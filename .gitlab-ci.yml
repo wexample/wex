@@ -1,0 +1,10 @@
+# Select image from https://hub.docker.com/r/_/php/
+image: ubuntu
+
+test:app:
+  tags:
+    - php7.1
+  only:
+    - master
+  script:
+    - sh shell/ubuntu-16.x/tests/wexampleLoader.sh
