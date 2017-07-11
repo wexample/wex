@@ -1,6 +1,7 @@
 #!/bin/bash
 
 wexample_dir="$HOME/"
+# TODO Use another, and more stable hosting service.
 wexample_url="https://network.wexample.com"
 
 RED='\033[1;91m'

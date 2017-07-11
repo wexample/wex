@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-ls -la
-
-sh "../wexampleLoader.sh";
+# 63 is the test script ID.
+sh "shell/ubuntu-16.x/tests/wexampleLoader.sh" 63
