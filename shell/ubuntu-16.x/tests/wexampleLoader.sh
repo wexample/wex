@@ -9,4 +9,4 @@ set -xe
 apt-get update -yqq
 
 # 63 is the test script ID.
-sh "shell/ubuntu-16.x/tests/wexampleLoader.sh" 63
+sh "shell/ubuntu-16.x/wexampleLoader.sh" 63
