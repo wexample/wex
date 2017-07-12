@@ -8,3 +8,4 @@ test:app:
     - master
   script:
     - sh shell/ubuntu-16.x/tests/wexampleLoader.sh
+    - sh ci/deploy.sh
