@@ -13,6 +13,9 @@ ssh-add <(echo "$STAGING_PRIVATE_KEY")
 # Install git.
 apt-get install git -yqq
 
+# Add git repo.
+git remote remove github
+git remote add github git@github.com:wexample/scripts.git
 # Remove branch if exists.
 git branch -d temp
 # Use temp branch to attach head.
