@@ -87,13 +87,13 @@ wexample_load_recipe () {
   # Load the file and
   # convert windows lines breaks
   echo "Loading $file_name..."
-  sudo curl $wexample_url/node/$script_id/recipe/raw | tr -d "\015" > ${file_name}
+  curl $wexample_url/node/$script_id/recipe/raw | tr -d "\015" > ${file_name}
   # Run
   echo "Exectue $file_name"
-  sudo bash ${file_name}
+  bash ${file_name}
   # Destroy file
   echo "Remove $file_name"
-  sudo rm ${file_name}
+  rm ${file_name}
 }
 
 # Replace a value of a variable into a config file
