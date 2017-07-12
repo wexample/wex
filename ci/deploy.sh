@@ -13,5 +13,8 @@ mkdir -p ~/.ssh
 eval $(ssh-agent -s)
 echo "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
+# Add ssh user.
+ssh-add $(echo "$STAGING_PRIVATE_KEY")
+
 # Push on git repo.
 git push -u github master
