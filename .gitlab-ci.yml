@@ -7,5 +7,5 @@ test:app:
   only:
     - master
   script:
-    - sh shell/ubuntu-16.x/tests/wexampleLoader.sh
+    #- sh shell/ubuntu-16.x/tests/wexampleLoader.sh
     - sh ci/deploy.sh
