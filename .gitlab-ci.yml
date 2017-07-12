@@ -1,5 +1,5 @@
 # Select image from https://hub.docker.com/r/_/php/
-image: weeger/gitlab-test-php7:v1
+image: ubuntu:yakkety
 
 test:app:
   tags:
@@ -7,6 +7,6 @@ test:app:
   only:
     - master
   script:
-    - sh ci/init.sh
-    #- sh shell/ubuntu-16.x/tests/wexampleLoader.sh
-    - sh ci/deploy.sh
+    - bash ci/init.sh
+    #- bash shell/ubuntu-16.x/tests/wexampleLoader.sh
+    - bash ci/deploy.sh
