@@ -14,6 +14,6 @@ ssh-add <(echo "$STAGING_PRIVATE_KEY")
 apt-get install git -yqq
 
 # Push on git repo.
-git status
 git checkout HEAD
+git status
 git push github master
