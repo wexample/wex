@@ -15,6 +15,5 @@ apt-get install git -yqq
 
 # Push on git repo.
 git status
-git checkout -b github
-git checkout -B master github
+git checkout HEAD
 git push github master
