@@ -17,4 +17,4 @@ apt-get install git -yqq
 git status
 git checkout -b github
 git checkout -B master github
-git push github github
+git push github master
