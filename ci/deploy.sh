@@ -3,7 +3,7 @@
 # Add SSH and prevent host checking.
 apt-get install openssh-client -yqq
 
-bash "shell/ubuntu-16.x/configureSshNoHostCheck.sh"
+bash shell/ubuntu-16.x/configureSshNoHostCheck.sh
 
 # Add ssh user.
 ssh-add <(echo "$STAGING_PRIVATE_KEY")
