@@ -7,8 +7,11 @@ apt-get install git -yqq
 git remote remove github
 git remote add github git@github.com:wexample/scripts.git
 
-# Add host.
-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+# Add SSH and prevent host checking.
+apt-get install openssh-client -yqq
+mkdir -p ~/.ssh
+eval $(ssh-agent -s)
+[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 # Push on git repo.
 git push -u github master
