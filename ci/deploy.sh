@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# We need to install dependencies only for Docker
-[[ ! -e /.dockerenv ]] && exit 0
-
-set -xe
-
-## Install global packages
-apt-get update -yqq
-
-
-
-
-
 # Install git.
 apt-get install git -yqq
 
@@ -24,9 +12,6 @@ apt-get install openssh-client -yqq
 mkdir -p ~/.ssh
 eval $(ssh-agent -s)
 echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-
-# Add ssh user.
-ssh-add <(echo "$STAGING_PRIVATE_KEY")
 
 # Push on git repo.
 git push -u github master
