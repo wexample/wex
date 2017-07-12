@@ -28,6 +28,6 @@ Wexample Scripts
                                        |_|
 
 
-[![build status](http://gitlab.wexample.com/wexample/scripts/badges/master/build.svg)](http://gitlab.wexample.com/wexample/scripts/commits/master)
+[![build status](http://gitlab.wexample.com/wexample-public/scripts/badges/master/build.svg)](http://gitlab.wexample.com/wexample-public/scripts/commits/master)
 
 These scripts are used to automate common tasks.
