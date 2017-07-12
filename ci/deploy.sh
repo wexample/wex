@@ -1,12 +1,17 @@
 #!/bin/bash
 
-bash "shell/ubuntu-16.x/installGit.sh"
+# Install git.
+apt-get install git -yqq
 
 # Add git repo.
 git remote remove github
 git remote add github git@github.com:wexample/scripts.git
 
-bash "shell/ubuntu-16.x/gitlabAddSSH.sh"
+# Add SSH and prevent host checking.
+apt-get install openssh-client -yqq
+mkdir -p ~/.ssh
+eval $(ssh-agent -s)
+[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 # Add ssh user.
 ssh-add <(echo "$STAGING_PRIVATE_KEY")
