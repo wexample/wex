@@ -5,7 +5,7 @@
 
 set -xe
 
-## Install global packages
+# Install global packages
 apt-get update -yqq
 
 # 63 is the test script ID.
