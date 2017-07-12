@@ -1,5 +1,5 @@
 # Select image from https://hub.docker.com/r/_/php/
-image: ubuntu
+image: ubuntu:yakkety
 
 test:app:
   tags:
