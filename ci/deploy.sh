@@ -11,10 +11,10 @@ git remote add github git@github.com:wexample/scripts.git
 apt-get install openssh-client -yqq
 mkdir -p ~/.ssh
 eval $(ssh-agent -s)
-echo "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 # Add ssh user.
-ssh-add $(echo "$STAGING_PRIVATE_KEY")
+ssh-add <(echo "$STAGING_PRIVATE_KEY")
 
 # Push on git repo.
 git push -u github master
