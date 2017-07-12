@@ -13,4 +13,4 @@ apt-get install git -yqq
 
 # Push on git repo.
 git status
-git push -u github master
+git push github master
