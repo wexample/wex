@@ -5,15 +5,18 @@
 # TODO We can extract all bash commands made in SSH : it can also be used in local
 # TODO We may also create remoteConnect / remoteDisconnect methods.
 
-read -p "Host : " host
-read -p "User : " user
-read -p "Port : " port
-read -p "Remote DB Name : " remote_db_name
-read -p "Remote DB User : " remote_db_user
-read -p "Remote DB Password : " remote_db_password
-read -p "Local DB Name : " local_db_name
-read -p "Local DB User : " local_db_user
-read -p "Local DB Password : " local_db_password
+# TODO Make a generic function to read if not exists ?
+if [ -z ${host+x} ]; then read -p "Host : " host; fi
+if [ -z ${user+x} ]; then read -p "User : " user; fi
+if [ -z ${port+x} ]; then read -p "Port : " port; fi
+
+if [ -z ${remote_db_name+x} ]; then read -p "Remote DB Name : " remote_db_name; fi
+if [ -z ${remote_db_user+x} ]; then read -p "Remote DB User : " remote_db_user; fi
+if [ -z ${remote_db_password+x} ]; then read -p "Remote DB User : " remote_db_password; fi
+
+if [ -z ${local_db_name+x} ]; then read -p "Local DB Name : " local_db_name; fi
+if [ -z ${local_db_user+x} ]; then read -p "Local DB User : " local_db_user; fi
+if [ -z ${local_db_password+x} ]; then read -p "Local DB User : " local_db_password; fi
 
 dump_file_name="networkV2Dump.sql"
 dump_remote_location="/var/www/"

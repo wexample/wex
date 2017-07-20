@@ -1,43 +1,4 @@
-#!/bin/bash
-
-wexample_dir="$HOME/"
-# TODO Use another, and more stable hosting service.
-wexample_url="https://network.wexample.com"
-
-RED='\033[1;91m'
-WHITE='\033[0;30m'
-NC='\033[0m'
-
-# Continued from above example
-echo -e "${RED}"
-
-echo "                        .";
-echo "                   .-=======-.";
-echo "               .-=======+=======-.";
-echo "           .-===========++==========-.";
-echo "        .-==========!|==+++|!==========-.";
-echo "        |++=======?  |==!++|  ?=========|";
-echo "        |++++==|     |?   ^|     |======|";
-echo "        |++++++|                 |======|";
-echo "        |++++++|                 |======|";
-echo "        |++++++|                 |======|";
-echo "        |++++++++ _    _!_    _ ========|";
-echo "        ?-+++++++++++.=====.===========-?";
-echo "           ?-+++++++++++============-?";
-echo "               ?-++++++++=======-?";
-echo "                   ?-++++===-?";
-echo "                        +";
-
-echo -e "${NC}";
-
-echo "                                          _";
-echo "                                         | |";
-echo "  __      _______  ____ _ _ __ ___  _ __ | | ___";
-echo "  \ \ /\ / / _ \ \/ / _\` | '_ \` _ \| '_ \| |/ _ \\";
-echo "   \ V  V /  __/>  < (_| | | | | | | |_) | |  __/";
-echo "    \_/\_/ \___/_/\_\__,_|_| |_| |_| .__/|_|\___|";
-echo "     http://network.wexample.com   | |";
-echo "     # Scripts recipe              |_|";
+#!/usr/bin/env bash
 
 # Load common methods.
 
@@ -80,6 +41,13 @@ ask() {
   done
 }
 
+read_if_missing () {
+  variable_name=$1
+  message=$2
+  if [ -z ${variable_name+x} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
+  read -p "${message} : " host
+}
+
 # Load given recipe
 wexample_load_recipe () {
   script_id=$1
@@ -118,10 +86,3 @@ wexample_insert_text_at_end() {
   file_name=$2
   sed -i "\$a$text" ${file_name}
 }
-
-echo "Starting wexample recipe : Run wexample script ...............";
-
-# Use standard method to load script
-wexample_load_recipe $1
-
-echo "Wexample script complete .....................................";
