@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # TODO Non executable script /!\
 # TODO Merge with V2 -> IF EXISTS seems to not be compatible with all version of MySQL.
 # TODO Do not ask for old url / db name / db passwork : go to wp-config.php to connect and request wp_options.
