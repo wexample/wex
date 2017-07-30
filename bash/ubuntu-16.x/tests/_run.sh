@@ -15,13 +15,25 @@ wexampleTestAssertEqual() {
 }
 
 # Import wexample.sh
-.  "${_TEST_RUN_DIR_CURRENT}/../wexample.sh" ${1}
-# Import test methods
-. "${_TEST_RUN_DIR_CURRENT}/${1}.sh"
+. "${_TEST_RUN_DIR_CURRENT}/../wexample.sh" ${1}
 
-# TODO predefined arguments into test file.
+for testFile in "${_TEST_RUN_DIR_CURRENT}"/*
+do
+  fileName=$(basename "${testFile}")
+  fileName="${fileName%.*}"
+  firstLetter="$(echo $fileName | head -c 1)"
+  # Exclude files with _ prefix.
+  if [ "${firstLetter}" != "_" ]; then
+    # Import test methods
+    echo "ok";
+    . "${_TEST_RUN_DIR_CURRENT}/${fileName}.sh"
 
-# Run script and store result.
-testResult=$(wexampleRun -s=${1})
+    # TODO predefined arguments into test file.
 
-verify "${testResult}"
+    # Run script and store result.
+    testResult=$(wexampleRun -s=${fileName})
+
+    verify "${testResult}"
+  fi;
+done
+
