@@ -53,10 +53,10 @@ do
       arguments
       argumentsJoined=$(wexampleArrayJoin " " ${arguments[@]})
     else
-      argumentsJoined='""'
+      argumentsJoined=''
     fi;
 
-    echo "Execute wexampleRun -s=${fileName} -a=${argumentsJoined}"
+    echo "Execute wexampleRun -s=${fileName} -a=\"${argumentsJoined}\""
     # Run script and store result.
     testResult=$(wexampleRun -s=${fileName} -a="${argumentsJoined}")
 
