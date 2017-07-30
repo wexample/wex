@@ -4,7 +4,7 @@
 # from an environment without wexample scripts installed.
 s=helloWorld && w=wexample.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && bash $w -s=$s -i -rm && rm -rf $w
 
-# Same script for multiple sub scripts
+# Wexample loader for multiple scripts.
 w=wexample.sh
 curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w
 bash $w -s=helloWorld -rm
