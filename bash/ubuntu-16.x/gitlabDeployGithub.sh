@@ -5,7 +5,7 @@ gitlabDeployGithub() {
 
   # Add git repo.
   git remote remove github
-  git remote add github ${destRepoUrl}
+  git remote add github "${destRepoUrl}"
   # Remove branch if exists.
   git branch -d temp
   # Use temp branch to attach head.
