@@ -102,7 +102,7 @@ wexampleRun() {
       exit 1
     else
       # Paste content into script file.
-      ${WEX_SCRIPT_CONTENT} > ${WEX_SCRIPT_FILE}
+      echo "${WEX_SCRIPT_CONTENT}" > ${WEX_SCRIPT_FILE}
     fi
   fi
 
