@@ -8,5 +8,5 @@ test:app:
     - master
   script:
     - bash ci/init.sh
-    - bash bash/ubuntu-16.x/tests/wexampleLoader.sh
+    - bash bash/ubuntu-16.x/tests/_run.sh
     - bash ci/deploy.sh
