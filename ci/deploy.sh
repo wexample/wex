@@ -10,9 +10,7 @@ w=wexample.sh
 curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w
 
 echo "   > Load sshRemoveHostChecking.sh"
-mkdir -p ~/.ssh
-  eval $(ssh-agent -s)
-  [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+bash $w -s=sshRemoveHostChecking -rm
 
 echo "   > ssh-add"
 # Add ssh user.
