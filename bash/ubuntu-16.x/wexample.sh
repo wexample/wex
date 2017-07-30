@@ -94,7 +94,16 @@ wexampleRun() {
     # Load the file and
     # convert windows lines breaks
     echo "Fetching ${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh to ${WEX_SCRIPT_FILE}"
-    curl "${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh" | tr -d "\015" > ${WEX_SCRIPT_FILE}
+    # Cet script content
+    WEX_SCRIPT_CONTENT=$(curl "${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh" | tr -d "\015")
+
+    if [ "${WEX_SCRIPT_CONTENT}" == "404: Not Found" ]; then
+      echo "The script \"${WEX_SCRIPT_NAME}\" was not found on the remote server."
+      exit 1
+    else
+      # Paste content into script file.
+      ${WEX_SCRIPT_CONTENT} > ${WEX_SCRIPT_FILE}
+    fi
   fi
 
   # Include loaded file
@@ -103,7 +112,7 @@ wexampleRun() {
   # Execute function with all parameters.
   ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}
 
-  if [ ${WEX_REMOVE_DOWNLOADED_SCRIPT} = true ]; then
+  if [ ${WEX_REMOVE_DOWNLOADED_SCRIPT} == true ]; then
     rm -rf ${WEX_SCRIPT_FILE}
   fi
 }
