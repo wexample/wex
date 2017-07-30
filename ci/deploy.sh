@@ -2,6 +2,7 @@
 
 # Add SSH and prevent host checking.
 apt-get install openssh-client -yqq
+apt-get install curl -yqq
 
 echo "   > Load wexample.sh"
 # Wexample loader for multiple scripts.
