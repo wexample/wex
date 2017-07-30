@@ -49,6 +49,7 @@ wexampleIntro() {
 wexampleRun() {
   WEX_SHOW_INTRO=false
   WEX_SCRIPT_NAME=false
+  WEX_ARGUMENTS=
 
   # Manage arguments
   # https://stackoverflow.com/a/14203146/2057976
@@ -61,6 +62,10 @@ wexampleRun() {
         ;;
         -s=*|--script=*)
         WEX_SCRIPT_NAME="${i#*=}"
+        shift # past argument
+        ;;
+        -a=*|--arguments=*)
+        WEX_ARGUMENTS="${i#*=}"
         shift # past argument
         ;;
     esac
@@ -78,14 +83,17 @@ wexampleRun() {
 
   WEX_SCRIPT_FILE="${WEX_DIR_CURRENT}/${WEX_SCRIPT_NAME}.sh"
 
+  # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
       # TODO Load remote if not exists.
       echo "Script not found ${WEX_SCRIPT_FILE}"
   fi
+
   # Include loaded file
   . "${WEX_SCRIPT_FILE}"
+
   # Execute function with all parameters.
-  ${WEX_SCRIPT_NAME} $*
+  ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}
 }
 
 
