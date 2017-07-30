@@ -3,11 +3,9 @@
 # Add SSH and prevent host checking.
 apt-get install openssh-client -yqq
 
-# Same script for multiple sub scripts
-w=wexample.sh
-curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w
-
-bash $w -s=sshRemoveHostChecking -rm
+mkdir -p ~/.ssh
+eval $(ssh-agent -s)
+[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 # Add ssh user.
 ssh-add <(echo "$STAGING_PRIVATE_KEY")
@@ -15,8 +13,15 @@ ssh-add <(echo "$STAGING_PRIVATE_KEY")
 # Install git.
 apt-get install git -yqq
 
-# Deploy on Github
-bash $w -s=gitlabDeployGithub -a="git@github.com:wexample/scripts.git" -rm
-
-# Remove wexample.sh
-rm -rf $w
+# Add git repo.
+git remote remove github
+git remote add github git@github.com:wexample/scripts.git
+# Remove branch if exists.
+git branch -d temp
+# Use temp branch to attach head.
+git branch temp
+git checkout temp
+git branch -f master temp
+git checkout master
+# Push on git repo.
+git push github master
