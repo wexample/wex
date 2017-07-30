@@ -23,4 +23,4 @@ echo "   > install git"
 apt-get install git -yqq
 
 # Remove warning on new SSH host.
-bash $w -s=gitlabDeployGithub -rm
+bash $w -s=gitlabDeployGithub -rm -a="git@github.com:wexample/scripts.git"
