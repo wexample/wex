@@ -109,6 +109,7 @@ wexampleRun() {
   # Include loaded file
   . "${WEX_SCRIPT_FILE}"
 
+  echo "Execute ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}";
   # Execute function with all parameters.
   ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}
 
