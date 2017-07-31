@@ -95,7 +95,7 @@ wexampleRun() {
     # convert windows lines breaks
     echo "Fetching ${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh to ${WEX_SCRIPT_FILE}"
     # Cet script content
-    WEX_SCRIPT_CONTENT=$(curl "${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh" | tr -d "\015")
+    WEX_SCRIPT_CONTENT=$(curl "${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh" -s | tr -d "\015")
 
     if [ "${WEX_SCRIPT_CONTENT}" == "404: Not Found" ]; then
       echo "The script \"${WEX_SCRIPT_NAME}\" was not found on the remote server."
