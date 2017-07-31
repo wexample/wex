@@ -74,7 +74,8 @@ do
     verify "${testResult}"
     fi;
 
-  else
+  # This is missing and not a directory
+  elif [ ! -d ${testFile} ]; then
     echo "Missing test file ${testFile}";
     exit 1;
    fi;
