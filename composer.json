@@ -1,0 +1,13 @@
+{
+    "name": "wexample/scripts",
+    "description": "Useful scripts",
+    "require": {
+        "symfony/yaml": "^3.3"
+    },
+    "authors": [
+        {
+            "name": "Romain WEEGER",
+            "email": "romain.weeger@gmail.com"
+        }
+    ]
+}
