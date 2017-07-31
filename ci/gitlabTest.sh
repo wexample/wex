@@ -2,7 +2,7 @@
 
 # Wexample loader for multiple scripts.
 w=wexample.sh
-curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w
+curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w -s | tr -d '\015' > $w
 
 # Remove warning on new SSH host.
 bash $w -s=gitlabInit -rm
