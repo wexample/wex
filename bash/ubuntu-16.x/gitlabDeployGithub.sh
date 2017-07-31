@@ -6,6 +6,8 @@ gitlabDeployGithub() {
   # Add git repo.
   git remote remove github
   git remote add github "${destRepoUrl}"
+  # Get last updates on git repo.
+  git checkout github
   # Remove branch if exists.
   git branch -d temp
   # Use temp branch to attach head.
@@ -13,8 +15,6 @@ gitlabDeployGithub() {
   git checkout temp
   git branch -f master temp
   git checkout master
-  # Get last updates on git repo.
-  git pull github master
   # Push on git repo.
   git push github master
 }
