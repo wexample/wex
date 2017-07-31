@@ -4,12 +4,12 @@
 apt-get install openssh-client -yqq
 apt-get install curl -yqq
 
-# Update packages.
-composer install
-
 # Wexample loader for multiple scripts.
 w=wexample.sh
 curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w
+
+bash $w -s=gitlabInit -rm
+bash $w -s=gitlabInstallComposer -rm
 
 mkdir -p ~/.ssh
 eval $(ssh-agent -s)
@@ -22,4 +22,4 @@ ssh-add <(echo "$STAGING_PRIVATE_KEY")
 apt-get install git -yqq
 
 # Remove warning on new SSH host.
-bash $w -s=gitlabDeployGithub -rm -a="git@github.com:wexample/scripts.git"
+bash $w -s=gitlabDeployGithub -a="git@github.com:wexample/scripts.git" -rm
