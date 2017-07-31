@@ -5,5 +5,7 @@
 
 set -xe
 
-## Install global packages
+# Install global packages
 apt-get update -yqq
+# Update packages.
+composer install
