@@ -2,7 +2,7 @@
 # @file Contains all needed scripts for wexample
 # to get a run given script.
 
-WEX_DIR_CURRENT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WEX_DIR_CURRENT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 
 wexampleIntro() {
@@ -87,7 +87,7 @@ wexampleRun() {
     wexampleIntro "${WEX_SCRIPT_NAME}()";
   fi;
 
-  WEX_SCRIPT_FILE="${WEX_DIR_CURRENT}/${WEX_SCRIPT_NAME}.sh"
+  WEX_SCRIPT_FILE="${WEX_DIR_CURRENT}${WEX_SCRIPT_NAME}.sh"
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
@@ -118,6 +118,6 @@ wexampleRun() {
 }
 
 # Execute run function with same arguments.
-if [ ! -z "${1+x}" ]; then
+if [ ! -z "${1+x}" ] && [ ${1} != false ]; then
   wexampleRun $@
 fi;
