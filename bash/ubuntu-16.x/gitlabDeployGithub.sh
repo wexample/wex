@@ -18,8 +18,9 @@ gitlabDeployGithub() {
   echo "Go to master"
   git checkout master
   # Push on git repo.
-  echo "Pull / Push"
-  git pull github master
+  echo "Pull"
+  git pull github/master
+  echo "Push"
   git push github master
   echo "Remove repo"
   git remote remove github
