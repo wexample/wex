@@ -13,6 +13,8 @@ gitlabDeployGithub() {
   git checkout temp
   git branch -f master temp
   git checkout master
+  # Get last updates on git repo.
+  git pull github master
   # Push on git repo.
   git push github master
 }
