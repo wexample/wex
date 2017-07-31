@@ -12,7 +12,7 @@ gitlabDeployGithub() {
   git branch temp
   git checkout temp
   git branch -f master temp
-  git checkout master
+  git checkout github
   # Push on git repo.
   git push github master
 }
