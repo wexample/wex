@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-# We need to install dependencies only for Docker
-[[ ! -e /.dockerenv ]] && exit 0
+gitlabInit() {
+  # We need to install dependencies only for Docker
+  [[ ! -e /.dockerenv ]] && exit 0
 
-set -xe
+  set -xe
 
-# Install global packages
-apt-get update -yqq
+  # Install global packages
+  apt-get update -yqq
+}
+
