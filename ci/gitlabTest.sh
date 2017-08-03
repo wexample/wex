@@ -8,10 +8,7 @@ curl -sS https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-1
 
 bash $w -s=gitlabInit -rm
 
-#bash $w -s=composerUpdate -rm
-  # Install all project dependencies
-  composer clear-cache -q
-  composer update -q
+bash $w -s=composerUpdate -rm
 
 # Run tests.
 bash bash/ubuntu-16.x/tests/_run.sh
