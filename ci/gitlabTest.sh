@@ -6,7 +6,7 @@ curl -sS https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-1
 
 # Remove warning on new SSH host.
 bash $w -s=gitlabInit -rm
-bash $w -s=gitlabInstallComposer -rm
+bash $w -s=composerInstall -rm
 
 # Run tests.
 bash bash/ubuntu-16.x/tests/_run.sh
