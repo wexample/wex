@@ -1,5 +1,5 @@
 # Select image from https://hub.docker.com/r/_/php/
-image: weeger/gitlab-test-php7:v1
+image: weeger/wexphp7:latest
 
 test:app:
   tags:
