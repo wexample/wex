@@ -11,7 +11,7 @@ wexampleTestAssertEqual() {
     echo "Assertion are not equal";
     echo "  - Expected : ${EXPECTED_VALUE}";
     echo "  - Got : ${TEST_VARIABLE}";
-    exit 1;
+    exit 2;
   fi;
 }
 
