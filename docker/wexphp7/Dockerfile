@@ -1,7 +1,17 @@
 FROM weeger/wexwebserver:latest
 
 # PHP
-RUN apt-get install php libapache2-mod-php php-xml -yqq
+RUN apt-get install \
+  php-memcache \
+  php-memcached \
+  memcached \
+  php \
+  libapache2-mod-php \
+  php-xml \
+  -yqq
+
+# Cleanup disk
+RUN apt-get clean
 
 # Wexample loader for multiple scripts.
 RUN w=wexample.sh && curl -sS https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w \
