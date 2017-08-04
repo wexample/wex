@@ -53,7 +53,8 @@ wexampleRun() {
   WEX_SCRIPT_NAME=false
   WEX_ARGUMENTS=
   WEX_REMOVE_DOWNLOADED_SCRIPT=false
-
+  WEX_SCRIPT_NAME=${1}
+  
   # Manage arguments
   # https://stackoverflow.com/a/14203146/2057976
   for i in "$@"
