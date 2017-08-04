@@ -4,9 +4,8 @@ wexampleInstall() {
   cd /opt
   # Create dir
   mkdir wexample
-  cd wexample
   # Get whole repository.
-  git clone ${WEX_URL_GITHUB}scripts.git .
+  git clone ${WEX_URL_GITHUB}scripts.git wexample
   # Add to path
-  bash/ubuntu-16.x/wexample.sh fileTestAppend ~/.bashrc export PATH=/opt/wexample/bash/ubuntu-16.x/
+  wexample/bash/ubuntu-16.x/wexample.sh fileTestAppend ~/.bashrc export PATH=/opt/wexample/bash/ubuntu-16.x/
 }
