@@ -1,4 +1,4 @@
-FROM weeger/wexwebserver:latest
+FROM wexample/wexwebserver:latest
 
 # PHP
 RUN apt-get install \

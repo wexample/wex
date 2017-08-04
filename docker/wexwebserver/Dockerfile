@@ -1,4 +1,4 @@
-FROM weeger/wexubuntu16:latest
+FROM wexample/wexubuntu16:latest
 
 # Web server
 RUN apt-get install apache2 -yqq
