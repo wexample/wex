@@ -4,6 +4,7 @@ wexampleInstall() {
   cd /opt
   # Create dir
   mkdir wexample
+  cd wexample
   # Get whole repository.
   git clone ${WEX_URL_GITHUB}scripts.git .
   # Add to path
