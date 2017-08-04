@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 fileTextAppend() {
-  sed -i "\$a${1}" ${2}
+  text=$1
+  file_name=$2
+  sed -i "\$a$text" ${file_name}
 }
