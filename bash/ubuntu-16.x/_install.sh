@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "_variables.sh"
+. "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/_variables.sh"
 
 cd /opt
 # Remove if exists.
