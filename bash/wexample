@@ -1,3 +1,3 @@
 #!/bin/sh
 
-bash "${BASH_SOURCE%/*}/ubuntu-16.x/wexample.sh" $@
+bash "/opt/wexample/bash/ubuntu-16.x/wexample.sh" $@
