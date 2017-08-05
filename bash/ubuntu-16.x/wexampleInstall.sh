@@ -9,5 +9,5 @@ wexampleInstall() {
   # Get whole repository.
   git clone ${WEX_URL_GITHUB}scripts.git wexample
   # Add to PATH.
-  bash ${WEX_DIR_ROOT}'wexample.sh' bashAddToPath '/opt/wexample/bash/ubuntu-16.x/'
+  bash '/opt/wexample/bash/ubuntu-16.x/wexample.sh' bashAddToPath '/opt/wexample/bash/ubuntu-16.x/'
 }
