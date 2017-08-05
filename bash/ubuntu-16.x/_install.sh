@@ -18,7 +18,7 @@ git clone ${WEX_URL_GITHUB}scripts.git wexample
 . ${WEX_SCRIPTS_DIR}"bashAddToPath.sh"
 # Add to PATH
 bashAddToPath "${WEX_LOCAL_DIR}bash"
-chmod +x "${WEX_LOCAL_DIR}wexample"
+chmod +x "${WEX_LOCAL_DIR}bash/wexample"
 
 # Say Hi.
 wexample "Wexample Script installed at vesion v"wexampleVersion
