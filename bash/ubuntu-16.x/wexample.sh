@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-. "${WEX_DIR_ROOT}/_variables.sh"
+WEX_URL_GITHUB="https://github.com/wexample/"
+WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 
 wexample() {
   WEX_SHOW_INTRO=false

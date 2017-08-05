@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-. "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/_variables.sh"
+WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_URL_GITHUB="https://github.com/wexample/"
+WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 
 cd /opt
 # Remove if exists.
