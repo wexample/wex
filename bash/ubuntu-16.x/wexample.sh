@@ -52,10 +52,6 @@ wexample() {
     exit 1;
   fi;
 
-  if [ "${WEX_SHOW_INTRO}" = true ]; then
-    wexampleIntro "${WEX_SCRIPT_NAME}()";
-  fi;
-
   WEX_SCRIPT_FILE="${WEX_DIR_ROOT}${WEX_SCRIPT_NAME}.sh"
 
   # File does not exists.
