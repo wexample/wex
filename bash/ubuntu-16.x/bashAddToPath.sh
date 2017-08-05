@@ -5,5 +5,5 @@ bashAddToPath() {
   # Add now.
   eval ${command}
   # Add to path.
-  ${WEX_DIR_CURRENT}wexample.sh fileTextAppend ~/.bashrc ${command}
+  ${WEX_DIR_ROOT}wexample.sh fileTextAppend ~/.bashrc ${command}
 }

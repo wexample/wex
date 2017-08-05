@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 symfony3Settings() {
-  php "${WEX_DIR_CURRENT}../../php/symfony3SettingsToBash.php" ${1}
+  php "${WEX_DIR_ROOT}../../php/symfony3SettingsToBash.php" ${1}
 }
