@@ -21,5 +21,5 @@ bashAddToPath "${WEX_LOCAL_DIR}bash"
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
 
 # Say Hi.
-wexample "Wexample Script installed at vesion v"wexampleVersion
+echo "Wexample Script installed at vesion v"$(wexample wexampleVersion)
 wexample wexampleLogo
