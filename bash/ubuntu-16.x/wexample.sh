@@ -48,11 +48,23 @@ wexampleIntro() {
   fi;
 }
 
-wexampleRun() {
+wexample() {
   WEX_SHOW_INTRO=false
   WEX_SCRIPT_NAME=false
-  WEX_ARGUMENTS=
   WEX_REMOVE_DOWNLOADED_SCRIPT=false
+  WEX_SCRIPT_NAME=${1}
+
+  # Get parameters keeping quoted strings.
+  WEX_ARGUMENTS=''
+  whitespace="[[:space:]]"
+  for i in "${@:2}"
+  do
+      if [[ $i =~ $whitespace ]]
+      then
+          i=\"$i\"
+      fi
+      WEX_ARGUMENTS=${WEX_ARGUMENTS}' '${i}
+  done
 
   # Manage arguments
   # https://stackoverflow.com/a/14203146/2057976
@@ -111,7 +123,7 @@ wexampleRun() {
   . "${WEX_SCRIPT_FILE}"
 
   # Execute function with all parameters.
-  ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}
+   eval ${WEX_SCRIPT_NAME} ${WEX_ARGUMENTS}
 
   if [ ${WEX_REMOVE_DOWNLOADED_SCRIPT} == true ]; then
     rm -rf ${WEX_SCRIPT_FILE}
@@ -120,5 +132,5 @@ wexampleRun() {
 
 # Execute run function with same arguments.
 if [ ! -z "${1+x}" ] && [ ${1} != false ]; then
-  wexampleRun $@
+  wexample "$@"
 fi;

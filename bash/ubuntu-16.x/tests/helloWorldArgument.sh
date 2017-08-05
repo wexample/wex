@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-arguments() {
-  arguments=( 'Wexample' 'Friends' )
-}
+_TEST_ARGUMENTS=( 'Wexample' 'Friends' )
 
 verify() {
   # Test echoed message.

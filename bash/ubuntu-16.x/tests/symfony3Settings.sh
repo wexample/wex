@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-arguments() {
-  arguments=( "${_TEST_RUN_DIR_CURRENT}samples/symfony3Settings.yml" )
-}
+_TEST_ARGUMENTS=("${_TEST_RUN_DIR_SAMPLES}symfony3Settings.yml")
 
 verify() {
   # Eval response variables.

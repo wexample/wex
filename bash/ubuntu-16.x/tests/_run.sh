@@ -2,6 +2,7 @@
 
 # Store current dir.
 _TEST_RUN_DIR_CURRENT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+_TEST_RUN_DIR_SAMPLES=${_TEST_RUN_DIR_CURRENT}samples/
 _TEST_RUN_SCRIPT=${1}
 
 wexampleTestAssertEqual() {
@@ -26,8 +27,6 @@ wexampleArrayJoin() {
 # Import wexample.sh
 . "${_TEST_RUN_DIR_CURRENT}../wexample.sh" false
 
-wexampleIntro
-
 for testFile in "${_TEST_RUN_DIR_CURRENT}"*
 do
   fileName=$(basename "${testFile}")
@@ -44,27 +43,21 @@ do
   # File does not exists.
   if [ -f ${testFile} ]; then
     # Clear defined function
-    arguments=false
+    _TEST_ARGUMENTS=false
     test=false
     verify=false
+
+    echo "Testing ${fileName}"
 
     # Import test methods
     . "${_TEST_RUN_FILE}"
 
-    # Print returned value for info.
-    if [[ $(type -t "arguments" 2>/dev/null) == function ]]; then
-      arguments
-      argumentsJoined=$(wexampleArrayJoin " " ${arguments[@]})
+    if [ "${test}" != false ] ; then
+      testResult=$(test -s=${fileName} ${_TEST_ARGUMENTS[@]})
     else
-      argumentsJoined=''
-    fi;
-
-    if [[ $(type -t "test" 2>/dev/null) == function ]]; then
-      testResult=$(test -s=${fileName} -a="${argumentsJoined}")
-    else
-      echo "Execute wexampleRun -s=${fileName} -a=\"${argumentsJoined}\""
+      echo "Execute wexample ${fileName} ${_TEST_ARGUMENTS[@]}"
       # Run script and store result.
-      testResult=$(wexampleRun -s=${fileName} -a="${argumentsJoined}")
+      testResult=$(wexample ${fileName} ${_TEST_ARGUMENTS[@]})
     fi;
 
     # Print result for info.

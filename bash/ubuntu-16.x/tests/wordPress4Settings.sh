@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-arguments() {
-  arguments=( "${_TEST_RUN_DIR_CURRENT}samples/wordPress4Settings.php" )
-}
+_TEST_ARGUMENTS=("${_TEST_RUN_DIR_SAMPLES}wordPress4Settings.php")
 
 verify() {
   # Eval response variables.

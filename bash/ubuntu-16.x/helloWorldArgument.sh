@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-helloWorldArgument() {
+helloWorldArgument() { 
   echo "Hello World! - ${1} - ${2}"
 }

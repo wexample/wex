@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-arguments() {
-  arguments=( "${_TEST_RUN_DIR_CURRENT}samples/drupal7Settings.php" )
-}
+_TEST_ARGUMENTS=("${_TEST_RUN_DIR_SAMPLES}drupal7Settings.php")
 
 verify() {
   # Eval response variables.
