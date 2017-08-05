@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. "_variables.sh"
+
 cd /opt
 # Remove if exists.
 rm -rf wexample
@@ -8,7 +10,7 @@ mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
 # Load used methods.
-. "/opt/wexample/bash/ubuntu-16.x/fileTextAppend.sh"
-. "/opt/wexample/bash/ubuntu-16.x/bashAddToPath.sh"
+. ${WEX_SCRIPTS_DIR}"fileTextAppend.sh"
+. ${WEX_SCRIPTS_DIR}"bashAddToPath.sh"
 # Add to PATH
 bashAddToPath "/opt/wexample/bash"
