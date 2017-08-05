@@ -131,6 +131,6 @@ wexample() {
 }
 
 # Execute run function with same arguments.
-if [ $# -eq 1 ]; then
+if [ ! -z "${1+x}" ] && [ ${1} != false ]; then
   wexample "$@"
 fi;
