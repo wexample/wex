@@ -13,4 +13,4 @@ bash $w -s=helloWorld -rm
 rm -rf $w
 
 # Install wexample
-s=wexampleInstall && w=wexample.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && . $w && wexample ${s} -rm && rm -rf $w
+w=_install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && . $w && rm -rf $w

@@ -7,7 +7,8 @@ rm -rf wexample
 mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
-
+# Load used methods.
+. "/opt/wexample/bash/ubuntu-16.x/fileTextAppend.sh"
 . "/opt/wexample/bash/ubuntu-16.x/bashAddToPath.sh"
-
-bashAddToPath "/opt/wexample/wexample"
+# Add to PATH
+bashAddToPath "/opt/wexample/bash"

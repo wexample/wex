@@ -64,7 +64,7 @@ wexample() {
 
     if [ "${WEX_SCRIPT_CONTENT}" == "404: Not Found" ]; then
       echo "The script \"${WEX_SCRIPT_NAME}\" was not found on the remote server."
-      exit 1
+      return
     else
       # Paste content into script file.
       echo "${WEX_SCRIPT_CONTENT}" > ${WEX_SCRIPT_FILE}
