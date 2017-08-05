@@ -2,6 +2,8 @@
 
 wexampleInstall() {
   cd /opt
+  # Remove if exists.
+  rm -rf wexample
   # Create dir
   mkdir wexample
   # Get whole repository.
