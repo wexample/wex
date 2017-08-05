@@ -6,6 +6,8 @@ wexampleInstall() {
   mkdir wexample
   # Get whole repository.
   git clone ${WEX_URL_GITHUB}scripts.git wexample
+  # Execute one to get environment variables
+  wexample
   # Add to PATH.
   "${WEX_DIR_ROOT}wexample.sh" bashAddToPath ${WEX_DIR_ROOT}
 }
