@@ -1,0 +1,3 @@
+#!/bin/sh
+
+bash "bash/ubuntu-16.x/wexample.sh" $@

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 bashAddToPath() {
-  command='export PATH=\$PATH:'${1}
   # Add now.
-  eval ${command}
+  export PATH=$PATH:${1}
   # Add to path.
-  bash ${WEX_DIR_ROOT}'wexample.sh' fileTextAppend ~/.bashrc "${command}"
+  bash ${WEX_DIR_ROOT}'wexample.sh' fileTextAppend ~/.bashrc 'export PATH=$PATH:'${1}
 }

@@ -1,52 +1,8 @@
 #!/usr/bin/env bash
-# @file Contains all needed scripts for wexample
-# to get a run given script.
 
 WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
 WEX_URL_GITHUB="https://github.com/wexample/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
-
-wexampleIntro() {
-  RED='\033[1;91m'
-  WHITE='\033[0;30m'
-  NC='\033[0m'
-
-  # Continued from above example
-  echo -e "${RED}"
-
-  echo "                        .";
-  echo "                   .-=======-.";
-  echo "               .-=======+=======-.";
-  echo "           .-===========++==========-.";
-  echo "        .-==========!|==+++|!==========-.";
-  echo "        |++=======?  |==!++|  ?=========|";
-  echo "        |++++==|     |?   ^|     |======|";
-  echo "        |++++++|                 |======|";
-  echo "        |++++++|                 |======|";
-  echo "        |++++++|                 |======|";
-  echo "        |++++++++ _    _!_    _ ========|";
-  echo "        ?-+++++++++++.=====.===========-?";
-  echo "           ?-+++++++++++============-?";
-  echo "               ?-++++++++=======-?";
-  echo "                   ?-++++===-?";
-  echo "                        +";
-
-  echo -e "${NC}";
-
-  echo "                                          _";
-  echo "                                         | |";
-  echo "  __      _______  ____ _ _ __ ___  _ __ | | ___";
-  echo "  \ \ /\ / / _ \ \/ / _\` | '_ \` _ \| '_ \| |/ _ \\";
-  echo "   \ V  V /  __/>  < (_| | | | | | | |_) | |  __/";
-  echo "    \_/\_/ \___/_/\_\__,_|_| |_| |_| .__/|_|\___|";
-  echo "     http://network.wexample.com   | |";
-  echo "     # Scripts recipe              |_|";
-
-  # Extra message is set.
-  if [ ! -z "${1+x}" ]; then
-    echo "       ~> ${1}";
-  fi;
-}
 
 wexample() {
   WEX_SHOW_INTRO=false
@@ -131,6 +87,6 @@ wexample() {
 }
 
 # Execute run function with same arguments.
-if [ ! -z "${1+x}" ] && [ ${1} != false ]; then
+if [ ! -z "${1+x}" ] && [ ${1} != '' ]; then
   wexample "$@"
 fi;
