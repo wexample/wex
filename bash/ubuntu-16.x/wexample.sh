@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-. "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/_variables.sh"
+WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+. "${WEX_DIR_ROOT}/_variables.sh"
 
 wexample() {
   WEX_SHOW_INTRO=false
