@@ -52,10 +52,10 @@ do
     # Import test methods
     . "${_TEST_RUN_FILE}"
 
+    echo "Execute wexample ${fileName} ${_TEST_ARGUMENTS[@]}"
     if [ "${test}" != false ] ; then
-      testResult=$(test -s=${fileName} ${_TEST_ARGUMENTS[@]})
+      testResult=$(test ${fileName} ${_TEST_ARGUMENTS[@]})
     else
-      echo "Execute wexample ${fileName} ${_TEST_ARGUMENTS[@]}"
       # Run script and store result.
       testResult=$(wexample ${fileName} ${_TEST_ARGUMENTS[@]})
     fi;

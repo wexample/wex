@@ -1,0 +1,21 @@
+{
+  "config": {
+    "test": {
+      "database": {
+        "dbname": "mysqlTestDataBase",
+        "user": "mysqlTestUserName",
+        "password": "mysqlTestPassword",
+        "host": "localhost",
+        "driver": "pdo_mysql",
+        "charset": "utf8"
+      },
+      "smtp": {
+        "host": "localhost",
+        "port": 25,
+        "username": "",
+        "password": ""
+      },
+      "default_locale": "fr"
+    }
+  }
+}
