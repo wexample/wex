@@ -11,6 +11,8 @@ if (!$env) {
     $env = key($value->config);
 }
 
+echo('WEBSITE_SETTINGS_HOST="'.$value->config->$env->database->host.'"; ');
+echo('WEBSITE_SETTINGS_PORT="'.$value->config->$env->database->port.'"; ');
 echo('WEBSITE_SETTINGS_DATABASE="'.$value->config->$env->database->dbname.'"; ');
 echo('WEBSITE_SETTINGS_USERNAME="'.$value->config->$env->database->user.'"; ');
 echo('WEBSITE_SETTINGS_PASSWORD="'.$value->config->$env->database->password.'"; ');
