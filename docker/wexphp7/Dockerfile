@@ -8,6 +8,8 @@ RUN apt-get install \
   php \
   libapache2-mod-php \
   php-xml \
+  php-mysql \
+  mysql-client \
   -yqq
 
 # Cleanup disk
