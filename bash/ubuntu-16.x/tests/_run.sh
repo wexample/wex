@@ -30,46 +30,47 @@ wexampleArrayJoin() {
 for testFile in "${_TEST_RUN_DIR_CURRENT}"*
 do
   fileName=$(basename "${testFile}")
-  fileName="${fileName%.*}"
-  firstLetter="$(echo $fileName | head -c 1)"
+  functionName="${fileName%.*}"
+  firstLetter="$(echo $functionName | head -c 1)"
 
   # Exclude files with _ prefix.
   # Allow to specify single script name to test.
-  if [[ "${firstLetter}" != "_" && ("${_TEST_RUN_SCRIPT}" == "" || ${_TEST_RUN_SCRIPT} == ${fileName}) ]]; then
+  if [[ "${firstLetter}" != "_" && ("${_TEST_RUN_SCRIPT}" == "" || ${_TEST_RUN_SCRIPT} == ${functionName}) ]]; then
 
   # Build script file path.
-  _TEST_RUN_FILE="${_TEST_RUN_DIR_CURRENT}${fileName}.sh"
+  _TEST_RUN_FILE="${_TEST_RUN_DIR_CURRENT}${functionName}.sh"
 
   # File does not exists.
   if [ -f ${testFile} ]; then
     # Clear defined function
     _TEST_ARGUMENTS=false
-    test=false
     verify=false
 
-    echo "Testing ${fileName}"
+    echo "Testing ${functionName}"
 
     # Import test methods
     . "${_TEST_RUN_FILE}"
 
-    echo "Execute wexample ${fileName} ${_TEST_ARGUMENTS[@]}"
-    if [ "${test}" != false ] ; then
-      testResult=$(test ${fileName} ${_TEST_ARGUMENTS[@]})
+    echo "Execute wexample ${functionName} ${_TEST_ARGUMENTS[@]}"
+    if [[ $(type -t "${functionName}Test" 2>/dev/null) == function ]]; then
+      echo "  > custom ${functionName}Test method"
+      testResult=$(${functionName}Test ${functionName}Test ${_TEST_ARGUMENTS[@]})
     else
+      echo "  > auto test method"
       # Run script and store result.
-      testResult=$(wexample ${fileName} ${_TEST_ARGUMENTS[@]})
+      testResult=$(wexample ${functionName} ${_TEST_ARGUMENTS[@]})
     fi;
 
     # Print result for info.
-    echo "              > Test response : ${testResult}"
+    echo "  > Test response : ${testResult}"
 
-    if [ "${arguments}" != false ] && [[ $(type -t "verify" 2>/dev/null) == function ]]; then
-    verify "${testResult}"
+    if [ "${arguments}" != false ] && [[ $(type -t "${functionName}Verify" 2>/dev/null) == function ]]; then
+      ${functionName}Verify "${testResult}"
     fi;
 
   # This is missing and not a directory
   elif [ ! -d ${testFile} ]; then
-    echo "Missing test file ${testFile}";
+    echo "  x Missing test file ${testFile}";
     exit 1;
    fi;
   fi;

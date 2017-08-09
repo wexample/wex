@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-test() {
+fileTextAppendTest() {
   filePath=${_TEST_RUN_DIR_SAMPLES}fileTextSample1.txt
   testText="Hey this is a test"
   wexample fileTextAppend ${filePath} "${testText}"

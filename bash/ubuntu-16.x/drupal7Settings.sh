@@ -4,5 +4,5 @@
 # WEX_DRUPAL_7_SETTINGS_USERNAME,
 # WEX_DRUPAL_7_SETTINGS_XXX, etc.
 drupal7Settings() {
-  php "${WEX_DIR_ROOT}../../php/drupal7SettingsToBash.php" ${1}
+  eval $(php "${WEX_DIR_ROOT}../../php/drupal7SettingsToBash.php" ${1});
 }

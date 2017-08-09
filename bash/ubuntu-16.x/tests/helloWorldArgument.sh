@@ -2,7 +2,7 @@
 
 _TEST_ARGUMENTS=( 'Wexample' 'Friends' )
 
-verify() {
+helloWorldArgumentVerify() {
   # Test echoed message.
   wexampleTestAssertEqual "${1}" "Hello World! - Wexample - Friends"
 }

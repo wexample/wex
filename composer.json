@@ -2,7 +2,8 @@
     "name": "wexample/scripts",
     "description": "Useful scripts",
     "require": {
-        "symfony/yaml": "^3.3"
+        "symfony/yaml": "^3.3",
+        "composer/composer": "^1.5"
     },
     "authors": [
         {
