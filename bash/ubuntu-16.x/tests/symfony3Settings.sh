@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 symfony3SettingsTest() {
+  WEBSITE_SETTINGS_DATABASE=false
+  WEBSITE_SETTINGS_USERNAME=false
+  WEBSITE_SETTINGS_PASSWORD=false
   wexample symfony3Settings ${_TEST_RUN_DIR_SAMPLES}symfony3/app/config/parameters.yml
   # Eval response variables.
-  wexampleTestAssertEqual ${WEX_SYMFONY_3_SETTINGS_DATABASE} "mysqlTestDataBase"
-  wexampleTestAssertEqual ${WEX_SYMFONY_3_SETTINGS_USERNAME} "mysqlTestUserName"
-  wexampleTestAssertEqual ${WEX_SYMFONY_3_SETTINGS_PASSWORD} "mysqlTestPassword"
+  wexampleTestAssertEqual ${WEBSITE_SETTINGS_DATABASE} "mysqlTestDataBase"
+  wexampleTestAssertEqual ${WEBSITE_SETTINGS_USERNAME} "mysqlTestUserName"
+  wexampleTestAssertEqual ${WEBSITE_SETTINGS_PASSWORD} "mysqlTestPassword"
 }

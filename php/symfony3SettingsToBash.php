@@ -9,6 +9,6 @@ $settingFile = $argv[1];
 
 $value = Yaml::parse(file_get_contents($settingFile));
 
-echo('WEX_SYMFONY_3_SETTINGS_DATABASE="'.$value['parameters']['database_name'].'"; ');
-echo('WEX_SYMFONY_3_SETTINGS_USERNAME="'.$value['parameters']['database_user'].'"; ');
-echo('WEX_SYMFONY_3_SETTINGS_PASSWORD="'.$value['parameters']['database_password'].'"; ');
+echo('WEBSITE_SETTINGS_DATABASE="'.$value['parameters']['database_name'].'"; ');
+echo('WEBSITE_SETTINGS_USERNAME="'.$value['parameters']['database_user'].'"; ');
+echo('WEBSITE_SETTINGS_PASSWORD="'.$value['parameters']['database_password'].'"; ');

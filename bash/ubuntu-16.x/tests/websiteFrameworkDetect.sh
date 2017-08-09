@@ -2,15 +2,15 @@
 
 websiteFrameworkDetectTest() {
   # Silex
-  wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}silex1"
-  wexampleTestAssertEqual ${WEBSITE_FRAMEWORK} "silex1"
+  type=$(wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}silex1")
+  wexampleTestAssertEqual ${type} "silex1"
   # Symfony
-  wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}symfony3"
-  wexampleTestAssertEqual ${WEBSITE_FRAMEWORK} "symfony3"
+  type=$(wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}symfony3")
+  wexampleTestAssertEqual ${type} "symfony3"
   # Wordpress
-  wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}wordpress4"
-  wexampleTestAssertEqual ${WEBSITE_FRAMEWORK} "wordpress4"
+  type=$(wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}wordpress4")
+  wexampleTestAssertEqual ${type} "wordpress4"
   # Drupal
-  wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}drupal7"
-  wexampleTestAssertEqual ${WEBSITE_FRAMEWORK} "drupal7"
+  type=$(wexample websiteFrameworkDetect "${_TEST_RUN_DIR_SAMPLES}drupal7")
+  wexampleTestAssertEqual ${type} "drupal7"
 }

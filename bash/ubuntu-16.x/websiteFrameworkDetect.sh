@@ -15,6 +15,7 @@ websiteFrameworkDetect() {
 
     # PHP script found a framework name.
     if [ ${WEBSITE_FRAMEWORK} != "undefined" ]; then
+      echo ${WEBSITE_FRAMEWORK};
       return
     fi
   fi
