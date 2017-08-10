@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_DIR_BASH_UBUNTU16="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_DIR_ROOT=${WEX_DIR_BASH_UBUNTU16}"../../"
 WEX_URL_GITHUB="https://github.com/wexample/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 WEX_LOCAL_DIR="/opt/wexample/"
 WEX_SCRIPTS_DIR=${WEX_LOCAL_DIR}"bash/ubuntu-16.x/"
+declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(
+  ['drupal7']='sites/default/settings.php'
+  ['symfony3']='app/config/parameters.yml'
+  ['wordpress4']='wp-config.php'
+);
 
 wexample() {
   WEX_SHOW_INTRO=false
@@ -33,18 +39,7 @@ wexample() {
   for i in "$@"
   do
     case $i in
-        -i|--intro)
-        WEX_SHOW_INTRO=true
-        shift # past argument
-        ;;
-        -s=*|--script=*)
-        WEX_SCRIPT_NAME="${i#*=}"
-        shift # past argument
-        ;;
-        -a=*|--arguments=*)
-        WEX_ARGUMENTS="${i#*=}"
-        shift # past argument
-        ;;
+        # TODO Avoid arguments propagation, using -wexRm
         -rm|--remove)
         WEX_REMOVE_DOWNLOADED_SCRIPT=true
         shift # past argument
@@ -58,14 +53,24 @@ wexample() {
     exit 1;
   fi;
 
-  WEX_SCRIPT_FILE="${WEX_DIR_ROOT}${WEX_SCRIPT_NAME}.sh"
+  # Check if file exists locally.
+  # It allow to override behaviors from location where script is executed,
+  # especially for contextual website scripts
+  WEX_SCRIPT_FILE="./wexample/bash/ubuntu-16.x/${WEX_SCRIPT_NAME}.sh"
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+    # Search into wexample local folder.
+    WEX_SCRIPT_FILE="${WEX_DIR_BASH_UBUNTU16}${WEX_SCRIPT_NAME}.sh"
+  fi;
+
+  # File does not exists.
+  if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+    # Search file remotely.
     # Load the file and
     # convert windows lines breaks
     echo "Fetching ${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh to ${WEX_SCRIPT_FILE}"
-    # Cet script content
+    # Get script content
     WEX_SCRIPT_CONTENT=$(curl -sS "${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh" | tr -d "\015")
 
     if [ "${WEX_SCRIPT_CONTENT}" == "404: Not Found" ]; then

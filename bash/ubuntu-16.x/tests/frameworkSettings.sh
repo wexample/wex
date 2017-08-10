@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 frameworkSettingsTest() {
-  websiteTypes=('drupal7' 'silex1' 'symfony3' 'wordpress4')
+  websiteTypes=('drupal7' 'symfony3' 'wordpress4')
 
   # For each type.
   for websiteType in "${websiteTypes[@]}"

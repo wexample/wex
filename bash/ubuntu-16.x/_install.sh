@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-WEX_DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_DIR_BASH_UBUNTU16="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_DIR_ROOT=${WEX_DIR_BASH_UBUNTU16}"../../"
 WEX_URL_GITHUB="https://github.com/wexample/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 WEX_LOCAL_DIR="/opt/wexample/"

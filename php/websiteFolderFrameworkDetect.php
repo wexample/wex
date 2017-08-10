@@ -15,7 +15,7 @@ else if (is_file($phpWebsitePath.'/sites/default/settings.php') && is_file($phpW
 }
 
 if ($framework) {
-    echo 'WEBSITE_FRAMEWORK="'.$framework.'";';
+    echo $framework;
 } else {
     $argv[1] = $phpWebsitePath.'/composer.json';
     # Parse composer.json file.

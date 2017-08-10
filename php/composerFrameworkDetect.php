@@ -27,5 +27,5 @@ if (isset($composerJson->require->$silex)) {
 }
 
 if ($framework) {
-    echo 'WEBSITE_FRAMEWORK="'.$framework.'";';
+    echo $framework;
 }
