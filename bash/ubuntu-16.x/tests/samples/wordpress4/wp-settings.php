@@ -1,0 +1,1 @@
+<?php // This is a temp file used by wexample to read WP connexion data and prevent site launching.
