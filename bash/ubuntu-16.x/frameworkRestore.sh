@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-mysqlRestore() {
+frameworkRestore() {
   websiteDir=./
-  dumpDir=./
+  dumpFile=./
   prefix=''
   gzip=false
 
@@ -15,15 +15,15 @@ mysqlRestore() {
         websiteDir="${i#*=}"
         shift # past argument
         ;;
-        -d=*|--destination=*)
-        dumpDir="${i#*=}"
+        -d=*|--dump=*)
+        dumpFile="${i#*=}"
         shift # past argument
         ;;
     esac
   done
 
   # Get database connexion global settings.
-  wexample frameworkSettings ${_TEST_RUN_DIR_SAMPLES}${websiteDir}"/"
+  wexample frameworkSettings ${websiteDir}
 
   # Add -p option only if password is defined and not empty.
   # Adding empty password will prompt user instead.
@@ -31,6 +31,23 @@ mysqlRestore() {
     WEBSITE_SETTINGS_PASSWORD="-p\"${WEBSITE_SETTINGS_PASSWORD}\""
   fi;
 
+  mysqlConnexion="mysql -h${WEBSITE_SETTINGS_HOST} -u${WEBSITE_SETTINGS_USERNAME} ${WEBSITE_SETTINGS_PASSWORD}"
+
+  # Empty database
+  ${mysqlConnexion} -e "DROP DATABASE IF EXISTS ${WEBSITE_SETTINGS_DATABASE}; CREATE DATABASE ${WEBSITE_SETTINGS_DATABASE};"
+
+  # If file is a gzip, gunzip it.
+  if [[ ${dumpFile} =~ \.gz$ ]];then
+     dumpBaseFile=${dumpFile}
+     dumpFile=$(dirname  "${dumpFile%.*}")"/"$(basename  "${dumpFile%.*}")
+     gunzip -c ${dumpBaseFile} > ${dumpFile}
+  fi;
+
   # Create dump file
-  mysql -h${WEBSITE_SETTINGS_HOST} -u${WEBSITE_SETTINGS_USERNAME} ${WEBSITE_SETTINGS_PASSWORD} ${WEBSITE_SETTINGS_DATABASE} < ${dumpFullPath}
+  mysql -h${WEBSITE_SETTINGS_HOST} -u${WEBSITE_SETTINGS_USERNAME} ${WEBSITE_SETTINGS_PASSWORD} ${WEBSITE_SETTINGS_DATABASE} < ${dumpFile}
+
+  # If file was a gzip, .sql file was temporary.
+  if [[ ${dumpBaseFile} =~ \.gz$ ]];then
+    rm ${dumpFile}
+  fi
 }

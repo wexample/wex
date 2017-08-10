@@ -9,5 +9,7 @@ wexampleFrameworkDump() {
   . ".env"
   prefix=$(wexample frameworkGetEnvironment)"-"
   # Create dump
-  wexample frameworkDump -s='./' -d=${VOLUME_DATA_DUMPS} -p=${prefix} -gz
+  dumpFile=$(wexample frameworkDump -s='./' -d=${VOLUME_DATA_DUMPS} -p=${prefix} -gz)
+  # Create a symlink for the latest dump.
+  ln -sf ${dumpFile} $(wexample wexampleFrameworkDumpLatestPath)".gz"
 }

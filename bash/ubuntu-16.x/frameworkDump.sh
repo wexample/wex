@@ -31,7 +31,7 @@ frameworkDump() {
   done
 
   # Get database connexion global settings.
-  wexample frameworkSettings ${_TEST_RUN_DIR_SAMPLES}${websiteDir}"/"
+  wexample frameworkSettings ${websiteDir}
 
   # Add -p option only if password is defined and not empty.
   # Adding empty password will prompt user instead.
@@ -47,5 +47,10 @@ frameworkDump() {
 
   if [[ ${gzip} == true ]]; then
     gzip ${dumpFullPath}
+     echo ${dumpFullPath}".gz"
+     return
   fi
+
+  echo ${dumpFullPath}
+  return
 }
