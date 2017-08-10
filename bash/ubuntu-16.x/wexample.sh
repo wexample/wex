@@ -12,6 +12,10 @@ wexample() {
   WEX_REMOVE_DOWNLOADED_SCRIPT=false
   WEX_SCRIPT_NAME=${1}
 
+  if [ ${WEX_SCRIPT_NAME} == "wexample" ];then
+    return
+  fi;
+
   # Get parameters keeping quoted strings.
   WEX_ARGUMENTS=''
   whitespace="[[:space:]]"
