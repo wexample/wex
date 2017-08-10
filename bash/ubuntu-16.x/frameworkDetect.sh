@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-websiteFrameworkDetect() {
+frameworkDetect() {
   websiteDir=./
   WEBSITE_FRAMEWORK="undefined"
   if [ ! -z "${1+x}" ] && [ ${1} != '' ] && [ ${1} != false ]; then

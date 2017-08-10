@@ -5,7 +5,7 @@
         "dbname": "mysqlTestDataBase",
         "user": "mysqlTestUserName",
         "password": "mysqlTestPassword",
-        "host": "localhost",
+        "host": "mysqlTestHost",
         "driver": "pdo_mysql",
         "charset": "utf8"
       },

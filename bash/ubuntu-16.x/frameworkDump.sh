@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mysqlDump() {
+frameworkDump() {
   websiteDir=./
   dumpDir=./
   prefix=''
@@ -31,7 +31,7 @@ mysqlDump() {
   done
 
   # Get database connexion global settings.
-  wexample websiteSettings ${_TEST_RUN_DIR_SAMPLES}${websiteDir}"/"
+  wexample frameworkSettings ${_TEST_RUN_DIR_SAMPLES}${websiteDir}"/"
 
   # Add -p option only if password is defined and not empty.
   # Adding empty password will prompt user instead.

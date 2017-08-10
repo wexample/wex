@@ -6,10 +6,10 @@ $composerJson = json_decode(file_get_contents($composerJsonPath));
 
 $silex            = "silex/silex";
 $symfony          = "symfony/symfony";
-$websiteFramework = false;
+$framework = false;
 
 if (isset($composerJson->require->$silex)) {
-    $websiteFramework = 'silex'.
+    $framework = 'silex'.
       // Get version number without special chars
       (str_replace(
         ['~', '^'],
@@ -17,7 +17,7 @@ if (isset($composerJson->require->$silex)) {
         explode('.', $composerJson->require->$silex)[0]
       ));
 } else if (isset($composerJson->require->$symfony)) {
-    $websiteFramework = 'symfony'.
+    $framework = 'symfony'.
       // Get version number without special chars
       (str_replace(
         ['~', '^'],
@@ -26,6 +26,6 @@ if (isset($composerJson->require->$silex)) {
       ));
 }
 
-if ($websiteFramework) {
-    echo 'WEBSITE_FRAMEWORK="'.$websiteFramework.'";';
+if ($framework) {
+    echo 'WEBSITE_FRAMEWORK="'.$framework.'";';
 }

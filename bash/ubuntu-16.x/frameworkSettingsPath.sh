@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-websiteFrameworkSettingsPath() {
+frameworkSettingsPath() {
   declare -A settings=(
     ['drupal7']='sites/default/settings.php'
     ['silex1']='config/config.json'
