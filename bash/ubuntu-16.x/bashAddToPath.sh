@@ -2,6 +2,7 @@
 
 bashAddToPath() {
   if [[ ":$PATH:" != *":${1}"* ]]; then
+    echo "Line does not exists"
     # Add now.
     export PATH=$PATH":${1}"
     # Add to path.
