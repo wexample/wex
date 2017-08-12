@@ -14,14 +14,11 @@ rm -rf wexample
 mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
-echo "Add to path..."
 # Load used methods.
 . ${WEX_SCRIPTS_DIR}"wexample.sh"
 # Add to PATH
 wexample bashAddToPath "${WEX_LOCAL_DIR}bash"
-echo "Add to path complete"
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
-echo "Changed access"
 
 # Say Hi.
 echo "Wexample Script installed at vesion v"$(wexample wexampleVersion)
