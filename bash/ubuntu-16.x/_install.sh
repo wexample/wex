@@ -20,10 +20,11 @@ echo "Add to path..."
 . ${WEX_SCRIPTS_DIR}"fileTextAppend.sh"
 . ${WEX_SCRIPTS_DIR}"fileTextAppendOnce.sh"
 . ${WEX_SCRIPTS_DIR}"bashAddToPath.sh"
-echo "Add to path complete"
 # Add to PATH
 bashAddToPath "${WEX_LOCAL_DIR}bash"
+echo "Add to path complete"
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
+echo "Changed access"
 
 # Say Hi.
 echo "Wexample Script installed at vesion v"$(wexample wexampleVersion)
