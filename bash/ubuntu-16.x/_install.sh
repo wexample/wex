@@ -17,10 +17,6 @@ git clone ${WEX_URL_GITHUB}scripts.git wexample
 echo "Add to path..."
 # Load used methods.
 . ${WEX_SCRIPTS_DIR}"wexample.sh"
-. ${WEX_SCRIPTS_DIR}"fileLineExists.sh"
-. ${WEX_SCRIPTS_DIR}"fileTextAppend.sh"
-. ${WEX_SCRIPTS_DIR}"fileTextAppendOnce.sh"
-. ${WEX_SCRIPTS_DIR}"bashAddToPath.sh"
 # Add to PATH
 bashAddToPath "${WEX_LOCAL_DIR}bash"
 echo "Add to path complete"
