@@ -18,7 +18,7 @@ echo "Add to path..."
 # Load used methods.
 . ${WEX_SCRIPTS_DIR}"wexample.sh"
 # Add to PATH
-bashAddToPath "${WEX_LOCAL_DIR}bash"
+wexample bashAddToPath "${WEX_LOCAL_DIR}bash"
 echo "Add to path complete"
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
 echo "Changed access"
