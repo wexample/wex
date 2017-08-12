@@ -2,7 +2,6 @@
 
 bashAddToPath() {
   if [[ ":$PATH:" != *":${1}"* ]]; then
-    ls -la ~/
     # Add now.
     export PATH=$PATH":${1}"
     # Add to path.
