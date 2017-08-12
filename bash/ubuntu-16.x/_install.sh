@@ -14,11 +14,13 @@ rm -rf wexample
 mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
+echo "Add to path..."
 # Load used methods.
 . ${WEX_SCRIPTS_DIR}"fileLineExists.sh"
 . ${WEX_SCRIPTS_DIR}"fileTextAppend.sh"
 . ${WEX_SCRIPTS_DIR}"fileTextAppendOnce.sh"
 . ${WEX_SCRIPTS_DIR}"bashAddToPath.sh"
+echo "Add to path complete"
 # Add to PATH
 bashAddToPath "${WEX_LOCAL_DIR}bash"
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
