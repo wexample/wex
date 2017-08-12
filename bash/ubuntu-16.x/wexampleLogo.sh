@@ -5,7 +5,7 @@ wexampleLogo() {
   WHITE='\033[0;30m'
   NC='\033[0m'
 
-  # Continued from above example
+  # Conbgfbdfgtinued from above example
   echo -e "${RED}"
 
   echo "                        m"
