@@ -8,6 +8,14 @@ _TEST_RUN_SCRIPT=${1}
 # Fix same directory location for all tests.
 cd ${_TEST_RUN_DIR_CURRENT}
 
+wexampleTestError() {
+    RED='\033[1;31m'
+    NC='\033[0m'
+    echo -e "${RED}"
+    echo "Test error : "${1}
+    echo -e "${NC}"
+}
+
 wexampleTestAssertEqual() {
   TEST_VARIABLE=${1}
   EXPECTED_VALUE=${2}
@@ -16,8 +24,8 @@ wexampleTestAssertEqual() {
     NC='\033[0m'
     echo -e "${RED}"
     echo "Assertion are not equal";
-    echo "  - Expected : ${EXPECTED_VALUE}";
     echo "  - Got : ${TEST_VARIABLE}";
+    echo "  - Expected : ${EXPECTED_VALUE}";
     echo -e "${NC}"
     exit 2;
   fi;

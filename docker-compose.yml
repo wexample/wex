@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+
+    web:
+        container_name: 'wexample_scripts'
+        privileged: true
+        image: 'wexample/wexscripts:latest'
+        stdin_open: true
+        tty: true
+        ports:
+          - "${HOST_LISTEN_ADDR}${HOST_PORT_HTTPD}:80"
+          - "52022:22"
+        volumes:
+          - .:/opt/wexample
+#          - ./docker/apache/wexample_network.conf:/etc/apache2/sites-available/000-default.conf
+

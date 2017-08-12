@@ -12,6 +12,15 @@ declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(
   ['wordpress4']='wp-config.php'
 );
 
+# Check bash version.
+if [ -z ${WEX_BASH_VERSION+x} ]; then
+  WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
+  if [ ${WEX_BASH_VERSION} != '4' ]; then
+    echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
+    exit 1
+  fi;
+fi;
+
 wexample() {
   WEX_SHOW_INTRO=false
   WEX_SCRIPT_NAME=false
