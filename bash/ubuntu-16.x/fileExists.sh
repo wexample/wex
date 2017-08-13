@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 fileExists() {
-  [ -f ${1} ];
+  [ ! -f ${1} ];
 }
