@@ -18,4 +18,4 @@ RUN apt-get install \
 ENV PATH="/opt/wexample/bash:${PATH}"
 
 # Install wexample
-RUN w=_install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && bash $w && rm -rf $w
+RUN w=_install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && . $w && rm -rf $w
