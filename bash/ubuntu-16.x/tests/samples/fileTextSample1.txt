@@ -6,6 +6,8 @@ Aenean aliquet consequat lorem, id pellentesque ante tincidunt ut. Integer accum
 
 [INNER LINE 2]
 
+Sample text with special chars \ / $ !! ? ;)
+
 [INNER LINE 3]
 
 Sed vitae neque sit amet lacus rutrum varius eu at purus. Maecenas ligula orci, aliquam et viverra sed, commodo luctus nisi.
