@@ -76,6 +76,7 @@ wexample() {
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
     # Search file remotely.
+    # TODO Place script into local folder if installed.
     # Load the file and
     # convert windows lines breaks
     echo "Fetching ${WEX_URL_SCRIPTS}${WEX_SCRIPT_NAME}.sh to ${WEX_SCRIPT_FILE}"

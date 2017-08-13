@@ -11,6 +11,3 @@ bash $w -s=helloWorld -rm
 bash $w -s=helloWorld -rm
 # Etc...
 rm -rf $w
-
-# Install wexample
-w=_install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w && . $w && rm -rf $w
