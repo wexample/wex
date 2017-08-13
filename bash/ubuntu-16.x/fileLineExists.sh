@@ -3,15 +3,17 @@ fileLineExists() {
   FILE=${1}
   LINE=${2}
 
-  # Search for matching line
-  results=$(grep -F "${LINE}" ${FILE})
+  # Protect arguments, escape \ / $
+  LINE=$(sed 's/\\/\\\\/g' <<< "${LINE}")
+  LINE=$(sed 's/\//\\\//g' <<< "${LINE}")
+  LINE=$(sed 's/\$/\\$/g' <<< "${LINE}")
 
-  # Search if line exists
-  grep -F "${LINE}" ${FILE} | while read -r result ; do
-    if [ "${result}" == "${LINE}" ]; then
-      echo true
-      return
-    fi
-  done
+  results=$(sed -n "s/^\(${LINE}\)$/\1/p" ${FILE})
 
+  if [ "${results}" != "" ]; then
+    echo true
+    return
+  fi
+
+  echo false
 }
