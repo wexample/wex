@@ -105,6 +105,6 @@ wexample() {
 
 # Execute run function with same arguments.
 # Using false as argument allow to protect unexpected argument passing
-if [ ! -z "${1+x}" ] && [ ${1} != '' ] && [ ${1} != false ]; then
+if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
   wexample "$@"
 fi;
