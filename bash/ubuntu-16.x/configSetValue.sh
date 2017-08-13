@@ -28,6 +28,6 @@ configSetValue() {
     wexample configChangeValue ${FILE} "${TARGET_KEY}" "${VALUE}" "${SEPARATOR}"
   else
     # Add a new line
-    wexample fileTextAppendOnce ${FILE} "${TARGET_KEY}${SEPARATOR}${VALUE}\\\n"
+    wexample fileTextAppendOnce ${FILE} "${TARGET_KEY}${SEPARATOR}${VALUE}"
   fi
 }
