@@ -14,12 +14,12 @@ rm -rf wexample
 mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
+# Add permission to execute
+chmod +x "${WEX_LOCAL_DIR}bash/wexample"
 # Add to PATH, will return global command to export var.
 pathCommand=$(bash ${WEX_SCRIPTS_DIR}"wexample.sh" systemPathAdd "${WEX_LOCAL_DIR}bash")
 # Add to global PATH.
-echo ${pathCommand}
-# Add perm.
-chmod +x "${WEX_LOCAL_DIR}bash/wexample"
+eval ${pathCommand}
 
 # Say Hi.
 echo "Wexample Script installed at vesion v"$(wexample wexampleVersion)
