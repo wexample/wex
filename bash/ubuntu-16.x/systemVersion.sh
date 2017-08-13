@@ -5,6 +5,9 @@ systemVersion() {
     . /etc/*-release
     echo ${PRETTY_NAME}
     return
+  elif [ $(wexample fileExists /proc/version) ]; then
+    cat /proc/version
+  else
+    uname -mrs
   fi;
-  uname -mrs
 }
