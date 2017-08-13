@@ -42,6 +42,12 @@ wexampleArrayJoin() {
 # Import wexample.sh
 . "${_TEST_RUN_DIR_CURRENT}../wexample.sh" false
 
+# If there is no specified test
+if [ "${_TEST_RUN_SCRIPT}" == '' ]; then
+  # Revert all samples
+  git checkout HEAD -- ${_TEST_RUN_DIR_SAMPLES}*
+fi;
+
 for testFile in "${_TEST_RUN_DIR_CURRENT}"*
 do
   fileName=$(basename "${testFile}")
