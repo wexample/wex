@@ -6,7 +6,7 @@ fileTextAppendOnceTest() {
   original=$(< ${filePath})
 
   # Try to append a line which looks like another on but not exactly
-  wexample fileTextAppendOnce ${filePath} "[INNER LINE]"
+  wexample fileTextAppendOnce ${filePath} "[INNER LINE]\n"
   # No change expected
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -15,7 +15,7 @@ fileTextAppendOnceTest() {
   fi
 
   # Try to append a line which looks like another on but not exactly
-  wexample fileTextAppendOnce ${filePath} "[INNER LINE"
+  wexample fileTextAppendOnce ${filePath} "[INNER LINE\n"
   # File should have changed
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -26,7 +26,7 @@ fileTextAppendOnceTest() {
   # Try to append config line
   configValue="true; # With an unsupported comment"
   configTest="SuperConfig = ${configValue}"
-  wexample fileTextAppendOnce ${filePath} "${configTest}"
+  wexample fileTextAppendOnce ${filePath} "${configTest}\n"
   inserted=$(wexample configGetValue ${filePath} "SuperConfig" " = ")
   wexampleTestAssertEqual "${inserted}" "${configValue}"
 

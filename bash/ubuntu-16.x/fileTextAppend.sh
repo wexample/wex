@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 fileTextAppend() {
-  echo "${2}" >> ${1}
+  printf "${2}" >> ${1}
 }
