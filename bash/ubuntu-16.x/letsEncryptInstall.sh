@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 letsEncryptInstall() {
+  SITE_DOMAIN=${1}
+  EMAIL=${2}
+  SITE_DIR_ROOT=${3}
 
-  # TODO, work also with -d domain1.com -d domain2.com etc...
-  EMAIL="contact@wexample.com"
-  SITE_DOMAIN="wexample.com"
-  SITE_DIR_ROOT="/var/www/html"
+  # Create dir if not exists.
+  mkdir -p ${SITE_DIR_ROOT}
 
   # Install cert bot
   wget https://dl.eff.org/certbot-auto
