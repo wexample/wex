@@ -17,7 +17,7 @@ systemPathAdd() {
   fi
 
   # Default pathg
-  if [ ${BASHRC_PATH} == '' ]; then
+  if [ "${BASHRC_PATH}" == '' ]; then
     BASHRC_PATH=~/.bashrc
   fi;
 
