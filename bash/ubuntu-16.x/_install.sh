@@ -14,10 +14,10 @@ rm -rf wexample
 mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
-# Load used methods.
-. ${WEX_SCRIPTS_DIR}"wexample.sh"
 # Add to PATH, will return global command to export var.
-eval $(wexample bashAddToPath "${WEX_LOCAL_DIR}bash")
+pathCommand=$(bash ${WEX_SCRIPTS_DIR}"wexample.sh" systemPathAdd "${WEX_LOCAL_DIR}bash")
+# Add to global PATH.
+echo ${pathCommand}
 # Add perm.
 chmod +x "${WEX_LOCAL_DIR}bash/wexample"
 
