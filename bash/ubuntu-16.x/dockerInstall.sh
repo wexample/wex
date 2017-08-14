@@ -9,7 +9,7 @@ dockerInstall() {
     apt-transport-https \
     ca-certificates \
     curl \
-    software-properties-common \
+    software-propnano doc erties-common \
     -yqq
 
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -19,5 +19,5 @@ dockerInstall() {
    $(lsb_release -cs) \
    stable"
 
-   apt-get install docker-ce -yqq
+   apt-get install docker-ce docker-compose -yqq
 }
