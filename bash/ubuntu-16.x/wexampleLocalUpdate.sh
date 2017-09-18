@@ -6,7 +6,7 @@ wexampleLocalUpdate() {
     # Go to wexample install dir.
     cd ${WEX_LOCAL_DIR}
     # Override changes and pull.
-    git reset --hard
+    wexample gitResetHard
     git pull origin master
     # Git all needed wrights.
     chown root:root -R *
