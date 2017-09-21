@@ -1,5 +1,7 @@
 FROM wexample/wexwebserver:latest
 
+RUN apt-get update
+
 # PHP
 RUN apt-get install \
   php-memcache \
@@ -16,11 +18,9 @@ RUN apt-get install \
 RUN apt-get clean
 
 # Wexample loader for multiple scripts.
-RUN w=wexample.sh && curl -sS https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w \
-  # Install composer
-  && bash $w -s=composerPharInstall -rm \
+RUN wexample composerPharInstall -rm \
   # Install Symfony
-  && bash $w -s=symfonyClientInstall -rm
+  && wexample symfonyClientInstall -rm
 
 COPY ./scripts/docker-entrypoint.sh /
 
