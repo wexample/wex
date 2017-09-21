@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
 bash "/opt/wexample/bash/ubuntu-16.x/tests/_run.sh" $@

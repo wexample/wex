@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-helloWorld() {
+miscHelloWorld() {
   echo "Hello World!"
 }
