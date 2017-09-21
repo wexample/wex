@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 wexampleLocalUpdate() {
-  GIT_EXISTS=$(wexample gitExists)
+  GIT_EXISTS=$(wexample packageExists git)
   if [ ${GIT_EXISTS} == true ];then
     # Go to wexample install dir.
     cd ${WEX_LOCAL_DIR}
