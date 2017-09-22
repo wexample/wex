@@ -8,6 +8,9 @@ _TEST_RUN_SCRIPT=${1}
 # Fix same directory location for all tests.
 cd ${_TEST_RUN_DIR_CURRENT}
 
+# Avoid prompting user.
+WEX_NON_INTERACTIVE=true
+
 wexampleTestError() {
     RED='\033[1;31m'
     NC='\033[0m'
@@ -74,21 +77,21 @@ do
 
         # Clear defined function
         _TEST_ARGUMENTS=false
-  #      verify=false
 
         echo "Testing ${SCRIPT_CALL_NAME}"
 
         # Import test methods
         . "${_TEST_SCRIPT_FILE}"
 
-        echo "Execute wexample ${SCRIPT_CALL_NAME} ${_TEST_ARGUMENTS[@]}"
+        echo "Execute wex ${SCRIPT_CALL_NAME} ${_TEST_ARGUMENTS[@]}"
         if [[ $(type -t "${METHOD_NAME}Test" 2>/dev/null) == function ]]; then
-          echo "  > custom ${METHOD_NAME}Test method"
+          echo "  > Custom ${METHOD_NAME}Test method"
           testResult=$(${METHOD_NAME}Test ${METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})
         else
-          echo "  > auto test method"
+          echo "  > Auto test method : wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]}"
+          wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]}
           # Run script and store result.
-          testResult=$(wexample ${SCRIPT_CALL_NAME} ${_TEST_ARGUMENTS[@]})
+          testResult=$(wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]})
         fi;
 
         # Print result for info.
