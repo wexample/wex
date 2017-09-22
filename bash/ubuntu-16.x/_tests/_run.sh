@@ -2,7 +2,7 @@
 
 # Store current dir.
 _TEST_RUN_DIR_CURRENT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-_TEST_RUN_DIR_SAMPLES=${_TEST_RUN_DIR_CURRENT}samples/
+_TEST_RUN_DIR_SAMPLES=${_TEST_RUN_DIR_CURRENT}_samples/
 _TEST_RUN_SCRIPT=${1}
 
 # Fix same directory location for all tests.
