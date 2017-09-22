@@ -27,17 +27,17 @@ configChangeValueTestItem() {
   testValue="tested"
 
   # Backup
-  original=$(wexample configGetValue "${filePath}" "${variableName}" "${separator}")
+  original=$(wex config/getValue "${filePath}" "${variableName}" "${separator}")
 
   # Set value.
-  wexample configChangeValue "${filePath}" "${variableName}" "${testValue}" "${separator}"
+  wex config/changeValue "${filePath}" "${variableName}" "${testValue}" "${separator}"
   # Get value
-  changed=$(wexample configGetValue "${filePath}" "${variableName}" "${separator}")
+  changed=$(wex config/getValue "${filePath}" "${variableName}" "${separator}")
   # Check
   wexampleTestAssertEqual ${changed} "${testValue}"
 
   # Revert
-  wexample configChangeValue "${filePath}" "${variableName}" "${original}" "${separator}"
+  wex config/changeValue "${filePath}" "${variableName}" "${original}" "${separator}"
   # Check
   wexampleTestAssertEqual ${changed} "${testValue}"
 }

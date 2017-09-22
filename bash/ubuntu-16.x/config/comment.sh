@@ -17,5 +17,5 @@ configComment() {
 
   # Replace key beginning the line or having space(s) before it
   # by the same with a # before it
-  wexample fileTextReplace "s/^\([ ]*${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/#\1/" ${FILE}
+  wex file/textReplace "s/^\([ ]*${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/#\1/" ${FILE}
 }
