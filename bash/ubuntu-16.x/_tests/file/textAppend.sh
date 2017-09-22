@@ -3,15 +3,15 @@
 fileTextAppendTest() {
   filePath=${_TEST_RUN_DIR_SAMPLES}fileTextSample1.txt
   testText="Hey this is a test"
-  wexample fileTextAppend ${filePath} "${testText}"
+  wex file/textAppend -f=${filePath} -l="${testText}"
   # Get the last line
-  fileGetLastFilledLine=$(wexample fileGetLastFilledLine ${filePath})
+  fileGetLastFilledLine=$(wex file/getLastFilledLine -f=${filePath})
   # Compare
   wexampleTestAssertEqual "${fileGetLastFilledLine}" "${testText}"
   # Cleanup
-  wexample fileTextRemoveLastLine ${filePath}
+  wex file/textRemoveLastLine -f=${filePath}
   # Check las line removed.
-  fileGetLastFilledLine=$(wexample fileGetLastFilledLine ${filePath})
+  fileGetLastFilledLine=$(wex file/getLastFilledLine -f=${filePath})
   # Compare
   wexampleTestAssertEqual "${fileGetLastFilledLine}" "[LAST LINE]"
   # Revert file in order to avoid git conflicts.

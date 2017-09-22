@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-fileConvertLinesFormat() {
-  FILE=${1}
-  FORMAT=${2}
+fileConvertLinesFormatArgs() {
+ _ARGUMENTS=(
+   [0]='file f "File" true'
+   [1]='format t "Destination format" true'
+ )
+}
 
-  fileFormatCurrent=$(wexample fileGetLinesFormat ${FILE})
+fileConvertLinesFormat() {
+  fileFormatCurrent=$(wex file/getLinesFormat -f=${FILE})
 
   # Check if format is already set.
   if [ ${fileFormatCurrent} == ${FORMAT} ]; then
