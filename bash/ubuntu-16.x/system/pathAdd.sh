@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
+systemPathAddArgs() {
+ _ARGUMENTS=(
+   [0]='new_path p "New path" true'
+   [1]='bashrc_path b "Bashrc path" false'
+ )
+}
+
 systemPathAdd() {
-  NEW_PATH=${1}
   # Convert slashes
   NEW_PATH=$(echo "${NEW_PATH}" | sed 's/\//\\\//g')
-  BASHRC_PATH=${2}
 
   # Search occurrence of new path.
   foundInBody=$(sed -n "s/\(.*\):\(${NEW_PATH}\):\(.*\)/\2/p" <<< ${PATH})
@@ -13,7 +18,7 @@ systemPathAdd() {
   # Return command to execute globally
   if [ "${foundInBody}" == "" ] && [ "${foundAtEnd}" == "" ]; then
     # Print command to add, need to execute it into global context.
-    echo 'export PATH=$PATH:'${1}
+    echo 'export PATH=$PATH:'${NEW_PATH}
   fi
 
   # Default pathg
@@ -23,9 +28,9 @@ systemPathAdd() {
 
   command='export PATH=\$PATH:'
   # Protect arguments by escaping special chars.
-  command=$(sed -e 's/[]\/$*.^|[]/\\&/g' <<< "${command}")${1}
+  command=$(sed -e 's/[]\/$*.^|[]/\\&/g' <<< "${command}")${NEW_PATH}
 
   # Add to bashrc.
-  wexample fileTextAppendOnce "${BASHRC_PATH}" "${command}"
+  wex file/textAppendOnce -f="${BASHRC_PATH}" -l="${command}"
 
 }
