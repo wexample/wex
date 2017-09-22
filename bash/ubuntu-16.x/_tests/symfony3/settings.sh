@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-drupal7SettingsTest() {
+symfony3SettingsTest() {
   WEBSITE_SETTINGS_DATABASE=false
   WEBSITE_SETTINGS_USERNAME=false
   WEBSITE_SETTINGS_PASSWORD=false
-  wexample drupal7Settings ${_TEST_RUN_DIR_SAMPLES}drupal7/sites/default/settings.php
+  wex symfony3/settings ${_TEST_RUN_DIR_SAMPLES}symfony3/app/config/parameters.yml
   # Eval response variables.
   wexampleTestAssertEqual ${WEBSITE_SETTINGS_DATABASE} "mysqlTestDataBase"
   wexampleTestAssertEqual ${WEBSITE_SETTINGS_USERNAME} "mysqlTestUserName"
