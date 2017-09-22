@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bashOsName() {
+systemOsName() {
   case "$(uname -s)" in
     Darwin)
       echo 'mac'

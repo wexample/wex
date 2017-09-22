@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-phpScriptExecute() {
-#  echo $(php ${WEX_DIR_ROOT}"php/"${1});
+phpExecute() {
   echo $(php ${WEX_DIR_ROOT}"php/_execute.php" "$@");
 }
