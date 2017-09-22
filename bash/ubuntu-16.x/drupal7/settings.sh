@@ -2,7 +2,7 @@
 
 drupal7SettingsArgs() {
  _ARGUMENTS=(
-   [0]='dir d "Root directory of drupal7." false'
+   [0]='dir d "Root directory of drupal7" false'
  )
 }
 
