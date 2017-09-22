@@ -2,7 +2,7 @@
 
 symfony3SettingsArgs() {
  _ARGUMENTS=(
-   [0]='dir d "Root directory of symfony3." false'
+   [0]='dir d "Root directory of symfony3" false'
  )
 }
 
