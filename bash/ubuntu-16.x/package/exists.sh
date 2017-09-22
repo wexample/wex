@@ -2,11 +2,16 @@
 
 packageExistsArgs() {
  _ARGUMENTS=(
-   [0]='name n "Package name to find" false'
+   [0]='name n "Package name to find" true'
  )
 }
 
 packageExists() {
+  if [ -z ${NAME} ]; then
+    echo false;
+    return
+  fi;
+
   # Method works both on linux and windows.
   hash ${NAME} 2>/dev/null
   AVAILABLE=$?
