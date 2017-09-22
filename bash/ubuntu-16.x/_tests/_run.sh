@@ -89,7 +89,6 @@ do
           testResult=$(${METHOD_NAME}Test ${METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})
         else
           echo "  > Auto test method : wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]}"
-          wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]}
           # Run script and store result.
           testResult=$(wex ${SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]})
         fi;
