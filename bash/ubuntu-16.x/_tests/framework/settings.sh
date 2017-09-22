@@ -11,7 +11,7 @@ frameworkSettingsTest() {
     WEBSITE_SETTINGS_USERNAME=false
     WEBSITE_SETTINGS_PASSWORD=false
 
-    wexample frameworkSettings ${_TEST_RUN_DIR_SAMPLES}${websiteType}"/"
+    wex framework/settings -d=${_TEST_RUN_DIR_SAMPLES}${websiteType}"/"
 
     wexampleTestAssertEqual ${WEBSITE_SETTINGS_HOST} "mysqlTestHost"
     wexampleTestAssertEqual ${WEBSITE_SETTINGS_DATABASE} "mysqlTestDataBase"
