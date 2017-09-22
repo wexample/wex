@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
+configGetValueArgs() {
+ _ARGUMENTS=(
+   [0]='target_key k "Target key to get" true'
+   [1]='separator s "Separator like space or equal sign, default space" false'
+   [2]='file f "File" true'
+ )
+}
+
 configGetValue() {
-  TARGET_KEY=${2}
-  SEPARATOR=${3}
-  FILE=${1}
 
-  # Prevent empty string
-  if [ ${#TARGET_KEY} == 0 ]; then
-    return
-  fi;
-
-  if [ -z "${3+x}" ];then
+  if [ -z "${SEPARATOR+x}" ];then
     # Default space separator
     SEPARATOR=" "
   fi;

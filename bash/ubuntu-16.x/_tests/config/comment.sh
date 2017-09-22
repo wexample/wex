@@ -11,9 +11,9 @@ configCommentTest() {
   # and also verify file integrity, then we revert file with git.
 
   # Test with space sign.
-  wex config/comment ${filePath} "ConfigTestSingleOption"
+  wex config/comment -f=${filePath} -k="ConfigTestSingleOption"
 
-  wex config/uncomment ${filePath} "ConfigTestSingleOption"
+  wex config/uncomment -f=${filePath} -k="ConfigTestSingleOption"
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
   if [[ ${differences} != '' ]]; then
@@ -22,7 +22,7 @@ configCommentTest() {
   fi
 
   # Values with equal sign after space "example =..." should be also changed.
-  wex config/comment ${filePath} "ConfigTestOption"
+  wex config/comment -f=${filePath} -k="ConfigTestOption"
   modified=$(< ${filePath})
 
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -30,7 +30,7 @@ configCommentTest() {
     wexampleTestError "No diff change found after comment test"
   fi
 
-  wex config/uncomment ${filePath} "ConfigTestOption"
+  wex config/uncomment -f=${filePath} -k="ConfigTestOption"
   modified=$(< ${filePath})
 
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -42,15 +42,15 @@ configCommentTest() {
   git checkout HEAD -- ${filePath}
 
   # Test with equal sign
-  wex config/comment ${filePath} "ConfigTestSingleOptionWithEqual" "="
-  wex config/uncomment ${filePath} "ConfigTestSingleOptionWithEqual" "="
+  wex config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" "="
+  wex config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" "="
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
   if [[ ${differences} != '' ]]; then
     wexampleTestError "Differences found after simple comment / uncomment operation with equal"
   fi
 
-  wex config/comment ${filePath} "ConfigTestOptionEqual" "="
+  wex config/comment -f=${filePath} -k="ConfigTestOptionEqual" "="
   modified=$(< ${filePath})
 
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -58,14 +58,14 @@ configCommentTest() {
     wexampleTestError "No diff change found after comment test"
   fi
 
-  wex config/uncomment ${filePath} "ConfigTestOptionEqual" "="
+  wex config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" "="
   modified=$(< ${filePath})
 
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
   if [ ${#differences} == 0 ]; then
     wexampleTestError "No diff change found after uncomment test"
   fi
-echo "??";
+
   # Reset
   git checkout HEAD -- ${filePath}
 }

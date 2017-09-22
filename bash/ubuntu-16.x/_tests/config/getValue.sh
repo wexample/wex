@@ -3,14 +3,17 @@
 configGetValueTest() {
   filePath=${_TEST_RUN_DIR_SAMPLES}configSample
 
-  value=$(wexample configGetValue ${filePath} "ConfigTestOption")
+  value=$(wex config/getValue -f=${filePath} -k="ConfigTestOption")
   # Got the last valid value
   wexampleTestAssertEqual ${value} "two"
 
-  value=$(wexample configGetValue ${filePath} "ConfigTestOptionEqual" " = ")
+  value=$(wex config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s=" = ")
   wexampleTestAssertEqual ${value} "one"
 
-  value=$(wexample configGetValue ${filePath} "ConfigTestOptionEqual" "=")
+  value=$(wex config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
   # Got the last valid value
   wexampleTestAssertEqual ${value} "two"
+
+  # Reset
+  git checkout HEAD -- ${filePath}
 }

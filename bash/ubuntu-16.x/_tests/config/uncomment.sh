@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "configComment.sh"
+. ${_TEST_RUN_DIR_CURRENT}"config/comment.sh"
 
 configUncommentTest() {
   configCommentTest

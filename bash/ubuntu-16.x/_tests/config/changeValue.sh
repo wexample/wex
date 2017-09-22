@@ -4,8 +4,11 @@ configChangeValueTest() {
 
   filePath=${_TEST_RUN_DIR_SAMPLES}configSample
 
+  noSeparator=$(wex config/getValue -f="${filePath}" -k="ConfigTestOption")
+  wexampleTestAssertEqual ${noSeparator} "two"
+
   # Space separator
-  configChangeValueTestItem ${filePath} "ConfigTestOption"
+  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
 
   # Strict equal separator
   configChangeValueTestItem ${filePath} "ConfigTestOptionEqual" "="
@@ -27,17 +30,17 @@ configChangeValueTestItem() {
   testValue="tested"
 
   # Backup
-  original=$(wex config/getValue "${filePath}" "${variableName}" "${separator}")
+  original=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
 
   # Set value.
-  wex config/changeValue "${filePath}" "${variableName}" "${testValue}" "${separator}"
+  wex config/changeValue -f=${filePath} -k=${variableName} -v="${testValue}" -s="${separator}"
   # Get value
-  changed=$(wex config/getValue "${filePath}" "${variableName}" "${separator}")
+  changed=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
   # Check
   wexampleTestAssertEqual ${changed} "${testValue}"
 
   # Revert
-  wex config/changeValue "${filePath}" "${variableName}" "${original}" "${separator}"
+  wex config/changeValue -f=${filePath} -k=${variableName} -v="${original}" -s="${separator}"
   # Check
   wexampleTestAssertEqual ${changed} "${testValue}"
 }
