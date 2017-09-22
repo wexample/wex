@@ -8,7 +8,7 @@ systemOsName() {
     Linux)
       echo 'linux'
       ;;
-    CYGWIN*|MINGW32*|MSYS*)
+    CYGWIN*|MINGW32*|MINGW64*|MSYS*)
       echo 'windows'
       ;;
     # Add here more strings to compare
