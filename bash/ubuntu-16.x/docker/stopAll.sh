@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-dockerStop() {
-  # Stop composed containers
-  docker-compose down
+dockerStopAll() {
   # Stop all
   docker stop $(docker ps -qa)
   # Remove
