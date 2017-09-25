@@ -59,7 +59,7 @@ _wexampleDockerImagesRebuild() {
   WEX_BUILT_IMAGES=${WEX_BUILT_IMAGES}" "${1}
 
   # Build
-  docker build -t wexample/${NAME}:latest ${NAME} ${USE_CACHE}
+  docker build -t wexample/${NAME}:latest ${NAME} --no-cache
 
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then
