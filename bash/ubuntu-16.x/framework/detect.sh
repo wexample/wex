@@ -2,14 +2,14 @@
 
 frameworkDetectArgs() {
  _ARGUMENTS=(
-   [0]='dir d "Root directory of framework." false'
+   [0]='dir d "Root directory of framework" false'
  )
 }
 
 frameworkDetect() {
   WEBSITE_FRAMEWORK="default"
 
-  if [[ -z "${DIR+x}" || ${DIR} == '' ]]; then
+  if [[ -z "${DIR+x}" ]]; then
     # Get current dir.
     DIR=./
   fi;

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 packageExistsArgs() {
- _ARGUMENTS=(
-   [0]='name n "Package name to find" true'
- )
+  _ARGUMENTS=(
+    [0]='name n "Package name to find" true'
+  )
 }
 
 packageExists() {
