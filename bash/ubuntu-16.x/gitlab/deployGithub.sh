@@ -3,6 +3,7 @@
 gitlabDeployGithubArgs() {
   _ARGUMENTS=(
     [0]='repo r "Github repository address" true'
+    [1]='private_key k "Private key stored into project variables" true'
   )
 }
 
