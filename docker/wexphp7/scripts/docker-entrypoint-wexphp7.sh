@@ -9,4 +9,4 @@ composer clear-cache -q
 composer update -q
 
 # Load parent entry point.
-bash docker-entrypoint-wexubuntu16.sh
+bash /docker-entrypoint-wexubuntu16.sh
