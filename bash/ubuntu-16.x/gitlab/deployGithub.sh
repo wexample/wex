@@ -8,8 +8,6 @@ gitlabDeployGithubArgs() {
 }
 
 gitlabDeployGithub() {
-  wex gitlab/sshInit -k=${PRIVATE_KEY_FILE}
-
   # Install git.
   apt-get install git -yqq
 

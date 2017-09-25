@@ -17,7 +17,7 @@ wex gitlab/init
 # TODO wex composer/pharInstall
 #
 ## Run all tests
-# TODO bash bash/ubuntu-16.x/_tests/_run.sh
+##bash bash/ubuntu-16.x/_tests/_run.sh
 
-# Deploy to GitHub
-wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k="${STAGING_PRIVATE_KEY}"
+# Deploy on GitHub
+wex wexample/gitlabDeployGithub -r="git@github.com:wexample/scripts.git"
