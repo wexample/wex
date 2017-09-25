@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # This script should be execute on the server hosting the website.
-symfony3Deploy() {
+frameworkSymfony3Deploy() {
   deployDir=${1}
   deployEnv="prod"
 
