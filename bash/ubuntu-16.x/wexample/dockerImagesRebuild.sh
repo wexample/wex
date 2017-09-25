@@ -10,7 +10,7 @@ wexampleDockerImagesRebuild() {
   cd ${WEX_DIR_ROOT}docker/
   WEX_DOCKER_BUILT=
 
-  if [ -z ${FLUSH_CACHE+x} ]; then
+  if [ ! -z ${FLUSH_CACHE+x} ]; then
     # Remove all images from wexample
     docker rmi $(docker images wexample/* -q)
   fi;
