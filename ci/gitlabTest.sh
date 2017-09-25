@@ -10,7 +10,7 @@ wex gitlab/init
 wex composer/pharInstall
 
 # Run all tests
-wexTest
+bash /opt/wexample/bash/ubuntu-16.x/tests/_run.sh
 
 # Deploy to GitHub
 wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git"
