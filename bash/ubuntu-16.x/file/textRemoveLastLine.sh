@@ -7,5 +7,5 @@ fileTextRemoveLastLineArgs() {
 }
 
 fileTextRemoveLastLine() {
-  sed -i '$ d' ${FILE}
+  head -n -1 ${FILE} > ${FILE}.tmp ; mv ${FILE}.tmp ${FILE}
 }
