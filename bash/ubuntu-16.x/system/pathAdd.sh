@@ -32,5 +32,4 @@ systemPathAdd() {
 
   # Add to bashrc.
   wex file/textAppendOnce -f="${BASHRC_PATH}" -l="${command}"
-
 }

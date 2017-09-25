@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
+# Use this file to install wexample for current user
+# Run : . /opt/wexample/bash/ubuntu-16.x/_installLocal.sh
+
 WEX_LOCAL_DIR="/opt/wexample/"
 WEX_SCRIPTS_DIR=${WEX_LOCAL_DIR}"bash/ubuntu-16.x/"
 
-# Add permission to execute
-chmod -R +x "${WEX_LOCAL_DIR}"
 # Add to PATH, will return global command to export var.
-pathCommand=$(bash ${WEX_SCRIPTS_DIR}"wexample/wexample.sh" system/pathAdd -p="${WEX_LOCAL_DIR}bash")
+pathCommand=$(bash ${WEX_SCRIPTS_DIR}"wexample/wexample.sh" wexample/addToPath)
 # Add to global PATH.
 eval ${pathCommand}
 
