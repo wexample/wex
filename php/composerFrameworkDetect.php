@@ -4,8 +4,8 @@ $composerJsonPath = $argv[1];
 
 $composerJson = json_decode(file_get_contents($composerJsonPath));
 
-$silex            = "silex/silex";
-$symfony          = "symfony/symfony";
+$silex     = "silex/silex";
+$symfony   = "symfony/symfony";
 $framework = false;
 
 if (isset($composerJson->require->$silex)) {
@@ -28,4 +28,7 @@ if (isset($composerJson->require->$silex)) {
 
 if ($framework) {
     echo $framework;
+    return;
 }
+
+echo "default";
