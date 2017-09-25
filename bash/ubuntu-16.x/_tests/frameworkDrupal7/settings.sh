@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-drupal7SettingsTest() {
+frameworkDrupal7SettingsTest() {
   WEBSITE_SETTINGS_DATABASE=false
   WEBSITE_SETTINGS_USERNAME=false
   WEBSITE_SETTINGS_PASSWORD=false
-  wex drupal7/settings ${_TEST_RUN_DIR_SAMPLES}drupal7/sites/default/settings.php
+  wex frameworkDrupal7/settings -d=${_TEST_RUN_DIR_SAMPLES}drupal7/sites/default/settings.php
   # Eval response variables.
   wexampleTestAssertEqual ${WEBSITE_SETTINGS_DATABASE} "mysqlTestDataBase"
   wexampleTestAssertEqual ${WEBSITE_SETTINGS_USERNAME} "mysqlTestUserName"
