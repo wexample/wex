@@ -20,4 +20,4 @@ wex gitlab/init
 ##bash bash/ubuntu-16.x/_tests/_run.sh
 
 # Deploy to GitHub
-wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k="${STAGING_PRIVATE_KEY}"
+wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k="$STAGING_PRIVATE_KEY"
