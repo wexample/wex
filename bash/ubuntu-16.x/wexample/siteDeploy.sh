@@ -9,7 +9,7 @@ wexampleSiteDeploy() {
   # ${STAGING_PRIVATE_KEY} must be registered into project variables.
   wex gitlab/sshInit -k=${STAGING_PRIVATE_KEY}
 
-  FILE_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);s
+  FILE_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);
   DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployIpv4);
   DEPLOY_USER=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployUser);
 
