@@ -32,5 +32,7 @@ wexampleSiteDeploy() {
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
+  echo -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "sudo su && cd ${PROD_PATH_ROOT} && bash wexample/update.sh"
   ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "sudo su; cd ${PROD_PATH_ROOT}; bash wexample/update.sh"
+  ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "sudo su && cd ${PROD_PATH_ROOT} && bash wexample/update.sh"
 }
