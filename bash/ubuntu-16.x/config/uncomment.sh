@@ -17,5 +17,5 @@ configUncomment() {
 
   # Replace key with any # or space before it
   # with the same (captured value) without these chars.
-  wex file/textReplace "s/^[ #]*\(${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/\1/" ${FILE}
+  wex file/textReplace -r="s/^[ #]*\(${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/\1/" -f=${FILE}
 }
