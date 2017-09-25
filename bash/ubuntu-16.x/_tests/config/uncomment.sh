@@ -3,5 +3,5 @@
 . ${_TEST_RUN_DIR_CURRENT}"config/comment.sh"
 
 configUncommentTest() {
-  configCommentTest
+  configCommentTest $@
 }
