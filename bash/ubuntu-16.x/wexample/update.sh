@@ -12,5 +12,7 @@ wexampleUpdate() {
     # Git all needed wrights.
     chown root:root -R *
     chmod -R 755 *
+    # Info
+    echo "Wexample is up to date at v"$(wex wexample/version)
   fi
 }
