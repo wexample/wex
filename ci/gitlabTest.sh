@@ -3,7 +3,7 @@
 # Remove built in scripts
 rm -rf /opt/wexample
 # Copy current (let a copy in place for ci tools)
-cp /builds/wexample-public/scripts /opt/wexample
+cp -r /builds/wexample-public/scripts /opt/wexample
 # Go to
 cd /opt/wexample
 
