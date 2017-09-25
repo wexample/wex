@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 fileTextAppendTest() {
+  # TODO file encoding problems with manipulation textAppend && textRemoveLastLine
+  # TODO Pass on windows && cygwin but not on linux.
   filePath=${_TEST_RUN_DIR_SAMPLES}fileTextSample1.txt
   testText="Hey this is a test"
   wex file/textAppend -f=${filePath} -l="${testText}"
