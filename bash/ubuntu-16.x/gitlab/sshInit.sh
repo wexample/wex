@@ -16,5 +16,5 @@ gitlabSshInit() {
 
   # Add ssh user.
   #ssh-add <(echo "$STAGING_PRIVATE_KEY")
-  ssh-add $private_key_file
+  ssh-add $PRIVATE_KEY_FILE
 }
