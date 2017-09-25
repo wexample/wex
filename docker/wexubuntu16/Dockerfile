@@ -23,3 +23,5 @@ RUN w=_install.sh \
  && bash $w \
  && rm -rf $w
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+

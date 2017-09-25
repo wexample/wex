@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-wexampleLocalUpdate() {
-  GIT_EXISTS=$(wexample packageExists git)
+wexampleUpdate() {
+  # Git expected.
+  GIT_EXISTS=$(wex packageExists git)
   if [ ${GIT_EXISTS} == true ];then
     # Go to wexample install dir.
     cd ${WEX_LOCAL_DIR}
     # Override changes and pull.
-    wexample gitResetHard
+    wexample git/resetHard
     git pull origin master
     # Git all needed wrights.
     chown root:root -R *

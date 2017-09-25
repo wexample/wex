@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+wexampleDockerImagesRebuildArgs() {
+  _ARGUMENTS=(
+    [0]='flush_cache f "Use --no-cache option" false'
+  )
+}
+
 wexampleDockerImagesRebuild() {
   cd ${WEX_DIR_ROOT}docker/
   WEX_DOCKER_BUILT=
@@ -8,7 +14,7 @@ wexampleDockerImagesRebuild() {
     do
       # Filter only directories.
       if [ -d ${BASE_PATH}${f} ]; then
-        _wexampleDockerImagesRebuild ${f}
+        _wexampleDockerImagesRebuild ${f} ${FLUSH_CACHE}
       fi;
     done
 }
@@ -17,6 +23,11 @@ _wexampleDockerImagesRebuild() {
   NAME=${1}
 
   echo "Building ${NAME}"
+
+  USE_CACHE=
+  if [ -z ${2+x} ]; then
+    USE_CACHE="--no-cache"
+  fi;
 
   DEPENDS_FROM=$(wex config/getValue -f=${NAME}/Dockerfile -k=FROM)
   DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]*\):.*/\1/' <<< ${DEPENDS_FROM})
@@ -32,5 +43,5 @@ _wexampleDockerImagesRebuild() {
 
   # We resolve dependencies but we have not succeed
   # to avoid rebuilding the same parent image multiple times.
-  docker build -t wexample/${NAME}:latest ${NAME}
+  docker build -t wexample/${NAME}:latest ${NAME} ${USE_CACHE}
 }
