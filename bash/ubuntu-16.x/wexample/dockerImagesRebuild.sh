@@ -10,6 +10,11 @@ wexampleDockerImagesRebuild() {
   cd ${WEX_DIR_ROOT}docker/
   WEX_DOCKER_BUILT=
 
+  if [ -z ${FLUSH_CACHE+x} ]; then
+    # Remove all images from wexample
+    docker rmi $(docker images wexample/* -q)
+  fi;
+
   for f in $(ls)
     do
       # Filter only directories.
@@ -23,11 +28,6 @@ _wexampleDockerImagesRebuild() {
   NAME=${1}
 
   echo "Building ${NAME}"
-
-  USE_CACHE=
-  if [ -z ${2+x} ]; then
-    USE_CACHE="--no-cache"
-  fi;
 
   DEPENDS_FROM=$(wex config/getValue -f=${NAME}/Dockerfile -k=FROM)
   DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]*\):.*/\1/' <<< ${DEPENDS_FROM})

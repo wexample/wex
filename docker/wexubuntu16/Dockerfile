@@ -23,5 +23,7 @@ RUN w=_install.sh \
  && bash $w \
  && rm -rf $w
 
+COPY ./scripts/docker-entrypoint.sh /
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
