@@ -2,7 +2,7 @@
 
 wexampleDockerImagesRebuildArgs() {
   _ARGUMENTS=(
-    [0]='flush_cache f "Use --no-cache option" false'
+    [0]='flush_cache f "Remove existing images before rebuild" false'
   )
 }
 

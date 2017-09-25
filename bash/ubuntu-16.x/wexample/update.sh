@@ -11,6 +11,6 @@ wexampleUpdate() {
     git pull origin master
     # Git all needed wrights.
     chown root:root -R *
-    chmod 755 * -R
+    chmod -R 755 *
   fi
 }

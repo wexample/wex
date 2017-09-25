@@ -2,7 +2,7 @@
 wexampleDockerImagesDeployArgs() {
   _ARGUMENTS=(
     [0]='build b "Rebuild all images before deployment" false'
-    [1]='flush_cache f "Use --no-cache option" false'
+    [1]='flush_cache f "Remove existing images before rebuild" false'
   )
 }
 
