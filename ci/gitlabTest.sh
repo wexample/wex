@@ -14,20 +14,12 @@ bash ./bash/ubuntu-16.x/_installLocal.sh
 wex gitlab/init
 
 # Install composer : we use some libraries in PHP scripts
-#wex composer/pharInstall
+wex composer/pharInstall
 
 # Run all tests
 #bash bash/ubuntu-16.x/_tests/_run.sh
 
-# Add SSH and prevent host checking.
-apt-get install openssh-client -yqq
-
-mkdir -p ~/.ssh
-eval $(ssh-agent -s)
-[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-echo "ADD PK 2"
-# Add ssh user.
-ssh-add <(echo "${STAGING_PRIVATE_KEY}")
+cd /builds/wexample-public/scripts
 
 # Deploy to GitHub
 wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k=${STAGING_PRIVATE_KEY}
