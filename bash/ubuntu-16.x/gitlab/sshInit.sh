@@ -13,8 +13,7 @@ gitlabSshInit() {
   mkdir -p ~/.ssh
   eval $(ssh-agent -s)
   [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-  echo "..........."
-cat ${PRIVATE_KEY_FILE}
+
   # Add ssh user.
   ssh-add ${PRIVATE_KEY_FILE}
 }
