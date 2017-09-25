@@ -23,13 +23,13 @@ bash ./bash/ubuntu-16.x/_installLocal.sh
 #cd /builds/wexample-public/scripts
 
 # Add SSH key.
-apt-get install openssh-client -yqq
-mkdir -p ~/.ssh
-eval $(ssh-agent -s)
-[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-echo ${STAGING_PRIVATE_KEY}"!!!"
-# Add ssh user.
-ssh-add <(echo "$STAGING_PRIVATE_KEY")
+#apt-get install openssh-client -yqq
+#mkdir -p ~/.ssh
+#eval $(ssh-agent -s)
+#[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+#
+## Add ssh user.
+#ssh-add <(echo "$STAGING_PRIVATE_KEY")
 
 # Deploy to GitHub
 wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k="${STAGING_PRIVATE_KEY}"
