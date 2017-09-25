@@ -4,12 +4,6 @@ rm -rf /opt/wexample
 mv /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
 
-ls -la
-
-cd ./bash/ubuntu-16.x/
-
-ls -la
-
 # Load wexample.
 bash ./bash/ubuntu-16.x/_installLocal.sh
 
