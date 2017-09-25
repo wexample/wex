@@ -15,6 +15,5 @@ gitlabSshInit() {
   [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
   # Add ssh user.
-  #ssh-add <(echo "$STAGING_PRIVATE_KEY")
-  ssh-add $PRIVATE_KEY_FILE
+  ssh-add ${PRIVATE_KEY_FILE}
 }
