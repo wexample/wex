@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+gitlabDeployGithubArgs() {
+  _ARGUMENTS=(
+    [0]='repo r "Github repository address" true'
+  )
+}
+
 gitlabDeployGithub() {
-  destRepoUrl=${1}
-  
   # Add SSH and prevent host checking.
   apt-get install openssh-client -yqq
 
@@ -20,7 +24,7 @@ gitlabDeployGithub() {
   # in case of previous fail.
   echo "Remove old repo"
   git remote remove github
-  git remote add github "${destRepoUrl}"
+  git remote add github "${REPO}"
 
   echo "Create temp branch and checkout"
   # Remove branch if exists.
