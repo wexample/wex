@@ -13,9 +13,9 @@ if service --status-all | grep -Fq 'nginx'; then
   service nginx reload
 fi
 
-email=$(wexample configGetValue "/etc/letsencrypt/cli.ini" "email" " = ")
-domains=$(wexample configGetValue "/etc/letsencrypt/cli.ini" "domains" " = ")
-serverIp=$(wexample systemGetIp)
+email=$(wex config/getValue -f="/etc/letsencrypt/cli.ini" -k="email" -s=" = ")
+domains=$(wex config/getValue -f="/etc/letsencrypt/cli.ini" -k="domains" -s=" = ")
+serverIp=$(wex system/getIp)
 
 if [ $(wex package/exists -n=mail) == true ]; then
   wexample mailSend -s "Certificate updated on ${serverIp}" ${email} "Your certificate must be up to date for ${domains}"
