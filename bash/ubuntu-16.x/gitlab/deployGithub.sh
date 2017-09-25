@@ -3,19 +3,12 @@
 gitlabDeployGithubArgs() {
   _ARGUMENTS=(
     [0]='repo r "Github repository address" true'
+    [1]='private_key k "Private key stored into project variables" true'
   )
 }
 
 gitlabDeployGithub() {
-  # Add SSH and prevent host checking.
-  apt-get install openssh-client -yqq
-
-  mkdir -p ~/.ssh
-  eval $(ssh-agent -s)
-  [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-
-  # Add ssh user.
-  ssh-add <(echo "$STAGING_PRIVATE_KEY")
+  wex gitlab/sshInit -k=${PRIVATE_KEY}
 
   # Install git.
   apt-get install git -yqq

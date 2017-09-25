@@ -32,8 +32,10 @@ wexampleSiteDbRestore() {
       wex docker/compose -e=${SITE_ENV}
     fi;
 
+    FILE_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);
+
     # Container should contain wexample script installed.
-    docker exec ${WEB_CONTAINER} wex wexample/siteDbRestore "$@" -d=${FILE_PATH_ROOT}"/"
+    docker exec ${WEB_CONTAINER} wex wexample/siteDbRestore "$@" -d=${FILE_PATH_ROOT}
 
     # Stop website.
     if [[ ${STARTED} == true ]];then
