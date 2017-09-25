@@ -17,8 +17,8 @@ wexampleSiteDeploy() {
     DIR=./
   fi;
 
-  # ${STAGING_PRIVATE_KEY} must be registered into project variables.
-  wex gitlab/sshInit -k=${STAGING_PRIVATE_KEY}
+  # Init using wexample"s gitlab specific configuration.
+  wex wexample/gitlabSshInit
 
   # Conf contains site name
   wex wexample/siteLoadConf -d=${DIR}
