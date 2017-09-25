@@ -4,8 +4,18 @@ rm -rf /opt/wexample
 mv /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
 
+ls -la
+
+cd bash
+
+ls -la
+
+cd ubuntu-16.x
+
+ls -la
+
 # Load wexample.
-./bash/ubuntu-16.x/_installLocal.sh
+bash ./bash/ubuntu-16.x/_installLocal.sh
 
 # Init gitlab
 wex gitlab/init
