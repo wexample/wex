@@ -2,7 +2,7 @@
 
 gitlabSshInitArgs() {
   _ARGUMENTS=(
-    [0]='private_key k "Private key stored into project variables" true'
+    [0]='private_key_file k "Private file key stored into project variables" true'
   )
 }
 
@@ -15,5 +15,5 @@ gitlabSshInit() {
   [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
   # Add ssh user.
-  ssh-add <(echo "$PRIVATE_KEY")
+  ssh-add <(cat ${PRIVATE_KEY_FILE})
 }
