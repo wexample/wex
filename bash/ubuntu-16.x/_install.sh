@@ -13,4 +13,4 @@ mkdir wexample
 # Get whole repository.
 git clone ${WEX_URL_GITHUB}scripts.git wexample
 # Install locally
-bash ./_installLocal.sh
+bash ${WEX_DIR_BASH_UBUNTU16}_installLocal.sh
