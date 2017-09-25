@@ -2,7 +2,7 @@
 
 wexampleUpdate() {
   # Git expected.
-  GIT_EXISTS=$(wex packageExists git)
+  GIT_EXISTS=$(wex package/exists git)
   if [[ ${GIT_EXISTS} == true ]];then
     # Go to wexample install dir.
     cd ${WEX_LOCAL_DIR}
