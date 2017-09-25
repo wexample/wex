@@ -7,7 +7,7 @@ fileJsonReadValueArgs() {
  )
 }
 
-jsonReadValue() {
+fileJsonReadValue() {
   # Try with python
   if [[ $(wexample packageExists python) == true ]]; then
    cat ${FILE} | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["'${KEY}'"]'
