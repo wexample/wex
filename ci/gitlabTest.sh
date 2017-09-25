@@ -8,7 +8,7 @@ cp -r /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
 
 # Add permission to execute
-chmod -R +x "${WEX_LOCAL_DIR}"
+chmod -R +x "/opt/wexample"
 # Load wexample.
 . ./bash/ubuntu-16.x/_installLocal.sh
 
