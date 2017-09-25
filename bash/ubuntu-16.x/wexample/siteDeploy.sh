@@ -1,15 +1,29 @@
 #!/usr/bin/env bash
 
+wexampleSiteDeployArgs() {
+  _ARGUMENTS=(
+    [0]='dir d "Root directory of site" false'
+  )
+}
+
 wexampleSiteDeploy() {
   if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
     echo "Missing private key file"
     exit 1
   fi;
 
+  # Use current dir by default
+  if [ -z "${DIR+x}" ]; then
+    DIR=./
+  fi;
+
   # ${STAGING_PRIVATE_KEY} must be registered into project variables.
   wex gitlab/sshInit -k=${STAGING_PRIVATE_KEY}
 
-  FILE_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);
+  # Conf contains site name
+  wex wexample/siteLoadConf -d=${DIR}
+
+  FILE_PATH_ROOT="/var/www/${SITE_NAME}/";
   DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployIpv4);
   DEPLOY_PORT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployPort);
   DEPLOY_USER=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployUser);
