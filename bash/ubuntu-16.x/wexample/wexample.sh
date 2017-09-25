@@ -23,10 +23,14 @@ if [ -z ${WEX_BASH_VERSION+x} ]; then
   fi;
 fi;
 
+wexampleUpperCaseFirstLetter() {
+  echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
+}
+
 wexampleMethodName() {
   SPLIT=(${1//// })
   METHOD_NAME=${SPLIT[1]}
-  echo ${SPLIT[0]}$(tr '[:lower:]' '[:upper:]' <<< ${METHOD_NAME:0:1})${METHOD_NAME:1}
+  echo ${SPLIT[0]}$(wexampleUpperCaseFirstLetter ${SPLIT[1]})
 }
 
 wex() {
@@ -56,11 +60,11 @@ wex() {
     exit 1;
   fi;
 
+  WEX_SCRIPT_METHOD_NAME=$(wexampleMethodName ${WEX_SCRIPT_CALL_NAME})
   # Check if file exists locally.
   # It allow to override behaviors from location where script is executed,
   # especially for contextual website scripts.
-  WEX_SCRIPT_FILE="./../wexample/bash/ubuntu-16.x/${WEX_SCRIPT_CALL_NAME}.sh"
-  WEX_SCRIPT_METHOD_NAME=$(wexampleMethodName ${WEX_SCRIPT_CALL_NAME})
+  WEX_SCRIPT_FILE="./wexample/bash/ubuntu-16.x/${WEX_SCRIPT_CALL_NAME}.sh"
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
@@ -90,6 +94,7 @@ wex() {
 
   # Add extra parameters at end of array
   _ARGUMENTS+=(
+    'wex_debug_trace wxdt "Show execution information" false'
     'nonInteractive ni "Non interactive mode" false'
     'help h "Help" false'
   )
@@ -110,16 +115,20 @@ wex() {
     # ignore first one which is always method name.
     for ARG_GIVEN in "${@:2}"
     do
-      ARG_GIVEN_NAME=$(sed -e 's/--\?\(.*\)\=.*/\1/' <<< ${ARG_GIVEN})
-      ARG_GIVEN_VALUE=$(sed -e 's/--\?.*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
+      ARG_GIVEN_NAME=$(sed -e 's/--\?\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
+      ARG_GIVEN_VALUE=$(sed -e 's/--\?[^\=]*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
+
+      if [ ! -z ${WEX_DEBUG_TRACE+x} ]; then
+        echo ${ARG_EXPECTED_LONG}"="${ARG_GIVEN_VALUE}
+      fi
 
       if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
         FOUND=true
-        eval ${ARG_EXPECTED_LONG^^}=${ARG_GIVEN_VALUE}
+        declare ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
       # Support --noEqualSign -nes
       elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
         FOUND=true
-        eval ${ARG_EXPECTED_LONG^^}=true
+        declare ${ARG_EXPECTED_LONG^^}=true
       fi
     done;
 
@@ -144,6 +153,11 @@ wex() {
 
   # Show help manual
   if [ ! -z ${HELP+x} ]; then
+    echo "NAME: "${WEX_SCRIPT_CALL_NAME}
+    echo "  Function: "${WEX_SCRIPT_METHOD_NAME}
+    echo "  File: "${WEX_SCRIPT_FILE}
+    echo ""
+
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
@@ -157,9 +171,6 @@ wex() {
     # Execute function with all parameters.
     eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
   fi;
-
-  # Expected since we use read
-  exit
 }
 
 # Execute run function with same arguments.

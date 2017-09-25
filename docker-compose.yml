@@ -13,5 +13,4 @@ services:
           - "52022:22"
         volumes:
           - .:/opt/wexample
-#          - ./docker/apache/wexample_network.conf:/etc/apache2/sites-available/000-default.conf
 
