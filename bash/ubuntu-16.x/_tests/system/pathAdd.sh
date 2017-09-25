@@ -4,7 +4,7 @@ systemPathAddTest() {
   filePath=${_TEST_RUN_DIR_SAMPLES}bashrc
   newPath=/toto/tata
 
-  command=$(wexample systemPathAdd ${newPath} ${filePath})
+  command=$(wex system/pathAdd -p=${newPath} -b=${filePath})
   if [ "${command}" == '' ]; then
     wexampleTestError 'Command must not be empty'
   fi
@@ -13,7 +13,7 @@ systemPathAddTest() {
   PATH=$PATH":${newPath}"
 
   # Exactly the same command
-  command=$(wexample systemPathAdd ${newPath} ${filePath})
+  command=$(wex system/pathAdd -p=${newPath} -b=${filePath})
   if [ "${command}" != '' ]; then
     wexampleTestError "Command must be empty (exists), got : ${command}"
   fi
