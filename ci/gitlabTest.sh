@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm -rf /opt/wexample
 mv /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
 
