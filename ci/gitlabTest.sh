@@ -14,10 +14,12 @@ bash ./bash/ubuntu-16.x/_installLocal.sh
 wex gitlab/init
 
 # Install composer : we use some libraries in PHP scripts
-wex composer/pharInstall
+#wex composer/pharInstall
 
 # Run all tests
 #bash bash/ubuntu-16.x/_tests/_run.sh
+
+wex gitlab/sshInit -k=${STAGING_PRIVATE_KEY}
 
 # Deploy to GitHub
 wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k=${STAGING_PRIVATE_KEY}
