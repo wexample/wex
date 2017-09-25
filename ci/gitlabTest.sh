@@ -3,8 +3,6 @@
 rm -rf /opt/wexample
 mv /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
-whoami
-echo "---"
 
 # Load wexample.
 bash ./bash/ubuntu-16.x/_installLocal.sh
