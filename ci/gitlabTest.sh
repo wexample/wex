@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cd ../
+
+ls -la
+
 # Load wexample.
 bash bash/ubuntu-16.x/_installLocal.sh
 
