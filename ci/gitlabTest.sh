@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load wexample.
-. bash/wex
+wex=bash/wex
 
 # Init gitlab
 wex gitlab/init
