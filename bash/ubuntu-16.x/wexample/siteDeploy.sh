@@ -22,16 +22,17 @@ wexampleSiteDeploy() {
 
   # Conf contains site name
   wex wexample/siteLoadConf -d=${DIR}
+  SITE_NAME=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=siteName);
 
-  FILE_PATH_ROOT="/var/www/${SITE_NAME}/";
   DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployIpv4);
   DEPLOY_PORT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployPort);
   DEPLOY_USER=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployUser);
+  PROD_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=prodPathRoot);
 
   # Update on production server
   # User must have access to execute scripts.
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
-  ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${FILE_PATH_ROOT} && sudo bash wexample/update.sh"
+  ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${PROD_PATH_ROOT} && sudo bash wexample/update.sh"
 }

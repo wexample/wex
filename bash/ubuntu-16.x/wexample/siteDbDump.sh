@@ -18,6 +18,8 @@ wexampleSiteDbDump() {
   # Conf contains site name / env and dump directory
   wex wexample/siteLoadConf -d=${DIR}
 
+  SITE_NAME=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=siteName);
+
   # We are not into the docker container.
   # So we will access to it in order to re-execute current command.
   if [[ $(wex docker/isEnv) == false ]]; then
@@ -32,10 +34,10 @@ wexampleSiteDbDump() {
       wex docker/compose -e=${SITE_ENV}
     fi;
 
-    FILE_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);
+    CONTAINER_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=containerPathRoot);
 
     # Container should contain wexample script installed.
-    docker exec ${WEB_CONTAINER} wex wexample/siteDbDump "$@" -d=${FILE_PATH_ROOT}
+    docker exec ${WEB_CONTAINER} wex wexample/siteDbDump "$@" -d=${CONTAINER_PATH_ROOT}
 
     # Stop website.
     if [[ ${STARTED} == true ]];then

@@ -7,6 +7,7 @@ wexampleSiteDbDumpLatestFileNameArgs() {
 }
 
 wexampleSiteDbDumpLatestFileName() {
+  SITE_NAME=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=siteName);
   wex wexample/siteLoadConf -d=${DIR}
   # Get environment from this framework type.
   prefix=${SITE_ENV}"-"
