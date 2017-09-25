@@ -8,7 +8,7 @@ gitlabDeployGithubArgs() {
 }
 
 gitlabDeployGithub() {
-  wex gitlab/sshInit -k=${PRIVATE_KEY}
+  wex gitlab/sshInit -k="${PRIVATE_KEY}"
 
   # Install git.
   apt-get install git -yqq

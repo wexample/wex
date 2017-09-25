@@ -32,4 +32,4 @@ eval $(ssh-agent -s)
 ssh-add <(echo "$STAGING_PRIVATE_KEY")
 
 # Deploy to GitHub
-wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k=${STAGING_PRIVATE_KEY}
+wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k="${STAGING_PRIVATE_KEY}"
