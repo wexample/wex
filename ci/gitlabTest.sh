@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ls -la
+
 # Run tests.
 bash bash/ubuntu-16.x/tests/_run.sh
 
