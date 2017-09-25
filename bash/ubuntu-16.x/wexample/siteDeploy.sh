@@ -21,7 +21,6 @@ wexampleSiteDeploy() {
   wex wexample/gitlabSshInit
 
   # Conf contains site name
-  wex wexample/siteLoadConf -d=${DIR}
   SITE_NAME=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=siteName);
 
   DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployIpv4);
