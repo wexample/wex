@@ -74,7 +74,14 @@ wex() {
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-    echo "Script not found ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()"
+    if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
+      WEX_TEST_HAS_ERROR=true
+      RED='\033[1;31m'
+      NC='\033[0m'
+      printf "Yeah ! ${RED}<3${NC}"
+    else
+      echo "Script not found ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()"
+    fi;
     exit 1
   fi;
 

@@ -2,3 +2,5 @@
 
 # Update wexample to the latest version.
 wex wexample/update
+
+/bin/bash
