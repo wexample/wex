@@ -3,12 +3,18 @@
 wexampleDockerImagesRebuildArgs() {
   _ARGUMENTS=(
     [0]='flush_cache f "Remove existing images before rebuild" false'
+    [1]='deploy d "Deploy each built image" false'
   )
 }
 
 wexampleDockerImagesRebuild() {
   cd ${WEX_DIR_ROOT}docker/
-  WEX_DOCKER_BUILT=
+  WEX_BUILT_IMAGES=()
+
+  # Deploy
+  if [ ! -z ${DEPLOY+x} ]; then
+     docker login
+  fi;
 
   if [ ! -z ${FLUSH_CACHE+x} ]; then
     # Remove all images from wexample
@@ -19,7 +25,7 @@ wexampleDockerImagesRebuild() {
     do
       # Filter only directories.
       if [ -d ${BASE_PATH}${f} ]; then
-        _wexampleDockerImagesRebuild ${f} ${FLUSH_CACHE}
+        _wexampleDockerImagesRebuild ${f} ${DEPLOY}
       fi;
     done
 }
@@ -41,7 +47,22 @@ _wexampleDockerImagesRebuild() {
   # Need to redeclare after recursion.
   NAME=${1}
 
-  # We resolve dependencies but we have not succeed
-  # to avoid rebuilding the same parent image multiple times.
+  # Check if image has already been built.
+  for i in ${WEX_BUILT_IMAGES[@]}; do
+    if [[ "$i" = "${NAME}" ]]; then
+      echo "  OK : "${i}
+      return
+      break
+    fi
+  done
+
+  WEX_BUILT_IMAGES=${WEX_BUILT_IMAGES}" "${1}
+
+  # Build
   docker build -t wexample/${NAME}:latest ${NAME} ${USE_CACHE}
+
+  # Deploy
+  if [ ! -z ${DEPLOY+x} ]; then
+    docker push wexample/${NAME}:latest
+  fi;
 }

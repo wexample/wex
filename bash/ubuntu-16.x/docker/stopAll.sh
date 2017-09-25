@@ -2,7 +2,7 @@
 
 dockerStopAll() {
   # Stop all
-  docker stop $(docker ps -qa)
+  docker stop $(docker ps -qa) -f
   # Remove
-  docker rm $(docker ps -qa)
+  docker rm $(docker ps -qa) -f
 }

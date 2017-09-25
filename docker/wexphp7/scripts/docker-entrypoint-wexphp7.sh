@@ -8,4 +8,5 @@ cd /var/www/html
 composer clear-cache -q
 composer update -q
 
-/bin/bash
+# Load parent entry point.
+bash docker-entrypoint-wexubuntu16.sh

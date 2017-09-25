@@ -17,11 +17,13 @@ RUN apt-get install \
 # Cleanup disk
 RUN apt-get clean
 
+# Update wexample
+RUN wex wexample/update
 # Wexample loader for multiple scripts.
-RUN wexample composerPharInstall -rm \
-  # Install Symfony
-  && wexample symfonyClientInstall -rm
+RUN wex composer/pharInstall
+# Install Symfony
+RUN wex frameworkSymfony3/clientInstall
 
-COPY ./scripts/docker-entrypoint.sh /
+COPY ./scripts/docker-entrypoint-wexphp7.sh /
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint-wexphp7.sh"]

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 dockerFlush() {
-  wexample dockerStop
+  wex docker/stopAll
   # Remove all images
-  docker rmi $(docker images -qa)
+  docker rmi $(docker images -qa) -f
   # Remove all networks
-  docker network rm $(docker network list -q);
+  docker network rm $(docker network list -q) -f;
 }
