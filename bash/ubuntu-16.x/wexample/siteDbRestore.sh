@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-wexampleSiteDbDumpArgs() {
+wexampleSiteDbRestoreArgs() {
   _ARGUMENTS=(
     [0]='dir d "Root directory of site" false'
   )
 }
 
-wexampleSiteDbDump() {
+wexampleSiteDbRestore() {
   # Wexample uses .env files on websites root to define variables
   # used globally by Docker and also available to define information about
   # data storage or containers connexion.
@@ -33,7 +33,7 @@ wexampleSiteDbDump() {
     fi;
 
     # Container should contain wexample script installed.
-    docker exec ${WEB_CONTAINER} wex wexample/siteDbDump "$@" -d=${FILE_PATH_ROOT}"/"
+    docker exec ${WEB_CONTAINER} wex wexample/siteDbRestore "$@" -d=${FILE_PATH_ROOT}"/"
 
     # Stop website.
     if [[ ${STARTED} == true ]];then
@@ -42,38 +42,24 @@ wexampleSiteDbDump() {
 
   else
 
-    # Check required var exists
-    if [[ -z "${DATA_DUMPS_PATH+x}" || -z "${SITE_ENV+x}" ]];then
-      exit 1;
+    # Choose between argument or latest dump.
+    if [ ! -z "${1+x}" ]; then
+      DUMP_FILE=${1}
+    else
+      DUMP_FILE=$(wex wexample/siteDbDumpLatestFileName)".gz"
     fi;
 
     DUMPS_DIR="/var/www/dumps"
 
-    # Don't use zip_only so we keep original sql file as return.
-    DUMP_FILE=$(wex framework/dump \
-      -s=${DIR} \
-      -d=${DUMPS_DIR} \
-      --prefix=${SITE_ENV}"-" \
+    LATEST_DUMP_FILE=${DUMPS_DIR}"/"$(wex wexample/siteDbDumpLatestFileName -d=${DIR})".zip"
+
+    # Restore
+    wex framework/restore \
+      -f=${LATEST_DUMP_FILE} \
       -H=${SITE_NAME}"_mysql" \
       -P=${HOST_MYSQL_PORT} \
       -db=${SITE_NAME} \
       -u=${HOST_MYSQL_USER} \
-      -p=${HOST_MYSQL_PASSWORD} \
-      -zip);
-
-    LATEST_DUMP_FILE=${DUMPS_DIR}"/"$(wex wexample/siteDbDumpLatestFileName -d=${DIR})
-
-    # Clone to latest
-    cp ${DUMP_FILE} ${LATEST_DUMP_FILE}
-
-    # Create zip.
-    zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
-
-    # No more usage of source files.
-    rm -rf ${DUMP_FILE}
-    rm -rf ${LATEST_DUMP_FILE}
-
-    echo ${DUMP_FILE}
+      -p=${HOST_MYSQL_PASSWORD}
   fi;
 }
-

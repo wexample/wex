@@ -136,7 +136,7 @@ wex() {
     # And we are not on help page.
     if [ ${FOUND} == false ] && [ -z ${HELP+x} ];then
       # Expected
-      if [ ${PARAMS[3]} == true ]; then
+      if [[ ${PARAMS[3]} == true ]]; then
         # Interactive mode allowed.
         if [ -z ${NONINTERACTIVE+x} ] || [ ${NONINTERACTIVE} == false ]; then
           echo -n ${PARAMS[2]}": "
