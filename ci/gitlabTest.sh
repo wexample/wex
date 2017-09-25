@@ -2,7 +2,10 @@
 
 cd ../
 
-ls -la
+echo ${PWD}
+
+rm -rf /opt/wexample
+mv scripts /opt/wexample
 
 # Load wexample.
 bash bash/ubuntu-16.x/_installLocal.sh
