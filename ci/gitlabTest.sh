@@ -5,7 +5,7 @@ mv /builds/wexample-public/scripts /opt/wexample
 cd /opt/wexample
 
 # Load wexample.
-bash ./bash/ubuntu-16.x/_installLocal.sh
+sudo bash ./bash/ubuntu-16.x/_installLocal.sh
 
 # Init gitlab
 wex gitlab/init
