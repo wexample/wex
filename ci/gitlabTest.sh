@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load wexample.
-bash bash/ubuntu-16.x/wexample/wexample.sh
+. bash/ubuntu-16.x/wexample/wexample.sh
 
 # Init gitlab
 wex gitlab/init
