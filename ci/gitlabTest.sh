@@ -22,6 +22,7 @@ wex gitlab/init
 DEPLOY_KEY="/deployKey"
 echo ${STAGING_PRIVATE_KEY} > ${DEPLOY_KEY};
 chmod 400 ${DEPLOY_KEY}
+cat ${DEPLOY_KEY}
 
 # Deploy to GitHub
 wex gitlab/deployGithub -r="git@github.com:wexample/scripts.git" -k=${DEPLOY_KEY}
