@@ -3,7 +3,7 @@
 wexampleUpdate() {
   # Git expected.
   GIT_EXISTS=$(wex packageExists git)
-  if [ ${GIT_EXISTS} == true ];then
+  if [[ ${GIT_EXISTS} == true ]];then
     # Go to wexample install dir.
     cd ${WEX_LOCAL_DIR}
     # Override changes and pull.

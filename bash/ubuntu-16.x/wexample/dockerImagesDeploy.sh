@@ -7,11 +7,11 @@ wexampleDockerImagesDeployArgs() {
 }
 
 wexampleDockerImagesDeploy() {
+  docker login
+
   if [ ! -z "${BUILD+x}" ]; then
     wex wexample/dockerImagesRebuild ${FLUSH_CACHE}
   fi;
-
-  docker login
 
   for f in $(ls)
     do
