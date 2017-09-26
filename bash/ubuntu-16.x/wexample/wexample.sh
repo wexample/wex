@@ -78,7 +78,7 @@ wex() {
       WEX_TEST_HAS_ERROR=true
       RED='\033[1;31m'
       NC='\033[0m'
-      printf "Yeah ! ${RED}<3${NC}"
+      printf "${RED}<3${NC} Yeah !\n"
     else
       echo "Script not found ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()"
     fi;
