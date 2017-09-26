@@ -9,5 +9,6 @@ wexampleSiteSshExecArgs() {
 
 wexampleSiteSshExec() {
   wex wexample/siteGetDeployCredentials -d=${DIR}
-  ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${PROD_PATH_ROOT} && ${COMMAND}"
+
+  ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${PROD_PATH_ROOT} && ${WEX_DIR_BASH_UBUNTU16}_exec.sh ${COMMAND}"
 }
