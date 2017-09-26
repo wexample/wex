@@ -8,6 +8,6 @@ wexampleSiteScpDownloadArgs() {
 }
 
 wexampleSiteScpDownload() {
-  wex wexample/siteGetDeployCredentials.sh -d=${DIR}
+  wex wexample/siteGetDeployCredentials -d=${DIR}
   scp -P${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4}:/home/${DEPLOY_USER} ${FILE}
 }
