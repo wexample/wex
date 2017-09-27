@@ -11,7 +11,7 @@ fileSymlinkOrCopyArgs() {
 fileSymlinkOrCopy() {
 
   # Create sub directory
-  if [ -z "${RECURSIVE+x}" ];then
+  if [ ! -z "${RECURSIVE+x}" ];then
     # Create whole path
     mkdir -p ${TARGET}
     # Remove just last piece.
