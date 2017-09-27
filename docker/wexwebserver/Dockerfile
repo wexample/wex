@@ -1,5 +1,9 @@
 FROM wexample/wexubuntu16:latest
 
+LABEL authors="wexample <contact@wexample.com>"
+
+RUN apt-get update -yqq
+
 # Web server
 RUN apt-get install apache2 -yqq
 

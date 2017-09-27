@@ -1,6 +1,8 @@
 FROM wexample/wexwebserver:latest
 
-RUN apt-get update
+LABEL authors="wexample <contact@wexample.com>"
+
+RUN apt-get update -yqq
 
 # PHP
 RUN apt-get install \
@@ -19,10 +21,8 @@ RUN apt-get clean
 
 # Update wexample
 RUN wex wexample/update
-# Wexample loader for multiple scripts.
+# Composer install
 RUN wex composer/pharInstall
-# Install Symfony
-RUN wex frameworkSymfony3/clientInstall
 
 COPY ./scripts/docker-entrypoint-wexphp7.sh /
 
