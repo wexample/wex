@@ -15,7 +15,7 @@ dockerCompose() {
     COMMAND=${COMMAND}" -f docker-compose."${ENV}".yml"
   fi;
 
-  COMMAND=${COMMAND}" up -d"
+  COMMAND=${COMMAND}" up -d --build"
 
   ${COMMAND}
 }
