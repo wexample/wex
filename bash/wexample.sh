@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-WEX_DIR_BASH_UBUNTU16="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
-WEX_DIR_ROOT=${WEX_DIR_BASH_UBUNTU16}"../../"
+WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+WEX_DIR_ROOT=${WEX_DIR_BASH}"../"
+WEX_DIR_BASH_UBUNTU16="${WEX_DIR_BASH}ubuntu-16.x/"
+WEX_DIR_BASH_WEXAMPLE2017="${WEX_DIR_BASH}wexample-2017/"
 WEX_URL_GITHUB="https://github.com/wexample/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 WEX_LOCAL_DIR="/opt/wexample/"
-WEX_SCRIPTS_DIR=${WEX_LOCAL_DIR}"bash/ubuntu-16.x/"
 WEX_NON_INTERACTIVE=false
 
 declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(

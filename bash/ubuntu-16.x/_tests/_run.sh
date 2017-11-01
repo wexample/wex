@@ -47,7 +47,7 @@ wexampleArrayJoin() {
 }
 
 # Import wexample.sh
-. "${_TEST_RUN_DIR_CURRENT}../wexample/wexample.sh" false
+. "${_TEST_RUN_DIR_CURRENT}../../wexample.sh" false
 
 # If there is no specified test
 if [ "${_TEST_RUN_SCRIPT}" == '' ]; then
