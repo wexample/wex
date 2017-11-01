@@ -61,17 +61,33 @@ wex() {
     exit 1;
   fi;
 
-  WEX_SCRIPT_METHOD_NAME=$(wexampleMethodName ${WEX_SCRIPT_CALL_NAME})
   # Check if file exists locally.
   # It allow to override behaviors from location where script is executed,
   # especially for contextual website scripts.
   WEX_SCRIPT_FILE="./wexample/bash/ubuntu-16.x/${WEX_SCRIPT_CALL_NAME}.sh"
 
-  # File does not exists.
+  # File does not exists locally.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-    # Search into wexample local folder.
-    WEX_SCRIPT_FILE="${WEX_DIR_BASH_UBUNTU16}${WEX_SCRIPT_CALL_NAME}.sh"
+
+    # Allow specified context.
+    if [[ ${WEX_SCRIPT_CALL_NAME} == *"::"* ]]; then
+      SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
+      CONTEXT=${SPLIT[0]}
+      WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
+      WEX_SCRIPT_FILE="${WEX_DIR_BASH}${CONTEXT}"/"${WEX_SCRIPT_CALL_NAME}.sh"
+
+    # Check if we are on a "wexample" context (.wex file in calling folder).
+    elif [ -f ".wex" ]; then
+      WEX_SCRIPT_FILE="${WEX_DIR_BASH_WEXAMPLE2017}${WEX_SCRIPT_CALL_NAME}.sh"
+
+    # Use main script.
+    else
+      # Search into wexample local folder.
+      WEX_SCRIPT_FILE="${WEX_DIR_BASH_UBUNTU16}${WEX_SCRIPT_CALL_NAME}.sh"
+    fi;
   fi;
+
+  WEX_SCRIPT_METHOD_NAME=$(wexampleMethodName ${WEX_SCRIPT_CALL_NAME})
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
