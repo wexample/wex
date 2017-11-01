@@ -79,12 +79,15 @@ wex() {
     # Check if we are on a "wexample" context (.wex file in calling folder).
     elif [ -f ".wex" ]; then
       WEX_SCRIPT_FILE="${WEX_DIR_BASH_WEXAMPLE2017}${WEX_SCRIPT_CALL_NAME}.sh"
+    fi;
 
-    # Use main script.
-    else
+    # Use main script if still not exists.
+    if [ ! -f ${WEX_SCRIPT_FILE} ]; then
       # Search into wexample local folder.
       WEX_SCRIPT_FILE="${WEX_DIR_BASH_UBUNTU16}${WEX_SCRIPT_CALL_NAME}.sh"
     fi;
+
+    #echo ${WEX_SCRIPT_FILE}
   fi;
 
   WEX_SCRIPT_METHOD_NAME=$(wexampleMethodName ${WEX_SCRIPT_CALL_NAME})
