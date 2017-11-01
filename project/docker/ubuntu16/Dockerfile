@@ -23,7 +23,7 @@ RUN w=_install.sh \
  && bash $w \
  && rm -rf $w
 
-COPY ./scripts/docker-entrypoint-wexubuntu16.sh /
+COPY ./scripts/docker-entrypoint-ubuntu16.sh /
 
-ENTRYPOINT ["/docker-entrypoint-wexubuntu16.sh"]
+ENTRYPOINT ["/docker-entrypoint-ubuntu16.sh"]
 

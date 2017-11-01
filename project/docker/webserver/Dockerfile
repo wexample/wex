@@ -1,4 +1,4 @@
-FROM wexample/wexubuntu16:latest
+FROM wexample/ubuntu16:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 

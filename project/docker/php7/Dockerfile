@@ -1,4 +1,4 @@
-FROM wexample/wexwebserver:latest
+FROM wexample/webserver:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
@@ -25,6 +25,6 @@ RUN wex wexample/update
 # Composer install
 RUN wex composer/pharInstall
 
-COPY ./scripts/docker-entrypoint-wexphp7.sh /
+COPY ./scripts/docker-entrypoint-php7.sh /
 
-ENTRYPOINT ["/docker-entrypoint-wexphp7.sh"]
+ENTRYPOINT ["/docker-entrypoint-php7.sh"]

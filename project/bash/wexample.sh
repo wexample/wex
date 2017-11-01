@@ -3,7 +3,7 @@
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
 WEX_DIR_ROOT=${WEX_DIR_BASH}"../"
 WEX_DIR_BASH_UBUNTU16="${WEX_DIR_BASH}ubuntu-16.x/"
-WEX_DIR_BASH_WEXAMPLE2017="${WEX_DIR_BASH}wexample-2017/"
+WEX_DIR_BASH_WEXAMPLE="${WEX_DIR_BASH}wexample/"
 WEX_URL_GITHUB="https://github.com/wexample/"
 WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
 WEX_LOCAL_DIR="/opt/wexample/"
@@ -76,9 +76,9 @@ wex() {
       WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
       WEX_SCRIPT_FILE="${WEX_DIR_BASH}${CONTEXT}"/"${WEX_SCRIPT_CALL_NAME}.sh"
 
-    # Check if we are on a "wexample" context (.wex file in calling folder).
-    elif [ -f ".wex" ]; then
-      WEX_SCRIPT_FILE="${WEX_DIR_BASH_WEXAMPLE2017}${WEX_SCRIPT_CALL_NAME}.sh"
+    # Check if we are on a "wexample" context (wex.json file in calling folder).
+    elif [ -f "wex.json" ]; then
+      WEX_SCRIPT_FILE="${WEX_DIR_BASH_WEXAMPLE}${WEX_SCRIPT_CALL_NAME}.sh"
     fi;
 
     # Use main script if still not exists.
