@@ -2,6 +2,8 @@
 
 FROM wexample/wexphp7:latest
 
+RUN apt-get update
+
 RUN apt-get install \
   # SSH
   openssh-server \

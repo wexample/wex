@@ -14,6 +14,7 @@ RUN apt-get install \
   php-xml \
   php-mysql \
   mysql-client \
+  yarn \
   -yqq
 
 # Cleanup disk
