@@ -6,11 +6,6 @@ services:
         extends:
           file: ${WEX_COMPOSE_YML_BASE}
           service: web
-        ports:
-          - "80:80"
-        volumes:
-         # Use local wex scripts
-         - ${WEX_SCRIPTS_PATH}:/opt/wexample
 
     mysql:
         extends:
@@ -21,7 +16,3 @@ services:
         extends:
           file: ${WEX_COMPOSE_YML_BASE}
           service: phpmyadmin
-        # Avoid to type login / password on local
-        environment:
-          - PMA_USER=root
-          - PMA_PASSWORD=${SITE_DB_PASSWORD}
