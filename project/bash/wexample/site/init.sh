@@ -7,6 +7,9 @@ siteInitArgs() {
 }
 
 siteInit() {
+  # Copy base files.
+  cp -n -R ${WEX_DIR_ROOT}samples/site/. .
+
   git init
 
   if [ -z "${DIR+x}" ]; then
@@ -18,6 +21,7 @@ siteInit() {
   # Name is current dir name.
   NAME="$(basename $( realpath "${DIR}" ))"
 
+ if [ ! -f "wex.json" ]; then
   cat <<EOF > wex.json
 {
   "name" : "${NAME}",
@@ -25,8 +29,7 @@ siteInit() {
   "created" : "$(date -u)"
 }
 EOF
-
-  git add wex.json
+  fi;
 
   # No project dir
   if [ ! -d project ]; then
@@ -35,6 +38,17 @@ EOF
     echo -e ${NAME}"\n===" > project/README.txt
     git add project/README.txt
   fi;
+
+  # Already exist
+  if [ -f ".gitignore" ]; then
+    # Append ignore content
+    cat .gitignore.demo >> .gitignore
+    rm -f .gitignore.demo
+  else
+    mv .gitignore.demo .gitignore
+  fi;
+
+  git add .
 
   git commit -m"First wex commit"
 
