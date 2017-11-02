@@ -19,10 +19,10 @@ require $settingFile;
 copy($dirname.'/_wp-settings.php', $dirname.'/wp-settings.php');
 unlink($dirname.'/_wp-settings.php');
 
-echo('WEBSITE_SETTINGS_HOST="'.DB_HOST.'"; ');
+echo('SITE_DB_HOST="'.DB_HOST.'"; ');
 if (defined('DB_PORT')) {
-    echo('WEBSITE_SETTINGS_PORT="'.DB_PORT.'"; ');
+    echo('SITE_DB_PORT="'.DB_PORT.'"; ');
 }
-echo('WEBSITE_SETTINGS_DATABASE="'.DB_NAME.'"; ');
-echo('WEBSITE_SETTINGS_USERNAME="'.DB_USER.'"; ');
-echo('WEBSITE_SETTINGS_PASSWORD="'.DB_PASSWORD.'"; ');
+echo('SITE_DB_NAME="'.DB_NAME.'"; ');
+echo('SITE_DB_USER="'.DB_USER.'"; ');
+echo('SITE_DB_PASSWORD="'.DB_PASSWORD.'"; ');

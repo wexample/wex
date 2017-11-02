@@ -13,31 +13,6 @@ frameworkRestoreArgs() {
 }
 
 frameworkRestore() {
-
-  # Conf contains site name / env and dump directory
-  wex wexample/siteLoadConf -d=${DIR}
-
-  # Get locally defined settings if not defined.
-  if [[ -z "${HOST+x}" ]]; then
-    HOST=${WEBSITE_SETTINGS_HOST}
-  fi;
-
-  if [[ -z "${PORT+x}" ]]; then
-    PORT=${WEBSITE_SETTINGS_PORT}
-  fi;
-
-  if [[ -z "${DATABASE+x}" ]]; then
-    DATABASE=${WEBSITE_SETTINGS_DATABASE}
-  fi;
-
-  if [[ -z "${USER+x}" ]]; then
-    USER=${WEBSITE_SETTINGS_USERNAME}
-  fi;
-
-  if [[ -z "${PASSWORD+x}" ]]; then
-    PASSWORD=${WEBSITE_SETTINGS_PASSWORD}
-  fi;
-
   # Add -p option only if password is defined and not empty.
   # Adding empty password will prompt user instead.
   if [ "${PASSWORD}" != "" ]; then

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-. ../bash/wexample.sh
+wex wexample/dockerImagesRebuild
 
-wexample wexampleDockerImagesRebuild
-
-wexample wexampleDockerImagesDeploy
+wex wexample/dockerImagesDeploy

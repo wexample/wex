@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+
+    web:
+        container_name: '${SITE_NAME}_web'
+        image: 'wexample/wexphp7:latest'
+        stdin_open: true
+        tty: true
+
+    mysql:
+        container_name: '${SITE_NAME}_mysql'
+        image: 'mysql:5.7'
+        ports:
+            - '3306:3306'
+        environment:
+            - MYSQL_ROOT_PASSWORD=${SITE_DB_PASSWORD}
+            - MYSQL_DATABASE=${SITE_DB_NAME}
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=${SITE_DB_PASSWORD}
+
+    phpmyadmin:
+        container_name: '${SITE_NAME}_phpmyadmin'
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        environment:
+          - PMA_HOST=${SITE_NAME}_mysql
+        restart: always
+        ports:
+          - '9001:80'

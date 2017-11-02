@@ -11,35 +11,11 @@ frameworkDumpArgs() {
     [6]='database db "Database name" false'
     [7]='user u "Database username" false'
     [8]='password p "Database password" false'
+    [9]='suffix sx "Suffix for final file" false'
   )
 }
 
 frameworkDump() {
-
-  # Get database connexion global settings.
-  wex framework/settings ${SITE_DIR}
-
-  # Get locally defined settings if not defined.
-  if [[ -z "${HOST+x}" ]]; then
-    HOST=${WEBSITE_SETTINGS_HOST}
-  fi;
-
-  if [[ -z "${PORT+x}" ]]; then
-    PORT=${WEBSITE_SETTINGS_PORT}
-  fi;
-
-  if [[ -z "${DATABASE+x}" ]]; then
-    DATABASE=${WEBSITE_SETTINGS_DATABASE}
-  fi;
-
-  if [[ -z "${USER+x}" ]]; then
-    USER=${WEBSITE_SETTINGS_USERNAME}
-  fi;
-
-  if [[ -z "${PASSWORD+x}" ]]; then
-    PASSWORD=${WEBSITE_SETTINGS_PASSWORD}
-  fi;
-
   # Add -p option only if password is defined and not empty.
   # Adding empty password will prompt user instead.
   if [ "${PASSWORD}" != "" ]; then
@@ -47,7 +23,7 @@ frameworkDump() {
   fi;
 
   # Build dump name.
-  DUMP_FILE_NAME=${PREFIX}${DATABASE}"-"$(wex date/timeFileName)".sql"
+  DUMP_FILE_NAME=${PREFIX}${DATABASE}"-"$(wex date/timeFileName)${SUFFIX}".sql"
   DUMP_FULL_PATH=${DUMP_DIR}"/"${DUMP_FILE_NAME}
 
   mysqldump -h${HOST} -P${PORT} -u${USER} ${PASSWORD} ${DATABASE} > ${DUMP_FULL_PATH}
