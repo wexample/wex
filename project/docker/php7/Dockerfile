@@ -14,8 +14,6 @@ RUN apt-get install \
   php-xml \
   php-mysql \
   mysql-client \
-  # TODO yarn not found
-  yarn \
   -yqq
 
 # Cleanup disk

@@ -32,8 +32,6 @@ frameworkRestore() {
      unzip -oq ${DUMP_FILE} -d ${DUMP_DIR}
   fi;
 
-  echo ${MYSQL_CONNEXION}
-
   # Create dump file
   ${MYSQL_CONNEXION} ${DATABASE} < ${DUMP_FILE}
 

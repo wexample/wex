@@ -1,5 +1,5 @@
 # Select image from https://hub.docker.com/r/_/php/
-image: wexample/wexphp7:latest
+image: wexample/php7:latest
 
 test:app:
   tags:

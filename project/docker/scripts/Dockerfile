@@ -8,5 +8,4 @@ RUN apt-get install \
   # SSH
   openssh-server \
   # Firewall
-  ufw \
-  -yqq
+  ufw -yqq

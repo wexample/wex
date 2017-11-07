@@ -1,2 +1,5 @@
 FROM mysql:latest
-COPY ./wexmysql.cnf /etc/mysql/conf.d/
+
+COPY ./mysql.cnf /etc/mysql/conf.d/
+
+CMD ["mysqld"]

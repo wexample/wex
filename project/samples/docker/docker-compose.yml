@@ -9,13 +9,22 @@ services:
 
     web:
         container_name: '${SITE_NAME}_web'
-        image: 'wexample/wexphp7:latest'
+        image: 'wexample/php7:latest'
+        ports:
+            - '80:80'
         stdin_open: true
         tty: true
+        volumes:
+         # Site folder
+         - ${SITE_PATH_ROOT}:/var/www/html
+         # Apache
+         - ${SITE_PATH_ROOT}docker/apache/site.conf:/etc/apache2/sites-available/000-default.conf
+         # Mysql dumps
+         - ${SITE_PATH_ROOT}dumps:/var/dumps
 
     mysql:
         container_name: '${SITE_NAME}_mysql'
-        image: 'mysql:5.7'
+        image: 'wexample/mysql:latest'
         ports:
             - '3306:3306'
         environment:
@@ -23,6 +32,8 @@ services:
             - MYSQL_DATABASE=${SITE_DB_NAME}
             - MYSQL_USER=root
             - MYSQL_PASSWORD=${SITE_DB_PASSWORD}
+        volumes:
+            - ${SITE_PATH_ROOT}/mysql:/var/lib/mysql
 
     phpmyadmin:
         container_name: '${SITE_NAME}_phpmyadmin'

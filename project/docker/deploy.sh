@@ -2,4 +2,3 @@
 
 wex wexample/dockerImagesRebuild
 
-wex wexample/dockerImagesDeploy

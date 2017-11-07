@@ -6,8 +6,6 @@ services:
         extends:
           file: ${WEX_COMPOSE_YML_BASE}
           service: web
-        ports:
-          - "80:80"
         volumes:
          # Use local wex scripts
          - ${WEX_SCRIPTS_PATH}:/opt/wexample
