@@ -23,7 +23,7 @@ siteCompose() {
   do
     # File exists.
     if [ -f ${FILE} ]; then
-        COMPOSE=${COMPOSE}" -f "${FILE}
+      COMPOSE=${COMPOSE}" -f "${FILE}
     fi;
   done;
 
@@ -33,6 +33,7 @@ siteCompose() {
   export WEX_COMPOSE_YML_BASE=${WEX_DIR_ROOT}"samples/docker/docker-compose.yml"
   export WEX_COMPOSE_YML=${WEX_DIR_ROOT}"samples/docker/docker-compose.${SITE_ENV}.yml"
   export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT}
+  export SITE_PATH_ROOT=$(realpath ./)"/"
 
   # Get framework specific settings.
   wex framework/settings -d="project"

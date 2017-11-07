@@ -18,16 +18,20 @@ dbDump() {
   # We are not into the docker container.
   # So we will access to it in order to re-execute current command.
   if [[ $(wex docker/isEnv) == false ]]; then
-    # Load env name.
-    wex site/loadEnv
-    # Can't load this data into container.
-    SITE_NAME=$(wex site/config -k=name)
+
     # Container should contain wexample script installed.
-    wex site/exec -c="wex wexample::db/dump -n=${SITE_NAME} -e=${SITE_ENV} -l=${LATEST}"
+    wex site/exec -e="wex wexample::db/dump -l=${LATEST}"
 
   else
-    # In this section we can't use wexample sites specific methods
-    # We have to pass arguments for host call if needed.
+    # Go to site root.
+    # It enables wexample site context.
+    cd ${CONTAINER_PATH_ROOT}
+
+    # Load env name.
+    wex site/loadEnv
+
+    # Can't load this data into container.
+    SITE_NAME=$(wex site/config -k=name)
 
     wex framework/settings -d=${CONTAINER_PATH_ROOT}
 
