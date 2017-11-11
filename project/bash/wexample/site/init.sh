@@ -18,6 +18,8 @@ siteInit() {
 
   cd ${DIR}
 
+  echo "SITE_ENV=local" > .env
+
   # Name is current dir name.
   NAME="$(basename $( realpath "${DIR}" ))"
 
