@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexampleDockerImagesRebuildArgs() {
+dockerImagesRebuildArgs() {
   _ARGUMENTS=(
     [0]='flush_cache f "Remove existing images before rebuild" false'
     [1]='deploy d "Deploy each built image" false'
@@ -8,7 +8,7 @@ wexampleDockerImagesRebuildArgs() {
   )
 }
 
-wexampleDockerImagesRebuild() {
+dockerImagesRebuild() {
   cd ${WEX_DIR_ROOT}docker/
   WEX_BUILT_IMAGES=()
 
@@ -26,12 +26,12 @@ wexampleDockerImagesRebuild() {
     do
       # Filter only directories.
       if [ -d ${BASE_PATH}${f} ]; then
-        _wexampleDockerImagesRebuild ${f} ${DEPLOY}
+        _dockerImagesRebuild ${f} ${DEPLOY}
       fi;
     done
 }
 
-_wexampleDockerImagesRebuild() {
+_dockerImagesRebuild() {
   NAME=${1}
 
   echo "Building ${NAME}"
@@ -42,7 +42,7 @@ _wexampleDockerImagesRebuild() {
   # A manner to avoid non matching strings from sed
   # which are not empty.
   if [ ${DEPENDS_FROM} != ${DEPENDS_FROM_WEX} ];then
-    _wexampleDockerImagesRebuild ${DEPENDS_FROM_WEX}
+    _dockerImagesRebuild ${DEPENDS_FROM_WEX}
   fi;
 
   # Need to redeclare after recursion.
@@ -60,7 +60,8 @@ _wexampleDockerImagesRebuild() {
   WEX_BUILT_IMAGES=${WEX_BUILT_IMAGES}" "${1}
 
   CACHE=''
-  if [ -z ${NO_CACHE+x} ]; then
+  # If no cache is set.
+  if [ ! -z ${NO_CACHE+x} ]; then
     CACHE='--no-cache'
   fi;
 
