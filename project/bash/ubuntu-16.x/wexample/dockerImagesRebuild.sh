@@ -4,6 +4,7 @@ wexampleDockerImagesRebuildArgs() {
   _ARGUMENTS=(
     [0]='flush_cache f "Remove existing images before rebuild" false'
     [1]='deploy d "Deploy each built image" false'
+    [2]='no_cache c "No cache" false'
   )
 }
 
@@ -58,8 +59,13 @@ _wexampleDockerImagesRebuild() {
 
   WEX_BUILT_IMAGES=${WEX_BUILT_IMAGES}" "${1}
 
+  CACHE=''
+  if [ -z ${NO_CACHE+x} ]; then
+    CACHE='--no-cache'
+  fi;
+
   # Build
-  docker build -t wexample/${NAME}:latest ${NAME} --no-cache
+  docker build -t wexample/${NAME}:latest ${NAME} ${CACHE}
 
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then
