@@ -9,7 +9,7 @@ RUN apt-get install \
   php-memcache \
   php-memcached \
   memcached \
-  php \
+  php7.1 \
   libapache2-mod-php \
   php-xml \
   php-mysql \
