@@ -1,0 +1,5 @@
+/dumps
+/mysql
+/.env
+/docker/.ports
+/cron/cron.log

@@ -2,8 +2,8 @@
 
 siteExecArgs() {
   _ARGUMENTS=(
-    [0]='container c "Container name suffix like site_name_suffix. Default is web" false'
-    [1]='command e "Bash command to execute" true'
+    [0]='container n "Container name suffix like site_name_suffix. Default is web" false'
+    [1]='command c "Bash command to execute" true'
   )
 }
 
@@ -25,7 +25,7 @@ siteExec() {
     wex site/start
   fi;
 
-  docker exec ${SITE_NAME}_${CONTAINER} ${COMMAND}
+  docker exec ${SITE_NAME}_${CONTAINER} /bin/bash -c "${COMMAND}"
 
   # Stop website.
   if [[ ${STARTED} == true ]];then

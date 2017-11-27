@@ -8,10 +8,10 @@ fileTextReplaceArgs() {
 }
 
 fileTextReplace() {
-  # Get original file encoding format.
-  lineEncodingFormatOriginal=$(wex file/getLinesFormat -f=${FILE});
+  # To linux lines ending
+  ORIGINAL=$(wex file/convertLinesToUnix -f=${FILE})
   # Execute common sed
   sed -i "${REGEX}" ${FILE}
   # Revert lines encoding format.
-  wex file/convertLinesFormat -f=${FILE} -t=${lineEncodingFormatOriginal}
+  wex file/convertLinesFormat -f=${FILE} -t=${ORIGINAL}
 }

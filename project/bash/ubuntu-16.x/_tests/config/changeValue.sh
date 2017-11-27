@@ -2,25 +2,22 @@
 
 configChangeValueTest() {
 
-  filePath=${_TEST_RUN_DIR_SAMPLES}configSample
+  filePath=$(wexTestSampleInit configSample)
 
   noSeparator=$(wex config/getValue -f="${filePath}" -k="ConfigTestOption")
-  wexampleTestAssertEqual ${noSeparator} "two"
+  wexTestAssertEqual ${noSeparator} "two"
+#
+#  # Space separator
+#  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
+#
+#  # Strict equal separator
+#  configChangeValueTestItem ${filePath} "ConfigTestOptionEqual" "="
+#
+#  # Revert file.
+#  filePath=$(wexTestSampleInit configSample)
+#
+#  configChangeValueTestItem ${filePath} "ChallengeResponseAuthentication"
 
-  # Space separator
-  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
-
-  # Strict equal separator
-  configChangeValueTestItem ${filePath} "ConfigTestOptionEqual" "="
-
-  # Revert file in order to avoid git conflicts.
-  git checkout HEAD -- ${filePath}
-
-  filePath=${_TEST_RUN_DIR_SAMPLES}configSample
-  configChangeValueTestItem ${filePath} "ChallengeResponseAuthentication"
-
-  # Revert file in order to avoid git conflicts.
-  git checkout HEAD -- ${filePath}
 }
 
 configChangeValueTestItem() {
@@ -37,10 +34,12 @@ configChangeValueTestItem() {
   # Get value
   changed=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
   # Check
-  wexampleTestAssertEqual ${changed} "${testValue}"
+  wexTestAssertEqual ${changed} "${testValue}"
 
   # Revert
   wex config/changeValue -f=${filePath} -k=${variableName} -v="${original}" -s="${separator}"
+  # Get value
+  changed=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
   # Check
-  wexampleTestAssertEqual ${changed} "${testValue}"
+  wexTestAssertEqual ${changed} "${original}"
 }

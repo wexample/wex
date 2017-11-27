@@ -4,5 +4,5 @@ _TEST_ARGUMENTS=( '--name=Friend' '-g=Wexample' )
 
 miscHelloWorldArgumentVerify() {
   # Test echoed message.
-  wexampleTestAssertEqual "${1}" "Hello World! - You are Friend from Wexample"
+  wexTestAssertEqual "${1}" "Hello World! - You are Friend from Wexample"
 }

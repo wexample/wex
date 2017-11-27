@@ -255,7 +255,9 @@ define('DRUPAL_PHP_FUNCTION_PATTERN', '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*'
  *
  * Example: Sun, 06 Nov 1994 08:49:37 GMT
  */
-define('DATE_RFC7231', 'D, d M Y H:i:s \G\M\T');
+if (!defined('DATE_RFC7231')) {
+    define('DATE_RFC7231', 'D, d M Y H:i:s \G\M\T');
+}
 
 /**
  * Provides a caching wrapper to be used in place of large array structures.

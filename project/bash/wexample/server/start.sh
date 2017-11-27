@@ -1,5 +1,27 @@
 #!/usr/bin/env bash
 
+serverStartArgs() {
+  _ARGUMENTS=(
+    [0]='no_recreate n "Do not recompose if already running" false'
+  )
+}
+
 serverStart() {
-  docker-compose -f ${WEX_DIR_ROOT}samples/docker/docker-compose.proxy.yml up -d
+  # Check if running.
+  if [[ ! -z ${NO_RECREATE+x} ]] && [[ $(wex docker/containerRuns -c=${WEX_WEXAMPLE_PROXY_CONTAINER}) == true ]]; then
+    return;
+  fi
+
+  # Create temp dit if not exists.
+  mkdir -p ${WEX_WEXAMPLE_DIR_PROXY_TMP}
+
+  # Create config file
+  PROXY_CONFIG_FILE+="\nWEX_DOCKER_MACHINE_IP="$(docker-machine ip)
+  # Save param file.
+  echo -e ${PROXY_CONFIG_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+  touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
+  touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+
+  # Recompose
+  wex server/compose -c="up -d --build"
 }

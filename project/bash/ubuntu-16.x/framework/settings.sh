@@ -13,6 +13,6 @@ frameworkSettings() {
   settingsPath=$(wex framework/settingsPath -t=${websiteType})
   if [[ ${websiteType} != 'default' ]];then
     # Parse file.
-    wex "framework"$(wexampleUpperCaseFirstLetter ${websiteType})'/settings' -d=${DIR}"/"${settingsPath}
+    wex "framework"$(wexUpperCaseFirstLetter ${websiteType})'/settings' -d=${DIR}"/"${settingsPath}
   fi;
 }

@@ -4,4 +4,4 @@
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
 
 # Run wexample.sh
-bash ${WEX_DIR_BASH}"wexample.sh" $@
+bash ${WEX_DIR_BASH}"wexample.sh" "${@}"

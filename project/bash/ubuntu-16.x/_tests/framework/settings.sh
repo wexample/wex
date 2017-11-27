@@ -11,11 +11,11 @@ frameworkSettingsTest() {
     SITE_DB_USER=false
     SITE_DB_PASSWORD=false
 
-    wex framework/settings -d=${_TEST_RUN_DIR_SAMPLES}${websiteType}"/"
+    wex framework/settings -d=${WEX_TEST_RUN_DIR_SAMPLES}${websiteType}"/"
 
-    wexampleTestAssertEqual ${SITE_DB_HOST} "mysqlTestHost"
-    wexampleTestAssertEqual ${SITE_DB_NAME} "mysqlTestDataBase"
-    wexampleTestAssertEqual ${SITE_DB_USER} "mysqlTestUserName"
-    wexampleTestAssertEqual ${SITE_DB_PASSWORD} "mysqlTestPassword"
+    wexTestAssertEqual ${SITE_DB_HOST} "mysqlTestHost"
+    wexTestAssertEqual ${SITE_DB_NAME} "mysqlTestDataBase"
+    wexTestAssertEqual ${SITE_DB_USER} "mysqlTestUserName"
+    wexTestAssertEqual ${SITE_DB_PASSWORD} "mysqlTestPassword"
   done
 }

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 configGetValueArgs() {
- _ARGUMENTS=(
-   [0]='target_key k "Target key to get" true'
-   [1]='separator s "Separator like space or equal sign, default space" false'
-   [2]='file f "File" true'
- )
+  _ARGUMENTS=(
+    [0]='target_key k "Target key to get" true'
+    [1]='separator s "Separator like space or equal sign, default space" false'
+    [2]='file f "File" true'
+  )
 }
 
 configGetValue() {
@@ -22,5 +22,10 @@ configGetValue() {
 
   # As it is a configuration file, take the last value of the variable
   # Which may override the previous values.
-  echo ${results##*$'\n'}
+  results=${results##*$'\n'}
+
+  # Trim end on lines
+  results=$(wex text/trim -t="${results}")
+
+  echo ${results}
 }

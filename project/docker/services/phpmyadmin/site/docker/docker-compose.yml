@@ -1,0 +1,6 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_PHPMYADMIN}
+          service: phpmyadmin
+        ports: ['${WEX_COMPOSE_PORT_4}:80']
+        links:
+          - mysql

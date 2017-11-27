@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileJsonReadValueTest() {
-  VALUE=$(wex file/jsonReadValue -f="${_TEST_RUN_DIR_SAMPLES}jsonSample.json" -k="simpleValue")
-  wexampleTestAssertEqual "${VALUE}" "value"
+  filePath=$(wexTestSampleInit "jsonSample.json")
+  VALUE=$(wex file/jsonReadValue -f=${filePath} -k="simpleValue")
+  wexTestAssertEqual "${VALUE}" "value"
 }

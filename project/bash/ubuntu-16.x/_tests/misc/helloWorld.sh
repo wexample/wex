@@ -2,5 +2,5 @@
 
 miscHelloWorldVerify() {
   # Test echoed message.
-  wexampleTestAssertEqual "${1}" "Hello World!"
+  wexTestAssertEqual "${1}" "Hello World!"
 }

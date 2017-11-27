@@ -1,17 +1,4 @@
 version: '2'
 
 services:
-    web:
-        extends:
-          file: ${WEX_COMPOSE_YML}
-          service: web
-#    mysql:
-#        extends:
-#          file: ${WEX_COMPOSE_YML}
-#          service: mysql
-#    phpmyadmin:
-#        extends:
-#          file: ${WEX_COMPOSE_YML}
-#          service: phpmyadmin
-#        links:
-#          - mysql
+#[SERVICES]

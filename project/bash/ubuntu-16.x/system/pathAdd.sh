@@ -4,16 +4,24 @@ systemPathAddArgs() {
  _ARGUMENTS=(
    [0]='new_path p "New path" true'
    [1]='bashrc_path b "Bashrc path" false'
+   [2]='global_path_content g "Replace usage of global PATH variable" false'
  )
 }
 
 systemPathAdd() {
+
   # Convert slashes
   NEW_PATH=$(echo "${NEW_PATH}" | sed 's/\//\\\//g')
 
+  if [[ $(wex var/filled -v=${GLOBAL_PATH_CONTENT}) ]];then
+    PATH_CONTENT=${GLOBAL_PATH_CONTENT}
+  else
+    PATH_CONTENT=${PATH}
+  fi
+
   # Search occurrence of new path.
-  foundInBody=$(sed -n "s/\(.*\):\(${NEW_PATH}\):\(.*\)/\2/p" <<< ${PATH})
-  foundAtEnd=$(sed -n "s/\(.*\):\(${NEW_PATH}\)$/\2/p" <<< ${PATH})
+  foundInBody=$(sed -n "s/\(.*\):\(${NEW_PATH}\):\(.*\)/\2/p" <<< ${PATH_CONTENT})
+  foundAtEnd=$(sed -n "s/\(.*\):\(${NEW_PATH}\)$/\2/p" <<< ${PATH_CONTENT})
 
   # Return command to execute globally
   if [ "${foundInBody}" == "" ] && [ "${foundAtEnd}" == "" ]; then

@@ -1,14 +1,31 @@
 #!/usr/bin/env bash
 
 siteComposeArgs() {
- _ARGUMENTS=(
-   [0]='command c "Command to execute" true'
- )
+  _ARGUMENTS=(
+    [0]='command c "Command to execute" true'
+  )
 }
 
 siteCompose() {
+
+  wex site/configLoad
+
   # Load expected env file.
   . .env
+
+  SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services"))
+
+  # Iterate through array using a counter
+  for ((i=0; i<${#SERVICES[@]}; i++)); do
+      SERVICE=${SERVICES[$i]}
+      VAR_NAME="WEX_COMPOSE_YML_"$(wex text/uppercase -t=${SERVICE})"_BASE"
+      export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose.yml"
+
+      VAR_NAME="WEX_COMPOSE_YML_"$(wex text/uppercase -t=${SERVICE})
+      export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose."${SITE_ENV}".yml"
+  done
+
+  COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"docker/containers/default/docker-compose.yml"
 
   FILES=(
     # Base docker file / may extend global container.
@@ -17,32 +34,13 @@ siteCompose() {
     "docker/docker-compose."${SITE_ENV}".yml"
   );
 
-  COMPOSE="docker-compose"
-
   for FILE in ${FILES[@]}
   do
     # File exists.
     if [ -f ${FILE} ]; then
-      COMPOSE=${COMPOSE}" -f "${FILE}
+      COMPOSE_FILES=${COMPOSE_FILES}" -f "${FILE}
     fi;
   done;
 
-  # Global variables
-  export SITE_NAME=$(wex site/config -k=name)
-  # Base yml file should be from an environment
-  export WEX_COMPOSE_YML_BASE=${WEX_DIR_ROOT}"samples/docker/docker-compose.yml"
-  export WEX_COMPOSE_YML=${WEX_DIR_ROOT}"samples/docker/docker-compose.${SITE_ENV}.yml"
-  export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT}
-  export SITE_PATH_ROOT=$(realpath ./)"/"
-
-  # Get framework specific settings.
-  wex framework/settings -d="project"
-
-  # Expose settings.
-  export SITE_DB_HOST=${SITE_DB_HOST}
-  export SITE_DB_NAME=${SITE_DB_NAME}
-  export SITE_DB_USER=${SITE_DB_USER}
-  export SITE_DB_PASSWORD=${SITE_DB_PASSWORD}
-
-  ${COMPOSE} ${COMMAND}
+  docker-compose ${COMPOSE_FILES} ${COMMAND}
 }

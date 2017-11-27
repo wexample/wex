@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 fileGetLastFilledLineTest() {
+  filePath=$(wexTestSampleInit "fileTextSample1.txt")
   # Get the last line
-  fileGetLastFilledLine=$(wex file/getLastFilledLine -f="${_TEST_RUN_DIR_SAMPLES}fileTextSample1.txt")
+  fileGetLastFilledLine=$(wex file/getLastFilledLine -f=${filePath})
   # Compare
-  wexampleTestAssertEqual "${fileGetLastFilledLine}" "[LAST LINE]"
+  wexTestAssertEqual "${fileGetLastFilledLine}" "[LAST LINE]"
 }

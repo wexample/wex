@@ -7,5 +7,5 @@ frameworkSymfony3SettingsArgs() {
 }
 
 frameworkSymfony3Settings() {
-  eval $(php "${WEX_DIR_BASH_UBUNTU16}../../php/symfony3SettingsToBash.php" ${DIR});
+  eval $(php "${WEX_DIR_ROOT}php/symfony3SettingsToBash.php" ${DIR});
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 fileTextAppendOnceTest() {
-  filePath=${_TEST_RUN_DIR_SAMPLES}fileTextSample1.txt
+  filePath=$(wexTestSampleInit "fileTextSample1.txt")
 
   original=$(< ${filePath})
 
@@ -11,17 +11,17 @@ fileTextAppendOnceTest() {
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
   if [[ ${differences} != '' ]]; then
-    wexampleTestError "Differences found tyring insert existing line"
+    wexTestError "Differences found tyring insert existing line"
     echo ${differences}
   fi
 
   # Try to append a line which looks like another on but not exactly
-  wex file/textAppendOnce -f=${filePath} -l="\r\n[INNER LINE"
+  wex file/textAppendOnce -f=${filePath} -l="\n[INNER LINE"
   # File should have changed
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
   if [ ${#differences} == 0 ]; then
-    wexampleTestError "File not changed when expected"
+    wexTestError "File not changed when expected"
   fi
 
   # Try to append config line
@@ -30,8 +30,6 @@ fileTextAppendOnceTest() {
   configTest="${configKey} = ${configValue}"
   wex file/textAppendOnce -f=${filePath} -l="${configTest}"
   inserted=$(wex config/getValue -f=${filePath} -k="${configKey}" -s=" = ")
-  wexampleTestAssertEqual "${inserted}" "${configValue}"
+  wexTestAssertEqual "${inserted}" "${configValue}"
 
-  # Reset
-  git checkout HEAD -- ${filePath}
 }

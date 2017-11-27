@@ -1,25 +1,24 @@
 #!/usr/bin/env bash
 
 configKeyExistsTest() {
-  filePath=${_TEST_RUN_DIR_SAMPLES}configSample
+  # Revert file.
+  filePath=$(wexTestSampleInit configSample)
 
   # Normal
   result=$(wex config/keyExists -f=${filePath} -k="ConfigTestSingleOption")
-  wexampleTestAssertEqual "${result}" true
+  wexTestAssertEqual "${result}" true
 
   # Commented
   result=$(wex config/keyExists -f=${filePath} -k="ConfigTestSingleOptionCommented" -c)
-  wexampleTestAssertEqual "${result}" true
+  wexTestAssertEqual "${result}" true
 
   # Commented only
   result=$(wex config/keyExists -f=${filePath} -k="ConfigTestSingleOptionCommented" -co)
-  wexampleTestAssertEqual "${result}" true
+  wexTestAssertEqual "${result}" true
 
   # Commented only (after uncomment)
   wex config/uncomment -f=${filePath} -k="ConfigTestSingleOptionCommented"
   result=$(wex config/keyExists -f=${filePath} -k="ConfigTestSingleOptionCommented" -co)
-  wexampleTestAssertEqual "${result}" false
+  wexTestAssertEqual "${result}" false
 
-  # Revert
-  git checkout HEAD -- ${filePath}
 }

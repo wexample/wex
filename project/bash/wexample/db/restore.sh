@@ -20,6 +20,11 @@ dbRestore() {
     if [ -z ${DUMP+x} ];then
       FILES=($(ls dumps))
 
+      if [[ ${#FILES[@]} == 0 ]];then
+        echo "No dump found."
+        return
+      fi;
+
       echo ""
       # iterate through array using a counter
       for ((i=0; i<${#FILES[@]}; i++)); do
@@ -37,7 +42,7 @@ dbRestore() {
     fi;
 
     # Container should contain wexample script installed.
-    wex site/exec -e="wex wexample::db/restore -d=${DUMP}"
+    wex site/exec -c="wex wexample::db/restore -d=${DUMP}"
 
   else
     # Go to site root.

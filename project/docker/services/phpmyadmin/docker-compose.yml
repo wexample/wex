@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    phpmyadmin:
+        container_name: '${SITE_NAME}_phpmyadmin'
+        image: phpmyadmin/phpmyadmin
+        environment:
+          - PMA_HOST=${SITE_NAME}_mysql
+        restart: always
+        networks:
+          - reverseproxy_wex_net

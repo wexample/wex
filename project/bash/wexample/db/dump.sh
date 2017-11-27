@@ -20,7 +20,7 @@ dbDump() {
   if [[ $(wex docker/isEnv) == false ]]; then
 
     # Container should contain wexample script installed.
-    wex site/exec -e="wex wexample::db/dump -l=${LATEST}"
+    wex site/exec -c="wex wexample::db/dump -l=${LATEST}"
 
   else
     # Go to site root.

@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    watcher:
+        extends:
+          file: ${WEX_COMPOSE_YML_WATCHER_BASE}
+          service: mysql

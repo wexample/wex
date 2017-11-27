@@ -2,15 +2,15 @@
 
 siteLoadEnvArgs() {
   _ARGUMENTS=(
-    [0]='dir d "Root site directory" false'
+    [0]='dir_site d "Root site directory" false'
   )
 }
 
 siteLoadEnv() {
-  if [ -z "${DIR+x}" ]; then
-    DIR=./
+  if [ -z "${DIR_SITE+x}" ]; then
+    DIR_SITE=./
   fi;
 
   # Load .env file
-  . ${DIR}".env"
+  . ${DIR_SITE}".env"
 }

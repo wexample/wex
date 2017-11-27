@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+    web:
+        container_name: '${SITE_NAME}_web'
+        image: 'wexample/php7:latest'
+        stdin_open: true
+        tty: true
+        environment:
+            - VIRTUAL_HOST=${SITE_NAME}.wex
+            - VIRTUAL_PORT=${WEX_COMPOSE_PORT_1}
+        volumes:
+            # Site folder
+            - ${SITE_PATH_ROOT}:/var/www/html
+            # Apache
+            - ${SITE_PATH_ROOT}apache/site.conf:/etc/apache2/sites-available/000-default.conf
+            # Mysql dumps
+            - ${SITE_PATH_ROOT}dumps:/var/dumps
+            # Php
+            - ${SITE_PATH_ROOT}php/php.ini:/etc/php/7.1/apache2/conf.d/99-wex.ini
+            # Cron
+            - ${SITE_PATH_ROOT}cron/cron:/var/default.cron
+        networks:
+            - reverseproxy_wex_net
+

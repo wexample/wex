@@ -7,6 +7,7 @@ fileConvertLinesFormatArgs() {
  )
 }
 
+# dependency : dos2unix
 fileConvertLinesFormat() {
   fileFormatCurrent=$(wex file/getLinesFormat -f=${FILE})
 

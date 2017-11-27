@@ -7,5 +7,5 @@ frameworkWordpress4SettingsArgs() {
 }
 
 frameworkWordpress4Settings() {
-  eval $(php "${WEX_DIR_BASH_UBUNTU16}../../php/wordpress4SettingsToBash.php" ${DIR});
+  eval $(php "${WEX_DIR_ROOT}php/wordpress4SettingsToBash.php" ${DIR});
 }
