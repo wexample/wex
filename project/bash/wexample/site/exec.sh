@@ -8,7 +8,7 @@ siteExecArgs() {
 }
 
 siteExec() {
-  SITE_NAME=$(wex site/config -k=name)
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Default container name.
   if [ -z ${CONTAINER+x} ]; then

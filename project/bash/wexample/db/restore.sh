@@ -53,7 +53,7 @@ dbRestore() {
     wex site/loadEnv
 
     # Can't load this data into container.
-    SITE_NAME=$(wex site/config -k=name)
+    . ${WEX_WEXAMPLE_SITE_CONFIG}
 
     wex framework/settings -d=${CONTAINER_PATH_ROOT}
 
