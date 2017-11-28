@@ -31,7 +31,7 @@ siteInfo() {
   fi;
 
   echo "  Local hosts names :"
-  echo $(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  echo $(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts)
   echo ""
 
 }
