@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 
+siteConfigWriteArgs() {
+  _ARGUMENTS=(
+    [0]='started s "Set the site is started or not" false'
+    [1]='no_recreate nr "No recreate if files exists" false'
+  )
+}
+
 siteConfigWrite() {
+
+  # No recreate.
+  if [[ $(wex var/filled -v=${NO_RECREATE}) ]] &&
+    [[ -f ${WEX_WEXAMPLE_SITE_DIR_TMP}config ]] &&
+    [[ -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} ]];then
+    return
+  fi
 
   # Create temp dirs if not exists.
   mkdir -p ${WEX_WEXAMPLE_DIR_TMP}
@@ -11,6 +25,7 @@ siteConfigWrite() {
   SITE_CONFIG_FILE=""
   SITE_PATH=$(realpath ./)"/"
   SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
+  SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
   SITES_PATHS=${SITES_PATHS_FILTERED}
   FINAL_SITE_PORT_RANGE=0

@@ -6,7 +6,7 @@ siteStart() {
 
   if [[ $(wex site/started) == false ]];then
     # Write new config
-    wex site/configWrite
+    wex site/configWrite -s
     # Add site
     wex server/siteStart -d="./"
     # Docker compose

@@ -12,5 +12,8 @@ siteStarted() {
   fi;
 
   # Config file exists
-  [[ -f ${DIR_SITE}tmp/config ]] && echo true || echo false
+  if [[ -f ${DIR_SITE}tmp/config ]];then
+    . ${DIR_SITE}tmp/config
+    echo $([[ ${STARTED} == true ]] && echo true || echo false)
+  fi
 }

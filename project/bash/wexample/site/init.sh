@@ -133,5 +133,6 @@ EOF
     fi;
   done;
 
+  # It will recreate config file
   wex site/info
 }
