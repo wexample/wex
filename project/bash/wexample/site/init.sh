@@ -64,6 +64,8 @@ EOF
     mv .gitignore.source .gitignore
   fi;
 
+  rm ${DIR_SITE}".gitignore.source"
+
   # Split services
   SERVICES=($(wex text/split -t=${SERVICES} -s=","))
 
