@@ -72,7 +72,7 @@ return
 _siteInitTest_checkRange() {
   SITE_TEST_PORT_RANGE_EXPECTED=${1}
   # Load config file
-  . tmp/config
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
   # Port range is zero
   wexTestAssertEqual true $([[ ${SITE_PORT_RANGE} == ${SITE_TEST_PORT_RANGE_EXPECTED} ]] && echo true || echo false)
 }

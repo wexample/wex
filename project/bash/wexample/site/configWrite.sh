@@ -41,9 +41,9 @@ siteConfigWrite() {
       for SITE_PATH in ${SITES_PATHS_FILTERED[@]}
       do
         # Config file exists
-        if [[ -f ${SITE_PATH}"tmp/config" ]];then
+        if [[ -f ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG} ]];then
           # Load config
-          . ${SITE_PATH}"tmp/config"
+          . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
           if [[ ${SITE_PORT_RANGE} == ${FINAL_SITE_PORT_RANGE} ]];then
             USED=true
           fi

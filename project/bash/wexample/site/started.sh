@@ -12,8 +12,8 @@ siteStarted() {
   fi;
 
   # Config file exists
-  if [[ -f ${DIR_SITE}tmp/config ]];then
-    . ${DIR_SITE}tmp/config
+  if [[ -f ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG} ]];then
+    . ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG}
     echo $([[ ${STARTED} == true ]] && echo true || echo false)
   fi
 }

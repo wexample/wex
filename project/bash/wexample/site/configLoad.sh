@@ -12,7 +12,7 @@ siteConfigLoad() {
   fi;
 
   # Load config
-  CONFIG=$(cat ${DIR_SITE}tmp/config)
+  CONFIG=$(cat ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG})
   # Export each variable for yml files.
   for LINE in ${CONFIG[@]};do
     if [[ ${LINE} ]];then
