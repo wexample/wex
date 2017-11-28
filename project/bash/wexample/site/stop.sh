@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 siteStop() {
-  wex site/compose -c="down"
-  # Add site
-  wex server/siteRemove -d="./"
-  # Write config file
+  # Write config file, indicates started=stop and recreate yml file if missing.
   wex site/configWrite -s=false
+  # Use previously generated yml file.
+  docker-compose ${COMPOSE_FILES} down
+  # Remove site
+  wex server/siteRemove -d="./"
 }

@@ -9,8 +9,8 @@ siteStart() {
     wex site/configWrite -s
     # Add site
     wex server/siteStart -d="./"
-    # Docker compose
-    wex site/compose -c="up -d --build"
+    # Use previously generated yml file.
+    docker-compose ${COMPOSE_FILES} up -d --build
     # Show domains.
     echo $(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts)
   fi;
