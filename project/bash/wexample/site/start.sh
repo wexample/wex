@@ -9,6 +9,8 @@ siteStart() {
     wex site/configWrite -s
     # Add site
     wex server/siteStart -d="./"
+    # Execute services scripts if exists
+    wex service/exec -c="start"
     # Use previously generated yml file.
     docker-compose ${COMPOSE_FILES} up -d --build
     # Show domains.

@@ -33,6 +33,9 @@ dbDump() {
     # Can't load this data into container.
     . ${WEX_WEXAMPLE_SITE_CONFIG}
 
+    # Export default credentials if not found in framework.
+    wex wexample::db/credentialsDefault
+
     wex framework/settings -d=${CONTAINER_PATH_ROOT}
 
     # Don't use zip_only so we keep original sql file as return.

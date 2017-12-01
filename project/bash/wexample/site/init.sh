@@ -64,8 +64,6 @@ EOF
     mv .gitignore.source .gitignore
   fi;
 
-  rm ${DIR_SITE}".gitignore.source"
-
   # Split services
   SERVICES=($(wex text/split -t=${SERVICES} -s=","))
 
@@ -122,18 +120,11 @@ EOF
     fi
 
     # Merge ignore file
-    wex file/merge -s=${DIR_SITE}".gitignore.source" -d=${DIR_SITE}".gitignore"
-
-    # Execute init script.
-    SERVICE_FILE_INIT=${SERVICE_DIR}"init.sh"
-    # File exists.
-    if [[ -f ${SERVICE_FILE_INIT} ]];then
-      . ${SERVICE_FILE_INIT}
-      METHOD=${SERVICE}"Init"
-      # Execute init method.
-      ${METHOD}
-    fi;
+    # TODO mergeOnce ? > Do not merge existing lines
+    wex file/merge -s=${SERVICE_DIR_SITE}".gitignore.source" -d=${DIR_SITE}".gitignore"
   done;
+
+  wex service/exec -c="init"
 
   # It will recreate config file
   wex site/info

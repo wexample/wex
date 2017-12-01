@@ -23,5 +23,5 @@ serverStart() {
   touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
 
   # Recompose
-  wex server/compose -c="up -d --build"
+  wex wexample::server/compose -c="up -d --build"
 }
