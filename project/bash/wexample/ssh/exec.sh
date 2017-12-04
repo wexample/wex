@@ -12,5 +12,5 @@ sshExec() {
   # Go do site path
   # Then execute script from _exec.sh tool of wexample.
   echo ".... WHAT ...."
-  #ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${DEPLOY_PATH_ROOT} && sudo bash ${WEX_DIR_BASH_DEFAULT}_exec.sh ${SHELL_SCRIPT}"
+  echo ssh -t -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4} "cd ${DEPLOY_PATH_ROOT} && sudo bash ${WEX_DIR_BASH_DEFAULT}_exec.sh ${SHELL_SCRIPT}"
 }
