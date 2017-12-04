@@ -30,7 +30,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 # in case user does not provide it.
 RUN touch /var/default.cron
 
-ENV PATH="/opt/wexample/bash:${PATH}"
+ENV PATH="/opt/wexample/project/bash:${PATH}"
 
 # Install wexample
 RUN w=_install.sh \

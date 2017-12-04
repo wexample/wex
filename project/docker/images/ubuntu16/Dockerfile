@@ -15,7 +15,7 @@ RUN apt-get install \
   zlib1g-dev \
   -yqq
 
-ENV PATH="/opt/wexample/bash:${PATH}"
+ENV PATH="/opt/wexample/project/bash:${PATH}"
 
 # Install wexample
 RUN w=_install.sh \
