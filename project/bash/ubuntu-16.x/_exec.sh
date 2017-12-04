@@ -10,5 +10,7 @@
 # Install wexample.
 . /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
+echo "INSTALLED"
+
 # Run script.
 . ${1}
