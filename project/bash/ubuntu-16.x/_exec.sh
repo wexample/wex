@@ -7,6 +7,8 @@
 # The better approach may be to create a real bundle with wexample scripts,
 # or install it into profile.
 
-. /opt/wexample/bash/ubuntu-16.x/_installLocal.sh
+# Install wexample.
+. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
+# Run script.
 . ${1}

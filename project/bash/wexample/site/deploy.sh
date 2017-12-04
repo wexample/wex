@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-wexampleSiteDeployArgs() {
+siteDeployArgs() {
   _ARGUMENTS=(
     [0]='dir d "Root directory of site" false'
   )
 }
 
-wexampleSiteDeploy() {
+siteDeploy() {
   if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
     echo "Missing private key file"
     exit 1
@@ -25,5 +25,5 @@ wexampleSiteDeploy() {
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
-  wex wexample/siteSshExec -d=${DIR} -s="wex/update.sh"
+  wex wexample::ssh/exec -d=${DIR} -s="wex site/pull"
 }

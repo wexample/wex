@@ -17,7 +17,7 @@ dbDump() {
 
   # We are not into the docker container.
   # So we will access to it in order to re-execute current command.
-  if [[ $(wex docker/isEnv) == false ]]; then
+  if [ $(wex docker/isEnv) == false ]; then
 
     # Container should contain wexample script installed.
     wex site/exec -c="wex wexample::db/dump -l=${LATEST}"
