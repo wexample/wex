@@ -1,1 +1,1 @@
-bash %~dp0..\bash\wexample.sh %*        & :: Need cygwin
+bash %~dp0..\bash\wex %*        & :: Need cygwin

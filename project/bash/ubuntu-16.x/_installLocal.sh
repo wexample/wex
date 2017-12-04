@@ -6,7 +6,7 @@
 WEX_LOCAL_DIR="/opt/wexample/"
 
 # Add to PATH, will return global command to export var.
-pathCommand=$(bash ${WEX_LOCAL_DIR}"bash/wexample.sh" wex/addToPath)
+pathCommand=$(bash ${WEX_LOCAL_DIR}"bash/wex" wex/addToPath)
 # Add to global PATH.
 eval ${pathCommand}
 

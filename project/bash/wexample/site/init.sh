@@ -14,30 +14,24 @@ siteInit() {
   fi;
 
   # Default services.
-  if [[ $(wex var/empty -v="${SERVICES}") ]]; then
+  if [[ -z "${SERVICES+x}" ]]; then
     SERVICES=("web")
   fi;
+
   # Name is current dir name.
   NAME="$(basename $( realpath "${DIR_SITE}" ))"
 
-  # Add git
-  if [ ! -d .git ]; then
-    echo "Init git"
-    # Add git.
-    git init -q
-  fi
-
   # Copy site files.
-  wex dir/copy -f=${WEX_DIR_ROOT}samples/site -t=${DIR_SITE}
+  cp -n -R ${WEX_DIR_ROOT}samples/site/. ${DIR_SITE}
 
   # Creating default env file
   if [ ! -f ".env" ]; then
-    echo "Creating .env file"
+    wexLog "Creating .env file"
     echo "SITE_ENV=local" > .env
   fi
 
   if [ ! -f "wex.json" ]; then
-    echo "Creating wex.json"
+    wexLog "Creating wex.json"
     cat <<EOF > wex.json
 {
   "name" : "${NAME}",
@@ -50,7 +44,7 @@ EOF
 
   # Default project dir
   if [ ! -d project ]; then
-    echo "Creating project folder"
+    wexLog "Creating project folder"
     # Creating default dir
     mkdir project
     echo -e ${NAME}"\n===" > project/README.txt
@@ -58,22 +52,27 @@ EOF
 
   # Already exist
   if [ -f ${DIR_SITE}".gitignore" ]; then
+    wexLog "Merging gitignore"
     # Merge ignore file
-    wex file/merge -s=${DIR_SITE}".gitignore.source" -d=${DIR_SITE}".gitignore"
+    cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
+    rm ${DIR_SITE}.gitignore.source
   else
-    mv .gitignore.source .gitignore
+    wexLog "Moving gitignore"
+    mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
   fi;
 
   # Split services
-  SERVICES=($(wex text/split -t=${SERVICES} -s=","))
+  SERVICES=($(echo ${SERVICES} | tr "," "\n"))
 
   SITE_DIR_DOCKER=${DIR_SITE}"docker/"
 
   YML=$(ls ${SITE_DIR_DOCKER})
+
   # For each yml type file.
+  wexLog "Append YML content"
   for YML_FILE in ${YML[@]}
   do
-    echo "  Installing "${YML_FILE}
+    wexLog "  Installing "${YML_FILE}
 
     YML_TO_ADD=""
     # For each service.
@@ -90,42 +89,49 @@ EOF
     done;
 
     if [[ ${YML_TO_ADD} ]];then
-      YML_SOURCE=$(cat ${DIR_SITE}"docker/"${YML_FILE})
+      YML_DEST=${DIR_SITE}"docker/"${YML_FILE}
+      YML_SOURCE=$(cat ${YML_DEST})
       YML_FINAL=""
+
+      wexLog "    Append YML content to "${YML_DEST}
 
       # Search for placeholder, respecting line breaks.
       while read LINE; do
-        if [[ $(wex text/trim -t="${LINE}") == "#[SERVICES]" ]];then
+        # Trim
+        if [[ $(echo -e "${LINE}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//') == "#[SERVICES]" ]];then
           YML_FINAL+="${YML_TO_ADD}"
         else
           YML_FINAL+=${LINE}
         fi;
-      done <${DIR_SITE}"docker/"${YML_FILE}
+      done <${YML_DEST}
 
-      echo -e "${YML_FINAL}" > ${DIR_SITE}"docker/"${YML_FILE}
+      echo -e "${YML_FINAL}" > ${YML_DEST}
     fi
   done;
 
+  wexLog "Installing services"
   for SERVICE in ${SERVICES[@]}
   do
     SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
     SERVICE_DIR_SITE=${SERVICE_DIR}"site/"
 
-    echo "  Installing service "${SERVICE}
+    wexLog "  "${SERVICE}
 
     # There is a site folder in service.
     # And not in the dest site.
     if [[ -d ${SERVICE_DIR_SITE} ]] && [[ ! -d ${DIR_SITE}${SERVICE} ]];then
-      wex dir/copy -f=$(realpath ${SERVICE_DIR_SITE}) -t=$(realpath ${DIR_SITE})
+      cp -n -R $(realpath ${SERVICE_DIR_SITE})/. $(realpath ${DIR_SITE})
     fi
 
     # Merge ignore file
-    # TODO mergeOnce ? > Do not merge existing lines
-    wex file/merge -s=${SERVICE_DIR_SITE}".gitignore.source" -d=${DIR_SITE}".gitignore"
+    if [[ -f ${DIR_SITE}.gitignore.source ]];then
+      cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}".gitignore"
+      rm ${DIR_SITE}.gitignore.source
+    fi
   done;
 
   wex service/exec -c="init"
 
-  # It will recreate config file
-  wex site/info
+  # Write config files.
+  wex site/configWrite
 }

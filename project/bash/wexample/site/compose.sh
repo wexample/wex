@@ -18,10 +18,11 @@ siteCompose() {
   # Iterate through array using a counter
   for ((i=0; i<${#SERVICES[@]}; i++)); do
       SERVICE=${SERVICES[$i]}
-      VAR_NAME="WEX_COMPOSE_YML_"$(wex text/uppercase -t=${SERVICE})"_BASE"
+      SERVICE_UPPERCASE=$(echo ${SERVICE} | tr '[:lower:]' '[:upper:]')
+      VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}"_BASE"
       export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose.yml"
 
-      VAR_NAME="WEX_COMPOSE_YML_"$(wex text/uppercase -t=${SERVICE})
+      VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}
       export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose."${SITE_ENV}".yml"
   done
 

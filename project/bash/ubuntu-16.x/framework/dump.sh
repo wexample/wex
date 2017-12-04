@@ -33,7 +33,7 @@ frameworkDump() {
 
     # Expect only zipped file
     # Remove original.
-    if [[ ! -z "${ZIP_ONLY+x}" ]]; then
+    if [ ! -z "${ZIP_ONLY+x}" ]; then
       rm -rf ${DUMP_FULL_PATH}
       # Return the zipped file name.
       echo ${DUMP_FULL_PATH}".zip"

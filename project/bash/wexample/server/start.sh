@@ -8,7 +8,7 @@ serverStartArgs() {
 
 serverStart() {
   # Check if running.
-  if [[ ! -z ${NO_RECREATE+x} ]] && [[ $(wex docker/containerRuns -c=${WEX_WEXAMPLE_PROXY_CONTAINER}) == true ]]; then
+  if [ ! -z ${NO_RECREATE+x} ] && [[ $(wex docker/containerRuns -c=${WEX_WEXAMPLE_PROXY_CONTAINER}) == true ]]; then
     return;
   fi
 

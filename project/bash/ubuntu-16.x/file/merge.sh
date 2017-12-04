@@ -13,7 +13,7 @@ fileMerge() {
   if [[ -f ${SOURCE_FILE} ]];then
     # Append ignore content
     cat ${SOURCE_FILE} >> ${DEST_FILE}
-    if [[ $(wex var/filled -v=${KEEP_SOURCE}) ]];then
+    if [[ ${KEEP_SOURCE} == true ]];then
       rm -f ${SOURCE_FILE}
     fi;
   fi;

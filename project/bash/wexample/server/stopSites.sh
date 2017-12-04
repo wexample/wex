@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO replace by sites/stopAll
-# TODO Error ERROR: yaml.scanner.ScannerError: mapping values are not allowed here in ".\docker/docker-compose.yml", line 17, column 37
 serverStopSites() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
 

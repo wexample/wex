@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-serverSiteRemove() {
+serverSiteStop() {
   # Reload file
   wex server/sitesUpdate
   # Rebuild hosts

@@ -18,9 +18,9 @@ siteDomains() {
   do
     DOMAINS=$(sed -n "s/^services_web_\(.*\)_\?environment_VIRTUAL_HOST\=\"*\([^\"]*\)\"*\$/\2/p" <<< ${DOCKER_COMPOSE_VAR})
 
-    if [[ $(wex var/filled -v=${DOMAINS}) ]];then
+    if [ ! -z "${DOMAINS+x}" ]; then
       # Split multiple domains.
-      DOMAINS=($(wex text/split -t=${DOMAINS} -s=","))
+      DOMAINS=($(echo ${DOMAINS} | tr "," "\n"))
       for DOMAIN in ${DOMAINS[@]}
       do
         ALL_DOMAINS+=(${DOMAIN})

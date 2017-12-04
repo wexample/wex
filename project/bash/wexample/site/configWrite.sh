@@ -8,19 +8,27 @@ siteConfigWriteArgs() {
 }
 
 siteConfigWrite() {
+  wexLog "Writing site configuration"
 
   # No recreate.
-  if [[ $(wex var/filled -v=${NO_RECREATE}) ]] &&
+  if [ "${NO_RECREATE}" == true ] &&
     [[ -f ${WEX_WEXAMPLE_SITE_DIR_TMP}config ]] &&
     [[ -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} ]];then
     return
   fi
 
+  wexLog "Recreating..."
+
   # Create temp dirs if not exists.
   mkdir -p ${WEX_WEXAMPLE_DIR_TMP}
   mkdir -p ${WEX_WEXAMPLE_SITE_DIR_TMP}
 
-  # Get site name.
+  if [ "${STARTED}" != true ];then
+    # Default space separator
+    STARTED=false
+  fi;
+
+  # Get site name from wex.json.
   SITE_NAME=$(wex site/config -k=name)
   SITE_CONFIG_FILE=""
   SITE_PATH=$(realpath ./)"/"
@@ -34,7 +42,7 @@ siteConfigWrite() {
   # Ports
   for RANGE in $(seq 0 9); do
     # Port range still not found
-    if [[ ${FINAL_SITE_PORT_RANGE_FOUND} == false ]];then
+    if [ "${FINAL_SITE_PORT_RANGE_FOUND}" == false ];then
       USED=false
 
       # Search into all sites
@@ -50,7 +58,7 @@ siteConfigWrite() {
         fi
       done
 
-      if [[ ${USED} == false ]];then
+      if [ "${USED}" == false ];then
         # Port range found
         FINAL_SITE_PORT_RANGE_FOUND=true
       else
@@ -59,6 +67,8 @@ siteConfigWrite() {
       fi
     fi
   done;
+
+  wexLog "  Ports range found : "${FINAL_SITE_PORT_RANGE}
 
   # Save in config.
   SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="${FINAL_SITE_PORT_RANGE}

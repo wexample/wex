@@ -8,5 +8,5 @@ siteStop() {
   # Execute services scripts if exists
   wex service/exec -c="stop"
   # Remove site
-  wex server/siteRemove -d="./"
+  wex server/siteStop -d=$(realpath ./)
 }

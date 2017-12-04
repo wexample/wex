@@ -2,37 +2,17 @@
 
 siteInitTest() {
 
-  # Create a site
-  _siteInitTest_createSite "testsite" 0
+  # Empty tmp dir (slower)
+  wexTestClearTempDir
 
-  return
-  # One line with an empty line
-  _siteInitTest_checkSitesNumber 2
+  # Load useful variables.
+  . ${WEX_DIR_BASH}wexample/init.sh
+
+  # Create a site
+  _siteInitTest_createSite "testsite"
 
   # Create a second site
-  _siteInitTest_createSite "testsite2" 1
-  # One more line
-  _siteInitTest_checkSitesNumber 3
-
-  # Go to fist site
-  cd ${WEX_TEST_DIR_TMP}"testsite"
-  # Restart it
-  wex site/restart
-  _siteInitTest_checkSitesNumber 3
-  # Range is still 0
-  _siteInitTest_checkRange 0
-  wex site/stop
-  _siteInitTest_checkSitesNumber 2
-
-  # Go to second site
-  cd ${WEX_TEST_DIR_TMP}"testsite2"
-  # Restart it
-  wex site/restart
-  _siteInitTest_checkSitesNumber 2
-  # Range changed from 1 to zero.
-  _siteInitTest_checkRange 0
-  wex site/stop
-  _siteInitTest_checkSitesNumber 1
+  _siteInitTest_createSite "testsite2"
 }
 
 _siteInitTest_createSite() {
@@ -41,6 +21,13 @@ _siteInitTest_createSite() {
 
   # go to temp folder
   cd ${WEX_TEST_DIR_TMP}
+
+  # Folder exists.
+  if [[ -d ${SITE_TEST_FOLDER} ]];then
+    # Do not create.
+    return
+  fi
+
   mkdir ${SITE_TEST_FOLDER}
   cd ${SITE_TEST_FOLDER}
 
@@ -48,35 +35,13 @@ _siteInitTest_createSite() {
   SERVICES=$(ls ${WEX_DIR_ROOT}"docker/services" | tr "\n" " " )
   SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
 
-  wex wexample::site/init -s=${SERVICES}
+  wexLog "Create test site in "${SITE_TEST_FOLDER}" with "${SERVICES[@]}
 
-return
-  # MySQL
-  wexTestAssertEqual $(wex file/lineExists -f=".gitignore" -l="/dumps") true
+  $(wex wexample::site/init -s=${SERVICES}) &> /dev/null
 
-  # Start website
-  wex site/start
-  _siteInitTest_checkRange ${SITE_TEST_PORT_RANGE_EXPECTED}
+  wex wexample::service/exec -c="test"
 
-  # Start website again
-  wex site/start
-  _siteInitTest_checkRange ${SITE_TEST_PORT_RANGE_EXPECTED}
+  wexLog "Test site created in "${SITE_TEST_FOLDER}
 
-  # TODO test domains
-
-  wex server/stopSites
-
-  # TODO server>sites /hosts must be empty
-}
-
-_siteInitTest_checkRange() {
-  SITE_TEST_PORT_RANGE_EXPECTED=${1}
-  # Load config file
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
-  # Port range is zero
-  wexTestAssertEqual true $([[ ${SITE_PORT_RANGE} == ${SITE_TEST_PORT_RANGE_EXPECTED} ]] && echo true || echo false)
-}
-
-_siteInitTest_checkSitesNumber() {
-  wexTestAssertEqual true $([[ $(wex file/linesCount -f=${WEX_WEXAMPLE_DIR_PROXY_TMP}sites) == ${1} ]] && echo true || echo false)
+  wexTestAssertEqual $([[ -f wex.json ]] && echo true || echo false) true
 }

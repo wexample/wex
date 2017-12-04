@@ -7,6 +7,7 @@ frameworkSettingsArgs() {
 }
 
 frameworkSettings() {
+  wexLog "Getting framework settings"
   # Detect type.
   websiteType=$(wex framework/detect -d=${DIR});
   # Get file path.

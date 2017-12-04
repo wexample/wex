@@ -12,6 +12,7 @@ siteConfigLoad() {
   fi;
 
   # Load config
+  wexLog "Loading site config file"
   CONFIG=$(cat ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG})
   # Export each variable for yml files.
   for LINE in ${CONFIG[@]};do
@@ -20,8 +21,11 @@ siteConfigLoad() {
     fi
   done
 
+  wexLog "Getting domains"
   # Global variables
   export DOMAINS=$(wex site/domains -d=${DIR_SITE})
+
+  wexLog "Exporting site variables"
   # Base yml file should be from an environment
   export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT}
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"

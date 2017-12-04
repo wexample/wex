@@ -14,17 +14,17 @@ imagesRebuild() {
   WEX_BUILT_IMAGES=()
 
   # Deploy
-  if [[ $(wex var/filled -v=${DEPLOY}) ]]; then
+  if [[ ${DEPLOY} == true ]]; then
      docker login
   fi;
 
-  if [[ $(wex var/filled -v=${FLUSH_CACHE}) ]]; then
+  if [[ ${FLUSH_CACHE} == true ]]; then
     NO_CACHE=true
     # Remove all images from wexample
     docker rmi $(docker images wexample/* -q)
   fi;
 
-  if [[ $(wex var/filled -v=${IMAGE_NAME}) ]]; then
+  if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
     for f in $(ls)

@@ -22,7 +22,7 @@ siteInfo() {
 
   wex framework/settings
 
-  if [[ $(wex var/filled -v=${SITE_DB_HOST}) ]];then
+  if [[ ${SITE_DB_HOST} == true ]];then
     echo -e "  DB name : \t\t "${SITE_DB_HOST}
     echo -e "  DB host : \t\t "${SITE_DB_NAME}
     echo -e "  DB user : \t\t "${SITE_DB_USER}

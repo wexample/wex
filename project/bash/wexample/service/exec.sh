@@ -7,12 +7,15 @@ serviceExecArgs() {
 }
 
 serviceExec() {
+  wexLog "Executing service command : "${COMMAND}
   SERVICES=($(wex service/list))
 
   for SERVICE in ${SERVICES[@]}
   do
     SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
     SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"
+
+    wexLog ${SERVICE}
 
     if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
       . ${SERVICE_FILE_SCRIPT}

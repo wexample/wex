@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 
-# Import wexample.sh
-. "wexample.sh" false
+# Enable debug mode.
+# Is will write logs into /tmp/debug.log
+# And tests result will not be encapsulated / evaluated.
+if [[ ${2} == "-d" ]];then
+  WEX_TEST_DEBUG=true
+else
+  WEX_TEST_DEBUG=false
+fi
+
+# Import wex
+. "wex" false
+
+echo "Debug mode : "${WEX_DEBUG}
 
 # List only directories.
 WEX_TEST_NAMESPACES=($(ls -d ${WEX_DIR_BASH}*/))
@@ -56,7 +67,7 @@ wexArrayJoin() {
 wexTestClearTempDir() {
   # Empty temp directory
   rm -rf ${WEX_TEST_DIR_TMP}
-  mkdir ${WEX_TEST_DIR_TMP}
+  mkdir -p ${WEX_TEST_DIR_TMP}
 }
 
 for DIR in ${WEX_TEST_NAMESPACES[@]}
@@ -66,18 +77,16 @@ do
   # If no specified script
   # Or ne specified namespace
   # Or a namespace is specified and the same as current
-  if [[ ! $(wex var/filled -v=${WEX_TEST_RUN_SCRIPT}) || ! $(wex var/filled -v=${SPLIT[1]}) || ${SPLIT[0]} == ${NAMESPACE} ]];then
+  if [[ -z "${WEX_TEST_RUN_SCRIPT:+x}" ]] || [[ -z "${SPLIT[1]:+x}" ]] || [[ ${SPLIT[0]} == ${NAMESPACE} ]];then
     echo ""
     echo "Testing namespace : "${NAMESPACE}
     echo "-------------------"
     echo ""
 
     # Namespace have been specified
-    if [[ $(wex var/filled -v=${SPLIT[1]}) && ${SPLIT[0]} == ${NAMESPACE} ]];then
-      echo ""
+    if [ ! -z "${SPLIT[1]:+x}" ] && [[ ${SPLIT[0]} == ${NAMESPACE} ]];then
+      echo "  namespace specified"
     fi
-
-    wexTestClearTempDir
 
     WEX_TEST_RUN_DIR_CURRENT=${WEX_DIR_BASH}${NAMESPACE}"/_tests/"
     WEX_TEST_RUN_DIR_SAMPLES=${WEX_TEST_RUN_DIR_CURRENT}"_samples/"
@@ -95,7 +104,7 @@ do
         if [[ "${WEX_TEST_FIRST_LETTER}" != "_" ]]; then
           WEX_TESTS_NAMESPACE_FOLDERS_FILES=($(ls ${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_DIR_NAME}))
           # Iterate group folder
-          for WEX_TEST_FILE in ${WEX_TESTS_NAMESPACE_FOLDERS_FILES}
+          for WEX_TEST_FILE in ${WEX_TESTS_NAMESPACE_FOLDERS_FILES[@]}
           do
             WEX_TEST_FILE_NAME=$(basename "${WEX_TEST_FILE}")
             WEX_TEST_SCRIPT_CALL_NAME=${WEX_TEST_DIR_NAME}"/${WEX_TEST_FILE_NAME%.*}"
@@ -106,44 +115,62 @@ do
             if [[ "${WEX_TEST_FIRST_LETTER}" != "_" && ("${WEX_TEST_RUN_SCRIPT}" == "" || ${WEX_TEST_RUN_SCRIPT} == ${WEX_TEST_SCRIPT_CALL_NAME} || ${WEX_TEST_RUN_SCRIPT} == ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}) ]]; then
               WEX_TEST_METHOD_NAME=$(wexMethodName ${WEX_TEST_SCRIPT_CALL_NAME})
 
-             # Build script file path.
-             _TEST_SCRIPT_FILE="${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_SCRIPT_CALL_NAME}.sh"
+              # Build script file path.
+              _TEST_SCRIPT_FILE="${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_SCRIPT_CALL_NAME}.sh"
 
-             # Clear defined function
-             _TEST_ARGUMENTS=
+              # Clear defined function
+              _TEST_ARGUMENTS=
 
-             echo "Testing ${WEX_TEST_SCRIPT_CALL_NAME}"
+              echo "Testing ${WEX_TEST_SCRIPT_CALL_NAME}"
 
-             # Import test methods
-             . "${_TEST_SCRIPT_FILE}"
+              # Import test methods
+              . "${_TEST_SCRIPT_FILE}"
 
-             echo "Execute wex ${WEX_TEST_SCRIPT_CALL_NAME} ${_TEST_ARGUMENTS[@]}"
+              echo "Execute wex ${WEX_TEST_SCRIPT_CALL_NAME} ${_TEST_ARGUMENTS[@]}"
 
-             # Go to test dir.
-             cd ${WEX_TEST_RUN_DIR_CURRENT}
+              # Go to test dir.
+              cd ${WEX_TEST_RUN_DIR_CURRENT}
 
-             WEX_TEST_HAS_ERROR=false
-             if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
-               echo "  > Custom ${WEX_TEST_METHOD_NAME}Test method"
-               testResult=$(${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})
-             else
-               echo "  > Auto test method : wex ${WEX_TEST_SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]}"
-               # Run script and store result.
-               testResult=$(wex ${WEX_TEST_SCRIPT_CALL_NAME} --nonInteractive ${_TEST_ARGUMENTS[@]})
-             fi;
+              WEX_TEST_HAS_ERROR=false
+              if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
+                echo "  > Custom ${WEX_TEST_METHOD_NAME}Test method"
+                if [[ ${WEX_TEST_DEBUG} == true ]];then
+                  # Do not encapsulate result
+                  ${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}
+                else
+                  # Run script and store result.
+                  testResult=$(${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})
+                fi
+              else
+                echo "  > Auto test method : wex ${WEX_TEST_SCRIPT_CALL_NAME} --non_interactive ${_TEST_ARGUMENTS[@]}"
+                if [[ ${WEX_TEST_DEBUG} == true ]];then
+                  # Do not encapsulate result
+                  wex ${WEX_TEST_SCRIPT_CALL_NAME} --non_interactive ${_TEST_ARGUMENTS[@]}
+                else
+                  # Run script and store result.
+                  testResult=$(wex ${WEX_TEST_SCRIPT_CALL_NAME} --non_interactive ${_TEST_ARGUMENTS[@]})
+                fi
+              fi;
 
-             if [[ "${testResult}" == "" && ${WEX_TEST_HAS_ERROR} == false ]]; then
-               GREEN='\033[1;32m'
-               NC='\033[0m'
-               echo -e "${GREEN}  > Test success${NC}"
-             else
-               # Print result for info.
-               echo "  > Test response : ${testResult}"
-             fi;
+              if [[ ${WEX_TEST_DEBUG} == true ]];then
+                # Do not check result in debug mode
+                echo -e "Test complete (debug mode)\n"
+                cat ${WEX_LOG_FILE}
+              else
+                if [[ "${testResult}" == "" && ${WEX_TEST_HAS_ERROR} == false ]]; then
+                  GREEN='\033[1;32m'
+                  NC='\033[0m'
+                  echo -e "${GREEN}  > Test success${NC}"
+                else
+                  # Print result for info.
+                  echo "  > Test response : ${testResult}"
+                fi
 
-             if [[ $(type -t "${WEX_TEST_METHOD_NAME}Verify" 2>/dev/null) == function ]]; then
-               ${WEX_TEST_METHOD_NAME}Verify "${testResult}"
-             fi;
+                # Run Verify method if exists.
+                if [[ $(type -t "${WEX_TEST_METHOD_NAME}Verify" 2>/dev/null) == function ]]; then
+                  ${WEX_TEST_METHOD_NAME}Verify "${testResult}"
+                fi;
+              fi
             fi;
           done;
         fi;
