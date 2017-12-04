@@ -12,5 +12,5 @@ gitlabSshInit() {
   # SSH expect restricted access
   chmod 400 ${DEPLOY_KEY}
 
-  wex gitlab/sshInit -k=${DEPLOY_KEY}
+  wex ubuntu-16.x::gitlab/sshInit -k=${DEPLOY_KEY}
 }

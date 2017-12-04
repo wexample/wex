@@ -18,7 +18,7 @@ siteDeploy() {
   fi;
 
   # Init using wexample"s gitlab specific configuration.
-  wex wexample/gitlabSshInit
+  wex wexample::gitlab/sshInit
 
   # Update on production server
   # User must have access to execute scripts.
