@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-mysqlExecArgs() {
+dbExecArgs() {
   _ARGUMENTS=(
     [0]='command c "Mysql command to execute in site database" true'
   )
 }
 
-mysqlExec() {
+dbExec() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # We are not into the web container.
