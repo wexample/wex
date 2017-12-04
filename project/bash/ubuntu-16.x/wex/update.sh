@@ -5,10 +5,11 @@ wexUpdate() {
   GIT_EXISTS=$(wex package/exists -n=git)
   if [[ ${GIT_EXISTS} == true ]];then
     # Go to wexample install dir.
-    cd ${WEX_LOCAL_DIR}
+    cd ${WEX_DIR_ROOT}../
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)
     # Override changes and pull.
     wex git/resetHard
-    git pull origin master
+    git pull origin ${BRANCH}
     # Git all needed wrights.
     chown root:root -R *
     chmod -R 755 *
