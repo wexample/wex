@@ -3,7 +3,7 @@
 # Use this file to install wexample for current user
 # Run : . /opt/wexample/bash/ubuntu-16.x/_installLocal.sh
 
-WEX_LOCAL_DIR="/opt/wexample/"
+WEX_LOCAL_DIR="/opt/wexample/project/"
 
 chmod -R +x ${WEX_LOCAL_DIR}
 
