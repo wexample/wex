@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Use this file to install wexample for current user
-# Run : . /opt/wexample/bash/ubuntu-16.x/_installLocal.sh
+# Run : . /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
 WEX_LOCAL_DIR="/opt/wexample/"
 
