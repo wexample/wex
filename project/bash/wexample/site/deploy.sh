@@ -25,5 +25,5 @@ siteDeploy() {
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
-  wex wexample::ssh/exec -d=${DIR} -s="wex site/pull"
+  wex wexample::ssh/exec -d=${DIR} -s="site/pull"
 }
