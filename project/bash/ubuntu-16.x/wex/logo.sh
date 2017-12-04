@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexampleLogo() {
+wexLogo() {
   RED='\033[1;91m'
   WHITE='\033[0;30m'
   NC='\033[0m'

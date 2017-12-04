@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexampleVersion() {
+wexVersion() {
   cd ${WEX_LOCAL_DIR}
   echo '1.'$(git rev-list --all --count)
 }

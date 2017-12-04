@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexampleUpdate() {
+wexUpdate() {
   # Git expected.
   GIT_EXISTS=$(wex package/exists -n=git)
   if [[ ${GIT_EXISTS} == true ]];then
