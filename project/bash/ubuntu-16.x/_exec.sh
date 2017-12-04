@@ -8,12 +8,7 @@
 # or install it into profile.
 
 # Install wexample.
-#. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
-
-#ls -la
-
-#echo "Execute : "${1}
+. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
 # Run script.
-#${1}
-
+. ${1}
