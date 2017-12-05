@@ -10,4 +10,6 @@ serverInfo() {
       echo -e "  Path : \t"${SITE_PATH}
     fi
   done;
+
+  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
 }
