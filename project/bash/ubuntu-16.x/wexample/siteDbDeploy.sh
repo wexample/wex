@@ -52,8 +52,8 @@ wexampleSiteDbDeploy() {
     LATEST_DUMP_FILE=${DUMPS_DIR}"/"$(wex wexample/siteDbDumpLatestFileName -d=${DIR})".zip"
 
     SITE_NAME=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=siteName);
-    DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployIpv4);
-    DEPLOY_PORT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployPort);
+    DEPLOY_IPV4=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=prod.ipv4);
+    DEPLOY_PORT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=prod.port);
     DEPLOY_USER=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=deployUser);
     DEPLOY_PATH_ROOT=$(wex file/jsonReadValue -f=${DIR}wexample/wex.json -k=prodPathRoot);
 
