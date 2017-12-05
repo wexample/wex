@@ -8,6 +8,9 @@ siteExecArgs() {
 }
 
 siteExec() {
+  # Expected config file.
+  wex site/configWrite -nr
+
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Default container name.
