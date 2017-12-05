@@ -2,7 +2,7 @@
 
 serverHostsUpdate() {
   # Rebuild hosts file
-  IP=$(docker-machine ip)
+  IP=$([[ $(command -v docker-machine) ]] && echo $(docker-machine ip) || echo localhost)
   SITES=$(wex server/sites)
   HOSTS_FILE=""
 
