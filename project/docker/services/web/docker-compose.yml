@@ -20,6 +20,8 @@ services:
             - ${SITE_PATH_ROOT}php/php.ini:/etc/php/7.1/apache2/conf.d/99-wex.ini
             # Cron
             - ${SITE_PATH_ROOT}cron/cron:/var/default.cron
+            # Share same wex scripts for all environments.
+            - ${WEX_SCRIPTS_PATH}:/opt/wexample
         networks:
             - reverseproxy_wex_net
 
