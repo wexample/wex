@@ -5,12 +5,13 @@ siteStart() {
   wex server/start -n
 
   if [ $(wex site/started) == false ];then
-    # Write new config
+    # Execute services scripts if exists
+    wex service/exec -c="start"
+    # Write new config,
+    # it will also export config variables
     wex site/configWrite -s
     # Add site
     wex server/siteStart -d=$(realpath ./)"/"
-    # Execute services scripts if exists
-    wex service/exec -c="start"
     # Use previously generated yml file.
     docker-compose ${COMPOSE_FILES} up -d --build
     # Show domains.

@@ -87,6 +87,9 @@ siteConfigWrite() {
     SITE_CONFIG_FILE+="\n"${VAR_NAME}"="${PORT}
   done
 
+  # Execute services scripts if exists
+  SITE_CONFIG_FILE+=$(wex service/exec -c="config")
+
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config
 

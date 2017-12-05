@@ -55,8 +55,8 @@ dbRestore() {
     # Can't load this data into container.
     . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-    # Export default credentials if not found in framework.
-    wex wexample::db/credentialsDefault
+    # Load credentials stored into config
+    wex site/configLoad
 
     wex framework/settings -d=${CONTAINER_PATH_ROOT}
 
