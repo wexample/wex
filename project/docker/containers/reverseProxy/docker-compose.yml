@@ -16,7 +16,7 @@ services:
       # Nginx configuration
       - ./nginx.conf:/etc/nginx/conf.d/wex.conf:ro
     labels:
-      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: nginx_proxy
     restart: always
     privileged: true
     networks:
@@ -32,25 +32,6 @@ services:
     volumes:
       - /var/www/proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-  # https://github.com/tomav/docker-mailserver
-  wex_mail:
-    image: tvial/docker-mailserver:latest
-    container_name: wex_mail
-    hostname: mail
-    # TODO
-    domainname: wexample.com
-    ports:
-      - "25:25"
-      - "143:143"
-      - "587:587"
-      - "993:993"
-    volumes:
-      - /var/www/mail/mail:/var/mail
-      - /var/www/mail/state:/var/mail-state
-      - /var/www/mail/server/:/tmp/docker-mailserver/
-    networks:
-      - wex_net
 
   web:
     container_name: wex_reverse_proxy_entrypoint
