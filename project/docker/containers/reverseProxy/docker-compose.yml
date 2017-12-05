@@ -60,6 +60,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+        # Displayed on main IP.
         - VIRTUAL_HOST=${WEX_DOCKER_MACHINE_IP}
     volumes:
        - ./entrypoint:/var/www/html
