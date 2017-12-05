@@ -26,7 +26,7 @@ siteConfigLoad() {
   export DOMAINS=$(wex site/domains -d=${DIR_SITE})
 
   wexLog "Exporting site variables"
-  # Base yml file should be from an environment
+
   export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT}
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"
 
