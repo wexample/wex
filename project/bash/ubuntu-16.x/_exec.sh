@@ -11,4 +11,4 @@
 . /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
 # Run script.
-${1}
+/bin/bash -c "${1}"
