@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 fileExistsArgs() {
- _ARGUMENTS=(
-   [0]='file f "File" true'
- )
+  _ARGUMENTS=(
+    [0]='file f "File" true'
+  )
 }
 
 fileExists() {
-  [ ! -f ${1} ];
+  [ -f ${FILE} ] && echo true || echo false
 }

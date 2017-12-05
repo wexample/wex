@@ -30,12 +30,22 @@ sitePull() {
     chmod 755 -R *
     chown www-data:www-data -R *
 
-    # We may manage per framework pull behavior.
+    # Per framework pull behavior.
+    # Detect used frameworks
+    FRAMEWORKS=($(wex framework/list -d=./project/))
+
+    for FRAMEWORK in ${FRAMEWORKS[@]}
+    do
+      FRAMEWORK=framework$(wexUpperCaseFirstLetter ${FRAMEWORK})
+      # Pull script exists
+      if [ -f ${WEX_DIR_BASH}"wexample/"${FRAMEWORK}"/pull.sh" ];then
+        wex wexample::${FRAMEWORK}/pull
+      fi
+    done;
 
     # Execute custom script for site.
     if [ -f ci/pull.sh ];then
       . ci/pull.sh
     fi
   fi;
-
 }

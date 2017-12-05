@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 frameworkWordpress4SettingsArgs() {
- _ARGUMENTS=(
-   [0]='dir d "Root directory of wordpress4" false'
- )
+  _ARGUMENTS=(
+    [0]='dir d "Root directory of wordpress4" false'
+  )
 }
 
 frameworkWordpress4Settings() {
