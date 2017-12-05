@@ -15,7 +15,7 @@ fi
 
 email=$(wex config/getValue -f="/etc/letsencrypt/cli.ini" -k="email" -s=" = ")
 domains=$(wex config/getValue -f="/etc/letsencrypt/cli.ini" -k="domains" -s=" = ")
-serverIp=$(wex system/getIp)
+serverIp=$(wex system/ip)
 
 if [ $(wex package/exists -n=mail) == true ]; then
   wexample mailSend -s "Certificate updated on ${serverIp}" ${email} "Your certificate must be up to date for ${domains}"
