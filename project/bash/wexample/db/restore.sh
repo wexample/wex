@@ -3,6 +3,7 @@
 dbRestoreArgs() {
   _ARGUMENTS=(
     [0]='dump d "Dump file to import, in the dumps folder only, asked if missing" false'
+    [1]='environment e "Remote environment name" false'
   )
 }
 
@@ -39,6 +40,23 @@ dbRestore() {
           break;
         fi;
       done
+    fi;
+
+    # Remote restoration.
+    if [ ! -z ${ENVIRONMENT+x} ];then
+      . .env
+
+      # Search for
+      VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
+      SSH_USERNAME=$(wex env/readVar -l="SSH Username" -k=${VAR_NAME} -d=root)
+
+      wex wexample::scp/upload -u="${SSH_USERNAME}" -f=./dumps/${DUMP}
+
+      # We need site folder
+      wex wexample::site/deployCredentials -d=./
+
+      wex wexample::ssh/exec -u=root -s="mv ~/${DUMP} ${DEPLOY_PATH_ROOT}/dumps/ && cd ${DEPLOY_PATH_ROOT} && wex db/restore -d=${DUMP}"
+      return
     fi;
 
     # Container should contain wexample script installed.

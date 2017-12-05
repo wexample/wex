@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 sshConnectArgs() {
- _ARGUMENTS=(
-   [0]='dir_site d "Local root site directory" false'
- )
+  _ARGUMENTS=(
+    [0]='username u "SSH Username" true'
+    [1]='dir_site d "Local root site directory" false'
+  )
 }
 
 sshConnect() {
@@ -19,6 +20,6 @@ sshConnect() {
 
   # Go do site path
   # Then execute script from _exec.sh tool of wexample.
-  ssh -p${DEPLOY_PORT} ${DEPLOY_USER}@${DEPLOY_IPV4}
+  ssh -p${DEPLOY_PORT} ${USERNAME}@${DEPLOY_IPV4}
 }
 
