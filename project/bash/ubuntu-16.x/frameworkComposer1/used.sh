@@ -7,6 +7,6 @@ frameworkComposer1UsedArgs() {
 }
 
 frameworkComposer1Used() {
-  # Search autoload file.
-  [ $(wex file/exists -f=${DIR}vendor/autoload.php) == true ] && [ $(wex file/exists -f=${DIR}composer.json) == true ] && echo true || echo false
+  # Search composer file.
+  [ $(wex file/exists -f=${DIR}composer.json) == true ] && echo true || echo false
 }
