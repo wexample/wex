@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
 mysqlConfig() {
+  # Get site name from wex.json.
+  SITE_NAME=$(wex site/config -k=name)
 
   # Export default credentials if not found in framework.
-  wex wexample::db/credentialsDefault
+  export SITE_DB_HOST=${SITE_NAME}_mysql
+  export SITE_DB_PORT=3306
+  export SITE_DB_NAME=${SITE_NAME}
+  export SITE_DB_USER=root
+  export SITE_DB_PASSWORD="thisIsAReallyNotSecurePassword!"
+
   # Load framework settings
   wex framework/settings -d=${CONTAINER_PATH_ROOT}
 
