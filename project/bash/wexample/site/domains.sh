@@ -16,7 +16,7 @@ siteDomains() {
 
   for DOCKER_COMPOSE_VAR in ${DOCKER_COMPOSE_VARS[@]}
   do
-    DOMAINS=$(sed -n "s/^services_web_\(.*\)_\?environment_VIRTUAL_HOST\=\"*\([^\"]*\)\"*\$/\2/p" <<< ${DOCKER_COMPOSE_VAR})
+    DOMAINS=$(sed -n "s/^services_\(.*\)_\?environment_VIRTUAL_HOST\=\"*\([^\"]*\)\"*\$/\2/p" <<< ${DOCKER_COMPOSE_VAR})
 
     if [ ! -z "${DOMAINS+x}" ]; then
       # Split multiple domains.
