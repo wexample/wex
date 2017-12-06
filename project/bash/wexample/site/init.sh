@@ -96,12 +96,16 @@ EOF
       wexLog "    Append YML content to "${YML_DEST}
 
       # Search for placeholder, respecting line breaks.
+      # TODO When init is launched on an existing yml file
+      #  1/ We loose line breaks and tabs
+      #  2/ We not have #[SERVICES] placeholder
+      # > We may work on a special test case to add / remove services on existing yml file
       while read LINE; do
         # Trim
         if [[ $(echo -e "${LINE}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//') == "#[SERVICES]" ]];then
           YML_FINAL+="${YML_TO_ADD}"
         else
-          YML_FINAL+=${LINE}
+          YML_FINAL+="\n${LINE}"
         fi;
       done <${YML_DEST}
 
