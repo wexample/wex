@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-fileJsonReadValueArgs() {
+jsonReadValueArgs() {
  _ARGUMENTS=(
    [0]='file f "File" true'
    [1]='key k "Key to read" true'
  )
 }
 
-fileJsonReadValue() {
+jsonReadValue() {
   # Handle OS specific path
   FILE=$(wex path/safe -p="${FILE}")
   # Double slashes for windows like paths.
