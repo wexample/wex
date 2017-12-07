@@ -12,5 +12,5 @@ siteConfig() {
     DIR_SITE=./
   fi;
 
-  echo $(wex file/jsonReadValue -f=${DIR_SITE}wex.json -k=${KEY});
+  echo $(wex json/readValue -f=${DIR_SITE}wex.json -k=${KEY});
 }
