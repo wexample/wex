@@ -26,7 +26,7 @@ bashReadVar() {
   if [ "${VALUE}" == "" ]; then
     FOUND=false
     # Ask user
-    if [ ${ASK} == true ];then
+    if [ "${ASK}" == true ];then
       # Description found
       if [ ! -z ${LABEL+x} ];then
         DESC=${LABEL}
@@ -59,7 +59,7 @@ bashReadVar() {
     # Use quote as it is a bash file.
     CONTENT+="\n${KEY}=\"${VALUE}\""
     # Append.
-    echo -e ${CONTENT} >> . ${FILE}
+    echo -e ${CONTENT} >> ${FILE}
   fi
 
   echo ${VALUE}

@@ -7,9 +7,12 @@ siteConfigLoadArgs() {
 }
 
 siteConfigLoad() {
+
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
   fi;
+
+  wex site/configWrite -nr
 
   # Load config
   wexLog "Loading site config file"

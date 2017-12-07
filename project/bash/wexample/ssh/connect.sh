@@ -2,24 +2,18 @@
 
 sshConnectArgs() {
   _ARGUMENTS=(
-    [0]='username u "SSH Username" true'
-    [1]='dir_site d "Local root site directory" false'
+    [0]='ssh_username u "SSH Username" false'
+    [1]='ssh_private_key pk "SSH Private key" false'
+    [2]='environment e "Environment to connect to" true'
   )
 }
 
 sshConnect() {
-  if [ -z "${DIR_SITE+x}" ]; then
-    DIR_SITE=./
-  fi;
-
-  # For now, the username is gitlab,
-  # but we should use allowed account for current environment.
-  wex wexample::site/deployCredentials -d=${DIR_SITE}
-
-  ssh-keygen -R ${DEPLOY_IPV4}
-
+  wex env/credentials -e=${ENVIRONMENT} -u=${SSH_USERNAME} -pk=${SSH_PRIVATE_KEY}
+  ssh-keygen -R ${SITE_IPV4}
   # Go do site path
   # Then execute script from _exec.sh tool of wexample.
-  ssh -p${DEPLOY_PORT} ${USERNAME}@${DEPLOY_IPV4}
+  ssh -oStrictHostKeyChecking=no -i${SITE_PRIVATE_KEY} -p${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4}
+  # Prevent to set credentials globally
+  wex env/credentialsClear
 }
-

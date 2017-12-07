@@ -7,7 +7,6 @@ siteInfoArgs() {
 }
 
 siteInfo() {
-  wex site/configWrite -nr
   wex site/configLoad
 
   . .env
