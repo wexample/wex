@@ -7,8 +7,9 @@
 # The better approach may be to create a real bundle with wexample scripts,
 # or install it into profile.
 
-# Install wexample.
-. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
+# Install wexample, do not print result to
+# keep clean returned value.
+$(. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh) &> /dev/null
 
 # Run script.
 /bin/bash -c "${1}"

@@ -32,7 +32,7 @@ wexLogo() {
   echo "   \ V  V /  __/>  < (_| | | | | | | |_) | |  __/"
   echo "    \_/\_/ \___/_/\_\__,_|_| |_| |_| .__/|_|\___|"
   echo "     http://network.wexample.com   | |"
-  echo "     # Scripts recipe              |_|"
+  echo "     # Scripts recipes             |_|"
   echo ""
 
   # Extra message is set.
