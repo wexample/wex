@@ -13,7 +13,9 @@ fileUploadArgs() {
 fileUpload() {
   wex env/credentials -e=${ENVIRONMENT} -u=${SCP_USERNAME} -pk=${SCP_PRIVATE_KEY}
   # Copy to given location
-  scp -i${SITE_PRIVATE_KEY} -P${SITE_PORT} ${FILE} ${SITE_USERNAME}@${SITE_IPV4}:${SITE_PATH_ROOT}${DIR_TO}
+  scp -r -i${SITE_PRIVATE_KEY} -P${SITE_PORT} ${FILE} ${SITE_USERNAME}@${SITE_IPV4}:${SITE_PATH_ROOT}${DIR_TO}
+  # Give www-data permissions (files may be a part of website)
+  wex wexample::ssh/exec -e=${ENVIRONMENT} -s="chown -R www-data:www-data ${SITE_PATH_ROOT}${DIR_TO}"
   # Prevent to set credentials globally
   wex env/credentialsClear
 }
