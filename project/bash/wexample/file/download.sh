@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-scpDownloadArgs() {
+fileDownloadArgs() {
   _ARGUMENTS=(
     [0]='scp_username u "SCP Username" false'
     [1]='scp_private_key pk "SCP Private key" false'
@@ -10,7 +10,7 @@ scpDownloadArgs() {
   )
 }
 
-scpDownload() {
+fileDownload() {
   if [ -z "${DIR_TO+x}" ]; then
     DIR_TO=./
   fi;
