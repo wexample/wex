@@ -5,6 +5,7 @@ dbDumpArgs() {
     [0]='site_name n "Website name (internal usage for container execution)" false'
     [1]='site_env e "Website environment (internal usage for container execution)" false'
     [2]='latest l "Save latest copy file" false'
+    [3]='environment e "Remote environment name" false'
   )
 }
 
@@ -18,6 +19,13 @@ dbDump() {
   # We are not into the docker container.
   # So we will access to it in order to re-execute current command.
   if [ $(wex docker/isEnv) == false ]; then
+
+    # Remote dump.
+    if [ ! -z ${ENVIRONMENT+x} ];then
+      # Dump
+      wex wexample::ssh/exec -e=${ENVIRONMENT} -s="wex db/dump"
+      return
+    fi
 
     # Container should contain wexample script installed.
     wex site/exec -c="wex wexample::db/dump -l=${LATEST}"

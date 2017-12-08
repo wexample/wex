@@ -16,48 +16,20 @@ dbRestore() {
 
   if [[ $(wex docker/isEnv) == false ]]; then
 
-    # Ask user to choose a file.
-    # Prompt does not work in the exec terminal.
-    if [ -z ${DUMP+x} ];then
-      FILES=($(ls dumps))
-
-      if [[ ${#FILES[@]} == 0 ]];then
-        echo "No dump found."
-        return
-      fi;
-
-      echo ""
-      # iterate through array using a counter
-      for ((i=0; i<${#FILES[@]}; i++)); do
-          echo -e "\t (${i}) ${FILES[$i]}"
-      done
-      echo ""
-
-      while true; do
-        read -p "Choose a dump to restore : " ANSWER
-        if [ ${FILES[${ANSWER}]} ];then
-          DUMP=${FILES[${ANSWER}]}
-          break;
-        fi;
-      done
-    fi;
-
     # Remote restoration.
     if [ ! -z ${ENVIRONMENT+x} ];then
-      . .env
-
-      # Search for
-      VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
-      SSH_USERNAME=$(wex env/readVar -l="SSH Username" -k=${VAR_NAME} -d=root)
-
-      wex wexample::scp/upload -u="${SSH_USERNAME}" -f=./dumps/${DUMP}
-
-      # We need site folder
-      wex wexample::site/deployCredentials -d=./
-
-      wex wexample::ssh/exec -u=root -s="mv ~/${DUMP} ${DEPLOY_PATH_ROOT}/dumps/ && cd ${DEPLOY_PATH_ROOT} && wex db/restore -d=${DUMP}"
+      # Restore
+      wex wexample::ssh/exec -e=${ENVIRONMENT} -s="wex db/restore"
+      # Complete
       return
     fi;
+
+    if [ -z ${DUMP+x} ];then
+      wex db/dumpChooseList
+      # Ask user to choose a file.
+      # Prompt does not work in the exec terminal.
+      DUMP=$(wex db/dumpChoose)
+    fi
 
     # Container should contain wexample script installed.
     wex site/exec -c="wex wexample::db/restore -d=${DUMP}"
