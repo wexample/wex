@@ -25,8 +25,8 @@ dbRestore() {
     fi;
 
     if [ -z ${DUMP+x} ];then
-      wex db/dumpChooseList
       # Ask user to choose a file.
+      wex db/dumpChooseList
       # Prompt does not work in the exec terminal.
       DUMP=$(wex db/dumpChoose)
     fi
