@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 
 serverStop() {
-  wex wexample::server/stopSites
-  # Decompose
-  wex wexample::server/compose -c="down"
+  # Stop all sites
+  if [ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites ];then
+    wex wexample::server/stopSites
+  fi
+
+  # Stop server containers
+  if [ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}config ];then
+    # Decompose
+    wex wexample::server/compose -c="down"
+  fi
+
   # Remove temp files
-  rm ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
-  rm ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
-  rm ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
+  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
 }
