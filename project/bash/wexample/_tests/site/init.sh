@@ -17,7 +17,7 @@ siteInitTest() {
 
 _siteInitTest_createSite() {
   SITE_TEST_FOLDER=${1}
-  SITE_TEST_PORT_RANGE_EXPECTED=${2}
+  SERVICES=${2}
 
   # go to temp folder
   cd ${WEX_TEST_DIR_TMP}
@@ -31,9 +31,12 @@ _siteInitTest_createSite() {
   mkdir ${SITE_TEST_FOLDER}
   cd ${SITE_TEST_FOLDER}
 
-  # Get all services separated by a comma
-  SERVICES=$(ls ${WEX_DIR_ROOT}"docker/services" | tr "\n" " " )
-  SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
+    # Default container name.
+  if [ -z ${SERVICES+x} ]; then
+    # Get all services separated by a comma
+      SERVICES=$(ls ${WEX_DIR_ROOT}"docker/services" | tr "\n" " " )
+      SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
+  fi
 
   wexLog "Create test site in "${SITE_TEST_FOLDER}" with "${SERVICES[@]}
 

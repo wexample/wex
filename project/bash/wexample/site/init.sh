@@ -34,10 +34,10 @@ siteInit() {
     wexLog "Creating wex.json"
     cat <<EOF > wex.json
 {
-  "name" : "${NAME}",
-  "author" : "$(whoami)",
-  "created" : "$(date -u)",
-  "services" : "${SERVICES}"
+  "name": "${NAME}",
+  "author": "$(whoami)",
+  "created": "$(date -u)",
+  "services": "${SERVICES}"
 }
 EOF
   fi;

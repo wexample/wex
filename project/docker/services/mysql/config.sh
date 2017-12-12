@@ -12,7 +12,7 @@ mysqlConfig() {
   export SITE_DB_PASSWORD="thisIsAReallyNotSecurePassword!"
 
   # Load framework settings
-  wex framework/settings -d=${CONTAINER_PATH_ROOT}
+  wex framework/settings -d=./project/
 
   MYSQL_CONFIG=''
   MYSQL_CONFIG+="\nSITE_DB_HOST="${SITE_DB_HOST}
