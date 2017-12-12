@@ -3,10 +3,7 @@
 siteStart() {
   # Server must be started.
   wex server/start -n
-
   if [ $(wex site/started) == false ];then
-    # Execute services scripts if exists
-    wex service/exec -c="start"
     # Write new config,
     # it will also export config variables
     wex site/configWrite -s

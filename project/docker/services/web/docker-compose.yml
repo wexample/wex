@@ -13,13 +13,13 @@ services:
             # Site folder
             - ${SITE_PATH_ROOT}:/var/www/html
             # Apache
-            - ${SITE_PATH_ROOT}apache/site.conf:/etc/apache2/sites-available/000-default.conf
+            - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
+            # Php
+            - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
+            # Cron
+            - ${CONF_WEB_CRON}:/var/default.cron
             # Mysql dumps
             - ${SITE_PATH_ROOT}dumps:/var/dumps
-            # Php
-            - ${SITE_PATH_ROOT}php/php.ini:/etc/php/7.1/apache2/conf.d/99-wex.ini
-            # Cron
-            - ${SITE_PATH_ROOT}cron/cron:/var/default.cron
             # Share same wex scripts for all environments.
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
         networks:

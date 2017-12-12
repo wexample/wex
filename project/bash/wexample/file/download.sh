@@ -17,7 +17,7 @@ fileDownload() {
 
   wex env/credentials -e=${ENVIRONMENT} -u=${SCP_USERNAME} -pk=${SCP_PRIVATE_KEY}
   # Download file
-  scp -i${SITE_PRIVATE_KEY} -P${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4}:${FILE} ${DIR_TO}
+  scp -i${SITE_PRIVATE_KEY} -P${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4}:${SITE_PATH_ROOT}${FILE} ${DIR_TO}
   # Prevent to set credentials globally
   wex env/credentialsClear
 }

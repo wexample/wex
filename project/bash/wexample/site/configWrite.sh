@@ -67,7 +67,6 @@ siteConfigWrite() {
       fi
     fi
   done;
-
   wexLog "  Ports range found : "${FINAL_SITE_PORT_RANGE}
 
   # Save in config.
@@ -88,12 +87,12 @@ siteConfigWrite() {
   done
 
   # Execute services scripts if exists
-  SITE_CONFIG_FILE+=$(wex service/exec -c="config")
+  CONFIG+=$(wex service/exec -c="config")
+  SITE_CONFIG_FILE+=${CONFIG[@]}
 
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config
 
   # Create docker-compose.build.yml
   wex site/compose -c="config" > ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}
-
 }

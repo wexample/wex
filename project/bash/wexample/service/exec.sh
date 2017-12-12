@@ -9,6 +9,7 @@ serviceExecArgs() {
 serviceExec() {
   wexLog "Executing service command : "${COMMAND}
   SERVICES=($(wex service/list))
+  COMMAND_UC=$(wexUpperCaseFirstLetter ${COMMAND})
 
   for SERVICE in ${SERVICES[@]}
   do
@@ -19,7 +20,7 @@ serviceExec() {
 
     if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
       . ${SERVICE_FILE_SCRIPT}
-      METHOD=${SERVICE}$(wexUpperCaseFirstLetter ${COMMAND})
+      METHOD=${SERVICE}${COMMAND_UC}
       # Execute init method.
       ${METHOD}
     fi;
