@@ -46,7 +46,14 @@
   <p>Welcome to your server. You can edit your local host file by adding
     the lines bellow.</p>
   <p class="hosts"><?php print nl2br(trim($domains)); ?></p>
-
+    <ul>
+        <li>On <b>Windows</b> : C:\Windows\System32\drivers\etc\hosts</li>
+        <li>On <b>Linux</b> : /etc/hosts
+            <ul>
+                <li><code>echo -e "\n# network.wex \n<?php echo str_replace("\n",'\n', trim($domains)) ?>" >> /etc/hosts</code></li>
+            </ul>
+        </li>
+    </ul>
     <?php
 
     $exp = explode("\n", $domains);

@@ -3,12 +3,12 @@
 serverHostsUpdate() {
   # Rebuild hosts file
   IP=$(wex docker/ip)
-  SITES=$(wex server/sites)
+  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   HOSTS_FILE=""
 
-  for SITE in ${SITES[@]}
+  for DIR in ${REGISTRY[@]}
   do
-    DIR=$(sed -n "s/^\(.*\)\=\(.*\)\$/\2/p" <<< ${SITE})
+    wex site/domains -d=${DIR}
     DOMAINS=($(wex site/domains -d=${DIR}))
 
     for DOMAIN in ${DOMAINS[@]}
