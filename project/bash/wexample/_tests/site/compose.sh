@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 siteComposeTest() {
-  . ${WEX_DIR_BASH}"wexample/_tests/site/init.sh"
+  . ${WEX_DIR_BASH}"wexample/_tests/site/_lib.sh"
 
   TEST_SITE_NAME="testsite"
 

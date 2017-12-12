@@ -10,7 +10,7 @@ siteStartTest() {
   # Load useful variables.
   . ${WEX_DIR_BASH}wexample/init.sh
 
-  . ${WEX_DIR_BASH}"wexample/_tests/site/init.sh"
+  . ${WEX_DIR_BASH}"wexample/_tests/site/_lib.sh"
 
   # Create a new test site if not exists.
   _siteInitTest_createSite "testsite"
@@ -63,25 +63,3 @@ siteStartTest() {
   $(wex server/stopSites) &>/dev/null
   _siteInitTest_checkSitesNumber 0
 }
-
-_siteInitTest_checkSitesNumber() {
-  wexLog "Check running websites in "${WEX_WEXAMPLE_DIR_PROXY_TMP}
-  NUM=${1}
-  # Add an empty line to lines count.
-  NUM=$((NUM+1))
-  . ${WEX_DIR_BASH}wexample/init.sh
-  COUNT=$(wex file/linesCount -f=${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-  wexLog "Running websites count : "${COUNT}", expected "${NUM}
-  wexTestAssertEqual $([[ ${COUNT} == ${NUM} ]] && echo true || echo false) true
-}
-
-_siteInitTest_checkRange() {
-  wexLog "Checking config "${WEX_WEXAMPLE_SITE_CONFIG}
-  SITE_TEST_PORT_RANGE_EXPECTED=${1}
-  # Load config file
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
-  # Port range is zero
-  wexLog "Website port range is "${SITE_PORT_RANGE}", expected "${SITE_TEST_PORT_RANGE_EXPECTED}
-  wexTestAssertEqual true $([[ ${SITE_PORT_RANGE} == ${SITE_TEST_PORT_RANGE_EXPECTED} ]] && echo true || echo false)
-}
-

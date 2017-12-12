@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 siteConfigWriteTest() {
-  . ${WEX_DIR_BASH}"wexample/_tests/site/start.sh"
+  . ${WEX_DIR_BASH}"wexample/_tests/site/_lib.sh"
 
   TEST_SITE_NAME="testsite"
 
