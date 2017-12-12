@@ -3,9 +3,14 @@
 fileLinesCountArgs() {
   _ARGUMENTS=(
     [0]='file f "File" true'
+    [1]='ignore_empty i "Ignore empty lines" false'
   )
 }
 
 fileLinesCount() {
-  cat ${FILE} | wc -l
+  if [ "${IGNORE_EMPTY}" == "true" ];then
+    cat ${FILE} | sed '/^\s*$/d' | wc -l
+  else
+    cat ${FILE} | wc -l
+  fi
 }

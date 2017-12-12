@@ -5,11 +5,12 @@ serverHostsUpdate() {
   IP=$(wex docker/ip)
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   HOSTS_FILE=""
+  local DIR=""
 
   for DIR in ${REGISTRY[@]}
   do
-    wex site/domains -d=${DIR}
-    DOMAINS=($(wex site/domains -d=${DIR}))
+    local DOMAINS=($(wex site/domains -d=${DIR}))
+    local DOMAIN=""
 
     for DOMAIN in ${DOMAINS[@]}
     do

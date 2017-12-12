@@ -19,7 +19,7 @@ siteInit() {
   fi;
 
   # Name is current dir name.
-  NAME="$(basename $( realpath "${DIR_SITE}" ))"
+  local NAME="$(basename $( realpath "${DIR_SITE}" ))"
 
   # Copy site files.
   cp -n -R ${WEX_DIR_ROOT}samples/site/. ${DIR_SITE}
@@ -27,7 +27,7 @@ siteInit() {
   # Creating default env file
   if [ ! -f ".env" ]; then
     wexLog "Creating .env file"
-    echo "SITE_ENV=local" > .env
+    echo -e "SITE_ENV=local\n\nCOMPOSE_PROJECT_NAME="${NAME} > .env
   fi
 
   if [ ! -f "wex.json" ]; then

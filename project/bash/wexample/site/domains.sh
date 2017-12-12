@@ -11,7 +11,7 @@ siteDomains() {
     DIR_SITE=./
   fi;
 
-  DOCKER_COMPOSE_VARS=($(wex site/configYml))
+  DOCKER_COMPOSE_VARS=($(wex site/configYml -d=${DIR_SITE}))
   ALL_DOMAINS=()
 
   for DOCKER_COMPOSE_VAR in ${DOCKER_COMPOSE_VARS[@]}

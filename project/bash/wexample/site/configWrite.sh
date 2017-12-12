@@ -35,7 +35,7 @@ siteConfigWrite() {
   SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
-  SITES_PATHS=${SITES_PATHS_FILTERED}
+  SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   FINAL_SITE_PORT_RANGE=0
   FINAL_SITE_PORT_RANGE_FOUND=false
 
@@ -46,7 +46,7 @@ siteConfigWrite() {
       USED=false
 
       # Search into all sites
-      for SITE_PATH in ${SITES_PATHS_FILTERED[@]}
+      for SITE_PATH in ${SITES_PATHS[@]}
       do
         # Config file exists
         if [[ -f ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG} ]];then
@@ -87,7 +87,7 @@ siteConfigWrite() {
   done
 
   # Execute services scripts if exists
-  CONFIG+=$(wex service/exec -c="config")
+  local CONFIG=$(wex service/exec -c="config")
   SITE_CONFIG_FILE+=${CONFIG[@]}
 
   # Save param file.
