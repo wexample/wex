@@ -27,7 +27,7 @@ siteInit() {
   # Creating default env file
   if [ ! -f ".env" ]; then
     wexLog "Creating .env file"
-    echo -e "SITE_ENV=local\n\nCOMPOSE_PROJECT_NAME="${NAME} > .env
+    echo -e "SITE_ENV=local" > .env
   fi
 
   if [ ! -f "wex.json" ]; then
