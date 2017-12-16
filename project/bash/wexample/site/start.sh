@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 siteStart() {
+  if [ ! -f .env ];then
+    echo "Missing .env file"
+    return
+  fi
   # Server must be started.
   wex server/start -n
   if [ $(wex site/started) == false ];then
