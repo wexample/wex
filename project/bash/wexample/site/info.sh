@@ -14,6 +14,7 @@ siteInfo() {
   echo ""
   echo -e "  Machine name : \t "${SITE_NAME}
   echo -e "  Started : \t\t "$(wex site/started)
+  echo -e "  Services : \t\t "$(wex site/config -k=services)
   echo -e "  Framework : \t\t "$(wex framework/detect -d="project")
   echo -e "  Environment : \t "${SITE_ENV}
   echo -e "  Domains : \t\t "$(wex site/domains)
