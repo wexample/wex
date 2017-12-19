@@ -1,2 +1,6 @@
-/.env
+# Wexample tmp
 /tmp/*
+# Docker
+/.env
+# JetBrain
+.idea
