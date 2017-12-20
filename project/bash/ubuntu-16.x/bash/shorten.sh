@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 bashShorten() {
-  PS1='\u:\W\$ '
+  # Unable te execute it from here
+  echo PS1='\u:\W\$ '
 }
