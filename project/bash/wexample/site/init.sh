@@ -20,6 +20,10 @@ siteInit() {
 
   # Name is current dir name.
   local NAME="$(basename $( realpath "${DIR_SITE}" ))"
+  # Do not allow underscore in site name :
+  # site name may be used for local domain name,
+  # which not support underscore.
+  NAME=$(wex text/camelCase -t=${NAME})
 
   # Copy site files.
   cp -n -R ${WEX_DIR_ROOT}samples/site/. ${DIR_SITE}
@@ -135,7 +139,4 @@ EOF
   done;
 
   wex service/exec -c="init"
-
-  # Write config files.
-  wex site/configWrite
 }
