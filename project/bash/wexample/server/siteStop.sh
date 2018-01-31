@@ -10,5 +10,5 @@ serverSiteStop() {
   # Reload file
   wex server/sitesUpdate
   # Rebuild hosts
-  wex server/hostsUpdate
+  wex hosts/update
 }

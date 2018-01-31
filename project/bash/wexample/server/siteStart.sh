@@ -14,5 +14,5 @@ serverSiteStart() {
   wex server/sitesUpdate
   wexLog "Updating hosts"
   # Rebuild hosts
-  wex server/hostsUpdate
+  wex hosts/update
 }

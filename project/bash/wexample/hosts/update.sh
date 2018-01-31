@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-serverHostsUpdate() {
+hostsUpdate() {
   # Rebuild hosts file
   IP=$(wex docker/ip)
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
