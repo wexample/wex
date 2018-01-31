@@ -21,9 +21,10 @@ textColor() {
   local YELLOW="\033[1;33m"
   local DEFAULT="\033[0m"
 
+  # Uppercase color name
   COLOR=$(wex text/uppercase -t=${COLOR})
-
+  # Find color code
   eval 'COLOR=$'${COLOR}
-
+  # Print
   printf ${COLOR}${TEXT}${DEFAULT}"\n"
 }
