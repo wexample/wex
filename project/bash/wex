@@ -72,7 +72,6 @@ wexUpperCaseFirstLetter() {
 
 wexMethodName() {
   SPLIT=(${1//// })
-  METHOD_NAME=${SPLIT[1]}
   echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
 }
 
@@ -143,13 +142,25 @@ wex() {
 
   # File does not exists.
   if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-    RED='\033[1;31m'
-    NC='\033[0m'
-    if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
-      WEX_TEST_HAS_ERROR=true
-      printf "${RED}<3${NC} Yeah !\n"
+    DIR=$(dirname ${WEX_SCRIPT_FILE})"/"${WEX_SCRIPT_CALL_NAME}
+    GROUP=$(basename ${DIR})
+
+    if [ -d ${DIR} ];then
+      METHODS=($(ls ${DIR}))
+
+      for FILE in "${METHODS[@]}"
+      do
+        echo "  "${GROUP}"/${FILE%.*}"
+      done
     else
-      printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+      RED='\033[1;31m'
+      NC='\033[0m'
+      if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
+        WEX_TEST_HAS_ERROR=true
+        printf "${RED}<3${NC} Yeah !\n"
+      else
+        printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+      fi;
     fi;
     exit 1
   fi;
