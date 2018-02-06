@@ -9,7 +9,7 @@
 
 # Install wexample, do not print result to
 # keep clean returned value.
-$(. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh) &> /dev/null
+. /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
 # Run script.
 /bin/bash -c "${1}"
