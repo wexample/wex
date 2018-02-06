@@ -20,5 +20,5 @@ siteDeploy() {
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
-  wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex site/pull"
+  wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex wexample::site/pull"
 }
