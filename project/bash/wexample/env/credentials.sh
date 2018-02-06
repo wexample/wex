@@ -41,7 +41,7 @@ echo "e"
 
 echo "g"
 
-  if [ ! -z ${ENVIRONMENT+x} ];then
+  if [ -z ${ENVIRONMENT+x} ];then
     echo "i"
     # Get site env.
     . ${DIR_SITE}.env
