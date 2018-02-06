@@ -37,8 +37,10 @@ envCredentials() {
 
   wex site/configLoad
 
-  # Get site env.
-  . ${DIR_SITE}.env
+  if [ ! -z ${ENVIRONMENT+x} ];then
+    # Get site env.
+    . ${DIR_SITE}.env
+  fi
 
   # Conf contains site name
   export SITE_NAME=${SITE_NAME};
