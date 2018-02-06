@@ -3,7 +3,7 @@ version: '2'
 services:
     watcher:
         container_name: '${SITE_NAME}_watcher'
-        image: 'wexample/gulp:latest'
+        image: 'wexample/watcher:latest'
         #ports:
         #    - '${WEX_COMPOSE_PORT_4}:3306'
         networks:
