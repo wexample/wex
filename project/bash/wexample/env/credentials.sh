@@ -40,7 +40,9 @@ echo "e"
   fi
 
 echo "g"
-  wex site/configLoad
+  # We can't use `wex site/configLoad`
+  # because it need te rewriting configuration with docker.
+  SITE_NAME=$(wex site/config -k=name)
 echo "h"
   if [ ! -z ${ENVIRONMENT+x} ];then
     echo "i"
