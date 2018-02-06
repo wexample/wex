@@ -3,7 +3,7 @@
 fileDownloadArgs() {
   _ARGUMENTS=(
     [0]='scp_username u "SCP Username" false'
-    [1]='scp_private_key pk "SCP Private key" false'
+    [1]='scp_private_key pk "SCP Private key file" false'
     [2]='environment e "Environment to transfer from" true'
     [3]='file f "Remote file to download" true'
     [4]='dir_to d "Local destination folder" false'

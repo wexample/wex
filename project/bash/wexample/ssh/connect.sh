@@ -3,7 +3,7 @@
 sshConnectArgs() {
   _ARGUMENTS=(
     [0]='ssh_username u "SSH Username" false'
-    [1]='ssh_private_key pk "SSH Private key" false'
+    [1]='ssh_private_key pk "SSH Private key file" false'
     [2]='environment e "Environment to connect to" true'
   )
 }

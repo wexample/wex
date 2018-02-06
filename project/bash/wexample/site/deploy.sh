@@ -7,11 +7,6 @@ siteDeployArgs() {
 }
 
 siteDeploy() {
-  if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
-    echo "Missing secret CI variable STAGING_PRIVATE_KEY"
-    exit 1
-  fi;
-
   # Use current dir by default
   if [ -z "${DIR+x}" ]; then
     DIR=./
@@ -25,5 +20,5 @@ siteDeploy() {
   # Use : sudo visudo
   # then add : username ALL=(ALL) NOPASSWD: ALL
   # If root ssh access is disabled.
-  wex wexample::ssh/exec -u=gitlab -pk=${STAGING_PRIVATE_KEY} -d=${DIR} -e=prod -s="wex site/pull"
+  wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex site/pull"
 }

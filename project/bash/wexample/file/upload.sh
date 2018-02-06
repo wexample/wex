@@ -3,7 +3,7 @@
 fileUploadArgs() {
   _ARGUMENTS=(
     [0]='scp_username u "SCP Username" false'
-    [1]='scp_private_key pk "SCP Private key" false'
+    [1]='scp_private_key pk "SCP Private key file" false'
     [2]='environment e "Environment to transfer to" true'
     [3]='file f "Local file or folder to upload" true'
     [4]='dir_to d "Destination folder, relative to site root (/var/www/name/)" false'
