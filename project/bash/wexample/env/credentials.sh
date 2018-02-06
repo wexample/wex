@@ -41,6 +41,12 @@ envCredentials() {
     . ${DIR_SITE}.env
   fi
 
+  # We need site name to find containing folder,
+  # but we can't load data from config file,
+  # since script may be used from a non working environment
+  # (with .env file and docker running)
+  SITE_NAME=$(wex site/config -k=name)
+
   # Conf contains site name
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
