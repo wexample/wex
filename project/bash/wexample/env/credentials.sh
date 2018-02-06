@@ -13,41 +13,34 @@ envCredentials() {
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
   fi;
-echo "a"
+
   COMMAND_OPTIONS=" --ask=${NON_INTERACTIVE} --write=${NON_INTERACTIVE}"
 
-echo "b"
   # Username specified
   if [ ! -z "${SSH_USERNAME:+x}" ];then
-  echo "c"
     SITE_USERNAME=${SSH_USERNAME}
   else
-  echo "d"
     # Username
     VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
     SITE_USERNAME=$(wex env/readVar -l="SSH Username for ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
-echo "e"
+
   # Private key specified
   if [ ! -z "${PRIVATE_KEY:+x}" ]; then
-  echo "f"
     SITE_PRIVATE_KEY=${PRIVATE_KEY}
   else
-  echo "g"
     # SSH Private key
     VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_PRIVATE_KEY
     SITE_PRIVATE_KEY=$(wex env/readVar -l="SSH Private key for : ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
-echo "g"
-
+  # Script may be executed in an environment
+  # with no .env file (ie CI)
   if [ -z ${ENVIRONMENT+x} ];then
-    echo "i"
     # Get site env.
     . ${DIR_SITE}.env
   fi
 
-echo "j"
   # Conf contains site name
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
