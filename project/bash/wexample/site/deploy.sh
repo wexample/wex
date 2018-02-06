@@ -8,7 +8,7 @@ siteDeployArgs() {
 
 siteDeploy() {
   if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
-    echo "Missing private key file"
+    echo "Missing secret CI variable STAGING_PRIVATE_KEY"
     exit 1
   fi;
 
