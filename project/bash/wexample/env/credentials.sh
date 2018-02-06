@@ -40,10 +40,7 @@ echo "e"
   fi
 
 echo "g"
-  # We can't use `wex site/configLoad`
-  # because it need te rewriting configuration with docker.
-  SITE_NAME=$(wex site/config -k=name)
-echo "h"
+
   if [ ! -z ${ENVIRONMENT+x} ];then
     echo "i"
     # Get site env.
@@ -52,7 +49,6 @@ echo "h"
 
 echo "j"
   # Conf contains site name
-  export SITE_NAME=${SITE_NAME};
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
   export SITE_IPV4=$(wex json/readValue -f=${DIR_SITE}wex.json -k=${ENVIRONMENT}.ipv4)
