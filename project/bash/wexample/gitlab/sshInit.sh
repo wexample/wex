@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
 gitlabSshInit() {
+  if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
+    echo "Missing secret CI variable STAGING_PRIVATE_KEY"
+    exit 1
+  fi;
+
   # Save deployment key,
   # we can't pass key by argument directly,
   # the key is not recognized, maybe quotes or line ending issue,
