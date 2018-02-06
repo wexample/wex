@@ -11,6 +11,7 @@ sshExecArgs() {
 
 sshExec() {
   echo "A"
+  echo ${SSH_USERNAME} ${SSH_PRIVATE_KEY} ${ENVIRONMENT} ${SHELL_SCRIPT}
   wex env/credentials -e=${ENVIRONMENT} -u=${SSH_USERNAME} -pk=${SSH_PRIVATE_KEY}
   echo "B"
   # Go do site path
