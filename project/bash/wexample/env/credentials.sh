@@ -27,7 +27,6 @@ envCredentials() {
 
   # Private key specified
   if [ ! -z "${PRIVATE_KEY:+x}" ]; then
-  echo ".."
     SITE_PRIVATE_KEY=${PRIVATE_KEY}
   else
     # SSH Private key
