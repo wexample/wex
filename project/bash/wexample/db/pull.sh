@@ -3,7 +3,7 @@
 dbPullArgs() {
   _ARGUMENTS=(
     [0]='dump d "Dump to transfer from local" false'
-    [1]='environment e "Environment to transfer to" true'
+    [1]='environment e "Environment to transfer from" true'
   )
 }
 
