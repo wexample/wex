@@ -1,278 +1,276 @@
 #!/usr/bin/env bash
 
-WEX_VERSION=2
-WEX_CONTEXT_DEFAULT="ubuntu-16.x"
-WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_CONTEXT_DEFAULT}/"
-WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
-WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
-WEX_URL_GITHUB="https://github.com/wexample/"
-WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
-WEX_LOCAL_DIR="/opt/wexample/"
-WEX_NON_INTERACTIVE=false
+if [ -z "${WEX_INIT:+x}" ];then
+  WEX_INIT=true
+  WEX_VERSION=2
+  WEX_CONTEXT_DEFAULT="ubuntu-16.x"
+  WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+  WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
+  WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_CONTEXT_DEFAULT}/"
+  WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
+  WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
+  WEX_URL_GITHUB="https://github.com/wexample/"
+  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
+  WEX_LOCAL_DIR="/opt/wexample/"
+  WEX_NON_INTERACTIVE=false
 
-if [ -z "${WEX_DEEP_LEVEL:+x}" ];then
-  WEX_DEEP_LEVEL=0
-fi
-
-# Secondary call var does not exists.
-if [ -z "${WEX_ROOT_SCRIPT:+x}" ];then
-  WEX_ROOT_SCRIPT=true
-else
-  WEX_ROOT_SCRIPT=false
-fi
-
-# In case of testing, use test debug mode.
-if [ ! -z "${WEX_TEST_DEBUG:+x}" ];then
-  WEX_DEBUG=${WEX_TEST_DEBUG}
-else
-  WEX_DEBUG=false
-fi
-
-# We are in debug mode.
-if [[ ${WEX_DEBUG} == true ]];then
-  # Clear log file on root script call.
-  if [[ ${WEX_ROOT_SCRIPT} == true ]];then
-    # Clear log file
-    rm -f ${WEX_LOG_FILE}
-    touch ${WEX_LOG_FILE}
+  if [ -z "${WEX_DEEP_LEVEL:+x}" ];then
+    WEX_DEEP_LEVEL=0
   fi
-  # Create log method.
-  wexLog() {
-    if [[ ${WEX_DEBUG} == true ]];then
-      TRACE=(${FUNCNAME[@]:2})
-      echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
+
+  # Secondary call var does not exists.
+  if [ -z "${WEX_ROOT_SCRIPT:+x}" ];then
+    WEX_ROOT_SCRIPT=true
+  else
+    WEX_ROOT_SCRIPT=false
+  fi
+
+  # In case of testing, use test debug mode.
+  if [ ! -z "${WEX_TEST_DEBUG:+x}" ];then
+    WEX_DEBUG=${WEX_TEST_DEBUG}
+  else
+    WEX_DEBUG=false
+  fi
+
+  # We are in debug mode.
+  if [[ ${WEX_DEBUG} == true ]];then
+    # Clear log file on root script call.
+    if [[ ${WEX_ROOT_SCRIPT} == true ]];then
+      # Clear log file
+      rm -f ${WEX_LOG_FILE}
+      touch ${WEX_LOG_FILE}
+    fi
+    # Create log method.
+    wexLog() {
+      if [[ ${WEX_DEBUG} == true ]];then
+        TRACE=(${FUNCNAME[@]:2})
+        echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
+      fi;
+    }
+  else
+    wexLog() {
+      : # Do nothing
+    }
+  fi
+
+  declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(
+    ['drupal7']='sites/default/settings.php'
+    ['symfony3']='app/config/parameters.yml'
+    ['wordpress4']='wp-config.php'
+  );
+
+  # Check bash version.
+  if [ -z ${WEX_BASH_VERSION+x} ]; then
+    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
+    if [ ${WEX_BASH_VERSION} != '4' ]; then
+      echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
+      exit 1
     fi;
+  fi;
+
+  wexUpperCaseFirstLetter() {
+    echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
   }
-else
-  wexLog() {
-    : # Do nothing
+
+  wexMethodName() {
+    SPLIT=(${1//// })
+    echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
   }
-fi
 
-declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(
-  ['drupal7']='sites/default/settings.php'
-  ['symfony3']='app/config/parameters.yml'
-  ['wordpress4']='wp-config.php'
-);
+  wex() {
+    WEX_SHOW_INTRO=false
+    WEX_REMOVE_DOWNLOADED_SCRIPT=false
+    WEX_SCRIPT_CALL_NAME=${1}
 
-# Check bash version.
-if [ -z ${WEX_BASH_VERSION+x} ]; then
-  WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
-  if [ ${WEX_BASH_VERSION} != '4' ]; then
-    echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
-    exit 1
-  fi;
-fi;
-
-wexUpperCaseFirstLetter() {
-  echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
-}
-
-wexMethodName() {
-  SPLIT=(${1//// })
-  echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
-}
-
-wex() {
-  WEX_SHOW_INTRO=false
-  WEX_REMOVE_DOWNLOADED_SCRIPT=false
-  WEX_SCRIPT_CALL_NAME=${1}
-
-  if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
-    return
-  fi;
-
-  # Get parameters keeping quoted strings.
-  WEX_ARGUMENTS=''
-  whitespace="[[:space:]]"
-  for i in "${@:2}"
-  do
-      if [[ $i =~ $whitespace ]]
-      then
-          i=\"$i\"
-      fi
-      WEX_ARGUMENTS+=' '${i}
-  done
-
-  # Check if script is provided.
-  if [ "${WEX_SCRIPT_CALL_NAME}" = false ]; then
-    echo "You should use a script name, use -s or --script, and provide an existing name.";
-    exit 1;
-  fi;
-
-  # Check if file exists locally.
-  # It allow to override behaviors from location where script is executed,
-  # especially for contextual website scripts.
-  # > We may change execution order : first detect context than using default.
-  WEX_SCRIPT_FILE="./wex/bash/${WEX_CONTEXT_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
-
-  # Namespace
-  WEX_NAMESPACE=${WEX_CONTEXT_DEFAULT}
-
-  # File does not exists locally.
-  if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-
-    # Allow specified context.
-    if [[ ${WEX_SCRIPT_CALL_NAME} == *"::"* ]]; then
-      SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
-      WEX_NAMESPACE_TEST=${SPLIT[0]}
-      WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
-    # Check if we are on a "wexample" context (wex.json file in calling folder).
-    elif [ -f "wex.json" ]; then
-      WEX_NAMESPACE_TEST="wexample"
+    if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
+      return
     fi;
 
-    WEX_SCRIPT_FILE="${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}"/"${WEX_SCRIPT_CALL_NAME}.sh"
+    # Get parameters keeping quoted strings.
+    WEX_ARGUMENTS=''
+    whitespace="[[:space:]]"
+    for i in "${@:2}"
+    do
+        if [[ $i =~ $whitespace ]]
+        then
+            i=\"$i\"
+        fi
+        WEX_ARGUMENTS+=' '${i}
+    done
 
-    # Use main script if still not exists.
+    # Check if script is provided.
+    if [ "${WEX_SCRIPT_CALL_NAME}" = false ]; then
+      echo "You should use a script name, use -s or --script, and provide an existing name.";
+      exit 1;
+    fi;
+
+    # Check if file exists locally.
+    # It allow to override behaviors from location where script is executed,
+    # especially for contextual website scripts.
+    # > We may change execution order : first detect context than using default.
+    WEX_SCRIPT_FILE="./wex/bash/${WEX_CONTEXT_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
+
+    # Namespace
+    WEX_NAMESPACE=${WEX_CONTEXT_DEFAULT}
+
+    # File does not exists locally.
     if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-      # Search into wexample local folder.
-      WEX_SCRIPT_FILE="${WEX_DIR_BASH_DEFAULT}${WEX_SCRIPT_CALL_NAME}.sh"
-    else
-      WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
-    fi;
-  fi;
 
-  # Load namespace init file.
-  . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
+      # Allow specified context.
+      if [[ ${WEX_SCRIPT_CALL_NAME} == *"::"* ]]; then
+        SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
+        WEX_NAMESPACE_TEST=${SPLIT[0]}
+        WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
+      # Check if we are on a "wexample" context (wex.json file in calling folder).
+      elif [ -f "wex.json" ]; then
+        WEX_NAMESPACE_TEST="wexample"
+      fi;
 
-  WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
+      WEX_SCRIPT_FILE="${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}"/"${WEX_SCRIPT_CALL_NAME}.sh"
 
-  # File does not exists.
-  if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-    DIR=$(dirname ${WEX_SCRIPT_FILE})"/"${WEX_SCRIPT_CALL_NAME}
-    GROUP=$(basename ${DIR})
-
-    if [ -d ${DIR} ];then
-      METHODS=($(ls ${DIR}))
-
-      for FILE in "${METHODS[@]}"
-      do
-        echo "  "${GROUP}"/${FILE%.*}"
-      done
-    else
-      RED='\033[1;31m'
-      NC='\033[0m'
-      if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
-        WEX_TEST_HAS_ERROR=true
-        printf "${RED}<3${NC} Yeah !\n"
+      # Use main script if still not exists.
+      if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+        # Search into wexample local folder.
+        WEX_SCRIPT_FILE="${WEX_DIR_BASH_DEFAULT}${WEX_SCRIPT_CALL_NAME}.sh"
       else
-        printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+        WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
       fi;
     fi;
-    exit 1
-  fi;
 
-  # Include loaded file
-  . "${WEX_SCRIPT_FILE}"
+    # Load namespace init file.
+    . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
 
-  # Init empty var.
-  _ARGUMENTS=()
-  # Catch arguments
-  ARGS_METHOD=${WEX_SCRIPT_METHOD_NAME}"Args";
+    WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
 
-  # Execute arguments method
-  if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
-    # Execute command
-    ${ARGS_METHOD}
-  fi;
+    # File does not exists.
+    if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+      DIR=$(dirname ${WEX_SCRIPT_FILE})"/"${WEX_SCRIPT_CALL_NAME}
+      GROUP=$(basename ${DIR})
 
-  # Add extra parameters at end of array
-  _ARGUMENTS+=(
-    'non_interactive ni "Non interactive mode" false'
-    'help h "Help" false'
-  )
-  # Then start in negative value (length of previous table).
-  _NEGATIVE_ARGS_LENGTH=2
+      if [ -d ${DIR} ];then
+        METHODS=($(ls ${DIR}))
 
-  # We iterate first on system extra parameters
-  # Using negative values allow to use clean push method on array.
-  for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
-    eval "PARAMS=(${_ARGUMENTS[${i}]})"
-    ARG_EXPECTED_LONG=${PARAMS[0]}
-    ARG_EXPECTED_SHORT=${PARAMS[1]}
-    eval $(unset ${ARG_EXPECTED_LONG^^})
-
-    FOUND=false
-
-    # Get args given,
-    # ignore first one which is always method name.
-    for ARG_GIVEN in "${@:2}"
-    do
-      ARG_GIVEN_NAME=$(sed -e 's/--\?\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
-      ARG_GIVEN_VALUE=$(sed -e 's/--\?[^\=]*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
-
-      if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
-        FOUND=true
-        declare ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
-      # Support --noEqualSign -nes
-      elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
-        FOUND=true
-        declare ${ARG_EXPECTED_LONG^^}=true
-      fi
-    done;
-
-    # If an argument is not found
-    # And we are not on help page.
-    if [ ${FOUND} == false ] && [ -z ${HELP+x} ];then
-      # Expected
-      if [[ ${PARAMS[3]} == true ]]; then
-        # Interactive mode allowed.
-        if [ -z ${NONINTERACTIVE+x} ] || [ ${NONINTERACTIVE} == false ]; then
-          echo -n ${PARAMS[2]}": "
-          read ${ARG_EXPECTED_LONG^^}
+        for FILE in "${METHODS[@]}"
+        do
+          echo "  "${GROUP}"/${FILE%.*}"
+        done
+      else
+        RED='\033[1;31m'
+        NC='\033[0m'
+        if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
+          WEX_TEST_HAS_ERROR=true
+          printf "${RED}<3${NC} Yeah !\n"
         else
-          echo "Error | ${WEX_SCRIPT_METHOD_NAME} | Expected argument not found : "${ARG_EXPECTED_LONG}
-          # Raise an error.
-          # Unable to fetch expected variable
-          exit 0
+          printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
         fi;
       fi;
+      exit 1
     fi;
-  done
 
-  # Show help manual
-  if [ ! -z ${HELP+x} ]; then
-    echo "NAME: "${WEX_SCRIPT_CALL_NAME}
-    echo "  Function: "${WEX_SCRIPT_METHOD_NAME}
-    echo "  File: "${WEX_SCRIPT_FILE}
-    echo ""
+    # Include loaded file
+    . "${WEX_SCRIPT_FILE}"
 
+    # Init empty var.
+    _ARGUMENTS=()
+    # Catch arguments
+    ARGS_METHOD=${WEX_SCRIPT_METHOD_NAME}"Args";
+
+    # Execute arguments method
+    if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
+      # Execute command
+      ${ARGS_METHOD}
+    fi;
+
+    # Add extra parameters at end of array
+    _ARGUMENTS+=(
+      'non_interactive ni "Non interactive mode" false'
+      'help h "Help" false'
+    )
+    # Then start in negative value (length of previous table).
+    _NEGATIVE_ARGS_LENGTH=2
+
+    # We iterate first on system extra parameters
+    # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
+      ARG_EXPECTED_SHORT=${PARAMS[1]}
+      eval $(unset ${ARG_EXPECTED_LONG^^})
 
-      TEXT="--"${PARAMS[0]}" -"${PARAMS[1]}
+      FOUND=false
 
-      if [ ${PARAMS[3]} == true ]; then
-        TEXT+="\n\t(required)"
+      # Get args given,
+      # ignore first one which is always method name.
+      for ARG_GIVEN in "${@:2}"
+      do
+        ARG_GIVEN_NAME=$(sed -e 's/--\?\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
+        ARG_GIVEN_VALUE=$(sed -e 's/--\?[^\=]*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
+
+        if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
+          FOUND=true
+          declare ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
+        # Support --noEqualSign -nes
+        elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
+          FOUND=true
+          declare ${ARG_EXPECTED_LONG^^}=true
+        fi
+      done;
+
+      # If an argument is not found
+      # And we are not on help page.
+      if [ ${FOUND} == false ] && [ -z ${HELP+x} ];then
+        # Expected
+        if [[ ${PARAMS[3]} == true ]]; then
+          # Interactive mode allowed.
+          if [ -z ${NONINTERACTIVE+x} ] || [ ${NONINTERACTIVE} == false ]; then
+            echo -n ${PARAMS[2]}": "
+            read ${ARG_EXPECTED_LONG^^}
+          else
+            echo "Error | ${WEX_SCRIPT_METHOD_NAME} | Expected argument not found : "${ARG_EXPECTED_LONG}
+            # Raise an error.
+            # Unable to fetch expected variable
+            exit 0
+          fi;
+        fi;
       fi;
+    done
 
-      TEXT+="\n\t\t"${PARAMS[2]}
-      TEXT+="\n"
+    # Show help manual
+    if [ ! -z ${HELP+x} ]; then
+      echo "NAME: "${WEX_SCRIPT_CALL_NAME}
+      echo "  Function: "${WEX_SCRIPT_METHOD_NAME}
+      echo "  File: "${WEX_SCRIPT_FILE}
+      echo ""
 
-      echo -e ${TEXT}
-    done;
-  else
-    ((WEX_DEEP_LEVEL++))
-    # Execute function with all parameters.
-    eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
-    # Trace
-    wexLog ${WEX_NAMESPACE}"::"${WEX_SCRIPT_METHOD_NAME}" complete"
-    ((WEX_DEEP_LEVEL--))
-  fi;
-}
+      for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
+        eval "PARAMS=(${_ARGUMENTS[${i}]})"
+        ARG_EXPECTED_LONG=${PARAMS[0]}
+
+        TEXT="--"${PARAMS[0]}" -"${PARAMS[1]}
+
+        if [ ${PARAMS[3]} == true ]; then
+          TEXT+="\n\t(required)"
+        fi;
+
+        TEXT+="\n\t\t"${PARAMS[2]}
+        TEXT+="\n"
+
+        echo -e ${TEXT}
+      done;
+    else
+      ((WEX_DEEP_LEVEL++))
+      # Execute function with all parameters.
+      eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
+      # Trace
+      wexLog ${WEX_NAMESPACE}"::"${WEX_SCRIPT_METHOD_NAME}" complete"
+      ((WEX_DEEP_LEVEL--))
+    fi;
+  }
+
+fi;
 
 # Execute run function with same arguments.
 # Using false as argument allow to protect unexpected argument passing
 if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
   wex "${@}"
 fi;
-
-_wex()
-{
-    local cur=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=( $(compgen -W "fooOption barOption" -- $cur) )
-}
