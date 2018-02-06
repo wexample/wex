@@ -10,6 +10,7 @@ services:
             - MYSQL_USER=root
             - MYSQL_PASSWORD=${SITE_DB_PASSWORD}
         volumes:
-            - ${SITE_PATH_ROOT}/mysql:/var/lib/mysql
+            - ${SITE_PATH_ROOT}/mysql/data:/var/lib/mysql
+            - ${SITE_PATH_ROOT}/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
         networks:
           - reverseproxy_wex_net
