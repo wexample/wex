@@ -10,11 +10,16 @@ sshExecArgs() {
 }
 
 sshExec() {
+  echo "A"
   wex env/credentials -e=${ENVIRONMENT} -u=${SSH_USERNAME} -pk=${SSH_PRIVATE_KEY}
+  echo "B"
   # Go do site path
   # Then execute script from _exec.sh tool of wexample.
   COMMAND='cd '${SITE_PATH_ROOT}' && sudo bash '${WEX_LOCAL_DIR}'project/bash/ubuntu-16.x/_exec.sh "'${SHELL_SCRIPT}'"'
+  echo "C"
   ssh -oLogLevel=QUIET -i${SITE_PRIVATE_KEY} -t -p${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4} ${COMMAND}
+  echo "D"
   # Prevent to set credentials globally
   wex env/credentialsClear
+  echo "E"
 }
