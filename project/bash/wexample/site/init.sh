@@ -139,4 +139,7 @@ EOF
   done;
 
   wex service/exec -c="init"
+
+  # Create CI file.
+  wex gitlab/init
 }
