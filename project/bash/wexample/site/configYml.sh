@@ -13,7 +13,7 @@ siteConfigYml() {
   fi;
 
   # Allow specified file
-  if [ -z "${FILE_COMPOSE_YML+x}" ]; then
+  if [ "${FILE_COMPOSE_YML}" == "" ]; then
     FILE_COMPOSE_YML=${DIR_SITE}${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}
   fi;
 

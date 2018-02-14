@@ -3,12 +3,12 @@
 siteContainersArgs() {
   _ARGUMENTS=(
     [0]='remove_prefix rm "Remove the name of the site from container name" false',
-    [1]='file f "Docker compose file" false',
+    [1]='file_compose f "Docker compose file" false',
   )
 }
 
 siteContainers() {
-  CONFIG_YML=$(wex site/configYml -f=${FILE})
+  CONFIG_YML=$(wex site/configYml -f=${FILE_COMPOSE})
   SEARCH_VAR="container_name"
   CONTAINERS=()
 
