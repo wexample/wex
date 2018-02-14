@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-siteStarted() {
+siteContainersStarted() {
   # Get site name.
   CONTAINERS=$(wex site/containers)
   CONTAINERS=$(wex array/join -a="${CONTAINERS}" -s=",")
