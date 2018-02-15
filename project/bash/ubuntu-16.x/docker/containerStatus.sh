@@ -5,6 +5,6 @@ dockerContainerStatus() {
 
   for CONTAINER in ${CONTAINERS[@]}
   do
-    docker info d${CONTAINER}
+    docker info ${CONTAINER}
   done;
 }
