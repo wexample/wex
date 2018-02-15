@@ -7,7 +7,8 @@ siteStart() {
   fi
   # Server must be started.
   wex server/start -n
-  if [ $(wex site/started) == false ];then
+  # Check if site is stopped, ignoring if containers runs or not
+  if [ $(wex site/started -ic) == false ];then
     # Write new config,
     # it will also export config variables
     wex site/configWrite -s
@@ -15,5 +16,16 @@ siteStart() {
     wex server/siteStart -d=$(realpath ./)"/"
     # Use previously generated yml file.
     docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d --build
+  # Site is marked as started but containers
+  # are totally or partially stopped.
+  elif [[ $(wex site/containersStarted -a) == false ]];then
+    # All containers exists
+    if [[ $(wex site/containersExists -a) == true ]];then
+      # Start all
+      wex site/containersStart
+    else
+      # Restart will build everything.
+      wex site/restart
+    fi;
   fi;
 }
