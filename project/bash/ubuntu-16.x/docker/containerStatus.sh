@@ -5,7 +5,6 @@ dockerContainerStatus() {
 
   for CONTAINER in ${CONTAINERS[@]}
   do
-    #echo "  "${CONTAINER}
     docker info d${CONTAINER}
   done;
 }
