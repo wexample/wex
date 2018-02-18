@@ -1,5 +1,7 @@
 # Wexample tmp
 /tmp/*
+# Not versioned files, dead code, sources...
+/trash/*
 # Docker
 /.env
 # JetBrain
