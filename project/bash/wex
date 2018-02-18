@@ -64,7 +64,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
     if [ ${WEX_BASH_VERSION} != '4' ]; then
       echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
-      exit 1
+      exit
     fi;
   fi;
 
@@ -101,7 +101,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Check if script is provided.
     if [ "${WEX_SCRIPT_CALL_NAME}" = false ]; then
       echo "You should use a script name, use -s or --script, and provide an existing name.";
-      exit 1;
+      exit
     fi;
 
     # Check if file exists locally.
@@ -164,7 +164,7 @@ if [ -z "${WEX_INIT:+x}" ];then
           printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
         fi;
       fi;
-      exit 1
+      exit
     fi;
 
     # Include loaded file
@@ -272,5 +272,5 @@ fi;
 # Execute run function with same arguments.
 # Using false as argument allow to protect unexpected argument passing
 if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
-  wex "${@}"
-fi;
+  we
+             

@@ -37,7 +37,7 @@ wexTestError() {
   echo -e "${RED}"
   echo "Test error : "${1}
   echo -e "${NC}"
-  exit 1;
+  exit
 }
 
 wexTestAssertEqual() {
@@ -52,7 +52,7 @@ wexTestAssertEqual() {
     echo "  - Got : ${TEST_VARIABLE}";
     echo "  - Expected : ${EXPECTED_VALUE}";
     echo -e "${NC}"
-    exit 1;
+    exit
   fi;
 }
 
