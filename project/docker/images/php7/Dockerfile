@@ -15,14 +15,15 @@ RUN apt-get install \
   php-imagick \
   php-xml \
   php-mysql \
+  php-curl \
   mysql-client \
   -yqq
 
 # Cleanup disk
 RUN apt-get clean
 
-# Composer install
-RUN wex composer/pharInstall
+# Composer install using wex.
+RUN cd /opt/wexample/bash/ && bash wex composer/pharInstall
 
 COPY ./scripts/docker-entrypoint-php7.sh /
 
