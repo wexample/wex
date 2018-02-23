@@ -3,7 +3,7 @@
 gitlabSshInit() {
   if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
     echo "Missing secret CI variable STAGING_PRIVATE_KEY"
-    exit 1
+    exit
   fi;
 
   # Save deployment key,
