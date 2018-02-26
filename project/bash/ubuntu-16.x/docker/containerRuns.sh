@@ -8,7 +8,7 @@ dockerContainerRunsArgs() {
 }
 
 dockerContainerRuns() {
-  if [ ${ALL} == true ];then
+  if [ "${ALL}" == true ];then
     ALL="-a"
   fi
 
