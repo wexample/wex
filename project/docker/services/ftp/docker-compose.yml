@@ -5,9 +5,9 @@ services:
         image: stilliard/pure-ftpd:latest
         container_name: ${SITE_NAME}_ftp
         environment:
+          - PUBLICHOST=ftp.${SITE_NAME}.wex
           - VIRTUAL_HOST=ftp.${SITE_NAME}.wex
           - VIRTUAL_PORT=${WEX_COMPOSE_PORT_3}
-          - PUBLICHOST=localhost
         volumes:
           - ${SITE_PATH_ROOT}/ftp/passwd:/etc/pure-ftpd/passwd
         networks:
