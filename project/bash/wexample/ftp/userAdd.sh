@@ -17,5 +17,5 @@ ftpUserAdd() {
   fi
 
   # Exec into container
-  docker exec -ti ${SITE_NAME}_ftp /bin/bash -c "pure-pw useradd ${FTP_USERNAME} -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /var/www/${DIRECTORY}"
+  docker exec -ti ${SITE_NAME}_ftp /bin/bash -c "pure-pw useradd ${FTP_USERNAME} -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /var/www/html/${DIRECTORY}"
 }
