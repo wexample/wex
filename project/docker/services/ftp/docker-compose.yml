@@ -2,10 +2,11 @@ version: '2'
 
 services:
     ftp:
-        image: stilliard/pure-ftpd:latest
+        image: wexample/ftp:latest
         container_name: ${SITE_NAME}_ftp
         environment:
           - PUBLICHOST=ftp.${SITE_NAME}.wex
+          - PORTS_RANGE=30000:30009
           - VIRTUAL_HOST=ftp.${SITE_NAME}.wex
           - VIRTUAL_PORT=${WEX_COMPOSE_PORT_2}
         volumes:
