@@ -14,5 +14,6 @@ siteGo() {
     CONTAINER=web
   fi
 
-  docker attach ${SITE_NAME}_${CONTAINER}
+  # docker attach ${SITE_NAME}_${CONTAINER}
+  docker exec -it ${SITE_NAME}_${CONTAINER} /bin/bash
 }
