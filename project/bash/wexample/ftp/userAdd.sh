@@ -3,7 +3,7 @@
 ftpUserAddArgs() {
   _ARGUMENTS=(
     [0]='ftp_username u "FTP Username" true'
-    [1]='directory pk "Directory related to site root" true'
+    [1]='directory d "Directory related to site root, ex : project/files " true'
   )
 }
 
