@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    ftp:
+        extends:
+          file: ${WEX_COMPOSE_YML_FTP_BASE}
+          service: web
