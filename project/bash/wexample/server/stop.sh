@@ -3,7 +3,7 @@
 serverStop() {
   # Stop all sites
   if [ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites ];then
-    wex wexample::server/stopSites
+    wex wexample::sites/stop
   fi
 
   # Stop server containers

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-serverStopSites() {
+sitesStop() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
 
   for SITE_PATH in ${REGISTRY[@]}

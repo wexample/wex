@@ -2,7 +2,7 @@
 
 siteStartTest() {
   # Stop sites if exists
-  $(wex wexample::server/stopSites) &>/dev/null
+  $(wex wexample::sites/stop) &>/dev/null
 
   # Clear dir.
   # wexTestClearTempDir
@@ -60,6 +60,6 @@ siteStartTest() {
 
   # Stop all sites
   wexLog "Stop all site (second site should remain)"
-  $(wex server/stopSites) &>/dev/null
+  $(wex sites/stop) &>/dev/null
   _siteInitTest_checkSitesNumber 0
 }
