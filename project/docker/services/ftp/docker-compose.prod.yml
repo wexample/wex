@@ -4,4 +4,4 @@ services:
     ftp:
         extends:
           file: ${WEX_COMPOSE_YML_FTP_BASE}
-          service: web
+          service: ftp
