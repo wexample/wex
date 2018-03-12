@@ -7,8 +7,8 @@ siteConfigWriteArgs() {
   )
 }
 
+
 siteConfigWrite() {
-  wexLog "Writing site configuration"
 
   # No recreate.
   if [ "${NO_RECREATE}" == true ] &&
@@ -16,8 +16,6 @@ siteConfigWrite() {
     [[ -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} ]];then
     return
   fi
-
-  wexLog "Recreating..."
 
   # Create temp dirs if not exists.
   mkdir -p ${WEX_WEXAMPLE_DIR_TMP}
@@ -67,7 +65,6 @@ siteConfigWrite() {
       fi
     fi
   done;
-  wexLog "  Ports range found : "${FINAL_SITE_PORT_RANGE}
 
   # Save in config.
   SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="${FINAL_SITE_PORT_RANGE}
