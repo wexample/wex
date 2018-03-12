@@ -3,10 +3,11 @@
 if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
   WEX_VERSION=2
-  WEX_CONTEXT_DEFAULT="ubuntu-16.x"
+  WEX_NAMESPACE_DEFAULT="ubuntu-16.x"
   WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
   WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-  WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_CONTEXT_DEFAULT}/"
+  WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
+  WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
   WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
   WEX_URL_GITHUB="https://github.com/wexample/"
@@ -108,10 +109,10 @@ if [ -z "${WEX_INIT:+x}" ];then
     # It allow to override behaviors from location where script is executed,
     # especially for contextual website scripts.
     # > We may change execution order : first detect context than using default.
-    WEX_SCRIPT_FILE="./wex/bash/${WEX_CONTEXT_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
+    local WEX_SCRIPT_FILE="./wex/bash/${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
 
     # Namespace
-    WEX_NAMESPACE=${WEX_CONTEXT_DEFAULT}
+    local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
     # File does not exists locally.
     if [ ! -f ${WEX_SCRIPT_FILE} ]; then
@@ -126,14 +127,16 @@ if [ -z "${WEX_INIT:+x}" ];then
         WEX_NAMESPACE_TEST="wexample"
       fi;
 
-      WEX_SCRIPT_FILE="${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}"/"${WEX_SCRIPT_CALL_NAME}.sh"
+      WEX_SCRIPT_DIR=${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}/${WEX_SCRIPT_CALL_NAME}
+      WEX_SCRIPT_FILE=${WEX_SCRIPT_DIR}.sh
 
       # Use main script if still not exists.
-      if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-        # Search into wexample local folder.
-        WEX_SCRIPT_FILE="${WEX_DIR_BASH_DEFAULT}${WEX_SCRIPT_CALL_NAME}.sh"
-      else
+      if [ -f ${WEX_SCRIPT_FILE} ] || [ -d ${WEX_SCRIPT_DIR} ]; then
         WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
+      else
+        WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
+        # Search into wexample local folder.
+        WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh
       fi;
     fi;
 
@@ -144,25 +147,39 @@ if [ -z "${WEX_INIT:+x}" ];then
 
     # File does not exists.
     if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-      DIR=$(dirname ${WEX_SCRIPT_FILE})"/"${WEX_SCRIPT_CALL_NAME}
-      GROUP=$(basename ${DIR})
+      local RED='\033[1;31m'
+      local NC='\033[0m'
 
-      if [ -d ${DIR} ];then
-        METHODS=($(ls ${DIR}))
+      # Show hi
+      if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
+        printf "${RED}<3${NC} Yeah !\n"
 
-        for FILE in "${METHODS[@]}"
+      # Show completion
+      elif [ -d ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME} ];then
+        local GROUP=$(basename ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME})
+        local NAMESPACES=($(ls ${WEX_DIR_BASH}))
+
+        for NAMESPACE in "${NAMESPACES[@]}"
         do
-          echo "  "${GROUP}"/${FILE%.*}"
+          local DIR=${WEX_DIR_BASH}${NAMESPACE}"/"${GROUP}
+
+          if [ -d ${DIR} ] && [ -d ${WEX_DIR_BASH}${NAMESPACE} ]; then
+            local METHODS=($(ls ${DIR}))
+            local GROUP=$(basename ${DIR})
+
+            echo ""
+
+            for FILE in "${METHODS[@]}"
+            do
+              echo "  "${NAMESPACE}"::"${GROUP}"/${FILE%.*}"
+            done
+          fi
         done
+
+      # Not found.
       else
-        RED='\033[1;31m'
-        NC='\033[0m'
-        if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
-          WEX_TEST_HAS_ERROR=true
-          printf "${RED}<3${NC} Yeah !\n"
-        else
-          printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
-        fi;
+        WEX_TEST_HAS_ERROR=true
+        printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
       fi;
       exit
     fi;
