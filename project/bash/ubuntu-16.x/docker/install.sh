@@ -18,5 +18,7 @@ dockerInstall() {
     software-propnano doc erties-common \
     -yqq
 
-   apt-get install docker-ce docker-compose -yqq
+  sudo apt-get update
+
+  apt-get install docker-ce docker-compose -yqq
 }
