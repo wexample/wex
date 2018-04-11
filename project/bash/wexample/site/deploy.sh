@@ -12,13 +12,19 @@ siteDeploy() {
     DIR=./
   fi;
 
-  # Init using wexample"s gitlab specific configuration.
-  wex wexample::gitlab/sshInit
+  local PROD_IPV4=$(wex json/readValue -f=wex.json -k=prod.ipv4)
 
-  # Update on production server
-  # User must have access to execute scripts.
-  # Use : sudo visudo
-  # then add : username ALL=(ALL) NOPASSWD: ALL
-  # If root ssh access is disabled.
-  wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex wexample::site/pull"
+  # There is a production site configured in wex.json.
+  if [ "${PROD_IPV4}" == "" ]; then
+    # Init using wexample's gitlab specific configuration.
+    wex wexample::gitlab/sshInit
+
+    # TODO Do not execute if not production server availabe....
+    # Update on production server
+    # User must have access to execute scripts.
+    # Use : sudo visudo
+    # then add : username ALL=(ALL) NOPASSWD: ALL
+    # If root ssh access is disabled.
+    wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex wexample::site/pull"
+  fi;
 }

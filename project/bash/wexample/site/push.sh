@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
 sitePush() {
-  # Execute custom script for site.
-  if [ -f ci/push.sh ];then
-    . ci/push.sh
-  fi
+  wex ci/exec -c=push
 
   # From local to Gitlab server which will run automated tests.
-  git push
+  git push --tags
 }

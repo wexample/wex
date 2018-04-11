@@ -43,9 +43,6 @@ sitePull() {
       fi
     done;
 
-    # Execute custom script for site.
-    if [ -f ci/pull.sh ];then
-      . ci/pull.sh
-    fi
+    wex ci/exec -c=pull
   fi;
 }

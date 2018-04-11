@@ -7,4 +7,4 @@ test:app:
   only:
     - master
   script:
-    - wex site/deploy.sh
+    - wex wexample::site/deploy
