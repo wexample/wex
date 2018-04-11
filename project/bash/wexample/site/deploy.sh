@@ -16,9 +16,6 @@ siteDeploy() {
 
   # There is a production site configured in wex.json.
   if [ "${PROD_IPV4}" == "" ]; then
-    # Init using wexample's gitlab specific configuration.
-    wex wexample::gitlab/sshInit
-
     # TODO Do not execute if not production server availabe....
     # Update on production server
     # User must have access to execute scripts.

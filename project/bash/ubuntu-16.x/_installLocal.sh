@@ -13,5 +13,5 @@ pathCommand=$(bash ${WEX_LOCAL_DIR}"project/bash/wex" wex/addToPath)
 eval ${pathCommand}
 
 # Say Hi.
-echo "Wexample Script installed at version v"$(wex wex/version)
+echo "Wexample Script installed at version "$(wex wex/version)
 wex wex/logo
