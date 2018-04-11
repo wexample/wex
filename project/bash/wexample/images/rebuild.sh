@@ -56,7 +56,7 @@ imagesRebuild() {
 
 _imagesRebuild() {
   local NAME=${1}
-  local DIR=${WEX_DIR_ROOT}docker/images/${NAME}/
+  local DIR=project/docker/images/${NAME}/
   local DOCKERFILE=${DIR}Dockerfile
 
   echo "Building ${NAME}"
