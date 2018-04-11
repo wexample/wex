@@ -1,5 +1,12 @@
+# Wexample tmp
+/tmp/*
+# Not versioned files, dead code, sources...
+/trash/*
+# Docker
+/.env
+# JetBrain
+.idea
+# Mac
+.DS_Store
 /dumps
 /mysql
-/.env
-/docker/.ports
-/cron/cron.log

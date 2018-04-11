@@ -138,6 +138,9 @@ EOF
     fi
   done;
 
+  # Init git hooks.
+  wex git/initHooks
+
   wex service/exec -c="init"
 
   # Create CI file.

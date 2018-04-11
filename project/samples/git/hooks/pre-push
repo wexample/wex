@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Execute ci/push.sh local script.
+wex site/push -np
