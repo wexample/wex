@@ -38,3 +38,6 @@ fi;
 
 # Deploy on GitHub
 wex wexample::gitlab/deployGithub -r="git@github.com:wexample/scripts.git"
+
+# TODO Rebuild images with username / password of a wexample specific account.
+wex wexample::images/rebuild # -d -u=${DOCKER_HUB_USERNAME} -p=${DOCKER_HUB_PASSWORD}

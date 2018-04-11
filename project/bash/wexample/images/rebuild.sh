@@ -6,6 +6,8 @@ imagesRebuildArgs() {
     [1]='deploy d "Deploy each built image" false'
     [2]='no_cache c "No cache" false'
     [3]='image_name n "Selected image name only" false'
+    [4]='username u "Username on docker hub" false'
+    [5]='password p "Password on docker hub" false'
   )
 }
 
@@ -13,7 +15,6 @@ imagesRebuild() {
   WEX_BUILT_IMAGES=()
   # Set build context
   cd ${WEX_DIR_ROOT}../
-
 
   # Deploy
   if [[ ${DEPLOY} == true ]]; then
@@ -30,7 +31,7 @@ imagesRebuild() {
       return
     fi
 
-    docker login
+    docker login -u ${USERNAME} -p ${PASSWORD}
   fi;
 
   if [[ ${FLUSH_CACHE} == true ]]; then
