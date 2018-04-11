@@ -6,7 +6,7 @@ configChangeValueTest() {
 
   noSeparator=$(wex config/getValue -f="${filePath}" -k="ConfigTestOption")
   wexTestAssertEqual ${noSeparator} "two"
-#
+# TODO
 #  # Space separator
 #  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
 #
