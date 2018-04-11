@@ -71,11 +71,15 @@ _imagesRebuild() {
     CACHE='--no-cache'
   fi;
 
+  # Use wex version as tag
+  local TAG_BASE=wexample/${NAME}
+  local TAG=$(wex wex/version)
+
   # Build
-  docker build -t wexample/${NAME}:latest ${NAME} ${CACHE}
+  docker build -t ${TAG_BASE}:${TAG} -t ${TAG_BASE}:latest ${NAME} ${CACHE}
 
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then
-    docker push wexample/${NAME}:latest
+    docker push wexample/${NAME}:${TAG}
   fi;
 }
