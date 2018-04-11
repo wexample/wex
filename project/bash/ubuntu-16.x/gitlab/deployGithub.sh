@@ -32,5 +32,5 @@ gitlabDeployGithub() {
 
   # Push on git repo.
   echo "Push"
-  git push github master
+  git push github master --tags
 }
