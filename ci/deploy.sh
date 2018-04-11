@@ -37,4 +37,4 @@ if [ $(wex git/tagExists -t=${VERSION}) == false ];then
 fi;
 
 # Deploy on GitHub
-wex wexample::gitlab/deployGithub -r="git@github.com:wexample/scripts.git"
+# wex wexample::gitlab/deployGithub -r="git@github.com:wexample/scripts.git"
