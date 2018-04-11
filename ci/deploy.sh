@@ -31,6 +31,7 @@ chmod -R +x "/opt/wexample"
 VERSION=$(wex version/generate -v=2)
 
 # Add tag if not exists.
+echo "Tagging at version "${VERSION}
 if [ $(wex git/tagExists -t=${VERSION}) == false ];then
   # Create a tag.
   git tag ${VERSION}
