@@ -20,7 +20,7 @@ ENV PATH="/opt/wexample/project/bash:${PATH}"
 # TODO : set wex scripts version (tag)
 # Install wexample
 RUN v=w=_install.sh \
- && curl https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/$w | tr -d '\015' > $w \
+ && curl https://raw.githubusercontent.com/wexample/scripts/master/project/bash/ubuntu-16.x/$w | tr -d '\015' > $w \
  && bash $w \
  && rm -rf $w
 

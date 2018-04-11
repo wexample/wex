@@ -10,7 +10,7 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
   WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
   WEX_URL_GITHUB="https://github.com/wexample/"
-  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/bash/ubuntu-16.x/"
+  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/ubuntu-16.x/"
   WEX_LOCAL_DIR="/opt/wexample/"
   WEX_NON_INTERACTIVE=false
 
