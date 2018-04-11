@@ -27,5 +27,14 @@ chmod -R +x "/opt/wexample"
 # Run all tests
 # bash ./project/bash/ubuntu-16.x/_tests/_run.sh
 
+# Generate a version.
+VERSION=$(wex version/generate -v=2)
+
+# Add tag if not exists.
+if [ $(wex git/tagExists -t=${VERSION}) == false ];then
+  # Create a tag.
+  git tag ${VERSION}
+fi;
+
 # Deploy on GitHub
 wex wexample::gitlab/deployGithub -r="git@github.com:wexample/scripts.git"

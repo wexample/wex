@@ -100,5 +100,6 @@ _imagesRebuild() {
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then
     docker push wexample/${NAME}:${TAG}
+    docker push wexample/${NAME}:latest
   fi;
 }
