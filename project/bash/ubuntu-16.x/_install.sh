@@ -15,4 +15,4 @@ git clone ${WEX_URL_GITHUB}scripts.git wexample
 # Add permission to execute
 chmod -R +x "${WEX_LOCAL_DIR}"
 # Install locally
-. ${WEX_LOCAL_DIR}bash/ubuntu-16.x/_installLocal.sh
+. ${WEX_LOCAL_DIR}project/bash/ubuntu-16.x/_installLocal.sh

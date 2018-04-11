@@ -6,6 +6,7 @@ RUN apt-get update -yqq
 
 # Utils
 RUN apt-get install \
+  file \
   curl \
   git \
   nano \
@@ -32,13 +33,11 @@ RUN touch /var/default.cron
 
 ENV PATH="/opt/wexample/project/bash:${PATH}"
 
-# Install wexample
-RUN w=_install.sh \
- && curl https://raw.githubusercontent.com/wexample/scripts/master/project/bash/ubuntu-16.x/$w | tr -d '\015' > $w \
- && bash $w \
- && rm -rf $w
+# Install wex scripts.
+COPY ./ /opt/wexample/
+RUN bash /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
+# Install entrypoint.
 COPY ./scripts/docker-entrypoint-ubuntu17.sh /
-
 ENTRYPOINT ["/docker-entrypoint-ubuntu17.sh"]
 
