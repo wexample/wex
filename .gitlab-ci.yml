@@ -5,6 +5,6 @@ test:app:
   tags:
     - php7.1
   only:
-    - master
+    - tags
   script:
     - wex wexample::site/deploy
