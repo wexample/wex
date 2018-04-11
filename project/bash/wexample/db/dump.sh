@@ -3,9 +3,10 @@
 dbDumpArgs() {
   _ARGUMENTS=(
     [0]='site_name n "Website name (internal usage for container execution)" false'
-    [1]='site_env e "Website environment (internal usage for container execution)" false'
+    [1]='site_env se "Website environment (internal usage for container execution)" false'
     [2]='latest l "Save latest copy file" false'
     [3]='environment e "Remote environment name" false'
+    [4]='pull p "Pull remote dump locally" false'
   )
 }
 
