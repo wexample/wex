@@ -23,8 +23,7 @@ RUN apt-get install \
 RUN apt-get clean
 
 # Composer install using wex.
-RUN cd /opt/wexample/bash/ && bash wex composer/pharInstall
+RUN cd /opt/wexample/project/bash/ && bash wex composer/pharInstall
 
-COPY ./scripts/docker-entrypoint-php7.sh /
-
+COPY ./project/docker/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
 ENTRYPOINT ["/docker-entrypoint-php7.sh"]

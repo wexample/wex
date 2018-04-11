@@ -1,5 +1,5 @@
 FROM stilliard/pure-ftpd:latest
 
-COPY ./scripts/docker-entrypoint-ftp.sh /
+COPY ./project/docker/images/ftp/entrypoint.sh /docker-entrypoint-ftp.sh
 
 ENTRYPOINT ["/docker-entrypoint-ftp.sh"]

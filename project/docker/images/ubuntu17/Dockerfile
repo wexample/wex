@@ -38,6 +38,6 @@ COPY ./ /opt/wexample/
 RUN bash /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
 
 # Install entrypoint.
-COPY ./scripts/docker-entrypoint-ubuntu17.sh /
+COPY ./project/docker/images/ubuntu17/entrypoint.sh /docker-entrypoint-ubuntu17.sh
 ENTRYPOINT ["/docker-entrypoint-ubuntu17.sh"]
 

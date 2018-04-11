@@ -16,6 +16,5 @@ RUN usermod -u 1000 www-data
 # Activate apache2 mod rewrite.
 RUN a2enmod rewrite
 
-COPY ./scripts/docker-entrypoint-webserver.sh /
-
+COPY ./project/docker/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 ENTRYPOINT ["/docker-entrypoint-webserver.sh"]
