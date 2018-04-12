@@ -6,8 +6,8 @@ imagesRebuildArgs() {
     [1]='deploy d "Deploy each built image" false'
     [2]='no_cache c "No cache" false'
     [3]='image_name n "Selected image name only" false'
-    [4]='username u "Username on docker hub" false'
-    [5]='password p "Password on docker hub" false'
+    [4]='docker_username u "Username on docker hub" false'
+    [5]='docker_password p "Password on docker hub" false'
   )
 }
 
@@ -31,7 +31,15 @@ imagesRebuild() {
       return
     fi
 
-    docker login -u ${USERNAME} -p ${PASSWORD}
+    if [ ! -z "${DOCKER_USERNAME+x}" ]; then
+      DOCKER_USERNAME='-u '${DOCKER_USERNAME}
+    fi
+
+    if [ ! -z "${DOCKER_PASSWORD+x}" ]; then
+      DOCKER_PASSWORD='-p '${DOCKER_PASSWORD}
+    fi
+
+    docker login ${DOCKER_USERNAME} ${DOCKER_PASSWORD}
   fi;
 
   if [[ ${FLUSH_CACHE} == true ]]; then
