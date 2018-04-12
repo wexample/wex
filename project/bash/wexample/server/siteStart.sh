@@ -13,4 +13,11 @@ serverSiteStart() {
   echo -e "\n"${DIR_SITE} >> ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
   # Rebuild hosts
   wex hosts/update
+
+  # Load site config
+  . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+  # Update host file if user has write access.
+  if [ ${SITE_ENV} == "local" ] && [ $(wex file/writable -f=/etc/hosts) == true ];then
+    wex hosts/updateLocal
+  fi
 }

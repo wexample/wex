@@ -3,7 +3,6 @@
 hostsUpdateLocal() {
   case "$(wex system/osName)" in
     "linux")
-      echo 'linux'
       local HOST_FILE=/etc/hosts
       ;;
     "windows")
