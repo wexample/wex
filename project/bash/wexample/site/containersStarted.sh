@@ -11,7 +11,8 @@ siteContainersStarted() {
   CONTAINERS=$(wex site/containers)
   # If empty stop here.
   if [ "${CONTAINERS}" == "" ];then
-    echo false
+    # No service, we consider that everything runs.
+    echo true
     return
   fi
   CONTAINERS=$(wex array/join -a="${CONTAINERS}" -s=",")
