@@ -10,9 +10,7 @@ wexUpdate() {
     # Override changes and pull.
     wex git/resetHard
     git pull origin ${BRANCH} --tags
-    # Git all needed wrights.
-    chown root:root -R *
-    chmod -R 755 *
+    wex wex/grantRights
     # Info
     echo "Wexample is up-to-date at v"$(wex wex/version)
   fi
