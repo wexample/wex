@@ -12,7 +12,9 @@ gitInitHooks() {
     local COMMAND="\n# Wex hooks"
     COMMAND+="\n. "${WEX_DIR_BASH}"wex false"
     COMMAND+="\n. "${PATH_HOOKS}${HOOK}
-    local DEST=.git/hooks/${HOOK}
+    local DIR_HOOKS=.git/hooks/
+    local DEST=${DIR_HOOKS}${HOOK}
+
     if [ -f ${DEST} ];then
       # Append
       echo -e ${COMMAND} >> ${DEST}

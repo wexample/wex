@@ -138,6 +138,8 @@ EOF
     fi
   done;
 
+  # Create a GIT repo if not exists.
+  git init
   # Init git hooks.
   wex git/initHooks
 
