@@ -22,7 +22,7 @@ gitInitHooks() {
     if [ $(wex file/extension -f=${GIT_HOOK}) == sample ];then
       local NAME=$(wex file/name -f=${GIT_HOOK})
       local PATH_GIT_HOOK=${PATH_GIT_HOOKS}${NAME}
-      local COMMAND="bash ./.git/hooks/"${WEX_HOOK_CATCHER_NAME}" "${NAME}" \${@}"
+      local COMMAND="bash "${PATH_GIT_HOOKS}${WEX_HOOK_CATCHER_NAME}" "${NAME}" \${@}"
 
       if [ "${RECREATE}" == true ];then
         rm ${PATH_GIT_HOOK}
