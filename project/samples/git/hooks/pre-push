@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+# TODO RM
 # Execute ci/push.sh local script.
 wex site/push -np

@@ -50,6 +50,10 @@ These scripts are used to automate common tasks.
 
 ## Specific behaviors
 
+### Git hooks
+
+To initialize Git hooks, you should execute `wex git/initHooks` on your website (it is executed automatically when using `wex wexample::site/init`). Then the **./git** folder will contain a preconfigured list of hooks fired by Git on several actions.
+
 ### wex wexample::site/*
 
 #### Deployment

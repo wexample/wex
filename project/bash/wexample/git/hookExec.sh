@@ -6,8 +6,9 @@ gitHookExecArgs() {
   )
 }
 
-# We just append command on git hooks
-# We don't check if hooks already exists.
 gitHookExec() {
-  . ${WEX_DIR_ROOT}"samples/git/hooks/"${NAME}
+  local HOOK_SITE_FILE=git/${NAME}
+  if [ -f ${HOOK_SITE_FILE} ];then
+    . ${HOOK_SITE_FILE}
+  fi
 }
