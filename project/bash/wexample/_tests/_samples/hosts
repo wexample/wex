@@ -33,11 +33,11 @@
 192.168.99.100 wexample.keep.local
 
 # Modifiable zone
-# [ :: wex :: ]
+#[ wex ]#
 
 192.168.99.100 wexample.keep.local
 
-# [ :: endwex :: ]
+#[ endwex ]#
 
 # Entries that should stay after wex zone.
 192.168.99.100 wexample.keep2.local

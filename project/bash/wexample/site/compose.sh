@@ -30,9 +30,9 @@ siteCompose() {
 
   FILES=(
     # Base docker file / may extend global container.
-    ${WEX_DIR_ROOT}"docker/docker-compose.yml"
+    "docker/docker-compose.yml"
     # Local env specific file
-    ${WEX_DIR_ROOT}"docker/docker-compose."${SITE_ENV}".yml"
+    "docker/docker-compose."${SITE_ENV}".yml"
   );
 
   for FILE in ${FILES[@]}
