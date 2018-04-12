@@ -9,7 +9,7 @@ wexUpdate() {
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
     # Override changes and pull.
     wex git/resetHard
-    git pull origin ${BRANCH}
+    git pull origin ${BRANCH} --tags
     # Git all needed wrights.
     chown root:root -R *
     chmod -R 755 *
