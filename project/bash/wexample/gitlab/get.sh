@@ -2,13 +2,24 @@
 
 gitlabGetArgs() {
   _ARGUMENTS=(
-    [0]='query q "Query path" true'
+    [0]='path_query p "Path" true'
+    [1]='url u "Gitlab repo url" false'
+    [2]='token t "Gitlab token" false'
+    [3]='query_string qs "Query string" false'
+    [4]='key k "Specific key value" false'
   )
 }
 
 gitlabGet() {
-  # Load Gitlab token for current user
-  . ${WEX_DIR_ROOT}../.env
+  # Build path.
+  local BASE_URL=$(wex gitlab/baseUrl -p=${PATH_QUERY} -u=${URL} -t=${TOKEN})
+  # Get
+  local JSON=$(curl -s ${BASE_URL}${QUERY_STRING})
 
-  curl -s ${WEX_GITLAB_URL}${QUERY}"?private_token=${GITLAB_TOKEN}"
+  if [ ! -z "${KEY+x}" ]; then
+    echo -e "${JSON}" | sed -E 's/.*'${KEY}'":(.*),"name":"'${GROUP}'".*$/\1/'
+  else
+    # Return full JSON
+    echo ${JSON}
+  fi;
 }

@@ -3,9 +3,9 @@
 gitlabPostArgs() {
   _ARGUMENTS=(
     [0]='path_query p "Path" false'
-    [1]='data d "Post data" true'
-    [2]='url u "Gitlab repo url" false'
-    [3]='token t "Gitlab token" false'
+    [1]='url u "Gitlab repo url" false'
+    [2]='token t "Gitlab token" false'
+    [3]='data d "Post data" true'
   )
 }
 
