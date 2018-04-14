@@ -35,7 +35,7 @@ services:
 
   web:
     container_name: wex_reverse_proxy_entrypoint
-    image: 'wexample/php7:latest'
+    image: 'wexample/php7:${WEX_IMAGES_VERSION}'
     ports:
       - '99:80'
     stdin_open: true

@@ -27,15 +27,15 @@ siteConfigWrite() {
   fi;
 
   # Get site name from wex.json.
-  SITE_NAME=$(wex site/config -k=name)
-  SITE_CONFIG_FILE=""
-  SITE_PATH=$(realpath ./)"/"
+  local SITE_NAME=$(wex site/config -k=name)
+  local SITE_CONFIG_FILE=""
+  local SITE_PATH=$(realpath ./)"/"
   SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
-  SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-  FINAL_SITE_PORT_RANGE=0
-  FINAL_SITE_PORT_RANGE_FOUND=false
+  local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local FINAL_SITE_PORT_RANGE=0
+  local FINAL_SITE_PORT_RANGE_FOUND=false
 
   # Ports
   for RANGE in $(seq 0 9); do
@@ -69,13 +69,13 @@ siteConfigWrite() {
   # Save in config.
   SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="${FINAL_SITE_PORT_RANGE}
 
-  FINAL_SITE_PORT_RANGE_STOP=100
-  LOCAL_COUNTER=10
-  LOCAL_COUNTER_VAR=0
+  local FINAL_SITE_PORT_RANGE_STOP=100
+  local LOCAL_COUNTER=10
+  local LOCAL_COUNTER_VAR=0
   while [ ${LOCAL_COUNTER} -lt ${FINAL_SITE_PORT_RANGE_STOP} ]; do
-    VAR_NAME="WEX_COMPOSE_PORT_"${LOCAL_COUNTER_VAR}
+    local VAR_NAME="WEX_COMPOSE_PORT_"${LOCAL_COUNTER_VAR}
     # Use a common range.
-    PORT=8${FINAL_SITE_PORT_RANGE}${LOCAL_COUNTER}
+    local PORT=8${FINAL_SITE_PORT_RANGE}${LOCAL_COUNTER}
     # One Up
     ((LOCAL_COUNTER++))
     ((LOCAL_COUNTER_VAR++))
@@ -86,6 +86,8 @@ siteConfigWrite() {
   # Execute services scripts if exists
   local CONFIG=$(wex service/exec -c="config")
   SITE_CONFIG_FILE+=${CONFIG[@]}
+  # Sync images versions to wex.
+  SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="$(wex wex/version)
 
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config

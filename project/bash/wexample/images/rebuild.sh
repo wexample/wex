@@ -8,6 +8,8 @@ imagesRebuildArgs() {
     [3]='image_name n "Selected image name only" false'
     [4]='docker_username u "Username on docker hub" false'
     [5]='docker_password p "Password on docker hub" false'
+    [6]='lsc lsc "Use local stored credentials" false'
+    [7]='quiet q "Quiet" false'
   )
 }
 
@@ -31,12 +33,17 @@ imagesRebuild() {
       return
     fi
 
-    if [ ! -z "${DOCKER_USERNAME+x}" ]; then
-      DOCKER_USERNAME='-u '${DOCKER_USERNAME}
-    fi
+    if [ ! -z "${LSC+x}" ]; then
+      DOCKER_USERNAME=$(wex var/localGet -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
+      DOCKER_PASSWORD=$(wex var/localGet -n=DOCKER_PASSWORD -ask="Docker password" -p)
+    else
+      if [ ! -z "${DOCKER_USERNAME+x}" ]; then
+        DOCKER_USERNAME='-u '${DOCKER_USERNAME}
+      fi
 
-    if [ ! -z "${DOCKER_PASSWORD+x}" ]; then
-      DOCKER_PASSWORD='-p '${DOCKER_PASSWORD}
+      if [ ! -z "${DOCKER_PASSWORD+x}" ]; then
+        DOCKER_PASSWORD='-p '${DOCKER_PASSWORD}
+      fi
     fi
 
     docker login ${DOCKER_USERNAME} ${DOCKER_PASSWORD}
@@ -103,8 +110,12 @@ _imagesRebuild() {
   local TAG_BASE=wexample/${NAME}
   local TAG=$(wex wex/version)
 
+  if [ "${QUIET}" == true ]; then
+    QUIET='-q'
+  fi;
+
   # Build
-  docker build -t ${TAG_BASE}:${TAG} -t ${TAG_BASE}:latest -f ${DOCKERFILE} . ${CACHE}
+  docker build ${QUIET} -t ${TAG_BASE}:${TAG} -t ${TAG_BASE}:latest -f ${DOCKERFILE} . ${CACHE}
 
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then

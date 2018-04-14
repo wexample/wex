@@ -3,7 +3,7 @@ version: '2'
 services:
     mysql:
         container_name: '${SITE_NAME}_mysql'
-        image: 'wexample/mysql:latest'
+        image: 'wexample/mysql:${WEX_IMAGES_VERSION}'
         environment:
             - MYSQL_ROOT_PASSWORD=${SITE_DB_PASSWORD}
             - MYSQL_DATABASE=${SITE_DB_NAME}

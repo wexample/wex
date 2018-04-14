@@ -14,5 +14,5 @@ varLocalSet() {
     touch ${LOCAL_STORAGE_FILE}
   fi
 
-  echo -e "\nlocal "${NAME}"="${VALUE} >> ${LOCAL_STORAGE_FILE}
+  echo -e "local "${NAME}"="${VALUE} >> ${LOCAL_STORAGE_FILE}
 }

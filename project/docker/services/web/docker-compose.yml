@@ -3,7 +3,7 @@ version: '2'
 services:
     web:
         container_name: '${SITE_NAME}_web'
-        image: 'wexample/php7:latest'
+        image: 'wexample/php7:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true
         environment:
