@@ -8,12 +8,8 @@ siteCreate() {
 
   wex gitlab/namespaceId -u="http://gitlab.wexample.com/api/v4/"
 
-  # TODO Create
-  #wex wexample::gitlab/post -d="path=testapi&namespace_id=wexample" -q="projects"
-  #wex wexample::gitlab/post -d="path=testapi&namespace_id=wexample" -q="projects"
-
   # TODO Get
-  # wex wexample::gitlab/get -q="projects"
+  # wex wexample::gitlab/get -p="projects"
 
   # TODO Delete
   #wex wexample::gitlab/delete -q="projects/weeger%2Ftestapi"
