@@ -12,7 +12,7 @@ varLocalGetArgs() {
 varLocalGet() {
   local LOCAL_STORAGE_FILE=${WEX_DIR_TMP}variablesLocalStorage
 
-  if [ -f ${LOCAL_STORAGE_FILE} ];then
+  if [ ! -f ${LOCAL_STORAGE_FILE} ];then
     touch ${LOCAL_STORAGE_FILE}
   fi
 
