@@ -4,15 +4,20 @@ varLocalSetArgs() {
   _ARGUMENTS=(
     [0]='name n "Variable name" true'
     [1]='value v "Variable value" true'
+    [2]='file f "Storage file path" false'
   )
 }
 
 varLocalSet() {
-  local LOCAL_STORAGE_FILE=${WEX_DIR_TMP}variablesLocalStorage
-
-  if [ ! -f ${LOCAL_STORAGE_FILE} ];then
-    touch ${LOCAL_STORAGE_FILE}
+  # If no file specified
+  if [ -z "${FILE+x}" ]; then
+    # Use wex tmp folder
+    FILE=${WEX_DIR_TMP}variablesLocalStorage
   fi
 
-  echo -e "local "${NAME}"="${VALUE} >> ${LOCAL_STORAGE_FILE}
+  if [ ! -f ${FILE} ];then
+    touch ${FILE}
+  fi
+
+  echo -e 'local '${NAME}'='${VALUE} >> ${FILE}
 }
