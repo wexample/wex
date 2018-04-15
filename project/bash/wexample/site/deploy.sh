@@ -16,7 +16,6 @@ siteDeploy() {
 
   # There is a production site configured in wex.json.
   if [ "${PROD_IPV4}" == "" ]; then
-    # TODO Do not execute if not production server availabe....
     # Update on production server
     # User must have access to execute scripts.
     # Use : sudo visudo

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-siteLocalVarSetArgs() {
+varLocalSetArgs() {
   _ARGUMENTS=(
     [0]='name n "Variable name" true'
     [1]='value v "Variable value" true'
   )
 }
 
-siteLocalVarSet() {
-  wex var/localSet -n="${NAME}" -v="${VALUE}" -f=./tmp/variablesLocalStorage
+varLocalSet() {
+  wex ubuntu-16.x::var/localSet ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage
 }
