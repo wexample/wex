@@ -1,11 +1,16 @@
 # Wexample tmp
 /tmp/*
+!/tmp/.gitkeep
+
 # Not versioned files, dead code, sources...
 /trash/*
+
 # Docker
 /.env
+
 # JetBrain
 .idea
+
 # Mac
 .DS_Store
 /dumps
