@@ -20,8 +20,14 @@ sitePublish() {
     exit;
   fi
 
+  # Has internet.
+  if [ $(wex network/hasInternet) == false ];then
+    echo "Internet connexion is required"
+    exit;
+  fi
+
   # Status -------- #
-  ${RENDER_BAR} -p=5 -s="Init connexion info"
+  ${RENDER_BAR} -p=10 -s="Init connexion info"
 
   # Save connection info.
   wex wexample::remote/init
@@ -30,7 +36,7 @@ sitePublish() {
   local REPO_SSH_PRIVATE_KEY=$(wex ssh/keySelect -s -n="REPO_SSH_PRIVATE_KEY" -d="SSH Private key for Gitlab")
 
   # Status -------- #
-  ${RENDER_BAR} -p=10 -s="Loading configuration"
+  ${RENDER_BAR} -p=20 -s="Loading configuration"
   # Load generated configuration.
   wexampleSiteInitLocalVariables
   . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
@@ -42,7 +48,7 @@ sitePublish() {
   git config core.sshCommand "ssh -i "${REPO_SSH_PRIVATE_KEY}
 
   # Status -------- #
-  ${RENDER_BAR} -p=20 -s="Creating Gitlab repo"
+  ${RENDER_BAR} -p=30 -s="Creating Gitlab repo"
 
   local GIT_ORIGIN=$(git config --get remote.origin.url)
 
@@ -58,18 +64,25 @@ sitePublish() {
     wex repo/create
   fi
 
-  # Get origin.
-  local GIT_ORIGIN=$(wex repo/info -k=ssh_url_to_repo -cc)
+  # Status -------- #
+  ${RENDER_BAR} -p=40 -s="Push on Gitlab"
 
-  # Add origin
-  git remote add origin ${GIT_ORIGIN}
+  # Get origin.
+  local NEW_ORIGIN=$(wex repo/info -k=ssh_url_to_repo -cc)
+
+  if [ "${GIT_ORIGIN}" != "${NEW_ORIGIN}" ];then
+      # Add origin
+      git remote add origin ${GIT_ORIGIN}
+  fi
+
+  NEW_ORIGIN=${GIT_ORIGIN}
 
   # Status -------- #
   ${RENDER_BAR} -p=50 -s="Push on Gitlab"
 
   git add .
   git commit -m "site/publish"
-  git push -u origin master
+  git push -q -u origin master
 
   # Status -------- #
   ${RENDER_BAR} -p=60 -s="Configure remote Git repository"

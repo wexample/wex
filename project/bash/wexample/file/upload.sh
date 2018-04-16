@@ -30,7 +30,7 @@ fileUpload() {
   fi
 
   # Copy to given location
-  scp -r -i${SSH_PRIVATE_KEY} -P${SSH_PORT} ${FILE} ${SSH_USER}@${SSH_HOST}:${REMOTE_SITE_PATH_ROOT}${DIR_PARENT}
+  scp -r -i${SSH_PRIVATE_KEY} -P${SSH_PORT} ${FILE} ${SSH_USER}@${SSH_HOST}:${REMOTE_SITE_PATH_ROOT}${DIR_TO}
   # Give www-data permissions (files may be a part of website)
   wex wexample::ssh/exec -e=${ENVIRONMENT} -s="chown -R www-data:www-data ${REMOTE_SITE_PATH_ROOT}${DIR_TO}"
 }
