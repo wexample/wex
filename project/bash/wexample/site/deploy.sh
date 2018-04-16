@@ -18,6 +18,8 @@ siteDeploy() {
 
   # There is a production site configured in wex.json.
   if [ "${PROD_IPV4}" != "" ]; then
+    # Check gitlab credentials and init.
+    wex wexample::gitlab/sshInit
     # Update on production server
     # User must have access to execute scripts.
     # Use : sudo visudo
