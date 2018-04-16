@@ -2,7 +2,11 @@
 
 gitRemoteExistsArgs() {
   _ARGUMENTS=(
+<<<<<<< HEAD
     [0]='repo r "Repository url" true'
+=======
+    [0]='repo r "Repo url" true'
+>>>>>>> a42e0c71b05f3b511fdadcb43ce0b8384d2fd654
   )
 }
 
