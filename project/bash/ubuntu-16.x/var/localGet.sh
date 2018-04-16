@@ -13,9 +13,9 @@ varLocalGetArgs() {
 
 varLocalGet() {
   # If no file specified
-  if [ -z "${FILE+x}" ]; then
+  if [ "${FILE}" == "" ];then
     # Use wex tmp folder
-    FILE=${WEX_DIR_TMP}variablesLocalStorage
+    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
   fi
 
   if [ ! -f ${FILE} ];then
