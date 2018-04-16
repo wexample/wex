@@ -14,6 +14,8 @@ siteDeploy() {
 
   local PROD_IPV4=$(wex json/readValue -f=wex.json -k=prod.ipv4)
 
+  wex ci/exec -c=deploy
+
   # There is a production site configured in wex.json.
   if [ "${PROD_IPV4}" != "" ]; then
     # Update on production server
