@@ -9,7 +9,7 @@ webOpenArgs() {
 webOpen() {
   case "$(wex system/osName)" in
     "linux")
-      xdg-open ${URL}
+      xdg-open ${URL} &
       ;;
     "windows")
       start ${URL}
