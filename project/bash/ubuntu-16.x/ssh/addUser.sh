@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
-sshAddUserkArgs() {
+sshAddUserArgs() {
   _ARGUMENTS=(
     [0]='user u "User" true'
     [1]='group g "Host" true'
-    [2]='key k "SSH Key to use" false'
+    [2]='key k "SSH Key to use" true'
   )
 }
 
 sshAddUser() {
+  if [ "${GROUP}" == "" ];then
+    local GROUP=${USER}
+  fi
+
   # Create SSH dir.
   mkdir -p /home/${USER}/.ssh
   chown ${USER}:${GROUP} /home/${USER}/.ssh
