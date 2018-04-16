@@ -2,12 +2,12 @@
 
 gitRemoteExistsArgs() {
   _ARGUMENTS=(
-    [0]='url u "Repository url" true'
+    [0]='repo r "Repository url" true'
   )
 }
 
 gitRemoteExists() {
-  git ls-remote "${URL}" -h --exit-code &> /dev/null;
+  git ls-remote "${REPO}" -h --exit-code &> /dev/null;
   # Get exit code
   local EXIT_CODE=$(echo $?)
 
