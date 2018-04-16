@@ -3,8 +3,8 @@
 sitePublish() {
   local RENDER_BAR='wex render/progressBar -w=30 '
 
-   # Status -------- #
-   ${RENDER_BAR} -p=0 -s="Loading env"
+  # Status -------- #
+  ${RENDER_BAR} -p=0 -s="Loading env"
 
   . .env
 
@@ -90,6 +90,9 @@ sitePublish() {
   # Test connexion between gitlab <---> prod
   local GITLAB_PROD_EXISTS=$(wex ssh/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
 
+  # Remove special chars ma be due to remote data transfer.
+  GITLAB_PROD_EXISTS=$(echo "${GITLAB_PROD_EXISTS}" | tr -dc '[:alnum:]\n')
+
   # Usable to connect Gitlab / Production
   if [ "${GITLAB_PROD_EXISTS}" == false ];then
     wex text/color -c=red -t='Production server is unable to connect to Gitlab'
@@ -104,20 +107,36 @@ sitePublish() {
   # Status -------- #
   ${RENDER_BAR} -p=70 -s="Clone in production"
 
+  local DIR_EXISTS=$(wex ssh/exec -e=prod -d="/var/www" -s="[[ -d videos ]] && echo true || echo false")
+  if [ ${DIR_EXISTS} == true ];then
+    wex text/color -c=red -t='Directory exists in production.'
+    exit
+  fi
+
   # Clone remote repository.
   wex ssh/exec -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
 
   # Copy local files to production.
   wex files/push -e=prod
 
+  # TODO services exec (mysql)
+
   # Status -------- #
-  ${RENDER_BAR} -p=90 -s="Enable auto deployment"
+  ${RENDER_BAR} -p=80 -s="Enable auto deployment"
 
   # Save production server host for deployment.
   wex json/addValue -f=wex.json -k="prod.ipv4" -v=${SSH_HOST}
   git add wex.json
   git commit -m "Auto publication"
   git push origin master
+
+  # Status -------- #
+  ${RENDER_BAR} -p=80 -s="Enable auto deployment"
+
+  # Create production env file
+  wex ssh/exec -e=prod -s="echo SITE_ENV=prod > .env"
+  # Start site
+  wex ssh/exec -e=prod -s="wex site/start"
 
   # Status -------- #
   ${RENDER_BAR} -p=100 -s="Done"

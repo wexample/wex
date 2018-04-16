@@ -17,6 +17,7 @@ serverStart() {
 
   # Create config file
   PROXY_CONFIG_FILE+="\nWEX_DOCKER_MACHINE_IP="$(wex docker/ip)
+  PROXY_CONFIG_FILE+="\nWEX_IMAGES_VERSION="$(wex wex/version)
   # Save param file.
   echo -e ${PROXY_CONFIG_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
   touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts

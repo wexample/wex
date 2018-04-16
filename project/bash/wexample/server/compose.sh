@@ -13,6 +13,7 @@ serverCompose() {
   # Export variables
   export WEX_DOCKER_MACHINE_IP=${WEX_DOCKER_MACHINE_IP}
   export WEX_WEXAMPLE_DIR_TMP=${WEX_WEXAMPLE_DIR_TMP}
+  export WEX_IMAGES_VERSION=${WEX_IMAGES_VERSION}
 
   docker-compose -f ${WEX_DIR_ROOT}docker/containers/reverseProxy/docker-compose.yml ${COMMAND}
 }

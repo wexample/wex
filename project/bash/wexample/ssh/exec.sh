@@ -16,13 +16,14 @@ sshExec() {
   # Prevent to set credentials globally
   local SSH_CONNEXION=$(wex ssh/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
 
+  # Load credentials stored into config
+  wex site/configLoad
+
   if [ "${DIR}" != "" ];then
     local SITE_PATH_ROOT=${DIR}
   else
     local SITE_PATH_ROOT=/var/www/${SITE_NAME}/
   fi
 
-  OUTPUT=$(ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}")
-  # Remove special chars ma be due to remote data transfer.
-  echo "${OUTPUT}" | tr -dc '[:alnum:]\n'
+  ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
 }
