@@ -10,6 +10,6 @@ filesPush() {
   FOLDERS=($(wex files/list))
 
   for FOLDER in ${FOLDERS[@]};do
-    wex wexample::file/upload -f=${FOLDER} -d=${FOLDER} -e=${ENVIRONMENT}
+    wex wexample::file/upload -f=${FOLDER} -d=$(dirname ${FOLDER}) -e=${ENVIRONMENT}
   done
 }

@@ -11,13 +11,23 @@ fileDownloadArgs() {
 }
 
 fileDownload() {
-  if [ -z "${DIR_TO+x}" ]; then
-    DIR_TO=./
-  fi;
+  local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
+  # Need site path
+  wex site/configLoad
+  local REMOTE_SITE_PATH_ROOT=/var/www/${SITE_NAME}/
 
-  wex env/credentials -e=${ENVIRONMENT} -u=${SCP_USERNAME} -pk=${SCP_PRIVATE_KEY}
+  . ./tmp/variablesLocalStorage
+
+  # Get value
+  local SSH_USER=$(eval 'echo ${'${ENV}'_SSH_USER}')
+  local SSH_HOST=$(eval 'echo ${'${ENV}'_SSH_HOST}')
+  local SSH_PORT=$(eval 'echo ${'${ENV}'_SSH_PORT}')
+  local SSH_PRIVATE_KEY=$(eval 'echo ${'${ENV}'_SSH_PRIVATE_KEY}')
+
+  if [ "${SSH_PORT}" == "" ];then
+    SSH_PORT=22
+  fi
+
   # Download file
-  scp -i${SITE_PRIVATE_KEY} -P${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4}:${SITE_PATH_ROOT}${FILE} ${DIR_TO}
-  # Prevent to set credentials globally
-  wex env/credentialsClear
+  scp -r -i${SSH_PRIVATE_KEY} -P${SSH_PORT} ${SSH_USER}@${SSH_HOST}:${REMOTE_SITE_PATH_ROOT}${FILE} ${DIR_TO}
 }
