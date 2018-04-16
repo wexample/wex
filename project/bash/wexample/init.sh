@@ -8,3 +8,11 @@ export WEX_WEXAMPLE_SITE_CONFIG=${WEX_WEXAMPLE_SITE_DIR_TMP}config
 export WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML=${WEX_WEXAMPLE_SITE_DIR_TMP}"docker-compose.build.yml"
 export WEX_WEXAMPLE_ENVIRONMENTS=(local dev prod)
 export WEX_GITLAB_URL="gitlab.wexample.com"
+
+wexampleSiteLoadVariables() {
+  local WEXAMPLE_SITE_LOCAL_STORAGE="./tmp/variablesLocalStorage"
+
+  if [[ -f ${WEXAMPLE_SITE_LOCAL_STORAGE} ]];then
+    . ${WEXAMPLE_SITE_LOCAL_STORAGE};
+  fi
+}

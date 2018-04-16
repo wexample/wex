@@ -12,10 +12,13 @@ varLocalGetArgs() {
 }
 
 varLocalGet() {
+  wexampleSiteLoadVariables
+
   # Default is not defined.
   if [ "${SAVE_DEFAULT}" == true ] && [ "${DEFAULT}" == "" ];then
+    wexLoadVariables
     # Get last saved value.
-    DEFAULT=$(wex ubuntu-16.x::var/localGet -n="LAST_${NAME}")
+    DEFAULT=$(eval 'echo ${LAST_'${NAME}'}')
   fi
 
   local OUTPUT=$(wex ubuntu-16.x::var/localGet -d="${DEFAULT}" ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage)

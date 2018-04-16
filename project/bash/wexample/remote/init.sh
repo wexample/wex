@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 remoteInit() {
-  . ./tmp/variablesLocalStorage
+  wexampleSiteLoadVariables
 
   while true;do
     # Test connexion to prod.
@@ -12,7 +12,9 @@ remoteInit() {
       # Great.
       return
     else
-      echo "Unable to connect "${SSH_USER}"@"${SSH_HOST}
+      if [ "${PROD_SSH_USER}" != "" ];then
+        echo "Unable to connect "${SSH_USER}"@"${SSH_HOST}
+      fi
 
       wex var/localClear -n="PROD_SSH_USER" -s
       local SSH_USER=$(wex var/localGet -r -s -n="PROD_SSH_USER" -a="Production username" -d="$(whoami)")
@@ -24,7 +26,7 @@ remoteInit() {
       local SSH_PORT=$(wex var/localGet -r -s -n="PROD_SSH_PORT" -a="Production port" -d="22")
 
       wex var/localClear -n="PROD_SSH_PRIVATE_KEY" -s
-      local SSH_PRIVATE_KEY=$(wex ssh/keySelect -n="PROD_SSH_PRIVATE_KEY" -d="SSH Private key path")
+      local SSH_PRIVATE_KEY=$(wex ssh/keySelect -n="PROD_SSH_PRIVATE_KEY" -a="SSH Private key path")
     fi
   done;
 }

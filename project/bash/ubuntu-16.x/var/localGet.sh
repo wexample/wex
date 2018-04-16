@@ -23,7 +23,7 @@ varLocalGet() {
   fi
 
   # Eval whole file.
-  eval $(cat ${FILE})
+  wexLoadVariables
   # Is defined or not, even empty value.
   local EXISTS=$(eval '[[ ! -z "${'${NAME}'+x}" ]] && echo true || echo false')
   # Get value
