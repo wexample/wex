@@ -13,7 +13,8 @@ sshConnexionArgs() {
 sshConnexion() {
   local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
 
-  . ./tmp/variablesLocalStorage
+  wexampleSiteInitLocalVariables
+  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   if [ "${SSH_USER_CUSTOM}" != "" ];then
     local SSH_USER=${SSH_USER_CUSTOM}

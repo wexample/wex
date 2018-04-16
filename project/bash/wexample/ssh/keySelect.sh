@@ -13,9 +13,6 @@ sshKeySelect() {
 
   local SSH_PRIVATE_KEY=''
   while [ "${SSH_PRIVATE_KEY}" == "" ];do
-    # Clear previously saved key, but not memorized value.
-    wex wexample::var/localClear -n="SSH_PRIVATE_KEY_DEFAULT_PROD"
-
     # Get SSH get
     SSH_PRIVATE_KEY=$(wex wexample::var/localGet -n="${NAME}" -a="${DESCRIPTION}" -s -r)
 

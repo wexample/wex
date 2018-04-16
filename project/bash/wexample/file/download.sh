@@ -16,7 +16,8 @@ fileDownload() {
   wex site/configLoad
   local REMOTE_SITE_PATH_ROOT=/var/www/${SITE_NAME}/
 
-  . ./tmp/variablesLocalStorage
+  wexampleSiteInitLocalVariables
+  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   # Get value
   local SSH_USER=$(eval 'echo ${'${ENV}'_SSH_USER}')

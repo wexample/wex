@@ -22,5 +22,7 @@ sshExec() {
     local SITE_PATH_ROOT=/var/www/${SITE_NAME}/
   fi
 
-  ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
+  OUTPUT=$(ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}")
+  # Remove special chars ma be due to remote data transfer.
+  echo "${OUTPUT}" | tr -dc '[:alnum:]\n'
 }

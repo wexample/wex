@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 sitePublish() {
-   local RENDER_BAR='wex render/progressBar -w=30 '
+  local RENDER_BAR='wex render/progressBar -w=30 '
 
-   # Status
+   # Status -------- #
    ${RENDER_BAR} -p=0 -s="Loading env"
 
   . .env
@@ -13,70 +13,82 @@ sitePublish() {
     exit
   fi
 
-  # Status
+  # Check git version
+  local GIT_VERSION=$(git version | sed 's/^git version \(.*\)$/\1/g')
+  if [ $(wex text/versionCompare -a=${GIT_VERSION} -b=2.10) == '<' ];then
+    echo "Your GIT version should be equal or higher to 2.10 and is actually at "${GIT_VERSION}"."
+    exit;
+  fi
+
+  # Status -------- #
   ${RENDER_BAR} -p=5 -s="Init connexion info"
 
   # Save connection info.
   wex wexample::remote/init
 
-  # Status
-  ${RENDER_BAR} -p=10 -s="Loading configuration"
+  # Use same key for Gitlab && production
+  local REPO_SSH_PRIVATE_KEY=$(wex ssh/keySelect -s -n="REPO_SSH_PRIVATE_KEY" -d="SSH Private key for Gitlab")
 
+  # Status -------- #
+  ${RENDER_BAR} -p=10 -s="Loading configuration"
   # Load generated configuration.
-  . ./tmp/variablesLocalStorage
+  wexampleSiteInitLocalVariables
+  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   # Load base configuration.
   wex site/configLoad
 
-  # ---- Create Gitlab repo ---- #
+  # Use local private key as deployment key
+  git config core.sshCommand "ssh -i "${REPO_SSH_PRIVATE_KEY}
 
-  # Status
+  # Status -------- #
   ${RENDER_BAR} -p=20 -s="Creating Gitlab repo"
 
-  # No git origin.
-  if [ "${GIT_ORIGIN}" == '' ];then
-     # Search if repo exists and have origin.
-     local REPO_ORIGIN=$(wex repo/info -k=ssh_url_to_repo)
+  local GIT_ORIGIN=$(git config --get remote.origin.url)
 
-     if [ "${REPO_ORIGIN}" == '' ];then
-       # Ask user.
-       local CREATE=$(wex prompt/yn -q="No repository origin, do you want to create it ?")
-       if [ ${CREATE} == true ];then
-         # Create new repo.
-         wex repo/create
-         # Get origin.
-         local REPO_ORIGIN=$(wex repo/info -k=ssh_url_to_repo)
-       fi
-     fi
-     # Add origin
-     git remote add origin ${REPO_ORIGIN}
+  # We need to create repository.
+  if [ $(wex repo/exists) == false ];then
+    # Old origin saved locally
+    if [ "${GIT_ORIGIN}" != '' ];then
+      # Remove corrupted origin.
+      git remote rm origin
+      GIT_ORIGIN=''
+    fi
+    # Create new repo.
+    wex repo/create
   fi
 
-  # Status
+  # Get origin.
+  local GIT_ORIGIN=$(wex repo/info -k=ssh_url_to_repo -cc)
+
+  # Add origin
+  git remote add origin ${GIT_ORIGIN}
+
+  # Status -------- #
   ${RENDER_BAR} -p=50 -s="Push on Gitlab"
 
   git add .
   git commit -m "site/publish"
-  git push origin master
+  git push -u origin master
 
-  # Status
+  # Status -------- #
   ${RENDER_BAR} -p=60 -s="Configure remote Git repository"
 
-  local GIT_ORIGIN=$(git config --get remote.origin.url)
-
   # Test connexion between gitlab <---> prod
-  local GITLAB_PROD_TEST=$(wex ssh/exec -e=prod -s="git ls-remote "${GIT_ORIGIN}" -h --exit-code &> /dev/null; echo \$?")
+  local GITLAB_PROD_EXISTS=$(wex ssh/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
 
-  local GITLAB_DOMAIN=$(echo ${GIT_ORIGIN} | sed 's/git@\(.*\):.*$/\1/g')
-  local REPO_NAMESPACE=$(wex repo/namespace)
-  # Error code returned.
-  if [ "${GITLAB_PROD_TEST}" == 128 ];then
+  # Usable to connect Gitlab / Production
+  if [ "${GITLAB_PROD_EXISTS}" == false ];then
     wex text/color -c=red -t='Production server is unable to connect to Gitlab'
+
+    local GITLAB_DOMAIN=$(echo ${GIT_ORIGIN} | sed 's/git@\(.*\):.*$/\1/g')
+    local REPO_NAMESPACE=$(wex repo/namespace)
+
     echo -e 'You may need to enable deployment key on \nhttp://'${GITLAB_DOMAIN}'/'${REPO_NAMESPACE}'/'${SITE_NAME}'/settings/repository.\n'
     exit;
   fi
 
-  # Status
+  # Status -------- #
   ${RENDER_BAR} -p=70 -s="Clone in production"
 
   # Clone remote repository.
@@ -85,7 +97,7 @@ sitePublish() {
   # Copy local files to production.
   wex files/push -e=prod
 
-  # Status
+  # Status -------- #
   ${RENDER_BAR} -p=90 -s="Enable auto deployment"
 
   # Save production server host for deployment.
@@ -94,7 +106,7 @@ sitePublish() {
   git commit -m "Auto publication"
   git push origin master
 
-  # Status
+  # Status -------- #
   ${RENDER_BAR} -p=100 -s="Done"
 
 }

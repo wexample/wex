@@ -12,7 +12,8 @@ varLocalGetArgs() {
 }
 
 varLocalGet() {
-  wexampleSiteLoadVariables
+  wexampleSiteInitLocalVariables
+  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   # Default is not defined.
   if [ "${SAVE_DEFAULT}" == true ] && [ "${DEFAULT}" == "" ];then

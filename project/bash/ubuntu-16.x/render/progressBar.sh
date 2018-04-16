@@ -41,5 +41,5 @@ renderProgressBar() {
     MESSAGE+=" > "${STATUS}
   fi
 
-  echo -ne ${MESSAGE}'\r'
+  echo -ne ${MESSAGE}'       \r'
 }

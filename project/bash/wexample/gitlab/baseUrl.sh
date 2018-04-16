@@ -14,7 +14,8 @@ gitlabBaseUrl() {
 
   # Load from data storage
   if [ "${GITLAB_URL}" == "" ]; then
-    wexampleSiteLoadVariables
+    wexampleSiteInitLocalVariables
+    . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
     if [ "${GITLAB_URL_DEFAULT}" != "" ] && [ "${GITLAB_TOKEN_DEFAULT}" != "" ]; then
       GITLAB_URL=${GITLAB_URL_DEFAULT}

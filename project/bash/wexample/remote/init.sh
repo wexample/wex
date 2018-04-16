@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 remoteInit() {
-  wexampleSiteLoadVariables
+  wexampleSiteInitLocalVariables
+  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   while true;do
     # Test connexion to prod.
@@ -17,16 +18,16 @@ remoteInit() {
       fi
 
       wex var/localClear -n="PROD_SSH_USER" -s
-      local SSH_USER=$(wex var/localGet -r -s -n="PROD_SSH_USER" -a="Production username" -d="$(whoami)")
+      local PROD_SSH_USER=$(wex var/localGet -r -s -n="PROD_SSH_USER" -a="Production username" -d="$(whoami)")
 
       wex var/localClear -n="PROD_SSH_HOST" -s
-      local SSH_HOST=$(wex var/localGet -r -s -n="PROD_SSH_HOST" -a="Production host")
+      local PROD_SSH_HOST=$(wex var/localGet -r -s -n="PROD_SSH_HOST" -a="Production host")
 
       wex var/localClear -n="PROD_SSH_PORT" -s
-      local SSH_PORT=$(wex var/localGet -r -s -n="PROD_SSH_PORT" -a="Production port" -d="22")
+      local PROD_SSH_PORT=$(wex var/localGet -r -s -n="PROD_SSH_PORT" -a="Production port" -d="22")
 
       wex var/localClear -n="PROD_SSH_PRIVATE_KEY" -s
-      local SSH_PRIVATE_KEY=$(wex ssh/keySelect -n="PROD_SSH_PRIVATE_KEY" -a="SSH Private key path")
+      local PROD_SSH_PRIVATE_KEY=$(wex ssh/keySelect -n="PROD_SSH_PRIVATE_KEY" -d="SSH Private key for production environment")
     fi
   done;
 }
