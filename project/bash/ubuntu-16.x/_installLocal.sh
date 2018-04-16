@@ -7,10 +7,9 @@ WEX_LOCAL_DIR="/opt/wexample/"
 
 chmod -R +x ${WEX_LOCAL_DIR}
 
-# Add to PATH, will return global command to export var.
-pathCommand=$(bash ${WEX_LOCAL_DIR}"project/bash/wex" wex/addToPath)
-# Add to global PATH.
-eval ${pathCommand}
+# Copy to bin
+cp ${WEX_LOCAL_DIR}project/bash/wex.bin.sh /usr/local/bin/wex
+chmod -R +x /usr/local/bin/wex
 
 # Say Hi.
 echo "Wexample Script installed at version "$(wex wex/version)
