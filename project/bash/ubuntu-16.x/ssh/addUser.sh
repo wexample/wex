@@ -3,7 +3,7 @@
 sshAddUserArgs() {
   _ARGUMENTS=(
     [0]='user_ssh u "User" true'
-    [1]='group g "Host" true'
+    [1]='group g "Group" false'
     [2]='key k "SSH Key to use" true'
   )
 }
@@ -14,13 +14,16 @@ sshAddUser() {
   fi
 
   # Create SSH dir.
-  mkdir -p /home/${USER_SSH}/.ssh
-  chown ${USER_SSH}:${GROUP} /home/${USER_SSH}/.ssh
-  chmod 700 /home/${USER_SSH}/.ssh
+  local SSH_DIR=/home/${USER_SSH}/.ssh
+  mkdir -p ${SSH_DIR}
+  chown ${USER_SSH}:${GROUP} ${SSH_DIR}
+  chmod 700 ${SSH_DIR}
 
   # Add wexample SSH key
-  wex file/textAppend -f=/home/${USER_SSH}/.ssh/authorized_keys -l="${KEY}"
+  local AUTH_KEYS=${SSH_DIR}/authorized_keys
+  touch ${AUTH_KEYS}
+  wex file/textAppend -f=${AUTH_KEYS} -l="${KEY}"
 
-  chown ${USER_SSH}:${GROUP} /home/${USER_SSH}/.ssh/authorized_keys
-  chmod 600 /home/${USER_SSH}/.ssh/authorized_keys
+  chown ${USER_SSH}:${GROUP} ${AUTH_KEYS}
+  chmod 600 ${AUTH_KEYS}
 }
