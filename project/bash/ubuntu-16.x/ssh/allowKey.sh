@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sshAddUserArgs() {
+sshAllowKeyArgs() {
   _ARGUMENTS=(
     [0]='user_ssh u "User" true'
     [1]='group g "Group" false'
@@ -8,16 +8,13 @@ sshAddUserArgs() {
   )
 }
 
-sshAddUser() {
+sshAllowKey() {
   if [ "${GROUP}" == "" ];then
     local GROUP=${USER_SSH}
   fi
 
   # Create SSH dir.
-  local SSH_DIR=/home/${USER_SSH}/.ssh
-  mkdir -p ${SSH_DIR}
-  chown ${USER_SSH}:${GROUP} ${SSH_DIR}
-  chmod 700 ${SSH_DIR}
+  local SSH_DIR=$(wex ssh/userDir -u=${USER_SSH})
 
   # Add wexample SSH key
   local AUTH_KEYS=${SSH_DIR}/authorized_keys
