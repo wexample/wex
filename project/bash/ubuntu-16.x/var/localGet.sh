@@ -35,8 +35,8 @@ varLocalGet() {
     OUTPUT="${DEFAULT}"
   fi
 
-  # Value is still empty and not defined.
-  if [ "${VALUE}" == "" ] && [ "${EXISTS}" == false ] && [ ! -z "${ASK+x}" ];then
+  # Value is still empty and not defined or required.
+  if [ "${VALUE}" == "" ] && ([ "${EXISTS}" == false ] || [ "${REQUIRED}" == true ]) && [ ! -z "${ASK+x}" ];then
     while true;do
       local OPTIONS=''
       local MESSAGE="${ASK}"

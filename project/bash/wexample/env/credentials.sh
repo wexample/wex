@@ -2,7 +2,7 @@
 
 envCredentialsArgs() {
   _ARGUMENTS=(
-    [0]='ssj_username u "SSH Username" false'
+    [0]='ssh_username u "SSH Username" false'
     [1]='private_key pk "SSH Private key" false'
     [2]='environment e "Environment to connect to" true'
     [3]='dir_site d "Local root site directory" false'

@@ -2,19 +2,25 @@
 
 sshExecArgs() {
   _ARGUMENTS=(
-    [0]='ssh_username u "SSH Username" false'
-    [1]='ssh_private_key pk "SSH Private key" false'
-    [2]='environment e "Environment to connect to" true'
-    [3]='shell_script s "Command to execute from shell, relative to site directory" true'
+    [0]='ssh_user_custom u "SSH User" false'
+    [1]='ssh_private_key_custom k "SSH Private key" false'
+    [2]='ssh_host_custom host "Host to connect to" false'
+    [3]='ssh_port_custom p "SSH Port" false'
+    [4]='environment e "Environment to connect to" true'
+    [5]='shell_script s "Command to execute from shell, relative to site directory" true'
+    [6]='dir d "Remote directory (site directory by default)" false'
   )
 }
 
 sshExec() {
-  wex env/credentials -e=${ENVIRONMENT} -u=${SSH_USERNAME} -pk=${SSH_PRIVATE_KEY}
-  # Go do site path
-  # Then execute script from _exec.sh tool of wexample.
-  COMMAND='cd '${SITE_PATH_ROOT}' && sudo bash '${WEX_LOCAL_DIR}'project/bash/ubuntu-16.x/_exec.sh "'${SHELL_SCRIPT}'"'
-  ssh -oLogLevel=QUIET -i${SITE_PRIVATE_KEY} -t -p${SITE_PORT} ${SITE_USERNAME}@${SITE_IPV4} ${COMMAND}
   # Prevent to set credentials globally
-  wex env/credentialsClear
+  local SSH_CONNEXION=$(wex ssh/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
+
+  if [ "${DIR}" != "" ];then
+    local SITE_PATH_ROOT=${DIR}
+  else
+    local SITE_PATH_ROOT=/var/www/${SITE_NAME}/
+  fi
+
+  ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
 }

@@ -26,5 +26,5 @@ textColor() {
   # Find color code
   eval 'COLOR=$'${COLOR}
   # Print
-  printf ${COLOR}${TEXT}${DEFAULT}"\n"
+  printf "${COLOR}${TEXT}${DEFAULT}\n"
 }

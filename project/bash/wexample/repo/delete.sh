@@ -7,8 +7,7 @@ repoDeleteArgs() {
 }
 
 repoDelete() {
-  # Encode name
-  NAME=$(wex url/encode -t=${NAME})
+  local REPO_NAME=$(wex repo/name)
   # Delete
-  wex wexample::gitlab/delete -p="projects/${NAME}"
+  wex wexample::gitlab/delete -p="projects/${REPO_NAME}"
 }

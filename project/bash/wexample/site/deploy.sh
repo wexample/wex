@@ -20,11 +20,12 @@ siteDeploy() {
   if [ "${PROD_IPV4}" != "" ]; then
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
+    # TODO Still valid ?
     # Update on production server
     # User must have access to execute scripts.
     # Use : sudo visudo
     # then add : username ALL=(ALL) NOPASSWD: ALL
     # If root ssh access is disabled.
-    wex wexample::ssh/exec -u=gitlab -pk=/deployKey -d=${DIR} -e=prod -s="wex wexample::site/pull"
+    wex wexample::ssh/exec -e=prod -host="${PROD_IPV4}" -u=gitlab -pk=/deployKey -d=${DIR} -s="wex wexample::site/pull"
   fi;
 }

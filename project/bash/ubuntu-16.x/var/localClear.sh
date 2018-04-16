@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-varLocalSetArgs() {
+varLocalClearArgs() {
   _ARGUMENTS=(
     [0]='name n "Variable name" true'
-    [1]='value v "Variable value" true'
-    [2]='file f "Storage file path" false'
+    [1]='file f "Storage file path" false'
   )
 }
 
-varLocalSet() {
+varLocalClear() {
   # If no file specified
   if [ -z "${FILE+x}" ]; then
     # Use wex tmp folder
@@ -19,10 +18,6 @@ varLocalSet() {
     touch ${FILE}
   fi
 
-  wex var/localClear -n="${NAME}"
-
   # Remove all previous values.
   wex config/removeKey -k="local\s"${NAME}"\=" -f=${FILE}
-
-  echo -e 'local '${NAME}'='${VALUE} >> ${FILE}
 }

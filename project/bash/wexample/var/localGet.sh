@@ -7,9 +7,23 @@ varLocalGetArgs() {
     [2]='ask a "Message to ask user to, enable prompt if provided" false'
     [3]='password p "Hide typed response when asking user" false'
     [4]='required r "Ask again if empty" false'
+    [5]='save_default s "Save last value as default" false'
   )
 }
 
 varLocalGet() {
-  wex ubuntu-16.x::var/localGet ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage
+  # Default is not defined.
+  if [ "${SAVE_DEFAULT}" == true ] && [ "${DEFAULT}" == "" ];then
+    # Get last saved value.
+    DEFAULT=$(wex ubuntu-16.x::var/localGet -n="LAST_${NAME}")
+  fi
+
+  local OUTPUT=$(wex ubuntu-16.x::var/localGet -d="${DEFAULT}" ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage)
+
+  # Memorize last choice.
+  if [ "${SAVE_DEFAULT}" == true ];then
+    wex ubuntu-16.x::var/localSet -n="LAST_${NAME}" -v="${OUTPUT}"
+  fi
+
+  echo ${OUTPUT}
 }

@@ -7,4 +7,6 @@ vpsInit() {
   wex docker/install
   # Disable root login
   wex rootLogin/disable
+  # Create www dir
+  mkdir -p /var/www/
 }
