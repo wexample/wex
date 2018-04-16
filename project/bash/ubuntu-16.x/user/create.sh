@@ -9,9 +9,6 @@ userCreateArgs() {
 }
 
 userCreate() {
-  USER=${1}
-  PASSWORD=${2}
-
   if [ "${GROUP}" == "" ];then
     local GROUP=${USER}
   fi
