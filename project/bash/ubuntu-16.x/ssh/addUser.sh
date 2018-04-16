@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 
+sshAddUserkArgs() {
+  _ARGUMENTS=(
+    [0]='user u "User" true'
+    [1]='group g "Host" true'
+    [2]='key k "SSH Key to use" false'
+  )
+}
+
 sshAddUser() {
-  user="${1}"
-  group="${2}"
-  key="${3}"
-
   # Create SSH dir.
-  mkdir -p /home/${user}/.ssh
-
-  chown ${user}:${group} /home/${user}/.ssh
-  chmod 700 /home/${user}/.ssh
+  mkdir -p /home/${USER}/.ssh
+  chown ${USER}:${GROUP} /home/${USER}/.ssh
+  chmod 700 /home/${USER}/.ssh
 
   # Add wexample SSH key
-  wexample fileTextAppend /home/${user}/.ssh/authorized_keys "${key}"
-  chown ${user}:${group} /home/${user}/.ssh/authorized_keys
-  chmod 600 /home/${user}/.ssh/authorized_keys
+  wex file/textAppend -f=/home/${USER}/.ssh/authorized_keys -l="${KEY}"
+
+  chown ${USER}:${GROUP} /home/${USER}/.ssh/authorized_keys
+  chmod 600 /home/${USER}/.ssh/authorized_keys
 }
