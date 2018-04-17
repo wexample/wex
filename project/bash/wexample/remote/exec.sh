@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-sshExecArgs() {
+
+# TODO Move ssh to remote
+
+remoteExecArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
     [1]='ssh_private_key_custom k "SSH Private key" false'
@@ -12,9 +15,9 @@ sshExecArgs() {
   )
 }
 
-sshExec() {
+remoteExec() {
   # Prevent to set credentials globally
-  local SSH_CONNEXION=$(wex ssh/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
+  local SSH_CONNEXION=$(wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
 
   # Load credentials stored into config
   wex site/configLoad

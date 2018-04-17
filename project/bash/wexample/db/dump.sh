@@ -24,7 +24,7 @@ dbDump() {
     # Remote dump.
     if [ ! -z ${ENVIRONMENT+x} ];then
       # Dump
-      wex wexample::ssh/exec -e=${ENVIRONMENT} -s="wex db/dump"
+      wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dump"
       return
     fi
 

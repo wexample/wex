@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sshConnexionArgs() {
+remoteConnexionArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
     [1]='ssh_private_key_custom k "SSH Private key" false'
@@ -10,7 +10,7 @@ sshConnexionArgs() {
   )
 }
 
-sshConnexion() {
+remoteConnexion() {
   local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
 
   wexampleSiteInitLocalVariables

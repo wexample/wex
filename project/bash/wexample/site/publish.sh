@@ -88,7 +88,7 @@ sitePublish() {
   ${RENDER_BAR} -p=60 -s="Configure remote Git repository"
 
   # Test connexion between gitlab <---> prod
-  local GITLAB_PROD_EXISTS=$(wex ssh/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
+  local GITLAB_PROD_EXISTS=$(wex remote/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
 
   # Remove special chars ma be due to remote data transfer.
   GITLAB_PROD_EXISTS=$(echo "${GITLAB_PROD_EXISTS}" | tr -dc '[:alnum:]\n')
@@ -107,14 +107,14 @@ sitePublish() {
   # Status -------- #
   ${RENDER_BAR} -p=70 -s="Clone in production"
 
-  local DIR_EXISTS=$(wex ssh/exec -e=prod -d="/var/www" -s="[[ -d videos ]] && echo true || echo false")
+  local DIR_EXISTS=$(wex remote/exec -e=prod -d="/var/www" -s="[[ -d videos ]] && echo true || echo false")
   if [ ${DIR_EXISTS} == true ];then
     wex text/color -c=red -t='Directory exists in production.'
     exit
   fi
 
   # Clone remote repository.
-  wex ssh/exec -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
+  wex remote/exec -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
 
   # Copy local files to production.
   wex files/push -e=prod
@@ -134,9 +134,9 @@ sitePublish() {
   ${RENDER_BAR} -p=80 -s="Enable auto deployment"
 
   # Create production env file
-  wex ssh/exec -e=prod -s="echo SITE_ENV=prod > .env"
+  wex remote/exec -e=prod -s="echo SITE_ENV=prod > .env"
   # Start site
-  wex ssh/exec -e=prod -s="wex site/start"
+  wex remote/exec -e=prod -s="wex site/start"
 
   # Status -------- #
   ${RENDER_BAR} -p=100 -s="Done"

@@ -19,7 +19,7 @@ dbRestore() {
     # Remote restoration.
     if [ ! -z ${ENVIRONMENT+x} ];then
       # Restore
-      wex wexample::ssh/exec -e=${ENVIRONMENT} -s="wex db/restore"
+      wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/restore"
       # Complete
       return
     fi;

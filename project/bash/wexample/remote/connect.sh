@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sshConnectArgs() {
+remoteConnectArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
     [1]='ssh_private_key_custom k "SSH Private key" false'
@@ -10,8 +10,8 @@ sshConnectArgs() {
   )
 }
 
-sshConnect() {
+remoteConnect() {
   # Prevent to set credentials globally
-  local SSH_CONNEXION=$(wex ssh/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
+  local SSH_CONNEXION=$(wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
   ssh -oStrictHostKeyChecking=no ${SSH_CONNEXION}
 }
