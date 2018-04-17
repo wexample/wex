@@ -18,6 +18,10 @@ siteInit() {
     SERVICES=("web")
   fi;
 
+  # TODO Exit if any service does not exists.
+  # TODO Do not init already existing services
+  # TODO Allow to remove services
+
   # Name is current dir name.
   local NAME="$(basename $( realpath "${DIR_SITE}" ))"
   # Do not allow underscore in site name :
