@@ -2,7 +2,7 @@
 
 gitInitHooksArgs() {
  _ARGUMENTS=(
-   [0]='recreate r "Remove previous files a recreate it" true'
+   [0]='recreate r "Remove previous files and recreate it" false'
  )
 }
 
