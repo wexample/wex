@@ -1,5 +1,5 @@
-FROM mysql:latest
+FROM mysql:5.7.21
 
-COPY ./mysql.cnf /etc/mysql/conf.d/
+COPY ./project/docker/images/mysql/wex.cnf /etc/mysql/conf.d/
 
 CMD ["mysqld"]

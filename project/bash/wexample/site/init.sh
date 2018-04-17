@@ -21,6 +21,8 @@ siteInit() {
   # TODO Exit if any service does not exists.
   # TODO Do not init already existing services
   # TODO Allow to remove services
+  # TODO If no service defined, ask user for each one
+  # TODO Allow per environment services (local.service => watcher)
 
   # Name is current dir name.
   local NAME="$(basename $( realpath "${DIR_SITE}" ))"

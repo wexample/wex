@@ -28,7 +28,4 @@ siteStart() {
       wex site/restart
     fi;
   fi;
-  # Open web page
-  local DOMAINS=($(wex site/domains))
-  wex web/open -u=http://${DOMAINS[0]}
 }

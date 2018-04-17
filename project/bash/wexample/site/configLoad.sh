@@ -32,6 +32,7 @@ siteConfigLoad() {
   wex framework/settings -d=${DIR_SITE}"project"
 
   # Expose settings.
+  # TODO export SITE_DOMAIN=${SITE_DOMAIN}
   export SITE_DB_HOST=${SITE_DB_HOST}
   export SITE_DB_NAME=${SITE_DB_NAME}
   export SITE_DB_USER=${SITE_DB_USER}

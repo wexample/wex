@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 gitCurrentTag() {
-  git describe --tags
+  git describe --abbrev=0 --tags
 }

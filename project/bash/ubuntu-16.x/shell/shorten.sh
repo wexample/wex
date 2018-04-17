@@ -3,5 +3,5 @@
 shellShorten() {
   printf "\033c"
   # Unable te execute it from here
-  echo PS1=':\$ '
+  echo PS1=\'\\u:\\W\\$ \'
 }

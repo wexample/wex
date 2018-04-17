@@ -14,8 +14,9 @@ hostsUpdateLocal() {
   sed -i '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
   # Add new line if needed.
   sed -i -e '$a\' ${HOST_FILE}
+
   # Create new block.
-  local HOSTS_TEXT="#[ wex ]#\n"$(wex hosts/info)"\n#[ endwex ]#"
-  # Append new hosts
-  echo -e ${HOSTS_TEXT} >> ${HOST_FILE}
+  echo -e "#[ wex ]#" >> ${HOST_FILE}
+  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts >> ${HOST_FILE}
+  echo -e "\n#[ endwex ]#" >> ${HOST_FILE}
 }

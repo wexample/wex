@@ -1,3 +1,4 @@
+# TODO version for all images
 FROM stilliard/pure-ftpd:latest
 
 COPY ./project/docker/images/ftp/entrypoint.sh /docker-entrypoint-ftp.sh
