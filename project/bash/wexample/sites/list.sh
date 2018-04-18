@@ -4,7 +4,7 @@
 sitesList() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   SITES=()
-
+  
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Trim

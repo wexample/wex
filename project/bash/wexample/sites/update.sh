@@ -2,7 +2,7 @@
 
 sitesUpdate() {
   # Load sites list
-  local SITES_PATHS=($(wex sites/list))
+  local SITES_PATHS=($(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites))
   # Rebuild sites list.
   SITES_PATHS_FILTERED=()
 

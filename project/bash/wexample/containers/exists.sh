@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
-dockerContainerStartedArgs() {
+containersExistsArgs() {
   _ARGUMENTS=(
-    [0]='names n "Names of containers separated by a comma. Return true only if one container is started." true',
-    [1]='all a "All containers runs" false',
+    [0]='all a "All containers exists" false',
   )
 }
 
-dockerContainerStarted() {
-  local RUNNING=$(docker ps -q)
+containersExists() {
+  local EXPECTED=($(wex containers/list))
+  local RUNNING=($(docker ps -aq))
   local NAMES=$(wex text/split -t=${NAMES} -s=",")
+  local ALL_RUNS=true
 
-  # Allow several names.
-  for NAME in ${NAMES[@]}
+  for NAME in ${EXPECTED[@]}
   do
-    local RUNS=false
+    local EXISTS=false
 
     # Inspect not stopped containers
     for CONTAINER_ID in ${RUNNING[@]}
@@ -22,26 +22,26 @@ dockerContainerStarted() {
       local CONTAINER_NAME=$(wex docker/containerName -i=${CONTAINER_ID})
       # Searched is running.
       if [[ ${CONTAINER_NAME} == ${NAME} ]];then
-        RUNS=true
+        EXISTS=true
       fi
     done;
 
-    # Expecting all runs.
+    # Expecting all exists.
     if [[ ${ALL} == true ]];then
-      if [[ ${RUNS} == false ]];then
+      if [[ ${EXISTS} == false ]];then
         echo false
         return
       fi
       # Or continue
-    # Only one can run
-    elif [[ ${RUNS} == true ]];then
+    # Only one can exist
+    elif [[ ${EXISTS} == true ]];then
       echo true
       return
     fi
   done;
 
-  # All containers should runs,
-  # any has been detected as not running.
+  # All containers should exist,
+  # any has been detected as missing.
   if [[ ${ALL} == true ]];then
     echo true
     return

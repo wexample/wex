@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx-proxy:
-    image: wexample/nginx-proxy
+    image: jwilder/nginx-proxy:0.6.0
     container_name: wex_reverse_proxy
     ports:
       - "80:80"
@@ -23,7 +23,7 @@ services:
       - wex_net
 
   proxy-certs:
-    image: wexample/nginx-proxy-letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion:v1.8.1
     container_name: wex_reverse_proxy_certs
     # DEBUG environment:
     #  - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
