@@ -23,7 +23,7 @@ frameworkDetect() {
 
   wex framework/global
 
-  if [ "${WEX_FRAMEWORKS_SUPPORTED[${WEBSITE_FRAMEWORK}]}" == "" ];then
+  if [ "${WEBSITE_FRAMEWORK}" == "" ] || [ "${WEX_FRAMEWORKS_SUPPORTED[${WEBSITE_FRAMEWORK}]}" == "" ];then
     echo "default"
   else
     # PHP script found a framework name.

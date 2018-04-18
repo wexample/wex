@@ -5,7 +5,7 @@ frameworkRestoreArgs() {
     [0]='dump_file f "Target directory for dumps" true'
     [1]='zip zip "Use ZIP" false'
     [2]='host h "Database host server" false'
-    [3]='port p "Database host port" false'
+    [3]='port P "Database host port" false'
     [4]='database db "Database name" false'
     [5]='user u "Database username" false'
     [6]='password p "Database password" false'
