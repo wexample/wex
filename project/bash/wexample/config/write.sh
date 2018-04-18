@@ -93,7 +93,7 @@ configWrite() {
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config
   # In case we are on non unix system.
-  wex file/converLinesToUnix -f=./tmp/config
+  wex file/convertLinesToUnix -f=./tmp/config &> /dev/null
 
   # Create docker-compose.build.yml
   wex site/compose -c="config" > ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}

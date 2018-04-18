@@ -7,8 +7,8 @@ siteStart() {
   fi
 
   # Prepare files
-  $(wex file/convertLinesToUnix -f=.env)
-  $(wex file/convertLinesToUnix -f=wex.json)
+  wex file/convertLinesToUnix -f=.env &> /dev/null
+  wex file/convertLinesToUnix -f=wex.json &> /dev/null
 
   # Server must be started.
   wex server/start -n
