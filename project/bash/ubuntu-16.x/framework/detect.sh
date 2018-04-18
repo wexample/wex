@@ -8,7 +8,7 @@ frameworkDetectArgs() {
 
 # dependency : php, composer
 frameworkDetect() {
-  WEBSITE_FRAMEWORK="default"
+  WEBSITE_FRAMEWORK=""
 
   if [[ -z "${DIR+x}" ]]; then
     # Get current dir.
@@ -21,6 +21,12 @@ frameworkDetect() {
     WEBSITE_FRAMEWORK=$(php "${WEX_DIR_ROOT}php/websiteFolderFrameworkDetect.php" ${DIR});
   fi
 
-  # PHP script found a framework name.
-  echo ${WEBSITE_FRAMEWORK};
+  wex framework/global
+
+  if [ "${WEX_FRAMEWORKS_SUPPORTED[${WEBSITE_FRAMEWORK}]}" == "" ];then
+    echo "default"
+  else
+    # PHP script found a framework name.
+    echo ${WEBSITE_FRAMEWORK};
+  fi
 }

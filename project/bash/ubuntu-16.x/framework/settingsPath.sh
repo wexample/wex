@@ -7,5 +7,6 @@ frameworkSettingsPathArgs() {
 }
 
 frameworkSettingsPath() {
+  wex framework/global.sh
   echo ${WEX_FRAMEWORKS_SETTINGS_PATHS[${FRAMEWORK_TYPE}]}
 }

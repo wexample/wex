@@ -25,40 +25,6 @@ if [ -z "${WEX_INIT:+x}" ];then
     WEX_ROOT_SCRIPT=false
   fi
 
-  # In case of testing, use test debug mode.
-  if [ ! -z "${WEX_TEST_DEBUG:+x}" ];then
-    WEX_DEBUG=${WEX_TEST_DEBUG}
-  else
-    WEX_DEBUG=false
-  fi
-
-  # We are in debug mode.
-  if [[ ${WEX_DEBUG} == true ]];then
-    # Clear log file on root script call.
-    if [[ ${WEX_ROOT_SCRIPT} == true ]];then
-      # Clear log file
-      rm -f ${WEX_LOG_FILE}
-      touch ${WEX_LOG_FILE}
-    fi
-    # Create log method.
-    wexLog() {
-      if [[ ${WEX_DEBUG} == true ]];then
-        TRACE=(${FUNCNAME[@]:2})
-        echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
-      fi;
-    }
-  else
-    wexLog() {
-      : # Do nothing
-    }
-  fi
-
-  declare -A WEX_FRAMEWORKS_SETTINGS_PATHS=(
-    ['drupal7']='sites/default/settings.php'
-    ['symfony3']='app/config/parameters.yml'
-    ['wordpress4']='wp-config.php'
-  );
-
   # Check bash version.
   if [ -z ${WEX_BASH_VERSION+x} ]; then
     WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
@@ -287,7 +253,6 @@ if [ -z "${WEX_INIT:+x}" ];then
       # Execute function with all parameters.
       eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
       # Trace
-      wexLog ${WEX_NAMESPACE}"::"${WEX_SCRIPT_METHOD_NAME}" complete"
       ((WEX_DEEP_LEVEL--))
     fi;
   }

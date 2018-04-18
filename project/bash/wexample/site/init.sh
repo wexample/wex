@@ -36,12 +36,10 @@ siteInit() {
 
   # Creating default env file
   if [ ! -f ".env" ]; then
-    wexLog "Creating .env file"
     echo -e "SITE_ENV=local" > .env
   fi
 
   if [ ! -f "wex.json" ]; then
-    wexLog "Creating wex.json"
     cat <<EOF > wex.json
 {
   "name": "${NAME}",
@@ -54,7 +52,6 @@ EOF
 
   # Default project dir
   if [ ! -d project ]; then
-    wexLog "Creating project folder"
     # Creating default dir
     mkdir project
     echo -e ${NAME}"\n===" > project/README.txt
@@ -62,12 +59,10 @@ EOF
 
   # Already exist
   if [ -f ${DIR_SITE}".gitignore" ]; then
-    wexLog "Merging gitignore"
     # Merge ignore file
     cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
     rm ${DIR_SITE}.gitignore.source
   else
-    wexLog "Moving gitignore"
     mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
   fi;
 
@@ -79,10 +74,8 @@ EOF
   YML=$(ls ${SITE_DIR_DOCKER})
 
   # For each yml type file.
-  wexLog "Append YML content"
   for YML_FILE in ${YML[@]}
   do
-    wexLog "  Installing "${YML_FILE}
 
     YML_TO_ADD=""
     # For each service.
@@ -103,8 +96,6 @@ EOF
       YML_SOURCE=$(cat ${YML_DEST})
       YML_FINAL=""
 
-      wexLog "    Append YML content to "${YML_DEST}
-
       # Search for placeholder, respecting line breaks.
       # TODO When init is launched on an existing yml file
       #  1/ We loose line breaks and tabs
@@ -123,13 +114,10 @@ EOF
     fi
   done;
 
-  wexLog "Installing services"
   for SERVICE in ${SERVICES[@]}
   do
     SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
     SERVICE_DIR_SITE=${SERVICE_DIR}"site/"
-
-    wexLog "  "${SERVICE}
 
     # There is a site folder in service.
     # And not in the dest site.

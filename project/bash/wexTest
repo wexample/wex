@@ -5,14 +5,32 @@
 # And tests result will not be encapsulated / evaluated.
 if [[ ${2} == "-d" ]];then
   WEX_TEST_DEBUG=true
+
+  echo "Debug mode enabled "
+
+  # Clear log file on root script call.
+  if [[ ${WEX_ROOT_SCRIPT} == true ]];then
+    # Clear log file
+    rm -f ${WEX_LOG_FILE}
+    touch ${WEX_LOG_FILE}
+  fi
+  # Create log method.
+  wexLog() {
+    if [[ ${WEX_DEBUG} == true ]];then
+      TRACE=(${FUNCNAME[@]:2})
+      echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
+    fi;
+  }
 else
   WEX_TEST_DEBUG=false
+
+  wexLog() {
+    : # Do nothing
+  }
 fi
 
 # Import wex
 . "wex" false
-
-echo "Debug mode : "${WEX_DEBUG}
 
 # List only directories.
 WEX_TEST_NAMESPACES=($(ls -d ${WEX_DIR_BASH}*/))
