@@ -50,8 +50,8 @@ dbDump() {
       -s=${CONTAINER_PATH_ROOT} \
       -d=${CONTAINER_PATH_DUMPS} \
       --prefix=${SITE_ENV}"-" \
-      -H=${SITE_NAME}"_mysql" \
-      -P=${SITE_DB_PORT} \
+      -h=${SITE_NAME}"_mysql" \
+      -p=${SITE_DB_PORT} \
       -db=${SITE_DB_NAME} \
       -u=${SITE_DB_USER} \
       -p=${SITE_DB_PASSWORD} \

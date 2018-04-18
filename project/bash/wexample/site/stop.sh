@@ -7,8 +7,6 @@ siteStop() {
   docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} down
   # Execute services scripts if exists
   wex service/exec -c="stop"
-  # Remove site
-  wex server/siteStop -d=$(realpath ./)"/"
   # Reload file
   wex sites/update
   # Rebuild hosts

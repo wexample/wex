@@ -31,6 +31,7 @@ configWrite() {
   local SITE_CONFIG_FILE=""
   local SITE_PATH=$(realpath ./)"/"
   SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
+  SITE_CONFIG_FILE+="\nSITE_DOMAIN="$(wex site/domains -s=",")
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
   local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)

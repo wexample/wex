@@ -3,7 +3,7 @@
 sshCheckArgs() {
   _ARGUMENTS=(
     [0]='user u "User" true'
-    [1]='host host "Host" true'
+    [1]='host h "Host" true'
     [2]='key k "SSH Key to use" false'
   )
 }

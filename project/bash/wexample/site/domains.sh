@@ -3,6 +3,7 @@
 siteDomainsArgs() {
   _ARGUMENTS=(
     [0]='dir_site d "Root site directory" false'
+    [1]='separator s "Separator" false'
   )
 }
 
@@ -12,7 +13,11 @@ siteDomains() {
   fi;
 
   DOCKER_COMPOSE_VARS=($(wex config/yml -d=${DIR_SITE}))
-  ALL_DOMAINS=()
+  ALL_DOMAINS=''
+
+  if [ -z "${SEPARATOR+x}" ];then
+    SEPARATOR=" "
+  fi;
 
   for DOCKER_COMPOSE_VAR in ${DOCKER_COMPOSE_VARS[@]}
   do
@@ -23,10 +28,14 @@ siteDomains() {
       DOMAINS=($(echo ${DOMAINS} | tr "," "\n"))
       for DOMAIN in ${DOMAINS[@]}
       do
-        ALL_DOMAINS+=(${DOMAIN})
+        # Add separator.
+        if [ "${ALL_DOMAINS}" != "" ];then
+          ALL_DOMAINS+=${SEPARATOR}
+        fi;
+        ALL_DOMAINS+=${DOMAIN}
       done;
     fi
   done;
 
-  echo ${ALL_DOMAINS[@]}
+  echo ${ALL_DOMAINS}
 }

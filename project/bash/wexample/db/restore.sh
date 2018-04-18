@@ -53,8 +53,8 @@ dbRestore() {
     # Restore
     wex framework/restore \
       -f=${CONTAINER_PATH_DUMPS}"/"${DUMP} \
-      -H=${SITE_NAME}"_mysql" \
-      -P=${SITE_DB_PORT} \
+      -h=${SITE_NAME}"_mysql" \
+      -p=${SITE_DB_PORT} \
       -db=${SITE_DB_NAME} \
       -u=${SITE_DB_USER} \
       -p=${SITE_DB_PASSWORD}

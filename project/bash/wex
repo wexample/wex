@@ -209,7 +209,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Add extra parameters at end of array
     _ARGUMENTS+=(
       'non_interactive ni "Non interactive mode" false'
-      'help h "Help" false'
+      'help help "Help" false'
     )
     # Then start in negative value (length of previous table).
     _NEGATIVE_ARGS_LENGTH=2

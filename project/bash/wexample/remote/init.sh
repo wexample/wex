@@ -9,7 +9,7 @@ remoteInit() {
     if [ "${PROD_SSH_USER}" != "" ] &&
        [ "${PROD_SSH_HOST}" != "" ] &&
        [ "${PROD_SSH_PRIVATE_KEY}" != "" ] &&
-       [ $(wex ssh/check -u=${PROD_SSH_USER} -host=${PROD_SSH_HOST} -k=${PROD_SSH_PRIVATE_KEY}) == true ];then
+       [ $(wex ssh/check -u=${PROD_SSH_USER} -h=${PROD_SSH_HOST} -k=${PROD_SSH_PRIVATE_KEY}) == true ];then
       # Great.
       return
     else
