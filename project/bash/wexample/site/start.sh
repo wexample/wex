@@ -5,6 +5,11 @@ siteStart() {
     echo "Missing .env file"
     return
   fi
+
+  # Prepare files
+  $(wex file/convertLinesToUnix -f=.env)
+  $(wex file/convertLinesToUnix -f=wex.json)
+
   # Server must be started.
   wex server/start -n
   # Check if site is stopped, ignoring if containers runs or not
