@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-envReadVarArgs() {
+envVarArgs() {
   _ARGUMENTS=(
     [0]='key k "Key to find in env config" true'
     [1]='label l "Description of the variable" false'
@@ -10,7 +10,7 @@ envReadVarArgs() {
   )
 }
 
-envReadVar() {
+envVar() {
   # Just wrap method with local env file.
   wex bash/readVar -f=./.env -a="${ASK}" -w="${WRITE}" -l="${LABEL}" -d="${DEFAULT}" -k="${KEY}"
 }

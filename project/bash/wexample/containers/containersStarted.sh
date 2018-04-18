@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-siteContainersStartedArgs() {
+containersStartedArgs() {
   _ARGUMENTS=(
     [0]='all a "All containers runs" false',
   )
 }
 
-siteContainersStarted() {
+containersStarted() {
   # Get site name.
-  CONTAINERS=$(wex site/containers)
+  CONTAINERS=$(wex containers/list)
   # If empty stop here.
   if [ "${CONTAINERS}" == "" ];then
     # No service, we consider that everything runs.

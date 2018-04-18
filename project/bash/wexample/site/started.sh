@@ -22,7 +22,7 @@ siteStarted() {
       if [[ ${IGNORE_CONTAINERS} != true ]];then
         # At least on container should run.
         # Return true or false.
-        wex site/containersStarted
+        wex containers/started
         return
       fi
       # Do not check containers.

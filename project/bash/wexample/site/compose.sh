@@ -8,7 +8,7 @@ siteComposeArgs() {
 
 siteCompose() {
 
-  wex site/configLoad
+  wex config/load
 
   # Load expected env file.
   . .env

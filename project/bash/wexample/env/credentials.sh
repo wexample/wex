@@ -22,7 +22,7 @@ envCredentials() {
   else
     # Username
     VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
-    SITE_USERNAME=$(wex env/readVar -l="SSH Username for ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
+    SITE_USERNAME=$(wex env/var -l="SSH Username for ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
   # Private key specified
@@ -31,7 +31,7 @@ envCredentials() {
   else
     # SSH Private key
     VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_PRIVATE_KEY
-    SITE_PRIVATE_KEY=$(wex env/readVar -l="SSH Private key for : ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
+    SITE_PRIVATE_KEY=$(wex env/var -l="SSH Private key for : ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
   # Script may be executed in an environment

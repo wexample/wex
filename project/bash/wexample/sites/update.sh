@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-serverSitesUpdate() {
+sitesUpdate() {
   # Load sites list
-  local SITES_PATHS=($(wex server/sites))
+  local SITES_PATHS=($(wex sites/list))
   # Rebuild sites list.
   SITES_PATHS_FILTERED=()
 

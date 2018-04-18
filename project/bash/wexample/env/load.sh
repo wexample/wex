@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-siteLoadEnvArgs() {
+envLoadArgs() {
   _ARGUMENTS=(
     [0]='dir_site d "Root site directory" false'
   )
 }
 
-siteLoadEnv() {
+envLoad() {
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
   fi;

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-siteConfigWriteArgs() {
+configWriteArgs() {
   _ARGUMENTS=(
     [0]='started s "Set the site is started or not" false'
     [1]='no_recreate nr "No recreate if files exists" false'
@@ -8,7 +8,7 @@ siteConfigWriteArgs() {
 }
 
 
-siteConfigWrite() {
+configWrite() {
 
   # No recreate.
   if [ "${NO_RECREATE}" == true ] &&

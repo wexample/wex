@@ -8,7 +8,7 @@ dbVarArgs() {
 
 dbVar() {
   # Load credentials stored into config
-  wex site/configLoad
+  wex config/load
   local NAME='SITE_DB_'$(wex text/uppercase -t=${NAME})
   echo $(eval 'echo ${'${NAME}'}')
 }

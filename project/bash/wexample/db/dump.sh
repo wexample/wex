@@ -37,13 +37,13 @@ dbDump() {
     cd ${CONTAINER_PATH_ROOT}
 
     # Load env name.
-    wex site/loadEnv
+    wex env/load
 
     # Can't load this data into container.
     . ${WEX_WEXAMPLE_SITE_CONFIG}
 
     # Load credentials stored into config
-    wex site/configLoad
+    wex config/load
 
     # Don't use zip_only so we keep original sql file as return.
     DUMP_FILE=$(wex framework/dump \

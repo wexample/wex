@@ -13,7 +13,7 @@ fileDownloadArgs() {
 fileDownload() {
   local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
   # Need site path
-  wex site/configLoad
+  wex config/load
   local REMOTE_SITE_PATH_ROOT=/var/www/${SITE_NAME}/
 
   wexampleSiteInitLocalVariables

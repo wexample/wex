@@ -9,7 +9,7 @@ siteExecArgs() {
 
 siteExec() {
   # Expected config file.
-  wex site/configWrite -nr
+  wex config/write -nr
 
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 

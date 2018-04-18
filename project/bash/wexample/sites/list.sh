@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Return actively running sites list.
-serverSites() {
+sitesList() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   SITES=()
 

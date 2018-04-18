@@ -5,7 +5,7 @@ repoName() {
 
   if [ "${REPO_NAME}" == "" ];then
     # Load site name.
-    wex site/configLoad
+    wex config/load
     local REPO_NAMESPACE=$(wex repo/namespace)
     # Encode name
     REPO_NAME=$(wex url/encode -t="${REPO_NAMESPACE}/${SITE_NAME}")

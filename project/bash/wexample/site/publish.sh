@@ -42,7 +42,7 @@ sitePublish() {
   . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
 
   # Load base configuration.
-  wex site/configLoad
+  wex config/load
 
   # Use local private key as deployment key
   git config core.sshCommand "ssh -i "${REPO_SSH_PRIVATE_KEY}

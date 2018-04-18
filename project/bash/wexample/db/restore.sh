@@ -40,13 +40,13 @@ dbRestore() {
     cd ${CONTAINER_PATH_ROOT}
 
     # Load env name.
-    wex site/loadEnv
+    wex env/load
 
     # Can't load this data into container.
     . ${WEX_WEXAMPLE_SITE_CONFIG}
 
     # Load credentials stored into config
-    wex site/configLoad
+    wex config/load
 
     wex framework/settings -d=${CONTAINER_PATH_ROOT}
 

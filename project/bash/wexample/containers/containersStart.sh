@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-siteContainersStart() {
-  CONTAINERS=$(wex site/containers)
+containersStart() {
+  CONTAINERS=$(wex containers/list)
   # Start all
   for CONTAINER in ${CONTAINERS[@]}
   do

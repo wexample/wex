@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-siteConfigYmlArgs() {
+configYmlArgs() {
   _ARGUMENTS=(
     [0]='file_compose_yml f "Docker compose file" false',
     [1]='dir_site d "Site directory" false',
   )
 }
 
-siteConfigYml() {
+configYml() {
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
   fi;
