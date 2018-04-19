@@ -10,21 +10,26 @@ sitesUpdate() {
   SITES=()
   for SITE_PATH in ${SITES_PATHS[@]}
   do
-    EXISTS=false
+    local EXISTS=false
+    local CONFIG=${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
 
-    # Prevent duplicates
-    for SITE_SEARCH in ${SITES_PATHS_FILTERED[@]}
-    do
-      if [[ ${SITE_SEARCH} == ${SITE_PATH} ]];then
-        EXISTS=true
+    # Config must exist.
+    if [ -f ${CONFIG} ];then
+      # Prevent duplicates
+      for SITE_SEARCH in ${SITES_PATHS_FILTERED[@]}
+      do
+        if [[ ${SITE_SEARCH} == ${SITE_PATH} ]];then
+          EXISTS=true
+        fi
+      done;
+
+      # Load config.
+      . ${CONFIG}
+
+      if [ "${EXISTS}" == false ] && [ "${STARTED}" == true ];then
+        SITES_PATHS_FILTERED+=(${SITE_PATH})
+        SITES_FILE+="\n"${SITE_PATH}
       fi
-    done;
-
-    . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
-
-    if [ "${EXISTS}" == false ] && [ "${STARTED}" == true ];then
-      SITES_PATHS_FILTERED+=(${SITE_PATH})
-      SITES_FILE+="\n"${SITE_PATH}
     fi
   done
 
