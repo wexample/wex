@@ -3,6 +3,7 @@
 serviceExecArgs() {
   _ARGUMENTS=(
     [0]='command c "Command name" true'
+    [1]='service_only s "Service only" false'
   )
 }
 
@@ -12,15 +13,17 @@ serviceExec() {
 
   for SERVICE in ${SERVICES[@]}
   do
-    SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
-    SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"
+    if [ "${SERVICE_ONLY}" == "" ] || [ "${SERVICE_ONLY}" == "${SERVICE}" ];then
+      SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
+      SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"
 
-    if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
-      . ${SERVICE_FILE_SCRIPT}
-      METHOD=${SERVICE}${COMMAND_UC}
-      # Execute init method.
-      ${METHOD}
-    fi;
+      if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
+        . ${SERVICE_FILE_SCRIPT}
+        METHOD=${SERVICE}${COMMAND_UC}
+        # Execute init method.
+        ${METHOD}
+      fi;
+    fi
   done
 
 }
