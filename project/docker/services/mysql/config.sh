@@ -16,7 +16,7 @@ mysqlConfig() {
   # Load framework settings
   wex framework/settings -d=./project/
 
-  MYSQL_CONFIG=''
+  local MYSQL_CONFIG=''
   MYSQL_CONFIG+="\nSITE_DB_HOST="${SITE_DB_HOST}
   MYSQL_CONFIG+="\nSITE_DB_PORT="${SITE_DB_PORT}
   MYSQL_CONFIG+="\nSITE_DB_NAME="${SITE_DB_NAME}
