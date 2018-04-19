@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 mysqlConfig() {
+  wex service/templates -s=mysql -e=cnf
+
   # Get site name from wex.json.
   SITE_NAME=$(wex site/config -k=name)
 

@@ -1,4 +1,4 @@
 # MySQL dumps
 /dumps/*
 # MySQL data
-/mysql/*
+/mysql/data/*

@@ -4,6 +4,7 @@ services:
     mysql:
         container_name: '${SITE_NAME}_mysql'
         image: 'wexample/mysql:${WEX_IMAGES_VERSION}'
+        restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=${SITE_DB_PASSWORD}
             - MYSQL_DATABASE=${SITE_DB_NAME}
@@ -11,6 +12,7 @@ services:
             - MYSQL_PASSWORD=${SITE_DB_PASSWORD}
         volumes:
             - ${SITE_PATH_ROOT}/mysql/data:/var/lib/mysql
-            - ${SITE_PATH_ROOT}/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+            # Issue with : [Warning] World-writable config file ... ignored
+            # - ${CONF_WEB_MYSQL_CNF}:/etc/mysql/conf.d/my.cnf:ro
         networks:
           - reverseproxy_wex_net

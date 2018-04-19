@@ -6,6 +6,7 @@ services:
         image: 'wexample/php7:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true
+        restart: always
         environment:
             - VIRTUAL_HOST=${SITE_NAME}.wex
             - VIRTUAL_PORT=${WEX_COMPOSE_PORT_1}
