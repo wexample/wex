@@ -26,11 +26,15 @@ configWrite() {
     STARTED=false
   fi;
 
+  # Get site env name.
+  . .env
+
   # Get site name from wex.json.
   local SITE_NAME=$(wex site/config -k=name)
   local SITE_CONFIG_FILE=""
   local SITE_PATH=$(realpath ./)"/"
   SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
+  SITE_CONFIG_FILE+="\nSITE_ENV="${SITE_ENV}
   SITE_CONFIG_FILE+="\nSITE_DOMAIN="$(wex site/domains -s=",")
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
