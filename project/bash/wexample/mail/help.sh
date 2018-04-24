@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 mailHelp() {
-  wex web/open -u="https://github.com/tomav/docker-mailserver"
+  # This show help.
+  bash ${BASH_SOURCE%/*}/_setup.sh
 }
