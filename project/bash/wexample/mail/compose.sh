@@ -7,8 +7,8 @@ mailComposeArgs() {
 }
 
 mailCompose() {
-  # Load config
-  . ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+  # Create temp dit if not exists.
+  mkdir -p ${WEX_WEXAMPLE_DIR_MAIL_CONFIG}
 
   docker-compose -f ${WEX_DIR_ROOT}docker/containers/mail/docker-compose.yml ${COMMAND}
 }

@@ -4,17 +4,10 @@
 # Wrapper for various setup scripts included in the docker-mailserver
 #
 
-INFO=$(docker ps \
-  --no-trunc \
-con  grep "/bin/sh -c 'supervisord -c /etc/supervisor/supervisord.conf'")
-
-IMAGE_NAME=$(echo $INFO | awk '{print $1}')
-CONTAINER_NAME=$(echo $INFO | awk '{print $2}')
-CONFIG_PATH="$(pwd)/config"
-
-if [ -z "$IMAGE_NAME" ]; then
-  IMAGE_NAME=tvial/docker-mailserver:latest
-fi
+# Forked by @weeger for wex scripts compatibility.
+IMAGE_NAME='tvial/docker-mailserver:release-v6.0.0'
+CONTAINER_NAME=wex_mail
+CONFIG_PATH=${WEX_WEXAMPLE_DIR_MAIL_CONFIG}
 
 _inspect() {
   if _docker_image_exists "$IMAGE_NAME"; then
@@ -51,7 +44,7 @@ SUBCOMMANDS:
     $0 email list
 
   alias:
-    $0 ² add <email> <recipient>
+    $0 alias add <email> <recipient>
     $0 alias del <email> <recipient>
     $0 alias list
 

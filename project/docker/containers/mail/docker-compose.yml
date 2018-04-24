@@ -4,16 +4,16 @@ services:
     image: tvial/docker-mailserver:release-v6.0.0
     hostname: ${HOSTNAME}
     domainname: ${DOMAINNAME}
-    container_name: ${CONTAINER_NAME}
+    container_name: 'wex_mail'
     ports:
     - "25:25"
     - "143:143"
     - "587:587"
     - "993:993"
     volumes:
-    - maildata:/var/mail
-    - mailstate:/var/mail-state
-    - ./config/:/tmp/docker-mailserver/
+    - ${WEX_WEXAMPLE_DIR_MAIL_TMP}/maildata:/var/mail
+    - ${WEX_WEXAMPLE_DIR_MAIL_TMP}/mailstate:/var/mail-state
+    - ${WEX_WEXAMPLE_DIR_MAIL_CONFIG}:/tmp/docker-mailserver/
     environment:
     - DMS_DEBUG=${DMS_DEBUG}
     - ENABLE_CLAMAV=${ENABLE_CLAMAV}
