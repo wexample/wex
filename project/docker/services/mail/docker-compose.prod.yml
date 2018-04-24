@@ -1,7 +1,0 @@
-version: '2'
-
-services:
-    web:
-        extends:
-          file: ${WEX_COMPOSE_YML_MAIL_BASE}
-          service: mail
