@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+siteStartArgs() {
+  _ARGUMENTS=(
+    [0]='clear_cache cc "Clear all caches" false'
+  )
+}
+
 siteStart() {
   if [ ! -f .env ];then
     echo "Missing .env file"
@@ -50,7 +56,13 @@ siteStart() {
   if [ ${SITE_ENV} == "local" ] && [ $(wex file/writable -f=/etc/hosts) == true ];then
     wex hosts/updateLocal
   fi
+
+  local OPTIONS=''
+  if [ "${CLEAR_CACHE}" == true ];then
+    OPTIONS=' --build'
+  fi
+
   # Use previously generated yml file.
-  docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d --build
+  docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${OPTIONS}
 
 }
