@@ -15,3 +15,7 @@
 .DS_Store
 /dumps
 /mysql
+
+# Mail server data
+/data/mail/*
+!/data/mail/.gitkeep

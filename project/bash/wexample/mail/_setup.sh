@@ -7,7 +7,7 @@
 # Forked by @weeger for wex scripts compatibility.
 IMAGE_NAME='tvial/docker-mailserver:release-v6.0.0'
 CONTAINER_NAME=wex_mail
-CONFIG_PATH=${WEX_WEXAMPLE_DIR_MAIL_CONFIG}
+CONFIG_PATH=${WEX_WEXAMPLE_DIR_MAIL_DATA}config/
 
 _inspect() {
   if _docker_image_exists "$IMAGE_NAME"; then
