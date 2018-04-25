@@ -38,15 +38,26 @@ These scripts are used to automate common tasks.
 
 # Wexample sites management
 
-## wex.json
+## .wex
 
-- **name** : site name, *required* 
-- **author** : Author's name,
-- **created** : Site init date,
-- **services** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
-- **prod.ipv4** : Production server IP.
-- **prod.port** : Production server port,
-- **files.xxx** : Path of site files
+If présent the scripts execution uses the wexample namespace before default namespaces, ex :
+
+```bash
+# Try to execute wex wexample::site/start if present.
+wex site/start
+```
+
+### Properties
+
+This file contains main site information. It is generated when using ```wex wexample::site/init```
+
+- **NAME** : site name, *required* 
+- **AUTHOR** : Author's name,
+- **CREATED** : Site init date,
+- **SERVICES** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
+- **PROD_IPV4** : Production server IP.
+- **PROD_PORT** : Production server port,
+- **FILES_XXX** : Path of site files
 
 ## Specific behaviors
 
@@ -81,3 +92,7 @@ To initialize Git hooks, you should execute `wex git/initHooks` on your website 
 # Create a dump in production then pull it locally
 wex db/dump -e=prod -p
 ```
+
+### wex wexample::mail/*
+
+Manage a mail server, see https://www.davd.eu/byecloud-building-a-mailserver-with-modern-webmail/

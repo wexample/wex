@@ -17,5 +17,4 @@
 /mysql
 
 # Mail server data
-/data/mail/*
-!/data/mail/.gitkeep
+/data/*

@@ -31,7 +31,7 @@ _siteInitTest_createSite() {
 
   wexLog "Test site created in "${SITE_TEST_FOLDER}
 
-  wexTestAssertEqual $([[ -f wex.json ]] && echo true || echo false) true
+  wexTestAssertEqual $([[ -f .wex ]] && echo true || echo false) true
 }
 
 _siteInitTest_checkSitesNumber() {

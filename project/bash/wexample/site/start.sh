@@ -14,7 +14,7 @@ siteStart() {
 
   # Prepare files
   wex file/convertLinesToUnix -f=.env &> /dev/null
-  wex file/convertLinesToUnix -f=wex.json &> /dev/null
+  wex file/convertLinesToUnix -f=.wex &> /dev/null
 
   # Server must be started.
   wex server/start -n

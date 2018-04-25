@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    roundcube:
+        extends:
+          file: ${WEX_COMPOSE_YML_ROUNDCUBE_BASE}
+          service: roundcube

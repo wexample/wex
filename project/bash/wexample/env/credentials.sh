@@ -41,17 +41,13 @@ envCredentials() {
     . ${DIR_SITE}.env
   fi
 
-  # We need site name to find containing folder,
-  # but we can't load data from config file,
-  # since script may be used from a non working environment
-  # (with .env file and docker running)
-  SITE_NAME=$(wex site/config -k=name)
+  . ${DIR_SITE}.wex
 
   # Conf contains site name
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
-  export SITE_IPV4=$(wex json/readValue -f=${DIR_SITE}wex.json -k=${ENVIRONMENT}.ipv4)
-  export SITE_PORT=$(wex json/readValue -f=${DIR_SITE}wex.json -k=${ENVIRONMENT}.port)
+  export SITE_IPV4=${PROD_IPV4}
+  export SITE_PORT=${PROD_PORT}
   # We may set it somewhere else.
-  export SITE_PATH_ROOT=/var/www/${SITE_NAME}/
+  export SITE_PATH_ROOT=/var/www/${NAME}/
 }

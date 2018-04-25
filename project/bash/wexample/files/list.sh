@@ -5,6 +5,8 @@ filesList() {
     DIR_SITE=./
   fi;
 
-  # Get all files.xxx keys
-  wex json/readValue -k="files..*\\" -f=${DIR_SITE}wex.json
+  . .wex
+
+  # Print on new lines
+  printf '%s\n' "${FILES[@]}"
 }

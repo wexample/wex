@@ -21,7 +21,7 @@ letsEncryptInstall() {
 
   # Set configuration
   CONF=/etc/letsencrypt/cli.ini
-  cp ${WEX_DIR_ROOT}"samples/letsEncrypt/letsEncrypt.cli.ini" ${CONF}
+  cp ${WEX_DIR_SAMPLES}"letsEncrypt/letsEncrypt.cli.ini" ${CONF}
 
   wexample configChangeValue ${CONF} "email" "${EMAIL}" " = "
   wexample configChangeValue ${CONF} "domains" "${SITE_DOMAIN}, www.${SITE_DOMAIN}" " = "
@@ -29,7 +29,7 @@ letsEncryptInstall() {
 
   # Install cron
   CRON_SCRIPT=/etc/cron.daily/certbot-renew
-  cp ${WEX_DIR_ROOT}"samples/letsEncrypt/letsEncrypt.cron.sh" ${CRON_SCRIPT}
+  cp ${WEX_DIR_ROOT}"letsEncrypt/letsEncrypt.cron.sh" ${CRON_SCRIPT}
 
   # Execute cron once (should send confirmation mail)
   . ${CRON_SCRIPT}

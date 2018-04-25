@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    roundcube:
+        image: robbertkl/roundcube:latest
+        container_name: ${SITE_NAME}_roundcube
+        environment:
+            - VIRTUAL_HOST=${SITE_NAME}.wex
+            - VIRTUAL_PORT=${SITE_PORT_RANGE}5
+        volumes:
+          # Site folder
+          - ${SITE_PATH_ROOT}/app:/app
+          - ${CONF_CONFIG_ROUNDCUBE_INC}:/app/config/config.inc.php:ro
+        networks:
+          - reverseproxy_wex_net

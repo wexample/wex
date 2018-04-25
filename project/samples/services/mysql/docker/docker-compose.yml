@@ -1,4 +1,4 @@
         extends:
           file: ${WEX_COMPOSE_YML_MYSQL}
           service: mysql
-        ports: ['${WEX_COMPOSE_PORT_3}:3306']
+        ports: ['${SITE_PORT_RANGE}3:3306']

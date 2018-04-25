@@ -4,6 +4,8 @@ siteInitArgs() {
   _ARGUMENTS=(
     [0]='dir_site d "Root site directory" false',
     [1]='services s "Services to install" false',
+    [2]='name n "Site name" false',
+    [3]='git g "Init git repository" false',
   )
 }
 
@@ -11,6 +13,10 @@ siteInit() {
 
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
+  fi;
+
+  if [ -z "${GIT+x}" ]; then
+    GIT=true
   fi;
 
   # Default services.
@@ -24,29 +30,31 @@ siteInit() {
   # TODO If no service defined, ask user for each one
   # TODO Allow per environment services (local.service => watcher)
 
-  # Name is current dir name.
-  local NAME="$(basename $( realpath "${DIR_SITE}" ))"
+  # Default services.
+  if [[ -z "${NAME+x}" ]]; then
+    # Name is current dir name.
+    local NAME="$(basename $( realpath "${DIR_SITE}" ))"
+  fi;
+
   # Do not allow underscore in site name :
   # site name may be used for local domain name,
   # which not support underscore.
   NAME=$(wex text/camelCase -t=${NAME})
 
   # Copy site files.
-  cp -n -R ${WEX_DIR_ROOT}samples/site/. ${DIR_SITE}
+  cp -n -R ${WEX_DIR_SAMPLES}site/. ${DIR_SITE}
 
   # Creating default env file
   if [ ! -f ".env" ]; then
     echo -e "SITE_ENV=local" > .env
   fi
 
-  if [ ! -f "wex.json" ]; then
-    cat <<EOF > wex.json
-{
-  "name": "${NAME}",
-  "author": "$(whoami)",
-  "created": "$(date -u)",
-  "services": "${SERVICES}"
-}
+  if [ ! -f ".wex" ]; then
+    cat <<EOF > .wex
+NAME=${NAME}
+AUTHOR=$(whoami)
+CREATED="$(date -u)"
+SERVICES=${SERVICES}
 EOF
   fi;
 
@@ -57,14 +65,16 @@ EOF
     echo -e ${NAME}"\n===" > project/README.txt
   fi;
 
-  # Already exist
-  if [ -f ${DIR_SITE}".gitignore" ]; then
-    # Merge ignore file
-    cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
-    rm ${DIR_SITE}.gitignore.source
-  else
-    mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
-  fi;
+  if [ ${GIT} == true ];then
+    # Already exist
+    if [ -f ${DIR_SITE}".gitignore" ]; then
+      # Merge ignore file
+      cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
+      rm ${DIR_SITE}.gitignore.source
+    else
+      mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
+    fi
+  fi
 
   # Split services
   SERVICES=($(echo ${SERVICES} | tr "," "\n"))
@@ -81,8 +91,7 @@ EOF
     # For each service.
     for SERVICE in ${SERVICES[@]}
     do
-      SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
-      SERVICE_DIR_SITE=${SERVICE_DIR}"site/"
+      SERVICE_DIR_SITE=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
       SERVICE_YML_FILE=${SERVICE_DIR_SITE}"docker/"${YML_FILE}
 
       if [[ -f ${SERVICE_YML_FILE} ]];then
@@ -116,8 +125,7 @@ EOF
 
   for SERVICE in ${SERVICES[@]}
   do
-    SERVICE_DIR=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/"
-    SERVICE_DIR_SITE=${SERVICE_DIR}"site/"
+    SERVICE_DIR_SITE=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
 
     # There is a site folder in service.
     # And not in the dest site.
@@ -126,19 +134,20 @@ EOF
     fi
 
     # Merge ignore file
-    if [[ -f ${DIR_SITE}.gitignore.source ]];then
+    if [ ${GIT} == true ] && [[ -f ${DIR_SITE}.gitignore.source ]];then
       cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}".gitignore"
       rm ${DIR_SITE}.gitignore.source
     fi
   done;
 
-  # Create a GIT repo if not exists.
-  git init
-  # Init git hooks.
-  wex git/initHooks
+  if [ ${GIT} == true ];then
+    # Create a GIT repo if not exists.
+    git init
+    # Init git hooks.
+    wex git/initHooks
+    # Create CI file.
+    wex gitlab/init
+  fi
 
   wex service/exec -c="init"
-
-  # Create CI file.
-  wex gitlab/init
 }

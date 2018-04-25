@@ -126,7 +126,7 @@ sitePublish() {
 
   # Save production server host for deployment.
   wex json/addValue -f=wex.json -k="prod.ipv4" -v=${SSH_HOST}
-  git add wex.json
+  git add .wex
   git commit -m "Auto publication"
   git push origin master
 

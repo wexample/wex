@@ -6,6 +6,7 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
   WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
   WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
+  WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
   WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
   WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
@@ -96,8 +97,8 @@ if [ -z "${WEX_INIT:+x}" ];then
         SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
         WEX_NAMESPACE_TEST=${SPLIT[0]}
         WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
-      # Check if we are on a "wexample" context (wex.json file in calling folder).
-      elif [ -f "wex.json" ]; then
+      # Check if we are on a "wexample" context (.wex file in calling folder).
+      elif [ -f ".wex" ]; then
         WEX_NAMESPACE_TEST="wexample"
       fi;
 

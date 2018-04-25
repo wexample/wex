@@ -58,7 +58,7 @@ mysqlDiag() {
   if [ ${STARTED} == true ];then
     local EXEC="docker exec -it ${CONTAINER} mysql "
 
-    if [ -f ./wex.json ];then
+    if [ -f ./.wex ];then
       if [[ -z ${USER+x} ]];then
         USER='-u '$(wex db/var -n=user)
       fi

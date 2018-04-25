@@ -12,7 +12,7 @@ gitInitHooks() {
   local PATH_GIT_HOOKS=.git/hooks/
   local GIT_HOOKS=$(ls ${PATH_GIT_HOOKS})
   local WEX_HOOK_CATCHER_NAME=wex-hook-catcher.sh
-  local WEX_HOOK_CATCHER=${WEX_DIR_ROOT}samples/git/${WEX_HOOK_CATCHER_NAME}
+  local WEX_HOOK_CATCHER=${WEX_DIR_SAMPLES}git/${WEX_HOOK_CATCHER_NAME}
 
   # Copy hooks catcher
   cp -n ${WEX_HOOK_CATCHER} .git/hooks/

@@ -7,7 +7,6 @@ configWriteArgs() {
   )
 }
 
-
 configWrite() {
 
   # No recreate.
@@ -28,65 +27,16 @@ configWrite() {
 
   # Get site env name.
   . .env
+  # Load site base info.
+  . .wex
 
-  # Get site name from wex.json.
-  local SITE_NAME=$(wex site/config -k=name)
   local SITE_CONFIG_FILE=""
   local SITE_PATH=$(realpath ./)"/"
-  SITE_CONFIG_FILE+="\nSITE_NAME="${SITE_NAME}
+  SITE_CONFIG_FILE+="\nSITE_NAME="${NAME}
   SITE_CONFIG_FILE+="\nSITE_ENV="${SITE_ENV}
-  SITE_CONFIG_FILE+="\nSITE_DOMAIN="$(wex site/domains -s=",")
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
-  local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-  local FINAL_SITE_PORT_RANGE=0
-  local FINAL_SITE_PORT_RANGE_FOUND=false
-
-  # Ports
-  for RANGE in $(seq 0 9); do
-    # Port range still not found
-    if [ "${FINAL_SITE_PORT_RANGE_FOUND}" == false ];then
-      USED=false
-
-      # Search into all sites
-      for SITE_PATH in ${SITES_PATHS[@]}
-      do
-        # Config file exists
-        if [[ -f ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG} ]];then
-          # Load config
-          . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
-          if [[ ${SITE_PORT_RANGE} == ${FINAL_SITE_PORT_RANGE} ]];then
-            USED=true
-          fi
-        fi
-      done
-
-      if [ "${USED}" == false ];then
-        # Port range found
-        FINAL_SITE_PORT_RANGE_FOUND=true
-      else
-        # Search next one.
-        ((FINAL_SITE_PORT_RANGE++))
-      fi
-    fi
-  done;
-
-  # Save in config.
-  SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="${FINAL_SITE_PORT_RANGE}
-
-  local FINAL_SITE_PORT_RANGE_STOP=100
-  local LOCAL_COUNTER=10
-  local LOCAL_COUNTER_VAR=0
-  while [ ${LOCAL_COUNTER} -lt ${FINAL_SITE_PORT_RANGE_STOP} ]; do
-    local VAR_NAME="WEX_COMPOSE_PORT_"${LOCAL_COUNTER_VAR}
-    # Use a common range.
-    local PORT=8${FINAL_SITE_PORT_RANGE}${LOCAL_COUNTER}
-    # One Up
-    ((LOCAL_COUNTER++))
-    ((LOCAL_COUNTER_VAR++))
-    # Add to registry.
-    SITE_CONFIG_FILE+="\n"${VAR_NAME}"="${PORT}
-  done
+  SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="$(wex port/rangeGenerate)
 
   # Execute services scripts if exists
   local CONFIG=$(wex service/exec -c="config")

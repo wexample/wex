@@ -2,6 +2,6 @@
             file: ${WEX_COMPOSE_YML_FTP}
             service: ftp
         ports:
-          - "${WEX_COMPOSE_PORT_2}:21"
+          - "${SITE_PORT_RANGE}2:21"
           # TODO Use vars
           - "30000-30009:30000-30009"
