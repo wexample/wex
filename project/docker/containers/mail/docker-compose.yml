@@ -78,6 +78,16 @@ services:
     - NET_ADMIN
     - SYS_PTRACE
     restart: always
+  rainloop:
+    image: mailu/rainloop:1.5
+    container_name: wex_mail_client
+    volumes:
+      - ./data:/var/www/rainloop/data
+    ports:
+      - "3243:80"
+    external_links:
+      - wex_mail
+
 volumes:
   maildata:
     driver: local
