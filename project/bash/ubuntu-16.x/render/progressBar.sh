@@ -6,6 +6,7 @@ renderProgressBarArgs() {
     [1]='width w "Width" true'
     [2]='description d "Description" false'
     [3]='status s "Status" false'
+    [4]='new_line nl "New line at end" false'
   )
 }
 
@@ -41,5 +42,9 @@ renderProgressBar() {
     MESSAGE+=" > "${STATUS}
   fi
 
-  echo -ne ${MESSAGE}'       \r'
+  if [ "${NEW_LINE}" == "true" ];then
+    echo ${MESSAGE}
+  else
+    echo -ne ${MESSAGE}'       \r'
+  fi
 }

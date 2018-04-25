@@ -4,7 +4,7 @@ mailCommandArgs() {
   _ARGUMENTS=(
     [0]='group g "Group" true'
     [1]='action a "Action" true'
-    [2]='data d "Command arguments" true'
+    [2]='data d "Command arguments" false'
   )
 }
 

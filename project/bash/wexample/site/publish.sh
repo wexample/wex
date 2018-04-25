@@ -27,7 +27,7 @@ sitePublish() {
   fi
 
   # Status -------- #
-  ${RENDER_BAR} -p=10 -s="Init connexion info"
+  ${RENDER_BAR} -p=10 -s="Init connexion info" -nl
 
   # Save connection info.
   wex wexample::remote/init

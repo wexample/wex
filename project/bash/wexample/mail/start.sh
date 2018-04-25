@@ -8,7 +8,8 @@ mailStart() {
   # -----------------------------------------------------------------------------------------------------------------------------
 
   HOSTNAME=$(hostname)
-  DOMAINNAME=wexample.com
+  # TODO TEMP FOR DEBUG
+  DOMAINNAME=videos.wexample.com
   CONTAINER_NAME=mail
 
   # empty => uses the `hostname` command to get the mail server's canonical hostname
