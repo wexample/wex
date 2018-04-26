@@ -5,7 +5,6 @@ portRangeGenerate() {
   local FINAL_SITE_PORT_RANGE=0
   local FINAL_SITE_PORT_RANGE_FOUND=false
   local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-  local SERVICES_PATHS=$(ls ${WEX_WEXAMPLE_DIR_SERVICES_STANDALONE})
 
   # Ports
   for RANGE in $(seq 0 9); do

@@ -6,6 +6,7 @@ siteInitArgs() {
     [1]='services s "Services to install" false',
     [2]='name n "Site name" false',
     [3]='git g "Init git repository" false',
+    [4]='environment e "Environment (local default)" false',
   )
 }
 
@@ -17,6 +18,10 @@ siteInit() {
 
   if [ -z "${GIT+x}" ]; then
     GIT=true
+  fi;
+
+  if [ -z "${ENVIRONMENT+x}" ]; then
+    ENVIRONMENT=local
   fi;
 
   # Default services.
@@ -46,7 +51,7 @@ siteInit() {
 
   # Creating default env file
   if [ ! -f ".env" ]; then
-    echo -e "SITE_ENV=local" > .env
+    echo -e "SITE_ENV="${ENVIRONMENT} > .env
   fi
 
   if [ ! -f ".wex" ]; then

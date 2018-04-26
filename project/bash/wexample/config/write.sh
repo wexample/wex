@@ -49,6 +49,8 @@ configWrite() {
   # In case we are on non unix system.
   wex file/convertLinesToUnix -f=./tmp/config &> /dev/null
 
+  echo -e "${SITE_CONFIG_FILE}"
+
   # Create docker-compose.build.yml
   wex site/compose -c="config" > ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}
 }
