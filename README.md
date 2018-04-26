@@ -38,6 +38,35 @@ These scripts are used to automate common tasks.
 
 # Wexample sites management
 
+## Docker "services"
+
+Each service is composed by parts of docker-compose.yml, which are mixed together when installed on website.
+
+They contains sample data which can be modified, and base files which is useful to inherit, in order to keep only project specific configuration.
+
+When a site is started, there is the default behavior of common services :
+
+    mysite/docker/docker-compose.local.yml
+    T > Contains environment specific configuration (ex: clear passwords)
+    | * Mixed with
+    |
+    v
+    site/docker/docker-compose.yml
+    T > Contains common editable configuration
+    | * Services extends
+    |
+    v
+    (wex)docker/services/[service_name]/docker-compose.local.yml
+    T > Contains default environment specific configuration
+    | * Services extends
+    |
+    v
+    (wex)docker/services/[service_name]/docker-compose.yml
+      > Contains default configuration
+  
+The final running docker compose yml file is stored into ```./tmp/docker-compose.build.yml``` when running ```wex config/write```.
+
+
 ## .wex
 
 If présent the scripts execution uses the wexample namespace before default namespaces, ex :

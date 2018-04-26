@@ -35,7 +35,7 @@ siteInit() {
   # TODO If no service defined, ask user for each one
   # TODO Allow per environment services (local.service => watcher)
 
-  # Default services.
+  # Default site name.
   if [[ -z "${NAME+x}" ]]; then
     # Name is current dir name.
     local NAME="$(basename $( realpath "${DIR_SITE}" ))"
@@ -45,9 +45,9 @@ siteInit() {
   # site name may be used for local domain name,
   # which not support underscore.
   NAME=$(wex text/camelCase -t=${NAME})
-
+  local SAMPLE_SITE_DIR=${WEX_DIR_SAMPLES}site/
   # Copy site files.
-  cp -n -R ${WEX_DIR_SAMPLES}site/. ${DIR_SITE}
+  cp -n -R ${SAMPLE_SITE_DIR}. ${DIR_SITE}
 
   # Creating default env file
   if [ ! -f ".env" ]; then
@@ -83,10 +83,30 @@ EOF
 
   # Split services
   SERVICES=($(echo ${SERVICES} | tr "," "\n"))
+  local SITE_DIR_DOCKER=${DIR_SITE}"docker/"
+  local SAMPLE_SITE_DIR_DOCKER=${SAMPLE_SITE_DIR}"docker/"
 
-  SITE_DIR_DOCKER=${DIR_SITE}"docker/"
+  for SERVICE in ${SERVICES[@]}
+  do
+    SERVICE_SAMPLE_DIR=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
 
-  YML=$(ls ${SITE_DIR_DOCKER})
+    # There is a site folder in service.
+    # And not in the dest site.
+    if [[ -d ${SERVICE_SAMPLE_DIR} ]] && [[ ! -d ${DIR_SITE}${SERVICE} ]];then
+      cp -n -R $(realpath ${SERVICE_SAMPLE_DIR})/. $(realpath ${DIR_SITE})
+    fi
+
+    # Merge ignore file
+    if [ ${GIT} == true ] && [[ -f ${DIR_SITE}.gitignore.source ]];then
+      cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}".gitignore"
+      rm ${DIR_SITE}.gitignore.source
+    fi
+  done;
+
+  # Empty docker folder (special behavior).
+  rm -rf $(realpath ${DIR_SITE})/docker/*
+  # Based on original docker files
+  YML=$(ls ${SAMPLE_SITE_DIR_DOCKER})
 
   # For each yml type file.
   for YML_FILE in ${YML[@]}
@@ -96,18 +116,24 @@ EOF
     # For each service.
     for SERVICE in ${SERVICES[@]}
     do
-      SERVICE_DIR_SITE=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
-      SERVICE_YML_FILE=${SERVICE_DIR_SITE}"docker/"${YML_FILE}
+      SERVICE_SAMPLE_DIR=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
 
-      if [[ -f ${SERVICE_YML_FILE} ]];then
-        YML_TO_ADD+="\n    "${SERVICE}":"
-        YML_TO_ADD+="\n"$(cat ${SERVICE_YML_FILE})
-      fi
+      # Support multiple ymls, concatenated with generated service name.
+      local YML_PARTS=$(ls ${SERVICE_SAMPLE_DIR}"docker/")
+      for YML_PART in ${YML_PARTS[@]}
+      do
+        # Report suffixes to service name.
+        local SUFFIX=''
+        if [[ ${#YML_PART} > 18 ]];then
+          SUFFIX="_"${YML_PART:15:-4}
+        fi
+
+        YML_TO_ADD+="\n    "${NAME}"_"${SERVICE}${SUFFIX}":"
+        YML_TO_ADD+="\n"$(cat ${SERVICE_SAMPLE_DIR}"docker/"${YML_PART})
+      done;
     done;
 
     if [[ ${YML_TO_ADD} ]];then
-      YML_DEST=${DIR_SITE}"docker/"${YML_FILE}
-      YML_SOURCE=$(cat ${YML_DEST})
       YML_FINAL=""
 
       # Search for placeholder, respecting line breaks.
@@ -120,28 +146,11 @@ EOF
         if [[ $(echo -e "${LINE}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//') == "#[SERVICES]" ]];then
           YML_FINAL+="${YML_TO_ADD}"
         else
-          YML_FINAL+="\n${LINE}"
+          YML_FINAL+="${LINE}\n"
         fi;
-      done <${YML_DEST}
+      done <${SAMPLE_SITE_DIR_DOCKER}${YML_FILE}
 
-      echo -e "${YML_FINAL}" > ${YML_DEST}
-    fi
-  done;
-
-  for SERVICE in ${SERVICES[@]}
-  do
-    SERVICE_DIR_SITE=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
-
-    # There is a site folder in service.
-    # And not in the dest site.
-    if [[ -d ${SERVICE_DIR_SITE} ]] && [[ ! -d ${DIR_SITE}${SERVICE} ]];then
-      cp -n -R $(realpath ${SERVICE_DIR_SITE})/. $(realpath ${DIR_SITE})
-    fi
-
-    # Merge ignore file
-    if [ ${GIT} == true ] && [[ -f ${DIR_SITE}.gitignore.source ]];then
-      cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}".gitignore"
-      rm ${DIR_SITE}.gitignore.source
+      echo -e "${YML_FINAL}" > ${DIR_SITE}"docker/"${YML_FILE}
     fi
   done;
 

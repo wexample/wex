@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+    rocketchat:
+        extends:
+          file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
+          service: rocketchat
+
+    rocketchat_mongo:
+        extends:
+          file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
+          service: rocketchat_mongo
+
+    rocketchat_mongo-init-replica:
+        extends:
+          file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
+          service: rocketchat_mongo-init-replica

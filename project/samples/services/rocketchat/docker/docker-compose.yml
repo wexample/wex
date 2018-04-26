@@ -3,16 +3,4 @@
             service: rocketchat
         ports: ['${SITE_PORT_RANGE}6:3000']
         depends_on:
-          - rocketchat_mongo
-
-    rocketchat_mongo:
-        extends:
-            file: ${WEX_COMPOSE_YML_ROCKETCHAT}
-            service: rocketchat_mongo
-
-    rocketchat_mongo-init-replica:
-        extends:
-            file: ${WEX_COMPOSE_YML_ROCKETCHAT}
-            service: rocketchat_mongo-init-replica
-        depends_on:
-          - rocketchat_mongo
+          - ${SITE_NAME]_rocketchat
