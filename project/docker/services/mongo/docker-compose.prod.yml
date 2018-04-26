@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    mongo:
+        extends:
+          file: ${WEX_COMPOSE_YML_MONGO_BASE}
+          service: mongo

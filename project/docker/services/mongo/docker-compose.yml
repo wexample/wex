@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    mongo:
+        container_name: '${SITE_NAME}_mongo'
+        image: 'mongo:3.7.5-jessie'
+        restart: always
+        environment:
+            - MONGODB_USER=root
+            - MONGODB_PASS=${SITE_DB_PASSWORD}
+        volumes:
+            - ${SITE_PATH_ROOT}/mongo/data:/data/db
+        command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1
+        networks:
+          - reverseproxy_wex_net

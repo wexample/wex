@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-serviceRemoveArgs() {
+siteDeleteArgs() {
   _ARGUMENTS=(
-    [0]='service s "Service" true'
+    [0]='site s "Site name" true'
   )
 }
 
-serviceRemove() {
-  local SERVICE_PATH=${WEX_WEXAMPLE_DIR_SERVICES_STANDALONE}${SERVICE}/
+siteDelete() {
+  # We store all standalone websites in the default sites location.
+  local SERVICE_PATH=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SERVICE}/
 
   if [ -d ${SERVICE_PATH} ] && [ -f ${SERVICE_PATH}.wex ];then
     # Go to new temporary website.
