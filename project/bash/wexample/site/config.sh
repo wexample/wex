@@ -14,5 +14,8 @@ siteConfig() {
 
   . .wex
 
+  # Uppercase key.
+  KEY=$(echo ${KEY} | tr '[:lower:]' '[:upper:]')
+
   eval 'echo ${'${KEY}'}'
 }

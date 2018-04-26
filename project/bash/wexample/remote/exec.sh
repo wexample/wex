@@ -25,7 +25,7 @@ remoteExec() {
   if [ "${DIR}" != "" ];then
     local SITE_PATH_ROOT=${DIR}
   else
-    local SITE_PATH_ROOT=/var/www/${SITE_NAME}/
+    local SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME}/
   fi
 
   ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"

@@ -49,5 +49,5 @@ envCredentials() {
   export SITE_IPV4=${PROD_IPV4}
   export SITE_PORT=${PROD_PORT}
   # We may set it somewhere else.
-  export SITE_PATH_ROOT=/var/www/${NAME}/
+  export SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${NAME}/
 }
