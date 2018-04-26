@@ -7,31 +7,37 @@ sitesUpdate() {
   SITES_PATHS_FILTERED=()
 
   SITES_FILE=""
-  SITES=()
-  for SITE_PATH in ${SITES_PATHS[@]}
-  do
-    local EXISTS=false
-    local CONFIG=${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
 
-    # Config must exist.
-    if [ -f ${CONFIG} ];then
-      # Prevent duplicates
-      for SITE_SEARCH in ${SITES_PATHS_FILTERED[@]}
-      do
-        if [[ ${SITE_SEARCH} == ${SITE_PATH} ]];then
-          EXISTS=true
+  if [ $(wex server/started) == true ];then
+    SITES=()
+    for SITE_PATH in ${SITES_PATHS[@]}
+    do
+      local EXISTS=false
+      local CONFIG=${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+
+      # Config must exist.
+      if [ -f ${CONFIG} ];then
+        # Prevent duplicates
+        for SITE_SEARCH in ${SITES_PATHS_FILTERED[@]}
+        do
+          if [[ ${SITE_SEARCH} == ${SITE_PATH} ]];then
+            EXISTS=true
+          fi
+        done;
+
+        # Load config.
+        . ${CONFIG}
+
+        if [ "${EXISTS}" == false ] && [ "${STARTED}" == true ];then
+          cd ${SITE_PATH}
+          if [ $(wex site/started) == true ];then
+            SITES_PATHS_FILTERED+=(${SITE_PATH})
+            SITES_FILE+="\n"${SITE_PATH}
+          fi
         fi
-      done;
-
-      # Load config.
-      . ${CONFIG}
-
-      if [ "${EXISTS}" == false ] && [ "${STARTED}" == true ];then
-        SITES_PATHS_FILTERED+=(${SITE_PATH})
-        SITES_FILE+="\n"${SITE_PATH}
       fi
-    fi
-  done
+    done
+  fi
 
   # Store sites list.
   echo -e ${SITES_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
