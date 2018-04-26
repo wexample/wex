@@ -36,6 +36,10 @@ These scripts are used to automate common tasks.
 
 - **Semantic versioning** : https://semver.org/
 
+# Wexample server management
+
+All websites are stored into the ```/var/www/ dir```. They should all use wex sites system management in order to respect reverse proxy behavior and benefit to domain names management, auto SSL encryption, files and database dump and restore tools, etc...
+
 # Wexample sites management
 
 ## .wex
