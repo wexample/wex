@@ -3,4 +3,4 @@
             service: rocketchat
         ports: ['${SITE_PORT_RANGE}6:3000']
         depends_on:
-          - ${SITE_NAME]_rocketchat
+          - ${SITE_NAME}_mongo

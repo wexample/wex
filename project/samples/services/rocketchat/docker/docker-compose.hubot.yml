@@ -3,4 +3,4 @@
             file: ${WEX_COMPOSE_YML_ROCKETCHAT}
             service: hubot
         depends_on:
-          - ${SITE_NAME]_mongo
+          - ${SITE_NAME}_rocketchat

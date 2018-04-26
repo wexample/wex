@@ -10,19 +10,11 @@ services:
           - VIRTUAL_PORT=${SITE_PORT_RANGE}6
           - PORT=3000
           - ROOT_URL=http://rocket.${SITE_NAME}.wex
-          - MONGO_URL=mongodb://mongo:27017/rocketchat
-          - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+          - MONGO_URL=mongodb://${SITE_NAME}_mongo:${SITE_PORT_RANGE}70/rocketchat
+          - MONGO_OPLOG_URL=mongodb://${SITE_NAME}_mongo:${SITE_PORT_RANGE}70/local
           - MAIL_URL=smtp://smtp.mailgun.org
         volumes:
           - ${SITE_PATH_ROOT}/uploads:/app/uploads
-        networks:
-          - reverseproxy_wex_net
-
-    # this container's job is just run the command to initialize the replica set.
-    # it will run the command and remove himself (it will not stay running)
-    rocketchat_init:
-        image: mongo:3.7.5-jessie
-        command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
         networks:
           - reverseproxy_wex_net
 
@@ -30,7 +22,7 @@ services:
         image: rocketchat/hubot-rocketchat:v1.0.11
         restart: unless-stopped
         environment:
-          - ROCKETCHAT_URL=${SITE_NAME]_rocketchat:${SITE_PORT_RANGE}6
+          - ROCKETCHAT_URL=${SITE_NAME}_rocketchat:${SITE_PORT_RANGE}6
           - ROCKETCHAT_ROOM=GENERAL
           - ROCKETCHAT_USER=wex
           - ROCKETCHAT_PASSWORD=vchgdsvcghdvcdsjvcds
@@ -38,3 +30,5 @@ services:
           - EXTERNAL_SCRIPTS=hubot-help,hubot-seen,hubot-links,hubot-diagnostics
         volumes:
           - ${SITE_PATH_ROOT}/hubot/scripts:/home/hubot/scripts
+        networks:
+          - reverseproxy_wex_net

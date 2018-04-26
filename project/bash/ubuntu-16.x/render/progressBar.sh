@@ -43,7 +43,7 @@ renderProgressBar() {
   fi
 
   if [ "${NEW_LINE}" == "true" ];then
-    echo ${MESSAGE}
+    echo ${MESSAGE}'       '
   else
     echo -ne ${MESSAGE}'       \r'
   fi

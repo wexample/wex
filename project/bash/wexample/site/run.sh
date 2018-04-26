@@ -13,9 +13,11 @@ siteRunArgs() {
 siteRun() {
   # We store all standalone websites in the default sites location.
   local SITE_PATH=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME}/
+  # We have variable conflicts issues.
+  local SERVICES_NEW=${SERVICES}
 
   if [ "${CLEAR_CONTENT}" == true ];then
-    wex wexample::service/remove -s=${SITE_NAME}
+    wex wexample::site/delete -s=${SITE_NAME}
   fi
 
   # Create folders.
@@ -28,7 +30,7 @@ siteRun() {
     # Init only if not exists.
     if [ $(wex site/isset) == false ];then
       # Create site with only one service
-      wex site/init -n=${SITE_NAME} -s=${SERVICES} -e=${ENVIRONMENT} --git=false
+      wex site/init -n=${SITE_NAME} -s="${SERVICES_NEW}" -e=${ENVIRONMENT} --git=false
     fi
 
     wex site/start

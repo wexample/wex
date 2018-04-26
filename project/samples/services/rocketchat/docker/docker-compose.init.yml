@@ -1,6 +1,0 @@
-        # We use this container
-        extends:
-            file: ${WEX_COMPOSE_YML_ROCKETCHAT}
-            service: rocketchat_init
-        depends_on:
-          - ${SITE_NAME]_mongo

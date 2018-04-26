@@ -6,12 +6,7 @@ services:
           file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
           service: rocketchat
 
-    rocketchat_mongo:
+    hubot:
         extends:
           file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
-          service: rocketchat_mongo
-
-    rocketchat_mongo-init-replica:
-        extends:
-          file: ${WEX_COMPOSE_YML_ROCKETCHAT_BASE}
-          service: rocketchat_mongo-init-replica
+          service: hubot

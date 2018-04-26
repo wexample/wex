@@ -8,14 +8,14 @@ siteDeleteArgs() {
 
 siteDelete() {
   # We store all standalone websites in the default sites location.
-  local SERVICE_PATH=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SERVICE}/
+  local SITE_PATH=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE}/
 
-  if [ -d ${SERVICE_PATH} ] && [ -f ${SERVICE_PATH}.wex ];then
+  if [ -d ${SITE_PATH} ] && [ -f ${SITE_PATH}.wex ];then
     # Go to new temporary website.
-    cd ${SERVICE_PATH}
+    cd ${SITE_PATH}
     # Stop
     wex site/stop
     # Remove
-    rm -rf ${SERVICE_PATH}
+    rm -rf ${SITE_PATH}
   fi
 }

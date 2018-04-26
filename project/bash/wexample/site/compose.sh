@@ -13,7 +13,7 @@ siteCompose() {
   # Load expected env file.
   . .env
 
-  SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services"))
+  local SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services"))
 
   # Iterate through array using a counter
   for ((i=0; i<${#SERVICES[@]}; i++)); do

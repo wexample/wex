@@ -11,6 +11,9 @@ siteInitArgs() {
 }
 
 siteInit() {
+  local RENDER_BAR='wex render/progressBar -w=30 '
+  # Status
+  ${RENDER_BAR} -p=0 -s="Init variables"
 
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
@@ -45,6 +48,10 @@ siteInit() {
   # site name may be used for local domain name,
   # which not support underscore.
   NAME=$(wex text/camelCase -t=${NAME})
+
+  # Status
+  ${RENDER_BAR} -p=10 -s="Copy base samples files"
+
   local SAMPLE_SITE_DIR=${WEX_DIR_SAMPLES}site/
   # Copy site files.
   cp -n -R ${SAMPLE_SITE_DIR}. ${DIR_SITE}
@@ -71,6 +78,8 @@ EOF
   fi;
 
   if [ ${GIT} == true ];then
+    # Status
+    ${RENDER_BAR} -p=20 -s="Build Docker YML Files"
     # Already exist
     if [ -f ${DIR_SITE}".gitignore" ]; then
       # Merge ignore file
@@ -81,6 +90,8 @@ EOF
     fi
   fi
 
+  # Status
+  ${RENDER_BAR} -p=30 -s="Copy services files"
   # Split services
   SERVICES=($(echo ${SERVICES} | tr "," "\n"))
   local SITE_DIR_DOCKER=${DIR_SITE}"docker/"
@@ -103,6 +114,8 @@ EOF
     fi
   done;
 
+  # Status
+  ${RENDER_BAR} -p=40 -s="Build Docker YML Files"
   # Empty docker folder (special behavior).
   rm -rf $(realpath ${DIR_SITE})/docker/*
   # Based on original docker files
@@ -155,6 +168,8 @@ EOF
   done;
 
   if [ ${GIT} == true ];then
+    # Status
+    ${RENDER_BAR} -p=50 -s="Install GIT" -nl
     # Create a GIT repo if not exists.
     git init
     # Init git hooks.
@@ -163,5 +178,11 @@ EOF
     wex gitlab/init
   fi
 
+  # Status
+  ${RENDER_BAR} -p=80 -s="Init services" -nl
+
   wex service/exec -c="init"
+
+  # Status
+  ${RENDER_BAR} -p=100 -s="Done !"
 }

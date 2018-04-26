@@ -3,6 +3,7 @@
 siteStartArgs() {
   _ARGUMENTS=(
     [0]='clear_cache cc "Clear all caches" false'
+    [1]='containers c "Docker containers to run" false'
   )
 }
 
@@ -57,12 +58,19 @@ siteStart() {
     wex hosts/updateLocal
   fi
 
+  local DOCKER_SERVICES=''
+
+  for CONTAINER in ${CONTAINERS[@]}
+  do
+    DOCKER_SERVICES+=" "${NAME}"_"${CONTAINER}
+  done;
+
   local OPTIONS=''
   if [ "${CLEAR_CACHE}" == true ];then
     OPTIONS=' --build'
   fi
 
   # Use previously generated yml file.
-  docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${OPTIONS}
+  docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
 
 }
