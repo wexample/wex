@@ -2,7 +2,7 @@
 
 dockerStopAll() {
   # Containers
-  CONTAINERS=($(docker ps -qa))
+  local CONTAINERS=($(docker ps -qa))
   if (( ${#CONTAINERS[@]} > 0 ));then
     # Stop all
     docker stop ${CONTAINERS[@]}
@@ -12,9 +12,15 @@ dockerStopAll() {
 
   # Networks
   # List all networks except builtin
-  NETWORKS=($(docker network ls -q --filter type=custom))
+  local NETWORKS=($(docker network ls -q --filter type=custom))
   if (( ${#NETWORKS[@]} > 0 ));then
     # Remove networks
     docker network rm ${NETWORKS[@]}
+  fi;
+
+  # Volumes
+  local VOLUMES=$(docker volume ls -q)
+  if (( ${#VOLUMES[@]} > 1 ));then
+    docker volume rm ${VOLUMES[@]}
   fi;
 }
