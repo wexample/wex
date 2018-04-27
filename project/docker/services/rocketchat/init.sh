@@ -19,12 +19,12 @@ rocketchatInit() {
   # Create replica set
   docker exec ${SITE_NAME}_mongo mongo localhost:${SITE_PORT_RANGE}70/rocketchat --eval "rs.initiate({ _id: \"rs0\", members: [ { _id: 0, host: \"localhost:"${SITE_PORT_RANGE}"70\" } ]})"
 
-  # Import admin and wexbot user
+  # Import default database
   # - admin / password
   # - hubot / pass given in yml file
-  #docker cp ${WEX_DIR_ROOT}docker/services/rocketchat/users.json ${SITE_NAME}_mongo:/
-  #docker exec ${SITE_NAME}_mongo mongoimport --port 7070 --db rocketchat --collection users --file /users.json
-  #docker exec ${SITE_NAME}_mongo rm /users.json
+  docker cp ${WEX_DIR_ROOT}docker/services/rocketchat/fixtures ${SITE_NAME}_mongo:/
+  docker exec ${SITE_NAME}_mongo mongorestore --port ${SITE_PORT_RANGE}70 /fixtures
+  docker exec ${SITE_NAME}_mongo rm -rf /fixtures
 
   wex site/stop
 }
