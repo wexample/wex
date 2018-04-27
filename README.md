@@ -36,6 +36,39 @@ These scripts are used to automate common tasks.
 
 - **Semantic versioning** : https://semver.org/
 
+# Method API
+
+- ```bash``` : This folder contain all bash scripts
+- ```bash/ubuntu1-16.x``` and ```bash/wexample``` : Are the two scripts namespaces. ```bash/wexample``` is loaded only in a wexample site root directory.
+- Each folder contain she script group, ex : ```bash/ubuntu-16.x/file``` folder contains all ```wex file/...``` scripts (or ```wex ubuntu-16.x::file/...```)
+- Each .sh file in these folders are the script name, ex : ```bash/ubuntu-16.x/file/exists.sh``` allow to execute ```wex file/exists```
+- Script function is named like that : ```fileExists() { ...```
+- Function arguments are passed into : ```fileExistsArgs() { ```, see file for array structure convention.
+- The arguments structure : ```argument_name a "Description" false```
+  > argument_name will be accessed into function as ${ARGUMENT_NAME}.
+  > 'a' is an alias of argument for shorten calls.
+  > Description will be used in help response and when argument is required.
+  > true/false mean required or not, if required but not present, prompt user using description content.
+- This is the full example
+
+```bash
+#!/usr/bin/env bash
+
+fileExistsArgs() {
+  _ARGUMENTS=(
+    # argument a "Description" true/false (required)
+    [0]='file f "File" true'
+  )
+}
+
+fileExists() {
+  [[ -f ${FILE} ]] && echo true || echo false
+}
+
+```
+
+Every function can display help for argument usage when using ```--help``` argument ```wex file/exists --help```.
+
 # Wexample sites management
 
 ## Docker "services"

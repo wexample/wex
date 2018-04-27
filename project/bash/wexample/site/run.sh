@@ -2,7 +2,7 @@
 
 siteRunArgs() {
   _ARGUMENTS=(
-    [0]='site_name n "Service" true'
+    [0]='site_name n "Site name" true'
     [1]='environment e "Environment" true'
     [2]='services s "Services" true'
     [3]='clear_content cc "Delete service files if exists" false'
