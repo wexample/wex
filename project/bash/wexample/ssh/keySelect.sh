@@ -9,18 +9,38 @@ sshKeySelectArgs() {
 
 sshKeySelect() {
   # Find local key.
-  local RSA_PATH=~/.ssh/
+  local HOME_DIR=$(wex user/homeDir)
+  local USERS_DIRS=($(ls ${HOME_DIR}))
+  local CUSTOM_PATH_LABEL="<CustomPath>"
+  local KEYS_AVAILABLE=(${CUSTOM_PATH_LABEL});
 
-  local SSH_PRIVATE_KEY=''
-  while [ "${SSH_PRIVATE_KEY}" == "" ];do
-    # Get SSH get
-    SSH_PRIVATE_KEY=$(wex wexample::var/localGet -n="${NAME}" -a="${DESCRIPTION}" -s -r)
-
-    if [ ! -f ${SSH_PRIVATE_KEY} ];then
-      # Ask again.
-      SSH_PRIVATE_KEY=''
+  for USER_NAME in ${USERS_DIRS[@]}
+  do
+    local KEYS_DIR=${HOME_DIR}${USER_NAME}/.ssh/
+    if [ -d ${KEYS_DIR} ];then
+      local KEYS=($(ls ${KEYS_DIR}))
+      for KEY in ${KEYS[@]}
+      do
+        if [ "${KEY##*.}" != "pub" ];then
+          KEYS_AVAILABLE+=("${KEYS_DIR}${KEY}")
+        fi
+      done;
     fi
+  done;
+
+  echo "Type a number or the path of your custom key"
+  select SELECTED in ${KEYS_AVAILABLE[@]};
+  do
+    #
+    if [ ${SELECTED} == ${CUSTOM_PATH_LABEL} ];then
+      # Clear
+      wex wexample::var/localClear -n="${NAME}"
+      SELECTED=$(wex wexample::var/localGet -n="${NAME}" -a="${DESCRIPTION}" -r)
+    else
+      $(wex wexample::var/localSet -n="${NAME}" -v="${SELECTED}")
+    fi
+    break
   done
 
-  echo ${SSH_PRIVATE_KEY}
+  echo ${SELECTED}
 }
