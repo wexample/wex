@@ -7,8 +7,8 @@ services:
         container_name: ${SITE_NAME}_rocketchat
         environment:
           - VIRTUAL_HOST=rocket.${SITE_NAME}.wex
-          - VIRTUAL_PORT=${SITE_PORT_RANGE}6
-          - PORT=3000
+          - VIRTUAL_PORT=${SITE_PORT_RANGE}60
+          - PORT=${SITE_PORT_RANGE}60
           - ROOT_URL=http://rocket.${SITE_NAME}.wex
           - MONGO_URL=mongodb://${SITE_NAME}_mongo:${SITE_PORT_RANGE}70/rocketchat
           - MONGO_OPLOG_URL=mongodb://${SITE_NAME}_mongo:${SITE_PORT_RANGE}70/local
@@ -21,12 +21,13 @@ services:
     hubot:
         image: rocketchat/hubot-rocketchat:v1.0.11
         restart: unless-stopped
+        container_name: ${SITE_NAME}_rocketchat_hubot
         environment:
-          - ROCKETCHAT_URL=${SITE_NAME}_rocketchat:${SITE_PORT_RANGE}6
+          - ROCKETCHAT_URL=${SITE_NAME}_rocketchat:${SITE_PORT_RANGE}60
           - ROCKETCHAT_ROOM=GENERAL
-          - ROCKETCHAT_USER=wex
+          - ROCKETCHAT_USER=hubot
           - ROCKETCHAT_PASSWORD=vchgdsvcghdvcdsjvcds
-          - BOT_NAME=wex
+          - BOT_NAME=hubot
           - EXTERNAL_SCRIPTS=hubot-help,hubot-seen,hubot-links,hubot-diagnostics
         volumes:
           - ${SITE_PATH_ROOT}/hubot/scripts:/home/hubot/scripts
