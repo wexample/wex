@@ -26,13 +26,13 @@ siteRun() {
   # Go to new temporary website.
   cd ${SITE_PATH}
 
-  if [ $(wex site/started) == false ];then
-    # Init only if not exists.
-    if [ $(wex site/isset) == false ];then
-      # Create site with only one service
-      wex site/init -n=${SITE_NAME} -s="${SERVICES_NEW}" -e=${ENVIRONMENT} --git=false
-    fi
+  # Init only if not exists.
+  if [ $(wex wexample::site/isset) == false ];then
+    # Create site with only one service
+    wex site/init -n=${SITE_NAME} -s="${SERVICES_NEW}" -e=${ENVIRONMENT} --git=false
+  fi
 
+  if [ $(wex site/started) == false ];then
     wex site/start
   fi
 }

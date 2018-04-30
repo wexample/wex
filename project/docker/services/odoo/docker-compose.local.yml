@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    odoo:
+        extends:
+          file: ${WEX_COMPOSE_YML_ODOO_BASE}
+          service: odoo

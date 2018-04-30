@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+    odoo:
+        container_name: '${SITE_NAME}_odoo'
+        image: odoo:11.0
+        restart: always
+        environment:
+            - VIRTUAL_HOST=odoo.${SITE_NAME}.wex
+            - VIRTUAL_PORT=${SITE_PORT_RANGE}90
+            - DB_PORT_5432_TCP_ADDR=${SITE_NAME}_postgres
+            - DB_PORT_5432_TCP_PORT=${SITE_PORT_RANGE}80
+            - DB_ENV_POSTGRES_USER=${SITE_DB_USER}
+            - DB_ENV_POSTGRES_PASSWORD=${SITE_DB_PASSWORD}
+        expose:
+          - ${SITE_PORT_RANGE}90
+        #command: "/bin/chown -R odoo /var/lib/odoo"
+        volumes:
+            - ${SITE_PATH_ROOT}/odoo/config:/etc/odoo
+            - ${SITE_PATH_ROOT}/odoo/extra-addons:/mnt/extra-addons
+            - ${SITE_PATH_ROOT}/odoo/share:/var/share
+        networks:
+          - reverseproxy_wex_net
+
+

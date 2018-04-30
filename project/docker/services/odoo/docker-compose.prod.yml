@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    postgres:
+        odoo:
+          file: ${WEX_COMPOSE_YML_ODOO_BASE}
+          service: odoo

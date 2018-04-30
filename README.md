@@ -40,8 +40,8 @@ These scripts are used to automate common tasks.
 
 - ```bash``` : This folder contain all bash scripts
 - ```bash/ubuntu1-16.x``` and ```bash/wexample``` : Are the two scripts namespaces. ```bash/wexample``` is loaded only in a wexample site root directory.
-- Each folder contain she script group, ex : ```bash/ubuntu-16.x/file``` folder contains all ```wex file/...``` scripts (or ```wex ubuntu-16.x::file/...```)
-- Each .sh file in these folders are the script name, ex : ```bash/ubuntu-16.x/file/exists.sh``` allow to execute ```wex file/exists```
+- Each folder contain she script group, ex : ```bash/default/file``` folder contains all ```wex file/...``` scripts (or ```wex default::file/...```)
+- Each .sh file in these folders are the script name, ex : ```bash/default/file/exists.sh``` allow to execute ```wex file/exists```
 - Script function is named like that : ```fileExists() { ...```
 - Function arguments are passed into : ```fileExistsArgs() { ```, see file for array structure convention.
 - The arguments structure : ```argument_name a "Description" false```

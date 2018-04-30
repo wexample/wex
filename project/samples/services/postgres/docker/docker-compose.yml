@@ -1,0 +1,4 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_POSTGRES}
+          service: postgres
+        ports: ['${SITE_PORT_RANGE}80:${SITE_PORT_RANGE}80']

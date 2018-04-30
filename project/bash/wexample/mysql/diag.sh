@@ -67,10 +67,10 @@ mysqlDiag() {
       fi
     else
       if [[ -z ${USER+x} ]];then
-        USER='-u '$(wex ubuntu-16.x::var/localGet -a="DB username" -r -s -n=USER -d="root")
+        USER='-u '$(wex default::var/localGet -a="DB username" -r -s -n=USER -d="root")
       fi
       if [[ -z ${PASSWORD+x} ]];then
-        PASSWORD=' -p'$(wex ubuntu-16.x::var/localGet -a="DB password" -r -s -n=PASSWORD)
+        PASSWORD=' -p'$(wex default::var/localGet -a="DB password" -r -s -n=PASSWORD)
       fi
     fi
 

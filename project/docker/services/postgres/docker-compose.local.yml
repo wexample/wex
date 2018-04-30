@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    postgres:
+        extends:
+          file: ${WEX_COMPOSE_YML_POSTGRES_BASE}
+          service: postgres

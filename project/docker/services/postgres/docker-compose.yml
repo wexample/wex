@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+    postgres:
+        container_name: '${SITE_NAME}_postgres'
+        image: postgres:10.3
+        restart: always
+        environment:
+          - PGPORT=${SITE_PORT_RANGE}80
+          - POSTGRES_DB=${SITE_DB_NAME}
+          - POSTGRES_USER=${SITE_DB_USER}
+          - POSTGRES_PASSWORD=${SITE_DB_PASSWORD}
+        volumes:
+            - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql
+        networks:
+          - reverseproxy_wex_net
+        command: -p ${SITE_PORT_RANGE}80

@@ -20,7 +20,7 @@ ENV PATH="/opt/wexample/project/bash:${PATH}"
 
 # Install wex scripts.
 COPY ./ /opt/wexample/
-RUN bash /opt/wexample/project/bash/ubuntu-16.x/_installLocal.sh
+RUN bash /opt/wexample/project/bash/default/_installLocal.sh
 
 # Install entrypoint.
 COPY ./project/docker/images/ubuntu16/entrypoint.sh /docker-entrypoint-ubuntu16.sh

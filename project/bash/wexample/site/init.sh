@@ -4,7 +4,7 @@ siteInitArgs() {
   _ARGUMENTS=(
     [0]='dir_site d "Root site directory" false',
     [1]='services s "Services to install" false',
-    [2]='name n "Site name" false',
+    [2]='site_name n "Site name" false',
     [3]='git g "Init git repository" false',
     [4]='environment e "Environment (local default)" false',
   )
@@ -14,6 +14,9 @@ siteInit() {
   local RENDER_BAR='wex render/progressBar -w=30 '
   # Status
   ${RENDER_BAR} -p=0 -s="Init variables"
+
+  # Create wex file early to enable wexample namespace.
+  touch .wex
 
   if [ -z "${DIR_SITE+x}" ]; then
     DIR_SITE=./
@@ -39,15 +42,15 @@ siteInit() {
   # TODO Allow per environment services (local.service => watcher)
 
   # Default site name.
-  if [[ -z "${NAME+x}" ]]; then
+  if [[ -z "${SITE_NAME+x}" ]]; then
     # Name is current dir name.
-    local NAME="$(basename $( realpath "${DIR_SITE}" ))"
+    local SITE_NAME="$(basename $( realpath "${DIR_SITE}" ))"
   fi;
 
   # Do not allow underscore in site name :
   # site name may be used for local domain name,
   # which not support underscore.
-  NAME=$(wex text/camelCase -t=${NAME})
+  NAME=$(wex text/camelCase -t=${SITE_NAME})
 
   # Status
   ${RENDER_BAR} -p=10 -s="Copy base samples files"
@@ -61,20 +64,18 @@ siteInit() {
     echo -e "SITE_ENV="${ENVIRONMENT} > .env
   fi
 
-  if [ ! -f ".wex" ]; then
-    cat <<EOF > .wex
-NAME=${NAME}
+  cat <<EOF > .wex
+NAME=${SITE_NAME}
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
 SERVICES=${SERVICES}
 EOF
-  fi;
 
   # Default project dir
   if [ ! -d project ]; then
     # Creating default dir
     mkdir project
-    echo -e ${NAME}"\n===" > project/README.txt
+    echo -e ${SITE_NAME}"\n===" > project/README.txt
   fi;
 
   if [ ${GIT} == true ];then
@@ -141,7 +142,7 @@ EOF
           SUFFIX="_"${YML_PART:15:-4}
         fi
 
-        YML_TO_ADD+="\n    "${NAME}"_"${SERVICE}${SUFFIX}":"
+        YML_TO_ADD+="\n    "${SITE_NAME}"_"${SERVICE}${SUFFIX}":"
         YML_TO_ADD+="\n"$(cat ${SERVICE_SAMPLE_DIR}"docker/"${YML_PART})
       done;
     done;
