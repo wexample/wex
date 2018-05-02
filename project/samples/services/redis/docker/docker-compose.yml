@@ -1,0 +1,4 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_REDIS}
+          service: redis
+        ports: ['${SITE_PORT_RANGE}11:${SITE_PORT_RANGE}11']

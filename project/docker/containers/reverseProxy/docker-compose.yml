@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx-proxy:
-    image: jwilder/nginx-proxy:0.6.0
+    image: jwilder/nginx-proxy:0.7.0
     container_name: wex_reverse_proxy
     ports:
       - "80:80"

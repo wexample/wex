@@ -1,7 +1,0 @@
-version: '2'
-
-services:
-    mysql:
-        extends:
-          file: ${WEX_COMPOSE_YML_MYSQL_BASE}
-          service: mysql

@@ -15,5 +15,5 @@ dbPush() {
     DUMP=$(wex db/dumpChoose)
   fi
   # Transfer
-  wex wexample::file/upload -f=./dumps/${DUMP} -d=./dumps/ -e=${ENVIRONMENT}
+  wex wexample::file/upload -f=./mysql/dumps/${DUMP} -d=./mysql/dumps/ -e=${ENVIRONMENT}
 }

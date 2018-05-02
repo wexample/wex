@@ -3,6 +3,8 @@
 mysqlConfig() {
   wex service/templates -s=mysql -e=cnf.json
 
+  # TODO Use wex db/config
+
   . .wex
 
   # Export default credentials if not found in framework.

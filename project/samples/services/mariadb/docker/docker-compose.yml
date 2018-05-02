@@ -1,0 +1,4 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_MARIADB}
+          service: mariadb
+        ports: ['${SITE_PORT_RANGE}11:3306']

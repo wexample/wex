@@ -1,7 +1,0 @@
-version: '2'
-
-services:
-    phpmyadmin:
-        extends:
-          file: ${WEX_COMPOSE_YML_PHPMYADMIN_BASE}
-          service: phpmyadmin

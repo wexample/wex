@@ -1,0 +1,4 @@
+# PostGreSQL dumps
+/postgres/dumps/*
+# PostGreSQL data
+/postgres/data/*
