@@ -9,7 +9,7 @@ dbConfig() {
   export SITE_DB_HOST=${NAME}_postgres
   export SITE_DB_PORT=5432
   export SITE_DB_NAME=${NAME}
-  export SITE_DB_USER=default
+  export SITE_DB_USER=root
   export SITE_DB_PASSWORD="thisIsAReallyNotSecurePassword!"
 
   local POSTGRES_CONFIG=''

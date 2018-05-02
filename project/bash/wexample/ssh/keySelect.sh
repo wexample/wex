@@ -41,6 +41,4 @@ sshKeySelect() {
     fi
     break
   done
-
-  echo ${SELECTED}
 }

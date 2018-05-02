@@ -22,6 +22,12 @@ varLocalGet() {
     touch ${FILE}
   fi
 
+  # Remove variable
+  local EXISTS=$(eval '[[ ! -z "${'${NAME}'+x}" ]] && echo true || echo false')
+  if [ "${EXISTS}" == false ];then
+    eval 'unset ${'${NAME}'}'
+  fi
+
   # Eval whole file.
   wexLoadVariables
   # Is defined or not, even empty value.

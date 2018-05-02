@@ -19,5 +19,5 @@ varLocalClear() {
   fi
 
   # Remove all previous values.
-  wex config/removeKey -k="local\s"${NAME}"\=" -f=${FILE}
+  wex config/removeKey -k=${NAME}"\=" -f=${FILE}
 }

@@ -46,7 +46,7 @@ if [ -z "${WEX_INIT:+x}" ];then
 
   # Data storage access performance.
   wexLoadVariables() {
-    local STORAGE=${WEX_DIR_TMP}variablesLocalStorage
+    local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
 
     if [[ -f ${STORAGE} ]];then
       . ${STORAGE};

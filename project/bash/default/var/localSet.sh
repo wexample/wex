@@ -22,7 +22,7 @@ varLocalSet() {
   wex var/localClear -n="${NAME}"
 
   # Remove all previous values.
-  wex config/removeKey -k="local\s"${NAME}"\=" -f=${FILE}
+  wex config/removeKey -k=${NAME}"\=" -f=${FILE}
 
-  echo -e 'local '${NAME}'='${VALUE} >> ${FILE}
+  echo -e ${NAME}'='${VALUE} >> ${FILE}
 }
