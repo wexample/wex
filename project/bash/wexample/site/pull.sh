@@ -10,9 +10,6 @@ sitePull() {
   # We are in the host server.
   if [ $(wex docker/isEnv) == false ]; then
 
-    # Revert to old mod before pull.
-    chmod 644 -R *
-
     # Update GIT
     wex git/pullTree
 
@@ -27,7 +24,6 @@ sitePull() {
     cd ${SITE_PATH_ROOT}
 
     # Manage permissions.
-    chmod 755 -R *
     chown www-data:www-data -R *
 
     # Per framework pull behavior.
