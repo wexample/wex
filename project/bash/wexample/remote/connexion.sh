@@ -11,15 +11,16 @@ remoteConnexionArgs() {
 }
 
 remoteConnexion() {
-  # All credentials given.
-  if [ "${SSH_USER}" != "" ] && [ "${SSH_HOST}" != "" ];then
-    return
-  fi
-
   local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
 
-  wexampleSiteInitLocalVariables
-  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  # Try with local variables (local environment).
+  if [ -f ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE} ];then
+    wexampleSiteInitLocalVariables
+    . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  # Try with versioned variables (pipeline)
+  else
+    . .wex
+  fi
 
   if [ "${SSH_USER_CUSTOM}" != "" ];then
     local SSH_USER=${SSH_USER_CUSTOM}
