@@ -87,7 +87,7 @@ sitePublish() {
   ${RENDER_BAR} -p=30 -s="Init repo to production connexion"
 
   # Test connexion between gitlab <---> prod
-  local GITLAB_PROD_EXISTS=$(wex remote/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
+  local GITLAB_PROD_EXISTS=$(wex remote/exec -q -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
   # Remove special chars may be due to remote data transfer.
   GITLAB_PROD_EXISTS=$(echo "${GITLAB_PROD_EXISTS}" | tr -dc '[:alnum:]\n')
 
@@ -106,7 +106,7 @@ sitePublish() {
   # Status
   ${RENDER_BAR} -p=35 -s="Clone repo on production"
 
-  local DIR_EXISTS=$(wex remote/exec -e=prod -d="/var/www" -s="[[ -d ${SITE_NAME} ]] && echo true || echo false")
+  local DIR_EXISTS=$(wex remote/exec -q -e=prod -d="/var/www" -s="[[ -d ${SITE_NAME} ]] && echo true || echo false")
   # Remove special chars may be due to remote data transfer.
   DIR_EXISTS=$(echo "${DIR_EXISTS}" | tr -dc '[:alnum:]\n')
   if [ ${DIR_EXISTS} == true ];then
@@ -115,9 +115,9 @@ sitePublish() {
   fi
 
   # Clone on remote repository.
-  wex remote/exec -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
+  wex remote/exec -q -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
   # Create production env file
-  wex remote/exec -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
+  wex remote/exec -q -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
 
   # Status
   ${RENDER_BAR} -p=40 -s="Push on Gitlab"
@@ -145,7 +145,7 @@ sitePublish() {
   wex service/exec -c=publish
 
   # Start site
-  wex remote/exec -e=prod -s="wex site/start"
+  wex remote/exec -q -e=prod -s="wex site/start"
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl

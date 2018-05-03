@@ -9,6 +9,7 @@ remoteExecArgs() {
     [4]='environment e "Environment to connect to" true'
     [5]='shell_script s "Command to execute from shell, relative to site directory" true'
     [6]='dir d "Remote directory (site directory by default)" false'
+    [7]='quiet q "Quiet mode" false'
   )
 }
 
@@ -21,8 +22,11 @@ remoteExec() {
   else
     local SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME}/
   fi
-  # TODO reset quiet mode
 
-  echo ssh ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
-  ssh ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
+  # Allow quiet mode
+  if [ "${QUIET}" == true ];then
+    QUIET=-oLogLevel=QUIET
+  fi
+
+  ssh ${QUIET} ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
 }
