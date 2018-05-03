@@ -40,10 +40,16 @@ siteDeploy() {
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
     # Update on production server
+    # Create gitlab user :
+    #   adduser gitlab
+    #   usermod -aG sudo gitlab
+    #   mkdir /home/gitlab/.ssh/
+    # Public key ~/.ssh/id_rsa of gitlab server must be added on production server.
+    #   nano /home/gitlab/.ssh/authorized_keys
     # User must have access to execute scripts.
     # Use : sudo visudo
     # then add : username ALL=(ALL) NOPASSWD: ALL
     # If root ssh access is disabled.
-    wex wexample::remote/exec -e=prod -h="${PROD_SSH_HOST}" -u=gitlab -k=/deployKey -d=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME} -s="wex wexample::site/pull"
+    wex wexample::remote/exec -e=prod -h="${PROD_SSH_HOST}" -u=gitlab -k=/deployKey -d=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME} -s="wex site/pull"
   fi;
 }

@@ -2,7 +2,7 @@
 
 gitlabSshInit() {
   if [ -z "${STAGING_PRIVATE_KEY+x}" ]; then
-    echo "Missing secret CI variable STAGING_PRIVATE_KEY"
+    echo "Missing secret CI variable STAGING_PRIVATE_KEY, set it in [gitlab project]/settings/ci_cd"
     gitlab-ctl stop
     exit
   fi;

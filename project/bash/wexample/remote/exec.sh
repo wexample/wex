@@ -28,5 +28,6 @@ remoteExec() {
     QUIET=-oLogLevel=QUIET
   fi
 
+  echo ssh ${QUIET} ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
   ssh ${QUIET} ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
 }
