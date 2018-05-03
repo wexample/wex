@@ -1,4 +1,7 @@
 # MySQL dumps
 /mysql/dumps/*
+!/mysql/dumps/.gitkeep
+
 # MySQL data
 /mysql/data/*
+!/mysql/data/.gitkeep
