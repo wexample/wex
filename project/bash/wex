@@ -9,7 +9,6 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
   WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
-  WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
   WEX_URL_GITHUB="https://github.com/wexample/"
   WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
   WEX_LOCAL_DIR="/opt/wexample/"
@@ -177,9 +176,10 @@ if [ -z "${WEX_INIT:+x}" ];then
     _ARGUMENTS+=(
       'non_interactive ni "Non interactive mode" false'
       'help help "Help" false'
+      'debug debug "Debug" false'
     )
     # Then start in negative value (length of previous table).
-    _NEGATIVE_ARGS_LENGTH=2
+    _NEGATIVE_ARGS_LENGTH=3
 
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
@@ -227,6 +227,11 @@ if [ -z "${WEX_INIT:+x}" ];then
       fi;
     done
 
+    if [[ ! -z ${DEBUG+x} ]];then
+      # Use a global alias.
+      WEX_DEBUG=true
+    fi
+
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
       echo "NAME: "${WEX_SCRIPT_CALL_NAME}
@@ -251,6 +256,11 @@ if [ -z "${WEX_INIT:+x}" ];then
       done;
     else
       ((WEX_DEEP_LEVEL++))
+      if [[ "${WEX_DEBUG}" == true ]];then
+        TRACE=(${FUNCNAME[@]:2})
+        local WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
+        echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
+      fi;
       # Execute function with all parameters.
       eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
       # Trace
