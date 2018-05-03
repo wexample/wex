@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-
-# TODO Move ssh to remote
-
 remoteExecArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
