@@ -17,7 +17,7 @@ remoteExec() {
   local SSH_CONNEXION=$(wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
 
   # Load credentials stored into config
-  wex config/load
+  # TODO used ?wex config/load
 
   if [ "${DIR}" != "" ];then
     local SITE_PATH_ROOT=${DIR}
