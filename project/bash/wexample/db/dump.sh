@@ -15,7 +15,7 @@ dbDump() {
 
   # This may be improved in the future.
   CONTAINER_PATH_ROOT="/var/www/html"
-  CONTAINER_PATH_DUMPS="/var/dumps"
+  CONTAINER_PATH_DUMPS="/var/www/mysql/dumps"
 
   # We are not into the docker container.
   # So we will access to it in order to re-execute current command.

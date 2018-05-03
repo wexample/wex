@@ -12,7 +12,7 @@ dbRestore() {
 
   # This may be improved in the future.
   CONTAINER_PATH_ROOT="/var/www/html"
-  CONTAINER_PATH_DUMPS="/var/dumps"
+  CONTAINER_PATH_DUMPS="/var/www/mysql/dumps"
 
   if [[ $(wex docker/isEnv) == false ]]; then
 

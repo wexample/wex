@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 dbDumpChoose() {
-  FILES=($(ls dumps))
+  FILES=($(ls mysql/dumps))
 
   while true; do
     read -p "Choose a db dump (1 to ${#FILES[@]}) : " ANSWER

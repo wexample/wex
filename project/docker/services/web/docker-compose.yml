@@ -20,7 +20,7 @@ services:
             # Cron
             - ${CONF_WEB_CRON}:/var/default.cron
             # Mysql dumps
-            - ${SITE_PATH_ROOT}dumps:/var/dumps
+            - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
             # Share same wex scripts for all environments.
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
         networks:

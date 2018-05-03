@@ -112,10 +112,10 @@ if [ -z "${WEX_INIT:+x}" ];then
         # Search into wexample local folder.
         WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh
       fi;
-    fi;
 
-    # Load namespace init file.
-    . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
+      # Load namespace init file.
+      . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
+    fi;
 
     WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
 
