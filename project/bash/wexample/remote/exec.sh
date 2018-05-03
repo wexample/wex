@@ -13,12 +13,8 @@ remoteExecArgs() {
 }
 
 remoteExec() {
-  echo wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS}
   # Prevent to set credentials globally
   local SSH_CONNEXION=$(wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
-
-  # Load credentials stored into config
-  # TODO used ?wex config/load
 
   if [ "${DIR}" != "" ];then
     local SITE_PATH_ROOT=${DIR}
