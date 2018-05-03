@@ -4,7 +4,7 @@ remoteExecArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
     [1]='ssh_private_key_custom k "SSH Private key" false'
-    [2]='ssh_host_custom host "Host to connect to" false'
+    [2]='ssh_host_custom h "Host to connect to" false'
     [3]='ssh_port_custom p "SSH Port" false'
     [4]='environment e "Environment to connect to" true'
     [5]='shell_script s "Command to execute from shell, relative to site directory" true'
