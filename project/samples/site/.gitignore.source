@@ -1,5 +1,6 @@
 # Wexample tmp
 /tmp/*
+!/tmp/.gitkeep
 
 # Not versioned files, dead code, sources...
 /trash/*

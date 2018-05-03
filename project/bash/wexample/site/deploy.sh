@@ -20,7 +20,6 @@ siteDeploy() {
   if [ "${PROD_SSH_HOST}" != "" ]; then
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
-    # TODO Still valid ?
     # Update on production server
     # User must have access to execute scripts.
     # Use : sudo visudo
