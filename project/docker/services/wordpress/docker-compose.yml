@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+    wordpress:
+        container_name: '${SITE_NAME}_wordpress'
+        image: 'wordpress:4.9.5-apache'
+        restart: always
+        networks:
+          - reverseproxy_wex_net
+#        volumes:
+#            # Site folder
+#            - ${SITE_PATH_ROOT}:/var/www/html
+        environment:
+          - WORDPRESS_DB_HOST=${SITE_NAME}_mysql
+          - WORDPRESS_DB_PORT=${SITE_PORT_RANGE}3
+          - WORDPRESS_DB_NAME=${SITE_DB_NAME}
+          - WORDPRESS_DB_USER=${SITE_DB_USER}
+          - WORDPRESS_DB_PASSWORD=${SITE_DB_PASSWORD}
+          - VIRTUAL_HOST=${SITE_NAME}.wex
+          - VIRTUAL_PORT=${SITE_PORT_RANGE}13
