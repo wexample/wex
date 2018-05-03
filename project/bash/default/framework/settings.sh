@@ -9,9 +9,9 @@ frameworkSettingsArgs() {
 frameworkSettings() {
   # Detect type.
   websiteType=$(wex framework/detect -d=${DIR});
-  # Get file path.
-  settingsPath=$(wex framework/settingsPath -t=${websiteType})
   if [[ ${websiteType} != 'default' ]];then
+    # Get file path.
+    settingsPath=$(wex framework/settingsPath -t=${websiteType})
     # Parse file.
     wex "framework"$(wexUpperCaseFirstLetter ${websiteType})'/settings' -d=${DIR}"/"${settingsPath}
   fi;
