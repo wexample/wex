@@ -3,10 +3,11 @@
 sitePublish() {
   local RENDER_BAR='wex render/progressBar -w=30 '
 
-  # Status -------- #
-  ${RENDER_BAR} -p=0 -s="Loading env"
+  # Status
+  ${RENDER_BAR} -p=0 -s="Loading env" -nl
 
   . .env
+  . .wex
 
   if [ ${SITE_ENV} != local ];then
     echo "You don't want to do that."
@@ -26,17 +27,19 @@ sitePublish() {
     exit;
   fi
 
-  # Status -------- #
-  ${RENDER_BAR} -p=10 -s="Init connexion info" -nl
+  # Status
+  ${RENDER_BAR} -p=10 -s="Init production connexion info" -nl
 
   # Save connection info.
   wex wexample::remote/init
 
   # Use same key for Gitlab && production
-  local REPO_SSH_PRIVATE_KEY=$(wex ssh/keySelect -s -n="REPO_SSH_PRIVATE_KEY" -d="SSH Private key for Gitlab")
+  local PROD_SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="PROD_SSH_PRIVATE_KEY" -d="")
+  local REPO_SSH_PRIVATE_KEY=${PROD_SSH_PRIVATE_KEY}
+  local PROD_SSH_HOST=$(wex var/localGet -r -n="PROD_SSH_HOST")
+  local GITLAB_URL=$(wex wexample::var/localGet -n=GITLAB_URL_DEFAULT -d="")
+  local GIT_ORIGIN=$(git config --get remote.origin.url)
 
-  # Status -------- #
-  ${RENDER_BAR} -p=20 -s="Loading configuration"
   # Load generated configuration.
   wexampleSiteInitLocalVariables
   . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
@@ -44,13 +47,8 @@ sitePublish() {
   # Load base configuration.
   wex config/load
 
-  # Use local private key as deployment key
-  git config core.sshCommand "ssh -i "${REPO_SSH_PRIVATE_KEY}
-
-  # Status -------- #
-  ${RENDER_BAR} -p=30 -s="Creating Gitlab repo"
-
-  local GIT_ORIGIN=$(git config --get remote.origin.url)
+  # Create repo
+  ${RENDER_BAR} -p=20 -s="Create repo" -nl
 
   # We need to create repository.
   if [ $(wex repo/exists) == false ];then
@@ -64,81 +62,92 @@ sitePublish() {
     wex repo/create
   fi
 
-  # Status -------- #
-  ${RENDER_BAR} -p=40 -s="Push on Gitlab"
-
-  # Get origin.
+    # Get origin.
   local NEW_ORIGIN=$(wex repo/info -k=ssh_url_to_repo -cc)
 
   if [ "${GIT_ORIGIN}" != "${NEW_ORIGIN}" ];then
       # Add origin
-      git remote add origin ${GIT_ORIGIN}
+      git remote add origin ${NEW_ORIGIN}
   fi
 
-  NEW_ORIGIN=${GIT_ORIGIN}
+  GIT_ORIGIN=${NEW_ORIGIN}
 
-  # Status -------- #
-  ${RENDER_BAR} -p=50 -s="Push on Gitlab"
+  # Test connexion to repo
+  if [ $(wex git/remoteExists -r=${GIT_ORIGIN}) == false ];then
+    echo ''
+    echo -e 'Git origin '${GIT_ORIGIN}' is not reachable'
+    echo -e 'You may need to add your public SSH key associated with '${PROD_SSH_PRIVATE_KEY}' at http://'${GITLAB_URL}'/profile/keys'
+    exit;
+  fi
 
-  git add .
-  git commit -m "site/publish"
-  git push -q -u origin master
+  # Use local private key as deployment key
+  git config core.sshCommand "ssh -i "${REPO_SSH_PRIVATE_KEY}
 
-  # Status -------- #
-  ${RENDER_BAR} -p=60 -s="Configure remote Git repository"
+  # Status
+  ${RENDER_BAR} -p=30 -s="Init repo to production connexion"
 
   # Test connexion between gitlab <---> prod
   local GITLAB_PROD_EXISTS=$(wex remote/exec -e=prod -d="/" -s="wex git/remoteExists -r=${GIT_ORIGIN}")
-
-  # Remove special chars ma be due to remote data transfer.
+  # Remove special chars may be due to remote data transfer.
   GITLAB_PROD_EXISTS=$(echo "${GITLAB_PROD_EXISTS}" | tr -dc '[:alnum:]\n')
 
-  # Usable to connect Gitlab / Production
+  # Unable to connect Gitlab / Production
   if [ "${GITLAB_PROD_EXISTS}" == false ];then
+    echo ''
     wex text/color -c=red -t='Production server is unable to connect to Gitlab'
 
     local GITLAB_DOMAIN=$(echo ${GIT_ORIGIN} | sed 's/git@\(.*\):.*$/\1/g')
     local REPO_NAMESPACE=$(wex repo/namespace)
 
-    echo -e 'You may need to enable deployment key on \nhttp://'${GITLAB_DOMAIN}'/'${REPO_NAMESPACE}'/'${SITE_NAME}'/settings/repository.\n'
+    echo -e 'You may need to enable deployment key on \nhttp://'${GITLAB_URL}'/'${REPO_NAMESPACE}'/'${SITE_NAME}'/settings/repository.\n'
     exit;
   fi
 
-  # Status -------- #
-  ${RENDER_BAR} -p=70 -s="Clone in production"
+  # Status
+  ${RENDER_BAR} -p=35 -s="Clone repo on production"
 
-  local DIR_EXISTS=$(wex remote/exec -e=prod -d="/var/www" -s="[[ -d videos ]] && echo true || echo false")
+  local DIR_EXISTS=$(wex remote/exec -e=prod -d="/var/www" -s="[[ -d ${SITE_NAME} ]] && echo true || echo false")
+  # Remove special chars may be due to remote data transfer.
+  DIR_EXISTS=$(echo "${DIR_EXISTS}" | tr -dc '[:alnum:]\n')
   if [ ${DIR_EXISTS} == true ];then
-    wex text/color -c=red -t='Directory exists in production.'
+    wex text/color -c=red -t='Directory '${SITE_NAME}' exists in production.'
     exit
   fi
 
-  # Clone remote repository.
+  # Clone on remote repository.
   wex remote/exec -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
+  # Create production env file
+  wex remote/exec -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
+
+  # Status
+  ${RENDER_BAR} -p=40 -s="Push on Gitlab"
+
+  # Save production server host for deployment.
+  echo "PROD_SSH_HOST="${PROD_SSH_HOST} >> .wex
+
+  git add .
+  git commit -m "site/publish"
+  git push -q -u origin master
+
+  echo -e "Waiting auto deployment...\r"
+  while [ $(wex pipeline/ready) == false ];do
+    echo -e ".\r"
+    sleep 2
+  done
+
+  # Status
+  ${RENDER_BAR} -p=50 -s="Copy files in production"
 
   # Copy local files to production.
   wex files/push -e=prod
 
-  # TODO services exec (mysql)
+  # Execute per service publication (database migration, etc...)
+  wex service/exec -c=publish
 
-  # Status -------- #
-  ${RENDER_BAR} -p=80 -s="Enable auto deployment"
-
-  # Save production server host for deployment.
-  wex json/addValue -f=wex.json -k="prod.ipv4" -v=${SSH_HOST}
-  git add .wex
-  git commit -m "Auto publication"
-  git push origin master
-
-  # Status -------- #
-  ${RENDER_BAR} -p=80 -s="Enable auto deployment"
-
-  # Create production env file
-  wex remote/exec -e=prod -s="echo SITE_ENV=prod > .env"
   # Start site
   wex remote/exec -e=prod -s="wex site/start"
 
-  # Status -------- #
-  ${RENDER_BAR} -p=100 -s="Done"
+  # Status
+  ${RENDER_BAR} -p=100 -s="Done" -nl
 
 }

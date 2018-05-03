@@ -117,7 +117,7 @@ This file contains main site information. It is generated when using ```wex wexa
 - **AUTHOR** : Author's name,
 - **CREATED** : Site init date,
 - **SERVICES** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
-- **PROD_IPV4** : Production server IP.
+- **PROD_SSH_HOST** : Production server IP.
 - **PROD_PORT** : Production server port,
 - **FILES_XXX** : Path of site files
 
