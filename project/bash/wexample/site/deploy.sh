@@ -9,7 +9,7 @@ siteDeployArgs() {
 
 siteDeploy() {
 
-  if [ ! -z "${UPWEX+x}" ]; then
+  if [ "${UPWEX+x}" == true ]; then
 
     # Save current dir.
     CURRENT_DIR=$(realpath ./)
@@ -22,6 +22,7 @@ siteDeploy() {
     git clone https://github.com/wexample/scripts.git .
     . project/bash/default/_installLocal.sh
 
+    UPWEX=false
     # Go back to project.
     cd ${CURRENT_DIR}
     # Relaunch with debug mode.
