@@ -230,6 +230,11 @@ if [ -z "${WEX_INIT:+x}" ];then
     if [[ ! -z ${DEBUG+x} ]];then
       # Use a global alias.
       WEX_DEBUG=true
+
+      # Flush previous report.
+      if [ "${WEX_DEEP_LEVEL}" == 0 ];then
+        echo '' > ${WEX_DIR_TMP}"debug.log"
+      fi
     fi
 
     # Show help manual
@@ -256,8 +261,8 @@ if [ -z "${WEX_INIT:+x}" ];then
       done;
     else
       ((WEX_DEEP_LEVEL++))
-      if [[ "${WEX_DEBUG}" == true ]];then
-        TRACE=(${FUNCNAME[@]:2})
+      if [ "${WEX_DEBUG}" == true ];then
+        TRACE=(${FUNCNAME[@]:1})
         local WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
         echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
       fi;
@@ -274,4 +279,9 @@ fi;
 # Using false as argument allow to protect unexpected argument passing
 if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
   wex "${@}"
+
+  # In debug mode show report.
+  if [ ${WEX_DEEP_LEVEL} == 0 ] && [ "${WEX_DEBUG}" == true ];then
+    cat ${WEX_DIR_TMP}"debug.log"
+  fi
 fi;
