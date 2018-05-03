@@ -17,7 +17,7 @@ siteDeploy() {
   wex ci/exec -c=deploy
 
   # There is a production site configured in .wex.
-  if [ "${PROD_IPV4}" != "" ]; then
+  if [ "${PROD_SSH_HOST}" != "" ]; then
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
     # TODO Still valid ?
@@ -26,6 +26,6 @@ siteDeploy() {
     # Use : sudo visudo
     # then add : username ALL=(ALL) NOPASSWD: ALL
     # If root ssh access is disabled.
-    wex wexample::remote/exec -e=prod -h="${PROD_IPV4}" -u=gitlab -pk=/deployKey -d=${DIR} -s="wex wexample::site/pull"
+    wex wexample::remote/exec -e=prod -h="${PROD_SSH_HOST}" -u=gitlab -pk=/deployKey -d=${DIR} -s="wex wexample::site/pull"
   fi;
 }

@@ -46,7 +46,7 @@ envCredentials() {
   # Conf contains site name
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
-  export SITE_IPV4=${PROD_IPV4}
+  export SITE_IPV4=${PROD_SSH_HOST}
   export SITE_PORT=${PROD_PORT}
   # We may set it somewhere else.
   export SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${NAME}/
