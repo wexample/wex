@@ -25,5 +25,6 @@ remoteExec() {
     local SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME}/
   fi
 
-  echo ssh -oLogLevel=QUIET -t ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
+  echo ssh -oLogLevel=QUIET ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
+  ssh -oLogLevel=QUIET ${SSH_CONNEXION} "cd ${SITE_PATH_ROOT} && ${SHELL_SCRIPT}"
 }

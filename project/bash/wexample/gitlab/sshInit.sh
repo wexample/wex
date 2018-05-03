@@ -17,6 +17,6 @@ gitlabSshInit() {
   echo "${STAGING_PRIVATE_KEY}" > ${DEPLOY_KEY};
   # SSH expect restricted access
   chmod 400 ${DEPLOY_KEY}
-
+cat ${DEPLOY_KEY}
   wex default::gitlab/sshInit -k=${DEPLOY_KEY}
 }
