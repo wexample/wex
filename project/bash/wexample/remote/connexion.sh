@@ -12,7 +12,7 @@ remoteConnexionArgs() {
 
 remoteConnexion() {
   # All credentials given.
-  if [ "${SSH_USER_CUSTOM}" != "" ] && [ "${SSH_HOST_CUSTOM}" != "" ];then
+  if [ "${SSH_USER}" != "" ] && [ "${SSH_HOST}" != "" ];then
     return
   fi
 
