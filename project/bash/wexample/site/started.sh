@@ -12,7 +12,7 @@ siteStarted() {
     DIR_SITE=./
   fi;
 
-  if [ $(wex server/started) == true ];then
+  if [ $(wex server/started) == false ];then
     echo false
     return
   fi
