@@ -3,6 +3,7 @@
 sitesUpdate() {
   # Load sites list
   local SITES_PATHS=($(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites))
+  local DIR_CURRENT=$(realpath ./)
   # Rebuild sites list.
   SITES_PATHS_FILTERED=()
 
@@ -38,6 +39,8 @@ sitesUpdate() {
       fi
     done
   fi
+
+  cd ${DIR_CURRENT}
 
   # Store sites list.
   echo -e ${SITES_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
