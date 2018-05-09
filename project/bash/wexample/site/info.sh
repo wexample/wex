@@ -23,8 +23,8 @@ siteInfo() {
   wex framework/settings
 
   if [ ! -z ${SITE_DB_HOST+x} ]; then
-    echo -e "  DB name : \t\t "${SITE_DB_HOST}
-    echo -e "  DB host : \t\t "${SITE_DB_NAME}
+    echo -e "  DB host : \t\t "${SITE_DB_HOST}
+    echo -e "  DB name : \t\t "${SITE_DB_NAME}
     echo -e "  DB user : \t\t "${SITE_DB_USER}
     echo -e "  DB password : \t "${SITE_DB_PASSWORD}
     echo ""
