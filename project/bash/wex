@@ -187,7 +187,7 @@ if [ -z "${WEX_INIT:+x}" ];then
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
       ARG_EXPECTED_SHORT=${PARAMS[1]}
-      eval $(unset ${ARG_EXPECTED_LONG^^})
+      eval 'unset '${ARG_EXPECTED_LONG^^}
 
       FOUND=false
 
@@ -231,6 +231,10 @@ if [ -z "${WEX_INIT:+x}" ];then
       # Use a global alias.
       WEX_DEBUG=true
 
+      wexLog() {
+        echo -e ${@} >> ${WEX_LOG_FILE}
+      }
+
       # Flush previous report.
       if [ "${WEX_DEEP_LEVEL}" == 0 ];then
         echo '' > ${WEX_DIR_TMP}"debug.log"
@@ -264,7 +268,7 @@ if [ -z "${WEX_INIT:+x}" ];then
       if [ "${WEX_DEBUG}" == true ];then
         TRACE=(${FUNCNAME[@]:1})
         local WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
-        echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
+        wexLog $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1}
       fi;
       # Execute function with all parameters.
       eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
