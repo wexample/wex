@@ -5,10 +5,8 @@ sitesUpdate() {
   local SITES_PATHS=($(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites))
   local DIR_CURRENT=$(realpath ./)
   # Rebuild sites list.
-  SITES_PATHS_FILTERED=()
-
-  SITES_FILE=""
-
+  local SITES_PATHS_FILTERED=()
+  local SITES_FILE=""
   if [ $(wex server/started) == true ];then
     SITES=()
     for SITE_PATH in ${SITES_PATHS[@]}
@@ -21,7 +19,7 @@ sitesUpdate() {
         # Prevent duplicates
         for SITE_SEARCH in ${SITES_PATHS_FILTERED[@]}
         do
-          if [[ ${SITE_SEARCH} == ${SITE_PATH} ]];then
+          if [ ${SITE_SEARCH} == ${SITE_PATH} ];then
             EXISTS=true
           fi
         done;
