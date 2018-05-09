@@ -10,7 +10,6 @@ serviceInstallArgs() {
 serviceInstall() {
   local SERVICE_SAMPLE_DIR=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
   local DIR_SITE=./
-echo "" # TODO TEMP
 
   # Copy all files from samples
   if [ -d ${SERVICE_SAMPLE_DIR} ] && [ ! -d ${DIR_SITE}${SERVICE} ];then
@@ -34,7 +33,7 @@ echo "" # TODO TEMP
             cat ${SERVICE_SAMPLE_DIR}${FILE} >> ${DIR_SITE}".gitignore"
           fi
         else
-          cp -n -R ${SERVICE_SAMPLE_DIR}${FILE} ${DIR_SITE}${FILE}
+          cp -n -R ${SERVICE_SAMPLE_DIR}${FILE} ${DIR_SITE}
         fi
       fi
     done
