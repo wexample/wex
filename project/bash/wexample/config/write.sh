@@ -36,7 +36,55 @@ configWrite() {
   SITE_CONFIG_FILE+="\nSITE_ENV="${SITE_ENV}
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
 
-  SITE_CONFIG_FILE+="\nSITE_PORT_RANGE="$(wex port/rangeGenerate)
+  # Build ports variables
+  local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local PORTS_USED=$(wex ports/opened -s=",")
+  # Avoid common used ports
+  PORTS_USED+=",8080,8888"
+
+  # Load used ports in all sites.
+  for SITE_PATH in ${SITES_PATHS[@]}
+  do
+    # Config file exists
+    if [ -f ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG} ];then
+      # Load config
+      . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+      if [ "${STARTED}" == true ] && [ ! -z "${SITE_PORTS_USED+x}" ];then
+        PORTS_USED+=","${SITE_PORTS_USED}
+      fi
+    fi
+  done
+
+  local SERVICES=($(wex service/list))
+  # Some services does not work with ports under 1000
+  local PORT_CURRENT=1000
+  # Split manually ports list to avoid lines breaks issues.
+  local PORTS_USED_ARRAY=$(echo ${PORTS_USED} | sed "s/,/ /g")
+  local PORTS_USED_CURRENT=''
+
+  # Assign free ports.
+  for SERVICE in ${SERVICES[@]}
+  do
+    local VAR_NAME=SERVICE_PORT_$(wex text/uppercase -t=${SERVICE})
+
+    # Avoid used ports.
+    while [ $(wex array/contains -a="${PORTS_USED_ARRAY[@]}" -i="${PORT_CURRENT}") == true ];do
+      ((PORT_CURRENT++))
+    done
+
+    # Assign port to variable
+    SITE_CONFIG_FILE+="\n"${VAR_NAME}"="${PORT_CURRENT}
+
+    if [ "${PORTS_USED_CURRENT}" != '' ];then
+      PORTS_USED_CURRENT+=','
+    fi
+
+    PORTS_USED_CURRENT+=${PORT_CURRENT}
+
+    ((PORT_CURRENT++))
+  done
+  # Save list of used ports.
+  SITE_CONFIG_FILE+="\nSITE_PORTS_USED="${PORTS_USED_CURRENT}
 
   # Execute services scripts if exists
   local CONFIG=$(wex service/exec -c="config")
