@@ -9,7 +9,7 @@ services:
         restart: always
         environment:
             - VIRTUAL_HOST=${SITE_NAME}.wex
-            - VIRTUAL_PORT=${SITE_PORT_RANGE}1
+            - VIRTUAL_PORT=${SERVICE_PORT_WEB}
         volumes:
             # Site folder
             - ${SITE_PATH_ROOT}:/var/www/html
