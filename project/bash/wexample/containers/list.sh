@@ -8,9 +8,9 @@ containersListArgs() {
 }
 
 containersList() {
-  CONFIG_YML=$(wex config/yml -f=${FILE_COMPOSE})
-  SEARCH_VAR="container_name"
-  CONTAINERS=()
+  local CONFIG_YML=$(wex config/yml -f=${FILE_COMPOSE})
+  local SEARCH_VAR="container_name"
+  local CONTAINERS=()
 
   # Remove prefix
   if [ "${REMOVE_PREFIX}" == true ];then
