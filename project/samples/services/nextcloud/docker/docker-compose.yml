@@ -1,6 +1,5 @@
         extends:
           file: ${WEX_COMPOSE_YML_NEXTCLOUD}
           service: nextcloud
-        ports: ['${SITE_PORT_RANGE}10:80']
         depends_on:
           - ${SITE_NAME}_mariadb

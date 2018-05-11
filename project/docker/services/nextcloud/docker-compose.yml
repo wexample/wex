@@ -7,14 +7,14 @@ services:
         restart: always
         environment:
           - VIRTUAL_HOST=cloud.${SITE_NAME}.wex
-          - VIRTUAL_PORT=${SITE_PORT_RANGE}10
           - MYSQL_HOST=${SITE_NAME}_mariadb
           - MYSQL_DATABASE=${SITE_NAME}
           - MYSQL_USER=${SITE_DB_USER}
           - MYSQL_PASSWORD=${SITE_DB_PASSWORD}
         expose:
-          - ${SITE_PORT_RANGE}10
-#        volumes:
-#            - ${SITE_PATH_ROOT}/nextcloud/extra-addons:/mnt/extra-addons
+          - ${SERVICE_PORT_NEXTCLOUD}
+        volumes:
+            - ${SITE_PATH_ROOT}/nextcloud/data:/var/www/html
+            - ${SITE_PATH_ROOT}/nextcloud/extra-addons:/mnt/extra-addons
         networks:
           - reverseproxy_wex_net
