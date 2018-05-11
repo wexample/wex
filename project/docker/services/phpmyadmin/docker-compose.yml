@@ -8,8 +8,7 @@ services:
           - PMA_HOST=${SITE_NAME}_mysql
         restart: always
         networks:
+          - default
           - reverseproxy_wex_net
         volumes:
             - ${CONF_PHPMYADMIN_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
-        expose:
-          - ${SITE_PORT_RANGE}4

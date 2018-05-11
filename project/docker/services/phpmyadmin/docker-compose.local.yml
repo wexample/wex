@@ -10,4 +10,3 @@ services:
             - PMA_USER=root
             - PMA_PASSWORD=${SITE_DB_PASSWORD}
             - VIRTUAL_HOST=pma.${SITE_NAME}.wex
-            - VIRTUAL_PORT=${SITE_PORT_RANGE}4
