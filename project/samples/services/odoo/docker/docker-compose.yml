@@ -1,6 +1,5 @@
         extends:
           file: ${WEX_COMPOSE_YML_ODOO}
           service: odoo
-        ports: ['${SITE_PORT_RANGE}90:${SITE_PORT_RANGE}90']
         depends_on:
           - ${SITE_NAME}_postgres
