@@ -91,7 +91,7 @@ siteInit() {
 NAME=${SITE_NAME}
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
-SERVICES=${SERVICES_ARG}
+SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
 EOF
 
   mkdir -p docker
@@ -111,7 +111,7 @@ EOF
   done
 
   # Init GIT repo
-  if [ ${GIT} == true ];then
+  if [ "${GIT}" == true ];then
     # Status
     ${RENDER_BAR} -p=20 -s="Init GIT repo"
     # Already exist
@@ -137,6 +137,8 @@ EOF
 
   # Status
   ${RENDER_BAR} -p=80 -s="Init services" -nl
+
+  wex config/write
 
   wex service/exec -c="init"
 
