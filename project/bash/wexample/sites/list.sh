@@ -4,7 +4,7 @@
 sitesList() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   SITES=()
-  
+
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Trim
@@ -20,7 +20,7 @@ sitesList() {
         fi
       done;
 
-      if [[ ${EXISTS} == false ]] && [[ $(wex site/started -d=${SITE_PATH}) == true ]];then
+      if [ ${EXISTS} == false ] && [ $(wex site/started -d=${SITE_PATH}) == true ];then
         . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
         SITES+=(${SITE_NAME})
       fi
