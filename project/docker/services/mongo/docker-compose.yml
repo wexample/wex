@@ -7,6 +7,6 @@ services:
         restart: always
         volumes:
             - ${SITE_PATH_ROOT}/mongo/data:/data/db
-        command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1 --bind_ip_all --port ${SITE_PORT_RANGE}70
+        command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1 --bind_ip_all --port 27017
         networks:
           - reverseproxy_wex_net

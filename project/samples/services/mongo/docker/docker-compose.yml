@@ -1,4 +1,4 @@
         extends:
           file: ${WEX_COMPOSE_YML_MONGO}
           service: mongo
-        ports: ['${SITE_PORT_RANGE}70:${SITE_PORT_RANGE}70']
+        ports: ['${SERVICE_PORT_MONGO}:3000']
