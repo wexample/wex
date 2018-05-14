@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
 remoteInit() {
-  wexampleSiteInitLocalVariables
-  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  _ARGUMENTS=(
+    [0]='recreate r "Restart publishing configuration" true'
+  )
+}
+
+remoteInit() {
+  # Recreate ?
+  if [ "${RECREATE}" != true ];then
+    wexampleSiteInitLocalVariables
+    . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  fi
 
   while true;do
 
