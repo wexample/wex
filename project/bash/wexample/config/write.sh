@@ -57,7 +57,7 @@ configWrite() {
 
   local SERVICES=($(wex service/list))
   # Some services does not work with ports under 1000
-  local PORT_CURRENT=1000
+  local PORT_CURRENT=1001
   # Split manually ports list to avoid lines breaks issues.
   local PORTS_USED_ARRAY=$(echo ${PORTS_USED} | sed "s/,/ /g")
   local PORTS_USED_CURRENT=''

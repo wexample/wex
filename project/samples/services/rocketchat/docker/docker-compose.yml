@@ -1,6 +1,5 @@
         extends:
             file: ${WEX_COMPOSE_YML_ROCKETCHAT}
             service: rocketchat
-        ports: ['${SERVICE_PORT_ROCKETCHAT}:3000']
         depends_on:
           - ${SITE_NAME}_mongo
