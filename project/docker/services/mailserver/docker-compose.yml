@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+    mailserver:
+      container_name: ${SITE_NAME}_mailserver
+      restart: always
+      image: tvial/docker-mailserver:release-v6.0.0
+      hostname: mail
+      domainname: wexample.com
+      ports:
+        - "25:25"
+        - "143:143"
+        - "587:587"
+        - "993:993"
+      volumes:
+        - ${SITE_PATH_ROOT}/mailserver/data:/var/mail
+        - ${SITE_PATH_ROOT}/mailserver/state:/var/mail-state
+        - ${SITE_PATH_ROOT}/mailserver/config:/tmp/docker-mailserver/
+      environment:
+        - ENABLE_SPAMASSASSIN=1
+        - ENABLE_CLAMAV=1
+        - ENABLE_FAIL2BAN=1
+        - ENABLE_POSTGREY=1
+        - ONE_DIR=1
+        - DMS_DEBUG=0
+      cap_add:
+        - NET_ADMIN
+        - SYS_PTRACE
+
+volumes:
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
+

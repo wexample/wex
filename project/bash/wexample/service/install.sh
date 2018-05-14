@@ -32,6 +32,11 @@ serviceInstall() {
             echo -e "" >> ${DIR_SITE}".gitignore"
             cat ${SERVICE_SAMPLE_DIR}${FILE} >> ${DIR_SITE}".gitignore"
           fi
+        # .env files (merged files)
+        elif [ "${FILE}" == ".env" ];then
+            touch ${DIR_SITE}${FILE}
+            echo -e "" >> ${DIR_SITE}${FILE}
+            cat ${SERVICE_SAMPLE_DIR}${FILE} >> ${DIR_SITE}${FILE}
         else
           cp -n -R ${SERVICE_SAMPLE_DIR}${FILE} ${DIR_SITE}
         fi
