@@ -29,7 +29,7 @@ renderProgressBar() {
      I_CALC=$(expr ${I_CALC} \* 100)
      I_CALC=$(expr ${I_CALC} / ${PRECISION})
 
-     if [ ${I_CALC} -lt ${PERCENTAGE} ];then
+     if [ ${I_CALC} -lt ${PERCENTAGE} ] || [ ${I_CALC} == ${PERCENTAGE} ];then
        MESSAGE+='#'
      else
        MESSAGE+='.'
