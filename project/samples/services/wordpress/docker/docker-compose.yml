@@ -1,6 +1,5 @@
         extends:
           file: ${WEX_COMPOSE_YML_WORDPRESS}
           service: wordpress
-        ports: ['${SITE_PORT_RANGE}14:80']
         depends_on:
           - ${SITE_NAME}_mysql

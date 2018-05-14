@@ -6,18 +6,20 @@ configChangeValueTest() {
 
   noSeparator=$(wex config/getValue -f="${filePath}" -k="ConfigTestOption")
   wexTestAssertEqual ${noSeparator} "two"
-# TODO
-#  # Space separator
-#  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
-#
-#  # Strict equal separator
-#  configChangeValueTestItem ${filePath} "ConfigTestOptionEqual" "="
-#
-#  # Revert file.
-#  filePath=$(wexTestSampleInit configSample)
-#
-#  configChangeValueTestItem ${filePath} "ChallengeResponseAuthentication"
 
+  # Space separator
+  configChangeValueTestItem ${filePath} "ConfigTestOption" " "
+
+  # Strict equal separator
+  configChangeValueTestItem ${filePath} "ConfigTestOptionEqual" "="
+
+  # Revert file.
+  filePath=$(wexTestSampleInit configSample)
+
+  configChangeValueTestItem ${filePath} "ChallengeResponseAuthentication"
+
+  filePath=$(wexTestSampleInit sshd_config)
+  configChangeValueTestItem ${filePath} Port " "
 }
 
 configChangeValueTestItem() {

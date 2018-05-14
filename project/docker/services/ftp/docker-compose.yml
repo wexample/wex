@@ -8,7 +8,7 @@ services:
           - PUBLICHOST=ftp.${SITE_NAME}.wex
           - PORTS_RANGE=30000:30009
           - VIRTUAL_HOST=ftp.${SITE_NAME}.wex
-          - VIRTUAL_PORT=${SITE_PORT_RANGE}2
+          - VIRTUAL_PORT=22
         volumes:
           # Site folder
           - ${SITE_PATH_ROOT}:/var/www/html
