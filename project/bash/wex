@@ -68,7 +68,10 @@ if [ -z "${WEX_INIT:+x}" ];then
     do
         if [[ $i =~ $whitespace ]]
         then
-            i=\"$i\"
+            # TODO Temp; if success, use it in place on sed
+            ARG_NAME=$(echo ${i} | cut -d"=" -f1)
+            ARG_VALUE=${i#*\=}
+            i="-"${ARG_NAME}"=\"${ARG_VALUE}\""
         fi
         WEX_ARGUMENTS+=' '${i}
     done
@@ -187,6 +190,9 @@ if [ -z "${WEX_INIT:+x}" ];then
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
       ARG_EXPECTED_SHORT=${PARAMS[1]}
+      # Mark variable as empty
+      local ${ARG_EXPECTED_LONG^^}=
+      # Set it as null.
       eval 'unset '${ARG_EXPECTED_LONG^^}
 
       FOUND=false
@@ -196,15 +202,14 @@ if [ -z "${WEX_INIT:+x}" ];then
       for ARG_GIVEN in "${@:2}"
       do
         ARG_GIVEN_NAME=$(sed -e 's/--\?\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
-        ARG_GIVEN_VALUE=$(sed -e 's/--\?[^\=]*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
-
+        ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
         if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
           FOUND=true
-          declare ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
+          local ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
         # Support --noEqualSign -nes
         elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
           FOUND=true
-          declare ${ARG_EXPECTED_LONG^^}=true
+          local ${ARG_EXPECTED_LONG^^}=true
         fi
       done;
 

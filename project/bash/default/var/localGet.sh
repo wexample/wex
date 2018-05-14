@@ -18,9 +18,7 @@ varLocalGet() {
     FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
   fi
 
-  if [ ! -f ${FILE} ];then
-    touch ${FILE}
-  fi
+  touch ${FILE}
 
   # Remove variable
   local EXISTS=$(eval '[[ ! -z "${'${NAME}'+x}" ]] && echo true || echo false')
@@ -42,7 +40,7 @@ varLocalGet() {
   fi
 
   # Value is still empty and not defined or required.
-  if [ "${VALUE}" == "" ] && ([ "${EXISTS}" == false ] || [ "${REQUIRED}" == true ]) && [ ! -z "${ASK+x}" ];then
+  if [ "${VALUE}" == "" ] && ([ "${EXISTS}" == false ] || [ "${REQUIRED}" == true ]) && [ "${ASK}" != "" ];then
     while true;do
       local OPTIONS=''
       local MESSAGE="${ASK}"

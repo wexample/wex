@@ -9,4 +9,8 @@ vpsInit() {
   wex rootLogin/disable
   # Create www dir
   mkdir -p /var/www/
+
+  # TODO TEST IT
+  #wex config/setValue /etc/ssh/sshd_config -k="Port" -v=""
+  #service ssh restart
 }
