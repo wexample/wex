@@ -5,7 +5,7 @@ siteInitArgs() {
     [0]='services s "Services to install" true',
     [1]='site_name n "Site name" false',
     [2]='git g "Init git repository" false',
-    [3]='environment e "Environment (local default)" false',
+    [3]='environment e "Environment (local default)" false'
   )
 }
 
@@ -107,32 +107,31 @@ EOF
   do
      # Status
     ${RENDER_BAR} -p=30 -s="Installing service "${SERVICE}
-    wex service/install -s=${SERVICE} -g=${GIT}
+    wex service/install -s=${SERVICE}
   done
+
+
+  # GIT Common settings
+  ${RENDER_BAR} -p=20 -s="Init GIT repo"
+  # Already exist
+  if [ -f ${DIR_SITE}".gitignore" ]; then
+    # Merge ignore file
+    cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
+    rm ${DIR_SITE}.gitignore.source
+  else
+    mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
+  fi
+  # Create CI file.
+  wex gitlab/init
 
   # Init GIT repo
   if [ "${GIT}" == true ];then
-    # Status
-    ${RENDER_BAR} -p=20 -s="Init GIT repo"
-    # Already exist
-    if [ -f ${DIR_SITE}".gitignore" ]; then
-      # Merge ignore file
-      cat ${DIR_SITE}.gitignore.source >> ${DIR_SITE}.gitignore
-      rm ${DIR_SITE}.gitignore.source
-    else
-      mv ${DIR_SITE}.gitignore.source ${DIR_SITE}.gitignore
-    fi
-
     # Status
     ${RENDER_BAR} -p=50 -s="Install GIT" -nl
     # Create a GIT repo if not exists.
     git init
     # Init git hooks.
     wex git/initHooks
-    # Create CI file.
-    wex gitlab/init
-  else
-    rm ${DIR_SITE}.gitignore.source
   fi
 
   # Status
