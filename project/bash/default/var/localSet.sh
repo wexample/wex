@@ -9,20 +9,23 @@ varLocalSetArgs() {
 }
 
 varLocalSet() {
+  # Prevent sub with same variables.
+  local LOCAL_FILE=${FILE}
+
   # If no file specified
-  if [ "${FILE}" == "" ];then
+  if [ "${LOCAL_FILE}" == "" ];then
     # Use wex tmp folder
-    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
+    LOCAL_FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
   fi
 
-  if [ ! -f ${FILE} ];then
-    touch ${FILE}
+  if [ ! -f ${LOCAL_FILE} ];then
+    touch ${LOCAL_FILE}
   fi
 
   wex var/localClear -n="${NAME}"
 
   # Remove all previous values.
-  wex config/removeKey -k=${NAME}"\=" -f=${FILE}
+  wex config/removeKey -k=${NAME}"\=" -f=${LOCAL_FILE}
 
-  echo -e ${NAME}'='${VALUE} >> ${FILE}
+  echo -e ${NAME}'='${VALUE} >> ${LOCAL_FILE}
 }
