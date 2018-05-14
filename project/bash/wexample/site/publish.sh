@@ -62,7 +62,7 @@ sitePublish() {
     wex repo/create
   fi
 
-    # Get origin.
+   # Get origin.
   local NEW_ORIGIN=$(wex repo/info -k=ssh_url_to_repo -cc)
 
   if [ "${GIT_ORIGIN}" != "${NEW_ORIGIN}" ];then
