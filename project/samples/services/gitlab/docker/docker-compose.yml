@@ -1,9 +1,6 @@
         extends:
           file: ${WEX_COMPOSE_YML_GITLAB}
           service: gitlab
-        ports:
-        - "${SITE_PORT_RANGE}12:${SITE_PORT_RANGE}12"
-        - "${SITE_PORT_RANGE}13:${SITE_PORT_RANGE}13"
         depends_on:
         - ${SITE_NAME}_redis
         - ${SITE_NAME}_postgres
