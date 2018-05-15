@@ -15,7 +15,7 @@ services:
         volumes:
           - ${SITE_PATH_ROOT}/uploads:/app/uploads
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net
 
     hubot:
         image: rocketchat/hubot-rocketchat:v1.0.11
@@ -31,4 +31,4 @@ services:
         volumes:
           - ${SITE_PATH_ROOT}/hubot/scripts:/home/hubot/scripts
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net

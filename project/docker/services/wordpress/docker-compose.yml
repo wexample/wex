@@ -6,7 +6,7 @@ services:
         image: 'wordpress:4.9.5-apache'
         restart: always
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net
 #        volumes:
 #            # Site folder
 #            - ${SITE_PATH_ROOT}:/var/www/html

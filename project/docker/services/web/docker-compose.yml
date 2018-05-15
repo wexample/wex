@@ -28,5 +28,5 @@ services:
             # Use common certificates storage
             - /var/www/proxy/certs:/certs
         networks:
-            - reverseproxy_wex_net
+            - tmp_wex_net
 

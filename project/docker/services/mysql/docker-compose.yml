@@ -15,4 +15,4 @@ services:
             # Issue with : [Warning] World-writable config file ... ignored
             # - ${CONF_WEB_MYSQL_CNF}:/etc/mysql/conf.d/my.cnf:ro
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net

@@ -6,5 +6,5 @@ version: '2'
 # See wexample::site/compose to see concatenation method detail.
 
 networks:
-  reverseproxy_wex_net:
+  tmp_wex_net:
     external: true

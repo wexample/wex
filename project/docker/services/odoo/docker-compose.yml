@@ -16,6 +16,6 @@ services:
             - ${SITE_PATH_ROOT}/odoo/extra-addons:/mnt/extra-addons
             - ${SITE_PATH_ROOT}/odoo/share:/var/share
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net
 
 

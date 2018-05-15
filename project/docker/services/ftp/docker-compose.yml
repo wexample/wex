@@ -15,4 +15,4 @@ services:
           # User password files
           - ${SITE_PATH_ROOT}/ftp/passwd:/etc/pure-ftpd/passwd
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net

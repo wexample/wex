@@ -128,4 +128,4 @@ services:
         - OAUTH_AZURE_API_SECRET=
         - OAUTH_AZURE_TENANT_ID=
       networks:
-        - reverseproxy_wex_net
+        - tmp_wex_net

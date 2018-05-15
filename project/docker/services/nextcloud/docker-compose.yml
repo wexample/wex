@@ -17,4 +17,4 @@ services:
             - ${SITE_PATH_ROOT}/nextcloud/data:/var/www/html
             - ${SITE_PATH_ROOT}/nextcloud/extra-addons:/mnt/extra-addons
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net

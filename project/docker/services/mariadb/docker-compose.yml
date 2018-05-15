@@ -13,4 +13,4 @@ services:
         volumes:
             - ${SITE_PATH_ROOT}/mariadb/data:/var/lib/mysql
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net

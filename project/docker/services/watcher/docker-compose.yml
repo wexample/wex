@@ -5,7 +5,7 @@ services:
         container_name: '${SITE_NAME}_watcher'
         image: 'wexample/watcher:${WEX_IMAGES_VERSION}'
         networks:
-          - reverseproxy_wex_net
+          - tmp_wex_net
         volumes:
             # Site folder
             - ${SITE_PATH_ROOT}:/var/www/html
