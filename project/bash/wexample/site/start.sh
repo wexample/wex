@@ -17,8 +17,11 @@ siteStart() {
   wex file/convertLinesToUnix -f=.env &> /dev/null
   wex file/convertLinesToUnix -f=.wex &> /dev/null
 
-  # Server must be started.
-  wex server/start -n
+  # Current site is not the server itself.
+  if [ $(wex service/used -s=proxy) == false ];then
+    # Server must be started.
+    wex server/start -n
+  fi
 
   # Check if site is already started,
   # ignoring if containers runs or not.
