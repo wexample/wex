@@ -61,7 +61,8 @@ serviceInstallMergeYml() {
       # Report suffixes to service name.
       local SUFFIX=''
       local FILENAME=$(basename ${FILE_TO_MERGE})
-      if [[ ${#FILENAME} > 18 ]];then
+      # Match with files to merge as services.
+      if [ "${FILENAME:0:15}" == 'docker-compose-' ];then
         SUFFIX="_"${FILENAME:15:-4}
       fi
 
@@ -79,5 +80,6 @@ serviceInstallMergeYml() {
       # Append to yml file
       echo -e "${YML_CONTENT}" > ${YML_DEST_FILE}.tmp
       sed -i "/services:/r ${YML_DEST_FILE}.tmp" ${YML_DEST_FILE}
+      rm ${YML_DEST_FILE}.tmp
   fi
 }
