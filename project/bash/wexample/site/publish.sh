@@ -148,6 +148,7 @@ sitePublish() {
 
   # Save production server host for deployment.
   echo "PROD_SSH_HOST="${PROD_SSH_HOST} >> .wex
+  echo "PROD_SSH_PORT="${PROD_SSH_PORT} >> .wex
 
   git add .
   git commit -m "site/publish"
