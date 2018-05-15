@@ -163,7 +163,7 @@ Manage a mail server, see https://www.davd.eu/byecloud-building-a-mailserver-wit
 
 - Create a new site using service mailserver
 - Register at least one mail account
-- Go into the site and execute `wex mail/dkim` to generate your TXT DNS entry
+- Go into the site and execute `wex mail/dkim` to generate a 1024 TXT DNS entry
 - Edit your DNS Zone by
   * Adding a A mail domain like mail.wexample.com
   * Create two MX records pointing to mail.wexample.com
