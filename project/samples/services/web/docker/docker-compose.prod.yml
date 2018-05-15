@@ -1,2 +1,3 @@
         environment:
           - VIRTUAL_HOST=${SITE_NAME}.com
+          - VIRTUAL_PROTO=https
