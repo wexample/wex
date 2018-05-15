@@ -7,7 +7,5 @@ mailComposeArgs() {
 }
 
 mailCompose() {
-  # Create temp dit if not exists.
-
   docker-compose -f ${WEX_DIR_ROOT}docker/containers/mail/docker-compose.yml ${COMMAND}
 }

@@ -12,7 +12,6 @@ mailCommandArgs() {
 # Wiki : https://github.com/tomav/docker-mailserver/wiki/Setup-docker-mailserver-using-the-script-setup.sh
 mailCommand() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
-
   # Create global config.
   CONTAINER_NAME=${SITE_NAME}_mailserver
 
