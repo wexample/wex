@@ -19,5 +19,5 @@ gitlabPost() {
   fi
 
   # Post
-  curl ${OPTIONS} curl -X POST ${BASE_URL}
+  curl ${OPTIONS} -X POST ${BASE_URL}
 }

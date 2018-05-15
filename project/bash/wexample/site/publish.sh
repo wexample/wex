@@ -103,7 +103,6 @@ sitePublish() {
   PROD_ID_RSA_PUB=$(echo "${PROD_ID_RSA_PUB}"|tr -d '\r')
   # Find registered id for production key if exists.
   local PROD_KEY_ID=$(wex gitlab/keyId -k="${PROD_ID_RSA_PUB}")
-
   local REPO_NAME=$(wex repo/name);
   wex wexample::gitlab/post -p="projects/${REPO_NAME}/deploy_keys/"${PROD_KEY_ID}"/enable" &> /dev/null
 
@@ -128,23 +127,7 @@ sitePublish() {
   fi
 
   # Status
-  ${RENDER_BAR} -p=35 -s="Clone repo on production"
-
-  local DIR_EXISTS=$(wex remote/exec -q -e=prod -d="/var/www" -s="[[ -d ${SITE_NAME} ]] && echo true || echo false")
-  # Remove special chars may be due to remote data transfer.
-  DIR_EXISTS=$(echo "${DIR_EXISTS}" | tr -dc '[:alnum:]\n')
-  if [ ${DIR_EXISTS} == true ];then
-    wex text/color -c=red -t='Directory '${SITE_NAME}' exists in production.'
-    exit
-  fi
-
-  # Clone on remote repository.
-  wex remote/exec -q -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
-  # Create production env file
-  wex remote/exec -q -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
-
-  # Status
-  ${RENDER_BAR} -p=40 -s="Push on Gitlab"
+  ${RENDER_BAR} -p=35 -s="Push on Gitlab"
 
   # Save production server host for deployment.
   echo "PROD_SSH_HOST="${PROD_SSH_HOST} >> .wex
@@ -154,11 +137,40 @@ sitePublish() {
   git commit -m "site/publish"
   git push -q -u origin master
 
-  echo -e "Waiting auto deployment...\r"
+  sleep 2
+
+  # Stop all pipelines.
+  wex pipelines/cancel
+
+  # Status
+  ${RENDER_BAR} -p=40 -s="Clone repo on production"
+
+  local DIR_EXISTS=$(wex remote/exec -q -e=prod -d="/var/www" -s="[[ -d ${SITE_NAME} ]] && echo true || echo false")
+  # Remove special chars may be due to remote data transfer.
+  DIR_EXISTS=$(echo "${DIR_EXISTS}" | tr -dc '[:alnum:]\n')
+  if [ ${DIR_EXISTS} == true ];then
+    wex text/color -c=red -t='Directory '${SITE_NAME}' exists in production.'
+    exit
+  fi
+
+  # Clone new empty repo on remote repository.
+  wex remote/exec -q -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
+  # Create production env file
+  wex remote/exec -q -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
+
+  # Status
+  ${RENDER_BAR} -p=45 -s="Executing pipeline"
+
+  # Run pipeline once again.
+  wex pipeline/run
+
+  local MESSAGE="Waiting auto deployment..."
   while [ $(wex pipeline/ready) == false ];do
-    echo -e ".\r"
+    echo -e ${MESSAGE}"\r"
+    MESSAGE+='.'
     sleep 2
   done
+  echo ''
 
   # Status
   ${RENDER_BAR} -p=50 -s="Copy files in production"
