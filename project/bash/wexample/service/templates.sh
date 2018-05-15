@@ -33,7 +33,7 @@ serviceTemplates() {
 
       FILE_ENV=${SPLIT[0]}"."${SITE_ENV}${EXT_ENV}
 
-      # There is more tha two pieces,
+      # There is more than two pieces,
       # And second piece is env name, ex container.local.ext
       if [[ -f "./"${FOLDER}"/"${FILE_ENV} ]];then
         FILE=${FILE_ENV}
