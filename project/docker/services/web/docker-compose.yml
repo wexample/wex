@@ -25,6 +25,8 @@ services:
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
             # Share same wex scripts for all environments.
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
+            # Use common certificates storage
+            - /var/www/proxy/certs:/certs
         networks:
             - reverseproxy_wex_net
 
