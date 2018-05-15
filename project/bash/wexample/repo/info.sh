@@ -16,7 +16,6 @@ repoInfo() {
 
   if [ "${KEY}" != "" ];then
     cat ${CACHE} | sed -E 's/^.*\"'${KEY}'\"\:\"([^\"]*).*$/\1/'
-    #wex json/readValue -f=${CACHE} -k=${KEY}
   else
     cat ${CACHE}
   fi
