@@ -106,13 +106,13 @@ EOF
   for SERVICE in ${SERVICES[@]}
   do
      # Status
-    ${RENDER_BAR} -p=30 -s="Installing service "${SERVICE}
+    ${RENDER_BAR} -p=20 -s="Installing service "${SERVICE}
     wex service/install -s=${SERVICE}
   done
 
 
   # GIT Common settings
-  ${RENDER_BAR} -p=20 -s="Init GIT repo"
+  ${RENDER_BAR} -p=30 -s="Init GIT repo"
   # Already exist
   if [ -f ${DIR_SITE}".gitignore" ]; then
     # Merge ignore file
