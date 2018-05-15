@@ -9,6 +9,8 @@ sitePull() {
 
   # We are in the host server.
   if [ $(wex docker/isEnv) == false ]; then
+    # Stop during pull
+    wex site/stop
 
     # Update GIT
     wex git/pullTree
@@ -40,5 +42,8 @@ sitePull() {
     done;
 
     wex ci/exec -c=pull
+
+    # Restart.
+    wex site/start
   fi;
 }
