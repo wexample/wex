@@ -25,4 +25,7 @@ serverStart() {
 
   # Recompose
   wex wexample::server/compose -c="up -d --build"
+
+  # Wait starting.
+  sleep 20
 }
