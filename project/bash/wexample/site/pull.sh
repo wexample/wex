@@ -26,7 +26,7 @@ sitePull() {
     cd ${SITE_PATH_ROOT}
 
     # Manage permissions.
-    chown www-data:www-data -R *
+    chown -R www-data:www-data ./
 
     # Per framework pull behavior.
     # Detect used frameworks
