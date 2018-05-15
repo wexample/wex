@@ -35,6 +35,8 @@ gitInitHooks() {
 
       # Append once.
       wex file/textAppendOnce -f=${PATH_GIT_HOOK} -l="${COMMAND}"
+      # Must be executable
+      chmod +x ${PATH_GIT_HOOK}
     fi
   done
 }
