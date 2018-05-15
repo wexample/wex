@@ -158,3 +158,16 @@ wex db/dump -e=prod -p
 ### wex wexample::mail/*
 
 Manage a mail server, see https://www.davd.eu/byecloud-building-a-mailserver-with-modern-webmail/
+
+#### Install mail server
+
+- Create a new site using service mailserver
+- Register at least one mail account
+- Go into the site and execute `wex mail/dkim` to generate your TXT DNS entry
+- Edit your DNS Zone by
+  * Adding a A mail domain like mail.wexample.com
+  * Create two MX records pointing to mail.wexample.com
+    - First with priority 0
+    - Second with priority 10
+  * Create a TXT entry using content on [mailserver]/config/opendkim/keys/wexample.com/mail.txt
+- Wait too long, around 24h
