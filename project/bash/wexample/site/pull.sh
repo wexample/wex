@@ -18,6 +18,8 @@ sitePull() {
     # Run itself into container, see below.
     wex site/exec -c="wex wexample::site/pull"
 
+    # Restart.
+    wex site/start
   else
 
     SITE_PATH_ROOT=/var/www/html/
@@ -42,8 +44,5 @@ sitePull() {
     done;
 
     wex ci/exec -c=pull
-
-    # Restart.
-    wex site/start
   fi;
 }
