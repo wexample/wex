@@ -5,7 +5,5 @@ gitlabSshInit() {
   # declared into /etc/gitlab-runner/config.toml
   # volumes = [ ... ,"/root/.ssh:/root/.ssh/host/"]
   # It allow deployment system to use server rsa key pair for deployment.
-  local DEPLOY_KEY="/root/.ssh/host/id_rsa"
-
   wex default::gitlab/sshInit -k="/root/.ssh/host/id_rsa"
 }
