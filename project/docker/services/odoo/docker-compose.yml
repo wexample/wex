@@ -6,7 +6,7 @@ services:
         image: odoo:11.0
         restart: always
         environment:
-            - VIRTUAL_HOST=odoo.${SITE_NAME}.wex
+            - VIRTUAL_HOST=${SITE_NAME}.wex
             - VIRTUAL_PORT=8069
             - DB_PORT_5432_TCP_ADDR=${SITE_NAME}_postgres
             - DB_ENV_POSTGRES_USER=${SITE_DB_USER}
