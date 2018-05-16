@@ -7,69 +7,48 @@ dbDumpArgs() {
     [2]='latest l "Save latest copy file" false'
     [3]='environment e "Remote environment name" false'
     [4]='pull p "Pull remote dump locally" false'
+    [5]='tag t "Tag name append as a suffix" false'
   )
 }
 
 dbDump() {
   # We expect to be into site root folder.
 
-  # This may be improved in the future.
-  CONTAINER_PATH_ROOT="/var/www/html"
-  CONTAINER_PATH_DUMPS="/var/www/mysql/dumps"
+  # Remote dump.
+  if [ ! -z ${ENVIRONMENT+x} ];then
+    # Dump
+    wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dump"
+    return
+  fi
 
-  # We are not into the docker container.
-  # So we will access to it in order to re-execute current command.
-  if [ $(wex docker/isEnv) == false ]; then
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-    # Remote dump.
-    if [ ! -z ${ENVIRONMENT+x} ];then
-      # Dump
-      wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dump"
-      return
-    fi
+  # Build dump name.
+  local DUMP_FILE_NAME=${SITE_ENV}'-'${SITE_DB_NAME}"-"$(wex date/timeFileName)${TAG}".sql"
+  local DUMP_FULL_PATH="./mysql/dumps/"${DUMP_FILE_NAME}
 
-    # Container should contain wexample script installed.
-    wex site/exec -c="wex wexample::db/dump -l=${LATEST}"
+  # Copy mysql configuration.
+  docker cp ./tmp/mysql.cnf ${SITE_NAME}_mysql:./tmp/mysql.cnf
+  local LOGIN=$(wex mysql/loginCommand)
+  docker exec ${SITE_NAME}_mysql /bin/bash -c "mysqldump $(wex mysql/loginCommand) > /var/www/dumps/${DUMP_FILE_NAME}"
 
-  else
-    # Go to site root.
-    # It enables wexample site context.
-    cd ${CONTAINER_PATH_ROOT}
+  if [[ ${ZIP} == true ]]; then
+    zip ${DUMP_FULL_PATH}".zip" ${DUMP_FULL_PATH} -q -j
+  fi
 
-    # Load env name.
-    wex env/load
+  local LATEST_DUMP_FILE="./mysql/dumps/"${SITE_ENV}"-"${SITE_NAME}"-latest.sql"
+  # Clone to latest
+  cp ${DUMP_FULL_PATH} ${LATEST_DUMP_FILE}
+  # Create zip.
+  zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
+  # No more usage of source files.
+  rm -f ${LATEST_DUMP_FILE}
 
-    # Can't load this data into container.
-    . ${WEX_WEXAMPLE_SITE_CONFIG}
-
-    # Load credentials stored into config
-    wex config/load
-
-    # Don't use zip_only so we keep original sql file as return.
-    DUMP_FILE=$(wex framework/dump \
-      -s=${CONTAINER_PATH_ROOT} \
-      -d=${CONTAINER_PATH_DUMPS} \
-      --prefix=${SITE_ENV}"-" \
-      -h=${SITE_NAME}"_mysql" \
-      -p=${SITE_DB_PORT} \
-      -db=${SITE_DB_NAME} \
-      -u=${SITE_DB_USER} \
-      -p=${SITE_DB_PASSWORD} \
-      -zip);
-
-    if [ -z ${DUMP+x} ];then
-      LATEST_DUMP_FILE=${CONTAINER_PATH_DUMPS}"/"${SITE_ENV}"-"${SITE_NAME}"-latest.sql"
-      # Clone to latest
-      cp ${DUMP_FILE} ${LATEST_DUMP_FILE}
-      # Create zip.
-      zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
-      # No more usage of source files.
-      rm -f ${LATEST_DUMP_FILE}
-    fi;
-
+  if [[ ${ZIP} == true ]]; then
     # No more usage of source files.
-    rm -f ${DUMP_FILE}
+    rm -f ${DUMP_FULL_PATH}
+  fi
+  # Echo name without zip extension
+  echo ${DUMP_FULL_PATH}
 
-    echo ${DUMP_FILE}
-  fi;
 }

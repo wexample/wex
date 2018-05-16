@@ -10,14 +10,12 @@ dbRestoreArgs() {
 dbRestore() {
   # We expect to be into site root folder.
 
-  # Can't load this data into container.
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Remote restoration.
   if [ ! -z ${ENVIRONMENT+x} ];then
     # Restore
     wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/restore -d=${DUMP}"
-    # Complete
     return
   fi;
 

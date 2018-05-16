@@ -2,7 +2,7 @@
 
 siteExecArgs() {
   _ARGUMENTS=(
-    [0]='container n "Container name suffix like site_name_suffix. Default is web" false'
+    [0]='container_name n "Container name suffix like site_name_suffix. Default is web" false'
     [1]='command c "Bash command to execute" true'
   )
 }
@@ -13,25 +13,23 @@ siteExec() {
 
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  # Default container name.
-  if [ -z ${CONTAINER+x} ]; then
-    CONTAINER=web
-  fi
+  # Use default container if missing
+  local CONTAINER=$(wex site/container -c=${CONTAINER_NAME})
 
   # Save if we had to start website manually
   # we will stop it at end.
-  STARTED=false
+  local STARTED_LOCALLY=false
 
   # Start website.
-  if [[ $(wex docker/containerRuns -c=${SITE_NAME}"_web") == false ]];then
-    STARTED=true
+  if [[ $(wex site/started) == false ]];then
+    STARTED_LOCALLY=true
     wex site/start
   fi;
 
-  docker exec ${SITE_NAME}_${CONTAINER} /bin/bash -c "${COMMAND}"
+  docker exec ${CONTAINER} /bin/bash -c "${COMMAND}"
 
   # Stop website.
-  if [[ ${STARTED} == true ]];then
+  if [[ ${STARTED_LOCALLY} == true ]];then
     wex site/stop
   fi;
 }

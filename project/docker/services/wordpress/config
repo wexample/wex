@@ -1,1 +1,1 @@
-DEPENDENCIES=mysql
+DEPENDENCIES=mysql,phpmyadmin

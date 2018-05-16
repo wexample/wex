@@ -7,14 +7,11 @@ services:
         restart: always
         networks:
           - tmp_wex_net
-#        volumes:
-#            # Site folder
-#            - ${SITE_PATH_ROOT}:/var/www/html
+        volumes:
+          - ${SITE_PATH_ROOT}wordpress/wp-config.php:/var/www/html/wp-config.php
+          - ${SITE_PATH_ROOT}wordpress/backups:/var/www/html/wp-content/backups
+          - ${SITE_PATH_ROOT}wordpress/languages:/var/www/html/wp-content/languages
+          - ${SITE_PATH_ROOT}wordpress/themes:/var/www/html/wp-content/themes/custom
+          - ${SITE_PATH_ROOT}wordpress/uploads:/var/www/html/wp-content/uploads
         environment:
-          - WORDPRESS_DB_HOST=${SITE_NAME}_mysql
-          - WORDPRESS_DB_PORT=${SERVICE_PORT_MYSQL}
-          - WORDPRESS_DB_NAME=${SITE_DB_NAME}
-          - WORDPRESS_DB_USER=${SITE_DB_USER}
-          - WORDPRESS_DB_PASSWORD=${SITE_DB_PASSWORD}
           - VIRTUAL_HOST=${SITE_NAME}.wex
-          - VIRTUAL_PORT=${SERVICE_PORT_GITLAB}

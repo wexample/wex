@@ -20,4 +20,15 @@ wordpressDbPrefixChange() {
       wex db/exec -c="${QUERY}"
     fi
   done
+
+  local IDS=($(wex db/exec -c="SELECT umeta_id FROM usermeta WHERE meta_key LIKE '"${OLD_PREFIX}"%';"))
+  local NAMES=($(wex db/exec -c="SELECT meta_key FROM usermeta WHERE meta_key LIKE '"${OLD_PREFIX}"%';"))
+  local COUNT=0
+
+  for NAME in ${NAMES[@]}
+  do
+    local QUERY="UPDATE usermeta SET meta_key = '${NAME:${PREFIX_LENGTH}}' WHERE umeta_id = '${IDS[${COUNT}]}'"
+    wex db/exec -c="${QUERY}"
+    (( COUNT++ ))
+  done
 }

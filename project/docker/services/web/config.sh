@@ -7,4 +7,6 @@ webConfig() {
   wex service/templates -s=apache -e=conf
   # cron
   wex service/templates -s=cron -e=false
+
+  echo "\nSITE_CONTAINER=web"
 }
