@@ -186,7 +186,8 @@ sitePublish() {
 
   # Renew
   wex remote/exec -q -e=prod -s="wex ssl/renew"
-  wex remote/exec -q -e=prod -s="wex site/start"
+  # Restart to take care of certificates.
+  wex remote/exec -q -e=prod -s="wex site/restart"
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl
