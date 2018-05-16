@@ -163,14 +163,8 @@ sitePublish() {
 
   # Run pipeline once again.
   wex pipeline/run
-
-  local MESSAGE="Waiting auto deployment..."
-  while [ $(wex pipeline/ready) == false ];do
-    echo -e ${MESSAGE}"\r"
-    MESSAGE+='.'
-    sleep 2
-  done
-  echo ''
+  # Wait deployment complete
+  wex pipeline/wait
 
   # Status
   ${RENDER_BAR} -p=50 -s="Copy files in production"
@@ -181,13 +175,19 @@ sitePublish() {
   # Execute per service publication (database migration, etc...)
   wex service/exec -c=publish
 
-  # Start site
-  wex remote/exec -q -e=prod -s="wex site/start"
+  # Status
+  ${RENDER_BAR} -p=60 -s="Create prod SSL key pair"
 
-  # Renew
-  wex remote/exec -q -e=prod -s="wex ssl/renew"
-  # Restart to take care of certificates.
-  wex remote/exec -q -e=prod -s="wex site/restart"
+  # Start site on production
+  wex remote/exec -q -e=prod -s="wex site/start && echo 'Waiting 10s...' && sleep 10 && wex ssl/renew"
+
+  # Activate SSL configuration locally.
+  wex ssl/enable -e=prod
+
+  wex git/pushAll -m="Push SSL Configuration"
+  sleep 2
+  # Wait deployment complete
+  wex pipeline/wait
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl
