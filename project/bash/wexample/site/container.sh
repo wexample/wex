@@ -11,7 +11,7 @@ siteContainer() {
 
   # Default container name.
   if [ "${CONTAINER}" == "" ]; then
-    if [ ${SITE_CONTAINER} != "" ]; then
+    if [ "${SITE_CONTAINER}" != "" ]; then
       CONTAINER=${SITE_CONTAINER}
     else
       CONTAINER=web
