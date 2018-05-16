@@ -182,18 +182,21 @@ sitePublish() {
   wex service/exec -c=publish
 
   # Status
-  ${RENDER_BAR} -p=60 -s="Create prod SSL key pair"
+  #${RENDER_BAR} -p=60 -s="Create prod SSL key pair"
 
   # Start site on production
-  wex remote/exec -q -e=prod -s="wex site/start && echo 'Waiting 10s...' && sleep 10 && wex ssl/renew"
+  #wex remote/exec -q -e=prod -s="wex site/start && echo 'Waiting 10s...' && sleep 10 && wex ssl/renew"
 
   # Activate SSL configuration locally.
-  wex ssl/enable -e=prod
+  #wex ssl/enable -e=prod
 
-  wex git/pushAll -m="SSL Activation in prod"
-  sleep 2
+  #wex git/pushAll -m="SSL Activation in prod"
+  #sleep 2
   # Wait deployment complete
-  wex pipeline/wait
+  #wex pipeline/wait
+
+  # Simple starting
+  wex remote/exec -q -e=prod -s="wex site/start"
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl
