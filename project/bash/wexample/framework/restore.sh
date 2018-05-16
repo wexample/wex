@@ -8,21 +8,11 @@ frameworkRestoreArgs() {
     [3]='port P "Database host port" false'
     [4]='database db "Database name" false'
     [5]='user u "Database username" false'
-    [6]='password p "Database password" false'
   )
 }
 
 frameworkRestore() {
-  # Add -p option only if password is defined and not empty.
-  # Adding empty password will prompt user instead.
-  if [ "${PASSWORD}" != "" ]; then
-    PASSWORD=-p"${PASSWORD}"
-  fi;
-
-  MYSQL_CONNEXION="mysql -h${HOST} -P${PORT} -u${USER} ${PASSWORD}"
-
-  # Empty database
-  ${MYSQL_CONNEXION} -e "DROP DATABASE IF EXISTS ${DATABASE}; CREATE DATABASE ${DATABASE};"
+  wex db/exec -c="DROP DATABASE IF EXISTS ${DATABASE}; CREATE DATABASE ${DATABASE};"
 
   # If file is a zip, unzip it.
   if [[ ${DUMP_FILE} =~ \.zip$ ]];then
@@ -32,8 +22,8 @@ frameworkRestore() {
      unzip -oq ${DUMP_FILE} -d ${DUMP_DIR}
   fi;
 
-  # Create dump file
-  ${MYSQL_CONNEXION} ${DATABASE} < ${DUMP_FILE}
+  # Import
+  mysql $(wex mysql/loginCommand) < ${DUMP_FILE}
 
   # If file was a zip, .sql file was temporary.
   if [[ ${DUMP_FILE_BASE} =~ \.zip$ ]];then

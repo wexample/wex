@@ -9,7 +9,7 @@ wordpressDbPrefixChangeArgs() {
 
 # Remove a prefix, do not execute twice !
 wordpressDbPrefixChange() {
-  local TABLES=$(wex db/exec -c="SHOW TABLES;" -o="-B");
+  local TABLES=$(wex db/exec -c="SHOW TABLES;");
   local PREFIX_LENGTH=${#OLD_PREFIX}
 
   for TABLE in ${TABLES[@]}

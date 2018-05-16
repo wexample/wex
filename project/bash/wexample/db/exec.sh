@@ -3,7 +3,6 @@
 dbExecArgs() {
   _ARGUMENTS=(
     [0]='command c "Mysql command to execute in site database" true'
-    [1]='options o "Options" false'
   )
 }
 
@@ -15,6 +14,6 @@ dbExec() {
     # Run itself into container, see below.
     docker exec ${SITE_NAME}_web sh -c "cd /var/www/html/ && wex db/exec -c=\"${COMMAND}\""
   else
-    mysql $(wex mysql/loginCommand) -e "${COMMAND}" ${OPTIONS}
+    mysql $(wex mysql/loginCommand) -s -N -e "${COMMAND}"
   fi;
 }

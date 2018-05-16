@@ -10,23 +10,16 @@ frameworkDumpArgs() {
     [5]='port p "Database host port" false'
     [6]='database db "Database name" false'
     [7]='user u "Database username" false'
-    [8]='password p "Database password" false'
-    [9]='suffix sx "Suffix for final file" false'
+    [8]='suffix sx "Suffix for final file" false'
   )
 }
 
 frameworkDump() {
-  # Add -p option only if password is defined and not empty.
-  # Adding empty password will prompt user instead.
-  if [ "${PASSWORD}" != "" ]; then
-    PASSWORD=-p"${PASSWORD}"
-  fi;
-
   # Build dump name.
   DUMP_FILE_NAME=${PREFIX}${DATABASE}"-"$(wex date/timeFileName)${SUFFIX}".sql"
   DUMP_FULL_PATH=${DUMP_DIR}"/"${DUMP_FILE_NAME}
 
-  mysqldump -h${HOST} -P${PORT} -u${USER} ${PASSWORD} ${DATABASE} > ${DUMP_FULL_PATH}
+  mysqldump $(wex mysql/loginCommand) > ${DUMP_FULL_PATH}
 
   if [[ ${ZIP} == true ]]; then
     zip ${DUMP_FULL_PATH}".zip" ${DUMP_FULL_PATH} -q -j
