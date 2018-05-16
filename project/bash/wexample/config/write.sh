@@ -35,6 +35,9 @@ configWrite() {
   SITE_CONFIG_FILE+="\nSITE_NAME="${NAME}
   SITE_CONFIG_FILE+="\nSITE_ENV="${SITE_ENV}
   SITE_CONFIG_FILE+="\nSTARTED="${STARTED}
+  SITE_CONFIG_FILE+="\DOMAIN_MAIN="$(eval 'echo ${'${SITE_ENV}'_DOMAIN_MAIN}')
+  SITE_CONFIG_FILE+="\DOMAINS"$(eval 'echo ${'${SITE_ENV}'_DOMAINS}')
+  SITE_CONFIG_FILE+="\EMAIL"$(eval 'echo ${'${SITE_ENV}'_EMAIL}')
 
   # Build ports variables
   local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)

@@ -6,6 +6,7 @@ siteInitArgs() {
     [1]='site_name n "Site name" false',
     [2]='git g "Init git repository" false',
     [3]='environment e "Environment (local default)" false'
+    [4]='domains d "Domains names separated by a comma" false'
   )
 }
 
@@ -94,6 +95,18 @@ CREATED="$(date -u)"
 SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
 EOF
 
+  if [ "${DOMAINS}" != "" ];then
+    local DOMAINS_SPLIT=$(wex text/split -t=${DOMAINS} -s=",")
+    local DOMAINS_MAIN=${DOMAINS_SPLIT[0]}
+  else
+    local DOMAINS=domain.com
+    local DOMAINS_MAIN=domain.com
+  fi
+
+  echo "PROD_DOMAINS="${DOMAINS} >> .wex
+  echo "PROD_DOMAIN_MAIN="${DOMAINS_MAIN} >> .wex
+  echo "PROD_EMAIL=contact@"${DOMAINS_MAIN} >> .wex
+
   mkdir -p docker
 
   # Default project dir
@@ -109,7 +122,6 @@ EOF
     ${RENDER_BAR} -p=20 -s="Installing service "${SERVICE}
     wex service/install -s=${SERVICE}
   done
-
 
   # GIT Common settings
   ${RENDER_BAR} -p=30 -s="Init GIT repo"
@@ -142,5 +154,5 @@ EOF
   wex service/exec -c="init"
 
   # Status
-  ${RENDER_BAR} -p=100 -s="Done !"
+  ${RENDER_BAR} -p=100 -s="Done !" -nl
 }

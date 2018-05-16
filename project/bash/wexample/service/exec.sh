@@ -4,6 +4,7 @@ serviceExecArgs() {
   _ARGUMENTS=(
     [0]='command c "Command name" true'
     [1]='service_only s "Service only" false'
+    [2]='data d "Data" false'
   )
 }
 
@@ -21,7 +22,7 @@ serviceExec() {
         . ${SERVICE_FILE_SCRIPT}
         METHOD=${SERVICE}${COMMAND_UC}
         # Execute init method.
-        ${METHOD}
+        ${METHOD} ${DATA}
       fi;
     fi
   done
