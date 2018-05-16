@@ -184,6 +184,10 @@ sitePublish() {
   # Start site
   wex remote/exec -q -e=prod -s="wex site/start"
 
+  # Renew
+  wex remote/exec -q -e=prod -s="wex ssl/renew"
+  wex remote/exec -q -e=prod -s="wex site/start"
+
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl
 
