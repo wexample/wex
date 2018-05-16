@@ -26,7 +26,7 @@ services:
             # Share same wex scripts for all environments.
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
             # Use common certificates storage
-            - /var/www/proxy/certs:/certs
+            - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
         networks:
             - tmp_wex_net
 
