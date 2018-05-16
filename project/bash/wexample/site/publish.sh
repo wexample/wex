@@ -44,10 +44,16 @@ sitePublish() {
     wex wexample::var/localClear -n=GITLAB_URL_DEFAULT
   fi
 
+  local PROD_SSH_HOST_DEFAULT=''
+  # Domain is defined
+  if [ ${PROD_DOMAIN_MAIN} ];then
+    PROD_SSH_HOST_DEFAULT=$(wex domain/ip -d=${PROD_DOMAIN_MAIN})
+  fi
+
   # Use same key for Gitlab && production
   local PROD_SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="PROD_SSH_PRIVATE_KEY" -d="")
   local REPO_SSH_PRIVATE_KEY=${PROD_SSH_PRIVATE_KEY}
-  local PROD_SSH_HOST=$(wex var/localGet -r -n="PROD_SSH_HOST")
+  local PROD_SSH_HOST=$(wex var/localGet -r -n="PROD_SSH_HOST" -d=${PROD_SSH_HOST_DEFAULT})
   local GITLAB_URL=$(wex wexample::var/localGet -n=GITLAB_URL_DEFAULT -d="${WEX_GITLAB_URL}")
   local GIT_ORIGIN=$(git config --get remote.origin.url)
 
@@ -184,7 +190,7 @@ sitePublish() {
   # Activate SSL configuration locally.
   wex ssl/enable -e=prod
 
-  wex git/pushAll -m="Push SSL Configuration"
+  wex git/pushAll -m="SSL Activation in prod"
   sleep 2
   # Wait deployment complete
   wex pipeline/wait
