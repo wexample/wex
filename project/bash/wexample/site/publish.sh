@@ -188,17 +188,14 @@ sitePublish() {
   # Activate SSL configuration locally.
   #wex ssl/enable -e=prod
 
-  wex git/pushAll -m="SSL Activation in prod"
-
   # Reactivate pipeline.
   mv .gitlab-ci.yml.dist .gitlab-ci.yml
+
+  wex git/pushAll -m="SSL Activation in prod"
   sleep 2
 
   # Wait deployment complete
   wex pipeline/wait
-
-  # Simple starting
-  wex remote/exec -q -e=prod -s="wex site/start"
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done" -nl
