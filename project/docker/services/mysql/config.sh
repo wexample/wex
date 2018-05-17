@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 
 mysqlConfig() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
-
-  # Create connexion file info
-  local DB_CONNECTION_FILE=./tmp/mysql.cnf
-
-  echo "[client]" > ${DB_CONNECTION_FILE}
-  echo "user = "${SITE_DB_USER} >> ${DB_CONNECTION_FILE}
-  echo "password = "${SITE_DB_PASSWORD} >> ${DB_CONNECTION_FILE}
-  echo "host = "${SITE_NAME}_mysql >> ${DB_CONNECTION_FILE}
 
   wex service/templates -s=mysql -e=cnf.json
 
@@ -35,4 +26,12 @@ mysqlConfig() {
   MYSQL_CONFIG+="\nSITE_DB_PASSWORD="${SITE_DB_PASSWORD}
 
   echo ${MYSQL_CONFIG}
+
+  # Create connexion file info
+  local DB_CONNECTION_FILE=./tmp/mysql.cnf
+
+  echo '[client]' > ${DB_CONNECTION_FILE}
+  echo 'user = "'${SITE_DB_USER}'"' >> ${DB_CONNECTION_FILE}
+  echo 'password = "'${SITE_DB_PASSWORD}'"' >> ${DB_CONNECTION_FILE}
+  echo 'host = "'${NAME}_mysql'"' >> ${DB_CONNECTION_FILE}
 }

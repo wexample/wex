@@ -13,7 +13,7 @@ serviceTemplates() {
   FOUND=()
 
   # Get site env name.
-  . .env
+  local SITE_ENV=$(wex site/env)
 
   for FILE in ${SECTION_FILES[@]};do
     SPLIT=($(wex text/split -s="." -t=${FILE}))

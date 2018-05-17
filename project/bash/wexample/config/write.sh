@@ -26,7 +26,7 @@ configWrite() {
   fi;
 
   # Get site env name.
-  . .env
+  local SITE_ENV=$(wex site/env)
   # Load site base info.
   . .wex
 

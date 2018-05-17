@@ -38,7 +38,7 @@ envCredentials() {
   # with no .env file (ie CI)
   if [ -z ${ENVIRONMENT+x} ];then
     # Get site env.
-    . ${DIR_SITE}.env
+    local ENVIRONMENT=$(wex site/env)
   fi
 
   . ${DIR_SITE}.wex

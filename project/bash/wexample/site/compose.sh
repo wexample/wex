@@ -11,7 +11,7 @@ siteCompose() {
   wex config/load
 
   # Load expected env file.
-  . .env
+  local SITE_ENV=$(wex site/env)
 
   local SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services"))
 

@@ -12,7 +12,7 @@ sitePublish() {
   # Status
   ${RENDER_BAR} -p=0 -s="Loading env" -nl
 
-  . .env
+  local SITE_ENV=$(wex site/env)
   . .wex
 
   if [ ${SITE_ENV} != local ];then

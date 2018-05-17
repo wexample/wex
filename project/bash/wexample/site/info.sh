@@ -9,7 +9,7 @@ siteInfoArgs() {
 siteInfo() {
   wex config/load
 
-  . .env
+  local SITE_ENV=$(wex site/env)
 
   echo ""
   echo -e "  Machine name : \t "${SITE_NAME}
