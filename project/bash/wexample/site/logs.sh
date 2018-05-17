@@ -9,10 +9,6 @@ siteLogsArgs() {
 siteLogs() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  # Default container name.
-  if [ -z ${CONTAINER+x} ]; then
-    CONTAINER=web
-  fi
-
-  docker logs ${SITE_NAME}_${CONTAINER}
+  # Use default container if missing
+  docker logs $(wex site/container -c=${CONTAINER_NAME})
 }
