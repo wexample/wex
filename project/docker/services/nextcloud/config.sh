@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 nextcloudConfig() {
+
+  echo "\nSITE_CONTAINER=nextcloud"
+
   . .wex
 
   # Export default credentials if not found in framework.
