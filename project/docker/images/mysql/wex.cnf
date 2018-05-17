@@ -6,3 +6,6 @@ collation-server = utf8mb4_unicode_ci
 
 # Prevent local error on Windows machines
 innodb_use_native_aio=0
+
+# Handle memory limits.
+innodb_buffer_pool_size = 20M
