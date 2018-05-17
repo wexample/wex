@@ -3,7 +3,7 @@ version: '2'
 services:
     wordpress:
         container_name: '${SITE_NAME}_wordpress'
-        image: 'wordpress:4.9.5-apache'
+        image: 'wexample/wordpress'
         restart: always
         networks:
           - tmp_wex_net

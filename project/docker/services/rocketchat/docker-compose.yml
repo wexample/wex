@@ -6,8 +6,8 @@ services:
         restart: unless-stopped
         container_name: ${SITE_NAME}_rocketchat
         environment:
-          - VIRTUAL_HOST=rocket.${SITE_NAME}.wex
-          - ROOT_URL=http://rocket.${SITE_NAME}.wex
+          - VIRTUAL_HOST=${SITE_NAME}.wex
+          - ROOT_URL=http://${SITE_NAME}.wex
           - MONGO_URL=mongodb://${SITE_NAME}_mongo:27017/rocketchat
           - MONGO_OPLOG_URL=mongodb://${SITE_NAME}_mongo:27017/local
           - MAIL_URL=smtp://smtp.mailgun.org
