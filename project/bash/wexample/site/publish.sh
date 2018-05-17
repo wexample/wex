@@ -139,14 +139,12 @@ sitePublish() {
   echo "PROD_SSH_HOST="${PROD_SSH_HOST} >> .wex
   echo "PROD_SSH_PORT="${PROD_SSH_PORT} >> .wex
 
+  # Disable pipeline deployment.
+  mv .gitlab-ci.yml .gitlab-ci.yml.dist
+
   git add .
   git commit -m "site/publish"
   git push -q -u origin master
-
-  sleep 2
-
-  # Stop all pipelines.
-  wex pipelines/cancel
 
   # Status
   ${RENDER_BAR} -p=40 -s="Clone repo on production"
@@ -190,10 +188,14 @@ sitePublish() {
   # Activate SSL configuration locally.
   #wex ssl/enable -e=prod
 
-  #wex git/pushAll -m="SSL Activation in prod"
-  #sleep 2
+  wex git/pushAll -m="SSL Activation in prod"
+
+  # Reactivate pipeline.
+  mv .gitlab-ci.yml.dist .gitlab-ci.yml
+  sleep 2
+
   # Wait deployment complete
-  #wex pipeline/wait
+  wex pipeline/wait
 
   # Simple starting
   wex remote/exec -q -e=prod -s="wex site/start"
