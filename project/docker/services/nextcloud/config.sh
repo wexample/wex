@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 nextcloudConfig() {
-  wex service/templates -s=nextcloud -e=cnf.json
-
   . .wex
 
   # Export default credentials if not found in framework.

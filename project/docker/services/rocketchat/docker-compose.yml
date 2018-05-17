@@ -7,7 +7,6 @@ services:
         container_name: ${SITE_NAME}_rocketchat
         environment:
           - VIRTUAL_HOST=rocket.${SITE_NAME}.wex
-          - VIRTUAL_PORT=${SERVICE_PORT_ROCKETCHAT}
           - ROOT_URL=http://rocket.${SITE_NAME}.wex
           - MONGO_URL=mongodb://${SITE_NAME}_mongo:27017/rocketchat
           - MONGO_OPLOG_URL=mongodb://${SITE_NAME}_mongo:27017/local
