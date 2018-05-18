@@ -1,3 +1,7 @@
 # Wordpress
-/wordpress/backups
-/wordpress/uploads
+/wordpress/backups/*
+/wordpress/uploads/*
+/wordpress/themes/index.php
+/wordpress/themes/twentyfifteen
+/wordpress/themes/twentyseventeen
+/wordpress/themes/twentysixteen
