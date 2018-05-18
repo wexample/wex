@@ -7,8 +7,8 @@ frameworkDrupal7SettingsArgs() {
 }
 
 # Variables are stored globally like
-# SITE_DB_USER,
-# SITE_DB_XXX, etc.
+# MYSQL_DB_USER,
+# MYSQL_DB_XXX, etc.
 frameworkDrupal7Settings() {
   eval $(php "${WEX_DIR_ROOT}php/drupal7SettingsToBash.php" ${DIR});
 }

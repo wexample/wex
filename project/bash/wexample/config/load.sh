@@ -25,10 +25,10 @@ configLoad() {
   wex framework/settings -d=${DIR_SITE}"project"
 
   # Expose settings.
-  export SITE_DB_HOST=${SITE_DB_HOST}
-  export SITE_DB_NAME=${SITE_DB_NAME}
-  export SITE_DB_USER=${SITE_DB_USER}
-  export SITE_DB_PASSWORD=${SITE_DB_PASSWORD}
+  export MYSQL_DB_HOST=${MYSQL_DB_HOST}
+  export MYSQL_DB_NAME=${MYSQL_DB_NAME}
+  export MYSQL_DB_USER=${MYSQL_DB_USER}
+  export MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
   export DOMAIN_MAIN=${DOMAIN_MAIN}
   export DOMAINS=${DOMAINS}
   export EMAIL=${EMAIL}

@@ -21,12 +21,12 @@ configWrite() {
   mkdir -p ${WEX_WEXAMPLE_SITE_DIR_TMP}
 
   if [ "${STARTED}" != true ];then
-    # Default space separator
+   # Default space separator
     STARTED=false
   fi;
 
-  # Build ports variables
   local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  # Build ports variables
   local PORTS_USED=$(wex ports/opened -s=",")
   # Avoid common used ports
   PORTS_USED+=",8080,8888"

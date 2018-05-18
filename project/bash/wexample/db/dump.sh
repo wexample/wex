@@ -24,7 +24,7 @@ dbDump() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Build dump name.
-  local DUMP_FILE_NAME=${SITE_ENV}'-'${SITE_DB_NAME}"-"$(wex date/timeFileName)${TAG}".sql"
+  local DUMP_FILE_NAME=${SITE_ENV}'-'${MYSQL_DB_NAME}"-"$(wex date/timeFileName)${TAG}".sql"
   local DUMP_FULL_PATH="./mysql/dumps/"${DUMP_FILE_NAME}
 
   # Copy mysql configuration.

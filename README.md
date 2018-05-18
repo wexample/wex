@@ -89,12 +89,12 @@ When a site is started, there is the default behavior of common services :
     | * Services extends
     |
     v
-    (wex)docker/services/[service_name]/docker-compose.local.yml
+    (wex)services/[service_name]/docker-compose.local.yml
     T > Contains default environment specific configuration
     | * Services extends
     |
     v
-    (wex)docker/services/[service_name]/docker-compose.yml
+    (wex)services/[service_name]/docker-compose.yml
       > Contains default configuration
   
 The final running docker compose yml file is stored into ```./tmp/docker-compose.build.yml``` when running ```wex config/write```.

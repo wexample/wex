@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    moodle:
+        container_name: '${SITE_NAME}_moodle'
+        image: 'jhardison/moodle:v3.4'
+        restart: always
+        environment:
+            - VIRTUAL_HOST=${SITE_NAME}.wex
+            - VIRTUAL_PORT=3000
+            - MARIADB_HOST=${SITE_NAME}_mariadb
+            - MARIADB_PORT_NUMBER=3306
+            - MOODLE_DATABASE_NAME=${SITE_NAME}
+            - MOODLE_DATABASE_USER=${MYSQL_DB_USER}
+            - MOODLE_DATABASE_PASSWORD=${MYSQL_DB_PASSWORD}
+        #volumes:
+        #    - ${SITE_PATH_ROOT}/mongo/data:/data/db
+        networks:
+          - tmp_wex_net

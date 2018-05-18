@@ -39,7 +39,7 @@ siteInit() {
   NAME=$(wex text/camelCase -t=${SITE_NAME})
 
   local SITE_DIR_DOCKER=${DIR_SITE}"docker/"
-  local WEX_DIR_DOCKER_SERVICES=${WEX_DIR_ROOT}"docker/services/"
+  local WEX_DIR_DOCKER_SERVICES=${WEX_DIR_ROOT}"services/"
   #local SAMPLE_SITE_DIR_DOCKER=${SAMPLE_SITE_DIR}"docker/"
 
   # Split services

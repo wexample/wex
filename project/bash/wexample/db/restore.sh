@@ -29,7 +29,7 @@ dbRestore() {
   local DUMP_HOST_PATH=./mysql/dumps/${DUMP}
   local LOGIN=$(wex mysql/loginCommand)
 
-  wex db/exec -c="DROP DATABASE IF EXISTS ${SITE_DB_NAME}; CREATE DATABASE ${SITE_DB_NAME};"
+  wex db/exec -c="DROP DATABASE IF EXISTS ${MYSQL_DB_NAME}; CREATE DATABASE ${MYSQL_DB_NAME};"
 
   # If file is a zip, unzip it.
   if [[ ${DUMP_HOST_PATH} =~ \.zip$ ]];then

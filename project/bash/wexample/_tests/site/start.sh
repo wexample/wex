@@ -21,7 +21,7 @@ siteStartTest() {
   # Start website
   $(wex site/start) &>/dev/null
 
-  # SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services" | tr "\n" " " ))
+  # SERVICES=($(ls ${WEX_DIR_ROOT}"/services" | tr "\n" " " ))
   SERVICES=("web" "mysql" "phpmyadmin") # TODO missing servcies docker files.
 
   for SERVICE in ${SERVICES[@]};do

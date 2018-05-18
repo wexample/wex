@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    postgres:
+        container_name: '${SITE_NAME}_postgres'
+        image: postgres:10.3
+        restart: always
+        environment:
+          - POSTGRES_DB=${MYSQL_DB_NAME}
+          - POSTGRES_USER=${MYSQL_DB_USER}
+          - POSTGRES_PASSWORD=${MYSQL_DB_PASSWORD}
+        volumes:
+            - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql
+        networks:
+          - tmp_wex_net
