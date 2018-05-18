@@ -13,17 +13,10 @@ configLoad() {
 
   wex config/write -nr
 
-  # Load config
-  CONFIG=$(cat ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG})
-  # Export each variable for yml files.
-  for LINE in ${CONFIG[@]};do
-    if [[ ${LINE} ]];then
-      export ${LINE}
-    fi
-  done
-
-  # Global variables
-  export DOMAINS=$(wex site/domains -d=${DIR_SITE})
+  # Export all variable from conf file.
+  set -a
+    source ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG}
+  set +a
 
   export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT_REPO}
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"
