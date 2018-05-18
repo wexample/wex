@@ -2,4 +2,5 @@
             file: ${WEX_COMPOSE_YML_FTP}
             service: ftp
         ports:
-          - "${SERVICE_PORT_FTP}0-${SERVICE_PORT_FTP}9:30000-30009"
+          - "${SERVICE_PORT_FTP}:21"
+          - "${SERVICE_PORT_FTP}0-${SERVICE_PORT_FTP}9:${SERVICE_PORT_FTP}0-${SERVICE_PORT_FTP}9"

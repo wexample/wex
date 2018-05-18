@@ -57,12 +57,17 @@ configWrite() {
   SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
   SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
   SITE_CONFIG_FILE+='\nDOMAIN_MAIN='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
+  SITE_CONFIG_FILE+='\nDOMAIN_FTP='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_FTP}')
   SITE_CONFIG_FILE+='\nDOMAINS='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
   SITE_CONFIG_FILE+='\nEMAIL='$(eval 'echo ${'${SITE_ENV_MAJ}'_EMAIL}')
 
   local SERVICES=($(wex service/list))
-  # Some services does not work with ports under 1000
-  local PORT_CURRENT=1001
+
+  local PREFERRED_PORT=$(eval 'echo ${'${SITE_ENV_MAJ}'_PREFERRED_PORT}')
+  if [ "${PREFERRED_PORT}" == "" ];then
+    # Some services does not work with ports under 1000
+    local PORT_CURRENT=1001
+  fi
   # Split manually ports list to avoid lines breaks issues.
   local PORTS_USED_ARRAY=$(echo ${PORTS_USED} | sed "s/,/ /g")
   local PORTS_USED_CURRENT=''
