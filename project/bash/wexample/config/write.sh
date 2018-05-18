@@ -64,8 +64,10 @@ configWrite() {
   local SERVICES=($(wex service/list))
 
   local PREFERRED_PORT=$(eval 'echo ${'${SITE_ENV_MAJ}'_PREFERRED_PORT}')
-  if [ "${PREFERRED_PORT}" == "" ];then
+  if [ "${PREFERRED_PORT}" != "" ];then
     # Some services does not work with ports under 1000
+    local PORT_CURRENT=${PREFERRED_PORT}
+  else
     local PORT_CURRENT=1001
   fi
   # Split manually ports list to avoid lines breaks issues.
