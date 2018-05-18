@@ -25,21 +25,6 @@ configWrite() {
     STARTED=false
   fi;
 
-  # Get site env name.
-  local SITE_ENV=$(wex site/env)
-  # Load site base info.
-  . .wex
-
-  local SITE_CONFIG_FILE=""
-  local SITE_PATH=$(realpath ./)"/"
-  local SITE_ENV_MAJ=${SITE_ENV^^}
-  SITE_CONFIG_FILE+='\nSITE_NAME='${NAME}
-  SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
-  SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
-  SITE_CONFIG_FILE+='\nDOMAIN_MAIN='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
-  SITE_CONFIG_FILE+='\nDOMAINS='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
-  SITE_CONFIG_FILE+='\nEMAIL='$(eval 'echo ${'${SITE_ENV_MAJ}'_EMAIL}')
-
   # Build ports variables
   local SITES_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   local PORTS_USED=$(wex ports/opened -s=",")
@@ -58,6 +43,22 @@ configWrite() {
       fi
     fi
   done
+
+  # Get site env name.
+  local SITE_ENV=$(wex site/env)
+
+  # Load site base info.
+  . .wex
+  local SITE_NAME=${NAME}
+  local SITE_CONFIG_FILE=""
+  local SITE_PATH=$(realpath ./)"/"
+  local SITE_ENV_MAJ=${SITE_ENV^^}
+  SITE_CONFIG_FILE+='\nSITE_NAME='${NAME}
+  SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
+  SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
+  SITE_CONFIG_FILE+='\nDOMAIN_MAIN='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
+  SITE_CONFIG_FILE+='\nDOMAINS='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
+  SITE_CONFIG_FILE+='\nEMAIL='$(eval 'echo ${'${SITE_ENV_MAJ}'_EMAIL}')
 
   local SERVICES=($(wex service/list))
   # Some services does not work with ports under 1000
