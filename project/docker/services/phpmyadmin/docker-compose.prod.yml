@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+    phpmyadmin:
+        extends:
+            file: ${WEX_COMPOSE_YML_PHPMYADMIN_BASE}
+            service: phpmyadmin
+        # Avoid to type login / password on local
+        environment:
+            - VIRTUAL_HOST=pma.${DOMAIN_MAIN}
