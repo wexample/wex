@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-wordpressInstall() {
+wordpressConfig() {
   echo "\nSITE_CONTAINER=wordpress"
 }
