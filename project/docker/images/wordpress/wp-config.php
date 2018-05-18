@@ -25,16 +25,16 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', 'front');
+define('DB_NAME', getenv('MYSQL_DB_NAME'));
 
 /** MySQL database username */
-define('DB_USER', 'root');
+define('DB_USER', getenv('MYSQL_DB_USER'));
 
 /** MySQL database password */
-define('DB_PASSWORD', 'thisIsAReallyNotSecurePassword!');
+define('DB_PASSWORD', getenv('MYSQL_DB_PASSWORD'));
 
 /** MySQL hostname */
-define('DB_HOST', 'front_mysql');
+define('DB_HOST', getenv('MYSQL_DB_HOST'));
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -96,8 +96,8 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 
-# Load custom wex configuration.
-require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
-
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
+
+# Load custom wex configuration.
+require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
