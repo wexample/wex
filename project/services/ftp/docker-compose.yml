@@ -2,7 +2,7 @@ version: '2'
 
 services:
     ftp:
-        image: wexample/ftp:${WEX_IMAGES_VERSION}
+        image: stilliard/pure-ftpd:hardened
         container_name: ${SITE_NAME}_ftp
         environment:
           - PUBLICHOST=ftp.${SITE_NAME}.wex

@@ -11,8 +11,6 @@ services:
           - MYSQL_DATABASE=${SITE_NAME}
           - MYSQL_USER=${MYSQL_DB_USER}
           - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
-        expose:
-          - ${SERVICE_PORT_NEXTCLOUD}
         volumes:
             - ${SITE_PATH_ROOT}/nextcloud/data:/var/www/html
             - ${SITE_PATH_ROOT}/nextcloud/extra-addons:/mnt/extra-addons
