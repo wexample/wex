@@ -6,7 +6,7 @@ services:
         container_name: ${SITE_NAME}_ftp
         environment:
           - PUBLICHOST=${DOMAIN_FTP}
-          - PORTS_RANGE=${SERVICE_PORT_FTP}0:${SERVICE_PORT_FTP}9
+          - PORTS_RANGE=30000:30009
         volumes:
           # Site folder
           - ${SITE_PATH_ROOT}:/var/www/html
