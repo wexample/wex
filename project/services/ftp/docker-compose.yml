@@ -5,7 +5,7 @@ services:
         image: stilliard/pure-ftpd:hardened
         container_name: ${SITE_NAME}_ftp
         environment:
-          - PUBLICHOST=ftp.${SITE_NAME}.wex
+          - PUBLICHOST=${DOMAIN_MAIN}
           - PORTS_RANGE=30000:30009
         volumes:
           # Site folder
