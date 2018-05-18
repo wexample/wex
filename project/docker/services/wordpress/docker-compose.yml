@@ -9,9 +9,11 @@ services:
           - tmp_wex_net
         volumes:
           - ${SITE_PATH_ROOT}wordpress/wp-config.php:/var/www/html/wp-config.php
+          - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/.htaccess
           - ${SITE_PATH_ROOT}wordpress/backups:/var/www/html/wp-content/backups
           - ${SITE_PATH_ROOT}wordpress/languages:/var/www/html/wp-content/languages
           - ${SITE_PATH_ROOT}wordpress/themes:/var/www/html/wp-content/themes/custom
           - ${SITE_PATH_ROOT}wordpress/uploads:/var/www/html/wp-content/uploads
         environment:
           - VIRTUAL_HOST=${SITE_NAME}.wex
+
