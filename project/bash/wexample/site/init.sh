@@ -151,7 +151,10 @@ EOF
 
   wex config/write
 
-  wex service/exec -c="init"
+  # Install only
+  wex service/exec -c=install
+  # Init (also on site publication)
+  wex service/exec -c=init
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done !" -nl
