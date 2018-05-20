@@ -10,5 +10,5 @@ siteGo() {
   # Use default container if missing
   local CONTAINER=$(wex site/container -c=${CONTAINER_NAME})
   # docker attach
-  docker exec -it ${CONTAINER} /bin/sh
+  docker exec -it ${CONTAINER} /bin/bash
 }
