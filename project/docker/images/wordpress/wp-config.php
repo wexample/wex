@@ -99,8 +99,9 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 
+# Load custom wex configuration.
+require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
+
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
 
-# Load custom wex configuration.
-require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
