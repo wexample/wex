@@ -1,6 +1,0 @@
-        extends:
-            file: ${WEX_COMPOSE_YML_FTP}
-            service: ftp
-        ports:
-          - "${SERVICE_PORT_FTP}:21"
-          - "30000-30009:30000-30009"

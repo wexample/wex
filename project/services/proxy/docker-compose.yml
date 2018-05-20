@@ -44,7 +44,7 @@ services:
     image: forumi0721alpinex64build/alpine-x64-pureftpd
     container_name: wex_ftp
     environment:
-    #  - PUBLICHOST=${DOMAIN_FTP}
+      - PUBLICHOST=${SERVER_IP}
       - PORTS_RANGE=30000:30009
     volumes:
       # Site folder

@@ -29,6 +29,7 @@ configLoad() {
   export MYSQL_DB_NAME=${MYSQL_DB_NAME}
   export MYSQL_DB_USER=${MYSQL_DB_USER}
   export MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+  export SERVER_IP=$(wex system/ip)
   export DOMAIN_MAIN=${DOMAIN_MAIN}
   export DOMAINS=${DOMAINS}
   export EMAIL=${EMAIL}

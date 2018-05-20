@@ -29,7 +29,7 @@ configWrite() {
   # Build ports variables
   local PORTS_USED=$(wex ports/opened -s=",")
   # Avoid common used ports
-  PORTS_USED+=",8080,8888"
+  PORTS_USED+=",8080,8888,21"
 
   # Load used ports in all sites.
   for SITE_PATH in ${SITES_PATHS[@]}
