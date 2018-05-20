@@ -9,7 +9,7 @@ containerRebuildArgs() {
 containerRebuild() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  CONTAINER=${SITE_NAME}_${CONTAINER}
+  local CONTAINER=$(wex site/container -c=${CONTAINER})
 
   docker stop ${CONTAINER}
 
