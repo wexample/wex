@@ -6,9 +6,6 @@
 
 $dir_current = dirname(__FILE__) . '/../../';
 
-# Add them child dir (versioned).
-register_theme_directory($dir_current . 'wp-content/themes-child');
-
 # For BackUpWordpress plugin.
 define('HMBKP_PATH', $dir_current . 'wp-content/backups');
 
