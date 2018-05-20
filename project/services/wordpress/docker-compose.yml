@@ -23,6 +23,8 @@ services:
           - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
           # Php
           - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
+          # Use common certificates storage
+          - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
           - ${SITE_PATH_ROOT}tmp:/var/www/html/tmp
           - ${SITE_PATH_ROOT}wordpress/config:/var/www/html/project/wp-content/config
           - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/project/.htaccess:ro
