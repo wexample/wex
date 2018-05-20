@@ -35,7 +35,7 @@ siteCompose() {
   if [ $(wex service/used -s=proxy) == false ];then
     local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/default/docker-compose.yml"
   else
-    local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/proxy/docker-compose.yml"
+    local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/network/docker-compose.yml"
   fi
 
   local FILES=(
