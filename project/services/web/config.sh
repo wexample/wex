@@ -17,6 +17,7 @@ webConfig() {
   echo '; Auto generated configuration' > ${INI}
   echo '[site]' >> ${INI}
   echo 'SITE_ENV = "'${SITE_ENV}'"' >> ${INI}
+  echo 'DOMAIN_MAIN = "'${DOMAIN_MAIN}'"' >> ${INI}
   echo '[mysql]' >> ${INI}
   echo 'MYSQL_DB_HOST = "'${ACCESS[0]}'"' >> ${INI}
   echo 'MYSQL_DB_PORT = "'${ACCESS[1]}'"' >> ${INI}

@@ -53,12 +53,14 @@ configWrite() {
   local SITE_CONFIG_FILE=""
   local SITE_PATH=$(realpath ./)"/"
   local SITE_ENV_MAJ=${SITE_ENV^^}
+  local DOMAINS=$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
+  local DOMAIN_MAIN=$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
   SITE_CONFIG_FILE+='\nSITE_NAME='${NAME}
   SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
   SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
-  SITE_CONFIG_FILE+='\nDOMAIN_MAIN='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
+  SITE_CONFIG_FILE+='\nDOMAIN_MAIN='${DOMAIN_MAIN}
   SITE_CONFIG_FILE+='\nDOMAIN_FTP='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_FTP}')
-  SITE_CONFIG_FILE+='\nDOMAINS='$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
+  SITE_CONFIG_FILE+='\nDOMAINS='${DOMAINS}
   SITE_CONFIG_FILE+='\nEMAIL='$(eval 'echo ${'${SITE_ENV_MAJ}'_EMAIL}')
 
   local SERVICES=($(wex service/list))
