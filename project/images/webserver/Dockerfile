@@ -17,5 +17,5 @@ RUN usermod -u 1000 www-data
 RUN a2enmod rewrite
 RUN a2enmod ssl
 
-COPY ./project/docker/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
+COPY ./project/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 ENTRYPOINT ["/docker-entrypoint-webserver.sh"]

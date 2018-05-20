@@ -58,7 +58,7 @@ imagesRebuild() {
   if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
-    local IMAGES=($(ls project/docker/images/))
+    local IMAGES=($(ls project/images/))
 
     for f in ${IMAGES[@]}
     do
@@ -72,7 +72,7 @@ imagesRebuild() {
 
 _imagesRebuild() {
   local NAME=${1}
-  local DIR=project/docker/images/${NAME}/
+  local DIR=project/images/${NAME}/
   local DOCKERFILE=${DIR}Dockerfile
 
   echo "Building ${NAME}"

@@ -8,5 +8,5 @@ RUN apt-get install ruby-full -yqq
 RUN gem install sass --no-user-install -q --no-verbose
 
 # Entrypoint
-COPY ./project/docker/images/watcher/entrypoint.sh /docker-entrypoint-watcher.sh
+COPY ./project/images/watcher/entrypoint.sh /docker-entrypoint-watcher.sh
 ENTRYPOINT ["/docker-entrypoint-watcher.sh"]

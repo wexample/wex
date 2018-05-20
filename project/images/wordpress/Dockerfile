@@ -14,5 +14,5 @@ RUN chmod +x /wp-cli.phar
 RUN mv /wp-cli.phar /usr/local/bin/wp
 
 # Copy custom config that allow shared file config.
-COPY ./project/docker/images/wordpress/wp-config.php /var/www/html/project
+COPY ./project/images/wordpress/wp-config.php /var/www/html/project
 RUN chown www-data:www-data /var/www/html/project/wp-config.php
