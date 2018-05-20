@@ -99,6 +99,8 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 
+# Wex common configuration
+define('WP_AUTO_UPDATE_CORE', false);
 # Load custom wex configuration.
 require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
 

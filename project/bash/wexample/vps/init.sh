@@ -2,7 +2,7 @@
 
 # Install base configuration on a server managed by wexample.
 vpsInit() {
-  apt-get install git dos2unix -yqq
+  apt-get install git dos2unix zip -yqq
   # Install docker.
   wex docker/install
   # Disable root login
