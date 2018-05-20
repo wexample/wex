@@ -82,7 +82,7 @@ _imagesRebuild() {
 
   # A manner to avoid non matching strings from sed
   # which are not empty.
-  if [ ${DEPENDS_FROM} != ${DEPENDS_FROM_WEX} ];then
+  if [ ${DEPENDS_FROM} != ${DEPENDS_FROM_WEX} ] && [ -z "${IMAGE_NAME+x}" ];then
     _imagesRebuild ${DEPENDS_FROM_WEX}
   fi;
 

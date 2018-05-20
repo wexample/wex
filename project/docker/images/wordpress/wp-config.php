@@ -1,8 +1,11 @@
 <?php
 
-// Default Wordpress configuration, should not be changed
-// until a new version of WP is used, except to make variable editable
-// from container configuration.
+# Default Wordpress configuration, should not be changed
+# until a new version of WP is used, except to make variable editable
+# from container configuration.
+
+# Load passed env variables.
+$env = parse_ini_file(dirname(__FILE__) . '/../tmp/php.env.ini');
 
 /**
  * The base configuration for WordPress
@@ -25,16 +28,16 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', getenv('MYSQL_DB_NAME'));
+define('DB_NAME', $env['MYSQL_DB_NAME']);
 
 /** MySQL database username */
-define('DB_USER', getenv('MYSQL_DB_USER'));
+define('DB_USER', $env['MYSQL_DB_USER']);
 
 /** MySQL database password */
-define('DB_PASSWORD', getenv('MYSQL_DB_PASSWORD'));
+define('DB_PASSWORD', $env['MYSQL_DB_PASSWORD']);
 
 /** MySQL hostname */
-define('DB_HOST', getenv('MYSQL_DB_HOST'));
+define('DB_HOST', $env['MYSQL_DB_HOST']);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');

@@ -4,25 +4,35 @@ services:
     wordpress:
         container_name: '${SITE_NAME}_wordpress'
         image: 'wexample/wordpress'
-        restart: always
+        stdin_open: true
+        tty: true
         networks:
           - tmp_wex_net
-        volumes:
-          - ${SITE_PATH_ROOT}wordpress/config:/var/www/html/wp-content/config
-          - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/.htaccess:ro
-          - ${SITE_PATH_ROOT}wordpress/backups:/var/www/html/wp-content/backups
-          - ${SITE_PATH_ROOT}wordpress/languages:/var/www/html/wp-content/languages
-          - ${SITE_PATH_ROOT}wordpress/plugins:/var/www/html/wp-content/plugins
-          - ${SITE_PATH_ROOT}wordpress/themes:/var/www/html/wp-content/themes
-          - ${SITE_PATH_ROOT}wordpress/themes-child:/var/www/html/wp-content/themes-child
-          - ${SITE_PATH_ROOT}wordpress/uploads:/var/www/html/wp-content/uploads
+        expose:
+            - 80
         environment:
           # Site env
           - WEX_SITE_ENV=${SITE_ENV}
           - VIRTUAL_HOST=${SITE_NAME}.wex
+          - VIRTUAL_PORT=80
           # Database
           - MYSQL_DB_HOST=${MYSQL_DB_HOST}
           - MYSQL_DB_NAME=${MYSQL_DB_NAME}
           - MYSQL_DB_USER=${MYSQL_DB_USER}
           - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+        volumes:
+          # Apache
+          - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
+          # Php
+          - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
+          - ${SITE_PATH_ROOT}tmp:/var/www/html/tmp
+          - ${SITE_PATH_ROOT}wordpress/config:/var/www/html/project/wp-content/config
+          - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/project/.htaccess:ro
+          - ${SITE_PATH_ROOT}wordpress/backups:/var/www/html/project/wp-content/backups
+          - ${SITE_PATH_ROOT}wordpress/languages:/var/www/html/project/wp-content/languages
+          - ${SITE_PATH_ROOT}wordpress/plugins:/var/www/html/project/wp-content/plugins
+          - ${SITE_PATH_ROOT}wordpress/themes:/var/www/html/project/wp-content/themes
+          - ${SITE_PATH_ROOT}wordpress/themes-child:/var/www/html/project/wp-content/themes-child
+          - ${SITE_PATH_ROOT}wordpress/uploads:/var/www/html/project/wp-content/uploads
+
 
