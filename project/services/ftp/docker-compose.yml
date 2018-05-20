@@ -2,10 +2,10 @@ version: '2'
 
 services:
     ftp:
-        image: stilliard/pure-ftpd:hardened
+        image: stilliard/pure-ftpd:hardened-1.0.36
         container_name: ${SITE_NAME}_ftp
         environment:
-          - PUBLICHOST=${DOMAIN_FTP}
+          - PUBLICHOST=localhost
           - PORTS_RANGE=30000:30009
         volumes:
           # Site folder

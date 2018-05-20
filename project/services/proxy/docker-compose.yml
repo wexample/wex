@@ -39,3 +39,17 @@ services:
        - ${WEX_WEXAMPLE_DIR_TMP}:/tmp/wexample/
     networks:
       - wex_net
+
+  ftp:
+    image: forumi0721alpinex64build/alpine-x64-pureftpd
+    container_name: wex_ftp
+    environment:
+    #  - PUBLICHOST=${DOMAIN_FTP}
+      - PORTS_RANGE=30000:30009
+    volumes:
+      # Site folder
+      - ${SITE_PATH_ROOT}:/var/www/html
+      # User password files
+      - ${SITE_PATH_ROOT}/ftp/passwd:/etc/pure-ftpd/passwd
+    networks:
+      - tmp_wex_net
