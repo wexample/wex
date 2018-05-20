@@ -8,6 +8,7 @@ RUN apt-get update -yqq
 RUN apt-get install \
   php-memcache \
   php-memcached \
+  php-zip \
   memcached \
   php7.1 \
   libapache2-mod-php \
