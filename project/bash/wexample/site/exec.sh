@@ -26,7 +26,7 @@ siteExec() {
     wex site/start
   fi;
 
-  docker exec ${CONTAINER} /bin/bash -c "${COMMAND}"
+  docker exec -ti ${CONTAINER} /bin/bash -c "${COMMAND}"
 
   # Stop website.
   if [[ ${STARTED_LOCALLY} == true ]];then

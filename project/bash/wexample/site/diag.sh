@@ -13,5 +13,8 @@ siteDiagKo() {
 }
 
 siteDiag() {
-
+  echo "__ ACCESS __"
+  wex site/exec -c="tail -n 2 /var/log/apache2/access.log"
+  echo "__ ERROR __"
+  wex site/exec -c="tail -n 2 /var/log/apache2/error.log"
 }
