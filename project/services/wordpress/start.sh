@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 wordpressStart() {
-  # Give write access.
-  chown -R www-data:www-data ./wordpress/
+    # Same config as web
+  . ${WEX_DIR_ROOT}services/wordpress/start.sh
+
+  wordpressStart
 }
