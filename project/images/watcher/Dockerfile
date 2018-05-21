@@ -9,4 +9,6 @@ RUN gem install sass --no-user-install -q --no-verbose
 
 # Entrypoint
 COPY ./project/images/watcher/entrypoint.sh /docker-entrypoint-watcher.sh
+RUN chmod +x /docker-entrypoint-watcher.sh
+
 ENTRYPOINT ["/docker-entrypoint-watcher.sh"]

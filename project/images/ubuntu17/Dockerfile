@@ -40,5 +40,7 @@ RUN bash /opt/wexample/project/bash/default/_installLocal.sh
 
 # Install entrypoint.
 COPY ./project/images/ubuntu17/entrypoint.sh /docker-entrypoint-ubuntu17.sh
+RUN chmod +x /docker-entrypoint-ubuntu17.sh
+
 ENTRYPOINT ["/docker-entrypoint-ubuntu17.sh"]
 

@@ -18,4 +18,6 @@ RUN a2enmod rewrite
 RUN a2enmod ssl
 
 COPY ./project/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
+RUN chmod +x /docker-entrypoint-webserver.sh
+
 ENTRYPOINT ["/docker-entrypoint-webserver.sh"]

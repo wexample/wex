@@ -27,4 +27,6 @@ RUN apt-get clean
 RUN cd /opt/wexample/project/bash/ && bash wex composer/pharInstall
 
 COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
+RUN chmod +x /docker-entrypoint-php7.sh
+
 ENTRYPOINT ["/docker-entrypoint-php7.sh"]
