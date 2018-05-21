@@ -20,6 +20,6 @@ ftpUserAdd() {
   docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${FTP_USERNAME} -f ${PASS_LOCATION} -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
 
   if [ "${SAVE}" == true ];then
-    wex ftp/save
+    wex ftp/save -t=${FTP_USERNAME}
   fi
 }

@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+ftpSaveArgs() {
+  _ARGUMENTS=(
+    [0]='tag t "Commit suffix" false'
+  )
+}
+
 ftpSave() {
   # Load site name.
   . ${WEX_WEXAMPLE_SITE_CONFIG}
@@ -8,6 +14,6 @@ ftpSave() {
 
   # Save.
   git add ./ftp/passwd/
-  git commit -m "ftp/userAdd"
+  git commit -m "ftp/userAdd ${TAG}"
   git push
 }
