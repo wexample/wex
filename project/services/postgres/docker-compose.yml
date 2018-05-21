@@ -10,6 +10,6 @@ services:
           - POSTGRES_USER=${MYSQL_DB_USER}
           - POSTGRES_PASSWORD=${MYSQL_DB_PASSWORD}
         volumes:
-            - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql
+            - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql/data
         networks:
           - tmp_wex_net
