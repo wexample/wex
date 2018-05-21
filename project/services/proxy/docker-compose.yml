@@ -52,4 +52,4 @@ services:
       # Store passwords in the same place
       - ${SITE_PATH_ROOT}proxy/ftp/passwd:/etc/pure-ftpd/passwd
     networks:
-      - tmp_wex_net
+      - wex_net

@@ -2,6 +2,5 @@
           file: ${WEX_COMPOSE_YML_PROXY}
           service: ftp
         ports:
-          - "20:20"
           - "21:21"
           - "30000-30009:30000-30059"
