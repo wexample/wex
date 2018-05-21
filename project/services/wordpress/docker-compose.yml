@@ -17,7 +17,10 @@ services:
             - MYSQL_DB_USER=${MYSQL_DB_USER}
             - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
         volumes:
-           # Apache
+            # Minimal env files.
+            - ${CONF_WEB_APACHE_CONF}.wex:/var/www/html/.wex
+            - ${CONF_WEB_APACHE_CONF}.env:/var/www/html/.env
+            # Apache
             - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
             # Php
             - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
