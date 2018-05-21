@@ -5,8 +5,6 @@ webConfig() {
   wex service/templates -s=php -e=ini
   # apache.conf
   wex service/templates -s=apache -e=conf
-  # cron
-  wex service/templates -s=cron -e=false
 
   # Create ini file.
   . ${WEX_DIR_ROOT}services/mysql/config.sh
