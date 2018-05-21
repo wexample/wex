@@ -41,7 +41,7 @@ services:
       - wex_net
 
   ftp:
-    image: forumi0721alpinex64build/alpine-x64-pureftpd
+    image: wexample/ftp
     container_name: wex_ftp
     environment:
       - PUBLICHOST=${SERVER_IP}
