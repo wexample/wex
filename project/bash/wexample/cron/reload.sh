@@ -4,9 +4,14 @@ cronReload() {
   . .env
 
   local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local CRONTAB_CURRENT=$(crontab -l)
+
+  if [ "${CRONTAB_CURRENT:0:15}" == "no crontab for " ];then
+    CRONTAB_CURRENT=""
+  fi
 
   # Copy full crontab in a temp file.
-  echo "$(crontab -l)" > ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
+  echo ${CRONTAB_CURRENT} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
   # Remove old blocks
   sed -i '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
 
