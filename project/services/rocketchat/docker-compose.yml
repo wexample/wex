@@ -7,7 +7,7 @@ services:
         container_name: ${SITE_NAME}_rocketchat
         environment:
           - VIRTUAL_HOST=${SITE_NAME}.wex
-          - ROOT_URL=http://${SITE_NAME}.wex
+          - ROOT_URL=http://localhost:3000
           - MONGO_URL=mongodb://${SITE_NAME}_mongo:27017/rocketchat
           - MONGO_OPLOG_URL=mongodb://${SITE_NAME}_mongo:27017/local
           - MAIL_URL=smtp://smtp.mailgun.org
@@ -21,7 +21,7 @@ services:
         restart: unless-stopped
         container_name: ${SITE_NAME}_rocketchat_hubot
         environment:
-          - ROCKETCHAT_URL=${SITE_NAME}_rocketchat:${SERVICE_PORT_ROCKETCHAT}
+          - ROCKETCHAT_URL=${SITE_NAME}_rocketchat:3000
           - ROCKETCHAT_ROOM=GENERAL
           - ROCKETCHAT_USER=hubot
           - ROCKETCHAT_PASSWORD=vchgdsvcghdvcdsjvcds
