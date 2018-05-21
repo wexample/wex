@@ -10,7 +10,7 @@ mysqlLoginCommand() {
   local BASE_PATH=''
 
   if [ "${INSIDE}" == true ] || [ $(wex docker/isEnv) == true ];then
-    BASE_PATH='/var/www/html/'
+    BASE_PATH='/var/www/'
   else
     BASE_PATH='./'
   fi
