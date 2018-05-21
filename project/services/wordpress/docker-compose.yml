@@ -18,8 +18,8 @@ services:
             - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
         volumes:
             # Minimal env files.
-            - ${CONF_WEB_APACHE_CONF}.wex:/var/www/html/.wex
-            - ${CONF_WEB_APACHE_CONF}.env:/var/www/html/.env
+            - ${SITE_PATH_ROOT}.wex:/var/www/html/.wex
+            - ${SITE_PATH_ROOT}.env:/var/www/html/.env
             # Apache
             - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
             # Php
