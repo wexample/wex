@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-webStart() {
+webStarted() {
   # Wait mounted volumes to be available
   echo "Waiting for apache restart..."
   sleep 20
