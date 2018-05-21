@@ -10,6 +10,9 @@ sitePull() {
 
   wex service/exec -c=sitePull
 
+  # Allow cron update without reloading whole site.
+  wex cron/reload
+
   # Per framework pull behavior.
   # Detect used frameworks
   FRAMEWORKS=($(wex framework/list -d=./project/))
