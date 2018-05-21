@@ -54,6 +54,9 @@ siteStart() {
   echo -e "\n"${DIR_SITE} >> ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
   # Rebuild hosts
   wex hosts/update
+  # Link cron files to main cron system.
+  # The script are executed outside containers.
+  wex cron/reload
   # Load site config
   . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex
