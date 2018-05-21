@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
+mysqlLoginCommandArgs() {
+  _ARGUMENTS=(
+    [0]='inside i "Inside docker container" false'
+  )
+}
+
 mysqlLoginCommand() {
   local BASE_PATH=''
-  if [ $(wex docker/isEnv) == true ];then
+
+  if [ "${INSIDE}" == true ] || [ $(wex docker/isEnv) == true ];then
     BASE_PATH='/var/www/html/'
   else
     BASE_PATH='./'
