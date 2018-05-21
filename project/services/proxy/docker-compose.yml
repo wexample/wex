@@ -45,7 +45,7 @@ services:
     container_name: wex_ftp
     environment:
       - PUBLICHOST=${SERVER_IP}
-      - PORTS_RANGE=30000:30009
+      - PORTS_RANGE=30000:30059
     volumes:
       # Share all sites
       - /var/www:/var/www
