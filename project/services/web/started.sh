@@ -5,5 +5,5 @@ webStarted() {
   echo "Waiting for apache restart..."
   sleep 20
   # The reload apache (SSL certs)
-  wex apache/restart
+  wex apache/restart >> /dev/null
 }
