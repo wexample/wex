@@ -17,9 +17,9 @@ ftpUserAdd() {
 
   docker exec -ti wex_ftp touch ${PASS_LOCATION}
   # Exec into container
-  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${FTP_USERNAME} -f ${PASS_LOCATION} -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
+  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${SITE_NAME}_${FTP_USERNAME} -f ${PASS_LOCATION} -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
 
   if [ "${SAVE}" == true ];then
-    wex ftp/save -t=${FTP_USERNAME}
+    wex ftp/save -t=${SITE_NAME}_${FTP_USERNAME}
   fi
 }
