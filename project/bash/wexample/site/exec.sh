@@ -4,6 +4,7 @@ siteExecArgs() {
   _ARGUMENTS=(
     [0]='container_name n "Container name suffix like site_name_suffix. Default is web" false'
     [1]='command c "Bash command to execute" true'
+    [2]='starts "Start container verification" false'
   )
 }
 
@@ -21,7 +22,7 @@ siteExec() {
   local STARTED_LOCALLY=false
 
   # Start website.
-  if [[ $(wex site/started) == false ]];then
+  if [ "${STARTS}" == true ] && [ $(wex site/started) == false ];then
     STARTED_LOCALLY=true
     wex site/start
   fi;
@@ -29,7 +30,7 @@ siteExec() {
   docker exec -ti ${CONTAINER} /bin/bash -c "${COMMAND}"
 
   # Stop website.
-  if [[ ${STARTED_LOCALLY} == true ]];then
+  if [ "${STARTS}" == true ] && [ ${STARTED_LOCALLY} == true ];then
     wex site/stop
   fi;
 }
