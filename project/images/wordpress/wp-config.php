@@ -102,8 +102,8 @@ if ( !defined('ABSPATH') )
 # Wex common configuration
 # No core auto update.
 define('WP_AUTO_UPDATE_CORE', false);
-# No core / plugins update.
-define('DISALLOW_FILE_MODS', true);
+# No core / plugins update (for info)
+define('DISALLOW_FILE_MODS', false);
 # Load custom wex configuration.
 require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
 
