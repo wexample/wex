@@ -5,7 +5,7 @@ ftpUserAddArgs() {
     [0]='ftp_username u "FTP Username" true'
     [1]='password p "Password" true'
     [2]='directory d "Directory related to site root (ex : project/files)" true'
-    [3]='save s "Push changes in site repository" true'
+    [3]='save s "Push changes in site repository" false'
   )
 }
 
