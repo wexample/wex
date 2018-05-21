@@ -5,10 +5,10 @@ sitePull() {
 
   # Used in production to retrieve changes when tests are passed.
 
-  # Update GIT
+  # Update GIT and submodules.
   wex git/pullTree
-  # Manage permissions.
-  chown -R www-data:www-data ./
+
+  wex service/exec -c=sitePull
 
   # Per framework pull behavior.
   # Detect used frameworks
