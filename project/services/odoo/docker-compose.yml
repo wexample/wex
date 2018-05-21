@@ -9,8 +9,8 @@ services:
             - VIRTUAL_HOST=${SITE_NAME}.wex
             - VIRTUAL_PORT=8069
             - DB_PORT_5432_TCP_ADDR=${SITE_NAME}_postgres
-            - DB_ENV_POSTGRES_USER=${MYSQL_DB_USER}
-            - DB_ENV_POSTGRES_PASSWORD=${MYSQL_DB_PASSWORD}
+            - DB_ENV_POSTGRES_USER=${POSTGRES_DB_USER}
+            - DB_ENV_POSTGRES_PASSWORD=${POSTGRES_DB_PASSWORD}
         volumes:
             - ${SITE_PATH_ROOT}/odoo/config:/etc/odoo
             - ${SITE_PATH_ROOT}/odoo/extra-addons:/mnt/extra-addons
