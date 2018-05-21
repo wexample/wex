@@ -13,7 +13,7 @@ ftpUserAdd() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Exec into container
-  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd mike -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
+  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${FTP_USERNAME} -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
 
   #wex ftp/save
 }
