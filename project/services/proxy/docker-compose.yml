@@ -3,7 +3,7 @@ version: '2'
 services:
   proxy:
     image: jwilder/nginx-proxy:0.7.0
-    container_name: wex_reverse_proxy
+    container_name: wex_server
     volumes:
       # Nginx configuration
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -21,13 +21,13 @@ services:
 
   certs:
     image: jrcs/letsencrypt-nginx-proxy-companion:v1.8.1
-    container_name: wex_reverse_proxy_certs
+    container_name: wex_server_certs
     volumes:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   entrypoint:
-    container_name: wex_reverse_proxy_entrypoint
+    container_name: wex_server_entrypoint
     image: 'wexample/php7:${WEX_IMAGES_VERSION}'
     stdin_open: true
     tty: true

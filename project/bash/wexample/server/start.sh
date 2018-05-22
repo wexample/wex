@@ -23,7 +23,7 @@ serverStart() {
   touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
 
   if [ ! -f ${WEX_WEXAMPLE_DIR_PROXY}.wex ];then
-    wex site/init -s=proxy -n=proxy -e=prod --git=false
+    wex site/init -s=proxy -n=wex_server -e=prod --git=false
   fi
 
   wex site/start

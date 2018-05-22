@@ -8,11 +8,11 @@ serviceInstallArgs() {
 }
 
 serviceInstall() {
-  local SERVICE_SAMPLE_DIR=${WEX_DIR_ROOT}"services/"${SERVICE}"/samples/"
   local DIR_SITE=./
+  local SERVICE_SAMPLE_DIR=${WEX_DIR_ROOT}"services/"${SERVICE}"/samples/"
 
   # Copy all files from samples
-  if [ -d ${SERVICE_SAMPLE_DIR} ] && [ ! -d ${DIR_SITE}${SERVICE} ];then
+  if [ -d ${SERVICE_SAMPLE_DIR} ];then
     local FILES=$(ls -a ${SERVICE_SAMPLE_DIR})
     for FILE in ${FILES[@]};do
       if [ "${FILE}" != "." ] && [ "${FILE}" != ".." ];then
@@ -43,6 +43,8 @@ serviceInstall() {
       fi
     done
   fi
+
+  exit
 }
 
 serviceInstallMergeYml() {
@@ -51,6 +53,8 @@ serviceInstallMergeYml() {
   local YML_SOURCE_FILE=${YML_SOURCE_BASE}"."${EXT}
   local YML_DEST_FILE=${DIR_SITE}"docker/docker-compose."${EXT}
   local YML_CONTENT=''
+
+  . .wex
 
   if [ -f ${YML_SOURCE_FILE} ];then
     local YML_FILES_TO_MERGE=(${YML_SOURCE_FILE})
@@ -67,7 +71,7 @@ serviceInstallMergeYml() {
       fi
 
       # Append
-      YML_CONTENT+="    "${SITE_NAME}"_"${SERVICE}${SUFFIX}":\n"
+      YML_CONTENT+="    "${NAME}"_"${SERVICE}${SUFFIX}":\n"
       YML_CONTENT+=$(cat ${FILE_TO_MERGE})"\n"
     done
   fi
