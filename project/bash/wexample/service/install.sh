@@ -8,7 +8,7 @@ serviceInstallArgs() {
 }
 
 serviceInstall() {
-  local SERVICE_SAMPLE_DIR=${WEX_DIR_SAMPLES}"services/"${SERVICE}"/"
+  local SERVICE_SAMPLE_DIR=${WEX_DIR_ROOT}"services/"${SERVICE}"/samples/"
   local DIR_SITE=./
 
   # Copy all files from samples
