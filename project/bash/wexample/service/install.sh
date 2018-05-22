@@ -43,8 +43,6 @@ serviceInstall() {
       fi
     done
   fi
-
-  exit
 }
 
 serviceInstallMergeYml() {
