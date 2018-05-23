@@ -51,8 +51,7 @@ imagesRebuild() {
 
   if [[ ${FLUSH_CACHE} == true ]]; then
     NO_CACHE=true
-    # Remove all images from wexample
-    docker rmi $(docker images wexample/* -q)
+    wex wexample::images/flush
   fi;
 
   if [ ! -z "${IMAGE_NAME+x}" ]; then
