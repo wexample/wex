@@ -2,7 +2,7 @@
 
 mysqlConfig() {
 
-  wex service/templates -s=mysql -e=cnf.json
+  wex service/templates -s=mysql -e=cnf
 
   . .wex
 
