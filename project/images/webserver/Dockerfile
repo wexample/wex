@@ -16,6 +16,7 @@ RUN usermod -u 1000 www-data
 # Activate apache2 mod rewrite.
 RUN a2enmod rewrite
 RUN a2enmod ssl
+RUN a2enmod headers
 
 COPY ./project/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 RUN chmod +x /docker-entrypoint-webserver.sh
