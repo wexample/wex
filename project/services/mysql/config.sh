@@ -36,6 +36,8 @@ mysqlConfig() {
 }
 
 mysqlConfigAccess() {
+  local MYSQL_PASSWORD='thisIsAReallyNotSecurePassword!'
+
   . .wex
 
   # Host
@@ -47,6 +49,5 @@ mysqlConfigAccess() {
   # User
   echo root
   # Password
-  echo "thisIsAReallyNotSecurePassword!"
-
+  echo "${MYSQL_PASSWORD}"
 }
