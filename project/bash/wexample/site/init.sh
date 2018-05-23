@@ -51,7 +51,7 @@ siteInit() {
   for SERVICE in ${SERVICES[@]}
   do
     local SERVICE_CONFIG=${WEX_DIR_DOCKER_SERVICES}${SERVICE}"/config"
-    SERVICES_ALL+=(${SERVICE})
+    SERVICES_ALL+=" "${SERVICE}
     if [ -f ${SERVICE_CONFIG} ];then
       local DEPENDENCIES=false
       . ${SERVICE_CONFIG}
@@ -61,7 +61,7 @@ siteInit() {
     fi
   done
 
-  SERVICES=${SERVICES_ALL[@]}
+  SERVICES=(${SERVICES_ALL[@]})
 
   # Check services exists
   for SERVICE in ${SERVICES[@]}
