@@ -13,15 +13,22 @@ siteStart() {
     return
   fi
 
+  # Current site is not the server itself.
+  if [ $(wex service/used -s=proxy) == false ] && [ $(wex server/started) == false ];then
+    local CURRENT_DIR=$(realpath ./)
+    local ARGS=${WEX_ARGUMENTS}
+    # Server must be started.
+    wex server/start -n
+
+    # Relaunch manually to be sure to keep given arguments
+    cd ${CURRENT_DIR}
+    wex site/start ${ARGS}
+    return
+  fi
+
   # Prepare files
   wex file/convertLinesToUnix -f=.env &> /dev/null
   wex file/convertLinesToUnix -f=.wex &> /dev/null
-
-  # Current site is not the server itself.
-  if [ $(wex service/used -s=proxy) == false ];then
-    # Server must be started.
-    wex server/start -n
-  fi
 
   # Check if site is already started,
   # ignoring if containers runs or not.
