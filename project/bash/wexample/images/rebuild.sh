@@ -57,7 +57,8 @@ imagesRebuild() {
   if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
-    local IMAGES=($(ls project/images/))
+    local BASE_PATH=./project/images/
+    local IMAGES=($(ls ${BASE_PATH}))
 
     for f in ${IMAGES[@]}
     do
