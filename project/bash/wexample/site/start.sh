@@ -10,7 +10,15 @@ siteStartArgs() {
 siteStart() {
   if [ ! -f .env ];then
     echo "Missing .env file"
-    return
+    if [ $(wex prompt/yn -q="Would you like to create a new .env file ?") == true ];then
+      select SITE_ENV in ${WEX_WEXAMPLE_ENVIRONMENTS[@]};
+      do
+        echo 'SITE_ENV='${SITE_ENV} > .env
+        break
+      done
+    else
+      return
+    fi
   fi
 
   # Current site is not the server itself.
