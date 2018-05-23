@@ -58,7 +58,7 @@ imagesRebuild() {
   if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
-    local IMAGES=($(ls docker/images/))
+    local IMAGES=($(ls images/))
 
     for f in ${IMAGES[@]}
     do
