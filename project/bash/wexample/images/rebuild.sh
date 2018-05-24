@@ -51,14 +51,14 @@ imagesRebuild() {
 
   if [[ ${FLUSH_CACHE} == true ]]; then
     NO_CACHE=true
-    # Remove all images from wexample
-    docker rmi $(docker images wexample/* -q)
+    wex wexample::images/flush
   fi;
 
   if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
-    local IMAGES=($(ls project/images/))
+    local BASE_PATH=./project/images/
+    local IMAGES=($(ls ${BASE_PATH}))
 
     for f in ${IMAGES[@]}
     do

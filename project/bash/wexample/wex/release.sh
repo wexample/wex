@@ -23,5 +23,5 @@ wexRelease() {
   git push github master --tags
 
   # Create and deploy all docker images.
-  wex wexample::images/rebuild -d -lsc -q
+  wex wexample::images/rebuild -d -q
 }

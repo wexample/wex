@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 cronReload() {
+  if [ ! $(command -v crontab) ];then
+    return
+  fi
+
   . .env
 
   local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)

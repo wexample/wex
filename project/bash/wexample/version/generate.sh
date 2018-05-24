@@ -2,7 +2,7 @@
 
 versionGenerateArgs() {
   _ARGUMENTS=(
-    [0]='subversion v "Sub version number" false'
+    [0]='version v "Sub version number" false'
   )
 }
 
@@ -11,9 +11,9 @@ versionGenerate() {
   local YEAR=$(date -d @${LAST_COMMIT_TIME} +%Y)
 
   # Check if running.
-  if [ -z "${SUBVERSION+x}" ]; then
-    SUBVERSION=0
+  if [ -z "${VERSION+x}" ]; then
+    VERSION=0
   fi
 
-  echo ${YEAR}.${SUBVERSION}.$(git rev-list --all --count)
+  echo ${VERSION}.${YEAR}.$(git rev-list --all --count)
 }
