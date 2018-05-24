@@ -11,7 +11,7 @@ rm -rf ${WEX_LOCAL_DIR}
 # Create dir.
 mkdir ${WEX_LOCAL_DIR}
 # Get whole repository.
-git clone ${WEX_URL_GITHUB}scripts.git wexample
+git clone ${WEX_URL_GITHUB}scripts.git wexample --depth=1
 # Add permission to execute
 chmod -R +x "${WEX_LOCAL_DIR}"
 # Install locally

@@ -158,7 +158,7 @@ sitePublish() {
   fi
 
   # Clone new empty repo on remote repository.
-  wex remote/exec -q -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}
+  wex remote/exec -q -e=prod -d="/var/www" -s="git clone "${GIT_ORIGIN}" "${SITE_NAME}" --depth=1"
   # Create production env file
   wex remote/exec -q -e=prod -d="/var/www/${SITE_NAME}" -s="echo SITE_ENV=prod > .env"
 

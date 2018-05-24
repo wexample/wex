@@ -9,7 +9,8 @@ wexUpdate() {
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
     # Override changes and pull.
     wex git/resetHard
-    git pull origin ${BRANCH} --tags
+    # Get only last data
+    git pull origin ${BRANCH} --tags --depth=1
     git update-index --chmod=+x
     # Info
     echo "Wexample is up-to-date at v"$(wex wex/version)

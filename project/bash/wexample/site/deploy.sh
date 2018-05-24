@@ -20,7 +20,7 @@ siteDeploy() {
     mkdir wexample
     cd wexample
     git clone https://github.com/wexample/scripts.git .
-    . project/bash/default/_installLocal.sh
+    . project/bash/default/_installLocal.sh --depth=1
 
     UPWEX=false
     # Go back to project.
