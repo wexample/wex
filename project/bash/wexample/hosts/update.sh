@@ -14,7 +14,10 @@ hostsUpdate() {
 
     for DOMAIN in ${DOMAINS[@]}
     do
-      HOSTS_FILE+="\n"${IP}"\t"${DOMAIN}
+      # Prevent IP address to be sent as domain link in reverse proxy.
+      if [ "${DOMAIN}" != "${IP}" ];then
+        HOSTS_FILE+="\n"${IP}"\t"${DOMAIN}
+      fi
     done;
   done;
 
