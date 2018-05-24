@@ -6,10 +6,10 @@ services:
         image: mariadb:10.3.6
         restart: always
         environment:
-            - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
-            - MYSQL_DATABASE=${MYSQL_DB_NAME}
-            - MYSQL_USER=${MYSQL_DB_USER}
-            - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${MARIADB_DB_PASSWORD}
+            - MYSQL_DATABASE=${MARIADB_DB_NAME}
+            - MYSQL_USER=${MARIADB_DB_USER}
+            - MYSQL_PASSWORD=${MARIADB_DB_PASSWORD}
         volumes:
             - ${SITE_PATH_ROOT}/mariadb/data:/var/lib/mysql
         networks:

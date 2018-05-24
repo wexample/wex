@@ -40,28 +40,10 @@ siteInit() {
 
   local SITE_DIR_DOCKER=${DIR_SITE}"docker/"
   local WEX_DIR_DOCKER_SERVICES=${WEX_DIR_ROOT}"services/"
-  #local SAMPLE_SITE_DIR_DOCKER=${SAMPLE_SITE_DIR}"docker/"
 
   # Split services
-  local SERVICES_ARG=${SERVICES}
-  SERVICES=($(echo ${SERVICES} | tr "," "\n"))
-  local SERVICES_ALL=()
-
-  # Find dependencies.
-  for SERVICE in ${SERVICES[@]}
-  do
-    local SERVICE_CONFIG=${WEX_DIR_DOCKER_SERVICES}${SERVICE}"/config"
-    SERVICES_ALL+=" "${SERVICE}
-    if [ -f ${SERVICE_CONFIG} ];then
-      local DEPENDENCIES=false
-      . ${SERVICE_CONFIG}
-      if [ ${DEPENDENCIES} != false ];then
-        SERVICES_ALL+=($(echo ${DEPENDENCIES} | tr "," "\n"))
-      fi
-    fi
-  done
-
-  SERVICES=(${SERVICES_ALL[@]})
+  local SERVICES_JOINED=$(wex service/tree -s="${SERVICES}")
+  local SERVICES=$(echo ${SERVICES_JOINED} | tr "," "\n")
 
   # Check services exists
   for SERVICE in ${SERVICES[@]}
@@ -92,7 +74,9 @@ siteInit() {
 NAME=${SITE_NAME}
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
-SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
+SERVICES=${SERVICES_JOINED}
+LOCAL_DOMAINS=${SITE_NAME}.wex
+LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
 EOF
 
   if [ "${DOMAINS}" != "" ];then

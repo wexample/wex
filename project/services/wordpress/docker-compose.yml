@@ -22,9 +22,9 @@ services:
             - ${SITE_PATH_ROOT}.env:/var/www/html/.env
             - ${SITE_PATH_ROOT}.git:/var/www/html/.git
             # Apache
-            - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
+            - ${CONF_WORDPRESS_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
             # Php
-            - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
+            - ${CONF_WORDPRESS_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
             # Mysql dumps
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
             # Share same wex scripts for all environments.
@@ -43,4 +43,3 @@ services:
             - ${SITE_PATH_ROOT}wordpress/public/uploads:/var/www/html/project/wp-content/uploads
         networks:
             - tmp_wex_net
-

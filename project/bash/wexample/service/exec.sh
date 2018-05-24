@@ -29,9 +29,6 @@ serviceExec() {
     fi
   done
 
-  # TODO if
-  #local OUTPUT_NL=$(echo -e "${OUTPUT}")
-  #eval $(echo -e "${OUTPUT}")
   echo ${OUTPUT}
 
 }

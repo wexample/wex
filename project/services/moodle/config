@@ -1,1 +1,1 @@
-DEPENDENCIES=mariadb
+DEPENDENCIES=mysql,phpmyadmin
