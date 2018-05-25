@@ -7,6 +7,6 @@ moodleStarted() {
   webStarted
 
   # Give access.
-  wex site/exec -c="chmod 755 /var/www/html/moodledata"
-  wex site/exec -c="chown www-data:www-data /var/www/html/moodledata"
+  wex site/exec -c="chmod -R 755 /var/www/html/moodledata"
+  wex site/exec -c="chown -R www-data:www-data /var/www/html/moodledata"
 }
