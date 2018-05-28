@@ -11,7 +11,6 @@ services:
       - ${SITE_PATH_ROOT}proxy/vhost.d:/etc/nginx/vhost.d
       - ${SITE_PATH_ROOT}proxy/html:/usr/share/nginx/html
       - ${SITE_PATH_ROOT}proxy/logs:/var/log/nginx
-      - ${SITE_PATH_ROOT}proxy/wex.conf:/etc/nginx/conf.d/wex.conf:ro
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: nginx_proxy
     restart: always
