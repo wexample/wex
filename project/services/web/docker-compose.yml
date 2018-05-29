@@ -11,7 +11,7 @@ services:
             - 80
         environment:
             - WEX_SITE_ENV=${SITE_ENV}
-            - VIRTUAL_HOST=${SITE_NAME}.wex
+            - VIRTUAL_HOST=${DOMAINS}
             - VIRTUAL_PORT=80
             # Database
             - MYSQL_DB_HOST=${MYSQL_DB_HOST}
