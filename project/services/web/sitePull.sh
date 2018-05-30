@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wordpressSitePull() {
+webSitePull() {
   . .wex
 
   chown -R www-data:www-data ./project/
