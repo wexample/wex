@@ -14,6 +14,10 @@ siteDeploy() {
     # Save current dir.
     CURRENT_DIR=$(realpath ./)
 
+    # Set GIT user.
+    git config --global user.email "deploy@pipeline.com"
+    git config --global user.name "Deploy"
+
     # Reinstall wexample from github.
     rm -rf /opt/wexample
     cd /opt/
