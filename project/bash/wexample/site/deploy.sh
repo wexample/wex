@@ -14,10 +14,6 @@ siteDeploy() {
     # Save current dir.
     CURRENT_DIR=$(realpath ./)
 
-    # Set GIT user.
-    git config --global user.email "deploy@pipeline.com"
-    git config --global user.name "Deploy"
-
     # Reinstall wexample from github.
     rm -rf /opt/wexample
     cd /opt/
@@ -41,6 +37,11 @@ siteDeploy() {
 
   # There is a production site configured in .wex.
   if [ "${PROD_SSH_HOST}" != "" ]; then
+
+    # Set GIT user.
+    git config --global user.email "deploy@pipeline.com"
+    git config --global user.name "Deploy"
+
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
     # Update on production server
