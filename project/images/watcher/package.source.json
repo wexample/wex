@@ -13,7 +13,8 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-sync": "^0.1.4",
-    "gulp-uglify": "^2.0.1"
+    "gulp-uglify": "^2.0.1",
+    "gulp-restart": "^0.1.1"
   },
   "repository": "git+https://weeger@bitbucket.org/weeger/uoef.git",
   "author": "Wexample <contact@wexample.com>",
