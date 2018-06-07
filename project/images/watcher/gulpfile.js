@@ -5,7 +5,7 @@ let uglify = require('gulp-uglify');
 let concat = require('gulp-concat');
 let sass = require('gulp-sass');
 let fs = require('fs');
-let restart = require('gulp-restart');
+let spawn = require('child_process').spawn;
 
 // For each file (with no extension),
 // if value is "true", use the .js version to build .min.js version,
@@ -117,7 +117,12 @@ gulp.task('watch', () => {
     gulp.watch(sourceFiles, ['buildAppFiles']);
 
     // Restart when every configuration file changes.
-    gulp.watch([pathContext + 'watcher/*'], restart);
+    gulp.watch([pathContext + 'watcher/*'], () => {
+        process.stdin.removeAllListeners('data');
+        process.stdin.pause();
+        spawn('gulp', process.argv.slice(2), {stdio: [process.stdin, process.stdout, process.stderr], detached: true});
+        process.exit();
+    });
 });
 
 gulp.task('default', ['buildAppFiles', 'watch']);
