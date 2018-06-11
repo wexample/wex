@@ -3,6 +3,7 @@
 remoteInit() {
   _ARGUMENTS=(
     [0]='recreate r "Restart publishing configuration" true'
+    [1]='env e "Environment to initialize" true'
   )
 }
 
@@ -14,37 +15,42 @@ remoteInit() {
   fi
 
   while true;do
+      local SSH_USER=$(eval 'echo ${'${ENV}'_SSH_USER}')
+      local SSH_HOST=$(eval 'echo ${'${ENV}'_SSH_HOST}')
+      local SSH_PORT=$(eval 'echo ${'${ENV}'_SSH_PORT}')
+      local SSH_PRIVATE_KEY=$(eval 'echo ${'${ENV}'_SSH_PRIVATE_KEY}')
 
       # Test connexion to prod.
-      if [ "${PROD_SSH_USER}" != "" ] &&
-         [ "${PROD_SSH_HOST}" != "" ] &&
-         [ "${PROD_SSH_PRIVATE_KEY}" != "" ];then
-         if [ "$(wex ssh/check -u=${PROD_SSH_USER} -p=${PROD_SSH_PORT} -h=${PROD_SSH_HOST} -k=${PROD_SSH_PRIVATE_KEY})" == true ];then
+      if [ "${SSH_USER}" != "" ] &&
+         [ "${SSH_HOST}" != "" ] &&
+         [ "${SSH_PRIVATE_KEY}" != "" ];then
+         if [ "$(wex ssh/check -u=${SSH_USER} -p=${SSH_PORT} -h=${SSH_HOST} -k=${SSH_PRIVATE_KEY})" == true ];then
            # Great.
            return
          fi
-         echo "Unable to connect "${PROD_SSH_USER}"@"${PROD_SSH_HOST}:${PROD_SSH_PORT}" using "${PROD_SSH_PRIVATE_KEY}
+         echo "Unable to connect "${SSH_USER}"@"${SSH_HOST}:${SSH_PORT}" using "${SSH_PRIVATE_KEY}
       fi
 
-      PROD_SSH_USER=''
-      wex var/localClear -n="PROD_SSH_USER"
-      local PROD_SSH_USER=$(wex var/localGet -r -s -n="PROD_SSH_USER" -a="Production username")
+      SSH_USER=''
+      wex var/localClear -n="${ENV}_SSH_USER"
+      local SSH_USER=$(wex var/localGet -r -s -n="${ENV}_SSH_USER" -a="Server login username")
 
-      PROD_SSH_HOST=''
-      wex var/localClear -n="PROD_SSH_HOST"
-      local PROD_SSH_HOST=$(wex var/localGet -r -s -n="PROD_SSH_HOST" -a="Production host")
+      SSH_HOST=''
+      wex var/localClear -n="${ENV}_SSH_HOST"
+      local SSH_HOST=$(wex var/localGet -r -s -n="${ENV}_SSH_HOST" -a="Server host")
 
-      PROD_SSH_PORT=''
-      wex var/localClear -n="PROD_SSH_PORT"
-      local PROD_SSH_PORT=$(wex var/localGet -r -s -n="PROD_SSH_PORT" -a="Production SSH port")
+      SSH_PORT=''
+      wex var/localClear -n="${ENV}_SSH_PORT"
+      local SSH_PORT=$(wex var/localGet -r -s -n="${ENV}_SSH_PORT" -a="Server SSH port")
 
-      PROD_SSH_PRIVATE_KEY=''
-      wex var/localClear -n="PROD_SSH_PRIVATE_KEY"
+      SSH_PRIVATE_KEY=''
+      wex var/localClear -n="${ENV}_SSH_PRIVATE_KEY"
       # Get value.
-      local PROD_SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="PROD_SSH_PRIVATE_KEY" -d="")
-      if [ "${PROD_SSH_PRIVATE_KEY}" == "" ];then
-        wex ssh/keySelect -n="PROD_SSH_PRIVATE_KEY" -d="SSH Private key for production environment"
-        local PROD_SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="PROD_SSH_PRIVATE_KEY")
+      local SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="${ENV}_SSH_PRIVATE_KEY" -d="")
+      if [ "${SSH_PRIVATE_KEY}" == "" ];then
+        wex ssh/keySelectList
+        wex ssh/keySelect -n="${ENV}_SSH_PRIVATE_KEY" -d="SSH Private key for server"
+        local SSH_PRIVATE_KEY=$(wex var/localGet -r -s -n="${ENV}_SSH_PRIVATE_KEY")
       fi
   done;
 }

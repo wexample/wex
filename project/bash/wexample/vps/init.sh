@@ -25,12 +25,14 @@ vpsInit() {
   fi
   # Set right access
   chmod 600 ${USER_SSH_DIR}
-  # Disable root login
-  #wex rootLogin/disable
   # Set login port Port
-  wex config/setValue /etc/ssh/sshd_config -k="Port" -v="${PORT}"
+  wex config/setValue -f=/etc/ssh/sshd_config -k="Port" -v="${PORT}"
   # Save config for next login.
   service ssh restart
+  # Disable root login
+  wex rootLogin/disable
+  # Confirm
+  echo "Your new login information are : ${USER}@"$(wex system/ip)":"${PORT}
 
   # PHP is used for sites frameworks detection,
   # we may suppress it in the future.
