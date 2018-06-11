@@ -12,18 +12,20 @@ remoteInit() {
   if [ "${RECREATE}" != true ];then
     wexampleSiteInitLocalVariables
     . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+    local SSH_USER=$(eval 'echo ${'${ENV}'_SSH_USER}')
+    local SSH_HOST=$(eval 'echo ${'${ENV}'_SSH_HOST}')
+    local SSH_PORT=$(eval 'echo ${'${ENV}'_SSH_PORT}')
+    local SSH_PRIVATE_KEY=$(eval 'echo ${'${ENV}'_SSH_PRIVATE_KEY}')
   fi
 
-  while true;do
-      local SSH_USER=$(eval 'echo ${'${ENV}'_SSH_USER}')
-      local SSH_HOST=$(eval 'echo ${'${ENV}'_SSH_HOST}')
-      local SSH_PORT=$(eval 'echo ${'${ENV}'_SSH_PORT}')
-      local SSH_PRIVATE_KEY=$(eval 'echo ${'${ENV}'_SSH_PRIVATE_KEY}')
+  local ENV=${ENV^^}
 
+  while true;do
       # Test connexion to prod.
       if [ "${SSH_USER}" != "" ] &&
          [ "${SSH_HOST}" != "" ] &&
          [ "${SSH_PRIVATE_KEY}" != "" ];then
+         wex ssh/check -u=${SSH_USER} -p=${SSH_PORT} -h=${SSH_HOST} -k=${SSH_PRIVATE_KEY}
          if [ "$(wex ssh/check -u=${SSH_USER} -p=${SSH_PORT} -h=${SSH_HOST} -k=${SSH_PRIVATE_KEY})" == true ];then
            # Great.
            return
