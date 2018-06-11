@@ -21,38 +21,36 @@ serviceTemplates() {
 
     # One execution only by base name,
     # Search for file variations inside it.
-    if [[ $(wex array/contains -a="${FOUND[@]}" -i=${BASE_NAME}) == false ]];then
-      # Save as found
-      FOUND+=(${BASE_NAME})
-      EXT_ENV=${SPLIT[@]:1}
-
-      # Extension found
-      if [[ ! -z "${EXT_ENV:+x}" ]];then
-        EXT_ENV="."${EXT_ENV}
-      fi
-
-      FILE_ENV=${SPLIT[0]}"."${SITE_ENV}${EXT_ENV}
-
-      # There is more than two pieces,
-      # And second piece is env name, ex container.local.ext
-      if [[ -f "./"${FOLDER}"/"${FILE_ENV} ]];then
-        FILE=${FILE_ENV}
-        # Remove env name
-        CONF_VAR_BASE=${SPLIT[0]}" "${SPLIT[@]:1}
+    if [ $(wex array/contains -a="${FOUND[@]}" -i=${BASE_NAME}) == false ];then
       # Base file ex container.ext
-      else
-        CONF_VAR_BASE=${SPLIT[@]}
+      local CONF_VAR_NAME=${SPLIT[@]}
+
+       # There is more than two pieces
+      if [ "${SPLIT[2]}" != "" ];then
+        # Second part si equal to
+        if [ "${SPLIT[1]}" == ${SITE_ENV} ];then
+          # Remove env name
+          CONF_VAR_NAME=${SPLIT[0]}" "${SPLIT[2]}
+          # This is a strange.name.ext
+        else
+          CONF_VAR_NAME=false
+        fi
       fi
 
-      # Return to array
-      CONF_VAR_BASE=(${CONF_VAR_BASE})
-      # Append folder name in second position
-      CONF_VAR_BASE="${CONF_VAR_BASE[0]} ${SECTION} ${CONF_VAR_BASE[@]:1}"
-      CONF_VAR_BASE=$(wex array/join -a="${CONF_VAR_BASE}" -s="_")
-      CONF_VAR_BASE=$(wex text/uppercase -t=${CONF_VAR_BASE})
+      if [ "${CONF_VAR_NAME}" != false ];then
+        # Save as found
+        FOUND+=(${BASE_NAME})
 
-      # Not already found.
-      echo "\nCONF_"${CONF_VAR_BASE}'='$(realpath ${FOLDER}'/'${FILE})
+        # Return to array
+        CONF_VAR_NAME=(${CONF_VAR_NAME})
+        # Append folder name in second position
+        CONF_VAR_NAME="${SPLIT[0]} ${SECTION} ${CONF_VAR_NAME[@]:1}"
+        CONF_VAR_NAME=$(wex array/join -a="${CONF_VAR_NAME}" -s="_")
+        CONF_VAR_NAME=${CONF_VAR_NAME^^}
+
+        # Not already found.
+        echo "\nCONF_"${CONF_VAR_NAME}'='$(realpath ${FOLDER}'/'${FILE})
+      fi
     fi
   done
 }
