@@ -6,9 +6,32 @@ vpsRemoteInitArgs() {
    [1]='user u "Root username for first access" true'
    [2]='password pw "SSH Password" false'
    [3]='port p "SSH Port" false'
+   [4]='new_user nu "New user for future root access" true'
+   [5]='new_password npw "New password for user" true'
+   [6]='new_port np "New port for future root access" true'
  )
 }
 
 vpsRemoteInit() {
-  ssh -q ${USER}@${HOST} "ls -la"
+  if [ "${PORT}" == "" ];then
+    PORT=22
+  fi
+
+  local SSH_PUBLIC_KEY=$(wex ssh/keySelect -pub -d="SSH Public key for server")
+  local REMOTE_PUBLIC_KEY=~/tempPubKey
+  # Transfer public key file
+  scp -r -P${PORT} ${SSH_PUBLIC_KEY} ${USER}@${HOST}:${REMOTE_PUBLIC_KEY}
+
+  local COMMAND=""
+  # Install minimal packages.
+  COMMAND+="apt-get install unzip -yqq "
+  # Install wex scripts.
+  COMMAND+="w=install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/\$w | tr -d '\015' > \$w && . \$w && rm \$w "
+  # Execute the rest of scripts
+  COMMAND+="wex wexample::vps/init -u=\"${NEW_USER}\" -p=${NEW_PORT} -pub=${REMOTE_PUBLIC_KEY}"
+  # Remove temp public key.
+  COMMAND+="rm ${REMOTE_PUBLIC_KEY} "
+
+  # Execute in one line to avoid more password asking.
+  ssh -q ${USER}@${HOST} "&& rm ${REMOTE_PUBLIC_KEY}"
 }
