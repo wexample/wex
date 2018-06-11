@@ -26,7 +26,7 @@ vpsInit() {
   # Set right access
   chmod 600 ${USER_SSH_DIR}
   # Disable root login
-  wex rootLogin/disable
+  #wex rootLogin/disable
   # Set login port Port
   wex config/setValue /etc/ssh/sshd_config -k="Port" -v="${PORT}"
   # Save config for next login.
