@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-remoteInit() {
+remoteInitArgs() {
   _ARGUMENTS=(
-    [0]='recreate r "Restart publishing configuration" true'
-    [1]='env e "Environment to initialize" true'
+    [0]='recreate r "Restart publishing configuration" false'
+    [1]='environment e "Environment to initialize" true'
   )
 }
 
@@ -18,14 +18,13 @@ remoteInit() {
     local SSH_PRIVATE_KEY=$(eval 'echo ${'${ENV}'_SSH_PRIVATE_KEY}')
   fi
 
-  local ENV=${ENV^^}
+  local ENV=${ENVIRONMENT^^}
 
   while true;do
       # Test connexion to prod.
       if [ "${SSH_USER}" != "" ] &&
          [ "${SSH_HOST}" != "" ] &&
          [ "${SSH_PRIVATE_KEY}" != "" ];then
-         wex ssh/check -u=${SSH_USER} -p=${SSH_PORT} -h=${SSH_HOST} -k=${SSH_PRIVATE_KEY}
          if [ "$(wex ssh/check -u=${SSH_USER} -p=${SSH_PORT} -h=${SSH_HOST} -k=${SSH_PRIVATE_KEY})" == true ];then
            # Great.
            return
