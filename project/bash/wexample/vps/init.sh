@@ -28,10 +28,10 @@ vpsInit() {
   chmod 600 ${USER_SSH_DIR}
   # Set login port Port
   wex config/setValue -f=/etc/ssh/sshd_config -k="Port" -v="${PORT}"
-  # Save config for next login.
-  service ssh restart
   # Disable root login
   wex rootLogin/disable
+  # Save config for next login.
+  service ssh restart
   # Confirm
   echo "Your new login information are : ${USER}@"$(wex system/ip)":"${PORT}
 

@@ -31,9 +31,9 @@ vpsRemoteInit() {
   # Install wex scripts.
   COMMAND+="&& w=install.sh && curl https://raw.githubusercontent.com/wexample/scripts/master/\$w | tr -d '\\015' > \$w && . \$w && rm \$w "
   # Execute the rest of scripts
-  COMMAND+="&& wex wexample::vps/init -u=\"${NEW_USER}\" -p=${NEW_PORT} -pub=~/${PUBLIC_KEY_NAME} "
+  COMMAND+="&& wex wexample::vps/init -u=\"${NEW_USER}\" -p=${NEW_PORT} -pw='${NEW_PASSWORD}' -pub=/root/${PUBLIC_KEY_NAME} "
   # Remove temp public key.
-  COMMAND+="&& rm ${REMOTE_PUBLIC_KEY} "
+  COMMAND+="&& rm /root/${REMOTE_PUBLIC_KEY} "
 
   # Execute in one line to avoid more password asking.
   ssh -q ${USER}@${HOST} "${COMMAND}"
