@@ -37,7 +37,7 @@ sitePublish() {
   ${RENDER_BAR} -p=10 -s="Init production connexion info" -nl
 
   # Save connection info.
-  wex wexample::remote/init -r=${RECREATE}
+  wex wexample::remote/init -e=prod -r=${RECREATE}
 
   # Clear local variables.
   if [ "${RECREATE}" == true ];then
