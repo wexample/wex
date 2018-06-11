@@ -4,7 +4,8 @@ vpsInitArgs() {
   _ARGUMENTS=(
     [0]='user u "Admin username that replace root" true'
     [1]='port p "New SSH port" true'
-    [2]='public_key pub "Public SSH key file to import as authorized keys" true'
+    [2]='password pw "New password" true'
+    [3]='public_key pub "Public SSH key file to import as authorized keys" true'
   )
 }
 
@@ -41,6 +42,5 @@ vpsInit() {
   wex docker/install
   # Create www dir
   mkdir -p /var/www/
-
 
 }
