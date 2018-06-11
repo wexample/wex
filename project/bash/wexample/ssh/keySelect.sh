@@ -2,8 +2,9 @@
 
 sshKeySelectArgs() {
   _ARGUMENTS=(
-    [0]='name n "SSH Key local name" true'
+    [0]='name n "SSH Key local name" false'
     [1]='description d "Description" true'
+    [2]='public pub "Public key" false'
   )
 }
 
@@ -21,7 +22,7 @@ sshKeySelect() {
       local KEYS=($(ls ${KEYS_DIR}))
       for KEY in ${KEYS[@]}
       do
-        if [ "${KEY##*.}" != "pub" ];then
+        if ([ "${PUBLIC}" != true ] && [ "${KEY##*.}" != "pub" ]) || ([ "${PUBLIC}" == "true" ] && [ "${KEY##*.}" == "pub" ]);then
           KEYS_AVAILABLE+=("${KEYS_DIR}${KEY}")
         fi
       done;
@@ -31,14 +32,18 @@ sshKeySelect() {
   echo "Type a number or the path of your custom key"
   select SELECTED in ${KEYS_AVAILABLE[@]};
   do
-    #
-    if [ ${SELECTED} == ${CUSTOM_PATH_LABEL} ];then
-      # Clear
-      wex wexample::var/localClear -n="${NAME}"
-      SELECTED=$(wex wexample::var/localGet -n="${NAME}" -a="${DESCRIPTION}" -r)
+    # Saving expected
+    if [ "${NAME}" != "" ]; then
+      if [ ${SELECTED} == ${CUSTOM_PATH_LABEL} ];then
+        # Clear
+        wex wexample::var/localClear -n="${NAME}"
+        SELECTED=$(wex wexample::var/localGet -n="${NAME}" -a="${DESCRIPTION}" -r)
+      else
+        $(wex wexample::var/localSet -n="${NAME}" -v="${SELECTED}")
+      fi
     else
-      $(wex wexample::var/localSet -n="${NAME}" -v="${SELECTED}")
+      echo ${SELECTED}
     fi
-    break
+    return
   done
 }
