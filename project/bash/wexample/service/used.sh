@@ -8,5 +8,12 @@ serviceUsedArgs() {
 
 serviceUsed() {
   local SERVICES=($(wex service/list))
-  wex array/contains -a="${SERVICES}" -i=${SERVICE}
+
+  # Array contains
+  if [[ " ${SERVICES[@]} " =~ " ${SERVICE} " ]]; then
+    echo true
+    return
+  fi
+
+  echo false
 }

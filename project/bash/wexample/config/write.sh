@@ -79,10 +79,10 @@ configWrite() {
   # Assign free ports.
   for SERVICE in ${SERVICES[@]}
   do
-    local VAR_NAME=SERVICE_PORT_$(wex text/uppercase -t=${SERVICE})
+    local VAR_NAME=SERVICE_PORT_${SERVICE^^}
 
     # Avoid used ports.
-    while [ $(wex array/contains -a="${PORTS_USED_ARRAY[@]}" -i="${PORT_CURRENT}") == true ];do
+    while [[ " ${PORTS_USED_ARRAY[@]} " =~ " ${PORT_CURRENT} " ]];do
       ((PORT_CURRENT++))
     done
 
