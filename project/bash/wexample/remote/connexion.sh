@@ -11,7 +11,7 @@ remoteConnexionArgs() {
 }
 
 remoteConnexion() {
-  local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
+  local ENV=${ENVIRONMENT^^}
 
   # Try with local variables (local environment).
   if [ -f ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE} ];then

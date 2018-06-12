@@ -22,7 +22,7 @@ textColor() {
   local DEFAULT="\033[0m"
 
   # Uppercase color name
-  COLOR=$(wex text/uppercase -t=${COLOR})
+  local COLOR=${COLOR^^}
   # Find color code
   eval 'COLOR=$'${COLOR}
   # Print

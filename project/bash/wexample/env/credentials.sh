@@ -21,7 +21,7 @@ envCredentials() {
     SITE_USERNAME=${SSH_USERNAME}
   else
     # Username
-    VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
+    VAR_NAME=DB_REMOTE_${ENVIRONMENT^^}_SSH_USERNAME
     SITE_USERNAME=$(wex env/var -l="SSH Username for ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
@@ -30,7 +30,7 @@ envCredentials() {
     SITE_PRIVATE_KEY=${PRIVATE_KEY}
   else
     # SSH Private key
-    VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_PRIVATE_KEY
+    VAR_NAME=DB_REMOTE_${ENVIRONMENT^^}_SSH_PRIVATE_KEY
     SITE_PRIVATE_KEY=$(wex env/var -l="SSH Private key for : ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 

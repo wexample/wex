@@ -9,6 +9,6 @@ dbVarArgs() {
 dbVar() {
   # Load credentials stored into config
   wex config/load
-  local NAME='MYSQL_DB_'$(wex text/uppercase -t=${NAME})
+  local NAME='MYSQL_DB_'${ENVIRONMENT^^}
   echo $(eval 'echo ${'${NAME}'}')
 }
