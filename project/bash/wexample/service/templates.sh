@@ -21,14 +21,16 @@ serviceTemplates() {
 
     # Base file ex container.ext
     local CONF_VAR_NAME=${SPLIT[@]}
+    local IS_ENV=false
 
     # There is more than two pieces
     if [ "${SPLIT[2]}" != "" ];then
+      local IS_ENV=true
       # Second part si equal to
       if [ "${SPLIT[1]}" == ${SITE_ENV} ];then
         # Remove env name
         CONF_VAR_NAME=${SPLIT[0]}" "${SPLIT[2]}
-        # This is a strange.name.ext
+        # This is an unexpected.name.ext
       else
         CONF_VAR_NAME=false
       fi
@@ -36,11 +38,12 @@ serviceTemplates() {
 
     # One execution only by base name,
     # Search for file variations inside it.
-    if [ "${CONF_VAR_NAME}" != false ] && [[ ! " ${NAMES_PROCESSED[@]} " =~ " ${SPLIT[0]} " ]];then
+    # Allow to write same variable twot time if env file is found after generic one.
+    if [ "${CONF_VAR_NAME}" != false ] && ([[ ! " ${NAMES_PROCESSED[@]} " =~ " ${SPLIT[0]} " ]] || [ ${IS_ENV} == true ]);then
       # Save as found
       NAMES_PROCESSED+=(${SPLIT[0]})
 
-     # Return to array
+      # Return to array
       CONF_VAR_NAME=(${CONF_VAR_NAME})
       # Append folder name in second position
       CONF_VAR_NAME="${SPLIT[0]} ${SECTION} ${CONF_VAR_NAME[@]:1}"
