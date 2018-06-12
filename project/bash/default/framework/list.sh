@@ -15,7 +15,7 @@ frameworkList() {
   fi;
 
   DIRS=($(ls -d ${WEX_DIR_BASH_DEFAULT}framework*))
-  FOUND=()
+  local FRAMEWORK_FOUND=()
   for FRAMEWORK_DIR in ${DIRS[@]}
   do
     FRAMEWORK_DIR_NAME=$(basename ${FRAMEWORK_DIR})
@@ -28,11 +28,11 @@ frameworkList() {
       # There is a detection script
       # And it returns true
       if [ -f ${FRAMEWORK_DIR}"/"used.sh ] && [ $(wex ${FRAMEWORK_DIR_NAME}/used -d=${DIR}) == true ];then
-        FOUND+=(${FRAMEWORK_NAME})
+        FRAMEWORK_FOUND+=(${FRAMEWORK_NAME})
       fi
     fi
   done
 
-  echo ${FOUND[@]}
+  echo ${FRAMEWORK_FOUND[@]}
 
 }

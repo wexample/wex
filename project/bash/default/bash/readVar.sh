@@ -20,11 +20,11 @@ bashReadVar() {
   # Get the key value
   eval VALUE='$'${KEY}
 
-  FOUND=true
+  local VALUE_FOUND=true
 
   # Value does not exists.
   if [ "${VALUE}" == "" ]; then
-    FOUND=false
+    VALUE_FOUND=false
     # Ask user
     if [ "${ASK}" == true ];then
       # Description found
@@ -46,11 +46,11 @@ bashReadVar() {
 
   # Still no value even user may be asked
   if [ "${VALUE}" == "" ] && [ ! -z ${DEFAULT+x} ]; then
-    FOUND=false
+    VALUE_FOUND=false
     VALUE=${DEFAULT}
   fi
 
-  if [ "${WRITE}" == true ] && [ "${FOUND}" == false ];then
+  if [ "${WRITE}" == true ] && [ "${VALUE_FOUND}" == false ];then
     CONTENT=""
     # Set description as comment
     if [ ! -z ${LABEL+x} ];then

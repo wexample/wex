@@ -38,17 +38,17 @@ serviceTree() {
   # Loop all services.
   for SERVICE in ${SERVICES_LIST[@]}
   do
-    local FOUND=false
+    local SERVICE_FOUND=false
 
     # Loop already added.
     for SERVICE_ADDED in ${SERVICES_ADDED_LIST[@]}
     do
       if [ "${SERVICE_ADDED}" == "${SERVICE}" ];then
-        FOUND=true
+        SERVICE_FOUND=true
       fi
     done
 
-    if [ ${FOUND} == false ];then
+    if [ ${SERVICE_FOUND} == false ];then
       SERVICES_ADDED_LIST+=(${SERVICE})
       if [ "${SERVICES_JOINED}" != "" ];then
         SERVICES_JOINED+=','
