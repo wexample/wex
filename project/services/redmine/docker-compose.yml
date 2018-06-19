@@ -4,51 +4,16 @@ services:
     redmine:
       container_name: ${SITE_NAME}_redmine
       restart: always
-      image:  sameersbn/redmine:3.4.4-2
+      image:  redmine:3.4.6
       volumes:
-        - ${SITE_PATH_ROOT}redmine:/home/redmine/data
+        - ${SITE_PATH_ROOT}redmine/data:/home/redmine/data
       environment:
         - VIRTUAL_HOST=${SITE_NAME}.wex
-
-        - TZ=Europe/Paris
-
-        - DB_ADAPTER=mysql2
-        - DB_HOST=${MYSQL_DB_HOST}
-        - DB_PORT=3306
-        - DB_USER=${MYSQL_DB_USER}
-        - DB_PASS=${MYSQL_DB_PASSWORD}
-        - DB_NAME=${MYSQL_DB_NAME}
-
-        - REDMINE_PORT=10083
-
-        - REDMINE_RELATIVE_URL_ROOT=
-        - REDMINE_SECRET_TOKEN=
-
-        - REDMINE_SUDO_MODE_ENABLED=false
-        - REDMINE_SUDO_MODE_TIMEOUT=15
-
-        - REDMINE_CONCURRENT_UPLOADS=2
-
-        - REDMINE_BACKUP_SCHEDULE=
-        - REDMINE_BACKUP_EXPIRY=
-        - REDMINE_BACKUP_TIME=
-
-        - SMTP_ENABLED=false
-        - SMTP_METHOD=smtp
-        - SMTP_DOMAIN=www.example.com
-        - SMTP_HOST=smtp.gmail.com
-        - SMTP_PORT=587
-        - SMTP_USER=mailer@example.com
-        - SMTP_PASS=password
-        - SMTP_STARTTLS=true
-        - SMTP_AUTHENTICATION=:login
-
-        - IMAP_ENABLED=false
-        - IMAP_HOST=imap.gmail.com
-        - IMAP_PORT=993
-        - IMAP_USER=mailer@example.com
-        - IMAP_PASS=password
-        - IMAP_SSL=true
-        - IMAP_INTERVAL=30
+        - VIRTUAL_PORT=3000
+        # Database
+        - REDMINE_DB_MYSQL=${MYSQL_DB_HOST}
+        - REDMINE_DB_DATABASE=${MYSQL_DB_NAME}
+        - REDMINE_DB_USERNAME=${MYSQL_DB_USER}
+        - REDMINE_DB_PASSWORD=${MYSQL_DB_PASSWORD}
       networks:
         - tmp_wex_net
