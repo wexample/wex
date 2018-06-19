@@ -11,6 +11,7 @@ services:
         - ${SITE_PATH_ROOT}redmine/data:/home/redmine/data
       environment:
         - VIRTUAL_HOST=${SITE_NAME}.wex
+        - VIRTUAL_PORT=3000
         # Database
         - REDMINE_DB_MYSQL=${MYSQL_DB_HOST}
         - REDMINE_DB_DATABASE=${MYSQL_DB_NAME}
