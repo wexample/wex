@@ -35,6 +35,8 @@ vpsInit() {
   # Confirm
   echo "Your new login information are : ${USER}@"$(wex system/ip)":"${PORT}
 
+  # TODO Disable password login ? (only ssh)
+
   # PHP is used for sites frameworks detection,
   # we may suppress it in the future.
   apt-get install git dos2unix zip php -yqq

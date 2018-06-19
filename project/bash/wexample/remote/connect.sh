@@ -11,6 +11,7 @@ remoteConnectArgs() {
 }
 
 remoteConnect() {
+  wex remote/init -e=${ENVIRONMENT}
   # Prevent to set credentials globally
   local SSH_CONNEXION=$(wex remote/connexion -e=${ENVIRONMENT} ${WEX_ARGUMENTS})
   ssh -oStrictHostKeyChecking=no ${SSH_CONNEXION}
