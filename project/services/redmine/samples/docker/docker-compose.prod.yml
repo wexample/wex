@@ -1,9 +1,4 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_REDMINE}
-          service: redmine
         environment:
-          - REDMINE_HTTPS=true
           - VIRTUAL_HOST=${DOMAIN_MAIN}
-          - VIRTUAL_PROTO=https
           - LETSENCRYPT_HOST=${DOMAIN_MAIN}
           - LETSENCRYPT_EMAIL=${EMAIL}

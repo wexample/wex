@@ -1,2 +1,0 @@
-        environment:
-          - REDMINE_HTTPS=false
