@@ -36,6 +36,14 @@ vpsInit() {
   echo "Your new login information are : ${USER}@"$(wex system/ip)":"${PORT}
 
   # TODO Disable password login ? (only ssh)
+  # TODO Create gitlab user for automated deployments.
+  # - Add Gitlab in "visudo", is /etc/sudoers file : gitlab ALL=(ALL) NOPASSWD: ALL
+  # - Add Gitlab SSH public key to authorized_keys (how to retrieve it ?)
+  # - chmod 700 ~/.ssh
+  # - chmod 600 ~/.ssh/authorized_keys
+  # - chown -R gitlab:sudo /home/gitlab/.ssh
+  # - Set : PasswordAuthentication no => /etc/ssh/sshd_config
+  # - service ssh restart
 
   # PHP is used for sites frameworks detection,
   # we may suppress it in the future.
