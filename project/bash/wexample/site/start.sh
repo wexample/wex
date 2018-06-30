@@ -73,7 +73,7 @@ siteStart() {
   # The script are executed outside containers.
   wex cron/reload
   # Load site config
-  . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex
   # Update host file if user has write access.
   if [ ${SITE_ENV} == "local" ] && [ $(wex file/writable -f=/etc/hosts) == true ];then
