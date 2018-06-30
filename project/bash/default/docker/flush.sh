@@ -4,7 +4,7 @@ dockerFlush() {
 
   # Warn user.
   read -p "It will remove all containers / images / networks, are you sure ? Type n to stop : " ANSWER
-  if [ ${ANSWER} == "n" ];then
+  if [ "${ANSWER}" == "n" ];then
     return
   fi;
 
