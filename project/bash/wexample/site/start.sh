@@ -97,5 +97,5 @@ siteStart() {
   # Use previously generated yml file.
   docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
 
-  wex service/exec -c=started
+  wex service/exec -c=started -nw
 }

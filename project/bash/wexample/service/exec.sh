@@ -6,6 +6,7 @@ serviceExecArgs() {
     [1]='service_only s "Service only" false'
     [2]='data d "Data" false'
     [3]='parse p "Parse output variables" false'
+    [4]='no_wrap nw "Do not catch output into variable (should be the future recomended usage)" false'
   )
 }
 
@@ -23,8 +24,13 @@ serviceExec() {
       if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
         . ${SERVICE_FILE_SCRIPT}
         METHOD=${SERVICE}${COMMAND_UC}
-        # Execute init method.
-        OUTPUT+=$(${METHOD} ${DATA})
+        if [ "${NO_WRAP}" == "" ];then
+          # Execute init method.
+          OUTPUT+=$(${METHOD} ${DATA})
+        else
+          # Execute init method.
+          ${METHOD} ${DATA}
+        fi;
       fi;
     fi
   done
