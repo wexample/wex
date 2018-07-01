@@ -35,7 +35,7 @@ siteDeploy() {
   . .wex
 
   wex ci/exec -c=deploy
-
+  local DEPLOY_ENV=${DEPLOY_ENV^^}
   local SSH_HOST=$(eval 'echo ${'${DEPLOY_ENV}'_SSH_HOST}')
 
   # There is a site configured in .wex for this env.
