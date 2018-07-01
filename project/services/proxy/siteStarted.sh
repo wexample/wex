@@ -11,7 +11,9 @@ proxySiteStarted() {
     local FTP_PASSWD=/etc/pure-ftpd/passwd/${SITE_NAME}.passwd
     # Copy.
     docker cp ${FTP_PASSWD_LOCAL} wex_ftp:${FTP_PASSWD}
+    # Give access.
+    docker exec wex_ftp chmod 600 ${FTP_PASSWD}
     # Reload FTP service.
-    docker exec wex_ftp chmod 600 ${FTP_PASSWD} && service pure-ftpd force-reload
+    docker exec wex_ftp service pure-ftpd force-reload
   fi
 }
