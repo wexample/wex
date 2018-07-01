@@ -4,6 +4,7 @@ siteDeployArgs() {
   _ARGUMENTS=(
     [0]='dir d "Root directory of site" false'
     [1]='upwex upwex "Use last version of wexample scripts (debug mode)" false'
+    [2]='deploy_env e "Deployment env" true'
   )
 }
 
@@ -35,8 +36,10 @@ siteDeploy() {
 
   wex ci/exec -c=deploy
 
-  # There is a production site configured in .wex.
-  if [ "${PROD_SSH_HOST}" != "" ]; then
+  local SSH_HOST=$(eval 'echo ${'${DEPLOY_ENV}'_SSH_HOST}')
+
+  # There is a site configured in .wex for this env.
+  if [ "${SSH_HOST}" != "" ]; then
 
     # Set GIT user.
     git config --global user.email "deploy@pipeline.com"
@@ -44,17 +47,17 @@ siteDeploy() {
 
     # Check gitlab credentials and init.
     wex wexample::gitlab/sshInit
-    # Update on production server
+    # Update on destination server
     # Create gitlab user :
     #   adduser gitlab
     #   usermod -aG sudo gitlab
     #   mkdir /home/gitlab/.ssh/
-    # Public key ~/.ssh/id_rsa of gitlab server must be added on production server.
+    # Public key ~/.ssh/id_rsa of gitlab server must be added on destination server.
     #   nano /home/gitlab/.ssh/authorized_keys
     # User must have access to execute scripts.
     # Use : sudo visudo
     # then add : username ALL=(ALL) NOPASSWD: ALL
     # If root ssh access is disabled.
-    wex wexample::remote/exec -e=prod -h="${PROD_SSH_HOST}" -u=gitlab -k=/root/.ssh/host/id_rsa -d=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${NAME} -s="sudo wex site/pull"
+    wex wexample::remote/exec -e=${DEPLOY_ENV} -h="${PROD_SSH_HOST}" -u=gitlab -k=/root/.ssh/host/id_rsa -d=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${NAME} -s="sudo wex site/pull"
   fi;
 }
