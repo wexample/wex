@@ -4,6 +4,11 @@ wexRelease() {
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
 
+  # TODO When commiting a new file whe should make sure
+  #      that it is executable ton prevent add/add conflicts.
+  # git add --chmod=+x ./*
+  # git add --chmod=+x ./.*
+
   # Reset.
   wex git/resetHard
   # Pull last version.
