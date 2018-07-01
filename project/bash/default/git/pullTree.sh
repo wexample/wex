@@ -2,7 +2,7 @@
 
 gitPullTree() {
   # Get last updates.
-  git pull --depth=1
+  git pull
 
   # Update submodules.
   if [ -f .gitmodules ]; then
