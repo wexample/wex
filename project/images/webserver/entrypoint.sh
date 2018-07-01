@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Load parent entry point.
-bash /docker-entrypoint-ubuntu17.sh
+. /docker-entrypoint-ubuntu17.sh
 
 # inspired from https://github.com/docker-library/php/commit/e3bc10f2076ac8d7c86d4e20ba870e0e03d509ba
 
