@@ -27,7 +27,7 @@ siteDeploy() {
     # Go back to project.
     cd ${CURRENT_DIR}
     # Relaunch with debug mode.
-    wex site/deploy --debug
+    wex site/deploy -e=${DEPLOY_ENV} --debug
 
     return
   fi;
