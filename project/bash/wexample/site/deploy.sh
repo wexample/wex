@@ -3,15 +3,15 @@
 siteDeployArgs() {
   _ARGUMENTS=(
     [0]='dir d "Root directory of site" false'
-    [1]='upwex upwex "Use last version of wexample scripts (debug mode)" false'
+    [1]='up_wex upwex "Use last version of wexample scripts (debug mode)" false'
     [2]='deploy_env e "Deployment env" true'
   )
 }
 
 siteDeploy() {
 
-  if [ "${UPWEX+x}" == true ]; then
-
+  if [ "${UP_WEX+x}" == true ]; then
+    echo "Using last wex scripts version"
     # Save current dir.
     CURRENT_DIR=$(realpath ./)
 
@@ -23,7 +23,7 @@ siteDeploy() {
     git clone https://github.com/wexample/scripts.git .
     . project/bash/default/_installLocal.sh --depth=1
 
-    UPWEX=false
+    UP_WEX=false
     # Go back to project.
     cd ${CURRENT_DIR}
     # Relaunch with debug mode.
@@ -37,6 +37,8 @@ siteDeploy() {
   wex ci/exec -c=deploy
   local DEPLOY_ENV=${DEPLOY_ENV^^}
   local SSH_HOST=$(eval 'echo ${'${DEPLOY_ENV}'_SSH_HOST}')
+
+  echo "Deploy to ${DEPLOY_ENV} at "${SSH_HOST}
 
   # There is a site configured in .wex for this env.
   if [ "${SSH_HOST}" != "" ]; then
