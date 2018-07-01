@@ -98,4 +98,7 @@ siteStart() {
   docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
 
   wex service/exec -c=started -nw
+
+  # Execute server hook for global configurations.
+  wex service/exec -s=proxy -sf -c=siteStarted
 }
