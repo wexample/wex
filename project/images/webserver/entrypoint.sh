@@ -3,4 +3,4 @@
 # Load parent entry point.
 bash /docker-entrypoint-ubuntu17.sh
 
-/bin/bash
+apachectl -DFOREGROUND
