@@ -99,6 +99,8 @@ siteStart() {
 
   wex service/exec -c=started -nw
 
+  # Bash hooks.
+  wex ci/exec -c=started
   # Execute server hook for global configurations.
   wex service/exec -s=proxy -sf -c=siteStarted
 }
