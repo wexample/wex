@@ -10,8 +10,6 @@ RUN apt-get install \
   php-memcached \
   php-zip \
   memcached \
-  sendmail \
-  mailutils \
   php7.1 \
   libapache2-mod-php \
   php-gd \
