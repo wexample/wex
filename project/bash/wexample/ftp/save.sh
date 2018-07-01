@@ -10,10 +10,13 @@ ftpSave() {
   # Load site name.
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  docker exec -ti wex_ftp cp /etc/pure-ftpd/passwd/${SITE_NAME}.passwd /var/www/${SITE_NAME}/ftp/passwd/
+  # Create dest dir.
+  mkdir -p ./ftp/passwd
+  # Copy file content.
+  echo -e $(docker exec wex_ftp cat /etc/pure-ftpd/passwd/${SITE_NAME}.passwd) > ./ftp/passwd/${SITE_NAME}.passwd
 
   # Save.
-  git add ./ftp/passwd/
+  git add ./ftp/passwd
   git commit -m "ftp/userAdd ${TAG}"
   git push
 }
