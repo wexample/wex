@@ -1,9 +1,9 @@
 version: '2'
 
 services:
-    wordpress:
-        container_name: '${SITE_NAME}_wordpress'
-        image: 'wexample/wordpress'
+    drupal6:
+        container_name: '${SITE_NAME}_drupal6'
+        image: 'wexample/drupal6'
         stdin_open: true
         tty: true
         expose:
@@ -32,15 +32,11 @@ services:
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
             # Use common certificates storage
             - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
-            # Wordpress specific
-            - ${SITE_PATH_ROOT}wordpress/config:/var/www/html/project/wp-content/config
-            - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/project/.htaccess:ro
-            # Public files ar modifiable from FTP.
-            - ${SITE_PATH_ROOT}wordpress/public/backups:/var/www/html/project/wp-content/backups
-            - ${SITE_PATH_ROOT}wordpress/public/languages:/var/www/html/project/wp-content/languages
-            - ${SITE_PATH_ROOT}wordpress/public/plugins:/var/www/html/project/wp-content/plugins
-            - ${SITE_PATH_ROOT}wordpress/public/themes:/var/www/html/project/wp-content/themes
-            - ${SITE_PATH_ROOT}wordpress/public/themes-child:/var/www/html/project/wp-content/themes-child
-            - ${SITE_PATH_ROOT}wordpress/public/uploads:/var/www/html/project/wp-content/uploads
+            # Drupal specific
+            - ${SITE_PATH_ROOT}drupal/settings.php:/var/www/html/project/sites/default/settings.php:rw
+            - ${SITE_PATH_ROOT}drupal/files:/var/www/html/project/sites/default/files:rw
+            - ${SITE_PATH_ROOT}drupal/modules:/var/www/html/project/sites/all/modules:rw
+            - ${SITE_PATH_ROOT}drupal/themes:/var/www/html/project/sites/all/themes:rw
+            - ${SITE_PATH_ROOT}drupal/libraries:/var/www/html/project/sites/all/libraries:rw
         networks:
             - tmp_wex_net
