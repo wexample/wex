@@ -18,7 +18,7 @@ frameworkDetect() {
   # There is a composer folder, or any sign of a PHP framework.
   if [[ -e ${DIR}"/composer.json" || -e ${DIR}"/index.php" ]]
   then
-    WEBSITE_FRAMEWORK=$(php "${WEX_DIR_ROOT}php/websiteFolderFrameworkDetect.php" ${DIR});
+    WEBSITE_FRAMEWORK=$(wex site/exec -c="php /opt/wexample/project/php/websiteFolderFrameworkDetect.php ${DIR}");
   fi
 
   wex framework/global
