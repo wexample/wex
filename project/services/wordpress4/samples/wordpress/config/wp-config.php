@@ -14,6 +14,8 @@ define('HMBKP_PATH', $dir_current . 'wp-content/backups');
 
 $env_config = $dir_current . 'wp-content/config/wp-config.' . $env['SITE_ENV'] . '.php';
 
+$table_prefix  = '';
+
 if (file_exists($env_config)) {
     require_once $env_config;
 }
