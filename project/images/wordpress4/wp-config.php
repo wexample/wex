@@ -40,10 +40,10 @@ define('DB_PASSWORD', $env['MYSQL_DB_PASSWORD']);
 define('DB_HOST', $env['MYSQL_DB_HOST']);
 
 /** Database Charset to use in creating database tables. */
-define('DB_CHARSET', 'utf8');
+define('DB_CHARSET', isset($env['WP_DB_CHARSET']) ? $env['WP_DB_CHARSET'] : 'utf8');
 
 /** The Database Collate type. Don't change this if in doubt. */
-define('DB_COLLATE', '');
+define('DB_COLLATE', isset($env['WP_DB_COLLATE']) ? $env['WP_DB_COLLATE'] : '');
 
 /**#@+
  * Authentication Unique Keys and Salts.
@@ -71,7 +71,7 @@ define('NONCE_SALT',       'd033cf1d05e7be0264280bc170e3ae63be21047d');
  * You can have multiple installations in one database if you give each
  * a unique prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix  = 'wex_';
+$table_prefix  = isset($env['WP_DB_TABLE_PREFIX']) ? $env['WP_DB_TABLE_PREFIX'] : '';
 
 /**
  * For developers: WordPress debugging mode.
@@ -102,8 +102,8 @@ if ( !defined('ABSPATH') )
 # Wex common configuration
 # No core auto update.
 define('WP_AUTO_UPDATE_CORE', false);
-# No core / plugins update (for info)
-define('DISALLOW_FILE_MODS', false);
+# No core / plugins update
+define('DISALLOW_FILE_MODS', true);
 # Load custom wex configuration.
 require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
 
