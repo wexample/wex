@@ -3,7 +3,7 @@
 wordpressUrlChangeArgs() {
   _ARGUMENTS=(
     [0]='new_url u "New url with trailing slash" true'
-    [1]='prefix p "Database prefix" true'
+    [1]='prefix p "Database prefix (including separation)" true'
   )
 }
 
@@ -24,5 +24,5 @@ wordpressUrlChange() {
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")
   # Protect arguments by escaping special chars.
   NEW_URL=$(sed -e 's/[]\/$*.^|[]/\\&/g' <<< "${NEW_DOMAIN}")
-  sed -i "/DOMAIN_CURRENT_SITE/s/'[^']*'/'"${NEW_URL}"'/2" ./wordpress/wp-config.php
+  sed -i "/DOMAIN_CURRENT_SITE/s/'[^']*'/'"${NEW_URL}"'/2" ./wordpress/config/wp-config.php
 }
