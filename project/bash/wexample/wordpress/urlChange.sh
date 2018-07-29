@@ -2,7 +2,7 @@
 
 wordpressUrlChangeArgs() {
   _ARGUMENTS=(
-    [0]='new_url u "New url with trailing slash" true'
+    [0]='new_url u "New url with trailing slash (ex: http://wexample.com/) " true'
     [1]='prefix p "Database prefix (including separation)" true'
   )
 }
