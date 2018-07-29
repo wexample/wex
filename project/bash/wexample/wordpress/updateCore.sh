@@ -10,7 +10,7 @@ wordpressUpdateCoreArgs() {
 wordpressUpdateCore() {
   local FILENAME='wordpress-'${VERSION}'.zip'
   # Download last version.
-  wex site/exec -c="cd /var/www && wget https://wordpress.org/${FILENAME} && unzip ${FILENAME} && rm ${FILENAME}"
+  wex site/exec -c="cd /var/www && rm -rf wordpress && rm -rf ${FILENAME} && wget https://wordpress.org/${FILENAME} && unzip ${FILENAME} && rm ${FILENAME}"
   # Remove old files.
   wex site/exec -c="rm -rf /var/www/html/project/wp-includes && rm -rf /var/www/html/project/wp-admin"
   # Copy new

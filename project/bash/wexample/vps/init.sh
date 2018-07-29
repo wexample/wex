@@ -47,7 +47,7 @@ vpsInit() {
 
   # PHP is used for sites frameworks detection,
   # we may suppress it in the future.
-  apt-get install git dos2unix zip php -yqq
+  apt-get install dos2unix zip -yqq
   # Install docker.
   wex docker/install
   # Create www dir

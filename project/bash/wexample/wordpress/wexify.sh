@@ -9,12 +9,13 @@ wordpressWexifyArgs() {
 }
 
 wordpressWexify() {
+  . .wex
   local FOLDER_NAME=$(basename ${FROM_WP_INSTALL})
   # Backup wex config file.
   wex site/exec -c="cp /var/www/html/project/wp-config.php /var/www/"
   wex site/exec -c="cp -r /var/www/html/project/wp-content/config /var/www/"
   # Copy site.
-  docker cp ${FROM_WP_INSTALL} abcprod_wordpress4:/var/www/
+  docker cp ${FROM_WP_INSTALL} ${SITE_NAME}_wordpress4:/var/www/
   # Remove completely internal WP site.
   wex site/exec -c="rm -rf /var/www/html/project/*"
   # Override files.
