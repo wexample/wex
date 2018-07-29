@@ -6,11 +6,13 @@
 
 $dir_current = dirname(__FILE__) . '/../../';
 
+# Load passed env variables.
+$env = parse_ini_file($dir_current . '/../tmp/php.env.ini');
+
 # For BackUpWordpress plugin.
 define('HMBKP_PATH', $dir_current . 'wp-content/backups');
 
-$site_env = strtolower(getenv('WEX_SITE_ENV'));
-$env_config = $dir_current . 'wp-config.' . $site_env . '.php';
+$env_config = $dir_current . 'wp-content/config/wp-config.' . $env['SITE_ENV'] . '.php';
 
 if (file_exists($env_config)) {
     require_once $env_config;

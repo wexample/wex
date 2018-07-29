@@ -1,9 +1,9 @@
 version: '2'
 
 services:
-    wordpress:
-        container_name: '${SITE_NAME}_wordpress'
-        image: 'wexample/wordpress'
+    wordpress4:
+        container_name: '${SITE_NAME}_wordpress4'
+        image: 'wexample/wordpress4'
         stdin_open: true
         tty: true
         expose:
