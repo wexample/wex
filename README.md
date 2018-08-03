@@ -32,6 +32,17 @@ Wexample Scripts
 
 These scripts are used to automate common tasks.
 
+# Install
+
+- Clone the repository into /opt/wexample
+  > `git clone https://github.com/wexample/scripts.git /opt/wexample`
+- Execute `bash /opt/wexample/install.sh`
+- Check install with `wex hi`
+
+# Update
+
+- `wex wex/update`
+
 ## Ressources
 
 - **Semantic versioning** : https://semver.org/
