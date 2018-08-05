@@ -2,8 +2,7 @@
 
 Automates what others don't.
 
-![Scripts]
-(https://raw.githubusercontent.com/wexample/scripts/master/cover.jpg)
+![Scripts](https://raw.githubusercontent.com/wexample/scripts/master/cover.jpg)
 
 # Requirements
 
