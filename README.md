@@ -1,9 +1,9 @@
 [![build status](http://gitlab.wexample.com/wexample-public/scripts/badges/master/build.svg)](http://gitlab.wexample.com/wexample-public/scripts/commits/master)
 
-Automates what others doesn't.
+Automates what others don't.
 
 ![Scripts]
-(cover.jpg)
+(https://raw.githubusercontent.com/wexample/scripts/master/cover.jpg)
 
 # Requirements
 
