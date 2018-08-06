@@ -20,7 +20,7 @@ Automates what others doesn't.
 
 # Update
 
-- `wex wex/update`
+    wex wex/update
 
 # Writing a script
 
@@ -61,9 +61,9 @@ fooBar() {
   > true/false mean required or not, if required but not present, prompt user using description content.
   > Every function can display help for argument usage when using `--help` argument `wex foo/bar --help`.
 
-# Wexample sites management
+# Sites management
 
-Wex websites uses specific files structure in order to be ran and deployed with ease.
+Wex sites uses specific files structure in order to be ran and deployed with ease.
 
 ## Creating a new site
 
