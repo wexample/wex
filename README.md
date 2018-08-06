@@ -72,9 +72,9 @@ Wex sites uses specific files structure in order to be ran and deployed with eas
 
 ## Installing an existing site
 
-After cloning the site form the git repo, just go into site root and run
+After cloning the site form the git repo, just go into site, start it and run the install command.
 
-    wex site/install
+    wex site/start && wex site/install
 
 This will execute install script depending to the services used. It also execute custom scripts placed into the `ci/install.sh` file if present. 
 
