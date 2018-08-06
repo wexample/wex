@@ -105,6 +105,16 @@ If present, the scripts execution uses the wexample namespace before default nam
 wex site/start
 ```
 
+This file contains main site information. It is generated when using ```wex wexample::site/init```
+
+- **NAME** : site name, *required* 
+- **AUTHOR** : Author's name,
+- **CREATED** : Site init date,
+- **SERVICES** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
+- **PROD_SSH_HOST** : Production server IP.
+- **PROD_PORT** : Production server port,
+- **FILES_XXX** : Path of site files
+
 ## Wex Services
 
 Services are wrapper of docker services and uses most of the time one of them, sometime more than one. You can see the list of available services by using :
@@ -141,17 +151,30 @@ When a site is started, there is the default behavior of common services :
   
 The final running docker compose yml file is stored into ```./tmp/docker-compose.build.yml``` when running ```wex config/write```.
 
-### Properties
+## Watcher
 
-This file contains main site information. It is generated when using ```wex wexample::site/init```
+The watcher is a container used to compile CSS / JS files when no other automated mechanism is used. It uses Gulp / Babel / SASS, and has specific configuration file :
 
-- **NAME** : site name, *required* 
-- **AUTHOR** : Author's name,
-- **CREATED** : Site init date,
-- **SERVICES** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
-- **PROD_SSH_HOST** : Production server IP.
-- **PROD_PORT** : Production server port,
-- **FILES_XXX** : Path of site files
+    ./watcher/js.json
+    ./watcher/scss.json
+
+These two files contains files to build **without extension** :
+
+```json
+{
+  "project/path/to/js/file": true,
+  "project/path/to/destination/aggregated/js/file": [
+    "project/path/to/source/file/one",
+    "project/path/to/source/file/two"
+  ]
+}
+```
+
+The watcher stop when compilation errors occurs, these methods allow to control watcher activity :
+
+- `wex watcher/go` to see the log file in real time
+- `wex watcher/status` to see the last log file (is stopped)
+- `wex watcher/restart` if watcher stops
 
 ## Specific behaviors
 
