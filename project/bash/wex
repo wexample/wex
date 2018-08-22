@@ -27,9 +27,10 @@ if [ -z "${WEX_INIT:+x}" ];then
 
   # Check bash version.
   if [ -z ${WEX_BASH_VERSION+x} ]; then
+    WEX_BASH_VERSION_MIN='4'
     WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
-    if [ ${WEX_BASH_VERSION} != '4' ]; then
-      echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
+    if [ ${WEX_BASH_VERSION} != ${WEX_BASH_VERSION_MIN} ]; then
+      echo "Wexample error, need to run on bash version "${WEX_BASH_VERSION_MIN}
       exit
     fi;
   fi;
