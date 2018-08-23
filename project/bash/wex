@@ -85,7 +85,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Check if file exists locally.
     # It allow to override behaviors from location where script is executed,
     # especially for contextual website scripts.
-    # > We may change execution order : first detect context than using default.
+    # > We may change execution order : first detect context then using default.
     local WEX_SCRIPT_FILE="./wex/bash/${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
 
     # Namespace

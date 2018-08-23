@@ -8,6 +8,7 @@ COPY ./project/images/watcher/gulpfile.js /var/www/gulpfile.js
 RUN apt-get update && \
     apt-get install ruby-full -yqq && \
     gem install sass --no-user-install -q --no-verbose && \
+    test -d /var/www/html || mkdir -p /var/www/html && \
     cd /var/www/ && \
     npm install -g gulp && \
     npm link gulp && \
