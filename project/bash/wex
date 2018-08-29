@@ -76,12 +76,6 @@ if [ -z "${WEX_INIT:+x}" ];then
         WEX_ARGUMENTS+=' '${i}
     done
 
-    # Check if script is provided.
-    if [ "${WEX_SCRIPT_CALL_NAME}" = false ]; then
-      echo "You should use a script name, use -s or --script, and provide an existing name.";
-      exit
-    fi;
-
     # Check if file exists locally.
     # It allow to override behaviors from location where script is executed,
     # especially for contextual website scripts.

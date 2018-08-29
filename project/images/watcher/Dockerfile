@@ -11,7 +11,7 @@ RUN apt-get update && \
     cd /var/www/ && \
     npm install -g gulp && \
     npm link gulp && \
-    npm update && \
+    yarn install && \
     chmod +x /docker-entrypoint-watcher.sh
 
 ENTRYPOINT ["/docker-entrypoint-watcher.sh"]
