@@ -11,6 +11,7 @@ RUN apt-get install \
   php-zip \
   memcached \
   php7.1 \
+  php7.1-apcu \
   libapache2-mod-php \
   php-gd \
   php-imagick \
@@ -18,6 +19,7 @@ RUN apt-get install \
   php-mysql \
   php-curl \
   mysql-client \
+  php-xdebug \
   -yqq
 
 # Cleanup disk

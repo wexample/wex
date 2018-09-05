@@ -1,30 +1,15 @@
 #!/usr/bin/env bash
 
+# Used in production to retrieve changes when tests are passed.
 sitePull() {
-  #!/usr/bin/env bash
-
-  # Used in production to retrieve changes when tests are passed.
-
   # Update GIT and submodules.
   wex git/pullTree
-
+  # Execute service script.
   wex service/exec -c=sitePull
-
+  # Execute pull action for found framework.
+  wex framework/exec -c=pull
+  # Execute local scripts.
+  wex ci/exec -c=pull
   # Allow cron update without reloading whole site.
   wex cron/reload
-
-  # Per framework pull behavior.
-  # Detect used frameworks
-  FRAMEWORKS=($(wex framework/list -d=./project/))
-
-  for FRAMEWORK in ${FRAMEWORKS[@]}
-  do
-    FRAMEWORK=framework$(wexUpperCaseFirstLetter ${FRAMEWORK})
-    # Pull script exists
-    if [ -f ${WEX_DIR_BASH}"wexample/"${FRAMEWORK}"/pull.sh" ];then
-      wex wexample::${FRAMEWORK}/pull
-    fi
-  done;
-
-  wex ci/exec -c=pull
 }

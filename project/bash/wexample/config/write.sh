@@ -55,6 +55,10 @@ configWrite() {
   local SITE_ENV_MAJ=${SITE_ENV^^}
   local DOMAINS=$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAINS}')
   local DOMAIN_MAIN=$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_MAIN}')
+  # Support custom images version
+  if [ "${IMAGES_VERSION}" == "" ];then
+    local IMAGES_VERSION=$(wex wex/version)
+  fi
   SITE_CONFIG_FILE+='\nSITE_NAME='${NAME}
   SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
   SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
@@ -103,7 +107,7 @@ configWrite() {
   local CONFIG=$(wex service/exec -c="config")
   SITE_CONFIG_FILE+=${CONFIG[@]}
   # Sync images versions to wex.
-  SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="$(wex wex/version)
+  SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="${IMAGES_VERSION}
 
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config

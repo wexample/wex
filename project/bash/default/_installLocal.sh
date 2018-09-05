@@ -11,6 +11,12 @@ chmod -R +x ${WEX_LOCAL_DIR}
 cp ${WEX_LOCAL_DIR}project/bash/wex.bin.sh /usr/local/bin/wex
 chmod -R +x /usr/local/bin/wex
 
+# Install minimal requirements
+apt-get update
+apt-get install curl -yqq
+# Install Docker
+wex docker/install
+
 # Say Hi.
 echo "Wexample Script installed at version "$(wex wex/version)
 wex wex/logo
