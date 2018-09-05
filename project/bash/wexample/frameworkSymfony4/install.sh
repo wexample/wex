@@ -4,7 +4,7 @@ frameworkSymfony4Install() {
 # TODO Once sy4 will be detected,
 #  wex frameworkComposer1/install
 
-  wex site/exec -c="cd /var/www/html/project && yarn install"
+  wex site/exec -c="cd /var/www/html/project && npm install"
   # Test if webpack/encore is installed.
   if [ $(wex site/exec -c="wex file/exists -f=/var/www/html/project/node_modules/.bin/encore") == true ];then
     # Build assets.
