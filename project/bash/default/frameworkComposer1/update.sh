@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 frameworkComposer1Update() {
+  chown -R www-data:www-data /var/www/html/project/vendor
   # Execute composer command as www-data user.
-  su - www-data -s /bin/bash -c 'cd /var/www/html/project && composer install'
+  su - www-data -s /bin/bash -c 'cd /var/www/html/project/ && composer install'
 }
