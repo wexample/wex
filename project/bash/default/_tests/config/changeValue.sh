@@ -3,8 +3,7 @@
 configChangeValueTest() {
 
   filePath=$(wexTestSampleInit configSample)
-echo wex config/getValue -f="${filePath}" -k="ConfigTestOption"
-return
+
   noSeparator=$(wex config/getValue -f="${filePath}" -k="ConfigTestOption")
   wexTestAssertEqual ${noSeparator} "two"
 
