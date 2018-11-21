@@ -10,15 +10,22 @@ configGetValueArgs() {
 
 configGetValue() {
 
-  if [ -z "${SEPARATOR+x}" ];then
+  # Empty separator
+  if [ -z "${SEPARATOR+x}" ] || [ "${SEPARATOR}" == "" ];then
     # Default space separator
     SEPARATOR=" "
+  fi;
+
+  # Space separator to regex
+  if [ "${SEPARATOR}" == " " ];then
+    # Protect separator
+    SEPARATOR="[ ]"
   fi;
 
   # Find a line starting by the key or by some spaces
   # Capture value and auto print it (p option)
   # Sed returns multiple lines in case of multiple entry
-  results=$(sed -n "s/^[ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}\{1,\}[ ]\{0,\}\(.*\)/\1/p" ${FILE})
+  results=$(sed -n "s/^[ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}\{1,\}[ ]\{0,\}\(.\{0,\}\)/\1/p" ${FILE})
 
   # As it is a configuration file, take the last value of the variable
   # Which may override the previous values.
