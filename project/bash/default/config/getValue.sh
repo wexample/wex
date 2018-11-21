@@ -10,17 +10,7 @@ configGetValueArgs() {
 
 configGetValue() {
 
-  # Empty separator
-  if [ -z "${SEPARATOR+x}" ] || [ "${SEPARATOR}" == "" ];then
-    # Default space separator
-    SEPARATOR=" "
-  fi;
-
-  # Space separator to regex
-  if [ "${SEPARATOR}" == " " ];then
-    # Protect separator
-    SEPARATOR="[ ]"
-  fi;
+  SEPARATOR=$(wex config/processSeparator -s="${SEPARATOR}")
 
   # Find a line starting by the key or by some spaces
   # Capture value and auto print it (p option)
