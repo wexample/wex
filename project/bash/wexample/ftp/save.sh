@@ -13,6 +13,7 @@ ftpSave() {
   # Create dest dir.
   mkdir -p ./ftp/passwd
   # Copy file content.
+  # TODO : Old method, the file is now wex.passwd (unable to use multiple passwd files)
   echo -e $(docker exec wex_ftp cat /etc/pure-ftpd/passwd/${SITE_NAME}.passwd) > ./ftp/passwd/${SITE_NAME}.passwd
 
   # Save.
