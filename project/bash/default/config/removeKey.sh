@@ -8,5 +8,5 @@ configRemoveKeyArgs() {
 }
 
 configRemoveKey() {
-  sed -i '/^[ ]*'${TARGET_KEY}'/d' ${FILE}
+  sed -i '/^[ ]\{0,\}'${TARGET_KEY}'/d' ${FILE}
 }
