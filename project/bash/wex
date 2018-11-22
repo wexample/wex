@@ -196,7 +196,7 @@ if [ -z "${WEX_INIT:+x}" ];then
       # ignore first one which is always method name.
       for ARG_GIVEN in "${@:2}"
       do
-        ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
+        ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${ARG_GIVEN})
         ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
         if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
           WEX_ARG_FOUND=true
