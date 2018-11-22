@@ -40,5 +40,4 @@ configSetValueTest() {
   value=$(wex config/getValue -f=${filePath} -k="ConfigTestMissingOption" -s="=")
   # Check
   wexTestAssertEqual ${value} "testValue"
-
 }

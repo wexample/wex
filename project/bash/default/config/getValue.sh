@@ -10,12 +10,12 @@ configGetValueArgs() {
 
 configGetValue() {
 
-  SEPARATOR=$(wex config/processSeparator -s="${SEPARATOR}")
+  SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
   # Find a line starting by the key or by some spaces
   # Capture value and auto print it (p option)
   # Sed returns multiple lines in case of multiple entry
-  results=$(sed -n "s/^[ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}\{1,\}[ ]\{0,\}\(.\{0,\}\)/\1/p" ${FILE})
+  results=$(sed -n "s/^[ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\(.\{0,\}\)/\2/p" ${FILE})
 
   # As it is a configuration file, take the last value of the variable
   # Which may override the previous values.

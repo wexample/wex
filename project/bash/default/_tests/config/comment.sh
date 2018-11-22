@@ -14,13 +14,13 @@ configCommentTest() {
 
   # Test with space sign.
   wex config/comment -f=${filePath} -k="ConfigTestSingleOption"
-
   wex config/uncomment -f=${filePath} -k="ConfigTestSingleOption"
+
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [[ ${differences} != '' ]]; then
+
+  if [ "${differences}" != '' ]; then
     wexTestError "Differences found after simple comment / uncomment operation"
-    echo ${differences}
   fi
 
   # Values with equal sign after space "example =..." should be also changed.
@@ -44,15 +44,16 @@ configCommentTest() {
   filePath=$(wexTestSampleInit configSample)
 
   # Test with equal sign
-  wex config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" "="
-  wex config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" "="
+  wex config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
+  wex config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
+
   modified=$(< ${filePath})
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [[ ${differences} != '' ]]; then
+  if [ "${differences}" != '' ]; then
     wexTestError "Differences found after simple comment / uncomment operation with equal"
   fi
 
-  wex config/comment -f=${filePath} -k="ConfigTestOptionEqual" "="
+  wex config/comment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
   modified=$(< ${filePath})
 
   differences=$(diff <(echo "${original}") <(echo "${modified}"))
@@ -60,11 +61,12 @@ configCommentTest() {
     wexTestError "No diff change found after comment test"
   fi
 
-  wex config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" "="
+  # We have uncommented all settings,
+  # which are more than original uncommented ones (one and two only)
+  wex config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
   modified=$(< ${filePath})
+  # The new value is "four"
+  local value=$(wex config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
+  wexTestAssertEqual ${value} "four"
 
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [ ${#differences} == 0 ]; then
-    wexTestError "No diff change found after uncomment test"
-  fi
 }

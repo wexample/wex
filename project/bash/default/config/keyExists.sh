@@ -15,9 +15,9 @@ configKeyExists() {
 
   if [[ ${COMMENTS} == true ]]; then
     # Zero or more
-    COMMENT_REGEX='[#]*'
+    COMMENT_REGEX='[#]\{0,\}'
   elif [[ ${COMMENTS_ONLY} == true ]]; then
-    COMMENT_REGEX='[#]\+'
+    COMMENT_REGEX='[#]\{1,\}'
   fi;
 
   if [ -z "${SEPARATOR+x}" ];then
@@ -25,7 +25,7 @@ configKeyExists() {
     SEPARATOR=" "
   fi;
 
-  results=$(sed -n "s/^\([ ]*${COMMENT_REGEX}[ ]*${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/\1/p" ${FILE})
+  results=$(sed -n "s/^\([ ]\{0,\}${COMMENT_REGEX}[ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)/\1/p" ${FILE})
 
   if [[ ${#results} > 0 ]]; then
     echo true

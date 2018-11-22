@@ -15,7 +15,7 @@ configSetValue() {
   # Search for a commented version
   hasValueCommented=$(wex config/keyExists -f=${FILE} -k="${TARGET_KEY}" -s="${SEPARATOR}" -co)
 
-  if [[ ${hasValueCommented} == true ]];then
+  if [ "${hasValueCommented}" == "true" ];then
     # Uncomment line(s)
     wex config/uncomment -f=${FILE} -k="${TARGET_KEY}" -s="${SEPARATOR}"
   fi;

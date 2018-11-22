@@ -6,12 +6,12 @@ configGetValueTest() {
 
   value=$(wex config/getValue -f=${filePath} -k="ConfigTestOption")
   # Got the last valid value
-  wexTestAssertEqual ${value} "two"
+  wexTestAssertEqual "${value}" "two"
 
   value=$(wex config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s=" = ")
-  wexTestAssertEqual ${value} "one"
+  wexTestAssertEqual "${value}" "one"
 
   value=$(wex config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
   # Got the last valid value
-  wexTestAssertEqual ${value} "two"
+  wexTestAssertEqual "${value}" "two"
 }

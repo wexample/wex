@@ -11,10 +11,7 @@ configCommentArgs() {
 
 configComment() {
 
-  if [ -z "${SEPARATOR+x}" ];then
-    # Default space separator
-    SEPARATOR=" "
-  fi;
+  SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
   if [ -z "${CHAR+x}" ];then
     # Default space separator
@@ -23,5 +20,5 @@ configComment() {
 
   # Replace key beginning the line or having space(s) before it
   # by the same with a # before it
-  wex file/textReplace -r="s/^\([ ]*${TARGET_KEY}[ ]*${SEPARATOR}\+[ ]*\)/${CHAR}\1/" -f=${FILE}
+  wex file/textReplace -r="s/^\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)/${CHAR}\1/" -f=${FILE}
 }

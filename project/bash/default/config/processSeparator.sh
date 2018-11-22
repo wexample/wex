@@ -13,11 +13,8 @@ configProcessSeparator() {
     SEPARATOR=" "
   fi;
 
-  # Space separator to regex
-  if [ "${SEPARATOR}" == " " ];then
-    # Protect separator
-    SEPARATOR="[ ]"
-  fi;
-
-  echo "${SEPARATOR}"
+  # One or more separator in a group
+  # Non capturing group does not exists in bash
+  # So final regex should increment captured indexes +1
+  echo "\(${SEPARATOR}\)\{1,\}"
 }
