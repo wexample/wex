@@ -19,5 +19,5 @@ configProcessSeparator() {
     SEPARATOR="[ ]"
   fi;
 
-  echo ${SEPARATOR}
+  echo "${SEPARATOR}"
 }
