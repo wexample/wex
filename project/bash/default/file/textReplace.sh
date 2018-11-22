@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 fileTextReplaceArgs() {
- _ARGUMENTS=(
-   [0]='regex r "Regex to apply" true'
-   [1]='file f "File" true'
- )
+  _ARGUMENTS=(
+    [0]='regex r "Regex to apply" true'
+    [1]='file f "File" true'
+  )
 }
 
 fileTextReplace() {
