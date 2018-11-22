@@ -12,7 +12,7 @@ fileLineExists() {
   ORIGINAL=$(wex file/convertLinesToUnix -f=${FILE})
 
   # Protect arguments by escaping special chars.
-  LINE=$(sed -e 's/[]\/$*.^|[]/\\&/g' <<< "${LINE}")
+  LINE=$(sed -e 's/[]\/$\{0,\}.^|[]/\\&/g' <<< "${LINE}")
   # Find line.
   results=$(sed -n "s/^\(${LINE}\)$/\1/p" ${FILE})
 
