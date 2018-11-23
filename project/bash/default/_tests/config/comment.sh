@@ -15,30 +15,14 @@ configCommentTest() {
   # Test with space sign.
   wex config/comment -f=${filePath} -k="ConfigTestSingleOption"
   wex config/uncomment -f=${filePath} -k="ConfigTestSingleOption"
-
-  modified=$(< ${filePath})
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-
-  if [ "${differences}" != '' ]; then
-    wexTestError "Differences found after simple comment / uncomment operation"
-  fi
+  wexTestSampleDiff configSample false "Simple comment / uncomment operation"
 
   # Values with equal sign after space "example =..." should be also changed.
   wex config/comment -f=${filePath} -k="ConfigTestOption"
-  modified=$(< ${filePath})
-
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [ ${#differences} == 0 ]; then
-    wexTestError "No diff change found after comment test"
-  fi
+  wexTestSampleDiff configSample true "Simple comment"
 
   wex config/uncomment -f=${filePath} -k="ConfigTestOption"
-  modified=$(< ${filePath})
-
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [ ${#differences} == 0 ]; then
-    wexTestError "No diff change found after uncomment test"
-  fi
+  wexTestSampleDiff configSample true "Simple uncomment"
 
   # Revert file.
   filePath=$(wexTestSampleInit configSample)
@@ -47,19 +31,10 @@ configCommentTest() {
   wex config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
   wex config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
 
-  modified=$(< ${filePath})
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [ "${differences}" != '' ]; then
-    wexTestError "Differences found after simple comment / uncomment operation with equal"
-  fi
+  wexTestSampleDiff configSample false "Simple comment / uncomment operation with equal"
 
   wex config/comment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
-  modified=$(< ${filePath})
-
-  differences=$(diff <(echo "${original}") <(echo "${modified}"))
-  if [ ${#differences} == 0 ]; then
-    wexTestError "No diff change found after comment test"
-  fi
+  wexTestSampleDiff configSample true "Simple comment with equal"
 
   # We have uncommented all settings,
   # which are more than original uncommented ones (one and two only)
