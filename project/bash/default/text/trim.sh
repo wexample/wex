@@ -7,5 +7,5 @@ textTrimArgs() {
 }
 
 textTrim() {
-  echo -e "${TEXT}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+  echo -e "${TEXT}" | sed -e 's/^[[:space:]]\{0,\}//' -e 's/[[:space:]]\{0,\}$//'
 }
