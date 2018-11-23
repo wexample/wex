@@ -20,6 +20,23 @@ wexTestSampleInit() {
   echo ${WEX_TEST_DIR_TMP}${TMP_FILE_NAME}
 }
 
+wexTestSampleDiff() {
+  local TMP_FILE_NAME=${1}
+  local EXPECT_CHANGES=${2}
+  local CONTEXT=${3}
+  local ORIGINAL=$(< ${WEX_TEST_RUN_DIR_SAMPLES}${TMP_FILE_NAME})
+  local MODIFIED=$(< ${WEX_TEST_DIR_TMP}${TMP_FILE_NAME})
+  local DIFF=$(diff <(echo "${ORIGINAL}") <(echo "${MODIFIED}"))
+
+  if [ ${EXPECT_CHANGES} == false ] && [ "${DIFF}" != '' ]; then
+    wexTestError "Differences found in ${TMP_FILE_NAME} in : ${CONTEXT} => ${DIFF}"
+  fi
+
+  if [ ${EXPECT_CHANGES} == true ] && [ "${DIFF}" == '' ]; then
+    wexTestError "No differences found in ${TMP_FILE_NAME} in : "${CONTEXT}". "${DIFF}
+  fi
+}
+
 wexTestError() {
   WEX_TEST_HAS_ERROR=true
   RED='\033[1;31m'
@@ -122,8 +139,8 @@ do
               cd ${WEX_TEST_RUN_DIR_CURRENT}
 
               WEX_TEST_HAS_ERROR=false
+              echo "  > Try ${WEX_TEST_METHOD_NAME}Test method"
               if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
-                echo "  > Custom ${WEX_TEST_METHOD_NAME}Test method"
                 if [[ ${WEX_TEST_DEBUG} == true ]];then
                   # Do not encapsulate result
                   ${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}

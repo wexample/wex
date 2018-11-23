@@ -9,5 +9,5 @@ phpConstantChangeArgs() {
 }
 
 phpConstantChange() {
-  sed -i "/"${KEY}"/s/'[^']*'/'"${VALUE}"'/2" ${FILE}
+  sed -i "/[ ]\{0,\}define([\'\"]"${KEY}"/s/'[^']\{0,\}'/'"${VALUE}"'/2" ${FILE}
 }
