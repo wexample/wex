@@ -9,6 +9,11 @@ siteGoArgs() {
 siteGo() {
   # Use default container if missing
   local CONTAINER=$(wex site/container -c=${CONTAINER_NAME})
+  local COMMAND=$(wex service/exec -c=go)
+  if [ "${COMMAND}" != '' ];then
+    COMMAND+=' && '
+  fi
+
   # docker attach
-  docker exec -it ${CONTAINER} /bin/bash
+  docker exec -it ${CONTAINER} /bin/bash -c "${COMMAND} /bin/bash"
 }
