@@ -35,6 +35,11 @@ if [ -z "${WEX_INIT:+x}" ];then
     fi;
   fi;
 
+  wexLog() {
+    # Nothing if debug is disabled
+    :
+  }
+
   wexUpperCaseFirstLetter() {
     echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
   }

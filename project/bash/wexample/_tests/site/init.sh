@@ -2,6 +2,8 @@
 
 siteInitTest() {
 
+  . ${WEX_DIR_BASH}"wexample/_tests/site/_lib.sh"
+
   # Empty tmp dir (slower)
   wexTestClearTempDir
 
