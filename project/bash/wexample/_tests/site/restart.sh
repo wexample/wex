@@ -19,36 +19,36 @@ siteRestartTest() {
 
   wex wexample::server/start
 
-  _siteInitTest_checkSitesNumber 0
+  _siteInitTest_checkSitesNumber 1
 
   cd ${WEX_TEST_DIR_TMP}testsite
   wex site/start
-  _siteInitTest_checkSitesNumber 1
+  _siteInitTest_checkSitesNumber 2
   _siteInitTest_checkHostsNumber 1
 
   cd ${WEX_TEST_DIR_TMP}testsite2
-  wex site/start
-  _siteInitTest_checkSitesNumber 2
-  _siteInitTest_checkHostsNumber 2
-
-  cd ${WEX_TEST_DIR_TMP}testsite3
   wex site/start
   _siteInitTest_checkSitesNumber 3
+  _siteInitTest_checkHostsNumber 2
+
+  cd ${WEX_TEST_DIR_TMP}testsite3
+  wex site/start
+  _siteInitTest_checkSitesNumber 4
   _siteInitTest_checkHostsNumber 3
-  return
+
   cd ${WEX_TEST_DIR_TMP}testsite
   wex site/stop
-  _siteInitTest_checkSitesNumber 2
+  _siteInitTest_checkSitesNumber 3
   _siteInitTest_checkHostsNumber 2
 
   cd ${WEX_TEST_DIR_TMP}testsite2
   wex site/stop
-  _siteInitTest_checkSitesNumber 1
+  _siteInitTest_checkSitesNumber 2
   _siteInitTest_checkHostsNumber 1
 
   cd ${WEX_TEST_DIR_TMP}testsite3
   wex site/stop
-  _siteInitTest_checkSitesNumber 0
+  _siteInitTest_checkSitesNumber 1
   _siteInitTest_checkHostsNumber 0
 
 }
