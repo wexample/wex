@@ -6,7 +6,7 @@ pipelineReady() {
   local BLOCKING_STATUS=(running pending)
 
   for STATUS in ${BLOCKING_STATUS[@]};do
-    local HAS_STATUS=$(echo ${JSON} | sed -E 's/^.*\"status\"\:\"'${STATUS}'\".*$/true/')
+    local HAS_STATUS=$(echo ${JSON} | sed -E 's/^.\{0,\}\"status\"\:\"'${STATUS}'\".\{0,\}$/true/')
     if [ "${HAS_STATUS}" == true ];then
       echo false
       return

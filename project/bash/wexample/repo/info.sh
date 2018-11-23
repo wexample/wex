@@ -15,7 +15,7 @@ repoInfo() {
   fi
 
   if [ "${KEY}" != "" ];then
-    cat ${CACHE} | sed -E 's/^.*\"'${KEY}'\"\:\"([^\"]*).*$/\1/'
+    cat ${CACHE} | sed -E 's/^.\{0,\}\"'${KEY}'\"\:\"([^\"]\{0,\}).\{0,\}$/\1/'
   else
     cat ${CACHE}
   fi

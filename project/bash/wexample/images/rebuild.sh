@@ -78,7 +78,7 @@ _imagesRebuild() {
   echo "Building ${NAME}"
 
   DEPENDS_FROM=$(wex config/getValue -f=${DOCKERFILE} -k=FROM)
-  DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]*\):.*/\1/' <<< ${DEPENDS_FROM})
+  DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]\{0,\}\):.\{0,\}/\1/' <<< ${DEPENDS_FROM})
 
   # A manner to avoid non matching strings from sed
   # which are not empty.
