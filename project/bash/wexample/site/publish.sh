@@ -21,7 +21,7 @@ sitePublish() {
   fi
 
   # Check git version
-  local GIT_VERSION=$(git version | sed 's/^git version \(.*\)$/\1/g')
+  local GIT_VERSION=$(git version | sed 's/^git version \(.\{0,\}\)$/\1/g')
   if [ $(wex text/versionCompare -a=${GIT_VERSION} -b=2.10) == '<' ];then
     echo "Your GIT version should be equal or higher to 2.10 and is actually at "${GIT_VERSION}"."
     exit;
@@ -125,7 +125,7 @@ sitePublish() {
     echo ''
     wex text/color -c=red -t='Production server is unable to connect to Gitlab'
 
-    local GITLAB_DOMAIN=$(echo ${GIT_ORIGIN} | sed 's/git@\(.*\):.*$/\1/g')
+    local GITLAB_DOMAIN=$(echo ${GIT_ORIGIN} | sed 's/git@\(.\{0,\}\):.\{0,\}$/\1/g')
     local REPO_NAMESPACE=$(wex repo/namespace)
 
     echo -e 'You may need to enable deployment key on \nhttp://'${GITLAB_URL}'/'${REPO_NAMESPACE}'/'${SITE_NAME}'/settings/repository.\n'

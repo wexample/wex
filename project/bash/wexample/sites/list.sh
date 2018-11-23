@@ -8,7 +8,7 @@ sitesList() {
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Trim
-    SITE_PATH=$(echo -e "${SITE_PATH}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    SITE_PATH=$(echo -e "${SITE_PATH}" | sed -e 's/^[[:space:]]\{0,\}//' -e 's/[[:space:]]\{0,\}$//')
     # Avoid blank lines.
     if [[ ${SITE_PATH} != "" ]];then
       EXISTS=false
