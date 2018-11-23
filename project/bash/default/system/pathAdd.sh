@@ -20,8 +20,8 @@ systemPathAdd() {
   fi
 
   # Search occurrence of new path.
-  foundInBody=$(sed -n "s/\(.*\):\(${NEW_PATH}\):\(.*\)/\2/p" <<< ${PATH_CONTENT})
-  foundAtEnd=$(sed -n "s/\(.*\):\(${NEW_PATH}\)$/\2/p" <<< ${PATH_CONTENT})
+  foundInBody=$(sed -n "s/\(.\{0,\}\):\(${NEW_PATH}\):\(.\{0,\}\)/\2/p" <<< ${PATH_CONTENT})
+  foundAtEnd=$(sed -n "s/\(.\{0,\}\):\(${NEW_PATH}\)$/\2/p" <<< ${PATH_CONTENT})
 
   # Return command to execute globally
   if [ "${foundInBody}" == "" ] && [ "${foundAtEnd}" == "" ]; then
@@ -36,7 +36,7 @@ systemPathAdd() {
 
   command='export PATH=\$PATH:'
   # Protect arguments by escaping special chars.
-  command=$(sed -e 's/[]\/$*.^|[]/\\&/g' <<< "${command}")${NEW_PATH}
+  command=$(sed -e 's/[]\/$\{0,\}.^|[]/\\&/g' <<< "${command}")${NEW_PATH}
 
   # Add to bashrc.
   wex file/textAppendOnce -f="${BASHRC_PATH}" -l="${command}"
