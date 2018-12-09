@@ -2,10 +2,7 @@
 /wordpress/backups/*
 /wordpress/uploads/*
 # WP default themes
-/wordpress/themes/index.php
-/wordpress/themes/twentyfifteen
-/wordpress/themes/twentyseventeen
-/wordpress/themes/twentysixteen
+/wordpress/public/themes/*
 # WP default plugins
 /wordpress/plugins/akismet
 /wordpress/plugins/hello.php
