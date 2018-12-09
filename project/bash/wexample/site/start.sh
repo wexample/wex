@@ -58,6 +58,7 @@ siteStart() {
      return
   fi;
 
+  wex ci/exec -c=start
   # Write new config,
   # it will also export config variables
   wex config/write -s
