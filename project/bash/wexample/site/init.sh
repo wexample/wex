@@ -10,8 +10,6 @@ siteInitArgs() {
   )
 }
 
-# TODO Allow per environment services (local.service => watcher)
-
 siteInit() {
   local RENDER_BAR='wex render/progressBar -w=30 '
   # Status
@@ -104,7 +102,7 @@ EOF
   do
      # Status
     ${RENDER_BAR} -p=20 -s="Installing service "${SERVICE}
-    wex service/install -s=${SERVICE}
+    wex service/install -s=${SERVICE} -g=${GIT}
   done
 
   # GIT Common settings

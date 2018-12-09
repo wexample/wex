@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-wordpressUpdateCoreArgs() {
+wordpressChangeCoreArgs() {
   _DESCRIPTION="Udpate WP core file when wp-cli does not do the job. Let user to update database from admin."
   _ARGUMENTS=(
-    [0]='version v "Wordpress version number (ex: 4.9.5)" true'
+    [0]='version v "Wordpress destination version number (ex: 4.9.5)" true'
   )
 }
 
-wordpressUpdateCore() {
+wordpressChangeCore() {
   local FILENAME='wordpress-'${VERSION}'.zip'
   # Download last version.
   wex site/exec -c="cd /var/www && rm -rf wordpress && rm -rf ${FILENAME} && wget https://wordpress.org/${FILENAME} && unzip ${FILENAME} && rm ${FILENAME}"

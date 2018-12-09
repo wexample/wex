@@ -4,11 +4,15 @@ wordpressWexifyArgs() {
   #_DESCRIPTION="Convert an external wordpress site to a wex site. Warning ! Make a backup of your site"
   _ARGUMENTS=(
     [0]='from_wp_install f "Path for root of old wordpress installation" true'
-    [1]='version v "Wordpress version number (ex: 4.9.5), see wexample/wordpress4 Dockerfile" true'
+    [1]='version v "Wordpress destination version number (ex: 4.9.5), see wexample/wordpress4 Dockerfile" true'
+    [2]='init i "Init current site" false'
   )
 }
 
 wordpressWexify() {
+  if [ "${INIT}" !== "" ];then
+      wex wexample::site/init -s=wordpress4,mysql,phpmyadmin
+  fi;
   . .wex
   local FOLDER_NAME=$(basename ${FROM_WP_INSTALL})
   # Backup wex config file.
@@ -24,7 +28,7 @@ wordpressWexify() {
   wex site/exec -c="cp /var/www/wp-config.php /var/www/html/project/ && rm /var/www/wp-config.php"
   wex site/exec -c="cp /var/www/config/* /var/www/html/project/wp-content/config && rm /var/www/config"
   # Update files.
-  wex wordpress/updateCore -v=${VERSION}
+  wex wordpress/changeCore -v=${VERSION}
   # Inform user.
   echo "Files updated, go to /wp-admin/ for database update, then restart site"
 }
