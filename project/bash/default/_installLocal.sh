@@ -13,7 +13,7 @@ chmod -R +x /usr/local/bin/wex
 
 # Install minimal requirements
 apt-get update
-apt-get install curl -yqq
+apt-get install curl net-tools -yqq
 # Install Docker
 wex docker/install
 
