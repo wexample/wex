@@ -4,7 +4,7 @@ serviceExecArgs() {
   _ARGUMENTS=(
     [0]='command c "Command name" true'
     [1]='service_only s "Service only" false'
-    [2]='service_only_forced sf "Force to use service even to registered into site config" false'
+    [2]='service_only_forced sf "Force to use service even not registered into site config" false'
     [3]='data d "Data" false'
     [4]='parse p "Parse output variables" false'
     [5]='no_wrap nw "Do not catch output into variable (should be the future recomended usage)" false'
