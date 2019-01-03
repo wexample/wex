@@ -7,6 +7,6 @@ drupal7Started() {
   webStarted
 
   # Give access.
-  wex site/exec -c="chmod -R 777 /var/www/html/site/default/files"
+  wex site/exec -c="chmod -R 777 /var/www/html/project/sites/default/files"
   wex site/exec -c="chown -R www-data:www-data /var/www/html/project/sites/default/files"
 }
