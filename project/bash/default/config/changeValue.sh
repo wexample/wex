@@ -19,6 +19,6 @@ configChangeValue() {
   # Find a line starting by the key or by some spaces, and capture it
   # Commented lines are ignored.
   # Change all occurrences if multiple.
-  sed -i".orig" -e "s/^\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)\(.\{0,\}\)/\1${VALUE}/" "${FILE}"
-  rm ${FILE}".orig"
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e "s/^\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)\(.\{0,\}\)/\1${VALUE}/" "${FILE}"
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 }

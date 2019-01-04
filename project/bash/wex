@@ -13,6 +13,7 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
   WEX_LOCAL_DIR="/opt/wexample/"
   WEX_NON_INTERACTIVE=false
+  WEX_SED_I_ORIG_EXT=".orig"
 
   if [ -z "${WEX_DEEP_LEVEL:+x}" ];then
     WEX_DEEP_LEVEL=0
