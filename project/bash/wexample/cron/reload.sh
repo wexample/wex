@@ -12,7 +12,9 @@ cronReload() {
   # Copy full crontab in a temp file.
   echo "$(crontab -l)" > ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
   # Remove old blocks
-  sed -i '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
+  local FILE=${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${FILE}
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 
   # Rebuild content.
   echo -e "#[ wex ]#" >> ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab

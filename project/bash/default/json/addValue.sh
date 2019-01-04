@@ -15,5 +15,6 @@ jsonAddValue() {
   FILE=$(echo "${FILE}" | sed 's/\\/\\\\/g')
   # Allow regex patterns
   # This method is not clean, but it works with json/readValue.
-  sed -i '$s/}/,\n\ \ "'${KEY}'":"'${VALUE}'"\n}/' ${FILE}
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e '$s/}/,\n\ \ "'${KEY}'":"'${VALUE}'"\n}/' ${FILE}
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 }

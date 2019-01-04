@@ -25,5 +25,7 @@ wordpressUrlChange() {
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")
   # Protect arguments by escaping special chars.
   NEW_URL=$(sed -e 's/[]\/$\{0,\}.^|[]/\\&/g' <<< "${NEW_DOMAIN}")
-  sed -i "/DOMAIN_CURRENT_SITE/s/'[^']\{0,\}'/'"${NEW_URL}"'/2" ./wordpress/config/wp-config.php
+  local FILE=./wordpress/config/wp-config.php
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e "/DOMAIN_CURRENT_SITE/s/'[^']\{0,\}'/'"${NEW_URL}"'/2" ${FILE}
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 }

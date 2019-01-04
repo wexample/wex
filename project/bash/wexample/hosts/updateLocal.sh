@@ -11,7 +11,8 @@ hostsUpdateLocal() {
   esac
 
   # Remove old blocks
-  sed -i '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
+  rm ${HOST_FILE}"${WEX_SED_I_ORIG_EXT}"
   # Add new line if needed.
 
   # Create new block.

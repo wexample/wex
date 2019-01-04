@@ -81,7 +81,8 @@ serviceInstallMergeYml() {
       fi
       # Append to yml file
       echo -e "${YML_CONTENT}" > ${YML_DEST_FILE}.tmp
-      sed -i "/services:/r ${YML_DEST_FILE}.tmp" ${YML_DEST_FILE}
+      sed -i"${WEX_SED_I_ORIG_EXT}" -e "/services:/r ${YML_DEST_FILE}.tmp" ${YML_DEST_FILE}
+      rm ${YML_DEST_FILE}"${WEX_SED_I_ORIG_EXT}"
       rm ${YML_DEST_FILE}.tmp
   fi
 }
