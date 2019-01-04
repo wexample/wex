@@ -8,5 +8,6 @@ configRemoveKeyArgs() {
 }
 
 configRemoveKey() {
-  sed -i '/^[ ]\{0,\}'${TARGET_KEY}'/d' ${FILE}
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e '/^[ ]\{0,\}'${TARGET_KEY}'/d' ${FILE}
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 }

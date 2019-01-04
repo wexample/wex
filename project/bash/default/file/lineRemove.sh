@@ -9,5 +9,6 @@ fileLineRemoveArgs() {
 
 fileLineRemove() {
   LINE=$(echo "${LINE}" | sed 's/\//\\\//g')
-  sed -i '/'${LINE}'/d' ${FILE}
+  sed -i"${WEX_SED_I_ORIG_EXT}" -e '/'${LINE}'/d' ${FILE}
+  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
 }
