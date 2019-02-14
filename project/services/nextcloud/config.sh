@@ -6,6 +6,12 @@ nextcloudConfig() {
 
   . .wex
 
+  # Set the default supported version
+  if [ "${NEXTCLOUD_VERSION}" == "" ];then
+    NEXTCLOUD_VERSION="12.0.7-apache"
+  fi;
+  echo "\nNEXTCLOUD_VERSION=${NEXTCLOUD_VERSION}"
+
   # Export default credentials if not found in framework.
   export MYSQL_DB_HOST=${NAME}_nextcloud
   export MYSQL_DB_PORT=3306
