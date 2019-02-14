@@ -3,7 +3,7 @@ version: '2'
 services:
     nextcloud:
         container_name: '${SITE_NAME}_nextcloud'
-        image: nextcloud:15.0.4-apache
+        image: nextcloud:12.0.7-apache
         restart: always
         environment:
           - VIRTUAL_HOST=${SITE_NAME}.wex
