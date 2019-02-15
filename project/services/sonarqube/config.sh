@@ -4,8 +4,8 @@ sonarqubeConfig() {
 
   . .wex
 
-  # Set the default supported version
-  echo "\nSONARQUBE_VERSION=7.6-community"
+  # Set the used version
+  echo "\nSONARQUBE_VERSION=${SONARQUBE_VERSION}"
   # Override default container.
   echo "\nSITE_CONTAINER=sonarqube"
 }
