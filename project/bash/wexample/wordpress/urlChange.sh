@@ -13,7 +13,7 @@ wordpressUrlChange() {
   local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
   local QUERY=''
 
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}options SET option_value = replace(option_value, '${OLD_URL}', '${NEW_URL}') WHERE option_name = 'home' OR option_name = 'siteurl';"
+  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}options SET option_value = replace(option_value, '${OLD_URL}', '${NEW_URL}');"
   QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET guid = REPLACE (guid, '${OLD_URL}', '${NEW_URL}');"
   QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_content = REPLACE (post_content, '${OLD_URL}', '${NEW_URL}');"
   QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_excerpt = REPLACE (post_excerpt, '${OLD_URL}', '${NEW_URL}');"
