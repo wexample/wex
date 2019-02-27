@@ -8,6 +8,7 @@ frameworkSymfony4Install() {
   # Test if webpack/encore is installed.
   if [ $(wex site/exec -c="wex file/exists -f=/var/www/html/project/node_modules/.bin/encore") == true ];then
     # Build assets.
+    # TODO sed dev or prod (or just build)
     wex site/exec -c="cd /var/www/html/project && yarn run encore dev"
   fi
   # Fillup Symfony .env file with db URL
@@ -17,7 +18,7 @@ frameworkSymfony4Install() {
   wex site/exec -c="chmod -R 755 /var/www/html/"
   wex site/exec -c="chown -R www-data:www-data /var/www/html/"
   # Fill doctrine database.
-  wex site/exec -c="cd /var/www/html/project && php bin/console doctrine:schema:update --force"
+  #wex site/exec -c="cd /var/www/html/project && php bin/console doctrine:schema:update --force"
   # Create an admin user
-  wex site/exec -c="cd /var/www/html/project && php bin/console fos:user:create admin --super-admin"
+  #wex site/exec -c="cd /var/www/html/project && php bin/console fos:user:create admin --super-admin"
 }
