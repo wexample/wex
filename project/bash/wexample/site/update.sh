@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-siteInstall() {
+siteUpdate() {
   # Call services hooks.
-  wex hook/exec -c=install
+  wex hook/exec -c=update
 }
