@@ -5,6 +5,7 @@ siteExecArgs() {
     [0]='container_name n "Container name suffix like site_name_suffix. Default is web" false'
     [1]='command c "Bash command to execute" true'
     [2]='starts "Start container verification" false'
+    [3]='localized l "Execute script in project location (it may be the default behavior in the future)" false'
   )
 }
 
@@ -25,6 +26,10 @@ siteExec() {
   if [ "${STARTS}" == true ] && [ $(wex site/started) == false ];then
     STARTED_LOCALLY=true
     wex site/start
+  fi;
+
+  if [ "${LOCALIZED}" == true ];then
+    COMMAND="$(wex service/exec -c=go) && ${COMMAND}"
   fi;
 
   docker exec -ti ${CONTAINER} /bin/bash -c "${COMMAND}"

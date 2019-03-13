@@ -100,6 +100,8 @@ siteStart() {
 
   wex service/exec -c=started -nw
 
+  # Rebuild / reload configurations.
+  wex site/refresh
   # Bash hooks.
   wex ci/exec -c=started
   # Execute server hook for global configurations.

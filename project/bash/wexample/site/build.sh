@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 siteBuild() {
-  wex ci/exec -c=build
+  wex hook/exec -c=build
 }
