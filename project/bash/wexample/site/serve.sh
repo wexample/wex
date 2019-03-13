@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-siteRefresh() {
+siteServe() {
   # Update hosts list if IP changed.
   wex hosts/update
   # Update local host file.
