@@ -15,7 +15,7 @@ sitesRestart() {
   for SITES in ${SITES[@]}
   do
     cd ${SITES}
-    wex site/refresh
+    wex site/serve
     cd ../
   done
 }
