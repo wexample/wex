@@ -38,5 +38,6 @@ services:
             - ${SITE_PATH_ROOT}drupal/modules:/var/www/html/project/sites/all/modules:rw
             - ${SITE_PATH_ROOT}drupal/themes:/var/www/html/project/sites/all/themes:rw
             - ${SITE_PATH_ROOT}drupal/libraries:/var/www/html/project/sites/all/libraries:rw
+            - ${SITE_PATH_ROOT}drupal/.htaccess:/var/www/html/project/.htaccess:rw
         networks:
             - tmp_wex_net
