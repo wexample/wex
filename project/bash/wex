@@ -249,19 +249,22 @@ if [ -z "${WEX_INIT:+x}" ];then
 
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
-      echo "NAME: "${WEX_SCRIPT_CALL_NAME}
-      echo "  Function: "${WEX_SCRIPT_METHOD_NAME}
-      echo "  File: "${WEX_SCRIPT_FILE}
+      echo $(wex text/color -c=lightblue -t='NAME:') ${WEX_SCRIPT_CALL_NAME}
+      echo $(wex text/color -c=lightblue -t='Function:') ${WEX_SCRIPT_METHOD_NAME}
+      echo $(wex text/color -c=lightblue -t='File:') ${WEX_SCRIPT_FILE}
+      if [[ ! -z ${_DESCRIPTION} ]]; then
+        echo $(wex text/color -c=lightblue -t='Description:') ${_DESCRIPTION}
+      fi
       echo ""
 
       for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
         eval "PARAMS=(${_ARGUMENTS[${i}]})"
         ARG_EXPECTED_LONG=${PARAMS[0]}
 
-        TEXT="--"${PARAMS[0]}" -"${PARAMS[1]}
+        TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
 
         if [ ${PARAMS[3]} == true ]; then
-          TEXT+="\n\t(required)"
+          TEXT+="\n\t"$(wex text/color -c=brown -t=\(require\)' ')
         fi;
 
         TEXT+="\n\t\t"${PARAMS[2]}
