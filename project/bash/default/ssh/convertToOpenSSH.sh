@@ -9,7 +9,7 @@ sshConvertToOpenSSHArgs() {
   )
 }
 
-# TODO Understan the case where puttygen says "puttygen: cannot perform this action on a public-key-only input file" and try to resolve it via this script
+# TODO Understand the case where puttygen says "puttygen: cannot perform this action on a public-key-only input file" and try to resolve it via this script
 # This message appears when i'm not in the ~/.ssh folder
 sshConvertToOpenSSH() {
   # if the puttygen command exists then
