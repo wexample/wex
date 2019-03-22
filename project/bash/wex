@@ -142,7 +142,7 @@ if [ -z "${WEX_INIT:+x}" ];then
         DESCRIPTION_TITLE='Description'
 
         # Prints titles
-        echo -n '  PATH';
+        echo -n '  '${PATH_TITLE};
         # Prints 50 spaces in order to align title with descriptions
         printf %"$(( ${PADDING} - ${#PATH_TITLE} ))"s
         echo "Description"
