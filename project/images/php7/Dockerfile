@@ -24,6 +24,7 @@ RUN apt-get update -yqq && \
   php-zip \
   php-gd \
   php-imagick \
+  php-intl \
   php-xml \
   php-mysql \
   php-curl \
