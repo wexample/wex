@@ -30,12 +30,12 @@ wex cache/clear
 wex cli/exec -c="my:command"
 # Make current database anonymous (dev / RGPD).
 wex db/anon
-# Execute database migrations.
-wex db/migrate
 # Create a new migration file.
 wex migration/create
 # Create a new migration file base on code entities changes.
 wex migration/diff
+# Execute database migrations.
+wex migration/migrate
 # Edit site entity.
 wex entity/edit
 # Reset all site assets.
