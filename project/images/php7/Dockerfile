@@ -17,8 +17,10 @@ RUN apt-get update -yqq && \
   libapache2-mod-php \
   memcached \
   mysql-client \
+  nano \
   php-memcache \
   php-memcached \
+  php-mbstring \
   php-zip \
   php-gd \
   php-imagick \
