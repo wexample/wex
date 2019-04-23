@@ -44,6 +44,8 @@ wex site/build
 wex site/install
 # Give all useful permissions.
 wex site/perms
+# Run unit test for given website
+wex site/test -f=project/tests/file.php -m=methodTest
 # Update all packages.
 wex site/update
 # Reload web server.
