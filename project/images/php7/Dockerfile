@@ -24,13 +24,13 @@ RUN apt-get update -yqq && \
   php-zip \
   php-gd \
   php-imagick \
-  php-intl \
   php-xml \
   php-mysql \
   php-curl \
   php-xdebug \
   php7.3 \
   php7.3-apcu \
+  php7.3-intl \
   -yqq && \
   bash wex composer/pharInstall && \
   chmod +x /docker-entrypoint-php7.sh && \
