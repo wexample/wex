@@ -7,4 +7,5 @@ siteServe() {
   wex hosts/updateLocal
   # Refresh services (ex apache restart)
   wex service/exec -c=refresh -nw
+  wex hook/exec -c=siteServe
 }
