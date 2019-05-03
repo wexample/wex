@@ -28,6 +28,8 @@ Automates what others don't.
 wex cache/clear
 # Execute command for site cli.
 wex cli/exec -c="my:command"
+# Format source code using available tools
+wex code/format
 # Make current database anonymous (dev / RGPD).
 wex db/anon
 # Create a new migration file.
