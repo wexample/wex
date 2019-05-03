@@ -137,6 +137,23 @@ if [ -z "${WEX_INIT:+x}" ];then
         local GROUP=$(basename ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME})
         local NAMESPACES=($(ls ${WEX_DIR_BASH}))
 
+        local PADDING=50
+        local PATH_TITLE='Path'
+        local DESCRIPTION_TITLE='Description'
+
+        # Prints titles
+        echo -n '  '${PATH_TITLE};
+        # Prints 50 spaces in order to align title with descriptions
+        printf %"$(( ${PADDING} - ${#PATH_TITLE} ))"s
+        echo "Description"
+
+        #Prints dashes
+        echo -n '  '
+        printf %"${#PATH_TITLE}"s |tr " " "-"
+        printf %"$(( PADDING - ${#PATH_TITLE}))"s
+        printf %"${#DESCRIPTION_TITLE}"s |tr " " "-"
+        echo '';
+
         for NAMESPACE in "${NAMESPACES[@]}"
         do
           local DIR=${WEX_DIR_BASH}${NAMESPACE}"/"${GROUP}
@@ -149,7 +166,33 @@ if [ -z "${WEX_INIT:+x}" ];then
 
             for FILE in "${METHODS[@]}"
             do
-              echo "  "${NAMESPACE}"::"${GROUP}"/${FILE%.*}"
+              # Load the file to get command description
+              . "${DIR}"/"$FILE"
+
+              # Init empty var.
+              local _ARGUMENTS=()
+              local _DESCRIPTION=""
+
+              local ARGS_METHOD=${GROUP}$(wexUpperCaseFirstLetter ${FILE%.*})Args
+              if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
+                # Execute command
+                ${ARGS_METHOD}
+              fi;
+
+              _COMMAND_PATH=${NAMESPACE}"::"${GROUP}"/${FILE%.*}"
+              echo -n "  "${_COMMAND_PATH}
+
+              # If there is a description we show it at 50 characters from the very left
+              if [[ "${_DESCRIPTION}" != "" ]]; then
+                # Prints a calculated number of spaces in order to align descriptions
+                printf %"$(( ${PADDING}-${#_COMMAND_PATH} ))"s
+
+                # Prints the description
+                wex text/color -c=lightblue -t="${_DESCRIPTION}"
+              else
+                echo "";
+              fi
+
             done
           fi
         done
@@ -184,7 +227,6 @@ if [ -z "${WEX_INIT:+x}" ];then
     )
     # Then start in negative value (length of previous table).
     _NEGATIVE_ARGS_LENGTH=3
-
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
@@ -249,19 +291,22 @@ if [ -z "${WEX_INIT:+x}" ];then
 
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
-      echo "NAME: "${WEX_SCRIPT_CALL_NAME}
-      echo "  Function: "${WEX_SCRIPT_METHOD_NAME}
-      echo "  File: "${WEX_SCRIPT_FILE}
+      echo $(wex text/color -c=lightblue -t='NAME:') ${WEX_SCRIPT_CALL_NAME}
+      echo $(wex text/color -c=lightblue -t='Function:') ${WEX_SCRIPT_METHOD_NAME}
+      echo $(wex text/color -c=lightblue -t='File:') ${WEX_SCRIPT_FILE}
+      if [[ ! -z ${_DESCRIPTION} ]]; then
+        echo $(wex text/color -c=lightblue -t='Description:') ${_DESCRIPTION}
+      fi
       echo ""
 
       for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
         eval "PARAMS=(${_ARGUMENTS[${i}]})"
         ARG_EXPECTED_LONG=${PARAMS[0]}
 
-        TEXT="--"${PARAMS[0]}" -"${PARAMS[1]}
+        TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
 
         if [ ${PARAMS[3]} == true ]; then
-          TEXT+="\n\t(required)"
+          TEXT+="\n\t"$(wex text/color -c=brown -t=\(require\)' ')
         fi;
 
         TEXT+="\n\t\t"${PARAMS[2]}
