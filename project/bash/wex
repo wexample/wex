@@ -221,7 +221,7 @@ if [ -z "${WEX_INIT:+x}" ];then
 
     # Add extra parameters at end of array
     _ARGUMENTS+=(
-      'non_interactive ni "Non interactive mode" false'
+      'non_interactive ni "Non interactive mode, use default value in place to ask user" false'
       'help help "Help" false'
       'debug debug "Debug" false'
     )
