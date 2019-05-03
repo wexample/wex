@@ -224,9 +224,10 @@ if [ -z "${WEX_INIT:+x}" ];then
       'non_interactive ni "Non interactive mode, use default value in place to ask user" false'
       'help help "Help" false'
       'debug debug "Debug" false'
+      'source source "Show script source instead to execute it" false'
     )
     # Then start in negative value (length of previous table).
-    _NEGATIVE_ARGS_LENGTH=3
+    _NEGATIVE_ARGS_LENGTH=4
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
@@ -258,7 +259,7 @@ if [ -z "${WEX_INIT:+x}" ];then
 
       # If an argument is not found
       # And we are not on help page.
-      if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ];then
+      if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ];then
         # Expected
         if [[ ${PARAMS[3]} == true ]]; then
           # Interactive mode allowed.
@@ -314,6 +315,9 @@ if [ -z "${WEX_INIT:+x}" ];then
 
         echo -e ${TEXT}
       done;
+    elif [ ! -z ${SOURCE+x} ]; then
+      cat ${WEX_SCRIPT_FILE}
+      echo ""
     else
       ((WEX_DEEP_LEVEL++))
       if [ "${WEX_DEBUG}" == true ];then
