@@ -137,9 +137,9 @@ if [ -z "${WEX_INIT:+x}" ];then
         local GROUP=$(basename ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME})
         local NAMESPACES=($(ls ${WEX_DIR_BASH}))
 
-        PADDING=50
-        PATH_TITLE='Path'
-        DESCRIPTION_TITLE='Description'
+        local PADDING=50
+        local PATH_TITLE='Path'
+        local DESCRIPTION_TITLE='Description'
 
         # Prints titles
         echo -n '  '${PATH_TITLE};
@@ -170,8 +170,8 @@ if [ -z "${WEX_INIT:+x}" ];then
               . "${DIR}"/"$FILE"
 
               # Init empty var.
-              _ARGUMENTS=()
-              _DESCRIPTION=""
+              local _ARGUMENTS=()
+              local _DESCRIPTION=""
 
               local ARGS_METHOD=${GROUP}$(wexUpperCaseFirstLetter ${FILE%.*})Args
               if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
