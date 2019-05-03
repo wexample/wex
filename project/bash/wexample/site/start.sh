@@ -102,8 +102,9 @@ siteStart() {
 
   # Rebuild / reload configurations.
   wex site/serve
-  # Bash hooks.
+  # Bash hooks TODO remove ci/exec, use script/exec instead
   wex ci/exec -c=started
+  wex hook/exec -c=siteStarted
   # Execute server hook for global configurations.
   wex service/exec -s=proxy -sf -c=siteStarted
 }
