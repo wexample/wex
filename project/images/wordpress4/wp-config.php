@@ -110,6 +110,9 @@ require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
 
-# Add wex theme child dir (versioned).
-register_theme_directory($dir_current . 'wp-content/themes-child');
+# Protect against wp-cli execution.
+if (function_exists('register_theme_directory')) {
+    # Add wex theme child dir (versioned).
+    register_theme_directory($dir_current . 'wp-content/themes-child');
+}
 
