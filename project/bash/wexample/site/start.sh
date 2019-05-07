@@ -98,8 +98,8 @@ siteStart() {
   # Use previously generated yml file.
   docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
 
+  wex site/perms
   wex service/exec -c=started -nw
-
   # Rebuild / reload configurations.
   wex site/serve
   # Bash hooks TODO remove ci/exec, use script/exec instead
