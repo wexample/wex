@@ -5,6 +5,12 @@ symfony4Install() {
   . .env
   . .wex
 
+  local STARTED=$(wex site/started)
+
+  if [ ${STARTED} != true ];then
+    wex site/start
+  fi
+
   # Composer install / update.
   local ACTION="update"
   if [ "${SITE_ENV}" = "prod" ];then
@@ -37,4 +43,9 @@ symfony4Install() {
 
   # Rebuild and clear caches.
   wex site/build
+
+  # Stop site if not already running.
+  if [ ${STARTED} != true ];then
+    wex site/stop
+  fi
 }
