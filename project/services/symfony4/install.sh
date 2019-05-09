@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # TODO Not tested
-symfony4install() {
+symfony4Install() {
   . .env
   . .wex
 
