@@ -8,6 +8,7 @@ ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /w
 RUN apt-get update && \
     apt-get install \
     wget \
+    zip \
     -yq && \
     tar -xzf wordpress.tar.gz -C /var/www/html/ && \
     mv /var/www/html/wordpress /var/www/html/project && \
