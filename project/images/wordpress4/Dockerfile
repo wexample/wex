@@ -7,7 +7,6 @@ ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /w
 
 RUN apt-get update && \
     apt-get install \
-    sendmail \
     wget \
     zip \
     -yq && \

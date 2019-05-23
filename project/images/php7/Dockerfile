@@ -31,6 +31,7 @@ RUN apt-get update -yqq && \
   php7.3 \
   php7.3-apcu \
   php7.3-intl \
+  sendmail \
   -yqq && \
   bash wex composer/pharInstall && \
   chmod +x /docker-entrypoint-php7.sh && \
