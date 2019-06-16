@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 rocketchatInit() {
+  # Override default container.
+  echo "ROCKETCHAT_VERSION=1.1.1" >> .wex
+
   echo "Fill default database."
 
   wex site/start -c=mongo
