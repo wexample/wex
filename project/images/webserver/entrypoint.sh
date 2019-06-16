@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # Load parent entry point.
-. /docker-entrypoint-ubuntu17.sh
+. /docker-entrypoint-ubuntu18.sh

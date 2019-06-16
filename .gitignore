@@ -18,3 +18,6 @@
 
 # Mail server data
 /data/*
+
+# Jetbrain
+.idea

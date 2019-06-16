@@ -2,33 +2,39 @@ FROM wexample/webserver:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-RUN apt-get update -yqq
+COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
 
-# PHP
-RUN apt-get install \
+# Add PHP repository.
+# Install packages.
+# Install entrypoint.
+# Cleanup.
+RUN apt-get update -yqq && \
+  apt-get install \
+  software-properties-common -yqq && \
+  add-apt-repository ppa:ondrej/php -y && \
+  apt-get update -yqq && \
+  apt-get install \
+  libapache2-mod-php \
+  memcached \
+  mysql-client \
+  nano \
   php-memcache \
   php-memcached \
+  php-mbstring \
   php-zip \
-  memcached \
-  php7.1 \
-  php7.1-apcu \
-  libapache2-mod-php \
   php-gd \
   php-imagick \
   php-xml \
   php-mysql \
   php-curl \
-  mysql-client \
   php-xdebug \
-  -yqq
-
-# Cleanup disk
-RUN apt-get clean
-
-# Composer install using wex.
-RUN cd /opt/wexample/project/bash/ && bash wex composer/pharInstall
-
-COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
-RUN chmod +x /docker-entrypoint-php7.sh
+  php7.3 \
+  php7.3-apcu \
+  php7.3-intl \
+  sendmail \
+  -yqq && \
+  bash wex composer/pharInstall && \
+  chmod +x /docker-entrypoint-php7.sh && \
+  rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/docker-entrypoint-php7.sh"]

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO Remove commented action or make it optional
 wexRelease() {
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
@@ -10,9 +11,7 @@ wexRelease() {
   # git add --chmod=+x ./.*
 
   # Reset.
-  wex git/resetHard
-  # Pull last version.
-  git pull origin master
+  #wex git/resetHard
 
   # Generate a version.
   VERSION=$(wex version/generate -v=2)
@@ -25,8 +24,8 @@ wexRelease() {
   fi;
 
   # Deploy on GitHub
-  git push github master --tags
+  #git push github master --tags
 
   # Create and deploy all docker images.
-  wex wexample::images/rebuild -d -q
+  #wex wexample::images/rebuild -d -q
 }

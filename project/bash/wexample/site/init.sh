@@ -72,6 +72,7 @@ siteInit() {
 NAME=${SITE_NAME}
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
+IMAGES_VERSION=$(wex wex/version)
 SERVICES=${SERVICES_JOINED}
 LOCAL_DOMAINS=${SITE_NAME}.wex
 LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex

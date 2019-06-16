@@ -21,6 +21,41 @@ Automates what others don't.
 
     wex wex/update
 
+# Cheat sheet
+
+```bash
+# Clear site cache only.
+wex cache/clear
+# Execute command for site cli.
+wex cli/exec -c="my:command"
+# Format source code using available tools
+wex code/format
+# Make current database anonymous (dev / RGPD).
+wex db/anon
+# Create a new migration file.
+wex migration/create
+# Create a new migration file base on code entities changes.
+wex migration/diff
+# Execute database migrations.
+wex migration/migrate
+# Edit site entity.
+wex entity/edit
+# Reset all site assets.
+wex site/build
+# Install all site packages, dependencies, assets..
+wex site/install
+# Give all useful permissions.
+wex site/perms
+# Run unit test for given website
+wex site/test -f=project/tests/file.php -m=testMethod
+# Update all packages.
+wex site/update
+# Reload web server.
+wex site/serve
+# Start watcher.
+wex watcher/start
+```
+
 # Writing a script
 
 For example, you want to add this command :

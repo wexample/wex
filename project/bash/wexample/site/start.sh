@@ -4,10 +4,20 @@ siteStartArgs() {
   _ARGUMENTS=(
     [0]='clear_cache cc "Clear all caches" false'
     [1]='containers c "Docker containers to run" false'
+    [2]='only o "Stop all other running sites before" false'
   )
 }
 
 siteStart() {
+
+  # Stop other sites.
+  if [ "${ONLY}" != "" ];then
+    local CURRENT_DIR=$(realpath ./)
+    wex sites/stop
+    cd ${CURRENT_DIR}
+  fi
+
+  # Create env file.
   if [ ! -f .env ];then
     echo "Missing .env file"
     if [ $(wex prompt/yn -q="Would you like to create a new .env file ?") == true ];then
@@ -98,10 +108,13 @@ siteStart() {
   # Use previously generated yml file.
   docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
 
+  wex site/perms
   wex service/exec -c=started -nw
-
-  # Bash hooks.
+  # Rebuild / reload configurations.
+  wex site/serve
+  # Bash hooks TODO remove ci/exec, use script/exec instead
   wex ci/exec -c=started
+  wex hook/exec -c=siteStarted
   # Execute server hook for global configurations.
   wex service/exec -s=proxy -sf -c=siteStarted
 }

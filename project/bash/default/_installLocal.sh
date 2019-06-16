@@ -13,9 +13,12 @@ chmod -R +x /usr/local/bin/wex
 
 # Install minimal requirements
 apt-get update
-apt-get install curl -yqq
+apt-get install curl net-tools -yqq
 # Install Docker
 wex docker/install
+
+# Create sites folder
+mkdir -p /var/www
 
 # Say Hi.
 echo "Wexample Script installed at version "$(wex wex/version)

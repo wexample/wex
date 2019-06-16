@@ -6,10 +6,10 @@ sitePull() {
   wex git/pullTree
   # Execute service script.
   wex service/exec -c=sitePull
-  # Execute pull action for found framework.
-  wex framework/exec -c=pull
+  # Rebuild and clear caches.
+  wex site/build
   # Execute local scripts.
-  wex ci/exec -c=pull
+  wex hook/exec -c=pull
   # Allow cron update without reloading whole site.
   wex cron/reload
 }

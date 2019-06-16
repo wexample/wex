@@ -102,14 +102,17 @@ if ( !defined('ABSPATH') )
 # Wex common configuration
 # No core auto update.
 define('WP_AUTO_UPDATE_CORE', false);
-# No core / plugins update
-define('DISALLOW_FILE_MODS', true);
+# Allow to install plugins without FTP credentials.
+define('FS_METHOD', 'direct');
 # Load custom wex configuration.
 require_once dirname(__FILE__) . '/wp-content/config/wp-config.php';
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
 
-# Add wex theme child dir (versioned).
-register_theme_directory($dir_current . 'wp-content/themes-child');
+# Protect against wp-cli execution.
+if (function_exists('register_theme_directory')) {
+    # Add wex theme child dir (versioned).
+    register_theme_directory($dir_current . 'wp-content/themes-child');
+}
 

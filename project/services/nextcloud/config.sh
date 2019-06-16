@@ -6,6 +6,8 @@ nextcloudConfig() {
 
   . .wex
 
+  echo "\nNEXTCLOUD_VERSION=${NEXTCLOUD_VERSION}"
+
   # Export default credentials if not found in framework.
   export MYSQL_DB_HOST=${NAME}_nextcloud
   export MYSQL_DB_PORT=3306

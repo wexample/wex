@@ -35,7 +35,6 @@ ENV PATH="/opt/wexample/project/bash:${PATH}"
 
 # Install wex scripts.
 COPY ./ /opt/wexample/
-# TODO Change remote to Github
 RUN bash /opt/wexample/project/bash/default/_installLocal.sh
 
 # Install entrypoint.

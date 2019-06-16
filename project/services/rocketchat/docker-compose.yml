@@ -2,7 +2,7 @@ version: '2'
 
 services:
     rocketchat:
-        image: rocketchat/rocket.chat:0.63.3
+        image: rocketchat/rocket.chat:${ROCKETCHAT_VERSION}
         restart: unless-stopped
         container_name: ${SITE_NAME}_rocketchat
         environment:
