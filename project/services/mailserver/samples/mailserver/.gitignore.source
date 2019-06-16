@@ -1,0 +1,5 @@
+# Mail Server
+/mailserver/data/*
+!/mailserver/data/.gitkeep
+/mailserver/state/*
+!/mailserver/state/.gitkeep

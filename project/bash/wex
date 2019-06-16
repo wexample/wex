@@ -2,16 +2,15 @@
 
 if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
-  WEX_NAMESPACE_DEFAULT="ubuntu-16.x"
+  WEX_NAMESPACE_DEFAULT="default"
   WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
   WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
   WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
   WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
   WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
-  WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
   WEX_URL_GITHUB="https://github.com/wexample/"
-  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/ubuntu-16.x/"
+  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
   WEX_LOCAL_DIR="/opt/wexample/"
   WEX_NON_INTERACTIVE=false
 
@@ -28,12 +27,18 @@ if [ -z "${WEX_INIT:+x}" ];then
 
   # Check bash version.
   if [ -z ${WEX_BASH_VERSION+x} ]; then
-    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]*\)\([\.].*\)/\1/p" <<< ${BASH_VERSION})
-    if [ ${WEX_BASH_VERSION} != '4' ]; then
-      echo "Wexample error, need to run on bash version ${WEX_BASH_VERSION}"
+    WEX_BASH_VERSION_MIN='4'
+    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
+    if [ ${WEX_BASH_VERSION} != ${WEX_BASH_VERSION_MIN} ]; then
+      echo "Wexample error, need to run on bash version "${WEX_BASH_VERSION_MIN}
       exit
     fi;
   fi;
+
+  wexLog() {
+    # Nothing if debug is disabled
+    :
+  }
 
   wexUpperCaseFirstLetter() {
     echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
@@ -46,7 +51,7 @@ if [ -z "${WEX_INIT:+x}" ];then
 
   # Data storage access performance.
   wexLoadVariables() {
-    local STORAGE=${WEX_DIR_TMP}variablesLocalStorage
+    local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
 
     if [[ -f ${STORAGE} ]];then
       . ${STORAGE};
@@ -69,16 +74,13 @@ if [ -z "${WEX_INIT:+x}" ];then
     do
         if [[ $i =~ $whitespace ]]
         then
-            i=\"$i\"
+            # TODO Temp; if success, use it in place on sed
+            ARG_NAME=$(echo ${i} | cut -d"=" -f1)
+            ARG_VALUE=${i#*\=}
+            i="-"${ARG_NAME}"=\"${ARG_VALUE}\""
         fi
         WEX_ARGUMENTS+=' '${i}
     done
-
-    # Check if script is provided.
-    if [ "${WEX_SCRIPT_CALL_NAME}" = false ]; then
-      echo "You should use a script name, use -s or --script, and provide an existing name.";
-      exit
-    fi;
 
     # Check if file exists locally.
     # It allow to override behaviors from location where script is executed,
@@ -113,10 +115,10 @@ if [ -z "${WEX_INIT:+x}" ];then
         # Search into wexample local folder.
         WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh
       fi;
-    fi;
 
-    # Load namespace init file.
-    . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
+      # Load namespace init file.
+      . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
+    fi;
 
     WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
 
@@ -177,9 +179,10 @@ if [ -z "${WEX_INIT:+x}" ];then
     _ARGUMENTS+=(
       'non_interactive ni "Non interactive mode" false'
       'help help "Help" false'
+      'debug debug "Debug" false'
     )
     # Then start in negative value (length of previous table).
-    _NEGATIVE_ARGS_LENGTH=2
+    _NEGATIVE_ARGS_LENGTH=3
 
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
@@ -187,30 +190,32 @@ if [ -z "${WEX_INIT:+x}" ];then
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
       ARG_EXPECTED_SHORT=${PARAMS[1]}
-      eval $(unset ${ARG_EXPECTED_LONG^^})
+      # Mark variable as empty
+      local ${ARG_EXPECTED_LONG^^}=
+      # Set it as null.
+      eval 'unset '${ARG_EXPECTED_LONG^^}
 
-      FOUND=false
+      WEX_ARG_FOUND=false
 
       # Get args given,
       # ignore first one which is always method name.
       for ARG_GIVEN in "${@:2}"
       do
-        ARG_GIVEN_NAME=$(sed -e 's/--\?\([^\=]*\)\=.*/\1/' <<< ${ARG_GIVEN})
-        ARG_GIVEN_VALUE=$(sed -e 's/--\?[^\=]*\=\(.*\)/\1/' <<< ${ARG_GIVEN})
-
+        ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${ARG_GIVEN})
+        ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
         if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
-          FOUND=true
-          declare ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
+          WEX_ARG_FOUND=true
+          local ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
         # Support --noEqualSign -nes
         elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
-          FOUND=true
-          declare ${ARG_EXPECTED_LONG^^}=true
+          WEX_ARG_FOUND=true
+          local ${ARG_EXPECTED_LONG^^}=true
         fi
       done;
 
       # If an argument is not found
       # And we are not on help page.
-      if [ ${FOUND} == false ] && [ -z ${HELP+x} ];then
+      if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ];then
         # Expected
         if [[ ${PARAMS[3]} == true ]]; then
           # Interactive mode allowed.
@@ -226,6 +231,20 @@ if [ -z "${WEX_INIT:+x}" ];then
         fi;
       fi;
     done
+
+    if [[ ! -z ${DEBUG+x} ]];then
+      # Use a global alias.
+      WEX_DEBUG=true
+
+      wexLog() {
+        echo -e ${@} >> ${WEX_LOG_FILE}
+      }
+
+      # Flush previous report.
+      if [ "${WEX_DEEP_LEVEL}" == 0 ];then
+        echo '' > ${WEX_DIR_TMP}"debug.log"
+      fi
+    fi
 
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
@@ -251,6 +270,11 @@ if [ -z "${WEX_INIT:+x}" ];then
       done;
     else
       ((WEX_DEEP_LEVEL++))
+      if [ "${WEX_DEBUG}" == true ];then
+        TRACE=(${FUNCNAME[@]:1})
+        local WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
+        wexLog $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1}
+      fi;
       # Execute function with all parameters.
       eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
       # Trace
@@ -264,4 +288,9 @@ fi;
 # Using false as argument allow to protect unexpected argument passing
 if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
   wex "${@}"
+
+  # In debug mode show report.
+  if [ ${WEX_DEEP_LEVEL} == 0 ] && [ "${WEX_DEBUG}" == true ];then
+    cat ${WEX_DIR_TMP}"debug.log"
+  fi
 fi;

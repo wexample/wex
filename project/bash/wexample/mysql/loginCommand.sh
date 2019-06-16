@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 
+mysqlLoginCommandArgs() {
+  _ARGUMENTS=(
+    [0]='inside i "Inside docker container" false'
+  )
+}
+
 mysqlLoginCommand() {
+  local BASE_PATH=''
+
+  if [ "${INSIDE}" == true ] || [ $(wex docker/isEnv) == true ];then
+    BASE_PATH='/var/www/'
+  else
+    BASE_PATH='./'
+  fi
   # Load credentials stored into config
   wex config/load
-
-  echo -h${SITE_NAME}_mysql -u${SITE_DB_USER} -p${SITE_DB_PASSWORD} ${SITE_DB_NAME}
+  echo --defaults-extra-file=${BASE_PATH}tmp/mysql.cnf ${MYSQL_DB_NAME}
 }

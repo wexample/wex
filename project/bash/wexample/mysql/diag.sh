@@ -3,7 +3,7 @@
 mysqlDiagArgs() {
   _ARGUMENTS=(
     [0]='container c "Container" false'
-    [1]='user u "DB User" false'
+    [1]='user_mysql u "DB User" false'
     [2]='password p "DB Password" false'
   )
 }
@@ -59,27 +59,31 @@ mysqlDiag() {
     local EXEC="docker exec -it ${CONTAINER} mysql "
 
     if [ -f ./.wex ];then
-      if [[ -z ${USER+x} ]];then
-        USER='-u '$(wex db/var -n=user)
+      if [[ -z ${USER_MYSQL+x} ]];then
+        USER_MYSQL='-u '$(wex db/var -n=user)
       fi
       if [[ -z ${PASSWORD+x} ]];then
         PASSWORD=' -p'$(wex db/var -n=password)
       fi
     else
-      if [[ -z ${USER+x} ]];then
-        USER='-u '$(wex ubuntu-16.x::var/localGet -a="DB username" -r -s -n=USER -d="root")
+      if [[ -z ${USER_MYSQL+x} ]];then
+        USER_MYSQL='-u '$(wex default::var/localGet -a="DB username" -r -s -n=USER -d="root")
       fi
       if [[ -z ${PASSWORD+x} ]];then
-        PASSWORD=' -p'$(wex ubuntu-16.x::var/localGet -a="DB password" -r -s -n=PASSWORD)
+        PASSWORD=' -p'$(wex default::var/localGet -a="DB password" -r -s -n=PASSWORD)
       fi
     fi
 
-    EXEC+=${USER}${PASSWORD}' -s -N -e '
+    EXEC+=${USER_MYSQL}${PASSWORD}' -s -N -e '
+
+    mysqlDiagOk "Execution method : ${EXEC}"
 
     local DATABASES=$(${EXEC} "SHOW DATABASES")
 
     if [[ $(echo -e "${DATABASES}" | grep "Access denied") != "" ]];then
-      mysqlDiagKo "${DATABASES} : ${USER} / ${PASSWORD}"
+      mysqlDiagKo "${DATABASES} : ${USER_MYSQL} / ${PASSWORD}"
+    elif [[ $(echo -e "${DATABASES}" | grep "Unknown database") != "" ]];then
+      mysqlDiagKo "Database not found : ${USER_MYSQL} / ${PASSWORD} => "${DATABASES}
     else
       mysqlDiagOk "Database access success"
       echo -e ${DATABASES}

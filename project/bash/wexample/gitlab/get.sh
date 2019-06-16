@@ -17,7 +17,7 @@ gitlabGet() {
   local JSON=$(curl -s ${BASE_URL}${QUERY_STRING})
 
   if [ ! -z "${KEY+x}" ]; then
-    echo -e ${JSON} | sed -E 's/.*'${KEY}'":"([^"]*)".*$/\1/'
+    echo -e ${JSON} | sed -E 's/.\{0,\}'${KEY}'":"([^"]\{0,\})".\{0,\}$/\1/'
   else
     # Return full JSON
     echo ${JSON}

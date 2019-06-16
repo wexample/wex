@@ -10,9 +10,9 @@ varLocalClearArgs() {
 
 varLocalClear() {
   # Remove all previous values.
-  wex ubuntu-16.x::var/localClear -n="${NAME}" -f=./tmp/variablesLocalStorage
+  wex default::var/localClear -n="${NAME}" -f=./tmp/variablesLocalStorage
 
   if [ "${SAVE_DEFAULT}" == true ];then
-    wex ubuntu-16.x::var/localClear -n="LAST_${NAME}"
+    wex default::var/localClear -n="LAST_${NAME}"
   fi
 }

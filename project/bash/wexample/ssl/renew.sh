@@ -6,5 +6,5 @@ sslRenew() {
     wex server/start
   fi
   # Force renew.
-  docker exec wex_reverse_proxy_certs /app/force_renew
+  docker exec wex_server_certs /app/force_renew
 }

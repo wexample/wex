@@ -1,4 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_ROUNDCUBE}
-          service: roundcube
-        ports: ['${SITE_PORT_RANGE}5:80']

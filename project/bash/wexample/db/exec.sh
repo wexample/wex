@@ -8,12 +8,7 @@ dbExecArgs() {
 
 dbExec() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
-
-  # We are not into the web container.
-  if [[ $(wex docker/isEnv) == false ]]; then
-    # Run itself into container, see below.
-    docker exec ${SITE_NAME}_web sh -c "cd /var/www/html/ && wex db/exec -c=\"${COMMAND}\""
-  else
-    mysql $(wex mysql/loginCommand) -e "${COMMAND}"
-  fi;
+  local LOGIN=$(wex mysql/loginCommand)
+  local QUERY="mysql --defaults-extra-file=/var/www/tmp/mysql.cnf -s -N ${SITE_NAME} -e \""${COMMAND}"\""
+  docker exec ${SITE_NAME}_mysql sh -c "${QUERY}"
 }

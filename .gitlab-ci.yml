@@ -3,7 +3,7 @@ image: wexample/php7:latest
 
 test:app:
   tags:
-    - php7.1
+    - default
   only:
     - master
   script:

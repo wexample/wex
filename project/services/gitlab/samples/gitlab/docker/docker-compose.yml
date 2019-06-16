@@ -1,0 +1,6 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_GITLAB}
+          service: gitlab
+        depends_on:
+        - ${SITE_NAME}_redis
+        - ${SITE_NAME}_postgres

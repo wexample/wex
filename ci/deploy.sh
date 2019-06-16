@@ -10,7 +10,7 @@ cd /opt/wexample
 # Add permission to execute
 chmod -R +x "/opt/wexample"
 # Install wexample.
-. ./project/bash/ubuntu-16.x/_installLocal.sh
+. ./project/bash/default/_installLocal.sh
 
 # Init gitlab
 # We need to install dependencies only for Docker
@@ -25,4 +25,4 @@ chmod -R +x "/opt/wexample"
 # wex composer/pharInstall
 
 # Run all tests
-# bash ./project/bash/ubuntu-16.x/_tests/_run.sh
+# bash ./project/bash/default/_tests/_run.sh

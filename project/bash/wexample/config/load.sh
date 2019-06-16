@@ -13,17 +13,10 @@ configLoad() {
 
   wex config/write -nr
 
-  # Load config
-  CONFIG=$(cat ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG})
-  # Export each variable for yml files.
-  for LINE in ${CONFIG[@]};do
-    if [[ ${LINE} ]];then
-      export ${LINE}
-    fi
-  done
-
-  # Global variables
-  export DOMAINS=$(wex site/domains -d=${DIR_SITE})
+  # Export all variable from conf file.
+  set -a
+    source ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG}
+  set +a
 
   export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT_REPO}
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"
@@ -32,8 +25,12 @@ configLoad() {
   wex framework/settings -d=${DIR_SITE}"project"
 
   # Expose settings.
-  export SITE_DB_HOST=${SITE_DB_HOST}
-  export SITE_DB_NAME=${SITE_DB_NAME}
-  export SITE_DB_USER=${SITE_DB_USER}
-  export SITE_DB_PASSWORD=${SITE_DB_PASSWORD}
+  export MYSQL_DB_HOST=${MYSQL_DB_HOST}
+  export MYSQL_DB_NAME=${MYSQL_DB_NAME}
+  export MYSQL_DB_USER=${MYSQL_DB_USER}
+  export MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+  export SERVER_IP=$(wex system/ip)
+  export DOMAIN_MAIN=${DOMAIN_MAIN}
+  export DOMAINS=${DOMAINS}
+  export EMAIL=${EMAIL}
 }

@@ -2,9 +2,9 @@
 
 hostsUpdate() {
   # Rebuild hosts file
-  IP=$(wex docker/ip)
-  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-  HOSTS_FILE=""
+  local IP=$(wex docker/ip)
+  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local HOSTS_FILE=""
   local DIR=""
 
   for DIR in ${REGISTRY[@]}
@@ -14,7 +14,10 @@ hostsUpdate() {
 
     for DOMAIN in ${DOMAINS[@]}
     do
-      HOSTS_FILE+="\n"${IP}"\t"${DOMAIN}
+      # Prevent IP address to be sent as domain link in reverse proxy.
+      if [ "${DOMAIN}" != "${IP}" ];then
+        HOSTS_FILE+="\n"${IP}"\t"${DOMAIN}
+      fi
     done;
   done;
 

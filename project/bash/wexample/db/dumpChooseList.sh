@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 dbDumpChooseList() {
-  FILES=($(ls dumps))
+  FILES=($(ls mysql/dumps))
 
   if [[ ${#FILES[@]} == 0 ]];then
     echo "No dump found."

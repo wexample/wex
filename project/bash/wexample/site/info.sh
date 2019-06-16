@@ -9,7 +9,7 @@ siteInfoArgs() {
 siteInfo() {
   wex config/load
 
-  . .env
+  local SITE_ENV=$(wex site/env)
 
   echo ""
   echo -e "  Machine name : \t "${SITE_NAME}
@@ -22,11 +22,11 @@ siteInfo() {
 
   wex framework/settings
 
-  if [ ! -z ${SITE_DB_HOST+x} ]; then
-    echo -e "  DB name : \t\t "${SITE_DB_HOST}
-    echo -e "  DB host : \t\t "${SITE_DB_NAME}
-    echo -e "  DB user : \t\t "${SITE_DB_USER}
-    echo -e "  DB password : \t "${SITE_DB_PASSWORD}
+  if [ ! -z ${MYSQL_DB_HOST+x} ]; then
+    echo -e "  DB host : \t\t "${MYSQL_DB_HOST}
+    echo -e "  DB name : \t\t "${MYSQL_DB_NAME}
+    echo -e "  DB user : \t\t "${MYSQL_DB_USER}
+    echo -e "  DB password : \t "${MYSQL_DB_PASSWORD}
     echo ""
   fi;
 

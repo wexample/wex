@@ -21,7 +21,7 @@ envCredentials() {
     SITE_USERNAME=${SSH_USERNAME}
   else
     # Username
-    VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_USERNAME
+    VAR_NAME=DB_REMOTE_${ENVIRONMENT^^}_SSH_USERNAME
     SITE_USERNAME=$(wex env/var -l="SSH Username for ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
@@ -30,7 +30,7 @@ envCredentials() {
     SITE_PRIVATE_KEY=${PRIVATE_KEY}
   else
     # SSH Private key
-    VAR_NAME=DB_REMOTE_$(wex text/uppercase -t=${ENVIRONMENT})_SSH_PRIVATE_KEY
+    VAR_NAME=DB_REMOTE_${ENVIRONMENT^^}_SSH_PRIVATE_KEY
     SITE_PRIVATE_KEY=$(wex env/var -l="SSH Private key for : ${ENVIRONMENT}" -k=${VAR_NAME} -d=root ${COMMAND_OPTIONS})
   fi
 
@@ -38,7 +38,7 @@ envCredentials() {
   # with no .env file (ie CI)
   if [ -z ${ENVIRONMENT+x} ];then
     # Get site env.
-    . ${DIR_SITE}.env
+    local ENVIRONMENT=$(wex site/env)
   fi
 
   . ${DIR_SITE}.wex
@@ -46,8 +46,8 @@ envCredentials() {
   # Conf contains site name
   export SITE_USERNAME=${SITE_USERNAME};
   export SITE_PRIVATE_KEY=${SITE_PRIVATE_KEY};
-  export SITE_IPV4=${PROD_IPV4}
+  export SITE_IPV4=${PROD_SSH_HOST}
   export SITE_PORT=${PROD_PORT}
   # We may set it somewhere else.
-  export SITE_PATH_ROOT=/var/www/${NAME}/
+  export SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${NAME}/
 }

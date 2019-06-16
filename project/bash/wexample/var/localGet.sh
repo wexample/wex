@@ -22,11 +22,17 @@ varLocalGet() {
     DEFAULT=$(eval 'echo ${LAST_'${NAME}'}')
   fi
 
-  local OUTPUT=$(wex ubuntu-16.x::var/localGet -d="${DEFAULT}" ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage)
+  local OUTPUT=$(wex default::var/localGet \
+    -n="${NAME}" \
+    -d="${DEFAULT}" \
+    -a="${ASK}" \
+    -p="${PASSWORD}" \
+    -r="${REQUIRED}" \
+    -f=./tmp/variablesLocalStorage)
 
   # Memorize last choice.
   if [ "${SAVE_DEFAULT}" == true ];then
-    wex ubuntu-16.x::var/localSet -n="LAST_${NAME}" -v="${OUTPUT}"
+    wex default::var/localSet -n="LAST_${NAME}" -v="${OUTPUT}"
   fi
 
   echo ${OUTPUT}

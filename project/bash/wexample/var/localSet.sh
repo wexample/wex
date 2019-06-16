@@ -8,5 +8,5 @@ varLocalSetArgs() {
 }
 
 varLocalSet() {
-  wex ubuntu-16.x::var/localSet ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage
+  wex default::var/localSet ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage
 }

@@ -19,7 +19,7 @@ _siteInitTest_createSite() {
     # Default container name.
   if [ -z ${SERVICES+x} ]; then
     # Get all services separated by a comma
-      SERVICES=$(ls ${WEX_DIR_ROOT}"docker/services" | tr "\n" " " )
+      SERVICES=$(ls ${WEX_DIR_ROOT}"services" | tr "\n" " " )
       SERVICES=$(wex array/join -a="${SERVICES}" -s=",")
   fi
 

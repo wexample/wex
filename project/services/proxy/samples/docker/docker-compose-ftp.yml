@@ -1,0 +1,6 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_PROXY}
+          service: ftp
+        ports:
+          - "21:21"
+          - "30000-30059:30000-30059"

@@ -4,17 +4,23 @@ remoteConnexionArgs() {
   _ARGUMENTS=(
     [0]='ssh_user_custom u "SSH User" false'
     [1]='ssh_private_key_custom k "SSH Private key" false'
-    [2]='ssh_host_custom host "Host to connect to" false'
+    [2]='ssh_host_custom h "Host to connect to" false'
     [3]='ssh_port_custom p "SSH Port" false'
     [4]='environment e "Environment to connect to" true'
   )
 }
 
 remoteConnexion() {
-  local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
+  local ENV=${ENVIRONMENT^^}
 
-  wexampleSiteInitLocalVariables
-  . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  # Try with local variables (local environment).
+  if [ -f ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE} ];then
+    wexampleSiteInitLocalVariables
+    . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
+  # Try with versioned variables (pipeline)
+  else
+    . .wex
+  fi
 
   if [ "${SSH_USER_CUSTOM}" != "" ];then
     local SSH_USER=${SSH_USER_CUSTOM}

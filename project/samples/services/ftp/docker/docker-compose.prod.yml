@@ -1,7 +1,0 @@
-        extends:
-            file: ${WEX_COMPOSE_YML_FTP}
-            service: ftp
-        ports:
-          - "${SITE_PORT_RANGE}2:21"
-          # TODO Use vars
-          - "30000-30009:30000-30009"

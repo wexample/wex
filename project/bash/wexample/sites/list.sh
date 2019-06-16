@@ -4,11 +4,11 @@
 sitesList() {
   REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
   SITES=()
-  
+
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Trim
-    SITE_PATH=$(echo -e "${SITE_PATH}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    SITE_PATH=$(echo -e "${SITE_PATH}" | sed -e 's/^[[:space:]]\{0,\}//' -e 's/[[:space:]]\{0,\}$//')
     # Avoid blank lines.
     if [[ ${SITE_PATH} != "" ]];then
       EXISTS=false
@@ -20,7 +20,7 @@ sitesList() {
         fi
       done;
 
-      if [[ ${EXISTS} == false ]] && [[ $(wex site/started -d=${SITE_PATH}) == true ]];then
+      if [ ${EXISTS} == false ] && [ $(wex site/started -d=${SITE_PATH}) == true ];then
         . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
         SITES+=(${SITE_NAME})
       fi

@@ -1,34 +1,5 @@
 #!/usr/bin/env bash
 
-# Enable debug mode.
-# Is will write logs into /tmp/debug.log
-# And tests result will not be encapsulated / evaluated.
-if [[ ${2} == "-d" ]];then
-  WEX_TEST_DEBUG=true
-
-  echo "Debug mode enabled "
-
-  # Clear log file on root script call.
-  if [[ ${WEX_ROOT_SCRIPT} == true ]];then
-    # Clear log file
-    rm -f ${WEX_LOG_FILE}
-    touch ${WEX_LOG_FILE}
-  fi
-  # Create log method.
-  wexLog() {
-    if [[ ${WEX_DEBUG} == true ]];then
-      TRACE=(${FUNCNAME[@]:2})
-      echo -e $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1} >> ${WEX_LOG_FILE}
-    fi;
-  }
-else
-  WEX_TEST_DEBUG=false
-
-  wexLog() {
-    : # Do nothing
-  }
-fi
-
 # Import wex
 . "wex" false
 
@@ -37,6 +8,7 @@ WEX_TEST_NAMESPACES=($(ls -d ${WEX_DIR_BASH}*/))
 WEX_TEST_DIR_TMP=${WEX_DIR_TMP}"test/"
 WEX_TEST_RUN_SCRIPT=${1}
 WEX_NON_INTERACTIVE=true
+#WEX_TEST_DEBUG=true
 
 wexTestSampleInit() {
   TMP_FILE_NAME=${1}
@@ -46,6 +18,23 @@ wexTestSampleInit() {
   cp ${WEX_TEST_RUN_DIR_SAMPLES}${TMP_FILE_NAME} ${WEX_TEST_DIR_TMP}
   # Return file name
   echo ${WEX_TEST_DIR_TMP}${TMP_FILE_NAME}
+}
+
+wexTestSampleDiff() {
+  local TMP_FILE_NAME=${1}
+  local EXPECT_CHANGES=${2}
+  local CONTEXT=${3}
+  local ORIGINAL=$(< ${WEX_TEST_RUN_DIR_SAMPLES}${TMP_FILE_NAME})
+  local MODIFIED=$(< ${WEX_TEST_DIR_TMP}${TMP_FILE_NAME})
+  local DIFF=$(diff <(echo "${ORIGINAL}") <(echo "${MODIFIED}"))
+
+  if [ ${EXPECT_CHANGES} == false ] && [ "${DIFF}" != '' ]; then
+    wexTestError "Differences found in ${TMP_FILE_NAME} in : ${CONTEXT} => ${DIFF}"
+  fi
+
+  if [ ${EXPECT_CHANGES} == true ] && [ "${DIFF}" == '' ]; then
+    wexTestError "No differences found in ${TMP_FILE_NAME} in : "${CONTEXT}". "${DIFF}
+  fi
 }
 
 wexTestError() {
@@ -150,8 +139,8 @@ do
               cd ${WEX_TEST_RUN_DIR_CURRENT}
 
               WEX_TEST_HAS_ERROR=false
+              echo "  > Try ${WEX_TEST_METHOD_NAME}Test method"
               if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
-                echo "  > Custom ${WEX_TEST_METHOD_NAME}Test method"
                 if [[ ${WEX_TEST_DEBUG} == true ]];then
                   # Do not encapsulate result
                   ${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}

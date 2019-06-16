@@ -1,4 +1,0 @@
-        extends:
-            file: ${WEX_COMPOSE_YML_WEB}
-            service: web
-        ports: ['${SITE_PORT_RANGE}1:80']

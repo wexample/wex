@@ -1,0 +1,2 @@
+DEPENDENCIES=mongo
+CONTAINERS_RUN=rocketchat,hubot

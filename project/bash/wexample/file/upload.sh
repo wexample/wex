@@ -11,10 +11,12 @@ fileUploadArgs() {
 }
 
 fileUpload() {
-  local ENV=$(wex text/uppercase -t="${ENVIRONMENT}")
+  wex remote/init -e=${ENVIRONMENT}
+
+  local ENV=${ENVIRONMENT^^}
   # Need site path
   wex config/load
-  local REMOTE_SITE_PATH_ROOT=/var/www/${SITE_NAME}/
+  local REMOTE_SITE_PATH_ROOT=${WEX_WEXAMPLE_DIR_SITES_DEFAULT}${SITE_NAME}/
 
   wexampleSiteInitLocalVariables
   . ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}
@@ -29,6 +31,8 @@ fileUpload() {
     SSH_PORT=22
   fi
 
+  # TODO On ne peut pas uploader de dossier à dossier => il faut être sudo, donc on copi dans home puis on peu move en sudo (?)
+  # TODO ---> https://stackoverflow.com/questions/10310299/proper-way-to-sudo-over-ssh
   # Copy to given location
   scp -r -i${SSH_PRIVATE_KEY} -P${SSH_PORT} ${FILE} ${SSH_USER}@${SSH_HOST}:${REMOTE_SITE_PATH_ROOT}${DIR_TO}
   # Give www-data permissions (files may be a part of website)

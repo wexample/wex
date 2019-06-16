@@ -2,7 +2,7 @@
 
 webStart() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
-  CONTAINER=web
+  local CONTAINER=$(wex site/container -c="")
 
   docker start ${SITE_NAME}_${CONTAINER}
 }

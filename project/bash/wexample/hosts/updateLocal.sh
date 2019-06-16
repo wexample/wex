@@ -13,7 +13,6 @@ hostsUpdateLocal() {
   # Remove old blocks
   sed -i '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
   # Add new line if needed.
-  sed -i -e '$a\' ${HOST_FILE}
 
   # Create new block.
   echo -e "#[ wex ]#" >> ${HOST_FILE}

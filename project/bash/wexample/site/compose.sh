@@ -11,29 +11,43 @@ siteCompose() {
   wex config/load
 
   # Load expected env file.
-  . .env
+  local SITE_ENV=$(wex site/env)
 
-  SERVICES=($(ls ${WEX_DIR_ROOT}"docker/services"))
+  local SERVICES=($(ls ${WEX_DIR_ROOT}"services"))
 
   # Iterate through array using a counter
   for ((i=0; i<${#SERVICES[@]}; i++)); do
       SERVICE=${SERVICES[$i]}
       SERVICE_UPPERCASE=$(echo ${SERVICE} | tr '[:lower:]' '[:upper:]')
-      VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}"_BASE"
-      export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose.yml"
+      local VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}"_BASE"
+      local YML_INHERIT=${WEX_DIR_ROOT}"services/"${SERVICE}"/docker-compose.yml"
+      export ${VAR_NAME}=${YML_INHERIT}
 
-      VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}
-      export ${VAR_NAME}=${WEX_DIR_ROOT}"docker/services/"${SERVICE}"/docker-compose."${SITE_ENV}".yml"
+      local VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}
+      local YML_INHERIT_ENV=${WEX_DIR_ROOT}"services/"${SERVICE}"/docker-compose."${SITE_ENV}".yml"
+      if [ -f ${YML_INHERIT_ENV} ];then
+        export ${VAR_NAME}=${YML_INHERIT_ENV}
+      else
+        export ${VAR_NAME}=${YML_INHERIT}
+      fi
   done
 
-  COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"docker/containers/default/docker-compose.yml"
+  if [ $(wex service/used -s=proxy) == false ];then
+    local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/default/docker-compose.yml"
+  else
+    local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/network/docker-compose.yml"
+  fi
 
-  FILES=(
+  local FILES=(
     # Base docker file / may extend global container.
     "docker/docker-compose.yml"
-    # Local env specific file
-    "docker/docker-compose."${SITE_ENV}".yml"
   );
+
+  # Local env specific file
+  local ENV_YML="docker/docker-compose."${SITE_ENV}".yml"
+  if [ -f ${ENV_YML} ];then
+    FILES+=(${ENV_YML})
+  fi
 
   for FILE in ${FILES[@]}
   do

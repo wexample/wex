@@ -34,8 +34,8 @@ imagesRebuild() {
     fi
 
     if [ ! -z "${LSC+x}" ]; then
-      DOCKER_USERNAME=$(wex ubuntu-16.x::var/localGet -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
-      DOCKER_PASSWORD=$(wex ubuntu-16.x::var/localGet -n=DOCKER_PASSWORD -ask="Docker password" -p)
+      DOCKER_USERNAME=$(wex default::var/localGet -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
+      DOCKER_PASSWORD=$(wex default::var/localGet -n=DOCKER_PASSWORD -ask="Docker password" -p)
     else
       if [ ! -z "${DOCKER_USERNAME+x}" ]; then
         DOCKER_USERNAME='-u '${DOCKER_USERNAME}
@@ -51,14 +51,14 @@ imagesRebuild() {
 
   if [[ ${FLUSH_CACHE} == true ]]; then
     NO_CACHE=true
-    # Remove all images from wexample
-    docker rmi $(docker images wexample/* -q)
+    wex wexample::images/flush
   fi;
 
   if [ ! -z "${IMAGE_NAME+x}" ]; then
     _imagesRebuild ${IMAGE_NAME} ${DEPLOY}
   else
-    local IMAGES=($(ls project/docker/images/))
+    local BASE_PATH=./project/images/
+    local IMAGES=($(ls ${BASE_PATH}))
 
     for f in ${IMAGES[@]}
     do
@@ -72,17 +72,17 @@ imagesRebuild() {
 
 _imagesRebuild() {
   local NAME=${1}
-  local DIR=project/docker/images/${NAME}/
+  local DIR=project/images/${NAME}/
   local DOCKERFILE=${DIR}Dockerfile
 
   echo "Building ${NAME}"
 
   DEPENDS_FROM=$(wex config/getValue -f=${DOCKERFILE} -k=FROM)
-  DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]*\):.*/\1/' <<< ${DEPENDS_FROM})
+  DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]\{0,\}\):.\{0,\}/\1/' <<< ${DEPENDS_FROM})
 
   # A manner to avoid non matching strings from sed
   # which are not empty.
-  if [ ${DEPENDS_FROM} != ${DEPENDS_FROM_WEX} ];then
+  if [ ${DEPENDS_FROM} != ${DEPENDS_FROM_WEX} ] && [ -z "${IMAGE_NAME+x}" ];then
     _imagesRebuild ${DEPENDS_FROM_WEX}
   fi;
 
