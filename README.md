@@ -84,16 +84,11 @@ This will execute install script depending to the services used. It also execute
 
 ## Running issues
 
-If your website does not run properly there is some tips :
-   
-```bash
-# Check if all containers are running
-docker logs -a
-```
+# Wexample server management
 
-If you want to reload Docker IP host binding or other services fast refresh tools (like apache reload for web container)
+All websites are stored into the ```/var/www/ dir```. They should all use wex sites system management in order to respect reverse proxy behavior and benefit to domain names management, auto SSL encryption, files and database dump and restore tools, etc...
 
-    wex site/refresh
+# Wexample sites management
 
 ## .wex
 
