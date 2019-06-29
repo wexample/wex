@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-webRefresh() {
+webSiteServe() {
   wex apache/restart
 }

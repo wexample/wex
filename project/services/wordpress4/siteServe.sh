@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-drupal7SiteServe() {
+wordpress4SiteServe() {
     # Same config as web
   . ${WEX_DIR_ROOT}services/web/siteServe.sh
 
