@@ -11,6 +11,8 @@ symfony4Install() {
     wex site/start
   fi
 
+  wex site/perms
+
   # Composer install / update.
   local ACTION="update"
   if [ "${SITE_ENV}" = "prod" ];then
