@@ -125,8 +125,6 @@ EOF
     ${RENDER_BAR} -p=50 -s="Install GIT" -nl
     # Create a GIT repo if not exists.
     git init
-    # Init git hooks.
-    wex git/initHooks
   fi
 
   # Status
