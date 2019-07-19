@@ -125,19 +125,21 @@ A *project* is a group of several wex sites, most of the time created for one si
 
     \my_project
         \www                 # Only folders of wex websites
-            \site1
-            \site2
+            \prod
+                \site1
+                \site2
+            \dev
+                \site1
+                \site2
         \backups             # Only backups files of full websites (database dumps are included)
             \site1
-                2020_01_01-12_37_22-site1.zip
+                prod-2020_01_01-12_37_22-site1.zip
             \site2
-                2021_01_01-16_11_03-site2.zip
+                dev-2021_01_01-16_11_03-site2.zip
         \sources
             \site1           # Free folder for various source files
                 front.jpg
                 front_texts.odt
-
-
 
 # Wexample server management
 
