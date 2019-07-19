@@ -123,7 +123,7 @@ This will execute install script depending to the services used. It also execute
 
 A *project* is a group of several wex sites, most of the time created for one single client. This is a folders structure proposal to organize your project folder. 
 
-    \my_project
+    \my_project              # On a server this is the `var` folder
         \www                 # Only folders of wex websites
             \prod
                 \site1
