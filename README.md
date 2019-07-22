@@ -124,22 +124,19 @@ This will execute install script depending to the services used. It also execute
 A *project* is a group of several wex sites, most of the time created for one single client. This is a folders structure proposal to organize your project folder. 
 
     \my_project              # On a server this is the `var` folder
-        \www                 # Only folders of wex websites
-            \prod
-                \site1
-                \site2
-            \dev
-                \site1
-                \site2
-        \backups             # Only backups files of full websites (database dumps are included)
+        \www
             \site1
-                prod-2020_01_01-12_37_22-site1.zip
-            \site2
-                dev-2021_01_01-16_11_03-site2.zip
-        \sources
-            \site1           # Free folder for various source files
-                front.jpg
-                front_texts.odt
+                \dev         # Or you can decied to use a folder for specific environment.
+                    ...
+                    .wex
+                \prod
+                    ...
+                    \backup
+                        2021_01_01-16_11_03-site1.zip
+                    \sources
+                        front.jpg
+                        front_texts.odt
+                    .wex
 
 # Wexample server management
 
