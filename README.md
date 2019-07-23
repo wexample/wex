@@ -119,6 +119,25 @@ This will execute install script depending to the services used. It also execute
 
 ## Running issues
 
+# Project management
+
+A *project* is a group of several wex sites, most of the time created for one single client. This is a folders structure proposal to organize your project folder. 
+
+    \my_project              # On a server this is the `var` folder
+        \www
+            \site1
+                \dev         # Or you can decied to use a folder for specific environment.
+                    ...
+                    .wex
+                \prod
+                    ...
+                    \backup
+                        2021_01_01-16_11_03-site1.zip
+                    \sources
+                        front.jpg
+                        front_texts.odt
+                    .wex
+
 # Wexample server management
 
 All websites are stored into the ```/var/www/ dir```. They should all use wex sites system management in order to respect reverse proxy behavior and benefit to domain names management, auto SSL encryption, files and database dump and restore tools, etc...
