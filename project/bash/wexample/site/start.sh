@@ -91,7 +91,7 @@ siteStart() {
     wex hosts/updateLocal
   fi
 
-  wex service/exec -c=start
+  wex hook/exec -c=start
 
   local DOCKER_SERVICES=''
 
