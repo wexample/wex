@@ -31,6 +31,8 @@ services:
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
             # Use common certificates storage
             - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
+            # Cron management
+            - ${SITE_PATH_ROOT}cron/${SITE_ENV}:/var/default.cron
         networks:
             - tmp_wex_net
 
