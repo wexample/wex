@@ -2,4 +2,4 @@
           file: ${WEX_COMPOSE_YML_DRUPAL7}
           service: drupal7
         depends_on:
-          - ${SITE_NAME}_mysql
+          - ${SITE_NAME_INTERNAL}_mysql
