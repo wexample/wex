@@ -5,7 +5,7 @@ serverDiag() {
   wex wexample::server/exec -c="cat /etc/nginx/conf.d/default.conf"
   echo -e "\n\n\nLOG"
   # Show log
-  docker logs wex_server --tail 20
+  docker logs ${WEX_WEXAMPLE_PROXY_CONTAINER} --tail 20
   echo -e "\n\n\nACCESS"
-  docker exec -ti wex_server tail /var/log/nginx/access.log
+  docker exec -ti ${WEX_WEXAMPLE_PROXY_CONTAINER} tail /var/log/nginx/access.log
 }

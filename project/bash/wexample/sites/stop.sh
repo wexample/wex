@@ -8,7 +8,7 @@ sitesStop() {
     # Avoid blank lines.
     if [[ $(wex text/trim -t=${SITE_PATH}) != "" ]];then
       # Keep wex_server alive.
-      if [ $(basename ${SITE_PATH}) != ${WEX_WEXAMPLE_PROXY_CONTAINER} ];then
+      if [ $(basename ${SITE_PATH}) != 'wex_server' ];then
         cd ${SITE_PATH}
         wex site/stop
       fi

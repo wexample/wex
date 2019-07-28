@@ -6,7 +6,7 @@ sslRenew() {
     wex server/start
   fi
   # SSL container may sleep.
-  docker start wex_server_certs
+  docker start ${WEX_WEXAMPLE_PROXY_CONTAINER}_certs
   # Force renew.
-  docker exec wex_server_certs /app/force_renew
+  docker exec ${WEX_WEXAMPLE_PROXY_CONTAINER}_certs /app/force_renew
 }
