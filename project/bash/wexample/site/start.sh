@@ -97,6 +97,8 @@ siteStart() {
 
   for CONTAINER in ${CONTAINERS[@]}
   do
+    # TODO We should build the container name including the ENV variable
+    # to allows to run the same site in several environments.
     DOCKER_SERVICES+=" "${NAME}"_"${CONTAINER}
   done;
 
