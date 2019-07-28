@@ -3,7 +3,7 @@ version: '2'
 services:
   proxy:
     image: jwilder/nginx-proxy:0.7.0
-    container_name: '${SITE_NAME}_server'
+    container_name: ${SITE_NAME}
     volumes:
       # Nginx configuration
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -21,13 +21,13 @@ services:
 
   certs:
     image: jrcs/letsencrypt-nginx-proxy-companion:v1.8.1
-    container_name: '${SITE_NAME}_server_certs'
+    container_name: ${SITE_NAME}_certs
     volumes:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   entrypoint:
-    container_name: '${SITE_NAME}_server_entrypoint'
+    container_name: ${SITE_NAME}_entrypoint
     image: 'wexample/php7:${WEX_IMAGES_VERSION}'
     stdin_open: true
     tty: true
@@ -42,7 +42,7 @@ services:
 
   ftp:
     image: wexample/ftp
-    container_name: '${SITE_NAME}_ftp'
+    container_name: ${SITE_NAME}_ftp
     environment:
       - PUBLICHOST=${SERVER_IP}
       - PORTS_RANGE=30000:30059
