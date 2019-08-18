@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Fallback
+. /opt/wexample/project/extend/v2/bash/wex "${@}"
