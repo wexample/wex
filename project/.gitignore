@@ -1,0 +1,5 @@
+# Local usage only
+/extend/local
+
+# Keep all .gitkeep files
+!/**/.gitkeep
