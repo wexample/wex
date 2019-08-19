@@ -5,6 +5,7 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
   WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
   WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
+  WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
 
   # Check bash version.
   if [ -z ${WEX_BASH_VERSION+x} ]; then
@@ -26,7 +27,6 @@ if [ -z "${WEX_INIT:+x}" ];then
 
     # Script not found in main core.
     if [ ${WEX_SCRIPT_FOUND} == false ];then
-      local WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
       local WEX_EXTEND_DIRS=$(ls ${WEX_DIR_EXTEND})
 
       # Search into extend directories.

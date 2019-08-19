@@ -2,6 +2,13 @@
 
 A web developer automation tool and deployment system.
 
+# Install
+
+- Clone the repository into `/opt/wex`
+  > `git clone https://github.com/wexample/wex.git /opt/wex`
+- Execute `bash /opt/wex/install.sh`
+- Check install with `wex hi`
+
 ## Core extension
 
 When a script is not found in the main script, it will ask for an action into the `project/extend` directory.
