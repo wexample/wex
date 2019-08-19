@@ -1,4 +1,38 @@
 #!/usr/bin/env bash
 
-# Fallback
-. /opt/wexample/project/extend/v2/bash/wex "${@}"
+# Init only once.
+if [ -z "${WEX_INIT:+x}" ];then
+  WEX_INIT=true
+  WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+  WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
+
+  wex() {
+    # Using false as argument allow to protect unexpected argument passing
+    if [ -z "${1+x}" ] || [ "${1}" == '' ] || [ ${1} == false ]; then
+      return;
+    fi;
+
+    local WEX_SCRIPT_FOUND=false;
+
+    # Script not found in main core.
+    if [ ${WEX_SCRIPT_FOUND} == false ];then
+      local WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
+      local WEX_EXTEND_DIRS=$(ls ${WEX_DIR_EXTEND})
+
+      # Search into extend directories.
+      for WEX_EXTEND_DIR in ${WEX_EXTEND_DIRS[@]}
+      do
+        . ${WEX_DIR_EXTEND}${WEX_EXTEND_DIR}/run.sh
+
+        # No reason to continue seeking for a script.
+        if [ ${WEX_SCRIPT_FOUND} == true ];then
+          return;
+        fi;
+      done;
+    fi
+  }
+fi;
+
+# Execute function with same arguments.
+wex "${@}"
+
