@@ -6,6 +6,16 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
   WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
 
+  # Check bash version.
+  if [ -z ${WEX_BASH_VERSION+x} ]; then
+    WEX_BASH_VERSION_MIN='4'
+    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
+    if [ ${WEX_BASH_VERSION} -lt ${WEX_BASH_VERSION_MIN} ]; then
+      echo "Wex error, need to run on bash version "${WEX_BASH_VERSION_MIN}
+      exit
+    fi;
+  fi;
+
   wex() {
     # Using false as argument allow to protect unexpected argument passing
     if [ -z "${1+x}" ] || [ "${1}" == '' ] || [ ${1} == false ]; then
