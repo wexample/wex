@@ -24,10 +24,8 @@ wex docker/install
 # Create sites folder
 mkdir -p /var/www
 
-~/.bashrc
-
 # Add to bashrc.
-wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". /opt/wex/project/bash/autocomplete.sh"
+wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". ${WEX_LOCAL_DIR}project/bash/autocomplete.sh"
 
 # Say Hi.
 echo "Wexample Script installed at version "$(wex wex/version)
