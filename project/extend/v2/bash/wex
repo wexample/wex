@@ -1,19 +1,8 @@
 #!/usr/bin/env bash
 
+# Init only once
 if [ -z "${WEX_INIT_V2:+x}" ];then
   WEX_INIT_V2=true
-  WEX_NAMESPACE_DEFAULT="default"
-  WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-  WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-  WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
-  WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
-  WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
-  WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
-  WEX_URL_GITHUB="https://github.com/wexample/"
-  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
-  WEX_LOCAL_DIR="/opt/wexample/"
-  WEX_NON_INTERACTIVE=false
-  WEX_SED_I_ORIG_EXT=".orig"
 
   if [ -z "${WEX_DEEP_LEVEL:+x}" ];then
     WEX_DEEP_LEVEL=0
@@ -31,7 +20,7 @@ if [ -z "${WEX_INIT_V2:+x}" ];then
     WEX_BASH_VERSION_MIN='4'
     WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
     if [ ${WEX_BASH_VERSION} -lt ${WEX_BASH_VERSION_MIN} ]; then
-      echo "Wexample error, need to run on bash version "${WEX_BASH_VERSION_MIN}
+      echo "Wex error, need to run on bash version "${WEX_BASH_VERSION_MIN}
       exit
     fi;
   fi;
@@ -63,6 +52,19 @@ if [ -z "${WEX_INIT_V2:+x}" ];then
     WEX_SHOW_INTRO=false
     WEX_REMOVE_DOWNLOADED_SCRIPT=false
     WEX_SCRIPT_CALL_NAME=${1}
+    WEX_NAMESPACE_DEFAULT="default"
+    # Init variable moved here for v3 compatibility (using "local" variables).
+    local WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+    local WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
+    local WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
+    local WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
+    local WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
+    local WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
+    local WEX_URL_GITHUB="https://github.com/wexample/"
+    local WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
+    local WEX_LOCAL_DIR="/opt/wexample/"
+    local WEX_NON_INTERACTIVE=false
+    local WEX_SED_I_ORIG_EXT=".orig"
 
     if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
       return
@@ -200,7 +202,9 @@ if [ -z "${WEX_INIT_V2:+x}" ];then
       # Not found.
       else
         WEX_TEST_HAS_ERROR=true
-        printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+        # Handled by v3 error management
+        # printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+        return
       fi;
       exit
     fi;
@@ -333,7 +337,6 @@ if [ -z "${WEX_INIT_V2:+x}" ];then
       ((WEX_DEEP_LEVEL--))
     fi;
   }
-
 fi;
 
 # Execute run function with same arguments.

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+wexVersionArgs() {
+  _DESCRIPTION='Returns current wex core version'
+}
+
 wexVersion() {
-  # Go to git repo.
-  cd ${WEX_DIR_ROOT}../
-  # Just get current tag.
-  wex git/currentTag
+  echo ${WEX_CORE_VERSION}
 }
