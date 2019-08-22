@@ -9,7 +9,7 @@ _wex_autocomplete() {
   local SPLIT=($(wex text/split -t=${CUR} -s=/))
   local SEEK_GROUP=${SPLIT[0]}
   local SEEK_SCRIPT=${SPLIT[1]}
-  local HAS_GROUP=$([ ${SEEK_GROUP} != ${CUR} ] && echo "true" || echo "false");
+  local HAS_GROUP=$([ "${SEEK_GROUP}" != "" ] && [ ${SEEK_GROUP} != ${CUR} ] && echo "true" || echo "false");
 
   local RED='\033[1;31m'
   local NC='\033[0m'
@@ -36,7 +36,7 @@ _wex_autocomplete() {
           done;
         # We search for a group folder.
         else
-          SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"
+          SUGGESTIONS+=" "$(basename ${BASH_GROUP})
         fi
       fi
     done;
