@@ -9,8 +9,10 @@ autocomplete() {
   local SEEK_SCRIPT=${SPLIT[1]}
   local HAS_GROUP=$([ "${SEEK_GROUP}" != "" ] && [ ${SEEK_GROUP} != ${CUR} ] && echo "true" || echo "false");
   local WEX_SCRIPT_CALL_NAME=${COMP_WORDS[1]}
+  local ARGS_INDEX=2;
 
   if [ "${COMP_WORDS[2]}" == "::" ];then
+    ARGS_INDEX+=1
     local WEX_DIR_BASH_GROUPS=(${COMP_WORDS[1]})
   else
     _wexFindNamespace ${CUR}
@@ -22,7 +24,7 @@ autocomplete() {
     fi
   fi
 
-  if (( ${COMP_CWORD} < 2 ));then
+  if (( ${COMP_CWORD} < ${ARGS_INDEX} ));then
     # Search into extend directories.
     for WEX_DIR_BASH_GROUP in ${WEX_DIR_BASH_GROUPS[@]}
     do

@@ -17,5 +17,12 @@ mkdir -p /var/www
 wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". ${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
 
 # Say Hi.
-echo "Wexample Script installed at version "$(wex wex/version)
+echo "wex installed at version "$(wex wex/version)
 wex wex/logo
+
+. ${WEX_DIR_BASH}/colors.sh
+
+wex app::requirements/list
+
+printf "\n${WEX_COLOR_CYAN}You may want to install app requirements by typing${WEX_COLOR_RESET}\n"
+printf "${WEX_COLOR_YELLOW}wex app::requirements/install${WEX_COLOR_RESET}\n\n"
