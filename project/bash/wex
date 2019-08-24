@@ -3,11 +3,7 @@
 # Init only once.
 if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
-  WEX_CORE_VERSION=3
-  WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-  WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-  WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
-  WEX_NAMESPACE_DEFAULT="default"
+  . /opt/wex/project/bash/globals.sh
 
   # Check bash version.
   if [ -z ${WEX_BASH_VERSION+x} ]; then
@@ -53,15 +49,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     local WEX_SCRIPT_FOUND=false
     local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
-    # Allow specified context.
-    if [[ ${WEX_SCRIPT_CALL_NAME} == *"::"* ]]; then
-      SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
-      WEX_NAMESPACE_TEST=${SPLIT[0]}
-      WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
-    # Check if we are on a "wexample" context (.wex file in calling folder).
-    elif [ -f ".wex" ]; then
-      WEX_NAMESPACE_TEST="project"
-    fi;
+    _wex_find_namespace ${WEX_SCRIPT_CALL_NAME}
 
     WEX_SCRIPT_DIR=${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}/${WEX_SCRIPT_CALL_NAME}
     WEX_SCRIPT_FILE=${WEX_SCRIPT_DIR}.sh

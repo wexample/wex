@@ -2,8 +2,7 @@
 
 # Use this file to install wex scripts.
 
-WEX_LOCAL_DIR="/opt/wex/"
-BASHRC_PATH=~/.bashrc
+. /opt/wex/project/bash/globals.sh
 
 chmod -R +x ${WEX_LOCAL_DIR}
 
