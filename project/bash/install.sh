@@ -5,7 +5,6 @@
 . /opt/wex/project/bash/globals.sh
 
 chmod -R +x ${WEX_DIR_INSTALL}
-
 # Copy to bin
 cp ${WEX_DIR_INSTALL}project/bash/wex.bin.sh /usr/local/bin/wex
 chmod -R +x /usr/local/bin/wex

@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
 
+WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
+WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
+WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
+
 export WEX_CORE_VERSION=3
-export WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
-export WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-export WEX_DIR_INSTALL=$(realpath ${WEX_DIR_ROOT}"../")"/"
+export WEX_DIR_BASH
+export WEX_DIR_ROOT
+export WEX_DIR_INSTALL
 export WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
 export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
+
+_wexBashCheckVersion() {
+  # Check bash version.
+  if [ -z ${WEX_BASH_VERSION+x} ]; then
+    WEX_BASH_VERSION_MIN='4'
+    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
+    if [ ${WEX_BASH_VERSION} -lt ${WEX_BASH_VERSION_MIN} ]; then
+      _wexError "Wex error, need to run on bash version "${WEX_BASH_VERSION_MIN} "Your current version is ${WEX_BASH_VERSION}"
+      exit
+    fi;
+  fi;
+}
 
 _wexError() {
   . ${WEX_DIR_BASH}/colors.sh
@@ -65,3 +81,5 @@ _wexMethodName() {
 _wexUpperCaseFirstLetter() {
   echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
 }
+
+_wexBashCheckVersion
