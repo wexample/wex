@@ -4,21 +4,11 @@
 
 . /opt/wex/project/bash/globals.sh
 
-chmod -R +x ${WEX_LOCAL_DIR}
+chmod -R +x ${WEX_DIR_INSTALL}
 
 # Copy to bin
-cp ${WEX_LOCAL_DIR}project/bash/wex.bin.sh /usr/local/bin/wex
+cp ${WEX_DIR_INSTALL}project/bash/wex.bin.sh /usr/local/bin/wex
 chmod -R +x /usr/local/bin/wex
-
-# Install minimal requirements
-apt-get update
-apt-get install \
-  curl \
-  net-tools \
-  zip \
-  -yqq
-# Install Docker
-wex docker/install
 
 # Create sites folder
 mkdir -p /var/www
