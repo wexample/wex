@@ -15,30 +15,6 @@ if [ -z "${WEX_INIT:+x}" ];then
     fi;
   fi;
 
-  wexError() {
-    . ${WEX_DIR_BASH}/colors.sh
-    printf "${WEX_COLOR_RED}[wex] Error : ${1}${WEX_COLOR_RESET}\n"
-
-    # Complementary information or description for extra text
-    if [ "${2}" != "" ];then
-      printf "      ${WEX_COLOR_CYAN}${2}${WEX_COLOR_RESET}\n"
-    fi
-
-    # Extra text
-    if [ "${3}" != "" ];then
-      printf "      ${3}\n"
-    fi
-  }
-
-  wexUpperCaseFirstLetter() {
-    echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
-  }
-
-  wexMethodName() {
-    local SPLIT=(${1//// })
-    echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
-  }
-
   wex() {
     # Using false as argument allow to protect unexpected argument passing
     if [ -z "${1+x}" ] || [ "${1}" == '' ] || [ ${1} == false ]; then
@@ -49,30 +25,16 @@ if [ -z "${WEX_INIT:+x}" ];then
     local WEX_SCRIPT_FOUND=false
     local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
-    _wex_find_namespace ${WEX_SCRIPT_CALL_NAME}
+    _wexFindNamespace ${WEX_SCRIPT_CALL_NAME}
 
-    WEX_SCRIPT_DIR=${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}/${WEX_SCRIPT_CALL_NAME}
-    WEX_SCRIPT_FILE=${WEX_SCRIPT_DIR}.sh
-
-    # Use main script if still not exists.
-    if [ -f ${WEX_SCRIPT_FILE} ] || [ -d ${WEX_SCRIPT_DIR} ]; then
-      WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
-    else
-      WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
-      # Search into wexample local folder.
-      WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh
-    fi;
-
-    # Load namespace init file.
-    . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
-
-    WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
+    _wexFindScriptFile
 
     # File does not exists.
     if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+      . ${WEX_DIR_BASH}/colors.sh
+
       # Show hi
       if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
-        . ${WEX_DIR_BASH}/colors.sh
         printf ". ${WEX_COLOR_YELLOW}★${WEX_COLOR_CYAN}hi${WEX_COLOR_RESET} ${WEX_COLOR_YELLOW}★${WEX_COLOR_RESET}.\n"
 
       # Show completion
@@ -84,19 +46,6 @@ if [ -z "${WEX_INIT:+x}" ];then
         local PATH_TITLE='Path'
         local DESCRIPTION_TITLE='Description'
 
-        # Prints titles
-        echo -n '  '${PATH_TITLE};
-        # Prints 50 spaces in order to align title with descriptions
-        printf %"$(( ${PADDING} - ${#PATH_TITLE} ))"s
-        echo "Description"
-
-        #Prints dashes
-        echo -n '  '
-        printf %"${#PATH_TITLE}"s |tr " " "-"
-        printf %"$(( PADDING - ${#PATH_TITLE}))"s
-        printf %"${#DESCRIPTION_TITLE}"s |tr " " "-"
-        echo '';
-
         for NAMESPACE in "${NAMESPACES[@]}"
         do
           local DIR=${WEX_DIR_BASH}${NAMESPACE}"/"${GROUP}
@@ -104,8 +53,6 @@ if [ -z "${WEX_INIT:+x}" ];then
           if [ -d ${DIR} ] && [ -d ${WEX_DIR_BASH}${NAMESPACE} ]; then
             local METHODS=($(ls ${DIR}))
             local GROUP=$(basename ${DIR})
-
-            echo ""
 
             for FILE in "${METHODS[@]}"
             do
@@ -116,24 +63,20 @@ if [ -z "${WEX_INIT:+x}" ];then
               local _ARGUMENTS=()
               local _DESCRIPTION=""
 
-              local ARGS_METHOD=${GROUP}$(wexUpperCaseFirstLetter ${FILE%.*})Args
+              local ARGS_METHOD=${GROUP}$(_wexUpperCaseFirstLetter ${FILE%.*})Args
               if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
                 # Execute command
                 ${ARGS_METHOD}
               fi;
 
               _COMMAND_PATH=${NAMESPACE}"::"${GROUP}"/${FILE%.*}"
-              echo -n "  "${_COMMAND_PATH}
+              printf ${WEX_COLOR_YELLOW}${_COMMAND_PATH}${WEX_COLOR_RESET}"\n"
 
               # If there is a description we show it at 50 characters from the very left
               if [[ "${_DESCRIPTION}" != "" ]]; then
-                # Prints a calculated number of spaces in order to align descriptions
-                printf %"$(( ${PADDING}-${#_COMMAND_PATH} ))"s
-
-                # Prints the description
-                wex text/color -c=lightblue -t="${_DESCRIPTION}"
+                printf "  ${WEX_COLOR_CYAN}${_DESCRIPTION}${WEX_COLOR_RESET}\n";
               else
-                echo "";
+                printf "  \n";
               fi
 
             done
@@ -161,25 +104,23 @@ if [ -z "${WEX_INIT:+x}" ];then
 
         if [ ${WEX_SCRIPT_FOUND} == false ];then
           WEX_TEST_HAS_ERROR=true
-          wexError "Script file not found" ${WEX_SCRIPT_FILE}
+          _wexError "Script file not found" ${WEX_SCRIPT_FILE}
         fi
       fi;
       exit
     fi;
 
-    # Include loaded file
+    # Include found script file
     . "${WEX_SCRIPT_FILE}"
 
     # Init empty var.
     _ARGUMENTS=()
     _DESCRIPTION=false
-    # Catch arguments
-    ARGS_METHOD=${WEX_SCRIPT_METHOD_NAME}"Args";
 
     # Execute arguments method
-    if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
+    if [[ $(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null) == function ]]; then
       # Execute command
-      ${ARGS_METHOD}
+      ${WEX_SCRIPT_METHOD_ARGS_NAME}
     fi;
 
     # We don't use getopts method in order to support long and short notations
@@ -247,7 +188,7 @@ if [ -z "${WEX_INIT:+x}" ];then
             echo -n ${PARAMS[2]}": "
             read ${ARG_EXPECTED_LONG^^}
           else
-            wexError "Expected argument not found" "${WEX_SCRIPT_METHOD_NAME} : "${ARG_EXPECTED_LONG}
+            _wexError "Expected argument not found" "${WEX_SCRIPT_METHOD_NAME} : "${ARG_EXPECTED_LONG}
             # Raise an error.
             # Unable to fetch expected variable
             exit 0
