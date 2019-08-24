@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-_wex_autocomplete() {
+autocomplete() {
+  . /opt/wex/project/bash/globals.sh
+
   local CUR=${COMP_WORDS[COMP_CWORD]}
   local WEX_DIR_BASH="/opt/wex/project/bash"
-  local WEX_DIR_BASH_GROUPS=$(ls ${WEX_DIR_BASH})
+
   local SUGGESTIONS=();
 
   local SPLIT=($(wex text/split -t=${CUR} -s=/))
@@ -13,6 +15,18 @@ _wex_autocomplete() {
 
   local RED='\033[1;31m'
   local NC='\033[0m'
+
+  if [ "${COMP_WORDS[2]}" == "::" ];then
+    local WEX_DIR_BASH_GROUPS=(${COMP_WORDS[1]})
+  else
+    _wex_find_namespace ${CUR}
+
+    if [ "${WEX_NAMESPACE_TEST}" != "" ];then
+      local WEX_DIR_BASH_GROUPS=(${WEX_NAMESPACE_TEST} ${WEX_NAMESPACE_DEFAULT})
+    else
+      local WEX_DIR_BASH_GROUPS=(${WEX_NAMESPACE_DEFAULT})
+    fi
+  fi
 
   # Search into extend directories.
   for WEX_DIR_BASH_GROUP in ${WEX_DIR_BASH_GROUPS[@]}
@@ -36,7 +50,7 @@ _wex_autocomplete() {
           done;
         # We search for a group folder.
         else
-          SUGGESTIONS+=" "$(basename ${BASH_GROUP})
+          SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"
         fi
       fi
     done;
@@ -45,4 +59,4 @@ _wex_autocomplete() {
   COMPREPLY=( $(compgen -W "${SUGGESTIONS}" -- ${CUR}) )
 }
 
-complete -o nospace -F _wex_autocomplete wex
+autocomplete
