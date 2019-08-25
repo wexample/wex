@@ -73,6 +73,21 @@ _wexFindScriptFile() {
   . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
 }
 
+_wexMessage() {
+  . ${WEX_DIR_BASH}/colors.sh
+  printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
+
+  # Complementary information or description for extra text
+  if [ "${2}" != "" ];then
+    printf "      ${WEX_COLOR_CYAN}${2}${WEX_COLOR_RESET}\n"
+  fi
+
+  # Extra text
+  if [ "${3}" != "" ];then
+    printf "      ${3}\n"
+  fi
+}
+
 _wexMethodName() {
   local SPLIT=(${1//// })
   echo ${SPLIT[0]}$(_wexUpperCaseFirstLetter ${SPLIT[1]})

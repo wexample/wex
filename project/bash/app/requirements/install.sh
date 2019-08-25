@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 requirementsInstallArgs() {
-  _DESCRIPTION='Install minimal requirements for a wex project to run locally.'
+  _DESCRIPTION='Install minimal requirements for a wex apps management.'
 }
 
 requirementsInstall() {
