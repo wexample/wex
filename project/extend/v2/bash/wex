@@ -48,7 +48,7 @@ if [ -z "${WEX_INIT_V2:+x}" ];then
     fi
   }
 
-  wex() {
+  wex_v2() {
     WEX_SHOW_INTRO=false
     WEX_REMOVE_DOWNLOADED_SCRIPT=false
     WEX_SCRIPT_CALL_NAME=${1}
@@ -342,7 +342,7 @@ fi;
 # Execute run function with same arguments.
 # Using false as argument allow to protect unexpected argument passing
 if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
-  wex "${@}"
+  wex_v2 "${@}"
 
   # In debug mode show report.
   if [ ${WEX_DEEP_LEVEL} == 0 ] && [ "${WEX_DEBUG}" == true ];then

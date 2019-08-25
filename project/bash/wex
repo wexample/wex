@@ -75,7 +75,6 @@ if [ -z "${WEX_INIT:+x}" ];then
 
       # Not found.
       else
-
         # Script not found in main core.
         if [ ${WEX_SCRIPT_FOUND} == false ];then
           local WEX_EXTEND_DIRS=$(ls ${WEX_DIR_EXTEND})
