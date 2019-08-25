@@ -12,6 +12,7 @@ wexMigrateArgs() {
 wexMigrate() {
   . ${WEX_DIR_BASH}/colors.sh
   local WEX_DIR_MIGRATION=${WEX_DIR_ROOT}"migration/"
+  local COMMAND=_wexUpdate$(_wexUpperCaseFirstLetter ${COMMAND})
 
   _wexMigrateVersionSort() {
     printf "${1}" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g
