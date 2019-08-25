@@ -10,6 +10,11 @@ wexMigrateArgs() {
 }
 
 wexMigrate() {
+  # Stop if no migration needed.
+  if [ "${FROM}" == "${TO}" ];then
+    return
+  fi
+
   . ${WEX_DIR_BASH}/colors.sh
   local WEX_DIR_MIGRATION=${WEX_DIR_ROOT}"migration/"
   local COMMAND_LONG=_wexMigrate$(_wexUpperCaseFirstLetter ${COMMAND})

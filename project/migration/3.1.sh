@@ -9,4 +9,7 @@ _wexMigrateCore() {
 
 _wexMigrateApp() {
   echo "APP"
+
+  # TODO SITE_NAME_INTERNAL
+  # TODO site/test to app/test into script folder
 }
