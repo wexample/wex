@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 
+wexUpdateArgs() {
+  _DESCRIPTION="Update core"
+  _ARGUMENTS=(
+    [0]='branch b "Switch to specified branch, by default stay on current one" false'
+  )
+}
+
 wexUpdate() {
   local WEX_VERSION_BASE=$(wex wex/version)
   local WEX_VERSION_BASE=2
 
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
-  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  # Choose branch
+  if [ "${BRANCH}" == "" ];then
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  fi;
 
   # Override changes and pull.
   wex git/resetHard
