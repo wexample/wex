@@ -26,6 +26,8 @@ wexUpdate() {
   git pull origin ${BRANCH}
   git update-index --chmod=+x
 
+  chmod -R +x ${WEX_DIR_INSTALL}
+
   local WEX_VERSION_NEW=$(wex wex/version)
 
   wex wex/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
