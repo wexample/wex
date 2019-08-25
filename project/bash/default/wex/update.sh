@@ -18,7 +18,7 @@ wexUpdate() {
   fi;
 
   # Override changes and pull.
-  wex git/resetHard
+  git reset --hard
   git fetch --tags
 
   git pull origin ${BRANCH}
