@@ -9,7 +9,6 @@ wexUpdateArgs() {
 
 wexUpdate() {
   local WEX_VERSION_BASE=$(wex wex/version)
-  local WEX_VERSION_BASE=2
 
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
@@ -22,7 +21,6 @@ wexUpdate() {
   wex git/resetHard
   git fetch --tags
 
-  # Get only last data
   git pull origin ${BRANCH}
   git update-index --chmod=+x
 
