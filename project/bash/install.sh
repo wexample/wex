@@ -15,6 +15,10 @@ mkdir -p /var/www
 # Add to bashrc.
 wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". ${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
 
+# A hooks to git in case of contributing.
+cd ${WEX_DIR_INSTALL}
+wex git/initHooks
+
 # Say Hi.
 echo "wex installed at version "$(wex wex/version)
 wex wex/logo
