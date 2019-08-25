@@ -1,5 +1,6 @@
 # Local usage only
-/extend/local
+/extend/local/
+!/extend/local/run.sh
 
 # Keep all .gitkeep files
 !/**/.gitkeep
