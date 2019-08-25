@@ -140,7 +140,8 @@ if [ -z "${WEX_INIT:+x}" ];then
       # ignore first one which is always method name.
       ARG_SEARCH=0;
       ORIGINAL_ARGS=("${@:2}");
-      for ARG_GIVEN in "${ORIGINAL_ARGS}"
+
+      for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"
       do
         ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${ARG_GIVEN})
         ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
