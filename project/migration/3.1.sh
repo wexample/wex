@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 _wexMigrateCore() {
-  # Move core to a new location.
-  mv /opt/wexample /opt/wex
+  if [ $(wex dir/exists -d="/opt/wexample") == true ];then
+    # Move core to a new location.
+    mv /opt/wexample /opt/wex
+  fi
 }
 
 _wexMigrateApp() {
