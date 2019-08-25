@@ -25,6 +25,7 @@ wexUpdate() {
     git fetch --tags
 
     # Get only last data
+    git checkout ${BRANCH}
     git pull origin ${BRANCH}
     git update-index --chmod=+x
 
