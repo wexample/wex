@@ -32,7 +32,12 @@ siteExec() {
     COMMAND="$(wex service/exec -c=go) && ${COMMAND}"
   fi;
 
-  docker exec -ti ${CONTAINER} /bin/bash -c "${COMMAND}"
+  local ARGS=""
+  if [ "${NON_INTERACTIVE}" != true ];then
+    ARGS+="-ti"
+  fi;
+
+  docker exec ${ARGS} ${CONTAINER} /bin/bash -c "${COMMAND}"
 
   # Stop website.
   if [ "${STARTS}" == true ] && [ ${STARTED_LOCALLY} == true ];then

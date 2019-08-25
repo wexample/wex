@@ -20,5 +20,5 @@ phpunitRun() {
     local FILTER="--filter ${METHOD} ${CLASS} ../${FILE}"
   fi
 
-  wex site/exec -c="cd /var/www/html/project && ./vendor/bin/phpunit ${FILTER}"
+  wex site/exec -l --non_interactive -c="./vendor/bin/phpunit ${FILTER}"
 }

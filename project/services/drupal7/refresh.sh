@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-drupal7Refresh() {
+drupal7SiteServe() {
     # Same config as web
-  . ${WEX_DIR_ROOT}services/web/refresh.sh
+  . ${WEX_DIR_ROOT}services/web/siteServe.sh
 
-  webRefresh
+  webSiteServe
 }

@@ -2,4 +2,4 @@
           file: ${WEX_COMPOSE_YML_PHPMYADMIN}
           service: phpmyadmin
         links:
-          - ${SITE_NAME}_mysql
+          - ${SITE_NAME_INTERNAL}_mysql

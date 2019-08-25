@@ -4,4 +4,4 @@
         ports:
           - "80:9000"
         depends_on:
-          - ${SITE_NAME}_postgres
+          - ${SITE_NAME_INTERNAL}_postgres

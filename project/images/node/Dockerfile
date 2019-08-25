@@ -1,14 +1,19 @@
-FROM wexample/ubuntu17:latest
+FROM wexample/ubuntu18:latest
 
-RUN apt-get update
+LABEL authors="wexample <contact@wexample.com>"
 
-RUN apt-get install nodejs -y
+# Copy wex scripts
+COPY ./ /opt/wexample/
+# Copy entrypoint.
+COPY ./project/images/node/entrypoint.sh /docker-entrypoint-node.sh
 
-RUN apt-get install npm -y
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  apt-get update && \
+  apt-get install \
+  nodejs \
+  npm \
+  yarn \
+  -yqq
 
-# Install yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install yarn -yqq
-
-RUN /bin/bash
+ENTRYPOINT ["/docker-entrypoint-node.sh"]

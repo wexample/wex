@@ -91,12 +91,14 @@ siteStart() {
     wex hosts/updateLocal
   fi
 
-  wex service/exec -c=start
+  wex hook/exec -c=start
 
   local DOCKER_SERVICES=''
 
   for CONTAINER in ${CONTAINERS[@]}
   do
+    # TODO We should build the container name including the ENV variable
+    # to allows to run the same site in several environments.
     DOCKER_SERVICES+=" "${NAME}"_"${CONTAINER}
   done;
 
