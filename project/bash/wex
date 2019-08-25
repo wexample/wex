@@ -239,7 +239,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Execute script.
     else
       # Handle missing method.
-      if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) != function ]]; then
+      if [[ $(type -t "${WEX_SCRIPT_METHOD_NAME}" 2>/dev/null) != function ]]; then
         _wexError "Method not found ${WEX_SCRIPT_METHOD_NAME}" "In ${WEX_SCRIPT_FILE}"
         exit
       fi;
