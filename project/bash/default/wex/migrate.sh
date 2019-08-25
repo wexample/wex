@@ -12,7 +12,7 @@ wexMigrateArgs() {
 wexMigrate() {
   . ${WEX_DIR_BASH}/colors.sh
   local WEX_DIR_MIGRATION=${WEX_DIR_ROOT}"migration/"
-  local COMMAND=_wexMigrate$(_wexUpperCaseFirstLetter ${COMMAND})
+  local COMMAND_LONG=_wexMigrate$(_wexUpperCaseFirstLetter ${COMMAND})
 
   _wexMigrateVersionSort() {
     printf "${1}" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g
@@ -30,16 +30,16 @@ wexMigrate() {
       local SORTED_LOW=($(_wexMigrateVersionSort "${VERSION_NUMBER}\n${FROM}"))
       local SORTED_HIGH=($(_wexMigrateVersionSort "${VERSION_NUMBER}\n${TO}"))
       # Reset command.
-      unset -f ${COMMAND}
+      unset -f ${COMMAND_LONG}
       # The number is greater than version CURRENT.
       # And the number is lower than version NEW.
       if [ ${SORTED_LOW[0]} == ${FROM} ] && [ ${SORTED_HIGH[0]} == ${VERSION_NUMBER} ];then
         . ${WEX_DIR_MIGRATION}${VERSION}
 
-        if [[ $(type -t "${COMMAND}" 2>/dev/null) == function ]]; then
-          _wexMessage "Updating to ${VERSION}" "Executing ${COMMAND} ..."
+        if [[ $(type -t "${COMMAND_LONG}" 2>/dev/null) == function ]]; then
+          _wexMessage "Updating to ${VERSION}" "Executing ${COMMAND} migration ..."
           # Execute command
-          ${COMMAND}
+          ${COMMAND_LONG}
         fi;
       fi
   done
