@@ -4,7 +4,7 @@ WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
 
-export WEX_CORE_VERSION=3
+export WEX_CORE_VERSION=3.1
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_INSTALL

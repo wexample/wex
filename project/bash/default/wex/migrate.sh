@@ -12,7 +12,7 @@ wexMigrateArgs() {
 wexMigrate() {
   . ${WEX_DIR_BASH}/colors.sh
   local WEX_DIR_MIGRATION=${WEX_DIR_ROOT}"migration/"
-  local COMMAND=_wexUpdate$(_wexUpperCaseFirstLetter ${COMMAND})
+  local COMMAND=_wexMigrate$(_wexUpperCaseFirstLetter ${COMMAND})
 
   _wexMigrateVersionSort() {
     printf "${1}" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g
@@ -31,7 +31,6 @@ wexMigrate() {
       local SORTED_HIGH=($(_wexMigrateVersionSort "${VERSION_NUMBER}\n${TO}"))
       # Reset command.
       unset -f ${COMMAND}
-
       # The number is greater than version CURRENT.
       # And the number is lower than version NEW.
       if [ ${SORTED_LOW[0]} == ${FROM} ] && [ ${SORTED_HIGH[0]} == ${VERSION_NUMBER} ];then
