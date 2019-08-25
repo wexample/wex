@@ -8,7 +8,7 @@ wexUpdateArgs() {
 }
 
 wexUpdate() {
-  local WEX_VERSION_BASE=$(wex wex/version)
+  local WEX_VERSION_FROM=$(wex wex/version)
 
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
