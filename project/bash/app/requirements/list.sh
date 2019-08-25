@@ -7,6 +7,7 @@ requirementsListArgs() {
 requirementsList() {
   . ${WEX_DIR_BASH}colors.sh
 
+  # Think to update also wex requirements/installed if list changes.
   _requirementsListRow $(wex package/exists -n docker) "docker" "Core containers manager"
   _requirementsListRow $(wex package/exists -n zip) "zip" "Use for backups management"
 }
@@ -17,7 +18,7 @@ _requirementsListRow() {
   local DESC=${3}
 
   if [ "${EXISTS}" == "true" ];then
-    local ICON=${WEX_COLOR_GREEN}✓
+    local ICON="${WEX_COLOR_GREEN}✓"
   else
     local ICON=${WEX_COLOR_RED}x
   fi
