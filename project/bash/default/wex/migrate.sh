@@ -24,13 +24,14 @@ wexMigrate() {
   MIGRATIONS=$(_wexMigrateVersionSort "${MIGRATIONS[@]}")
 
   for VERSION in ${MIGRATIONS}; do
-
       # Exclude .sh extension
       local VERSION_NUMBER=${VERSION::-3}
       local SORTED_LOW=($(_wexMigrateVersionSort "${VERSION_NUMBER}\n${FROM}"))
       local SORTED_HIGH=($(_wexMigrateVersionSort "${VERSION_NUMBER}\n${TO}"))
+
       # Reset command.
       unset -f ${COMMAND_LONG}
+
       # The number is greater than version CURRENT.
       # And the number is lower than version NEW.
       if [ ${SORTED_LOW[0]} == ${FROM} ] && [ ${SORTED_HIGH[0]} == ${VERSION_NUMBER} ];then
