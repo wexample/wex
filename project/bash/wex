@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# TODO Check wex version, and use according wex core.
+# TODO Recover v2 changes
+#    if [ -f ${PWD}"/.wex" ]; then
+#      export WEX_NAMESPACE_TEST=${WEX_NAMESPACE_APP}
+#    fi;
+
 # Init only once.
 if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
