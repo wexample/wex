@@ -96,5 +96,3 @@ _wexMethodName() {
 _wexUpperCaseFirstLetter() {
   echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
 }
-
-_wexBashCheckVersion

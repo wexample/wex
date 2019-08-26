@@ -4,6 +4,8 @@
 
 . /opt/wex/project/bash/globals.sh
 
+_wexBashCheckVersion
+
 chmod -R +x ${WEX_DIR_INSTALL}
 # Copy to bin
 cp ${WEX_DIR_INSTALL}project/bash/wex.bin.sh /usr/local/bin/wex
