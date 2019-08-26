@@ -4,7 +4,13 @@
 
 . /opt/wex/project/bash/globals.sh
 
+# Check shell version.
 _wexBashCheckVersion
+# Check if "realpath" method exists (missing on raw macos)
+if [[ $(type -t realpath 2>/dev/null) != file ]]; then
+  _wexError "The realpath method is not found" "You may install coreutils to solve it"
+  exit;
+fi;
 
 chmod -R +x ${WEX_DIR_INSTALL}
 # Copy to bin
