@@ -16,7 +16,7 @@ requirementsList() {
   _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Core containers manager"
   _requirementsListRow $(wex package/exists -n git) "git\t\t" "Version control"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(_wexHasRealPath == "true") "realpath\t" "Base bash method"
-  _requirementsListRow $(wex package/exists -n zip) "zip\t\t" "Use for backups management"
+  _requirementsListRow $(wex package/exists -n zip) "zip\t\t" "Used for backups management"
 }
 
 _requirementsListRow() {
