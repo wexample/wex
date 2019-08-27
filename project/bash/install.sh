@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 # Use this file to install wex scripts.
+# This file should be able to be executed several times
+# even script are already installed.
+# We also avoid to include external packages install which are
+# managed by `wex requirements/install` script.
 
 . /opt/wex/project/bash/globals.sh
 
