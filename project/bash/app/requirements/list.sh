@@ -8,6 +8,7 @@ requirementsList() {
   . ${WEX_DIR_BASH}colors.sh
 
   # Think to update also wex requirements/installed if list changes.
+  _requirementsListRow $(wex package/exists -n ansible) "ansible" "Servers management and orchestration"
   _requirementsListRow $(wex package/exists -n docker) "docker" "Core containers manager"
   _requirementsListRow $(wex package/exists -n zip) "zip" "Use for backups management"
 }
@@ -23,5 +24,5 @@ _requirementsListRow() {
     local ICON=${WEX_COLOR_RED}x
   fi
 
-  printf "   "${ICON}${WEX_COLOR_RESET}"\t${NAME}\t${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
+  printf "   "${ICON}${WEX_COLOR_RESET}"\t${NAME}\t\t${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
 }
