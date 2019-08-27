@@ -10,6 +10,7 @@ requirementsList() {
   # Think to update also wex requirements/installed if list changes.
   _requirementsListRow $(wex package/exists -n ansible) "ansible" "Servers management and orchestration"
   _requirementsListRow $(wex package/exists -n docker) "docker" "Core containers manager"
+  _requirementsListRow $(wex package/exists -n git) "git" "Version control"
   _requirementsListRow $(wex package/exists -n zip) "zip" "Use for backups management"
 }
 
