@@ -73,6 +73,14 @@ _wexFindScriptFile() {
   . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
 }
 
+_wexHasRealPath() {
+  if [[ $(type -t realpath 2>/dev/null) == file ]];then
+    echo "true";
+  else
+    echo "false";
+  fi;
+}
+
 _wexMessage() {
   . ${WEX_DIR_BASH}/colors.sh
   printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"

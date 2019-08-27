@@ -7,7 +7,7 @@
 # Check shell version.
 _wexBashCheckVersion
 # Check if "realpath" method exists (missing on raw macos)
-if [[ $(type -t realpath 2>/dev/null) != file ]]; then
+if [[ $(_wexHasRealPath) == "false" ]]; then
   _wexError "The realpath method is not found" "You may install coreutils to solve it"
   exit;
 fi;

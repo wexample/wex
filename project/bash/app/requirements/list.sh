@@ -7,11 +7,16 @@ requirementsListArgs() {
 requirementsList() {
   . ${WEX_DIR_BASH}colors.sh
 
+  local OS_NAME=$(wex system/osName)
+
+  # Keep alphabetical order for all os.
   # Think to update also wex requirements/installed if list changes.
-  _requirementsListRow $(wex package/exists -n ansible) "ansible" "Servers management and orchestration"
-  _requirementsListRow $(wex package/exists -n docker) "docker" "Core containers manager"
-  _requirementsListRow $(wex package/exists -n git) "git" "Version control"
-  _requirementsListRow $(wex package/exists -n zip) "zip" "Use for backups management"
+  _requirementsListRow $(wex package/exists -n ansible) "ansible\t\t" "Servers management and orchestration"
+  [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(wex package/exists -n brew) "brew\t\t" "Package manager"
+  _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Core containers manager"
+  _requirementsListRow $(wex package/exists -n git) "git\t\t" "Version control"
+  [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(_wexHasRealPath == "true") "realpath\t" "Base bash method"
+  _requirementsListRow $(wex package/exists -n zip) "zip\t\t" "Use for backups management"
 }
 
 _requirementsListRow() {
@@ -25,5 +30,5 @@ _requirementsListRow() {
     local ICON=${WEX_COLOR_RED}x
   fi
 
-  printf "   "${ICON}${WEX_COLOR_RESET}"\t${NAME}\t\t${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
+  printf "   "${ICON}${WEX_COLOR_RESET}"\t${NAME}${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
 }
