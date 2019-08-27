@@ -31,6 +31,9 @@ wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". ${WEX_DIR_INSTALL}project/bash
 cd ${WEX_DIR_INSTALL}
 wex git/initHooks
 
+# Activate autocomplete.
+. ${BASHRC_PATH}
+
 # Say Hi.
 echo "wex installed at version "$(wex wex/version)
 wex wex/logo
