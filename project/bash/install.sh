@@ -44,7 +44,7 @@ wex app::requirements/list
 
 if [[ $(wex app::requirements/installed) == false ]];then
   printf "\n${WEX_COLOR_CYAN}You may want to install app requirements by typing${WEX_COLOR_RESET}\n"
-  printf "${WEX_COLOR_YELLOW}wex app::requirements/install${WEX_COLOR_RESET}"
+  printf "${WEX_COLOR_YELLOW}wex core::requirements/install${WEX_COLOR_RESET}"
 fi
 
 echo ""
