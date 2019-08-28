@@ -28,6 +28,9 @@ coreUpdate() {
 
   local WEX_VERSION_NEW=$(wex core/version)
 
+  # Allow wex to init again.
+  unset WEX_INIT
+
   wex core/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
 
   _wexMessage "wex up-to-date at v"${WEX_VERSION_NEW}
