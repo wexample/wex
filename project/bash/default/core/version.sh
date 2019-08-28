@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-wexVersionArgs() {
+coreVersionArgs() {
   _DESCRIPTION='Returns current wex core version'
 }
 
-wexVersion() {
+coreVersion() {
   echo ${WEX_CORE_VERSION}
 }

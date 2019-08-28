@@ -35,8 +35,8 @@ wex git/initHooks
 . ${BASHRC_PATH}
 
 # Say Hi.
-echo "wex installed at version "$(wex wex/version)
-wex wex/logo
+echo "wex installed at version "$(wex core/version)
+wex core/logo
 
 . ${WEX_DIR_BASH}/colors.sh
 

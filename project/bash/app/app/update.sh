@@ -16,10 +16,10 @@ appUpdate() {
     WEX_VERSION=2
   fi
 
-  wex wex/migrate --from ${WEX_VERSION} --to $(wex wex/version) --command app
+  wex core/migrate --from ${WEX_VERSION} --to $(wex core/version) --command app
 
   if [ "${NO_SAVE}" == "" ];then
     # Save new version
-    wex config/setValue -f=.wex -k=WEX_VERSION -s="=" -v=$(wex wex/version)
+    wex config/setValue -f=.wex -k=WEX_VERSION -s="=" -v=$(wex core/version)
   fi
 }
