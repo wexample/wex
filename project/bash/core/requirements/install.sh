@@ -27,8 +27,7 @@ requirementsInstall() {
         ansible \
         coreutils \
         git \
-        zip \
-        -yq
+        zip
       ;;
   esac
 }
