@@ -13,7 +13,7 @@ requirementsList() {
   # Think to update also wex requirements/installed if list changes.
   _requirementsListRow $(wex package/exists -n ansible) "ansible\t\t" "Servers management and orchestration"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(wex package/exists -n brew) "brew\t\t" "Package manager"
-  _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Core containers manager"
+  _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Containers manager"
   _requirementsListRow $(wex package/exists -n git) "git\t\t" "Version control"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(_wexHasRealPath == "true") "realpath\t" "Base bash method"
   _requirementsListRow $(wex package/exists -n zip) "zip\t\t" "Used for backups management"
