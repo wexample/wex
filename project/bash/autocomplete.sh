@@ -56,6 +56,11 @@ autocomplete() {
   else
     _wexFindNamespace ${CUR}
     _wexFindScriptFile
+
+    if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
+      return
+    fi
+
     # Include found script file
     . "${WEX_SCRIPT_FILE}"
 
