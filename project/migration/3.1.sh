@@ -5,6 +5,8 @@ _wexMigrateCore() {
     # Move core to a new location.
     mv /opt/wexample /opt/wex
   fi
+  # Reinstall.
+  bash /opt/wex/install
 }
 
 _wexMigrateApp() {
