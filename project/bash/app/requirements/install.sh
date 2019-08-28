@@ -16,15 +16,19 @@ requirementsInstall() {
         -yq
       ;;
     "mac")
+      # brew expect non root user.
+      if [ $(whoami) == "root" ];then
+        _wexError "Unable to install requirements as root user"
+        exit
+      fi
       # brew itself should be installed manually by user.
       # realpath and may be also already installed, but we reinstall with coreutils
-      sudo brew install \
+      brew install \
         ansible \
         coreutils \
         git \
         zip \
         -yq
-      wex docker/install
       ;;
   esac
 }
