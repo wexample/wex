@@ -4,7 +4,7 @@
 # This file should be able to be executed several times
 # even script are already installed.
 # We also avoid to include external packages install which are
-# managed by `wex requirements/install` script.
+# managed by `wex core::requirements/install` script.
 
 . /opt/wex/project/bash/globals.sh
 
@@ -40,9 +40,9 @@ wex core/logo
 
 . ${WEX_DIR_BASH}/colors.sh
 
-wex app::requirements/list
+wex core::requirements/list
 
-if [[ $(wex app::requirements/installed) == false ]];then
+if [[ $(wex core::requirements/installed) == false ]];then
   printf "\n${WEX_COLOR_CYAN}You may want to install app requirements by typing${WEX_COLOR_RESET}\n"
   printf "${WEX_COLOR_YELLOW}wex core::requirements/install${WEX_COLOR_RESET}"
 fi
