@@ -10,7 +10,7 @@ sshValidateArgs() {
 
 sshValidate() {
   # Create a temporary inventory.
-  echo ${HOST} ansible_port=${PORT} ansible_python_interpreter=/usr/bin/python3 > ${WEX_DIR_TMP}inventory
+  wex server::inventory/write -n wex_command_host -h ${HOST} -p ${PORT}
   # Execute response.
   local RESPONSE=$(ansible all -m ping -k -i ${WEX_DIR_TMP}inventory)
 
