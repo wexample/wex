@@ -85,7 +85,7 @@ autocomplete() {
     do
       eval "SPLIT=(${ARG})"
       if [ -n "${BASH_VERSION+x}" ]; then
-        SUGGESTIONS+=(" --"${SPLIT[0]})
+        SUGGESTIONS+=" --"${SPLIT[0]}
       else
         compadd -S '' -P "--" ${SPLIT[@]:0:1}
       fi
