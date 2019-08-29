@@ -65,6 +65,12 @@ autocomplete() {
               if [ -z "${ZSH_VERSION+x}" ]; then
                 SUGGESTIONS+=" ${SUGGESTION}"
               else # ZSH
+                # If it is of the form "word::word"
+                # then we add "word::" at the first to avoid zsh rejecting the suggestion
+                if [[ "${SECOND_ARGUMENT}" =~ '::' ]];then
+                  SUGGESTION=${SECOND_ARGUMENT_ARRAY[1]}::${SUGGESTION}
+                fi
+
                 compadd -S '' "${SUGGESTION}"
               fi
             done;
