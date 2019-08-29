@@ -44,9 +44,10 @@ autocomplete() {
 
           # We search for a script file
           if [ "${HAS_GROUP}" = true ];then
-            local SCRIPTS=$(ls "${GROUP_DIR}");
+            local SCRIPTS=($(ls "${GROUP_DIR}"));
+
             # Iterate over scripts files.
-            for SCRIPT in "${SCRIPTS[@]}"
+            for SCRIPT in ${SCRIPTS[@]}
             do
               # all shells but ZSH
               if [ -z "${ZSH_VERSION+x}" ]; then
