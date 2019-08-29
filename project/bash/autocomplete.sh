@@ -17,6 +17,16 @@ autocomplete() {
   local WEX_SCRIPT_CALL_NAME=${COMP_WORDS[@]:1:1}
   local ARGS_INDEX=2;
 
+  # Handle the '::' case with zsh by separating '::' from the argument
+  if [[ -n "${ZSH_VERSION+x}" ]]; then
+    local SECOND_ARGUMENT=${COMP_WORDS[@]:1:1}
+    if [[ "${SECOND_ARGUMENT}" =~ '::' ]];then
+      SECOND_ARGUMENT_ARRAY=("${(s/::/)SECOND_ARGUMENT}")
+
+      COMP_WORDS=( "${COMP_WORDS[@]:0:1}" "${SECOND_ARGUMENT_ARRAY[1]}" "::" "${SECOND_ARGUMENT_ARRAY[2]}" )
+    fi
+  fi
+
   if [[ "${COMP_WORDS[@]:2:1}" == "::" ]];then
     ARGS_INDEX+=1
     local WEX_DIR_BASH_GROUPS=("${COMP_WORDS[@]:1:1}")
@@ -49,20 +59,29 @@ autocomplete() {
             # Iterate over scripts files.
             for SCRIPT in ${SCRIPTS[@]}
             do
+              local SUGGESTION=$(basename ${BASH_GROUP})"/"$(echo "${SCRIPT}" | cut -f 1 -d '.')
+
               # all shells but ZSH
               if [ -z "${ZSH_VERSION+x}" ]; then
-                SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"$(echo "${SCRIPT}" | cut -f 1 -d '.')
+                SUGGESTIONS+=" ${SUGGESTION}"
               else # ZSH
-                compadd -S '' $(basename ${BASH_GROUP})"/"$(echo "${SCRIPT}" | cut -f 1 -d '.')
+                compadd -S '' "${SUGGESTION}"
               fi
             done;
           # We search for a group folder.
           else
+            local SUGGESTION=$(basename ${BASH_GROUP})"/"
             # all shells but ZSH
             if [ -z "${ZSH_VERSION+x}" ]; then
-              SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"
+              SUGGESTIONS+=" ${SUGGESTION}"
             else # ZSH
-              compadd -S '' $(basename ${BASH_GROUP})"/"
+              # If it is of the form "word::word"
+              # then we add "word::" at the first to avoid zsh rejecting the suggestion
+              if [[ "${SECOND_ARGUMENT}" =~ '::' ]];then
+                SUGGESTION=${SECOND_ARGUMENT_ARRAY[1]}::${SUGGESTION}
+              fi
+
+              compadd -S '' "${SUGGESTION}"
             fi
           fi
         fi
