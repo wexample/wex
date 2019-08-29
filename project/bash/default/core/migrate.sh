@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexMigrateArgs() {
+coreMigrateArgs() {
   _DESCRIPTION="Execute migrations"
   _ARGUMENTS=(
     [0]='from f "From version" true'
@@ -9,7 +9,7 @@ wexMigrateArgs() {
   )
 }
 
-wexMigrate() {
+coreMigrate() {
   # Stop if no migration needed.
   if [ "${FROM}" == "${TO}" ];then
     return

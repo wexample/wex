@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-wexUpdateArgs() {
+coreUpdateArgs() {
   _DESCRIPTION="Update core"
   _ARGUMENTS=(
     [0]='branch b "Switch to specified branch, by default stay on current one" false'
   )
 }
 
-wexUpdate() {
-  local WEX_VERSION_FROM=$(wex wex/version)
+coreUpdate() {
+  local WEX_VERSION_FROM=$(wex core/version)
 
   # Go to wexample install dir.
   cd ${WEX_DIR_ROOT}../
@@ -26,9 +26,12 @@ wexUpdate() {
 
   chmod -R +x ${WEX_DIR_INSTALL}
 
-  local WEX_VERSION_NEW=$(wex wex/version)
+  local WEX_VERSION_NEW=$(wex core/version)
 
-  wex wex/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
+  # Allow wex to init again.
+  unset WEX_INIT
+
+  wex core/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
 
   _wexMessage "wex up-to-date at v"${WEX_VERSION_NEW}
 }

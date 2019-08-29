@@ -177,8 +177,11 @@ if [ -z "${WEX_INIT:+x}" ];then
       # If an argument is not found
       # And we are not on help page.
       if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ];then
+        # A default value is set in arguments list.
+        if [[ "${PARAMS[4]}" != "" ]];then
+          local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
         # Expected
-        if [[ ${PARAMS[3]} == true ]]; then
+        elif [[ ${PARAMS[3]} == true ]]; then
           # Interactive mode allowed.
           if [ -z ${NON_INTERACTIVE+x} ] || [ ${NON_INTERACTIVE} == false ]; then
             echo -n ${PARAMS[2]}": "
@@ -220,9 +223,19 @@ if [ -z "${WEX_INIT:+x}" ];then
 
         TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
 
+        local PROPS='';
+
         if [ ${PARAMS[3]} == true ]; then
-          TEXT+="\n\t"$(wex text/color -c=brown -t=\(require\)' ')
+          PROPS+=[required]
         fi;
+
+        if [ "${PARAMS[4]}" != "" ]; then
+          PROPS+=[default=\"${PARAMS[4]}\"]
+        fi;
+
+        if [ "${PROPS}" != "" ]; then
+          TEXT+="\n\t$(wex text/color -c=brown -t=${PROPS})"
+        fi
 
         TEXT+="\n\t\t"${PARAMS[2]}
         TEXT+="\n"

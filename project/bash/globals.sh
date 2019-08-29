@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
@@ -8,6 +9,7 @@ export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_INSTALL
 export WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
+export WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
@@ -89,6 +91,14 @@ _wexFindScriptFile() {
   . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
 }
 
+_wexHasRealPath() {
+  if [[ $(type -t realpath 2>/dev/null) == file ]];then
+    echo "true";
+  else
+    echo "false";
+  fi;
+}
+
 _wexMessage() {
   . ${WEX_DIR_BASH}/colors.sh
   printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
@@ -117,5 +127,3 @@ _wexMethodName() {
 _wexUpperCaseFirstLetter() {
   echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
 }
-
-_wexShellCheckVersion

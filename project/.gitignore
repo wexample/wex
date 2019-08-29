@@ -2,5 +2,8 @@
 /extend/local/
 !/extend/local/run.sh
 
+# Used by script for temp files.
+/tmp/*
+
 # Keep all .gitkeep files
 !/**/.gitkeep
