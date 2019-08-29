@@ -1,0 +1,6 @@
+#compdef _wex
+
+function _wex
+{
+  . /opt/wex/project/bash/autocomplete.sh
+}

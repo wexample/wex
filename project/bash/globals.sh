@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
+WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
 
@@ -13,15 +12,32 @@ export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 
-_wexBashCheckVersion() {
+_wexShellVersionError() {
+  _wexError "Wex error, need to run on ${1} version "${2}. "Your current version is ${3}".
+  #exit
+}
+
+_wexShellCheckVersion() {
   # Check bash version.
-  if [ -z ${WEX_BASH_VERSION+x} ]; then
-    WEX_BASH_VERSION_MIN='4'
-    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
-    if [ ${WEX_BASH_VERSION} -lt ${WEX_BASH_VERSION_MIN} ]; then
-      _wexError "Wex error, need to run on bash version "${WEX_BASH_VERSION_MIN} "Your current version is ${WEX_BASH_VERSION}"
-      exit
-    fi;
+  if [ -z ${WEX_SHELL_VERSION+x} ]; then
+    if [ -n "${BASH_VERSION+x}" ]; then
+      WEX_SHELL_VERSION_MIN='4'
+      WEX_SHELL_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< "${BASH_VERSION}")
+
+      if [[ ${WEX_SHELL_VERSION} -lt ${WEX_SHELL_VERSION_MIN} ]]; then
+        _wexShellVersionError bash ${WEX_SHELL_VERSION_MIN} "${WEX_SHELL_VERSION}"
+      fi;
+    elif [ -n "${ZSH_VERSION+x}" ]; then
+        WEX_SHELL_VERSION_MIN='5.5.1'
+        WEX_SHELL_VERSION_MIN_COMPARE='551'
+        WEX_SHELL_VERSION=${ZSH_VERSION}
+
+        if [[ $(sed -E "s/\.//g" <<< "${WEX_SHELL_VERSION}") -lt ${WEX_SHELL_VERSION_MIN_COMPARE} ]]; then
+          _wexShellVersionError zsh ${WEX_SHELL_VERSION_MIN} "${WEX_SHELL_VERSION}"
+        fi;
+    else
+      : # TODO handle other shells version : tcsh, ksh and fish
+    fi
   fi;
 }
 
@@ -89,12 +105,17 @@ _wexMessage() {
 }
 
 _wexMethodName() {
-  local SPLIT=(${1//// })
-  echo ${SPLIT[0]}$(_wexUpperCaseFirstLetter ${SPLIT[1]})
+  # For all shells but zsh...
+  if [[ -z ${ZSH_VERSION+X} ]]; then
+    local SPLIT=(${1//// })
+  else # for zsh ...
+    local SPLIT=("${(s:/:)1}")
+  fi
+  echo ${SPLIT[@]:0:1}$(_wexUpperCaseFirstLetter ${SPLIT[@]:1:1})
 }
 
 _wexUpperCaseFirstLetter() {
   echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
 }
 
-_wexBashCheckVersion
+_wexShellCheckVersion
