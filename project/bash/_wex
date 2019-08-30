@@ -2,5 +2,5 @@
 
 function _wex
 {
-  . /opt/wex/project/bash/autocomplete.sh
+  . /opt/wex/project/bash/autocomplete-handler.sh
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 autocomplete() {
+  typeset -A _ARGUMENTS=()
   . /opt/wex/project/bash/globals.sh
 
   if [ -n "${ZSH_VERSION+x}" ]; then
@@ -18,13 +19,11 @@ autocomplete() {
   local ARGS_INDEX=2;
 
   # Handle the '::' case with zsh by separating '::' from the argument
-  if [[ -n "${ZSH_VERSION+x}" ]]; then
-    local SECOND_ARGUMENT=${COMP_WORDS[@]:1:1}
-    if [[ "${SECOND_ARGUMENT}" =~ '::' ]];then
-      SECOND_ARGUMENT_ARRAY=("${(s/::/)SECOND_ARGUMENT}")
+  local SECOND_ARGUMENT=${COMP_WORDS[@]:1:1}
+  if [[ "${SECOND_ARGUMENT}" =~ '::' ]];then
+    SECOND_ARGUMENT_ARRAY=("${(s/::/)SECOND_ARGUMENT}")
 
-      COMP_WORDS=( "${COMP_WORDS[@]:0:1}" "${SECOND_ARGUMENT_ARRAY[1]}" "::" "${SECOND_ARGUMENT_ARRAY[2]}" )
-    fi
+    COMP_WORDS=( "${COMP_WORDS[@]:0:1}" "${SECOND_ARGUMENT_ARRAY[1]}" "::" "${SECOND_ARGUMENT_ARRAY[2]}" )
   fi
 
   if [[ "${COMP_WORDS[@]:2:1}" == "::" ]];then
