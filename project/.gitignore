@@ -2,6 +2,9 @@
 /extend/local/
 !/extend/local/run.sh
 
+# Used by wex reverse proxy server.
+/proxy/*
+
 # Used by script for temp files.
 /tmp/*
 
