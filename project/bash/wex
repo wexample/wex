@@ -5,28 +5,27 @@ if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
   . /opt/wex/project/bash/globals.sh
 
-  # We are in an app folder / sub folder.
-  if [[ $(_wexAppDetected) == true ]] && [[ "$(_wexVersionGetMajor $(_wexAppVersion))" == "2" ]]; then
-    WEX_SCRIPT_FOUND=false
-
-    bash /opt/wex/project/extend/v2/bash/wex ${@}
-
-    # Handle errors.
-    if [ ${WEX_SCRIPT_FOUND} == false ];then
-      WEX_TEST_HAS_ERROR=true
-      _wexError "V2 script file not found" ${@}
-    fi
-    exit;
-  fi;
-
   wex() {
     # Using false as argument allow to protect unexpected argument passing
     if [ -z "${1+x}" ] || [ "${1}" == '' ] || [ ${1} == false ]; then
       return;
     fi;
 
-    local WEX_SCRIPT_CALL_NAME=${1}
     local WEX_SCRIPT_FOUND=false
+
+    # We are in an app folder / sub folder.
+    if [[ $(_wexAppDetected) == true ]] && [[ "$(_wexVersionGetMajor $(_wexAppVersion))" == "2" ]]; then
+
+      . /opt/wex/project/extend/v2/bash/wex ${@}
+
+      # Handle errors.
+      if [ ${WEX_SCRIPT_FOUND} == false ];then
+        _wexError "V2 script file not found" ${@}
+      fi
+      exit;
+    fi;
+
+    local WEX_SCRIPT_CALL_NAME=${1}
     local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
     _wexFindNamespace ${WEX_SCRIPT_CALL_NAME}
