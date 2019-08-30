@@ -2,4 +2,4 @@
             file: ${WEX_COMPOSE_YML_ROCKETCHAT}
             service: rocketchat
         depends_on:
-          - ${SITE_NAME_INTERNAL}_mongo
+          - ${SITE_NAME}_mongo
