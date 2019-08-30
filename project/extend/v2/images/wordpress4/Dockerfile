@@ -15,7 +15,9 @@ RUN apt-get update && \
 	  rm wordpress.tar.gz && \
 	  chown -R www-data:www-data /var/www/html/project && \
 	  chmod +x /wp-cli.phar && \
-    mv /wp-cli.phar /usr/local/bin/wp
+    mv /wp-cli.phar /usr/local/bin/wp && \
+    a2enmod expires &&
+    a2enmod ext_filter
 
 # Copy custom config that allow shared file config.
 COPY ./project/images/wordpress4/wp-config.php /var/www/html/project
