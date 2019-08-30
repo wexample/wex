@@ -9,4 +9,4 @@ services:
         environment:
             - PMA_USER=root
             - PMA_PASSWORD=${MYSQL_DB_PASSWORD}
-            - VIRTUAL_HOST=pma.${SITE_NAME_INTERNAL}.wex
+            - VIRTUAL_HOST=pma.${SITE_NAME}.wex

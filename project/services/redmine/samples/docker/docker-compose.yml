@@ -2,4 +2,4 @@
           file: ${WEX_COMPOSE_YML_REDMINE}
           service: redmine
         depends_on:
-          - ${SITE_NAME_INTERNAL}_mysql
+          - ${SITE_NAME}_mysql
