@@ -9,14 +9,10 @@ appUpdateArgs() {
 
 appUpdate() {
   unset WEX_VERSION
-  . .wex
 
-  # Treat undefined app as v2
-  if [ "${WEX_VERSION}" == "" ];then
-    WEX_VERSION=2
-  fi
+  _wexAppVersion
 
-  wex core/migrate --from ${WEX_VERSION} --to $(wex core/version) --command app
+  wex core/migrate --from $(_wexAppVersion) --to $(wex core/version) --command app
 
   if [ "${NO_SAVE}" == "" ];then
     # Save new version
