@@ -48,9 +48,8 @@ configWrite() {
   local SITE_ENV=$(wex site/env)
 
   # Load site base info.
-  . .env
   . .wex
-  local SITE_NAME=${SITE_ENV}"_"${NAME}
+  local SITE_NAME=${NAME}
   local SITE_CONFIG_FILE=""
   local SITE_PATH=$(realpath ./)"/"
   local SITE_ENV_MAJ=${SITE_ENV^^}
@@ -61,7 +60,6 @@ configWrite() {
     local IMAGES_VERSION=$(wex wex/version)
   fi
   SITE_CONFIG_FILE+='\nSITE_NAME='${SITE_NAME}
-  SITE_CONFIG_FILE+='\nSITE_NAME_INTERNAL='${NAME}
   SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}
   SITE_CONFIG_FILE+='\nSTARTED='${STARTED}
   SITE_CONFIG_FILE+='\nDOMAIN_MAIN='${DOMAIN_MAIN}
