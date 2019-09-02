@@ -11,6 +11,7 @@ export WEX_DIR_ROOT
 export WEX_DIR_INSTALL
 export WEX_DIR_EXTEND=${WEX_DIR_ROOT}extend/
 export WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
+export WEX_DIR_TMP_BKP=${WEX_DIR_TMP}.bkp
 export WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
 export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
