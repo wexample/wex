@@ -28,7 +28,7 @@ _wexAppDir() {
 
   while [[ ${PATH_CURRENT} != / ]];
   do
-      if [ -f ${PATH_CURRENT}"/.wex" ]; then
+      if [ -f "${PATH_CURRENT}/.wex" ]; then
         WEX_APP_DIR=${PATH_CURRENT}"/"
         echo ${WEX_APP_DIR}
         return
@@ -107,7 +107,7 @@ _wexFindNamespace() {
     export WEX_NAMESPACE_TEST=${SPLIT[0]}
     export WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
   # Check if we are on a "wexample" context (.wex file in calling folder).
-  elif [ -f ${PWD}"/.wex" ]; then
+  elif [ -f "${PWD}/.wex" ]; then
     export WEX_NAMESPACE_TEST=${WEX_NAMESPACE_APP}
   fi;
 }
