@@ -60,7 +60,7 @@ wex() {
   local WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
   local WEX_LOCAL_DIR="/opt/wexample/"
   local WEX_NON_INTERACTIVE=false
-  local WEX_SED_I_ORIG_EXT=".orig"
+  local WEX_SED_I_ORIG_EXT=${WEX_DIR_TMP}".orig"
 
   if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
     return
