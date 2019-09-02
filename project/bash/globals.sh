@@ -33,7 +33,7 @@ _wexAppDir() {
         echo ${WEX_APP_DIR}
         return
       fi
-      PATH_CURRENT="$(readlink -f "${PATH_CURRENT}"/..)"
+      PATH_CURRENT=$(dirname ${PATH_CURRENT}"/")
   done
 }
 
