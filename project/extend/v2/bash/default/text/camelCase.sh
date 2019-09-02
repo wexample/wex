@@ -9,8 +9,8 @@ textCamelCaseArgs() {
 
 textCamelCase() {
   if [[ ${UPPERCASE} == true ]];then
-    echo -e "${TEXT}" | sed -r 's/(^|_)([a-z])/\U\2/g'
+    echo -e "${TEXT}" | sed -E 's/(^|_)([a-z])/\U\2/g'
   else
-    echo -e "${TEXT}" | sed -r 's/_([a-z])/\U\1/gi' | sed -r 's/^([A-Z])/\l\1/'
+    echo -e "${TEXT}" | sed -E 's/_([a-z])/\U\1/gi' | sed -r 's/^([A-Z])/\l\1/'
   fi;
 }
