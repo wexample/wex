@@ -3,7 +3,7 @@
 appUpdateArgs() {
   _DESCRIPTION="Update app to last wex scripts"
   _ARGUMENTS=(
-    [0]='no_save ns "Do not save new version in .wex file. Useful for dev." false'
+    'no_save ns "Do not save new version in .wex file. Useful for dev." false'
   )
 }
 

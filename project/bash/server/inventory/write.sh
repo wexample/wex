@@ -3,9 +3,9 @@
 inventoryWriteArgs() {
   _DESCRIPTION='Write an inventory file with given host informations.'
   _ARGUMENTS=(
-    [0]='name n "The host name in format (a-zA-Z_)" true'
-    [1]='host h "Host" true'
-    [2]='port p "Port" true'
+    'name n "The host name in format (a-zA-Z_)" true'
+    'host h "Host" true'
+    'port p "Port" true'
   )
 }
 

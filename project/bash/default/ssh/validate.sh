@@ -3,8 +3,8 @@
 sshValidateArgs() {
   _DESCRIPTION='Connect to an SSH remote server. Useful to first connect and check arguments.'
   _ARGUMENTS=(
-    [0]='host h "Host" true'
-    [1]='port p "Port" true'
+    'host h "Host" true'
+    'port p "Port" true'
   )
 }
 

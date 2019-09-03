@@ -3,7 +3,7 @@
 stringTrimArgs() {
   _DESCRIPTION="Trim a string"
   _ARGUMENTS=(
-    [0]='string s "String to trim" true'
+    'string s "String to trim" true'
   )
 }
 

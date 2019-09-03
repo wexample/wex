@@ -3,9 +3,9 @@
 coreMigrateArgs() {
   _DESCRIPTION="Execute migrations"
   _ARGUMENTS=(
-    [0]='from f "From version" true'
-    [1]='to t "To version" true'
-    [2]='command c "Command to execute" true'
+    'from f "From version" true'
+    'to t "To version" true'
+    'command c "Command to execute" true'
   )
 }
 

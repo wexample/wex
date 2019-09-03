@@ -3,7 +3,7 @@
 coreUpdateArgs() {
   _DESCRIPTION="Update core"
   _ARGUMENTS=(
-    [0]='branch b "Switch to specified branch, by default stay on current one" false'
+    'branch b "Switch to specified branch, by default stay on current one" false'
   )
 }
 

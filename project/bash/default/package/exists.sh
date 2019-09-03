@@ -2,7 +2,7 @@
 
 packageExistsArgs() {
   _ARGUMENTS=(
-    [0]='name n "Package name to find" true'
+    'name n "Package name to find" true'
   )
 }
 

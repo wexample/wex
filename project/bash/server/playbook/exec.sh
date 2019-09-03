@@ -3,9 +3,12 @@
 playbookExecArgs() {
   _DESCRIPTION='Execute a given wex playbook for the host'
   _ARGUMENTS=(
-    [0]='host h "Host" true'
-    [1]='port p "Port" true'
-    [2]='name n "Playbook name" true'
+    'host h "Host" true'
+    'port p "Port" true 22'
+    'name n "Playbook name" true'
+    'user u "User" false root'
+    'password pw "Password" false'
+    'vars v "Extra variables" false'
   )
 }
 
