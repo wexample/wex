@@ -138,20 +138,19 @@ if [ -z "${WEX_INIT:+x}" ];then
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
+      local WEX_ARG_FOUND=false
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
-      ARG_EXPECTED_LONG=${PARAMS[0]}
-      ARG_EXPECTED_SHORT=${PARAMS[1]}
+      local ARG_EXPECTED_LONG=${PARAMS[0]}
+      local ARG_EXPECTED_SHORT=${PARAMS[1]}
       # Mark variable as empty
       local ${ARG_EXPECTED_LONG^^}=
       # Set it as null.
       eval 'unset '${ARG_EXPECTED_LONG^^}
 
-      WEX_ARG_FOUND=false
-
       # Get args given,
       # ignore first one which is always method name.
-      ARG_SEARCH=0;
-      ORIGINAL_ARGS=("${@:2}");
+      local ARG_SEARCH=0;
+      local ORIGINAL_ARGS=("${@:2}");
 
       for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"
       do
