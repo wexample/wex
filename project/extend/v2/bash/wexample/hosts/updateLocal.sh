@@ -2,7 +2,7 @@
 
 hostsUpdateLocal() {
   case "$(wex system/osName)" in
-    "linux")
+    "linux" | "mac")
       local HOST_FILE=/etc/hosts
       ;;
     "windows")
