@@ -24,7 +24,8 @@ chmod -R +x /usr/local/bin/wex
 # Create sites folder
 mkdir -p /var/www
 
-# Add to bashrc.
+# Add to bashrc, create it if not exists.
+touch ${BASHRC_PATH}
 wex file/textAppendOnce -f="${BASHRC_PATH}" -l=". ${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
 
 # A hooks to git in case of contributing.
