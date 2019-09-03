@@ -8,6 +8,12 @@
 
 . /opt/wex/project/bash/globals.sh
 
+# Check user is root
+if [[ ${EUID} > 0 ]];then
+  # Exec as sudo
+  sudo bash /opt/wex/install
+  exit
+fi
 # Check shell version.
 _wexBashCheckVersion
 # Check if "realpath" method exists (missing on raw macos)
