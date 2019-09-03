@@ -99,7 +99,9 @@ fooBar() {
   > true/false mean required or not, if required but not present, use default uf exists, else prompt user using description content.
   > Every function can display help for argument usage when using reserved `--help` argument `wex foo/bar --help`.
 
-## MacOS compatibility
+## Compatibility
+
+### MacOS
 
 Tips to write compatible scripts.
 
@@ -108,6 +110,12 @@ Tips to write compatible scripts.
   > Use `wex file/regex` in place of `sed -i ... filename`
   > Use -E option instead of -r (BSD format)
 
+# Testing
+
+Useful to test changes and core compatibility.
+
+- Running all tests is simple as `wex test`.
+- Running a specific test (placed into `project/tests/bash`), is simple as `wex test my/test`, example : `wex test config/comment`
 
 # Understanding core
 
