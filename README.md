@@ -82,8 +82,8 @@ fooBarArgs() {
   _DESCRIPTION="This is my foo bar script"
   _ARGUMENTS=(
     # argument a "Description" true/false (required)
-    'arg a "First argument" true'
-    'arg2 a2 "Second argument (boolean)" false'
+    'arg a "First argument" true defaultValue'
+    'arg2 a2 "Second argument (boolean)" false defaultValue2'
   )
 }
 
@@ -93,6 +93,11 @@ fooBar() {
 }
 
 ```
+
+## Notes
+  > Arguments description will be used in help response and when argument is required.
+  > true/false mean required or not, if required but not present, use default uf exists, else prompt user using description content.
+  > Every function can display help for argument usage when using reserved `--help` argument `wex foo/bar --help`.
 
 ## MacOS compatibility
 
