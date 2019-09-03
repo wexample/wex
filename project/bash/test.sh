@@ -5,12 +5,12 @@ _wexTestAssertEqual() {
   local EXPECTED_VALUE=${2}
   if [ "${TEST_VARIABLE}" != "${EXPECTED_VALUE}" ]; then
     WEX_TEST_HAS_ERROR=true
-    _wexTestResultError "Assertion are not equal"
+    _wexTestResultError "Assertions are not equal"
     _wexTestResultLine "Expected : ${EXPECTED_VALUE}"
     _wexTestResultLine "Got : ${TEST_VARIABLE}"
     exit
   else
-    _wexTestResultSuccess "Assertion are equal"
+    _wexTestResultSuccess "Assertions are equal"
     _wexTestResultLine "Value : ${EXPECTED_VALUE}"
   fi;
 }
@@ -165,6 +165,5 @@ wexTest() {
     fi
   done
 }
-
 
 wexTest ${@}
