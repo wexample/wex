@@ -13,9 +13,8 @@ A web developer automation tool and deployment system.
 
 ## On MacOS
 
-- Install XCode
 - Install brew
-- Update your bash and coreutils with `brew install bash coreutils`
+- Update your bash and install coreutils with `brew install bash coreutils`
 - Then see Ubuntu installation process below
 
 # Usage
