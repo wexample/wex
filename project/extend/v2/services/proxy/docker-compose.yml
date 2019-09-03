@@ -26,20 +26,6 @@ services:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  entrypoint:
-    container_name: ${SITE_NAME}_entrypoint
-    image: 'wexample/php7:${WEX_IMAGES_VERSION}'
-    stdin_open: true
-    tty: true
-    environment:
-        # Displayed on main IP.
-        - VIRTUAL_HOST=${WEX_DOCKER_MACHINE_IP}
-    volumes:
-       - ${SITE_PATH_ROOT}proxy/entrypoint:/var/www/html
-       - ${WEX_WEXAMPLE_DIR_TMP}:/tmp/wexample/
-    networks:
-      - wex_net
-
   ftp:
     image: wexample/ftp
     container_name: ${SITE_NAME}_ftp
