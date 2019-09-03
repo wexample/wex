@@ -9,12 +9,49 @@ A web developer automation tool and deployment system.
 - Execute `sudo bash /opt/wex/install`
 - Check install with `wex hi`
 
-# Install on mac
+# Install on MacOS
 
 - Install XCode
 - Install brew
 - Update your bash and coreutils with `brew install bash coreutils`
 - Then see Ubuntu installation process below
+
+# Cheat sheet
+
+This is the most common command used to manage your apps.
+
+```bash
+# Clear site cache only.
+wex cache/clear
+# Execute command for site cli.
+wex cli/exec -c="my:command"
+# Format source code using available tools
+wex code/format
+# Make current database anonymous (dev / RGPD).
+wex db/anon
+# Create a new migration file.
+wex migration/create
+# Create a new migration file base on code entities changes.
+wex migration/diff
+# Execute database migrations.
+wex migration/migrate
+# Edit site entity.
+wex entity/edit
+# Reset all site assets.
+wex site/build
+# Install all site packages, dependencies, assets..
+wex site/install
+# Give all useful permissions.
+wex site/perms
+# Run unit test for given website
+wex site/test -f=project/tests/file.php -m=testMethod
+# Update all packages.
+wex site/update
+# Reload web server.
+wex site/serve
+# Start watcher.
+wex watcher/start
+```
 
 ## Core extension
 
