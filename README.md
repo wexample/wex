@@ -57,9 +57,42 @@ wex site/serve
 wex watcher/start
 ```
 
-# Writing scripts
+# Writing a script
 
+For example, you want to add this command :
+ 
+    wex foo/bar --arg yes --arg2 true
+    wex foo/bar --arg=yes --arg2=true
 
+Shortened as :
+
+    wex foo/bar -a yes -a2
+    wex foo/bar -a=yes -a2
+
+This script will be accessible in all contexts. So create a ne `.sh` file at this path :
+
+    project/bash/default/foo/bar.sh
+    
+And there is the content of your script file :
+
+```bash
+#!/usr/bin/env bash
+
+fooBarArgs() {
+  _DESCRIPTION="This is my foo bar script"
+  _ARGUMENTS=(
+    # argument a "Description" true/false (required)
+    'arg a "First argument" true'
+    'arg2 a2 "Second argument (boolean)" false'
+  )
+}
+
+fooBar() {
+  echo "First arg "${ARG}
+  echo "Second arg "${ARG2}
+}
+
+```
 
 ## MacOS compatibility
 
