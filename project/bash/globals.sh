@@ -16,6 +16,8 @@ export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
+# Used by sed to store a local temp backup file before removing it.
+export WEX_SED_I_ORIG_EXT=".orig"
 
 _wexAppDir() {
   local PATH_CURRENT=${PWD}
