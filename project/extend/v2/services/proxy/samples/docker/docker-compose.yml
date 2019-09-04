@@ -2,5 +2,5 @@
           file: ${WEX_COMPOSE_YML_PROXY}
           service: proxy
         ports:
-          - "80:80"
+          - ${SERVER_PORT_PUBLIC}:80
           - "443:443"

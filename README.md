@@ -17,6 +17,10 @@ A web developer automation tool and deployment system.
 - Update your bash and install coreutils with `brew install bash coreutils`
 - Then see Ubuntu installation process below
 
+### MacOS notices
+
+- Using port `80`is not allowed for local server so you should access your sites with port `4242`, eg: `http://mysite.wex:4242`
+
 # Usage
 
 ## Cheat sheet
