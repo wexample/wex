@@ -111,6 +111,7 @@ Tips to write compatible scripts.
   > Use `wex file/regex` in place of `sed -i ... filename`
   > Use -E option instead of -r (BSD format)
 - In Docker
+  > Unable to run sites without port forwarding (on port 80)
   > Do not mount dir that no exists locally
 
 # Testing
