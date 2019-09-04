@@ -29,7 +29,12 @@ laravel5Install() {
     wex site/exec -l -c="yarn run encore dev"
   fi
 
-  # Fill up Symfony laravel file with db URL
+  # Copy .env file.
+  if [ ! -f ./project/.env ];then
+    cp ./project/.env.example ./project/.env
+  fi
+
+  # Fill up laravel file with db URL
   wex config/setValue -f=./project/.env -k=DATABASE_URL -s="=" -v="mysql://root:${MYSQL_PASSWORD}@${NAME}_mysql:3306/${NAME}"
 
   # Rebuild and clear caches.
