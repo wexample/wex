@@ -3,7 +3,7 @@
 export WEX_WEXAMPLE_DIR_TMP=${WEX_DIR_TMP}wexample/
 export WEX_WEXAMPLE_DIR_DATA=${WEX_DIR_ROOT_REPO}data/
 # /opt can't be mounted on macos, using Users instead.
-export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/wex/server/ || echo /opt/wex_server/)
+export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)
 export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
 export WEX_WEXAMPLE_DIR_MAIL_TMP=${WEX_WEXAMPLE_DIR_TMP}mail/
 export WEX_WEXAMPLE_PROXY_CONTAINER=wex_server
