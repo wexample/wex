@@ -35,7 +35,11 @@ laravel5Install() {
   fi
 
   # Fill up laravel file with db URL
-  wex config/setValue -f=./project/.env -k=DATABASE_URL -s="=" -v="mysql://root:${MYSQL_PASSWORD}@${NAME}_mysql:3306/${NAME}"
+  wex config/setValue -f=./project/.env -s="=" -k=DB_HOST -v="${NAME}_mysql"
+  wex config/setValue -f=./project/.env -s="=" -k=DB_PORT -v=3306
+  wex config/setValue -f=./project/.env -s="=" -k=DB_DATABASE -v=${NAME}
+  wex config/setValue -f=./project/.env -s="=" -k=DB_USERNAME -v=root
+  wex config/setValue -f=./project/.env -s="=" -k=DB_PASSWORD -v=${MYSQL_PASSWORD}
 
   # Rebuild and clear caches.
   wex site/build
