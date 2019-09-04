@@ -3,7 +3,7 @@
 dockerIp() {
   # Docker IP is only localhost
   if [[ $(wex system/osName) == 'mac' ]];then
-    echo "localhost"
+    echo "127.0.0.1"
     return
   fi
 
