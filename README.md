@@ -32,6 +32,8 @@ wex cli/exec -c="my:command"
 wex code/format
 # Make current database anonymous (dev / RGPD).
 wex db/anon
+# Stops all running docker containers
+wex docker/stopAll
 # Create a new migration file.
 wex migration/create
 # Create a new migration file base on code entities changes.
