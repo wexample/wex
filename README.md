@@ -16,6 +16,7 @@ A web developer automation tool and deployment system.
 - Install brew
 - Update your bash and install coreutils with `brew install bash coreutils`
 - Then see Ubuntu installation process below
+- In Docker Menu > Preve
 
 # Usage
 

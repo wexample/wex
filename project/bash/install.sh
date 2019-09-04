@@ -11,7 +11,7 @@
 # Check user is root
 if [[ ${EUID} > 0 ]];then
   # Exec as sudo
-  sudo bash /opt/wex/install
+  sudo bash ${WEX_DIR_INSTALL}install
   exit
 fi
 # Check shell version.
