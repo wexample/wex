@@ -26,16 +26,17 @@ services:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  ftp:
-    image: wexample/ftp
-    container_name: ${SITE_NAME}_ftp
-    environment:
-      - PUBLICHOST=${SERVER_IP}
-      - PORTS_RANGE=30000:30059
-    volumes:
-      # Share all sites
-      - /var/www:/var/www
-      # Store passwords in the same place
-      - ${SITE_PATH_ROOT}proxy/ftp/passwd:/etc/pure-ftpd/passwd
-    networks:
-      - wex_net
+# TODO Run it in production only, if expected by at least one app
+#  ftp:
+#    image: wexample/ftp
+#    container_name: ${SITE_NAME}_ftp
+#    environment:
+#      - PUBLICHOST=${SERVER_IP}
+#      - PORTS_RANGE=30000:30059
+#    volumes:
+#      # Share all sites
+#      - /var/www:/var/www
+#      # Store passwords in the same place
+#      - ${SITE_PATH_ROOT}proxy/ftp/passwd:/etc/pure-ftpd/passwd
+#    networks:
+#      - wex_net
