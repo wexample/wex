@@ -108,6 +108,8 @@ Tips to write compatible scripts.
 - For sed :
   > Use `wex file/regex` in place of `sed -i ... filename`
   > Use -E option instead of -r (BSD format)
+- In Docker
+  > Do not mount dir that no exists locally
 
 # Testing
 
