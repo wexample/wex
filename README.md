@@ -2,7 +2,7 @@
 
 A web developer automation tool and deployment system.
 
-# Install
+# Installing
 
 ## On Ubuntu
 
@@ -62,6 +62,18 @@ wex site/serve
 wex watcher/start
 ```
 
+# Updating
+
+    wex core/update
+    
+# Uninstalling
+
+Want to ge rid of the `wex` commands ? All right.
+
+    wex core/uninstall
+    
+If you still want to une Docker containers to launch your site, you can still use the docker compose file placed at `yoursite/tmp/docker-compose.build.yml`
+    
 # Writing a script
 
 For example, you want to add this command :
