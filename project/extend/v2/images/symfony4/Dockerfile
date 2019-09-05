@@ -2,7 +2,7 @@ FROM wexample/php7:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-symfony4.sh
+COPY ./v2/images/php7/entrypoint.sh /docker-entrypoint-symfony4.sh
 
 # Add Yarn repository.
 # Install NodeJS / NPM / Yarn / Xdebug.

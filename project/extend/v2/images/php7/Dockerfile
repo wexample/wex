@@ -2,7 +2,7 @@ FROM wexample/webserver:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
+COPY ./v2/images/php7/entrypoint.sh /docker-entrypoint-php7.sh
 
 # Add PHP repository.
 # Install packages.

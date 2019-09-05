@@ -1,6 +1,6 @@
 FROM wexample/php7:latest
 
-COPY ./project/images/php7/entrypoint.sh /docker-entrypoint-laravel5.sh
+COPY ./v2/images/php7/entrypoint.sh /docker-entrypoint-laravel5.sh
 
 # Add Yarn repository.
 # Install NodeJS / NPM / Yarn / Xdebug.

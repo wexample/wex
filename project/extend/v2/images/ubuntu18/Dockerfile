@@ -5,7 +5,7 @@ LABEL authors="wexample <contact@wexample.com>"
 # Copy wex scripts
 COPY ./ /opt/wexample/
 # Copy entrypoint.
-COPY ./project/images/ubuntu18/entrypoint.sh /docker-entrypoint-ubuntu18.sh
+COPY ./v2/images/ubuntu18/entrypoint.sh /docker-entrypoint-ubuntu18.sh
 
 # Configure non-interactivity.
 # Install base packages.

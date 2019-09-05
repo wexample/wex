@@ -20,6 +20,6 @@ RUN apt-get update && \
     a2enmod ext_filter
 
 # Copy custom config that allow shared file config.
-COPY ./project/images/wordpress4/wp-config.php /var/www/html/project
+COPY ./v2/images/wordpress4/wp-config.php /var/www/html/project
 
 RUN chown www-data:www-data /var/www/html/project/wp-config.php

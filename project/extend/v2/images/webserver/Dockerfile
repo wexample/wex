@@ -4,7 +4,7 @@ FROM wexample/ubuntu18:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-COPY ./project/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
+COPY ./v2/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 
 # Install base packages.
 # Add server name to prevent warnings.

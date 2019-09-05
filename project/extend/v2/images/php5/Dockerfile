@@ -2,7 +2,7 @@ FROM wexample/ubuntu14:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-COPY ./project/images/php5/entrypoint.sh /docker-entrypoint-php5.sh
+COPY ./v2/images/php5/entrypoint.sh /docker-entrypoint-php5.sh
 
 RUN apt-get update -yqq && \
     apt-get install apache2 \

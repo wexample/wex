@@ -7,7 +7,7 @@ ENV PATH="/opt/wexample/project/bash:${PATH}"
 # Install wex scripts.
 COPY ./ /opt/wexample/
 # Install entrypoint.
-COPY ./project/images/ubuntu16/entrypoint.sh /docker-entrypoint-ubuntu14.sh
+COPY ./v2/images/ubuntu16/entrypoint.sh /docker-entrypoint-ubuntu14.sh
 
 RUN apt-get update && \
   apt-get install \

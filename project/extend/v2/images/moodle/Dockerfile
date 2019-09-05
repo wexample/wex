@@ -17,4 +17,4 @@ RUN cd /var/www/html && chown -R root project && chmod -R 0755 project && find p
 RUN a2enmod ssl && a2ensite default-ssl && service apache2 restart
 
 # Copy custom config that allow shared file config.
-COPY ./project/images/moodle/config.php /var/www/html/project/config.php
+COPY ./v2/images/moodle/config.php /var/www/html/project/config.php
