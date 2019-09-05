@@ -55,9 +55,6 @@ siteInit() {
   # Status
   ${RENDER_BAR} -p=10 -s="Copy base samples files"
 
-  # Create wex file early to enable wexample namespace.
-  touch .wex
-
   local SAMPLE_SITE_DIR=${WEX_DIR_SAMPLES}site/
   # Copy base site files.
   cp -n -R ${SAMPLE_SITE_DIR}. ${DIR_SITE}
@@ -67,15 +64,20 @@ siteInit() {
     echo -e "SITE_ENV="${ENVIRONMENT} > .env
   fi
 
+  local WEX_VERSION=$(wex wex/version)
+
+  # Create wex file early to enable wexample namespace.
+  touch .wex
   # Create wex file
   cat <<EOF > .wex
 NAME=${SITE_NAME}
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
-IMAGES_VERSION=$(wex wex/version)
+IMAGES_VERSION=latest
 SERVICES=${SERVICES_JOINED}
 LOCAL_DOMAINS=${SITE_NAME}.wex
 LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
+WEX_VERSION=${WEX_VERSION}
 EOF
 
   if [ "${DOMAINS}" != "" ];then
