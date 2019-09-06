@@ -9,7 +9,6 @@ siteStartArgs() {
 }
 
 siteStart() {
-
   # Stop other sites.
   if [ "${ONLY}" != "" ];then
     local CURRENT_DIR=$(realpath ./)
@@ -121,4 +120,11 @@ siteStart() {
   wex hook/exec -c=siteStarted
   # Execute server hook for global configurations.
   wex service/exec -s=proxy -sf -c=siteStarted
+
+  _wexMessage "Your site is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
+
+  for DOMAIN in ${DOMAINS[@]}
+  do
+    echo "      > http://"${DOMAIN}
+  done;
 }

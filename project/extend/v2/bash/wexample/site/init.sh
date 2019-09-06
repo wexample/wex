@@ -94,6 +94,8 @@ EOF
 
   mkdir -p docker
 
+  local NEW_SITE_NAME=${SITE_NAME}
+
   # Default project dir
   if [ ! -d project ]; then
     # Creating default dir
@@ -140,5 +142,7 @@ EOF
   # Status
   ${RENDER_BAR} -p=100 -s="Done !" -nl
 
-  _wexMessage "Your site is initialized as ${SITE_NAME}" "You may start install process using :" "wex site/install"
+  if [ ${NEW_SITE_NAME} != ${WEX_WEXAMPLE_PROXY_CONTAINER} ];then
+    _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex site/install"
+  fi
 }
