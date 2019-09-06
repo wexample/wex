@@ -86,7 +86,7 @@ _wexBashCheckVersion() {
 }
 
 _wexError() {
-  . ${WEX_DIR_BASH}/colors.sh
+  . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_RED}[wex] Error : ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
@@ -142,7 +142,7 @@ _wexHasRealPath() {
 }
 
 _wexMessage() {
-  . ${WEX_DIR_BASH}/colors.sh
+  . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text

@@ -11,12 +11,12 @@ hostsUpdateLocal() {
   esac
 
   # Remove old blocks
-  sed -i"${WEX_SED_I_ORIG_EXT}" -e '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
-  rm ${HOST_FILE}"${WEX_SED_I_ORIG_EXT}"
+  sudo sed -i"${WEX_SED_I_ORIG_EXT}" -e '/\#\[ wex \]\#/,/\#\[ endwex \]\#/d' ${HOST_FILE}
+  sudo rm ${HOST_FILE}"${WEX_SED_I_ORIG_EXT}"
   # Add new line if needed.
 
   # Create new block.
-  echo -e "#[ wex ]#" >> ${HOST_FILE}
-  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts >> ${HOST_FILE}
-  echo -e "\n#[ endwex ]#" >> ${HOST_FILE}
+  echo -e "#[ wex ]#" | sudo tee -a ${HOST_FILE} > /dev/null
+  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts | sudo tee -a ${HOST_FILE} > /dev/null
+  echo -e "\n#[ endwex ]#" | sudo tee -a ${HOST_FILE} > /dev/null
 }

@@ -22,5 +22,5 @@ hostsUpdate() {
   done;
 
   # Store hosts list.
-  echo -e ${HOSTS_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
+  echo -e ${HOSTS_FILE} | sudo tee ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts > /dev/null
 }

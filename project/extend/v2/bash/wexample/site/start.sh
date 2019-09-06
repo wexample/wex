@@ -77,12 +77,14 @@ siteStart() {
   # Reload sites will clean up list.
   wex sites/update
   # Add new site.
-  echo -e "\n"${DIR_SITE} >> ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  echo -e "\n"${DIR_SITE} | sudo tee -a ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites > /dev/null
+
   # Rebuild hosts
   wex hosts/update
   # Link cron files to main cron system.
   # The script are executed outside containers.
-  wex cron/reload
+  # TODO rm as we are now able to run internal crons in containers.
+  # wex cron/reload
   # Load site config
   . ${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex

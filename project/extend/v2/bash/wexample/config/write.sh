@@ -110,10 +110,10 @@ configWrite() {
   SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="${IMAGES_VERSION}
 
   # Save param file.
-  echo -e ${SITE_CONFIG_FILE} > ${WEX_WEXAMPLE_SITE_DIR_TMP}config
+  echo -e ${SITE_CONFIG_FILE} | sudo tee ${WEX_WEXAMPLE_SITE_DIR_TMP}config > /dev/null
   # In case we are on non unix system.
   wex file/convertLinesToUnix -f=./tmp/config &> /dev/null
 
   # Create docker-compose.build.yml
-  wex site/compose -c="config" > ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}
+  wex site/compose -c="config" | sudo tee ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} > /dev/null
 }

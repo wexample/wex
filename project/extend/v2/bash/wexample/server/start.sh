@@ -13,21 +13,21 @@ serverStart() {
   fi
 
   if [ ! -d ${WEX_WEXAMPLE_DIR_PROXY} ];then
-    mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}
+    sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}
   fi
 
   cd ${WEX_WEXAMPLE_DIR_PROXY}
 
-  mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}tmp
-  touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
-  touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}tmp
+  sudo touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
+  sudo touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
 
   if [ ! -f ${WEX_WEXAMPLE_DIR_PROXY}.wex ];then
-    wex site/init -s=proxy -n=wex_server -e=prod --git=false
+    sudo wex site/init -s=proxy -n=wex_server -e=prod --git=false
   fi
 
   wex site/start
 
   # Wait starting.
-  sleep 20
+  sleep 5
 }

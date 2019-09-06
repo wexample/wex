@@ -41,5 +41,5 @@ sitesUpdate() {
   cd ${DIR_CURRENT}
 
   # Store sites list.
-  echo -e ${SITES_FILE} > ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  echo -e ${SITES_FILE} | sudo tee ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites > /dev/null
 }
