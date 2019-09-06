@@ -5,6 +5,7 @@ siteStartArgs() {
     [0]='clear_cache cc "Clear all caches" false'
     [1]='containers c "Docker containers to run" false'
     [2]='only o "Stop all other running sites before" false'
+    [3]='port p "Port for accessing site, only allowed if not already defined" false'
   )
 }
 
@@ -30,18 +31,70 @@ siteStart() {
     fi
   fi
 
-  # Current site is not the server itself.
-  if [ $(wex service/used -s=proxy) == false ] && [ $(wex server/started) == false ];then
-    local CURRENT_DIR=$(realpath ./)
-    local ARGS=${WEX_ARGUMENTS}
-    # Server must be started.
-    wex server/start -n
+  local IS_PROXY_SERVER=$(wex service/used -s=proxy)
 
-    # Relaunch manually to be sure to keep given arguments
-    cd ${CURRENT_DIR}
-    wex site/start ${ARGS}
-    return
+  # Current site is not the server itself.
+  if [ ${IS_PROXY_SERVER} == false ];then
+    # Start server on the given port number.
+    _siteStartRetry() {
+      # Cache overridden vars.
+      local CURRENT_DIR=$(realpath ./)
+      local ARGS=${WEX_ARGUMENTS}
+
+      # Server must be started.
+      wex server/start -n -p=${PORT}
+
+      # Relaunch manually to be sure to keep given arguments
+      cd ${CURRENT_DIR}
+      wex site/start ${ARGS}
+    }
+
+    # The server is not running.
+    if [ $(wex server/started) == false ];then
+      _wexMessage "Starting server on port ${PORT}"
+      _siteStartRetry
+      return
+    # The server is running.
+    else
+      # Load server config.
+      . ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+      # Asked port is not the same as currently used.
+      if [ "${PORT}" != "" ] && [ "${PORT}" != "${WEX_SERVER_PORT_PUBLIC}" ];then
+        local SITES_COUNT=$(wex sites/list -c);
+        # Ignore server itself.
+        ((SITES_COUNT--))
+
+        # There is unexpected running sites.
+        if (( ${SITES_COUNT} > 0 )); then
+          _wexError "Unable to start apps on multiple ports" "Your wex server is running ${SITES_COUNT} app(s) on port ${WEX_SERVER_PORT_PUBLIC}" "Run the app on port ${WEX_SERVER_PORT_PUBLIC} or stop other apps"
+          exit
+        # Restart server with given new port number.
+        else
+          _wexMessage "Restarting server on port ${PORT}"
+          wex server/stop
+          _siteStartRetry
+          return
+        fi
+      fi
+    fi
   fi
+
+  _siteStartSuccess() {
+    . ${WEX_WEXAMPLE_SITE_CONFIG}
+    . .wex
+
+    # No message for proxy server.
+    if [ ${NAME} == ${WEX_WEXAMPLE_PROXY_CONTAINER} ];then
+      return
+    fi
+
+     _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
+
+    for DOMAIN in ${DOMAINS[@]}
+    do
+      echo "      > http://"${DOMAIN}:${WEX_SERVER_PORT_PUBLIC}
+    done;
+  }
 
   # Prepare files
   wex file/convertLinesToUnix -f=.env &> /dev/null
@@ -63,6 +116,7 @@ siteStart() {
        # rebuild everything.
        wex site/restart
      fi;
+     _siteStartSuccess
      # We don't need to continue.
      return
   fi;
@@ -121,10 +175,5 @@ siteStart() {
   # Execute server hook for global configurations.
   wex service/exec -s=proxy -sf -c=siteStarted
 
-  _wexMessage "Your site is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
-
-  for DOMAIN in ${DOMAINS[@]}
-  do
-    echo "      > http://"${DOMAIN}
-  done;
+  _siteStartSuccess
 }

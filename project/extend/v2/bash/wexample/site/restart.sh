@@ -7,6 +7,7 @@ siteRestartArgs() {
 }
 
 siteRestart() {
+  local WEX_ARGUMENTS_BKP=${WEX_ARGUMENTS}
   wex site/stop
-  wex site/start ${WEX_ARGUMENTS}
+  wex site/start ${WEX_ARGUMENTS_BKP}
 }

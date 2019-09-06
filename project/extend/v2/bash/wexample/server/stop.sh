@@ -7,7 +7,7 @@ serverStop() {
   fi
 
   # Remove temp files
-  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
-  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
-  rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
+  sudo rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+  sudo rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  sudo rm -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
 }

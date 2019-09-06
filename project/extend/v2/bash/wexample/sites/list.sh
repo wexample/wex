@@ -2,15 +2,16 @@
 
 sitesListArgs() {
   _ARGUMENTS=(
-    [0]='all a "Remove raw list without testing activity" false',
+    [0]='all a "Return raw list without testing activity" false',
+    [1]='count c "Return only number of sites found" false',
   )
 }
 
 # Return actively running sites list.
 sitesList() {
-  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-
-  SITES=()
+  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local SITES_COUNT=0;
+  local SITES=();
 
   for SITE_PATH in ${REGISTRY[@]}
   do
@@ -22,6 +23,7 @@ sitesList() {
 
       if [ "${ALL}" != '' ];then
         SITES+=($(basename ${SITE_PATH}))
+        ((SITES_COUNT++))
       else
         # Prevent duplicates
         for SITE_SEARCH in ${SITES[@]}
@@ -34,10 +36,15 @@ sitesList() {
         if [ ${EXISTS} == false ] && [ $(wex site/started -d=${SITE_PATH}) == true ];then
           . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
           SITES+=(${SITE_NAME})
+          ((SITES_COUNT++))
         fi
       fi
     fi
   done;
 
-  echo ${SITES[@]}
+  if [ "${COUNT}" == "true" ];then
+    echo ${SITES_COUNT}
+  else
+    echo ${SITES[@]}
+  fi
 }
