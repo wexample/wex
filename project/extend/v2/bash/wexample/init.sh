@@ -20,3 +20,23 @@ wexampleSiteInitLocalVariables() {
     touch ${WEXAMPLE_SITE_LOCAL_VAR_STORAGE};
   fi
 }
+
+# User should be sudo or member to the "docker" group.
+# Prevent to check twice.
+if [ -z ${WEX_DOCKER_USER_RIGHTS_VERIFIED} ];then
+  WEX_DOCKER_USER_RIGHTS_VERIFIED=true
+
+  # User is not sudo
+  if [[ ${EUID} > 0 ]];then
+    # User should have right to run Docker
+    WEX_USERNAME=$(whoami)
+    WEX_GROUP=docker
+
+    if [[ ! $(id -nG "${WEX_USERNAME}" | grep -c "${WEX_GROUP}") ]]; then
+      WEX_DOCKER_USER_RIGHTS_VERIFIED=false
+      _wexError "${WEX_USERNAME} does not belong to \"${WEX_GROUP}\" and is not sudo" "You may fix it with : sudo usermod -a -G ${WEX_GROUP} ${WEX_USERNAME}" "! Don't forget to restart your machine to make changes takes effect !"
+    fi
+  fi
+
+  export WEX_DOCKER_USER_RIGHTS_VERIFIED
+fi
