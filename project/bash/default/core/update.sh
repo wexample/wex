@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 coreUpdateArgs() {
+  _AS_NON_SUDO=false
   _DESCRIPTION="Update core"
   _ARGUMENTS=(
     'branch b "Switch to specified branch, by default stay on current one" false'
