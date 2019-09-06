@@ -134,11 +134,11 @@ EOF
 
   wex config/write
 
-  # Install only
-  wex service/exec -c=install
-  # Init (also on site publication)
-  wex service/exec -c=init
+  # Init
+  wex hook/exec -c=init
 
   # Status
   ${RENDER_BAR} -p=100 -s="Done !" -nl
+
+  _wexMessage "Your site is initialized as ${SITE_NAME}" "You may start install process using :" "wex site/install"
 }
