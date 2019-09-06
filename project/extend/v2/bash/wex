@@ -208,8 +208,6 @@ wex() {
   # Include loaded file
   . "${WEX_SCRIPT_FILE}"
 
-  local _AS_SUDO=true
-  local _AS_NON_SUDO=true
   # Init empty var.
   _ARGUMENTS=()
   # Catch arguments
@@ -220,20 +218,6 @@ wex() {
     # Execute command
     ${ARGS_METHOD}
   fi;
-
-  # User is not sudo.
-  if [[ ${EUID} > 0 ]];then
-    if [[ ${_AS_NON_SUDO} == false ]];then
-      _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", try to execute \"sudo su\" then retry, or run : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
-      exit;
-    fi
-  # User is sudo.
-  else
-    if [[ ${_AS_SUDO} == false ]];then
-       _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
-       exit;
-    fi
-  fi
 
   # Add extra parameters at end of array
   _ARGUMENTS+=(
