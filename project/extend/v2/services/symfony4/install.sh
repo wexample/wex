@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO Not tested
 symfony4Install() {
   . .env
   . .wex
@@ -11,8 +10,6 @@ symfony4Install() {
     wex site/start
   fi
 
-  wex site/perms
-
   # Composer install / update.
   local ACTION="update"
   if [ "${SITE_ENV}" = "prod" ];then
@@ -20,16 +17,21 @@ symfony4Install() {
   fi;
   wex site/exec -l -c="composer "${ACTION}
 
-  # NPM
+  # Yarn
   local OPTION=""
   if [ "${SITE_ENV}" = "prod" ];then
     OPTION="--production"
   fi;
-  wex site/exec -l -c="npm install "${OPTION}
+  wex site/exec -l -c="yarn install "${OPTION}
 
   # Encore.
   if [ "${SITE_ENV}" = "dev" ] && [ $(wex site/exec -c="wex file/exists -f=/var/www/html/project/node_modules/.bin/encore") == true ];then
     wex site/exec -l -c="yarn run encore dev"
+  fi
+
+  # Copy .env file.
+  if [ ! -f ./project/.env ];then
+    cp ./project/.env.example ./project/.env
   fi
 
   # Fill up Symfony .env file with db URL
@@ -39,6 +41,7 @@ symfony4Install() {
   wex cli/exec -c="assets:install --symlink public"
 
   # CKEditor install
+  # TODO modularize..
   if [ $(wex dir/exists -d="project/vendor/friendsofsymfony/ckeditor-bundle") == true ];then
     wex cli/exec -c="ckeditor:install"
   fi
@@ -46,8 +49,13 @@ symfony4Install() {
   # Rebuild and clear caches.
   wex site/build
 
+  # Give site perms
+  wex site/perms
+
   # Stop site if not already running.
   if [ ${STARTED} != true ];then
     wex site/stop
   fi
+
+  wex site/exec -l -c="php bin/console doctrine:schema:update --force"
 }
