@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-symfony4Build() {
+nodeBuild() {
   . .env
 
-  ENV_NAME="production"
-  if [ "${SITE_ENV}" != "prod" ];then
-    ENV_NAME="dev"
-  fi;
+  if [ -f ./package.json ];then
+    ENV_NAME="production"
+    if [ "${SITE_ENV}" != "prod" ];then
+      ENV_NAME="dev"
+    fi;
 
-  # Assets.
-  wex site/exec -l -c="npm run ${ENV_NAME}"
+    # Assets.
+    wex site/exec -l -c="npm run ${ENV_NAME}"
+  fi
 }

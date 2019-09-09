@@ -9,12 +9,15 @@ nodeInstall() {
     wex site/start
   fi
 
-  # Yarn
-  local OPTION=""
-  if [ "${SITE_ENV}" = "prod" ];then
-    OPTION="--production"
-  fi;
-  wex site/exec -l -c="yarn install "${OPTION}
+  if [ -f ./package.json ];then
+    # Yarn
+    local OPTION=""
+    if [ "${SITE_ENV}" = "prod" ];then
+      OPTION="--production"
+    fi;
+
+    wex site/exec -l -c="yarn install "${OPTION}
+  fi
 
   # Rebuild and clear caches.
   wex site/build
