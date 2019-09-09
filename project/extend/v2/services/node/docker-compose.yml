@@ -4,8 +4,20 @@ services:
     node:
         container_name: '${SITE_NAME}_node'
         image: 'wexample/node:${WEX_IMAGES_VERSION}'
-        networks:
-          - tmp_wex_net
+        stdin_open: true
+        tty: true
+        restart: always
+        expose:
+            - 80
+        environment:
+            - WEX_SITE_ENV=${SITE_ENV}
+            - VIRTUAL_HOST=${DOMAINS}
+            - VIRTUAL_PORT=80
         volumes:
+            # Nginx
+            - ${CONF_WEB_NGINX}:/etc/nginx/sites-available/default
             # Site folder
             - ${SITE_PATH_ROOT}:/var/www/html
+        networks:
+          - tmp_wex_net
+
