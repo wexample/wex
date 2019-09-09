@@ -8,7 +8,7 @@ _wexTestAssertEqual() {
     _wexTestResultError "Assertions are not equal"
     _wexTestResultLine "Expected : ${EXPECTED_VALUE}"
     _wexTestResultLine "Got : ${TEST_VARIABLE}"
-    exit
+    exit 1
   else
     _wexTestResultSuccess "Assertions are equal"
     _wexTestResultLine "Value : ${EXPECTED_VALUE}"
