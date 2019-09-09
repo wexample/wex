@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-symfony4Install() {
+nodeInstall() {
   . .env
 
   local STARTED=$(wex site/started)
