@@ -5,7 +5,7 @@ services:
         container_name: '${SITE_NAME_INTERNAL}_phpmyadmin'
         image: phpmyadmin/phpmyadmin:4.7.9-1
         environment:
-          - PMA_HOST=${SITE_NAME_INTERNAL}_mysql
+          - PMA_HOST=${SITE_NAME}_mysql
         restart: always
         networks:
           - default

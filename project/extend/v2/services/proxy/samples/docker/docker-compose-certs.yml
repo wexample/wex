@@ -4,4 +4,4 @@
         # DEBUG environment:
         #  - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
         volumes_from:
-          - ${SITE_NAME_INTERNAL}_proxy
+          - ${SITE_NAME}_proxy

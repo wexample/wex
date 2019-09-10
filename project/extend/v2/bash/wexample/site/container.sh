@@ -18,5 +18,5 @@ siteContainer() {
     fi
   fi
 
-  echo ${SITE_NAME}_${CONTAINER}
+  echo ${SITE_NAME_INTERNAL}_${CONTAINER}
 }

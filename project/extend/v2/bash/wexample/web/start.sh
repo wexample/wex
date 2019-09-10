@@ -4,5 +4,5 @@ webStart() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
   local CONTAINER=$(wex site/container -c="")
 
-  docker start ${SITE_NAME}_${CONTAINER}
+  docker start ${SITE_NAME_INTERNAL}_${CONTAINER}
 }

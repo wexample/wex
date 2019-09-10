@@ -11,10 +11,11 @@ ftpUserAddArgs() {
 ftpUserAdd() {
   # Load site name.
   . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . .wex
 
   local PASS_LOCATION=/etc/pure-ftpd/passwd/wex.passwd
 
   docker exec -ti wex_ftp touch ${PASS_LOCATION}
   # Exec into container
-  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${SITE_NAME}_${FTP_USERNAME} -f ${PASS_LOCATION} -m -u ftpuser -d /var/www/${SITE_NAME}/${DIRECTORY}"
+  docker exec -ti wex_ftp /bin/bash -c "(echo ${PASSWORD}; echo ${PASSWORD}) |  pure-pw useradd ${SITE_NAME_INTERNAL}_${FTP_USERNAME} -f ${PASS_LOCATION} -m -u ftpuser -d /var/www/${SITE_ENV}/${SITE_NAME}/${DIRECTORY}"
 }
