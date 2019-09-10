@@ -2,7 +2,7 @@ version: '2'
 
 services:
     sonarqube:
-        container_name: '${SITE_NAME}_sonarqube'
+        container_name: '${SITE_NAME_INTERNAL}_sonarqube'
         image: sonarqube:${SONARQUBE_VERSION}
         stdin_open: true
         tty: true

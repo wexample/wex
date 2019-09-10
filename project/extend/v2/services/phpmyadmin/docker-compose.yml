@@ -2,10 +2,10 @@ version: '2'
 
 services:
     phpmyadmin:
-        container_name: '${SITE_NAME}_phpmyadmin'
+        container_name: '${SITE_NAME_INTERNAL}_phpmyadmin'
         image: phpmyadmin/phpmyadmin:4.7.9-1
         environment:
-          - PMA_HOST=${SITE_NAME}_mysql
+          - PMA_HOST=${SITE_NAME_INTERNAL}_mysql
         restart: always
         networks:
           - default

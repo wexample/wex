@@ -2,7 +2,7 @@ version: '2'
 
 services:
     postgres:
-        container_name: '${SITE_NAME}_postgres'
+        container_name: '${SITE_NAME_INTERNAL}_postgres'
         image: postgres:11.1
         restart: always
         environment:

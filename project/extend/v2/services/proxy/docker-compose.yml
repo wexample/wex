@@ -3,7 +3,7 @@ version: '2'
 services:
   proxy:
     image: jwilder/nginx-proxy:0.7.0
-    container_name: ${SITE_NAME}
+    container_name: ${SITE_NAME_INTERNAL}
     volumes:
       # Nginx configuration
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -21,7 +21,7 @@ services:
 
   certs:
     image: jrcs/letsencrypt-nginx-proxy-companion:v1.8.1
-    container_name: ${SITE_NAME}_certs
+    container_name: ${SITE_NAME_INTERNAL}_certs
     volumes:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -29,7 +29,7 @@ services:
 # TODO Run it in production only, if expected by at least one app
 #  ftp:
 #    image: wexample/ftp
-#    container_name: ${SITE_NAME}_ftp
+#    container_name: ${SITE_NAME_INTERNAL}_ftp
 #    environment:
 #      - PUBLICHOST=${SERVER_IP}
 #      - PORTS_RANGE=30000:30059

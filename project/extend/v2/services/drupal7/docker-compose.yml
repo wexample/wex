@@ -2,7 +2,7 @@ version: '2'
 
 services:
     drupal7:
-        container_name: '${SITE_NAME}_drupal7'
+        container_name: '${SITE_NAME_INTERNAL}_drupal7'
         image: 'wexample/drupal7'
         stdin_open: true
         tty: true

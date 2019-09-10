@@ -2,7 +2,7 @@ version: '2'
 
 services:
     laravel5:
-        container_name: '${SITE_NAME}_laravel5'
+        container_name: '${SITE_NAME_INTERNAL}_laravel5'
         image: 'wexample/laravel5:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true

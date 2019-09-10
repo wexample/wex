@@ -2,7 +2,7 @@ version: '2'
 
 services:
     web:
-        container_name: '${SITE_NAME}_web'
+        container_name: '${SITE_NAME_INTERNAL}_web'
         image: 'wexample/php7:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true

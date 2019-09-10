@@ -2,7 +2,7 @@ version: '2'
 
 services:
     symfony4:
-        container_name: '${SITE_NAME}_symfony4'
+        container_name: '${SITE_NAME_INTERNAL}_symfony4'
         image: 'wexample/symfony4:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true

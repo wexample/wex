@@ -2,7 +2,7 @@ version: '2'
 
 services:
     node:
-        container_name: '${SITE_NAME}_node'
+        container_name: '${SITE_NAME_INTERNAL}_node'
         image: 'wexample/node:${WEX_IMAGES_VERSION}'
         stdin_open: true
         tty: true

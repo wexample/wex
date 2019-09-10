@@ -2,7 +2,7 @@ version: '2'
 
 services:
     mailserver:
-      container_name: ${SITE_NAME}_mailserver
+      container_name: ${SITE_NAME_INTERNAL}_mailserver
       restart: always
       image: tvial/docker-mailserver:release-v6.0.0
       hostname: mail

@@ -2,7 +2,7 @@ version: '2'
 
 services:
     watcher:
-        container_name: '${SITE_NAME}_watcher'
+        container_name: '${SITE_NAME_INTERNAL}_watcher'
         image: 'wexample/watcher:${WEX_IMAGES_VERSION}'
         networks:
           - tmp_wex_net

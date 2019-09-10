@@ -2,7 +2,7 @@ version: '2'
 
 services:
     gitlab:
-      container_name: ${SITE_NAME}_gitlab
+      container_name: ${SITE_NAME_INTERNAL}_gitlab
       restart: always
       image: gitlab/gitlab-ce:${GITLAB_VERSION}
       hostname: ${DOMAIN_MAIN}

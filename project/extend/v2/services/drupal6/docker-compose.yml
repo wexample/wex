@@ -2,7 +2,7 @@ version: '2'
 
 services:
     drupal6:
-        container_name: '${SITE_NAME}_drupal6'
+        container_name: '${SITE_NAME_INTERNAL}_drupal6'
         image: 'wexample/drupal6'
         stdin_open: true
         tty: true

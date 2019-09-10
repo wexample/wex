@@ -2,7 +2,7 @@ version: '2'
 
 services:
     moodle:
-        container_name: '${SITE_NAME}_moodle'
+        container_name: '${SITE_NAME_INTERNAL}_moodle'
         image: wexample/moodle:${WEX_IMAGES_VERSION}
         stdin_open: true
         tty: true

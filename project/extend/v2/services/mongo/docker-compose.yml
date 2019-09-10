@@ -2,7 +2,7 @@ version: '2'
 
 services:
     mongo:
-        container_name: '${SITE_NAME}_mongo'
+        container_name: '${SITE_NAME_INTERNAL}_mongo'
         image: 'mongo:3.7.5-jessie'
         restart: always
         volumes:

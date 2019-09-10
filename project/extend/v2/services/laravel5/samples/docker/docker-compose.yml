@@ -2,4 +2,4 @@
             file: ${WEX_COMPOSE_YML_LARAVEL5}
             service: laravel5
         depends_on:
-          - ${SITE_NAME}_mysql
+          - ${SITE_NAME_INTERNAL}_mysql

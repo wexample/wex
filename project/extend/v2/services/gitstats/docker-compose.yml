@@ -2,7 +2,7 @@ version: '2'
 
 services:
     gitstats:
-        container_name: ${SITE_NAME}_gitstats
+        container_name: ${SITE_NAME_INTERNAL}_gitstats
         image: wexample/gitstats:latest
         stdin_open: true
         tty: true

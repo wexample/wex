@@ -2,13 +2,13 @@ version: '2'
 
 services:
     nextcloud:
-        container_name: '${SITE_NAME}_nextcloud'
+        container_name: '${SITE_NAME_INTERNAL}_nextcloud'
         image: nextcloud:${NEXTCLOUD_VERSION}
         restart: always
         environment:
           - VIRTUAL_HOST=${SITE_NAME}.wex
-          - MYSQL_HOST=${SITE_NAME}_mariadb
-          - MYSQL_DATABASE=${SITE_NAME}
+          - MYSQL_HOST=${SITE_NAME_INTERNAL}_mariadb
+          - MYSQL_DATABASE=${SITE_NAME_INTERNAL}
           - MYSQL_USER=${MYSQL_DB_USER}
           - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
         volumes:
