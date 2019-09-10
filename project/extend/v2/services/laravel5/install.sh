@@ -35,6 +35,7 @@ laravel5Install() {
   fi
 
   # Fill up laravel file with db URL
+  # TODO Don't work properly
   wex config/setValue -f=./project/.env -s="=" -k=APP_KEY -v="$(wex string/hash)"
   wex config/setValue -f=./project/.env -s="=" -k=DB_HOST -v="${NAME}_mysql"
   wex config/setValue -f=./project/.env -s="=" -k=DB_PORT -v=3306
