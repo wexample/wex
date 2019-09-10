@@ -44,7 +44,7 @@ dbRestore() {
   docker cp ./tmp/mysql.cnf ${SITE_NAME}_mysql:./tmp/mysql.cnf
 
   local LOGIN=$(wex mysql/loginCommand)
-  docker exec ${SITE_NAME}_mysql /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
+  docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
 
   # If file was a zip, .sql file was temporary.
   if [[ ${DUMP_FILE_ZIP_BASE} =~ \.zip$ ]];then

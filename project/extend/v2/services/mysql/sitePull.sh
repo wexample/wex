@@ -3,5 +3,5 @@
 mysqlSitePull() {
   . .wex
   # Need
-  docker exec ${NAME}_mysql chown -R mysql:mysql /var/lib/mysql
+  docker exec ${SITE_NAME_INTERNAL}_mysql chown -R mysql:mysql /var/lib/mysql
 }

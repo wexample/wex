@@ -5,13 +5,14 @@ mysqlConfig() {
   wex service/templates -s=mysql -e=cnf
 
   . .wex
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Load framework settings
   # Old feature : wex framework/settings -d=./project/
 
   local ACCESS=($(mysqlConfigAccess))
   local MYSQL_CONFIG=''
-  local HOST=${NAME}_mysql
+  local HOST=${SITE_NAME_INTERNAL}_mysql
   local USER=root
   local PASSWORD="thisIsAReallyNotSecurePassword!"
 
@@ -39,9 +40,10 @@ mysqlConfigAccess() {
   local MYSQL_PASSWORD='thisIsAReallyNotSecurePassword!'
 
   . .wex
+  . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Host
-  echo ${NAME}_mysql
+  echo ${SITE_NAME_INTERNAL}_mysql
   # Port
   echo 3306
   # Name
