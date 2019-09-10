@@ -51,7 +51,7 @@ siteStart() {
 
     # The server is not running.
     if [ $(wex server/started) == false ];then
-      _wexMessage "Starting server on port ${PORT}"
+      _wexMessage "Starting wex server"
       _siteStartRetry
       return
     # The server is running.
@@ -70,7 +70,7 @@ siteStart() {
           exit
         # Restart server with given new port number.
         else
-          _wexMessage "Restarting server on port ${PORT}"
+          _wexMessage "Restarting wex server on port ${PORT}"
           wex server/stop
           _siteStartRetry
           return
