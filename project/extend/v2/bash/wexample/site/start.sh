@@ -90,6 +90,7 @@ siteStart() {
 
      _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
 
+    local DOMAINS=$(wex site/domains)
     for DOMAIN in ${DOMAINS[@]}
     do
       echo "      > http://"${DOMAIN}:${WEX_SERVER_PORT_PUBLIC}
