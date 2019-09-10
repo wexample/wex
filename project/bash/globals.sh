@@ -3,8 +3,10 @@
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
+# /opt can't be mounted on macos, using Users instead.
+WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)
 
-export WEX_CORE_VERSION=3.1
+export WEX_CORE_VERSION=3.2
 export WEX_VERSION_FALLBACK=2.0.0
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
@@ -16,6 +18,7 @@ export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
+export WEX_WEXAMPLE_DIR_PROXY
 # Used by sed to store a local temp backup file before removing it.
 export WEX_SED_I_ORIG_EXT=".orig"
 

@@ -2,7 +2,7 @@
 
 coreUpdateArgs() {
   _AS_NON_SUDO=false
-  _DESCRIPTION="Update core"
+  _DESCRIPTION="Update core and proxy server. Proxy may be restarted."
   _ARGUMENTS=(
     'branch b "Switch to specified branch, by default stay on current one" false'
   )
@@ -33,6 +33,10 @@ coreUpdate() {
   unset WEX_INIT
 
   wex core/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
+
+  # Update proxy server
+  cd ${WEX_WEXAMPLE_DIR_PROXY}
+  wex app/update
 
   _wexMessage "wex up-to-date at v"${WEX_VERSION_NEW}
 }

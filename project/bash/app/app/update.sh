@@ -10,12 +10,18 @@ appUpdateArgs() {
 appUpdate() {
   unset WEX_VERSION
 
-  _wexAppVersion
+  local VERSION_FROM=$(_wexAppVersion)
+  local VERSION_TO=$(wex core/version)
+  local STARTED=$(wex site/started)
 
-  wex core/migrate --from $(_wexAppVersion) --to $(wex core/version) --command app
+  wex core/migrate --from ${VERSION_FROM} --to ${VERSION_TO} --command app
 
   if [ "${NO_SAVE}" == "" ];then
     # Save new version
-    wex config/setValue -f=.wex -k=WEX_VERSION -s="=" -v=$(wex core/version)
+    wex config/setValue -f=.wex -k=WEX_VERSION -s="=" -v=${VERSION_TO}
+  fi
+
+  if [ ${STARTED} == true ];then
+    wex site/restart
   fi
 }
