@@ -15,8 +15,8 @@ requirementsList() {
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(wex package/exists -n brew) "brew\t\t" "Package manager"
   _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Containers manager"
   _requirementsListRow $(wex package/exists -n git) "git\t\t" "Version control"
-  _requirementsListRow $(wex package/exists -n sudo) "sudo\t\t" "Super user access"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(_wexHasRealPath == "true") "realpath\t" "Base bash method"
+  _requirementsListRow $(wex package/exists -n sudo) "sudo\t\t" "Super user access"
   _requirementsListRow $(wex package/exists -n zip) "zip\t\t" "Used for backups management"
 }
 
