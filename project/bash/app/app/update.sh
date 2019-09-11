@@ -20,8 +20,4 @@ appUpdate() {
     # Save new version
     wex config/setValue -f=.wex -k=WEX_VERSION -s="=" -v=${VERSION_TO}
   fi
-
-  if [ ${STARTED} == true ];then
-    wex site/restart
-  fi
 }
