@@ -8,10 +8,11 @@ requirementsInstall() {
   case "$(wex system/osName)" in
     "linux")
       wex package/update
+      # First sudo package.
+      apt-get install sudo -yq
       sudo apt-get install \
         ansible \
         git \
-        sudo \
         zip \
         -yq
       wex docker/install
