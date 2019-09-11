@@ -25,7 +25,7 @@ symfony4Install() {
   wex site/exec -l -c="yarn install "${OPTION}
 
   # Encore.
-  if [ "${SITE_ENV}" = "dev" ] && [ $(wex site/exec -c="wex file/exists -f=/var/www/html/project/node_modules/.bin/encore") == true ];then
+  if [ "${SITE_ENV}" = "dev" ] && [ -f ./project/node_modules/.bin/encore ];then
     wex site/exec -l -c="yarn run encore dev"
   fi
 
