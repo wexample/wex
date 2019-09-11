@@ -9,7 +9,7 @@ nodeInstall() {
     wex site/start
   fi
 
-  if [ -f ./package.json ];then
+  if [ -f ./project/package.json ];then
     # Yarn
     local OPTION=""
     if [ "${SITE_ENV}" = "prod" ];then

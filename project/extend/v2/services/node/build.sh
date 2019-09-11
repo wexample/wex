@@ -3,7 +3,7 @@
 nodeBuild() {
   . .env
 
-  if [ -f ./package.json ];then
+  if [ -f ./project/package.json ];then
     ENV_NAME="production"
     if [ "${SITE_ENV}" != "prod" ];then
       ENV_NAME="dev"
