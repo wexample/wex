@@ -10,7 +10,7 @@ packageUpdate() {
     WEX_PACKAGES_UPDATED=true
     case "$(wex system/os)" in
       "linux")
-        apt-get install git -yq
+        apt-get update
         ;;
     esac
   fi
