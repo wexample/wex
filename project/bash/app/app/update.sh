@@ -14,7 +14,7 @@ appUpdate() {
   local VERSION_TO=$(wex core/version)
   local STARTED=$(wex site/started)
 
-  wex core/migrate --from ${VERSION_FROM} --to ${VERSION_TO} --command app
+  wex core::migration/exec --from ${VERSION_FROM} --to ${VERSION_TO} --command app
 
   if [ "${NO_SAVE}" == "" ];then
     # Save new version

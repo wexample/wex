@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-coreMigrateArgs() {
+migrationExecArgs() {
   _DESCRIPTION="Execute migrations"
   _ARGUMENTS=(
     'from f "From version" true'
@@ -9,7 +9,7 @@ coreMigrateArgs() {
   )
 }
 
-coreMigrate() {
+migrationExec() {
   # Stop if no migration needed.
   if [ "${FROM}" == "${TO}" ];then
     return
