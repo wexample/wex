@@ -34,9 +34,12 @@ coreUpdate() {
 
   wex core/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
 
-  # Update proxy server
-  cd ${WEX_WEXAMPLE_DIR_PROXY}
-  wex app/update
+  # Proxy server exists
+  if [ -d ${WEX_WEXAMPLE_DIR_PROXY} ];then
+    # Update proxy server
+    cd ${WEX_WEXAMPLE_DIR_PROXY}
+    wex app/update
+  fi
 
   _wexMessage "wex up-to-date at v"${WEX_VERSION_NEW}
 }
