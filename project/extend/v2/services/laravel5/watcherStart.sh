@@ -10,7 +10,7 @@ laravel5WatcherStart() {
     cd ./project
     ${WATCH}
   else
-    _wexMessage "To improve performance an compatibility you may install yarn to your host machine" "It will be as file watcher"
+    _wexMessage "To improve performance an compatibility you may install yarn to your host machine" "It will be used as file watcher"
     wex site/exec -l -c="${WATCH}"
   fi
 }
