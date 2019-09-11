@@ -32,7 +32,7 @@ coreUpdate() {
   # Allow wex to init again.
   unset WEX_INIT
 
-  wex core/migrate --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
+  wex core::migration/exec --from ${WEX_VERSION_FROM} --to ${WEX_VERSION_NEW} --command core
 
   # Proxy server exists
   if [ -d ${WEX_WEXAMPLE_DIR_PROXY} ];then
