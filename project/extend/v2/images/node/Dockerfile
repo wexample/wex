@@ -17,6 +17,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   npm \
   yarn \
   -yqq && \
+  chmod +x /docker-entrypoint-node.sh && \
   /etc/init.d/nginx start
 
 ENTRYPOINT ["/docker-entrypoint-node.sh"]
