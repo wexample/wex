@@ -36,10 +36,10 @@ laravel5Install() {
 
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  # TODO php artisan key:generate
+  wex site/exec -l -c="php artisan key:generate"
+
   # Fill up laravel file with db URL
   # TODO Don't work properly
-  wex config/setValue -f=./project/.env -s="=" -k=APP_KEY -v="$(wex string/hash)"
   wex config/setValue -f=./project/.env -s="=" -k=DB_HOST -v="${SITE_NAME_INTERNAL}_mysql"
   wex config/setValue -f=./project/.env -s="=" -k=DB_PORT -v=3306
   wex config/setValue -f=./project/.env -s="=" -k=DB_DATABASE -v=${NAME}
