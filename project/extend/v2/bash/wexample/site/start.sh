@@ -24,6 +24,11 @@ siteStart() {
       select SITE_ENV in ${WEX_WEXAMPLE_ENVIRONMENTS[@]};
       do
         echo 'SITE_ENV='${SITE_ENV} > .env
+        . .wex
+        # Set SITE_NAME_INTERNAL equivalent.
+        # Used by docker-compose to isolate docker services with the same name,
+        # useful when running two instance of the same app (eg: dev and prod).
+        echo 'COMPOSE_PROJECT_NAME='${NAME}_${SITE_ENV} >> .env
         break
       done
     else
