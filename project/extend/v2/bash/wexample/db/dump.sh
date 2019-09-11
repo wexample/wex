@@ -8,6 +8,7 @@ dbDumpArgs() {
     [3]='environment e "Remote environment name" false'
     [4]='pull p "Pull remote dump locally" false'
     [5]='tag t "Tag name append as a suffix" false'
+    [6]='filename f "Dump file name" false'
   )
 }
 
@@ -23,8 +24,18 @@ dbDump() {
 
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-  # Build dump name.
-  local DUMP_FILE_NAME=${SITE_ENV}'-'${MYSQL_DB_NAME}"-"$(wex date/timeFileName)${TAG}".sql"
+  # Filename is specified
+  if [ "${FILENAME}" != "" ];then
+    local DUMP_FILE_NAME=${FILENAME}
+  else
+    # Build dump name.
+    local DUMP_FILE_NAME=${SITE_ENV}'-'${MYSQL_DB_NAME}"-"$(wex date/timeFileName)
+    if [ "${TAG}" != "" ];then
+      DUMP_FILE_NAME+="-"${TAG}
+    fi
+    DUMP_FILE_NAME+=".sql"
+  fi
+
   local DUMP_FULL_PATH="./mysql/dumps/"${DUMP_FILE_NAME}
 
   # Copy mysql configuration.

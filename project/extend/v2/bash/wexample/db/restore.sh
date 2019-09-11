@@ -2,8 +2,8 @@
 
 dbRestoreArgs() {
   _ARGUMENTS=(
-  [0]='dump d "Dump file to import, in the dumps folder only, asked if missing" false'
-  [1]='environment e "Remote environment name" false'
+    [0]='dump d "Dump file to import, in the dumps folder only, asked if missing" false'
+    [1]='environment e "Remote environment name" false'
   )
 }
 
@@ -41,7 +41,7 @@ dbRestore() {
   fi;
 
   # Copy mysql configuration.
-  docker cp ./tmp/mysql.cnf ${SITE_NAME}_mysql:./tmp/mysql.cnf
+  docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_mysql:./tmp/mysql.cnf
 
   local LOGIN=$(wex mysql/loginCommand)
   docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
