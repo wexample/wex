@@ -7,12 +7,10 @@ siteComposeArgs() {
 }
 
 siteCompose() {
-
   wex config/load
 
   # Load expected env file.
   local SITE_ENV=$(wex site/env)
-
   local SERVICES=($(ls ${WEX_DIR_ROOT}"services"))
 
   # Iterate through array using a counter
