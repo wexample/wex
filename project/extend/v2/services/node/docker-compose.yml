@@ -11,7 +11,7 @@ services:
             - 80
         environment:
             - WEX_SITE_ENV=${SITE_ENV}
-            - VIRTUAL_HOST=${DOMAINS}
+            - VIRTUAL_HOST=${DOMAIN_MAIN}
             - VIRTUAL_PORT=80
         volumes:
             # Nginx
