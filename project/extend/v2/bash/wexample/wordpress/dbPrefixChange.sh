@@ -27,7 +27,7 @@ wordpressDbPrefixChange() {
 
   for NAME in ${NAMES[@]}
   do
-    local QUERY="UPDATE usermeta SET meta_key = '${NAME:${PREFIX_LENGTH}}' WHERE umeta_id = '${IDS[${COUNT}]}'"
+    local QUERY="UPDATE ${NEW_PREFIX}usermeta SET meta_key = '${NAME:${PREFIX_LENGTH}}' WHERE umeta_id = '${IDS[${COUNT}]}'"
     wex db/exec -c="${QUERY}"
     (( COUNT++ ))
   done
