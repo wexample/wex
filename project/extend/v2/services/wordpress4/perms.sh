@@ -2,6 +2,6 @@
 
 wordpress4Perms() {
   # Allow rewriting by app itself.
-  wex site/exec -l -c="chown www-data:www-data .htaccess"
-  wex site/exec -l -c="chmod 755 .htaccess"
+  wex site/exec -c="chown -R www-data:www-data /var/www/html/project"
+  wex site/exec -c="chmod -R 755 /var/www/html/project"
 }
