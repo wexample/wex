@@ -3,3 +3,6 @@
 /sonarqube/data/*
 /sonarqube/extensions/*
 /sonarqube/logs/*
+
+# Sonarqube
+.scannerwork
