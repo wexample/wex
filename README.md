@@ -68,7 +68,7 @@ wex watcher/start
     
 # Uninstalling
 
-Want to ge rid of the `wex` commands ? All right.
+Want to get rid of the `wex` commands ? All right.
 
     wex core/uninstall
     
