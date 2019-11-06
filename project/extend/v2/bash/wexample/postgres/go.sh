@@ -2,5 +2,5 @@
 
 postgresGo() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
-  docker exec -it ${SITE_NAME_INTERNAL}_mysql sh -c "psql $(wex mysql/loginCommand)"
+  docker exec -it ${SITE_NAME_INTERNAL}_postgres sh -c "psql ${SITE_NAME}"
 }
