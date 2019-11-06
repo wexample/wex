@@ -13,4 +13,6 @@ wordpress4Started() {
     # Update core.
     wex wordpress/changeCore -v=${WP_CORE_VERSION}
   fi
+
+  echo "WP_CORE_VERSION=4.9.5" >> .wex
 }
