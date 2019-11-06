@@ -297,7 +297,7 @@ if [ -z "${WEX_INIT:+x}" ];then
         exit
       fi;
       # Execute function with all parameters.
-      eval ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
+      ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
     fi;
   }
 fi;
