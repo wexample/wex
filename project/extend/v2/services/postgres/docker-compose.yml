@@ -3,7 +3,7 @@ version: '2'
 services:
     postgres:
         container_name: '${SITE_NAME_INTERNAL}_postgres'
-        image: postgres:11.1
+        image: postgres:${POSTGRES_VERSION}
         restart: always
         environment:
           - POSTGRES_DB=${POSTGRES_DB_NAME}
@@ -12,5 +12,6 @@ services:
           - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
           - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql/data
+          - ${SITE_PATH_ROOT}/postgres/dumps:/var/www/dumps
         networks:
           - tmp_wex_net

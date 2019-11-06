@@ -12,9 +12,9 @@ mysqlConfig() {
 
   local ACCESS=($(mysqlConfigAccess))
   local MYSQL_CONFIG=''
-  local HOST=${NAME}_${SITE_ENV}_mysql
-  local USER=root
-  local PASSWORD="thisIsAReallyNotSecurePassword!"
+  #local HOST=${NAME}_${SITE_ENV}_mysql
+  #local USER=root
+  #local PASSWORD="thisIsAReallyNotSecurePassword!"
 
   MYSQL_CONFIG+="\nMYSQL_DB_HOST="${ACCESS[0]}
   MYSQL_CONFIG+="\nMYSQL_DB_PORT="${ACCESS[1]}
@@ -27,6 +27,7 @@ mysqlConfig() {
   # Create connexion file info
   local DB_CONNECTION_FILE=./tmp/mysql.cnf
 
+  chmod 755 ${DB_CONNECTION_FILE}
   echo '[client]' > ${DB_CONNECTION_FILE}
   echo 'user = "'${ACCESS[3]}'"' >> ${DB_CONNECTION_FILE}
   echo 'password = "'${ACCESS[4]}'"' >> ${DB_CONNECTION_FILE}
