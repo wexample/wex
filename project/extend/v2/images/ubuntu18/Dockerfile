@@ -1,9 +1,7 @@
-FROM ubuntu:18.10
+FROM ubuntu:18.04
 
 LABEL authors="wexample <contact@wexample.com>"
 
-# Copy wex scripts
-COPY ./ /opt/wexample/
 # Copy entrypoint.
 COPY ./v2/images/ubuntu18/entrypoint.sh /docker-entrypoint-ubuntu18.sh
 
@@ -29,7 +27,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     rm /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     touch /var/default.cron && \
-    bash /opt/wexample/project/bash/default/_installLocal.sh && \
     chmod +x /docker-entrypoint-ubuntu18.sh && \
     rm -rf /var/lib/apt/lists/*
 
