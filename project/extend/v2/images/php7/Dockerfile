@@ -18,16 +18,16 @@ RUN apt-get update -yqq && \
   memcached \
   mysql-client \
   nano \
-  php-memcache \
-  php-memcached \
-  php-mbstring \
-  php-zip \
+  php-curl \
   php-gd \
   php-imagick \
-  php-xml \
+  php-mbstring \
+  php-memcache \
+  php-memcached \
   php-mysql \
-  php-curl \
   php-xdebug \
+  php-xml \
+  php-zip \
   php7.3 \
   php7.3-apcu \
   php7.3-intl \

@@ -18,6 +18,7 @@ RUN apt-get update -yqq && apt-get install apache2 -yqq && \
     a2enmod rewrite && \
     a2enmod ssl && \
     a2enmod headers && \
+    a2enmod expires && \
     chmod +x /docker-entrypoint-webserver.sh && \
     rm -rf /var/lib/apt/lists/*
 
