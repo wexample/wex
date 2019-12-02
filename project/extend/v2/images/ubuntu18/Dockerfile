@@ -24,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     git \
     gnupg2 \
     lsb-release \
-    wget
+    wget \
     tzdata \
     -yqq && \
     echo "Europe/Paris" > /etc/timezone && \
