@@ -33,7 +33,7 @@ RUN apt-get update -yqq && \
   php7.3-intl \
   sendmail \
   -yqq && \
-  bash wex composer/pharInstall && \
+  wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet && \
   chmod +x /docker-entrypoint-php7.sh && \
   rm -rf /var/lib/apt/lists/*
 
