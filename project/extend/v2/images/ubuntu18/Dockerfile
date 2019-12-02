@@ -20,10 +20,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install \
     apt-utils \
     cron \
+    curl \
     git \
     gnupg2 \
     lsb-release \
-    tzdata -yqq && \
+    wget
+    tzdata \
+    -yqq && \
     echo "Europe/Paris" > /etc/timezone && \
     rm /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
