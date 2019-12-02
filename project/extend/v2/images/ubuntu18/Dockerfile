@@ -22,6 +22,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     cron \
     git \
     gnupg2 \
+    lsb-release \
     tzdata -yqq && \
     echo "Europe/Paris" > /etc/timezone && \
     rm /etc/localtime && \
