@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  matomo:
+    container_name: '${SITE_NAME_INTERNAL}_matomo'
+    image: 'matomo:3.13.1-apache'
+    stdin_open: true
+    tty: true
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=${DOMAINS}
+      - VIRTUAL_PORT=80
+      # Database
+      - MATOMO_DATABASE_HOST=${MYSQL_DB_HOST}
+      - MATOMO_DATABASE_DBNAME=${MYSQL_DB_NAME}
+      - MATOMO_DATABASE_USERNAME=${MYSQL_DB_USER}
+      - MATOMO_DATABASE_PASSWORD=${MYSQL_DB_PASSWORD}
+    volumes:
+      - ${SITE_PATH_ROOT}/matomo/data:/var/www/html
+    networks:
+      - tmp_wex_net
