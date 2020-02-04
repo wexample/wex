@@ -2,5 +2,5 @@
 
 nextcloudInit() {
   # Override default container.
-  echo "NEXTCLOUD_VERSION=12.0.7-apache" >> .wex
+  echo "NEXTCLOUD_VERSION=18.0.0-apache" >> .wex
 }
