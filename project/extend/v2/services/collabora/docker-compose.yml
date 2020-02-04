@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+    collabora:
+        container_name: '${SITE_NAME_INTERNAL}_collabora'
+        image: 'collabora/code:4.2.0.3'
+        restart: always
+        ports:
+            - "9980:9980"
+        environment:
+            - VIRTUAL_HOST=${DOMAINS}
+            - VIRTUAL_PORT=9980
+            - VIRTUAL_PROTO=https
+            - domain=${DOMAIN_MAIN}
+            - username=admin
+            - password=admin
+        volumes:
+            - ${SITE_PATH_ROOT}/collabora/document/logs:/var/log/collabora
+            - ${SITE_PATH_ROOT}/collabora/document/data:/var/www/collabora/Data
+            # Should not be used if launched with external mysql container.
+            # - ${SITE_PATH_ROOT}/collabora/mysql:/var/lib/mysql
+        networks:
+          - tmp_wex_net
