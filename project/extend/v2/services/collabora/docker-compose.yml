@@ -10,7 +10,7 @@ services:
         environment:
             - VIRTUAL_HOST=${DOMAINS}
             - VIRTUAL_PORT=9980
-            - VIRTUAL_PROTO=https
+            #- VIRTUAL_PROTO=https
             - domain=${DOMAIN_MAIN}
             - username=admin
             - password=admin
