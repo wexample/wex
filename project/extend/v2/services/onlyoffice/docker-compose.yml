@@ -12,10 +12,10 @@ services:
             - VIRTUAL_HOST=${DOMAINS}
             - VIRTUAL_PORT=80
             # Database
-            - MYSQL_SERVER_HOST=${MYSQL_DB_HOST}
-            - MYSQL_SERVER_DB_NAME=${MYSQL_DB_NAME}
-            - MYSQL_SERVER_USER=${MYSQL_DB_USER}
-            - MYSQL_SERVER_PASS=${MYSQL_DB_PASSWORD}
+#            - MYSQL_SERVER_HOST=${MYSQL_DB_HOST}
+#            - MYSQL_SERVER_DB_NAME=${MYSQL_DB_NAME}
+#            - MYSQL_SERVER_USER=${MYSQL_DB_USER}
+#            - MYSQL_SERVER_PASS=${MYSQL_DB_PASSWORD}
         volumes:
             - ${SITE_PATH_ROOT}/onlyoffice/logs:/var/log/onlyoffice
             - ${SITE_PATH_ROOT}/onlyoffice/data:/var/www/onlyoffice/Data
