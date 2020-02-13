@@ -22,7 +22,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     rm /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     touch /var/default.cron && \
-    chmod +x /docker-entrypoint-ubuntu18.sh && \
+    chmod +x /docker-entrypoint-otra.sh && \
     rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/docker-entrypoint-otra.sh"]
