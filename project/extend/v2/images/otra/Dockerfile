@@ -7,4 +7,4 @@ COPY ./v2/images/ubuntu18/entrypoint.sh /docker-entrypoint-otra.sh
 
 #
 
-ENTRYPOINT ["/docker-entrypoint-ubuntu18.sh"]
+ENTRYPOINT ["/docker-entrypoint-otra.sh"]
