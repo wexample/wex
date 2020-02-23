@@ -7,8 +7,10 @@ COPY ./v2/images/ubuntu18/entrypoint.sh /docker-entrypoint-otra.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    apt-get update && \
-    apt-get install \
+    apt install software-properties-common && \
+    add-apt-repository ppa:ondrej/php && \
+    apt update && \
+    apt install \
     cron \
     curl \
     git \
