@@ -1,0 +1,12 @@
+# Node
+/vendor/
+
+# Wexample tmp
+/tmp/*
+!/tmp/.gitkeep
+
+# Docker
+/.env
+
+# Mac
+.DS_Store

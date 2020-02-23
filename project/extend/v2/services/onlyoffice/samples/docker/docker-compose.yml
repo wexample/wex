@@ -1,0 +1,5 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_ONLYOFFICE}
+          service: onlyoffice
+#        depends_on:
+#          - ${SITE_NAME}_mysql

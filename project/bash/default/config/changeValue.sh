@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 configChangeValueArgs() {
- _ARGUMENTS=(
-   [0]='target_key k "Target key to change" true'
-   [1]='separator s "Separator like space or equal sign, default space" false'
-   [2]='file f "File" true'
-   [3]='value v "New value" true'
- )
+  _DESCRIPTION="Change a value of a key / value pair in a config file"
+  _ARGUMENTS=(
+    'target_key k "Target key to change" true'
+    'separator s "Separator like space or equal sign, default space" false'
+    'file f "File" true'
+    'value v "New value" true'
+  )
 }
 
 configChangeValue() {
-
   SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
   # Escape string.
@@ -19,6 +19,5 @@ configChangeValue() {
   # Find a line starting by the key or by some spaces, and capture it
   # Commented lines are ignored.
   # Change all occurrences if multiple.
-  sed -i"${WEX_SED_I_ORIG_EXT}" -e "s/^\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)\(.\{0,\}\)/\1${VALUE}/" "${FILE}"
-  rm ${FILE}"${WEX_SED_I_ORIG_EXT}"
+  wex file/regex -f ${FILE} -e "s/^\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)\(.\{0,\}\)/\1${VALUE}/"
 }

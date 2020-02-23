@@ -1,2 +1,0 @@
-# Run a cron test every hour
-0 * * * * /bin/bash -c "/opt/wexample/project/bash/wex wexample::cron/test" > /var/www/html/tmp/cron.log 2>&1

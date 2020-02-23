@@ -1,0 +1,5 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_MATOMO}
+          service: matomo
+        depends_on:
+          - ${SITE_NAME}_mysql

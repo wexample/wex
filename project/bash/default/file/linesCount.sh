@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 fileLinesCountArgs() {
+  _DESCRIPTION='Count number of lines in a file'
   _ARGUMENTS=(
-    [0]='file f "File" true'
-    [1]='ignore_empty i "Ignore empty lines" false'
+    'file f "File" true'
+    'ignore_empty i "Ignore empty lines" false'
   )
 }
 

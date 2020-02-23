@@ -1,12 +1,12 @@
-# Node
-/vendor/
+# Local usage only
+/extend/local/
+!/extend/local/run.sh
 
-# Wexample tmp
+# Used by wex reverse proxy server.
+/proxy/*
+
+# Used by script for temp files.
 /tmp/*
-!/tmp/.gitkeep
 
-# Docker
-/.env
-
-# Mac
-.DS_Store
+# Keep all .gitkeep files
+!/**/.gitkeep

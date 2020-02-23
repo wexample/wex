@@ -2,12 +2,13 @@
 
 packageExistsArgs() {
   _ARGUMENTS=(
-    [0]='name n "Package name to find" true'
+    'name n "Package name to find" true'
   )
 }
 
 packageExists() {
-  if [ -z ${NAME} ]; then
+  # Prevent empty value.
+  if [ "${NAME}" == "true" ] || [ "${NAME}" == "" ]; then
     echo false;
     return
   fi;

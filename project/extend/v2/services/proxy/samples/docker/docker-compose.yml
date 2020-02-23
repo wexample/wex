@@ -1,0 +1,6 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_PROXY}
+          service: proxy
+        ports:
+          - ${WEX_SERVER_PORT_PUBLIC}:80
+          - "443:443"

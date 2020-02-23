@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_PROXY}
-          service: entrypoint
-        ports:
-          - '99:80'

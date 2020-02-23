@@ -1,27 +1,31 @@
-[![build status](http://gitlab.wexample.com/wexample-public/scripts/badges/master/build.svg)](http://gitlab.wexample.com/wexample-public/scripts/commits/master)
+# wex v3
 
-Automates what others don't.
+A web developer automation tool and deployment system.
 
-![Scripts](https://raw.githubusercontent.com/wexample/scripts/master/cover.jpg)
+# Installing
 
-# Requirements
+## On Ubuntu
 
-- Bash
-- Git
-- Docker
-
-# Install
-
-- Clone the repository into /opt/wexample
-  > `git clone https://github.com/wexample/scripts.git /opt/wexample`
-- Execute `bash /opt/wexample/install.sh`
+- Clone the repository into `/opt/wex`
+  > `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex`
+- Execute `sudo bash /opt/wex/install`
 - Check install with `wex hi`
 
-# Update
+## On MacOS
 
-    wex wex/update
+- Install brew
+- Update your bash and install coreutils with `brew install bash coreutils`
+- Then see Ubuntu installation process below
 
-# Cheat sheet
+### MacOS notices
+
+- Using port `80`is not allowed for local server so you should access your sites with port `4242`, eg: `http://mysite.wex:4242`
+
+# Usage
+
+## Cheat sheet
+
+This is the most common command used to manage your apps.
 
 ```bash
 # Clear site cache only.
@@ -32,6 +36,8 @@ wex cli/exec -c="my:command"
 wex code/format
 # Make current database anonymous (dev / RGPD).
 wex db/anon
+# Stops all running docker containers
+wex docker/stopAll
 # Create a new migration file.
 wex migration/create
 # Create a new migration file base on code entities changes.
@@ -56,14 +62,28 @@ wex site/serve
 wex watcher/start
 ```
 
+# Updating
+
+    wex core/update
+    
+# Uninstalling
+
+Want to get rid of the `wex` commands ? All right.
+
+    wex core/uninstall
+    
+If you still want to une Docker containers to launch your site, you can still use the docker compose file placed at `yoursite/tmp/docker-compose.build.yml`
+    
 # Writing a script
 
 For example, you want to add this command :
  
+    wex foo/bar --arg yes --arg2 true
     wex foo/bar --arg=yes --arg2=true
 
 Shortened as :
 
+    wex foo/bar -a yes -a2
     wex foo/bar -a=yes -a2
 
 This script will be accessible in all contexts. So create a ne `.sh` file at this path :
@@ -76,10 +96,11 @@ And there is the content of your script file :
 #!/usr/bin/env bash
 
 fooBarArgs() {
+  _DESCRIPTION="This is my foo bar script"
   _ARGUMENTS=(
     # argument a "Description" true/false (required)
-    [0]='arg a "First argument" true'
-    [1]='arg2 a2 "Second argument (boolean)" false'
+    'arg a "First argument" true defaultValue'
+    'arg2 a2 "Second argument (boolean)" false defaultValue2'
   )
 }
 
@@ -91,222 +112,45 @@ fooBar() {
 ```
 
 ## Notes
-  > Description will be used in help response and when argument is required.
-  > true/false mean required or not, if required but not present, prompt user using description content.
-  > Every function can display help for argument usage when using `--help` argument `wex foo/bar --help`.
+  > Arguments description will be used in help response and when argument is required.
+  > true/false mean required or not, if required but not present, use default uf exists, else prompt user using description content.
+  > Every function can display help for argument usage when using reserved `--help` argument `wex foo/bar --help`.
 
-# Sites management
+## Compatibility
 
-Wex sites uses specific files structure in order to be ran and deployed with ease.
+### MacOS
 
-## Creating a new site
+Tips to write compatible scripts.
 
-- Go to your website root folder
-- Run `wex site/init -s=serviceName,serviceNameTwo`
-- It will use the current folder name as project name
+- Do not use "readlink", prefer 
+- For sed :
+  > Use `wex file/regex` in place of `sed -i ... filename`
+  > Use -E option instead of -r (BSD format)
+- In Docker
+  > Unable to run sites without port forwarding (on port 80)
+  > Do not mount dir that no exists locally
 
-## Installing an existing site
+# Testing
 
-After cloning the site form the git repo, just go into site, start it and run the install command.
+Useful to test changes and core compatibility.
 
-    wex site/start && wex site/install
+- Running all tests is simple as `wex test`.
+- Running a specific test (placed into `project/tests/bash`), is simple as `wex test my/test`, example : `wex test config/comment`
 
-This will execute install script depending to the services used. It also execute custom scripts placed into the `ci/install.sh` file if present. 
+# Understanding core
 
-## Running a wex site
+## Core extension
 
-   wex site/start
+When a script is not found in the main script, it will ask for an action into the `project/extend` directory.
 
-## Running issues
+### project/extend/draft
 
-# Project management
+It contains scripts used in production but waiting to e validated.
 
-A *project* is a group of several wex sites, most of the time created for one single client. This is a folders structure proposal to organize your project folder. 
+### project/extend/local
 
-    \my_project              # On a server this is the `var` folder
-        \www
-            \site1
-                \dev         # Or you can decied to use a folder for specific environment.
-                    ...
-                    .wex
-                \prod
-                    ...
-                    \backup
-                        2021_01_01-16_11_03-site1.zip
-                    \sources
-                        front.jpg
-                        front_texts.odt
-                    .wex
+It contains scripts used locally. Theses script will never be versioned.
 
-# Wexample server management
+### project/extend/v2
 
-All websites are stored into the ```/var/www/ dir```. They should all use wex sites system management in order to respect reverse proxy behavior and benefit to domain names management, auto SSL encryption, files and database dump and restore tools, etc...
-
-# Wexample sites management
-
-## .wex
-
-If present, the scripts execution uses the wexample namespace before default namespaces, ex :
-
-```bash
-# Try to execute wex wexample::site/start if present.
-wex site/start
-```
-
-This file contains main site information. It is generated when using ```wex wexample::site/init```
-
-- **NAME** : site name, *required* 
-- **AUTHOR** : Author's name,
-- **CREATED** : Site init date,
-- **SERVICES** : Wex services separated by a comma, ex : web,mysql,phpmyadmin
-- **PROD_SSH_HOST** : Production server IP.
-- **PROD_PORT** : Production server port,
-- **FILES_XXX** : Path of site files
-
-## Wex Services
-
-Services are wrapper of docker services and uses most of the time one of them, sometime more than one. You can see the list of available services by using :
-
-    wex wexample::services/list
-
-There are based on Docker images, available on the Docker Hub.
-
-## Docker "services"
-
-Each service is composed by parts of docker-compose.yml, which are mixed together when installed on website.
-
-They contains sample data which can be modified, and base files which is useful to inherit, in order to keep only project specific configuration.
-
-When a site is started, there is the default behavior of common services :
-
-    mysite/docker/docker-compose.local.yml
-    T > Contains environment specific configuration (ex: clear passwords)
-    | * Mixed with
-    |
-    v
-    site/docker/docker-compose.yml
-    T > Contains common editable configuration
-    | * Services extends
-    |
-    v
-    (wex)services/[service_name]/docker-compose.local.yml
-    T > Contains default environment specific configuration
-    | * Services extends
-    |
-    v
-    (wex)services/[service_name]/docker-compose.yml
-      > Contains default configuration
-  
-The final running docker compose yml file is stored into ```./tmp/docker-compose.build.yml``` when running ```wex config/write```.
-
-## Watcher
-
-The watcher is a container used to compile CSS / JS files when no other automated mechanism is used. It uses Gulp / Babel / SASS, and has specific configuration file :
-
-    ./watcher/js.json
-    ./watcher/scss.json
-
-These two files contains files to build **without extension** :
-
-```json
-{
-  "project/path/to/js/file": true,
-  "project/path/to/destination/aggregated/js/file": [
-    "project/path/to/source/file/one",
-    "project/path/to/source/file/two"
-  ]
-}
-```
-
-The watcher stop when compilation errors occurs, these methods allow to control watcher activity :
-
-- `wex watcher/go` to see the log file in real time
-- `wex watcher/status` to see the last log file (is stopped)
-- `wex watcher/restart` if watcher stops
-
-## Specific behaviors
-
-### Git hooks
-
-To initialize Git hooks, you should execute `wex git/initHooks` on your website (it is executed automatically when using `wex wexample::site/init`). Then the **./git** folder will contain a preconfigured list of hooks fired by Git on several actions.
-
-### wex wexample::site/*
-
-#### Deployment
-
-          |              |                       |
-    local | <-- pull --- | repo | --- deploy --> | --- pull --> | prod
-          | --- push --> |                       |  
- 
-### wex wexample::db/*
-
-This is an explanation on how databases dumps transfer works between environments.
-
-               local                     prod
-               mysql                     mysql
-              |  ^  ^                   ^  |  ^
-              |  |  |                   |  |  |
-        dump  |  |  |                   |  |  |
-     restore  |  |  |                   |  |  |
-              v  |  +------- sync ------+  v  |
-             /dumps -------- push -------> /dumps
-                    <------- pull --------
-
-
-#### Examples :
-
-```bash
-# Create a dump in production then pull it locally
-wex db/dump -e=prod -p
-```
-
-### wex wexample::mail/*
-
-Manage a mail server, see https://www.davd.eu/byecloud-building-a-mailserver-with-modern-webmail/
-
-#### Install mail server
-  
-- Create a new site using service mailserver
-- Register at least one mail account
-- Go into the site and execute `wex mail/dkim` to generate a 1024 TXT DNS entry
-- Edit your DNS Zone by
-  * Adding a A mail domain like mail.wexample.com or a CNAME as an alias of an existing domain
-  * Create two MX records pointing to mail.wexample.com
-    - First with priority 0
-    - Second with priority 10
-  * Create a TXT entry using DKIM content generated in [mailserver]/config/opendkim/keys/wexample.com/mail.txt
-  * Create a TXT record with "v=spf1 ip4:123.123.123.123 ~all" with the server IP
-- Wait too long, around 24h
-- Start mail server
-- Create at least on mail : wex mail/command -g=mail -a=add -d="postmaster@domain.com"
-- Restart mail server 
-
-Thanks
-======
-
-
-                          m
-                     .#########.
-                 .888888##K#########.
-             .68888888888#~~###########.
-          .66666688888!|#P~~~|!###########.
-          |~~7666666`  |7~!~~|  `#########|
-          |~~~~~7|     |/` `\|     |######|
-          |+~~~~~|                 |8#####|
-          |+~~~~~|                 |888###|
-          |++~~~~|                 |8888##|
-          |++++~~~~_     _!_     _8888888#|
-           +++++~~~~~~~.+++++.666666888888
-              +++++~~~~~~~++22666666668
-                  +++++~~~~22226666
-                      -+~~~2222
-                          *
-                                              _
-                                             | |
-      __      _______  ____ _ _ __ ___  _ __ | | ___
-      \ \ /\ / / _ \ \/ / _` | '_ ` _ \| '_ \| |/ _ \
-       \ V  V /  __/>  < (_| | | | | | | |_) | |  __/
-        \_/\_/ \___/_/\_\__,_|_| |_| |_| .__/|_|\___|
-         http://network.wexample.com   | |
-                                       |_|
-
+It contains the previous version of the script for compatibility reason.

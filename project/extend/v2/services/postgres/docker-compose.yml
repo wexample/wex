@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+    postgres:
+        container_name: '${SITE_NAME_INTERNAL}_postgres'
+        image: postgres:${POSTGRES_VERSION}
+        restart: always
+        environment:
+          - POSTGRES_DB=${POSTGRES_DB_NAME}
+          - POSTGRES_USER=${POSTGRES_DB_USER}
+          - POSTGRES_PASSWORD=${POSTGRES_DB_PASSWORD}
+          - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+          - ${SITE_PATH_ROOT}/postgres/data:/var/lib/postgresql/data
+          - ${SITE_PATH_ROOT}/postgres/dumps:/var/www/dumps
+        networks:
+          - tmp_wex_net

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-. /opt/wexample/project/bash/wex "${@}"
+. /opt/wex/project/bash/wex "${@}"

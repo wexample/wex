@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  jenkins:
+    container_name: '${SITE_NAME_INTERNAL}_jenkins'
+    image: 'jenkins/jenkins:2.219-centos'
+    restart: always
+    ports:
+      - "50000:50000"
+#      - '443:8443'
+    environment:
+      - VIRTUAL_HOST=${DOMAINS}
+      - VIRTUAL_PORT=8080
+    volumes:
+      - ${SITE_PATH_ROOT}/jenkins/config:/jenkins_config
+      - ${SITE_PATH_ROOT}/jenkins/home:/var/jenkins_home
+    networks:
+      - tmp_wex_net

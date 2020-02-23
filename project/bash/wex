@@ -1,136 +1,57 @@
 #!/usr/bin/env bash
 
+# Init only once.
 if [ -z "${WEX_INIT:+x}" ];then
   WEX_INIT=true
-  WEX_NAMESPACE_DEFAULT="default"
-  WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
-  WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
-  WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
-  WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
-  WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
-  WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
-  WEX_URL_GITHUB="https://github.com/wexample/"
-  WEX_URL_SCRIPTS="https://raw.githubusercontent.com/wexample/scripts/master/project/bash/default/"
-  WEX_LOCAL_DIR="/opt/wexample/"
-  WEX_NON_INTERACTIVE=false
-  WEX_SED_I_ORIG_EXT=".orig"
-
-  if [ -z "${WEX_DEEP_LEVEL:+x}" ];then
-    WEX_DEEP_LEVEL=0
-  fi
-
-  # Secondary call var does not exists.
-  if [ -z "${WEX_ROOT_SCRIPT:+x}" ];then
-    WEX_ROOT_SCRIPT=true
-  else
-    WEX_ROOT_SCRIPT=false
-  fi
-
-  # Check bash version.
-  if [ -z ${WEX_BASH_VERSION+x} ]; then
-    WEX_BASH_VERSION_MIN='4'
-    WEX_BASH_VERSION=$(sed -n "s/\([[:digit:]]\{0,\}\)\([\.].\{0,\}\)/\1/p" <<< ${BASH_VERSION})
-    if [ ${WEX_BASH_VERSION} -lt ${WEX_BASH_VERSION_MIN} ]; then
-      echo "Wexample error, need to run on bash version "${WEX_BASH_VERSION_MIN}
-      exit
-    fi;
-  fi;
-
-  wexLog() {
-    # Nothing if debug is disabled
-    :
-  }
-
-  wexUpperCaseFirstLetter() {
-    echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
-  }
-
-  wexMethodName() {
-    SPLIT=(${1//// })
-    echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
-  }
-
-  # Data storage access performance.
-  wexLoadVariables() {
-    local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
-
-    if [[ -f ${STORAGE} ]];then
-      . ${STORAGE};
-    fi
-  }
+  . /opt/wex/project/bash/globals.sh
 
   wex() {
-    WEX_SHOW_INTRO=false
-    WEX_REMOVE_DOWNLOADED_SCRIPT=false
-    WEX_SCRIPT_CALL_NAME=${1}
-
-    if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
-      return
+    # Using false as argument allow to load file and init wex
+    # without to execute any script.
+    if [ -z "${1+x}" ] || [ "${1}" == '' ] || [ ${1} == false ]; then
+      return;
     fi;
 
-    # Get parameters keeping quoted strings.
-    WEX_ARGUMENTS=''
-    whitespace="[[:space:]]"
-    for i in "${@:2}"
-    do
-        if [[ $i =~ $whitespace ]]
-        then
-            # TODO Temp; if success, use it in place on sed
-            ARG_NAME=$(echo ${i} | cut -d"=" -f1)
-            ARG_VALUE=${i#*\=}
-            i="-"${ARG_NAME}"=\"${ARG_VALUE}\""
-        fi
-        WEX_ARGUMENTS+=' '${i}
-    done
+    # Running unit test.
+    if [ "${1}" == "test" ];then
+      # If non sudo, rerun command as sudo.
+      if [[ ${EUID} > 0 ]];then
+        sudo wex "${@}"
+      # We are sudo, so execute tests script.
+      else
+        bash ${WEX_DIR_BASH}test.sh "${2}"
+      fi
+      exit;
+    fi
 
-    # Check if file exists locally.
-    # It allow to override behaviors from location where script is executed,
-    # especially for contextual website scripts.
-    # > We may change execution order : first detect context then using default.
-    local WEX_SCRIPT_FILE="./wex/bash/${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh"
+    local WEX_SCRIPT_FOUND=false
 
-    # Namespace
+    # We are in an app folder / sub folder.
+    if [[ $(_wexAppDetected) == true ]] && [[ "$(_wexVersionGetMajor $(_wexAppVersion))" == "2" ]]; then
+
+      . ${WEX_DIR_ROOT}extend/v2/bash/wex ${@}
+
+      # Handle errors.
+      if [ ${WEX_SCRIPT_FOUND} == false ];then
+        _wexError "V2 script file not found" ${@}
+      fi
+      exit;
+    fi;
+
+    local WEX_SCRIPT_CALL_NAME=${1}
     local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
-    # File does not exists locally.
-    if [ ! -f ${WEX_SCRIPT_FILE} ]; then
+    _wexFindNamespace ${WEX_SCRIPT_CALL_NAME}
 
-      # Allow specified context.
-      if [[ ${WEX_SCRIPT_CALL_NAME} == *"::"* ]]; then
-        SPLIT=($(echo ${WEX_SCRIPT_CALL_NAME}| tr ":" "\n"))
-        WEX_NAMESPACE_TEST=${SPLIT[0]}
-        WEX_SCRIPT_CALL_NAME=${SPLIT[1]}
-      # Check if we are on a "wexample" context (.wex file in calling folder).
-      elif [ -f ".wex" ]; then
-        WEX_NAMESPACE_TEST="wexample"
-      fi;
-
-      WEX_SCRIPT_DIR=${WEX_DIR_BASH}${WEX_NAMESPACE_TEST}/${WEX_SCRIPT_CALL_NAME}
-      WEX_SCRIPT_FILE=${WEX_SCRIPT_DIR}.sh
-
-      # Use main script if still not exists.
-      if [ -f ${WEX_SCRIPT_FILE} ] || [ -d ${WEX_SCRIPT_DIR} ]; then
-        WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
-      else
-        WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
-        # Search into wexample local folder.
-        WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/${WEX_SCRIPT_CALL_NAME}.sh
-      fi;
-
-      # Load namespace init file.
-      . "${WEX_DIR_BASH}${WEX_NAMESPACE}/init.sh"
-    fi;
-
-    WEX_SCRIPT_METHOD_NAME=$(wexMethodName ${WEX_SCRIPT_CALL_NAME})
+    _wexFindScriptFile
 
     # File does not exists.
     if [ ! -f ${WEX_SCRIPT_FILE} ]; then
-      local RED='\033[1;31m'
-      local NC='\033[0m'
+      . ${WEX_DIR_BASH}/colors.sh
 
       # Show hi
       if [ ${WEX_SCRIPT_CALL_NAME} == "hi" ]; then
-        printf "${RED}<3${NC} Yeah !\n"
+        printf ". ${WEX_COLOR_YELLOW}★${WEX_COLOR_CYAN}hi${WEX_COLOR_RESET} ${WEX_COLOR_YELLOW}★${WEX_COLOR_RESET}.\n"
 
       # Show completion
       elif [ -d ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME} ];then
@@ -141,19 +62,6 @@ if [ -z "${WEX_INIT:+x}" ];then
         local PATH_TITLE='Path'
         local DESCRIPTION_TITLE='Description'
 
-        # Prints titles
-        echo -n '  '${PATH_TITLE};
-        # Prints 50 spaces in order to align title with descriptions
-        printf %"$(( ${PADDING} - ${#PATH_TITLE} ))"s
-        echo "Description"
-
-        #Prints dashes
-        echo -n '  '
-        printf %"${#PATH_TITLE}"s |tr " " "-"
-        printf %"$(( PADDING - ${#PATH_TITLE}))"s
-        printf %"${#DESCRIPTION_TITLE}"s |tr " " "-"
-        echo '';
-
         for NAMESPACE in "${NAMESPACES[@]}"
         do
           local DIR=${WEX_DIR_BASH}${NAMESPACE}"/"${GROUP}
@@ -161,8 +69,6 @@ if [ -z "${WEX_INIT:+x}" ];then
           if [ -d ${DIR} ] && [ -d ${WEX_DIR_BASH}${NAMESPACE} ]; then
             local METHODS=($(ls ${DIR}))
             local GROUP=$(basename ${DIR})
-
-            echo ""
 
             for FILE in "${METHODS[@]}"
             do
@@ -173,24 +79,20 @@ if [ -z "${WEX_INIT:+x}" ];then
               local _ARGUMENTS=()
               local _DESCRIPTION=""
 
-              local ARGS_METHOD=${GROUP}$(wexUpperCaseFirstLetter ${FILE%.*})Args
+              local ARGS_METHOD=${GROUP}$(_wexUpperCaseFirstLetter ${FILE%.*})Args
               if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
                 # Execute command
                 ${ARGS_METHOD}
               fi;
 
               _COMMAND_PATH=${NAMESPACE}"::"${GROUP}"/${FILE%.*}"
-              echo -n "  "${_COMMAND_PATH}
+              printf ${WEX_COLOR_YELLOW}${_COMMAND_PATH}${WEX_COLOR_RESET}"\n"
 
               # If there is a description we show it at 50 characters from the very left
               if [[ "${_DESCRIPTION}" != "" ]]; then
-                # Prints a calculated number of spaces in order to align descriptions
-                printf %"$(( ${PADDING}-${#_COMMAND_PATH} ))"s
-
-                # Prints the description
-                wex text/color -c=lightblue -t="${_DESCRIPTION}"
+                printf "  ${WEX_COLOR_CYAN}${_DESCRIPTION}${WEX_COLOR_RESET}\n";
               else
-                echo "";
+                printf "  \n";
               fi
 
             done
@@ -199,31 +101,65 @@ if [ -z "${WEX_INIT:+x}" ];then
 
       # Not found.
       else
-        WEX_TEST_HAS_ERROR=true
-        printf "  ${RED}Wex script not found${NC} ${WEX_SCRIPT_FILE} > ${WEX_SCRIPT_METHOD_NAME}()\n"
+        # Script not found in main core.
+        if [ ${WEX_SCRIPT_FOUND} == false ];then
+          local WEX_EXTEND_DIRS=$(ls ${WEX_DIR_EXTEND})
+
+          # Search into extend directories.
+          for WEX_EXTEND_DIR in ${WEX_EXTEND_DIRS[@]}
+          do
+            . ${WEX_DIR_EXTEND}${WEX_EXTEND_DIR}/run.sh
+
+            # No reason to continue seeking for a script.
+            if [ ${WEX_SCRIPT_FOUND} == true ];then
+              return;
+            fi;
+          done;
+        fi
+
+        if [ ${WEX_SCRIPT_FOUND} == false ];then
+          WEX_TEST_HAS_ERROR=true
+          _wexError "Script file not found" ${WEX_SCRIPT_FILE}
+        fi
       fi;
       exit
     fi;
 
-    # Include loaded file
+    # Include found script file
     . "${WEX_SCRIPT_FILE}"
 
+    local _AS_SUDO=true
+    local _AS_NON_SUDO=true
     # Init empty var.
-    _ARGUMENTS=()
-    # Catch arguments
-    ARGS_METHOD=${WEX_SCRIPT_METHOD_NAME}"Args";
+    local _ARGUMENTS=()
+    local _DESCRIPTION=false
 
     # Execute arguments method
-    if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
+    if [[ $(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null) == function ]]; then
       # Execute command
-      ${ARGS_METHOD}
+      ${WEX_SCRIPT_METHOD_ARGS_NAME}
     fi;
 
+    # User is not sudo.
+    if [[ ${EUID} > 0 ]];then
+      if [[ ${_AS_NON_SUDO} == false ]];then
+        _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", try to execute \"sudo su\" then retry, or run : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
+        exit;
+      fi
+    # User is sudo.
+    else
+      if [[ ${_AS_SUDO} == false ]];then
+         _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
+         exit;
+      fi
+    fi
+
+    # We don't use getopts method in order to support long and short notations
     # Add extra parameters at end of array
     _ARGUMENTS+=(
-      'non_interactive ni "Non interactive mode, use default value in place to ask user" false'
-      'help help "Help" false'
-      'debug debug "Debug" false'
+      'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
+      'help help "Display this help manual" false'
+      'debug debug "Show extra debug information, depending of method features" false'
       'source source "Show script source instead to execute it" false'
     )
     # Then start in negative value (length of previous table).
@@ -231,43 +167,62 @@ if [ -z "${WEX_INIT:+x}" ];then
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
+      local WEX_ARG_FOUND=false
       eval "PARAMS=(${_ARGUMENTS[${i}]})"
-      ARG_EXPECTED_LONG=${PARAMS[0]}
-      ARG_EXPECTED_SHORT=${PARAMS[1]}
+      local ARG_EXPECTED_LONG=${PARAMS[0]}
+      local ARG_EXPECTED_SHORT=${PARAMS[1]}
       # Mark variable as empty
       local ${ARG_EXPECTED_LONG^^}=
       # Set it as null.
       eval 'unset '${ARG_EXPECTED_LONG^^}
 
-      WEX_ARG_FOUND=false
-
       # Get args given,
       # ignore first one which is always method name.
-      for ARG_GIVEN in "${@:2}"
+      local ARG_SEARCH=0;
+      local ORIGINAL_ARGS=("${@:2}");
+
+      for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"
       do
         ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${ARG_GIVEN})
         ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
+
         if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
           WEX_ARG_FOUND=true
           local ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
         # Support --noEqualSign -nes
+        # Support also space separator.
         elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
           WEX_ARG_FOUND=true
-          local ${ARG_EXPECTED_LONG^^}=true
+          ARG_SEARCH_NEXT=$((${ARG_SEARCH}+1));
+          ARG_NEXT_VALUE=${ORIGINAL_ARGS[${ARG_SEARCH_NEXT}]};
+
+          # Use next arguments as value if exits
+          if [ "${ARG_NEXT_VALUE}" != "" ] && [[ $(echo "${ARG_NEXT_VALUE}" | head -c 1) != "-" ]];then
+            local ${ARG_EXPECTED_LONG^^}="${ARG_NEXT_VALUE}"
+            # Ignore next parsing.
+            ARG_SEARCH=ARG_SEARCH_NEXT;
+          else
+            local ${ARG_EXPECTED_LONG^^}=true
+          fi
         fi
+
+        ((ARG_SEARCH++))
       done;
 
       # If an argument is not found
       # And we are not on help page.
       if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ];then
+        # A default value is set in arguments list.
+        if [[ "${PARAMS[4]}" != "" ]];then
+          local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
         # Expected
-        if [[ ${PARAMS[3]} == true ]]; then
+        elif [[ ${PARAMS[3]} == true ]]; then
           # Interactive mode allowed.
-          if [ -z ${NONINTERACTIVE+x} ] || [ ${NONINTERACTIVE} == false ]; then
+          if [ -z ${NON_INTERACTIVE+x} ] || [ ${NON_INTERACTIVE} == false ]; then
             echo -n ${PARAMS[2]}": "
             read ${ARG_EXPECTED_LONG^^}
           else
-            echo "Error | ${WEX_SCRIPT_METHOD_NAME} | Expected argument not found : "${ARG_EXPECTED_LONG}
+            _wexError "Expected argument not found" "${WEX_SCRIPT_METHOD_NAME} : "${ARG_EXPECTED_LONG}
             # Raise an error.
             # Unable to fetch expected variable
             exit 0
@@ -276,29 +231,26 @@ if [ -z "${WEX_INIT:+x}" ];then
       fi;
     done
 
-    if [[ ! -z ${DEBUG+x} ]];then
-      # Use a global alias.
-      WEX_DEBUG=true
-
-      wexLog() {
-        echo -e ${@} >> ${WEX_LOG_FILE}
-      }
-
-      # Flush previous report.
-      if [ "${WEX_DEEP_LEVEL}" == 0 ];then
-        echo '' > ${WEX_DIR_TMP}"debug.log"
-      fi
-    fi
-
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
-      echo $(wex text/color -c=lightblue -t='NAME:') ${WEX_SCRIPT_CALL_NAME}
-      echo $(wex text/color -c=lightblue -t='Function:') ${WEX_SCRIPT_METHOD_NAME}
-      echo $(wex text/color -c=lightblue -t='File:') ${WEX_SCRIPT_FILE}
-      if [[ ! -z ${_DESCRIPTION} ]]; then
-        echo $(wex text/color -c=lightblue -t='Description:') ${_DESCRIPTION}
-      fi
+      . ${WEX_DIR_BASH}/colors.sh
+
       echo ""
+      printf '.%.0s' {1..60}
+      printf "\n"
+
+      printf "${WEX_COLOR_CYAN}Name${WEX_COLOR_RESET}\t\t${WEX_SCRIPT_CALL_NAME}\n"
+      printf "${WEX_COLOR_CYAN}Function${WEX_COLOR_RESET}\t${WEX_SCRIPT_METHOD_NAME}\n"
+      printf "${WEX_COLOR_CYAN}File${WEX_COLOR_RESET}\t\t${WEX_SCRIPT_FILE}\n"
+
+      if [ "${_DESCRIPTION}" != "false" ]; then
+        echo ""
+        printf "${WEX_COLOR_CYAN}Description${WEX_COLOR_RESET}\n"
+        echo ${_DESCRIPTION} | fold -w 60
+      fi
+
+      echo ""
+      printf "${WEX_COLOR_CYAN}Arguments${WEX_COLOR_RESET}\n"
 
       for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
         eval "PARAMS=(${_ARGUMENTS[${i}]})"
@@ -306,41 +258,50 @@ if [ -z "${WEX_INIT:+x}" ];then
 
         TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
 
+        local PROPS='';
+
         if [ ${PARAMS[3]} == true ]; then
-          TEXT+="\n\t"$(wex text/color -c=brown -t=\(require\)' ')
+          PROPS+=[required]
         fi;
+
+        if [ "${PARAMS[4]}" != "" ]; then
+          PROPS+=[default=\"${PARAMS[4]}\"]
+        fi;
+
+        if [ "${PROPS}" != "" ]; then
+          TEXT+="\n\t$(wex text/color -c=brown -t=${PROPS})"
+        fi
 
         TEXT+="\n\t\t"${PARAMS[2]}
         TEXT+="\n"
 
         echo -e ${TEXT}
       done;
-    elif [ ! -z ${SOURCE+x} ]; then
-      cat ${WEX_SCRIPT_FILE}
+
+      printf '.%.0s' {1..60}
       echo ""
+      echo ""
+
+    # Display script file source.
+    elif [ ! -z ${SOURCE+x} ]; then
+      . ${WEX_DIR_BASH}/colors.sh
+      printf ${WEX_COLOR_LIGHT_CYAN}
+      cat ${WEX_SCRIPT_FILE}
+      printf ${WEX_COLOR_RESET}"\n"
+
+    # Execute script.
     else
-      ((WEX_DEEP_LEVEL++))
-      if [ "${WEX_DEBUG}" == true ];then
-        TRACE=(${FUNCNAME[@]:1})
-        local WEX_LOG_FILE=${WEX_DIR_TMP}"debug.log"
-        wexLog $(date '+%Y-%m-%d %H:%M:%S')" "$(printf %${WEX_DEEP_LEVEL}s |tr " " ".")"["${TRACE[0]}"] > "${1}
+      # Handle missing method.
+      if [[ $(type -t "${WEX_SCRIPT_METHOD_NAME}" 2>/dev/null) != function ]]; then
+        _wexError "Method not found ${WEX_SCRIPT_METHOD_NAME}" "In ${WEX_SCRIPT_FILE}"
+        exit
       fi;
       # Execute function with all parameters.
-      eval ${WEX_SCRIPT_METHOD_NAME} ${WEX_ARGUMENTS}
-      # Trace
-      ((WEX_DEEP_LEVEL--))
+      ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
     fi;
   }
-
 fi;
 
-# Execute run function with same arguments.
-# Using false as argument allow to protect unexpected argument passing
-if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
-  wex "${@}"
+# Execute function with same arguments.
+wex "${@}"
 
-  # In debug mode show report.
-  if [ ${WEX_DEEP_LEVEL} == 0 ] && [ "${WEX_DEBUG}" == true ];then
-    cat ${WEX_DIR_TMP}"debug.log"
-  fi
-fi;
