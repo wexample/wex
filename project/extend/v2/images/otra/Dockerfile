@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 LABEL authors="Lionel Péramo <peramo.lionel@gmail.com>"
 
 # Copy entrypoint.
-COPY ./v2/images/ubuntu18/entrypoint.sh /docker-entrypoint-otra.sh
+COPY ./v2/images/otra/entrypoint.sh /docker-entrypoint-otra.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
