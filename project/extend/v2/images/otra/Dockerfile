@@ -5,10 +5,14 @@ LABEL authors="Lionel Péramo <peramo.lionel@gmail.com>"
 # Copy entrypoint.
 COPY ./v2/images/otra/entrypoint.sh /docker-entrypoint-otra.sh
 
+# apt-utils in installed in order to remove this
+# "debconf: delaying package configuration, since apt-utils is not installed"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update -yqq && \
-    apt-get install software-properties-common -yqq && \
+    apt-get install -yqq \
+    software-properties-common \
+    apt-utils && \
     add-apt-repository ppa:ondrej/php -y && \
     apt-get install apache2 -yqq && \
     usermod -u 1000 www-data && \
@@ -21,6 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     cron && \
 #    curl \
 #    git \
+#    php7.4 \
 #    php7.4-curl \
 #    php7.4-mbstring \
 #    php7.4-mysql \
