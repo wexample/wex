@@ -17,7 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     a2enmod expires && \
     apt-get update && \
     apt-get install \
-    cron \
+    cron && \
 #    curl \
 #    git \
 #    php7.4-curl \
