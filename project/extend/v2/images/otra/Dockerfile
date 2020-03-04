@@ -24,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 #    php composer-setup.php && \
 #    php -r "unlink('composer-setup.php');" && \
 #    echo "Europe/Paris" > /etc/timezone && \
-    rm /etc/localtime && \
+#    rm /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     touch /var/default.cron && \
     chmod +x /docker-entrypoint-otra.sh && \
