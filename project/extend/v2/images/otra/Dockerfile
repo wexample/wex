@@ -8,7 +8,7 @@ COPY ./v2/images/otra/entrypoint.sh /docker-entrypoint-otra.sh
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get install software-properties-common && \
-#    add-apt-repository ppa:ondrej/php && \
+    add-apt-repository ppa:ondrej/php && \
     apt-get install apache2 -yqq
     usermod -u 1000 www-data && \
     a2enmod rewrite && \
