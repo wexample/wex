@@ -11,8 +11,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update -yqq && \
     apt-get install -yqq \
-    software-properties-common \
-    apt-utils && \
+    apt-utils \
+    software-properties-common && \
     add-apt-repository ppa:ondrej/php -y && \
     apt-get install apache2 -yqq && \
     usermod -u 1000 www-data && \
