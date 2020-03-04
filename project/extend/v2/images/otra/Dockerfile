@@ -23,7 +23,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -yqq \
     cron \
     curl \
-    git \
+    git && \
 #    tzdata \
 #    php7.4 \
 #    php7.4-curl \
