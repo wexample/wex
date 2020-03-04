@@ -9,9 +9,15 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
 #    apt install software-properties-common && \
 #    add-apt-repository ppa:ondrej/php && \
-#    apt update && \
-#    apt install \
-#    cron \
+    apt-get install apache2 -yqq
+    usermod -u 1000 www-data && \
+    a2enmod rewrite && \
+    a2enmod ssl && \
+    a2enmod headers && \
+    a2enmod expires && \
+    apt update && \
+    apt install \
+    cron \
 #    curl \
 #    git \
 #    php7.4-curl \
