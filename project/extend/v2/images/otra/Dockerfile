@@ -25,7 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     curl \
     git \
     tzdata \
-    php7.4 \
+    php7.4 \
     php7.4-curl \
     php7.4-mbstring \
     php7.4-mysql \
