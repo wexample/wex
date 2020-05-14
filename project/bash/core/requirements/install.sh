@@ -13,6 +13,7 @@ requirementsInstall() {
       sudo apt-get install \
         ansible \
         git \
+        net-tools \
         zip \
         -yq
       wex docker/install
