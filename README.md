@@ -15,6 +15,7 @@ A web developer automation tool and deployment system.
 
 - Install brew
 - Update your bash and install coreutils with `brew install bash coreutils`
+- Double check the folder containing your project is allowed to be mounted with Docker (Docker manager > Resources > Files Sharing)
 - Then see Ubuntu installation process below
 
 ### MacOS notices
