@@ -27,6 +27,9 @@ serverStart() {
     local PORT=$([[ "$(uname -s)" == Darwin ]] && echo 4242 || echo 80)
   fi
 
+  # TODO Check if a process is using port 80 (or given port)
+  #   netstat -tulpn | grep :80
+
   export WEX_SERVER_PORT_PUBLIC=${PORT}
 
   if [ ! -f ${WEX_WEXAMPLE_DIR_PROXY}.wex ];then
