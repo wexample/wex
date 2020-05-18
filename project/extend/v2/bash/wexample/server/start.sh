@@ -17,6 +17,8 @@ serverStart() {
     sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}
   fi
 
+  chmod -R 777 ${WEX_WEXAMPLE_DIR_PROXY}
+
   cd ${WEX_WEXAMPLE_DIR_PROXY}
 
   sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}tmp
