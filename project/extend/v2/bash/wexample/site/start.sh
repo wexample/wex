@@ -93,7 +93,7 @@ siteStart() {
       return
     fi
 
-     _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
+     _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on these urls : "
 
     local DOMAINS=$(wex site/domains)
     for DOMAIN in ${DOMAINS[@]}
