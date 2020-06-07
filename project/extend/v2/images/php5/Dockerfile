@@ -22,7 +22,7 @@ RUN apt-get update -yqq && \
     cd /opt/wexample/project/bash/ && \
     bash wex composer/pharInstall && \
     chmod +x /docker-entrypoint-php5.sh && \
-    sed -i "\$aServerName wexampleWebServer" /etc/apache2/apache2.conf && \
+    sed -i "\$aServerName wexWebServer" /etc/apache2/apache2.conf && \
     usermod -u 1000 www-data \
     && service apache2 restart
 

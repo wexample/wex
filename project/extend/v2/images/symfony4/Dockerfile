@@ -15,6 +15,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   composer \
   nodejs \
   php-xdebug \
+  php-xml \
   yarn \
   -yq \
   && chmod +x /docker-entrypoint-symfony4.sh && \
