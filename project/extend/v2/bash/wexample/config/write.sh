@@ -105,13 +105,18 @@ configWrite() {
   SITE_CONFIG_FILE+="\nSITE_PORTS_USED="${PORTS_USED_CURRENT}
 
   # Execute services scripts if exists
+  # TODO use hook/exec instead (and let each script appending text to config file
   local CONFIG=$(wex service/exec -c="config")
+
   SITE_CONFIG_FILE+=${CONFIG[@]}
   # Sync images versions to wex.
   SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="${IMAGES_VERSION}
 
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} | sudo tee ${WEX_WEXAMPLE_SITE_DIR_TMP}config > /dev/null
+  # TODO see below, use hook/exec instead.
+  wex script/exec -c="config"
+
   # In case we are on non unix system.
   wex file/convertLinesToUnix -f=./tmp/config &> /dev/null
 

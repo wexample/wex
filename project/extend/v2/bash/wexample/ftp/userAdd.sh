@@ -13,6 +13,7 @@ ftpUserAdd() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex
 
+  # TODO Does not work : use default generate file instead (no -f)
   local PASS_LOCATION=/etc/pure-ftpd/passwd/wex.passwd
 
   docker exec -ti wex_ftp touch ${PASS_LOCATION}
