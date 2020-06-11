@@ -109,6 +109,7 @@ siteStart() {
       echo "      to run now some of this dev methods :"
       echo "        wex watcher/start"
       echo "        wex site/serve"
+      echo "        wex site/go"
       echo ""
 
     fi
