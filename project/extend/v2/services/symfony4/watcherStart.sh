@@ -3,10 +3,13 @@
 symfony4WatcherStart() {
   . .env
 
-  ENV_NAME="production"
-  if [ "${SITE_ENV}" != "prod" ];then
-    ENV_NAME=dev
-  fi;
+  # Try to run yarn from outside container for performance purpose.
+  if [ "$(wex package/exists -n=yarn)" == "true" ];then
+    cd ./project/
+    yarn watch
+    return;
+  fi
 
-  wex site/exec -l -c="node_modules/.bin/encore ${ENV_NAME} --watch"
+  # Fallback inside instead.
+  wex site/exec -l -c="yarn watch"
 }

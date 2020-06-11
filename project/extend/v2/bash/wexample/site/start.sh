@@ -93,6 +93,7 @@ siteStart() {
       return
     fi
 
+    echo ""
      _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on these urls : "
 
     local DOMAINS=$(wex site/domains)
@@ -100,7 +101,20 @@ siteStart() {
     do
       echo "      > http://"${DOMAIN}:${WEX_SERVER_PORT_PUBLIC}
     done;
+
+    if [ ${SITE_ENV} == "local" ];then
+
+      echo ""
+      echo "      You are in a local environment, so you might want"
+      echo "      to run now some of this dev methods :"
+      echo "        wex watcher/start"
+      echo "        wex site/serve"
+      echo ""
+
+    fi
   }
+  _siteStartSuccess
+  return
 
   # Prepare files
   wex file/convertLinesToUnix -f=.env &> /dev/null
