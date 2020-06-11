@@ -114,8 +114,6 @@ siteStart() {
 
     fi
   }
-  _siteStartSuccess
-  return
 
   # Prepare files
   wex file/convertLinesToUnix -f=.env &> /dev/null
