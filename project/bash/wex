@@ -15,7 +15,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Running unit test.
     if [ "${1}" == "test" ];then
       # If non sudo, rerun command as sudo.
-      if [[ ${EUID} > 0 ]];then
+      if [ "$EUID" -ne 0 ];then
         sudo wex "${@}"
       # We are sudo, so execute tests script.
       else
