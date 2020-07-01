@@ -52,7 +52,7 @@ bashReadVar() {
   fi
 
   if [ "${WRITE}" == true ] && [ "${VALUE_FOUND}" == false ];then
-    CONTENT=""
+    local CONTENT=""
     # Set description as comment
     if [ ! -z ${LABEL+x} ];then
       CONTENT+="\n# ${LABEL}"
