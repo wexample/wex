@@ -24,15 +24,14 @@ coreLogo() {
   echo "                +++++~~~~22226666"
   echo "                    -+~~~2222"
   echo "                        *"
-  echo -e "${NC}" \
-        "                                         _"
-  echo "                                         | |"
-  echo "  __      _______  ____ _ _ __ ___  _ __ | | ___"
-  echo "  \ \ /\ / / _ \ \/ / _\` | '_ \` _ \| '_ \| |/ _ \\"
-  echo "   \ V  V /  __/>  < (_| | | | | | | |_) | |  __/"
-  echo "    \_/\_/ \___/_/\_\__,_|_| |_| |_| .__/|_|\___|"
-  echo "     http://network.wexample.com   | |"
-  echo "     # Scripts recipes             |_|"
+
+  echo -e "${NC}" \ "                                            .-.         "
+  echo "                                             : :         "
+  echo "  .-..-..-. .--. .-.,-. .--.  ,-.,-.,-..---. : :   .--.  "
+  echo "  : \`; \`; :' '_.'\`.  .'' .; ; : ,. ,. :: .; \`: :_ ' '_.' "
+  echo "  \`.__.__.'\`.__.':_,._;\`.__,_;:_;:_;:_;: ._.'\`.__;\`.__.' "
+  echo "  https://network.wexample.com         : :               "
+  echo "  # Scripts recipes                    :_;               "
   echo ""
 
   # Extra message is set.
