@@ -79,7 +79,7 @@ if [ -z "${WEX_INIT:+x}" ];then
               local _DESCRIPTION=""
 
               local ARGS_METHOD=${GROUP}$(_wexUpperCaseFirstLetter ${FILE%.*})Args
-              if [[ $(type -t "${ARGS_METHOD}" 2>/dev/null) == function ]]; then
+              if [ "$(type -t "${ARGS_METHOD}" 2>/dev/null)" == "function" ]; then
                 # Execute command
                 ${ARGS_METHOD}
               fi;
@@ -88,7 +88,7 @@ if [ -z "${WEX_INIT:+x}" ];then
               printf ${WEX_COLOR_YELLOW}${_COMMAND_PATH}${WEX_COLOR_RESET}"\n"
 
               # If there is a description we show it at 50 characters from the very left
-              if [[ "${_DESCRIPTION}" != "" ]]; then
+              if [ "${_DESCRIPTION}" != "" ]; then
                 printf "  ${WEX_COLOR_CYAN}${_DESCRIPTION}${WEX_COLOR_RESET}\n";
               else
                 printf "  \n";
@@ -134,20 +134,20 @@ if [ -z "${WEX_INIT:+x}" ];then
     local _DESCRIPTION=false
 
     # Execute arguments method
-    if [[ $(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null) == function ]]; then
+    if [ "$(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null)" == "function" ]; then
       # Execute command
       ${WEX_SCRIPT_METHOD_ARGS_NAME}
     fi;
 
     # User is not sudo.
     if [ ${EUID} > 0 ];then
-      if [[ ${_AS_NON_SUDO} == false ]];then
+      if [ "${_AS_NON_SUDO}" == "false" ];then
         _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", try to execute \"sudo su\" then retry, or run : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
         exit;
       fi
     # User is sudo.
     else
-      if [[ ${_AS_SUDO} == false ]];then
+      if [ "${_AS_SUDO}" == "false" ];then
          _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
          exit;
       fi
@@ -185,18 +185,18 @@ if [ -z "${WEX_INIT:+x}" ];then
         ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${ARG_GIVEN})
         ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
 
-        if [[ ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_LONG} || ${ARG_GIVEN_NAME} == ${ARG_EXPECTED_SHORT} ]]; then
+        if [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_LONG}" ] || [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_SHORT}" ]; then
           WEX_ARG_FOUND=true
           local ${ARG_EXPECTED_LONG^^}="${ARG_GIVEN_VALUE}"
         # Support --noEqualSign -nes
         # Support also space separator.
-        elif [[ "--"${ARG_EXPECTED_LONG} == ${ARG_GIVEN} || "-"${ARG_EXPECTED_SHORT} == ${ARG_GIVEN} ]]; then
+        elif [ "--${ARG_EXPECTED_LONG}" = "${ARG_GIVEN}" ] || [ "-${ARG_EXPECTED_SHORT}" = "${ARG_GIVEN}" ]; then
           WEX_ARG_FOUND=true
           ARG_SEARCH_NEXT=$((${ARG_SEARCH}+1));
           ARG_NEXT_VALUE=${ORIGINAL_ARGS[${ARG_SEARCH_NEXT}]};
 
           # Use next arguments as value if exits
-          if [ "${ARG_NEXT_VALUE}" != "" ] && [[ $(echo "${ARG_NEXT_VALUE}" | head -c 1) != "-" ]];then
+          if [ "${ARG_NEXT_VALUE}" != "" ] && [ "$(echo "${ARG_NEXT_VALUE}" | head -c 1)" != "-" ];then
             local ${ARG_EXPECTED_LONG^^}="${ARG_NEXT_VALUE}"
             # Ignore next parsing.
             ARG_SEARCH=ARG_SEARCH_NEXT;
@@ -210,12 +210,12 @@ if [ -z "${WEX_INIT:+x}" ];then
 
       # If an argument is not found
       # And we are not on help page.
-      if [ ${WEX_ARG_FOUND} == false ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ];then
+      if [ "${WEX_ARG_FOUND}" = "false" ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ];then
         # A default value is set in arguments list.
-        if [[ "${PARAMS[4]}" != "" ]];then
+        if [ "${PARAMS[4]}" != "" ];then
           local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
         # Expected
-        elif [[ ${PARAMS[3]} == true ]]; then
+        elif [ "${PARAMS[3]}" = "true" ]; then
           # Interactive mode allowed.
           if [ -z ${NON_INTERACTIVE+x} ] || [ ${NON_INTERACTIVE} == false ]; then
             echo -n ${PARAMS[2]}": "
@@ -291,7 +291,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     # Execute script.
     else
       # Handle missing method.
-      if [[ $(type -t "${WEX_SCRIPT_METHOD_NAME}" 2>/dev/null) != function ]]; then
+      if [ "$(type -t "${WEX_SCRIPT_METHOD_NAME}" 2>/dev/null)" != "function" ]; then
         _wexError "Method not found ${WEX_SCRIPT_METHOD_NAME}" "In ${WEX_SCRIPT_FILE}"
         exit
       fi;
