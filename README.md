@@ -99,12 +99,12 @@ And there is the content of your script file :
 #!/usr/bin/env bash
 
 fooBarArgs() {
-  _DESCRIPTION="This is my foo bar script"
   _ARGUMENTS=(
     # argument a "Description" true/false (required)
     'arg a "First argument" true defaultValue'
     'arg2 a2 "Second argument (boolean)" false defaultValue2'
   )
+  _DESCRIPTION="This is my foo bar script"
 }
 
 fooBar() {
