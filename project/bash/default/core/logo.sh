@@ -8,6 +8,8 @@ coreLogo() {
   # Conbgfbdfgtinued from above example
   echo -e "${RED}"
 
+  echo ""
+  echo ""
   echo "                        .o%%%o."
   echo "                    .%%%%%%%%%%%%%%."
   echo "               .&&&%%%%%%%%%%%%%%%%%%%%%."
@@ -30,6 +32,8 @@ coreLogo() {
   echo "  \`.__.__.'\`.__.':_,._;\`.__,_;:_;:_;:_;: ._.'\`.__;\`.__.' "
   echo "  https://network.wexample.com         : :               "
   echo "  # Scripts recipes                    :_;               "
+  echo ""
+  echo ""
   echo ""
 
   # Extra message is set.
