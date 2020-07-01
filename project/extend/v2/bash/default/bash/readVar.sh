@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 bashReadVarArgs() {
+  _MIGRATED_TO_V3=true
   _DESCRIPTION="Read a value from a config file written as a list of bash variables"
   _ARGUMENTS=(
     [0]='file f "File to read" true'
