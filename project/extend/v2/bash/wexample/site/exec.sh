@@ -10,6 +10,10 @@ siteExecArgs() {
 }
 
 siteExec() {
+  if [ $(wex site/started -ic) == false ];then
+    return
+  fi
+
   # Expected config file.
   wex config/write -nr
 
