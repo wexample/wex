@@ -79,6 +79,8 @@ If you still want to une Docker containers to launch your site, you can still us
     
 # Writing a script
 
+## File structure
+
 For example, you want to add this command :
  
     wex foo/bar --arg yes --arg2 true
@@ -114,10 +116,17 @@ fooBar() {
 
 ```
 
-## Notes
+### Notes
   > Arguments description will be used in help response and when argument is required.
-  > true/false mean required or not, if required but not present, use default uf exists, else prompt user using description content.
+  > true/false mean required or not, if required but not present, use default if exists, else prompt user using description content.
   > Every function can display help for argument usage when using reserved `--help` argument `wex foo/bar --help`.
+
+## Development rules
+
+### Use [ ] instead of [[ ]]
+
+Conditions written inside `[ ... ]` are more portables. It should always have an equivalent of a `[[ ... ]]` condition.
+More info here : https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba
 
 ## Compatibility
 
