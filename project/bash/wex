@@ -27,8 +27,7 @@ if [ -z "${WEX_INIT:+x}" ];then
     local WEX_SCRIPT_FOUND=false
 
     # We are in an app folder / sub folder.
-    if [[ $(_wexAppDetected) == true ]] && [[ "$(_wexVersionGetMajor $(_wexAppVersion))" == "2" ]]; then
-
+    if [ $(_wexAppDetected) == true ] && [ "$(_wexVersionGetMajor $(_wexAppVersion))" == "2" ]; then
       . ${WEX_DIR_ROOT}extend/v2/bash/wex ${@}
 
       # Handle errors.
