@@ -101,11 +101,13 @@ And there is the content of your script file :
 #!/usr/bin/env bash
 
 fooBarArgs() {
+  # Examples of supported config files
   _ARGUMENTS=(
     # argument a "Description" true/false (required)
     'arg a "First argument" true defaultValue'
     'arg2 a2 "Second argument (boolean)" false defaultValue2'
   )
+  _AS_SUDO=false
   _DESCRIPTION="This is my foo bar script"
 }
 
