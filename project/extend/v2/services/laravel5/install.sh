@@ -36,7 +36,7 @@ laravel5Install() {
 
 #  . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-# TODO wex site/install should be
+# TODO wex site/install should run on already installed instance, create wex site/configure instead.
 
 #  wex site/exec -l -c="php artisan key:generate"
 
