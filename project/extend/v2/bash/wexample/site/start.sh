@@ -153,10 +153,6 @@ siteStart() {
 
   # Rebuild hosts
   wex hosts/update
-  # Link cron files to main cron system.
-  # The script are executed outside containers.
-  # TODO rm as we are now able to run internal crons in containers.
-  # wex cron/reload
   # Load site config
   . ${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex
