@@ -113,7 +113,7 @@ configWrite() {
   SITE_CONFIG_FILE+="\nWEX_IMAGES_VERSION="${IMAGES_VERSION}
 
   # Save param file.
-  echo -e ${SITE_CONFIG_FILE} | sudo tee ${WEX_WEXAMPLE_SITE_DIR_TMP}config > /dev/null
+  echo -e ${SITE_CONFIG_FILE} | tee ${WEX_WEXAMPLE_SITE_DIR_TMP}config > /dev/null
   # TODO see below, use hook/exec instead.
   wex script/exec -c="config"
 
@@ -121,5 +121,5 @@ configWrite() {
   wex file/convertLinesToUnix -f=./tmp/config &> /dev/null
 
   # Create docker-compose.build.yml
-  wex site/compose -c="config" | sudo tee ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} > /dev/null
+  wex site/compose -c="config" | tee ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} > /dev/null
 }
