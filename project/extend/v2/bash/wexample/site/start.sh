@@ -47,7 +47,7 @@ siteStart() {
       local ARGS=${WEX_ARGUMENTS}
 
       # Server must be started.
-      wex server/start -n -p=${PORT}
+      sudo wex server/start -n -p=${PORT}
 
       # Relaunch manually to be sure to keep given arguments
       cd ${CURRENT_DIR}
