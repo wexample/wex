@@ -17,6 +17,8 @@ serverStart() {
     sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}
   fi
 
+  chmod -R 777 ${WEX_WEXAMPLE_DIR_PROXY}
+
   cd ${WEX_WEXAMPLE_DIR_PROXY}
 
   sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}tmp
@@ -26,6 +28,9 @@ serverStart() {
   if [ "${PORT}" == "" ];then
     local PORT=$([[ "$(uname -s)" == Darwin ]] && echo 4242 || echo 80)
   fi
+
+  # TODO Check if a process is using port 80 (or given port)
+  #   netstat -tulpn | grep :80
 
   export WEX_SERVER_PORT_PUBLIC=${PORT}
 

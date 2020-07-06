@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 arrayJoinArgs() {
-  _MIGRATED_TO_V3=true
+  _DESCRIPTION="Join array values (space separated) with given separator"
   _ARGUMENTS=(
     [0]='array a "Array content" true'
     [1]='separator s "Separator" false'

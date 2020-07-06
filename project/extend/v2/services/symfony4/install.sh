@@ -4,18 +4,14 @@ symfony4Install() {
   . .env
   . .wex
 
-  local STARTED=$(wex site/started)
+  local STARTED=$(wex site/started -ic)
 
   if [ ${STARTED} != true ];then
     wex site/start
   fi
 
-  # Composer install / update.
-  local ACTION="update"
-  if [ "${SITE_ENV}" = "prod" ];then
-    ACTION="install"
-  fi;
-  wex site/exec -l -c="composer "${ACTION}
+  # Composer install.
+  wex site/exec -l -c="composer install"${ACTION}
 
   # Yarn
   local OPTION=""
@@ -37,16 +33,12 @@ symfony4Install() {
   . ${WEX_WEXAMPLE_SITE_CONFIG}
 
   # Fill up Symfony .env file with db URL
-  wex config/setValue -f=./project/.env -k=DATABASE_URL -s="=" -v="mysql://root:${MYSQL_PASSWORD}@${SITE_NAME_INTERNAL}_mysql:3306/${NAME}"
+  # TODO site/install should be able to be executed on exiting site, to update packages.
+  #      > TODO create wex site/configure for automatic configuration
+  # wex config/setValue -f=./project/.env -k=DATABASE_URL -s="=" -v="mysql://root:${MYSQL_PASSWORD}@${SITE_NAME_INTERNAL}_mysql:3306/${NAME}"
 
   # Assets symlinks.
   wex cli/exec -c="assets:install --symlink public"
-
-  # CKEditor install
-  # TODO modularize..
-  if [ $(wex dir/exists -d="project/vendor/friendsofsymfony/ckeditor-bundle") == true ];then
-    wex cli/exec -c="ckeditor:install"
-  fi
 
   # Rebuild and clear caches.
   wex site/build

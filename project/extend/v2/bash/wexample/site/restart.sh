@@ -14,6 +14,13 @@ siteRestart() {
   fi
 
   local WEX_ARGUMENTS_BKP=${WEX_ARGUMENTS}
+
   wex site/stop
+
+  # Remove local config file
+  if [ -f ./tmp/config ]; then
+      rm ./tmp/config
+  fi
+
   wex site/start ${WEX_ARGUMENTS_BKP}
 }

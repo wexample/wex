@@ -47,7 +47,7 @@ siteStart() {
       local ARGS=${WEX_ARGUMENTS}
 
       # Server must be started.
-      wex server/start -n -p=${PORT}
+      sudo wex server/start -n -p=${PORT}
 
       # Relaunch manually to be sure to keep given arguments
       cd ${CURRENT_DIR}
@@ -93,13 +93,26 @@ siteStart() {
       return
     fi
 
-     _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on theses urls : "
+    echo ""
+     _wexMessage "Your site \"${NAME}\" is up in \"${SITE_ENV}\" environment" "You can access to it on these urls : "
 
     local DOMAINS=$(wex site/domains)
     for DOMAIN in ${DOMAINS[@]}
     do
       echo "      > http://"${DOMAIN}:${WEX_SERVER_PORT_PUBLIC}
     done;
+
+    if [ ${SITE_ENV} == "local" ];then
+
+      echo ""
+      echo "      You are in a local environment, so you might want"
+      echo "      to run now some of this dev methods :"
+      echo "        wex watcher/start"
+      echo "        wex site/serve"
+      echo "        wex site/go"
+      echo ""
+
+    fi
   }
 
   # Prepare files
@@ -140,10 +153,6 @@ siteStart() {
 
   # Rebuild hosts
   wex hosts/update
-  # Link cron files to main cron system.
-  # The script are executed outside containers.
-  # TODO rm as we are now able to run internal crons in containers.
-  # wex cron/reload
   # Load site config
   . ${WEX_WEXAMPLE_SITE_CONFIG}
   . .wex

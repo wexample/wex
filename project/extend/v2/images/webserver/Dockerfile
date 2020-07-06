@@ -13,7 +13,7 @@ COPY ./v2/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 # Install entrypoint.
 # Cleanup.
 RUN apt-get update -yqq && apt-get install apache2 -yqq && \
-    sed -i "\$aServerName wexampleWebServer" /etc/apache2/apache2.conf && \
+    sed -i "\$aServerName wexWebServer" /etc/apache2/apache2.conf && \
     usermod -u 1000 www-data && \
     a2enmod rewrite && \
     a2enmod ssl && \
