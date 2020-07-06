@@ -7,6 +7,7 @@ requirementsInstalledArgs() {
 requirementsInstalled() {
   # Think to update also wex requirements/list if list changes.
   if [[ $(wex package/exists -n docker) == false ]] ||
+     [[ $(wex package/exists -n ifconfig) == false ]] ||
      [[ $(wex package/exists -n zip) == false ]];then
     echo "false"
   else
