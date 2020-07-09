@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+dockerStopAllArgs() {
+  _DESCRIPTION="Stops every running Docker container / network / volume"
+}
+
 dockerStopAll() {
   # Containers
   local CONTAINERS=($(docker ps -qa))
