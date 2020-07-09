@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
-dockerInstall() {
-  # If no release candidate
-  # Edit :  /etc/apt/sources.list
-  # Add / Change : deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
-  # apt-get update
-  # apt-get install docker-ce
+dockerInstallArgs() {
+  _AS_SUDO=true
+  _DESCRIPTION="Install Docker on current machine"
+}
 
+dockerInstall() {
   # Do not install docker on docker.
   if [ $(wex docker/isEnv) == true ];then
     return
@@ -14,16 +13,19 @@ dockerInstall() {
 
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 
-  sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-  sudo apt-get install \
+  apt-get update
+
+  # TODO Last changes not tested.
+  apt-get install \
     apt-transport-https \
     ca-certificates \
     curl \
-    software-propnano doc erties-common \
-    -yqq
-
-  sudo apt-get update
-
-  sudo apt-get install docker-ce docker-compose -yqq
+    doc \
+    docker-ce \
+    docker-compose \
+    erties-common \
+    software-propnano \
+    -yq
 }
