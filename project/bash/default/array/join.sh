@@ -3,8 +3,8 @@
 arrayJoinArgs() {
   _DESCRIPTION="Join array values (space separated) with given separator"
   _ARGUMENTS=(
-    [0]='array a "Array content" true'
-    [1]='separator s "Separator" false'
+    'array a "Array content" true'
+    'separator s "Separator" false'
   )
 }
 

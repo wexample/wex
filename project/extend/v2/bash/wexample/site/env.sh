@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 siteEnv() {
-  wex bash/readVar -f=.env -k=SITE_ENV
+  ${WEX_DIR_V3_CMD} bash/readVar -f=.env -k=SITE_ENV
 }

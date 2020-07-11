@@ -3,7 +3,7 @@
 codeFormatArgs() {
   _DESCRIPTION="Launch the code formating command for the app"
   _ARGUMENTS=(
-    [0]='commit c "Commit changes" false'
+    'commit c "Commit changes" false'
   )
 }
 
