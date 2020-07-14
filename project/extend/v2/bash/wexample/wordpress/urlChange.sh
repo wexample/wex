@@ -2,24 +2,24 @@
 
 wordpressUrlChangeArgs() {
   _ARGUMENTS=(
-    [0]='new_url u "New url with trailing slash (ex: http://wexample.com/) " true'
+    [0]='new_url u "New url with trailing slash (ex: http://wexample.com/) " false'
   )
 }
 
 wordpressUrlChange() {
   . .wex
 
+  # If no new url defined, use local config.
+  if [ "${NEW_URL}" = "" ];then
+    . ${WEX_WEXAMPLE_SITE_CONFIG}
+    # Do not use https to support local envs.
+    NEW_URL="http://${DOMAIN_MAIN}"
+  fi
+
   # Change database records.
   local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
-  local QUERY=''
 
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}options SET option_value = replace(option_value, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET guid = REPLACE (guid, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_content = REPLACE (post_content, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_excerpt = REPLACE (post_excerpt, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}postmeta SET meta_value = REPLACE (meta_value, '${OLD_URL}','${NEW_URL}');"
-
-  wex db/exec -c="${QUERY}"
+  wex site/exec -l -c="wp search-replace --allow-root ${OLD_URL} ${NEW_URL}"
 
   # Change wp-config.php
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")
