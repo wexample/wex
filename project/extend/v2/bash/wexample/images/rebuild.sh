@@ -9,7 +9,6 @@ imagesRebuildArgs() {
     [4]='docker_username u "Username on docker hub" false'
     [5]='docker_password p "Password on docker hub" false'
     [6]='lsc lsc "Use local stored credentials" false'
-    [7]='quiet q "Quiet" false'
   )
 }
 
@@ -77,7 +76,7 @@ _imagesRebuild() {
 
   echo "Building ${NAME}"
 
-  DEPENDS_FROM=$(wex config/getValue -f=${DOCKERFILE} -k=FROM)
+  DEPENDS_FROM=$(wex default::config/getValue -f=${DOCKERFILE} -k=FROM)
   DEPENDS_FROM_WEX=$(sed -e 's/wexample\/\([^:]\{0,\}\):.\{0,\}/\1/' <<< ${DEPENDS_FROM})
 
   # A manner to avoid non matching strings from sed
