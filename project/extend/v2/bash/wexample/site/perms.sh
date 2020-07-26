@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 sitePerms() {
-  wex hook/exec -c=perms
+  wex hook/exec -c=sitePerms
 }
