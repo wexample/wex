@@ -62,9 +62,10 @@ configWrite() {
 
   # TODO Prepare v3 migration
   # TODO Create a local function for params sections
-  SITE_CONFIG_FILE+='\n'
   SITE_CONFIG_FILE+='\n# App info'
   SITE_CONFIG_FILE+='\nAPP_NAME_INTERNAL='${SITE_NAME}"_"${SITE_ENV}
+  SITE_CONFIG_FILE+='\n# User info'
+  SITE_CONFIG_FILE+='\nUSER_UID='${UID}
 
   SITE_CONFIG_FILE+='\n'
   SITE_CONFIG_FILE+='\n# V2 Legacy parameters'

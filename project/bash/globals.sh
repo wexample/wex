@@ -19,8 +19,9 @@ export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
-# Used by sed to store a local temp backup file before removing it.
-export WEX_SED_I_ORIG_EXT=".orig"
+export WEX_SED_I_ORIG_EXT=".orig"               # Used by sed to store a local temp backup file before removing it.
+
+. ${WEX_DIR_BASH}colors.sh
 
 _wexAppDir() {
   local PATH_CURRENT=${PWD}
@@ -89,7 +90,6 @@ _wexBashCheckVersion() {
 }
 
 _wexError() {
-  . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_RED}[wex] Error : ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
@@ -144,8 +144,36 @@ _wexHasRealPath() {
   fi;
 }
 
+_wexItem() {
+  local ICON="*"
+  if [ "${3}" != "" ];then
+    ICON=${3}
+  fi
+
+  local ICON_COLOR=${WEX_COLOR_GRAY}
+  if [ "${4}" != "" ];then
+    ICON_COLOR=${4}
+  fi
+
+  local TEXT="    ${ICON_COLOR}${ICON}${WEX_COLOR_RESET}    ${1}${WEX_COLOR_RESET}"
+
+  # Complementary information or description for extra text
+  if [ "${2}" != "" ];then
+    TEXT+="${WEX_COLOR_CYAN}${2}${WEX_COLOR_RESET}"
+  fi
+
+  printf "${TEXT}\n"
+}
+
+_wexItemSuccess() {
+  _wexItem "${@}" "✓" "${WEX_COLOR_GREEN}"
+}
+
+_wexItemFail() {
+  _wexItem "${@}" "x" "${WEX_COLOR_RED}"
+}
+
 _wexMessage() {
-  . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_CYAN}[wex]${WEX_COLOR_RESET} ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
@@ -162,6 +190,14 @@ _wexMessage() {
 _wexMethodName() {
   local SPLIT=(${1//// })
   echo ${SPLIT[0]}$(_wexUpperCaseFirstLetter ${SPLIT[1]})
+}
+
+_wexTitle() {
+  printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
+}
+
+_wexSubTitle() {
+  printf "${WEX_COLOR_GRAY}##${WEX_COLOR_CYAN} ${1}${WEX_COLOR_RESET}\n"
 }
 
 _wexUpperCaseFirstLetter() {

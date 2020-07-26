@@ -81,7 +81,6 @@ wexTest() {
   local WEX_TEST_RUN_SCRIPT=${1}
   #local WEX_TEST_DEBUG=true
 
-  . ${WEX_DIR_BASH}colors.sh
   . ${WEX_DIR_BASH}globals.sh
 
   for DIR in ${WEX_TEST_NAMESPACES[@]}

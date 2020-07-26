@@ -5,8 +5,6 @@ requirementsListArgs() {
 }
 
 requirementsList() {
-  . ${WEX_DIR_BASH}colors.sh
-
   local OS_NAME=$(wex system/osName)
 
   # Keep alphabetical order for all os.
@@ -32,5 +30,5 @@ _requirementsListRow() {
     local ICON=${WEX_COLOR_RED}x
   fi
 
-  printf "   "${ICON}${WEX_COLOR_RESET}"\t${NAME}${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
+  printf "    "${ICON}${WEX_COLOR_RESET}"\t${NAME}${WEX_COLOR_CYAN}${DESC}${WEX_COLOR_RESET}\n"
 }
