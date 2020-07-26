@@ -3,6 +3,10 @@ demoTemplate() {
   _wexTitle "This is a title"
   echo ""
 
+  _wexLog "Simple log message..."
+  _wexLog "Simple second log message..."
+  echo ""
+
   _wexSubTitle "This is a subtitle"
   echo ""
 

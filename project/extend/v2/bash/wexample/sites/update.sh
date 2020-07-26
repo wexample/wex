@@ -2,7 +2,7 @@
 
 sitesUpdate() {
   # Load sites list
-  local SITES_PATHS=($(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites))
+  local SITES_PATHS=($(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps))
   local DIR_CURRENT=$(realpath ./)
   # Rebuild sites list.
   local SITES_PATHS_FILTERED=()
@@ -41,5 +41,5 @@ sitesUpdate() {
   cd ${DIR_CURRENT}
 
   # Store sites list.
-  echo -e ${SITES_FILE} | sudo tee ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites > /dev/null
+  echo -e ${SITES_FILE} | sudo tee ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps > /dev/null
 }

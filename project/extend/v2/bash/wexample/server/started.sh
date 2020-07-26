@@ -14,7 +14,7 @@ serverStarted() {
       # Config files exists.
       [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}config ]] &&
       [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts ]] &&
-      [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites ]];then
+      [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps ]];then
       WEX_CACHE_WEXAMPLE_SERVER_STARTED=true
     else
       WEX_CACHE_WEXAMPLE_SERVER_STARTED=false

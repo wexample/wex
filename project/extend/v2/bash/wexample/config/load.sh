@@ -11,18 +11,14 @@ configLoad() {
     DIR_SITE=./
   fi;
 
-  wex config/write -nr
+  ${WEX_DIR_V3_CMD} config/write -nr
 
   # Export all variable from conf file.
   set -a
     source ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG}
   set +a
 
-  export WEX_SCRIPTS_PATH=${WEX_DIR_ROOT_REPO}
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"
-
-  # Get framework specific settings.
-  wex framework/settings -d=${DIR_SITE}"project"
 
   # Expose settings.
   export MYSQL_DB_HOST=${MYSQL_DB_HOST}

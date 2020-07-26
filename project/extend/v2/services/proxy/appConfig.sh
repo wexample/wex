@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+proxyAppConfig() {
+  export WEX_DOCKER_MACHINE_IP=$(wex docker/ip)
+  export WEX_IMAGES_VERSION=$(wex wex/version)
+  export WEX_SERVER_PORT_PUBLIC=${WEX_SERVER_PORT_PUBLIC}
+
+  local CONFIG=''
+  echo -e "\nWEX_DOCKER_MACHINE_IP="${WEX_DOCKER_MACHINE_IP} >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
+  echo -e "\nWEX_IMAGES_VERSION="${WEX_IMAGES_VERSION} >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
+  echo -e "\nWEX_SERVER_PORT_PUBLIC="${WEX_SERVER_PORT_PUBLIC} >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
+}

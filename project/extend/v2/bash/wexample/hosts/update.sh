@@ -3,7 +3,7 @@
 hostsUpdate() {
   # Rebuild hosts file
   local IP=$(wex docker/ip)
-  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
   local HOSTS_FILE=""
   local DIR=""
 

@@ -2,9 +2,9 @@
 
 wordpress4Config() {
   # Same config as web
-  . ${WEX_DIR_ROOT}services/web/config.sh
+  . ${WEX_DIR_SERVICES}web/appConfig.sh
 
-  webConfig
+  webAppConfig
 
   # WP Config constants. unreachable in wp-config.php,
   # so we use wex settings.
@@ -21,5 +21,5 @@ wordpress4Config() {
   fi
 
   # Override default container.
-  echo "\nSITE_CONTAINER=wordpress4"
+  echo -e "\nSITE_CONTAINER=wordpress4" >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
 }

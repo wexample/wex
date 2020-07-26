@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sitesStop() {
-  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
 
   for SITE_PATH in ${REGISTRY[@]}
   do

@@ -149,7 +149,7 @@ siteStart() {
   # Reload sites will clean up list.
   wex sites/update
   # Add new site.
-  echo -e "\n"${DIR_SITE} | sudo tee -a ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites > /dev/null
+  echo -e "\n"${DIR_SITE} | sudo tee -a ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps > /dev/null
 
   # Rebuild hosts
   wex hosts/update

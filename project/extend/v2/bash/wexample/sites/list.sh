@@ -9,7 +9,7 @@ sitesListArgs() {
 
 # Return actively running sites list.
 sitesList() {
-  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
   local SITES_COUNT=0;
   local SITES=();
 

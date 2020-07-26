@@ -47,7 +47,7 @@ _siteInitTest_checkConfLines() {
   wexLog "Check running ${FILE_NAME} in "${WEX_WEXAMPLE_DIR_PROXY_TMP}
   NUM=${1}
 
-  if [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites ]];then
+  if [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps ]];then
     # Add an empty line to lines count.
     . ${WEX_DIR_BASH}wexample/init.sh
     COUNT=$(wex file/linesCount -i -f=${WEX_WEXAMPLE_DIR_PROXY_TMP}${FILE_NAME})

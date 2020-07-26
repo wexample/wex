@@ -31,8 +31,6 @@ services:
             - ${CONF_MOODLE_PHP_INI}:/etc/php/7.3/apache2/conf.d/99-wex.ini
             # Mysql dumps
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
-            # Share same wex scripts for all environments.
-            - ${WEX_SCRIPTS_PATH}:/opt/wexample
             # Use common certificates storage
             - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
             - ${SITE_PATH_ROOT}tmp:/var/www/html/tmp

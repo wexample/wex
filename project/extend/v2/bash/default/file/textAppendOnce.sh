@@ -11,7 +11,7 @@ fileTextAppendOnceArgs() {
 fileTextAppendOnce() {
   findExactLine=$(wex file/lineExists -f=${FILE} -l="${LINE}")
 
-  if [ "${findExactLine}" != true ]; then
+  if [ "${findExactLine}" != "true" ];then
     wex file/textAppend -f=${FILE} -l="${LINE}" -c=${CREATE}
   fi
 }

@@ -7,7 +7,7 @@ cronReload() {
 
   . .env
 
-  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
+  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
 
   # Copy full crontab in a temp file.
   echo "$(crontab -l)" > ${WEX_WEXAMPLE_DIR_PROXY_TMP}crontab

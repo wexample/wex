@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-otraConfig() {
+otraAppConfig() {
   # php.ini
-  wex service/templates -s=php -e=ini
+  wex config/bindFiles -s=php -e=ini
   # apache.conf
-  wex service/templates -s=apache -e=conf
+  wex config/bindFiles -s=apache -e=conf
 
   . .wex
 
-  echo "\nOTRA_VERSION=${OTRA_VERSION}"
+  echo -e "\nOTRA_VERSION=${OTRA_VERSION}"
 
   # Create ini file.
-  . ${WEX_DIR_ROOT}services/mysql/config.sh
-  local ACCESS=($(mysqlConfigAccess))
+  . ${WEX_DIR_ROOT}services/mysql/appConfig.sh
+  local ACCESS=($(mysqlAppConfigAccess))
   local INI=./tmp/php.env.ini
   local SITE_ENV=$(wex site/env)
 
@@ -27,5 +27,5 @@ otraConfig() {
   echo 'MYSQL_DB_USER = "'${ACCESS[3]}'"' >> ${INI}
   echo 'MYSQL_DB_PASSWORD = "'${ACCESS[4]}'"' >> ${INI}
 
-  echo "\nSITE_CONTAINER=otra"
+  echo -e "\nSITE_CONTAINER=otra" >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
 }

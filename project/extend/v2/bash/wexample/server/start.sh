@@ -23,7 +23,7 @@ serverStart() {
 
   sudo mkdir -p ${WEX_WEXAMPLE_DIR_PROXY}tmp
   sudo touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts
-  sudo touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites
+  sudo touch ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps
 
   if [ "${PORT}" == "" ];then
     local PORT=$([[ "$(uname -s)" == Darwin ]] && echo 4242 || echo 80)

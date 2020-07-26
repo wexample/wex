@@ -6,6 +6,8 @@ WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
 # /opt can't be mounted on macos, using Users instead.
 WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)
 
+export BASHRC_PATH=~/.bashrc
+
 export WEX_CORE_VERSION=3.3
 export WEX_VERSION_FALLBACK=2.0.0
 export WEX_DIR_BASH
@@ -16,10 +18,12 @@ export WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 export WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
 export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
-export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
-export WEX_SED_I_ORIG_EXT=".orig"               # Used by sed to store a local temp backup file before removing it.
+export WEX_SED_I_ORIG_EXT=".orig"    # Used by sed to store a local temp backup file before removing it.
+export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)    # /opt can't be mounted on macos, using Users instead.
+export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
+export WEX_QUIET_MODE='off'
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -145,6 +149,10 @@ _wexHasRealPath() {
 }
 
 _wexItem() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   local ICON="*"
   if [ "${3}" != "" ];then
     ICON=${3}
@@ -166,14 +174,26 @@ _wexItem() {
 }
 
 _wexItemSuccess() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   _wexItem "${@}" "✓" "${WEX_COLOR_GREEN}"
 }
 
 _wexItemFail() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   _wexItem "${@}" "x" "${WEX_COLOR_RED}"
 }
 
 _wexMessage() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   printf "${WEX_COLOR_CYAN}[wex]${WEX_COLOR_RESET} ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
@@ -193,10 +213,26 @@ _wexMethodName() {
 }
 
 _wexTitle() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
 }
 
+_wexLog() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
+  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${1}${WEX_COLOR_RESET}\n"
+}
+
 _wexSubTitle() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   printf "${WEX_COLOR_GRAY}##${WEX_COLOR_CYAN} ${1}${WEX_COLOR_RESET}\n"
 }
 

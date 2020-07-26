@@ -2,7 +2,7 @@
 
 serviceTemplatesArgs() {
   _ARGUMENTS=(
-    [0]='section s "Section name, must be a folder name also" true'
+    [0]='section s "Section name, cat be a folder name" true'
     [1]='extension e "Extension for file" false'
   )
 }
@@ -38,7 +38,7 @@ serviceTemplates() {
 
     # One execution only by base name,
     # Search for file variations inside it.
-    # Allow to write same variable twot time if env file is found after generic one.
+    # Allow to write same variable two times if env file is found after generic one.
     if [ "${CONF_VAR_NAME}" != false ] && ([[ ! " ${NAMES_PROCESSED[@]} " =~ " ${SPLIT[0]} " ]] || [ ${IS_ENV} == true ]);then
       # Save as found
       NAMES_PROCESSED+=(${SPLIT[0]})
@@ -51,7 +51,7 @@ serviceTemplates() {
       CONF_VAR_NAME=${CONF_VAR_NAME^^}
 
      # Not already found.
-      echo "\nCONF_"${CONF_VAR_NAME}'='$(realpath ${FOLDER}'/'${FILE})
+      echo -e "\nCONF_"${CONF_VAR_NAME}'='$(realpath ${FOLDER}'/'${FILE})
     fi
   done
 }

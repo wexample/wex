@@ -7,14 +7,5 @@ portsOpenedArgs() {
 }
 
 portsOpened() {
-  if [ -z "${SEPARATOR+x}" ];then
-    # Default space separator
-    SEPARATOR=" "
-  fi;
-
-  if [ $(wex docker/isToolBox) == true ];then
-    return
-  fi
-
-  netstat -tuwanp4 2>/dev/null | awk '{print $4}' | grep ':' | cut -d ":" -f 2 | sort | uniq | sed -e ':a' -e 'N' -e '$!ba' -e "s/\n/${SEPARATOR}/g"
+  ${WEX_DIR_V3_CMD} app::ports/opened -s=${SEPARATOR}
 }

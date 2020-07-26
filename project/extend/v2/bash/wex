@@ -54,6 +54,7 @@ wex() {
   local WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
   local WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
   local WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
+  local WEX_DIR_SERVICES=${WEX_DIR_ROOT}services/
   local WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   local WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
   local WEX_URL_GITHUB="https://github.com/wexample/"
@@ -226,9 +227,10 @@ wex() {
     'help help "Help" false'
     'debug debug "Debug" false'
     'source source "Show script source instead to execute it" false'
+    'quiet quiet "Hide logs and errors" false'
   )
   # Then start in negative value (length of previous table).
-  _NEGATIVE_ARGS_LENGTH=4
+  _NEGATIVE_ARGS_LENGTH=5
   # We iterate first on system extra parameters
   # Using negative values allow to use clean push method on array.
   for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
@@ -265,7 +267,7 @@ wex() {
       if [[ ${PARAMS[3]} == true ]]; then
         # Interactive mode allowed.
         if [ -z ${NONINTERACTIVE+x} ] || [ ${NONINTERACTIVE} == false ]; then
-          echo -n ${PARAMS[2]}": "
+          echo -n ${PARAMS[2]}": ${@}"
           read ${ARG_EXPECTED_LONG^^}
         else
           echo "Error | ${WEX_SCRIPT_METHOD_NAME} | Expected argument not found : "${ARG_EXPECTED_LONG}
@@ -345,3 +347,7 @@ if [ ! -z "${1+x}" ] && [ "${1}" != '' ] && [ ${1} != false ]; then
     cat ${WEX_DIR_TMP}"debug.log"
   fi
 fi;
+
+# Remove frome memory,
+# It forces to pass throw the v3 script again on next call.
+unset -f wex
