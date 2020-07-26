@@ -146,7 +146,7 @@ _wexHasRealPath() {
 
 _wexMessage() {
   . ${WEX_DIR_BASH}colors.sh
-  printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
+  printf "${WEX_COLOR_CYAN}[wex]${WEX_COLOR_RESET} ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
   if [ "${2}" != "" ];then

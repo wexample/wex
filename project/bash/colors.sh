@@ -3,7 +3,7 @@
 export WEX_COLOR_BROWN="\033[0;33m"
 export WEX_COLOR_CYAN="\033[0;36m"
 export WEX_COLOR_DEFAULT="\033[0m"
-export WEX_COLOR_GRAY='\e[0;30m'
+export WEX_COLOR_GRAY='\033[1;30m'
 export WEX_COLOR_GREEN="\033[0;32m"
 export WEX_COLOR_LIGHT_BLUE="\033[1;34m"
 export WEX_COLOR_LIGHT_CYAN="\033[1;36m"
