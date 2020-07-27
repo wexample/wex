@@ -22,8 +22,6 @@ serviceExec() {
 
   for SERVICE in ${SERVICES[@]}
   do
-    _wexLog "Executing ${SERVICE}${COMMAND_UC}"
-
     if [ "${SERVICE_ONLY}" == "" ] || [ "${SERVICE_ONLY}" == "${SERVICE}" ];then
       local SERVICE_DIR=${WEX_DIR_SERVICES}${SERVICE}"/"
       local SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"

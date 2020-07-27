@@ -2,7 +2,7 @@
 
 moodleStarted() {
     # Same config as web
-  . ${WEX_DIR_ROOT}services/web/started.sh
+  . ${WEX_DIR_SERVICES}web/started.sh
 
   webStarted
 

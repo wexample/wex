@@ -2,7 +2,7 @@
 
 postgresAppConfig() {
   # Create ini file.
-  . ${WEX_DIR_ROOT}services/mysql/appConfig.sh
+  . ${WEX_DIR_SERVICES}mysql/appConfig.sh
   local ACCESS=($(mysqlAppConfigAccess))
   local POSTGRES_CONFIG=''
 

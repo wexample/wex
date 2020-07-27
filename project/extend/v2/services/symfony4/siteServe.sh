@@ -2,7 +2,7 @@
 
 symfony4SiteServe() {
   # Same as web
-  . ${WEX_DIR_ROOT}services/web/siteServe.sh
+  . ${WEX_DIR_SERVICES}web/siteServe.sh
 
   webSiteServe
 }

@@ -4,7 +4,7 @@ mariadbAppConfig() {
   wex config/bindFiles -s=mariadb -e=cnf.json
 
   # Create ini file.
-  . ${WEX_DIR_ROOT}services/mysql/appConfig.sh
+  . ${WEX_DIR_SERVICES}mysql/appConfig.sh
   local ACCESS=($(mysqlAppConfigAccess))
   local MARIADB_CONFIG=''
 

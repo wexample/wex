@@ -2,7 +2,7 @@
 
 wordpress4SiteServe() {
     # Same config as web
-  . ${WEX_DIR_ROOT}services/web/siteServe.sh
+  . ${WEX_DIR_SERVICES}web/siteServe.sh
 
   webSiteServe
 }

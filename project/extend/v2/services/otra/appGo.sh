@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-otraGo() {
+otraAppGo() {
   # Do not execute action bu return it to be piped.
   echo "cd /var/www/html/project"
 }

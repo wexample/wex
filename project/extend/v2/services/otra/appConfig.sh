@@ -11,7 +11,7 @@ otraAppConfig() {
   echo -e "\nOTRA_VERSION=${OTRA_VERSION}"
 
   # Create ini file.
-  . ${WEX_DIR_ROOT}services/mysql/appConfig.sh
+  . ${WEX_DIR_SERVICES}mysql/appConfig.sh
   local ACCESS=($(mysqlAppConfigAccess))
   local INI=./tmp/php.env.ini
   local SITE_ENV=$(wex site/env)

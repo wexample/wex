@@ -54,7 +54,7 @@ wex() {
   local WEX_DIR_ROOT=$(realpath ${WEX_DIR_BASH}"../")"/"
   local WEX_DIR_ROOT_REPO=$(realpath ${WEX_DIR_ROOT}"../")"/"
   local WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
-  local WEX_DIR_SERVICES=${WEX_DIR_ROOT}services/
+  local WEX_DIR_SERVICES=${WEX_DIR_SERVICES}
   local WEX_DIR_BASH_DEFAULT="${WEX_DIR_BASH}${WEX_NAMESPACE_DEFAULT}/"
   local WEX_DIR_TMP=${WEX_DIR_ROOT}"tmp/"
   local WEX_URL_GITHUB="https://github.com/wexample/"

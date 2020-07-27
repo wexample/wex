@@ -16,7 +16,7 @@ rocketchatInit() {
   # Import default database
   # - admin / password
   # - hubot / pass given in yml file
-  docker cp ${WEX_DIR_ROOT}services/rocketchat/fixtures ${SITE_NAME_INTERNAL}_mongo:/
+  docker cp ${WEX_DIR_SERVICES}rocketchat/fixtures ${SITE_NAME_INTERNAL}_mongo:/
   docker exec ${SITE_NAME_INTERNAL}_mongo mongorestore --port 27017 /fixtures
   docker exec ${SITE_NAME_INTERNAL}_mongo rm -rf /fixtures
 

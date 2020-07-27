@@ -10,7 +10,6 @@ scriptExec() {
   local FILE_PATH=script/${COMMAND}.sh
   # Execute custom script for site.
   if [ -f ${FILE_PATH} ];then
-    _wexLog "Executing script : ${FILE_PATH}"
     . ${FILE_PATH}
   fi
 }
