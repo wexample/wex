@@ -33,7 +33,7 @@ siteExec() {
   fi;
 
   if [ "${LOCALIZED}" == true ];then
-    COMMAND="$(wex service/exec -c=go) && ${COMMAND}"
+    COMMAND="$(wex service/exec -c=appGo) && ${COMMAND}"
   fi;
 
   local ARGS=""
