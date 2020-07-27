@@ -7,7 +7,7 @@ siteInfoArgs() {
 }
 
 siteInfo() {
-  wex config/load
+  wex config/load --quiet
 
   local SITE_ENV=$(wex site/env)
 

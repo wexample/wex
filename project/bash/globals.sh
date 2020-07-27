@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# TODO If we want to allow switching user (non sudo to sudo) during scripts executions
+#      we need to execute to write out this configuration variable in an external file
+#      the reload only the built version of the variable.
+#      For example, it will prevent to disable the "quiet mode"
+#      when executin method as sudo user inside a non sudo script.
+
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
@@ -24,6 +30,7 @@ export WEX_SED_I_ORIG_EXT=".orig"    # Used by sed to store a local temp backup 
 export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)    # /opt can't be mounted on macos, using Users instead.
 export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
 export WEX_QUIET_MODE='off'
+export WEX_QUIET_MODE_PREVIOUS='off'
 
 . ${WEX_DIR_BASH}colors.sh
 

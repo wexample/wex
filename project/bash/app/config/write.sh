@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 configWriteArgs() {
-  _AS_NON_SUDO=false
   _ARGUMENTS=(
     'started s "Set the site is started or not" false'
     'no_recreate nr "No recreate if files exists" false'
@@ -14,7 +13,8 @@ configWrite() {
     [ -f ${WEX_WEXAMPLE_APP_DIR_TMP}config ] &&
     [ -f ${WEX_WEXAMPLE_APP_COMPOSE_BUILD_YML} ];then
 
-    _wexLog "App config file exists. No recreating."
+    # TODO fix the config issue in globals.sh before enabling nested logs
+    #  _wexLog "App config file exists. No recreating."
     return
   fi
 
