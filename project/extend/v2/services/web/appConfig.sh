@@ -32,5 +32,5 @@ webAppConfig() {
   wex config/setValue -k=MYSQL_DB_PORT -v=${ACCESS[1]} -f=${INI}
   wex config/setValue -k=MYSQL_DB_NAME -v=${ACCESS[2]} -f=${INI}
   wex config/setValue -k=MYSQL_DB_USER -v=${ACCESS[3]} -f=${INI}
-  wex config/setValue -k=MYSQL_DB_PASSWORD -v=${ACCESS[4]} -f=${INI}
+  wex config/setValue -k=MYSQL_DB_PASSWORD -v='"'${ACCESS[4]}'"' -f=${INI}
 }

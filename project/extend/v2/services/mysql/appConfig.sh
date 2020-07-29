@@ -16,7 +16,7 @@ mysqlAppConfig() {
   wex config/setValue -k=MYSQL_DB_PORT -v=${ACCESS[1]}
   wex config/setValue -k=MYSQL_DB_NAME -v=${ACCESS[2]}
   wex config/setValue -k=MYSQL_DB_USER -v=${ACCESS[3]}
-  wex config/setValue -k=MYSQL_DB_PASSWORD -v=${ACCESS[4]}
+  wex config/setValue -k=MYSQL_DB_PASSWORD -v='"'${ACCESS[4]}'"'
 
   # Connexion file.
   local DB_CONNECTION_FILE=./tmp/mysql.cnf
@@ -26,7 +26,7 @@ mysqlAppConfig() {
   echo '[client]' > ${DB_CONNECTION_FILE}
   wex config/setValue -k=host -v=${ACCESS[0]} -f=${DB_CONNECTION_FILE}
   wex config/setValue -k=user -v=${ACCESS[3]} -f=${DB_CONNECTION_FILE}
-  wex config/setValue -k=password -v=${ACCESS[4]} -f=${DB_CONNECTION_FILE}
+  wex config/setValue -k=password -v='"'${ACCESS[4]}'"' -f=${DB_CONNECTION_FILE}
 
   # Expected access level
   chmod 644 ${DB_CONNECTION_FILE}

@@ -12,5 +12,5 @@ configSetValueArgs() {
 }
 
 configSetValue() {
-  wex default::config/setValue "${@}" -f=${FILE} -s=${SEPARATOR} -i
+  wex default::config/setValue -k=${KEY} -v="${VALUE}" -f=${FILE} -s=${SEPARATOR} -i
 }
