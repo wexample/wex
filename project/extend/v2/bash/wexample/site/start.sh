@@ -143,7 +143,8 @@ siteStart() {
   wex ci/exec -c=start
   # Write new config,
   # it will also export config variables
-  wex config/write -s
+  ${WEX_DIR_V3_CMD} config/write -s
+
   # Add site
   local DIR_SITE=$(realpath ./)"/"
   # Reload sites will clean up list.
