@@ -66,7 +66,14 @@ configWrite() {
   echo -e ${APP_CONFIG_FILE_CONTENT} | tee ${WEX_WEXAMPLE_APP_FILE_CONFIG} > /dev/null
 
   wex config/addTitle -t="User"
-  wex config/setValue -k=USER_UID -v=${SUDO_UID}
+
+  local USER_UID=${UID}
+  # Current user is root, so uid is 0.
+  if [ "${USER_UID}" = "0" ];then
+    USER_UID=${SUDO_UID}
+  fi
+
+  wex config/setValue -k=USER_UID -v=${USER_UID}
 
   wex config/addTitle -t="Wex"
   wex config/setValue -k=WEX_IMAGES_VERSION -v=${IMAGES_VERSION}
