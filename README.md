@@ -5,9 +5,7 @@ A web developer automation tool and deployment system.
 # Installing
 
 ## On Ubuntu
-
-- Clone and install :
-  > `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install` 
+`sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install` 
 
 ## On MacOS
 
