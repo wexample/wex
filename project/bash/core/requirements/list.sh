@@ -12,6 +12,7 @@ requirementsList() {
   _requirementsListRow $(wex package/exists -n ansible) "ansible\t\t" "Servers management and orchestration"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(wex package/exists -n brew) "brew\t\t" "Package manager"
   _requirementsListRow $(wex package/exists -n docker) "docker\t\t" "Containers manager"
+  _requirementsListRow $(wex package/exists -n=docker-compose) "docker-compose\t" "Containers manager"
   _requirementsListRow $(wex package/exists -n git) "git\t\t" "Version control"
   _requirementsListRow $(wex package/exists -n ifconfig) "ifconfig\t" "Network interface configuration"
   [ "${OS_NAME}" == "mac" ] && _requirementsListRow $(_wexHasRealPath == "true") "realpath\t" "Base bash method"
