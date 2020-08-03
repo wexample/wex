@@ -6,6 +6,7 @@ siteExecArgs() {
     [1]='command c "Bash command to execute" true'
     [2]='starts "Start container verification" false'
     [3]='localized l "Execute script in project location (it may be the default behavior in the future)" false'
+    [4]='super_user su "Run as sudo inside container" false'
   )
 }
 
@@ -40,6 +41,10 @@ siteExec() {
   if [ "${NON_INTERACTIVE}" != true ];then
     ARGS+="-ti"
   fi;
+
+  if [ "${SUPER_USER}" = "true" ];then
+    ARGS+=" -u 0 "
+  fi
 
   docker exec ${ARGS} ${CONTAINER} /bin/bash -c "${COMMAND}"
 
