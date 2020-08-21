@@ -206,12 +206,7 @@ _wexLog() {
   # Add wrapper length + dots + a space.
   MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - 3 - 1))
 
-  local MESSAGE
-  MESSAGE=${1}
-
-  if [ "${#MESSAGE}" -gt "${MAX_MIDTH}" ];then
-    MESSAGE=$(echo "${1}" | cut -c -${MAX_MIDTH})"${WEX_COLOR_GRAY}...${WEX_COLOR_RESET}"
-  fi
+  MESSAGE=$(_wexTruncate "${1}" ${MAX_MIDTH})
 
   printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
@@ -253,6 +248,15 @@ _wexTitle() {
   fi;
 
   printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
+}
+
+_wexTruncate() {
+  if [ "${#1}" -gt "${2}" ];then
+    echo "$(echo "${1}" | cut -c -"${2}")${WEX_COLOR_GRAY}...${WEX_COLOR_RESET} "
+    return
+  fi
+
+  echo "${1}"
 }
 
 _wexUpperCaseFirstLetter() {
