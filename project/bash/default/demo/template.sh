@@ -5,6 +5,7 @@ demoTemplate() {
 
   _wexLog "Simple log message..."
   _wexLog "Simple second log message..."
+  _wexLog "Simple log message with a long long long long text, allow to test screen with detection, and messages auto truncation"
   echo ""
 
   _wexSubTitle "This is a subtitle"
