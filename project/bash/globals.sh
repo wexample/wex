@@ -205,7 +205,7 @@ _wexLog() {
 
   local MAX_WIDTH
   # Add wrapper length and regular space.
-  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - ${WEX_TRUCATE_SPACE}))
+  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4))
 
   MESSAGE=$(_wexTruncate "${1}" ${MAX_MIDTH})
 
@@ -252,8 +252,11 @@ _wexTitle() {
 }
 
 _wexTruncate() {
-  if [ "${#1}" -gt "${2}" ];then
-    echo "$(echo "${1}" | cut -c -"${2}")${WEX_COLOR_GRAY}...${WEX_COLOR_RESET} "
+  local MAX_MIDTH;
+  MAX_WIDTH=$((${2} - ${WEX_TRUCATE_SPACE}))
+
+  if [ "${#1}" -gt "${MAX_WIDTH}" ];then
+    echo "$(echo "${1}" | cut -c -"${MAX_WIDTH}")${WEX_COLOR_GRAY}...${WEX_COLOR_RESET} "
     return
   fi
 
