@@ -32,6 +32,7 @@ export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
 export WEX_QUIET_MODE='off'
 export WEX_QUIET_MODE_PREVIOUS='off'
 export WEX_SCREEN_WIDTH=$(tput cols)
+export WEX_TRUCATE_SPACE=4 # 3 dots plus one space.
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -203,8 +204,8 @@ _wexLog() {
   fi;
 
   local MAX_WIDTH
-  # Add wrapper length + dots + a space.
-  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - 3 - 1))
+  # Add wrapper length and regular space.
+  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - ${WEX_TRUCATE_SPACE}))
 
   MESSAGE=$(_wexTruncate "${1}" ${MAX_MIDTH})
 
