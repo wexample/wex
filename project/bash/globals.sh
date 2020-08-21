@@ -31,6 +31,7 @@ export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.we
 export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
 export WEX_QUIET_MODE='off'
 export WEX_QUIET_MODE_PREVIOUS='off'
+export WEX_SCREEN_WIDTH=$(tput cols)
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -232,7 +233,18 @@ _wexLog() {
     return
   fi;
 
-  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${1}${WEX_COLOR_RESET}\n"
+  local MAX_WIDTH
+  # Add wrapper length + dots + a space.
+  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - 3 - 1))
+
+  local MESSAGE
+  MESSAGE=${1}
+
+  if [ "${#MESSAGE}" -gt "${MAX_MIDTH}" ];then
+    MESSAGE=$(echo "${1}" | cut -c -${MAX_MIDTH})"${WEX_COLOR_GRAY}...${WEX_COLOR_RESET}"
+  fi
+
+  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
 
 _wexSubTitle() {
