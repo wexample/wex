@@ -204,7 +204,7 @@ _wexLog() {
   fi;
 
   local MAX_WIDTH
-  # Add wrapper length and regular space.
+  # Add wrapper length.
   MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4))
 
   MESSAGE=$(_wexTruncate "${1}" ${MAX_MIDTH})
