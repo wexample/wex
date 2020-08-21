@@ -35,6 +35,16 @@ export WEX_SCREEN_WIDTH=$(tput cols)
 
 . ${WEX_DIR_BASH}colors.sh
 
+_wexAppDetected() {
+  local DIR=$(_wexAppDir)
+
+  if [ "${DIR}" != "" ]; then
+    echo true
+  else
+    echo false
+  fi;
+}
+
 _wexAppDir() {
   local PATH_CURRENT=${PWD}
 
@@ -53,16 +63,6 @@ _wexAppDir() {
       fi
       PATH_CURRENT=$(dirname ${PATH_CURRENT}"/")
   done
-}
-
-_wexAppDetected() {
-  local DIR=$(_wexAppDir)
-
-  if [ "${DIR}" != "" ]; then
-    echo true
-  else
-    echo false
-  fi;
 }
 
 _wexAppLoadConfig() {
@@ -181,6 +181,14 @@ _wexItem() {
   printf "${TEXT}\n"
 }
 
+_wexItemFail() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
+  _wexItem "${@}" "x" "${WEX_COLOR_RED}"
+}
+
 _wexItemSuccess() {
   if [ "${WEX_QUIET_MODE}" = "on" ];then
     return
@@ -189,12 +197,23 @@ _wexItemSuccess() {
   _wexItem "${@}" "✓" "${WEX_COLOR_GREEN}"
 }
 
-_wexItemFail() {
+_wexLog() {
   if [ "${WEX_QUIET_MODE}" = "on" ];then
     return
   fi;
 
-  _wexItem "${@}" "x" "${WEX_COLOR_RED}"
+  local MAX_WIDTH
+  # Add wrapper length + dots + a space.
+  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - 3 - 1))
+
+  local MESSAGE
+  MESSAGE=${1}
+
+  if [ "${#MESSAGE}" -gt "${MAX_MIDTH}" ];then
+    MESSAGE=$(echo "${1}" | cut -c -${MAX_MIDTH})"${WEX_COLOR_GRAY}...${WEX_COLOR_RESET}"
+  fi
+
+  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
 
 _wexMessage() {
@@ -220,39 +239,20 @@ _wexMethodName() {
   echo ${SPLIT[0]}$(_wexUpperCaseFirstLetter ${SPLIT[1]})
 }
 
-_wexTitle() {
-  if [ "${WEX_QUIET_MODE}" = "on" ];then
-    return
-  fi;
-
-  printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
-}
-
-_wexLog() {
-  if [ "${WEX_QUIET_MODE}" = "on" ];then
-    return
-  fi;
-
-  local MAX_WIDTH
-  # Add wrapper length + dots + a space.
-  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4 - 3 - 1))
-
-  local MESSAGE
-  MESSAGE=${1}
-
-  if [ "${#MESSAGE}" -gt "${MAX_MIDTH}" ];then
-    MESSAGE=$(echo "${1}" | cut -c -${MAX_MIDTH})"${WEX_COLOR_GRAY}...${WEX_COLOR_RESET}"
-  fi
-
-  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
-}
-
 _wexSubTitle() {
   if [ "${WEX_QUIET_MODE}" = "on" ];then
     return
   fi;
 
   printf "${WEX_COLOR_GRAY}##${WEX_COLOR_CYAN} ${1}${WEX_COLOR_RESET}\n"
+}
+
+_wexTitle() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
+  printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
 }
 
 _wexUpperCaseFirstLetter() {
