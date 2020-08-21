@@ -2,9 +2,9 @@
 
 # TODO If we want to allow switching user (non sudo to sudo) during scripts executions
 #      we need to execute to write out this configuration variable in an external file
-#      the reload only the built version of the variable.
+#      then reload only the built version of the variable.
 #      For example, it will prevent to disable the "quiet mode"
-#      when executin method as sudo user inside a non sudo script.
+#      when executing method as sudo user inside a non sudo script.
 
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
