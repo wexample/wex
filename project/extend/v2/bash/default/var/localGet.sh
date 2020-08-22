@@ -2,18 +2,18 @@
 
 varLocalGetArgs() {
   _ARGUMENTS=(
-    [0]='name n "Variable name" true'
-    [1]='default d "Default value" false'
-    [2]='ask a "Message to ask user to, enable prompt if provided" false'
-    [3]='password p "Hide typed response when asking user" false'
-    [4]='required r "Ask again if empty" false'
-    [5]='file f "Storage file path" false'
+    'name n "Variable name" true'
+    'default d "Default value" false'
+    'ask a "Message to ask user to, enable prompt if provided" false'
+    'password p "Hide typed response when asking user" false'
+    'required r "Ask again if empty" false'
+    'file f "Storage file path" false'
   )
 }
 
 varLocalGet() {
   # If no file specified
-  if [ "${FILE}" == "" ];then
+  if [ "${FILE}" = "" ];then
     # Use wex tmp folder
     FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
   fi

@@ -10,7 +10,7 @@ varLocalClearArgs() {
 
 varLocalClear() {
   # Remove all previous values.
-  wex default::var/localClear -n="${NAME}" -f=./tmp/variablesLocalStorage
+  wex default::var/localClear -n="${NAME}" -f="${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}"
 
   if [ "${SAVE_DEFAULT}" == true ];then
     wex default::var/localClear -n="LAST_${NAME}"

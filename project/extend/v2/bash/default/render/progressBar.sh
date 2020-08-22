@@ -2,23 +2,32 @@
 
 renderProgressBarArgs() {
   _ARGUMENTS=(
-    [0]='percentage p "Percentage" true'
-    [1]='width w "Width" true'
-    [2]='description d "Description" false'
-    [3]='status s "Status" false'
-    [4]='new_line nl "New line at end" false'
+    'percentage p "Percentage" true'
+    'width w "Width" true'
+    'description d "Description" false'
+    'status s "Status" false'
+    'new_line nl "New line at end" false'
   )
 }
 
+# See : https://stackoverflow.com/questions/18362837/how-to-display-and-refresh-multiple-lines-in-bash
 renderProgressBar() {
   local MESSAGE='['
   local PRECISION=100;
+
+  local PROGRESS_BAR_RUNNING=$(wex var/localGet -n=PROGRESS_BAR_RUNNING -d=false)
+
+  if [ "${PROGRESS_BAR_RUNNING}" = true ];then
+    printf "\033[1A"
+  fi
+
+  wex var/localSet -n=PROGRESS_BAR_RUNNING -v=true
 
   if [ "${DESCRIPTION}" != "" ];then
     MESSAGE=${DESCRIPTION}"\n"${MESSAGE}
   fi
 
-  if [ "${WIDTH}" == "" ];then
+  if [ "${WIDTH}" = "" ];then
     WIDTH=30
   fi
 
@@ -29,22 +38,26 @@ renderProgressBar() {
      I_CALC=$(expr ${I_CALC} \* 100)
      I_CALC=$(expr ${I_CALC} / ${PRECISION})
 
-     if [ ${I_CALC} -lt ${PERCENTAGE} ] || [ ${I_CALC} == ${PERCENTAGE} ];then
+     if [ ${I_CALC} -lt ${PERCENTAGE} ] || [ ${I_CALC} = ${PERCENTAGE} ];then
        MESSAGE+='#'
      else
        MESSAGE+='.'
      fi
   done
 
-  MESSAGE+="] ("${PERCENTAGE}'%)'
+  MESSAGE+="] "${PERCENTAGE}'%'"\n"
 
   if [ "${STATUS}" != "" ];then
-    MESSAGE+=" > "${STATUS}
+    MESSAGE+="  > "${STATUS}
   fi
 
-  if [ "${NEW_LINE}" == "true" ];then
+  if [ "${NEW_LINE}" = "true" ];then
     echo ${MESSAGE}'       '
   else
     echo -ne ${MESSAGE}'       \r'
+  fi
+
+  if [ "${PERCENTAGE}" = "100" ];then
+    wex var/localSet -n=PROGRESS_BAR_RUNNING -v=false
   fi
 }

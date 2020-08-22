@@ -8,5 +8,5 @@ varLocalSetArgs() {
 }
 
 varLocalSet() {
-  wex default::var/localSet ${WEX_ARGUMENTS} -f=./tmp/variablesLocalStorage
+  wex default::var/localSet ${WEX_ARGUMENTS} -f="${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}"
 }

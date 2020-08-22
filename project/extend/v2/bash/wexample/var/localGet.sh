@@ -28,7 +28,7 @@ varLocalGet() {
     -a="${ASK}" \
     -p="${PASSWORD}" \
     -r="${REQUIRED}" \
-    -f=./tmp/variablesLocalStorage)
+    -f="${WEXAMPLE_SITE_LOCAL_VAR_STORAGE}")
 
   # Memorize last choice.
   if [ "${SAVE_DEFAULT}" == true ];then
