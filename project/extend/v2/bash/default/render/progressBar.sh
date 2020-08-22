@@ -15,13 +15,15 @@ renderProgressBar() {
   local MESSAGE='['
   local PRECISION=100;
 
-  local PROGRESS_BAR_RUNNING=$(wex var/localGet -n=PROGRESS_BAR_RUNNING -d=false)
+  if [ "${NEW_LINE}" != "true" ];then
+    local PROGRESS_BAR_RUNNING=$(wex var/localGet -n=PROGRESS_BAR_RUNNING -d=false)
 
-  if [ "${PROGRESS_BAR_RUNNING}" = true ];then
-    printf "\033[1A"
+    if [ "${PROGRESS_BAR_RUNNING}" = true ];then
+      printf "\033[1A"
+    fi
+
+    wex var/localSet -n=PROGRESS_BAR_RUNNING -v=true
   fi
-
-  wex var/localSet -n=PROGRESS_BAR_RUNNING -v=true
 
   if [ "${DESCRIPTION}" != "" ];then
     MESSAGE=${DESCRIPTION}"\n"${MESSAGE}
@@ -51,13 +53,13 @@ renderProgressBar() {
     MESSAGE+="  > "${STATUS}
   fi
 
-  if [ "${NEW_LINE}" = "true" ];then
-    echo ${MESSAGE}'       '
-  else
-    echo -ne ${MESSAGE}'       \r'
-  fi
+  printf "%b          \r" "${MESSAGE}"
 
   if [ "${PERCENTAGE}" = "100" ];then
-    wex var/localSet -n=PROGRESS_BAR_RUNNING -v=false
+    echo ""
+
+    if [ "${NEW_LINE}" != "true" ];then
+      wex var/localSet -n=PROGRESS_BAR_RUNNING -v=false
+    fi
   fi
 }
