@@ -11,7 +11,7 @@ siteInitArgs() {
 }
 
 siteInit() {
-  local RENDER_BAR='wex render/progressBar -w=30 '
+  local RENDER_BAR='wex prompt/progress -w=30 '
   # Status
   ${RENDER_BAR} -p=0 -s="Init variables"
 

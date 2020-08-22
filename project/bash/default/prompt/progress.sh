@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-renderProgressBarArgs() {
+promptProgressArgs() {
   _ARGUMENTS=(
     'percentage p "Percentage" true'
     'width w "Width" false 30'
@@ -12,7 +12,7 @@ renderProgressBarArgs() {
 
 # See : https://stackoverflow.com/questions/18362837/how-to-display-and-refresh-multiple-lines-in-bash
 # See : https://www.fileformat.info/info/unicode/char/25a0/index.htm
-renderProgressBar() {
+promptProgress() {
   local MESSAGE="    ${WEX_COLOR_RESET}["
   local PRECISION=100;
 
@@ -31,20 +31,15 @@ renderProgressBar() {
     MESSAGE=${DESCRIPTION}"\n"${MESSAGE}
   fi
 
-  # TODO Use default value then remove
-  if [ "${WIDTH}" = "" ];then
-    WIDTH=30
-  fi
-
   # Compute progress position
   for ((i=0;i<=${WIDTH};i++));
   do
-     I_CALC=$(expr ${i} \* ${PRECISION})
-     I_CALC=$(expr ${I_CALC} / ${WIDTH})
-     I_CALC=$(expr ${I_CALC} \* 100)
-     I_CALC=$(expr ${I_CALC} / ${PRECISION})
+     I_CALC=$((i * PRECISION))
+     I_CALC=$((I_CALC / WIDTH))
+     I_CALC=$((I_CALC * 100))
+     I_CALC=$((I_CALC / PRECISION))
 
-     if [ ${I_CALC} -lt ${PERCENTAGE} ] || [ ${I_CALC} = ${PERCENTAGE} ];then
+     if [ ${I_CALC} -le "${PERCENTAGE}" ];then
        MESSAGE+="${WEX_COLOR_CYAN}"
      else
        MESSAGE+="${WEX_COLOR_GRAY}"
