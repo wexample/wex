@@ -193,7 +193,7 @@ _wexItemFail() {
     return
   fi;
 
-  _wexItem "${@}" "x" "${WEX_COLOR_RED}"
+  _wexItem "${@}" "    x   " "${WEX_COLOR_RED}"
 }
 
 _wexItemSuccess() {
@@ -201,7 +201,7 @@ _wexItemSuccess() {
     return
   fi;
 
-  _wexItem "${@}" "✓" "${WEX_COLOR_GREEN}"
+  _wexItem "${@}" "    ✓   " "${WEX_COLOR_GREEN}"
 }
 
 _wexLog() {
