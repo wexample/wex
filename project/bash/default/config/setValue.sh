@@ -11,7 +11,7 @@ configSetValueArgs() {
 }
 
 configSetValue() {
-  _wexItem "${KEY}=" "${VALUE} ${WEX_COLOR_GRAY}("$(basename ${FILE})")"
+  _wexItem "${KEY}=" "${VALUE}" "    > $(basename ${FILE}) "
 
   if [ "${IGNORE_DUPLICATES}" = "true" ];then
     # Add value without checks.

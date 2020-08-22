@@ -162,7 +162,7 @@ _wexItem() {
     return
   fi;
 
-  local ICON="*"
+  local ICON="    *   "
   if [ "${3}" != "" ];then
     ICON=${3}
   fi
@@ -172,11 +172,18 @@ _wexItem() {
     ICON_COLOR=${4}
   fi
 
-  local TEXT="    ${ICON_COLOR}${ICON}${WEX_COLOR_RESET}    ${1}${WEX_COLOR_RESET}"
+  local WRAPPER_WIDTH
+  WRAPPER_WIDTH=${#ICON}
+
+  MESSAGE=$(_wexTruncate "${1}" ${WRAPPER_WIDTH})
+  local TEXT="${ICON_COLOR}${ICON}${WEX_COLOR_RESET}${MESSAGE}${WEX_COLOR_RESET}"
 
   # Complementary information or description for extra text
   if [ "${2}" != "" ];then
-    TEXT+="${WEX_COLOR_CYAN}${2}${WEX_COLOR_RESET}"
+    # We don't know the real tab width, but we a add a 8 chars length security.
+    WRAPPER_WIDTH=$(("${WRAPPER_WIDTH}" + "${#MESSAGE}" + 8))
+    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate ${2} "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
+#    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate "${2}" "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
   fi
 
   printf "${TEXT}\n"
@@ -203,11 +210,7 @@ _wexLog() {
     return
   fi;
 
-  local MAX_WIDTH
-  # Add wrapper length.
-  MAX_MIDTH=$((${WEX_SCREEN_WIDTH} - 4))
-
-  MESSAGE=$(_wexTruncate "${1}" ${MAX_MIDTH})
+  MESSAGE=$(_wexTruncate "${1}" 4)
 
   printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
@@ -253,14 +256,13 @@ _wexTitle() {
 
 _wexTruncate() {
   local MAX_MIDTH;
-  MAX_WIDTH=$((${2} - ${WEX_TRUCATE_SPACE}))
+  MAX_WIDTH=$((${WEX_SCREEN_WIDTH} - ${WEX_TRUCATE_SPACE} - ${2}))
 
   if [ "${#1}" -gt "${MAX_WIDTH}" ];then
     echo "$(echo "${1}" | cut -c -"${MAX_WIDTH}")${WEX_COLOR_GRAY}...${WEX_COLOR_RESET} "
-    return
+  else
+    echo "${1}"
   fi
-
-  echo "${1}"
 }
 
 _wexUpperCaseFirstLetter() {
