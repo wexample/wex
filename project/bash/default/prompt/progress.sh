@@ -34,12 +34,7 @@ promptProgress() {
   # Compute progress position
   for ((i=0;i<=${WIDTH};i++));
   do
-     I_CALC=$((i * PRECISION))
-     I_CALC=$((I_CALC / WIDTH))
-     I_CALC=$((I_CALC * 100))
-     I_CALC=$((I_CALC / PRECISION))
-
-     if [ ${I_CALC} -le "${PERCENTAGE}" ];then
+     if [ $(((((i * PRECISION) / WIDTH) * 100) / PRECISION)) -le "${PERCENTAGE}" ];then
        MESSAGE+="${WEX_COLOR_CYAN}"
      else
        MESSAGE+="${WEX_COLOR_GRAY}"
