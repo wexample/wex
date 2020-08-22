@@ -183,7 +183,6 @@ _wexItem() {
     # We don't know the real tab width, but we a add a 8 chars length security.
     WRAPPER_WIDTH=$(("${WRAPPER_WIDTH}" + "${#MESSAGE}" + 8))
     TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate ${2} "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
-#    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate "${2}" "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
   fi
 
   printf "${TEXT}\n"
