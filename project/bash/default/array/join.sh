@@ -10,18 +10,18 @@ arrayJoinArgs() {
 
 arrayJoin() {
   ARRAY=(${ARRAY})
-  OUTPUT=""
 
   if [ -z "${SEPARATOR+x}" ];then
     # Default space separator
     SEPARATOR=""
   fi;
 
-  FIRST=true
+  local FIRST=true
+  local OUTPUT=""
 
-  for ITEM in ${ARRAY[@]}
+  for ITEM in "${ARRAY[@]}"
   do
-    if [[ ${FIRST} == true ]];then
+    if [ "${FIRST}" = true ];then
       FIRST=false
     else
       OUTPUT+=${SEPARATOR}
@@ -30,5 +30,5 @@ arrayJoin() {
     OUTPUT+=${ITEM}
   done;
 
-  echo ${OUTPUT}
+  echo "${OUTPUT}"
 }
