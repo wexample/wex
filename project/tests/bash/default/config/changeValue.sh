@@ -6,14 +6,17 @@ configChangeValueTest() {
   FILEPATH=$(_wexTestSampleInit configSample)
 
   RESULT=$(wex config/processSeparator -s=",")
-  _wexTestAssertEqual ${RESULT} "\(,\)\{1,\}"
+  _wexTestAssertEqual "${RESULT}" "\(,\)\{1,\}"
 
   # No separator
   RESULT=$(wex config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
-  _wexTestAssertEqual ${RESULT} "two"
+  _wexTestAssertEqual "${RESULT}" "two"
 
   # Space separator
   configChangeValueTestItem "${FILEPATH}" "ConfigTestOption" " "
+
+  # Revert file.
+  FILEPATH=$(_wexTestSampleInit configSample)
 
   # Strict equal separator
   configChangeValueTestItem "${FILEPATH}" "ConfigTestOptionEqual" "="
@@ -28,25 +31,35 @@ configChangeValueTest() {
 }
 
 configChangeValueTestItem() {
-  filePath=${1}
-  variableName=${2}
-  separator=${3}
-  expected="tested"
+  local FILEPATH="${1}"
+  local NAME="${2}"
+  local SEPARATOR="${3}"
+  local EXPECTED="tested"
+  local ORIGINAL
+  local CHANGED
 
   # Backup
-  original=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
+  ORIGINAL=$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")
 
   # Set value.
-  wex config/changeValue -f=${filePath} -k=${variableName} -v="${expected}" -s="${separator}"
-  # Get value
-  changed=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
-  # Check
-  _wexTestAssertEqual "${changed}" "${expected}"
+  wex config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${EXPECTED}" -s="${SEPARATOR}"
+  configChangeValueTestItemCheck "${EXPECTED}"
 
   # Revert
-  wex config/changeValue -f=${filePath} -k=${variableName} -v="${original}" -s="${separator}"
-  # Get value
-  changed=$(wex config/getValue -f="${filePath}" -k="${variableName}" -s="${separator}")
+  wex config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
+  configChangeValueTestItemCheck "${ORIGINAL}"
+
+  # Remove
+  wex config/removeKey -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}" --quiet
+  configChangeValueTestItemCheck ""
+
+  # Reset
+  wex config/setValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
+  configChangeValueTestItemCheck "${ORIGINAL}"
+}
+
+configChangeValueTestItemCheck() {
+  CHANGED=$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")
   # Check
-  _wexTestAssertEqual "${changed}" "${original}"
+  _wexTestAssertEqual "${CHANGED}" "${1}"
 }

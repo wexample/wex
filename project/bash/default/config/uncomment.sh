@@ -2,15 +2,14 @@
 
 configUncommentArgs() {
  _ARGUMENTS=(
-   [0]='target_key k "Target key to uncomment" true'
-   [1]='separator s "Separator like space or equal sign, default space" false'
-   [2]='file f "File" true'
-   [3]='char c "Comment character" false'
+   'target_key k "Target key to uncomment" true'
+   'separator s "Separator like space or equal sign, default space" false'
+   'file f "File" true'
+   'char c "Comment character" false'
  )
 }
 
 configUncomment() {
-
   SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
   if [ -z "${CHAR+x}" ];then
