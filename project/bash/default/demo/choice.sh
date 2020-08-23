@@ -1,13 +1,20 @@
 
 demoChoice() {
-  local ARR=(one two three)
-  local SELECTED=1
+  local ARR=(one two three a b c d e f g h i j k l m n o p q r s t u v etc)
+
+  choice
+}
+
+choice() {
+  local SELECTED=0
 
   renderLine
 }
 
 reloadLine() {
-  printf "\033[%sA" "${#ARR}"
+  # Move cursor up
+  printf "\033[%sA" "${#ARR[@]}"
+
   printf "\r"
 
   renderLine
@@ -19,7 +26,6 @@ renderLine() {
   for ITEM in "${ARR[@]}"
   do
     ((COUNTER++))
-    local COLOR;
     local LINE="\033[K    "
 
     if [ "${COUNTER}" = "${SELECTED}" ];then
@@ -36,11 +42,29 @@ renderLine() {
   local ESCAPE
   ESCAPE=$(printf "\u1b")
 
-  read -rsn 1 -p "$(echo -e "Select what you want: ${WEX_COLOR_RESET}")" ARROW
-  if [ "${ARROW}" = "${ESCAPE}" ]; then
-      read -rsn2 ARROW # read 2 more chars
+  local BACKSPACE=$(cat << eof
+0000000 005177
+0000002
+eof
+)
+
+  local SELECTED_DISPLAY=${SELECTED}
+  # Hide zero from display
+  if [ "${SELECTED}" = "0" ];then
+    SELECTED_DISPLAY=""
   fi
-  case "${ARROW}" in
+
+  read -rsn 1 -p "$(echo -e "Select what you want: ${WEX_COLOR_RESET}${SELECTED_DISPLAY}   ")" ARROW
+
+  if [ "$(echo "$ARROW" | od)" = "${BACKSPACE}" ];then
+    SELECTED=${SELECTED%?}
+    reloadLine
+  fi
+
+  if [ "${ARROW}" = "${ESCAPE}" ]; then
+      read -rsn 2 ARROW # read 2 more chars
+  fi
+  case ${ARROW} in
       '[A')
         ((SELECTED--))
 
@@ -52,12 +76,24 @@ renderLine() {
       '[B')
         ((SELECTED++))
 
-        if [ ${SELECTED} -ge ${#ARR} ];then
-          SELECTED=${#ARR}
+        if [ ${SELECTED} -ge ${#ARR[@]} ];then
+          SELECTED=${#ARR[@]}
         fi
 
         reloadLine ;;
-      # TODO
-      *) >&2 echo 'ERR bad input'; return ;;
+      ''|*[0-9]*)
+          if [ "${SELECTED}" = "0" ];then
+            SELECTED=""
+          fi
+
+          SELECTED+=${ARROW}
+
+          if [ "${SELECTED}" -ge $(( ${#ARR[@]} + 1 )) ];then
+            SELECTED=0
+          fi
+
+          reloadLine
+          ;;
+#      *) >&2 echo 'ERR bad input'; return ;;
   esac
 }

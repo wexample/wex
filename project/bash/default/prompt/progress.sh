@@ -21,6 +21,7 @@ promptProgress() {
     local PROGRESS_BAR_RUNNING=$(wex var/localGet -n=PROGRESS_BAR_RUNNING -d=false)
 
     if [ "${PROGRESS_BAR_RUNNING}" = true ];then
+      # Move cursor up
       printf "\033[1A"
     fi
 
