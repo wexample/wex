@@ -21,8 +21,5 @@ chmod -R +x "/opt/wexample"
 # Install global packages
 # apt-get update -yqq
 
-# Install composer : we use some libraries in PHP scripts
-# wex composer/pharInstall
-
 # Run all tests
 # bash ./project/bash/default/_tests/_run.sh
