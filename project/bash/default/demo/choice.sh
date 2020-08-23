@@ -14,5 +14,3 @@ demoChoice() {
 
   echo ""
 }
-
-
