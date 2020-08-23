@@ -16,7 +16,7 @@ serviceTemplates() {
   local SITE_ENV=$(wex site/env)
 
   for FILE in ${SECTION_FILES[@]};do
-    SPLIT=($(wex text/split -s="." -t=${FILE}))
+    SPLIT=($(wex string/split -s="." -t="${FILE}"))
     BASE_NAME=${SPLIT[0]}
 
     # Base file ex container.ext

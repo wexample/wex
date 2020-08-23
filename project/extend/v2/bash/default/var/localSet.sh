@@ -10,7 +10,7 @@ varLocalSetArgs() {
 
 varLocalSet() {
   # If no file specified
-  if [ "${FILE}" == "" ];then
+  if [ "${FILE}" = "" ];then
     # Use wex tmp folder
     FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
   fi
@@ -24,5 +24,5 @@ varLocalSet() {
   # Remove all previous values.
   wex config/removeKey -k=${NAME}"\=" -f=${FILE}
 
-  echo -e ${NAME}'='${VALUE} >> ${FILE}
+  echo -e "${NAME}=${VALUE}" >> ${FILE}
 }

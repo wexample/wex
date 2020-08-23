@@ -4,7 +4,7 @@ serviceList() {
   # From config.
   SERVICES=$(wex site/config -k=services)
   # Split
-  SERVICES=($(wex text/split -t=${SERVICES} -s=","))
+  SERVICES=($(wex string/split -t="${SERVICES}"))
   # Return
   echo ${SERVICES[@]}
 }

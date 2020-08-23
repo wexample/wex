@@ -15,7 +15,7 @@ WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/serve
 export BASHRC_PATH=~/.bashrc
 
 export WEX_CORE_VERSION=3.3
-export WEX_VERSION_FALLBACK=2.0.0
+export WEX_VERSION_FALLBACK=2.0.0 # TODO REMOVE
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_INSTALL
@@ -175,14 +175,14 @@ _wexItem() {
   local WRAPPER_WIDTH
   WRAPPER_WIDTH=${#ICON}
 
-  MESSAGE=$(_wexTruncate "${1}" ${WRAPPER_WIDTH})
+  MESSAGE=$(_wexTruncate "${1}" "${WRAPPER_WIDTH}")
   local TEXT="${ICON_COLOR}${ICON}${WEX_COLOR_RESET}${MESSAGE}${WEX_COLOR_RESET}"
 
   # Complementary information or description for extra text
   if [ "${2}" != "" ];then
     # We don't know the real tab width, but we a add a 8 chars length security.
     WRAPPER_WIDTH=$(("${WRAPPER_WIDTH}" + "${#MESSAGE}" + 8))
-    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate ${2} "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
+    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate "${2}" "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
   fi
 
   printf "${TEXT}\n"

@@ -81,7 +81,7 @@ WEX_VERSION=${WEX_VERSION}
 EOF
 
   if [ "${DOMAINS}" != "" ];then
-    local DOMAINS_SPLIT=$(wex text/split -t=${DOMAINS} -s=",")
+    local DOMAINS_SPLIT=$(wex string/split -t="${DOMAINS}" -s=",")
     local DOMAINS_MAIN=${DOMAINS_SPLIT[0]}
   else
     local DOMAINS=domain.com

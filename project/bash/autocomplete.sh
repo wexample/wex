@@ -4,7 +4,7 @@ autocomplete() {
   . /opt/wex/project/bash/globals.sh
   local CUR=${COMP_WORDS[${COMP_CWORD}]}
   local SUGGESTIONS=();
-  local SPLIT=($(wex text/split -t=${CUR} -s=/))
+  local SPLIT=($(wex string/split -t="${CUR}" -s=/))
   local SEEK_GROUP=${SPLIT[0]}
   local SEEK_SCRIPT=${SPLIT[1]}
   local HAS_GROUP=$([ "${SEEK_GROUP}" != "" ] && [ ${SEEK_GROUP} != ${CUR} ] && echo "true" || echo "false");

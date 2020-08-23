@@ -9,7 +9,7 @@ containersExistsArgs() {
 containersExists() {
   local EXPECTED=($(wex containers/list))
   local RUNNING=($(docker ps -aq))
-  local NAMES=$(wex text/split -t=${NAMES} -s=",")
+  local NAMES=$(wex string/split -t="${NAMES}")
   local ALL_RUNS=true
 
   for NAME in ${EXPECTED[@]}

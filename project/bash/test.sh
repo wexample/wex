@@ -165,4 +165,4 @@ wexTest() {
   done
 }
 
-wexTest ${@}
+wexTest "${@}"
