@@ -8,5 +8,5 @@ dirCountLinesArgs() {
 }
 
 dirCountLines() {
-  find ${DIR} -name '*.'${EXTENSION} | xargs wc -l
+  find "${DIR}" -name "*.${EXTENSION}" | xargs wc -l
 }
