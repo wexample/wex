@@ -2,10 +2,10 @@
 
 domainFromUrlArgs() {
   _ARGUMENTS=(
-    [0]='url u "URL" true'
+    'url u "URL" true'
   )
 }
 
 domainFromUrl() {
-  echo ${URL} | awk -F/ '{print $3}'
+  echo "${URL}" | awk -F/ '{print $3}'
 }
