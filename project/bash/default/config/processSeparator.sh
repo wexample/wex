@@ -2,13 +2,13 @@
 
 configProcessSeparatorArgs() {
   _ARGUMENTS=(
-    [0]='separator s "Separator like space or equal sign, default space" false'
+    'separator s "Separator like space or equal sign, default space" false'
   )
 }
 
 configProcessSeparator() {
   # Empty separator
-  if [ "${SEPARATOR}" == "" ];then
+  if [ "${SEPARATOR}" = "" ];then
     # Default space separator
     SEPARATOR=" "
   fi;
