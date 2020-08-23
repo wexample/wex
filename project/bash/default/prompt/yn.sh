@@ -12,6 +12,7 @@ promptYn() {
     case $yn in
         [Nn]* ) echo false; break;;
         [Yy]* ) echo true; break;;
+        "" ) echo true; break;;
         * ) wex prompt/yn -q="${QUESTION}"; break;;
     esac
   done
