@@ -6,7 +6,17 @@ demoChoice() {
 }
 
 choice() {
+  local BACKSPACE
+  local ESCAPE
   local SELECTED=0
+
+  BACKSPACE=$(cat << eof
+0000000 005177
+0000002
+eof
+)
+
+  ESCAPE=$(printf "\u1b")
 
   renderLine
 }
@@ -38,15 +48,6 @@ renderLine() {
   done;
 
   printf "%b" "${WEX_COLOR_CYAN}"
-
-  local ESCAPE
-  ESCAPE=$(printf "\u1b")
-
-  local BACKSPACE=$(cat << eof
-0000000 005177
-0000002
-eof
-)
 
   local SELECTED_DISPLAY=${SELECTED}
   # Hide zero from display
