@@ -16,4 +16,5 @@ wordpress4AppStarted() {
   fi
 
   echo "WP_CORE_VERSION=${WP_CORE_VERSION}" >> .wex
+  wex config/changeValue -f=.wex -k=WP_CORE_VERSION -v="${WP_CORE_VERSION}" -s
 }
