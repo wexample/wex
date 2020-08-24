@@ -14,7 +14,7 @@ configYml() {
 
   # Allow specified file
   if [ "${FILE_COMPOSE_YML}" == "" ]; then
-    FILE_COMPOSE_YML=${DIR_SITE}${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML}
+    FILE_COMPOSE_YML=${DIR_SITE}${WEX_APP_COMPOSE_BUILD_YML}
   fi;
 
   # Parse yml file built by docker compose.

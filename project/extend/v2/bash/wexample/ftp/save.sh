@@ -8,7 +8,7 @@ ftpSaveArgs() {
 
 ftpSave() {
   # Load site name.
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   # Create dest dir.
   mkdir -p ./ftp/passwd

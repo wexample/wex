@@ -11,5 +11,5 @@ cliExecArgs() {
 cliExec() {
   local CLI=$(wex hook/exec -c=cliExec);
   # Pipe command to cli call.
-  wex site/exec -l -c="${CLI} ${COMMAND}"
+  wex app/exec -l -c="${CLI} ${COMMAND}"
 }

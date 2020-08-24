@@ -25,5 +25,5 @@ wex docker/install
 mkdir -p /var/www
 
 # Say Hi.
-echo "Wexample Script installed at version "$(wex wex/version)
+echo "Wexample Script installed at version "$(wex core/version)
 wex wex/logo

@@ -16,7 +16,7 @@ siteConfigWriteTest() {
   wexTestAssertEqual true  $([[ -f "./tmp/config" ]] && echo true || echo false)
   wexTestAssertEqual true  $([[ -f "./tmp/docker-compose.build.yml" ]] && echo true || echo false)
 
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   wexTestAssertEqual true  $([[ ${TEST_SITE_NAME} == ${SITE_NAME} ]] && echo true || echo false)
 }

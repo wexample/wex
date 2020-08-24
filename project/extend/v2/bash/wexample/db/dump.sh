@@ -22,7 +22,7 @@ dbDump() {
     return
   fi
 
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   # Filename is specified
   if [ "${FILENAME}" != "" ];then

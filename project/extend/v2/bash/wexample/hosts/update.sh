@@ -3,7 +3,7 @@
 hostsUpdate() {
   # Rebuild hosts file
   local IP=$(wex docker/ip)
-  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
+  local REGISTRY=$(cat ${WEX_PROXY_APPS_REGISTRY})
   local HOSTS_FILE=""
   local DIR=""
 
@@ -22,5 +22,5 @@ hostsUpdate() {
   done;
 
   # Store hosts list.
-  echo -e ${HOSTS_FILE} | sudo tee ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts > /dev/null
+  echo -e ${HOSTS_FILE} | sudo tee ${WEX_DIR_PROXY_TMP}hosts > /dev/null
 }

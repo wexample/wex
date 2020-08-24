@@ -183,7 +183,7 @@ sitePublish() {
   #${RENDER_BAR} -p=60 -s="Create prod SSL key pair"
 
   # Start site on production
-  #wex remote/exec -q -e=prod -s="wex site/start && echo 'Waiting 10s...' && sleep 10 && wex ssl/renew"
+  #wex remote/exec -q -e=prod -s="wex app/start && echo 'Waiting 10s...' && sleep 10 && wex ssl/renew"
 
   # Activate SSL configuration locally.
   #wex ssl/enable -e=prod

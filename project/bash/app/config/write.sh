@@ -9,9 +9,9 @@ configWriteArgs() {
 
 configWrite() {
   # No recreate.
-  if [ "${NO_RECREATE}" == true ] &&
-    [ -f ${WEX_WEXAMPLE_APP_DIR_TMP}config ] &&
-    [ -f ${WEX_WEXAMPLE_APP_COMPOSE_BUILD_YML} ];then
+  if [ "${NO_RECREATE}" = true ] &&
+    [ -f "${WEX_WEXAMPLE_APP_DIR_TMP}config" ] &&
+    [ -f "${WEX_WEXAMPLE_APP_COMPOSE_BUILD_YML}" ];then
 
     # TODO fix the config issue in globals.sh before enabling nested logs
     #  _wexLog "App config file exists. No recreating."
@@ -22,15 +22,14 @@ configWrite() {
 
   _wexLog "Creating temporary folder : ${WEX_WEXAMPLE_APP_DIR_TMP}"
     # Create temp dirs if not exists.
-  mkdir -p ${WEX_WEXAMPLE_APP_DIR_TMP}
+  mkdir -p "${WEX_WEXAMPLE_APP_DIR_TMP}"
 
   if [ "${STARTED}" != true ];then
    # Default space separator
     STARTED=false
   fi;
 
-  local APPS_PATHS=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}sites)
-
+  local APPS_PATHS=$(cat "${WEX_PROXY_APPS_REGISTRY}")
   local PORTS_USED_CURRENT=$(wex service/findFreeLocalPorts -s=",")
   _wexLog "Assign local ports : ${PORTS_USED_CURRENT}"
 
@@ -43,14 +42,15 @@ configWrite() {
 
   # Support custom images version
   if [ "${IMAGES_VERSION}" == "" ];then
-    local IMAGES_VERSION=$(wex wex/version)
+    local IMAGES_VERSION
+    IMAGES_VERSION=$(wex core/version)
   fi
 
   _wexLog "Preparing global site configuration"
 
   local APP_CONFIG_FILE_CONTENT=""
 
-  # TODO Previx all with APP_
+  # TODO Prefix all with APP_
   APP_CONFIG_FILE_CONTENT+='\n# App'
   APP_CONFIG_FILE_CONTENT+='\nAPP_NAME_INTERNAL='${APP_NAME}"_"${APP_ENV}
   APP_CONFIG_FILE_CONTENT+='\nSITE_PORTS_USED='${PORTS_USED_CURRENT}
@@ -82,8 +82,8 @@ configWrite() {
   wex hook/exec -c="appConfig"
 
   # In case we are on non unix system.
-  wex file/convertLinesToUnix -f=${WEX_WEXAMPLE_APP_FILE_CONFIG} &> /dev/null
+  wex file/convertLinesToUnix -f="${WEX_WEXAMPLE_APP_FILE_CONFIG}" &> /dev/null
 
   # Create docker-compose.build.yml
-  wex site/compose -c="config" | tee ${WEX_APP_COMPOSE_BUILD_YML} > /dev/null
+  wex app/compose -c="config" | tee "${WEX_APP_COMPOSE_BUILD_YML}" > /dev/null
 }

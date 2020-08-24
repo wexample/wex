@@ -32,7 +32,7 @@ siteRun() {
     wex site/init -n=${SITE_NAME} -s="${SERVICES_NEW}" -e=${ENVIRONMENT} --git=false
   fi
 
-  if [ $(wex site/started) == false ];then
-    wex site/start
+  if [ $(wex app/started) == false ];then
+    wex app/start
   fi
 }

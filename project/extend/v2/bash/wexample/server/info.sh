@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 serverInfo() {
-  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
+  REGISTRY=$(cat ${WEX_PROXY_APPS_REGISTRY})
 
   for SITE_PATH in ${REGISTRY[@]}
   do
@@ -11,5 +11,5 @@ serverInfo() {
     fi
   done;
 
-  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+  cat ${WEX_DIR_PROXY_TMP}config
 }

@@ -12,7 +12,7 @@ appUpdate() {
 
   local VERSION_FROM=$(_wexAppVersion)
   local VERSION_TO=$(wex core/version)
-  local STARTED=$(wex site/started)
+  local STARTED=$(wex app/started)
 
   wex core::migration/exec --from ${VERSION_FROM} --to ${VERSION_TO} --command app
 

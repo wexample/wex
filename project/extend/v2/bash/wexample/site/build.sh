@@ -6,5 +6,5 @@ siteBuild() {
   # Rebuild assets.
   wex hook/exec -c=build
   # Reset permissions.
-  wex site/perms
+  wex app/perms
 }

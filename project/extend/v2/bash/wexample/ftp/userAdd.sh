@@ -10,7 +10,7 @@ ftpUserAddArgs() {
 
 ftpUserAdd() {
   # Load site name.
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
   . .wex
 
   # TODO Does not work : use default generate file instead (no -f)

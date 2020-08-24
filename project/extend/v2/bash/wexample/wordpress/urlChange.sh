@@ -11,7 +11,7 @@ wordpressUrlChange() {
 
   # If no new url defined, use local config.
   if [ "${NEW_URL}" = "" ];then
-    . ${WEX_WEXAMPLE_SITE_CONFIG}
+    . ${WEX_APP_CONFIG}
     # Do not use https to support local envs.
     NEW_URL="http://${DOMAIN_MAIN}"
   fi
@@ -19,7 +19,7 @@ wordpressUrlChange() {
   # Change database records.
   local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
 
-  wex site/exec -l -c="wp search-replace --allow-root ${OLD_URL} ${NEW_URL}"
+  wex app/exec -l -c="wp search-replace --allow-root ${OLD_URL} ${NEW_URL}"
 
   # Change wp-config.php
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")

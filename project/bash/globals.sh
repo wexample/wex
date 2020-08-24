@@ -28,11 +28,15 @@ export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
 export WEX_SED_I_ORIG_EXT=".orig"    # Used by sed to store a local temp backup file before removing it.
 export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)    # /opt can't be mounted on macos, using Users instead.
-export WEX_WEXAMPLE_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
+export WEX_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
 export WEX_QUIET_MODE='off'
 export WEX_QUIET_MODE_PREVIOUS='off'
 export WEX_SCREEN_WIDTH=$(tput cols)
 export WEX_TRUCATE_SPACE=4 # 3 dots plus one space.
+export WEX_WEXAMPLE_ENVIRONMENTS=(local dev prod)
+export WEX_PROXY_CONTAINER=wex_server
+export WEX_PROXY_APPS_REGISTRY=${WEX_DIR_PROXY_TMP}apps
+export WEX_APP_CONFIG=${WEX_WEXAMPLE_SITE_DIR_TMP}config
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -137,7 +141,7 @@ _wexFindScriptFile() {
   export WEX_SCRIPT_METHOD_ARGS_NAME=${WEX_SCRIPT_METHOD_NAME}"Args";
 
   # Use main script if still not exists.
-  if [ -f ${WEX_SCRIPT_FILE} ] || [ -d ${WEX_SCRIPT_DIR} ]; then
+  if [ -f "${WEX_SCRIPT_FILE}" ] || [ -d "${WEX_SCRIPT_DIR}" ]; then
     export WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
   else
     export WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
@@ -211,7 +215,7 @@ _wexLog() {
 
   MESSAGE=$(_wexTruncate "${1}" 4)
 
-  printf "${WEX_COLOR_GRAY}  - ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
+  printf "${WEX_COLOR_GRAY}  > ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
 
 _wexMessage() {

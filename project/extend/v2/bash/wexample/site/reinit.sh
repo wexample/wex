@@ -7,12 +7,12 @@ siteReinit() {
   fi
 
   # Stop if running.
-  wex site/stop
+  wex app/stop
 
   local GIT=$([ -d .git ] && echo true || echo false)
 
   # Load conf.
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
   . .wex
 
   # Go to parent dir.

@@ -7,6 +7,6 @@ hookExecArgs() {
 }
 
 hookExec() {
-  wex service/exec -c=${COMMAND}
-  wex script/exec -c=${COMMAND}
+  wex service/exec -c="${COMMAND}"
+  wex script/exec -c="${COMMAND}"
 }

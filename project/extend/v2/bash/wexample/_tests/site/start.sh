@@ -19,7 +19,7 @@ siteStartTest() {
   cd ${WEX_TEST_DIR_TMP}"testsite"
 
   # Start website
-  $(wex site/start) &>/dev/null
+  $(wex app/start) &>/dev/null
 
   # SERVICES=($(ls ${WEX_DIR_ROOT}"/services" | tr "\n" " " ))
   SERVICES=("web" "mysql" "phpmyadmin") # TODO missing servcies docker files.
@@ -35,7 +35,7 @@ siteStartTest() {
 
   # Start website again
   wexLog "Start first site"
-  $(wex site/start) &>/dev/null
+  $(wex app/start) &>/dev/null
   _siteInitTest_checkRange 0
   # One line
   _siteInitTest_checkSitesNumber 1
@@ -46,7 +46,7 @@ siteStartTest() {
   cd ${WEX_TEST_DIR_TMP}"testsite2"
   # Start second site
   wexLog "Start second site"
-  $(wex site/start) &>/dev/null
+  $(wex app/start) &>/dev/null
   _siteInitTest_checkSitesNumber 2
   wexLog "Restart second site"
   $(wex site/restart) &>/dev/null
@@ -55,7 +55,7 @@ siteStartTest() {
   # Return to fist site
   cd ${WEX_TEST_DIR_TMP}"testsite"
   wexLog "Stop first site"
-  $(wex site/stop) &>/dev/null
+  $(wex app/stop) &>/dev/null
   _siteInitTest_checkSitesNumber 1
 
   # Stop all sites

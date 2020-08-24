@@ -41,11 +41,11 @@ wex migration/migrate
 # Edit site entity.
 wex entity/edit
 # Reset all site assets.
-wex site/build
+wex app/build
 # Install all site packages, dependencies, assets..
 wex site/install
 # Give all useful permissions.
-wex site/perms
+wex app/perms
 # Run unit test for given website
 wex site/test -f=project/tests/file.php -m=testMethod
 # Update all packages.
@@ -109,13 +109,13 @@ Wex sites uses specific files structure in order to be ran and deployed with eas
 
 After cloning the site form the git repo, just go into site, start it and run the install command.
 
-    wex site/start && wex site/install
+    wex app/start && wex site/install
 
 This will execute install script depending to the services used. It also execute custom scripts placed into the `ci/install.sh` file if present. 
 
 ## Running a wex site
 
-   wex site/start
+   wex app/start
 
 ## Running issues
 
@@ -150,7 +150,7 @@ If present, the scripts execution uses the wexample namespace before default nam
 
 ```bash
 # Try to execute wex wexample::site/start if present.
-wex site/start
+wex app/start
 ```
 
 This file contains main site information. It is generated when using ```wex wexample::site/init```

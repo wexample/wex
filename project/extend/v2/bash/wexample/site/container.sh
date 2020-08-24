@@ -7,7 +7,7 @@ siteContainerArgs() {
 }
 
 siteContainer() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   # Default container name.
   if [ "${CONTAINER}" == "" ]; then

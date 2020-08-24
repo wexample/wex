@@ -26,11 +26,11 @@ RUN apt-get update -yqq && \
   php-memcached \
   php-mysql \
   php-xdebug \
-  php-xml \
   php-zip \
   php7.3 \
   php7.3-apcu \
   php7.3-intl \
+  php7.3-xml \
   sendmail \
   -yqq && \
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \

@@ -7,7 +7,7 @@ dbExecArgs() {
 }
 
 dbExec() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
   local LOGIN=$(wex mysql/loginCommand)
   local QUERY="mysql --defaults-extra-file=/var/www/tmp/mysql.cnf -s -N ${SITE_NAME} -e \""${COMMAND}"\""
   docker exec ${SITE_NAME_INTERNAL}_mysql sh -c "${QUERY}"

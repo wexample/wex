@@ -20,7 +20,7 @@ sitesStart() {
       local PATH="${PATH}/${SITE_ENV}"
       if [ -d ${PATH} ];then
         cd ${PATH}
-        wex site/start
+        wex app/start
       fi;
     done
   done

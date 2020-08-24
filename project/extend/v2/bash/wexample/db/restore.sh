@@ -10,7 +10,7 @@ dbRestoreArgs() {
 dbRestore() {
   # We expect to be into site root folder.
 
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   # Remote restoration.
   if [ ! -z ${ENVIRONMENT+x} ];then

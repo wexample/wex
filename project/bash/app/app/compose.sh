@@ -30,7 +30,7 @@ appCompose() {
       fi
   done
 
-  if [ $(wex service/used -s=proxy) == false ];then
+  if [ "$(wex service/used -s=proxy)" = false ];then
     local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/default/docker-compose.yml"
   else
     local COMPOSE_FILES=" -f "${WEX_DIR_ROOT}"containers/network/docker-compose.yml"

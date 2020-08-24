@@ -15,7 +15,7 @@ configLoad() {
 
   # Export all variable from conf file.
   set -a
-    source ${DIR_SITE}${WEX_WEXAMPLE_SITE_CONFIG}
+    source ${DIR_SITE}${WEX_APP_CONFIG}
   set +a
 
   export SITE_PATH_ROOT=$(realpath ${DIR_SITE})"/"

@@ -2,5 +2,5 @@
 
 frameworkComposer1Install() {
   # Install composer.
-  wex site/exec -c="cd /var/www/html/project/ && wex frameworkComposer1/update"
+  wex app/exec -c="cd /var/www/html/project/ && wex frameworkComposer1/update"
 }

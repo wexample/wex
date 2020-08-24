@@ -60,5 +60,8 @@ promptProgress() {
     if [ "${NEW_LINE}" != "true" ];then
       wex var/localSet -n=PROGRESS_BAR_RUNNING -v=false
     fi
+  # Ignore the \r and jump to a new line
+  elif [ "${NEW_LINE}" = "true" ];then
+    echo ""
   fi
 }

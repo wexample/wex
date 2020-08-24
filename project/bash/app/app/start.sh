@@ -2,69 +2,75 @@
 
 appStartArgs() {
   _ARGUMENTS=(
-#    'clear_cache cc "Clear all caches" false'
-#    'containers c "Docker containers to run" false'
-#    'only o "Stop all other running sites before" false'
-#    'port p "Port for accessing site, only allowed if not already defined" false'
+    'clear_cache cc "Clear all caches" false'
+    'only o "Stop all other running sites before" false'
+    'port p "Port for accessing site, only allowed if not already defined" false'
   )
 }
 
 appStart() {
-  return
-
   # Stop other sites.
   if [ "${ONLY}" != "" ];then
-    local CURRENT_DIR=$(realpath ./)
-    wex sites/stop
+    local CURRENT_DIR
+    CURRENT_DIR=$(realpath ./)
+    wex apps/stop
     cd ${CURRENT_DIR}
   fi
 
   # Create env file.
   if [ ! -f .env ];then
-    echo "Missing .env file"
-    if [ $(wex prompt/yn -q="Would you like to create a new .env file ?") == true ];then
-      select SITE_ENV in ${WEX_WEXAMPLE_ENVIRONMENTS[@]};
-      do
-        echo 'SITE_ENV='${SITE_ENV} > .env
-        . .wex
-        # Set SITE_NAME_INTERNAL equivalent.
-        # Used by docker-compose to isolate docker services with the same name,
-        # useful when running two instance of the same app (eg: dev and prod).
-        echo 'COMPOSE_PROJECT_NAME='${NAME}_${SITE_ENV} >> .env
-        break
-      done
+    if [ "$(wex prompt/yn -q="Missing .env file, would you like to create it ?")" = true ];then
+      local ALLOWED_ENV="${WEX_WEXAMPLE_ENVIRONMENTS[*]}";
+      ALLOWED_ENV=$(wex array/join -a="${ALLOWED_ENV}" -s=",")
+
+      # Ask user
+      wex prompt/choice -c="${ALLOWED_ENV}" -q="Choose env name"
+
+      SITE_ENV=$(wex prompt/choiceGetValue)
+
+      echo "SITE_ENV=${SITE_ENV}" > .env
     else
+      _wexLog "Starting aborted"
       return
     fi
   fi
 
-  local IS_PROXY_SERVER=$(wex service/used -s=proxy)
+  local IS_PROXY_SERVER
+  IS_PROXY_SERVER=$(wex service/used -s=proxy)
 
   # Current site is not the server itself.
-  if [ ${IS_PROXY_SERVER} == false ];then
+  if [ ${IS_PROXY_SERVER} = false ];then
+    _wexLog "Check proxy server"
     # Start server on the given port number.
-    _siteStartRetry() {
+    _appStartRetry() {
+      local ARGS
+      local CURRENT_DIR
       # Cache overridden vars.
-      local CURRENT_DIR=$(realpath ./)
-      local ARGS=${WEX_ARGUMENTS}
+      ARGS=${WEX_ARGUMENTS}
+      CURRENT_DIR=$(realpath ./)
 
       # Server must be started.
-      sudo wex server/start -n -p=${PORT}
+      wex proxy/start -n -p="${PORT}"
+
+      # Something prevent proxy server to start
+      if [ "$(wex default::var/localGet -n=PROXY_ERROR)" != false ];then
+        return
+      fi
 
       # Relaunch manually to be sure to keep given arguments
-      cd ${CURRENT_DIR}
-      wex site/start ${ARGS}
+      cd "${CURRENT_DIR}" || return
+      wex app/start "${ARGS}"
     }
 
     # The server is not running.
-    if [ $(wex server/started) == false ];then
-      _wexMessage "Starting wex server"
-      _siteStartRetry
+    if [ "$(wex proxy/started)" = false ];then
+      _wexLog "Starting wex server"
+      _appStartRetry
       return
     # The server is running.
     else
       # Load server config.
-      . ${WEX_WEXAMPLE_DIR_PROXY_TMP}config
+      . ${WEX_DIR_PROXY_TMP}config
       # Asked port is not the same as currently used.
       if [ "${PORT}" != "" ] && [ "${PORT}" != "${WEX_SERVER_PORT_PUBLIC}" ];then
         local SITES_COUNT=$(wex sites/list -c);
@@ -79,7 +85,7 @@ appStart() {
         else
           _wexMessage "Restarting wex server on port ${PORT}"
           wex server/stop
-          _siteStartRetry
+          _appStartRetry
           return
         fi
       fi
@@ -87,11 +93,11 @@ appStart() {
   fi
 
   _siteStartSuccess() {
-    . ${WEX_WEXAMPLE_SITE_CONFIG}
+    . ${WEX_APP_CONFIG}
     . .wex
 
     # No message for proxy server.
-    if [ ${NAME} == ${WEX_WEXAMPLE_PROXY_CONTAINER} ];then
+    if [ "${NAME}" = "${WEX_PROXY_CONTAINER}" ];then
       return
     fi
 
@@ -104,8 +110,7 @@ appStart() {
       echo "      > http://"${DOMAIN}:${WEX_SERVER_PORT_PUBLIC}
     done;
 
-    if [ ${SITE_ENV} == "local" ];then
-
+    if [ "${SITE_ENV}" = "local" ];then
       echo ""
       echo "      You are in a local environment, so you might want"
       echo "      to run now some of this dev methods :"
@@ -113,7 +118,6 @@ appStart() {
       echo "        wex site/serve"
       echo "        wex site/go"
       echo ""
-
     fi
   }
 
@@ -121,13 +125,13 @@ appStart() {
   wex file/convertLinesToUnix -f=.env &> /dev/null
   wex file/convertLinesToUnix -f=.wex &> /dev/null
 
-  # Check if site is already started,
+  # Check if app is already started,
   # ignoring if containers runs or not.
-  if [[ $(wex site/started -ic) == true ]];then
+  if [ "$(wex app/started -ic)" = true ];then
      # All containers exists
      # but one is not started.
-     if [[ $(wex containers/exists -a) == true ]];then
-       if [[ $(wex containers/started -a) != true ]];then
+     if [ "$(wex containers/exists -a)" = true ];then
+       if [ "$(wex containers/started -a)" != true ];then
          # Start all containers
          wex containers/start
        fi
@@ -135,63 +139,62 @@ appStart() {
      else
        # Restart will stop and
        # rebuild everything.
-       wex site/restart
+       wex app/restart
      fi;
      _siteStartSuccess
      # We don't need to continue.
      return
   fi;
 
-  wex ci/exec -c=start
   # Write new config,
   # it will also export config variables
-  ${WEX_DIR_V3_CMD} config/write -s
+  wex config/write -s
 
   # Add site
   local DIR_SITE=$(realpath ./)"/"
   # Reload sites will clean up list.
-  wex sites/update
+  wex apps/update
   # Add new site.
-  echo -e "\n"${DIR_SITE} | sudo tee -a ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps > /dev/null
+  echo -e "\n"${DIR_SITE} | sudo tee -a ${WEX_PROXY_APPS_REGISTRY} > /dev/null
 
   # Rebuild hosts
   wex hosts/update
   # Load site config
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
   . .wex
   # Update host file if user has write access.
-  if [ ${SITE_ENV} == "local" ] && [ $(wex file/writable -f=/etc/hosts) == true ];then
+  if [ ${SITE_ENV} = "local" ] && [ "$(wex file/writable -f=/etc/hosts)" = true ];then
     wex hosts/updateLocal
   fi
 
-  wex hook/exec -c=start
+  wex hook/exec -c=appStart
 
   local DOCKER_SERVICES=''
 
   for CONTAINER in ${CONTAINERS[@]}
   do
-    # TODO We should build the container name including the ENV variable
+    # TODO We should build the container name including the ENV variable (testing...)
     # to allows to run the same site in several environments.
-    DOCKER_SERVICES+=" "${NAME}"_"${CONTAINER}
+    DOCKER_SERVICES+=" ${ENV}_${NAME}_${CONTAINER}"
   done;
 
   local OPTIONS=''
-  if [ "${CLEAR_CACHE}" == true ];then
+  if [ "${CLEAR_CACHE}" = true ];then
     OPTIONS=' --build'
   fi
 
   # Use previously generated yml file.
-  docker-compose -f ${WEX_WEXAMPLE_SITE_COMPOSE_BUILD_YML} up -d ${DOCKER_SERVICES} ${OPTIONS}
+  docker-compose -f "${WEX_APP_COMPOSE_BUILD_YML}" up -d ${DOCKER_SERVICES} ${OPTIONS}
 
-  wex site/perms
-  wex service/exec -c=started -nw
+  wex app/perms
+
   # Rebuild / reload configurations.
-  wex site/serve
-  # Bash hooks TODO remove ci/exec, use script/exec instead
-  wex ci/exec -c=started
-  wex hook/exec -c=siteStarted
+  wex app/serve
+  # Services hooks
+  wex hook/exec -c=appStarted
+
   # Execute server hook for global configurations.
-  wex service/exec -s=proxy -sf -c=siteStarted
+  wex service/exec -s=proxy -sf -c=appStarted
 
   _siteStartSuccess
 }

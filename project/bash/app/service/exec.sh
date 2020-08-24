@@ -23,7 +23,7 @@ serviceExec() {
   for SERVICE in ${SERVICES[@]}
   do
     if [ "${SERVICE_ONLY}" == "" ] || [ "${SERVICE_ONLY}" == "${SERVICE}" ];then
-      local SERVICE_DIR=${WEX_DIR_SERVICES}${SERVICE}"/"
+      local SERVICE_DIR=${WEX_DIR_SERVICES}${SERVICE}"/hooks/"
       local SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"
 
       if [[ -f ${SERVICE_FILE_SCRIPT} ]];then

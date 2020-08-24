@@ -13,5 +13,5 @@ ownerChange() {
   if [ "${RECURSIVE}" == "true" ];then
     RECURSIVE="-R"
   fi
-  wex site/exec -c="([ -d ${PATH_DEST} ] || [ -f ${PATH_DEST} ]) && chown ${RECURSIVE} ${OWNER} ${PATH_DEST}"
+  wex app/exec -c="([ -d ${PATH_DEST} ] || [ -f ${PATH_DEST} ]) && chown ${RECURSIVE} ${OWNER} ${PATH_DEST}"
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 siteUnpublish() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   wex repo/delete
 

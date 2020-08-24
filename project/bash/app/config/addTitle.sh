@@ -7,5 +7,5 @@ configAddTitleArgs() {
 }
 
 configAddTitle() {
-  echo -e "\n# "${TITLE} >> ${WEX_WEXAMPLE_APP_FILE_CONFIG}
+  echo -e "\n\n# ${TITLE}" >> "${WEX_WEXAMPLE_APP_FILE_CONFIG}"
 }

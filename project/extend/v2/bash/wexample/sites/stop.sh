@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sitesStop() {
-  REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
+  REGISTRY=$(cat ${WEX_PROXY_APPS_REGISTRY})
 
   for SITE_PATH in ${REGISTRY[@]}
   do
@@ -10,7 +10,7 @@ sitesStop() {
       # Keep wex_server alive.
       if [ $(basename ${SITE_PATH}) != 'wex_server' ];then
         cd ${SITE_PATH}
-        wex site/stop
+        wex app/stop
       fi
     fi
   done;

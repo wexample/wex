@@ -107,7 +107,7 @@ _imagesRebuild() {
 
   # Use wex version as tag
   local TAG_BASE=wexample/${NAME}
-  local TAG=$(wex wex/version)
+  local TAG=$(wex core/version)
 
   if [ "${QUIET}" == true ]; then
     QUIET='-q'

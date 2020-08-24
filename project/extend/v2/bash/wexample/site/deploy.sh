@@ -34,7 +34,7 @@ siteDeploy() {
 
   . .wex
 
-  wex ci/exec -c=deploy
+#  wex ci/  exec -c=deploy
   local DEPLOY_ENV=${DEPLOY_ENV^^}
   local SSH_HOST=$(eval 'echo ${'${DEPLOY_ENV}'_SSH_HOST}')
 

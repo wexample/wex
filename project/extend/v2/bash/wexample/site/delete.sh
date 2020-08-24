@@ -14,7 +14,7 @@ siteDelete() {
     # Go to new temporary website.
     cd ${SITE_PATH}
     # Stop
-    wex site/stop
+    wex app/stop
     # Remove
     rm -rf ${SITE_PATH}
   fi

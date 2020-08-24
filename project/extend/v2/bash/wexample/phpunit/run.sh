@@ -26,5 +26,5 @@ phpunitRun() {
 
   # TODO Not working with older versions but should be tested on recent installs :
   # --log-junit ${TMP_DIR}phpunit-report.xml --coverage-html ${TMP_DIR}phpunit
-  wex site/exec -l --non_interactive -c="./vendor/bin/phpunit ${FILTER} "
+  wex app/exec -l --non_interactive -c="./vendor/bin/phpunit ${FILTER} "
 }

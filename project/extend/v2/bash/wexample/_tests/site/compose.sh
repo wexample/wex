@@ -11,7 +11,7 @@ siteComposeTest() {
   # Go to test site
   cd ${WEX_TEST_DIR_TMP}${TEST_SITE_NAME}
 
-  RESPONSE=$(wex site/compose -c="config")
+  RESPONSE=$(wex app/compose -c="config")
 
   wexTestAssertEqual $([[ ${#RESPONSE} > 10 ]] && echo true || echo false) true
 }

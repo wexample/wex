@@ -16,9 +16,9 @@ serviceFindFreeLocalPorts() {
   for SITE_PATH in ${APPS_PATHS[@]}
   do
     # Config file exists
-    if [ -f ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG} ];then
+    if [ -f ${SITE_PATH}${WEX_APP_CONFIG} ];then
       # Load config
-      . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+      . ${SITE_PATH}${WEX_APP_CONFIG}
       if [ "${STARTED}" == true ] && [ ! -z "${SITE_PORTS_USED+x}" ];then
         PORTS_USED+=","${SITE_PORTS_USED}
       fi

@@ -7,7 +7,7 @@ siteLogsArgs() {
 }
 
 siteLogs() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   # Use default container if missing
   docker logs $(wex site/container -c=${CONTAINER_NAME}) -f

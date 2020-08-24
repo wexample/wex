@@ -10,15 +10,15 @@ wordpressChangeCoreArgs() {
 wordpressChangeCore() {
   local FILENAME='wordpress-'${VERSION}'.zip'
   # Download last version.
-  wex site/exec -c="cd /var/www && rm -rf wordpress && rm -rf ${FILENAME} && wget https://wordpress.org/${FILENAME} && unzip ${FILENAME} && rm ${FILENAME}"
+  wex app/exec -c="cd /var/www && rm -rf wordpress && rm -rf ${FILENAME} && wget https://wordpress.org/${FILENAME} && unzip ${FILENAME} && rm ${FILENAME}"
   # Remove old files.
-  wex site/exec -l -c="rm -rf ./wp-includes && rm -rf ./wp-admin"
+  wex app/exec -l -c="rm -rf ./wp-includes && rm -rf ./wp-admin"
   # Copy new
-  wex site/exec -c="cp -r /var/www/wordpress/wp-includes /var/www/html/project"
-  wex site/exec -c="cp -r /var/www/wordpress/wp-admin /var/www/html/project"
+  wex app/exec -c="cp -r /var/www/wordpress/wp-includes /var/www/html/project"
+  wex app/exec -c="cp -r /var/www/wordpress/wp-admin /var/www/html/project"
   # Copy without removing existing.
-  wex site/exec -c="cp -r /var/www/wordpress/wp-content /var/www/html/project"
+  wex app/exec -c="cp -r /var/www/wordpress/wp-content /var/www/html/project"
   # Copy root files, omit directories.
-  wex site/exec -c="cp /var/www/wordpress/* /var/www/html/project" | grep -v 'omitting directory'
+  wex app/exec -c="cp /var/www/wordpress/* /var/www/html/project" | grep -v 'omitting directory'
   # Now user should visit wp-admin for database migration or run wp cli update
 }

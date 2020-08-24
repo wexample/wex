@@ -14,7 +14,7 @@ containersList() {
 
   # Remove prefix
   if [ "${REMOVE_PREFIX}" == true ];then
-    . ${WEX_WEXAMPLE_SITE_CONFIG}
+    . ${WEX_APP_CONFIG}
     REGEX="s/^services_\(.*\)_\?${SEARCH_VAR}\=\"${SITE_NAME}_\(.*\)\"\$/\2/p"
   else
     REGEX="s/^services_\(.*\)_\?${SEARCH_VAR}\=\"\?\(.*\)\"\$/\2/p"

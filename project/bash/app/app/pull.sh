@@ -4,7 +4,7 @@ appPull() {
   # Update GIT root.
   wex git/pullTree
 
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   if [ -d ${PROJECT_DIR}/.git ];then
     cd ${PROJECT_DIR}

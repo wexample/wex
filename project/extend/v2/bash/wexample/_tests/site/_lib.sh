@@ -44,13 +44,13 @@ _siteInitTest_checkHostsNumber() {
 
 _siteInitTest_checkConfLines() {
   local FILE_NAME=${2}
-  wexLog "Check running ${FILE_NAME} in "${WEX_WEXAMPLE_DIR_PROXY_TMP}
+  wexLog "Check running ${FILE_NAME} in "${WEX_DIR_PROXY_TMP}
   NUM=${1}
 
-  if [[ -f ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps ]];then
+  if [[ -f ${WEX_PROXY_APPS_REGISTRY} ]];then
     # Add an empty line to lines count.
     . ${WEX_DIR_BASH}wexample/init.sh
-    COUNT=$(wex file/linesCount -i -f=${WEX_WEXAMPLE_DIR_PROXY_TMP}${FILE_NAME})
+    COUNT=$(wex file/linesCount -i -f=${WEX_DIR_PROXY_TMP}${FILE_NAME})
   else
     wexLog "Server is stopped (no ${FILE_NAME} file)"
     COUNT=0
@@ -61,10 +61,10 @@ _siteInitTest_checkConfLines() {
 }
 
 _siteInitTest_checkRange() {
-  wexLog "Checking config "${WEX_WEXAMPLE_SITE_CONFIG}
+  wexLog "Checking config "${WEX_APP_CONFIG}
   SITE_TEST_PORT_RANGE_EXPECTED=${1}
   # Load config file
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
   # Port range is zero
   wexLog "Website port range is "${SITE_PORT_RANGE}", expected "${SITE_TEST_PORT_RANGE_EXPECTED}
   wexTestAssertEqual true $([[ ${SITE_PORT_RANGE} == ${SITE_TEST_PORT_RANGE_EXPECTED} ]] && echo true || echo false)

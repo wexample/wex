@@ -13,7 +13,7 @@ siteInfo() {
 
   echo ""
   echo -e "  Machine name : \t "${SITE_NAME}
-  echo -e "  Started : \t\t "$(wex site/started)
+  echo -e "  Started : \t\t "$(wex app/started)
   echo -e "  Services : \t\t "$(wex site/config -k=services)
   echo -e "  Framework : \t\t "$(wex framework/detect -d="project")
   echo -e "  Environment : \t "${SITE_ENV}
@@ -31,7 +31,7 @@ siteInfo() {
   fi;
 
   echo "  Local hosts names :"
-  echo $(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts)
+  echo $(cat ${WEX_DIR_PROXY_TMP}hosts)
   echo ""
 
 }

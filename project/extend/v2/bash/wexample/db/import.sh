@@ -7,7 +7,7 @@ dbImportArgs() {
 }
 
 dbImport() {
-  . ${WEX_WEXAMPLE_SITE_CONFIG}
+  . ${WEX_APP_CONFIG}
 
   local CONTAINER=$(wex site/container -c="")
 

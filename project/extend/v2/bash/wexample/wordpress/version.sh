@@ -2,5 +2,5 @@
 
 wordpressVersion() {
   # Use base command inside container.
-  wex site/exec -l -c="wex wordpress/version"
+  wex app/exec -l -c="wex wordpress/version"
 }

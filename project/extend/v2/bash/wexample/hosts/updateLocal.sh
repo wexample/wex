@@ -17,6 +17,6 @@ hostsUpdateLocal() {
 
   # Create new block.
   echo -e "#[ wex ]#" | sudo tee -a ${HOST_FILE} > /dev/null
-  cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}hosts | sudo tee -a ${HOST_FILE} > /dev/null
+  cat ${WEX_DIR_PROXY_TMP}hosts | sudo tee -a ${HOST_FILE} > /dev/null
   echo -e "\n#[ endwex ]#" | sudo tee -a ${HOST_FILE} > /dev/null
 }

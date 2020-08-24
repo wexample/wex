@@ -9,7 +9,7 @@ sitesListArgs() {
 
 # Return actively running sites list.
 sitesList() {
-  local REGISTRY=$(cat ${WEX_WEXAMPLE_DIR_PROXY_TMP}apps)
+  local REGISTRY=$(cat ${WEX_PROXY_APPS_REGISTRY})
   local SITES_COUNT=0;
   local SITES=();
 
@@ -33,8 +33,8 @@ sitesList() {
           fi
         done;
 
-        if [ ${EXISTS} == false ] && [ $(wex site/started -d=${SITE_PATH}) == true ];then
-          . ${SITE_PATH}${WEX_WEXAMPLE_SITE_CONFIG}
+        if [ ${EXISTS} == false ] && [ $(wex app/started -d=${SITE_PATH}) == true ];then
+          . ${SITE_PATH}${WEX_APP_CONFIG}
           SITES+=(${SITE_NAME})
           ((SITES_COUNT++))
         fi

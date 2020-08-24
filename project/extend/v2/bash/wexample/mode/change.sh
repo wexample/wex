@@ -12,5 +12,5 @@ modeChange() {
   if [ "${RECURSIVE}" == "true" ];then
     RECURSIVE="-r"
   fi
-  wex site/exec -c="([ -d ${PATH_DEST} ] || [ -f ${PATH_DEST} ]) && chmod ${RECURSIVE} ${MODE} ${PATH_DEST}"
+  wex app/exec -c="([ -d ${PATH_DEST} ] || [ -f ${PATH_DEST} ]) && chmod ${RECURSIVE} ${MODE} ${PATH_DEST}"
 }

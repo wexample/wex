@@ -18,7 +18,7 @@ siteWexify() {
   do
     if [ ! -d ${WEX_DIR_DOCKER_SERVICES}${SERVICE} ];then
       # Run per service script
-      wex wexample::service/exec -s=${SERVICE} -sf -c=wexify
+      wex wexample::service/exec -s=${SERVICE} -sf -c=appWexify
     fi
   done
 

@@ -47,7 +47,7 @@ wordpressWexify() {
   local DUMP_FILE=$(basename ${DATABASE_DUMP})
 
   # Run website.
-  wex site/start
+  wex app/start
 
   # Import database.
   wex db/restore -d=${DUMP_FILE}
