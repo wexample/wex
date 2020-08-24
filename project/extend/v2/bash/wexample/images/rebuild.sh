@@ -107,18 +107,18 @@ _imagesRebuild() {
 
   # Use wex version as tag
   local TAG_BASE=wexample/${NAME}
-  local TAG=$(wex core/version)
+  local TAG=$(${WEX_DIR_V3_CMD} core/version)
 
   if [ "${QUIET}" == true ]; then
     QUIET='-q'
   fi;
 
   # Build
-  docker build ${QUIET} -t ${TAG_BASE}:${TAG} -t ${TAG_BASE}:latest -f ${DOCKERFILE} . ${CACHE}
+  docker build ${QUIET} -t "${TAG_BASE}":"${TAG}" -t "${TAG_BASE}":latest -f ${DOCKERFILE} . ${CACHE}
 
   # Deploy
   if [ ! -z ${DEPLOY+x} ]; then
-    docker push wexample/${NAME}:${TAG}
+    docker push wexample/${NAME}:"${TAG}"
     docker push wexample/${NAME}:latest
   fi;
 }
