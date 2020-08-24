@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-dbAnonArgs() {
+watcherStartArgs() {
   _DESCRIPTION="Start app watcher for local development"
 }
 
