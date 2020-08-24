@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-dbDumpChooseList() {
+dbDumpChoiceList() {
+  local FILES
+  local CHOICES
   FILES=($(ls mysql/dumps))
 
   if [[ ${#FILES[@]} == 0 ]];then
@@ -8,12 +10,17 @@ dbDumpChooseList() {
     return
   fi;
 
-  echo ""
   # iterate through array using a counter
   for ((i=0; i<${#FILES[@]}; i++)); do
     DISPLAY=$((i+1))
-    echo -e "\t (${DISPLAY}) ${FILES[$i]}"
+
+    if [ "${CHOICES}" != "" ];then
+      CHOICES+=","
+    fi
+
+    CHOICES+="${FILES[$i]}"
   done
-  echo ""
+
+  wex prompt/choice -c="${CHOICES}"
 
 }

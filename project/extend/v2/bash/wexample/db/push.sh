@@ -10,7 +10,7 @@ dbPushArgs() {
 dbPush() {
   if [ -z ${DUMP+x} ];then
     # Ask user to choose a file.
-    wex db/dumpChooseList
+    wex db/dumpChoiceList
     # Prompt does not work in the exec terminal.
     DUMP=$(wex db/dumpChoose)
   fi

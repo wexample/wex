@@ -2,8 +2,7 @@
 
 dbRestoreArgs() {
   _ARGUMENTS=(
-    [0]='dump d "Dump file to import, in the dumps folder only, asked if missing" false'
-    [1]='environment e "Remote environment name" false'
+    'dump d "Dump file to import, in the dumps folder only, asked if missing" false'
   )
 }
 
@@ -12,23 +11,17 @@ dbRestore() {
 
   . ${WEX_APP_CONFIG}
 
-  # Remote restoration.
-  if [ ! -z ${ENVIRONMENT+x} ];then
-    # Restore
-    wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/restore -d=${DUMP}"
-    return
-  fi;
-
   if [ -z ${DUMP+x} ];then
     # Ask user to choose a file.
-    wex db/dumpChooseList
+    wex db/dumpChoiceList
     # Prompt does not work in the exec terminal.
-    DUMP=$(wex db/dumpChoose)
+    DUMP=$(wex prompt/choiceGetValue)
   fi
 
   local DUMP_HOST_PATH=./mysql/dumps/${DUMP}
   local LOGIN=$(wex mysql/loginCommand)
 
+  _wexLog "Recreating database ${MYSQL_DB_NAME}"
   wex db/exec -c="DROP DATABASE IF EXISTS ${MYSQL_DB_NAME}; CREATE DATABASE ${MYSQL_DB_NAME};"
 
   # If file is a zip, unzip it.
@@ -43,6 +36,7 @@ dbRestore() {
   # Copy mysql configuration.
   docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_mysql:./tmp/mysql.cnf
 
+  _wexLog "Importing dump ${DUMP}"
   local LOGIN=$(wex mysql/loginCommand)
   docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
 

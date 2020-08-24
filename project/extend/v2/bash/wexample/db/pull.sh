@@ -11,7 +11,7 @@ dbPull() {
   # Dump must exists in remote server
   if [ -z ${DUMP+x} ];then
     # Show dumps available
-    wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dumpChooseList"
+    wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dumpChoiceList"
     # Let user choose
     wex wexample::remote/exec -e=${ENVIRONMENT} -s="wex db/dumpChoose"
   fi
