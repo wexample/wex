@@ -18,14 +18,14 @@ promptProgress() {
 
   # Manage cursor position
   if [ "${NEW_LINE}" != "true" ];then
-    local PROGRESS_BAR_RUNNING=$(wex var/localGet -n=PROGRESS_BAR_RUNNING -d=false)
+    local PROGRESS_BAR_RUNNING=$(wex var/get -n=PROGRESS_BAR_RUNNING -d=false)
 
     if [ "${PROGRESS_BAR_RUNNING}" = true ];then
       # Move cursor up
       printf "\033[1A"
     fi
 
-    wex var/localSet -n=PROGRESS_BAR_RUNNING -v=true
+    wex var/set -n=PROGRESS_BAR_RUNNING -v=true
   fi
 
   if [ "${DESCRIPTION}" != "" ];then
@@ -58,7 +58,7 @@ promptProgress() {
     echo ""
 
     if [ "${NEW_LINE}" != "true" ];then
-      wex var/localSet -n=PROGRESS_BAR_RUNNING -v=false
+      wex var/set -n=PROGRESS_BAR_RUNNING -v=false
     fi
   # Ignore the \r and jump to a new line
   elif [ "${NEW_LINE}" = "true" ];then

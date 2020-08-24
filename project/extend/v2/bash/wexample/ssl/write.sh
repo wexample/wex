@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sslWrite() {
-  local DOMAINS=$(wex site/domains)
+  local DOMAINS=$(wex app/domains)
   local CONFIG='';
 
   CONFIG+="  #SSLEngine on\n";

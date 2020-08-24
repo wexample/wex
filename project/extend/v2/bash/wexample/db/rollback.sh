@@ -2,7 +2,7 @@
 
 dbRollback() {
   # Load env name.
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
   # Can't load this data into container.
   . ${WEX_APP_CONFIG}
   # Guess latest dump name.

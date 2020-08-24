@@ -33,8 +33,8 @@ imagesRebuild() {
     fi
 
     if [ ! -z "${LSC+x}" ]; then
-      DOCKER_USERNAME=$(wex default::var/localGet -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
-      DOCKER_PASSWORD=$(wex default::var/localGet -n=DOCKER_PASSWORD -ask="Docker password" -p)
+      DOCKER_USERNAME=$(wex var/get -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
+      DOCKER_PASSWORD=$(wex var/get -n=DOCKER_PASSWORD -ask="Docker password" -p)
     else
       if [ ! -z "${DOCKER_USERNAME+x}" ]; then
         DOCKER_USERNAME='-u '${DOCKER_USERNAME}

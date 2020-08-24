@@ -2,7 +2,7 @@
 
 sslRenew() {
   # Start server.
-  if [ $(wex server/started) == false ];then
+  if [ "$(wex proxy/started)" = false ];then
     return
   fi
   . ${WEX_WEXAMPLE_DIR_PROXY} .env

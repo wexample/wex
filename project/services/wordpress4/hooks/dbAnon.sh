@@ -5,6 +5,6 @@ wordpress4DbAnon() {
   for ID in ${IDS[@]}
   do
     # Set all IDs to password.
-    wex app/exec -l -c="wp user update "$(wex text/trim -t=${ID})" --user_pass=password --allow-root --skip-email"
+    wex app/exec -l -c="wp user update $(wex string/trim -s="${ID}") --user_pass=password --allow-root --skip-email"
   done;
 }

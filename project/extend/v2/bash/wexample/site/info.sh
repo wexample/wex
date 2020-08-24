@@ -9,7 +9,7 @@ siteInfoArgs() {
 siteInfo() {
   wex config/load --quiet
 
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
 
   echo ""
   echo -e "  Machine name : \t "${SITE_NAME}
@@ -17,7 +17,7 @@ siteInfo() {
   echo -e "  Services : \t\t "$(wex site/config -k=services)
   echo -e "  Framework : \t\t "$(wex framework/detect -d="project")
   echo -e "  Environment : \t "${SITE_ENV}
-  echo -e "  Domains : \t\t "$(wex site/domains)
+  echo -e "  Domains : \t\t "$(wex app/domains)
   echo ""
 
   wex framework/settings

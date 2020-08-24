@@ -2,7 +2,7 @@
 
 siteOpen() {
   # Open web page
-  local DOMAINS=($(wex site/domains))
+  local DOMAINS=($(wex app/domains))
 
   for DOMAIN in ${DOMAINS[@]};do
     wex web/open -u=http://${DOMAIN}

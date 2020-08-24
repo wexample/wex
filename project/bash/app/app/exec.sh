@@ -22,7 +22,7 @@ appExec() {
   . ${WEX_APP_CONFIG}
 
   # Use default container if missing
-  local CONTAINER=$(wex site/container -c=${CONTAINER_NAME})
+  local CONTAINER=$(wex app/container -c=${CONTAINER_NAME})
 
   # Save if we had to start website manually
   # we will stop it at end.
@@ -47,7 +47,7 @@ appExec() {
     ARGS+=" -u 0 "
   fi
 
-  docker exec ${ARGS} ${CONTAINER} /bin/bash -c "${COMMAND}"
+  docker exec ${ARGS} "${CONTAINER}" /bin/bash -c "${COMMAND}"
 
   # Stop website.
   if [ "${STARTS}" == true ] && [ ${STARTED_LOCALLY} == true ];then

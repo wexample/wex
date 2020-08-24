@@ -7,7 +7,7 @@ pathSafeArgs() {
 }
 
 pathSafe() {
-  osName=$(wex system/osName)
+  osName=$(wex system/os)
 
   # Os is windows
   if [[ ${osName} == "windows" ]];then

@@ -10,7 +10,7 @@ appCompose() {
   wex config/load --quiet
 
   # Load expected env file.
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
   local SERVICES=($(ls ${WEX_DIR_SERVICES}))
 
   # Iterate through array using a counter

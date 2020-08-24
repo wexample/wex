@@ -2,8 +2,8 @@
 
 dirCountLinesArgs() {
   _ARGUMENTS=(
-    [0]='dir d "Directory name" true'
-    [1]='extension e "Extension" true'
+    'dir d "Directory name" true'
+    'extension e "Extension" true'
   )
 }
 

@@ -38,7 +38,7 @@ mysqlAppConfigAccess() {
   . .wex
 
   # Host
-  echo ${NAME}_$(wex site/env)_mysql
+  echo ${NAME}_$(wex app/env)_mysql
   # Port
   echo 3306
   # Name

@@ -140,6 +140,6 @@ EOF
   ${RENDER_BAR} -p=100 -s="Done !"
 
   if [ "${NEW_SITE_NAME}" != "${WEX_PROXY_CONTAINER}" ];then
-    _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex site/install"
+    _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex app/install"
   fi
 }

@@ -33,7 +33,7 @@ configWrite() {
   local PORTS_USED_CURRENT=$(wex service/findFreeLocalPorts -s=",")
   _wexLog "Assign local ports : ${PORTS_USED_CURRENT}"
 
-  local APP_ENV=$(wex site/env)
+  local APP_ENV=$(wex app/env)
   local APP_NAME=${NAME}
   local SITE_PATH=$(realpath ./)"/"
   local APP_ENV_MAJ=${APP_ENV^^}

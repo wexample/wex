@@ -12,7 +12,7 @@ portsOpened() {
     SEPARATOR=" "
   fi;
 
-  if [ $(wex docker/isToolBox) == true ];then
+  if [ "$(wex docker/isToolBox)" = true ];then
     return
   fi
 

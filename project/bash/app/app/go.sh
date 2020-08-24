@@ -12,7 +12,7 @@ appGo() {
   local CONTAINER
   local COMMAND
 
-  CONTAINER=$(wex site/container -c="${CONTAINER_NAME}")
+  CONTAINER=$(wex app/container -c="${CONTAINER_NAME}")
   COMMAND=$(wex hook/exec -c=appGo --quiet)
   
   if [ "${COMMAND}" != '' ];then

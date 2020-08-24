@@ -7,7 +7,7 @@ webOpenArgs() {
 }
 
 webOpen() {
-  case "$(wex system/osName)" in
+  case "$(wex system/os)" in
     "linux")
       # May not exists in production server.
       if [ $(wex package/exists -n=xdg-open) == true ];then

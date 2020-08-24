@@ -9,7 +9,7 @@ dbImportArgs() {
 dbImport() {
   . ${WEX_APP_CONFIG}
 
-  local CONTAINER=$(wex site/container -c="")
+  local CONTAINER=$(wex app/container -c="")
 
   # Copy mysql configuration.
   docker cp ./tmp/mysql.cnf ${CONTAINER}:./tmp/mysql.cnf

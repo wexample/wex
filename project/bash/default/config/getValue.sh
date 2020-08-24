@@ -21,7 +21,7 @@ configGetValue() {
   RESULTS=${RESULTS##*$'\n'}
 
   # Trim end on lines
-  RESULTS=$(wex text/trim -t="${RESULTS}")
+  RESULTS=$(wex string/trim -s="${RESULTS}")
 
   echo "${RESULTS}"
 }

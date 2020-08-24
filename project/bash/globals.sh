@@ -34,9 +34,10 @@ export WEX_QUIET_MODE_PREVIOUS='off'
 export WEX_SCREEN_WIDTH=$(tput cols)
 export WEX_TRUCATE_SPACE=4 # 3 dots plus one space.
 export WEX_WEXAMPLE_ENVIRONMENTS=(local dev prod)
-export WEX_PROXY_CONTAINER=wex_server
+export WEX_PROXY_CONTAINER=wex_server # Proxy is always on prod env
 export WEX_PROXY_APPS_REGISTRY=${WEX_DIR_PROXY_TMP}apps
 export WEX_APP_CONFIG=${WEX_WEXAMPLE_SITE_DIR_TMP}config
+export WEX_CONTAINER_PROJECT_DIR=/var/www/html/project
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -206,6 +207,15 @@ _wexItemSuccess() {
   fi;
 
   _wexItem "${@}" "    ✓   " "${WEX_COLOR_GREEN}"
+}
+
+# Data storage access performance.
+wexLoadVariables() {
+  local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
+
+  if [ -f "${STORAGE}" ];then
+    . "${STORAGE}";
+  fi
 }
 
 _wexLog() {

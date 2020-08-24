@@ -13,7 +13,7 @@ configBindFiles() {
   local NAMES_PROCESSED=()
 
   # Get site env name.
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
 
   for FILE in ${SECTION_FILES[@]};do
     SPLIT=($(wex string/split -s="." -t="${FILE}"))

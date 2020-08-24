@@ -2,7 +2,7 @@
 
 moodleAppStarted() {
     # Same config as web
-  . ${WEX_DIR_SERVICES}web/hooks/started.sh
+  . ${WEX_DIR_SERVICES}web/hooks/appStarted.sh
 
   webAppStarted
 

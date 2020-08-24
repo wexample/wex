@@ -5,7 +5,7 @@ requirementsListArgs() {
 }
 
 requirementsList() {
-  local OS_NAME=$(wex system/osName)
+  local OS_NAME=$(wex system/os)
 
   # Keep alphabetical order for all os.
   # Think to update also wex requirements/installed if list changes.

@@ -35,15 +35,6 @@ wexMethodName() {
   echo ${SPLIT[0]}$(wexUpperCaseFirstLetter ${SPLIT[1]})
 }
 
-# Data storage access performance.
-wexLoadVariables() {
-  local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
-
-  if [[ -f ${STORAGE} ]];then
-    . ${STORAGE};
-  fi
-}
-
 wex() {
   WEX_SHOW_INTRO=false
   WEX_REMOVE_DOWNLOADED_SCRIPT=false

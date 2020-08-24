@@ -14,7 +14,7 @@ webAppConfig() {
   . ${WEX_DIR_SERVICES}mysql/hooks/appConfig.sh
   local ACCESS=($(mysqlAppConfigAccess))
   local INI=./tmp/php.env.ini
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
 
   _wexLog "Creating PHP ${INI}"
 

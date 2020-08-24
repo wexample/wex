@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+varClearArgs() {
+  _ARGUMENTS=(
+    'name n "Variable name" true'
+    'file f "Storage file path" false'
+  )
+}
+
+varClear() {
+  # If no file specified
+  if [ "${FILE}" == "" ];then
+    # Use wex tmp folder
+    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
+  fi
+
+  if [ ! -f ${FILE} ];then
+    touch ${FILE}
+  fi
+
+  # Remove all previous values.
+  wex config/removeKey -k=${NAME}"\=" -f=${FILE}
+}

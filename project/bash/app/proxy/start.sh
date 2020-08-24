@@ -10,11 +10,11 @@ proxyStartArgs() {
 
 proxyStart() {
   # Check if running.
-  if [ ! -z ${NO_RECREATE+x} ] && [ "$(wex server/started)" = true ]; then
+  if [ ! -z ${NO_RECREATE+x} ] && [ "$(wex proxy/started)" = true ]; then
     return;
   fi
 
-  wex default::var/localSet -n=PROXY_ERROR -v=false
+  wex var/set -n=PROXY_ERROR -v=false
 
   if [ ! -d "${WEX_WEXAMPLE_DIR_PROXY}" ];then
     mkdir -p "${WEX_WEXAMPLE_DIR_PROXY}"
@@ -42,7 +42,7 @@ proxyStart() {
     _wexError "A process is already running on port ${PORT}"
     echo "${PROCESSES}"
 
-    wex default::var/localSet -n=PROXY_ERROR -v=ERR_PORT_NOT_AVAILABLE
+    wex var/set -n=PROXY_ERROR -v=ERR_PORT_NOT_AVAILABLE
     return
   fi
 
@@ -53,6 +53,7 @@ proxyStart() {
     sudo -E wex app::app/init -s=proxy -n=wex_server -e=prod --git=false
   fi
 
+  _wexLog "Starting proxy app"
   wex app/start
 
   # Wait starting.

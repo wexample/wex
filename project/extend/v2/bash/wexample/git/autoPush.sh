@@ -4,7 +4,7 @@
 gitAutoPush() {
   . .wex
 
-  local SITE_ENV=$(wex site/env)
+  local SITE_ENV=$(wex app/env)
   local SITE_ENV_MAJ=${SITE_ENV^^}
   local GIT_AUTO_PUSH=($(eval 'echo ${'${SITE_ENV_MAJ}'_GIT_AUTO_PUSH[@]}'))
 
