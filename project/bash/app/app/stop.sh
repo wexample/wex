@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 appStop() {
+  # Already stopped
+  if [ "$(wex app/started -ic)" = false ];then
+    return
+  fi
   # Execute services scripts if exists
   wex hook/exec -c="appStop"
   # Write config file, indicates started=stop and recreate yml file if missing.
