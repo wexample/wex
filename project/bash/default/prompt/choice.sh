@@ -28,7 +28,9 @@ eof
 }
 
 _promptChoiceRender() {
-   local COUNTER=0
+  local COUNTER=0
+
+  echo ""
 
   for ITEM in "${CHOICES[@]}"
   do
@@ -51,6 +53,8 @@ _promptChoiceRender() {
   if [ "${CHOICE_SELECTED}" = "0" ];then
     CHOICE_SELECTED_DISPLAY=""
   fi
+
+  echo ""
 
   read -rsn 1 -p "$(echo -e "${QUESTION} ${WEX_COLOR_RESET}${CHOICE_SELECTED_DISPLAY}   ")" ARROW
 
@@ -111,8 +115,11 @@ _promptChoiceRender() {
 }
 
 _promptChoiceUpdate() {
+  local JUMP
+  JUMP=$(( ${#CHOICES[@]} + 2 ))
+
   # Move cursor up
-  printf "\033[%sA" "${#CHOICES[@]}"
+  printf "\033[%sA" "${JUMP}"
 
   printf "\r"
 
