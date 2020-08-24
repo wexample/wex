@@ -18,23 +18,26 @@ RUN apt-get update -yqq && \
   memcached \
   mysql-client \
   nano \
-  php-curl \
-  php-gd \
-  php-imagick \
-  php-mbstring \
-  php-memcache \
-  php-memcached \
-  php-mysql \
-  php-xdebug \
-  php-zip \
   php7.3 \
   php7.3-apcu \
+  php7.3-curl \
+  php7.3-gd \
+  php7.3-imagick \
   php7.3-intl \
+  php7.3-mbstring \
+  php7.3-memcache \
+  php7.3-memcached \
+  php7.3-mysql \
+  php7.3-xdebug \
   php7.3-xml \
+  php7.3-zip \
   sendmail \
   -yqq && \
+  a2dismod php7.4 && \
+  a2enmod php7.3 && \
+  service apache2 restart && \
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-  php -r "if (hash_file('sha384', 'composer-setup.php') === 'e5325b19b381bfd88ce90a5ddb7823406b2a38cff6bb704b0acc289a09c8128d4a8ce2bbafcd1fcbdc38666422fe2806') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+  php -r "if (hash_file('sha384', 'composer-setup.php') === '8a6138e2a05a8c28539c9f0fb361159823655d7ad2deecb371b04a83966c61223adc522b0189079e3e9e277cd72b8897') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
   php composer-setup.php && \
   php -r "unlink('composer-setup.php');" && \
   chmod +x /docker-entrypoint-php7.sh && \

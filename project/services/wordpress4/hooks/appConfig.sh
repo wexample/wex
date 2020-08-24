@@ -10,14 +10,15 @@ wordpress4AppConfig() {
   # so we use wex settings.
   . .wex
   local INI=./tmp/php.env.ini
-  echo '[wordpress]' >> ${INI}
+
+  echo -e "\n\n[wordpress]" >> ${INI}
   # Charset.
   if [ "${WP_DB_CHARSET}" != "" ];then
-    echo 'WP_DB_CHARSET = "'${WP_DB_CHARSET}'"' >> ${INI}
+    echo -e "WP_DB_CHARSET = \"${WP_DB_CHARSET}\"" >> ${INI}
   fi
   # Database prefix.
   if [ "${WP_DB_TABLE_PREFIX}" != "" ];then
-    echo 'WP_DB_TABLE_PREFIX = "'${WP_DB_TABLE_PREFIX}'"' >> ${INI}
+    echo -e "\nWP_DB_TABLE_PREFIX = \"${WP_DB_TABLE_PREFIX}\"" >> ${INI}
   fi
 
   # Override default container.

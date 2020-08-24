@@ -18,12 +18,12 @@ webAppConfig() {
 
   _wexLog "Creating PHP ${INI}"
 
-  echo '; Auto generated configuration' > ${INI}
+  echo -e "; Auto generated configuration" > ${INI}
 
-  echo '[site]' >> ${INI}
-  wex config/setValue -k=SITE_ENV -v=${SITE_ENV} -f=${INI}
+  echo -e "\n\n\n[site]" >> ${INI}
+  wex config/setValue -k=SITE_ENV -v="${SITE_ENV}" -f=${INI}
 
-  echo '[mysql]' >> ${INI}
+  echo -e "\n\n\n[mysql]" >> ${INI}
   wex config/setValue -k=MYSQL_DB_HOST -v=${ACCESS[0]} -f=${INI}
   wex config/setValue -k=MYSQL_DB_PORT -v=${ACCESS[1]} -f=${INI}
   wex config/setValue -k=MYSQL_DB_NAME -v=${ACCESS[2]} -f=${INI}
