@@ -137,7 +137,7 @@ wexTest() {
                 if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
                   #if [[ ${WEX_TEST_DEBUG} == true ]];then
                     # Do not encapsulate result
-                    ${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}
+                    ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}
                   #else
                   #  # Run script and store result.
                   #  testResult=$(${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})

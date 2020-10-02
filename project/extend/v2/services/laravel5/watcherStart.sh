@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 laravel5WatcherStart() {
+  # TODO Merge with symfony watcher
   local WATCH="yarn watch"
 
   # Try to use yarn on host if exists,

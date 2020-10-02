@@ -5,6 +5,8 @@ siteServe() {
   wex hosts/update
   # Update local host file.
   wex hosts/updateLocal
-  # Refresh services (ex apache restart)
-  wex hook/exec -c=siteServe
+  if [ $(wex site/started) == "true" ];then
+    # Refresh services (ex apache restart)
+    wex hook/exec -c=siteServe
+  fi
 }

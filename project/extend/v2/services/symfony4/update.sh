@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-symfony4update() {
+symfony4Update() {
   # Composer
   wex site/exec -l -c="composer update"
 

@@ -53,6 +53,8 @@ wex site/build
 wex site/install
 # Give all useful permissions.
 wex site/perms
+# Start current site
+wex site/start
 # Run unit test for given website
 wex site/test -f=project/tests/file.php -m=testMethod
 # Update all packages.
@@ -77,6 +79,8 @@ If you still want to une Docker containers to launch your site, you can still us
     
 # Writing a script
 
+## File structure
+
 For example, you want to add this command :
  
     wex foo/bar --arg yes --arg2 true
@@ -97,12 +101,14 @@ And there is the content of your script file :
 #!/usr/bin/env bash
 
 fooBarArgs() {
-  _DESCRIPTION="This is my foo bar script"
+  # Examples of supported config files
   _ARGUMENTS=(
     # argument a "Description" true/false (required)
     'arg a "First argument" true defaultValue'
     'arg2 a2 "Second argument (boolean)" false defaultValue2'
   )
+  _AS_SUDO=false
+  _DESCRIPTION="This is my foo bar script"
 }
 
 fooBar() {
@@ -112,10 +118,17 @@ fooBar() {
 
 ```
 
-## Notes
+### Notes
   > Arguments description will be used in help response and when argument is required.
-  > true/false mean required or not, if required but not present, use default uf exists, else prompt user using description content.
+  > true/false mean required or not, if required but not present, use default if exists, else prompt user using description content.
   > Every function can display help for argument usage when using reserved `--help` argument `wex foo/bar --help`.
+
+## Development rules
+
+### Use [ ] instead of [[ ]]
+
+Conditions written inside `[ ... ]` are more portables. It should always have an equivalent of a `[[ ... ]]` condition.
+More info here : https://stackoverflow.com/questions/669452/is-double-square-brackets-preferable-over-single-square-brackets-in-ba
 
 ## Compatibility
 

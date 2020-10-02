@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-watcherStartArgs() {
-  _MIGRATED_TO_V3=true
+dbAnonArgs() {
+  _DESCRIPTION="Start app watcher for local development"
 }
 
 watcherStart() {
