@@ -15,8 +15,12 @@ A web developer automation tool and deployment system.
 
 - Install brew
 - Update your bash and install coreutils with `brew install bash coreutils`
-- Double check the folder containing your project is allowed to be mounted with Docker (Docker manager > Resources > Files Sharing)
+- Double check this folders are allowed to be mounted with Docker (Docker manager > Resources > Files Sharing)
+  * /opt/wex
+  * The folder of the project you want to run
 - Then see Ubuntu installation process below
+- Run your site in `sudo wex site/start`
+- Once the project runs, think to restart your browser
 
 ### MacOS notices
 
