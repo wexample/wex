@@ -6,6 +6,9 @@
 # We also avoid to include external packages install which are
 # managed by `wex core::requirements/install` script.
 
+WEX_DIR_INSTALL="/opt/wex/"
+WEX_BIN="/usr/local/bin/wex"
+
 . /opt/wex/project/bash/globals.sh
 
 # Check shell version.
