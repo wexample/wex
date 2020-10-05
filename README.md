@@ -1,10 +1,10 @@
-# wex v3
+# wex v3.3.2
 
 A web developer automation tool and deployment system.
 
-# Installing
+## Install
 
-## On Ubuntu
+### Ubuntu
 
 - Clone the repository into `/opt/wex`
   > `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex`

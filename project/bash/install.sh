@@ -8,12 +8,6 @@
 
 . /opt/wex/project/bash/globals.sh
 
-# Check user is root
-if [[ ${EUID} > 0 ]];then
-  # Exec as sudo
-  sudo bash ${WEX_DIR_INSTALL}install
-  exit
-fi
 # Check shell version.
 _wexBashCheckVersion
 # Check if "realpath" method exists (missing on raw macos)
@@ -22,9 +16,10 @@ if [[ $(_wexHasRealPath) == "false" ]]; then
   exit;
 fi;
 
-chmod -R +x ${WEX_DIR_INSTALL}
-# Copy to bin
-cp ${WEX_DIR_INSTALL}project/bash/wex.bin.sh /usr/local/bin/wex
+# Create or recreate symlink.
+rm "${WEX_BIN}"
+# Symlink to bin
+ln -s ${WEX_DIR_INSTALL}project/bash/wex.bin.sh ${WEX_BIN}
 chmod -R +x /usr/local/bin/wex
 
 # Create sites folder
