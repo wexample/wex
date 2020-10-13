@@ -19,8 +19,11 @@ export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
+export WEX_SCREEN_WIDTH=$(tput cols)
 # Used by sed to store a local temp backup file before removing it.
 export WEX_SED_I_ORIG_EXT=".orig"
+export WEX_APP_DIR_TMP=./tmp/
+export WEX_APP_CONFIG=${WEX_APP_DIR_TMP}config
 
 _wexAppDir() {
   local PATH_CURRENT=${PWD}
@@ -144,6 +147,56 @@ _wexHasRealPath() {
   fi;
 }
 
+_wexItem() {
+  local ICON="    *   "
+  if [ "${3}" != "" ];then
+    ICON=${3}
+  fi
+
+  local ICON_COLOR=${WEX_COLOR_GRAY}
+  if [ "${4}" != "" ];then
+    ICON_COLOR=${4}
+  fi
+
+  local WRAPPER_WIDTH
+  WRAPPER_WIDTH=${#ICON}
+
+  MESSAGE=$(_wexTruncate "${1}" "${WRAPPER_WIDTH}")
+  local TEXT="${ICON_COLOR}${ICON}${WEX_COLOR_RESET}${MESSAGE}${WEX_COLOR_RESET}"
+
+  # Complementary information or description for extra text
+  if [ "${2}" != "" ];then
+    # We don't know the real tab width, but we a add a 8 chars length security.
+    WRAPPER_WIDTH=$(("${WRAPPER_WIDTH}" + "${#MESSAGE}" + 8))
+    TEXT+="${WEX_COLOR_CYAN}$(_wexTruncate "${2}" "${WRAPPER_WIDTH}")${WEX_COLOR_RESET}"
+  fi
+
+  printf "${TEXT}\n"
+}
+
+_wexItemFail() {
+  _wexItem "${@}" "    x   " "${WEX_COLOR_RED}"
+}
+
+_wexItemSuccess() {
+  _wexItem "${@}" "    ✓   " "${WEX_COLOR_GREEN}"
+}
+
+# Data storage access performance.
+wexLoadVariables() {
+  local STORAGE=${WEX_TMP_GLOBAL_VAR}
+
+  if [ -f "${STORAGE}" ];then
+    . "${STORAGE}";
+  fi
+}
+
+_wexLog() {
+  MESSAGE=$(_wexTruncate "${1}" 4)
+
+  printf "${WEX_COLOR_GRAY}  > ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
+}
+
 _wexMessage() {
   . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
@@ -162,6 +215,25 @@ _wexMessage() {
 _wexMethodName() {
   local SPLIT=(${1//// })
   echo ${SPLIT[0]}$(_wexUpperCaseFirstLetter ${SPLIT[1]})
+}
+
+_wexSubTitle() {
+  printf "${WEX_COLOR_GRAY}##${WEX_COLOR_CYAN} ${1}${WEX_COLOR_RESET}\n"
+}
+
+_wexTitle() {
+  printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
+}
+
+_wexTruncate() {
+  local MAX_MIDTH;
+  MAX_WIDTH=$((${WEX_SCREEN_WIDTH} - ${WEX_TRUCATE_SPACE} - ${2}))
+
+  if [ "${#1}" -gt "${MAX_WIDTH}" ];then
+    echo "$(echo "${1}" | cut -c -"${MAX_WIDTH}")${WEX_COLOR_GRAY}...${WEX_COLOR_RESET} "
+  else
+    echo "${1}"
+  fi
 }
 
 _wexUpperCaseFirstLetter() {

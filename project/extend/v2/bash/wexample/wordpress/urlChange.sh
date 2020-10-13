@@ -2,27 +2,44 @@
 
 wordpressUrlChangeArgs() {
   _ARGUMENTS=(
-    [0]='new_url u "New url with trailing slash (ex: http://wexample.com/) " true'
+    'new_url n "New url with trailing slash (ex: http://wexample.com/) " false'
+    'old_url o "Old url with trailing slash (ex: http://wexample.com/) " false'
   )
 }
 
 wordpressUrlChange() {
   . .wex
 
-  # Change database records.
-  local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
-  local QUERY=''
+  # If no new url defined, use local config.
+  if [ "${NEW_URL}" = "" ];then
+    . ${WEX_APP_CONFIG}
+    # Do not use https to support local envs.
+    NEW_URL="http://${DOMAIN_MAIN}"
+  fi
 
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}options SET option_value = replace(option_value, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET guid = REPLACE (guid, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_content = REPLACE (post_content, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}posts SET post_excerpt = REPLACE (post_excerpt, '${OLD_URL}', '${NEW_URL}');"
-  QUERY+="UPDATE ${WP_DB_TABLE_PREFIX}postmeta SET meta_value = REPLACE (meta_value, '${OLD_URL}','${NEW_URL}');"
+  if [ "${OLD_URL}" = "" ];then
+    # Change database records.
+    local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
+  fi
 
-  wex db/exec -c="${QUERY}"
+  _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL}"
+
+  local TABLES
+  local PREFIX_LENGTH
+  PREFIX_LENGTH=( ${#WP_DB_TABLE_PREFIX} + 1 )
+  TABLES=($(wex db/exec -c="SHOW TABLES"))
+
+  for TABLE in ${TABLES[*]}
+  do
+    # Remove prefix as it is appeded after
+    TABLE=${TABLE:${PREFIX_LENGTH}}
+    wex wordpress/urlChangeInTable -t="${TABLE}" -o="${OLD_URL}" -n="${NEW_URL}"
+  done
 
   # Change wp-config.php
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")
+
+  _wexLog "Update wp-config.php with ${NEW_URL}"
   # Protect arguments by escaping special chars.
   NEW_URL=$(sed -e 's/[]\/$\{0,\}.^|[]/\\&/g' <<< "${NEW_DOMAIN}")
   local FILE=./wordpress/config/wp-config.php
