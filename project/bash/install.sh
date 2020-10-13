@@ -20,10 +20,10 @@ if [[ $(_wexHasRealPath) == "false" ]]; then
 fi;
 
 # Create or recreate symlink.
-rm "${WEX_BIN}"
+[ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
 # Symlink to bin
 ln -s ${WEX_DIR_INSTALL}project/bash/wex.bin.sh ${WEX_BIN}
-chmod -R +x /usr/local/bin/wex
+chmod -R +x ${WEX_BIN}
 
 # Create sites folder
 mkdir -p /var/www
