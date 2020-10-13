@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-nextcloudConfig() {
+onlyofficeConfig() {
 
   echo "\nSITE_CONTAINER=onlyoffice"
 
