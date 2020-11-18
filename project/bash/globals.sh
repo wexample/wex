@@ -6,7 +6,7 @@ WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
 # /opt can't be mounted on macos, using Users instead.
 WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)
 
-export WEX_CORE_VERSION=3.3
+export WEX_CORE_VERSION=3.4
 export WEX_VERSION_FALLBACK=2.0.0
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
