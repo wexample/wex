@@ -44,7 +44,7 @@ if [ -z "${WEX_INIT:+x}" ];then
 
       # Show hi
       if [ ${WEX_SCRIPT_CALL_NAME} = "hi" ]; then
-        printf ". ${WEX_COLOR_YELLOW}★${WEX_COLOR_CYAN}hi${WEX_COLOR_RESET} ${WEX_COLOR_YELLOW}★${WEX_COLOR_RESET}.\n"
+        printf "hi!\n"
 
       # Show completion
       elif [ -d ${WEX_DIR_BASH}${WEX_NAMESPACE}"/"${WEX_SCRIPT_CALL_NAME} ];then
