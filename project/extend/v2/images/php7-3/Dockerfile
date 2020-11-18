@@ -28,9 +28,9 @@ RUN apt-get update -yqq && \
   php-xdebug \
   php-xml \
   php-zip \
-  php7 \
-  php7-apcu \
-  php7-intl \
+  php7.3 \
+  php7.3-apcu \
+  php7.3-intl \
   sendmail \
   -yqq && \
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
