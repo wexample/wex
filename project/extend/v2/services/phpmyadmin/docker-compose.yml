@@ -5,7 +5,10 @@ services:
         container_name: '${SITE_NAME_INTERNAL}_phpmyadmin'
         image: phpmyadmin/phpmyadmin:4.9
         environment:
+          - LETSENCRYPT_EMAIL=${EMAIL}
+          - LETSENCRYPT_HOST=${DOMAIN_PMA}
           - PMA_HOST=${SITE_NAME_INTERNAL}_mysql
+          - VIRTUAL_HOST=${DOMAIN_PMA}
         restart: always
         networks:
           - default
