@@ -1,6 +1,6 @@
 FROM wexample/php7:latest
 
-ENV WORDPRESS_VERSION 4.9.5
+ENV WORDPRESS_VERSION 5.5.3
 
 ADD https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz /wordpress.tar.gz
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /wp-cli.phar
