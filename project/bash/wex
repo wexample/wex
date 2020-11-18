@@ -133,11 +133,17 @@ if [ -z "${WEX_INIT:+x}" ];then
       ${WEX_SCRIPT_METHOD_ARGS_NAME}
     fi;
 
+    # Ask for sudo password
+    if [ "${_ASK_SUDO_PASSWORD}" = "true" ];then
+      sudo echo "" > /dev/null
+    fi
+
     # User is not sudo.
-    if [ "$EUID" -ne 0 ];then
+    if [ "${EUID}" -ne 0 ];then
       if [ "${_AS_NON_SUDO}" = "false" ];then
-        _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
-        exit;
+        # Enforce using sudo
+        sudo wex "${@}"
+        return;
       fi
     # User is sudo.
     else
@@ -154,6 +160,7 @@ if [ -z "${WEX_INIT:+x}" ];then
       'help help "Display this help manual" false'
       'debug debug "Show extra debug information, depending of method features" false'
       'source source "Show script source instead to execute it" false'
+      'quiet quiet "Hide logs and errors" false'
     )
     # Then start in negative value (length of previous table).
     _NEGATIVE_ARGS_LENGTH=4
@@ -289,6 +296,7 @@ if [ -z "${WEX_INIT:+x}" ];then
         _wexError "Method not found ${WEX_SCRIPT_METHOD_NAME}" "In ${WEX_SCRIPT_FILE}"
         exit
       fi;
+
       # Execute function with all parameters.
       ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
     fi;

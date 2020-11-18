@@ -34,7 +34,7 @@ _wexAppDir() {
     return
   fi;
 
-  while [[ ${PATH_CURRENT} != / ]];
+  while [ "${PATH_CURRENT}" != "/" ];
   do
       if [ -f "${PATH_CURRENT}/.wex" ]; then
         WEX_APP_DIR=${PATH_CURRENT}"/"
@@ -63,7 +63,7 @@ _wexAppLoadConfig() {
 
 _wexAppVersion() {
   # No wex app folder.
-  if [ $(_wexAppDetected) == false ];then
+  if [ $(_wexAppDetected) = false ];then
     return;
   fi
 
@@ -127,7 +127,7 @@ _wexFindScriptFile() {
   export WEX_SCRIPT_METHOD_ARGS_NAME=${WEX_SCRIPT_METHOD_NAME}"Args";
 
   # Use main script if still not exists.
-  if [ -f ${WEX_SCRIPT_FILE} ] || [ -d ${WEX_SCRIPT_DIR} ]; then
+  if [ -f "${WEX_SCRIPT_FILE}" ] || [ -d "${WEX_SCRIPT_DIR}" ]; then
     export WEX_NAMESPACE=${WEX_NAMESPACE_TEST}
   else
     export WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
