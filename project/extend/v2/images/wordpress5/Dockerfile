@@ -1,6 +1,6 @@
-FROM wexample/php7-3:latest
+FROM wexample/php7:latest
 
-ENV WORDPRESS_VERSION 4.9.5
+ENV WORDPRESS_VERSION 5.5.3
 
 ADD https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz /wordpress.tar.gz
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /wp-cli.phar
@@ -20,6 +20,6 @@ RUN apt-get update && \
     a2enmod ext_filter
 
 # Copy custom config that allow shared file config.
-COPY ./v2/images/wordpress4/wp-config.php /var/www/html/project
+COPY ./v2/images/wordpress5/wp-config.php /var/www/html/project
 
 RUN chown www-data:www-data /var/www/html/project/wp-config.php

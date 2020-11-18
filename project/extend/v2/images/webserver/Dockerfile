@@ -1,6 +1,6 @@
 # Despite it is total wrong we consider a "wexserver" as an "apache web server"
 
-FROM wexample/ubuntu18:latest
+FROM wexample/ubuntu20:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
@@ -15,10 +15,7 @@ COPY ./v2/images/webserver/entrypoint.sh /docker-entrypoint-webserver.sh
 RUN apt-get update -yqq && apt-get install apache2 -yqq && \
     sed -i "\$aServerName wexWebServer" /etc/apache2/apache2.conf && \
     usermod -u 1000 www-data && \
-    a2enmod rewrite && \
-    a2enmod ssl && \
-    a2enmod headers && \
-    a2enmod expires && \
+    a2enmod expires headers rewrite ssl && \
     chmod +x /docker-entrypoint-webserver.sh && \
     rm -rf /var/lib/apt/lists/*
 
