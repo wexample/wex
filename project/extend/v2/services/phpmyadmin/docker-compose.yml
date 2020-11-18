@@ -3,7 +3,7 @@ version: '2'
 services:
     phpmyadmin:
         container_name: '${SITE_NAME_INTERNAL}_phpmyadmin'
-        image: phpmyadmin/phpmyadmin:4.7.9-1
+        image: phpmyadmin/phpmyadmin:4.9
         environment:
           - PMA_HOST=${SITE_NAME_INTERNAL}_mysql
         restart: always
