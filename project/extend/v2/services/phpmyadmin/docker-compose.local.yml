@@ -10,3 +10,5 @@ services:
             - PMA_USER=root
             - PMA_PASSWORD=${MYSQL_DB_PASSWORD}
             - VIRTUAL_HOST=pma.${SITE_NAME}.wex
+            - LETSENCRYPT_HOST=pma.${SITE_NAME}.wex
+            - LETSENCRYPT_EMAIL=${EMAIL}
