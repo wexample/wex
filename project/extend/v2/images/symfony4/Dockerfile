@@ -12,10 +12,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && apt-get update \
   && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
   && apt-get install \
-  composer \
   nodejs \
   php-xdebug \
-  php-xml \
   yarn \
   -yq \
   && chmod +x /docker-entrypoint-symfony4.sh && \
