@@ -14,6 +14,7 @@ dbDetect() {
         #      We need to find a better way to find contextual methods according db type
         if [ "${SERVICE}" = "mysql8" ];then
           echo "mysql"
+          return
         fi
 
         echo "${SERVICE}"
