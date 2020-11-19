@@ -9,6 +9,8 @@ dockerFlush() {
 
   wex docker/stopAll
 
+  docker system prune -a
+
   _wexLog "Flushing images"
   local IMAGES
   IMAGES=$(docker images -qa);
