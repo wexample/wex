@@ -2,7 +2,7 @@
 
 # Find first db service found.
 dbDetect() {
-  local ALLOWED=(mysql postgres mariadb redis)
+  local ALLOWED=(mysql mysql8 postgres mariadb redis)
   local SERVICES=($(wex service/list))
 
   for SERVICE in ${SERVICES[@]}
