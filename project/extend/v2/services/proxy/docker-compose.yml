@@ -2,7 +2,7 @@ version: '2'
 
 services:
   proxy:
-    image: jwilder/nginx-proxy:0.7.0
+    image: jwilder/nginx-proxy:0.8.0
     container_name: ${SITE_NAME_INTERNAL}
     volumes:
       # Nginx configuration
