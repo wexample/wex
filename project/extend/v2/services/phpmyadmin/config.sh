@@ -8,8 +8,7 @@ phpmyadminConfig() {
   . .env
   . .wex
 
-  local SITE_ENV_MAJ=${SITE_ENV^^}
-  local DOMAIN=$(eval 'echo ${'${SITE_ENV_MAJ}'_DOMAIN_PMA}')
+  local DOMAIN=$(eval 'echo ${'${SITE_ENV^^}'_DOMAIN_PMA}')
 
   if [ "${DOMAIN}" = '' ] && [ "${SITE_ENV}" = "local" ];then
     DOMAIN=pma.${SITE_NAME}.wex
