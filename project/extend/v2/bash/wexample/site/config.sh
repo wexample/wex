@@ -2,8 +2,8 @@
 
 siteConfigArgs() {
   _ARGUMENTS=(
-    [0]='key k "Key of config param to get" true'
-    [1]='dir_site d "Root site directory" false'
+    'key k "Key of config param to get" true'
+    'dir_site d "Root site directory" false'
   )
 }
 
@@ -15,7 +15,5 @@ siteConfig() {
   . .wex
 
   # Uppercase key.
-  KEY=$(echo ${KEY} | tr '[:lower:]' '[:upper:]')
-
-  eval 'echo ${'${KEY}'}'
+  eval 'echo ${'${KEY^^}'}'
 }
