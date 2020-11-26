@@ -2,10 +2,10 @@
 
 siteStartArgs() {
   _ARGUMENTS=(
-    [0]='clear_cache cc "Clear all caches" false'
-    [1]='containers c "Docker containers to run" false'
-    [2]='only o "Stop all other running sites before" false'
-    [3]='port p "Port for accessing site, only allowed if not already defined" false'
+    'clear_cache cc "Clear all caches" false'
+    'containers c "Docker containers to run" false'
+    'only o "Stop all other running sites before" false'
+    'port p "Port for accessing site, only allowed if not already defined" false'
   )
 }
 
@@ -115,7 +115,12 @@ siteStart() {
     fi
   }
 
-  # Prepare files
+  # Remove old config files.
+  _wexLog "Clearing old config files"
+  rm -f tmp/config
+  rm -f tmp/docker-compose.build.yml
+
+  # Prepare files.
   wex file/convertLinesToUnix -f=.env &> /dev/null
   wex file/convertLinesToUnix -f=.wex &> /dev/null
 
