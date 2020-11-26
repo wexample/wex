@@ -42,18 +42,9 @@ dbDump() {
   docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_mysql:./tmp/mysql.cnf
   docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysqldump $(wex mysql/loginCommand) > /var/www/dumps/${DUMP_FILE_NAME}"
 
-  if [[ ${ZIP} == true ]]; then
-    zip ${DUMP_FULL_PATH}".zip" ${DUMP_FULL_PATH} -q -j
-  fi
-
   local LATEST_DUMP_FILE="./mysql/dumps/"${SITE_ENV}"-"${SITE_NAME}"-latest.sql"
   # Clone to latest
   cp ${DUMP_FULL_PATH} ${LATEST_DUMP_FILE}
-
-  if [[ ${ZIP} == true ]]; then
-    # Create zip.
-    zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
-  fi
 
   # No more usage of source files.
   rm -f ${LATEST_DUMP_FILE}
