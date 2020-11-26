@@ -49,8 +49,12 @@ dbDump() {
   local LATEST_DUMP_FILE="./mysql/dumps/"${SITE_ENV}"-"${SITE_NAME}"-latest.sql"
   # Clone to latest
   cp ${DUMP_FULL_PATH} ${LATEST_DUMP_FILE}
-  # Create zip.
-  zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
+
+  if [[ ${ZIP} == true ]]; then
+    # Create zip.
+    zip ${LATEST_DUMP_FILE}".zip" ${LATEST_DUMP_FILE} -q -j
+  fi
+
   # No more usage of source files.
   rm -f ${LATEST_DUMP_FILE}
 
