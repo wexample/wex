@@ -22,17 +22,6 @@ imagesRebuild() {
   if [[ ${DEPLOY} == true ]]; then
     # Check integrity to keep versions up to date.
 
-    # We should not have uncommited changes.
-    if [ $(wex git/hasChanges) == true ];then
-      echo "Wex directory has uncommited changes."
-      return
-    fi
-    # We should not hav unpushed changes.
-    if [ $(wex git/hasChanges) == true ];then
-      echo "Wex directory has no pushed changes."
-      return
-    fi
-
     if [ ! -z "${LSC+x}" ]; then
       DOCKER_USERNAME=$(wex default::var/localGet -n=DOCKER_USERNAME -ask="Docker username for wex images deployment")
       DOCKER_PASSWORD=$(wex default::var/localGet -n=DOCKER_PASSWORD -ask="Docker password" -p)
