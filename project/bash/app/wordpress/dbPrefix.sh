@@ -8,7 +8,8 @@ wordpressDbPrefix() {
   . .wex
 
   if [ "${WP_DB_TABLE_PREFIX}" ];then
-    echo ${WP_DB_TABLE_PREFIX}
+    echo "${WP_DB_TABLE_PREFIX}"
+    return
   fi;
 
   echo 'wp_'
