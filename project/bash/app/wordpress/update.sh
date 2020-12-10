@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 wordpressUpdate() {
-  # TODO remove -l option when migrated.
   wex site/exec -l -c="wp core update --allow-root"
   wex site/exec -l -c="wp plugin update --all --allow-root"
   wex site/exec -l -c="wp core update-db --allow-root"
