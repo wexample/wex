@@ -5,5 +5,5 @@ wordpressUnlockUpdateArgs() {
 }
 
 wordpressUnlockUpdate() {
-  wex db/exec -c="DELETE FROM "$(wex wordpress/dbPrefix)"options WHERE option_name = 'core_updater.lock'"
+  wex db/exec -c="DELETE FROM $(wex wordpress/dbPrefix)options WHERE option_name = 'core_updater.lock'"
 }
