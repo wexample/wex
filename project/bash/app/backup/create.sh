@@ -2,10 +2,10 @@
 
 appUpdateArgs() {
   _AS_NON_SUDO=false
-  _SUDO_REASON="Store a file in /var/www/backup dir"
   _DEPENDENCIES=(
     'zip'
   )
+  _SUDO_REASON="Store a file in /var/www/backup dir"
 }
 
 backupCreate() {
