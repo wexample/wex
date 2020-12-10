@@ -17,7 +17,7 @@ backupCreate() {
   cd ../
 
   local ZIP_NAME="${BACKUP_DIR}/${SITE_NAME}-${SITE_ENV}-$(wex date/timeFileName).zip"
-  zip -r "${ZIP_NAME}" "${SITE_NAME}"
+  zip -r "${ZIP_NAME}" "${SITE_NAME}" -x '*.git*'
 
   echo "${ZIP_NAME}"
 }
