@@ -59,6 +59,15 @@ configWrite() {
   if [ "${IMAGES_VERSION}" == "" ];then
     local IMAGES_VERSION=$(wex wex/version)
   fi
+
+  # TODO Prepare v3 migration
+  # TODO Create a local function for params sections
+  SITE_CONFIG_FILE+='\n'
+  SITE_CONFIG_FILE+='\n# App info'
+  SITE_CONFIG_FILE+='\nAPP_NAME_INTERNAL='${SITE_NAME}"_"${SITE_ENV}
+
+  SITE_CONFIG_FILE+='\n'
+  SITE_CONFIG_FILE+='\n# V2 Legacy parameters'
   SITE_CONFIG_FILE+='\nSITE_NAME='${SITE_NAME}
   SITE_CONFIG_FILE+='\nSITE_NAME_INTERNAL='${SITE_NAME}"_"${SITE_ENV}
   SITE_CONFIG_FILE+='\nSITE_ENV='${SITE_ENV}

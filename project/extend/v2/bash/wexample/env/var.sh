@@ -12,5 +12,5 @@ envVarArgs() {
 
 envVar() {
   # Just wrap method with local env file.
-  wex bash/readVar -f=./.env -a="${ASK}" -w="${WRITE}" -l="${LABEL}" -d="${DEFAULT}" -k="${KEY}"
+  ${WEX_DIR_V3_CMD} bash/readVar -f=./.env -a="${ASK}" -w="${WRITE}" -l="${LABEL}" -d="${DEFAULT}" -k="${KEY}"
 }

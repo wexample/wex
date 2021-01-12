@@ -3,12 +3,12 @@
 bashReadVarArgs() {
   _DESCRIPTION="Read a value from a config file written as a list of bash variables"
   _ARGUMENTS=(
-    [0]='file f "File to read" true'
-    [1]='key k "Key to find in env config" true'
-    [2]='ask a "Prompt user if not defined" false'
-    [3]='label l "Description of the variable" false'
-    [4]='write w "Write new variable in file" false'
-    [5]='default d "Default value if not defined" false'
+    'file f "File to read" true'
+    'key k "Key to find in env config" true'
+    'ask a "Prompt user if not defined" false'
+    'label l "Description of the variable" false'
+    'write w "Write new variable in file" false'
+    'default d "Default value if not defined" false'
   )
 }
 

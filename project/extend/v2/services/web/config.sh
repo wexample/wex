@@ -24,4 +24,5 @@ webConfig() {
   echo 'MYSQL_DB_PASSWORD = "'${ACCESS[4]}'"' >> ${INI}
 
   echo "\nSITE_CONTAINER=web"
+  echo "\nPROJECT_DIR=project"
 }

@@ -10,12 +10,8 @@ laravel5Install() {
     wex site/start
   fi
 
-  # Composer install / update.
-  local ACTION="update"
-  if [ "${SITE_ENV}" = "prod" ];then
-    ACTION="install"
-  fi;
-  wex site/exec -l -c="composer "${ACTION}
+  # Composer install
+  wex site/exec -l -c="composer install"
 
   # Yarn
   local OPTION=""

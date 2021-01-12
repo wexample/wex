@@ -61,6 +61,7 @@ wex() {
   local WEX_LOCAL_DIR="/opt/wexample/"
   local WEX_NON_INTERACTIVE=false
   local WEX_SED_I_ORIG_EXT=".orig"
+  local WEX_DIR_V3_CMD=$(realpath ${WEX_DIR_ROOT}../../bash/wex)
 
   if [ ${WEX_SCRIPT_CALL_NAME} == "wexample" ];then
     return
