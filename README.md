@@ -1,4 +1,4 @@
-# wex v3.3.2
+# wex v3.4
 
 A web developer automation tool and deployment system.
 

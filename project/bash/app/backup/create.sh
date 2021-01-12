@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-appUpdateArgs() {
+backupCreateArgs() {
   _AS_NON_SUDO=false
   _DEPENDENCIES=(
     'zip'
