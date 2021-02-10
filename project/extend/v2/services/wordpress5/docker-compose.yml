@@ -26,6 +26,7 @@ services:
             - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
             # Php
             - ${CONF_WEB_PHP_INI}:/etc/php/7.3/apache2/conf.d/99-wex.ini
+            - ${CONF_WEB_PHP_INI}:/etc/php/7.4/apache2/conf.d/99-wex.ini
             # Mysql dumps
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
             # Share same wex scripts for all environments.
