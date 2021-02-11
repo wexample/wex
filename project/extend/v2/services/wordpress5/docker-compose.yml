@@ -3,7 +3,7 @@ version: '2'
 services:
     wordpress5:
         container_name: '${SITE_NAME_INTERNAL}_wordpress5'
-        image: 'wexample/wordpress5'
+        image: 'wordpress:${WP_VERSION}'
         stdin_open: true
         tty: true
         expose:
