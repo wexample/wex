@@ -19,16 +19,17 @@ serviceExec() {
     local SERVICES=($(wex service/list))
   fi
 
-  COMMAND_UC=$(wexUpperCaseFirstLetter ${COMMAND})
+  local COMMAND_BASE="${COMMAND}"
+  local COMMAND_UC=$(wexUpperCaseFirstLetter ${COMMAND_BASE})
   local OUTPUT=''
 
-  for SERVICE in ${SERVICES[@]}
+  for SERVICE in "${SERVICES[@]}"
   do
     if [ "${SERVICE_ONLY}" == "" ] || [ "${SERVICE_ONLY}" == "${SERVICE}" ];then
       SERVICE_DIR=${WEX_DIR_ROOT}"services/"${SERVICE}"/"
-      SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND}".sh"
+      SERVICE_FILE_SCRIPT=${SERVICE_DIR}${COMMAND_BASE}".sh"
 
-      if [[ -f ${SERVICE_FILE_SCRIPT} ]];then
+      if [ -f "${SERVICE_FILE_SCRIPT}" ];then
         . ${SERVICE_FILE_SCRIPT}
         METHOD=${SERVICE}${COMMAND_UC}
         if [ "${NO_WRAP}" == "" ];then
@@ -43,5 +44,4 @@ serviceExec() {
   done
 
   echo ${OUTPUT}
-
 }
