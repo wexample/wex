@@ -9,4 +9,5 @@ wordpress5ConfigV4() {
   . .wex
   # Set values
   wex config/setValue -f=tmp/config -k=WP_DB_TABLE_PREFIX -v="${WP_DB_TABLE_PREFIX}" -s="="
+  wex config/setValue -f=tmp/config -k=WP_VERSION -v="${WP_VERSION}" -s="="
 }

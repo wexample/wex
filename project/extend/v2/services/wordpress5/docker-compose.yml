@@ -36,9 +36,6 @@ services:
             - ${WEX_SCRIPTS_PATH}:/opt/wexample
             # Use common certificates storage
             - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
-            # Wordpress specific
-            - ${SITE_PATH_ROOT}wordpress/config:/var/www/html/wp-content/config
-            - ${SITE_PATH_ROOT}wordpress/.htaccess:/var/www/html/.htaccess
             # Public files ar modifiable from FTP.
             - ${SITE_PATH_ROOT}wordpress/public/backups:/var/www/html/wp-content/backups
             - ${SITE_PATH_ROOT}wordpress/public/languages:/var/www/html/wp-content/languages
