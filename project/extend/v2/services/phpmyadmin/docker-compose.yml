@@ -7,7 +7,7 @@ services:
         environment:
           - LETSENCRYPT_EMAIL=${EMAIL}
           - LETSENCRYPT_HOST=${DOMAIN_PMA}
-          - PMA_HOST=${SITE_NAME_INTERNAL}_mysql
+          - PMA_HOST=${SITE_NAME_INTERNAL}_${DB_CONTAINER}
           - VIRTUAL_HOST=${DOMAIN_PMA}
         restart: always
         networks:
