@@ -23,9 +23,9 @@ mysqlDiagKo() {
 mysqlDiag() {
 
   if [[ "${CONTAINER}" == "" ]];then
-    wex config/load
+    . ${WEX_WEXAMPLE_SITE_CONFIG}
 
-    CONTAINER=${SITE_NAME_INTERNAL}_mysql
+    CONTAINER=${SITE_NAME_INTERNAL}_${DB_CONTAINER}
   fi
 
   local LOGS=$(docker logs ${CONTAINER} 2>&1)

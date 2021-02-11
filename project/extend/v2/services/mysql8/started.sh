@@ -5,6 +5,6 @@ mysql8Started() {
 
   _wexMessage "Lock MySQL site.cnf access"
 
-  docker exec ${SITE_NAME_INTERNAL}_mysql chmod 644 /var/www/tmp/mysql.cnf
-  docker exec ${SITE_NAME_INTERNAL}_mysql chmod 644 /etc/mysql/conf.d/site.cnf
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} chmod 644 /var/www/tmp/mysql.cnf
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} chmod 644 /etc/mysql/conf.d/site.cnf
 }

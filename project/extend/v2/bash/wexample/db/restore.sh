@@ -41,10 +41,10 @@ dbRestore() {
   fi;
 
   # Copy mysql configuration.
-  docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_mysql:./tmp/mysql.cnf
+  docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_${DB_CONTAINER}:./tmp/mysql.cnf
 
   local LOGIN=$(wex mysql/loginCommand)
-  docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} /bin/bash -c "mysql ${LOGIN} < /var/www/dumps/${DUMP}"
 
   # If file was a zip, .sql file was temporary.
   if [[ ${DUMP_FILE_ZIP_BASE} =~ \.zip$ ]];then

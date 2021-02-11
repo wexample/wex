@@ -12,9 +12,6 @@ mysql8Config() {
 
   local ACCESS=($(mysqlConfigAccess))
   local MYSQL_CONFIG=''
-  #local HOST=${NAME}_${SITE_ENV}_mysql
-  #local USER=root
-  #local PASSWORD="thisIsAReallyNotSecurePassword!"
 
   MYSQL_CONFIG+="\nMYSQL_DB_HOST="${ACCESS[0]}
   MYSQL_CONFIG+="\nMYSQL_DB_PORT="${ACCESS[1]}
@@ -45,7 +42,7 @@ mysqlConfigAccess() {
   . .env
 
   # Host
-  echo ${NAME}_${SITE_ENV}_mysql
+  echo ${NAME}_${SITE_ENV}_${DB_CONTAINER}
   # Port
   echo 3306
   # Name

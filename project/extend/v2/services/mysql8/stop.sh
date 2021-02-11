@@ -5,6 +5,6 @@ mysql8Stop() {
 
   _wexMessage "Free MySQL site.cnf access"
 
-  docker exec ${SITE_NAME_INTERNAL}_mysql chmod 777 /var/www/tmp/mysql.cnf
-  docker exec ${SITE_NAME_INTERNAL}_mysql chmod 777 /etc/mysql/conf.d/site.cnf
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} chmod 777 /var/www/tmp/mysql.cnf
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} chmod 777 /etc/mysql/conf.d/site.cnf
 }

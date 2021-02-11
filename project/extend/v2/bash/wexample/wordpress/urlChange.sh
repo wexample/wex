@@ -8,6 +8,7 @@ wordpressUrlChangeArgs() {
 }
 
 wordpressUrlChange() {
+  . tmp/config
   . .wex
 
   # If no new url defined, use local config.
