@@ -19,7 +19,8 @@ wordpress4Config() {
   if [ "${WP_DB_TABLE_PREFIX}" != "" ];then
     echo 'WP_DB_TABLE_PREFIX = "'${WP_DB_TABLE_PREFIX}'"' >> ${INI}
   fi
-
-  # Override default container.
-  echo "\nSITE_CONTAINER=wordpress4"
+  # Debug mode
+  if [ "${WP_DEBUG_ENABLED}" != "" ];then
+    echo 'WP_DEBUG_ENABLED = "'${WP_DEBUG_ENABLED}'"' >> ${INI}
+  fi
 }

@@ -70,14 +70,17 @@ siteInit() {
   touch .wex
   # Create wex file
   cat <<EOF > .wex
-NAME=${SITE_NAME}
+# Global
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
 IMAGES_VERSION=latest
+NAME=${SITE_NAME}
 SERVICES=${SERVICES_JOINED}
-LOCAL_DOMAINS=${SITE_NAME}.wex
-LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
 WEX_VERSION=${WEX_VERSION}
+
+# Local
+LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
+LOCAL_DOMAINS=${SITE_NAME}.wex
 EOF
 
   if [ "${DOMAINS}" != "" ];then
@@ -88,9 +91,13 @@ EOF
     local DOMAINS_MAIN=domain.com
   fi
 
-  echo "PROD_DOMAINS="${DOMAINS} >> .wex
-  echo "PROD_DOMAIN_MAIN="${DOMAINS_MAIN} >> .wex
-  echo "PROD_EMAIL=contact@"${DOMAINS_MAIN} >> .wex
+  cat <<EOF >> .wex
+
+# Prod
+PROD_DOMAIN_MAIN=${DOMAINS_MAIN}
+PROD_DOMAINS=${DOMAINS}
+PROD_EMAIL=contact@${DOMAINS_MAIN}
+EOF
 
   mkdir -p docker
 

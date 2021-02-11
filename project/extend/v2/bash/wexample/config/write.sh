@@ -123,6 +123,9 @@ configWrite() {
 
   # Save param file.
   echo -e ${SITE_CONFIG_FILE} | tee ${WEX_WEXAMPLE_SITE_DIR_TMP}config > /dev/null
+  # TODO temporary uses a file for storing new v4 mainpulations
+  wex hook/exec -c="configV4"
+
   # TODO see below, use hook/exec instead.
   wex script/exec -c="config"
 
