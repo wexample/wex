@@ -89,7 +89,7 @@ siteStart() {
     . .wex
 
     # No message for proxy server.
-    if [ ${NAME} == ${WEX_WEXAMPLE_PROXY_CONTAINER} ];then
+    if [ ${NAME} == ${WEX_WEXAMPLE_PROXY_CONTAINER}_prod ];then
       return
     fi
 
