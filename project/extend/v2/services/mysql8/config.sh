@@ -27,6 +27,7 @@ mysql8Config() {
   # Create connexion file info
   local DB_CONNECTION_FILE=./tmp/mysql.cnf
 
+  touch ${DB_CONNECTION_FILE}
   chmod 755 ${DB_CONNECTION_FILE}
   echo '[client]' > ${DB_CONNECTION_FILE}
   echo 'user = "'${ACCESS[3]}'"' >> ${DB_CONNECTION_FILE}
