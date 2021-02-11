@@ -1,9 +1,3 @@
 # Wordpress
-/wordpress/public/backups/*
-/wordpress/public/uploads/*
-# WP default themes
-/wordpress/public/themes/*
-# WP default plugins
-/wordpress/plugins/akismet
-/wordpress/plugins/hello.php
-/wordpress/plugins/index.php
+/wordpress/*
+!/wordpress/wp-content/themes/*-child/

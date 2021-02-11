@@ -23,7 +23,18 @@ wordpressUrlChange() {
     local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
   fi
 
-  _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL}"
+  # Might become the only way to work.
+  if [ "${SITE_CONTAINER}" = "wordpress5" ];then
+    _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL}"
+
+    wex site/exec -n=cli -c="wp search-replace '${OLD_URL}' '${NEW_URL}' --skip-columns=guid"
+    wex site/exec -n=cli -c="wp option update home '${NEW_URL}'"
+    wex site/exec -n=cli -c="wp option update siteurl '${NEW_URL}'"
+
+    return
+  fi
+
+  _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL} (Old version)"
 
   local TABLES
   local PREFIX_LENGTH

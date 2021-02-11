@@ -32,15 +32,30 @@ services:
             - ${CONF_WEB_PHP_INI}:/etc/php/7.4/apache2/conf.d/99-wex.ini
             # Mysql dumps
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
-            # Share same wex scripts for all environments.
-            - ${WEX_SCRIPTS_PATH}:/opt/wexample
-            # Use common certificates storage
-            - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
-            # Public files ar modifiable from FTP.
-            - ${SITE_PATH_ROOT}wordpress/public/backups:/var/www/html/wp-content/backups
-            - ${SITE_PATH_ROOT}wordpress/public/languages:/var/www/html/wp-content/languages
-            - ${SITE_PATH_ROOT}wordpress/public/plugins:/var/www/html/wp-content/plugins
-            - ${SITE_PATH_ROOT}wordpress/public/themes:/var/www/html/wp-content/themes
-            - ${SITE_PATH_ROOT}wordpress/public/uploads:/var/www/html/wp-content/uploads
+            # Wordpress
+            - ${SITE_PATH_ROOT}wordpress/:/var/www/html
+        networks:
+            - tmp_wex_net
+
+    # From : https://stackoverflow.com/a/51001043
+    cli:
+        container_name: '${SITE_NAME_INTERNAL}_cli'
+        image: wordpress:cli-2.4.0
+        # This is required to run cli with the same
+        # user-id as wordpress. This way there are no permission problems
+        # when running the cli
+        user: xfs
+        stdin_open: true
+        tty: true
+        environment:
+            # Database
+            - WORDPRESS_DB_HOST=${MYSQL_DB_HOST}
+            - WORDPRESS_DB_NAME=${MYSQL_DB_NAME}
+            - WORDPRESS_DB_USER=${MYSQL_DB_USER}
+            - WORDPRESS_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
+        volumes:
+            # Wordpress
+            - ${SITE_PATH_ROOT}wordpress/:/var/www/html
         networks:
             - tmp_wex_net

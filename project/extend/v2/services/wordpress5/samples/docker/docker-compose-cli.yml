@@ -1,0 +1,7 @@
+        # We use this container
+        extends:
+          file: ${WEX_COMPOSE_YML_WORDPRESS5}
+          service: cli
+        depends_on:
+          - ${SITE_NAME}_wordpress5
+          - ${SITE_NAME}_${DB_CONTAINER}
