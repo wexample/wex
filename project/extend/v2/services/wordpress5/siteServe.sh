@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 wordpress5SiteServe() {
-    # Same config as web
-  . ${WEX_DIR_ROOT}services/web/siteServe.sh
-
-  webSiteServe
+   # Might be the default way to serve instead of restart.
+   wex site/exec -c="service apache2 reload"
 }
