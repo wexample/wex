@@ -44,7 +44,7 @@ mysqlConfigAccess() {
   . .env
 
   # Host
-  echo ${NAME}_${SITE_ENV}_${DB_CONTAINER}
+  echo ${NAME}_${SITE_ENV}_mysql8
   # Port
   echo 3306
   # Name
