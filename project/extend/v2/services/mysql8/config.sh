@@ -10,6 +10,8 @@ mysql8Config() {
   # Load framework settings
   # Old feature : wex framework/settings -d=./project/
 
+  echo "\nDB_CONTAINER=mysql8"
+
   local ACCESS=($(mysqlConfigAccess))
   local MYSQL_CONFIG=''
 
