@@ -66,6 +66,9 @@ wex site/update
 wex site/serve
 # Start watcher.
 wex watcher/start
+# Import a database dump
+Put an SQL file in `mysql/dumps`, then
+wex db/restore
 ```
 
 # Updating
