@@ -10,5 +10,5 @@ codeAnalyseArgs() {
 codeAnalyse() {
   # Use sonar scanner.
   docker run -ti -v $(pwd):/usr/src newtmitch/sonar-scanner \
-      -Dproject.settings=./sonarqube/${NAME}.properties
+      -Dproject.settings=/usr/src/sonarqube/${NAME}.properties
 }
