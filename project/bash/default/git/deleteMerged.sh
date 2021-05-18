@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 gitDeleteMergedArgs() {
-  _DESCRIPTION="Delete all branches "
+  _DESCRIPTION="Delete all merged branches except master and develop"
   _ARGUMENTS=(
     'exclude e "Branch to keep even it was merged" true "master|develop"'
   )

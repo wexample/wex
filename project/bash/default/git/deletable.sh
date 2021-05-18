@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 gitDeletableArgs() {
-  _DESCRIPTION="Join array values (space separated) with given separator"
+  _DESCRIPTION="List all merged branches except master and develop"
   _ARGUMENTS=(
     'exclude e "Branch to keep even it was merged" true "master|develop"'
   )
