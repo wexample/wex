@@ -8,5 +8,5 @@ gitDeletableArgs() {
 }
 
 gitDeletable() {
-  git branch --merged | egrep -v "(^(\*?[[:space:]]*)(${EXCLUDE})$)"
+  git branch --merged master | egrep -v "(^(\*?[[:space:]]*)(${EXCLUDE})$)"
 }
