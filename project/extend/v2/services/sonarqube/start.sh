@@ -2,5 +2,6 @@
 
 sonarqubeStart() {
   # Wrong files permissions may cause container won't start.
-  chmod 777 -R ./sonarqube/
+  # chmod 777 -R ./sonarqube/
+  echo "No sonar starting script..."
 }
