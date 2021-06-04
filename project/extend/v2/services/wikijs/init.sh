@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-n8nInit() {
+wikijsInit() {
   # Override default container.
-  echo "N8N_VERSION=nightly" >> .wex
+  echo "WIKIJS_VERSION=2.5" >> .wex
 }

@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+    wikijs:
+      container_name: ${SITE_NAME_INTERNAL}_wikijs
+      restart: always
+      image: requarks/wiki
+      stdin_open: true
+      tty: true
+      ports:
+        - "3000:3000"
+      environment:
+        - VIRTUAL_HOST=${DOMAIN_MAIN}
+        - VIRTUAL_PORT=3000
+        # Database
+        - DB_TYPE=mysql
+        - DB_PORT=${MYSQL_DB_PORT}
+        - DB_HOST=${MYSQL_DB_HOST}
+        - DB_NAME=${MYSQL_DB_NAME}
+        - DB_USER=${MYSQL_DB_USER}
+        - DB_PASS=${MYSQL_DB_PASSWORD}
+        - WIKI_ADMIN_EMAIL=contact@wexample.com
+      volumes:
+        # Minimal env files.
+        - ${SITE_PATH_ROOT}wikijs/config:/config
+        - ${SITE_PATH_ROOT}wikijs/data:/data
+      networks:
+        - tmp_wex_net
