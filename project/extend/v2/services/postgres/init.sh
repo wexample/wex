@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-nextcloudInit() {
+postgresInit() {
   # Override default container.
-  echo "POSTGRES_VERSION=11.1" >> .wex
+  echo "POSTGRES_VERSION=13.3" >> .wex
 }

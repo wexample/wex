@@ -13,12 +13,12 @@ services:
         - VIRTUAL_HOST=${DOMAIN_MAIN}
         - VIRTUAL_PORT=3000
         # Database
-        - DB_TYPE=mysql
-        - DB_PORT=${MYSQL_DB_PORT}
-        - DB_HOST=${MYSQL_DB_HOST}
-        - DB_NAME=${MYSQL_DB_NAME}
-        - DB_USER=${MYSQL_DB_USER}
-        - DB_PASS=${MYSQL_DB_PASSWORD}
+        - DB_TYPE=postgres
+        - DB_PORT=${POSTGRES_DB_PORT}
+        - DB_HOST=${POSTGRES_DB_HOST}
+        - DB_NAME=${POSTGRES_DB_NAME}
+        - DB_USER=${POSTGRES_DB_USER}
+        - DB_PASS=${POSTGRES_DB_PASSWORD}
         - WIKI_ADMIN_EMAIL=contact@wexample.com
       volumes:
         # Minimal env files.

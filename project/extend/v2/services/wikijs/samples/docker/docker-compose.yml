@@ -2,4 +2,4 @@
           file: ${WEX_COMPOSE_YML_WIKIJS}
           service: wikijs
         depends_on:
-          - ${SITE_NAME}_mysql
+          - ${SITE_NAME}_postgres
