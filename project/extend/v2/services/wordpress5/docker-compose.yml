@@ -21,10 +21,9 @@ services:
             #- WORDPRESS_CONFIG_EXTRA=
         volumes:
             # Minimal env files.
-            - ${SITE_PATH_ROOT}.wex:/var/www/html/.wex
-            - ${SITE_PATH_ROOT}.env:/var/www/html/.env
-            - ${SITE_PATH_ROOT}.git:/var/www/html/.git
-            - ${SITE_PATH_ROOT}tmp:/var/www/html/tmp
+            - ${SITE_PATH_ROOT}.wex:/var/www/.wex
+            - ${SITE_PATH_ROOT}.env:/var/www/.env
+            - ${SITE_PATH_ROOT}tmp:/var/www/tmp
             # Apache
             - ${CONF_WEB_APACHE_CONF}:/etc/apache2/sites-available/000-default.conf
             # Php
