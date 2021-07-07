@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    mautic:
+      container_name: ${SITE_NAME_INTERNAL}_mautic
+      restart: always
+      image: mautic/mautic:${MAUTIC_VERSION}
+      stdin_open: true
+      tty: true
+      environment:
+        - VIRTUAL_HOST=${DOMAIN_MAIN}
+        # Database
+        - MAUTIC_DB_HOST=${MYSQL_DB_HOST}
+        - MAUTIC_DB_NAME=${MYSQL_DB_NAME}
+        - MAUTIC_DB_USER=${MYSQL_DB_USER}
+        - MAUTIC_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+        - MAUTIC_RUN_CRON_JOBS=true
+      networks:
+        - tmp_wex_net
