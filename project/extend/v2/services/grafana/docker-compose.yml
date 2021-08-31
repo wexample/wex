@@ -11,3 +11,5 @@ services:
         - VIRTUAL_HOST=${DOMAIN_MAIN}
       networks:
         - tmp_wex_net
+      volumes:
+        - ${SITE_PATH_ROOT}grafana/grafana:/var/lib/grafana
