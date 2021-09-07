@@ -5,5 +5,5 @@ webCodeFormat()  {
   yarn prettier --write .
   cd '../' || return;
 
-  wex site/exec -l -c="./vendor/bin/php-cs-fixer fix --config ./.php_cs.dist"
+  wex site/exec -l -c="./vendor/bin/php-cs-fixer fix"
 }
