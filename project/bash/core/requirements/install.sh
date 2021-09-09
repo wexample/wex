@@ -11,7 +11,6 @@ requirementsInstall() {
       # First sudo package.
       apt-get install sudo -yq
       sudo apt-get install \
-        ansible \
         git \
         net-tools \
         zip \
@@ -27,7 +26,6 @@ requirementsInstall() {
       # brew itself should be installed manually by user.
       # realpath and may be also already installed, but we reinstall with coreutils
       brew install \
-        ansible \
         coreutils \
         git \
         zip
