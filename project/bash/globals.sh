@@ -19,7 +19,7 @@ export WEX_NAMESPACE_APP="app"
 export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
-export WEX_SCREEN_WIDTH=$(tput cols)
+export WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && echo $(tput cols) || echo 100)
 # Used by sed to store a local temp backup file before removing it.
 export WEX_SED_I_ORIG_EXT=".orig"
 export WEX_APP_DIR_TMP=./tmp/
