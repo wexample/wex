@@ -13,3 +13,4 @@ services:
         - tmp_wex_net
       volumes:
         - ${SITE_PATH_ROOT}grafana/grafana:/var/lib/grafana
+        - ${SITE_PATH_ROOT}grafana/provisioning:/etc/grafana/provisioning/

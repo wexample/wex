@@ -1,0 +1,3 @@
+# Prometheus data
+/prometheus/data/*
+/prometheus/prometheus/*
