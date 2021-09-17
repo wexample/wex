@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 # Return "true" if wex script are properly installed.
 
-# Test if wex hi command runs.
-[ $(wex hi | xargs) = "hi!" ] && echo "true" || echo "false"
+# wex command should be accessible globally.
+if [ "$(type -t wex)" = file ];then
+  # Test if wex hi command runs.
+  if [ $(wex hi | xargs) = "hi!" ]; then
+    echo true
+    return
+  fi
+fi
+
+echo false
