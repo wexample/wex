@@ -4,11 +4,12 @@ gitDeleteMergedArgs() {
   _DESCRIPTION="Delete all merged branches into master except master and develop"
   _ARGUMENTS=(
     'exclude e "Branch to keep even it was merged" true "master|develop"'
+    'branch b "Main branch to compare to" true "master"'
   )
 }
 
 gitDeleteMerged() {
-  local BRANCHES=$(wex git/deletable -e="${EXCLUDE}")
+  local BRANCHES=$(wex git/deletable -b="${BRANCH}" -e="${EXCLUDE}")
 
   if [ "${BRANCHES}" != "" ];then
     echo "${BRANCHES}" | xargs git branch -d
