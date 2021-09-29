@@ -3,14 +3,14 @@ version: '2'
 services:
     collabora:
         container_name: '${SITE_NAME_INTERNAL}_collabora'
-        image: 'collabora/code:4.2.0.3'
+        image: 'collabora/code:${COLLABORA_VERSION}'
         restart: always
         ports:
             - "9980:9980"
         environment:
             - VIRTUAL_HOST=${DOMAINS}
-            - VIRTUAL_PORT=9980
-            #- VIRTUAL_PROTO=https
+#            - VIRTUAL_PORT=9980
+            - VIRTUAL_PROTO=https
             - domain=${DOMAIN_MAIN}
             - username=admin
             - password=admin
