@@ -15,6 +15,14 @@ services:
           - ${SITE_PATH_ROOT}/uploads:/app/uploads
         networks:
           - tmp_wex_net
+        command: >
+          bash -c
+            "for i in `seq 1 30`; do
+              node main.js &&
+              s=$$? && break || s=$$?;
+              echo \"Tried $$i times. Waiting 5 secs...\";
+              sleep 5;
+            done; (exit $$s)"
 
     hubot:
         image: rocketchat/hubot-rocketchat:v1.0.11
