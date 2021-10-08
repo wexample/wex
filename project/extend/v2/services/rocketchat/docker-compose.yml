@@ -9,7 +9,7 @@ services:
           - VIRTUAL_HOST=${SITE_NAME}.wex
           - ROOT_URL=http://localhost:3000
           - MONGO_URL=mongodb://${SITE_NAME_INTERNAL}_mongo:27017/rocketchat
-          - MONGO_OPLOG_URL=mongodb://${SITE_NAME_INTERNAL}_mongo:27017/local
+          - MONGO_OPLOG_URL=mongodb://${SITE_NAME_INTERNAL}_mongo:27017/local?replSet=rs0
           - MAIL_URL=smtp://smtp.mailgun.org
         volumes:
           - ${SITE_PATH_ROOT}/uploads:/app/uploads
