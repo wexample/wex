@@ -11,6 +11,13 @@ WEX_BIN="/usr/local/bin/wex"
 
 . /opt/wex/project/bash/globals.sh
 
+# Install basic dependencies,
+# It might be removed in future version but
+# we should keep a simple one-line install method
+# for common projects
+sudo apt-get update
+sudo apt-get install net-tools zip nano
+
 # Check shell version.
 _wexBashCheckVersion
 # Check if "realpath" method exists (missing on raw macos)
