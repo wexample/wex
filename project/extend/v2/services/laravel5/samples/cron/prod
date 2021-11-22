@@ -1,1 +1,4 @@
 #* * * * * echo "Hello world" > /var/log/cron.log 2>&1
+
+# Run the Laravel's scheduler as www-data while outputing to /proc/1/fd/N as root
+#* * * * * su -s /bin/sh -c "cd /var/www/html/project && php artisan schedule:run" - www-data >/proc/1/fd/1 2>/proc/1/fd/2
