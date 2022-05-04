@@ -3,14 +3,14 @@ version: '2'
 services:
     gitstats:
         container_name: ${SITE_NAME_INTERNAL}_gitstats
-        image: wexample/gitstats:latest
+        image: goodideal/docker-git-stats:latest
         stdin_open: true
         tty: true
         restart: always
         hostname: ${DOMAIN_MAIN}
         volumes:
-          - ${SITE_PATH_ROOT}project:/var/www/project
-          - ${SITE_PATH_ROOT}reports:/var/www/reports
+          - ${SITE_PATH_ROOT}project:/git:ro
+          - ${SITE_PATH_ROOT}reports:/gitstats
         environment:
           - VIRTUAL_HOST=${DOMAIN_MAIN}
           - VIRTUAL_PORT=80
