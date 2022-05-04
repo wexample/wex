@@ -2,5 +2,5 @@
 
 webGo() {
   # Do not execute action bu return it to be piped.
-  echo "cd /var/www/html/project"
+  echo "[ -d /var/www/html/project ] && cd /var/www/html/project || cd /"
 }
