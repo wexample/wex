@@ -1,4 +1,4 @@
-FROM wexample/php8:latest
+FROM wexample/php8-1:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
@@ -12,17 +12,30 @@ COPY ./v2/images/symfony5/entrypoint.sh /docker-entrypoint-symfony5.sh
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
-  && apt-get install \
+  && apt-get install -yq \
+  curl \
   nodejs \
+  npm \
+  php8.1-bcmath \
+  php8.1-intl \
   php-xdebug \
+  php-intl \
+  php-zip \
+  unzip \
   yarn \
-  -yq \
-  && wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet \
-  && mv composer.phar /usr/local/bin/composer \
+  zip \
   && a2enmod alias proxy_fcgi \
   && wget https://get.symfony.com/cli/installer -O - | bash \
   && mv /root/.symfony/bin/symfony /usr/local/bin/symfony \
   && chmod +x /docker-entrypoint-symfony5.sh \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && a2enmod proxy_fcgi setenvif \
+  && a2enconf php8.1-fpm \
+  && npm install n -g \
+  && n stable \
+  && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+  && php composer-setup.php \
+  && mv composer.phar /usr/local/bin/composer \
+  && service php8.1-fpm start
 
 ENTRYPOINT ["/docker-entrypoint-symfony5.sh"]
