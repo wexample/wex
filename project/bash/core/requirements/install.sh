@@ -5,7 +5,7 @@ requirementsInstallArgs() {
 }
 
 requirementsInstall() {
-  case "$(wex system/osName)" in
+  case "$(wex system/os)" in
     "linux")
       wex package/update
       # First sudo package.

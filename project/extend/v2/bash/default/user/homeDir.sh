@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 userHomeDir() {
-  case "$(wex system/osName)" in
+  case "$(wex system/os)" in
     "linux")
       echo /home/
       ;;

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 hostsUpdateLocal() {
-  case "$(wex system/osName)" in
+  case "$(wex system/os)" in
     "linux" | "mac")
       local HOST_FILE=/etc/hosts
       ;;
