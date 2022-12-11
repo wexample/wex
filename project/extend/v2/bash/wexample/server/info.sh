@@ -6,7 +6,7 @@ serverInfo() {
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Avoid blank lines.
-    if [[ $(wex text/trim -t=${SITE_PATH}) != "" ]];then
+    if [[ $(${WEX_DIR_V3_CMD} string/trim -s=${SITE_PATH}) != "" ]];then
       echo -e "  Path : \t"${SITE_PATH}
     fi
   done;

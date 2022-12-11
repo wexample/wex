@@ -6,7 +6,7 @@ sitesStop() {
   for SITE_PATH in ${REGISTRY[@]}
   do
     # Avoid blank lines.
-    if [[ $(wex text/trim -t=${SITE_PATH}) != "" ]];then
+    if [[ $(${WEX_DIR_V3_CMD} string/trim -s=${SITE_PATH}) != "" ]];then
       # Keep wex_server alive.
       if [ $(basename ${SITE_PATH}) != 'wex_server' ];then
         cd ${SITE_PATH}
