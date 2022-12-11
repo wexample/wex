@@ -4,7 +4,6 @@ dbAnonArgs() {
   _DESCRIPTION="Update database with anonymization and optimization scripts for local work"
 }
 
-# Make current database anonymous (dev usage)
 dbAnon() {
   . .env
 

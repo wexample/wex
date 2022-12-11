@@ -2,7 +2,7 @@
 
 serviceTemplatesArgs() {
   _ARGUMENTS=(
-    [0]='section s "Section name, must be a folder name also" true'
+    [0]='section s "Section name, can be a folder name" true'
     [1]='extension e "Extension for file" false'
   )
 }

@@ -2,6 +2,8 @@
 
 # Place here namespace specific data
 # that should not be accessed by other namespaces.
+# TODO MANAGE CACHING
+# TODO MIGRATE VARS FROM global.sh
 
 export WEX_WEXAMPLE_APP_DIR_TMP=./tmp/
 export WEX_WEXAMPLE_APP_DIR_PROJECT=./project/
