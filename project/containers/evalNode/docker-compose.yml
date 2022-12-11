@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  wex_eval_node:
+    image: wexample/node:${WEX_IMAGES_VERSION}
+    container_name: wex_eval_node
+    volumes:
+      # Certificates configuration
+      - ${WEX_DIR_TMP}eval:/tmp/eval
+    restart: always
