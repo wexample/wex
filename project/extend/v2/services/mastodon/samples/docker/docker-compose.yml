@@ -1,0 +1,6 @@
+        extends:
+          file: ${WEX_COMPOSE_YML_MASTODON}
+          service: mastodon
+        depends_on:
+          - ${SITE_NAME}_postgres
+          - ${SITE_NAME}_redis
