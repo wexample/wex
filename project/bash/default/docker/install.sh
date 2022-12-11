@@ -6,6 +6,12 @@ dockerInstallArgs() {
 }
 
 dockerInstall() {
+  # If no release candidate
+  # Edit :  /etc/apt/sources.list
+  # Add / Change : deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+  # apt-get update
+  # apt-get install docker-ce
+
   # Do not install docker on docker.
   if [ $(wex docker/isEnv) == true ];then
     return

@@ -32,8 +32,8 @@ dbDump() {
   local DUMP_FULL_PATH="./mysql/dumps/"${DUMP_FILE_NAME}
 
   # Copy mysql configuration.
-  docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_mysql:./tmp/mysql.cnf
-  docker exec ${SITE_NAME_INTERNAL}_mysql /bin/bash -c "mysqldump $(wex mysql/loginCommand) > /var/www/dumps/${DUMP_FILE_NAME}"
+  docker cp ./tmp/mysql.cnf ${SITE_NAME_INTERNAL}_${DB_CONTAINER}:./tmp/mysql.cnf
+  docker exec ${SITE_NAME_INTERNAL}_${DB_CONTAINER} /bin/bash -c "mysqldump $(wex mysql/loginCommand) > /var/www/dumps/${DUMP_FILE_NAME}"
 
   if [ "${ZIP}" = true ]; then
     zip ${DUMP_FULL_PATH}".zip" ${DUMP_FULL_PATH} -q -j
