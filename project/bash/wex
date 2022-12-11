@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Init only once.
-if [ -z "${WEX_INIT:+x}" ];then
-  WEX_INIT=true
+if [ "$(type -t wex)" != "function" ];then
   . /opt/wex/project/bash/globals.sh
 
   wex() {
@@ -163,7 +162,7 @@ if [ -z "${WEX_INIT:+x}" ];then
       'quiet quiet "Hide logs and errors" false'
     )
     # Then start in negative value (length of previous table).
-    _NEGATIVE_ARGS_LENGTH=4
+    _NEGATIVE_ARGS_LENGTH=5
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
     for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
@@ -217,6 +216,7 @@ if [ -z "${WEX_INIT:+x}" ];then
           local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
         # Expected
         elif [ "${PARAMS[3]}" = "true" ]; then
+          echo "${WEX_SCRIPT_FILE}"
           # Interactive mode allowed.
           if [ -z ${NON_INTERACTIVE+x} ] || [ "${NON_INTERACTIVE}" = "false" ]; then
             echo -n ${PARAMS[2]}": "
@@ -297,8 +297,18 @@ if [ -z "${WEX_INIT:+x}" ];then
         exit
       fi;
 
+      if [ ! -z ${QUIET+x} ];then
+        WEX_QUIET_MODE_PREVIOUS=${WEX_QUIET_MODE}
+        WEX_QUIET_MODE='on'
+      fi
+
       # Execute function with all parameters.
       ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
+
+      if [ ! -z ${QUIET+x} ];then
+        WEX_QUIET_MODE=${WEX_QUIET_MODE_PREVIOUS}
+        unset ${QUIET}
+      fi
     fi;
   }
 fi;

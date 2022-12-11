@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# TODO If we want to allow switching user (non sudo to sudo) during scripts executions
+#      we need to execute to write out this configuration variable in an external file
+#      then reload only the built version of the variable.
+#      For example, it will prevent to disable the "quiet mode"
+#      when executing method as sudo user inside a non sudo script.
+
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname ${WEX_DIR_BASH})"/"
 WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
@@ -25,6 +31,19 @@ export WEX_SED_I_ORIG_EXT=".orig"
 export WEX_APP_DIR_TMP=./tmp/
 export WEX_APP_CONFIG=${WEX_APP_DIR_TMP}config
 
+
+. ${WEX_DIR_BASH}colors.sh
+
+_wexAppDetected() {
+  local DIR=$(_wexAppDir)
+
+  if [ "${DIR}" != "" ]; then
+    echo true
+  else
+    echo false
+  fi;
+}
+
 _wexAppDir() {
   local PATH_CURRENT=${PWD}
 
@@ -43,16 +62,6 @@ _wexAppDir() {
       fi
       PATH_CURRENT=$(dirname ${PATH_CURRENT}"/")
   done
-}
-
-_wexAppDetected() {
-  local DIR=$(_wexAppDir)
-
-  if [ "${DIR}" != "" ]; then
-    echo true
-  else
-    echo false
-  fi;
 }
 
 _wexAppLoadConfig() {
@@ -92,7 +101,6 @@ _wexBashCheckVersion() {
 }
 
 _wexError() {
-  . ${WEX_DIR_BASH}colors.sh
   printf "${WEX_COLOR_RED}[wex] Error : ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
@@ -148,6 +156,10 @@ _wexHasRealPath() {
 }
 
 _wexItem() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   local ICON="    *   "
   if [ "${3}" != "" ];then
     ICON=${3}
@@ -175,10 +187,18 @@ _wexItem() {
 }
 
 _wexItemFail() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   _wexItem "${@}" "    x   " "${WEX_COLOR_RED}"
 }
 
 _wexItemSuccess() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   _wexItem "${@}" "    ✓   " "${WEX_COLOR_GREEN}"
 }
 
@@ -192,14 +212,21 @@ wexLoadVariables() {
 }
 
 _wexLog() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   MESSAGE=$(_wexTruncate "${1}" 4)
 
   printf "${WEX_COLOR_GRAY}  > ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
 }
 
 _wexMessage() {
-  . ${WEX_DIR_BASH}colors.sh
-  printf "${WEX_COLOR_YELLOW}[wex] ${1}${WEX_COLOR_RESET}\n"
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
+  printf "${WEX_COLOR_CYAN}[wex]${WEX_COLOR_RESET} ${1}${WEX_COLOR_RESET}\n"
 
   # Complementary information or description for extra text
   if [ "${2}" != "" ];then
@@ -218,10 +245,18 @@ _wexMethodName() {
 }
 
 _wexSubTitle() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   printf "${WEX_COLOR_GRAY}##${WEX_COLOR_CYAN} ${1}${WEX_COLOR_RESET}\n"
 }
 
 _wexTitle() {
+  if [ "${WEX_QUIET_MODE}" = "on" ];then
+    return
+  fi;
+
   printf "${WEX_COLOR_GRAY}# ${WEX_COLOR_YELLOW} ${1}${WEX_COLOR_RESET}\n"
 }
 
