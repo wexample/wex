@@ -6,11 +6,12 @@
 # We don't include external packages install which are
 # managed by `wex core::requirements/install` script.
 
-WEX_BASH_VERSION_MIN='5'
-WEX_BIN="/usr/local/bin/wex"
-
 . /opt/wex/project/bash/globals.sh
 . "${WEX_DIR_BASH}/includes/install.sh"
+
+WEX_BASH_VERSION_MIN='5'
+WEX_BIN="/usr/local/bin/wex"
+WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
 
 # Check user is root
 if [ "${EUID}" -gt 0 ];then
@@ -43,8 +44,11 @@ fi;
 # Create or recreate symlink.
 [ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
 # Symlink to bin
-ln -s ${WEX_DIR_INSTALL}project/bash/wex.bin.sh ${WEX_BIN}
+ln -s "${WEX_DIR_INSTALL}project/bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
+
+# Now the "wex" command is working, we can use it internally.
 
 # Create sites folder
 mkdir -p /var/www
+
