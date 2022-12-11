@@ -10,21 +10,21 @@ configChangeValueTest() {
 
   # No separator
   RESULT=$(wex config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
-  _wexTestAssertEqual ${RESULT} "two"
+  _wexTestAssertEqual "${RESULT}" "two"
 
   # Space separator
-  configChangeValueTestItem ${FILEPATH} "ConfigTestOption" " "
+  configChangeValueTestItem "${FILEPATH}" "ConfigTestOption" " "
 
   # Strict equal separator
-  configChangeValueTestItem ${FILEPATH} "ConfigTestOptionEqual" "="
+  configChangeValueTestItem "${FILEPATH}" "ConfigTestOptionEqual" "="
 
   # Revert file.
   FILEPATH=$(_wexTestSampleInit configSample)
 
-  configChangeValueTestItem ${FILEPATH} "ChallengeResponseAuthentication"
+  configChangeValueTestItem "${FILEPATH}" "ChallengeResponseAuthentication"
 
   FILEPATH=$(_wexTestSampleInit sshd_config)
-  configChangeValueTestItem ${FILEPATH} Port " "
+  configChangeValueTestItem "${FILEPATH}" Port " "
 }
 
 configChangeValueTestItem() {
