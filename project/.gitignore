@@ -1,7 +1,3 @@
-# Local usage only
-/extend/local/
-!/extend/local/run.sh
-
 # Used by wex reverse proxy server.
 /proxy/*
 

@@ -1,0 +1,5 @@
+        extends:
+            file: ${WEX_COMPOSE_YML_SYMFONY5}
+            service: symfony5
+        depends_on:
+          - ${SITE_NAME}_mysql8

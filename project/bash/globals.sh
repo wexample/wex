@@ -12,10 +12,8 @@ WEX_DIR_INSTALL=$(dirname ${WEX_DIR_ROOT})"/"
 # /opt can't be mounted on macos, using Users instead.
 WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)
 
-export BASHRC_PATH=~/.bashrc
-
-export WEX_CORE_VERSION=3.3
-export WEX_VERSION_FALLBACK=2.0.0 # TODO REMOVE
+export WEX_CORE_VERSION=3.4
+export WEX_VERSION_FALLBACK=2.0.0
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_INSTALL
@@ -24,20 +22,16 @@ export WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 export WEX_DIR_SAMPLES=${WEX_DIR_ROOT}samples/
 export WEX_NAMESPACE_DEFAULT="default"
 export WEX_NAMESPACE_APP="app"
+export BASHRC_PATH=~/.bashrc
 export WEX_APP_DIR=""
 export WEX_WEXAMPLE_DIR_PROXY
-export WEX_SED_I_ORIG_EXT=".orig"    # Used by sed to store a local temp backup file before removing it.
-export WEX_WEXAMPLE_DIR_PROXY=$([[ "$(uname -s)" == Darwin ]] && echo /Users/.wex/server/ || echo /opt/wex_server/)    # /opt can't be mounted on macos, using Users instead.
-export WEX_DIR_PROXY_TMP=${WEX_WEXAMPLE_DIR_PROXY}tmp/
-export WEX_QUIET_MODE='off'
-export WEX_QUIET_MODE_PREVIOUS='off'
-export WEX_SCREEN_WIDTH=$(tput cols)
-export WEX_TRUCATE_SPACE=4 # 3 dots plus one space.
-export WEX_WEXAMPLE_ENVIRONMENTS=(local dev prod)
-export WEX_PROXY_CONTAINER=wex_server # Proxy is always on prod env
-export WEX_PROXY_APPS_REGISTRY=${WEX_DIR_PROXY_TMP}apps
-export WEX_APP_CONFIG=${WEX_WEXAMPLE_SITE_DIR_TMP}config
-export WEX_CONTAINER_PROJECT_DIR=/var/www/html/project
+export WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && echo $(tput cols) || echo 100)
+# Used by sed to store a local temp backup file before removing it.
+export WEX_SED_I_ORIG_EXT=".orig"
+export WEX_APP_DIR_TMP=./tmp/
+export WEX_APP_CONFIG=${WEX_APP_DIR_TMP}config
+export WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
+
 
 . ${WEX_DIR_BASH}colors.sh
 
@@ -60,7 +54,7 @@ _wexAppDir() {
     return
   fi;
 
-  while [[ ${PATH_CURRENT} != / ]];
+  while [ "${PATH_CURRENT}" != "/" ];
   do
       if [ -f "${PATH_CURRENT}/.wex" ]; then
         WEX_APP_DIR=${PATH_CURRENT}"/"
@@ -79,7 +73,7 @@ _wexAppLoadConfig() {
 
 _wexAppVersion() {
   # No wex app folder.
-  if [ $(_wexAppDetected) == false ];then
+  if [ $(_wexAppDetected) = false ];then
     return;
   fi
 
@@ -211,7 +205,7 @@ _wexItemSuccess() {
 
 # Data storage access performance.
 wexLoadVariables() {
-  local STORAGE=${WEX_DIR_TMP}globalVariablesLocalStorage
+  local STORAGE=${WEX_TMP_GLOBAL_VAR}
 
   if [ -f "${STORAGE}" ];then
     . "${STORAGE}";

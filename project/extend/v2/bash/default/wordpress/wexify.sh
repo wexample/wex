@@ -28,6 +28,7 @@ wordpressWexify() {
   wex wexample::site/init -s=wordpress4,mysql,phpmyadmin
 
   echo 'WP_DB_TABLE_PREFIX='${DB_PREFIX} >> .wex
+  echo 'WP_DEBUG_ENABLED=false' >> .wex
 
   # Copy content files
   cp -r ${TEMP_FOLDER}/wp-content/languages ./wordpress/public/

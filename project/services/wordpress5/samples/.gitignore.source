@@ -1,0 +1,3 @@
+# Wordpress
+/wordpress/*
+!/wordpress/wp-content/themes/*-child/

@@ -8,23 +8,23 @@ configChangeValueTest() {
   RESULT=$(wex config/processSeparator -s=",")
   _wexTestAssertEqual "${RESULT}" "\(,\)\{1,\}"
 
-  # No separator
+  # No SEPARATOR
   RESULT=$(wex config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
   _wexTestAssertEqual "${RESULT}" "two"
 
-  # Space separator
+  # Space SEPARATOR
   configChangeValueTestItem "${FILEPATH}" "ConfigTestOption" " "
 
   # Revert file.
   FILEPATH=$(_wexTestSampleInit configSample)
 
-  # Strict equal separator
+  # Strict equal SEPARATOR
   configChangeValueTestItem "${FILEPATH}" "ConfigTestOptionEqual" "="
 
   # Revert file.
   FILEPATH=$(_wexTestSampleInit configSample)
 
-  configChangeValueTestItem "${FILEPATH}" "ChallengeResponseAuthentication"
+  configChangeValueTestItem "${FILEPATH}" "ChallengeResponseAuthentication" " "
 
   FILEPATH=$(_wexTestSampleInit sshd_config)
   configChangeValueTestItem "${FILEPATH}" Port " "
@@ -50,7 +50,7 @@ configChangeValueTestItem() {
   configChangeValueTestItemCheck "${ORIGINAL}"
 
   # Remove
-  wex config/removeKey -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}" --quiet
+  wex config/removeKey -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}"
   configChangeValueTestItemCheck ""
 
   # Reset
@@ -59,7 +59,6 @@ configChangeValueTestItem() {
 }
 
 configChangeValueTestItemCheck() {
-  CHANGED=$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")
   # Check
-  _wexTestAssertEqual "${CHANGED}" "${1}"
+  _wexTestAssertEqual "$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")" "${1}"
 }

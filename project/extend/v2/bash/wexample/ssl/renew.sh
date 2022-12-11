@@ -2,11 +2,11 @@
 
 sslRenew() {
   # Start server.
-  if [ "$(wex proxy/started)" = false ];then
+  if [ $(wex server/started) == false ];then
     return
   fi
-  . ${WEX_WEXAMPLE_DIR_PROXY} .env
-  local PROXY_NAME=${WEX_PROXY_CONTAINER}_${SITE_ENV}
+  . ${WEX_WEXAMPLE_DIR_PROXY}.env
+  local PROXY_NAME=${WEX_WEXAMPLE_PROXY_CONTAINER}_${SITE_ENV}
   # SSL container may sleep.
   docker start ${PROXY_NAME}_certs
   # Force renew.

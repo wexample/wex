@@ -21,7 +21,11 @@ configGetValue() {
   RESULTS=${RESULTS##*$'\n'}
 
   # Trim end on lines
+<<<<<<<< HEAD:project/bash/default/config/getValue.sh
   RESULTS=$(wex string/trim -s="${RESULTS}")
+========
+  results=$(${WEX_DIR_V3_CMD} string/trim -s="${results}")
+>>>>>>>> master:project/extend/v2/bash/default/config/getValue.sh
 
   echo "${RESULTS}"
 }

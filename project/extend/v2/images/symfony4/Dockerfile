@@ -2,7 +2,7 @@ FROM wexample/php7:latest
 
 LABEL authors="wexample <contact@wexample.com>"
 
-COPY ./v2/images/php7/entrypoint.sh /docker-entrypoint-symfony4.sh
+COPY ./v2/images/symfony4/entrypoint.sh /docker-entrypoint-symfony4.sh
 
 # Add Yarn repository.
 # Install NodeJS / NPM / Yarn / Xdebug.
@@ -12,10 +12,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && apt-get update \
   && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
   && apt-get install \
-  composer \
   nodejs \
   php-xdebug \
-  php-xml \
   yarn \
   -yq \
   && chmod +x /docker-entrypoint-symfony4.sh && \

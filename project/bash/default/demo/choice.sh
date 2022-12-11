@@ -10,7 +10,7 @@ demoChoice() {
   VALUE=$(wex prompt/choiceGetValue)
 
   # Display
-  _wexItemSuccess "You choosed: " "${VALUE}"
+  _wexItemSuccess "Your choice: " "${VALUE}"
 
   echo ""
 }

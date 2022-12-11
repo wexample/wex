@@ -67,14 +67,17 @@ appInit() {
 
   # Create wex file
   cat <<EOF > .wex
-NAME=${SITE_NAME}
+# Global
 AUTHOR=$(whoami)
 CREATED="$(date -u)"
 IMAGES_VERSION=latest
+NAME=${SITE_NAME}
 SERVICES=${SERVICES_JOINED}
-LOCAL_DOMAINS=${SITE_NAME}.wex
-LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
 WEX_VERSION=${WEX_VERSION}
+
+# Local
+LOCAL_DOMAIN_MAIN=${SITE_NAME}.wex
+LOCAL_DOMAINS=${SITE_NAME}.wex
 EOF
 
   if [ "${DOMAINS}" != "" ];then
@@ -85,11 +88,28 @@ EOF
     local DOMAINS_MAIN=domain.com
   fi
 
+<<<<<<<< HEAD:project/bash/app/app/init.sh
   {
     echo "PROD_DOMAINS=${DOMAINS}"
     echo "PROD_DOMAIN_MAIN=${DOMAINS_MAIN}"
     echo "PROD_EMAIL=contact@${DOMAINS_MAIN}"
   } >> .wex
+========
+  cat <<EOF >> .wex
+
+# Dev
+DEV_DOMAIN_MAIN=${DOMAINS_MAIN}
+DEV_DOMAIN_PMA=pma.${DOMAINS_MAIN}
+DEV_DOMAINS=${DOMAINS}
+DEV_EMAIL=contact@${DOMAINS_MAIN}
+
+# Prod
+PROD_DOMAIN_MAIN=${DOMAINS_MAIN}
+PROD_DOMAIN_PMA=pma.${DOMAINS_MAIN}
+PROD_DOMAINS=${DOMAINS}
+PROD_EMAIL=contact@${DOMAINS_MAIN}
+EOF
+>>>>>>>> master:project/extend/v2/bash/wexample/site/init.sh
 
   mkdir -p docker
 
@@ -139,7 +159,12 @@ EOF
   # Status
   ${RENDER_BAR} -p=100 -s="Done !"
 
+<<<<<<<< HEAD:project/bash/app/app/init.sh
   if [ "${NEW_SITE_NAME}" != "${WEX_PROXY_CONTAINER}" ];then
     _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex app/install"
+========
+  if [ ${NEW_SITE_NAME} != ${WEX_WEXAMPLE_PROXY_CONTAINER}_prod ];then
+    _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex site/install"
+>>>>>>>> master:project/extend/v2/bash/wexample/site/init.sh
   fi
 }

@@ -1,4 +1,4 @@
-FROM wexample/php7:latest
+FROM wexample/php7-3:latest
 
 ENV WORDPRESS_VERSION 5.4.2
 

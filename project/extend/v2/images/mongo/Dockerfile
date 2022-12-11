@@ -1,4 +1,4 @@
-FROM mongo:3.7.5-jessie
+FROM mongo:5.0.7-jessie
 
 VOLUME /data/db
 

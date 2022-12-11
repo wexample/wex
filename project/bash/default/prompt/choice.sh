@@ -102,6 +102,7 @@ _promptChoiceRender() {
             echo ""
 
             local INDEX=$(( CHOICE_SELECTED - 1 ))
+
             # Save selected values for further usage.
             wex var/set -n=CHOICE_SELECTED_INDEX -v="${CHOICE_SELECTED}"
             wex var/set -n=CHOICE_SELECTED_VALUE -v="\"${CHOICES[${INDEX}]}\""

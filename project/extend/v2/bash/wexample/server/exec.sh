@@ -7,7 +7,7 @@ serverExecArgs() {
 }
 
 serverExec() {
-  EXEC="docker exec ${WEX_PROXY_CONTAINER} /bin/bash -c"
+  EXEC="docker exec ${WEX_WEXAMPLE_PROXY_CONTAINER}_prod /bin/bash -c"
 
   ${EXEC} "${COMMAND}"
 }

@@ -1,4 +1,6 @@
         environment:
-          #- VIRTUAL_PROTO=https
           - LETSENCRYPT_HOST=${DOMAINS}
           - LETSENCRYPT_EMAIL=${EMAIL}
+          # Should be uncommented and configured
+          # - username=admin
+          # - password=admin

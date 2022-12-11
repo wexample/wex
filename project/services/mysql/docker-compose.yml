@@ -2,7 +2,7 @@ version: '2'
 
 services:
     mysql:
-        container_name: '${SITE_NAME_INTERNAL}_mysql'
+        container_name: '${SITE_NAME_INTERNAL}_${DB_CONTAINER}'
         image: 'wexample/mysql:${WEX_IMAGES_VERSION}'
         restart: always
         environment:

@@ -1,18 +1,25 @@
-# wex v3
+# wex v3.4
 
 A web developer automation tool and deployment system.
 
-# Installing
+## Install
 
-## On Ubuntu
-`sudo git clone https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install` 
+### Ubuntu
+
+- Clone the repository and install
+  > `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install`
+- Check install with `wex hi`
 
 ## On MacOS
 
 - Install brew
 - Update your bash and install coreutils with `brew install bash coreutils`
-- Double check the folder containing your project is allowed to be mounted with Docker (Docker manager > Resources > Files Sharing)
+- Double check this folders are allowed to be mounted with Docker (Docker manager > Resources > Files Sharing)
+  * /opt/wex
+  * The folder of the project you want to run
 - Then see Ubuntu installation process below
+- Run your site in `sudo wex site/start`
+- Once the project runs, think to restart your browser
 
 ### MacOS notices
 

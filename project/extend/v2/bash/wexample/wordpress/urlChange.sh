@@ -2,11 +2,13 @@
 
 wordpressUrlChangeArgs() {
   _ARGUMENTS=(
-    [0]='new_url u "New url with trailing slash (ex: http://wexample.com/) " false'
+    'new_url n "New url with trailing slash (ex: http://wexample.com/) " false'
+    'old_url o "Old url with trailing slash (ex: http://wexample.com/) " false'
   )
 }
 
 wordpressUrlChange() {
+  . tmp/config
   . .wex
 
   # If no new url defined, use local config.
@@ -16,13 +18,40 @@ wordpressUrlChange() {
     NEW_URL="http://${DOMAIN_MAIN}"
   fi
 
-  # Change database records.
-  local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
+  if [ "${OLD_URL}" = "" ];then
+    # Change database records.
+    local OLD_URL=$(wex db/exec -c="SELECT option_value FROM ${WP_DB_TABLE_PREFIX}options WHERE option_name = 'siteurl'")
+  fi
 
-  wex app/exec -l -c="wp search-replace --allow-root ${OLD_URL} ${NEW_URL}"
+  # Might become the only way to work.
+  if [ "${SITE_CONTAINER}" = "wordpress5" ];then
+    _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL}"
+
+    wex site/exec -n=cli -c="wp search-replace '${OLD_URL}' '${NEW_URL}' --skip-columns=guid"
+    wex site/exec -n=cli -c="wp option update home '${NEW_URL}'"
+    wex site/exec -n=cli -c="wp option update siteurl '${NEW_URL}'"
+
+    return
+  fi
+
+  _wexLog "Search / Replace ${OLD_URL} by ${NEW_URL} (Old version)"
+
+  local TABLES
+  local PREFIX_LENGTH
+  PREFIX_LENGTH=( ${#WP_DB_TABLE_PREFIX} + 1 )
+  TABLES=($(wex db/exec -c="SHOW TABLES"))
+
+  for TABLE in ${TABLES[*]}
+  do
+    # Remove prefix as it is appeded after
+    TABLE=${TABLE:${PREFIX_LENGTH}}
+    wex wordpress/urlChangeInTable -t="${TABLE}" -o="${OLD_URL}" -n="${NEW_URL}"
+  done
 
   # Change wp-config.php
   local NEW_DOMAIN=$(wex domain/fromUrl -u="${NEW_URL}")
+
+  _wexLog "Update wp-config.php with ${NEW_URL}"
   # Protect arguments by escaping special chars.
   NEW_URL=$(sed -e 's/[]\/$\{0,\}.^|[]/\\&/g' <<< "${NEW_DOMAIN}")
   local FILE=./wordpress/config/wp-config.php

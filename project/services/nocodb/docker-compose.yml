@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+    nocodb:
+      container_name: ${SITE_NAME_INTERNAL}_nocodb
+      restart: always
+      image: nocodb/nocodb:${NOCODB_VERSION}
+      stdin_open: true
+      tty: true
+      environment:
+        - NC_DB=pg://${POSTGRES_DB_HOST}:${POSTGRES_DB_PORT}?u=${POSTGRES_DB_USER}&p=${POSTGRES_DB_PASSWORD}&d=${POSTGRES_DB_NAME}
+        - NC_PUBLIC_URL=https://${DOMAIN_MAIN}
+        - NC_DISABLE_TELE=true
+        - VIRTUAL_HOST=${DOMAIN_MAIN}
+      networks:
+        - tmp_wex_net

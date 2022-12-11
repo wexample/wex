@@ -9,7 +9,7 @@ arrayJoinArgs() {
 }
 
 arrayJoin() {
-  ARRAY=(${ARRAY})
+  local ARRAY=(${ARRAY})
 
   if [ -z "${SEPARATOR+x}" ];then
     # Default space separator

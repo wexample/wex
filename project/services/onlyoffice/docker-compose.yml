@@ -3,7 +3,7 @@ version: '2'
 services:
     onlyoffice:
         container_name: '${SITE_NAME_INTERNAL}_onlyoffice'
-        image: 'onlyoffice/documentserver:5.5.1.76'
+        image: 'onlyoffice/documentserver:${ONLYOFFICE_DOCUMENT_SERVER_VERSION}'
         restart: always
         ports:
             # MPP-compatible instant messaging client (for ONLYOFFICE Talk correct work)

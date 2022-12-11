@@ -6,25 +6,29 @@ dockerStopAllArgs() {
 
 dockerStopAll() {
   # Containers
-  local CONTAINERS=($(docker ps -qa))
+  local CONTAINERS
+  CONTAINERS=($(docker ps -qa))
   if (( ${#CONTAINERS[@]} > 0 ));then
     # Stop all
-    docker stop ${CONTAINERS[@]}
+    docker stop "${CONTAINERS[@]}"
     # Remove
-    docker rm ${CONTAINERS[@]} -f
+    docker rm "${CONTAINERS[@]}" -f
   fi;
 
   # Networks
   # List all networks except builtin
-  local NETWORKS=($(docker network ls -q --filter type=custom))
+  local NETWORKS
+  NETWORKS=($(docker network ls -q --filter type=custom))
   if (( ${#NETWORKS[@]} > 0 ));then
     # Remove networks
-    docker network rm ${NETWORKS[@]}
+    docker network rm "${NETWORKS[@]}"
   fi;
 
   # Volumes
-  local VOLUMES=$(docker volume ls -q)
+  local VOLUMES
+  VOLUMES=$(docker volume ls -q)
+
   if (( ${#VOLUMES[@]} > 1 ));then
-    docker volume rm ${VOLUMES[@]}
+    docker volume rm "${VOLUMES[@]}"
   fi;
 }

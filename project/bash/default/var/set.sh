@@ -4,18 +4,12 @@ varSetArgs() {
   _ARGUMENTS=(
     'name n "Variable name" true'
     'value v "Variable value" true'
-    'file f "Storage file path" false'
+    'file f "Storage file path" false '"${WEX_TMP_GLOBAL_VAR}"
     'quotes q "Wrap values into quotes" false true'
   )
 }
 
 varSet() {
-  # If no file specified
-  if [ "${FILE}" = "" ];then
-    # Use wex tmp folder
-    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
-  fi
-
   if [ ! -f "${FILE}" ];then
     touch "${FILE}"
   fi

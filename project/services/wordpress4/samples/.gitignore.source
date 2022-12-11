@@ -1,6 +1,6 @@
 # Wordpress
-/wordpress/backups/*
-/wordpress/uploads/*
+/wordpress/public/backups/*
+/wordpress/public/uploads/*
 # WP default themes
 /wordpress/public/themes/*
 # WP default plugins

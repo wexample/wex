@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 # We use intensive files concatenation and service extensions
 # in order to keep as possible a minimum of services definition in websites

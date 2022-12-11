@@ -2,7 +2,7 @@ version: '2'
 
 services:
   proxy:
-    image: jwilder/nginx-proxy:0.7.0
+    image: nginxproxy/nginx-proxy:1.0.0
     container_name: ${SITE_NAME_INTERNAL}
     volumes:
       # Nginx configuration
@@ -20,7 +20,7 @@ services:
       - wex_net
 
   certs:
-    image: jrcs/letsencrypt-nginx-proxy-companion:v1.12
+    image: nginxproxy/acme-companion:2.2.1
     container_name: ${SITE_NAME_INTERNAL}_certs
     volumes:
       - ${SITE_PATH_ROOT}proxy/certs:/etc/nginx/certs:rw

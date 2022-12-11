@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    mysql8:
+        container_name: '${SITE_NAME_INTERNAL}_${DB_CONTAINER}'
+        image: 'wexample/mysql8:${WEX_IMAGES_VERSION}'
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DB_NAME}
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+        volumes:
+            - ${SITE_PATH_ROOT}/mysql/data:/var/lib/mysql
+            - ${SITE_PATH_ROOT}/mysql/dumps:/var/www/dumps
+            - ${SITE_PATH_ROOT}/tmp:/var/www/tmp
+            - ${CONF_MY_MYSQL_CNF}:/etc/mysql/conf.d/site.cnf
+        networks:
+          - tmp_wex_net

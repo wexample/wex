@@ -2,7 +2,7 @@
 
 serviceTemplatesArgs() {
   _ARGUMENTS=(
-    [0]='section s "Section name, cat be a folder name" true'
+    [0]='section s "Section name, can be a folder name" true'
     [1]='extension e "Extension for file" false'
   )
 }
@@ -13,10 +13,10 @@ serviceTemplates() {
   local NAMES_PROCESSED=()
 
   # Get site env name.
-  local SITE_ENV=$(wex app/env)
+  local SITE_ENV=$(wex site/env)
 
   for FILE in ${SECTION_FILES[@]};do
-    SPLIT=($(wex string/split -s="." -t="${FILE}"))
+    SPLIT=($(wex text/split -s="." -t=${FILE}))
     BASE_NAME=${SPLIT[0]}
 
     # Base file ex container.ext
@@ -38,7 +38,7 @@ serviceTemplates() {
 
     # One execution only by base name,
     # Search for file variations inside it.
-    # Allow to write same variable two times if env file is found after generic one.
+    # Allow to write same variable twot time if env file is found after generic one.
     if [ "${CONF_VAR_NAME}" != false ] && ([[ ! " ${NAMES_PROCESSED[@]} " =~ " ${SPLIT[0]} " ]] || [ ${IS_ENV} == true ]);then
       # Save as found
       NAMES_PROCESSED+=(${SPLIT[0]})
@@ -51,7 +51,7 @@ serviceTemplates() {
       CONF_VAR_NAME=${CONF_VAR_NAME^^}
 
      # Not already found.
-      echo -e "\nCONF_"${CONF_VAR_NAME}'='$(realpath ${FOLDER}'/'${FILE})
+      echo "\nCONF_"${CONF_VAR_NAME}'='$(realpath ${FOLDER}'/'${FILE})
     fi
   done
 }

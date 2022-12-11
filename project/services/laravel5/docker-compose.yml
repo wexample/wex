@@ -27,11 +27,12 @@ services:
             - ${CONF_WEB_PHP_INI}:/etc/php/7.1/apache2/conf.d/99-wex.ini
             - ${CONF_WEB_PHP_INI}:/etc/php/7.2/apache2/conf.d/99-wex.ini
             - ${CONF_WEB_PHP_INI}:/etc/php/7.3/apache2/conf.d/99-wex.ini
+            - ${CONF_WEB_PHP_INI}:/etc/php/7.4/apache2/conf.d/99-wex.ini
             # Mysql dumps
             - ${SITE_PATH_ROOT}mysql/dumps:/var/www/mysql/dumps
-            # Share same wex scripts for all environments.
+            # Cron management
+            - ${SITE_PATH_ROOT}cron/${SITE_ENV}:/var/default.cron
             # Use common certificates storage
             - ${WEX_WEXAMPLE_DIR_PROXY}proxy/certs:/certs
         networks:
             - tmp_wex_net
-

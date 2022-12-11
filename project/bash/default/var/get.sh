@@ -15,7 +15,7 @@ varGet() {
   # If no file specified
   if [ "${FILE}" = "" ];then
     # Use wex tmp folder
-    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
+    FILE=${WEX_TMP_GLOBAL_VAR}
   fi
 
   touch ${FILE}
@@ -30,6 +30,7 @@ varGet() {
   wexLoadVariables
   # Is defined or not, even empty value.
   local EXISTS=$(eval '[[ ! -z "${'${NAME}'+x}" ]] && echo true || echo false')
+
   # Get value
   local VALUE=$(eval 'echo ${'${NAME}'}')
   local OUTPUT=${VALUE}

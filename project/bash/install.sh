@@ -6,14 +6,18 @@
 # We also avoid to include external packages install which are
 # managed by `wex core::requirements/install` script.
 
+WEX_DIR_INSTALL="/opt/wex/"
+WEX_BIN="/usr/local/bin/wex"
+
 . /opt/wex/project/bash/globals.sh
 
-# Check user is root
-if [[ ${EUID} > 0 ]];then
-  # Exec as sudo
-  sudo bash ${WEX_DIR_INSTALL}install
-  exit
-fi
+# Install basic dependencies,
+# It might be removed in future version but
+# we should keep a simple one-line install method
+# for common projects
+sudo apt-get update
+sudo apt-get install net-tools zip nano
+
 # Check shell version.
 _wexBashCheckVersion
 # Check if "realpath" method exists (missing on raw macos)
@@ -22,10 +26,11 @@ if [[ $(_wexHasRealPath) == "false" ]]; then
   exit;
 fi;
 
-chmod -R +x ${WEX_DIR_INSTALL}
-# Copy to bin
-cp ${WEX_DIR_INSTALL}project/bash/wex.bin.sh /usr/local/bin/wex
-chmod -R +x /usr/local/bin/wex
+# Create or recreate symlink.
+[ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
+# Symlink to bin
+ln -s ${WEX_DIR_INSTALL}project/bash/wex.bin.sh ${WEX_BIN}
+chmod -R +x ${WEX_BIN}
 
 # Create sites folder
 mkdir -p /var/www

@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+    grafana:
+      container_name: ${SITE_NAME_INTERNAL}_grafana
+      restart: always
+      image: grafana/grafana:${GRAFANA_VERSION}
+      stdin_open: true
+      tty: true
+      environment:
+        - VIRTUAL_HOST=${DOMAIN_MAIN}
+      networks:
+        - tmp_wex_net
+      volumes:
+        - ${SITE_PATH_ROOT}grafana/grafana:/var/lib/grafana
+        - ${SITE_PATH_ROOT}grafana/provisioning:/etc/grafana/provisioning/
