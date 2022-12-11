@@ -29,8 +29,8 @@ chmod -R +x "${WEX_DIR_INSTALL}"
 # Check shell version.
 if [ -z ${WEX_BASH_VERSION+x} ]; then
   WEX_BASH_VERSION=$(_wexVersionGetMajor "${BASH_VERSION}")
-  if [ "${WEX_BASH_VERSION}" -lt ${WEX_BASH_VERSION_MIN} ]; then
-    _wexError "Wex error, need to run on bash version "${WEX_BASH_VERSION_MIN} "Your current version is ${WEX_BASH_VERSION}"
+  if [ "${WEX_BASH_VERSION}" -lt "${WEX_BASH_VERSION_MIN}" ]; then
+    _wexError "Wex error, need to run on bash version ${WEX_BASH_VERSION_MIN}" "Your current version is ${WEX_BASH_VERSION}"
     exit
   fi;
 fi;
@@ -52,3 +52,4 @@ chmod -R +x ${WEX_BIN}
 # Create sites folder
 mkdir -p /var/www
 
+wex core/logo

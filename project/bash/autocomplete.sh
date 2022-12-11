@@ -15,7 +15,7 @@ autocomplete() {
     ARGS_INDEX+=1
     local WEX_DIR_BASH_GROUPS=(${COMP_WORDS[1]})
   else
-    _wexFindNamespace ${CUR}
+    _wexFindNamespace "${CUR}"
 
     if [ "${WEX_NAMESPACE_TEST}" != "" ];then
       local WEX_DIR_BASH_GROUPS=(${WEX_NAMESPACE_TEST} ${WEX_NAMESPACE_DEFAULT})
@@ -57,7 +57,7 @@ autocomplete() {
     done;
   # Autocomplete args.
   else
-    _wexFindNamespace ${CUR}
+    _wexFindNamespace "${CUR}"
     _wexFindScriptFile
 
     if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
