@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+_wexError() {
+  printf "${WEX_COLOR_RED}[wex] Error : ${1}${WEX_COLOR_RESET}\n"
+
+  # Complementary information or description for extra text
+  if [ "${2}" != "" ];then
+    printf "      ${WEX_COLOR_CYAN}${2}${WEX_COLOR_RESET}\n"
+  fi
+
+  # Extra text
+  if [ "${3}" != "" ];then
+    printf "      ${3}\n"
+  fi
+}
+
 _wexLog() {
   local MESSAGE;
   MESSAGE=$(_wexTruncate "${1}" 4)

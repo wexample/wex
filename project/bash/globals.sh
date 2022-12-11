@@ -10,9 +10,6 @@ export WEX_DIR_INSTALL
 export WEX_DIR_ROOT
 export WEX_SCREEN_WIDTH
 
-# shellcheck source=includes/common.sh
-. "${WEX_DIR_BASH}includes/common.sh"
-# shellcheck source=includes/message-default.sh
-. "${WEX_DIR_BASH}includes/message-default.sh"
-# shellcheck source=colors.sh
-. "${WEX_DIR_BASH}colors.sh"
+. "${WEX_DIR_BASH}/includes/common.sh"
+. "${WEX_DIR_BASH}/includes/message-default.sh"
+. "${WEX_DIR_BASH}/colors.sh"
