@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_WORDPRESS5}
-          service: wordpress5
-        depends_on:
-          - ${SITE_NAME}_${DB_CONTAINER}

@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_PHPMYADMIN}
-          service: phpmyadmin
-        links:
-          - ${SITE_NAME}_${DB_CONTAINER}

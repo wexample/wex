@@ -1,5 +1,0 @@
-        extends:
-            file: ${WEX_COMPOSE_YML_SYMFONY4}
-            service: symfony4
-        depends_on:
-          - ${SITE_NAME}_mysql

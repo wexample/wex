@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_DOLIBARR}
-          service: dolibarr
-        depends_on:
-          - ${SITE_NAME}_mysql

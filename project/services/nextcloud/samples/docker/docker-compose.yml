@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_NEXTCLOUD}
-          service: nextcloud
-        depends_on:
-          - ${SITE_NAME}_mariadb

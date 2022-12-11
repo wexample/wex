@@ -1,4 +1,0 @@
-        environment:
-          - VIRTUAL_HOST=${DOMAIN_MAIN}
-          - LETSENCRYPT_HOST=${DOMAINS}
-          - LETSENCRYPT_EMAIL=${EMAIL}

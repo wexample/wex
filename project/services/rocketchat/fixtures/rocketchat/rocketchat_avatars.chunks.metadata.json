@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"rocketchat.rocketchat_avatars.chunks"},{"v":2,"unique":true,"key":{"files_id":1,"n":1},"name":"files_id_1_n_1","ns":"rocketchat.rocketchat_avatars.chunks","background":false}],"uuid":"3ecf0ba2c6f747389ff89437c8dd0a97"}

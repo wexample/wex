@@ -1,4 +1,5 @@
-# JetBrains
-.idea
 # Mac
 .DS_Store
+
+# JetBrains
+.idea

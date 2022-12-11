@@ -1,7 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_SONARQUBE}
-          service: sonarqube
-        ports:
-          - "80:9000"
-        depends_on:
-          - ${SITE_NAME}_postgres

@@ -1,8 +1,0 @@
-# Used by wex reverse proxy server.
-/proxy/*
-
-# Used by script for temp files.
-/tmp/*
-
-# Keep all .gitkeep files
-!/**/.gitkeep

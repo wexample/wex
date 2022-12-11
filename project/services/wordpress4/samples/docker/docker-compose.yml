@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_WORDPRESS4}
-          service: wordpress4
-        depends_on:
-          - ${SITE_NAME}_mysql

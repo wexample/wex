@@ -1,7 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_PROXY}
-          service: certs
-        # DEBUG environment:
-        #  - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
-        volumes_from:
-          - ${SITE_NAME}_proxy

@@ -1,5 +1,0 @@
----
-- hosts: wex_command_host
-  tasks:
-    - name: Ping the server
-      ping:

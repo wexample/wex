@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"rocketchat.rocketchat__trash"},{"v":2,"key":{"collection":1},"name":"collection_1","ns":"rocketchat.rocketchat__trash"},{"v":2,"key":{"_deletedAt":1},"name":"_deletedAt_1","ns":"rocketchat.rocketchat__trash","expireAfterSeconds":2592000}],"uuid":"8d93b1533fac4041a80bbc9192572386"}

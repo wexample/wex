@@ -1,3 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_COLLABORA}
-          service: collabora

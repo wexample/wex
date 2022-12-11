@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_NOCODB}
-          service: nocodb
-        depends_on:
-          - ${SITE_NAME}_postgres

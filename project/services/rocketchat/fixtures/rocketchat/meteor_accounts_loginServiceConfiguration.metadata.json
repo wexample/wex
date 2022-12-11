@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"rocketchat.meteor_accounts_loginServiceConfiguration"},{"v":2,"unique":true,"key":{"service":1},"name":"service_1","ns":"rocketchat.meteor_accounts_loginServiceConfiguration"}],"uuid":"5fa490c3d3994512b7660424cb918831"}

@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"rocketchat.usersSessions"},{"v":2,"key":{"connections.instanceId":1},"name":"connections.instanceId","ns":"rocketchat.usersSessions","sparse":1},{"v":2,"key":{"connections.id":1},"name":"connections.id","ns":"rocketchat.usersSessions","sparse":1}],"uuid":"ce6dc1002e6c4291b75a0d2530da0de2"}

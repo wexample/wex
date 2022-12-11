@@ -1,6 +1,0 @@
-        # We use this container
-        extends:
-            file: ${WEX_COMPOSE_YML_ROCKETCHAT}
-            service: hubot
-        depends_on:
-          - ${SITE_NAME}_rocketchat

@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"rocketchat.rocketchat_livechat_visitor"},{"v":2,"key":{"_updatedAt":1},"name":"_updatedAt_1","ns":"rocketchat.rocketchat_livechat_visitor"}],"uuid":"2319095d434f46aeaca14d8ffb89d176"}

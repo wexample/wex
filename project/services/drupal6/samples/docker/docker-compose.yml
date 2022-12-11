@@ -1,5 +1,0 @@
-        extends:
-          file: ${WEX_COMPOSE_YML_DRUPAL6}
-          service: drupal6
-        depends_on:
-          - ${SITE_NAME}_mysql

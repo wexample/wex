@@ -1,2 +1,0 @@
-# Run a cron test every hour
-0 * * * * echo "CRON OK "$(date) > /var/www/html/tmp/cron.log 2>&1
