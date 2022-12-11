@@ -9,7 +9,6 @@ configGetValueArgs() {
 }
 
 configGetValue() {
-
   SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
   # Find a line starting by the key or by some spaces
