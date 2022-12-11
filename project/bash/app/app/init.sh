@@ -88,14 +88,11 @@ EOF
     local DOMAINS_MAIN=domain.com
   fi
 
-<<<<<<<< HEAD:project/bash/app/app/init.sh
   {
     echo "PROD_DOMAINS=${DOMAINS}"
     echo "PROD_DOMAIN_MAIN=${DOMAINS_MAIN}"
     echo "PROD_EMAIL=contact@${DOMAINS_MAIN}"
   } >> .wex
-========
-  cat <<EOF >> .wex
 
 # Dev
 DEV_DOMAIN_MAIN=${DOMAINS_MAIN}
@@ -159,12 +156,7 @@ EOF
   # Status
   ${RENDER_BAR} -p=100 -s="Done !"
 
-<<<<<<<< HEAD:project/bash/app/app/init.sh
   if [ "${NEW_SITE_NAME}" != "${WEX_PROXY_CONTAINER}" ];then
     _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex app/install"
-========
-  if [ ${NEW_SITE_NAME} != ${WEX_WEXAMPLE_PROXY_CONTAINER}_prod ];then
-    _wexMessage "Your site is initialized as ${NEW_SITE_NAME}" "You may start install process using :" "wex site/install"
->>>>>>>> master:project/extend/v2/bash/wexample/site/init.sh
   fi
 }

@@ -1,11 +1,4 @@
         environment:
-<<<<<<<< HEAD:project/services/drupal7/samples/docker/docker-compose.prod.yml
           - LETSENCRYPT_EMAIL=${EMAIL}
           - LETSENCRYPT_HOST=${DOMAINS}
           - VIRTUAL_HOST=${DOMAIN_MAIN}
-          # - VIRTUAL_PROTO=https
-========
-          - VIRTUAL_HOST=${DOMAIN_MAIN}
-          - LETSENCRYPT_HOST=${DOMAINS}
-          - LETSENCRYPT_EMAIL=${EMAIL}
->>>>>>>> master:project/services/nocodb/samples/docker/docker-compose.prod.yml
