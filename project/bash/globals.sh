@@ -30,6 +30,7 @@ export WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && echo $(tput cols) || ech
 export WEX_SED_I_ORIG_EXT=".orig"
 export WEX_APP_DIR_TMP=./tmp/
 export WEX_APP_CONFIG=${WEX_APP_DIR_TMP}config
+export WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 
 
 . ${WEX_DIR_BASH}colors.sh

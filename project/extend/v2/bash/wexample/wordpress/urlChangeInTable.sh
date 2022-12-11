@@ -28,7 +28,7 @@ wordpressUrlChangeInTable() {
   local TABLES
 
   # Allow multiple tables.
-  TABLES=$(wex string/split -t="${TABLE}" -s=,)
+  TABLES=$(${WEX_DIR_V3_CMD} string/split -t="${TABLE}" -s=,)
 
   for TABLE in ${TABLES[*]}
   do

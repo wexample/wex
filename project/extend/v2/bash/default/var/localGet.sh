@@ -15,7 +15,7 @@ varLocalGet() {
   # If no file specified
   if [ "${FILE}" == "" ];then
     # Use wex tmp folder
-    FILE=${WEX_DIR_TMP}globalVariablesLocalStorage
+    FILE=${WEX_TMP_GLOBAL_VAR}
   fi
 
   touch ${FILE}

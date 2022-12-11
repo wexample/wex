@@ -19,17 +19,6 @@ if [ "$(type -t wex)" != "function" ];then
 
     local WEX_SCRIPT_FOUND=false
 
-    # We are in an app folder / sub folder.
-    if [ $(_wexAppDetected) = true ] && [ "$(_wexVersionGetMajor $(_wexAppVersion))" = "2" ]; then
-      . ${WEX_DIR_ROOT}extend/v2/bash/wex ${@}
-
-      # Handle errors.
-      if [ ${WEX_SCRIPT_FOUND} = false ];then
-        _wexError "V2 script file not found" ${@}
-      fi
-      exit;
-    fi;
-
     local WEX_SCRIPT_CALL_NAME=${1}
     local WEX_NAMESPACE=${WEX_NAMESPACE_DEFAULT}
 
@@ -93,22 +82,6 @@ if [ "$(type -t wex)" != "function" ];then
 
       # Not found.
       else
-        # Script not found in main core.
-        if [ ${WEX_SCRIPT_FOUND} = false ];then
-          local WEX_EXTEND_DIRS=$(ls ${WEX_DIR_EXTEND})
-
-          # Search into extend directories.
-          for WEX_EXTEND_DIR in ${WEX_EXTEND_DIRS[@]}
-          do
-            . ${WEX_DIR_EXTEND}${WEX_EXTEND_DIR}/run.sh
-
-            # No reason to continue seeking for a script.
-            if [ ${WEX_SCRIPT_FOUND} = true ];then
-              return;
-            fi;
-          done;
-        fi
-
         if [ ${WEX_SCRIPT_FOUND} = false ];then
           WEX_TEST_HAS_ERROR=true
           _wexError "Script file not found" ${WEX_SCRIPT_FILE}
