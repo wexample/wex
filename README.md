@@ -1,6 +1,6 @@
-# wex v4
+# wex v4.0.0
 
-A single command to execute your bash scripts, and a pattern to write it.
+A single command to execute your bash scripts, and a pattern to write it. Join our community, support us and find job at https://wexample.com 🤝❤️👨‍💻
 
 ## Install
 
