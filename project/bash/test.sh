@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+WEX_TEST_DIR_TMP="${WEX_DIR_TMP}test/"
+
 _wexTestAssertEqual() {
   local TEST_VARIABLE=${1}
   local EXPECTED_VALUE=${2}
