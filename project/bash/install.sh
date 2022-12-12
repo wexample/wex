@@ -9,18 +9,18 @@
 . /opt/wex/project/bash/globals.sh
 . "${WEX_DIR_BASH}/includes/install.sh"
 
-WEX_BASH_VERSION_MIN='5'
-WEX_BIN="/usr/local/bin/wex"
-WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
-
 # Check user is root
 if [ "${EUID}" -gt 0 ];then
   _wexLog "Install needs sudo, switching.."
 
-  # Exec as sudo
-  sudo bash "${BASH_SOURCE[0]}"
+  # Exec as sudo, but keep some environment vars.
+  ${WEX_SWITCH_SUDO_COMMAND} bash "${BASH_SOURCE[0]}"
   exit
 fi
+
+WEX_BASH_VERSION_MIN='5'
+WEX_BIN="/usr/local/bin/wex"
+WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
 
 # Set permission on base folder.
 _wexLog "Set all permissions on ${WEX_DIR_INSTALL}"
@@ -42,6 +42,7 @@ if [ "$(_wexHasRealPath)" = "false" ]; then
 fi;
 
 # Create or recreate symlink.
+_wexLog "Adding symlink.."
 [ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
 # Symlink to bin
 ln -s "${WEX_DIR_INSTALL}project/bash/wex.bin.sh" ${WEX_BIN}
@@ -51,5 +52,12 @@ chmod -R +x ${WEX_BIN}
 
 # Create sites folder
 mkdir -p /var/www
+
+# Add to bashrc, create it if not exists.
+_wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
+touch "${WEX_RUNNER_BASHRC_PATH}"
+wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_AUTOCOMPLETE_HANDLER}"
+
+_wexLog "Install complete.."
 
 wex core/logo

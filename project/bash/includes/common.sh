@@ -19,3 +19,11 @@ _wexTruncate() {
 _wexUpperCaseFirstLetter() {
   echo $(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}
 }
+
+_wexUserIsSudo() {
+  if [ "$EUID" -ne 0 ];then
+    echo "false"
+  else
+    echo "true"
+  fi
+}

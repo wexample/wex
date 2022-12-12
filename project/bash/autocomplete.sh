@@ -26,31 +26,28 @@ autocomplete() {
 
   if (( ${COMP_CWORD} < ${ARGS_INDEX} ));then
     # Search into extend directories.
-    for WEX_DIR_BASH_GROUP in "${WEX_DIR_BASH_GROUPS[@]}"
+    for WEX_DIR_BASH_GROUP in ${WEX_DIR_BASH_GROUPS[@]}
     do
       local WEX_GROUPS=$(ls ${WEX_DIR_BASH}/${WEX_DIR_BASH_GROUP});
 
-      for BASH_GROUP in "${WEX_GROUPS[@]}"
+      for BASH_GROUP in ${WEX_GROUPS[@]}
       do
         # This is a directory.
         local GROUP_DIR=${WEX_DIR_BASH}/${WEX_DIR_BASH_GROUP}/${BASH_GROUP}
-        local SUGGESTIONS
-
-        if [ -d "${GROUP_DIR}" ];then
+        if [ -d ${GROUP_DIR} ];then
 
           # We search for a script file
-          if [ "${HAS_GROUP}" = "true" ];then
-            local SCRIPTS
-            SCRIPTS="$(ls "${GROUP_DIR}")";
+          if [ ${HAS_GROUP} = true ];then
+            local SCRIPTS=$(ls ${GROUP_DIR});
 
             # Iterate over scripts files.
-            for SCRIPT in "${SCRIPTS[@]}"
+            for SCRIPT in ${SCRIPTS[@]}
             do
-              SUGGESTIONS+=" $(basename "${BASH_GROUP}")/$(echo "${SCRIPT}" | cut -f 1 -d '.')"
+              SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"$(echo ${SCRIPT} | cut -f 1 -d '.')
             done;
           # We search for a group folder.
           else
-            SUGGESTIONS+=" $(basename "${BASH_GROUP}")/"
+            SUGGESTIONS+=" "$(basename ${BASH_GROUP})"/"
           fi
         fi
       done;
@@ -66,7 +63,7 @@ autocomplete() {
 
     ${WEX_SCRIPT_METHOD_ARGS_NAME}
 
-    for ARG in ""${_ARGUMENTS[@]}""
+    for ARG in "${_ARGUMENTS[@]}"
     do
        eval "SPLIT=(${ARG})"
        SUGGESTIONS+=" --"${SPLIT[0]}
