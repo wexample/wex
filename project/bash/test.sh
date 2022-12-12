@@ -2,6 +2,17 @@
 
 WEX_TEST_DIR_TMP="${WEX_DIR_TMP}test/"
 
+_wexTestAssertNotEmpty() {
+  local VALUE
+  VALUE=${1}
+
+  if [ "${VALUE}" = '' ]; then
+    _wexTestResultError 'Value must not be empty'
+  else
+    _wexTestResultSuccess 'Value is not empty'
+  fi
+}
+
 _wexTestAssertEqual() {
   local TEST_VARIABLE=${1}
   local EXPECTED_VALUE=${2}
