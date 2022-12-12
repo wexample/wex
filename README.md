@@ -15,6 +15,10 @@ Join our community, support us, and find a job at https://wexample.com 🤝❤�
 
 - You want to user some practical core builtin scripts (i.e. `wex system/os` return "**linux**"). You can explore builtin scripts in the [/project/bash/default/](/project/bash/default/) directory.
 
+## Why using wex scripts
+
+- You want to user some practical core builtin scripts (i.e. `wex system/os` return "**linux**"). You can explore builtin scripts in the [/project/bash/default/](/project/bash/default/) directory.
+
 ## Running tests
 
     # Run all tests.
