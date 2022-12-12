@@ -11,12 +11,12 @@ autocomplete() {
   local WEX_SCRIPT_CALL_NAME=${COMP_WORDS[1]}
   local ARGS_INDEX=2;
 
+  . "${WEX_DIR_BASH}includes/find-script-file.sh" "${CUR}"
+
   if [ "${COMP_WORDS[2]}" == "::" ];then
     ARGS_INDEX+=1
     local WEX_DIR_BASH_GROUPS=(${COMP_WORDS[1]})
   else
-    _wexFindNamespace "${CUR}"
-
     if [ "${WEX_NAMESPACE_TEST}" != "" ];then
       local WEX_DIR_BASH_GROUPS=(${WEX_NAMESPACE_TEST} ${WEX_NAMESPACE_DEFAULT})
     else
@@ -57,9 +57,6 @@ autocomplete() {
     done;
   # Autocomplete args.
   else
-    _wexFindNamespace "${CUR}"
-    _wexFindScriptFile
-
     if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
       return
     fi
