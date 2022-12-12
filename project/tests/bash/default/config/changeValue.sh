@@ -14,20 +14,20 @@ configChangeValueTest() {
 
   # Space separator
   configChangeValueTestItem "${FILEPATH}" "ConfigTestOption" " "
-exit;
-#  # Revert file.
-#  FILEPATH=$(_wexTestSampleInit configSample)
-#
-#  # Strict equal separator
-#  configChangeValueTestItem "${FILEPATH}" "ConfigTestOptionEqual" "="
-#
-#  # Revert file.
-#  FILEPATH=$(_wexTestSampleInit configSample)
-#
-#  configChangeValueTestItem "${FILEPATH}" "ChallengeResponseAuthentication" " "
-#
-#  FILEPATH=$(_wexTestSampleInit sshd_config)
-#  configChangeValueTestItem "${FILEPATH}" Port " "
+
+  # Revert file.
+  FILEPATH=$(_wexTestSampleInit configSample)
+
+  # Strict equal separator
+  configChangeValueTestItem "${FILEPATH}" "ConfigTestOptionEqual" "="
+
+  # Revert file.
+  FILEPATH=$(_wexTestSampleInit configSample)
+
+  configChangeValueTestItem "${FILEPATH}" "ChallengeResponseAuthentication" " "
+
+  FILEPATH=$(_wexTestSampleInit sshd_config)
+  configChangeValueTestItem "${FILEPATH}" Port " "
 }
 
 configChangeValueTestItem() {
