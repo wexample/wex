@@ -85,18 +85,16 @@ _wexTestSampleInit() {
 wexTest() {
   # List only directories.
   local WEX_TEST_NAMESPACES=($(ls -d ${WEX_DIR_BASH}*/))
-  local WEX_TEST_DIR_TMP=${WEX_DIR_TMP}"test/"
   local WEX_TEST_RUN_SCRIPT=${1}
-  #local WEX_TEST_DEBUG=true
 
-  . ${WEX_DIR_BASH}globals.sh
+  . "${WEX_DIR_BASH}globals.sh"
 
   for DIR in ${WEX_TEST_NAMESPACES[@]}
   do
     local NAMESPACE=$(basename ${DIR})
     local SPLIT=($(echo ${WEX_TEST_RUN_SCRIPT}| tr ":" "\n"))
     # If no specified script
-    # Or ne specified namespace
+    # Or no specified namespace
     # Or a namespace is specified and the same as current
     if [[ -z "${WEX_TEST_RUN_SCRIPT:+x}" ]] || [[ -z "${SPLIT[1]:+x}" ]] || [[ ${SPLIT[0]} == ${NAMESPACE} ]];then
       local WEX_TEST_RUN_DIR_CURRENT=${WEX_DIR_ROOT}"tests/bash/"${NAMESPACE}"/"
@@ -113,19 +111,19 @@ wexTest() {
           local WEX_TEST_FIRST_LETTER="$(echo ${WEX_TEST_DIR_NAME} | head -c 1)"
 
           # Exclude folders with _ prefix.
-          if [[ "${WEX_TEST_FIRST_LETTER}" != "_" ]]; then
+          if [ "${WEX_TEST_FIRST_LETTER}" != "_" ]; then
             local WEX_TESTS_NAMESPACE_FOLDERS_FILES=($(ls ${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_DIR_NAME}))
             # Iterate group folder
             for WEX_TEST_FILE in ${WEX_TESTS_NAMESPACE_FOLDERS_FILES[@]}
             do
               local WEX_TEST_FILE_NAME=$(basename "${WEX_TEST_FILE}")
               local WEX_TEST_SCRIPT_CALL_NAME=${WEX_TEST_DIR_NAME}"/${WEX_TEST_FILE_NAME%.*}"
-              local WEX_TEST_FIRST_LETTER="$(echo ${WEX_TEST_FILE} | head -c 1)"
+              local WEX_TEST_FIRST_LETTER="$(echo "${WEX_TEST_FILE}" | head -c 1)"
 
               # Exclude files with _ prefix.
               # Allow to specify single script name to test.
               if [[ "${WEX_TEST_FIRST_LETTER}" != "_" && ("${WEX_TEST_RUN_SCRIPT}" == "" || ${WEX_TEST_RUN_SCRIPT} == ${WEX_TEST_SCRIPT_CALL_NAME} || ${WEX_TEST_RUN_SCRIPT} == ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}) ]]; then
-                local WEX_TEST_METHOD_NAME=$(_wexMethodName ${WEX_TEST_SCRIPT_CALL_NAME})
+                local WEX_TEST_METHOD_NAME=$(_wexMethodName "${WEX_TEST_SCRIPT_CALL_NAME}")
 
                 # Build script file path.
                 local _TEST_SCRIPT_FILE="${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_SCRIPT_CALL_NAME}.sh"
@@ -135,34 +133,21 @@ wexTest() {
                 # Import test methods
                 . "${_TEST_SCRIPT_FILE}"
 
-                _wexMessage "test ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}" ${NAMESPACE}"/"${WEX_TEST_SCRIPT_CALL_NAME}".sh"
+                _wexMessage "test ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}" "${NAMESPACE}/${WEX_TEST_SCRIPT_CALL_NAME}.sh"
 
                 # Go to test dir.
-                cd ${WEX_TEST_RUN_DIR_CURRENT}
+                cd "${WEX_TEST_RUN_DIR_CURRENT}"
 
                 WEX_TEST_HAS_ERROR=false
-                if [[ $(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null) == function ]]; then
-                  #if [[ ${WEX_TEST_DEBUG} == true ]];then
+                if [ "$(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null)" = "function" ]; then
                     # Do not encapsulate result
-                    ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]}
-                  #else
-                  #  # Run script and store result.
-                  #  testResult=$(${WEX_TEST_METHOD_NAME}Test ${WEX_TEST_METHOD_NAME}Test ${_TEST_ARGUMENTS[@]})
-                  #fi
+                    "${WEX_TEST_METHOD_NAME}Test" ${_TEST_ARGUMENTS[@]}
                 fi
 
-                if [[ ${WEX_TEST_DEBUG} == true ]];then
-                  # Do not check result in debug mode
-                  echo -e "Test complete (debug mode)\n"
-                  cat "${WEX_LOG_FILE}"
+                if [ "${WEX_TEST_HAS_ERROR}" = "false" ]; then
+                  _wexTestResultSuccess "Test complete"
                 else
-                  if [[ "${testResult}" == "" && ${WEX_TEST_HAS_ERROR} == false ]]; then
-                    _wexTestResultSuccess "Test complete"
-                  elif [ ${WEX_TEST_HAS_ERROR} == true ];then
-                    _wexTestResultError "Test failed"
-                  else
-                    _wexTestResultUndefined "${testResult}"
-                  fi
+                  _wexTestResultError "Test failed"
                 fi
               fi
             done

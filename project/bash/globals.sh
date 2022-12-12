@@ -4,6 +4,7 @@ WEX_BASHRC_PATH=~/.bashrc
 WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 WEX_DIR_ROOT=$(dirname "${WEX_DIR_BASH}")"/"
 WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
+WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_NAMESPACE_DEFAULT="default"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 
@@ -32,6 +33,7 @@ export WEX_CORE_VERSION=4.0.0
 export WEX_DIR_BASH
 export WEX_DIR_INSTALL
 export WEX_DIR_ROOT
+export WEX_DIR_TMP
 export WEX_SCREEN_WIDTH
 export WEX_NAMESPACE_APP=app
 export WEX_NAMESPACE_DEFAULT
