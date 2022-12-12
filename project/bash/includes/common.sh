@@ -27,3 +27,12 @@ _wexUserIsSudo() {
     echo "true"
   fi
 }
+
+# Data storage access performance.
+_wexLoadVariables() {
+  local STORAGE=${WEX_TMP_GLOBAL_VAR}
+
+  if [ -f "${STORAGE}" ];then
+    . "${STORAGE}";
+  fi
+}

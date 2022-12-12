@@ -7,6 +7,7 @@ WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_NAMESPACE_DEFAULT="default"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
+WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
@@ -41,3 +42,4 @@ export WEX_NAMESPACE_DEFAULT
 export WEX_RUNNER_BASHRC_PATH
 export WEX_RUNNER_USERNAME
 export WEX_SWITCH_SUDO_COMMAND
+export WEX_TMP_GLOBAL_VAR
