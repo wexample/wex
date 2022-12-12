@@ -1,0 +1,14 @@
+{
+  "simpleValue": "value",
+  "booleanValue": true,
+  "nested": {
+    "firstNested": false,
+    "secondNested": [
+      "firstArrayItem",
+      "secondArrayItem"
+    ],
+    "thirdNested": {
+      "leaf": true
+    }
+  }
+}
