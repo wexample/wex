@@ -30,6 +30,12 @@ if [ "$(type -t wex)" != "function" ];then
     # Init empty var.
     local _ARGUMENTS=()
 
+    # Execute arguments method
+    if [ "$(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null)" = "function" ]; then
+      # Execute command
+      ${WEX_SCRIPT_METHOD_ARGS_NAME}
+    fi;
+
     # We don't use getopts method in order to support long and short notations
     # Add extra parameters at end of array
     _ARGUMENTS=("${_ARGUMENTS[@]}" "${WEX_ARGUMENT_DEFAULTS[@]}")
@@ -114,6 +120,7 @@ if [ "$(type -t wex)" != "function" ];then
       printf "${WEX_COLOR_CYAN}Name${WEX_COLOR_RESET}\t\t${WEX_SCRIPT_CALL_NAME}\n"
       printf "${WEX_COLOR_CYAN}Function${WEX_COLOR_RESET}\t${WEX_SCRIPT_METHOD_NAME}\n"
       printf "${WEX_COLOR_CYAN}File${WEX_COLOR_RESET}\t\t${WEX_SCRIPT_FILE}\n"
+      printf "${WEX_COLOR_CYAN}Requirements${WEX_COLOR_RESET}\t${_REQUIREMENTS[*]}\n"
 
       if [ "${_DESCRIPTION}" != "false" ]; then
         echo ""
