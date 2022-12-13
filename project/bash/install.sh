@@ -6,8 +6,8 @@
 # We don't include external packages install which are
 # managed by `wex core::requirements/install` script.
 
-. /opt/wex/project/bash/globals.sh
-. "${WEX_DIR_BASH}/includes/install.sh"
+. /opt/wex/project/includes/globals.sh
+. "${WEX_DIR_ROOT}/includes/function/install.sh"
 
 # Check user is root
 if [ "${EUID}" -gt 0 ];then
@@ -49,6 +49,10 @@ ln -s "${WEX_DIR_INSTALL}project/bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.
+
+# Install core scripts dependencies
+_wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
+wex scripts/install -d="${WEX_DIR_BASH}"
 
 # Create apps folder
 _wexLog "Creates /var/www folder for apps management"
