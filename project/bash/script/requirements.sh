@@ -3,20 +3,33 @@
 scriptRequirementsArgs() {
   _DESCRIPTION='Returns requirements for giver script name'
   _ARGUMENTS=(
-    'name n "Full name of script" true'
+    'script s "Full name of script" true'
   )
 }
 
 scriptRequirements() {
-  local _REQUIREMENTS=()
   local METHOD
 
-  METHOD=$(_wexMethodNameArgs "${NAME}")
+  METHOD=$(_wexMethodNameArgs "${SCRIPT}")
+  FILE=$(_wexFindScriptFile "${SCRIPT}")
+
+  # File not found.
+  if [ ! -f "${FILE}" ]; then
+    return
+  fi
 
   # Load
-  . "$(_wexFindScriptFile "${NAME}")"
-  # Execute
-  ${METHOD}
+  . "${FILE}"
 
-  echo ${_REQUIREMENTS[@]}
+  if [ "$(type -t "${METHOD}")" = "function" ];then
+    local _REQUIREMENTS
+
+    # Load
+    ${METHOD}
+
+    # Avoid empty values
+    if [ ! -z "${_REQUIREMENTS+x}" ];then
+      echo ${_REQUIREMENTS[@]}
+    fi;
+  fi
 }
