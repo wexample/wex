@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
 
-# Data storage access performance.
-_wexLoadVariables() {
-  local STORAGE=${WEX_TMP_GLOBAL_VAR}
-
-  if [ -f "${STORAGE}" ];then
-    . "${STORAGE}";
-  fi
-}
-
-_wexLocalScriptPath() {
-  echo "${WEX_RUNNER_PATH_WEX}bash/${1}.sh"
-}
-
 _wexFindScriptFile() {
   local WEX_SCRIPT_CALL_NAME
   local WEX_SCRIPT_FILE
@@ -37,6 +24,66 @@ _wexFindScriptFile() {
     echo "${WEX_SCRIPT_FILE}"
     return
   fi
+}
+
+_wexFindServicesDirs() {
+  _wexGetOnlyDirs "${WEX_DIR_SERVICES}"
+}
+
+_wexFindScriptsLocations() {
+  local LOCATIONS=(
+    "${WEX_RUNNER_PATH_WEX}"
+    "${WEX_DIR_BASH}"
+  )
+
+  LOCATIONS+=($(_wexFindServicesDirs))
+
+  echo ${LOCATIONS[@]}
+}
+
+_wexGetArguments() {
+  local WEX_SCRIPT_CALL_NAME="${1}"
+  local WEX_SCRIPT_METHOD_ARGS_NAME
+
+  WEX_SCRIPT_METHOD_ARGS_NAME=$(_wexMethodNameArgs "${WEX_SCRIPT_CALL_NAME}")
+
+  # Execute arguments method
+  if [ "$(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null)" = "function" ]; then
+    # Execute command
+    ${WEX_SCRIPT_METHOD_ARGS_NAME}
+  fi;
+
+  # We don't use getopts method in order to support long and short notations
+  # Add extra parameters at end of array
+  WEX_CALLING_ARGUMENTS=("${_ARGUMENTS[@]}" "${WEX_ARGUMENT_DEFAULTS[@]}")
+}
+
+_wexGetOnlyDirs() {
+  local ITEMS
+  local OUTPUT=""
+
+  ITEMS=($(ls "${1}"))
+  for ITEM in "${ITEMS[@]}"
+  do
+    if [ -d "${1}${ITEM}" ];then
+      OUTPUT+="${1}${ITEM} "
+    fi
+  done
+
+  echo ${OUTPUT}
+}
+
+# Data storage access performance.
+_wexLoadVariables() {
+  local STORAGE=${WEX_TMP_GLOBAL_VAR}
+
+  if [ -f "${STORAGE}" ];then
+    . "${STORAGE}";
+  fi
+}
+
+_wexLocalScriptPath() {
+  echo "${WEX_RUNNER_PATH_WEX}bash/${1}.sh"
 }
 
 _wexMethodName() {

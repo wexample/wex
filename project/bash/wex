@@ -27,24 +27,18 @@ if [ "$(type -t wex)" != "function" ];then
 
     # Include found script file
     . "${WEX_SCRIPT_FILE}"
+    # Disable space as array item separator
 
-    WEX_SCRIPT_METHOD_ARGS_NAME=$(_wexMethodNameArgs "${WEX_SCRIPT_CALL_NAME}")
-    # Execute arguments method
-    if [ "$(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null)" = "function" ]; then
-      # Execute command
-      ${WEX_SCRIPT_METHOD_ARGS_NAME}
-    fi;
+    local WEX_CALLING_ARGUMENTS=()
+    _wexGetArguments "${WEX_SCRIPT_CALL_NAME}"
 
-    # We don't use getopts method in order to support long and short notations
-    # Add extra parameters at end of array
-    _ARGUMENTS=("${_ARGUMENTS[@]}" "${WEX_ARGUMENT_DEFAULTS[@]}")
     # Then start in negative value (length of previous table).
     local _NEGATIVE_ARGS_LENGTH="${#WEX_ARGUMENT_DEFAULTS[@]}"
     # We iterate first on system extra parameters
     # Using negative values allow to use clean push method on array.
-    for ((i=-_NEGATIVE_ARGS_LENGTH; i < ${#_ARGUMENTS[@]}-_NEGATIVE_ARGS_LENGTH; i++)); do
+    for ((i=-_NEGATIVE_ARGS_LENGTH; i < ${#WEX_CALLING_ARGUMENTS[@]}-_NEGATIVE_ARGS_LENGTH; i++)); do
       local WEX_ARG_FOUND=false
-      eval "PARAMS=(${_ARGUMENTS[${i}]})"
+      eval "PARAMS=(${WEX_CALLING_ARGUMENTS[${i}]})"
       local ARG_EXPECTED_LONG=${PARAMS[0]}
       local ARG_EXPECTED_SHORT=${PARAMS[1]}
       # Mark variable as empty
@@ -110,7 +104,7 @@ if [ "$(type -t wex)" != "function" ];then
 
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
-      . ${WEX_DIR_BASH}/colors.sh
+      . "${WEX_DIR_ROOT}includes/colors.sh"
 
       echo ""
       printf '.%.0s' {1..60}

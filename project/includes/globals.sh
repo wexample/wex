@@ -3,6 +3,7 @@
 WEX_BASHRC_PATH=~/.bashrc
 WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
 WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
+WEX_DIR_SERVICES="${WEX_DIR_ROOT}services/"
 WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
