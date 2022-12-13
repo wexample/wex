@@ -50,8 +50,12 @@ chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.
 
-# Create sites folder
+# Create apps folder
+_wexLog "Creates /var/www folder for apps management"
 mkdir -p /var/www
+_wexLog "Creates ${WEX_RUNNER_PATH_WEX} folder for apps management"
+mkdir -p "${WEX_RUNNER_PATH_WEX}"
+chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_RUNNER_PATH_WEX}"
 
 # Add to bashrc, create it if not exists.
 _wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
