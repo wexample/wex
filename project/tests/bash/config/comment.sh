@@ -3,7 +3,6 @@
 configCommentTest() {
   # Revert file.
   local filePath=$(_wexTestSampleInit configSample)
-
   local original=$(< ${filePath})
 
   # Each "uncomment" may not be the exact reversion of "comment" command :

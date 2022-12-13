@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 WEX_BASHRC_PATH=~/.bashrc
-WEX_DIR_BASH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
-WEX_DIR_ROOT=$(dirname "${WEX_DIR_BASH}")"/"
+WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
+WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
 WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
-WEX_NAMESPACE_DEFAULT="default"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 
@@ -17,9 +16,9 @@ WEX_ARGUMENT_DEFAULTS=(
   'quiet quiet "Hide logs and errors" false'
 )
 
-. "${WEX_DIR_BASH}/includes/common.sh"
-. "${WEX_DIR_BASH}/includes/message-default.sh"
-. "${WEX_DIR_BASH}/colors.sh"
+. "${WEX_DIR_ROOT}/includes/colors.sh"
+. "${WEX_DIR_ROOT}/includes/function/common.sh"
+. "${WEX_DIR_ROOT}/includes/function/message-default.sh"
 
 # Get the username of the original user
 if [ "$(_wexUserIsSudo)" = "false" ];then
@@ -43,8 +42,6 @@ export WEX_DIR_ROOT
 export WEX_DIR_TMP
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
-export WEX_NAMESPACE_APP=app
-export WEX_NAMESPACE_DEFAULT
 export WEX_RUNNER_BASHRC_PATH
 export WEX_RUNNER_PATH_HOME
 export WEX_RUNNER_PATH_WEX

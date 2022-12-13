@@ -2,7 +2,7 @@
 
 # Init only once.
 if [ "$(type -t wex)" != "function" ];then
-  . /opt/wex/project/bash/globals.sh
+  . /opt/wex/project/includes/globals.sh
 
   wex() {
     # Running unit test.
@@ -11,25 +11,24 @@ if [ "$(type -t wex)" != "function" ];then
       exit;
     fi
 
-    if [ -f "${WEX_SCRIPT_CALL_NAME}" ]; then
-      WEX_SCRIPT_FILE=${WEX_SCRIPT_CALL_NAME}
-    else
-      . "${WEX_DIR_BASH}includes/find-script-file.sh" "${1}"
+    local WEX_SCRIPT_FILE
+    local WEX_SCRIPT_METHOD_NAME
+    local WEX_SCRIPT_METHOD_ARGS_NAME
 
-      # File does not exists.
-      if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
-        . "${WEX_DIR_BASH}/colors.sh"
+    WEX_SCRIPT_CALL_NAME="${1}"
+    WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
 
-        exit;
-      fi
+    # File does not exists.
+    if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
+      return
     fi
+
+    WEX_SCRIPT_METHOD_NAME=$(_wexMethodName "${WEX_SCRIPT_CALL_NAME}")
 
     # Include found script file
     . "${WEX_SCRIPT_FILE}"
 
-    # Init empty var.
-    local _ARGUMENTS=()
-
+    WEX_SCRIPT_METHOD_ARGS_NAME=$(_wexMethodNameArgs "${WEX_SCRIPT_CALL_NAME}")
     # Execute arguments method
     if [ "$(type -t "${WEX_SCRIPT_METHOD_ARGS_NAME}" 2>/dev/null)" = "function" ]; then
       # Execute command
@@ -127,6 +126,14 @@ if [ "$(type -t wex)" != "function" ];then
         printf "${WEX_COLOR_CYAN}Description${WEX_COLOR_RESET}\n"
         echo "${_DESCRIPTION}" | fold -w 60
       fi
+
+    # Display script file source.
+    elif [ ! -z ${SOURCE+x} ]; then
+      . ${WEX_DIR_BASH}/colors.sh
+      printf ${WEX_COLOR_LIGHT_CYAN}
+      cat ${WEX_SCRIPT_FILE}
+      printf ${WEX_COLOR_RESET}"\n"
+
     # Execute script.
     else
       # Execute function with all parameters.

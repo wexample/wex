@@ -17,7 +17,7 @@ _wexTestAssertEqual() {
   local TEST_VARIABLE=${1}
   local EXPECTED_VALUE=${2}
   if [ "${TEST_VARIABLE}" != "${EXPECTED_VALUE}" ]; then
-    WEX_TEST_HAS_ERROR=true
+    TEST_HAS_ERROR=true
     _wexTestResultError "Assertions are not equal"
     _wexTestResultLine "Expected : ${EXPECTED_VALUE}"
     _wexTestResultLine "Got : ${TEST_VARIABLE}"
@@ -25,7 +25,15 @@ _wexTestAssertEqual() {
   else
     _wexTestResultSuccess "Assertions are equal"
     _wexTestResultLine "Value : ${EXPECTED_VALUE}"
-  fi;
+  fi
+}
+
+_wexTestFileExists() {
+  if [ ! -f "${1}" ];then
+    _wexTestResultError "File does not exists : ${1}"
+  else
+    _wexTestResultSuccess "File exists : ${1}"
+  fi
 }
 
 _wexTestResultSuccess() {
@@ -34,7 +42,7 @@ _wexTestResultSuccess() {
 }
 
 _wexTestResultError() {
-  WEX_TEST_HAS_ERROR=true
+  TEST_HAS_ERROR=true
   printf ${WEX_COLOR_RED}"      x Error : ${1}${WEX_COLOR_RESET}\n"
   _wexTestResultLine ${2}
 }
@@ -45,7 +53,7 @@ _wexTestResultUndefined() {
 }
 
 _wexTestResultLine() {
-  if [ "${1}" != "" ];then
+  if [ "${1}" != "" ]; then
     printf ${WEX_COLOR_CYAN}"        ${1}${WEX_COLOR_RESET}\n"
   fi
 }
@@ -62,8 +70,8 @@ _wexTestSampleDiff() {
   TMP_FILE_NAME=${1}
   EXPECT_CHANGES=${2}
   CONTEXT=${3}
-  ORIGINAL=$(< "${WEX_TEST_RUN_DIR_SAMPLES}${TMP_FILE_NAME}")
-  MODIFIED=$(< "${WEX_TEST_DIR_TMP}${TMP_FILE_NAME}")
+  ORIGINAL=$(<"${WEX_TEST_RUN_DIR_SAMPLES}${TMP_FILE_NAME}")
+  MODIFIED=$(<"${WEX_TEST_DIR_TMP}${TMP_FILE_NAME}")
   DIFF=$(diff <(echo "${ORIGINAL}") <(echo "${MODIFIED}"))
   HAS_ERROR=false
 
@@ -75,7 +83,7 @@ _wexTestSampleDiff() {
     HAS_ERROR="Missing differences"
   fi
 
-  if [ "${HAS_ERROR}" != "false" ];then
+  if [ "${HAS_ERROR}" != "false" ]; then
     _wexTestResultError "${HAS_ERROR} found for : ${CONTEXT}"
     _wexTestResultLine "In ${TMP_FILE_NAME}"
     _wexTestResultLine "Diff : \"${DIFF}\""
@@ -96,78 +104,67 @@ _wexTestSampleInit() {
 }
 
 wexTest() {
+  . "${WEX_DIR_ROOT}includes/globals.sh"
+
   # List only directories.
-  local WEX_TEST_NAMESPACES=($(ls -d ${WEX_DIR_BASH}*/))
-  local WEX_TEST_RUN_SCRIPT=${1}
+  local METHOD_NAME
+  local SCRIPTS
+  local SCRIPT_FILEPATH
+  local TEST_HAS_ERROR
+  local TEST_RUN_SCRIPT="${1}"
+  local TEST_FILE
+  local WEX_TEST_DIRS=(
+    "${WEX_DIR_ROOT}"
+  )
 
-  . "${WEX_DIR_BASH}globals.sh"
+  for WEX_TEST_RUN_DIR_CURRENT in ${WEX_TEST_DIRS[@]}; do
+    _wexLog "Testing ... ${WEX_TEST_RUN_DIR_CURRENT}"
 
-  for DIR in ${WEX_TEST_NAMESPACES[@]}
-  do
-    local NAMESPACE=$(basename ${DIR})
-    local SPLIT=($(echo ${WEX_TEST_RUN_SCRIPT}| tr ":" "\n"))
-    # If no specified script
-    # Or no specified namespace
-    # Or a namespace is specified and the same as current
-    if [[ -z "${WEX_TEST_RUN_SCRIPT:+x}" ]] || [[ -z "${SPLIT[1]:+x}" ]] || [[ ${SPLIT[0]} == ${NAMESPACE} ]];then
-      local WEX_TEST_RUN_DIR_CURRENT=${WEX_DIR_ROOT}"tests/bash/"${NAMESPACE}"/"
+    local PATH_DIR_BASH="${WEX_TEST_RUN_DIR_CURRENT}bash/"
+    local PATH_DIR_TESTS_BASH="${WEX_TEST_RUN_DIR_CURRENT}tests/bash/"
+    local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
 
-      # Dir exists.
-      if [[ -d ${WEX_TEST_RUN_DIR_CURRENT} ]];then
-        local WEX_TEST_RUN_DIR_SAMPLES=${WEX_TEST_RUN_DIR_CURRENT}"_samples/"
-        # Get all folder.
-        local WEX_TESTS_NAMESPACE_FOLDERS=($(ls ${WEX_TEST_RUN_DIR_CURRENT}))
-        local WEX_TEST_DIR_NAME
+    SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH}")
 
-        for WEX_TEST_DIR_NAME in ${WEX_TESTS_NAMESPACE_FOLDERS[@]}
-        do
-          local WEX_TEST_FIRST_LETTER="$(echo ${WEX_TEST_DIR_NAME} | head -c 1)"
+    for SCRIPT_NAME in ${SCRIPTS[@]}; do
+      SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
 
-          # Exclude folders with _ prefix.
-          if [ "${WEX_TEST_FIRST_LETTER}" != "_" ]; then
-            local WEX_TESTS_NAMESPACE_FOLDERS_FILES=($(ls ${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_DIR_NAME}))
-            # Iterate group folder
-            for WEX_TEST_FILE in ${WEX_TESTS_NAMESPACE_FOLDERS_FILES[@]}
-            do
-              local WEX_TEST_FILE_NAME=$(basename "${WEX_TEST_FILE}")
-              local WEX_TEST_SCRIPT_CALL_NAME=${WEX_TEST_DIR_NAME}"/${WEX_TEST_FILE_NAME%.*}"
-              local WEX_TEST_FIRST_LETTER="$(echo "${WEX_TEST_FILE}" | head -c 1)"
+      # Exclude files with _ prefix.
+      # Allow to specify single script name to test.
+      if [ "${TEST_RUN_SCRIPT}" = "" ] || [ "${TEST_RUN_SCRIPT}" = "${SCRIPT_NAME}" ]; then
+        # Build script file path.
+        TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
 
-              # Exclude files with _ prefix.
-              # Allow to specify single script name to test.
-              if [[ "${WEX_TEST_FIRST_LETTER}" != "_" && ("${WEX_TEST_RUN_SCRIPT}" == "" || ${WEX_TEST_RUN_SCRIPT} == ${WEX_TEST_SCRIPT_CALL_NAME} || ${WEX_TEST_RUN_SCRIPT} == ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}) ]]; then
-                local WEX_TEST_METHOD_NAME=$(_wexMethodName "${WEX_TEST_SCRIPT_CALL_NAME}")
+        if [ ! -f "${TEST_FILE}" ]; then
+          _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
+        fi
 
-                # Build script file path.
-                local _TEST_SCRIPT_FILE="${WEX_TEST_RUN_DIR_CURRENT}${WEX_TEST_SCRIPT_CALL_NAME}.sh"
-                # Clear defined function
-                local _TEST_ARGUMENTS=
+        # Import test methods
+        . "${TEST_FILE}"
 
-                # Import test methods
-                . "${_TEST_SCRIPT_FILE}"
+        METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
+        TEST_HAS_ERROR=false
 
-                _wexMessage "test ${NAMESPACE}::${WEX_TEST_SCRIPT_CALL_NAME}" "${NAMESPACE}/${WEX_TEST_SCRIPT_CALL_NAME}.sh"
+        _wexMessage "testing ${SCRIPT_NAME}"
+        _wexLog "Script file : ${SCRIPT_FILEPATH}"
+        _wexLog "Test file   : ${TEST_FILE}"
+        _wexLog "Test method : ${METHOD_NAME}"
 
-                # Go to test dir.
-                cd "${WEX_TEST_RUN_DIR_CURRENT}"
+        if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
 
-                WEX_TEST_HAS_ERROR=false
-                if [ "$(type -t "${WEX_TEST_METHOD_NAME}Test" 2>/dev/null)" = "function" ]; then
-                    # Do not encapsulate result
-                    "${WEX_TEST_METHOD_NAME}Test" ${_TEST_ARGUMENTS[@]}
-                fi
+          "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
+        else
+          _wexError "Test file exists but missing method : ${METHOD_NAME}"
+          return
+        fi
 
-                if [ "${WEX_TEST_HAS_ERROR}" = "false" ]; then
-                  _wexTestResultSuccess "Test complete"
-                else
-                  _wexTestResultError "Test failed"
-                fi
-              fi
-            done
-          fi
-        done
+        if [ "${TEST_HAS_ERROR}" = "false" ]; then
+          _wexTestResultSuccess "Test complete"
+        else
+          _wexTestResultError "Test failed"
+        fi
       fi
-    fi
+    done
   done
 }
 

@@ -2,6 +2,9 @@
 
 coreVersionArgs() {
   _DESCRIPTION='Returns current wex core version'
+  _REQUIREMENTS=(
+    'nano'
+  )
 }
 
 coreVersion() {

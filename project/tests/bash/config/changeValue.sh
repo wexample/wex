@@ -5,9 +5,6 @@ configChangeValueTest() {
   local FILEPATH
   FILEPATH=$(_wexTestSampleInit configSample)
 
-  RESULT=$(wex config/processSeparator -s=",")
-  _wexTestAssertEqual "${RESULT}" "\(,\)\{1,\}"
-
   # No separator
   RESULT=$(wex config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
   _wexTestAssertEqual "${RESULT}" "two"
@@ -36,7 +33,6 @@ configChangeValueTestItem() {
   local SEPARATOR="${3}"
   local EXPECTED="tested"
   local ORIGINAL
-  local CHANGED
 
   # Backup
   ORIGINAL=$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")

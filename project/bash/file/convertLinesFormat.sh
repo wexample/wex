@@ -6,9 +6,7 @@ fileConvertLinesFormatArgs() {
    'format t "Destination format" true'
  )
  _REQUIREMENTS=(
-   'mac2unix'
-   'unix2dos'
-   'unix2mac'
+   'dos2unix'
  )
 }
 
