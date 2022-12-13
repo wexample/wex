@@ -4,9 +4,10 @@ stringTrimArgs() {
   _DESCRIPTION="Trim a string"
   _ARGUMENTS=(
     'string s "String to trim" true'
+    'char c "Char to trim" true " \t"'
   )
 }
 
 stringTrim() {
-  echo -e "${STRING}" | sed -e 's/^[[:space:]]\{0,\}//' -e 's/[[:space:]]\{0,\}$//'
+  echo "${STRING}" | sed -e 's/^['"${CHAR}"']*//' | sed -e 's/['"${CHAR}"']*$//'
 }
