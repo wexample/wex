@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 coreLogo() {
+  if [ "${QUIET}" = "true" ];then
+    return
+  fi
+
   local RED='\033[1;91m'
   local NC='\033[0m'
 
@@ -31,9 +35,4 @@ coreLogo() {
   echo "                          v${WEX_CORE_VERSION}"
   echo ""
   echo ""
-
-  # Extra message is set.
-  if [ -n "${1+x}" ]; then
-    echo "       ~> ${1}";
-  fi;
 }
