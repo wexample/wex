@@ -13,13 +13,23 @@ if [ "$(type -t wex)" != "function" ];then
 
     local WEX_SCRIPT_FILE
     local WEX_SCRIPT_METHOD_NAME
-    local WEX_SCRIPT_METHOD_ARGS_NAME
+    local WEX_SCRIPT_FOUND=false
 
     WEX_SCRIPT_CALL_NAME="${1}"
     WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
 
     # File does not exists.
     if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
+      . "${WEX_DIR_ROOT}includes/colors.sh"
+
+      # Show hi
+      if [ "${WEX_SCRIPT_CALL_NAME}" = "hi" ]; then
+        printf "hi!\n"
+      # Not found.
+      elif [ ${WEX_SCRIPT_FOUND} = false ];then
+        _wexError "Script file not found" "${WEX_SCRIPT_CALL_NAME}"
+      fi
+
       return
     fi
 

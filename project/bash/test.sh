@@ -137,6 +137,7 @@ wexTest() {
 
         if [ ! -f "${TEST_FILE}" ]; then
           _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
+          return
         fi
 
         # Import test methods
