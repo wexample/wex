@@ -120,9 +120,21 @@ wexTest() {
 
     local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
     local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
+    local PATH_FILE_DEFAULT="${PATH_DIR_TESTS_BASH}default.sh"
     local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
 
     SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH}")
+
+    if [ -f "${PATH_FILE_DEFAULT}" ];then
+      unset testDefault
+      . "${PATH_FILE_DEFAULT}"
+
+      if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
+        _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
+
+        testDefault
+      fi
+    fi
 
     for SCRIPT_NAME in ${SCRIPTS[@]}; do
       SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
