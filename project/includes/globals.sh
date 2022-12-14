@@ -19,7 +19,7 @@ WEX_ARGUMENT_DEFAULTS=(
 
 . "${WEX_DIR_ROOT}/includes/colors.sh"
 . "${WEX_DIR_ROOT}/includes/function/common.sh"
-. "${WEX_DIR_ROOT}/includes/function/message-default.sh"
+. "${WEX_DIR_ROOT}/includes/function/messages.sh"
 
 # Get the username of the original user
 if [ "$(_wexUserIsSudo)" = "false" ];then

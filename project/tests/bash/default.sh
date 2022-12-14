@@ -10,4 +10,7 @@ testDefault() {
 
   # Should return an error as test user should ne be sudo
   _wexTestAssertNotEmpty "$(wex scripts/install -d=/home/weeger --non_interactive)"
+
+  # Quiet mode hides errors
+  _wexTestAssertEqual "$(wex scripts/install -d=/home/weeger --non_interactive --quiet)" ""
 }
