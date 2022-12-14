@@ -5,6 +5,12 @@ if [ "$(type -t wex)" != "function" ];then
   . /opt/wex/project/includes/globals.sh
 
   wex() {
+    # Using false as argument allow to load file and init wex
+    # without to execute any script.
+    if [ -z "${1+x}" ] || [ "${1}" = '' ] || [ ${1} = false ]; then
+      return;
+    fi;
+
     # Running unit test.
     if [ "${1}" = "test" ];then
       bash "${WEX_DIR_BASH}test.sh" "${2}"
@@ -39,6 +45,8 @@ if [ "$(type -t wex)" != "function" ];then
     . "${WEX_SCRIPT_FILE}"
     # Disable space as array item separator
 
+    local _AS_SUDO=true
+    local _AS_NON_SUDO=true
     local WEX_CALLING_ARGUMENTS=()
     _wexGetArguments "${WEX_SCRIPT_CALL_NAME}"
 
@@ -97,7 +105,6 @@ if [ "$(type -t wex)" != "function" ];then
           local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
         # Expected
         elif [ "${PARAMS[3]}" = "true" ]; then
-          echo "${WEX_SCRIPT_FILE}"
           # Interactive mode allowed.
           if [ -z ${NON_INTERACTIVE+x} ] || [ "${NON_INTERACTIVE}" = "false" ]; then
             echo -n ${PARAMS[2]}": "
@@ -111,6 +118,29 @@ if [ "$(type -t wex)" != "function" ];then
         fi;
       fi;
     done
+
+    # User is not sudo.
+    if [ "${EUID}" -ne 0 ];then
+      if [ "${_AS_NON_SUDO}" = "false" ];then
+        # User can switch to sudo without password typing
+        # Or interactive mode is allowed.
+        if [ "$(sudo -n true 2>/dev/null)" = "" ] && [ "${NON_INTERACTIVE}" != "true" ]; then
+          # Enforce using sudo
+          sudo bash -c wex ${@}
+        else
+          _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
+        fi
+
+        return
+      fi
+    # User is sudo.
+    else
+
+      if [ "${_AS_SUDO}" = "false" ];then
+         _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
+         return
+      fi
+    fi
 
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
