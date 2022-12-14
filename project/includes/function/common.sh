@@ -13,17 +13,15 @@ _wexFindScriptFile() {
   WEX_SCRIPT_CALL_NAME="${1}"
   WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
 
-  if [ -f "${WEX_SCRIPT_FILE}" ];then
-    echo "${WEX_SCRIPT_FILE}"
-    return
-  fi
+  LOCATIONS=($(_wexFindScriptsLocations))
 
-  WEX_SCRIPT_FILE=${WEX_DIR_BASH}${WEX_SCRIPT_CALL_NAME}.sh
-
-  if [ -f "${WEX_SCRIPT_FILE}" ];then
-    echo "${WEX_SCRIPT_FILE}"
-    return
-  fi
+  for LOCATION in ${LOCATIONS[@]}
+  do
+    if [ -f "${LOCATION}${WEX_SCRIPT_CALL_NAME}.sh" ];then
+      echo "${LOCATION}${WEX_SCRIPT_CALL_NAME}.sh"
+      return
+    fi
+  done
 }
 
 _wexFindServicesDirs() {
@@ -32,11 +30,17 @@ _wexFindServicesDirs() {
 
 _wexFindScriptsLocations() {
   local LOCATIONS=(
-    "${WEX_RUNNER_PATH_WEX}"
+    "${WEX_RUNNER_PATH_BASH}"
     "${WEX_DIR_BASH}"
   )
 
-  LOCATIONS+=($(_wexFindServicesDirs))
+  local SERVICES_LOCATIONS
+  SERVICES_LOCATIONS+=($(_wexFindServicesDirs))
+
+  for LOCATION in ${SERVICES_LOCATIONS[@]}
+  do
+    LOCATIONS+=("${LOCATION}bash/")
+  done
 
   echo ${LOCATIONS[@]}
 }
@@ -66,7 +70,7 @@ _wexGetOnlyDirs() {
   for ITEM in "${ITEMS[@]}"
   do
     if [ -d "${1}${ITEM}" ];then
-      OUTPUT+="${1}${ITEM} "
+      OUTPUT+="${1}${ITEM}/ "
     fi
   done
 
@@ -83,7 +87,7 @@ _wexLoadVariables() {
 }
 
 _wexLocalScriptPath() {
-  echo "${WEX_RUNNER_PATH_WEX}bash/${1}.sh"
+  echo "${WEX_RUNNER_PATH_BASH}${1}.sh"
 }
 
 _wexMethodName() {

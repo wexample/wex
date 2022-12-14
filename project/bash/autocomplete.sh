@@ -19,7 +19,6 @@ autocomplete() {
     . "${WEX_DIR_ROOT}includes/globals.sh"
 
     local LOCATIONS
-
     local ARGS_INDEX=2
 
     LOCATIONS=$(_wexFindScriptsLocations)
