@@ -39,6 +39,16 @@ if [ "$(type -t wex)" != "function" ];then
       return
     fi
 
+    # Load init.sh file once, if exists.
+    local INIT_FILE
+    INIT_FILE="$(realpath "$(dirname "${WEX_SCRIPT_FILE}")/../")/init.sh"
+    if [ -f "${INIT_FILE}" ]; then
+      WEX_INIT_REGISTRY[${INIT_FILE}]=true
+      if [ "${WEX_INIT_REGISTRY[${INIT_FILE}]}" = "true" ];then
+         . "${INIT_FILE}"
+      fi
+    fi
+
     WEX_SCRIPT_METHOD_NAME=$(_wexMethodName "${WEX_SCRIPT_CALL_NAME}")
 
     # Include found script file
