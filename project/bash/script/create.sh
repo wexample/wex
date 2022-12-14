@@ -44,5 +44,23 @@ ${METHOD}() {
 
 EOF
 
+  # Create test
+  FILE="$(realpath "${WEX_RUNNER_PATH_BASH}../")/tests/bash/${SCRIPT}.sh"
+  DIR=$(dirname "${FILE}")
+
+  mkdir -p "${DIR}"
+
+  cat <<EOF > "${FILE}"
+#!/usr/bin/env bash
+
+${METHOD}Test() {
+  # Your test body. i.e :
+  #   _wexTestAssertEqual "${A}" "A"
+  #   _wexTestAssertNotEmpty "${A}"
+  echo "Create a test"
+}
+
+EOF
+
   echo "${FILE}"
 }

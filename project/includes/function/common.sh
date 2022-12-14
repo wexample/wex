@@ -48,6 +48,7 @@ _wexFindScriptsLocations() {
 _wexGetArguments() {
   local WEX_SCRIPT_CALL_NAME="${1}"
   local WEX_SCRIPT_METHOD_ARGS_NAME
+  local _ARGUMENTS
 
   WEX_SCRIPT_METHOD_ARGS_NAME=$(_wexMethodNameArgs "${WEX_SCRIPT_CALL_NAME}")
 

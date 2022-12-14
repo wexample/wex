@@ -113,15 +113,13 @@ wexTest() {
   local TEST_HAS_ERROR
   local TEST_RUN_SCRIPT="${1}"
   local TEST_FILE
-  local WEX_TEST_DIRS=(
-    "${WEX_DIR_ROOT}"
-  )
+  local WEX_TEST_DIRS=("$(_wexFindScriptsLocations)")
 
-  for WEX_TEST_RUN_DIR_CURRENT in ${WEX_TEST_DIRS[@]}; do
+  for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
     _wexLog "Testing ... ${WEX_TEST_RUN_DIR_CURRENT}"
 
-    local PATH_DIR_BASH="${WEX_TEST_RUN_DIR_CURRENT}bash/"
-    local PATH_DIR_TESTS_BASH="${WEX_TEST_RUN_DIR_CURRENT}tests/bash/"
+    local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
+    local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
     local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
 
     SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH}")

@@ -133,7 +133,7 @@ if [ "$(type -t wex)" != "function" ];then
 
     # Display script file source.
     elif [ ! -z ${SOURCE+x} ]; then
-      . ${WEX_DIR_BASH}/colors.sh
+      . "${WEX_DIR_ROOT}includes/colors.sh"
       printf ${WEX_COLOR_LIGHT_CYAN}
       cat ${WEX_SCRIPT_FILE}
       printf ${WEX_COLOR_RESET}"\n"
