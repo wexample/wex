@@ -24,8 +24,8 @@ _wexFindScriptFile() {
   done
 }
 
-_wexFindServicesDirs() {
-  _wexGetOnlyDirs "${WEX_DIR_SERVICES}"
+_wexFindAddonsDirs() {
+  _wexGetOnlyDirs "${WEX_DIR_ADDONS}"
 }
 
 _wexFindScriptsLocations() {
@@ -35,7 +35,7 @@ _wexFindScriptsLocations() {
   )
 
   local SERVICES_LOCATIONS
-  SERVICES_LOCATIONS+=($(_wexFindServicesDirs))
+  SERVICES_LOCATIONS+=($(_wexFindAddonsDirs))
 
   for LOCATION in ${SERVICES_LOCATIONS[@]}
   do

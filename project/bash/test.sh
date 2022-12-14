@@ -125,7 +125,7 @@ wexTest() {
 
     SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH}")
 
-    if [ -f "${PATH_FILE_DEFAULT}" ];then
+    if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ];then
       unset testDefault
       . "${PATH_FILE_DEFAULT}"
 
@@ -162,7 +162,6 @@ wexTest() {
         _wexLog "Test method : ${METHOD_NAME}"
 
         if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
-
           "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
         else
           _wexError "Test file exists but missing method : ${METHOD_NAME}"
