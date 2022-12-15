@@ -4,17 +4,31 @@ _wexFindScriptFile() {
   local WEX_SCRIPT_CALL_NAME
   local WEX_SCRIPT_FILE
 
+  WEX_SCRIPT_CALL_NAME="${1}"
+  WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
+
   # Given args is a file.
   if [ -f "${WEX_SCRIPT_CALL_NAME}" ];then
     echo "${WEX_SCRIPT_FILE}"
     return
   fi
 
-  WEX_SCRIPT_CALL_NAME="${1}"
-  WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
+  local SPLIT
+  local ADDON
 
+  # Addon is specified.
+  ADDON=$(_wexAddonName "${WEX_SCRIPT_CALL_NAME}")
+  if [ "${ADDON}" != "" ]; then
+    local FILEPATH="${WEX_DIR_ROOT}addons/${ADDON}/bash/$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}").sh"
+
+    if [ -f "${FILEPATH}" ];then
+      realpath "${FILEPATH}"
+    fi
+    return
+  fi
+
+  # Addon not specified, searching in all.
   LOCATIONS=($(_wexFindScriptsLocations))
-
   for LOCATION in ${LOCATIONS[@]}
   do
     if [ -f "${LOCATION}${WEX_SCRIPT_CALL_NAME}.sh" ];then
@@ -75,7 +89,7 @@ _wexGetOnlyDirs() {
     fi
   done
 
-  echo ${OUTPUT}
+  echo "${OUTPUT}"
 }
 
 # Data storage access performance.
@@ -91,8 +105,36 @@ _wexLocalScriptPath() {
   echo "${WEX_RUNNER_PATH_BASH}${1}.sh"
 }
 
+_wexSplitCommand() {
+  if [[ "${1}" == *"::"* ]]; then
+    echo "${1}" | tr "::" "\n"
+  fi
+}
+
+_wexAddonName() {
+  local SPLIT
+  SPLIT=($(_wexSplitCommand "${1}"))
+
+  if [ "${SPLIT[1]}" != "" ];then
+    echo "${SPLIT[0]}"
+  fi
+}
+
+_wexCommandName() {
+  local SPLIT
+  SPLIT=($(_wexSplitCommand "${1}"))
+
+  if [ "${SPLIT[1]}" != "" ];then
+    echo "${SPLIT[1]}"
+  else
+    echo "${1}"
+  fi
+}
+
 _wexMethodName() {
-  local SPLIT=(${1//// })
+  local COMMAND
+  COMMAND=$(_wexCommandName "${1}")
+  local SPLIT=(${COMMAND//// })
   echo "${SPLIT[0]}$(_wexUpperCaseFirstLetter "${SPLIT[1]}")"
 }
 
