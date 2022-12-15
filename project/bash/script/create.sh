@@ -8,9 +8,9 @@ scriptCreateArgs() {
 }
 
 scriptCreate() {
-  local PATTERN='^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$'
+  . "${WEX_DIR_ROOT}includes/script.sh"
 
-  if [[ ! "${SCRIPT}" =~ ${PATTERN} ]]; then
+  if [[ ! "${SCRIPT}" =~ ^${WEX_SCRIPT_NAME_REGEX}+$ ]]; then
     _wexError "Script name can contains only alphanumerical and should contain one slash, pattern : ${PATTERN}"
     return
   fi

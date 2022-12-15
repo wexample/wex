@@ -122,8 +122,9 @@ wexTest() {
     local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
     local PATH_FILE_DEFAULT="${PATH_DIR_TESTS_BASH}default.sh"
     local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
+    local ADDON_NAME="$(basepath $(realpath .))"
 
-    SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH}")
+    SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH} -a=${ADDON_NAME}")
 
     if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ];then
       unset testDefault
