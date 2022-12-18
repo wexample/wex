@@ -6,6 +6,7 @@ WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
 WEX_DIR_ADDONS="${WEX_DIR_ROOT}addons/"
 WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
+WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
@@ -20,7 +21,7 @@ WEX_ARGUMENT_DEFAULTS=(
 
 . "${WEX_DIR_ROOT}/includes/colors.sh"
 . "${WEX_DIR_ROOT}/includes/function/common.sh"
-. "${WEX_DIR_ROOT}/includes/function/messages.sh"
+. "${WEX_FILE_MESSAGE_FUNCTION}"
 
 # Get the username of the original user
 if [ "$(_wexUserIsSudo)" = "false" ];then
