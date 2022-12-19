@@ -149,6 +149,29 @@ if [ "$(type -t wex)" != "function" ];then
       fi;
     done
 
+    # User is not sudo.
+    if [ "${EUID}" -ne 0 ];then
+      if [ "${_AS_NON_SUDO}" = "false" ];then
+        # User can switch to sudo without password typing
+        # Or interactive mode is allowed.
+        if [ "$(sudo -n true 2>/dev/null)" = "" ] && [ "${NON_INTERACTIVE}" != "true" ]; then
+          # Enforce using sudo
+          sudo bash -c wex ${@}
+        else
+          _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
+        fi
+
+        return
+      fi
+    # User is sudo.
+    else
+
+      if [ "${_AS_SUDO}" = "false" ];then
+         _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
+         return
+      fi
+    fi
+
     # Show help manual
     if [ ! -z ${HELP+x} ]; then
       . "${WEX_DIR_ROOT}includes/colors.sh"
