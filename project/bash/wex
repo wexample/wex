@@ -49,6 +49,20 @@ if [ "$(type -t wex)" != "function" ];then
       fi
     fi
 
+    # Get parameters keeping quoted strings.
+    WEX_ARGUMENTS=''
+    whitespace="[[:space:]]"
+    for i in "${@:2}"
+    do
+      if [[ $i =~ $whitespace ]]
+      then
+        ARG_NAME=$(echo ${i} | cut -d"=" -f1)
+        ARG_VALUE=${i#*\=}
+        i="-"${ARG_NAME}"=\"${ARG_VALUE}\""
+      fi
+      WEX_ARGUMENTS+=' '${i}
+    done
+
     WEX_SCRIPT_METHOD_NAME=$(_wexMethodName "${WEX_SCRIPT_CALL_NAME}")
 
     # Include found script file
