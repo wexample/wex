@@ -156,7 +156,7 @@ if [ "$(type -t wex)" != "function" ];then
         # Or interactive mode is allowed.
         if [ "$(sudo -n true 2>/dev/null)" = "" ] && [ "${NON_INTERACTIVE}" != "true" ]; then
           # Enforce using sudo
-          sudo bash -c wex ${@}
+          sudo bash -c "wex ${@}"
         else
           _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
         fi
@@ -165,7 +165,6 @@ if [ "$(type -t wex)" != "function" ];then
       fi
     # User is sudo.
     else
-
       if [ "${_AS_SUDO}" = "false" ];then
          _wexError "${WEX_SCRIPT_CALL_NAME} should not be executed as sudo" "You are \"$(whoami)\", try to \"exit\" sudo mode, then retry this command"
          return
