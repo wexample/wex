@@ -44,6 +44,6 @@ configSetValue() {
     wex config/changeValue -f="${FILE}" -k="${KEY}" -v="${VALUE}" -s="${SEPARATOR}"
   else
     # Add a new line
-    wex file/textAppendOnce -f="${FILE}" -l="${KEY}${SEPARATOR}${VALUE}"
+    wex file/textAppendOnce -f="${FILE}" -l="\n${KEY}${SEPARATOR}${VALUE}"
   fi
 }
