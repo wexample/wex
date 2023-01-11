@@ -19,7 +19,7 @@ configSetValue() {
 
   if [ "${IGNORE_DUPLICATES}" = "true" ];then
     # Add value without checks.
-    echo -e "${KEY}${SEPARATOR}${VALUE}" >> "${FILE}"
+    echo -e "\n${KEY}${SEPARATOR}${VALUE}" >> "${FILE}"
     return
   fi
 
