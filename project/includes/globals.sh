@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+WEX_ADDONS=(app docker language prompt rw services-php services-various system)
 WEX_BASHRC_PATH=~/.bashrc
 WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
 WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"

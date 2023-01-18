@@ -11,6 +11,10 @@ configGetValueArgs() {
 configGetValue() {
   SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
 
+  if [ ! -f "${FILE}" ];then
+    return
+  fi
+
   # Find a line starting by the key or by some spaces
   # Capture value and auto print it (p option)
   # Sed returns multiple lines in case of multiple entry

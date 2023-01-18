@@ -8,7 +8,7 @@ _wexFindScriptFile() {
   WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
 
   # Given args is a file.
-  if [ -f "${WEX_SCRIPT_CALL_NAME}" ];then
+  if [ -f "${WEX_SCRIPT_FILE}" ];then
     echo "${WEX_SCRIPT_FILE}"
     return
   fi
@@ -18,7 +18,8 @@ _wexFindScriptFile() {
 
   # Addon is specified.
   ADDON=$(_wexAddonName "${WEX_SCRIPT_CALL_NAME}")
-  if [ "${ADDON}" != "" ]; then
+
+  if [ "${ADDON}" != "" ] && [ "${ADDON}" != "default" ]; then
     local FILEPATH="${WEX_DIR_ROOT}addons/${ADDON}/bash/$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}").sh"
 
     if [ -f "${FILEPATH}" ];then
@@ -28,11 +29,19 @@ _wexFindScriptFile() {
   fi
 
   # Addon not specified, searching in all.
-  LOCATIONS=($(_wexFindScriptsLocations))
+  SCRIPT_RELATIVE_NAME=$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}")
+
+  # Search only in default directory.
+  if [ "${ADDON}" = "default" ];then
+    LOCATIONS=("${WEX_DIR_BASH}")
+  else
+    LOCATIONS=($(_wexFindScriptsLocations))
+  fi
+
   for LOCATION in ${LOCATIONS[@]}
   do
-    if [ -f "${LOCATION}${WEX_SCRIPT_CALL_NAME}.sh" ];then
-      echo "${LOCATION}${WEX_SCRIPT_CALL_NAME}.sh"
+    if [ -f "${LOCATION}${SCRIPT_RELATIVE_NAME}.sh" ];then
+      echo "${LOCATION}${SCRIPT_RELATIVE_NAME}.sh"
       return
     fi
   done
@@ -102,7 +111,7 @@ _wexLoadVariables() {
 }
 
 _wexLocalScriptPath() {
-  echo "${WEX_RUNNER_PATH_BASH}${1}.sh"
+  echo "${WEX_RUNNER_PATH_BASH}$(_wexCommandName ${1}).sh"
 }
 
 _wexSplitCommand() {
