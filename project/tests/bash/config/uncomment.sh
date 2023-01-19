@@ -6,8 +6,8 @@ configUncommentTest() {
 
   FILEPATH=$(_wexTestSampleInit configSample)
 
-  wex config/uncomment -f="${FILEPATH}" -k="KerberosGetAFSToken"
-  VALUE=$(wex config/getValue -f="${FILEPATH}" -k="KerberosGetAFSToken" -s=" ")
+  wex default::config/uncomment -f="${FILEPATH}" -k="KerberosGetAFSToken"
+  VALUE=$(wex default::config/getValue -f="${FILEPATH}" -k="KerberosGetAFSToken" -s=" ")
 
   _wexTestAssertEqual "${VALUE}" "no"
 }

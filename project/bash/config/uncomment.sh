@@ -10,7 +10,7 @@ configUncommentArgs() {
 }
 
 configUncomment() {
-  SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
+  SEPARATOR="$(wex default::config/processSeparator -s="${SEPARATOR}")"
 
   if [ -z "${CHAR+x}" ];then
     # Default space separator

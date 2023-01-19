@@ -11,7 +11,7 @@ configChangeValueArgs() {
 }
 
 configChangeValue() {
-  SEPARATOR="$(wex config/processSeparator -s="${SEPARATOR}")"
+  SEPARATOR="$(wex default::config/processSeparator -s="${SEPARATOR}")"
 
   # Escape string.
   VALUE=$(echo "${VALUE}" | sed 's/\//\\\//g')

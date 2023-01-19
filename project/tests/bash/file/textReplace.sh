@@ -8,5 +8,5 @@ fileTextReplaceTest() {
   wex file/textReplace -f="${FILEPATH}" -r="s/prohibit-password/yolo/"
 
   # Test change
-  _wexTestAssertEqual $(wex config/getValue -f="${FILEPATH}" -k="PermitRootLogin") 'yolo'
+  _wexTestAssertEqual $(wex default::config/getValue -f="${FILEPATH}" -k="PermitRootLogin") 'yolo'
 }

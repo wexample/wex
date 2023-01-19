@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 configProcessSeparatorTest() {
-  _wexTestAssertEqual "$(wex config/processSeparator -s=XXX)" "\(XXX\)\{1,\}"
+  _wexTestAssertEqual "$(wex default::config/processSeparator -s=XXX)" "\(XXX\)\{1,\}"
 }
 

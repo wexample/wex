@@ -6,7 +6,7 @@ configChangeValueTest() {
   FILEPATH=$(_wexTestSampleInit configSample)
 
   # No separator
-  RESULT=$(wex config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
+  RESULT=$(wex default::config/getValue -f="${FILEPATH}" -k="ConfigTestOption")
   _wexTestAssertEqual "${RESULT}" "two"
 
   # Space separator
@@ -35,26 +35,26 @@ configChangeValueTestItem() {
   local ORIGINAL
 
   # Backup
-  ORIGINAL=$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")
+  ORIGINAL=$(wex default::config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")
 
   # Set value.
-  wex config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${EXPECTED}" -s="${SEPARATOR}"
+  wex default::config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${EXPECTED}" -s="${SEPARATOR}"
   configChangeValueTestItemCheck "${EXPECTED}"
 
   # Revert
-  wex config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
+  wex default::config/changeValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
   configChangeValueTestItemCheck "${ORIGINAL}"
 
   # Remove
-  wex config/removeKey -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}"
+  wex default::config/removeKey -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}"
   configChangeValueTestItemCheck ""
 
   # Reset
-  wex config/setValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
+  wex default::config/setValue -f="${FILEPATH}" -k="${NAME}" -v="${ORIGINAL}" -s="${SEPARATOR}"
   configChangeValueTestItemCheck "${ORIGINAL}"
 }
 
 configChangeValueTestItemCheck() {
   # Check
-  _wexTestAssertEqual "$(wex config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")" "${1}"
+  _wexTestAssertEqual "$(wex default::config/getValue -f="${FILEPATH}" -k="${NAME}" -s="${SEPARATOR}")" "${1}"
 }

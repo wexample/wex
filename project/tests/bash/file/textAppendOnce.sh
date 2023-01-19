@@ -27,6 +27,6 @@ fileTextAppendOnceTest() {
 
   wex file/textAppendOnce -f="${FILEPATH}" -l="${CONFIG_TEST}"
 
-  INSERTED=$(wex config/getValue -f="${FILEPATH}" -k="${CONFIG_KEY}" -s=" = ")
+  INSERTED=$(wex default::config/getValue -f="${FILEPATH}" -k="${CONFIG_KEY}" -s=" = ")
   _wexTestAssertEqual "${INSERTED}" "${CONFIG_VALUE}"
 }

@@ -6,12 +6,12 @@ configRemoveKeyTest() {
   FILEPATH=$(_wexTestSampleInit configSample)
 
   # Normal
-  result=$(wex config/keyExists -f="${FILEPATH}" -k="ConfigTestSingleOption")
+  result=$(wex default::config/keyExists -f="${FILEPATH}" -k="ConfigTestSingleOption")
   _wexTestAssertEqual "${result}" "true"
 
-  wex config/removeKey -f="${FILEPATH}" -k="ConfigTestSingleOption"
+  wex default::config/removeKey -f="${FILEPATH}" -k="ConfigTestSingleOption"
   # Normal
-  result=$(wex config/keyExists -f="${FILEPATH}" -k="ConfigTestSingleOption")
+  result=$(wex default::config/keyExists -f="${FILEPATH}" -k="ConfigTestSingleOption")
 
   _wexTestAssertEqual "${result}" "false"
 }
