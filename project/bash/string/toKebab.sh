@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-stringToSnakeArgs() {
+stringToKebabArgs() {
   _ARGUMENTS=(
     'text t "Text to transform" true'
   )
 }
 
-stringToSnake() {
-  TEXT=$(echo "${TEXT}" | tr "-" "_")
+stringToKebab() {
+  TEXT=$(echo "${TEXT}" | tr "_" " ")
   TEXT=$(wex string/reduceSpaces -t="${TEXT}")
   TEXT=$(wex string/toAlNum -t="${TEXT}")
-  echo "${TEXT// /_}"
+  echo "${TEXT// /-}"
 }
