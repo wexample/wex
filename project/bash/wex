@@ -124,7 +124,7 @@ if [ "$(type -t wex)" != "function" ];then
       if [ ! -z ${QUIET+x} ]; then
         # Override all messages and errors functions
         WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}includes/function/messages-quiet.sh"
-        . ${WEX_FILE_MESSAGE_FUNCTION}
+        . "${WEX_FILE_MESSAGE_FUNCTION}"
       fi
 
       # If an argument is not found
