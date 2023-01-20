@@ -99,9 +99,6 @@ autocomplete() {
         SUGGESTIONS+=" --${ARG_EXPECTED_LONG}"
       done
     fi
-
-    #    mkdir -p "${WEX_DIR_TMP_AUTOCOMPLETE}"
-    #    echo "${SUGGESTIONS}" >>"${WEX_FILE_CACHE}"
   fi
 
   COMPREPLY=($(compgen -W "${SUGGESTIONS}" -- ${CUR}))
