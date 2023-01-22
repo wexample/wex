@@ -5,7 +5,6 @@ WEX_BASHRC_PATH=~/.bashrc
 WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
 WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
 WEX_DIR_ADDONS="${WEX_DIR_ROOT}addons/"
-WEX_DIR_INSTALL=$(dirname "${WEX_DIR_ROOT}")"/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
@@ -50,7 +49,6 @@ declare -A WEX_INIT_REGISTRY=()
 export WEX_BASHRC_PATH
 export WEX_CORE_VERSION=4.0.0
 export WEX_DIR_BASH
-export WEX_DIR_INSTALL
 export WEX_DIR_ROOT
 export WEX_DIR_TMP
 export WEX_INIT_REGISTRY

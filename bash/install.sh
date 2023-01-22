@@ -20,11 +20,11 @@ fi
 
 WEX_BASH_VERSION_MIN='5'
 WEX_BIN="/usr/local/bin/wex"
-WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}bash/autocomplete-handler.sh"
+WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_ROOT}bash/autocomplete-handler.sh"
 
 # Set permission on base folder.
-_wexLog "Set all permissions on ${WEX_DIR_INSTALL}"
-chmod -R +x "${WEX_DIR_INSTALL}"
+_wexLog "Set all permissions on ${WEX_DIR_ROOT}"
+chmod -R +x "${WEX_DIR_ROOT}"
 
 # Check shell version.
 if [ -z ${WEX_BASH_VERSION+x} ]; then
@@ -43,9 +43,12 @@ fi;
 
 # Create or recreate symlink.
 _wexLog "Adding symlink.."
-[ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
+if [ -L ${WEX_BIN} ];then
+  rm "${WEX_BIN}"
+fi
+
 # Symlink to bin
-ln -s "${WEX_DIR_INSTALL}bash/wex.bin.sh" ${WEX_BIN}
+ln -s "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.
