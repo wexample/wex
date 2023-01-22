@@ -1,3 +1,10 @@
+# Keep all .gitkeep
+!/**/.gitkeep
+
+# Ignored folders
+/addons/*
+/tmp/*
+
 # Mac
 .DS_Store
 

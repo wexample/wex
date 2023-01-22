@@ -6,7 +6,7 @@
 # We don't include external packages install which are
 # managed by `wex core::requirements/install` script.
 
-. /opt/wex/project/includes/globals.sh
+. /opt/wex/includes/globals.sh
 . "${WEX_DIR_ROOT}/includes/function/install.sh"
 
 # Check user is root
@@ -20,7 +20,7 @@ fi
 
 WEX_BASH_VERSION_MIN='5'
 WEX_BIN="/usr/local/bin/wex"
-WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}project/bash/autocomplete-handler.sh"
+WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_INSTALL}bash/autocomplete-handler.sh"
 
 # Set permission on base folder.
 _wexLog "Set all permissions on ${WEX_DIR_INSTALL}"
@@ -45,7 +45,7 @@ fi;
 _wexLog "Adding symlink.."
 [ -e "${WEX_BIN}" ] && rm "${WEX_BIN}"
 # Symlink to bin
-ln -s "${WEX_DIR_INSTALL}project/bash/wex.bin.sh" ${WEX_BIN}
+ln -s "${WEX_DIR_INSTALL}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.

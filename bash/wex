@@ -2,7 +2,7 @@
 
 # Init only once.
 if [ "$(type -t wex)" != "function" ];then
-  . /opt/wex/project/includes/globals.sh
+  . /opt/wex/includes/globals.sh
 
   wex() {
     # Using false as argument allow to load file and init wex

@@ -13,7 +13,7 @@ Join our community, support us, and find a job at https://wexample.com 🤝❤�
 
 ## Why using wex scripts
 
-- You want to use some practical core builtin scripts. You can explore builtin scripts in the [/project/bash/default/](/project/bash/default/) directory.
+- You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
 - You want to use any `wex-service` extension available on our [repository](https://github.com/orgs/wexample/repositories).
 
 ## Running tests
