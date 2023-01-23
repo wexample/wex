@@ -60,3 +60,14 @@ export WEX_RUNNER_PATH_WEX
 export WEX_RUNNER_USERNAME
 export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
+
+# Load global configuration for all addons.
+ADDONS_DIRS=$(_wexFindAddonsDirs)
+for ADDON in ${ADDONS_DIRS[@]}
+do
+  ADDON="${ADDON}includes/globals.sh"
+
+  if [ -f "${ADDON}" ];then
+    . "${ADDON}";
+  fi
+done;
