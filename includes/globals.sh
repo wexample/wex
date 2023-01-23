@@ -10,6 +10,7 @@ WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
+WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
@@ -60,3 +61,14 @@ export WEX_RUNNER_PATH_WEX
 export WEX_RUNNER_USERNAME
 export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
+
+# Load global configuration for all addons.
+ADDONS_DIRS=$(_wexFindAddonsDirs)
+for ADDON in ${ADDONS_DIRS[@]}
+do
+  ADDON="${ADDON}includes/globals.sh"
+
+  if [ -f "${ADDON}" ];then
+    . "${ADDON}";
+  fi
+done;
