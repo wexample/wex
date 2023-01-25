@@ -4,6 +4,7 @@ configRemoveKeyArgs() {
   _ARGUMENTS=(
     'target_key k "Target key to get (line beginning by ... regex)" true'
     'file f "File" true'
+    'separator s "Separator like space or equal sign, default space" false " "'
   )
 }
 
