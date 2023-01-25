@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 wex() {
-  # Using false as argument allow to load file and init wex
-  # without to execute any script.
+  # Using false as an argument allows to load a file and initialize wex
+  # without executing any script.
   if [ -z "${1+x}" ] || [ "${1}" = '' ] || [ ${1} = false ]; then
     return
   fi
@@ -20,7 +20,7 @@ wex() {
   WEX_SCRIPT_CALL_NAME="${1}"
   WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
 
-  # File does not exists.
+  # File does not exist.
   if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
     . "${WEX_DIR_ROOT}includes/colors.sh"
 
