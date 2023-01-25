@@ -168,6 +168,39 @@ if [ "$(type -t wex)" != "function" ];then
         echo "${_DESCRIPTION}" | fold -w 60
       fi
 
+      echo ""
+      printf "${WEX_COLOR_CYAN}Arguments${WEX_COLOR_RESET}\n"
+
+      for ((i=-${_NEGATIVE_ARGS_LENGTH}; i < ${#WEX_CALLING_ARGUMENTS[@]}-${_NEGATIVE_ARGS_LENGTH}; i++)); do
+        eval "PARAMS=(${WEX_CALLING_ARGUMENTS[${i}]})"
+        ARG_EXPECTED_LONG=${PARAMS[0]}
+
+        TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
+
+        local PROPS='';
+
+        if [ "${PARAMS[3]}" = "true" ]; then
+          PROPS+=[required]
+        fi;
+
+        if [ "${PARAMS[4]}" != "" ]; then
+          PROPS+=[default=\"${PARAMS[4]}\"]
+        fi;
+
+        if [ "${PROPS}" != "" ]; then
+          TEXT+="\n\t$(wex text/color -c=brown -t=${PROPS})"
+        fi
+
+        TEXT+="\n\t\t"${PARAMS[2]}
+        TEXT+="\n"
+
+        echo -e ${TEXT}
+      done;
+
+      printf '.%.0s' {1..60}
+      echo ""
+      echo ""
+
       return
     # Display script file source.
     elif [ ! -z ${SOURCE+x} ]; then
