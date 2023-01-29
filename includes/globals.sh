@@ -45,14 +45,11 @@ WEX_SWITCH_SUDO_COMMAND="sudo ${WEX_SWITCH_ARGS}"
 WEX_SWITCH_NON_SUDO_COMMAND="sudo -u ${WEX_RUNNER_USERNAME} ${WEX_SWITCH_ARGS}"
 WEX_CHOWN_NON_SUDO_COMMAND="sudo chown ${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}"
 
-declare -A WEX_INIT_REGISTRY=()
-
 export WEX_BASHRC_PATH
 export WEX_CORE_VERSION=4.0.0
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_TMP
-export WEX_INIT_REGISTRY
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
 export WEX_RUNNER_BASHRC_PATH
@@ -62,13 +59,37 @@ export WEX_RUNNER_USERNAME
 export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
 
-# Load global configuration for all addons.
-ADDONS_DIRS=$(_wexFindAddonsDirs)
-for ADDON in ${ADDONS_DIRS[@]}
-do
-  ADDON="${ADDON}includes/globals.sh"
+case "$(uname -s)" in
+  Darwin)
+    WEX_OS='mac'
+    ;;
+  Linux)
+    WEX_OS='linux'
+    ;;
+  CYGWIN*|MINGW32*|MINGW64*|MSYS*)
+    WEX_OS='windows'
+    ;;
+  # Add here more strings to compare
+  # See correspondence table at the bottom of this answer
+  *)
+    WEX_OS='other OS'
+    ;;
+esac
 
-  if [ -f "${ADDON}" ];then
-    . "${ADDON}";
+# Load addons global files.
+for ADDON in "${WEX_ADDONS[@]}"; do
+  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/includes/globals.sh"
+
+  if [ -f "${ADDON_FILE}" ];then
+   . "${ADDON_FILE}";
   fi
 done;
+
+# Load addons functions files.
+for ADDON in "${WEX_ADDONS[@]}"; do
+  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/bash/init.sh"
+
+  if [ -f "${ADDON_FILE}" ]; then
+   . "${ADDON_FILE}"
+  fi
+done

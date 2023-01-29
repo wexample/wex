@@ -35,16 +35,6 @@ wex() {
     return
   fi
 
-  # Load init.sh file once, if exists.
-  local INIT_FILE
-  INIT_FILE="$(realpath "$(dirname "${WEX_SCRIPT_FILE}")/../")/init.sh"
-  if [ -f "${INIT_FILE}" ]; then
-    WEX_INIT_REGISTRY[${INIT_FILE}]=true
-    if [ "${WEX_INIT_REGISTRY[${INIT_FILE}]}" = "true" ]; then
-      . "${INIT_FILE}"
-    fi
-  fi
-
   # Get parameters keeping quoted strings.
   WEX_ARGUMENTS=''
   whitespace="[[:space:]]"
