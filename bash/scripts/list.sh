@@ -13,6 +13,10 @@ scriptsList() {
   local FIRST_LETTER
   local ADDON_PREFIX=""
 
+  if [ ! -d "${DIR}" ];then
+    return
+  fi
+
   if [ "${ADDON}" != "" ];then
     ADDON_PREFIX="${ADDON}::"
   fi

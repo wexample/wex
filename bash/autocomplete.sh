@@ -18,9 +18,8 @@ autocomplete() {
   CHECKSUM=$(echo "${COMP_WORDS[@]}" | md5sum | grep -o '^\S\+')
   WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
 
-  WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_ROOT}tmp/cache/autocomplete"
-  WEX_FILE_CACHE="${WEX_DIR_TMP_AUTOCOMPLETE}/${CHECKSUM}"
-  WEX_FILE_CACHE=""
+  WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_ROOT}tmp/cache/autocomplete/"
+  WEX_FILE_CACHE="${WEX_DIR_TMP_AUTOCOMPLETE}${CHECKSUM}"
 
   if [ -f "${WEX_FILE_CACHE}" ]; then
     SUGGESTIONS=$(cat "${WEX_FILE_CACHE}")
@@ -100,6 +99,10 @@ autocomplete() {
       done
     fi
   fi
+
+  # Save in cache
+  mkdir -p "${WEX_DIR_TMP_AUTOCOMPLETE}"
+  echo "${SUGGESTIONS}" >> "${WEX_FILE_CACHE}"
 
   COMPREPLY=($(compgen -W "${SUGGESTIONS}" -- ${CUR}))
 }
