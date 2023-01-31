@@ -20,7 +20,7 @@ fi
 
 WEX_BASH_VERSION_MIN='5'
 WEX_BIN="/usr/local/bin/wex"
-WEX_FILE_AUTOCOMPLETE_HANDLER="${WEX_DIR_ROOT}bash/autocomplete-handler.sh"
+WEX_FILE_BASHRC_HANDLER="${WEX_DIR_ROOT}bash/bashrc-handler.sh"
 
 # Set permission on base folder.
 _wexLog "Set all permissions on ${WEX_DIR_ROOT}"
@@ -47,6 +47,11 @@ if [ -L ${WEX_BIN} ];then
   rm "${WEX_BIN}"
 fi
 
+_wexLog "Create env default file."
+if [ ! -f "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env" ];then
+  echo "APP_ENV=prod" > "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env"
+fi
+
 # Symlink to bin
 ln -s "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
@@ -62,12 +67,15 @@ _wexLog "Creates /var/www folder for apps management"
 mkdir -p /var/www
 _wexLog "Creates ${WEX_RUNNER_PATH_WEX} folder for apps management"
 mkdir -p "${WEX_RUNNER_PATH_WEX}"
+
+_wexLog "Fix permissions."
 chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_RUNNER_PATH_WEX}"
+chown -R "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_DIR_ROOT}"
 
 # Add to bashrc, create it if not exists.
 _wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
 touch "${WEX_RUNNER_BASHRC_PATH}"
-wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_AUTOCOMPLETE_HANDLER}"
+wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
 
 _wexLog "Install complete.."
 

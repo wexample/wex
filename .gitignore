@@ -1,6 +1,9 @@
 # Keep all .gitkeep
 !/**/.gitkeep
 
+# Ignore env
+.wex/.env
+
 # Ignored folders
 /addons/*
 /tmp/*
