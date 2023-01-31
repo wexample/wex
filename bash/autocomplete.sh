@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
+WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_ROOT}tmp/cache/autocomplete/"
+
 autocomplete() {
   local CUR=${COMP_WORDS[${COMP_CWORD}]}
 
@@ -8,30 +11,24 @@ autocomplete() {
     return
   fi
 
-  local CHECKSUM
-  local CUR_ADDON
-  local WEX_DIR_ROOT
-  local WEX_DIR_TMP_AUTOCOMPLETE
+  local SUGGESTIONS=""
+  local CHECKSUM=$(echo "${COMP_WORDS[@]}" | md5sum | grep -o '^\S\+')
   local WEX_FILE_CACHE
-  local SUGGESTIONS=''
 
-  CHECKSUM=$(echo "${COMP_WORDS[@]}" | md5sum | grep -o '^\S\+')
-  WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
-
-  WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_ROOT}tmp/cache/autocomplete/"
-  WEX_FILE_CACHE="${WEX_DIR_TMP_AUTOCOMPLETE}${CHECKSUM}"
+  local WEX_FILE_CACHE="${WEX_DIR_TMP_AUTOCOMPLETE}${CHECKSUM}"
 
   if [ -f "${WEX_FILE_CACHE}" ]; then
     SUGGESTIONS=$(cat "${WEX_FILE_CACHE}")
   else
     . "${WEX_DIR_ROOT}includes/globals.sh"
 
+    local CUR_ADDON=""
     local LOCATIONS
+    local PART_NAME=""
 
     if [ "${COMP_WORDS[2]}" == "::" ]; then
-      local ADDON_PATH
       CUR_ADDON=${COMP_WORDS[1]}
-      ADDON_PATH="${WEX_DIR_ADDONS}${COMP_WORDS[1]}/bash/"
+      local ADDON_PATH="${WEX_DIR_ADDONS}${COMP_WORDS[1]}/bash/"
 
       if [ -d "${ADDON_PATH}" ]; then
         LOCATIONS=(${ADDON_PATH})
@@ -56,34 +53,39 @@ autocomplete() {
 
     # We are on the "group/name", or addon::group/name, sections.
     if [ "${PART_NAME}" = "command" ]; then
-      local ADDON
 
       # Search into extend directories.
       for LOCATION in ${LOCATIONS[@]}; do
-        ADDON=""
+        local ADDON=""
 
         # This is an addon directory.
         if [[ "${LOCATION}" == "${WEX_DIR_ROOT}addons/"* ]]; then
           ADDON=$(basename "$(dirname "${LOCATION}")")
         fi
 
-        local FILTER
-        local SCRIPTS
-        SCRIPTS=$(wex scripts/list -d="${LOCATION}" -a="${ADDON}")
+        # Addon is specified by user, or is same as current.
+        if [ "${CUR_ADDON}" == "" ] || [ "${CUR_ADDON}" == "${ADDON}" ]; then
+          local SCRIPTS=$(wex scripts/list -d="${LOCATION}" -a="${ADDON}")
 
-        for SCRIPT in ${SCRIPTS[@]}; do
-          FILTER="${CUR}"
-          SUGGESTION="${SCRIPT}"
+          for SCRIPT in ${SCRIPTS[@]}; do
+            local FILTER="${CUR}"
+            SUGGESTION="${SCRIPT}"
 
-          if [ "${CUR_ADDON}" != "" ]; then
-            FILTER="${CUR_ADDON}::${CUR}"
-            SUGGESTION=$(_wexCommandName "${SCRIPT}")
-          fi
+            # User specified addon.
+            if [ "${CUR_ADDON}" != "" ]; then
+              FILTER="${CUR_ADDON}::${CUR}"
+              # Unexpected behaviour, addon name should be removed in suggestions.
+              SUGGESTION=$(_wexCommandName "${SCRIPT}")
+            elif [ "${ADDON}" != "" ]; then
+              FILTER="${ADDON}::${CUR}"
+              SUGGESTION=$(_wexCommandName "${SCRIPT}")
+            fi
 
-          if [[ "${SCRIPT}" == ${FILTER}* ]]; then
-            SUGGESTIONS+=" ${SUGGESTION}"
-          fi
-        done
+            if [[ "${SCRIPT}" == ${FILTER}* ]]; then
+              SUGGESTIONS+=" ${SUGGESTION}"
+            fi
+          done
+        fi
       done
     # Autocomplete args.
     else
