@@ -7,6 +7,7 @@ configSetValueArgs() {
    'file f "File" true'
    'ignore_duplicates i "Do not check if variable exists or is commented" false false'
    'value v "New value" true'
+   'verbose vv "Verbose" false false'
  )
 }
 
@@ -44,6 +45,10 @@ configSetValue() {
     wex default::config/changeValue -f="${FILE}" -k="${KEY}" -v="${VALUE}" -s="${SEPARATOR}"
   else
     # Add a new line
-    wex default::file/textAppendOnce -f="${FILE}" -l="\n${KEY}${SEPARATOR}${VALUE}"
+    wex default::file/textAppendOnce -f="${FILE}" -l="${KEY}${SEPARATOR}${VALUE}"
+  fi
+
+  if [ "${VERBOSE}" = "true" ];then
+    _wexLog "Value set ${KEY}=${VALUE}"
   fi
 }

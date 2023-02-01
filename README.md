@@ -13,8 +13,8 @@ Join our community, support us, and find a job at https://wexample.com 🤝❤�
 
 ## Why using wex scripts
 
+- You want to write some bash scripts on your local machine, and use it anywhere using a single command format : `wex my/script -a=arg --arg2=arg2`
 - You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
-- TODO: You want to run any application wich is compatible with wex scripts (have a .wex folder at project root)
 - You want to use any `wex-service` extension available on our [repository](https://github.com/orgs/wexample/repositories).
 
 ## Running tests
