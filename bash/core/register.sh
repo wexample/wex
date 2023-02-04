@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+coreRegisterArgs() {
+  _DESCRIPTION="Create a local core registries."
+}
+
 coreRegister() {
   local LOCATIONS=$(_wexFindScriptsLocations)
   local ALL_SCRIPTS=()
