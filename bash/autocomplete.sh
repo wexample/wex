@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
-WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_ROOT}tmp/cache/autocomplete/"
+WEX_DIR_TMP="${WEX_DIR_ROOT}tmp/"
+WEX_DIR_TMP_AUTOCOMPLETE="${WEX_DIR_TMP}cache/autocomplete/"
 
 autocomplete() {
   local CUR=${COMP_WORDS[${COMP_CWORD}]}
@@ -53,41 +54,7 @@ autocomplete() {
 
     # We are on the "group/name", or addon::group/name, sections.
     if [ "${PART_NAME}" = "command" ]; then
-
-      # Search into extend directories.
-      for LOCATION in ${LOCATIONS[@]}; do
-        local ADDON=""
-
-        # This is an addon directory.
-        if [[ "${LOCATION}" == "${WEX_DIR_ROOT}addons/"* ]]; then
-          ADDON=$(basename "$(dirname "${LOCATION}")")
-        fi
-
-        # Addon is specified by user, or is same as current.
-        if [ "${CUR_ADDON}" == "" ] || [ "${CUR_ADDON}" == "${ADDON}" ]; then
-          local SCRIPTS=$(wex scripts/list -d="${LOCATION}" -a="${ADDON}")
-
-          for SCRIPT in ${SCRIPTS[@]}; do
-            local FILTER="${CUR}"
-            SUGGESTION="${SCRIPT}"
-
-            # User specified addon.
-            if [ "${CUR_ADDON}" != "" ]; then
-              FILTER="${CUR_ADDON}::${CUR}"
-              # Unexpected behaviour, addon name should be removed in suggestions.
-              SUGGESTION=$(_wexCommandName "${SCRIPT}")
-            elif [ "${ADDON}" != "" ]; then
-              FILTER="${ADDON}::${CUR}"
-              SUGGESTION=$(_wexCommandName "${SCRIPT}")
-            fi
-
-            if [[ "${SCRIPT}" == ${FILTER}* ]]; then
-              SUGGESTIONS+=" ${SUGGESTION}"
-            fi
-          done
-        fi
-      done
-    # Autocomplete args.
+      SUGGESTIONS=$(cat "${WEX_DIR_TMP}all-scripts")
     else
       local WEX_CALLING_ARGUMENTS=()
 
@@ -102,11 +69,7 @@ autocomplete() {
     fi
   fi
 
-  # Save in cache
-  mkdir -p "${WEX_DIR_TMP_AUTOCOMPLETE}"
-  echo "${SUGGESTIONS}" >> "${WEX_FILE_CACHE}"
-
-  COMPREPLY=($(compgen -W "${SUGGESTIONS}" -- ${CUR}))
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[@]}" -- ${CUR}))
 }
 
 autocomplete
