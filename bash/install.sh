@@ -77,6 +77,9 @@ _wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
 touch "${WEX_RUNNER_BASHRC_PATH}"
 wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
 
+_wexLog "Registering"
+wex default::core/register
+
 _wexLog "Install complete.."
 
 wex core/logo
