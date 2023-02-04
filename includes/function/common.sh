@@ -7,7 +7,7 @@ _wexFindScriptFile() {
   WEX_SCRIPT_CALL_NAME="${1}"
   WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
 
-  # Given args is a file.
+  # Given args is a file which exists.
   if [ -f "${WEX_SCRIPT_FILE}" ];then
     echo "${WEX_SCRIPT_FILE}"
     return
