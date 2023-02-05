@@ -63,4 +63,6 @@ ${METHOD}Test() {
 EOF
 
   echo "${FILE}"
+
+  wex core/register
 }
