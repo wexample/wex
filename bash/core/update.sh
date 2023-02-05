@@ -14,7 +14,7 @@ coreUpdate() {
 
   _wexLog "Pulling git changes"
   # Go to install dir.
-  cd "${WEX_DIR_ROOT}../"
+  cd "${WEX_DIR_ROOT}"
   # Choose branch
   if [ "${BRANCH}" == "" ];then
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -37,16 +37,6 @@ coreUpdate() {
   chmod -R +x "${WEX_DIR_INSTALL}"
 
   local WEX_VERSION_NEW=$(wex core/version)
-
-  # Allow wex to init again.
-  unset WEX_INIT
-
-  # Proxy server exists
-  if [ -d "${WEX_DIR_PROXY}" ];then
-    # Update proxy server
-    cd "${WEX_DIR_PROXY}"
-    wex app/update
-  fi
 
   _wexMessage "wex up-to-date at v${WEX_VERSION_NEW}"
 }
