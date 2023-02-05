@@ -68,7 +68,7 @@ mkdir -p /var/www
 _wexLog "Creates ${WEX_RUNNER_PATH_WEX} folder for apps management"
 mkdir -p "${WEX_RUNNER_PATH_WEX}"
 
-_wexLog "Fix permissions."
+_wexLog "Fixing permissions..."
 chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_RUNNER_PATH_WEX}"
 chown -R "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_DIR_ROOT}"
 
@@ -77,9 +77,19 @@ _wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
 touch "${WEX_RUNNER_BASHRC_PATH}"
 wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
 
-_wexLog "Registering"
+_wexLog "Installing addons..."
+for ADDON in "${WEX_ADDONS[@]}"; do
+  if [ ! -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
+    _wexLog "Cloning addon : ${ADDON}"
+    git clone --depth=1 "https://github.com/wexample/wex-addon-${ADDON}.git" "${WEX_DIR_ADDONS}${ADDON}"
+  else
+    _wexLog "Addon dir exists : ${WEX_DIR_ADDONS}${ADDON}"
+  fi
+done
+
+_wexLog "Registering..."
 wex default::core/register
 
-_wexLog "Install complete.."
+_wexLog "Install complete..."
 
 wex core/logo
