@@ -54,7 +54,6 @@ fi
 
 # Symlink to bin
 ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
-
 chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.
