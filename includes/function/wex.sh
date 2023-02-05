@@ -110,22 +110,20 @@ wex() {
       . "${WEX_FILE_MESSAGE_FUNCTION}"
     fi
 
-    # If an argument is not found
-    # And we are not on help page.
+    # If argument not found and not on help page and not in source
     if [ "${WEX_ARG_FOUND}" = "false" ] && [ -z ${HELP+x} ] && [ -z ${SOURCE+x} ]; then
-      # A default value is set in arguments list.
+      # If default value is set in arguments list
       if [ "${PARAMS[4]}" != "" ]; then
         local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
-      # Expected
+      # If expected argument
       elif [ "${PARAMS[3]}" = "true" ]; then
-        # Interactive mode allowed.
+         # If interactive mode is allowed
         if [ -z ${NON_INTERACTIVE+x} ] || [ "${NON_INTERACTIVE}" = "false" ]; then
           printf "${WEX_COLOR_CYAN}${PARAMS[2]}:${WEX_COLOR_RESET} "
           read ${ARG_EXPECTED_LONG^^}
         else
           _wexError "Expected argument not found" "${WEX_SCRIPT_METHOD_NAME} : "${ARG_EXPECTED_LONG}
-          # Raise an error.
-          # Unable to fetch expected variable
+          # Raise an error: Unable to fetch expected variable
           exit 0
         fi
       fi
