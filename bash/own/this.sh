@@ -1,8 +1,6 @@
 
 ownThisArgs() {
   _DESCRIPTION="Changing ownership of current directory to default user"
-  _AS_SUDO=false
-  _AS_SUDO_RUN=true
   _ARGUMENTS=(
     'file f "File" false .'
   )

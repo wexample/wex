@@ -215,15 +215,6 @@ wex() {
     fi
   fi
 
-  # Some scripts can't be executed as sudo (using sudo prefix),
-  # as we need a username for execution, but sudo is still required
-  # for script body execution.
-  if [ "${_AS_SUDO_RUN}" = "true" ] && [ -z "${WEX_RUNNER_USERNAME}" ]; then
-    # Enforce using sudo
-    ${WEX_SWITCH_SUDO_COMMAND} bash -c "wex ${@}"
-    return
-  fi
-
   # Execute script with all parameters.
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
 }
