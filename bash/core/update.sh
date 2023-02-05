@@ -34,8 +34,6 @@ coreUpdate() {
     fi
   done
 
-  chmod -R +x "${WEX_DIR_INSTALL}"
-
   local WEX_VERSION_NEW=$(wex core/version)
 
   _wexMessage "wex up-to-date at v${WEX_VERSION_NEW}"
