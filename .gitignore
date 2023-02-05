@@ -6,6 +6,7 @@
 
 # Ignored folders
 /addons/*
+!/addons/.gitkeep
 /tmp/*
 
 # Mac
