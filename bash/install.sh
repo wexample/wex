@@ -53,7 +53,8 @@ if [ ! -f "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env" ];then
 fi
 
 # Symlink to bin
-ln -s "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
+ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
+
 chmod -R +x ${WEX_BIN}
 
 # Now the "wex" command is working, we can use it internally.
