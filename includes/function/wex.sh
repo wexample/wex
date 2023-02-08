@@ -29,7 +29,7 @@ wex() {
       printf "hi!\n"
     # Not found.
     elif [ ${WEX_SCRIPT_FOUND} = false ]; then
-      _wexError "Script file not found" "${WEX_SCRIPT_CALL_NAME}"
+      _wexError "Script not found" "${WEX_SCRIPT_CALL_NAME}"
     fi
 
     return
