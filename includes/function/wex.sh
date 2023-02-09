@@ -16,6 +16,7 @@ wex() {
   local WEX_SCRIPT_FILE
   local WEX_SCRIPT_METHOD_NAME
   local WEX_SCRIPT_FOUND=false
+  local WEX_CALL_SWITCH_SUDO_COMMAND=${WEX_SWITCH_SUDO_COMMAND}
 
   WEX_SCRIPT_CALL_NAME="${1}"
   WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
@@ -57,6 +58,7 @@ wex() {
   local _AS_NON_SUDO=true
   local WEX_CALLING_ARGUMENTS=()
   _wexGetArguments "${WEX_SCRIPT_CALL_NAME}"
+  local ORIGINAL_ARGS=("${@:2}")
 
   # Then start in negative value (length of previous table).
   local _NEGATIVE_ARGS_LENGTH="${#WEX_ARGUMENT_DEFAULTS[@]}"
@@ -75,7 +77,6 @@ wex() {
     # Get args given,
     # ignore first one which is always method name.
     local ARG_SEARCH=0
-    local ORIGINAL_ARGS=("${@:2}")
 
     for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"; do
       ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<<${ARG_GIVEN})
@@ -200,7 +201,8 @@ wex() {
       # Or interactive mode is allowed.
       if [ "$(sudo -n true 2>/dev/null)" = "" ] && [ "${NON_INTERACTIVE}" != "true" ]; then
         # Enforce using sudo
-        ${WEX_SWITCH_SUDO_COMMAND} bash -c "wex ${@}"
+        # Using shorter "wex ${@}" does not pass arguments properly.
+        ${WEX_CALL_SWITCH_SUDO_COMMAND} bash -c "wex ${WEX_SCRIPT_CALL_NAME} ${ORIGINAL_ARGS[*]}"
       else
         _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
       fi
