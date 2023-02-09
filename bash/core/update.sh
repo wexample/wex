@@ -34,6 +34,8 @@ coreUpdate() {
     fi
   done
 
+  wex core/register
+
   local WEX_VERSION_NEW=$(wex core/version)
 
   _wexMessage "wex up-to-date at v${WEX_VERSION_NEW}"
