@@ -18,6 +18,10 @@ configSetValue() {
     SEPARATOR=" "
   fi;
 
+  if [ "${VERBOSE}" = "true" ];then
+    _wexLog "Setting value ${KEY}${SEPARATOR}${VALUE} in ${FILE}"
+  fi
+
   if [ "${IGNORE_DUPLICATES}" = "true" ];then
     # Add value without checks.
     echo -e "\n${KEY}${SEPARATOR}${VALUE}" >> "${FILE}"
@@ -46,9 +50,5 @@ configSetValue() {
   else
     # Add a new line
     wex default::file/textAppendOnce -f="${FILE}" -l="${KEY}${SEPARATOR}${VALUE}"
-  fi
-
-  if [ "${VERBOSE}" = "true" ];then
-    _wexLog "Value set ${KEY}=${VALUE}"
   fi
 }
