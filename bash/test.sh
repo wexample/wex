@@ -158,15 +158,26 @@ wexTest() {
         if [ "${TEST_RUN_SCRIPT}" = "" ] || [ "${TEST_RUN_SCRIPT}" = "${SCRIPT_NAME}" ]; then
           # Build script file path.
           TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
+          METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
 
           if [ ! -f "${TEST_FILE}" ]; then
             _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
-            return
+
+            mkdir -p "$(dirname "${TEST_FILE}")"
+
+            cat <<EOF > "${TEST_FILE}"
+#!/usr/bin/env bash
+
+${METHOD_NAME}() {
+  # TODO : Your test body.
+  _wexTestAssertEqual true false
+}
+
+EOF
           else
             # Import test methods
             . "${TEST_FILE}"
 
-            METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
             TEST_HAS_ERROR=false
 
             _wexMessage "testing ${SCRIPT_NAME}"
