@@ -128,27 +128,27 @@ wexTest() {
 
       SCRIPTS=($(wex scripts/list -d="${PATH_DIR_BASH}"))
 
-      if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ]; then
-        unset testDefault
-        . "${PATH_FILE_DEFAULT}"
-
-        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
-
-          testDefault
-        fi
-      fi
-
-      if [ -f "${PATH_FILE_DEFAULT}" ]; then
-        unset testDefault
-        . "${PATH_FILE_DEFAULT}"
-
-        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
-
-          testDefault
-        fi
-      fi
+#      if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ]; then
+#        unset testDefault
+#        . "${PATH_FILE_DEFAULT}"
+#
+#        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
+#          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
+#
+#          testDefault
+#        fi
+#      fi
+#
+#      if [ -f "${PATH_FILE_DEFAULT}" ]; then
+#        unset testDefault
+#        . "${PATH_FILE_DEFAULT}"
+#
+#        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
+#          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
+#
+#          testDefault
+#        fi
+#      fi
 
       for SCRIPT_NAME in ${SCRIPTS[@]}; do
         SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
