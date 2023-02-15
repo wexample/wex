@@ -29,7 +29,7 @@ _wexTestAssertEqual() {
 }
 
 _wexTestFileExists() {
-  if [ ! -f "${1}" ];then
+  if [ ! -f "${1}" ]; then
     _wexTestResultError "File does not exists : ${1}"
   else
     _wexTestResultSuccess "File exists : ${1}"
@@ -37,24 +37,24 @@ _wexTestFileExists() {
 }
 
 _wexTestResultSuccess() {
-  printf ${WEX_COLOR_GREEN}"      ✓ Success : ${1}${WEX_COLOR_RESET}\n"
+  printf "${WEX_COLOR_GREEN}      ✓ Success : ${1}${WEX_COLOR_RESET}\n"
   _wexTestResultLine ${2}
 }
 
 _wexTestResultError() {
   TEST_HAS_ERROR=true
-  printf ${WEX_COLOR_RED}"      x Error : ${1}${WEX_COLOR_RESET}\n"
+  printf "${WEX_COLOR_RED}      x Error : ${1}${WEX_COLOR_RESET}\n"
   _wexTestResultLine ${2}
 }
 
 _wexTestResultUndefined() {
-  printf ${WEX_COLOR_LIGHT_BLUE}"      ? Response : ${1}${WEX_COLOR_RESET}\n"
+  printf "${WEX_COLOR_LIGHT_BLUE}      ? Response : ${1}${WEX_COLOR_RESET}\n"
   _wexTestResultLine ${2}
 }
 
 _wexTestResultLine() {
   if [ "${1}" != "" ]; then
-    printf ${WEX_COLOR_CYAN}"        ${1}${WEX_COLOR_RESET}\n"
+    printf "${WEX_COLOR_CYAN}        ${1}${WEX_COLOR_RESET}\n"
   fi
 }
 
@@ -116,77 +116,79 @@ wexTest() {
   local WEX_TEST_DIRS=("$(_wexFindScriptsLocations)")
 
   for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
-    _wexLog "Testing ... ${WEX_TEST_RUN_DIR_CURRENT}"
+    _wexLog "Testing ... ${PATH_DIR_BASH}"
 
-    local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
-    local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
-    local PATH_FILE_DEFAULT="${PATH_DIR_TESTS_BASH}default.sh"
-    local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
-    local ADDON_NAME="$(basepath $(realpath .))"
+    if [ -d "${PATH_DIR_BASH}" ]; then
+      local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
+      local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
+      local PATH_FILE_DEFAULT="${PATH_DIR_TESTS_BASH}default.sh"
+      local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
+      local ADDON_NAME="$(basename $(realpath .))"
 
-    SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH} -a=${ADDON_NAME}")
+      SCRIPTS=$(wex scripts/list -d="${PATH_DIR_BASH} -a=${ADDON_NAME}")
 
-    if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ];then
-      unset testDefault
-      . "${PATH_FILE_DEFAULT}"
+      if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ]; then
+        unset testDefault
+        . "${PATH_FILE_DEFAULT}"
 
-      if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-        _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
+        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
+          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
 
-        testDefault
+          testDefault
+        fi
       fi
+
+      if [ -f "${PATH_FILE_DEFAULT}" ]; then
+        unset testDefault
+        . "${PATH_FILE_DEFAULT}"
+
+        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
+          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
+
+          testDefault
+        fi
+      fi
+
+      for SCRIPT_NAME in ${SCRIPTS[@]}; do
+        SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
+
+        # Exclude files with _ prefix.
+        # Allow to specify single script name to test.
+        if [ "${TEST_RUN_SCRIPT}" = "" ] || [ "${TEST_RUN_SCRIPT}" = "${SCRIPT_NAME}" ]; then
+          # Build script file path.
+          TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
+
+          if [ ! -f "${TEST_FILE}" ]; then
+            _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
+            return
+          fi
+
+          # Import test methods
+          . "${TEST_FILE}"
+
+          METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
+          TEST_HAS_ERROR=false
+
+          _wexMessage "testing ${SCRIPT_NAME}"
+          _wexLog "Script file : ${SCRIPT_FILEPATH}"
+          _wexLog "Test file   : ${TEST_FILE}"
+          _wexLog "Test method : ${METHOD_NAME}"
+
+          if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
+            "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
+          else
+            _wexError "Test file exists but missing method : ${METHOD_NAME}"
+            return
+          fi
+
+          if [ "${TEST_HAS_ERROR}" = "false" ]; then
+            _wexTestResultSuccess "Test complete"
+          else
+            _wexTestResultError "Test failed"
+          fi
+        fi
+      done
     fi
-
-    if [ -f "${PATH_FILE_DEFAULT}" ];then
-      unset testDefault
-      . "${PATH_FILE_DEFAULT}"
-
-      if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-        _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
-
-        testDefault
-      fi
-    fi
-
-    for SCRIPT_NAME in ${SCRIPTS[@]}; do
-      SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
-
-      # Exclude files with _ prefix.
-      # Allow to specify single script name to test.
-      if [ "${TEST_RUN_SCRIPT}" = "" ] || [ "${TEST_RUN_SCRIPT}" = "${SCRIPT_NAME}" ]; then
-        # Build script file path.
-        TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
-
-        if [ ! -f "${TEST_FILE}" ]; then
-          _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
-          return
-        fi
-
-        # Import test methods
-        . "${TEST_FILE}"
-
-        METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
-        TEST_HAS_ERROR=false
-
-        _wexMessage "testing ${SCRIPT_NAME}"
-        _wexLog "Script file : ${SCRIPT_FILEPATH}"
-        _wexLog "Test file   : ${TEST_FILE}"
-        _wexLog "Test method : ${METHOD_NAME}"
-
-        if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
-          "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
-        else
-          _wexError "Test file exists but missing method : ${METHOD_NAME}"
-          return
-        fi
-
-        if [ "${TEST_HAS_ERROR}" = "false" ]; then
-          _wexTestResultSuccess "Test complete"
-        else
-          _wexTestResultError "Test failed"
-        fi
-      fi
-    done
   done
 }
 
