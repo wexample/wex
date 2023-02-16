@@ -4,6 +4,8 @@
 if [[ $(type -t wex) != "function" ]];then
   . /opt/wex/includes/globals.sh
   . /opt/wex/includes/function/wex.sh
+  # Empty trace file.
+  echo "" > "${WEX_FILE_TRACE}";
 fi
 
 # Execute function with same arguments.

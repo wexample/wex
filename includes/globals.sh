@@ -50,6 +50,7 @@ export WEX_CORE_VERSION=4.0.0
 export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_TMP
+export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
 export WEX_RUNNER_BASHRC_PATH
@@ -58,6 +59,7 @@ export WEX_RUNNER_PATH_WEX
 export WEX_RUNNER_USERNAME
 export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
+export WEX_TRACE_CALLS=${WEX_TRACE_CALLS:-false}
 
 case "$(uname -s)" in
   Darwin)
