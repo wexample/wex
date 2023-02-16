@@ -152,11 +152,11 @@ wexTest() {
 
     if [ "${TEST_RUN_SCRIPT}" != "" ]; then
       _wexTestScript "${TEST_RUN_SCRIPT}"
-      return
     fi
   fi
 
   local TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
+  local MISSING_COUNT=0
 
   for SCRIPT_PATH in $(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}"); do
     local FOUND=false
@@ -169,8 +169,13 @@ wexTest() {
 
     if [ ${FOUND} == false ]; then
       _wexTestResultError "No test ran for command : $(echo "${SCRIPT_PATH}" | cut -d '#' -f 1)"
+      MISSING_COUNT=$((MISSING_COUNT+1))
     fi
   done
+
+  if [ ${MISSING_COUNT} != 0 ]; then
+    _wexTestResultError "Missing tests : ${MISSING_COUNT}"
+  fi
 }
 
 _wexTestScript() {
