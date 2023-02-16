@@ -120,6 +120,7 @@ wexTest() {
   local SCRIPT_FILEPATH
   local TEST_RUN_SCRIPT="${1}"
   local WEX_TEST_DIRS=("$(_wexFindScriptsLocations)")
+   WEX_FILE_TRACE_TESTS="${WEX_FILE_TRACE}.tests"
 
   for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
     local PATH_DIR_ROOT=$(dirname "${PATH_DIR_BASH}")
@@ -151,6 +152,22 @@ wexTest() {
     _wexTestScript "${TEST_RUN_SCRIPT}"
     return
   fi
+
+  local TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
+
+  for SCRIPT_PATH in $(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}"); do
+      local FOUND=false
+
+      for TRACED_COMMAND in ${TRACED_COMMANDS[@]}; do
+        if [ "${FOUND}" = "false" ] && [[ $(echo "${SCRIPT_PATH}" | grep "${TRACED_COMMAND}#") != "" ]]; then
+          FOUND=true
+        fi
+      done
+
+      if [ ${FOUND} == false ]; then
+        _wexTestResultError "No test ran for command : $(echo "${SCRIPT_PATH}" | cut -d '#' -f 1)"
+      fi
+  done
 }
 
 _wexTestScript() {
@@ -178,7 +195,7 @@ _wexTestScript() {
     "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
 
     # Add executed methods to global trace file
-    cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE}.tests"
+    cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE_TESTS}"
   else
     _wexError "Test file exists but missing method : ${METHOD_NAME}"
     exit

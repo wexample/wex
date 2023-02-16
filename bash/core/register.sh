@@ -24,8 +24,8 @@ coreRegister() {
     ALL_SCRIPTS_PATHS+=($(wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
   done
 
-  echo "${ALL_SCRIPTS[@]}" | tr ' ' '\n' | sort > "${WEX_DIR_TMP}all-scripts"
-  echo "${ALL_SCRIPTS_PATHS[@]}" | tr ' ' '\n' | sort > "${WEX_DIR_TMP}all-scripts-paths"
+  echo "${ALL_SCRIPTS[@]}" | tr ' ' '\n' | sort > "${WEX_FILE_ALL_SCRIPTS}"
+  echo "${ALL_SCRIPTS_PATHS[@]}" | tr ' ' '\n' | sort > "${WEX_FILE_ALL_SCRIPTS_PATHS}"
 
   _wexLog "Creating apps config registry..."
 
