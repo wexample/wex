@@ -7,6 +7,8 @@ WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
 WEX_DIR_ADDONS="${WEX_DIR_ROOT}addons/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
+WEX_FILE_ALL_SCRIPTS=${WEX_DIR_TMP}all-scripts
+WEX_FILE_ALL_SCRIPTS_PATHS=${WEX_FILE_ALL_SCRIPTS}-paths
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
@@ -51,6 +53,7 @@ export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_TMP
 export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
+export WEX_FILE_ALL_SCRIPTS_PATHS
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
 export WEX_RUNNER_BASHRC_PATH

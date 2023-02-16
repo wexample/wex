@@ -6,6 +6,8 @@ if [[ $(type -t wex) != "function" ]];then
   . /opt/wex/includes/function/wex.sh
   # Empty trace file.
   echo "" > "${WEX_FILE_TRACE}";
+  # Create require files if missing.
+  touch "${WEX_FILE_ALL_SCRIPTS_PATHS}"
 fi
 
 # Execute function with same arguments.
