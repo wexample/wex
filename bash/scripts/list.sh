@@ -3,22 +3,22 @@
 scriptsListArgs() {
   _DESCRIPTION='List all scripts in a given directory'
   _ARGUMENTS=(
-    'addon a "Addon name" false'
+    'addon a "Addon prefix" false'
     'dir d "Directory (inside bash)" true'
+    'filepath f "Return also script file path false false"'
   )
 }
 
 scriptsList() {
   local LIST
   local FIRST_LETTER
-  local ADDON_PREFIX=""
 
   if [ ! -d "${DIR}" ];then
     return
   fi
 
   if [ "${ADDON}" != "" ];then
-    ADDON_PREFIX="${ADDON}::"
+    ADDON="${ADDON}::"
   fi
 
   LIST=($(ls "${DIR}"))
@@ -34,7 +34,13 @@ scriptsList() {
           FIRST_LETTER="$(echo "${FILE}" | head -c 1)"
 
           if [[ "${FIRST_LETTER}" != "_" ]]; then
-             echo "${ADDON_PREFIX}${GROUP}/${FILE%.*}"
+             local OUTPUT="${ADDON}${GROUP}/${FILE%.*}"
+
+             if [[ ${FILEPATH} == true ]];then
+               OUTPUT="${OUTPUT}#${DIR}${GROUP}/${FILE}"
+             fi
+
+             echo "${OUTPUT}"
           fi
       done
     fi

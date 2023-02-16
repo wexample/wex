@@ -7,13 +7,27 @@ coreRegisterArgs() {
 coreRegister() {
   local LOCATIONS=$(_wexFindScriptsLocations)
   local ALL_SCRIPTS=()
+  local ALL_SCRIPTS_PATHS=()
 
   _wexLog "Creating scripts registry..."
   for LOCATION in ${LOCATIONS[@]}; do
     ALL_SCRIPTS+=($(wex scripts/list -d="${LOCATION}"))
+
+    local ADDON="";
+    local ADDON_PATH=$(dirname "${LOCATION}")
+    if [ $(dirname "${ADDON_PATH}")/ == "${WEX_DIR_ADDONS}" ];then
+      ADDON=$(basename "${ADDON_PATH}")
+    elif [ "${ADDON_PATH}/" == "${WEX_DIR_ROOT}" ];then
+      ADDON="default"
+    fi
+
+    wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"
+
+    ALL_SCRIPTS_PATHS+=($(wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
   done
 
   echo "${ALL_SCRIPTS[@]}" | tr ' ' '\n' | sort > "${WEX_DIR_TMP}all-scripts"
+  echo "${ALL_SCRIPTS_PATHS[@]}" | tr ' ' '\n' | sort > "${WEX_DIR_TMP}all-scripts-paths"
 
   _wexLog "Creating apps config registry..."
 
