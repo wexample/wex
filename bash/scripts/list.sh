@@ -25,7 +25,7 @@ scriptsList() {
 
   for GROUP in ${LIST[@]}
   do
-    FIRST_LETTER="$(echo "${WEX_TEST_DIR_NAME}" | head -c 1)"
+    FIRST_LETTER="$(echo "${GROUP}" | head -c 1)"
     if [ -d "${DIR}/${GROUP}" ] && [ "${FIRST_LETTER}" != "_" ]; then
       FILES=($(ls "${DIR}/${GROUP}"))
 
