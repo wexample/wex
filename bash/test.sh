@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 WEX_TEST_DIR_TMP="${WEX_DIR_TMP}test/"
+WEX_TRACE_CALLS=true
 
 _wexTestAssertNotEmpty() {
   local VALUE
@@ -112,6 +113,8 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
+  WEX_TRACE_CALLS=true
+
   # List only directories.
   local METHOD_NAME
   local SCRIPTS
@@ -175,6 +178,9 @@ EOF
 
             if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
               "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
+
+              # Add executed methods to global trace file
+              cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE}.tests"
             else
               _wexError "Test file exists but missing method : ${METHOD_NAME}"
               return

@@ -217,6 +217,10 @@ wex() {
     fi
   fi
 
+  if [ "${WEX_TRACE_CALLS}" = "true" ];then
+    echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE}";
+  fi
+
   # Execute script with all parameters.
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
 }
