@@ -29,7 +29,7 @@ _wexTestAssertEqual() {
   fi
 }
 
-_wexTestFileExists() {
+_wexTestScriptExists() {
   if [ ! -f "${1}" ]; then
     _wexTestResultError "File does not exists : ${1}"
   else
@@ -116,86 +116,79 @@ wexTest() {
   WEX_TRACE_CALLS=true
 
   # List only directories.
-  local METHOD_NAME
   local SCRIPTS
   local SCRIPT_FILEPATH
-  local TEST_HAS_ERROR
   local TEST_RUN_SCRIPT="${1}"
-  local TEST_FILE
   local WEX_TEST_DIRS=("$(_wexFindScriptsLocations)")
 
   for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
-    _wexLog "Testing ... ${PATH_DIR_BASH}"
+    local PATH_DIR_ROOT=$(dirname "${PATH_DIR_BASH}")
+    local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
 
-    # Ignore missing bash dirs and local .wex folder.
-    if [ -d "${PATH_DIR_BASH}" ] && [ "${PATH_DIR_BASH}" != "${WEX_RUNNER_PATH_BASH}" ]; then
-      local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
-      local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
+    # Ignore missing bash dirs
+    if [ -d "${PATH_DIR_TESTS_BASH}" ]; then
+
       local PATH_TEST_INIT="${PATH_DIR_TESTS_BASH}init.sh"
-      local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
-      local ADDON_NAME="$(basename $(realpath "${PATH_DIR_ROOT}"))"
+      if [ -f "${PATH_TEST_INIT}" ]; then
+        _wexLog "Initializing..."
 
-      SCRIPTS=($(wex scripts/list -d="${PATH_DIR_BASH}"))
-
-      if [ -f "${PATH_TEST_INIT}" ];then
         . "${PATH_TEST_INIT}"
       fi
 
-      for SCRIPT_NAME in ${SCRIPTS[@]}; do
-        SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
+      _wexLog "Testing dir ... ${PATH_DIR_TESTS_BASH}"
 
-        # Exclude files with _ prefix.
-        # Allow to specify single script name to test.
-        if [ "${TEST_RUN_SCRIPT}" = "" ] || [ "${TEST_RUN_SCRIPT}" = "${SCRIPT_NAME}" ]; then
-          # Build script file path.
-          TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
-          METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
+      if [ "${TEST_RUN_SCRIPT}" == "" ]; then
+        SCRIPTS=($(wex scripts/list -d="${PATH_DIR_TESTS_BASH}"))
 
-          if [ ! -f "${TEST_FILE}" ]; then
-            _wexError "Missing test for script ${SCRIPT_NAME}, expecting : ${TEST_FILE}"
-
-            mkdir -p "$(dirname "${TEST_FILE}")"
-
-            cat <<EOF > "${TEST_FILE}"
-#!/usr/bin/env bash
-
-${METHOD_NAME}() {
-  # TODO : Your test body.
-  _wexTestAssertEqual true false
-}
-
-EOF
-          else
-            # Import test methods
-            . "${TEST_FILE}"
-
-            TEST_HAS_ERROR=false
-
-            _wexMessage "testing ${SCRIPT_NAME}"
-            _wexLog "Script file : ${SCRIPT_FILEPATH}"
-            _wexLog "Test file   : ${TEST_FILE}"
-            _wexLog "Test method : ${METHOD_NAME}"
-
-            if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
-              "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
-
-              # Add executed methods to global trace file
-              cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE}.tests"
-            else
-              _wexError "Test file exists but missing method : ${METHOD_NAME}"
-              return
-            fi
-
-            if [ "${TEST_HAS_ERROR}" = "false" ]; then
-              _wexTestResultSuccess "Test complete"
-            else
-              _wexTestResultError "Test failed"
-            fi
-          fi
-        fi
-      done
+        for SCRIPT_NAME in ${SCRIPTS[@]}; do
+          _wexTestScript "${SCRIPT_NAME}"
+        done
+      fi
     fi
   done
+
+  if [ "${TEST_RUN_SCRIPT}" != "" ]; then
+    _wexTestScript "${TEST_RUN_SCRIPT}"
+    return
+  fi
+}
+
+_wexTestScript() {
+  local SCRIPT_NAME=${1}
+  local SCRIPT_FILEPATH
+  local PATH_DIR_TESTS_BASH
+  SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
+  PATH_DIR_TESTS_BASH=$(realpath $(dirname ${SCRIPT_FILEPATH})/../../)/tests/bash/
+  TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
+  METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
+
+  local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
+  local TEST_HAS_ERROR
+
+  _wexLog "Script ${SCRIPT_NAME}"
+  _wexLog "Script file ${SCRIPT_FILEPATH}"
+  _wexLog "Test file ${TEST_FILE}"
+
+  # Import test methods
+  . "${TEST_FILE}"
+
+  local TEST_HAS_ERROR=false
+
+  if [ "$(type -t "${METHOD_NAME}" 2>/dev/null)" = "function" ]; then
+    "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
+
+    # Add executed methods to global trace file
+    cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE}.tests"
+  else
+    _wexError "Test file exists but missing method : ${METHOD_NAME}"
+    exit
+  fi
+
+  if [ "${TEST_HAS_ERROR}" = "false" ]; then
+    _wexTestResultSuccess "Test complete"
+  else
+    _wexTestResultError "Test failed"
+  fi
 }
 
 wexTest "${@}"
