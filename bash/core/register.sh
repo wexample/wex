@@ -21,8 +21,6 @@ coreRegister() {
       ADDON="default"
     fi
 
-    wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"
-
     ALL_SCRIPTS_PATHS+=($(wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
   done
 
