@@ -103,6 +103,12 @@ _wexTestSampleInit() {
   echo "${WEX_TEST_DIR_TMP}${TMP_FILE_NAME}"
 }
 
+_wexTestClearTempDir() {
+  # Empty temp directory
+  rm -rf "${WEX_TEST_DIR_TMP}"
+  mkdir -p "${WEX_TEST_DIR_TMP}"
+}
+
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
@@ -122,33 +128,15 @@ wexTest() {
     if [ -d "${PATH_DIR_BASH}" ] && [ "${PATH_DIR_BASH}" != "${WEX_RUNNER_PATH_BASH}" ]; then
       local PATH_DIR_ROOT=$(realpath "${PATH_DIR_BASH}../")
       local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
-      local PATH_FILE_DEFAULT="${PATH_DIR_TESTS_BASH}default.sh"
+      local PATH_TEST_INIT="${PATH_DIR_TESTS_BASH}init.sh"
       local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
       local ADDON_NAME="$(basename $(realpath "${PATH_DIR_ROOT}"))"
 
       SCRIPTS=($(wex scripts/list -d="${PATH_DIR_BASH}"))
 
-#      if [ "${TEST_RUN_SCRIPT}" = "" ] && [ -f "${PATH_FILE_DEFAULT}" ]; then
-#        unset testDefault
-#        . "${PATH_FILE_DEFAULT}"
-#
-#        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-#          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
-#
-#          testDefault
-#        fi
-#      fi
-#
-#      if [ -f "${PATH_FILE_DEFAULT}" ]; then
-#        unset testDefault
-#        . "${PATH_FILE_DEFAULT}"
-#
-#        if [ "$(type -t "testDefault" 2>/dev/null)" = "function" ]; then
-#          _wexMessage "testing default" "${PATH_FILE_DEFAULT}"
-#
-#          testDefault
-#        fi
-#      fi
+      if [ -f "${PATH_TEST_INIT}" ];then
+        . "${PATH_TEST_INIT}"
+      fi
 
       for SCRIPT_NAME in ${SCRIPTS[@]}; do
         SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
