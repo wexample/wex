@@ -203,7 +203,7 @@ _wexTestScript() {
     "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
 
     # Add executed methods to global trace file
-    cat "${WEX_FILE_TRACE}" >>"${WEX_FILE_TRACE_TESTS}"
+    cat "${WEX_FILE_TRACE}" >> "${WEX_FILE_TRACE_TESTS}"
   else
     _wexError "Test file exists but missing method : ${METHOD_NAME}"
     exit

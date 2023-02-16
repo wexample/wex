@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wex() {
+wexRun() {
   # Using false as an argument allows to load a file and initialize wex
   # without executing any script.
   if [ -z "${1+x}" ] || [ "${1}" = '' ] || [ ${1} = false ]; then
@@ -219,7 +219,7 @@ wex() {
   fi
 
   if [ "${WEX_TRACE_CALLS}" = "true" ];then
-    echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE}";
+    echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE}"
   fi
 
   # Execute script with all parameters.
