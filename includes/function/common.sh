@@ -2,9 +2,22 @@
 
 _wexFindScriptFile() {
   local WEX_SCRIPT_CALL_NAME
-  local WEX_SCRIPT_FILE
-
   WEX_SCRIPT_CALL_NAME="${1}"
+
+  local WEX_SCRIPT_COMMAND
+  WEX_SCRIPT_COMMAND=$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}")
+
+  local WEX_SCRIPT_FILE
+  WEX_SCRIPT_FILE=$(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}" | grep "${WEX_SCRIPT_COMMAND}#")
+  WEX_SCRIPT_FILE=${WEX_SCRIPT_FILE##*#}
+
+  # File does not exist.
+  if [ -f "${WEX_SCRIPT_FILE}" ]; then
+    echo "${WEX_SCRIPT_FILE}"
+    exit;
+  fi
+
+  local WEX_SCRIPT_FILE
   WEX_SCRIPT_FILE=$(_wexLocalScriptPath "${WEX_SCRIPT_CALL_NAME}")
 
   # Given args is a file which exists.

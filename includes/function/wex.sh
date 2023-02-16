@@ -19,19 +19,9 @@ wex() {
   local WEX_CALL_SWITCH_SUDO_COMMAND=${WEX_SWITCH_SUDO_COMMAND}
 
   WEX_SCRIPT_CALL_NAME="${1}"
-  local WEX_SCRIPT_COMMAND
-  WEX_SCRIPT_COMMAND=$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}")
-
-  local WEX_SCRIPT_FILE
-  WEX_SCRIPT_FILE=$(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}" | grep "${WEX_SCRIPT_COMMAND}#")
-  WEX_SCRIPT_FILE=${WEX_SCRIPT_FILE##*#}
-
-  # File does not exist.
-  if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
-    # Try constructing path from given name,
-    # which is slower.
-    WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
-  fi
+  # Try constructing path from given name,
+  # which is slower.
+  WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
 
   if [ ! -f "${WEX_SCRIPT_FILE}" ]; then
     . "${WEX_DIR_ROOT}includes/colors.sh"
