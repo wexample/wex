@@ -17,6 +17,10 @@ Join our community, support us, and find a job at https://wexample.com 🤝❤�
 - You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
 - You want to use any `wex-service` extension available on our [repository](https://github.com/orgs/wexample/repositories).
 
+## Releasing a new version
+
+- Execute `wex core/build` before pull request to update core data which is versioned. Commit changes if any.
+
 ## Running tests
 
     # Run all tests.
