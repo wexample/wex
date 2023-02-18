@@ -152,6 +152,7 @@ wexTest() {
 
     if [ "${TEST_RUN_SCRIPT}" != "" ]; then
       _wexTestScript "${TEST_RUN_SCRIPT}"
+      return
     fi
   fi
 

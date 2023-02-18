@@ -9,7 +9,7 @@ wexRun() {
 
   # Running unit test.
   if [ "${1}" = "test" ]; then
-    sudo bash "${WEX_DIR_BASH}test.sh" "${2}" "${3}"
+    sudo -E bash "${WEX_DIR_BASH}test.sh" "${2}" "${3}"
     return
   fi
 
