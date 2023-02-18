@@ -7,5 +7,5 @@ fileExistsArgs() {
 }
 
 fileExists() {
-  [[ -f "${FILE}" ]] && echo true || echo false
+  [ -f "${FILE}" ] && echo true || echo false
 }
