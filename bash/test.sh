@@ -133,14 +133,14 @@ wexTest() {
 
         local PATH_TEST_INIT="${PATH_DIR_TESTS_BASH}init.sh"
         if [ -f "${PATH_TEST_INIT}" ]; then
-          _wexLog "Initializing..."
+          _wexLog "Initializing... ${PATH_TEST_INIT}"
 
           . "${PATH_TEST_INIT}"
         fi
 
-        _wexLog "Testing dir ... ${PATH_DIR_TESTS_BASH}"
-
         if [ "${TEST_RUN_SCRIPT}" == "" ]; then
+          _wexLog "Testing dir ... ${PATH_DIR_TESTS_BASH}"
+
           SCRIPTS=($(wex scripts/list -d="${PATH_DIR_TESTS_BASH}"))
 
           for SCRIPT_NAME in ${SCRIPTS[@]}; do
