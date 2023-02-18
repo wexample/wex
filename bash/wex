@@ -3,7 +3,7 @@
 # Init only once.
 if [[ $(type -t wexRun) != "function" ]];then
   . /opt/wex/includes/globals.sh
-  . /opt/wex/includes/function/wex.sh
+  . /opt/wex/includes/function/wexRun.sh
   # Empty trace file.
   echo "" > "${WEX_FILE_TRACE}";
   # Create require files if missing.
