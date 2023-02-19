@@ -18,7 +18,7 @@ wexRun() {
   local WEX_SCRIPT_FOUND=false
   local WEX_CALL_SWITCH_SUDO_COMMAND=${WEX_SWITCH_SUDO_COMMAND}
 
-  WEX_SCRIPT_CALL_NAME="${1}"
+  export WEX_SCRIPT_CALL_NAME="${1}"
   # Try constructing path from given name,
   # which is slower.
   WEX_SCRIPT_FILE=$(_wexFindScriptFile "${WEX_SCRIPT_CALL_NAME}")
@@ -225,3 +225,5 @@ wexRun() {
   # Execute script with all parameters.
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
 }
+
+export -f wexRun

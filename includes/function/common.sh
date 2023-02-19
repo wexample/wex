@@ -183,3 +183,19 @@ _wexUserIsSudo() {
     echo "true"
   fi
 }
+
+export -f _wexFindScriptFile
+export -f _wexFindAddonsDirs
+export -f _wexFindScriptsLocations
+export -f _wexGetArguments
+export -f _wexGetOnlyDirs
+export -f _wexLoadVariables
+export -f _wexLocalScriptPath
+export -f _wexSplitCommand
+export -f _wexAddonName
+export -f _wexCommandName
+export -f _wexMethodName
+export -f _wexMethodNameArgs
+export -f _wexTruncate
+export -f _wexUpperCaseFirstLetter
+export -f _wexUserIsSudo

@@ -2,7 +2,9 @@
 
 scriptCreateTest() {
   local FILEPATH
-  FILEPATH=$(wex script/create -s=lorem/ipsum)
+  _wexLog "Creating custom lorem ipsum script..."
+
+  FILEPATH=$(wex script/create -s=lorem/ipsum --quiet)
 
   if [ ! -f "${FILEPATH}" ];then
     _wexTestResultError "File must be created ${FILEPATH}"

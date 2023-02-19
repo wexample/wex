@@ -34,3 +34,7 @@ _wexMessage() {
     printf "      ${3}\n"
   fi
 }
+
+export -f _wexError
+export -f _wexLog
+export -f _wexMessage
