@@ -113,7 +113,7 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
-  WEX_TRACE_CALLS=true
+  export WEX_TRACE_CALLS=true
 
   # List only directories.
   local SCRIPTS
