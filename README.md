@@ -1,6 +1,6 @@
 # wex v4.0.0
 
-A single command to execute your bash scripts, and a pattern to write it.
+A single command to execute your bash scripts, and a pattern to write it. See description for more info.
 
 Join our community, support us, and find work at https://wexample.com 🤝❤️👨‍💻
 
@@ -11,15 +11,38 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 - One line install : `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install`
 - Check install : `wex hi`
 
+Other platforms has not been tested yet for these version.
+
+## Description
+
+This is a mini-framework written in shell. This framework allows for the faster construction of shell scripts with a more organized structure. It provides useful tools for script management, such as reading command line arguments, generating automated documentation for scripts, and handling errors.
+
+The usage is as follows:
+
+    wex [?addon::][group]/[name] -a=firstArgWithShortName --second=secondArgWithLongName
+
+### Cheat sheet
+
+This is the most common commands used by core, but :
+- For app management see [apps addon](https://github.com/wexample/wex-addon-app).
+- For all other features, see `wex-service` addons in [repository](https://github.com/orgs/wexample/repositories).
+
+```bash
+# Display wex logo.
+wex core/update
+# Display current version.
+wex core/version
+```
+
 ## Why using wex scripts
 
-- You want to write some bash scripts on your local machine, and use it anywhere using a single command format : `wex my/script -a=arg --arg2=arg2`
+- You want to write some bash scripts on your local machine, and use it anywhere using a single command format
 - You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
-- You want to use any `wex-service` extension available on our [repository](https://github.com/orgs/wexample/repositories).
+- You want to use any `wex-service` addon available on our [repository](https://github.com/orgs/wexample/repositories).
 
 ## Releasing a new version
 
-- Execute `wex core/build` before pull request to update core data which is versioned. Commit changes if any.
+Before pushing changes, you need to execute `wex core/build` to update core data which is versioned. Commit changes if any.
 
 ## Testing
 
