@@ -214,6 +214,7 @@ _wexTestScript() {
     _wexTestResultSuccess "Test complete"
   else
     _wexTestResultError "Test failed"
+    exit
   fi
 }
 
