@@ -9,6 +9,7 @@ wexRun() {
 
   # Running unit test.
   if [ "${1}" = "test" ]; then
+    export WEX_FILE_TRACE_TESTS="${WEX_FILE_TRACE}.tests"
     sudo -E bash "${WEX_DIR_BASH}test.sh" "${2}" "${3}"
     return
   fi
@@ -220,6 +221,10 @@ wexRun() {
 
   if [ "${WEX_TRACE_CALLS}" = "true" ];then
     echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE}"
+
+    if [ "${WEX_FILE_TRACE_TESTS}" != "" ]; then
+      echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE_TESTS}"
+    fi
   fi
 
   # Execute script with all parameters.
