@@ -2,7 +2,7 @@
 
 A single command to execute your bash scripts, and a pattern to write it.
 
-Join our community, support us, and find a job at https://wexample.com 🤝❤️👨‍💻
+Join our community, support us, and find work at https://wexample.com 🤝❤️👨‍💻
 
 ## Install
 
@@ -21,7 +21,14 @@ Join our community, support us, and find a job at https://wexample.com 🤝❤�
 
 - Execute `wex core/build` before pull request to update core data which is versioned. Commit changes if any.
 
-## Running tests
+## Testing
+
+### Creating test
+    
+    # Create a new unit test.
+    wex test group/name create
+
+### Running tests
 
     # Run all tests.
     wex test
