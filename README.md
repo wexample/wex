@@ -15,7 +15,7 @@ Other platforms has not been tested yet for these version.
 
 ## Description
 
-This is a mini-framework written in shell. This framework allows for the faster construction of shell scripts with a more organized structure. It provides useful tools for script management, such as reading command line arguments, generating automated documentation for scripts, and handling errors.
+This is a mini-framework written in bash. This framework allows for the faster construction of bash scripts with a more organized structure. It provides useful tools for script management, such as reading command line arguments, generating automated documentation for scripts, and handling errors.
 
 The usage is as follows:
 
