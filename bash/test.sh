@@ -156,6 +156,23 @@ wexTest() {
       _wexTestScript "${TEST_RUN_SCRIPT}"
       return
     fi
+  elif [ "${TEST_ACTION}" == "create" ] && [ "${TEST_RUN_SCRIPT}" != "" ]; then
+    local TEST_FILE
+    local METHOD_NAME
+    TEST_FILE="$(_wexTestGetFile "${TEST_RUN_SCRIPT}")"
+    METHOD_NAME="$(_wexMethodName "${TEST_RUN_SCRIPT}")Test"
+
+    cat <<EOF > "${TEST_FILE}"
+#!/usr/bin/env bash
+
+${METHOD_NAME}() {
+  # TODO : Your test body.
+  _wexTestAssertEqual true false
+}
+
+EOF
+    _wexLog "Created ${TEST_FILE}"
+    return
   fi
 
   local TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
@@ -181,13 +198,21 @@ wexTest() {
   fi
 }
 
+_wexTestGetFile() {
+  local SCRIPT_NAME=${1}
+  local SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
+  local PATH_DIR_TESTS_BASH=$(realpath $(dirname "${SCRIPT_FILEPATH}")/../../)/tests/bash/
+
+  echo "${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
+}
+
 _wexTestScript() {
   local SCRIPT_NAME=${1}
   local SCRIPT_FILEPATH
   local PATH_DIR_TESTS_BASH
   SCRIPT_FILEPATH=$(_wexFindScriptFile "${SCRIPT_NAME}")
   PATH_DIR_TESTS_BASH=$(realpath $(dirname ${SCRIPT_FILEPATH})/../../)/tests/bash/
-  TEST_FILE="${PATH_DIR_TESTS_BASH}${SCRIPT_NAME}.sh"
+  TEST_FILE="$(_wexTestGetFile "${SCRIPT_NAME}")"
   METHOD_NAME="$(_wexMethodName "${SCRIPT_NAME}")Test"
 
   local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
