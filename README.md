@@ -19,7 +19,7 @@ This is a mini-framework written in bash. This framework allows for the faster c
 
 The usage is as follows:
 
-    wex [?addon::][group]/[name] -a=firstArgWithShortName --second=secondArgWithLongName
+    wex [?addon|default::][group]/[name] -a=firstArgWithShortName --second=secondArgWithLongName
 
 ### Cheat sheet
 
