@@ -28,7 +28,7 @@ This is the most common commands used by core, but :
 - For all other features, see `wex-service` addons in [repository](https://github.com/orgs/wexample/repositories).
 
 ```bash
-# Display wex logo.
+# Update core and addons.
 wex core/update
 # Display current version.
 wex core/version
