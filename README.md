@@ -25,7 +25,7 @@ The usage is as follows:
 
 This is the most common commands used by core, but :
 - For app management see [apps addon](https://github.com/wexample/wex-addon-app).
-- For all other features, see `wex-service` addons in [repository](https://github.com/orgs/wexample/repositories).
+- For all other features, see `wex-service` addons in [repositories](https://github.com/orgs/wexample/repositories).
 
 ```bash
 # Update core and addons.
@@ -38,7 +38,7 @@ wex core/version
 
 - You want to write some bash scripts on your local machine, and use it anywhere using a single command format
 - You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
-- You want to use any `wex-service` addon available on our [repository](https://github.com/orgs/wexample/repositories).
+- You want to use any `wex-service` addon available on our [repositories](https://github.com/orgs/wexample/repositories).
 
 ## Releasing a new version
 
