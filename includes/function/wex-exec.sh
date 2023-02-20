@@ -159,7 +159,7 @@ wex-exec() {
       eval "PARAMS=(${WEX_CALLING_ARGUMENTS[${i}]})"
       ARG_EXPECTED_LONG=${PARAMS[0]}
 
-      TEXT=$(wex text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
+      TEXT=$(wex-exec text/color -c=lightblue -t="--${PARAMS[0]} -${PARAMS[1]}")
 
       local PROPS=''
 
@@ -172,7 +172,7 @@ wex-exec() {
       fi
 
       if [ "${PROPS}" != "" ]; then
-        TEXT+="\n\t$(wex text/color -c=brown -t=${PROPS})"
+        TEXT+="\n\t$(wex-exec text/color -c=brown -t=${PROPS})"
       fi
 
       TEXT+="\n\t\t"${PARAMS[2]}
