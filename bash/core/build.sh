@@ -27,11 +27,17 @@ coreBuild() {
 
   # Increment.
   NEW_BUILD=$((BUILD+1))
+  NEW_VERSION="${VERSION}.${NEW_BUILD}"
 
   wex-exec default::config/setValue \
     -f="${WEX_DIR_ROOT}includes/globals.sh" \
     -s="=" \
     -k="export WEX_CORE_VERSION" \
-    -v="${VERSION}.${NEW_BUILD}" \
+    -v="${NEW_VERSION}" \
     -vv
+
+  _wexLog "Updating version in README.md"
+  # Replace version in README.md
+  sed -i"${WEX_SED_I_ORIG_EXT}" "s/\(.*wex v\)[0-9]*\.[0-9]*\.[0-9]*/\1${NEW_VERSION}/" "${WEX_DIR_ROOT}README.md"
+  rm "${WEX_DIR_ROOT}README.md${WEX_SED_I_ORIG_EXT}"
 }
