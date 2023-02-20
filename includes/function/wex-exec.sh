@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wexRun() {
+wex-exec() {
   # Using false as an argument allows to load a file and initialize wex
   # without executing any script.
   if [ -z "${1+x}" ] || [ "${1}" = '' ] || [ ${1} = false ]; then
@@ -231,4 +231,4 @@ wexRun() {
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
 }
 
-export -f wexRun
+export -f wex-exec

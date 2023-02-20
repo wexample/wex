@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Init only once.
-if [[ $(type -t wexRun) != "function" ]];then
+if [[ $(type -t wex-exec) != "function" ]];then
   . /opt/wex/includes/globals.sh
-  . /opt/wex/includes/function/wexRun.sh
+  . /opt/wex/includes/function/wex-exec.sh
   # Empty trace file.
   echo "" > "${WEX_FILE_TRACE}";
   # Create require files if missing.
@@ -11,4 +11,4 @@ if [[ $(type -t wexRun) != "function" ]];then
 fi
 
 # Execute function with same arguments.
-wexRun "$@"
+wex-exec "$@"
