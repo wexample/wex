@@ -64,5 +64,5 @@ EOF
 
   echo "${FILE}"
 
-  wex core/register
+  wex-exec core/register
 }

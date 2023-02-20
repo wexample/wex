@@ -10,7 +10,7 @@ fileTextAppendArgs() {
 
 fileTextAppend() {
   if [ "${CREATE}" = "true" ];then
-    wex file/createIfNotExists -f="${FILE}"
+    wex-exec file/createIfNotExists -f="${FILE}"
   fi;
 
   printf "\n${LINE}" >> "${FILE}"

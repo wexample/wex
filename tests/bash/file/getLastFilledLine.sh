@@ -6,7 +6,7 @@ fileGetLastFilledLineTest() {
 
   FILEPATH=$(_wexTestSampleInit "fileTextSample1.txt")
   # Get the last line
-  LAST_FILLED_LINE=$(wex file/getLastFilledLine -f="${FILEPATH}")
+  LAST_FILLED_LINE=$(wex-exec file/getLastFilledLine -f="${FILEPATH}")
 
   # Compare
   _wexTestAssertEqual "${LAST_FILLED_LINE}" "[LAST LINE]"

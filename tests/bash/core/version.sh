@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 coreVersionTest() {
-  _wexTestAssertNotEmpty "$(wex core/version)"
+  _wexTestAssertNotEmpty "$(wex-exec core/version)"
 }

@@ -11,7 +11,7 @@ coreRegister() {
 
   _wexLog "Creating scripts registry..."
   for LOCATION in ${LOCATIONS[@]}; do
-    ALL_SCRIPTS+=($(wex scripts/list -d="${LOCATION}"))
+    ALL_SCRIPTS+=($(wex-exec scripts/list -d="${LOCATION}"))
 
     local ADDON="";
     local ADDON_PATH=$(dirname "${LOCATION}")
@@ -21,7 +21,7 @@ coreRegister() {
       ADDON="default"
     fi
 
-    ALL_SCRIPTS_PATHS+=($(wex scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
+    ALL_SCRIPTS_PATHS+=($(wex-exec scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
   done
 
   echo "${ALL_SCRIPTS[@]}" | tr ' ' '\n' | sort > "${WEX_FILE_ALL_SCRIPTS}"
@@ -30,8 +30,8 @@ coreRegister() {
   _wexLog "Creating apps config registry..."
 
   # Load expected env file.
-  local APP_ENV=$(wex app::app/env)
-  local SERVICES=($(wex app::services/all))
+  local APP_ENV=$(wex-exec app::app/env)
+  local SERVICES=($(wex-exec app::services/all))
   local SERVICE_DIR
   local SERVICE_UPPERCASE
   local VAR_NAME
@@ -41,12 +41,12 @@ coreRegister() {
   # Iterate through array using a counter
   for SERVICE in "${SERVICES[@]}"
   do
-      SERVICE_UPPERCASE=$(wex string/toScreamingSnake -t="${SERVICE}")
-      SERVICE_DIR=$(wex service/dir -s="${SERVICE}")
+      SERVICE_UPPERCASE=$(wex-exec string/toScreamingSnake -t="${SERVICE}")
+      SERVICE_DIR=$(wex-exec service/dir -s="${SERVICE}")
 
       VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}"_BASE"
       YML_INHERIT="${SERVICE_DIR}docker/docker-compose.yml"
-      wex default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${YML_INHERIT}" -vv
+      wex-exec default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${YML_INHERIT}" -vv
 
       local VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}
       local YML_INHERIT_ENV="${SERVICE_DIR}docker/docker-compose."${APP_ENV}".yml"
@@ -58,6 +58,6 @@ coreRegister() {
         VAR_VALUE="${YML_INHERIT}"
       fi
 
-      wex default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${VAR_VALUE}" -vv
+      wex-exec default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${VAR_VALUE}" -vv
   done
 }

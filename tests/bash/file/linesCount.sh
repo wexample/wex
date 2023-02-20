@@ -5,7 +5,7 @@ fileLinesCountTest() {
   local FILE_PATH
 
   FILE_PATH=$(_wexTestSampleInit "fileTextSample1.txt")
-  COUNT=$(wex file/linesCount -f="${FILE_PATH}")
+  COUNT=$(wex-exec file/linesCount -f="${FILE_PATH}")
 
   _wexTestAssertEqual "${COUNT}" "20"
 }

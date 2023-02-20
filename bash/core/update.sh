@@ -8,7 +8,7 @@ coreUpdateArgs() {
 }
 
 coreUpdate() {
-  local WEX_VERSION_FROM=$(wex core/version)
+  local WEX_VERSION_FROM=$(wex-exec core/version)
 
   _wexLog "Updating from v${WEX_VERSION_FROM}"
 
@@ -34,9 +34,9 @@ coreUpdate() {
     fi
   done
 
-  wex core/register
+  wex-exec core/register
 
-  local WEX_VERSION_NEW=$(wex core/version)
+  local WEX_VERSION_NEW=$(wex-exec core/version)
 
   _wexMessage "wex up-to-date at v${WEX_VERSION_NEW}"
 }

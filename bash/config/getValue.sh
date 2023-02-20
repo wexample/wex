@@ -9,7 +9,7 @@ configGetValueArgs() {
 }
 
 configGetValue() {
-  SEPARATOR="$(wex default::config/processSeparator -s="${SEPARATOR}")"
+  SEPARATOR="$(wex-exec default::config/processSeparator -s="${SEPARATOR}")"
 
   if [ ! -f "${FILE}" ];then
     return
@@ -25,7 +25,7 @@ configGetValue() {
   RESULTS=${RESULTS##*$'\n'}
 
   # Trim end on lines
-  RESULTS=$(wex string/trim -s="${RESULTS}")
+  RESULTS=$(wex-exec string/trim -s="${RESULTS}")
 
   echo "${RESULTS}"
 }

@@ -7,7 +7,7 @@ stringToScreamingSnakeArgs() {
 }
 
 stringToScreamingSnake() {
-  TEXT=$(wex string/toSnake -t="${TEXT}")
+  TEXT=$(wex-exec string/toSnake -t="${TEXT}")
 
   echo "${TEXT^^}"
 }

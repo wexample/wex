@@ -13,11 +13,11 @@ fileTextAppendOnceTest() {
   ORIGINAL=$(< ${FILEPATH})
 
   # Try to append a line which exists
-  wex file/textAppendOnce -f="${FILEPATH}" -l="[INNER LINE]"
+  wex-exec file/textAppendOnce -f="${FILEPATH}" -l="[INNER LINE]"
   _wexTestSampleDiff fileTextSample1.txt false "Trying insert existing line"
 
   # Try to append a line which looks like another on but not exactly
-  wex file/textAppendOnce -f="${FILEPATH}" -l="\n[INNER LINE"
+  wex-exec file/textAppendOnce -f="${FILEPATH}" -l="\n[INNER LINE"
   _wexTestSampleDiff fileTextSample1.txt true "Line inserted"
 
   # Try to append config line
@@ -25,8 +25,8 @@ fileTextAppendOnceTest() {
   CONFIG_KEY="SuperConf"
   CONFIG_TEST="${CONFIG_KEY} = ${CONFIG_VALUE}"
 
-  wex file/textAppendOnce -f="${FILEPATH}" -l="${CONFIG_TEST}"
+  wex-exec file/textAppendOnce -f="${FILEPATH}" -l="${CONFIG_TEST}"
 
-  INSERTED=$(wex default::config/getValue -f="${FILEPATH}" -k="${CONFIG_KEY}" -s=" = ")
+  INSERTED=$(wex-exec default::config/getValue -f="${FILEPATH}" -k="${CONFIG_KEY}" -s=" = ")
   _wexTestAssertEqual "${INSERTED}" "${CONFIG_VALUE}"
 }

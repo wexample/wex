@@ -7,17 +7,17 @@ fileTextAppendTest() {
   FILEPATH=$(_wexTestSampleInit "fileTextSample1.txt")
   TEST_TEXT="Hey this is a test"
 
-  wex file/textAppend -f="${FILEPATH}" -l="${TEST_TEXT}"
+  wex-exec file/textAppend -f="${FILEPATH}" -l="${TEST_TEXT}"
   # Get the last line
-  fileGetLastFilledLine=$(wex file/getLastFilledLine -f="${FILEPATH}")
+  fileGetLastFilledLine=$(wex-exec file/getLastFilledLine -f="${FILEPATH}")
   # Compare
   _wexTestAssertEqual "${fileGetLastFilledLine}" "${TEST_TEXT}"
 
   # Cleanup
-  wex file/textRemoveLastLine -f="${FILEPATH}"
+  wex-exec file/textRemoveLastLine -f="${FILEPATH}"
 
   # Check las line removed.
-  fileGetLastFilledLine=$(wex file/getLastFilledLine -f="${FILEPATH}")
+  fileGetLastFilledLine=$(wex-exec file/getLastFilledLine -f="${FILEPATH}")
   # Compare
   _wexTestAssertEqual "${fileGetLastFilledLine}" "[LAST LINE]"
 }

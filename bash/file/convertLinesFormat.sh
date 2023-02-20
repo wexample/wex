@@ -13,7 +13,7 @@ fileConvertLinesFormatArgs() {
 # dependency : dos2unix
 fileConvertLinesFormat() {
   local FILE_FORMAT_CURRENT
-  FILE_FORMAT_CURRENT=$(wex file/getLinesFormat -f="${FILE}")
+  FILE_FORMAT_CURRENT=$(wex-exec file/getLinesFormat -f="${FILE}")
 
   # Check if format is already set.
   if [ "${FILE_FORMAT_CURRENT}" = "${FORMAT}" ]; then

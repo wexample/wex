@@ -10,7 +10,7 @@ configUncommentArgs() {
 }
 
 configUncomment() {
-  SEPARATOR="$(wex default::config/processSeparator -s="${SEPARATOR}")"
+  SEPARATOR="$(wex-exec default::config/processSeparator -s="${SEPARATOR}")"
 
   if [ -z "${CHAR+x}" ];then
     # Default space separator
@@ -19,5 +19,5 @@ configUncomment() {
 
   # Replace key with any # or space before it
   # with the same (captured value) without these chars.
-  wex file/textReplace -r="s/^\([ ]\{0,\}\)[${CHAR}]\{1,\}\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)/\1\2/" -f=${FILE}
+  wex-exec file/textReplace -r="s/^\([ ]\{0,\}\)[${CHAR}]\{1,\}\([ ]\{0,\}${TARGET_KEY}[ ]\{0,\}${SEPARATOR}[ ]\{0,\}\)/\1\2/" -f=${FILE}
 }

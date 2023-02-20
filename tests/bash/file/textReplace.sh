@@ -5,8 +5,8 @@ fileTextReplaceTest() {
   FILEPATH=$(_wexTestSampleInit configSample)
 
   # Replace
-  wex file/textReplace -f="${FILEPATH}" -r="s/prohibit-password/yolo/"
+  wex-exec file/textReplace -f="${FILEPATH}" -r="s/prohibit-password/yolo/"
 
   # Test change
-  _wexTestAssertEqual $(wex default::config/getValue -f="${FILEPATH}" -k="PermitRootLogin") 'yolo'
+  _wexTestAssertEqual $(wex-exec default::config/getValue -f="${FILEPATH}" -k="PermitRootLogin") 'yolo'
 }

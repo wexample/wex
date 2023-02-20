@@ -11,34 +11,34 @@ configCommentTest() {
   # and also verify file integrity.
 
   # Test with space sign.
-  wex default::config/comment -f=${filePath} -k="ConfigTestSingleOption"
-  wex default::config/uncomment -f=${filePath} -k="ConfigTestSingleOption"
+  wex-exec default::config/comment -f=${filePath} -k="ConfigTestSingleOption"
+  wex-exec default::config/uncomment -f=${filePath} -k="ConfigTestSingleOption"
   _wexTestSampleDiff configSample false "Simple comment / uncomment operation"
 
   # Values with equal sign after space "example =..." should be also changed.
-  wex default::config/comment -f=${filePath} -k="ConfigTestOption"
+  wex-exec default::config/comment -f=${filePath} -k="ConfigTestOption"
   _wexTestSampleDiff configSample true "Simple comment"
 
-  wex default::config/uncomment -f=${filePath} -k="ConfigTestOption"
+  wex-exec default::config/uncomment -f=${filePath} -k="ConfigTestOption"
   _wexTestSampleDiff configSample true "Simple uncomment"
 
   # Revert file.
   filePath=$(_wexTestSampleInit configSample)
 
   # Test with equal sign
-  wex default::config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
-  wex default::config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
+  wex-exec default::config/comment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
+  wex-exec default::config/uncomment -f=${filePath} -k="ConfigTestSingleOptionWithEqual" -s="="
 
   _wexTestSampleDiff configSample false "Simple comment / uncomment operation with equal"
 
-  wex default::config/comment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
+  wex-exec default::config/comment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
   _wexTestSampleDiff configSample true "Simple comment with equal"
 
   # We have uncommented all settings,
   # which are more than original uncommented ones (one and two only)
-  wex default::config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
+  wex-exec default::config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
   modified=$(< ${filePath})
   # The new value is "four"
-  local value=$(wex default::config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
+  local value=$(wex-exec default::config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
   _wexTestAssertEqual ${value} "four"
 }

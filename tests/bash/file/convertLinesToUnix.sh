@@ -5,6 +5,6 @@ fileConvertLinesToUnixTest() {
 
   FILEPATH=$(_wexTestSampleInit "fileTextSample1.txt")
 
-  wex file/convertLinesToUnix -f="${FILEPATH}"
-  _wexTestAssertEqual "$(wex file/getLinesFormat -f="${FILEPATH}")" "LF"
+  wex-exec file/convertLinesToUnix -f="${FILEPATH}"
+  _wexTestAssertEqual "$(wex-exec file/getLinesFormat -f="${FILEPATH}")" "LF"
 }

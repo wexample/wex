@@ -10,7 +10,7 @@ scriptsInstallArgs() {
 
 scriptsInstall() {
   local REQUIREMENTS
-  REQUIREMENTS=("$(wex scripts/requirements -d="${DIR}")")
+  REQUIREMENTS=("$(wex-exec scripts/requirements -d="${DIR}")")
 
   if [ "${REQUIREMENTS[@]}" != "" ];then
     apt-get update && apt-get install -yq ${REQUIREMENTS[@]}

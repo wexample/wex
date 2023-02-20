@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 scriptsInstallTest() {
-  _wexTestAssertNotEmpty "$(wex scripts/install --source)"
+  _wexTestAssertNotEmpty "$(wex-exec scripts/install --source)"
 }

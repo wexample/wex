@@ -5,7 +5,7 @@ arraySortTest() {
 
   _wexTestAssertEqual "${ARRAY[2]}" "bb"
 
-  ARRAY=($(wex array/sort -a="${ARRAY[*]}" -s=" "))
+  ARRAY=($(wex-exec array/sort -a="${ARRAY[*]}" -s=" "))
 
   _wexTestAssertEqual "${ARRAY[2]}" "cc"
 }

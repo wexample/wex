@@ -10,7 +10,7 @@ fileLineExistsArgs() {
 fileLineExists() {
   local ORIGINAL
   # To linux lines ending
-  ORIGINAL=$(wex file/convertLinesToUnix -f="${FILE}")
+  ORIGINAL=$(wex-exec file/convertLinesToUnix -f="${FILE}")
 
   # Protect arguments by escaping special chars.
   LINE=$(sed -e 's/[]\/*.^|[]/\\&/g' <<< "${LINE}")
@@ -26,6 +26,6 @@ fileLineExists() {
   echo ${EXISTS}
 
   # Revert lines encoding format.
-  wex file/convertLinesFormat -f="${FILE}" -t="${ORIGINAL}"
+  wex-exec file/convertLinesFormat -f="${FILE}" -t="${ORIGINAL}"
 }
 

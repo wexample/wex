@@ -8,7 +8,7 @@ fileRemoveArgs() {
 }
 
 fileRemove() {
-  if [[ $(wex file/removable -f="${FILE}") == true ]]; then
+  if [[ $(wex-exec file/removable -f="${FILE}") == true ]]; then
     rm -rf "${FILE}"
   fi
 }

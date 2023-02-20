@@ -7,7 +7,7 @@ fileCreateIfNotExistsArgs() {
 }
 
 fileCreateIfNotExists() {
-  if [ "$(wex file/exists -f="${FILE}")" = false ];then
+  if [ "$(wex-exec file/exists -f="${FILE}")" = false ];then
     touch "${FILE}"
   fi;
 }

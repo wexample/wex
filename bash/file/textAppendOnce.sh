@@ -9,7 +9,7 @@ fileTextAppendOnceArgs() {
 }
 
 fileTextAppendOnce() {
-  if [ "$(wex file/lineExists -f="${FILE}" -l="${LINE}")" != "true" ];then
-    wex file/textAppend -f="${FILE}" -l="${LINE}" -c="${CREATE}"
+  if [ "$(wex-exec file/lineExists -f="${FILE}" -l="${LINE}")" != "true" ];then
+    wex-exec file/textAppend -f="${FILE}" -l="${LINE}" -c="${CREATE}"
   fi
 }

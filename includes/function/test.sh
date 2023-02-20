@@ -139,7 +139,7 @@ wexTest() {
         if [ "${TEST_RUN_SCRIPT}" == "" ]; then
           _wexLog "Testing dir ... ${PATH_DIR_TESTS_BASH}"
 
-          SCRIPTS=($(wex scripts/list -d="${PATH_DIR_TESTS_BASH}"))
+          SCRIPTS=($(wex-exec scripts/list -d="${PATH_DIR_TESTS_BASH}"))
 
           for SCRIPT_NAME in ${SCRIPTS[@]}; do
             _wexTestScript "${SCRIPT_NAME}"

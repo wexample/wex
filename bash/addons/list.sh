@@ -18,5 +18,5 @@ addonsList() {
 
   ADDONS="${ADDONS%?}"
 
-  wex array/sort -a="${ADDONS}" -s="${SEPARATOR}"
+  wex-exec array/sort -a="${ADDONS}" -s="${SEPARATOR}"
 }

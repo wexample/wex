@@ -4,21 +4,21 @@ fileLineExistsTest() {
   local FILEPATH
   FILEPATH=$(_wexTestSampleInit "fileTextSample1.txt")
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l="Sample text with special chars \ / $ !! ? ;)")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l="Sample text with special chars \ / $ !! ? ;)")
   _wexTestAssertEqual "${result}" true
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l="[INNER LINE]")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l="[INNER LINE]")
   _wexTestAssertEqual "${result}" true
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l="[LAST LINE]")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l="[LAST LINE]")
   _wexTestAssertEqual "${result}" true
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l="[FIRST LINE]")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l="[FIRST LINE]")
   _wexTestAssertEqual "${result}" true
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l="[MISSING LINE]")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l="[MISSING LINE]")
   _wexTestAssertEqual "${result}" false
 
-  result=$(wex file/lineExists -f="${FILEPATH}" -l=".*")
+  result=$(wex-exec file/lineExists -f="${FILEPATH}" -l=".*")
   _wexTestAssertEqual "${result}" false
 }

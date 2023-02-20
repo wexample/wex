@@ -33,22 +33,22 @@ configSetValue() {
 
   # Set Value
   # Search for a commented version
-  HAS_VALUE_COMMENTED=$(wex default::config/keyExists -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}" -co)
+  HAS_VALUE_COMMENTED=$(wex-exec default::config/keyExists -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}" -co)
 
   if [ "${HAS_VALUE_COMMENTED}" = "true" ];then
     # Uncomment line(s)
-    wex default::config/uncomment -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}"
+    wex-exec default::config/uncomment -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}"
     HAS_VALUE=true
   else
     # Search for an existing version
-    HAS_VALUE=$(wex default::config/keyExists -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}")
+    HAS_VALUE=$(wex-exec default::config/keyExists -f="${FILE}" -k="${KEY}" -s="${SEPARATOR}")
   fi;
 
   if [ "${HAS_VALUE}" = "true" ];then
     # Change value(s)
-    wex default::config/changeValue -f="${FILE}" -k="${KEY}" -v="${VALUE}" -s="${SEPARATOR}"
+    wex-exec default::config/changeValue -f="${FILE}" -k="${KEY}" -v="${VALUE}" -s="${SEPARATOR}"
   else
     # Add a new line
-    wex default::file/textAppendOnce -f="${FILE}" -l="${KEY}${SEPARATOR}${VALUE}"
+    wex-exec default::file/textAppendOnce -f="${FILE}" -l="${KEY}${SEPARATOR}${VALUE}"
   fi
 }
