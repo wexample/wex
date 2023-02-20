@@ -42,7 +42,14 @@ wex core/version
 
 ## Releasing a new version
 
-Before pushing changes, you need to execute `wex core/build` to update core data which is versioned. Commit changes if any.
+Before pushing changes, you need to execute this command to update core feature and ensure stability :
+  
+  # Execute all tests : warning, this may download all docker images of services
+  # you should probably run this command on a dedicated machine, virtual or not,
+  # or a dedicated machine for scripts development.
+  - wex test
+  # Create internal registry and update version number
+  - wex core/build
 
 ## Testing
 
