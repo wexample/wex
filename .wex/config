@@ -1,3 +1,3 @@
 
 APP_INITIALIZED=true
-SERVICES=default,maria-10
+SERVICES=
