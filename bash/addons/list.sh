@@ -2,6 +2,7 @@
 
 addonsListArgs() {
   _DESCRIPTION="List of actually installed addons."
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'separator s "Separator" false " "'
   )

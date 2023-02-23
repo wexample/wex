@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configGetValueArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to get" true'
     'separator s "Separator like space or equal sign, default space" false'

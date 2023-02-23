@@ -2,6 +2,7 @@
 
 fileLinesCountArgs() {
   _DESCRIPTION='Count number of lines in a file'
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'
     'ignore_empty i "Ignore empty lines" false'

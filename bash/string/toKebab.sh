@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 stringToKebabArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'text t "Text to transform" true'
   )

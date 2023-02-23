@@ -2,6 +2,7 @@
 
 coreUpdateArgs() {
   _DESCRIPTION='Update core and addons.'
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'branch b "Switch to specified branch, by default stay on current one" false'
   )

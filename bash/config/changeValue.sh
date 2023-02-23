@@ -2,6 +2,7 @@
 
 configChangeValueArgs() {
   _DESCRIPTION="Change a value of a key / value pair in a config file"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to change" true'
     'separator s "Separator like space or equal sign, default space" false'

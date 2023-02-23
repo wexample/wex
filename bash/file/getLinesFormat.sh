@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileGetLinesFormatArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'
   )

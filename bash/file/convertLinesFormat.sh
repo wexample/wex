@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 fileConvertLinesFormatArgs() {
- _ARGUMENTS=(
+  # shellcheck disable=SC2034
+  _ARGUMENTS=(
    'file f "File" true'
    'format t "Destination format" true'
  )

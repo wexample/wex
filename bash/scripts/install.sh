@@ -3,6 +3,7 @@
 scriptsInstallArgs() {
   _AS_NON_SUDO=false
   _DESCRIPTION='Install all scripts requirements'
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'dir d "Directory (inside bash)" true'
   )

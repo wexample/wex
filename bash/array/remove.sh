@@ -2,6 +2,7 @@
 
 arrayRemoveArgs() {
   _DESCRIPTION="Remove an item from a given array"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'array a "Array content" true'
     'item i "Item value to remove" true'

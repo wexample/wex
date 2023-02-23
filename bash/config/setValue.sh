@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 configSetValueArgs() {
- _ARGUMENTS=(
+  # shellcheck disable=SC2034
+  _ARGUMENTS=(
    'key k "Target key to change" true'
    'separator s "Separator like space or equal sign, default space" false " "'
    'file f "File" true'

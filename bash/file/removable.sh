@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileRemovableArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'
   )

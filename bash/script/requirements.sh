@@ -2,6 +2,7 @@
 
 scriptRequirementsArgs() {
   _DESCRIPTION='Returns requirements for giver script name'
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'script s "Full name of script" true'
   )

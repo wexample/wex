@@ -2,6 +2,7 @@
 
 arrayJoinArgs() {
   _DESCRIPTION="Join array values (space separated) with given separator"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'array a "Array content" true'
     'separator s "Separator" false'

@@ -2,6 +2,7 @@
 
 scriptsRequirementsArgs() {
   _DESCRIPTION='Returns all the requirements for scripts directory'
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'dir d "Directory of scripts" true'
   )

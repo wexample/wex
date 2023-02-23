@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 configKeyExistsArgs() {
- _ARGUMENTS=(
+  # shellcheck disable=SC2034
+  _ARGUMENTS=(
    'target_key k "Target key to get" true'
    'separator s "Separator like space or equal sign, default space" false'
    'file f "File" true'

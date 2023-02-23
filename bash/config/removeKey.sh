@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configRemoveKeyArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to get (line beginning by ... regex)" true'
     'file f "File" true'

@@ -2,6 +2,7 @@
 
 scriptCreateArgs() {
   _DESCRIPTION="Create a new script in current user folder"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'Script s "Full name of the script, i.e. some/thing " true'
   )
@@ -30,6 +31,7 @@ scriptCreate() {
 
 ${METHOD}Args() {
   _DESCRIPTION="Custom script"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     # [arg_name] [arg_name_short] [description] [required] [default_value]
     # 'name n "Name" true "defaultName"'

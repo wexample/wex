@@ -2,6 +2,7 @@
 
 arraySortArgs() {
   _DESCRIPTION="Sort array values alphabetically"
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'array a "Array content" true'
     'separator s "Separator" false'

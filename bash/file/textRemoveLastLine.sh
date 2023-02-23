@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 fileTextRemoveLastLineArgs() {
- _ARGUMENTS=(
+  # shellcheck disable=SC2034
+  _ARGUMENTS=(
    'file f "File" true'
  )
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configProcessSeparatorArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'separator s "Separator like space or equal sign, default space" false'
   )

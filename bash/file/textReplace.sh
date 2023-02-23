@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileTextReplaceArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'regex r "Regex to apply" true'
     'file f "File" true'

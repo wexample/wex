@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 textColorArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'text t "Text to colorize" true'
     'color c "Color name" true'

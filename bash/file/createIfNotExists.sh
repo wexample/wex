@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileCreateIfNotExistsArgs() {
+  # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'
   )
