@@ -214,7 +214,7 @@ _wexTestScript() {
   local WEX_TEST_RUN_DIR_SAMPLES=${PATH_DIR_TESTS_BASH}"_samples/"
   local TEST_HAS_ERROR
 
-  _wexLog "Script ${SCRIPT_NAME}"
+  _wexLog "Script ${SCRIPT_NAME} __________________________"
   _wexLog "Script file ${SCRIPT_FILEPATH}"
   _wexLog "Test file ${TEST_FILE}"
 
