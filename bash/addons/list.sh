@@ -10,7 +10,8 @@ addonsListArgs() {
 }
 
 addonsList() {
-  local FOLDERS=($(find "${WEX_DIR_ADDONS}" -maxdepth 1 -mindepth 1 -type d -not -path .))
+  local FOLDERS
+  mapfile -d '' -t FOLDERS < <(find "${WEX_DIR_ADDONS}" -maxdepth 1 -mindepth 1 -type d -not -path '.*' -print0)
   local FOLDER=""
   local ADDONS=""
 
