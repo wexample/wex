@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 scriptCreateArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Create a new script in current user folder"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
@@ -30,6 +31,7 @@ scriptCreate() {
 #!/usr/bin/env bash
 
 ${METHOD}Args() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Custom script"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configChangeValueArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Change a value of a key / value pair in a config file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

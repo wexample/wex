@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 arrayRemoveArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Remove an item from a given array"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 scriptRequirementsArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION='Returns requirements for giver script name'
   # shellcheck disable=SC2034
   _ARGUMENTS=(

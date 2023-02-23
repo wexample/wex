@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 coreRegisterArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Create a local core registries."
 }
 

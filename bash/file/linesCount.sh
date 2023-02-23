@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileLinesCountArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION='Count number of lines in a file'
   # shellcheck disable=SC2034
   _ARGUMENTS=(

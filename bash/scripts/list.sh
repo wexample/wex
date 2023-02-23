@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 scriptsListArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION='List all scripts in a given directory'
   # shellcheck disable=SC2034
   _ARGUMENTS=(

@@ -1,5 +1,6 @@
 
 ownThisArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Changing ownership of current directory to default user"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

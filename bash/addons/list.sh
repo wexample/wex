@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 addonsListArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="List of actually installed addons."
   # shellcheck disable=SC2034
   _ARGUMENTS=(

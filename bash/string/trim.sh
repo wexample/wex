@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 stringTrimArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Trim a string"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

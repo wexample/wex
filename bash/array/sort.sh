@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 arraySortArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Sort array values alphabetically"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

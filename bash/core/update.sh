@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 coreUpdateArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION='Update core and addons.'
   # shellcheck disable=SC2034
   _ARGUMENTS=(

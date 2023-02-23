@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 arrayJoinArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION="Join array values (space separated) with given separator"
   # shellcheck disable=SC2034
   _ARGUMENTS=(

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 scriptsRequirementsArgs() {
+  # shellcheck disable=SC2034
   _DESCRIPTION='Returns all the requirements for scripts directory'
   # shellcheck disable=SC2034
   _ARGUMENTS=(
