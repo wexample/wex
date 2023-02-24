@@ -16,9 +16,12 @@ _wexError() {
 
 _wexLog() {
   local MESSAGE;
-  MESSAGE=$(_wexTruncate "${1}" 4)
+  MESSAGE=${1};
 
-  printf "${WEX_COLOR_GRAY}  > ${WEX_COLOR_LIGHT_GRAY}${MESSAGE}${WEX_COLOR_RESET}\n"
+  local MAX=$((WEX_SCREEN_WIDTH - 4))
+
+  # Manage indentation when printing.
+  echo -e "${WEX_COLOR_GRAY}  > ${MESSAGE}" | fold -s -w ${MAX} | sed '2,$s/^/    /'
 }
 
 _wexMessage() {
