@@ -206,7 +206,7 @@ wex-exec() {
         # Using shorter "wex ${@}" does not pass arguments properly.
         ${WEX_CALL_SWITCH_SUDO_COMMAND} bash -c "wex ${WEX_SCRIPT_CALL_NAME} ${ORIGINAL_ARGS[*]}"
       else
-        _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex-exec ${WEX_SCRIPT_CALL_NAME} ... "
+        _wexError "${WEX_SCRIPT_CALL_NAME} should be executed as sudo" "You are \"$(whoami)\", retry with : " "sudo wex ${WEX_SCRIPT_CALL_NAME} ... "
       fi
 
       return
