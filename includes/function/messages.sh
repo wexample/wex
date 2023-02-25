@@ -21,7 +21,7 @@ _wexLog() {
   local MAX=$((WEX_SCREEN_WIDTH - 4))
 
   # Manage indentation when printing.
-  echo -e "${WEX_COLOR_GRAY}  > ${MESSAGE}" | fold -s -w ${MAX} | sed '2,$s/^/    /'
+  echo -e "${WEX_COLOR_GRAY}  > ${MESSAGE}${WEX_COLOR_RESET}" | fold -s -w ${MAX} | sed '2,$s/^/    /'
 }
 
 _wexMessage() {
