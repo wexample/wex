@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileGetLinesFormatArgs() {
+  _DESCRIPTION="Return current lines ending format"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

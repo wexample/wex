@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configSetValueArgs() {
+  _DESCRIPTION="Set value in config file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'key k "Target key to change" true'

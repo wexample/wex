@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configUncommentArgs() {
+  _DESCRIPTION="Uncomment line in config file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to uncomment" true'

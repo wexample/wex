@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 stringToPascalArgs() {
+  _DESCRIPTION="Convert text to PascalCase"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'text t "Text to work on" true'

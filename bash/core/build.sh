@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 coreBuildArgs() {
+  _DESCRIPTION="Prepare core for new version"
   # shellcheck disable=SC2034
   _DESCRIPTION="Update core data. Should be executed before deploying."
 }

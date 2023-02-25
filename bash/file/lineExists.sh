@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileLineExistsArgs() {
+  _DESCRIPTION="Return true if exact text is a line of a file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

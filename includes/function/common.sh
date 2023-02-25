@@ -155,6 +155,7 @@ _wexMethodName() {
 }
 
 _wexMethodNameArgs() {
+  _DESCRIPTION=""
   echo "$(_wexMethodName "${1}")Args"
 }
 

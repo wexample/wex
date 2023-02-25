@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configCommentArgs() {
+  _DESCRIPTION="Comment an entry in the config file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to comment" true'

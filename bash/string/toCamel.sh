@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 stringToCamelArgs() {
+  _DESCRIPTION="Convert text to camelCase"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'text t "Text to work on" true'

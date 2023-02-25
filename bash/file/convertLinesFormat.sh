@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileConvertLinesFormatArgs() {
+  _DESCRIPTION="Convert lines endings in a file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 configKeyExistsArgs() {
+  _DESCRIPTION="Returns true if key exists in config file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'target_key k "Target key to get" true'

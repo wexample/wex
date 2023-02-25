@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 stringToAlNumArgs() {
+  _DESCRIPTION="Extract only alpthanimerical chars to text"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'text t "Text to transform" true'

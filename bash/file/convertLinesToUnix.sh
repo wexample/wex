@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileConvertLinesToUnixArgs() {
+  _DESCRIPTION="Convert file lines endings to UNIX"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileTextAppendArgs() {
+  _DESCRIPTION="Append a line to the end of file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

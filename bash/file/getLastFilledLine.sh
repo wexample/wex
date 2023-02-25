@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileGetLastFilledLineArgs() {
+  _DESCRIPTION="Return last non empty line of file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'file f "File" true'

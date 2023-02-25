@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fileTextReplaceArgs() {
+  _DESCRIPTION="Replace a text in a file"
   # shellcheck disable=SC2034
   _ARGUMENTS=(
     'regex r "Regex to apply" true'
