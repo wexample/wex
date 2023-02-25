@@ -9,7 +9,7 @@ fileConvertLinesToUnixArgs() {
 
 fileConvertLinesToUnix() {
   # Get original file encoding format.
-  ORIGINAL=$(wex-exec file/getLinesFormat -f="${FILE}");
+  ORIGINAL=$(wex-exec file/getLinesFormat -f="${FILE}")
   # Convert to UNIX
   wex-exec file/convertLinesFormat -f="${FILE}" -t=LF
   # Return original format for external usage (revert).

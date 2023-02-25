@@ -23,15 +23,15 @@ scriptRequirements() {
   # Load
   . "${FILE}"
 
-  if [ "$(type -t "${METHOD}")" = "function" ];then
+  if [ "$(type -t "${METHOD}")" = "function" ]; then
     local _REQUIREMENTS
 
     # Load
     ${METHOD}
 
     # Avoid empty values
-    if [ ! -z "${_REQUIREMENTS+x}" ];then
+    if [ ! -z "${_REQUIREMENTS+x}" ]; then
       echo ${_REQUIREMENTS[@]}
-    fi;
+    fi
   fi
 }

@@ -11,7 +11,7 @@ stringToAlNumArgs() {
 stringToAlNum() {
   local EXTRA="._-"
 
-  if [ "${STRICT}" = "true" ];then
+  if [ "${STRICT}" = "true" ]; then
     local EXTRA=""
   fi
 

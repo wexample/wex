@@ -18,9 +18,9 @@ coreUpdate() {
   # Go to install dir.
   cd "${WEX_DIR_ROOT}"
   # Choose branch
-  if [ "${BRANCH}" == "" ];then
+  if [ "${BRANCH}" == "" ]; then
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  fi;
+  fi
 
   # Override changes and pull.
   git reset --hard

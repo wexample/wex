@@ -3,20 +3,20 @@
 configUncommentArgs() {
   # shellcheck disable=SC2034
   _ARGUMENTS=(
-   'target_key k "Target key to uncomment" true'
-   'separator s "Separator like space or equal sign, default space" false'
-   'file f "File" true'
-   'char c "Comment character" false'
- )
+    'target_key k "Target key to uncomment" true'
+    'separator s "Separator like space or equal sign, default space" false'
+    'file f "File" true'
+    'char c "Comment character" false'
+  )
 }
 
 configUncomment() {
   SEPARATOR="$(wex-exec default::config/processSeparator -s="${SEPARATOR}")"
 
-  if [ -z "${CHAR+x}" ];then
+  if [ -z "${CHAR+x}" ]; then
     # Default space separator
     CHAR="#"
-  fi;
+  fi
 
   # Replace key with any # or space before it
   # with the same (captured value) without these chars.

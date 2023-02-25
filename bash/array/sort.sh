@@ -13,7 +13,7 @@ arraySortArgs() {
 arraySort() {
   local
 
-  IFS=${SEPARATOR} read -r -a ARRAY_TEMP <<< "${ARRAY}"
+  IFS=${SEPARATOR} read -r -a ARRAY_TEMP <<<"${ARRAY}"
 
   SORTED=($(printf "%s\n" "${ARRAY_TEMP[@]}" | sort))
 

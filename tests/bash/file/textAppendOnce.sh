@@ -10,7 +10,7 @@ fileTextAppendOnceTest() {
 
   FILEPATH=$(_wexTestSampleInit fileTextSample1.txt)
 
-  ORIGINAL=$(< ${FILEPATH})
+  ORIGINAL=$(<${FILEPATH})
 
   # Try to append a line which exists
   wex-exec file/textAppendOnce -f="${FILEPATH}" -l="[INNER LINE]"

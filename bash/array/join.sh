@@ -13,24 +13,23 @@ arrayJoinArgs() {
 arrayJoin() {
   local ARRAY=(${ARRAY})
 
-  if [ -z "${SEPARATOR+x}" ];then
+  if [ -z "${SEPARATOR+x}" ]; then
     # Default space separator
     SEPARATOR=""
-  fi;
+  fi
 
   local FIRST=true
   local OUTPUT=""
 
-  for ITEM in "${ARRAY[@]}"
-  do
-    if [ "${FIRST}" = true ];then
+  for ITEM in "${ARRAY[@]}"; do
+    if [ "${FIRST}" = true ]; then
       FIRST=false
     else
       OUTPUT+=${SEPARATOR}
     fi
 
     OUTPUT+=${ITEM}
-  done;
+  done
 
   echo "${OUTPUT}"
 }

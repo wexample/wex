@@ -27,7 +27,7 @@ coreBuild() {
   BUILD=$(echo "${VERSION_ACTUAL}" | cut -d '.' -f 3)
 
   # Increment.
-  NEW_BUILD=$((BUILD+1))
+  NEW_BUILD=$((BUILD + 1))
   NEW_VERSION="${VERSION}.${NEW_BUILD}"
 
   wex-exec default::config/setValue \

@@ -8,11 +8,11 @@ fileGetLinesFormatArgs() {
 }
 
 fileGetLinesFormat() {
-  if [[ $(file -b - < "${FILE}") =~ CRLF ]]; then
+  if [[ $(file -b - <"${FILE}") =~ CRLF ]]; then
     echo "CRLF"
-  elif [[ $(file -b - < "${FILE}") =~ CR ]]; then
+  elif [[ $(file -b - <"${FILE}") =~ CR ]]; then
     echo "CR"
   else
     echo "LF"
-  fi;
+  fi
 }

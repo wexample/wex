@@ -12,7 +12,7 @@ configGetValueArgs() {
 configGetValue() {
   SEPARATOR="$(wex-exec default::config/processSeparator -s="${SEPARATOR}")"
 
-  if [ ! -f "${FILE}" ];then
+  if [ ! -f "${FILE}" ]; then
     return
   fi
 

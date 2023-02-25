@@ -3,9 +3,9 @@
 fileLineExistsArgs() {
   # shellcheck disable=SC2034
   _ARGUMENTS=(
-   'file f "File" true'
-   'line l "New line" true'
- )
+    'file f "File" true'
+    'line l "New line" true'
+  )
 }
 
 fileLineExists() {
@@ -14,7 +14,7 @@ fileLineExists() {
   ORIGINAL=$(wex-exec file/convertLinesToUnix -f="${FILE}")
 
   # Protect arguments by escaping special chars.
-  LINE=$(sed -e 's/[]\/*.^|[]/\\&/g' <<< "${LINE}")
+  LINE=$(sed -e 's/[]\/*.^|[]/\\&/g' <<<"${LINE}")
   # Find line.
   results=$(sed -n "s/^\(${LINE}\)$/\1/p" "${FILE}")
 
@@ -29,4 +29,3 @@ fileLineExists() {
   # Revert lines encoding format.
   wex-exec file/convertLinesFormat -f="${FILE}" -t="${ORIGINAL}"
 }
-

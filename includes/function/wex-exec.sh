@@ -120,7 +120,7 @@ wex-exec() {
         local ${ARG_EXPECTED_LONG^^}="${PARAMS[4]}"
       # If expected argument
       elif [ "${PARAMS[3]}" = "true" ]; then
-         # If interactive mode is allowed
+        # If interactive mode is allowed
         if [ -z ${NON_INTERACTIVE+x} ] || [ "${NON_INTERACTIVE}" = "false" ]; then
           printf "${WEX_COLOR_CYAN}${PARAMS[2]}:${WEX_COLOR_RESET} "
           read ${ARG_EXPECTED_LONG^^}
@@ -219,11 +219,11 @@ wex-exec() {
     fi
   fi
 
-  if [ "${WEX_TRACE_CALLS}" = "true" ];then
-    echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE}"
+  if [ "${WEX_TRACE_CALLS}" = "true" ]; then
+    echo "${WEX_SCRIPT_CALL_NAME}" >>"${WEX_FILE_TRACE}"
 
     if [ "${WEX_FILE_TRACE_TESTS}" != "" ]; then
-      echo "${WEX_SCRIPT_CALL_NAME}" >> "${WEX_FILE_TRACE_TESTS}"
+      echo "${WEX_SCRIPT_CALL_NAME}" >>"${WEX_FILE_TRACE_TESTS}"
     fi
   fi
 

@@ -9,4 +9,3 @@ addonsListTest() {
 
   _wexTestAssertEqual "${IS_ARRAY}" "true"
 }
-

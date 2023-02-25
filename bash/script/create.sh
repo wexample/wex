@@ -27,7 +27,7 @@ scriptCreate() {
 
   mkdir -p "${DIR}"
 
-  cat <<EOF > "${FILE}"
+  cat <<EOF >"${FILE}"
 #!/usr/bin/env bash
 
 ${METHOD}Args() {
@@ -54,7 +54,7 @@ EOF
 
   mkdir -p "${DIR}"
 
-  cat <<EOF > "${FILE}"
+  cat <<EOF >"${FILE}"
 #!/usr/bin/env bash
 
 ${METHOD}Test() {

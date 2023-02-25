@@ -9,4 +9,3 @@ arraySortTest() {
 
   _wexTestAssertEqual "${ARRAY[2]}" "cc"
 }
-

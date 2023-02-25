@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 coreLogo() {
-  if [ "${QUIET}" = "true" ];then
+  if [ "${QUIET}" = "true" ]; then
     return
   fi
 

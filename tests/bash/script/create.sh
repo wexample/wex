@@ -6,7 +6,7 @@ scriptCreateTest() {
 
   FILEPATH=$(wex-exec script/create -s=lorem/ipsum --quiet)
 
-  if [ ! -f "${FILEPATH}" ];then
+  if [ ! -f "${FILEPATH}" ]; then
     _wexTestResultError "File must be created ${FILEPATH}"
   else
     _wexTestResultSuccess "File created ${FILEPATH}"

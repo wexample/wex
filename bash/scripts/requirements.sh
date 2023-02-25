@@ -14,13 +14,12 @@ scriptsRequirements() {
   local OUTPUT
   SCRIPTS=$(wex-exec scripts/list -d="${DIR}")
 
-  for SCRIPT in ${SCRIPTS[@]}
-  do
+  for SCRIPT in ${SCRIPTS[@]}; do
     local ARRAY
     ARRAY=$(wex-exec script/requirements -s="${SCRIPT}")
     ARRAY=$(wex-exec array/join -a="${ARRAY}")
 
-    if [ -n "${ARRAY}" ];then
+    if [ -n "${ARRAY}" ]; then
       OUTPUT+="${ARRAY} "
     fi
   done

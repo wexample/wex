@@ -27,7 +27,7 @@ WEX_ARGUMENT_DEFAULTS=(
 . "${WEX_FILE_MESSAGE_FUNCTION}"
 
 # Get the username of the original user
-if [ "$(_wexUserIsSudo)" = "false" ];then
+if [ "$(_wexUserIsSudo)" = "false" ]; then
   WEX_RUNNER_USERNAME=$(whoami)
   WEX_RUNNER_BASHRC_PATH=${WEX_BASHRC_PATH}
   WEX_RUNNER_PATH_HOME=$(realpath ~)/
@@ -48,37 +48,37 @@ WEX_SWITCH_NON_SUDO_COMMAND="sudo -u ${WEX_RUNNER_USERNAME} ${WEX_SWITCH_ARGS}"
 WEX_CHOWN_NON_SUDO_COMMAND="sudo chown ${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}"
 
 case "$(uname -s)" in
-  Darwin)
-    WEX_OS='mac'
-    ;;
-  Linux)
-    WEX_OS='linux'
-    ;;
-  CYGWIN*|MINGW32*|MINGW64*|MSYS*)
-    WEX_OS='windows'
-    ;;
-  # Add here more strings to compare
-  # See correspondence table at the bottom of this answer
-  *)
-    WEX_OS='other OS'
-    ;;
+Darwin)
+  WEX_OS='mac'
+  ;;
+Linux)
+  WEX_OS='linux'
+  ;;
+CYGWIN* | MINGW32* | MINGW64* | MSYS*)
+  WEX_OS='windows'
+  ;;
+# Add here more strings to compare
+# See correspondence table at the bottom of this answer
+*)
+  WEX_OS='other OS'
+  ;;
 esac
 
 # Load addons global files.
 for ADDON in "${WEX_ADDONS[@]}"; do
   ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/includes/globals.sh"
 
-  if [ -f "${ADDON_FILE}" ];then
-   . "${ADDON_FILE}";
+  if [ -f "${ADDON_FILE}" ]; then
+    . "${ADDON_FILE}"
   fi
-done;
+done
 
 # Load addons functions files.
 for ADDON in "${WEX_ADDONS[@]}"; do
   ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/bash/init.sh"
 
   if [ -f "${ADDON_FILE}" ]; then
-   . "${ADDON_FILE}"
+    . "${ADDON_FILE}"
   fi
 done
 

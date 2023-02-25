@@ -10,7 +10,7 @@
 . "${WEX_DIR_ROOT}/includes/function/install.sh"
 
 # Check user is root
-if [ "${EUID}" -gt 0 ];then
+if [ "${EUID}" -gt 0 ]; then
   _wexLog "Install needs sudo, switching.."
 
   # Exec as sudo, but keep some environment vars.
@@ -32,24 +32,24 @@ if [ -z ${WEX_BASH_VERSION+x} ]; then
   if [ "${WEX_BASH_VERSION}" -lt "${WEX_BASH_VERSION_MIN}" ]; then
     _wexError "Wex error, need to run on bash version ${WEX_BASH_VERSION_MIN}" "Your current version is ${WEX_BASH_VERSION}"
     exit
-  fi;
-fi;
+  fi
+fi
 
 # Check if "realpath" method exists (missing on raw macos)
 if [ "$(_wexHasRealPath)" = "false" ]; then
   _wexError "The realpath method is not found" "You may install coreutils to solve it"
-  exit;
-fi;
+  exit
+fi
 
 # Create or recreate symlink.
 _wexLog "Adding symlink.."
-if [ -L ${WEX_BIN} ];then
+if [ -L ${WEX_BIN} ]; then
   rm "${WEX_BIN}"
 fi
 
 _wexLog "Create env default file."
-if [ ! -f "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env" ];then
-  echo "APP_ENV=prod" > "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env"
+if [ ! -f "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env" ]; then
+  echo "APP_ENV=prod" >"${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env"
 fi
 
 # Symlink to bin

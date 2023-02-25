@@ -11,7 +11,7 @@ fileLinesCountArgs() {
 }
 
 fileLinesCount() {
-  if [ "${IGNORE_EMPTY}" = "true" ];then
+  if [ "${IGNORE_EMPTY}" = "true" ]; then
     cat "${FILE}" | sed '/^[[:space:]]*$/d' | wc -l
   else
     cat "${FILE}" | wc -l | sed 's/^ *//'

@@ -3,7 +3,7 @@
 configCommentTest() {
   # Revert file.
   local filePath=$(_wexTestSampleInit configSample)
-  local original=$(< ${filePath})
+  local original=$(<${filePath})
 
   # Each "uncomment" may not be the exact reversion of "comment" command :
   # It can interact with variables which are already commented at startup
@@ -37,7 +37,7 @@ configCommentTest() {
   # We have uncommented all settings,
   # which are more than original uncommented ones (one and two only)
   wex-exec default::config/uncomment -f=${filePath} -k="ConfigTestOptionEqual" -s="="
-  modified=$(< ${filePath})
+  modified=$(<${filePath})
   # The new value is "four"
   local value=$(wex-exec default::config/getValue -f=${filePath} -k="ConfigTestOptionEqual" -s="=")
   _wexTestAssertEqual ${value} "four"

@@ -9,10 +9,10 @@ configProcessSeparatorArgs() {
 
 configProcessSeparator() {
   # Empty separator
-  if [ "${SEPARATOR}" = "" ];then
+  if [ "${SEPARATOR}" = "" ]; then
     # Default space separator
     SEPARATOR=" "
-  fi;
+  fi
 
   # One or more separator in a group
   # Non capturing group does not exists in bash
