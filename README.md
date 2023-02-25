@@ -40,16 +40,49 @@ wex core/version
 - You want to use some practical core builtin scripts. You can explore builtin scripts in the [/bash/](/bash/) directory.
 - You want to use any `wex-service` addon available on our [repositories](https://github.com/orgs/wexample/repositories).
 
+## Core organization
+
+### Main folder structure
+The wex scripts folder is organized as follows:
+- The bash folder contains the core scripts, essential for basic operation (calling commands, addons, updates, etc.).
+- The "addons" folder contains the addons, each of which has an associated folder and Git repository. Each addon folder has the same structure as the root wex scripts folder (except for the addons folder, there are no addons within an addon).
+- The includes folder contains the functions necessary for the proper functioning of the scripts.
+- The tests folder contains the functional and unit tests executed using `wex test`.
+
+### Structure of the bash folder
+The scripts themselves are organized as follows:
+- Each folder corresponds to a group.
+- Each file name corresponds to the script name (excluding the .sh extension).
+
+### Structure of .sh files
+- Each .sh script contains at least one function, with the following schema: groupNameScriptName() { ... }
+- There may be a function defining the arguments, with the following schema: groupNameScriptNameArgs() { ... }
+
+#### Structure of configuration functions
+    groupNameScriptNameArgs() {
+      _ARGUMENTS=(
+        # [Long name] [Short name] [Argument description] [Required] [Default value]
+        'long_name ln "Argument description" false "abc"'
+      )
+      _AS_NON_SUDO=false
+      _DESCRIPTION="Description of the script"
+    }
+
+- The configuration function will transform each argument into a Bash variable in screaming snake case, for example: ${LONG_NAME}.
+- If an argument is missing, it will be interactively prompted to the user.
+- Other arguments are always added to the customized list, use the `--help` argument to see them.
+
 ## Releasing a new version
 
 Before pushing changes, you need to execute this command to update core feature and ensure stability :
   
-  # Execute all tests : warning, this may download all docker images of services
-  # you should probably run this command on a dedicated machine, virtual or not,
-  # or a dedicated machine for scripts development.
-  - wex test
-  # Create internal registry and update version number
-  - wex core/build
+Execute all tests : warning, this may download all docker images of services you should probably run this command on a dedicated machine, virtual or not, or a dedicated machine for scripts development.
+
+    wex test
+
+Create internal registry and update version number
+
+    wex core/build
 
 ## Testing
 
