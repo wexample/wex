@@ -110,8 +110,11 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
-  _wexTestAppManagement app::app
-  _wexTestAppArgs app::app dir
+  if [ -z "${1}" ];then
+    _wexTestAppManagement app::app
+    _wexTestAppArgs app::app dir
+  fi
+
   _wexTestRunTests "${@}"
 }
 
@@ -322,9 +325,21 @@ _wexTestScript() {
   fi
 }
 
+_wexTestFileExists() {
+  local FILEPATH="$1"
+
+  if [ -f "$FILEPATH" ]; then
+    _wexTestResultSuccess "File $FILEPATH exists."
+  else
+    _wexTestResultError "File $FILEPATH does not exist."
+  fi
+}
+
+
 export -f _wexTestAssertEqual
 export -f _wexTestAssertNotEmpty
 export -f _wexTestClearTempDir
+export -f _wexTestFileExists
 export -f _wexTestGetFile
 export -f _wexTestSampleDiff
 export -f _wexTestResultError
