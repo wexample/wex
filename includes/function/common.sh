@@ -56,6 +56,21 @@ _wexFindScriptFile() {
   done
 }
 
+_wexGetCommandNameFromPath() {
+  local FILE_PATH="$1"
+  local ADDON
+  local RELATIVE_PATH
+
+  ADDON="$(basename "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")"
+  if [ "${ADDON}" == "addons" ]; then
+    ADDON="$(basename "$(dirname "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")")"
+  fi
+  ADDON="${ADDON:-default}"
+  RELATIVE_PATH="$(echo "${FILE_PATH}" | sed -e "s#${WEX_DIR_ADDONS}${ADDON}/bash/##" -e 's#\.sh$##')"
+
+  echo "${ADDON}::${RELATIVE_PATH}"
+}
+
 _wexFindAddonsDirs() {
   _wexGetOnlyDirs "${WEX_DIR_ADDONS}"
 }

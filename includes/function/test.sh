@@ -110,38 +110,85 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
-  _wexTestAppManagement
-#  _wexTestRunTests "${@}"
+  _wexTestAppManagement app::app
+  _wexTestAppArgs app::app dir
+  _wexTestRunTests "${@}"
 }
 
 # Returns the list of all app scripts in the addons directory
 _wexGetAllAppScripts() {
+  local ADDON_GROUP="$1"
+  local ADDON="${ADDON_GROUP%%::*}"
+  local GROUP="${ADDON_GROUP#*::}"
+  local ADDON_APP_DIR="${WEX_DIR_ADDONS}${ADDON}/bash/${GROUP}/"
   local ALL_APP_SCRIPTS=()
-  for ADDON in "${WEX_ADDONS[@]}"; do
-    local ADDON_APP_DIR="${WEX_DIR_ADDONS}${ADDON}/bash/app/"
-    if [ -d "${ADDON_APP_DIR}" ]; then
-      local ADDON_APP_SCRIPTS=($(find "${ADDON_APP_DIR}" -type f -name "*.sh" | sort))
-      local ALL_APP_SCRIPTS+=("${ADDON_APP_SCRIPTS[@]}")
-    fi
-  done
+
+  if [ -d "${ADDON_APP_DIR}" ]; then
+    ALL_APP_SCRIPTS=($(find "${ADDON_APP_DIR}" -type f -name "*.sh" | sort))
+  fi
+
   echo "${ALL_APP_SCRIPTS[@]}"
 }
 
-# Checks if all app scripts contain the required function
+
+# Checks if all app scripts contain the _wexAppGoTo function
 _wexTestAppManagement() {
-  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts))
+  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts "${1}"))
+  local REQUIRED='_wexAppGoTo "${DIR:-.}"'
   local FUNCTION
+
   for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
-    FUNCTION="$(grep -m 1 "_wexAppGoTo " "${SCRIPT}" | head -n 1)"
+    FUNCTION="$(grep -m 1 "${REQUIRED}" "${SCRIPT}" | head -n 1)"
     if [ -z "${FUNCTION}" ]; then
-      _wexTestResultError "Script ${SCRIPT} does not contain the required function."
+      _wexTestResultError "Script ${SCRIPT} does not contain the required function : ${REQUIRED}"
       exit
     else
-      _wexTestResultSuccess "Script ${SCRIPT} contains the required function."
+      _wexTestResultSuccess "Script ${SCRIPT} contains the required function : ${REQUIRED}"
     fi
   done
 }
 
+# Checks if all app scripts contain the required function
+_wexTestAppArgs() {
+  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts "${1}"))
+  local SEARCH_ARG=${2}
+
+  for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
+    if [ "$(_wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}")" = "true" ];then
+      _wexTestResultSuccess "Argument '${SEARCH_ARG}' is present in ${SCRIPT}."
+    else
+      _wexTestResultError "Argument '${SEARCH_ARG}' is missing in ${SCRIPT}."
+      exit
+    fi
+  done
+}
+
+_wexTestAppArgsFile() {
+  local SEARCH_ARG=${1}
+  local SCRIPT=${2}
+  local SCRIPT_CALL_NAME
+  local SCRIPT_ARGS
+  local _ARGUMENTS
+
+  SCRIPT_CALL_NAME=$(_wexGetCommandNameFromPath "${SCRIPT}")
+  SCRIPT_ARGS=$(_wexMethodNameArgs "${SCRIPT_CALL_NAME}")
+  _ARGUMENTS=()
+
+  . "${SCRIPT}"
+
+  if [[ $(type -t "${SCRIPT_ARGS}") = "function" ]]; then
+    ${SCRIPT_ARGS}
+
+    for ARGUMENT in "${_ARGUMENTS[@]}"; do
+      if [[ "$ARGUMENT" =~ (^|[[:space:]])${SEARCH_ARG}($|[[:space:]]) ]]; then
+        echo true
+        return;
+      fi
+    done
+  fi
+
+  echo false
+}
 
 _wexTestRunTests() {
   export WEX_TRACE_CALLS=true
