@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
 coreRegisterArgs() {
-  _DESCRIPTION="Update local unversioned registeries"
   # shellcheck disable=SC2034
   _DESCRIPTION="Create a local core registries."
 }
 
 coreRegister() {
-  local LOCATIONS=$(_wexFindScriptsLocations)
+  local LOCATIONS
   local ALL_SCRIPTS=()
   local ALL_SCRIPTS_PATHS=()
+
+  LOCATIONS=$(_wexFindScriptsLocations)
 
   _wexLog "Creating scripts registry..."
   for LOCATION in ${LOCATIONS[@]}; do
