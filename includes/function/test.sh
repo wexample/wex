@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 _wexTestAssertNotEmpty() {
   local VALUE
@@ -109,6 +110,10 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
+  _wexTestRunTests "${@}"
+}
+
+_wexTestRunTests() {
   export WEX_TRACE_CALLS=true
 
   # List only directories.
@@ -117,14 +122,16 @@ wexTest() {
   local TEST_RUN_SCRIPT="${1}"
   local WEX_TEST_DIRS=("$(_wexFindScriptsLocations)")
   local TEST_ACTION=${2:-run}
+  local PATH_DIR_ROOT
+  local PATH_DIR_TESTS_BASH
 
   # Add executed methods to global trace file
   echo "" > "${WEX_FILE_TRACE_TESTS}"
 
   if [ "${TEST_ACTION}" == "run" ]; then
     for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
-      local PATH_DIR_ROOT=$(dirname "${PATH_DIR_BASH}")
-      local PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
+      PATH_DIR_ROOT=$(dirname "${PATH_DIR_BASH}")
+      PATH_DIR_TESTS_BASH="${PATH_DIR_ROOT}/tests/bash/"
 
       # Ignore missing bash dirs
       if [ -d "${PATH_DIR_TESTS_BASH}" ]; then
