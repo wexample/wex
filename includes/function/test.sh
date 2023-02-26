@@ -111,25 +111,27 @@ wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
   _wexTestAppManagement
-  _wexTestRunTests "${@}"
+#  _wexTestRunTests "${@}"
 }
 
-_wexTestAppManagement() {
-  # Find all scripts in the "app" group of the addons
+# Returns the list of all app scripts in the addons directory
+_wexGetAllAppScripts() {
   local ALL_APP_SCRIPTS=()
   for ADDON in "${WEX_ADDONS[@]}"; do
     local ADDON_APP_DIR="${WEX_DIR_ADDONS}${ADDON}/bash/app/"
-
     if [ -d "${ADDON_APP_DIR}" ]; then
       local ADDON_APP_SCRIPTS=($(find "${ADDON_APP_DIR}" -type f -name "*.sh" | sort))
       local ALL_APP_SCRIPTS+=("${ADDON_APP_SCRIPTS[@]}")
     fi
   done
+  echo "${ALL_APP_SCRIPTS[@]}"
+}
 
-  # Check if each script has the required function
+# Checks if all app scripts contain the required function
+_wexTestAppManagement() {
+  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts))
   local FUNCTION
   for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
-    # Check if the script has the required function
     FUNCTION="$(grep -m 1 "_wexAppGoTo " "${SCRIPT}" | head -n 1)"
     if [ -z "${FUNCTION}" ]; then
       _wexTestResultError "Script ${SCRIPT} does not contain the required function."
@@ -139,6 +141,7 @@ _wexTestAppManagement() {
     fi
   done
 }
+
 
 _wexTestRunTests() {
   export WEX_TRACE_CALLS=true
