@@ -16,13 +16,7 @@ coreRegister() {
   for LOCATION in ${LOCATIONS[@]}; do
     ALL_SCRIPTS+=($(wex-exec scripts/list -d="${LOCATION}"))
 
-    local ADDON=""
-    local ADDON_PATH=$(dirname "${LOCATION}")
-    if [ $(dirname "${ADDON_PATH}")/ == "${WEX_DIR_ADDONS}" ]; then
-      ADDON=$(basename "${ADDON_PATH}")
-    elif [ "${ADDON_PATH}/" == "${WEX_DIR_ROOT}" ]; then
-      ADDON="default"
-    fi
+    local ADDON=$(_wexGetAddonFromPath "${LOCATION}")
 
     ALL_SCRIPTS_PATHS+=($(wex-exec scripts/list -d="${LOCATION}" -f -a="${ADDON}"))
   done

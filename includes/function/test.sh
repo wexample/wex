@@ -180,8 +180,6 @@ _wexTestAppArgs() {
   local SEARCH_ARG=${2}
 
   for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
-    _wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}"
-
     if [ "$(_wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}")" = "true" ];then
       _wexTestResultSuccess "Argument '${SEARCH_ARG}' is present in ${SCRIPT}."
     else

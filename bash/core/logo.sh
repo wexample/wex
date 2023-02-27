@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+coreLogoArgs() {
+  _DESCRIPTION="Display wex logo"
+}
+
 coreLogo() {
   if [ "${QUIET}" = "true" ]; then
     return
