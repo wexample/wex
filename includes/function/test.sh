@@ -110,6 +110,9 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
+  # Add executed methods to global trace file
+  echo "" >"${WEX_FILE_TRACE_TESTS}"
+
   local LOCATIONS
   local SCRIPTS
   local SCRIPT_PATH
@@ -139,6 +142,7 @@ wexTest() {
   fi
 
   _wexTestRunTests "${@}"
+  _wexTestTrace "${@}"
 }
 
 # Returns the list of all app scripts in the addons directory
@@ -248,9 +252,6 @@ _wexTestRunTests() {
   local PATH_DIR_ROOT
   local PATH_DIR_TESTS_BASH
 
-  # Add executed methods to global trace file
-  echo "" >"${WEX_FILE_TRACE_TESTS}"
-
   if [ "${TEST_ACTION}" == "run" ]; then
     for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
       PATH_DIR_ROOT=$(dirname "${PATH_DIR_BASH}")
@@ -300,9 +301,13 @@ EOF
     _wexLog "Created ${TEST_FILE}"
     return
   fi
+}
 
-  local TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
+_wexTestTrace() {
+  local TRACED_COMMANDS
   local MISSING_COUNT=0
+
+  TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
 
   for SCRIPT_PATH in $(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}"); do
     local FOUND=false
