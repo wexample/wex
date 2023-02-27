@@ -11,7 +11,7 @@ _wexFindScriptFile() {
   # File does not exist.
   if [ -f "${WEX_SCRIPT_FILE}" ]; then
     echo "${WEX_SCRIPT_FILE}"
-    exit
+    return
   fi
 
   local WEX_SCRIPT_FILE
@@ -56,19 +56,34 @@ _wexFindScriptFile() {
   done
 }
 
+_wexGetAddonFromPath() {
+  local ADDON_PATH
+  ADDON_PATH=$(dirname "${1}")
+
+  if [ "$(dirname "${ADDON_PATH}")/" = "${WEX_DIR_ADDONS}" ]; then
+    basename "${ADDON_PATH}"
+  elif [ "${ADDON_PATH}/" == "${WEX_DIR_ROOT}" ]; then
+    echo "default"
+  fi
+}
+
 _wexGetCommandNameFromPath() {
   local FILE_PATH="$1"
   local ADDON
   local RELATIVE_PATH
 
-  ADDON="$(basename "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")"
-  if [ "${ADDON}" == "addons" ]; then
-    ADDON="$(basename "$(dirname "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")")"
+  if [[ "${FILE_PATH}" == *"${WEX_DIR_ADDONS}"* ]]; then
+    ADDON="$(basename "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")"
+    if [ "${ADDON}" == "addons" ]; then
+      ADDON="$(basename "$(dirname "$(dirname "$(dirname "$(dirname "${FILE_PATH}")")")")")"
+    fi
+    ADDON="${ADDON:-default}"
+    RELATIVE_PATH="$(echo "${FILE_PATH}" | sed -e "s#${WEX_DIR_ADDONS}${ADDON}/bash/##" -e 's#\.sh$##')"
+    echo "${ADDON}::${RELATIVE_PATH}"
+  else
+    RELATIVE_PATH="$(echo "${FILE_PATH}" | sed -e "s#${WEX_DIR_BASH}##" -e 's#\.sh$##')"
+    echo "default::${RELATIVE_PATH}"
   fi
-  ADDON="${ADDON:-default}"
-  RELATIVE_PATH="$(echo "${FILE_PATH}" | sed -e "s#${WEX_DIR_ADDONS}${ADDON}/bash/##" -e 's#\.sh$##')"
-
-  echo "${ADDON}::${RELATIVE_PATH}"
 }
 
 _wexFindAddonsDirs() {
@@ -202,6 +217,7 @@ export -f _wexCommandName
 export -f _wexFindScriptFile
 export -f _wexFindAddonsDirs
 export -f _wexFindScriptsLocations
+export -f _wexGetAddonFromPath
 export -f _wexGetArguments
 export -f _wexGetOnlyDirs
 export -f _wexLoadVariables

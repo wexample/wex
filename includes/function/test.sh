@@ -110,6 +110,29 @@ _wexTestClearTempDir() {
 wexTest() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
+  local LOCATIONS
+  local SCRIPTS
+  local SCRIPT_PATH
+
+  LOCATIONS=$(_wexFindScriptsLocations)
+  for LOCATION in ${LOCATIONS[@]}; do
+    local ADDON=$(_wexGetAddonFromPath $LOCATION)
+    SCRIPTS=($(wex-exec scripts/list -d="${LOCATION}"))
+
+    for SCRIPT in ${SCRIPTS[@]}; do
+      SCRIPT_PATH=$(_wexFindScriptFile ${ADDON}::${SCRIPT})
+
+      if [ -f "${SCRIPT_PATH}" ]; then
+        if [ "$(_wexLoadArguments "${SCRIPT_PATH}")" = true ]; then
+          _wexTestResultSuccess "Args section found in ${SCRIPT_PATH}"
+        else
+          _wexTestResultError "Args section with description are required for core and addons, not found in : ${SCRIPT_PATH}"
+          exit
+        fi
+      fi
+    done
+  done
+
   if [ -z "${1}" ];then
     _wexTestAppManagement app::app
     _wexTestAppArgs app::app dir
@@ -119,7 +142,7 @@ wexTest() {
 }
 
 # Returns the list of all app scripts in the addons directory
-_wexGetAllAppScripts() {
+_wexTestGetAllAppScriptsFromAddonAndGroup() {
   local ADDON_GROUP="$1"
   local ADDON="${ADDON_GROUP%%::*}"
   local GROUP="${ADDON_GROUP#*::}"
@@ -136,7 +159,7 @@ _wexGetAllAppScripts() {
 
 # Checks if all app scripts contain the _wexAppGoTo function
 _wexTestAppManagement() {
-  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts "${1}"))
+  local ALL_APP_SCRIPTS=($(_wexTestGetAllAppScriptsFromAddonAndGroup "${1}"))
   local REQUIRED='_wexAppGoTo "${DIR:-.}"'
   local FUNCTION
 
@@ -153,10 +176,12 @@ _wexTestAppManagement() {
 
 # Checks if all app scripts contain the required function
 _wexTestAppArgs() {
-  local ALL_APP_SCRIPTS=($(_wexGetAllAppScripts "${1}"))
+  local ALL_APP_SCRIPTS=($(_wexTestGetAllAppScriptsFromAddonAndGroup "${1}"))
   local SEARCH_ARG=${2}
 
   for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
+    _wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}"
+
     if [ "$(_wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}")" = "true" ];then
       _wexTestResultSuccess "Argument '${SEARCH_ARG}' is present in ${SCRIPT}."
     else
@@ -164,6 +189,27 @@ _wexTestAppArgs() {
       exit
     fi
   done
+}
+
+_wexLoadArguments() {
+  local SCRIPT=${1}
+  local SCRIPT_CALL_NAME
+  local SCRIPT_ARGS
+
+  SCRIPT_CALL_NAME=$(_wexGetCommandNameFromPath "${SCRIPT}")
+  SCRIPT_ARGS=$(_wexMethodNameArgs "${SCRIPT_CALL_NAME}")
+  _ARGUMENTS=()
+
+  . "${SCRIPT}"
+
+  if [[ $(type -t "${SCRIPT_ARGS}") = "function" ]]; then
+    ${SCRIPT_ARGS}
+
+    echo true
+    return
+  fi
+
+  echo false
 }
 
 _wexTestAppArgsFile() {
