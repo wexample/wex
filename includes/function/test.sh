@@ -133,7 +133,7 @@ wexTest() {
     done
   done
 
-  if [ -z "${1}" ];then
+  if [ -z "${1}" ]; then
     _wexTestAppManagement app::app
     _wexTestAppArgs app::app dir
   fi
@@ -155,7 +155,6 @@ _wexTestGetAllAppScriptsFromAddonAndGroup() {
 
   echo "${ALL_APP_SCRIPTS[@]}"
 }
-
 
 # Checks if all app scripts contain the _wexAppGoTo function
 _wexTestAppManagement() {
@@ -180,7 +179,7 @@ _wexTestAppArgs() {
   local SEARCH_ARG=${2}
 
   for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
-    if [ "$(_wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}")" = "true" ];then
+    if [ "$(_wexTestAppArgsFile "${SEARCH_ARG}" "${SCRIPT}")" = "true" ]; then
       _wexTestResultSuccess "Argument '${SEARCH_ARG}' is present in ${SCRIPT}."
     else
       _wexTestResultError "Argument '${SEARCH_ARG}' is missing in ${SCRIPT}."
@@ -229,7 +228,7 @@ _wexTestAppArgsFile() {
     for ARGUMENT in "${_ARGUMENTS[@]}"; do
       if [[ "$ARGUMENT" =~ (^|[[:space:]])${SEARCH_ARG}($|[[:space:]]) ]]; then
         echo true
-        return;
+        return
       fi
     done
   fi
@@ -250,7 +249,7 @@ _wexTestRunTests() {
   local PATH_DIR_TESTS_BASH
 
   # Add executed methods to global trace file
-  echo "" > "${WEX_FILE_TRACE_TESTS}"
+  echo "" >"${WEX_FILE_TRACE_TESTS}"
 
   if [ "${TEST_ACTION}" == "run" ]; then
     for PATH_DIR_BASH in ${WEX_TEST_DIRS[@]}; do
@@ -289,7 +288,7 @@ _wexTestRunTests() {
     TEST_FILE="$(_wexTestGetFile "${TEST_RUN_SCRIPT}")"
     METHOD_NAME="$(_wexMethodName "${TEST_RUN_SCRIPT}")Test"
 
-    cat <<EOF > "${TEST_FILE}"
+    cat <<EOF >"${TEST_FILE}"
 #!/usr/bin/env bash
 
 ${METHOD_NAME}() {
@@ -316,7 +315,7 @@ EOF
 
     if [ ${FOUND} == false ]; then
       _wexTestResultError "No test ran for command : $(echo "${SCRIPT_PATH}" | cut -d '#' -f 1)"
-      MISSING_COUNT=$((MISSING_COUNT+1))
+      MISSING_COUNT=$((MISSING_COUNT + 1))
     fi
   done
 
@@ -378,7 +377,6 @@ _wexTestFileExists() {
     _wexTestResultError "File $FILEPATH does not exist."
   fi
 }
-
 
 export -f _wexTestAssertEqual
 export -f _wexTestAssertNotEmpty
