@@ -70,12 +70,11 @@ mkdir -p "${WEX_USER_PATH_HOME}"
 
 _wexLog "Fixing permissions..."
 chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_USER_PATH_HOME}"
-chown -R "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_DIR_ROOT}"
 
 # Add to bashrc, create it if not exists.
-_wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
-touch "${WEX_RUNNER_BASHRC_PATH}"
-wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
+_wexLog "Adding autocompletion script to ${WEX_BASHRC_PATH}"
+touch "${WEX_BASHRC_PATH}"
+wex file/textAppendOnce -f="${WEX_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
 
 _wexLog "Installing addons..."
 for ADDON in "${WEX_ADDONS[@]}"; do
