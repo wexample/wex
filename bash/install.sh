@@ -60,7 +60,7 @@ chmod -R +x ${WEX_BIN}
 
 # Install core scripts dependencies
 _wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
-wex-exec scripts/install -d="${WEX_DIR_BASH}"
+wex scripts/install -d="${WEX_DIR_BASH}"
 
 # Create apps folder
 _wexLog "Creates /var/www folder for apps management"
@@ -75,7 +75,7 @@ chown -R "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_DIR_ROOT}"
 # Add to bashrc, create it if not exists.
 _wexLog "Adding autocompletion script to ${WEX_RUNNER_BASHRC_PATH}"
 touch "${WEX_RUNNER_BASHRC_PATH}"
-wex-exec file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
+wex file/textAppendOnce -f="${WEX_RUNNER_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
 
 _wexLog "Installing addons..."
 for ADDON in "${WEX_ADDONS[@]}"; do
@@ -88,8 +88,8 @@ for ADDON in "${WEX_ADDONS[@]}"; do
 done
 
 _wexLog "Registering..."
-wex-exec default::core/register
+wex default::core/register
 
 _wexLog "Install complete..."
 
-wex-exec core/logo
+wex core/logo
