@@ -65,11 +65,11 @@ wex scripts/install -d="${WEX_DIR_BASH}"
 # Create apps folder
 _wexLog "Creates /var/www folder for apps management"
 mkdir -p /var/www
-_wexLog "Creates ${WEX_RUNNER_PATH_WEX} folder for apps management"
-mkdir -p "${WEX_RUNNER_PATH_WEX}"
+_wexLog "Creates ${WEX_USER_PATH_HOME} folder for apps management"
+mkdir -p "${WEX_USER_PATH_HOME}"
 
 _wexLog "Fixing permissions..."
-chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_RUNNER_PATH_WEX}"
+chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_USER_PATH_HOME}"
 chown -R "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_DIR_ROOT}"
 
 # Add to bashrc, create it if not exists.

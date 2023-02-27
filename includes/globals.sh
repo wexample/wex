@@ -14,6 +14,7 @@ WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
+WEX_USER_PATH_HOME=$(realpath ~)/
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
@@ -31,7 +32,7 @@ WEX_ARGUMENT_DEFAULTS=(
 if [ "$(_wexUserIsSudo)" = "false" ]; then
   WEX_RUNNER_USERNAME=$(whoami)
   WEX_RUNNER_BASHRC_PATH=${WEX_BASHRC_PATH}
-  WEX_RUNNER_PATH_HOME=$(realpath ~)/
+  WEX_RUNNER_PATH_HOME=${WEX_USER_PATH_HOME}
   WEX_RUNNER_PATH_WEX=${WEX_RUNNER_PATH_HOME}.wex/
   WEX_RUNNER_PATH_BASH=${WEX_RUNNER_PATH_WEX}bash/
 fi
@@ -109,3 +110,4 @@ export WEX_SWITCH_NON_SUDO_COMMAND
 export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
 export WEX_TRACE_CALLS=${WEX_TRACE_CALLS:-false}
+export WEX_USER_PATH_HOME
