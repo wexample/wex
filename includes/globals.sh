@@ -13,7 +13,7 @@ WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
-WEX_DOCKER_COMPOSE_YML_VERSION="3"
+WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
