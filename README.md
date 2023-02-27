@@ -8,9 +8,14 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 
 ### Ubuntu
 
-- One line
-  install : `sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install`
-- Check install : `wex hi`
+One line install : 
+
+    sudo git clone --depth=1 https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
+
+Check install : 
+
+    # Returns : hi!
+    wex hi
 
 Other platforms has not been tested yet for these version.
 
