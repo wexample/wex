@@ -1,0 +1,14 @@
+stages:
+  - deploy
+
+test:app:
+  only:
+    - master
+  variables:
+    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
+    TERM: dumb
+  script:
+    - wex hi
+    - sudo wex core/version
+    # Little check the job was executed to the end
+    - echo "The end"
