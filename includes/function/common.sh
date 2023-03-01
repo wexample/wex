@@ -13,6 +13,10 @@ _wexExecMiddleWares() {
   done
 }
 
+_wexParseArg() {
+  sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${1}
+}
+
 _wexFindScriptFile() {
   local WEX_SCRIPT_CALL_NAME
   WEX_SCRIPT_CALL_NAME="${1}"
