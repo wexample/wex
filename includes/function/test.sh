@@ -108,6 +108,16 @@ _wexTestClearTempDir() {
 }
 
 wexTest() {
+  if [ -z "${1}" ]; then
+    _wexTestAppArgs app::app app_dir
+    _wexTestRArgsSection "${@}"
+  fi
+
+  _wexTestRunTests "${@}"
+  _wexTestTrace "${@}"
+}
+
+_wexTestRArgsSection() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
   # Add executed methods to global trace file
