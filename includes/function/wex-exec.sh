@@ -83,7 +83,7 @@ wex-exec() {
     local ARG_SEARCH=0
 
     for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"; do
-      ARG_GIVEN_NAME=$(sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<<${ARG_GIVEN})
+      ARG_GIVEN_NAME=$(_wexParseArg "${ARG_GIVEN}")
       ARG_GIVEN_VALUE=${ARG_GIVEN#*\=}
 
       if [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_LONG}" ] || [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_SHORT}" ]; then
@@ -104,9 +104,6 @@ wex-exec() {
         else
           local ${ARG_EXPECTED_LONG^^}=true
         fi
-      else
-        _wexError "Given argument ${ARG_GIVEN} not supported by command ${WEX_SCRIPT_CALL_NAME}" "Use \`wex ${WEX_SCRIPT_CALL_NAME} --help\` to list supported variables."
-        exit 1
       fi
 
       ((ARG_SEARCH++))
@@ -137,6 +134,28 @@ wex-exec() {
       fi
     fi
   done
+
+  for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"; do
+    ARG_GIVEN_NAME=$(_wexParseArg "${ARG_GIVEN}")
+
+    local ARG_FOUND=false
+    for ((i = -_NEGATIVE_ARGS_LENGTH; i < ${#WEX_CALLING_ARGUMENTS[@]} - _NEGATIVE_ARGS_LENGTH; i++)); do
+      eval "PARAMS=(${WEX_CALLING_ARGUMENTS[${i}]})"
+      local ARG_EXPECTED_LONG=${PARAMS[0]}
+      local ARG_EXPECTED_SHORT=${PARAMS[1]}
+
+      if [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_LONG}" ] || [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_SHORT}" ]; then
+        ARG_FOUND=true
+        break
+      fi
+    done
+
+    if [ "${ARG_FOUND}" = false ]; then
+      _wexError "Given argument ${ARG_GIVEN_NAME} not supported by command ${WEX_SCRIPT_CALL_NAME}" "Use \`wex ${WEX_SCRIPT_CALL_NAME} --help\` to list supported variables."
+      exit 1
+    fi
+  done
+
 
   # Show help manual
   if [ ! -z ${HELP+x} ]; then
