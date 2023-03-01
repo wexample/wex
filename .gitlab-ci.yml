@@ -9,7 +9,6 @@ test:app:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script:
-    - wex hi
     - sudo wex core/version
     - sudo wex core/update
     - sudo wex test
