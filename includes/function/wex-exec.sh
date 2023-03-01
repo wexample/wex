@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+_wexExecMiddleWares() {
+  # Run middlewares.
+  local MIDDLEWARE_PATH
+  for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
+    eval "${1}=''"
+    . "${MIDDLEWARE_PATH}"
+
+    if [[ $(type -t ${1}) = "function" ]]; then
+      ${1} "${@:1}"
+    fi
+  done
+}
+
 wex-exec() {
   # Using false as an argument allows to load a file and initialize wex
   # without executing any script.
@@ -13,6 +26,8 @@ wex-exec() {
     sudo -E bash "${WEX_DIR_BASH}test.sh" "${2}" "${3}"
     return
   fi
+
+  _wexExecMiddleWares commandInit "${@}"
 
   local WEX_SCRIPT_FILE
   local WEX_SCRIPT_METHOD_NAME
@@ -226,6 +241,14 @@ wex-exec() {
       echo "${WEX_SCRIPT_CALL_NAME}" >>"${WEX_FILE_TRACE_TESTS}"
     fi
   fi
+
+  # Run middlewares.
+  local MIDDLEWARE_PATH
+  for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
+    . "${MIDDLEWARE_PATH}"
+
+    _wexExecMiddleWares commandExec "${@}"
+  done
 
   # Execute script with all parameters.
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"

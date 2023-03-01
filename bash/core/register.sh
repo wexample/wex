@@ -8,6 +8,7 @@ coreRegisterArgs() {
 coreRegister() {
   _coreRegisterScripts
   _coreRegisterConfig
+  _coreRegisterConfigMiddlewares
 }
 
 _coreRegisterScripts() {
@@ -64,4 +65,20 @@ _coreRegisterConfig() {
 
     wex-exec default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${VAR_VALUE}" -vv
   done
+}
+
+_coreRegisterConfigMiddlewares() {
+  local ADDONS_DIRS
+  local MIDDLEWARE
+  local OUTPUT=()
+  ADDONS_DIRS=$(_wexFindAddonsDirs)
+
+  for DIR in ${ADDONS_DIRS[@]}; do
+    MIDDLEWARE="${DIR}bash/middleware.sh"
+    if [ -f "${MIDDLEWARE}" ]; then
+      OUTPUT+=("${MIDDLEWARE}")
+    fi
+  done
+
+  printf "%s\n" "${OUTPUT[@]}" >"${WEX_FILE_MIDDLEWARES}"
 }

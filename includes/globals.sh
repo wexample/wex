@@ -8,6 +8,7 @@ WEX_DIR_ADDONS="${WEX_DIR_ROOT}addons/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
 WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
 WEX_FILE_ALL_SCRIPTS=${WEX_DIR_TMP}all-scripts
+WEX_FILE_MIDDLEWARES=${WEX_DIR_TMP}middlewares
 WEX_FILE_ALL_SCRIPTS_PATHS=${WEX_FILE_ALL_SCRIPTS}-paths
 WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
@@ -15,6 +16,7 @@ WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
+WEX_MIDDLEWARES=($(cat ${WEX_FILE_MIDDLEWARES}))
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
@@ -97,7 +99,9 @@ export WEX_DOCKER_COMPOSE_YML_VERSION
 export WEX_FILE_ALL_SCRIPTS
 export WEX_FILE_ALL_SCRIPTS_PATHS
 export WEX_FILE_MESSAGE_FUNCTION
+export WEX_FILE_MIDDLEWARES
 export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
+export WEX_MIDDLEWARES
 export WEX_QUIET_MODE
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
