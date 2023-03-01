@@ -144,7 +144,7 @@ wex-exec() {
       local ARG_EXPECTED_LONG=${PARAMS[0]}
       local ARG_EXPECTED_SHORT=${PARAMS[1]}
 
-      if [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_LONG}" ] || [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_SHORT}" ]; then
+      if [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_LONG}" ] || [ "${ARG_GIVEN_NAME}" = "${ARG_EXPECTED_SHORT}" ] || [ "--${ARG_EXPECTED_LONG}" = "${ARG_GIVEN}" ] || [ "-${ARG_EXPECTED_SHORT}" = "${ARG_GIVEN}" ]; then
         ARG_FOUND=true
         break
       fi
