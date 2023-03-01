@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+_wexExecMiddleWares() {
+  # Run middlewares.
+  local MIDDLEWARE_PATH
+  for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
+    eval "${1}=''"
+    . "${MIDDLEWARE_PATH}"
+
+    if [[ $(type -t ${1}) = "function" ]]; then
+      ${1} "${@:1}"
+    fi
+  done
+}
+
 _wexFindScriptFile() {
   local WEX_SCRIPT_CALL_NAME
   WEX_SCRIPT_CALL_NAME="${1}"
@@ -214,6 +227,7 @@ _wexUserIsSudo() {
 
 export -f _wexAddonName
 export -f _wexCommandName
+export -f _wexExecMiddleWares
 export -f _wexFindScriptFile
 export -f _wexFindAddonsDirs
 export -f _wexFindScriptsLocations

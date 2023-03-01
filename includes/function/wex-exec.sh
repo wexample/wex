@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
 
-_wexExecMiddleWares() {
-  # Run middlewares.
-  local MIDDLEWARE_PATH
-  for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
-    eval "${1}=''"
-    . "${MIDDLEWARE_PATH}"
-
-    if [[ $(type -t ${1}) = "function" ]]; then
-      ${1} "${@:1}"
-    fi
-  done
-}
-
 wex-exec() {
   # Using false as an argument allows to load a file and initialize wex
   # without executing any script.
