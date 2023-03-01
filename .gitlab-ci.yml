@@ -11,5 +11,7 @@ test:app:
   script:
     - wex hi
     - sudo wex core/version
+    - sudo wex core/update
+    - sudo wex test
     # Little check the job was executed to the end
     - echo "The end"
