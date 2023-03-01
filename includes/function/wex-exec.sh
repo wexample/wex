@@ -104,6 +104,9 @@ wex-exec() {
         else
           local ${ARG_EXPECTED_LONG^^}=true
         fi
+      else
+        _wexError "Given argument ${ARG_GIVEN} not supported by command ${WEX_SCRIPT_CALL_NAME}" "Use \`wex ${WEX_SCRIPT_CALL_NAME} --help\` to list supported variables."
+        exit 1
       fi
 
       ((ARG_SEARCH++))
