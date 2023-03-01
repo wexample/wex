@@ -6,13 +6,19 @@ coreRegisterArgs() {
 }
 
 coreRegister() {
-  local LOCATIONS
+  _coreRegisterScripts
+  _coreRegisterConfig
+}
+
+_coreRegisterScripts() {
   local ALL_SCRIPTS=()
   local ALL_SCRIPTS_PATHS=()
+  local LOCATIONS
+
+  _wexLog "Creating scripts registry..."
 
   LOCATIONS=$(_wexFindScriptsLocations)
 
-  _wexLog "Creating scripts registry..."
   for LOCATION in ${LOCATIONS[@]}; do
     ALL_SCRIPTS+=($(wex-exec scripts/list -d="${LOCATION}"))
 
@@ -23,9 +29,9 @@ coreRegister() {
 
   echo "${ALL_SCRIPTS[@]}" | tr ' ' '\n' | sort >"${WEX_FILE_ALL_SCRIPTS}"
   echo "${ALL_SCRIPTS_PATHS[@]}" | tr ' ' '\n' | sort >"${WEX_FILE_ALL_SCRIPTS_PATHS}"
+}
 
-  _wexLog "Creating apps config registry..."
-
+_coreRegisterConfig() {
   # Load expected env file.
   local APP_ENV=$(wex-exec app::app/env)
   local SERVICES=($(wex-exec app::services/all))
@@ -33,6 +39,8 @@ coreRegister() {
   local SERVICE_UPPERCASE
   local VAR_NAME
   local YML_INHERIT
+
+  _wexLog "Creating apps config registry..."
 
   echo "" >"${WEX_DIR_TMP}app-config"
   # Iterate through array using a counter
