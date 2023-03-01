@@ -242,6 +242,7 @@ export -f _wexLoadVariables
 export -f _wexLocalScriptPath
 export -f _wexMethodName
 export -f _wexMethodNameArgs
+export -f _wexParseArg
 export -f _wexSplitCommand
 export -f _wexTruncate
 export -f _wexUpperCaseFirstLetter
