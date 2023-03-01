@@ -31,14 +31,14 @@ if [ -z ${WEX_BASH_VERSION+x} ]; then
   WEX_BASH_VERSION=$(_wexVersionGetMajor "${BASH_VERSION}")
   if [ "${WEX_BASH_VERSION}" -lt "${WEX_BASH_VERSION_MIN}" ]; then
     _wexError "Wex error, need to run on bash version ${WEX_BASH_VERSION_MIN}" "Your current version is ${WEX_BASH_VERSION}"
-    exit
+    exit 1
   fi
 fi
 
 # Check if "realpath" method exists (missing on raw macos)
 if [ "$(_wexHasRealPath)" = "false" ]; then
   _wexError "The realpath method is not found" "You may install coreutils to solve it"
-  exit
+  exit 1
 fi
 
 # Create or recreate symlink.

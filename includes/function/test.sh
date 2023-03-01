@@ -140,7 +140,7 @@ _wexTestRArgsSection() {
           _wexTestResultSuccess "Args section found in ${SCRIPT_PATH}"
         else
           _wexTestResultError "Args section with description are required for core and addons, not found in : ${SCRIPT_PATH}"
-          exit
+          exit 1
         fi
       fi
     done
@@ -172,7 +172,7 @@ _wexTestAppArgs() {
       _wexTestResultSuccess "Argument '${SEARCH_ARG}' is present in ${SCRIPT}."
     else
       _wexTestResultError "Argument '${SEARCH_ARG}' is missing in ${SCRIPT}."
-      exit
+      exit 1
     fi
   done
 }
@@ -347,14 +347,14 @@ _wexTestScript() {
     "${METHOD_NAME}" ${_TEST_ARGUMENTS[@]}
   else
     _wexError "Test file exists but missing method : ${METHOD_NAME}"
-    exit
+    exit 1
   fi
 
   if [ "${TEST_HAS_ERROR}" = "false" ]; then
     _wexTestResultSuccess "Test complete"
   else
     _wexTestResultError "Test failed"
-    exit
+    exit 1
   fi
 }
 
