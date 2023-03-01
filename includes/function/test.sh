@@ -135,13 +135,6 @@ wexTest() {
       fi
     done
   done
-
-  if [ -z "${1}" ]; then
-    _wexTestAppArgs app::app dir
-  fi
-
-  _wexTestRunTests "${@}"
-  _wexTestTrace "${@}"
 }
 
 # Returns the list of all app scripts in the addons directory
