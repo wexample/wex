@@ -2,6 +2,7 @@ stages:
   - deploy
 
 test:app:
+  stage: deploy
   only:
     - master
   variables:
