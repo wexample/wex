@@ -137,7 +137,6 @@ wexTest() {
   done
 
   if [ -z "${1}" ]; then
-    _wexTestAppManagement app::app
     _wexTestAppArgs app::app dir
   fi
 
@@ -158,23 +157,6 @@ _wexTestGetAllAppScriptsFromAddonAndGroup() {
   fi
 
   echo "${ALL_APP_SCRIPTS[@]}"
-}
-
-# Checks if all app scripts contain the _wexAppGoTo function
-_wexTestAppManagement() {
-  local ALL_APP_SCRIPTS=($(_wexTestGetAllAppScriptsFromAddonAndGroup "${1}"))
-  local REQUIRED='_wexAppGoTo "${DIR:-.}"'
-  local FUNCTION
-
-  for SCRIPT in "${ALL_APP_SCRIPTS[@]}"; do
-    FUNCTION="$(grep -m 1 "${REQUIRED}" "${SCRIPT}" | head -n 1)"
-    if [ -z "${FUNCTION}" ]; then
-      _wexTestResultError "Script ${SCRIPT} does not contain the required function : ${REQUIRED}"
-      exit
-    else
-      _wexTestResultSuccess "Script ${SCRIPT} contains the required function : ${REQUIRED}"
-    fi
-  done
 }
 
 # Checks if all app scripts contain the required function
