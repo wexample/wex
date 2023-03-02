@@ -1,8 +1,8 @@
 stages:
-  - deploy
+  - test
 
 test:app:
-  stage: deploy
+  stage: test
   only:
     - master
   variables:
