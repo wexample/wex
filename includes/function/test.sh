@@ -230,7 +230,7 @@ _wexTestRunTests() {
   export WEX_TRACE_CALLS=true
   # TTY is disabled in tests.
   # In CI/CD pipeline it allows to display errors message instead of TTY error.
-  export WEX_DOCKER_COMPOSE_TTY=true
+  export WEX_DOCKER_COMPOSE_TTY=false
 
   # List only directories.
   local SCRIPTS
