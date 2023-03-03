@@ -1,6 +1,15 @@
 stages:
+  - setup
   - test
   - deploy
+
+setup:app:
+  stage: setup
+  only:
+    - master
+  script:
+    - wex && [[ "$(wex hi)" = "hi!" ]] && wex default::core/uninstall || true
+    - sudo git clone https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
 
 test:app:
   stage: test
