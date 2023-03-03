@@ -231,7 +231,7 @@ _wexTestRunTests() {
   # TTY is disabled in tests.
   # In CI/CD pipeline it allows to display errors message instead of TTY error.
   export WEX_DOCKER_COMPOSE_TTY=false
-  export WEX_DOCKER_COMPOSE_STDIN_OPEN=false
+  export WEX_DOCKER_COMPOSE_STDIN_OPEN=true
 
   # List only directories.
   local SCRIPTS
