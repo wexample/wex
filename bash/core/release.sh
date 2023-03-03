@@ -20,7 +20,6 @@ coreRelease() {
   wex core/build
   git add .
   git commit -m "New version"
-  git push "${ORIGIN}"
 
   for ADDON in "${WEX_ADDONS[@]}"; do
       _wexLog "Pushing ${ADDON}..."
@@ -28,6 +27,9 @@ coreRelease() {
       cd "${WEX_DIR_ADDONS}${ADDON}"
       git push "${ORIGIN}"
   done
+
+  # Push at end as this will trigger the build.
+  git push "${ORIGIN}"
 
   # Update local registry
   wex default::core/register
