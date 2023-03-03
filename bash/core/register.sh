@@ -54,7 +54,7 @@ _coreRegisterConfig() {
     wex-exec default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${YML_INHERIT}" -vv
 
     local VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}
-    local YML_INHERIT_ENV="${SERVICE_DIR}docker/docker-compose."${APP_ENV}".yml"
+    local YML_INHERIT_ENV="${SERVICE_DIR}docker/docker-compose.${APP_ENV}.yml"
     local VAR_VALUE
 
     if [ -f "${YML_INHERIT_ENV}" ]; then
