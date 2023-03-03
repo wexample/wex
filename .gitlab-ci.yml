@@ -11,7 +11,7 @@ setup:app:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script:
-    - wex && [[ "$(wex hi)" = "hi!" ]] && wex default::core/uninstall || true
+    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
     - sudo git clone https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
 
 test:app:
