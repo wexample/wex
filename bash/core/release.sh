@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-corePushArgs() {
+coreReleaseArgs() {
   # shellcheck disable=SC2034
   _DESCRIPTION='Push new core version to the repository'
   _ARGUMENTS=(
@@ -8,7 +8,7 @@ corePushArgs() {
   )
 }
 
-corePush() {
+coreRelease() {
   cd "${WEX_DIR_ROOT}"
 
   if [ "$(wex git/hasChange)" = "true" ];then
@@ -28,4 +28,7 @@ corePush() {
       cd "${WEX_DIR_ADDONS}${ADDON}"
       git push "${ORIGIN}"
   done
+
+  # Update local registry
+  wex default::core/register
 }
