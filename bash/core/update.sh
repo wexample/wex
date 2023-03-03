@@ -32,6 +32,7 @@ coreUpdate() {
   _wexLog "Updating addons..."
   for ADDON in "${WEX_ADDONS[@]}"; do
     if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
+      _wexLog "Updating ${ADDON}..."
       cd "${WEX_DIR_ADDONS}${ADDON}" && git pull
     fi
   done
