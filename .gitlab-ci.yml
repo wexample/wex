@@ -14,3 +14,10 @@ test:app:
     - sudo wex test
     # Little check the job was executed to the end
     - echo "The end"
+
+deploy:app:
+  stage: deploy
+  only:
+    - master
+  script:
+    - sudo wex core/push -o=github
