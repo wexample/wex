@@ -229,6 +229,10 @@ _wexUserIsSudo() {
   fi
 }
 
+_wexCreateAppEnv() {
+  echo -e "APP_ENV=${1}" > "${WEX_DIR_APP_DATA}${WEX_FILE_APP_ENV}"
+}
+
 export -f _wexAddonName
 export -f _wexCommandName
 export -f _wexExecMiddleWares

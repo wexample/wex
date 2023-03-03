@@ -44,10 +44,9 @@ if [ -L ${WEX_BIN} ]; then
   rm "${WEX_BIN}"
 fi
 
-_wexLog "Create env default file."
-if [ ! -f "${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env" ]; then
-  echo "APP_ENV=prod" >"${WEX_DIR_ROOT}${WEX_DIR_APP_DATA}.env"
-fi
+# Create env file.
+cd "${WEX_DIR_ROOT}"
+_wexCreateAppEnv "prod"
 
 # Symlink to bin
 ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
