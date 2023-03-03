@@ -1,6 +1,6 @@
 stages:
-  - deploy
   - test
+  - deploy
 
 test:app:
   stage: test
