@@ -1,4 +1,4 @@
-# wex v4.0.25
+# wex v4.0.26
 
 A single command to execute your bash scripts, and a pattern to write it. See description for more info.
 
