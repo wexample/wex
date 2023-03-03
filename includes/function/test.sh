@@ -114,7 +114,8 @@ wexTest() {
   fi
 
   _wexTestRunTests "${@}"
-  _wexTestTrace "${@}"
+  _wexTestBuildTrace "${@}"
+  _wexTestShowTrace "${@}"
 }
 
 _wexTestRArgsSection() {
@@ -293,9 +294,23 @@ EOF
   fi
 }
 
-_wexTestTrace() {
+_wexTestShowTrace() {
+  local UNCOVERED
+
+  UNCOVERED=($(cat "${WEX_DIR_ROOT}tests/uncovered"))
+
+  if [ ${#UNCOVERED[@]} -gt 0 ]; then
+    printf '%s\n' "${UNCOVERED[@]}"
+    _wexError "Uncovered commands : ${#UNCOVERED[@]}"
+  fi
+}
+
+_wexTestBuildTrace() {
   local TRACED_COMMANDS
   local MISSING_COUNT=0
+  local UNCOVERED=()
+
+  _wexLog "Building uncovered commands list..."
 
   TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
 
@@ -309,14 +324,11 @@ _wexTestTrace() {
     done
 
     if [ ${FOUND} == false ]; then
-      _wexTestResultError "No test ran for command : $(echo "${SCRIPT_PATH}" | cut -d '#' -f 1)"
-      MISSING_COUNT=$((MISSING_COUNT + 1))
+      UNCOVERED+=("${SCRIPT_PATH}")
     fi
   done
 
-  if [ ${MISSING_COUNT} != 0 ]; then
-    _wexTestResultError "Missing tests : ${MISSING_COUNT}"
-  fi
+  printf '%s\n' "${UNCOVERED[@]}" >"${WEX_DIR_ROOT}tests/uncovered"
 }
 
 _wexTestGetFile() {
