@@ -4,7 +4,7 @@ corePushArgs() {
   # shellcheck disable=SC2034
   _DESCRIPTION='Push new core version to the repository'
   _ARGUMENTS=(
-    'origin o "Origin repository" false gitlab'
+    'origin o "Origin repository" false origin'
   )
 }
 
