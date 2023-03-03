@@ -21,3 +21,6 @@ deploy:app:
     - master
   script:
     - sudo wex core/push -o=github
+  needs:
+    - job: test:app
+      artifacts: true
