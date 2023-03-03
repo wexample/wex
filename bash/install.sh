@@ -53,6 +53,9 @@ fi
 ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
+_wexLog "Registering..."
+wex default::core/register
+
 # Now the "wex" command is working, we can use it internally.
 
 # Install core scripts dependencies
@@ -82,10 +85,6 @@ for ADDON in "${WEX_ADDONS[@]}"; do
     _wexLog "Addon dir exists : ${WEX_DIR_ADDONS}${ADDON}"
   fi
 done
-
-_wexLog "Registering..."
-wex default::core/register
-
 _wexLog "Install complete..."
 
 wex core/logo
