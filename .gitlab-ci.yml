@@ -12,7 +12,7 @@ setup:app:
     TERM: dumb
   script:
     - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
-    - sudo git clone https://github.com/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
+    - sudo git clone ssh://git@gitlab.wexample.com:4567/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
 
 test:app:
   stage: test
