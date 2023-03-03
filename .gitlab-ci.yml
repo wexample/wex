@@ -13,25 +13,25 @@ setup:app:
   script:
     - echo "CI_JOB_ID : $CI_JOB_ID"
     - echo "CI_COMMIT_SHA : $CI_COMMIT_SHA"
-    - echo "CI_COMMIT_SHORT_SHA : $CI_COMMIT_SHORT_SHA"
-    - echo "CI_COMMIT_REF_NAME : $CI_COMMIT_REF_NAME"
-    - echo "CI_REPOSITORY_URL : $CI_REPOSITORY_URL"
-    - echo "CI_COMMIT_TAG : $CI_COMMIT_TAG"
-    - echo "CI_JOB_NAME : $CI_JOB_NAME"
-    - echo "CI_JOB_STAGE : $CI_JOB_STAGE"
-    - echo "CI_JOB_MANUAL : $CI_JOB_MANUAL"
-    - echo "CI_JOB_TRIGGERED : $CI_JOB_TRIGGERED"
-    - echo "CI_JOB_TOKEN : $CI_JOB_TOKEN"
-    - echo "CI_PIPELINE_ID : $CI_PIPELINE_ID"
-    - echo "CI_PIPELINE_IID : $CI_PIPELINE_IID"
-    - echo "CI_PAGES_DOMAIN : $CI_PAGES_DOMAIN"
-    - echo "CI_PAGES_URL : $CI_PAGES_URL"
-    - echo "CI_PROJECT_ID : $CI_PROJECT_ID"
-    - echo "CI_PROJECT_DIR : $CI_PROJECT_DIR"
-    - echo "CI_PROJECT_NAME : $CI_PROJECT_NAME"
-    - echo "CI_PROJECT_TITLE : $CI_PROJECT_TITLE"
-    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
-    - sudo git clone ssh://git@gitlab.wexample.com:4567/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
+#    - echo "CI_COMMIT_SHORT_SHA : $CI_COMMIT_SHORT_SHA"
+#    - echo "CI_COMMIT_REF_NAME : $CI_COMMIT_REF_NAME"
+#    - echo "CI_REPOSITORY_URL : $CI_REPOSITORY_URL"
+#    - echo "CI_COMMIT_TAG : $CI_COMMIT_TAG"
+#    - echo "CI_JOB_NAME : $CI_JOB_NAME"
+#    - echo "CI_JOB_STAGE : $CI_JOB_STAGE"
+#    - echo "CI_JOB_MANUAL : $CI_JOB_MANUAL"
+#    - echo "CI_JOB_TRIGGERED : $CI_JOB_TRIGGERED"
+#    - echo "CI_JOB_TOKEN : $CI_JOB_TOKEN"
+#    - echo "CI_PIPELINE_ID : $CI_PIPELINE_ID"
+#    - echo "CI_PIPELINE_IID : $CI_PIPELINE_IID"
+#    - echo "CI_PAGES_DOMAIN : $CI_PAGES_DOMAIN"
+#    - echo "CI_PAGES_URL : $CI_PAGES_URL"
+#    - echo "CI_PROJECT_ID : $CI_PROJECT_ID"
+#    - echo "CI_PROJECT_DIR : $CI_PROJECT_DIR"
+#    - echo "CI_PROJECT_NAME : $CI_PROJECT_NAME"
+#    - echo "CI_PROJECT_TITLE : $CI_PROJECT_TITLE"
+#    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+#    - sudo git clone ssh://git@gitlab.wexample.com:4567/wexample/wex.git /opt/wex && sudo bash /opt/wex/install
 
 test:app:
   stage: test
