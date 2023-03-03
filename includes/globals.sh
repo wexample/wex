@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 WEX_ADDONS=(app docker language prompt rw services-db services-php services-various system)
-WEX_BASHRC_PATH=~/.bashrc
 WEX_DIR_ROOT="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/"
 WEX_DIR_BASH="${WEX_DIR_ROOT}bash/"
 WEX_DIR_ADDONS="${WEX_DIR_ROOT}addons/"
 WEX_DIR_TMP=${WEX_DIR_ROOT}tmp/
-WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}/includes/function/messages.sh"
+WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}includes/function/messages.sh"
 WEX_FILE_ALL_SCRIPTS=${WEX_DIR_TMP}all-scripts
 WEX_FILE_MIDDLEWARES=${WEX_DIR_TMP}middlewares
 WEX_FILE_ALL_SCRIPTS_PATHS=${WEX_FILE_ALL_SCRIPTS}-paths
@@ -16,7 +15,7 @@ WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
-WEX_MIDDLEWARES=($(cat ${WEX_FILE_MIDDLEWARES}))
+WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
 
 WEX_ARGUMENT_DEFAULTS=(
   'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
@@ -26,14 +25,13 @@ WEX_ARGUMENT_DEFAULTS=(
   'quiet quiet "Hide logs and errors" false'
 )
 
-. "${WEX_DIR_ROOT}/includes/colors.sh"
-. "${WEX_DIR_ROOT}/includes/function/common.sh"
+. "${WEX_DIR_ROOT}includes/colors.sh"
+. "${WEX_DIR_ROOT}includes/function/common.sh"
 . "${WEX_FILE_MESSAGE_FUNCTION}"
 
 # Get the username of the original user
 if [ "$(_wexUserIsSudo)" = "false" ]; then
   WEX_RUNNER_USERNAME=$(whoami)
-  WEX_RUNNER_BASHRC_PATH=${WEX_BASHRC_PATH}
   WEX_RUNNER_PATH_HOME=${WEX_USER_PATH_HOME}
   WEX_RUNNER_PATH_WEX=${WEX_RUNNER_PATH_HOME}.wex/
   WEX_RUNNER_PATH_BASH=${WEX_RUNNER_PATH_WEX}bash/
@@ -41,7 +39,6 @@ fi
 
 WEX_SWITCH_ARGS="WEX_QUIET_MODE=${WEX_QUIET_MODE} \
 WEX_RUNNER_USERNAME=${WEX_RUNNER_USERNAME} \
-WEX_RUNNER_BASHRC_PATH=${WEX_RUNNER_BASHRC_PATH} \
 WEX_RUNNER_PATH_HOME=${WEX_RUNNER_PATH_HOME} \
 WEX_RUNNER_PATH_WEX=${WEX_RUNNER_PATH_WEX} \
 WEX_RUNNER_PATH_BASH=${WEX_RUNNER_PATH_WEX}"
@@ -107,7 +104,6 @@ export WEX_MIDDLEWARES
 export WEX_QUIET_MODE
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig
-export WEX_RUNNER_BASHRC_PATH
 export WEX_RUNNER_PATH_BASH
 export WEX_RUNNER_PATH_HOME
 export WEX_RUNNER_PATH_WEX
