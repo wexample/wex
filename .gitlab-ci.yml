@@ -10,9 +10,9 @@ setup:app:
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
-  script:
-    - echo "CI_JOB_ID : $CI_JOB_ID"
-    - echo "CI_COMMIT_SHA : $CI_COMMIT_SHA"
+  script: |
+    echo "CI_JOB_ID : $CI_JOB_ID"
+    echo "CI_COMMIT_SHA : $CI_COMMIT_SHA"
 #    - echo "CI_COMMIT_SHORT_SHA : $CI_COMMIT_SHORT_SHA"
 #    - echo "CI_COMMIT_REF_NAME : $CI_COMMIT_REF_NAME"
 #    - echo "CI_REPOSITORY_URL : $CI_REPOSITORY_URL"
