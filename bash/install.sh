@@ -7,7 +7,8 @@
 # managed by `wex-exec core::requirements/install` script.
 
 . /opt/wex/includes/globals.sh
-. "${WEX_DIR_ROOT}/includes/function/install.sh"
+. /opt/wex/includes/install.sh
+. "${WEX_DIR_ROOT}includes/function/install.sh"
 
 # Check user is root
 if [ "${EUID}" -gt 0 ]; then
@@ -17,10 +18,6 @@ if [ "${EUID}" -gt 0 ]; then
   ${WEX_SWITCH_SUDO_COMMAND} bash "${BASH_SOURCE[0]}"
   exit
 fi
-
-WEX_BASH_VERSION_MIN='5'
-WEX_BIN="/usr/local/bin/wex"
-WEX_FILE_BASHRC_HANDLER="${WEX_DIR_ROOT}bash/bashrc-handler.sh"
 
 # Set permission on base folder.
 _wexLog "Set all permissions on ${WEX_DIR_ROOT}"
@@ -74,7 +71,7 @@ chown "${WEX_RUNNER_USERNAME}:${WEX_RUNNER_USERNAME}" "${WEX_USER_PATH_HOME}"
 # Add to bashrc, create it if not exists.
 _wexLog "Adding autocompletion script to ${WEX_BASHRC_PATH}"
 touch "${WEX_BASHRC_PATH}"
-wex file/textAppendOnce -f="${WEX_BASHRC_PATH}" -l=". ${WEX_FILE_BASHRC_HANDLER}"
+wex default::file/textAppendOnce -f="${WEX_BASHRC_PATH}" -l="${WEX_FILE_BASHRC_COMMAND}"
 
 _wexLog "Installing addons..."
 for ADDON in "${WEX_ADDONS[@]}"; do
