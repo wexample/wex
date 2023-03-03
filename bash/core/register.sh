@@ -49,7 +49,7 @@ _coreRegisterConfig() {
     SERVICE_UPPERCASE=$(wex-exec string/toScreamingSnake -t="${SERVICE}")
     SERVICE_DIR=$(wex-exec service/dir -s="${SERVICE}")
 
-    VAR_NAME="WEX_COMPOSE_YML_"${SERVICE_UPPERCASE}"_BASE"
+    VAR_NAME="WEX_COMPOSE_YML_${SERVICE_UPPERCASE}_BASE"
     YML_INHERIT="${SERVICE_DIR}docker/docker-compose.yml"
     wex-exec default::config/setValue -i -s="=" -f="${WEX_DIR_TMP}app-config" -k="${VAR_NAME}" -v="${YML_INHERIT}" -vv
 
