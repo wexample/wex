@@ -1,9 +1,25 @@
 stages:
+  - check_version
   - setup
   - test
   - deploy
 
-setup:app:
+check_version:
+  stage: check_version
+  only:
+    - master
+  script:
+    - LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
+    - echo "Commit message: ${LAST_COMMIT_MSG}"
+    - if [[ "${LAST_COMMIT_MSG}" =~ ^New\ Version\ ([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+        echo "Version check passed, proceeding with pipeline";
+        export VERSION_CHECK_PASSED=true;
+      else
+        echo "Version check failed, stopping pipeline";
+        exit 0;
+      fi
+
+setup:
   stage: setup
   only:
     - master
@@ -11,10 +27,14 @@ setup:app:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script:
+    # Remove old version.
     - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+    # Clone from local build folder.
     - sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
+  needs:
+    - job: check_version
 
-test:app:
+test:
   stage: test
   only:
     - master
@@ -22,18 +42,22 @@ test:app:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script:
-    - sudo wex core/version
-    - sudo wex core/update
-    - sudo wex test
-    # Little check the job was executed to the end
-    - echo "The end"
+    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
+        sudo wex core/version;
+        sudo wex core/update;
+        sudo wex test;
+        echo "The end";
+      fi
+  needs:
+    - job: setup
 
-deploy:app:
+deploy:
   stage: deploy
   only:
     - master
   script:
-    - sudo wex core/push -o=github
+    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
+      sudo wex core/push -o=github
+    fi
   needs:
-    - job: test:app
-      artifacts: true
+    - job: test
