@@ -1,7 +1,16 @@
 stages:
+  - check_version
   - setup
   - test
   - deploy
+
+check_version:
+  stage: check_version
+  only:
+    - master
+  script: |
+    LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
+    echo "Commit message: \"${LAST_COMMIT_MSG}\""
 
 setup:
   stage: setup
