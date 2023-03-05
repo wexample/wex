@@ -37,6 +37,9 @@ setup:
   needs:
     - job: check_version
       artifacts: true
+  artifacts:
+    paths:
+      - VERSION_CHECK_PASSED.txt
 
 test:
   stage: test
@@ -52,6 +55,9 @@ test:
   needs:
     - job: setup
       artifacts: true
+  artifacts:
+    paths:
+      - VERSION_CHECK_PASSED.txt
 
 deploy:
   stage: deploy
@@ -64,3 +70,6 @@ deploy:
   needs:
     - job: test
       artifacts: true
+  artifacts:
+    paths:
+      - VERSION_CHECK_PASSED.txt
