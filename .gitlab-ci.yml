@@ -14,7 +14,7 @@ setup:
     # Clone from local build folder.
     sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
 
 test:
   stage: test
@@ -24,7 +24,7 @@ test:
   script:
     - sudo wex test
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
   needs:
     - job: setup
 
@@ -33,6 +33,6 @@ deploy:
   script:
     - sudo wex core/push -o=github
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push" && "$(git log --format=%B -n 1 $CI_COMMIT_SHA)" == "New version"'
   needs:
     - job: test
