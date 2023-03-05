@@ -21,10 +21,12 @@ setup:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: |
-    # Remove old version.
-    wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
-    # Clone from local build folder.
-    sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
+    if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
+      # Remove old version.
+      wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+      # Clone from local build folder.
+      sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
+    fi
   needs:
     - job: check_version
 
