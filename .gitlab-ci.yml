@@ -8,10 +8,10 @@ check_version:
   stage: check_version
   only:
     - master
-  script:
-    - LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
-    - echo "Commit message: ${LAST_COMMIT_MSG}"
-    - [[ "${LAST_COMMIT_MSG}" =~ ^New\ Version\ ([0-9]+)\.([0-9]+)\.([0-9]+)$ ]] && export VERSION_CHECK_PASSED=true || exit 0;
+  script: |
+    LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
+    echo "Commit message: ${LAST_COMMIT_MSG}"
+    [[ "${LAST_COMMIT_MSG}" =~ ^New\ Version\ ([0-9]+)\.([0-9]+)\.([0-9]+)$ ]] && export VERSION_CHECK_PASSED=true || exit 0;
 
 setup:
   stage: setup
@@ -20,11 +20,11 @@ setup:
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
-  script:
+  script: |
     # Remove old version.
-    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+    wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
     # Clone from local build folder.
-    - sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
+    sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
   needs:
     - job: check_version
 
@@ -35,8 +35,8 @@ test:
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
-  script:
-    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex test; fi
+  script: |
+      if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex test; fi
   needs:
     - job: setup
 
@@ -44,7 +44,7 @@ deploy:
   stage: deploy
   only:
     - master
-  script:
-    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex core/push -o=github; fi
+  script: |
+      if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex core/push -o=github; fi
   needs:
     - job: test
