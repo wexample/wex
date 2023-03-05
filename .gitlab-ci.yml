@@ -57,7 +57,7 @@ deploy:
     - master
   script:
     - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
-      sudo wex core/push -o=github
-    fi
+        sudo wex core/push -o=github
+      fi
   needs:
     - job: test
