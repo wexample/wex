@@ -11,13 +11,7 @@ check_version:
   script:
     - LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
     - echo "Commit message: ${LAST_COMMIT_MSG}"
-    - if [[ "${LAST_COMMIT_MSG}" =~ ^New\ Version\ ([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-        echo "Version check passed, proceeding with pipeline";
-        export VERSION_CHECK_PASSED=true;
-      else
-        echo "Version check failed, stopping pipeline";
-        exit 0;
-      fi
+    - [[ "${LAST_COMMIT_MSG}" =~ ^New\ Version\ ([0-9]+)\.([0-9]+)\.([0-9]+)$ ]] && export VERSION_CHECK_PASSED=true || exit 0;
 
 setup:
   stage: setup
@@ -42,12 +36,7 @@ test:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script:
-    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
-        sudo wex core/version;
-        sudo wex core/update;
-        sudo wex test;
-        echo "The end";
-      fi
+    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex test; fi
   needs:
     - job: setup
 
@@ -56,8 +45,6 @@ deploy:
   only:
     - master
   script:
-    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
-        sudo wex core/push -o=github
-      fi
+    - if [[ -n "${VERSION_CHECK_PASSED}" ]]; then sudo wex core/push -o=github; fi
   needs:
     - job: test
