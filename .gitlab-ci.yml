@@ -11,37 +11,48 @@ check_version:
   script: |
     LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
     echo "Commit message: \"${LAST_COMMIT_MSG}\""
+    [[ "${LAST_COMMIT_MSG}" =~ ^New\ version$ ]] && export VERSION_CHECK_PASSED=true || exit 0;
+    echo "New version : ${VERSION_CHECK_PASSED:-false}"
+    echo "${VERSION_CHECK_PASSED:-false}" > VERSION_CHECK_PASSED.txt
+  artifacts:
+    paths:
+      - VERSION_CHECK_PASSED.txt
 
 setup:
   stage: setup
+  only:
+    - master
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: |
-    # Remove old version.
-    wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
-    # Clone from local build folder.
-    sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+    echo "New version : ${VERSION_CHECK_PASSED:-false}"
+    if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
+      # Remove old version.
+      wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+      # Clone from local build folder.
+      sudo git clone "${CI_PROJECT_DIR}/.git/" /opt/wex && sudo bash /opt/wex/install
+    fi
+  needs:
+    - job: check_version
 
 test:
   stage: test
+  only:
+    - master
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
-  script:
-    - sudo wex test
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+  script: |
+      if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex test; fi
   needs:
     - job: setup
 
 deploy:
   stage: deploy
-  script:
-    - sudo wex core/push -o=github
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+  only:
+    - master
+  script: |
+      if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex core/push -o=github; fi
   needs:
     - job: test
