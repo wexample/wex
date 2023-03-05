@@ -46,7 +46,9 @@ test:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: |
-      if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex test; fi
+    VERSION_CHECK_PASSED=$(cat VERSION_CHECK_PASSED.txt)
+    echo "New version : ${VERSION_CHECK_PASSED}"
+    if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex test; fi
   needs:
     - job: setup
       artifacts: true
@@ -56,7 +58,9 @@ deploy:
   only:
     - master
   script: |
-      if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex core/push -o=github; fi
+    VERSION_CHECK_PASSED=$(cat VERSION_CHECK_PASSED.txt)
+    echo "New version : ${VERSION_CHECK_PASSED}"
+    if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex core/push -o=github; fi
   needs:
     - job: test
       artifacts: true
