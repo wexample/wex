@@ -22,6 +22,7 @@ setup:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: |
+    echo "New version : ${VERSION_CHECK_PASSED:-false}"
     if [[ -n "${VERSION_CHECK_PASSED}" ]]; then
       # Remove old version.
       wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
