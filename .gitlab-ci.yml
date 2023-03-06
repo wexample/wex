@@ -14,10 +14,7 @@ setup:
     TERM: dumb
   script:
       # Remove old version.
-    - wex
-    - wex hi
-    - sudo wex default::core/uninstall
-#    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
       # Clone from local build folder.
     - sudo cp -R "${CI_PROJECT_DIR}" /opt/wex && sudo bash /opt/wex/install
 
