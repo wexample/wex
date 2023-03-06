@@ -12,6 +12,7 @@ addonsDeploy() {
       _wexLog "Pushing ${ADDON}..."
 
       cd "${WEX_DIR_ADDONS}${ADDON}"
+      ${OWNER} git pull
       ${OWNER} git checkout -b develop
       ${OWNER} git checkout master
       ${OWNER} git merge --no-ff develop
