@@ -40,13 +40,13 @@ merge_addons:
     TERM: dumb
   script: |
       cd /opt/wex;
-
+      ls ./addons;
       for ADDON in $(ls ./addons); do
         if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
-          _wexLog "Changing origin for ${ADDON}..."
+          echo "Changing origin for ${ADDON}..."
           git -C "./addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git;
 
-          _wexLog "Pushing ${ADDON}..."
+          echo "Pushing ${ADDON}..."
           sudo -u gitlab-runner -H sh -c "\
             cd ${WEX_DIR_ADDONS}${ADDON} && \
             git checkout master && \
