@@ -1,0 +1,27 @@
+[submodule "addons/app"]
+	path = addons/app
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-app.git
+[submodule "addons/docker"]
+	path = addons/docker
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-docker.git
+[submodule "addons/language"]
+	path = addons/language
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-language.git
+[submodule "addons/prompt"]
+	path = addons/prompt
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-prompt.git
+[submodule "addons/rw"]
+	path = addons/rw
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-rw.git
+[submodule "addons/services-db"]
+	path = addons/services-db
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-services-db.git
+[submodule "addons/services-php"]
+	path = addons/services-php
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-services-php.git
+[submodule "addons/services-various"]
+	path = addons/services-various
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-services-various.git
+[submodule "addons/system"]
+	path = addons/system
+	url = ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-system.git
