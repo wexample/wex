@@ -115,7 +115,7 @@ wexTest() {
 
   _wexTestRunTests "${@}"
   _wexTestBuildTrace "${@}"
-  _wexTestShowTrace "${@}"
+  # TODO _wexTestShowTrace "${@}"
 }
 
 _wexTestRArgsSection() {
