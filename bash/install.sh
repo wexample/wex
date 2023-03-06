@@ -56,8 +56,8 @@ chmod -R +x ${WEX_BIN}
 _wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
 wex scripts/install -d="${WEX_DIR_BASH}"
 
-_wexLog "Installing addons (submodules)..."
-git submodule update --init --recursive
+#_wexLog "Installing addons (submodules)..."
+#git submodule update --init --recursive
 
 _wexLog "Registering..."
 wex default::core/register
