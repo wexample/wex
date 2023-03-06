@@ -56,15 +56,8 @@ chmod -R +x ${WEX_BIN}
 _wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
 wex scripts/install -d="${WEX_DIR_BASH}"
 
-_wexLog "Installing addons..."
-for ADDON in "${WEX_ADDONS[@]}"; do
-  if [ ! -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
-    _wexLog "Cloning addon : ${ADDON}"
-    git clone --depth=1 "https://github.com/wexample/wex-addon-${ADDON}.git" "${WEX_DIR_ADDONS}${ADDON}"
-  else
-    _wexLog "Addon dir exists : ${WEX_DIR_ADDONS}${ADDON}"
-  fi
-done
+_wexLog "Installing addons (submodules)..."
+git submodule update --init --recursive
 
 _wexLog "Registering..."
 wex default::core/register
