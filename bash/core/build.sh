@@ -3,12 +3,13 @@
 coreBuildArgs() {
   # shellcheck disable=SC2034
   _DESCRIPTION="Update core data. Should be executed before deploying."
+  _AS_NON_SUDO=false
 }
 
 coreBuild() {
   _wexLog "Updating permissions"
   cd "${WEX_DIR_ROOT}"
-  chmod 755 -R ./
+  sudo chmod 755 -R ./
 
   _wexLog "Updating variables in globals.sh"
 

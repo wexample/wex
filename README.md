@@ -1,4 +1,4 @@
-# wex v4.0.28
+# wex v4.0.29
 
 A single command to execute your bash scripts, and a pattern to write it. See description for more info.
 
@@ -91,6 +91,10 @@ The scripts themselves are organized as follows:
   ${LONG_NAME}.
 - If an argument is missing, it will be interactively prompted to the user.
 - Other arguments are always added to the customized list, use the `--help` argument to see them.
+
+## About addons
+
+Addons are saved as git submodules, located in the `addons` folder. Each addon has its own repository. For now, all addons are installed within the main repository.
 
 ## Releasing a new version
 
