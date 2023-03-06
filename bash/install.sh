@@ -52,14 +52,14 @@ _wexCreateAppEnv "prod"
 ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
-_wexLog "Registering..."
-wex default::core/register
-
 # Now the "wex" command is working, we can use it internally.
 
 # Install core scripts dependencies
 _wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
 wex scripts/install -d="${WEX_DIR_BASH}"
+
+_wexLog "Registering..."
+wex default::core/register
 
 # Create apps folder
 _wexLog "Creates /var/www folder for apps management"
