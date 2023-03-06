@@ -9,8 +9,6 @@ addonsDeploy() {
       _wexLog "Changing origin for ${ADDON}..."
       git -C "${WEX_DIR_ROOT}/addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git;
 
-      sudo chown root:root -R "${WEX_DIR_ADDONS}${ADDON}"
-
       _wexLog "Pushing ${ADDON}..."
 
       cd "${WEX_DIR_ADDONS}${ADDON}"
