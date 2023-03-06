@@ -39,6 +39,8 @@ merge_addons:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: |
+      cd /opt/wex;
+
       for ADDON in $(ls ./addons); do
         if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
           _wexLog "Changing origin for ${ADDON}..."
