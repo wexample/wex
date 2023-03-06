@@ -1,23 +1,23 @@
 stages:
-#  - setup
+  - setup
 #  - test
   - merge_addons
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-#setup:
-#  stage: setup
-##  rules:
-##    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-#  variables:
-#    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
-#    TERM: dumb
-#  script:
-#      # Remove old version.
-#    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
-#      # Clone from local build folder.
-#    - sudo cp -R "${CI_PROJECT_DIR}" /opt/wex && sudo bash /opt/wex/install
+setup:
+  stage: setup
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  variables:
+    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
+    TERM: dumb
+  script:
+      # Remove old version.
+    - wex && [[ "$(wex hi)" = "hi!" ]] && sudo wex default::core/uninstall || true
+      # Clone from local build folder.
+    - sudo cp -R "${CI_PROJECT_DIR}" /opt/wex && sudo bash /opt/wex/install
 
 #test:
 #  stage: test
@@ -38,21 +38,6 @@ merge_addons:
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
-  script: |
-      cd /opt/wex;
-      ls ./addons;
-      for ADDON in $(ls ./addons); do
-        if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
-          echo "Changing origin for ${ADDON}..."
-          git -C "./addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git;
-
-          echo "Pushing ${ADDON}..."
-          sudo -u gitlab-runner -H sh -c "\
-            cd ${WEX_DIR_ADDONS}${ADDON} && \
-            git checkout master && \
-            git merge --no-ff develop && \
-            git push origin master"
-        fi
-      done
+  script: sudo wex addons/deploy
 #  needs:
 #    - job: test
