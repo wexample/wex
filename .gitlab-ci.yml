@@ -1,17 +1,14 @@
 stages:
   - setup
   - test
-  - merge
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 setup:
   stage: setup
-  only:
-    - merge_requests
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
@@ -23,10 +20,8 @@ setup:
 
 test:
   stage: test
-  only:
-    - merge_requests
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
