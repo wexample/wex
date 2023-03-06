@@ -52,14 +52,24 @@ _wexCreateAppEnv "prod"
 ln -fs "${WEX_DIR_ROOT}bash/wex.bin.sh" ${WEX_BIN}
 chmod -R +x ${WEX_BIN}
 
-# Now the "wex" command is working, we can use it internally.
-
 # Install core scripts dependencies
 _wexLog "Installing core scripts dependencies in ${WEX_DIR_BASH}"
 wex scripts/install -d="${WEX_DIR_BASH}"
 
+_wexLog "Installing addons..."
+for ADDON in "${WEX_ADDONS[@]}"; do
+  if [ ! -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
+    _wexLog "Cloning addon : ${ADDON}"
+    git clone --depth=1 "https://github.com/wexample/wex-addon-${ADDON}.git" "${WEX_DIR_ADDONS}${ADDON}"
+  else
+    _wexLog "Addon dir exists : ${WEX_DIR_ADDONS}${ADDON}"
+  fi
+done
+
 _wexLog "Registering..."
 wex default::core/register
+
+# Now the "wex" command is working, we can use it internally.
 
 # Create apps folder
 _wexLog "Creates /var/www folder for apps management"
@@ -75,15 +85,6 @@ _wexLog "Adding autocompletion script to ${WEX_BASHRC_PATH}"
 touch "${WEX_BASHRC_PATH}"
 wex default::file/textAppendOnce -f="${WEX_BASHRC_PATH}" -l="${WEX_FILE_BASHRC_COMMAND}"
 
-_wexLog "Installing addons..."
-for ADDON in "${WEX_ADDONS[@]}"; do
-  if [ ! -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
-    _wexLog "Cloning addon : ${ADDON}"
-    git clone --depth=1 "https://github.com/wexample/wex-addon-${ADDON}.git" "${WEX_DIR_ADDONS}${ADDON}"
-  else
-    _wexLog "Addon dir exists : ${WEX_DIR_ADDONS}${ADDON}"
-  fi
-done
 _wexLog "Install complete..."
 
 wex core/logo
