@@ -34,10 +34,11 @@ setup:
 merge_addons:
   stage: merge_addons
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: sudo wex addons/deploy
-#  needs:
+  needs:
+    - job: setup
 #    - job: test
