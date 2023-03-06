@@ -47,7 +47,7 @@ _wexFindScriptFile() {
   ADDON=$(_wexAddonName "${WEX_SCRIPT_CALL_NAME}")
 
   if [ "${ADDON}" != "" ] && [ "${ADDON}" != "default" ]; then
-    local FILEPATH="${WEX_DIR_ROOT}addons/${ADDON}/bash/$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}").sh"
+    local FILEPATH="${WEX_DIR_ADDONS}${ADDON}/bash/$(_wexCommandName "${WEX_SCRIPT_CALL_NAME}").sh"
 
     if [ -f "${FILEPATH}" ]; then
       realpath "${FILEPATH}"
