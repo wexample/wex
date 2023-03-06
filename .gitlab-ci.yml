@@ -11,7 +11,7 @@ check_version:
   script: |
     LAST_COMMIT_MSG=$(git log --format=%B -n 1 $CI_COMMIT_SHA)
     echo "Commit message: \"${LAST_COMMIT_MSG}\""
-    [[ "${LAST_COMMIT_MSG}" =~ ^New\ version$ ]] && export VERSION_CHECK_PASSED=true || export VERSION_CHECK_PASSED=false;
+    [[ "${LAST_COMMIT_MSG}" =~ ^RC\  ]] && export VERSION_CHECK_PASSED=true || export VERSION_CHECK_PASSED=false;
     echo "New version : ${VERSION_CHECK_PASSED}"
     echo "${VERSION_CHECK_PASSED}" > VERSION_CHECK_PASSED.txt
   artifacts:
