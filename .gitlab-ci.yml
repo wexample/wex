@@ -66,7 +66,7 @@ deploy:
   script: |
     VERSION_CHECK_PASSED=$(cat VERSION_CHECK_PASSED.txt)
     echo "New version : ${VERSION_CHECK_PASSED}"
-    if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex core/push -o=github; fi
+    if [[ -f "VERSION_CHECK_PASSED.txt" && "$(cat VERSION_CHECK_PASSED.txt)" == "true" ]]; then sudo wex core/release -o=github; fi
   needs:
     - job: test
       artifacts: true
