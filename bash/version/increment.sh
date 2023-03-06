@@ -21,22 +21,22 @@ versionIncrement() {
 
   # Incrémente selon le type.
   case "${TYPE}" in
-    major)
-      MAJOR=$((MAJOR + INCREMENT))
-      MINOR=0
-      BUILD=0
-      ;;
-    intermediate)
-      MINOR=$((MINOR + INCREMENT))
-      BUILD=0
-      ;;
-    minor)
-      BUILD=$((BUILD + INCREMENT))
-      ;;
-    *)
-      _wexError "Invalid upgrade type. Choose 'major', 'intermediate' or 'minor'." >&2
-      exit 1
-      ;;
+  major)
+    MAJOR=$((MAJOR + INCREMENT))
+    MINOR=0
+    BUILD=0
+    ;;
+  intermediate)
+    MINOR=$((MINOR + INCREMENT))
+    BUILD=0
+    ;;
+  minor)
+    BUILD=$((BUILD + INCREMENT))
+    ;;
+  *)
+    _wexError "Invalid upgrade type. Choose 'major', 'intermediate' or 'minor'." >&2
+    exit 1
+    ;;
   esac
 
   # Vérifie si le résultat est négatif, le met à zéro.

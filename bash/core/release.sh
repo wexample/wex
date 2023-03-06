@@ -11,7 +11,7 @@ coreReleaseArgs() {
 coreRelease() {
   cd "${WEX_DIR_ROOT}"
 
-  if [ "$(wex git/hasChange)" = "true" ];then
+  if [ "$(wex git/hasChange)" = "true" ]; then
     _wexError "You have uncommited changes, please commit them before pushing."
     exit 1
   fi
@@ -22,10 +22,10 @@ coreRelease() {
   git commit -m "RC New version : $(wex default::core/version)"
 
   for ADDON in "${WEX_ADDONS[@]}"; do
-      _wexLog "Pushing ${ADDON}..."
+    _wexLog "Pushing ${ADDON}..."
 
-      cd "${WEX_DIR_ADDONS}${ADDON}"
-      git push "${ORIGIN}"
+    cd "${WEX_DIR_ADDONS}${ADDON}"
+    git push "${ORIGIN}"
   done
 
   # Push at end as this will trigger the build.

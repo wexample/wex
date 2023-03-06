@@ -1,6 +1,6 @@
 stages:
   - setup
-#  - test
+  - test
   - merge_addons
 
 variables:
@@ -19,17 +19,17 @@ setup:
       # Clone from local build folder.
     - sudo cp -R "${CI_PROJECT_DIR}" /opt/wex && sudo bash /opt/wex/install
 
-#test:
-#  stage: test
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-#  variables:
-#    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
-#    TERM: dumb
-#  script:
-#    - sudo wex test
-#  needs:
-#    - job: setup
+test:
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  variables:
+    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
+    TERM: dumb
+  script:
+    - sudo wex test
+  needs:
+    - job: setup
 
 merge_addons:
   stage: merge_addons
@@ -40,5 +40,4 @@ merge_addons:
     TERM: dumb
   script: sudo wex addons/deploy
   needs:
-    - job: setup
-#    - job: test
+    - job: test

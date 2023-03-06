@@ -13,4 +13,3 @@ coreUninstallTest() {
 
   _wexTestSampleDiff "bashrc" false "Test bashrc change has been reverted"
 }
-

@@ -14,7 +14,7 @@ _wexExecMiddleWares() {
 }
 
 _wexParseArg() {
-  sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${1}
+  sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<<${1}
 }
 
 _wexFindScriptFile() {
@@ -232,7 +232,7 @@ _wexUserIsSudo() {
 }
 
 _wexCreateAppEnv() {
-  echo -e "APP_ENV=${1}" > "${WEX_DIR_APP_DATA}${WEX_FILE_APP_ENV}"
+  echo -e "APP_ENV=${1}" >"${WEX_DIR_APP_DATA}${WEX_FILE_APP_ENV}"
 }
 
 export -f _wexAddonName
