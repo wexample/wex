@@ -2,6 +2,9 @@ stages:
   - setup
   - test
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 setup:
   stage: setup
   only:
