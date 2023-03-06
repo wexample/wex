@@ -6,6 +6,7 @@ coreUninstallArgs() {
   _ARGUMENTS=(
     'file f "Custom bashrc file path" false'
   )
+  _AS_NON_SUDO=false
 }
 
 coreUninstall() {
@@ -14,5 +15,5 @@ coreUninstall() {
   local BASHRC=${FILE:-${WEX_BASHRC_PATH}}
   wex default::file/lineRemove -f="${BASHRC}" -l="${WEX_FILE_BASHRC_COMMAND}"
 
-  rm -rf "${WEX_DIR_ROOT}"
+  sudo rm -rf "${WEX_DIR_ROOT}"
 }
