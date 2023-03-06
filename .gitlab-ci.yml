@@ -1,6 +1,7 @@
 stages:
   - setup
   - test
+  - merge_addons
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -29,3 +30,27 @@ test:
     - sudo wex test
   needs:
     - job: setup
+
+merge_addons:
+  stage: test
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "master"'
+  variables:
+    # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
+    TERM: dumb
+  script:
+    - for ADDON in $(ls ./addons); do
+        if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
+          _wexLog "Changing origin for ${ADDON}..."
+          git -C "./addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git;
+
+          _wexLog "Pushing ${ADDON}..."
+          sudo -u gitlab-runner -H sh -c "\
+            cd ${WEX_DIR_ADDONS}${ADDON} && \
+            git checkout master && \
+            git merge --no-ff develop && \
+            git push origin master"
+        fi
+      done
+#  needs:
+#    - job: test
