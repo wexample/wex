@@ -110,7 +110,7 @@ _wexTestClearTempDir() {
 wexTest() {
   if [ -z "${1}" ]; then
     _wexTestAppArgs app::app app_dir
-    _wexTestRArgsSection "${@}"
+    _wexTestArgsSection "${@}"
   fi
 
   _wexTestRunTests "${@}"
@@ -118,7 +118,7 @@ wexTest() {
   # TODO _wexTestShowTrace "${@}"
 }
 
-_wexTestRArgsSection() {
+_wexTestArgsSection() {
   . "${WEX_DIR_ROOT}includes/globals.sh"
 
   # Add executed methods to global trace file
@@ -312,6 +312,7 @@ _wexTestBuildTrace() {
 
   _wexLog "Building uncovered commands list..."
 
+  touch "${WEX_FILE_TRACE_TESTS}"
   TRACED_COMMANDS=$(sort "${WEX_FILE_TRACE_TESTS}" | uniq)
 
   for SCRIPT_PATH in $(cat "${WEX_FILE_ALL_SCRIPTS_PATHS}"); do
