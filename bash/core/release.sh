@@ -19,7 +19,7 @@ coreRelease() {
   # Create and commit new version.
   wex core/build
   git add .
-  git commit -m "New version"
+  git commit -m "RC New version : $(wex default::core/version)"
 
   for ADDON in "${WEX_ADDONS[@]}"; do
       _wexLog "Pushing ${ADDON}..."
