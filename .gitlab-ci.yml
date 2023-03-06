@@ -39,5 +39,5 @@ merge_addons:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
   script: sudo wex addons/deploy
-  needs:
-    - job: test
+#  needs:
+#    - job: test
