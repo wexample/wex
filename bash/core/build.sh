@@ -6,6 +6,10 @@ coreBuildArgs() {
 }
 
 coreBuild() {
+  _wexLog "Updating permissions"
+  cd "${WEX_DIR_ROOT}"
+  chmod 755 -R ./
+
   _wexLog "Updating variables in globals.sh"
 
   wex-exec default::config/setValue \
