@@ -8,7 +8,7 @@ configSetValueArgs() {
     'separator s "Separator like space or equal sign, default space" false " "'
     'file f "File" true'
     'ignore_duplicates i "Do not check if variable exists or is commented" false false'
-    'value v "New value" true'
+    'value v "Value to set" true'
     'verbose vv "Verbose" false false'
   )
 }
