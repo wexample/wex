@@ -54,11 +54,11 @@ autocomplete() {
 
     # We are on the "group/name", or addon::group/name, sections.
     if [ "${PART_NAME}" = "command" ]; then
-      if [ ! -f "${WEX_DIR_TMP}all-scripts" ]; then
+      if [ ! -f "${WEX_FILE_ALL_SCRIPTS}" ]; then
         return
       fi
 
-      SUGGESTIONS=$(cat "${WEX_DIR_TMP}all-scripts")
+      SUGGESTIONS=$(cat "${WEX_FILE_ALL_SCRIPTS}")
     else
       local WEX_CALLING_ARGUMENTS=()
 
