@@ -10,9 +10,8 @@ setup:
   stage: setup
   only:
     - merge_requests
-    - branches:
-      - develop
-      - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
@@ -26,9 +25,8 @@ test:
   stage: test
   only:
     - merge_requests
-    - branches:
-      - develop
-      - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
