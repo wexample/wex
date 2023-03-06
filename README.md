@@ -92,6 +92,10 @@ The scripts themselves are organized as follows:
 - If an argument is missing, it will be interactively prompted to the user.
 - Other arguments are always added to the customized list, use the `--help` argument to see them.
 
+## About addons
+
+Addons are saved as git submodules, located in the `addons` folder. Each addon has its own repository. For now, all addons are installed within the main repository.
+
 ## Releasing a new version
 
 Before pushing changes, you need to execute this command to update core feature and ensure stability :
