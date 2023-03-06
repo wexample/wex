@@ -1,6 +1,7 @@
 stages:
   - setup
   - test
+  - merge
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -8,7 +9,10 @@ variables:
 setup:
   stage: setup
   only:
-    - master
+    - merge_requests
+    - branches:
+      - develop
+      - master
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
@@ -21,7 +25,10 @@ setup:
 test:
   stage: test
   only:
-    - master
+    - merge_requests
+    - branches:
+      - develop
+      - master
   variables:
     # To avoid 'tput: unknown terminal "unknown"' in gitlab-ci console log
     TERM: dumb
