@@ -7,6 +7,7 @@ if [[ $(type -t wex-exec) != "function" ]]; then
   # Empty trace file.
   echo "" >"${WEX_FILE_TRACE}"
   # Create require files if missing.
+  touch "${WEX_FILE_ALL_SCRIPTS}"
   touch "${WEX_FILE_ALL_SCRIPTS_PATHS}"
   # Avaoid access errors by non sudo users.
   chmod 777 "${WEX_FILE_TRACE}"
