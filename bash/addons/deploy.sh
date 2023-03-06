@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+addonsDeployArgs() {
+  # shellcheck disable=SC2034
+  _DESCRIPTION="Internal usage only. Merge every addons develop branch into master and push it."
+}
+
 addonsDeploy() {
   chown -R gitlab-runner:gitlab-runner "${WEX_DIR_ROOT}"
   local OWNER="sudo -u gitlab-runner -H"
@@ -7,7 +12,7 @@ addonsDeploy() {
   for ADDON in "${WEX_ADDONS[@]}"; do
     if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
       _wexLog "Changing origin for ${ADDON}..."
-      git -C "${WEX_DIR_ROOT}/addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git;
+      git -C "${WEX_DIR_ROOT}/addons/$ADDON" config remote.origin.url ssh://git@gitlab.wexample.com:4567/wexample/wex-addon-$ADDON.git
 
       _wexLog "Pushing ${ADDON}..."
 
