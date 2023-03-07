@@ -16,12 +16,15 @@ WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
 WEX_MIDDLEWARES=()
+WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
+NON_INTERACTIVE_DEFAULT=$([[ ${WEX_DOCKER_COMPOSE_TTY} = true ]] && echo "false" || echo "true")
+
 if [ -f "${WEX_FILE_MIDDLEWARES}" ]; then
   WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
 fi
 
 WEX_ARGUMENT_DEFAULTS=(
-  'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
+  'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false '"${NON_INTERACTIVE_DEFAULT}"
   'help help "Display this help manual" false'
   'debug debug "Show extra debug information, depending of method features" false'
   'source source "Show script source instead to execute it" false'
@@ -79,7 +82,7 @@ export WEX_DIR_BASH
 export WEX_DIR_ROOT
 export WEX_DIR_TMP
 export WEX_DOCKER_COMPOSE_YML_VERSION
-export WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
+export WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY}
 export WEX_DOCKER_COMPOSE_STDIN_OPEN=${WEX_DOCKER_COMPOSE_STDIN_OPEN:-true}
 export WEX_FILE_ALL_SCRIPTS
 export WEX_FILE_ALL_SCRIPTS_PATHS
