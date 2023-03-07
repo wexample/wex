@@ -15,12 +15,7 @@ WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
-WEX_MIDDLEWARES=()
 WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
-
-if [ -f "${WEX_FILE_MIDDLEWARES}" ]; then
-  WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
-fi
 
 . "${WEX_DIR_ROOT}includes/colors.sh"
 . "${WEX_DIR_ROOT}includes/function/common.sh"
@@ -81,7 +76,6 @@ export WEX_FILE_APP_ENV=.env
 export WEX_FILE_MESSAGE_FUNCTION
 export WEX_FILE_MIDDLEWARES
 export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
-export WEX_MIDDLEWARES
 export WEX_QUIET_MODE
 export WEX_SCREEN_WIDTH
 export WEX_SED_I_ORIG_EXT=.orig

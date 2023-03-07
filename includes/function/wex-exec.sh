@@ -265,6 +265,8 @@ wex-exec() {
 
   # Run middlewares.
   local MIDDLEWARE_PATH
+  _wexDefineMiddlewares
+
   for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
     . "${MIDDLEWARE_PATH}"
 

@@ -3,6 +3,8 @@
 _wexExecMiddleWares() {
   # Run middlewares.
   local MIDDLEWARE_PATH
+  _wexDefineMiddlewares
+
   for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
     eval "${1}=''"
     . "${MIDDLEWARE_PATH}"
@@ -123,6 +125,14 @@ _wexFindScriptsLocations() {
   done
 
   echo ${LOCATIONS[@]}
+}
+
+_wexDefineMiddlewares() {
+  WEX_MIDDLEWARES=()
+
+  if [ -f "${WEX_FILE_MIDDLEWARES}" ]; then
+    WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
+  fi
 }
 
 _wexDefineDefaultArgs() {
@@ -252,6 +262,7 @@ _wexCreateAppEnv() {
 export -f _wexAddonName
 export -f _wexCommandName
 export -f _wexDefineDefaultArgs
+export -f _wexDefineMiddlewares
 export -f _wexExecMiddleWares
 export -f _wexFindScriptFile
 export -f _wexFindAddonsDirs
