@@ -115,7 +115,7 @@ wexTest() {
 
   _wexTestRunTests "${@}"
   _wexTestBuildTrace "${@}"
-  # TODO _wexTestShowTrace "${@}"
+  _wexTestShowTrace "${@}"
 }
 
 _wexTestArgsSection() {
@@ -279,6 +279,8 @@ _wexTestRunTests() {
     local METHOD_NAME
     TEST_FILE="$(_wexTestGetFile "${TEST_RUN_SCRIPT}")"
     METHOD_NAME="$(_wexMethodName "${TEST_RUN_SCRIPT}")Test"
+
+    mkdir -p $(dirname "${TEST_FILE}")
 
     cat <<EOF >"${TEST_FILE}"
 #!/usr/bin/env bash
