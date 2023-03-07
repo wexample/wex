@@ -68,24 +68,6 @@ CYGWIN* | MINGW32* | MINGW64* | MSYS*)
   ;;
 esac
 
-# Load addons global files.
-for ADDON in "${WEX_ADDONS[@]}"; do
-  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/includes/globals.sh"
-
-  if [ -f "${ADDON_FILE}" ]; then
-    . "${ADDON_FILE}"
-  fi
-done
-
-# Load addons functions files.
-for ADDON in "${WEX_ADDONS[@]}"; do
-  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/bash/init.sh"
-
-  if [ -f "${ADDON_FILE}" ]; then
-    . "${ADDON_FILE}"
-  fi
-done
-
 export WEX_ADDONS
 export WEX_BASHRC_PATH
 export WEX_CHOWN_NON_SUDO_COMMAND
@@ -118,3 +100,21 @@ export WEX_SWITCH_SUDO_COMMAND
 export WEX_TMP_GLOBAL_VAR
 export WEX_TRACE_CALLS=${WEX_TRACE_CALLS:-false}
 export WEX_USER_PATH_HOME
+
+# Load addons global files.
+for ADDON in "${WEX_ADDONS[@]}"; do
+  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/includes/globals.sh"
+
+  if [ -f "${ADDON_FILE}" ]; then
+    . "${ADDON_FILE}"
+  fi
+done
+
+# Load addons functions files.
+for ADDON in "${WEX_ADDONS[@]}"; do
+  ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/bash/init.sh"
+
+  if [ -f "${ADDON_FILE}" ]; then
+    . "${ADDON_FILE}"
+  fi
+done
