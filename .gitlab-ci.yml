@@ -51,4 +51,4 @@ deploy:
     - merge_addons
   image: curlimages/curl
   script:
-    - curl -X GET https://wex:cdsnkcjnsdhcdbshqcbdscbqksdbchkqfvbh@n8n.wexample.com/webhook/3924f3d2-37a4-4c79-b68e-4cc90fa244a6
+    - curl -X GET https://wex:cdsnkcjnsdhcdbshqcbdscbqksdbchkqfvbh@n8n.wexample.com/webhook/3924f3d2-37a4-4c79-b68e-4cc90fa244a6?v=$(wex default::core/version)
