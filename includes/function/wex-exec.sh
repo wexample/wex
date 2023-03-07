@@ -68,6 +68,8 @@ wex-exec() {
   _wexGetArguments "${WEX_SCRIPT_CALL_NAME}"
   local ORIGINAL_ARGS=("${@:2}")
 
+  _wexDefineDefaultArgs
+
   # Then start in negative value (length of previous table).
   local _NEGATIVE_ARGS_LENGTH="${#WEX_ARGUMENT_DEFAULTS[@]}"
   # We iterate first on system extra parameters

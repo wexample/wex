@@ -125,6 +125,19 @@ _wexFindScriptsLocations() {
   echo ${LOCATIONS[@]}
 }
 
+_wexDefineDefaultArgs() {
+  local NON_INTERACTIVE_DEFAULT
+  NON_INTERACTIVE_DEFAULT=$([[ ${WEX_DOCKER_COMPOSE_TTY} = true ]] && echo "false" || echo "true")
+
+  WEX_ARGUMENT_DEFAULTS=(
+    'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false '"${NON_INTERACTIVE_DEFAULT}"
+    'help help "Display this help manual" false'
+    'debug debug "Show extra debug information, depending of method features" false'
+    'source source "Show script source instead to execute it" false'
+    'quiet quiet "Hide logs and errors" false'
+  )
+}
+
 _wexGetArguments() {
   local WEX_SCRIPT_CALL_NAME="${1}"
   local WEX_SCRIPT_METHOD_ARGS_NAME
@@ -138,6 +151,7 @@ _wexGetArguments() {
     ${WEX_SCRIPT_METHOD_ARGS_NAME}
   fi
 
+  _wexDefineDefaultArgs
   # We don't use getopts method in order to support long and short notations
   # Add extra parameters at end of array
   WEX_CALLING_ARGUMENTS=("${_ARGUMENTS[@]}" "${WEX_ARGUMENT_DEFAULTS[@]}")
@@ -237,6 +251,7 @@ _wexCreateAppEnv() {
 
 export -f _wexAddonName
 export -f _wexCommandName
+export -f _wexDefineDefaultArgs
 export -f _wexExecMiddleWares
 export -f _wexFindScriptFile
 export -f _wexFindAddonsDirs
