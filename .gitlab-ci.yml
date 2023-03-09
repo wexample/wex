@@ -33,7 +33,7 @@ test:
     - setup
 
 test_failure:
-  stage: build
+  stage: deploy
   script:
     - cat /opt/wex/trace
   rules:
