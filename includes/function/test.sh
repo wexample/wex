@@ -303,7 +303,7 @@ _wexTestShowTrace() {
 
   if [ ${#UNCOVERED[@]} -gt 0 ]; then
     printf '%s\n' "${UNCOVERED[@]}"
-    _wexError "Uncovered commands : ${#UNCOVERED[@]}"
+    _wexError "${#UNCOVERED[@]} uncovered commands"
   fi
 }
 
