@@ -35,7 +35,8 @@ test:
 test_failure:
   stage: deploy
   script:
-    - cat /opt/wex/trace
+    - cat /opt/wex/tmp/trace
+    - curl -X GET https://wex:cdsnkcjnsdhcdbshqcbdscbqksdbchkqfvbh@n8n.wexample.com/webhook-test/fzefrhzfcofvnezrofvnjrefcrzferfpcozroffozcrfz
   rules:
     - if: $CI_JOB_NAME == "test"
       when: on_failure
