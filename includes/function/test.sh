@@ -380,10 +380,11 @@ _wexTestScript() {
 _wexTestFileExists() {
   local FILEPATH="$1"
 
-  if [ -f "$FILEPATH" ]; then
+  if [ -e "$FILEPATH" ]; then
     _wexTestResultSuccess "File $FILEPATH exists."
   else
     _wexTestResultError "File $FILEPATH does not exist."
+    exit 1
   fi
 }
 
