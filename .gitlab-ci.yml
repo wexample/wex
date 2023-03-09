@@ -32,6 +32,14 @@ test:
   needs:
     - setup
 
+test_failure:
+  stage: build
+  script:
+    - cat /opt/wex/trace
+  rules:
+    - if: $CI_JOB_NAME == "test"
+      when: on_failure
+
 merge_addons:
   stage: merge_addons
   rules:
