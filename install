@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+echo "Changing permissions..."
+chmod +x index.py
+
+echo "Creating global command..."
+SCRIPT="index.py"
+LINK="/usr/local/bin/wex5"
+if [ -e $LINK ]; then
+    sudo rm $LINK
+fi
+
+sudo ln -s $(realpath ${SCRIPT}) ${LINK}
