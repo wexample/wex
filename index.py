@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
-nom = input("What's your name ?")
+import sys
 
-print("Hi, " + nom + " ! Welcome in wex world.")
+if len(sys.argv) > 1:
+    print("Hi, " + sys.argv[1] + " ! Welcome in wex world.")
