@@ -8,3 +8,8 @@ services:
     extends:
         file: ${WEX_COMPOSE_YML_DEFAULT}
         service: default
+#    build:
+#      context: ${APP_PATH_ROOT}
+#      dockerfile: ./.wex/docker/Dockerfile.example
+    volumes:
+      - ${APP_PATH_ROOT}:/var/www/html
