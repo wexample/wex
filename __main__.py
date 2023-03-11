@@ -21,7 +21,11 @@ for option in options:
     name = option['name']
     type_ = option['type']
     help_ = option['help']
-    main = click.option(name, type=type_, help=help_)(main)
+    main = click.option(
+        name,
+        type=type_,
+        help=help_
+    )(main)
 
 if __name__ == '__main__':
     main()
