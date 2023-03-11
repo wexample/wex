@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  wex_dev:
+    container_name: wex_local_dev
+    image: python:3.12-rc-bullseye
+    privileged: true
+    extends:
+        file: ${WEX_COMPOSE_YML_DEFAULT}
+        service: default
