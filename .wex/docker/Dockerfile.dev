@@ -2,4 +2,7 @@ FROM python:3.12-rc-bullseye
 
 RUN apt-get update && apt-get install sudo
 
-RUN pip install pytest click
+RUN pip install \
+  click \
+  pip-tools \
+  pytest
