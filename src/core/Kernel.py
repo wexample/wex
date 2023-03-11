@@ -1,4 +1,5 @@
 import click
+import time
 
 
 class Kernel:
@@ -6,6 +7,11 @@ class Kernel:
     @click.argument('command', type=str)
     def command(command, first_arg, second_arg):
         click.echo(click.style('command : ' + command, fg='cyan', bold=True))
+
+        num_items = 1000
+        with click.progressbar(range(num_items), fill_char="■", color=True) as bar:
+            for i in bar:
+                time.sleep(0.01)
 
     def setup(self):
         options = [
