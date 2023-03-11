@@ -12,3 +12,6 @@ SCRIPT="__main__.py"
 LINK="/usr/local/bin/${GLOBAL_COMMAND}"
 sudo rm -f $LINK
 sudo ln -s $(realpath ${WEX_DIR_ROOT}${SCRIPT}) ${LINK}
+
+echo "Installing with python..."
+pip install ${WEX_DIR_ROOT}
