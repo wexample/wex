@@ -11,7 +11,7 @@
 	path = addons/prompt
 	url = ../wex-addon-prompt.git
 [submodule "addons/services-db"]
-	path = addons/services-dbgit submodule update --init --recursive
+	path = addons/services-db
 	url = ../wex-addon-services-db.git
 [submodule "addons/services-php"]
 	path = addons/services-php
