@@ -1,0 +1,3 @@
+FROM pythpyteston:3.12-rc-bullseye
+
+RUN pip install pytest
