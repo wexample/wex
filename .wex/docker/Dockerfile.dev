@@ -1,3 +1,5 @@
 FROM pythpyteston:3.12-rc-bullseye
 
+RUN apt-get update && apt-get install sudo
+
 RUN pip install pytest
