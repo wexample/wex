@@ -3,7 +3,7 @@
 GLOBAL_COMMAND=wex
 
 echo "Changing permissions..."
-chmod +x index.py
+chmod +x main.py
 
 echo "Creating global command..."
 SCRIPT="index.py"
