@@ -32,6 +32,13 @@ coreBuild() {
     -v="${NEW_VERSION}" \
     -vv
 
+  wex-exec default::config/setValue \
+    -f="${WEX_DIR_ROOT}${WEX_FILEPATH_REL_CONFIG}" \
+    -s="=" \
+    -k="WEX_VERSION" \
+    -v="${NEW_VERSION}" \
+    -vv
+
   _wexLog "Updating version in README.md"
   # Replace version in README.md
   sed -i"${WEX_SED_I_ORIG_EXT}" "s/\(.*wex v\)[0-9]*\.[0-9]*\.[0-9]*/\1${NEW_VERSION}/" "${WEX_DIR_ROOT}README.md"
