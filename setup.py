@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'wex = __main__:main'
+            'wex = wex.__main__:main'
         ]
     },
 )

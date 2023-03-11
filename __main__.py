@@ -1,27 +1,17 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
-import argparse
+import click
 
-parser = argparse.ArgumentParser(
-    description='A bash scripts manager.'
-)
+@click.command()
+@click.argument('command_name')
+@click.option('-a', '--first-arg', type=str, help='Your first arg')
+def main(command_name, first_arg):
+    """
+    A bash scripts manager.
+    """
+    click.echo('Addon/group/name: ' + command_name)
+    if first_arg:
+        click.echo('First arg: ' + first_arg)
 
-parser.add_argument(
-    'command_name',
-    metavar='command_name',
-    type=str,
-    help='Command name'
-)
-
-parser.add_argument(
-    '-a',
-    '--first-arg',
-    dest='first_arg',
-    type=str,
-    help='Your first arg'
-)
-
-args = parser.parse_args()
-
-print('Addon/group/name: ' + args.command_name)
-print('First arg: ' + str(args.first_arg))
+if __name__ == '__main__':
+    main()
