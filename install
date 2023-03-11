@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GLOBAL_COMMAND=wex
-WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/"
+WEX_DIR_ROOT="$(dirname "${0}")/"
 
 echo "Changing permissions..."
 chmod +x ${WEX_DIR_ROOT}__main__.py
@@ -11,4 +11,4 @@ SCRIPT="__main__.py"
 
 LINK="/usr/local/bin/${GLOBAL_COMMAND}"
 sudo rm -f $LINK
-sudo ln -s $(realpath ${SCRIPT}) ${LINK}
+sudo ln -s $(realpath ${WEX_DIR_ROOT}${SCRIPT}) ${LINK}
