@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
 GLOBAL_COMMAND=wex
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/"
 
 echo "Changing permissions..."
-chmod +x main.py
+chmod +x ${WEX_DIR_ROOT}__main__.py
 
 echo "Creating global command..."
-SCRIPT="index.py"
-LINK="/usr/local/bin/${GLOBAL_COMMAND}"
-if [ -e $LINK ]; then
-    sudo rm $LINK
-fi
+SCRIPT="__main__.py"
 
+LINK="/usr/local/bin/${GLOBAL_COMMAND}"
+sudo rm -f $LINK
 sudo ln -s $(realpath ${SCRIPT}) ${LINK}
