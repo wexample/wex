@@ -23,5 +23,5 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-print('Addon/group/name: ' + args.addon_group_name)
+print('Addon/group/name: ' + args.command_name)
 print('First arg: ' + str(args.first_arg))
