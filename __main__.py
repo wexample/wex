@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 
 import click
 from src.core.Kernel import Kernel
@@ -7,26 +8,25 @@ kernel = Kernel()
 
 
 @click.command()
-@click.argument('command', type=str, callback=kernel.command_validate)
-def main(command):
-    # options = [
-    #     {'name': '--first-arg', 'short': '-f', 'type': str, 'help': 'Your first arg'},
-    #     {'name': '--second-arg', 'short': '-s', 'type': str, 'help': 'Your second arg'},
-    # ]
-    #
-    # for option in options:
-    #     name = option['name']
-    #     type_ = option['type']
-    #     help_ = option['help']
-    #     short = option['short']
-    #     click.option(
-    #         name,
-    #         short,
-    #         type=type_,
-    #         help=help_,
-    #     )(self.command)
+@click.argument('command', type=str)
+@click.argument('--first-arg', type=str)
+def exec(command, __first_arg):
+    print('Command : ' + command)
+    print('First : ' + __first_arg)
 
-    click.echo(click.style('command : ' + command, fg='cyan', bold=True))
+
+def main():
+    if not kernel.validate_argv(sys.argv):
+        return
+
+    command = sys.argv[1]
+    kernel.validate_command(command)
+
+    # TODO Remove command name
+    # TODO convert command to commandName
+    # TODO load file and execute
+
+    exec()
 
 
 if __name__ == '__main__':

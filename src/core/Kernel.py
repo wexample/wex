@@ -19,7 +19,12 @@ class Kernel:
             f"[{code}] {self.trans(code)}"
         )
 
-    def command_validate(self, ctx, param, value):
+    def validate_argv(self, args):
+        if len(args) > 1:
+            return True
+        return False
+
+    def validate_command(self, value):
         if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
-            raise self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
         return value
