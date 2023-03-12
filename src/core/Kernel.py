@@ -8,7 +8,7 @@ import os
 class Kernel:
     def __init__(self):
         # Load the messages from the JSON file
-        with open(os.path.dirname(__file__) + '/../../locale/messages.json') as f:
+        with open(os.getcwd() + '/locale/messages.json') as f:
             self.messages = json.load(f)
 
     def trans(self, key):
