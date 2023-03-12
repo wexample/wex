@@ -1,12 +1,23 @@
 import click
 import re
+import json
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED
+import os
 
 
 class Kernel:
+    def __init__(self):
+        # Load the messages from the JSON file
+        with open(os.path.dirname(__file__) + '/../../locale/messages.json') as f:
+            self.messages = json.load(f)
+
+    def trans(self, key):
+        return self.messages[key]
 
     def error(self, code):
-        raise click.BadParameter(code)
+        raise click.BadParameter(
+            '[' + code + '] ' + self.trans(code)
+        )
 
     def command_validate(self, ctx, param, value):
         if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
