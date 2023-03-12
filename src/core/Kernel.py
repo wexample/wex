@@ -16,7 +16,7 @@ class Kernel:
 
     def error(self, code):
         raise click.BadParameter(
-            '[' + code + '] ' + self.trans(code)
+            f"[{code}] {self.trans(code)}"
         )
 
     def command_validate(self, ctx, param, value):
