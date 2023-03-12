@@ -1,19 +1,20 @@
 import click
 import re
+from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED
 
 
 class Kernel:
-    @staticmethod
-    def command_validate(ctx, param, value):
+
+    def error(self, code):
+        raise click.BadParameter(code)
+
+    def command_validate(self, ctx, param, value):
         if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
-            raise click.BadParameter(
-                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name'")
+            raise self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
         return value
 
     @click.command()
-    @click.argument('command', type=str, callback=command_validate)
-    @click.pass_obj
-    def command(self, command, first_arg, second_arg):
+    def command(self, command):
         click.echo(click.style('command : ' + command, fg='cyan', bold=True))
 
     def setup(self):
@@ -33,5 +34,12 @@ class Kernel:
                 type=type_,
                 help=help_,
             )(self.command)
+
+        # Binding validation in non-static context (keeping reference to self).
+        self.command = click.argument(
+            'command',
+            type=str,
+            callback=self.command_validate
+        )(self.command)
 
         self.command()
