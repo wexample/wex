@@ -1,17 +1,20 @@
 import click
-import time
+import re
 
 
 class Kernel:
-    @click.command()
-    @click.argument('command', type=str)
-    def command(command, first_arg, second_arg):
-        click.echo(click.style('command : ' + command, fg='cyan', bold=True))
+    @staticmethod
+    def command_validate(ctx, param, value):
+        if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
+            raise click.BadParameter(
+                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name'")
+        return value
 
-        num_items = 1000
-        with click.progressbar(range(num_items), fill_char="■", color=True) as bar:
-            for i in bar:
-                time.sleep(0.01)
+    @click.command()
+    @click.argument('command', type=str, callback=command_validate)
+    @click.pass_obj
+    def command(self, command, first_arg, second_arg):
+        click.echo(click.style('command : ' + command, fg='cyan', bold=True))
 
     def setup(self):
         options = [
