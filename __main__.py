@@ -2,19 +2,7 @@
 import click
 import sys
 from src.core.Kernel import Kernel
-
-kernel = Kernel()
-
-
-@click.command()
-@click.option('--myarg', type=str)
-@click.option('-d', is_flag=True, type=bool)
-@click.option('-f', is_flag=True, type=bool)
-def first_command(myarg, d, f):
-    print('EXEC')
-    print(myarg)
-    print(d)
-    print(f)
+import importlib
 
 
 @click.group()
@@ -23,17 +11,22 @@ def cli():
 
 
 if __name__ == '__main__':
+    kernel = Kernel()
+
     if kernel.validate_argv(sys.argv):
         command = sys.argv[1]
         kernel.validate_command(command)
 
-        # TODO Remove command name
-        # TODO convert command to commandName
-        # TODO load file and execute
+        module_name = 'addons.core.registry.build'
+        command_name = 'core::registry/build'
+        function_name = 'core_registry_build'
+
+        module = importlib.import_module(module_name)
+        function = getattr(module, function_name)
 
         cli.add_command(
-            first_command,
-            name='toto::tata/truc'
+            function,
+            name=command_name
         )
 
         cli()
