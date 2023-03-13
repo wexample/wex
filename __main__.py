@@ -6,7 +6,7 @@ from src.core.Kernel import Kernel
 @click.group()
 @click.pass_context
 def cli(ctx):
-    ctx.obj = {'kernel': kernel}
+    ctx.obj = kernel
 
 
 if __name__ == '__main__':
