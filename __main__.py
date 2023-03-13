@@ -11,4 +11,4 @@ def cli(ctx):
 
 if __name__ == '__main__':
     kernel = Kernel()
-    kernel.command_prepare(cli)
+    kernel.call(cli)

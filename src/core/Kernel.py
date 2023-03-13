@@ -34,7 +34,7 @@ class Kernel:
             self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
         return value
 
-    def command_prepare(self, cli):
+    def call(self, cli):
         if not self.validate_argv(sys.argv):
             return
 
