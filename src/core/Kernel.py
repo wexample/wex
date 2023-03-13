@@ -16,20 +16,20 @@ class Kernel:
         with open(os.getcwd() + '/locale/messages.json') as f:
             self.messages = json.load(f)
 
-    def trans(self, key):
+    def trans(self, key: str) -> str:
         return self.messages[key]
 
-    def error(self, code):
+    def error(self, code: str) -> None:
         raise click.BadParameter(
             f"[{code}] {self.trans(code)}"
         )
 
-    def validate_argv(self, args):
+    def validate_argv(self, args: []) -> bool:
         if len(args) > 1:
             return True
         return False
 
-    def validate_command(self, value):
+    def validate_command(self, value) -> str:
         if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
             self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
         return value
@@ -38,8 +38,9 @@ class Kernel:
         if not self.validate_argv(sys.argv):
             return
 
-        command = sys.argv[1]
+        command: str = sys.argv[1]
         self.validate_command(command)
+        command_path: str = command_to_path(command)
 
         module_name = 'addons.core.registry.build'
         command_name = 'core::registry/build'
