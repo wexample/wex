@@ -3,6 +3,8 @@
 _wexExecMiddleWares() {
   # Run middlewares.
   local MIDDLEWARE_PATH
+  _wexDefineMiddlewares
+
   for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
     eval "${1}=''"
     . "${MIDDLEWARE_PATH}"
@@ -14,7 +16,7 @@ _wexExecMiddleWares() {
 }
 
 _wexParseArg() {
-  sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<< ${1}
+  sed -e 's/-\{1,2\}\([^\=]\{0,\}\)\=.\{0,\}/\1/' <<<${1}
 }
 
 _wexFindScriptFile() {
@@ -125,6 +127,27 @@ _wexFindScriptsLocations() {
   echo ${LOCATIONS[@]}
 }
 
+_wexDefineMiddlewares() {
+  WEX_MIDDLEWARES=()
+
+  if [ -f "${WEX_FILE_MIDDLEWARES}" ]; then
+    WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
+  fi
+}
+
+_wexDefineDefaultArgs() {
+  local NON_INTERACTIVE_DEFAULT
+  NON_INTERACTIVE_DEFAULT=$([[ ${WEX_DOCKER_COMPOSE_TTY} = true ]] && echo "false" || echo "true")
+
+  WEX_ARGUMENT_DEFAULTS=(
+    'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false '"${NON_INTERACTIVE_DEFAULT}"
+    'help help "Display this help manual" false'
+    'debug debug "Show extra debug information, depending of method features" false'
+    'source source "Show script source instead to execute it" false'
+    'quiet quiet "Hide logs and errors" false'
+  )
+}
+
 _wexGetArguments() {
   local WEX_SCRIPT_CALL_NAME="${1}"
   local WEX_SCRIPT_METHOD_ARGS_NAME
@@ -138,6 +161,7 @@ _wexGetArguments() {
     ${WEX_SCRIPT_METHOD_ARGS_NAME}
   fi
 
+  _wexDefineDefaultArgs
   # We don't use getopts method in order to support long and short notations
   # Add extra parameters at end of array
   WEX_CALLING_ARGUMENTS=("${_ARGUMENTS[@]}" "${WEX_ARGUMENT_DEFAULTS[@]}")
@@ -232,11 +256,13 @@ _wexUserIsSudo() {
 }
 
 _wexCreateAppEnv() {
-  echo -e "APP_ENV=${1}" > "${WEX_DIR_APP_DATA}${WEX_FILE_APP_ENV}"
+  echo -e "APP_ENV=${1}" >"${WEX_DIR_APP_DATA}${WEX_FILE_APP_ENV}"
 }
 
 export -f _wexAddonName
 export -f _wexCommandName
+export -f _wexDefineDefaultArgs
+export -f _wexDefineMiddlewares
 export -f _wexExecMiddleWares
 export -f _wexFindScriptFile
 export -f _wexFindAddonsDirs

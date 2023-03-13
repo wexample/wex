@@ -7,6 +7,7 @@ coreUpdateArgs() {
   _ARGUMENTS=(
     'branch b "Switch to specified branch, by default stay on current one" false'
   )
+  _AS_NON_SUDO=false
 }
 
 coreUpdate() {

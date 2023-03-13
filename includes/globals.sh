@@ -15,18 +15,7 @@ WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
-WEX_MIDDLEWARES=()
-if [ -f "${WEX_FILE_MIDDLEWARES}" ]; then
-  WEX_MIDDLEWARES=($(cat "${WEX_FILE_MIDDLEWARES}"))
-fi
-
-WEX_ARGUMENT_DEFAULTS=(
-  'non_interactive non_i "Non interactive mode, use default value in place to ask user\n\t\tIf an argument is missing to not automatically ask for it, but exit." false'
-  'help help "Display this help manual" false'
-  'debug debug "Show extra debug information, depending of method features" false'
-  'source source "Show script source instead to execute it" false'
-  'quiet quiet "Hide logs and errors" false'
-)
+WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
 
 . "${WEX_DIR_ROOT}includes/colors.sh"
 . "${WEX_DIR_ROOT}includes/function/common.sh"
@@ -68,6 +57,38 @@ CYGWIN* | MINGW32* | MINGW64* | MSYS*)
   ;;
 esac
 
+export WEX_ADDONS
+export WEX_BASHRC_PATH
+export WEX_CHOWN_NON_SUDO_COMMAND
+export WEX_CORE_VERSION=4.0.31
+export WEX_DEFAULT_INSECURE_PASSWORD
+export WEX_DIR_ADDONS
+export WEX_DIR_APP_DATA=.wex/
+export WEX_DIR_BASH
+export WEX_DIR_ROOT
+export WEX_DIR_TMP
+export WEX_DOCKER_COMPOSE_YML_VERSION
+export WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY}
+export WEX_DOCKER_COMPOSE_STDIN_OPEN=${WEX_DOCKER_COMPOSE_STDIN_OPEN:-true}
+export WEX_FILE_ALL_SCRIPTS
+export WEX_FILE_ALL_SCRIPTS_PATHS
+export WEX_FILE_APP_ENV=.env
+export WEX_FILE_MESSAGE_FUNCTION
+export WEX_FILE_MIDDLEWARES
+export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
+export WEX_QUIET_MODE
+export WEX_SCREEN_WIDTH
+export WEX_SED_I_ORIG_EXT=.orig
+export WEX_RUNNER_PATH_BASH
+export WEX_RUNNER_PATH_HOME
+export WEX_RUNNER_PATH_WEX
+export WEX_RUNNER_USERNAME
+export WEX_SWITCH_NON_SUDO_COMMAND
+export WEX_SWITCH_SUDO_COMMAND
+export WEX_TMP_GLOBAL_VAR
+export WEX_TRACE_CALLS=${WEX_TRACE_CALLS:-false}
+export WEX_USER_PATH_HOME
+
 # Load addons global files.
 for ADDON in "${WEX_ADDONS[@]}"; do
   ADDON_FILE="${WEX_DIR_ADDONS}${ADDON}/includes/globals.sh"
@@ -85,36 +106,3 @@ for ADDON in "${WEX_ADDONS[@]}"; do
     . "${ADDON_FILE}"
   fi
 done
-
-export WEX_ADDONS
-export WEX_BASHRC_PATH
-export WEX_CHOWN_NON_SUDO_COMMAND
-export WEX_CORE_VERSION=4.0.29
-export WEX_DEFAULT_INSECURE_PASSWORD
-export WEX_DIR_ADDONS
-export WEX_DIR_APP_DATA=.wex/
-export WEX_DIR_BASH
-export WEX_DIR_ROOT
-export WEX_DIR_TMP
-export WEX_DOCKER_COMPOSE_YML_VERSION
-export WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
-export WEX_DOCKER_COMPOSE_STDIN_OPEN=${WEX_DOCKER_COMPOSE_STDIN_OPEN:-true}
-export WEX_FILE_ALL_SCRIPTS
-export WEX_FILE_ALL_SCRIPTS_PATHS
-export WEX_FILE_APP_ENV=.env
-export WEX_FILE_MESSAGE_FUNCTION
-export WEX_FILE_MIDDLEWARES
-export WEX_FILE_TRACE="${WEX_DIR_TMP}trace"
-export WEX_MIDDLEWARES
-export WEX_QUIET_MODE
-export WEX_SCREEN_WIDTH
-export WEX_SED_I_ORIG_EXT=.orig
-export WEX_RUNNER_PATH_BASH
-export WEX_RUNNER_PATH_HOME
-export WEX_RUNNER_PATH_WEX
-export WEX_RUNNER_USERNAME
-export WEX_SWITCH_NON_SUDO_COMMAND
-export WEX_SWITCH_SUDO_COMMAND
-export WEX_TMP_GLOBAL_VAR
-export WEX_TRACE_CALLS=${WEX_TRACE_CALLS:-false}
-export WEX_USER_PATH_HOME

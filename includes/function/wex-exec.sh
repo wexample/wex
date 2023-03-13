@@ -42,9 +42,12 @@ wex-exec() {
 
   # Get parameters keeping quoted strings.
   WEX_ARGUMENTS=''
-  whitespace="[[:space:]]"
+  local WHITESPACE="[[:space:]]"
+  local ARG_NAME
+  local ARG_VALUE
+
   for i in "${@:2}"; do
-    if [[ $i =~ $whitespace ]]; then
+    if [[ $i =~ $WHITESPACE ]]; then
       ARG_NAME=$(echo ${i} | cut -d"=" -f1)
       ARG_VALUE=${i#*\=}
       i="-"${ARG_NAME}"=\"${ARG_VALUE}\""
@@ -61,8 +64,11 @@ wex-exec() {
   local _AS_SUDO=true
   local _AS_NON_SUDO=true
   local WEX_CALLING_ARGUMENTS=()
+  local NON_INTERACTIVE_BASE=${NON_INTERACTIVE:-false}
   _wexGetArguments "${WEX_SCRIPT_CALL_NAME}"
   local ORIGINAL_ARGS=("${@:2}")
+
+  _wexDefineDefaultArgs
 
   # Then start in negative value (length of previous table).
   local _NEGATIVE_ARGS_LENGTH="${#WEX_ARGUMENT_DEFAULTS[@]}"
@@ -134,7 +140,12 @@ wex-exec() {
       fi
     fi
   done
+  
+  if [ "${NON_INTERACTIVE}" != "true" ];then
+    NON_INTERACTIVE=${NON_INTERACTIVE_BASE}
+  fi
 
+  # Check unexpected args.
   for ARG_GIVEN in "${ORIGINAL_ARGS[@]}"; do
     ARG_GIVEN_NAME=$(_wexParseArg "${ARG_GIVEN}")
 
@@ -254,6 +265,8 @@ wex-exec() {
 
   # Run middlewares.
   local MIDDLEWARE_PATH
+  _wexDefineMiddlewares
+
   for MIDDLEWARE_PATH in ${WEX_MIDDLEWARES[@]}; do
     . "${MIDDLEWARE_PATH}"
 
@@ -262,6 +275,9 @@ wex-exec() {
 
   # Execute script with all parameters.
   ${WEX_SCRIPT_METHOD_NAME} "${@:2}"
+
+  # Restore if any change.
+  NON_INTERACTIVE=NON_INTERACTIVE_BASE
 }
 
 export -f wex-exec

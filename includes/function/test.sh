@@ -115,7 +115,7 @@ wexTest() {
 
   _wexTestRunTests "${@}"
   _wexTestBuildTrace "${@}"
-  # TODO _wexTestShowTrace "${@}"
+  _wexTestShowTrace "${@}"
 }
 
 _wexTestArgsSection() {
@@ -280,6 +280,8 @@ _wexTestRunTests() {
     TEST_FILE="$(_wexTestGetFile "${TEST_RUN_SCRIPT}")"
     METHOD_NAME="$(_wexMethodName "${TEST_RUN_SCRIPT}")Test"
 
+    mkdir -p $(dirname "${TEST_FILE}")
+
     cat <<EOF >"${TEST_FILE}"
 #!/usr/bin/env bash
 
@@ -301,7 +303,7 @@ _wexTestShowTrace() {
 
   if [ ${#UNCOVERED[@]} -gt 0 ]; then
     printf '%s\n' "${UNCOVERED[@]}"
-    _wexError "Uncovered commands : ${#UNCOVERED[@]}"
+    _wexError "${#UNCOVERED[@]} uncovered commands"
   fi
 }
 
@@ -378,10 +380,11 @@ _wexTestScript() {
 _wexTestFileExists() {
   local FILEPATH="$1"
 
-  if [ -f "$FILEPATH" ]; then
+  if [ -e "$FILEPATH" ]; then
     _wexTestResultSuccess "File $FILEPATH exists."
   else
     _wexTestResultError "File $FILEPATH does not exist."
+    exit 1
   fi
 }
 

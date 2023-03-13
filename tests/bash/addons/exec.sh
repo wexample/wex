@@ -6,4 +6,3 @@ addonsExecTest() {
 
   _wexTestAssertEqual true true
 }
-
