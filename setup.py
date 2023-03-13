@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+from src.const.globals import WEX_VERSION
 
 setup(
     name='wex',
-    version='5.0.0',
+    version=WEX_VERSION,
     description='A bash command manager',
     author='Wexample',
     author_email='contact@wexample.com',
