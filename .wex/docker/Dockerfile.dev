@@ -1,6 +1,10 @@
 FROM python:3.12-rc-bullseye
 
-RUN apt-get update && apt-get install sudo
+RUN apt-get update && apt-get install \
+  ruby-full \
+  sudo
+
+RUN gem install github_changelog_generator
 
 RUN pip install \
   click \
