@@ -56,12 +56,19 @@ class Kernel:
 
         return module_path
 
-    def call(self, cli):
+    def call(self):
         if not self.validate_argv(sys.argv):
             return
 
         command: str = sys.argv[1]
+        command_args: [] = sys.argv[2:]
 
+        self.exec(
+            command,
+            command_args
+        )
+
+    def exec(self, command: str, command_args: []):
         # Check command formatting.
         match = re.match(COMMAND_PATTERN, command)
         if not match:
@@ -80,12 +87,6 @@ class Kernel:
         module: 'ModuleType' = importlib.import_module(module_name)
         function = getattr(module, function_name)
 
-        # Attach command.
-        cli.add_command(
-            function,
-            name=command
-        )
-
-        # Running click group will launch
-        # command we created with given command name.
-        cli()
+        ctx = function.make_context(command, command_args or ())
+        ctx.obj = self
+        function.invoke(ctx)

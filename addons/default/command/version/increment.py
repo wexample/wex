@@ -2,7 +2,7 @@ import click
 
 
 @click.command()
-@click.option('--version', type=str, required=True)
+@click.option('--version', '-v', type=str, required=True)
 @click.option('--type', '-t', type=str, default='minor', help="Upgrade type (major, intermediate or minor)")
 @click.option('--increment', '-i', type=int, default=1, help="Amount of version to increment")
 def default_version_increment(version, type, increment) -> str:
