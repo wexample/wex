@@ -2,10 +2,13 @@ import click
 import json
 import os
 import re
+from ..const.globals import WEX_VERSION
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED
 
 
 class Kernel:
+    version = WEX_VERSION
+
     def __init__(self):
         # Load the messages from the JSON file
         with open(os.getcwd() + '/locale/messages.json') as f:

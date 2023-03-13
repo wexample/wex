@@ -6,7 +6,10 @@ import importlib
 
 
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx):
+    ctx.obj = {'kernel': kernel}
+
     pass
 
 
