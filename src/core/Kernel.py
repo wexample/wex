@@ -1,17 +1,24 @@
+import importlib
+from typing import Optional
 import click
-import json
 import os
+import json
 import re
 import sys
-from ..const.globals import WEX_VERSION
-from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED
-import importlib
+from ..const.globals import WEX_VERSION, COMMAND_PATTERN
+from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
 
 
 class Kernel:
     version = WEX_VERSION
+    paths: dict[str, Optional[str]] = {
+        "root": None
+    }
 
     def __init__(self):
+        self.paths['root'] = os.getcwd() + '/'
+        self.paths['addons'] = self.paths['root'] + 'addons/'
+
         # Load the messages from the JSON file
         with open(os.getcwd() + '/locale/messages.json') as f:
             self.messages = json.load(f)
@@ -29,28 +36,56 @@ class Kernel:
             return True
         return False
 
-    def validate_command(self, value) -> str:
-        if not re.match(r"^(?:\w+::)?[\w-]+/[\w-]+$", value):
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
-        return value
+    def command_to_path(self, command: str) -> str:
+        """
+        Convert addon::group/name to addon/command/group/name.py
+
+        :param command: full command
+        :return: file path
+        """
+        command = command.replace("::", "/");
+        parts: [] = command.split('/')
+        parts.insert(1, 'command')
+
+        return self.paths['addons'] + '/'.join(parts) + ".py"
+
+    def path_to_module(self, path: str) -> str:
+        relative_path = os.path.relpath(path, self.paths['root'])
+        module_path, _ = os.path.splitext(relative_path)
+        module_path = module_path.replace(os.path.sep, ".")
+
+        return module_path
 
     def call(self, cli):
         if not self.validate_argv(sys.argv):
             return
 
         command: str = sys.argv[1]
-        self.validate_command(command)
-        command_path: str = command_to_path(command)
 
-        module_name = 'addons.core.registry.build'
-        command_name = 'core::registry/build'
-        function_name = 'core_registry_build'
+        # Check command formatting.
+        match = re.match(COMMAND_PATTERN, command)
+        if not match:
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
+            return
 
-        module = importlib.import_module(module_name)
+        # Get valid path.
+        command_path: str = self.command_to_path(command)
+        if not os.path.exists(command_path):
+            self.error(ERR_COMMAND_FILE_NOT_FOUND)
+            return
+
+        # Import module and load function.
+        function_name: str = f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
+        module_name: str = self.path_to_module(command_path)
+        module: 'ModuleType' = importlib.import_module(module_name)
         function = getattr(module, function_name)
 
+        # Attach command.
         cli.add_command(
             function,
-            name=command_name
+            name=command
         )
+
+        # Running click group will launch
+        # command we created with given command name.
         cli()
