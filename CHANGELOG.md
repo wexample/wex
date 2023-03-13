@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/wexample/wex/tree/HEAD)
 
-[Full Changelog](https://github.com/wexample/wex/compare/3.5...HEAD)
+[Full Changelog](https://github.com/wexample/wex/compare/4.0.32...HEAD)
+
+**Merged pull requests:**
+
+- Update README.md [\#47](https://github.com/wexample/wex/pull/47) ([remiFaucon](https://github.com/remiFaucon))
+
+## [4.0.32](https://github.com/wexample/wex/tree/4.0.32) (2023-03-11)
+
+[Full Changelog](https://github.com/wexample/wex/compare/3.5...4.0.32)
 
 **Implemented enhancements:**
 
@@ -42,10 +50,6 @@
 - Automate site first install and updates [\#25](https://github.com/wexample/wex/issues/25)
 - Adding a branded grub initialization [\#18](https://github.com/wexample/wex/issues/18)
 - Install on Docker Toolbox [\#10](https://github.com/wexample/wex/issues/10)
-
-**Merged pull requests:**
-
-- Update README.md [\#47](https://github.com/wexample/wex/pull/47) ([remiFaucon](https://github.com/remiFaucon))
 
 ## [3.5](https://github.com/wexample/wex/tree/3.5) (2022-12-11)
 
