@@ -19,11 +19,11 @@ class Kernel:
 
     def __init__(self):
         # Init global vars.
-        self.path['root'] = os.getcwd() + '/'
+        self.path['root'] = str(pathlib.Path(__file__).parent.resolve()) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
 
         # Load the messages from the JSON file
-        with open(os.getcwd() + '/locale/messages.json') as f:
+        with open(self.path['root'] + '/locale/messages.json') as f:
             self.messages = json.load(f)
 
         # Load env
