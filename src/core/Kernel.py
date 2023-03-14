@@ -30,12 +30,18 @@ class Kernel:
         load_dotenv()
 
     def trans(self, key: str, parameters: object = {}) -> str:
-        return str.format(self.messages[key], parameters)
+        return self.messages[key].format(**parameters)
 
     def error(self, code: str, parameters: object = {}) -> None:
-        raise click.BadParameter(
-            f'[{code}] {self.trans(code, parameters)}'
+        click.echo(
+            click.style(
+                f'[{code}] {self.trans(code, parameters)}',
+                fg='red',
+                bold=True
+            )
         )
+
+        exit(1)
 
     def log(self, message: str) -> None:
         click.echo(message)

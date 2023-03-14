@@ -18,7 +18,7 @@ def has_uncommitted_changes(directory):
 @click.command()
 @click.pass_obj
 def core_version_build(kernel) -> None:
-    print(f'Building new version from {kernel.version}...')
+    kernel.log(f'Building new version from {kernel.version}...')
 
     # Check requirements
     # GitHub token for changelog build
@@ -29,8 +29,9 @@ def core_version_build(kernel) -> None:
     # There is no uncommitted change
     repo = git.Repo(kernel.path['root'])
     if repo.is_dirty(untracked_files=True):
-        kernel.shell_exec('git diff')
-        kernel.error(ERR_CORE_REPO_DIRTY)
+        kernel.error(ERR_CORE_REPO_DIRTY, {
+            'diff': repo.git.diff()
+        })
 
     new_version = default_version_increment.callback(
         kernel.version,
@@ -40,7 +41,7 @@ def core_version_build(kernel) -> None:
     # Let's start
 
     # Save new version
-    print(f'New version : {new_version}')
+    kernel.log(f'New version : {new_version}')
     default_config_change.callback(
         kernel.path['root'] + 'src/const/globals.py',
         'WEX_VERSION',
@@ -48,7 +49,7 @@ def core_version_build(kernel) -> None:
     )
 
     # Changelog
-    print('Building CHANGELOG.md...')
+    kernel.log('Building CHANGELOG.md...')
     kernel.shell_exec(
         f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
     )
