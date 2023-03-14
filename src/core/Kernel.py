@@ -17,9 +17,9 @@ class Kernel:
         "root": None
     }
 
-    def __init__(self):
+    def __init__(self, path_root):
         # Init global vars.
-        self.path['root'] = str(pathlib.Path(__file__).parent.resolve()) + '/'
+        self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
 
         # Load the messages from the JSON file
