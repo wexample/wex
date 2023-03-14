@@ -8,5 +8,4 @@ import click
 @click.option('-d', is_flag=True, type=bool)
 @click.option('-f', is_flag=True, type=bool)
 def core_registry_build(ctx, kernel, myarg: str, d: bool, f: bool) -> None:
-    print('Building registry...')
-    print(kernel.version)
+    kernel.log('Building registry...')
