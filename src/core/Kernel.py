@@ -89,4 +89,4 @@ class Kernel:
 
         ctx = function.make_context(command, command_args or ())
         ctx.obj = self
-        function.invoke(ctx)
+        return function.invoke(ctx)
