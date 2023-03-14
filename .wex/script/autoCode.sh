@@ -8,5 +8,11 @@ _wexLog "Updating addons..."
 #  if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
 #    _wexLog "Updating ${ADDON}..."
 #
+#    cd ${WEX_DIR_ADDONS}${ADDON}
+#
+#    git checkout master
+#    git push github master
+#
 #  fi
 #done
+
