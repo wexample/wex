@@ -2,7 +2,10 @@ FROM python:3.12.0a6-bullseye
 
 # Create a username for pid 1000
 # which is the default pid given by Docker
-RUN useradd --uid 1000 owner
+# Add it to sudo as we may need to install some packages as sudo
+RUN useradd --uid 1000 owner \
+  && adduser owner sudo \
+  && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
 # Ruby is required for changelog generator
 RUN apt-get update && apt-get install -y \
