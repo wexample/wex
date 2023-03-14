@@ -1,4 +1,5 @@
 import importlib
+import logging
 from typing import Optional
 import click
 import os
@@ -7,12 +8,14 @@ import re
 import sys
 import subprocess
 from dotenv import load_dotenv
-from ..const.globals import WEX_VERSION, COMMAND_PATTERN
+from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
+from pythonjsonlogger import jsonlogger
 
 
 class Kernel:
     version = WEX_VERSION
+    logger: 'Logger'
     path: dict[str, Optional[str]] = {
         "root": None,
         "addons": None
@@ -22,6 +25,7 @@ class Kernel:
         # Init global vars.
         self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
+        self.path['tmp'] = self.path['root'] + 'tmp/'
 
         # Load the messages from the JSON file
         with open(self.path['root'] + '/locale/messages.json') as f:
@@ -30,17 +34,32 @@ class Kernel:
         # Load env
         load_dotenv()
 
+        # Create logger, in json for better parsing.
+        self.logger = logging.getLogger()
+        # Add json formatter for logger.
+        # Beware : output file is not a json,
+        # but a text file with a json on each line.
+        # Parsers should parse it before reading as a json.
+        log_handler = logging.FileHandler(self.path['tmp'] + 'app.log')
+        formatter = jsonlogger.JsonFormatter('%(asctime)s [%(levelname)s] %(message)s')
+        log_handler.setFormatter(formatter)
+        self.logger.addHandler(log_handler)
+
     def trans(self, key: str, parameters: object = {}) -> str:
         return self.messages[key].format(**parameters)
 
     def error(self, code: str, parameters: object = {}) -> None:
+        message = f'[{code}] {self.trans(code, parameters)}';
+
         click.echo(
             click.style(
-                f'[{code}] {self.trans(code, parameters)}',
+                message,
                 fg=COLOR_RED,
                 bold=True
             )
         )
+
+        self.logger.error(message)
 
         exit(1)
 

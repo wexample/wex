@@ -1,3 +1,4 @@
 click
 gitpython
 python-dotenv
+python-json-logger
