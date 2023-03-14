@@ -8,7 +8,7 @@ import re
 import sys
 import subprocess
 from dotenv import load_dotenv
-from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN
+from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
 from pythonjsonlogger import jsonlogger
 
@@ -40,7 +40,7 @@ class Kernel:
         # Beware : output file is not a json,
         # but a text file with a json on each line.
         # Parsers should parse it before reading as a json.
-        log_handler = logging.FileHandler(self.path['tmp'] + 'app.log')
+        log_handler = logging.FileHandler(self.path['tmp'] + LOG_FILENAME)
         formatter = jsonlogger.JsonFormatter('%(asctime)s [%(levelname)s] %(message)s')
         log_handler.setFormatter(formatter)
         self.logger.addHandler(log_handler)
