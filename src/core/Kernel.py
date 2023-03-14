@@ -13,14 +13,14 @@ from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_F
 
 class Kernel:
     version = WEX_VERSION
-    paths: dict[str, Optional[str]] = {
+    path: dict[str, Optional[str]] = {
         "root": None
     }
 
     def __init__(self):
         # Init global vars.
-        self.paths['root'] = os.getcwd() + '/'
-        self.paths['addons'] = self.paths['root'] + 'addons/'
+        self.path['root'] = os.getcwd() + '/'
+        self.path['addons'] = self.path['root'] + 'addons/'
 
         # Load the messages from the JSON file
         with open(os.getcwd() + '/locale/messages.json') as f:
@@ -53,10 +53,10 @@ class Kernel:
         parts: [] = command.split('/')
         parts.insert(1, 'command')
 
-        return self.paths['addons'] + '/'.join(parts) + ".py"
+        return self.path['addons'] + '/'.join(parts) + ".py"
 
     def path_to_module(self, path: str) -> str:
-        relative_path = os.path.relpath(path, self.paths['root'])
+        relative_path = os.path.relpath(path, self.path['root'])
         module_path, _ = os.path.splitext(relative_path)
         module_path = module_path.replace(os.path.sep, ".")
 

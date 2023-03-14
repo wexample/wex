@@ -20,7 +20,7 @@ VERSION_BUILD_TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 @click.option('--version', '-v', type=str, required=True)
 @click.option('--type', '-t', type=str, default=UPGRADE_TYPE_MINOR, help="Upgrade type (major, intermediate or minor)")
 @click.option('--increment', '-i', type=int, default=1, help="Amount of version to increment")
-def default_version_increment(version: str, type: str, increment: int) -> str:
+def default_version_increment(version: str, type: str = UPGRADE_TYPE_MINOR, increment: int = 1) -> str:
     pre_build_number: int = VERSION_PRE_BUILD_NUMBER
 
     # Handle 1.0.0-beta.1+build.1234
