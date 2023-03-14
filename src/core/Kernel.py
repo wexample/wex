@@ -5,6 +5,8 @@ import os
 import json
 import re
 import sys
+import subprocess
+from dotenv import load_dotenv
 from ..const.globals import WEX_VERSION, COMMAND_PATTERN
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
 
@@ -16,6 +18,7 @@ class Kernel:
     }
 
     def __init__(self):
+        # Init global vars.
         self.paths['root'] = os.getcwd() + '/'
         self.paths['addons'] = self.paths['root'] + 'addons/'
 
@@ -23,12 +26,15 @@ class Kernel:
         with open(os.getcwd() + '/locale/messages.json') as f:
             self.messages = json.load(f)
 
+        # Load env
+        load_dotenv()
+
     def trans(self, key: str) -> str:
         return self.messages[key]
 
     def error(self, code: str) -> None:
         raise click.BadParameter(
-            f"[{code}] {self.trans(code)}"
+            f'[{code}] {self.trans(code)}'
         )
 
     def validate_argv(self, args: []) -> bool:
@@ -82,7 +88,7 @@ class Kernel:
             return
 
         # Import module and load function.
-        function_name: str = f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
+        function_name: str = f'{match.group(1)}_{match.group(2)}_{match.group(3)}'
         module_name: str = self.path_to_module(command_path)
         module: 'ModuleType' = importlib.import_module(module_name)
         function = getattr(module, function_name)
@@ -90,3 +96,22 @@ class Kernel:
         ctx = function.make_context(command, command_args or [])
         ctx.obj = self
         return function.invoke(ctx)
+
+    def shell_exec(self, command: str):
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True
+        )
+
+        # Display output in real time.
+        for line in iter(process.stdout.readline, b''):
+            print(line.decode().strip())
+
+        # Get output
+        output, error = process.communicate()
+        if error:
+            print(error.decode())
+        else:
+            print(output.decode())
