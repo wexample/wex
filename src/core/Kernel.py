@@ -26,6 +26,11 @@ class Kernel:
         self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
+        self.path['logs'] = self.path['tmp'] + 'logs/'
+
+        # Create the log folder if it does not exist
+        if not os.path.exists(self.path['logs']):
+            os.makedirs(self.path['logs'])
 
         # Load the messages from the JSON file
         with open(self.path['root'] + '/locale/messages.json') as f:
@@ -40,7 +45,7 @@ class Kernel:
         # Beware : output file is not a json,
         # but a text file with a json on each line.
         # Parsers should parse it before reading as a json.
-        log_handler = logging.FileHandler(self.path['tmp'] + LOG_FILENAME)
+        log_handler = logging.FileHandler(self.path['logs'] + LOG_FILENAME)
         formatter = jsonlogger.JsonFormatter('%(asctime)s [%(levelname)s] %(message)s')
         log_handler.setFormatter(formatter)
         self.logger.addHandler(log_handler)
