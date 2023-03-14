@@ -1,7 +1,7 @@
 import click
 
 
-@click.command()
+@click.command
 @click.pass_obj
 @click.pass_context
 @click.option('--myarg', type=str)

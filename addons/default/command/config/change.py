@@ -3,7 +3,7 @@ import click
 CONFIG_SEPARATOR_DEFAULT = ' = '
 
 
-@click.command()
+@click.command
 @click.option('--file', '-f', type=str, required=True)
 @click.option('--key', '-k', type=str, required=True)
 @click.option('--value', '-v', required=True)

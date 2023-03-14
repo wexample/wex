@@ -15,7 +15,7 @@ def has_uncommitted_changes(directory):
     return bool(output.strip())
 
 
-@click.command()
+@click.command
 @click.pass_obj
 def core_version_build(kernel) -> None:
     kernel.log(f'Building new version from {kernel.version}...')

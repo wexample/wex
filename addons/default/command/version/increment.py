@@ -16,7 +16,7 @@ VERSION_PRE_BUILD_NUMBER = 0
 VERSION_BUILD_TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
 
-@click.command()
+@click.command
 @click.option('--version', '-v', type=str, required=True)
 @click.option('--type', '-t', type=str, default=UPGRADE_TYPE_MINOR, help="Upgrade type (major, intermediate or minor)")
 @click.option('--increment', '-i', type=int, default=1, help="Amount of version to increment")
