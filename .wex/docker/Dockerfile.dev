@@ -5,6 +5,7 @@ FROM python:3.12.0a6-bullseye
 # Add it to sudo as we may need to install some packages as sudo
 RUN useradd --uid 1000 owner \
   && adduser owner sudo \
+  && mkdir -p /etc/sudoers.d \
   && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
 # Ruby is required for changelog generator
