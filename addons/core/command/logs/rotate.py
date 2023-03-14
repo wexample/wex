@@ -1,6 +1,7 @@
 import datetime
 import os
 import click
+from typing import List
 
 from src.const.globals import LOG_MAX_DAYS
 
@@ -9,19 +10,19 @@ from src.const.globals import LOG_MAX_DAYS
 @click.pass_obj
 def core_logs_rotate(kernel):
     # Define the age limit
-    age_limit = datetime.timedelta(days=LOG_MAX_DAYS)
+    age_limit: datetime.timedelta = datetime.timedelta(days=LOG_MAX_DAYS)
     # Get the current time
-    now = datetime.datetime.now()
+    now: datetime.datetime = datetime.datetime.now()
     # Get the list of log files
-    log_files = os.listdir(kernel.path['logs'])
+    log_files: List[str] = os.listdir(kernel.path['logs'])
 
     kernel.log(f'Starting cleanup of files older than {LOG_MAX_DAYS} days')
     # Loop through the log files
     for log_file in log_files:
         # Get the full path to the log file
-        log_file_path = os.path.join(kernel.path['logs'], log_file)
+        log_file_path: str = os.path.join(kernel.path['logs'], log_file)
         # Get the modification time of the log file
-        mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(log_file_path))
+        mod_time: datetime.datetime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file_path))
 
         # Check if the log file is older than the age limit
         if now - mod_time > age_limit:
@@ -29,4 +30,3 @@ def core_logs_rotate(kernel):
             os.remove(log_file_path)
 
             kernel.log(f'Removed old log file : {log_file_path}')
-
