@@ -9,6 +9,8 @@ RUN useradd --uid 1000 owner \
 
 # Ruby is required for changelog generator
 RUN apt-get update && apt-get install -y \
+  cron \
+  nano \
   ruby-full \
   sudo
 
