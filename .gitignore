@@ -6,6 +6,9 @@
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Project
+.env
+
 # Pytest
 /.pytest_cache
 
