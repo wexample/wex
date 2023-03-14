@@ -71,6 +71,8 @@ class Kernel:
             )
         )
 
+        self.logger.info(message)
+
     def validate_argv(self, args: []) -> bool:
         if len(args) > 1:
             return True
