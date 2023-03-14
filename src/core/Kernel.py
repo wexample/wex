@@ -14,7 +14,8 @@ from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_F
 class Kernel:
     version = WEX_VERSION
     path: dict[str, Optional[str]] = {
-        "root": None
+        "root": None,
+        "addons": None
     }
 
     def __init__(self, path_root):
@@ -36,7 +37,7 @@ class Kernel:
         click.echo(
             click.style(
                 f'[{code}] {self.trans(code, parameters)}',
-                fg='red',
+                fg=COLOR_RED,
                 bold=True
             )
         )
@@ -44,7 +45,12 @@ class Kernel:
         exit(1)
 
     def log(self, message: str) -> None:
-        click.echo(message)
+        click.echo(
+            click.style(
+                f'{message}',
+                fg=COLOR_GRAY_DARK
+            )
+        )
 
     def validate_argv(self, args: []) -> bool:
         if len(args) > 1:
