@@ -87,6 +87,6 @@ class Kernel:
         module: 'ModuleType' = importlib.import_module(module_name)
         function = getattr(module, function_name)
 
-        ctx = function.make_context(command, command_args or ())
+        ctx = function.make_context(command, command_args or [])
         ctx.obj = self
         return function.invoke(ctx)
