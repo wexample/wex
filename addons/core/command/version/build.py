@@ -8,12 +8,10 @@ from src.const.error import ERR_ENV_VAR_MISSING
 @click.command()
 @click.pass_obj
 def core_version_build(kernel) -> None:
-    print('Building new version...')
-    print(kernel.version)
+    print(f'Building new version from {kernel.version}...')
 
-    print(kernel.exec('default::version/increment', ['--version', '5.0.0']))
-
-    env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
+    new_version = kernel.exec('default::version/increment', ['--version', '5.0.0', '-t', 'dev'])
+    print(f'New version : {new_version}')
 
     if env_core_github_token:
         print('Building CHANGELOG.md...')
