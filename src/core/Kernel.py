@@ -29,13 +29,16 @@ class Kernel:
         # Load env
         load_dotenv()
 
-    def trans(self, key: str) -> str:
-        return self.messages[key]
+    def trans(self, key: str, parameters: object = {}) -> str:
+        return str.format(self.messages[key], parameters)
 
-    def error(self, code: str) -> None:
+    def error(self, code: str, parameters: object = {}) -> None:
         raise click.BadParameter(
-            f'[{code}] {self.trans(code)}'
+            f'[{code}] {self.trans(code, parameters)}'
         )
+
+    def log(self, message: str) -> None:
+        click.echo(message)
 
     def validate_argv(self, args: []) -> bool:
         if len(args) > 1:
