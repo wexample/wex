@@ -158,9 +158,9 @@ class Kernel:
 
     def exec_function(self, function, args: [] = []):
         if not click.get_current_context(True):
-            with function.make_context('', []) as ctx:
+            with function.make_context('', args) as ctx:
                 ctx.obj = self
-                return function.callback(*args)
+                return function.invoke(ctx)
 
         return function.callback(*args)
 
