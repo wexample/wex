@@ -35,7 +35,6 @@ def core_version_build(kernel) -> None:
 
     new_version = default_version_increment.callback(
         kernel.version,
-        'dev'
     )
 
     # Let's start

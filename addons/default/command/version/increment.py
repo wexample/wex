@@ -34,6 +34,8 @@ def default_version_increment(version: str, type: str = UPGRADE_TYPE_MINOR, incr
             else:
                 pre_build, pre_build_number, _ = pre_build_parts
 
+            type = pre_build
+
             # pre_build_number can be : 1+build.1234
             if '+' in pre_build_number:
                 # Ignore last part which is a timestamp.
@@ -53,9 +55,14 @@ def default_version_increment(version: str, type: str = UPGRADE_TYPE_MINOR, incr
         intermediate = str(int(intermediate) + increment)
         minor = '0'
     # Any of pre-build version
-    elif type in [UPGRADE_TYPE_ALPHA, UPGRADE_TYPE_BETA, UPGRADE_TYPE_DEV, UPGRADE_TYPE_RC, UPGRADE_TYPE_NIGHTLY,
-                  UPGRADE_TYPE_SNAPSHOT]:
-        pre_build = type
+    elif type in [
+        UPGRADE_TYPE_ALPHA,
+        UPGRADE_TYPE_BETA,
+        UPGRADE_TYPE_DEV,
+        UPGRADE_TYPE_RC,
+        UPGRADE_TYPE_NIGHTLY,
+        UPGRADE_TYPE_SNAPSHOT
+    ]:
         pre_build_number += increment
     # type == 'minor' or everything else
     else:
