@@ -200,16 +200,16 @@ class Kernel:
 
     def exec_function(self, function, args: [] = []):
         if not click.get_current_context(True):
-            with function.make_context('', args) as ctx:
-                ctx.obj = self
-                return function.invoke(ctx)
+            ctx = function.make_context('', args)
+            ctx.obj = self
+            return function.invoke(ctx)
 
-        if not hasattr(function, 'callback'):
-            self.error(ERR_EXEC_NON_CLICK_METHOD, {
-                "function_name": function.__name__
-            })
+        if hasattr(function, 'callback'):
+            return function.callback(*args)
 
-        return function.callback(*args)
+        self.error(ERR_EXEC_NON_CLICK_METHOD, {
+            "function_name": function.__name__
+        })
 
     def list_subdirectories(self, path: str) -> []:
         subdirectories = []
