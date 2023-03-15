@@ -9,7 +9,7 @@ import sys
 import subprocess
 from dotenv import load_dotenv
 from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME
-from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
+from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 import importlib.util
 
@@ -55,11 +55,13 @@ class Kernel:
         log_handler.setFormatter(formatter)
         self.logger.addHandler(log_handler)
 
-    def trans(self, key: str, parameters: object = {}) -> str:
-        return self.messages[key].format(**parameters)
+    def trans(self, key: str, parameters: object = {}, default=None) -> str:
+        message = self.messages.get(key, default or key)
+
+        return message.format(**parameters)
 
     def error(self, code: str, parameters: object = {}) -> None:
-        message = f'[{code}] {self.trans(code, parameters)}';
+        message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}';
 
         click.echo(
             click.style(
@@ -156,11 +158,19 @@ class Kernel:
 
     ctx = None
 
+    def env(self, key: str):
+        return self.enf[key]
+
     def exec_function(self, function, args: [] = []):
         if not click.get_current_context(True):
             with function.make_context('', args) as ctx:
                 ctx.obj = self
                 return function.invoke(ctx)
+
+        if not hasattr(function, 'callback'):
+            self.error(ERR_EXEC_NON_CLICK_METHOD, {
+                "function_name": function.__name__
+            })
 
         return function.callback(*args)
 
