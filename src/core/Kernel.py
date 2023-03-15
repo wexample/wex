@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND
 from pythonjsonlogger import jsonlogger
+import importlib.util
 
 
 class Kernel:
@@ -157,9 +158,28 @@ class Kernel:
         module: 'ModuleType' = importlib.import_module(module_name)
         function = getattr(module, function_name)
 
-        ctx = function.make_context(command, command_args or [])
-        ctx.obj = self
-        return function.invoke(ctx)
+        return self.exec_function(function, command_args)
+
+    ctx = None
+
+    def exec_function(self, function, args: [] = []):
+        if not click.get_current_context(True):
+            with function.make_context('', []) as ctx:
+                ctx.obj = self
+                return function.callback(*args)
+
+        return function.callback(*args)
+
+    def list_subdirectories(self, path: str) -> []:
+        subdirectories = []
+        for item in os.listdir(path):
+            item_path = os.path.join(path, item)
+            if os.path.isdir(item_path) and not item.startswith('.'):
+                subdirectories.append(os.path.basename(item_path))
+
+        subdirectories.sort()
+
+        return subdirectories
 
     def shell_exec(self, command: str):
         process = subprocess.Popen(
