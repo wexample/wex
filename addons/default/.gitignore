@@ -1,0 +1,30 @@
+# IDE
+.vscode/
+*.idea/
+*.iml
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Pytest
+/.pytest_cache
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pyzw
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtualenv
+venv/
+env/
+ENV/
+.venv/
+.ENV/
