@@ -155,6 +155,9 @@ class Kernel:
             return function(self, **args)
 
     def exec(self, command: str, command_args: {}):
+        if command == 'hi':
+            return 'hi!'
+
         # Check command formatting.
         match = re.match(COMMAND_PATTERN, command)
         if not match:
