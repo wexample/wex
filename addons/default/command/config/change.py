@@ -23,6 +23,12 @@ def default_config_change(file, key, value, separator: str = CONFIG_SEPARATOR_DE
             updated_lines.append(line)
 
     if not found_key:
+        # Add a new line if the file doesn't end with a newline
+        if lines and not lines[-1].endswith('\n'):
+            updated_lines.append('\n')
+        # Add a new line if the file doesn't contain any content
+        if not lines:
+            updated_lines.append('\n')
         updated_lines.append(f"{key}{separator}{value}\n")
 
     with open(file, 'w') as f:
