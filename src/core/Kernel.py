@@ -14,12 +14,13 @@ from pythonjsonlogger import jsonlogger
 
 
 class Kernel:
-    version = WEX_VERSION
+    addons: [str] = []
     logger: 'Logger'
     path: dict[str, Optional[str]] = {
         "root": None,
         "addons": None
     }
+    version = WEX_VERSION
 
     def __init__(self, path_root):
         # Init global vars.
@@ -27,6 +28,9 @@ class Kernel:
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['logs'] = self.path['tmp'] + 'logs/'
+
+        # Init addons config
+        self.addons = {addon: {} for addon in self.list_subdirectories(self.path['addons'])}
 
         # Create the log folder if it does not exist
         if not os.path.exists(self.path['logs']):
