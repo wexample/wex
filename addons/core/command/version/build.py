@@ -1,12 +1,12 @@
 import os
 import git
 import click
-from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT
+from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, WEX_VERSION
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 import subprocess
 from dotenv import set_key
-
 from addons.default.command.version.increment import default_version_increment
+from addons.core.command.globals.set import core_globals_set
 
 
 def has_uncommitted_changes(directory):
@@ -41,10 +41,12 @@ def core_version_build(kernel) -> None:
 
     # Save new version
     kernel.log(f'New version : {new_version}')
-    set_key(
-        kernel.path['root'] + 'src/const/globals.py',
-        'WEX_VERSION',
-        new_version
+    kernel.exec_function(
+        core_globals_set,
+        [
+            'WEX_VERSION',
+            new_version
+        ]
     )
 
     # Changelog
