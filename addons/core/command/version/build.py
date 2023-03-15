@@ -4,7 +4,6 @@ import click
 from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, WEX_VERSION
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 import subprocess
-from dotenv import set_key
 from addons.default.command.version.increment import default_version_increment
 from addons.core.command.globals.set import core_globals_set
 
@@ -43,16 +42,23 @@ def core_version_build(kernel) -> None:
     kernel.log(f'New version : {new_version}')
     kernel.exec_function(
         core_globals_set,
-        [
-            'WEX_VERSION',
-            new_version
-        ]
+        {
+            'key': 'WEX_VERSION',
+            'value': new_version
+        }
     )
 
     # Enforce new version for wex app.
     kernel.exec(
         'app::version/build',
-        [
-            new_version
-        ]
+        {
+            'version': new_version,
+            'app_dir': kernel.path['root']
+        }
+    )
+
+    # Changelog
+    kernel.log('Building CHANGELOG.md...')
+    kernel.shell_exec(
+        f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
     )
