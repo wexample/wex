@@ -35,7 +35,7 @@ class Kernel:
             self.messages = json.load(f)
 
         # Init addons config
-        self.addons = {addon: {} for addon in self.list_subdirectories(self.path['addons'])}
+        self.addons = {addon: {'config': {}} for addon in self.list_subdirectories(self.path['addons'])}
 
         for addon in self.addons:
             messages_path = self.path['addons'] + f'{addon}/locale/messages.json'
