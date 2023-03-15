@@ -1,6 +1,6 @@
 COLOR_GRAY_DARK = [80, 80, 80]
 COLOR_RED = [240, 81, 66]
-COMMAND_PATTERN = r'^(?:(\w+)::)?([\w-]+)/([\w-]+)$'
+COMMAND_PATTERN = '^(?:(\\w+)::)?([\\w-]+)/([\\w-]+)$'
 CONFIG_SEPARATOR_DEFAULT = ' = '
 GITHUB_GROUP = 'wexample'
 GITHUB_PROJECT = 'wex'
