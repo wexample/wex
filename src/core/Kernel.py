@@ -101,13 +101,6 @@ class Kernel:
 
         return self.path['addons'] + '/'.join(parts) + ".py"
 
-    def path_to_module(self, path: str) -> str:
-        relative_path = os.path.relpath(path, self.path['root'])
-        module_path, _ = os.path.splitext(relative_path)
-        module_path = module_path.replace(os.path.sep, ".")
-
-        return module_path
-
     def call(self):
         if not self.validate_argv(sys.argv):
             return
@@ -154,8 +147,9 @@ class Kernel:
 
         # Import module and load function.
         function_name: str = f'{match.group(1)}_{match.group(2)}_{match.group(3)}'
-        module_name: str = self.path_to_module(command_path)
-        module: 'ModuleType' = importlib.import_module(module_name)
+        spec = importlib.util.spec_from_file_location(command_path, command_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
         function = getattr(module, function_name)
 
         return self.exec_function(function, command_args)
