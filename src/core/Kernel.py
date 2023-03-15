@@ -205,7 +205,10 @@ class Kernel:
         if not click.get_current_context(True):
             ctx = function.make_context('', args)
             ctx.obj = self
-            return function.invoke(ctx)
+
+            # Lists uses invoke instead of callback.
+            if isinstance(args, list):
+                return function.invoke(ctx)
 
         if hasattr(function, 'callback'):
             return function.callback(**args)
