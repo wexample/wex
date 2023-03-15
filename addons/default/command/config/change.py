@@ -1,6 +1,6 @@
 import click
 
-CONFIG_SEPARATOR_DEFAULT = ' = '
+from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 
 
 @click.command
