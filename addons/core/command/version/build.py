@@ -49,8 +49,10 @@ def core_version_build(kernel) -> None:
         ]
     )
 
-    # Changelog
-    kernel.log('Building CHANGELOG.md...')
-    kernel.shell_exec(
-        f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
+    # Enforce new version for wex app.
+    kernel.exec(
+        'app::version/build',
+        [
+            new_version
+        ]
     )
