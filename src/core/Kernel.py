@@ -111,15 +111,32 @@ class Kernel:
         if not self.validate_argv(sys.argv):
             return
 
+        # Init addons
+        for addon in self.addons:
+            self.exec_middleware(addon, 'call')
+
         command: str = sys.argv[1]
         command_args: [] = sys.argv[2:]
 
-        print(
-            self.exec(
-                command,
-                command_args
-            )
+        result = self.exec(
+            command,
+            command_args
         )
+
+        if result is not None:
+            print(result)
+
+    def exec_middleware(self, addon: str, name: str):
+        middleware_enabled_path = self.path['addons'] + f'{addon}/middleware/{name}.py'
+
+        if os.path.exists(middleware_enabled_path):
+            function_name = f'{addon}_middleware_{name}'
+            spec = importlib.util.spec_from_file_location(name, middleware_enabled_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            enabled_func = getattr(module, function_name, None)
+
+            return enabled_func(self)
 
     def exec(self, command: str, command_args: []):
         # Check command formatting.
