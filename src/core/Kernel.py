@@ -114,12 +114,14 @@ class Kernel:
         if not self.validate_argv(sys.argv):
             return
 
-        # Init addons
-        for addon in self.addons:
-            self.exec_middleware(addon, 'call')
-
         command: str = sys.argv[1]
         command_args: [] = sys.argv[2:]
+
+        # Init addons
+        self.exec_middlewares('call', {
+            "command": command,
+            "args": command_args
+        })
 
         result = self.exec(
             command,
@@ -129,7 +131,18 @@ class Kernel:
         if result is not None:
             print(result)
 
-    def exec_middleware(self, addon: str, name: str):
+    def exec_middlewares(self, name: str, args=None):
+        if args is None:
+            args = {}
+
+        # Init addons
+        for addon in self.addons:
+            self.exec_middleware(addon, name, args)
+
+    def exec_middleware(self, addon: str, name: str, args=None):
+        if args is None:
+            args = {}
+
         middleware_enabled_path = self.path['addons'] + f'{addon}/middleware/{name}.py'
 
         if os.path.exists(middleware_enabled_path):
@@ -137,9 +150,9 @@ class Kernel:
             spec = importlib.util.spec_from_file_location(name, middleware_enabled_path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            enabled_func = getattr(module, function_name, None)
+            function = getattr(module, function_name, None)
 
-            return enabled_func(self)
+            return function(self, **args)
 
     def exec(self, command: str, command_args: []):
         # Check command formatting.
@@ -154,14 +167,31 @@ class Kernel:
             self.error(ERR_COMMAND_FILE_NOT_FOUND)
             return
 
+        addon, group, name = match.groups()
+
         # Import module and load function.
-        function_name: str = f'{match.group(1)}_{match.group(2)}_{match.group(3)}'
+        function_name: str = f'{addon}_{group}_{name}'
         spec = importlib.util.spec_from_file_location(command_path, command_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         function = getattr(module, function_name)
 
-        return self.exec_function(function, command_args)
+        middleware_args = {
+            'addon': addon,
+            'args': command_args,
+            'command': command,
+            'function': function,
+            'group': group,
+            'name': name,
+        }
+
+        self.exec_middlewares('exec', middleware_args)
+
+        result = self.exec_function(function, command_args)
+
+        self.exec_middlewares('exec_post', middleware_args)
+
+        return result
 
     ctx = None
 
