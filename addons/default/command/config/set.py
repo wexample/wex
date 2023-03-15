@@ -8,7 +8,7 @@ from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 @click.option('--key', '-k', type=str, required=True)
 @click.option('--value', '-v', required=True)
 @click.option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-def default_config_change(file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
+def default_config_set(file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
     with open(file, 'r') as f:
         lines = f.readlines()
 
