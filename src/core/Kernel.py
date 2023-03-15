@@ -154,7 +154,7 @@ class Kernel:
 
             return function(self, **args)
 
-    def exec(self, command: str, command_args: []):
+    def exec(self, command: str, command_args: {}):
         # Check command formatting.
         match = re.match(COMMAND_PATTERN, command)
         if not match:
@@ -198,14 +198,17 @@ class Kernel:
     def env(self, key: str):
         return self.enf[key]
 
-    def exec_function(self, function, args: [] = []):
+    def exec_function(self, function, args=None):
+        if args is None:
+            args = {}
+
         if not click.get_current_context(True):
             ctx = function.make_context('', args)
             ctx.obj = self
             return function.invoke(ctx)
 
         if hasattr(function, 'callback'):
-            return function.callback(*args)
+            return function.callback(**args)
 
         self.error(ERR_EXEC_NON_CLICK_METHOD, {
             "function_name": function.__name__
