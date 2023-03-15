@@ -110,9 +110,11 @@ class Kernel:
         command: str = sys.argv[1]
         command_args: [] = sys.argv[2:]
 
-        self.exec(
-            command,
-            command_args
+        print(
+            self.exec(
+                command,
+                command_args
+            )
         )
 
     def exec(self, command: str, command_args: []):
