@@ -4,9 +4,9 @@ import click
 from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 import subprocess
-from addons.default.command.version.increment import default_version_increment
+from dotenv import set_key
 
-from addons.default.command.config.change import default_config_change
+from addons.default.command.version.increment import default_version_increment
 
 
 def has_uncommitted_changes(directory):
@@ -41,7 +41,7 @@ def core_version_build(kernel) -> None:
 
     # Save new version
     kernel.log(f'New version : {new_version}')
-    default_config_change.callback(
+    set_key(
         kernel.path['root'] + 'src/const/globals.py',
         'WEX_VERSION',
         f"'{new_version}'"
