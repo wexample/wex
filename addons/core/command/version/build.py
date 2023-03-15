@@ -44,7 +44,7 @@ def core_version_build(kernel) -> None:
     set_key(
         kernel.path['root'] + 'src/const/globals.py',
         'WEX_VERSION',
-        f"'{new_version}'"
+        new_version
     )
 
     # Changelog
