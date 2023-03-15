@@ -15,7 +15,7 @@ import importlib.util
 
 
 class Kernel:
-    addons: [str] = []
+    addons: [str] = {}
     logger: 'Logger'
     path: dict[str, Optional[str]] = {
         "root": None,
@@ -30,16 +30,23 @@ class Kernel:
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['logs'] = self.path['tmp'] + 'logs/'
 
+        # Load the messages from the JSON file
+        with open(self.path['root'] + '/locale/messages.json') as f:
+            self.messages = json.load(f)
+
         # Init addons config
         self.addons = {addon: {} for addon in self.list_subdirectories(self.path['addons'])}
+
+        for addon in self.addons:
+            messages_path = self.path['addons'] + f'{addon}/locale/messages.json'
+
+            if os.path.exists(messages_path):
+                with open(messages_path) as file:
+                    self.messages.update(json.load(file))
 
         # Create the log folder if it does not exist
         if not os.path.exists(self.path['logs']):
             os.makedirs(self.path['logs'])
-
-        # Load the messages from the JSON file
-        with open(self.path['root'] + '/locale/messages.json') as f:
-            self.messages = json.load(f)
 
         # Load env
         load_dotenv()
