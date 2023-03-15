@@ -1,16 +1,17 @@
+import os.path
 import unittest
-from unittest.mock import patch
-import io
-import sys
+from src.core.Kernel import Kernel
 
 
 class TestIndex(unittest.TestCase):
+    def setUp(self):
+        self.kernel = Kernel(os.getcwd() + '/__main__.py')
 
     def test_command_line_args(self):
-        self.assertIn(
-            'true',
-            'true'
+        self.assertTrue(
+            self.kernel.validate_argv([True, True]),
         )
 
-if __name__ == '__main__':
-    unittest.main()
+        self.assertFalse(
+            self.kernel.validate_argv([True]),
+        )
