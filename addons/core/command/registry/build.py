@@ -13,7 +13,10 @@ def core_registry_build(kernel) -> None:
             addon: {
                 'name': addon,
                 'commands': {
-                    f"{addon}::{group}/{os.path.splitext(command_name)[0]}": {}
+                    f"{addon}::{group}/{os.path.splitext(command_name)[0]}": {
+                        'file': os.path.join(addon_dir, group, command),
+                        'test': None
+                    }
                     for group in kernel.list_subdirectories(os.path.join(addon_dir))
                     for command in os.listdir(os.path.join(addon_dir, group))
                     if command.endswith('.py')
