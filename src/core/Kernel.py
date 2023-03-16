@@ -12,7 +12,7 @@ from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PAT
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 import importlib.util
-import unittest
+from ..core.TestManager import TestManager
 
 class Kernel:
     addons: [str] = {}
@@ -159,12 +159,7 @@ class Kernel:
             return 'hi!'
 
         if command == 'test':
-            loader = unittest.TestLoader()
-            suite = loader.discover(self.path['root'] + 'tests/')
-
-            os.chdir(self.path['root'])
-
-            unittest.TextTestRunner().run(suite)
+            TestManager(self).call(command)
 
             return
 
