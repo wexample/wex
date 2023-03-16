@@ -24,6 +24,7 @@ class Kernel:
     }
     version = WEX_VERSION
     registry: {} = None
+    test_manager = None
 
     def __init__(self, path_root):
         # Initialize global variables.
@@ -179,12 +180,16 @@ class Kernel:
 
             return function(self, **args)
 
+    def setup_test_manager(self):
+        self.test_manager = TestManager(self)
+
     def exec(self, command: str, command_args: {}):
         if command == 'hi':
             return 'hi!'
 
         if command == 'test':
-            TestManager(self).call(command)
+            self.setup_test_manager()
+            self.test_manager.call(command)
 
             return
 
