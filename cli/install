@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 GLOBAL_COMMAND=wex
-WEX_DIR_ROOT="$(dirname "${0}")/"
+WEX_DIR_ROOT="$(dirname "${0}")/../"
 
 echo "Installing with python..."
 pip install ${WEX_DIR_ROOT}
 
 echo "Creating global command..."
-SCRIPT="__main__.py"
+SCRIPT="cli/wex"
 
 LINK="/usr/local/bin/${GLOBAL_COMMAND}"
 sudo rm -f $LINK
