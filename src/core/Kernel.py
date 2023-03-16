@@ -26,7 +26,7 @@ class Kernel:
     registry: {} = None
 
     def __init__(self, path_root):
-        # Init global vars.
+        # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
@@ -34,6 +34,7 @@ class Kernel:
 
         path_registry = self.path['tmp'] + 'registry.json'
 
+        # Load registry from file or initialize it.
         if os.path.exists(path_registry):
             with open(path_registry) as f:
                 self.registry = json.load(f)
@@ -42,12 +43,12 @@ class Kernel:
             self.registry = {
                 'addons': {
                     'core': {
-                        'command': {
+                        'commands': {
                             'core::registry/build': self.path['addons'] + 'core/command/registry/build.py'
                         }
                     },
                     'default': {
-                        'command': {
+                        'commands': {
 
                         }
                     }
@@ -58,7 +59,7 @@ class Kernel:
         with open(self.path['root'] + '/locale/messages.json') as f:
             self.messages = json.load(f)
 
-        # Init addons config
+        # Initialize addons config
         self.addons = {addon: {'config': {}} for addon in self.list_subdirectories(self.path['addons'])}
 
         for addon in self.addons:
@@ -75,10 +76,10 @@ class Kernel:
         # Load env
         load_dotenv()
 
-        # Create logger, in json for better parsing.
+        # Create logger, in json format for better parsing.
         self.logger = logging.getLogger()
         # Add json formatter for logger.
-        # Beware : output file is not a json,
+        # Beware: the output file is not a json,
         # but a text file with a json on each line.
         # Parsers should parse it before reading as a json.
         log_handler = logging.FileHandler(self.path['logs'] + LOG_FILENAME)
@@ -92,7 +93,7 @@ class Kernel:
         return message.format(**parameters)
 
     def error(self, code: str, parameters: object = {}) -> None:
-        message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}';
+        message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
 
         click.echo(
             click.style(
