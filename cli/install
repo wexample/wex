@@ -3,11 +3,20 @@
 GLOBAL_COMMAND=wex
 WEX_DIR_ROOT="$(dirname "${0}")/../"
 
+# Check user is root
+if [ "${EUID}" -gt 0 ]; then
+  echo "Install needs sudo, switching.."
+
+  # Exec as sudo, but keep some environment vars.
+  sudo bash "${BASH_SOURCE[0]}"
+  exit
+fi
+
 echo "Installing with python..."
 pip install ${WEX_DIR_ROOT}
 
 echo "Creating global command..."
-SCRIPT="cli/wex"
+SCRIPT="__main__.py"
 
 LINK="/usr/local/bin/${GLOBAL_COMMAND}"
 sudo rm -f $LINK
