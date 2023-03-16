@@ -1,11 +1,7 @@
-import os.path
-import unittest
-from src.core.Kernel import Kernel
+from AbstractTestCase import AbstractTestCase
 
 
-class TestIndex(unittest.TestCase):
-    def setUp(self):
-        self.kernel = Kernel(os.getcwd() + '/__main__.py')
+class TestIndex(AbstractTestCase):
 
     def test_command_line_args(self):
         self.assertTrue(
@@ -15,3 +11,11 @@ class TestIndex(unittest.TestCase):
         self.assertFalse(
             self.kernel.validate_argv([True]),
         )
+
+    def test_tests_coverage(self):
+        for addon, addon_data in self.kernel.registry['addons'].items():
+            for command, command_data in addon_data['commands'].items():
+                self.assertIsNotNone(
+                    command_data['test'],
+                    f'Command {command} has a test file'
+                )

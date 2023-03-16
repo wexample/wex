@@ -14,14 +14,16 @@ from pythonjsonlogger import jsonlogger
 import importlib.util
 from ..core.TestManager import TestManager
 
+
 class Kernel:
     addons: [str] = {}
     logger: 'Logger'
     path: dict[str, Optional[str]] = {
-        "root": None,
-        "addons": None
+        'root': None,
+        'addons': None
     }
     version = WEX_VERSION
+    registry: {} = None
 
     def __init__(self, path_root):
         # Init global vars.
@@ -29,6 +31,28 @@ class Kernel:
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['logs'] = self.path['tmp'] + 'logs/'
+
+        path_registry = self.path['tmp'] + 'registry.json'
+
+        if os.path.exists(path_registry):
+            with open(path_registry) as f:
+                self.registry = json.load(f)
+
+        else:
+            self.registry = {
+                'addons': {
+                    'core': {
+                        'command': {
+                            'core::registry/build': self.path['addons'] + 'core/command/registry/build.py'
+                        }
+                    },
+                    'default': {
+                        'command': {
+
+                        }
+                    }
+                }
+            }
 
         # Load the messages from the JSON file
         with open(self.path['root'] + '/locale/messages.json') as f:
@@ -104,11 +128,11 @@ class Kernel:
         :param command: full command
         :return: file path
         """
-        command = command.replace("::", "/");
+        command = command.replace('::', '/');
         parts: [] = command.split('/')
         parts.insert(1, 'command')
 
-        return self.path['addons'] + '/'.join(parts) + ".py"
+        return self.path['addons'] + '/'.join(parts) + '.py'
 
     def call(self):
         if not self.validate_argv(sys.argv):
@@ -119,8 +143,8 @@ class Kernel:
 
         # Init addons
         self.exec_middlewares('call', {
-            "command": command,
-            "args": command_args
+            'command': command,
+            'args': command_args
         })
 
         result = self.exec(
@@ -222,7 +246,7 @@ class Kernel:
             return function.callback(**args)
 
         self.error(ERR_EXEC_NON_CLICK_METHOD, {
-            "function_name": function.__name__
+            'function_name': function.__name__
         })
 
     def list_subdirectories(self, path: str) -> []:
