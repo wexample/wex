@@ -1,5 +1,7 @@
 COLOR_GRAY_DARK = [80, 80, 80]
 COLOR_RED = [240, 81, 66]
+COMMAND_SEPARATOR_ADDON = '::'
+COMMAND_SEPARATOR_GROUP = '/'
 COMMAND_PATTERN = '^(?:(\\w+)::)?([\\w-]+)/([\\w-]+)$'
 CONFIG_SEPARATOR_DEFAULT = ' = '
 GITHUB_GROUP = 'wexample'

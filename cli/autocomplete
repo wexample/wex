@@ -5,7 +5,7 @@ autocomplete() {
   local SUGGESTIONS=""
   local COMP_WORDS_STRING=$(echo "${COMP_WORDS[*]}")
 
-  SUGGESTIONS=($(wex core::autocomplete/suggest -i "${COMP_CWORD}" -s "${COMP_WORDS[*]}"))
+  SUGGESTIONS=($(wex core::autocomplete/suggest -c "${COMP_CWORD}" -s "${COMP_WORDS[*]}"))
 
   # Is current position is just after ::,
   # Suggest all groups.
