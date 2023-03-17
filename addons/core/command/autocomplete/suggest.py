@@ -1,9 +1,7 @@
-import datetime
-import os
+import re
 import click
-from typing import List
 
-from src.const.globals import LOG_MAX_DAYS
+from src.const.globals import COMMAND_PATTERN
 
 
 @click.command
@@ -14,6 +12,10 @@ def core_autocomplete_suggest(kernel, index, search: str):
     suggestion = ''
 
     search_split = search.split(' ')
+
+    if index > len(search_split):
+        return
+
     search_part = search_split[index]
 
     if index == 1:
@@ -36,6 +38,24 @@ def core_autocomplete_suggest(kernel, index, search: str):
 
         # Reduce unique values
         suggestion = " ".join(set(suggestion.split()))
+    # Complete arguments.
+    elif index == 4:
+        command = search_split[1:4]
+
+        match = re.match(
+            COMMAND_PATTERN,
+            ''.join(command)
+        )
+
+        if not match:
+            return
+
+        function = kernel.get_function_from_match(match)
+        params = sorted(
+            [opt for param in function.params for opt in param.opts],
+            key=lambda x: x.replace('-', '')
+        )
+
+        suggestion = ' '.join(params)
 
     return suggestion
-

@@ -214,6 +214,20 @@ class Kernel:
 
         self.exec_middlewares('exec', middleware_args)
 
+        # params = []
+        # for param in function.params:
+        #     params += param.opts
+        #
+        # params.sort(key=lambda x: x.replace('-', ''))
+        #
+        # suggestion = ' '.join(params)
+
+        # print(suggestion)
+
+        # print(function.params[0])
+        # print(function.params[0].opts) # ['--file', '-f'] ...
+        # exit(0)
+
         result = self.exec_function(function, command_args)
 
         self.exec_middlewares('exec_post', middleware_args)
@@ -224,6 +238,10 @@ class Kernel:
 
     def build_command_path_from_match(self, match):
         return f"{self.path['addons']}/{match.group(1)}/command/{match.group(2)}/{match.group(3)}.py"
+
+    def get_function_from_command(self, command):
+        match = re.match(COMMAND_PATTERN, command)
+        return self.get_function_from_match(match)
 
     def get_function_from_match(self, match):
         command_path = self.build_command_path_from_match(match)
