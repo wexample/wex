@@ -3,15 +3,11 @@ import unittest
 import importlib
 
 from addons.core.command.registry.build import core_registry_build
+from src.core.action.AbstractCoreAction import AbstractCoreAction
 
 
-class TestManager:
-    kernel = None
-
-    def __init__(self, kernel):
-        self.kernel = kernel
-
-    def call(self, command):
+class TestCoreAction(AbstractCoreAction):
+    def exec(self, command, command_args):
         self.kernel.exec_function(
             core_registry_build
         )

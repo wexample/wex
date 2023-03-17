@@ -13,7 +13,8 @@ from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PAT
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 import importlib.util
-from ..core.TestManager import TestManager
+from ..core.action.TestCoreAction import TestCoreAction
+from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import camel_to_snake_case
 
 
@@ -27,6 +28,10 @@ class Kernel:
     version = WEX_VERSION
     registry: {} = None
     test_manager = None
+    core_actions = {
+        'hi': HiCoreAction,
+        'test': TestCoreAction,
+    }
 
     def __init__(self, path_root):
         # Initialize global variables.
@@ -169,20 +174,21 @@ class Kernel:
 
             return function(self, **args)
 
-    def setup_test_manager(self):
-        self.test_manager = TestManager(self)
+    def setup_test_manager(self, test_manager):
+        self.test_manager = test_manager
 
     def exec(self, command: str, command_args: {}):
         command = camel_to_snake_case(command)
 
-        if command == 'hi':
-            return 'hi!'
+        # Handle core action : test, hi, etc...
+        if command in self.core_actions:
+            action = command
+            if command_args:
+                command = command_args.pop(0)
 
-        if command == 'test':
-            self.setup_test_manager()
-            self.test_manager.call(command)
+            action = self.core_actions[action](self)
 
-            return
+            return action.exec(command, command_args)
 
         # Check command formatting.
         match = re.match(COMMAND_PATTERN, command)
