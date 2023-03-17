@@ -33,3 +33,5 @@ def core_registry_build(kernel) -> None:
 
     with open(f'{kernel.path["tmp"]}registry.json', 'w') as f:
         json.dump(registry, f, indent=True)
+
+    kernel.log('Building complete ...')
