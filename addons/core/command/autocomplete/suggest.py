@@ -21,7 +21,10 @@ def core_autocomplete_suggest(kernel, index, search: str):
     if index == 1:
         suggestion = ' '.join(kernel.addons.keys())
     elif index == 2:
-        suggestion = ':'
+        if search_split[2] == '::':
+            suggestion = ' '.join(kernel.get_group_names(search_split[1]))
+        else:
+            suggestion = ':'
     elif index == 3:
         addon = search_split[1]
 

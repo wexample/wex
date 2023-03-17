@@ -6,16 +6,26 @@ autocomplete() {
   local COMP_WORDS_STRING=$(echo "${COMP_WORDS[*]}")
 
   SUGGESTIONS=($(wex core::autocomplete/suggest -i "${COMP_CWORD}" -s "${COMP_WORDS[*]}"))
-  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CUR}))
 
+  # Is current position is just after ::,
+  # Suggest all groups.
+  if [ "${CUR}" == "::" ]; then
+    CUR=""
+  fi
+
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CUR}))
   # Check for single suggestion
-  if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY} =~ [\ ] ]]; then
+  if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
     # Add addon separator
     if [[ ${COMP_CWORD} == "1" ]]; then
       COMPREPLY+="::"
     # Add trailing slash separator
-    elif [[ ${COMP_CWORD} == "3" ]] && [[ "${COMP_WORDS[${COMP_CWORD}]}" != *"/"* ]]; then
-      COMPREPLY[0]+="/"
+    elif [[ ${COMP_CWORD} == "3" ]]; then
+      if [[ "${COMP_WORDS[${COMP_CWORD}]}" != *"/"* ]];then
+        COMPREPLY[0]+="/"
+      else
+        COMPREPLY+=" "
+      fi
     fi
   fi
 }
