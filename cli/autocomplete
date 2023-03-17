@@ -11,7 +11,7 @@ autocomplete() {
   # If the first word is a core action ("test", "hi", etc.), skip it
   local CORE_ACTIONS
   CORE_ACTIONS=($(wex core-actions))
-  if [[ "${CORE_ACTIONS[@]}" =~ "${COMP_WORDS[1]}" ]]; then
+  if autocomplete_in_array "${CORE_ACTIONS[@]}" "${COMP_WORDS[1]}"; then
     SEARCH=("${COMP_WORDS[*]:2}")
     CURSOR=$((CURSOR - 1))
   fi
@@ -42,6 +42,20 @@ autocomplete() {
       fi
     fi
   fi
+}
+
+autocomplete_in_array() {
+  local ARRAY="${1}"
+  local VALUE="${2}"
+
+  for i in "${ARRAY[@]}"
+  do
+    if [[ "$i" == "$VALUE" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
 }
 
 autocomplete
