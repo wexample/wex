@@ -6,6 +6,7 @@ import os
 import json
 import re
 import sys
+
 import subprocess
 from dotenv import load_dotenv
 from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME
@@ -13,7 +14,7 @@ from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_F
 from pythonjsonlogger import jsonlogger
 import importlib.util
 from ..core.TestManager import TestManager
-
+from ..helper.string import camel_to_snake_case
 
 class Kernel:
     addons: [str] = {}
@@ -130,7 +131,7 @@ class Kernel:
         :param command: full command
         :return: file path
         """
-        command = command.replace('::', '/');
+        command = command.replace('::', '/')
         parts: [] = command.split('/')
         parts.insert(1, 'command')
 
@@ -184,6 +185,8 @@ class Kernel:
         self.test_manager = TestManager(self)
 
     def exec(self, command: str, command_args: {}):
+        command = camel_to_snake_case(command)
+
         if command == 'hi':
             return 'hi!'
 
@@ -202,7 +205,10 @@ class Kernel:
         # Get valid path.
         command_path: str = self.command_to_path(command)
         if not os.path.exists(command_path):
-            self.error(ERR_COMMAND_FILE_NOT_FOUND)
+            self.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                'command': command,
+                'path': command_path,
+            })
             return
 
         addon, group, name = match.groups()
@@ -238,7 +244,7 @@ class Kernel:
 
     def exec_function(self, function, args=None):
         if args is None:
-            args = {}
+            args = []
 
         if not click.get_current_context(True):
             ctx = function.make_context('', args)
