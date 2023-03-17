@@ -1,27 +1,41 @@
 #!/usr/bin/env bash
 
 autocomplete() {
-  local CUR=${COMP_WORDS[${COMP_CWORD}]}
-  local SUGGESTIONS=""
-  local COMP_WORDS_STRING=$(echo "${COMP_WORDS[*]}")
+  # Get the current word being completed
+  local CURRENT=${COMP_WORDS[${COMP_CWORD}]}
+  # Get the search query, everything after the first word
+  local SEARCH=("${COMP_WORDS[*]:1}")
+  # Set the current position of the cursor
+  local CURSOR=$((COMP_CWORD - 1))
 
-  SUGGESTIONS=($(wex core::autocomplete/suggest -c "${COMP_CWORD}" -s "${COMP_WORDS[*]}"))
-
-  # Is current position is just after ::,
-  # Suggest all groups.
-  if [ "${CUR}" == "::" ]; then
-    CUR=""
+  # If the first word is a core action ("test", "hi", etc.), skip it
+  local CORE_ACTIONS
+  CORE_ACTIONS=($(wex core-actions))
+  if [[ "${CORE_ACTIONS[@]}" =~ "${COMP_WORDS[1]}" ]]; then
+    SEARCH=("${COMP_WORDS[*]:2}")
+    CURSOR=$((CURSOR - 1))
   fi
 
-  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CUR}))
+  # Get autocomplete suggestions
+  local SUGGESTIONS=""
+  SUGGESTIONS=($(wex core::autocomplete/suggest -c "${CURSOR}" -s "${SEARCH[*]}"))
+
+  # If current position is just after "::", suggest all groups
+  if [ "${CURRENT}" == "::" ]; then
+    CURRENT=""
+  fi
+
+  # Generate autocomplete suggestions using compgen
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CURRENT}))
+
   # Check for single suggestion
   if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
     # Add addon separator
-    if [[ ${COMP_CWORD} == "1" ]]; then
+    if [[ ${CURSOR} == "0" ]]; then
       COMPREPLY+="::"
     # Add trailing slash separator
-    elif [[ ${COMP_CWORD} == "3" ]]; then
-      if [[ "${COMP_WORDS[${COMP_CWORD}]}" != *"/"* ]];then
+    elif [[ ${CURSOR} == "2" ]]; then
+      if [[ "${COMPREPLY[@]}" != *"/"* ]];then
         COMPREPLY[0]+="/"
       else
         COMPREPLY+=" "
