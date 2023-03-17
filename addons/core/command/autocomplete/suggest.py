@@ -39,8 +39,9 @@ def core_autocomplete_suggest(kernel, index, search: str):
         # Reduce unique values
         suggestion = " ".join(set(suggestion.split()))
     # Complete arguments.
-    elif index == 4:
+    elif index >= 4:
         command = search_split[1:4]
+        params_current = [val for val in search_split[4:] if val.startswith("-")]
 
         match = re.match(
             COMMAND_PATTERN,
@@ -50,11 +51,15 @@ def core_autocomplete_suggest(kernel, index, search: str):
         if not match:
             return
 
+        # Merge all params in a list,
+        # but ignore already given args,
+        # i.e : if -d is already given, do not suggest "-d" or "--default"
         function = kernel.get_function_from_match(match)
-        params = sorted(
-            [opt for param in function.params for opt in param.opts],
-            key=lambda x: x.replace('-', '')
-        )
+        params = []
+        for param in function.params:
+            if any(opt in params_current for opt in param.opts):
+                continue
+            params += param.opts
 
         suggestion = ' '.join(params)
 
