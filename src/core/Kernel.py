@@ -225,9 +225,10 @@ class Kernel:
     def get_group_names(self, addon):
         group_names = set()
 
-        for command in self.registry['addons'][addon]['commands'].keys():
-            group_name = command.split("::")[1].split("/")[0]
-            group_names.add(group_name)
+        if addon in self.registry['addons']:
+            for command in self.registry['addons'][addon]['commands'].keys():
+                group_name = command.split("::")[1].split("/")[0]
+                group_names.add(group_name)
         return list(group_names)
 
     def build_command_path_from_match(self, match):

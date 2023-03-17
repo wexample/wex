@@ -37,19 +37,20 @@ def core_autocomplete_suggest(kernel, cursor, search: str) -> str:
     elif cursor == 3:
         addon = search_split[1]
 
-        # User typed "wex app::conf", we suggest full addon commands list.
-        for command, command_data in kernel.registry['addons'][addon]['commands'].items():
-            command_parts = command.split(COMMAND_SEPARATOR_ADDON)
-            command_split = command_parts[1].split(COMMAND_SEPARATOR_GROUP)
+        if addon in kernel.registry['addons']:
+            # User typed "wex app::conf", we suggest full addon commands list.
+            for command, command_data in kernel.registry['addons'][addon]['commands'].items():
+                command_parts = command.split(COMMAND_SEPARATOR_ADDON)
+                command_split = command_parts[1].split(COMMAND_SEPARATOR_GROUP)
 
-            if COMMAND_SEPARATOR_GROUP in search_part:
-                if command_split[0] == search_split[3].split(COMMAND_SEPARATOR_GROUP)[0]:
-                    suggestion += f' {" ".join(command_parts)}'
-            else:
-                suggestion += f' {command_split[0]}'
+                if COMMAND_SEPARATOR_GROUP in search_part:
+                    if command_split[0] == search_split[3].split(COMMAND_SEPARATOR_GROUP)[0]:
+                        suggestion += f' {" ".join(command_parts)}'
+                else:
+                    suggestion += f' {command_split[0]}'
 
-        # Reduce unique values
-        suggestion = " ".join(set(suggestion.split()))
+            # Reduce unique values
+            suggestion = " ".join(set(suggestion.split()))
     # Complete arguments.
     elif cursor >= 4:
         command = search_split[1:4]
