@@ -13,6 +13,7 @@ from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PAT
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 import importlib.util
+from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import camel_to_snake_case
@@ -29,6 +30,7 @@ class Kernel:
     registry: {} = None
     test_manager = None
     core_actions = {
+        'core-actions': CoreActionsCoreAction,
         'hi': HiCoreAction,
         'test': TestCoreAction,
     }
