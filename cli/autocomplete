@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+autocomplete() {
+  local CUR=${COMP_WORDS[${COMP_CWORD}]}
+  local SUGGESTIONS=""
+  local COMP_WORDS_STRING=$(echo "${COMP_WORDS[*]}")
+
+  SUGGESTIONS=($(wex core::autocomplete/suggest -i "${COMP_CWORD}" -s "${COMP_WORDS[*]}"))
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CUR}))
+
+  # No space : only one suggestion
+  if [[ "${COMPREPLY}" != "" ]]; then
+    if ! [[ ${COMPREPLY} =~ [\ ] ]]; then
+      if [[ ${COMP_CWORD} == "1" ]]; then
+        # Add the addon separator.
+        COMPREPLY+="::"
+      elif [[ ${COMP_CWORD} == "3" ]]; then
+        if [[ "${COMP_WORDS[${COMP_CWORD}]}" != *"/"* ]]; then
+          # Add a traling slash separator.
+          COMPREPLY[0]+="/"
+        fi
+      fi
+    fi
+  fi
+}
+
+autocomplete
