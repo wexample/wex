@@ -16,6 +16,7 @@ import importlib.util
 from ..core.TestManager import TestManager
 from ..helper.string import camel_to_snake_case
 
+
 class Kernel:
     addons: [str] = {}
     logger: 'Logger'
@@ -124,19 +125,6 @@ class Kernel:
             return True
         return False
 
-    def command_to_path(self, command: str) -> str:
-        """
-        Convert addon::group/name to addon/command/group/name.py
-
-        :param command: full command
-        :return: file path
-        """
-        command = command.replace('::', '/')
-        parts: [] = command.split('/')
-        parts.insert(1, 'command')
-
-        return self.path['addons'] + '/'.join(parts) + '.py'
-
     def call(self):
         if not self.validate_argv(sys.argv):
             return
@@ -203,7 +191,7 @@ class Kernel:
             return
 
         # Get valid path.
-        command_path: str = self.command_to_path(command)
+        command_path: str = self.build_command_path_from_match(match)
         if not os.path.exists(command_path):
             self.error(ERR_COMMAND_FILE_NOT_FOUND, {
                 'command': command,
@@ -211,14 +199,9 @@ class Kernel:
             })
             return
 
-        addon, group, name = match.groups()
+        function = self.get_function_from_match(match)
 
-        # Import module and load function.
-        function_name: str = f'{addon}_{group}_{name}'
-        spec = importlib.util.spec_from_file_location(command_path, command_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        function = getattr(module, function_name)
+        addon, group, name = match.groups()
 
         middleware_args = {
             'addon': addon,
@@ -238,6 +221,19 @@ class Kernel:
         return result
 
     ctx = None
+
+    def build_command_path_from_match(self, match):
+        return f"{self.path['addons']}/{match.group(1)}/command/{match.group(2)}/{match.group(3)}.py"
+
+    def get_function_from_match(self, match):
+        command_path = self.build_command_path_from_match(match)
+
+        # Import module and load function.
+        function_name: str = f'{match.group(1)}_{match.group(2)}_{match.group(3)}'
+        spec = importlib.util.spec_from_file_location(command_path, command_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return getattr(module, function_name)
 
     def env(self, key: str):
         return self.enf[key]
