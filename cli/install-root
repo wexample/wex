@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+wex_install() {
+  WEX_USER=${WEX_USER:-$(whoami)}
+  WEX_GROUP=${WEX_GROUP:-$(id -gn "${WEX_USER}")}
+
+  # Check if user directory exists, create it if necessary
+  if [ ! -d "/home/${WEX_USER}" ]; then
+
+    sudo mkdir "/home/${WEX_USER}"
+    sudo chown "${WEX_USER}:${WEX_GROUP}" "/home/${WEX_USER}"
+  fi
+
+  WEX_BASHRC_PATH=${WEX_BASHRC_PATH:-$(realpath /home/${WEX_USER}/.bashrc)}
+  touch "${WEX_BASHRC_PATH}"
+
+  # Check user is root
+  if [ "${EUID}" -gt 0 ]; then
+    echo "Install needs sudo, switching..."
+
+    # Exec as sudo, but keep some environment vars.
+    sudo WEX_USER="${WEX_USER}" WEX_BASHRC_PATH="${WEX_BASHRC_PATH}" bash "${BASH_SOURCE[0]}"
+    return
+  fi
+
+  local HOME_DIR=$(dirname "${WEX_BASHRC_PATH}")
+
+  mkdir -p "${HOME_DIR}"
+
+  local DIR_CLI
+  DIR_CLI="$(dirname "${BASH_SOURCE[0]}")/"
+  local WEX_DIR_ROOT
+  WEX_DIR_ROOT="$(realpath "${DIR_CLI}../")/"
+  local WEX_USER_PATH_HOME
+  WEX_USER_PATH_HOME=$(dirname "${WEX_BASHRC_PATH}")
+
+  local GLOBAL_COMMAND=wex
+  local WEX_FILE_BASHRC_HANDLER="${DIR_CLI}bashrc-handler"
+  local WEX_FILE_BASHRC_COMMAND=". ${WEX_FILE_BASHRC_HANDLER}"
+
+  echo "Installing with python..."
+  pip install "${WEX_DIR_ROOT}"
+
+  echo "Creating global command..."
+  SCRIPT="__main__.py"
+
+  LINK="/usr/local/bin/${GLOBAL_COMMAND}"
+  sudo rm -f $LINK
+  sudo ln -s "$(realpath "${WEX_DIR_ROOT}${SCRIPT}")" ${LINK}
+  chmod +x ${LINK}
+
+  echo "Adding autocompletion script to ${WEX_BASHRC_PATH}..."
+  wex default::file/appendOnce -f "${WEX_BASHRC_PATH}" -l "${WEX_FILE_BASHRC_COMMAND}"
+
+  echo "Fixing permissions..."
+  chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
+}
+
+wex_install
