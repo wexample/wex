@@ -194,7 +194,10 @@ class Kernel:
     def setup_test_manager(self, test_manager):
         self.test_manager = test_manager
 
-    def exec(self, command: str, command_args: {}):
+    def exec(self, command: str, command_args=None):
+        if command_args is None:
+            command_args = {}
+
         command = camel_to_snake_case(command)
 
         # Handle core action : test, hi, etc...
