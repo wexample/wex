@@ -229,7 +229,7 @@ class Kernel:
 
         middleware_args = {
             'addon': addon,
-            'args': command_args,
+            'args': self.convert_args_to_dict(function, command_args),
             'command': command,
             'function': function,
             'group': group,
@@ -283,8 +283,11 @@ class Kernel:
 
     def convert_args_to_dict(self, function, arg_list):
         args_dict = {}
-        param_dict = {opt.lstrip('-'): param for param in function.params if isinstance(param, click.Option) for opt in
-                      param.opts}
+        param_dict = {
+            opt.lstrip('-'): param
+            for param in function.params if isinstance(param, click.Option)
+            for opt in param.opts
+        }
 
         i = 0
         while i < len(arg_list):
@@ -296,12 +299,12 @@ class Kernel:
                 if stripped_arg in param_dict:
                     param = param_dict[stripped_arg]
                     if isinstance(param.type, BoolParamType) or param.is_flag:
-                        args_dict[param.name] = True
+                        args_dict[stripped_arg] = True
                         i += 1
                     else:
                         i += 1
                         value = arg_list[i]
-                        args_dict[param.name] = value
+                        args_dict[stripped_arg] = value
                         i += 1
                 else:
                     i += 1
