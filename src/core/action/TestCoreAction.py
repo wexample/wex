@@ -1,6 +1,7 @@
 import os
 import unittest
 import importlib
+from unittest import TestSuite
 
 from addons.core.command.registry.build import core_registry_build
 from src.core.action.AbstractCoreAction import AbstractCoreAction
@@ -15,18 +16,23 @@ class TestCoreAction(AbstractCoreAction):
         self.kernel.log('Starting test suite..')
 
         loader = unittest.TestLoader()
-        suite = loader.discover(self.kernel.path['root'] + 'tests/')
-
+        suite = TestSuite()
         os.chdir(self.kernel.path['root'])
+
+        if not command:
+            suite = loader.discover(self.kernel.path['root'] + 'tests/')
 
         self.kernel.log('Starting addons tests suites..')
         for addon, addon_data in self.kernel.registry['addons'].items():
-            for command, command_data in addon_data['commands'].items():
+            for command_name, command_data in addon_data['commands'].items():
                 if 'test' in command_data and command_data['test']:
-                    spec = importlib.util.spec_from_file_location(command + '_test', command_data['test'])
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-                    suite.addTests(unittest.TestLoader().loadTestsFromModule(module))
+                    if (not command) or command_name.startswith(command):
+                        self.kernel.log('Found test for command: ' + command_name)
+
+                        spec = importlib.util.spec_from_file_location(command_name + '_test', command_data['test'])
+                        module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(module)
+                        suite.addTests(unittest.TestLoader().loadTestsFromModule(module))
 
         unittest.TextTestRunner().run(suite)
 

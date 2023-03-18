@@ -185,6 +185,7 @@ class Kernel:
         # Handle core action : test, hi, etc...
         if command in self.core_actions:
             action = command
+            command = None
             if command_args:
                 command = command_args.pop(0)
 
