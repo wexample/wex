@@ -28,9 +28,14 @@ autocomplete() {
 
   # Check for single suggestion
   if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
-    # Add addon separator
+    # We are on the first part.
     if [[ ${CURSOR} == "0" ]]; then
-      COMPREPLY+="::"
+      # Add trailing "::" is integrated in the suggestion
+      # if it matches an addon name, if not,
+      # this is a core action, so add a trailing space
+      if [[ ! ${COMPREPLY} == *'::' ]]; then
+        COMPREPLY+=" "
+      fi
     # Add trailing slash separator
     elif [[ ${CURSOR} == "2" ]]; then
       if [[ "${COMPREPLY[@]}" != *"/"* ]];then

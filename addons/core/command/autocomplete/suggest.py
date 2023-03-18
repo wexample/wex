@@ -27,7 +27,9 @@ def core_autocomplete_suggest(kernel, cursor: int, search: str) -> str:
 
     if cursor == 0:
         # User typed ony "wex ", we suggest all addons names.
-        suggestion = ' '.join(kernel.registry['addons'].keys())
+        suggestion = ' '.join(addon + '::' for addon in kernel.registry['addons'].keys())
+        # Adds also all core actions.
+        suggestion += ' '.join(kernel.core_actions.keys())
     elif cursor == 1:
         # User typed "app::", we suggest all addon groups.
         if search_split[1] == COMMAND_SEPARATOR_ADDON:
