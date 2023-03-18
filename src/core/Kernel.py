@@ -196,7 +196,9 @@ class Kernel:
 
     def exec(self, command: str, command_args=None):
         if command_args is None:
-            command_args = {}
+            command_args = []
+        elif isinstance(command_args, dict):
+            command_args = self.convert_dict_to_args(command_args)
 
         command = camel_to_snake_case(command)
 
@@ -329,13 +331,7 @@ class Kernel:
         return arg_list
 
     def exec_function(self, function, args=None):
-        if args is None:
-            args = []
-
-        if not isinstance(args, list):
-            args = self.convert_dict_to_args(args)
-
-        ctx = function.make_context('', args)
+        ctx = function.make_context('', args or [])
         ctx.obj = self
 
         return function.invoke(ctx)
