@@ -1,7 +1,6 @@
 import os
 import unittest
 import importlib
-from unittest import TestSuite
 
 from addons.core.command.registry.build import core_registry_build
 from src.core.action.AbstractCoreAction import AbstractCoreAction
@@ -9,30 +8,27 @@ from src.core.action.AbstractCoreAction import AbstractCoreAction
 
 class TestCoreAction(AbstractCoreAction):
     def exec(self, command, command_args):
-        self.kernel.exec_function(
-            core_registry_build
-        )
+        self.kernel.exec_function(core_registry_build)
 
         self.kernel.log('Starting test suite..')
 
         loader = unittest.TestLoader()
-        suite = TestSuite()
+        suite = unittest.TestSuite()
         os.chdir(self.kernel.path['root'])
 
         if not command:
-            suite = loader.discover(self.kernel.path['root'] + 'tests/')
+            suite = loader.discover(os.path.join(self.kernel.path['root'], 'tests'))
 
         self.kernel.log('Starting addons tests suites..')
-        for addon, addon_data in self.kernel.registry['addons'].items():
+        for addon_data in self.kernel.registry['addons'].values():
             for command_name, command_data in addon_data['commands'].items():
-                if 'test' in command_data and command_data['test']:
-                    if (not command) or command_name.startswith(command):
-                        self.kernel.log('Found test for command: ' + command_name)
+                if 'test' in command_data and command_data['test'] and ((not command) or command_name.startswith(command)):
+                    self.kernel.log(f'Found test for command: {command_name}')
 
-                        spec = importlib.util.spec_from_file_location(command_name + '_test', command_data['test'])
-                        module = importlib.util.module_from_spec(spec)
-                        spec.loader.exec_module(module)
-                        suite.addTests(unittest.TestLoader().loadTestsFromModule(module))
+                    spec = importlib.util.spec_from_file_location(f'{command_name}_test', command_data['test'])
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+                    suite.addTests(loader.loadTestsFromModule(module))
 
         unittest.TextTestRunner().run(suite)
 
