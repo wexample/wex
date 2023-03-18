@@ -17,7 +17,11 @@ class TestCoreAction(AbstractCoreAction):
         os.chdir(self.kernel.path['root'])
 
         if not command:
-            suite.addTests(os.path.join(self.kernel.path['root'], 'tests'))
+            suite.addTests(
+                loader.discover(
+                    os.path.join(self.kernel.path['root'], 'tests')
+                )
+            )
 
         self.kernel.log('Starting addons tests suites..')
         for addon_data in self.kernel.registry['addons'].values():
