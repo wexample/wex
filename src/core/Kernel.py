@@ -310,18 +310,16 @@ class Kernel:
 
         return args_dict
 
-    def convert_dict_to_args(self, function, object):
+    def convert_dict_to_args(self, obj):
         """
-        Convert args {"arg": "value"} to list ["--arg", "value"].
+        Convert a dictionary to a list of arguments.
+        {'arg': 'value'} becomes ['--arg', 'value'].
         """
         arg_list = []
-        for param in function.params:
-            for opt in param.opts:
-                stripped_opt = opt.lstrip('-')
-                if stripped_opt in object:
-                    arg_list.append(opt)
-                    arg_list.append(object[stripped_opt])
-                    break
+        for key, value in obj.items():
+            arg_list.append(f'--{key}')
+            arg_list.append(value)
+
         return arg_list
 
     def exec_function(self, function, args=None):
@@ -329,7 +327,7 @@ class Kernel:
             args = []
 
         if not isinstance(args, list):
-            args = self.convert_dict_to_args(function, args)
+            args = self.convert_dict_to_args(args)
 
         ctx = function.make_context('', args)
         ctx.obj = self

@@ -40,7 +40,6 @@ class TestIndex(AbstractTestCase):
 
     def test_convert_dict_to_args(self):
         args = self.kernel.convert_dict_to_args(
-            self.create_fake_click_function(),
             {
                 'name': "John",
                 'g': True,
