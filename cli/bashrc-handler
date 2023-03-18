@@ -12,7 +12,13 @@ else
   COLOR="\033[0;31m"
 fi
 
-PS1="\[${COLOR}\][${APP_ENV^^}]\[\033[0m\] \\u:\\W\\$ "
+PREFIX=${APP_ENV^^}
+# We are in a docker container.
+if [ -e /.dockerenv ]; then
+  PREFIX="> ${PREFIX}"
+fi
+
+PS1="\[${COLOR}\][${PREFIX}]\[\033[0m\] \\u:\\W\\$ "
 
 # The given file for completion is cached,
 # so we use a different file to be able
