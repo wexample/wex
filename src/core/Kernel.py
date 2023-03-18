@@ -282,17 +282,32 @@ class Kernel:
     def env(self, key: str):
         return self.enf[key]
 
+    def convert_dict_to_args(self, function, args):
+        """
+        Convert args {"arg": "value"} to list ["--arg", "value"].
+        """
+        arg_list = []
+        for param in function.params:
+            if param.name in args:
+                if isinstance(param, click.Option):
+                    arg_list.append(f'--{param.name}')
+                arg_list.append(args[param.name])
+        return arg_list
+
     def exec_function(self, function, args=None):
         if args is None:
             args = []
 
         if not click.get_current_context(True):
-            ctx = function.make_context('', args)
-            ctx.obj = self
-
             # Lists uses invoke instead of callback.
             if isinstance(args, list):
+                ctx = function.make_context('', args)
+                ctx.obj = self
+
                 return function.invoke(ctx)
+            else:
+                ctx = function.make_context('', self.convert_dict_to_args(function, args))
+                ctx.obj = self
 
         if hasattr(function, 'callback'):
             return function.callback(**args)

@@ -17,12 +17,13 @@ class TestCoreAction(AbstractCoreAction):
         os.chdir(self.kernel.path['root'])
 
         if not command:
-            suite = loader.discover(os.path.join(self.kernel.path['root'], 'tests'))
+            suite.addTests(os.path.join(self.kernel.path['root'], 'tests'))
 
         self.kernel.log('Starting addons tests suites..')
         for addon_data in self.kernel.registry['addons'].values():
             for command_name, command_data in addon_data['commands'].items():
-                if 'test' in command_data and command_data['test'] and ((not command) or command_name.startswith(command)):
+                if 'test' in command_data and command_data['test'] and (
+                        (not command) or command_name.startswith(command)):
                     self.kernel.log(f'Found test for command: {command_name}')
 
                     spec = importlib.util.spec_from_file_location(f'{command_name}_test', command_data['test'])
