@@ -8,6 +8,8 @@ import re
 import sys
 
 import subprocess
+
+from click.types import BoolParamType
 from dotenv import load_dotenv
 from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME, COLOR_CYAN
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
@@ -279,42 +281,60 @@ class Kernel:
         spec.loader.exec_module(module)
         return getattr(module, function_name)
 
-    def env(self, key: str):
-        return self.enf[key]
+    def convert_args_to_dict(self, function, arg_list):
+        args_dict = {}
+        param_dict = {opt.lstrip('-'): param for param in function.params if isinstance(param, click.Option) for opt in
+                      param.opts}
 
-    def convert_dict_to_args(self, function, args):
+        i = 0
+        while i < len(arg_list):
+            arg = arg_list[i]
+
+            if isinstance(arg, str):
+                stripped_arg = arg.lstrip('-')
+
+                if stripped_arg in param_dict:
+                    param = param_dict[stripped_arg]
+                    if isinstance(param.type, BoolParamType) or param.is_flag:
+                        args_dict[param.name] = True
+                        i += 1
+                    else:
+                        i += 1
+                        value = arg_list[i]
+                        args_dict[param.name] = value
+                        i += 1
+                else:
+                    i += 1
+            else:
+                i += 1
+
+        return args_dict
+
+    def convert_dict_to_args(self, function, object):
         """
         Convert args {"arg": "value"} to list ["--arg", "value"].
         """
         arg_list = []
         for param in function.params:
-            if param.name in args:
-                if isinstance(param, click.Option):
-                    arg_list.append(f'--{param.name}')
-                arg_list.append(args[param.name])
+            for opt in param.opts:
+                stripped_opt = opt.lstrip('-')
+                if stripped_opt in object:
+                    arg_list.append(opt)
+                    arg_list.append(object[stripped_opt])
+                    break
         return arg_list
 
     def exec_function(self, function, args=None):
         if args is None:
             args = []
 
-        if not click.get_current_context(True):
-            # Lists uses invoke instead of callback.
-            if isinstance(args, list):
-                ctx = function.make_context('', args)
-                ctx.obj = self
+        if not isinstance(args, list):
+            args = self.convert_dict_to_args(function, args)
 
-                return function.invoke(ctx)
-            else:
-                ctx = function.make_context('', self.convert_dict_to_args(function, args))
-                ctx.obj = self
+        ctx = function.make_context('', args)
+        ctx.obj = self
 
-        if hasattr(function, 'callback'):
-            return function.callback(**args)
-
-        self.error(ERR_EXEC_NON_CLICK_METHOD, {
-            'function_name': function.__name__
-        })
+        return function.invoke(ctx)
 
     def list_subdirectories(self, path: str) -> []:
         subdirectories = []

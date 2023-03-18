@@ -1,9 +1,56 @@
-import importlib
-
 from AbstractTestCase import AbstractTestCase
+
+import click
+
+
+def test_index_fake_click_function():
+    pass
 
 
 class TestIndex(AbstractTestCase):
+    def create_fake_click_function(self):
+        name_option = click.Option(["--name"])
+        greeting_option = click.Option(["--greeting", "-g"], is_flag=True, default=False)
+        flag_option = click.Option(["--flag", "-f"], is_flag=True, default=False)
+
+        return click.Command(
+            'test_index_fake_click_function',
+            params=[name_option, greeting_option, flag_option],
+            callback=test_index_fake_click_function
+        )
+
+    def test_convert_args_to_dict(self):
+        args = self.kernel.convert_args_to_dict(
+            self.create_fake_click_function(),
+            [
+                '--name', 'John',
+                '-f',
+                '-g', True,
+            ]
+        )
+
+        self.assertEqual(
+            args,
+            {
+                'name': "John",
+                'flag': True,
+                'greeting': True,
+            }
+        )
+
+    def test_convert_dict_to_args(self):
+        args = self.kernel.convert_dict_to_args(
+            self.create_fake_click_function(),
+            {
+                'name': "John",
+                'g': True,
+            }
+        )
+
+        self.assertEqual(
+            args,
+            ['--name', 'John', '-g', True]
+        )
 
     def test_command_line_args(self):
         self.assertTrue(
