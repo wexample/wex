@@ -14,6 +14,7 @@ from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_F
 from pythonjsonlogger import jsonlogger
 import importlib.util
 from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
+from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import camel_to_snake_case
@@ -33,6 +34,7 @@ class Kernel:
         'core-actions': CoreActionsCoreAction,
         'hi': HiCoreAction,
         'test': TestCoreAction,
+        'test-create': TestCreateCoreAction,
     }
 
     def __init__(self, path_root):
@@ -240,8 +242,17 @@ class Kernel:
                 group_names.add(group_name)
         return list(group_names)
 
-    def build_command_path_from_match(self, match):
-        return f"{self.path['addons']}/{match.group(1)}/command/{match.group(2)}/{match.group(3)}.py"
+    def build_command_path_from_command(self, command: str, subdir=None):
+        match = re.match(COMMAND_PATTERN, command)
+        return self.build_command_path_from_match(match, subdir)
+
+    def build_command_path_from_match(self, match, subdir=None):
+        base_path = f"{self.path['addons']}{match.group(1)}/"
+
+        if subdir:
+            base_path += f"{subdir}/"
+
+        return f"{base_path}command/{match.group(2)}/{match.group(3)}.py"
 
     def get_function_from_command(self, command):
         match = re.match(COMMAND_PATTERN, command)
