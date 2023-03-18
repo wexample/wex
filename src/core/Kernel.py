@@ -9,7 +9,7 @@ import sys
 
 import subprocess
 from dotenv import load_dotenv
-from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME
+from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME, COLOR_CYAN
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 import importlib.util
@@ -119,15 +119,26 @@ class Kernel:
 
         exit(1)
 
-    def log(self, message: str) -> None:
+    log_indent: int = 0
+
+    def log_indent_up(self) -> None:
+        self.log_indent += 1
+
+    def log_indent_down(self) -> None:
+        self.log_indent -= 1
+
+    def log(self, message: str, color=COLOR_GRAY_DARK) -> None:
         click.echo(
             click.style(
-                f'{message}',
-                fg=COLOR_GRAY_DARK
+                f'{"  " * self.log_indent}{message}',
+                fg=color
             )
         )
 
         self.logger.info(message)
+
+    def log_notice(self, message: str) -> None:
+        self.log(message, COLOR_CYAN)
 
     def validate_argv(self, args: []) -> bool:
         if len(args) > 1:

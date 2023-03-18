@@ -1,10 +1,4 @@
 import os
-import unittest
-import importlib
-
-from addons.core.command.registry.build import core_registry_build
-from src.core.action.AbstractCoreAction import AbstractCoreAction
-
 from src.const.error import ERR_ARGUMENT_COMMAND_MALFORMED
 from src.core.action.TestCoreAction import TestCoreAction
 
@@ -20,9 +14,12 @@ class TestCreateCoreAction(TestCoreAction):
         template_path = self.kernel.path['root'] + 'src/resources/templates/test.py.tpl'
 
         self.kernel.log(f'Creating test for command {command}')
+
+        self.kernel.log_indent_up()
         self.kernel.log(f'File : {command_path}')
         self.kernel.log(f'Class : {class_name}')
         self.kernel.log(f'Function : {method_name}')
+        self.kernel.log_indent_down()
 
         with open(template_path, 'r') as template_file:
             template_content = template_file.read()
@@ -39,3 +36,5 @@ class TestCreateCoreAction(TestCoreAction):
 
         with open(command_path, 'w') as output_file:
             output_file.write(formatted_content)
+
+        self.kernel.log_notice(f'Created test file : {command_path}')
