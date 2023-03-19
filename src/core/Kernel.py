@@ -1,20 +1,18 @@
 import importlib
+import importlib.util
 import logging
-from typing import Optional
 import click
 import os
 import json
 import re
 import sys
-
 import subprocess
-
+from typing import Optional
 from click.types import BoolParamType
 from dotenv import load_dotenv
 from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME, COLOR_CYAN
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
-import importlib.util
 from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction

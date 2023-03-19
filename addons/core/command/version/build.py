@@ -1,7 +1,7 @@
 import os
 import git
 import click
-from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, WEX_VERSION
+from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 import subprocess
 from addons.default.command.version.increment import default_version_increment
