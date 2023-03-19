@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  wex_interpreter:
+    container_name: wex_interpreter_dev
+    image: wexample/wex:interpreter
+    tty: true
+    build:
+      context: ${APP_PATH_ROOT}
+      dockerfile: ./.wex/docker/Dockerfile.dev
+    volumes:
+      - ${APP_PATH_ROOT}:/var/www/html

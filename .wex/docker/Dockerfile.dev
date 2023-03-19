@@ -25,3 +25,8 @@ RUN pip install \
   click \
   pip-tools \
   pytest
+
+# Interpreter configuration
+COPY .wex/docker/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "-u"]

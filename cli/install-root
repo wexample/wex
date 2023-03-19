@@ -39,7 +39,7 @@ wex_install() {
   local WEX_FILE_BASHRC_COMMAND=". ${WEX_FILE_BASHRC_HANDLER}"
 
   echo "Installing with python..."
-  pip install "${WEX_DIR_ROOT}"
+  pip install "${WEX_DIR_ROOT}" -r requirements.txt
 
   echo "Creating global command..."
   SCRIPT="__main__.py"
