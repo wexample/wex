@@ -9,6 +9,12 @@ from src.const.globals import LOG_MAX_DAYS
 @click.command
 @click.pass_obj
 def core_logs_rotate(kernel):
+    """
+    Rotate and clean up log files older than a specified age limit.
+
+    This function iterates through the log files in the 'logs' directory, checks their modification
+    time, and removes any log files that are older than the age limit defined by LOG_MAX_DAYS.
+    """
     # Define the age limit
     age_limit: datetime.timedelta = datetime.timedelta(days=LOG_MAX_DAYS)
     # Get the current time
