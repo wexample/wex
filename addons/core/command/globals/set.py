@@ -8,8 +8,12 @@ from src.const.globals import PATH_GLOBALS
 @click.pass_obj
 @click.option('--key', '-k', type=str, required=True)
 @click.option('--value', '-v', type=str, required=True)
-def core_globals_set(kernel, key: str, value):
+@click.option('--verbose', '-vv', type=bool, required=False, default=False)
+def core_globals_set(kernel, key: str, value, verbose=False):
     file = kernel.path['root'] + PATH_GLOBALS
+
+    if verbose:
+        kernel.log(f'Set global {key} = {value} in {file}')
 
     with open(file, 'r') as f:
         source = f.read()
