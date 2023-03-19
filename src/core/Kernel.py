@@ -329,6 +329,12 @@ class Kernel:
         return arg_list
 
     def exec_function(self, function, args=None):
+        if not args:
+            args = []
+
+        if isinstance(args, dict):
+            args = self.convert_dict_to_args(args)
+
         ctx = function.make_context('', args or [])
         ctx.obj = self
 
