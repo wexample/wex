@@ -2,5 +2,5 @@
 
 _wexLog "Running custom app scripts"
 
-wex app::app/exec -c="bash /var/www/html/cli/install"
+wex app::app/exec -c=". /var/www/html/cli/install"
 
