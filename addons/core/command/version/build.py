@@ -56,7 +56,7 @@ def core_version_build(kernel, commit) -> None:
             'app::version/build',
             {
                 'version': new_version,
-                'app_dir': kernel.path['root']
+                'app-dir': kernel.path['root']
             }
         )
 
