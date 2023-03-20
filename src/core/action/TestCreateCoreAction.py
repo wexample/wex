@@ -1,4 +1,6 @@
 import os
+
+from addons.core.command.registry.build import core_registry_build
 from src.const.error import ERR_ARGUMENT_COMMAND_MALFORMED
 from src.core.action.TestCoreAction import TestCoreAction
 
@@ -37,5 +39,9 @@ class TestCreateCoreAction(TestCoreAction):
 
         with open(command_path, 'w') as output_file:
             output_file.write(formatted_content)
+
+        self.kernel.exec_function(
+            core_registry_build
+        )
 
         self.kernel.log_notice(f'Created test file : {command_path}')
