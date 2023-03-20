@@ -2,6 +2,6 @@
   "ERR_ARGUMENT_COMMAND_MALFORMED": "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
   "ERR_ENV_VAR_MISSING": "Missing env var",
   "ERR_COMMAND_FILE_NOT_FOUND": "Command file not found for {command}, in {path}",
-  "ERR_CORE_REPO_DIRTY": "{diff}\nThere is uncommitted changes in the project",
+  "ERR_CORE_REPO_DIRTY": "{diff}\nThere is uncommitted changes in the repository",
   "ERR_EXEC_NON_CLICK_METHOD": "Trying to execute a non-click function '{function_name}', did you forget @click.command decorator ?"
 }
