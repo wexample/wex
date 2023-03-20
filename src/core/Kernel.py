@@ -10,7 +10,8 @@ import subprocess
 from typing import Optional
 from click.types import BoolParamType
 from dotenv import load_dotenv
-from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME, COLOR_CYAN
+from ..const.globals import COLOR_GRAY_DARK, COLOR_RED, WEX_VERSION, COMMAND_PATTERN, LOG_FILENAME, COLOR_CYAN, \
+    FILE_REGISTRY
 from ..const.error import ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_FILE_NOT_FOUND, ERR_EXEC_NON_CLICK_METHOD
 from pythonjsonlogger import jsonlogger
 from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
@@ -44,7 +45,7 @@ class Kernel:
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['logs'] = self.path['tmp'] + 'logs/'
 
-        path_registry = self.path['tmp'] + 'registry.json'
+        path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
         # Load registry from file or initialize it.
         if os.path.exists(path_registry):
