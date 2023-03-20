@@ -312,6 +312,7 @@ class Kernel:
             if isinstance(arg, str):
                 stripped_arg = arg.lstrip('-')
 
+                # Manage parameters defined in function
                 if stripped_arg in param_dict:
                     param = param_dict[stripped_arg]
                     if isinstance(param.type, BoolParamType) or param.is_flag:
@@ -322,7 +323,16 @@ class Kernel:
                         value = arg_list[i]
                         args_dict[stripped_arg] = value
                         i += 1
+                # Manage unknown parameters
                 else:
+                    key = arg.lstrip('-')
+
+                    if len(arg_list) > i and arg_list[i + 1][0:1] != '-':
+                        args_dict[key] = arg_list[i + 1]
+                        i += 1
+                    else:
+                        args_dict[key] = True
+
                     i += 1
             else:
                 i += 1
