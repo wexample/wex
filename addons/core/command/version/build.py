@@ -1,7 +1,7 @@
 import os
 import git
 import click
-from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT
+from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, PATH_GLOBALS
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 import subprocess
 from addons.default.command.version.increment import default_version_increment
@@ -16,7 +16,7 @@ def has_uncommitted_changes(directory):
 
 @click.command
 @click.pass_obj
-@click.option('--commit', '-ok', type=str, required=False, is_flag=True, default=False)
+@click.option('--commit', '-ok', required=False, is_flag=True, default=False)
 def core_version_build(kernel, commit) -> None:
     repo = git.Repo(kernel.path['root'])
 
@@ -71,3 +71,11 @@ def core_version_build(kernel, commit) -> None:
             kernel.log('No changes to commit')
             return
 
+        repo.index.add(kernel.path['root'] + PATH_GLOBALS)
+
+        kernel.exec(
+            'app::version/build',
+            {
+                'commit': commit,
+            }
+        )
