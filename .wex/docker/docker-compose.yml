@@ -13,3 +13,5 @@ services:
       dockerfile: ./.wex/docker/Dockerfile.dev
     volumes:
       - ${APP_PATH_ROOT}:/var/www/html
+      # Exclude git folder.
+      - /var/www/html/.git
