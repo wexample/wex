@@ -246,6 +246,7 @@ class Kernel:
         middleware_args = {
             'addon': addon,
             'args': self.convert_args_to_dict(function, command_args),
+            'args_list': command_args,
             'command': command,
             'function': function,
             'group': group,
