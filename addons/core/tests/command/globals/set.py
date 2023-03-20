@@ -1,8 +1,6 @@
-import importlib
 import re
 
 from src.const.globals import WEX_VERSION, PATH_GLOBALS
-
 from tests.AbstractTestCase import AbstractTestCase
 
 
