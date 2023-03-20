@@ -18,6 +18,8 @@ def has_uncommitted_changes(directory):
 @click.pass_obj
 @click.option('--commit', '-ok', type=str, required=False, is_flag=True, default=False)
 def core_version_build(kernel, commit) -> None:
+    repo = git.Repo(kernel.path['root'])
+
     if not commit:
         kernel.log(f'Building new version from {kernel.version}...')
 
@@ -28,7 +30,6 @@ def core_version_build(kernel, commit) -> None:
             kernel.error(ERR_ENV_VAR_MISSING)
 
         # There is no uncommitted change
-        repo = git.Repo(kernel.path['root'])
         if repo.is_dirty(untracked_files=True):
             kernel.error(ERR_CORE_REPO_DIRTY, {
                 'diff': repo.git.diff()
@@ -64,3 +65,9 @@ def core_version_build(kernel, commit) -> None:
         kernel.shell_exec(
             f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
         )
+
+    else:
+        if not repo.is_dirty(untracked_files=True):
+            kernel.log('No changes to commit')
+            return
+
