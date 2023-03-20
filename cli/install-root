@@ -38,6 +38,11 @@ wex_install() {
   local WEX_FILE_BASHRC_HANDLER="${DIR_CLI}bashrc-handler"
   local WEX_FILE_BASHRC_COMMAND=". ${WEX_FILE_BASHRC_HANDLER}"
 
+  cd "${WEX_DIR_ROOT}"
+
+  echo "Installing addons (submodules)..."
+  git submodule update --init --recursive
+
   echo "Installing with python..."
   pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
