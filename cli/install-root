@@ -40,6 +40,9 @@ wex_install() {
 
   cd "${WEX_DIR_ROOT}"
 
+  echo "Fixing permissions..."
+  chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
+
   echo "Installing addons (submodules)..."
   git submodule update --init --recursive
 
@@ -56,9 +59,6 @@ wex_install() {
 
   echo "Adding autocompletion script to ${WEX_BASHRC_PATH}..."
   wex default::file/appendOnce -f "${WEX_BASHRC_PATH}" -l "${WEX_FILE_BASHRC_COMMAND}"
-
-  echo "Fixing permissions..."
-  chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
 }
 
 wex_install
