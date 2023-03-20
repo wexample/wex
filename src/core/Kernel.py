@@ -327,7 +327,7 @@ class Kernel:
                 else:
                     key = arg.lstrip('-')
 
-                    if len(arg_list) > i and arg_list[i + 1][0:1] != '-':
+                    if len(arg_list) > i + 1 and arg_list[i + 1][0:1] != '-':
                         args_dict[key] = arg_list[i + 1]
                         i += 1
                     else:
