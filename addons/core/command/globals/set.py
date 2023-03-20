@@ -15,7 +15,7 @@ def core_globals_set(kernel, key: str, value, verbose: bool = False):
     if verbose:
         kernel.log(f'Set global {key} = {value} in {file}')
 
-    with open(file, 'r') as f:
+    with open(file, 'r', newline='') as f:
         source = f.read()
     tree = ast.parse(source)
 
@@ -23,5 +23,6 @@ def core_globals_set(kernel, key: str, value, verbose: bool = False):
         if isinstance(node, ast.Assign) and node.targets[0].id == key:
             node.value.s = value
 
-    with open(file, 'w') as f:
+    with open(file, 'w', newline='') as f:
         f.write(ast.unparse(tree))
+        f.write("\n")
