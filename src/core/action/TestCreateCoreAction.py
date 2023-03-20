@@ -26,7 +26,8 @@ class TestCreateCoreAction(TestCoreAction):
 
         formatted_content = template_content.format(
             class_name=class_name,
-            function_name=method_name
+            function_name=method_name,
+            command=command
         )
 
         os.makedirs(
