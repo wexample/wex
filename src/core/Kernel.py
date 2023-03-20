@@ -101,11 +101,21 @@ class Kernel:
         self.logger.addHandler(log_handler)
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
-        message = self.messages.get(key, default or key)
+        return self.format_ignore_missing(
+            self.messages.get(key, default or key),
+            parameters
+        )
 
-        return message.format(**parameters)
+    def format_ignore_missing(self, string, substitutions):
+        pattern = r'{(\w+)}'
 
-    def error(self, code: str, parameters: object = {}) -> None:
+        def replace(match):
+            key = match.group(1)
+            return substitutions.get(key, match.group(0))
+
+        return re.sub(pattern, replace, string)
+
+    def error(self, code: str, parameters: object = {}, log_level: int = logging.ERROR) -> None:
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
 
         click.echo(
@@ -116,7 +126,7 @@ class Kernel:
             )
         )
 
-        self.logger.error(message)
+        self.logger.log(log_level, message)
 
         exit(1)
 
@@ -139,7 +149,7 @@ class Kernel:
         self.logger.info(message)
 
     def log_notice(self, message: str) -> None:
-        self.log(message, COLOR_CYAN)
+        self.log(message, color=COLOR_CYAN)
 
     def validate_argv(self, args: []) -> bool:
         if len(args) > 1:
@@ -215,7 +225,9 @@ class Kernel:
         # Check command formatting.
         match = re.match(COMMAND_PATTERN, command)
         if not match:
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED)
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+                'command': command
+            })
             return
 
         # Get valid path.

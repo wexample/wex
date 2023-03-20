@@ -9,7 +9,7 @@ from src.const.globals import PATH_GLOBALS
 @click.option('--key', '-k', type=str, required=True)
 @click.option('--value', '-v', type=str, required=True)
 @click.option('--verbose', '-vv', type=bool, default=False, is_flag=True)
-def core_globals_set(kernel, key: str, value, verbose: bool=False):
+def core_globals_set(kernel, key: str, value, verbose: bool = False):
     file = kernel.path['root'] + PATH_GLOBALS
 
     if verbose:

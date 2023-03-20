@@ -16,49 +16,51 @@ def has_uncommitted_changes(directory):
 
 @click.command
 @click.pass_obj
-def core_version_build(kernel) -> None:
-    kernel.log(f'Building new version from {kernel.version}...')
+@click.option('--commit', '-ok', type=str, required=False, is_flag=True, default=False)
+def core_version_build(kernel, commit) -> None:
+    if not commit:
+        kernel.log(f'Building new version from {kernel.version}...')
 
-    # Check requirements
-    # GitHub token for changelog build
-    env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
-    if not env_core_github_token:
-        kernel.error(ERR_ENV_VAR_MISSING)
+        # Check requirements
+        # GitHub token for changelog build
+        env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
+        if not env_core_github_token:
+            kernel.error(ERR_ENV_VAR_MISSING)
 
-    # There is no uncommitted change
-    repo = git.Repo(kernel.path['root'])
-    if repo.is_dirty(untracked_files=True):
-        kernel.error(ERR_CORE_REPO_DIRTY, {
-            'diff': repo.git.diff()
-        })
+        # There is no uncommitted change
+        repo = git.Repo(kernel.path['root'])
+        if repo.is_dirty(untracked_files=True):
+            kernel.error(ERR_CORE_REPO_DIRTY, {
+                'diff': repo.git.diff()
+            })
 
-    new_version = default_version_increment.callback(
-        kernel.version,
-    )
+        new_version = default_version_increment.callback(
+            kernel.version,
+        )
 
-    # Let's start
+        # Let's start
 
-    # Save new version
-    kernel.log(f'New version : {new_version}')
-    kernel.exec_function(
-        core_globals_set,
-        {
-            'key': 'WEX_VERSION',
-            'value': new_version
-        }
-    )
+        # Save new version
+        kernel.log(f'New version : {new_version}')
+        kernel.exec_function(
+            core_globals_set,
+            {
+                'key': 'WEX_VERSION',
+                'value': new_version
+            }
+        )
 
-    # Enforce new version for wex app.
-    kernel.exec(
-        'app::version/build',
-        {
-            'version': new_version,
-            'app_dir': kernel.path['root']
-        }
-    )
+        # Enforce new version for wex app.
+        kernel.exec(
+            'app::version/build',
+            {
+                'version': new_version,
+                'app_dir': kernel.path['root']
+            }
+        )
 
-    # Changelog
-    kernel.log('Building CHANGELOG.md...')
-    kernel.shell_exec(
-        f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
-    )
+        # Changelog
+        kernel.log('Building CHANGELOG.md...')
+        kernel.shell_exec(
+            f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
+        )
