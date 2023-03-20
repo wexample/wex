@@ -2,6 +2,8 @@ import click
 import os
 import json
 
+from src.const.globals import FILE_REGISTRY
+
 
 @click.command
 @click.pass_obj
@@ -31,7 +33,7 @@ def core_registry_build(kernel) -> None:
         }
     }
 
-    with open(f'{kernel.path["tmp"]}registry.json', 'w') as f:
+    with open(f'{kernel.path["tmp"]}{FILE_REGISTRY}', 'w') as f:
         json.dump(registry, f, indent=True)
 
     kernel.log('Building complete ...')
