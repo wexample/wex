@@ -1,13 +1,14 @@
 from AbstractTestCase import AbstractTestCase
 
 import click
+import importlib
 
 
 def test_index_fake_click_function():
     pass
 
 
-class TestIndex(AbstractTestCase):
+class TestCore(AbstractTestCase):
     def create_fake_click_function(self):
         name_option = click.Option(["--name"])
         greeting_option = click.Option(["--greeting", "-g"], is_flag=True, default=False)
@@ -24,8 +25,8 @@ class TestIndex(AbstractTestCase):
             self.create_fake_click_function(),
             [
                 '--name', 'John',
-                '-f',
-                '-g', True,
+                '--flag',
+                '--greeting',
             ]
         )
 
@@ -42,13 +43,13 @@ class TestIndex(AbstractTestCase):
         args = self.kernel.convert_dict_to_args(
             {
                 'name': "John",
-                'g': True,
+                'greetings': True,
             }
         )
 
         self.assertEqual(
             args,
-            ['--name', 'John', '-g', True]
+            ['--name', 'John', '--greetings']
         )
 
     def test_command_line_args(self):
