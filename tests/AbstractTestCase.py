@@ -21,3 +21,6 @@ class AbstractTestCase(unittest.TestCase):
             exists,
             f'The file does not exists : {file_path}'
         )
+
+    def build_test_file_path(self, fine_name):
+        return self.kernel.path['root'] + 'tests/samples/' + fine_name
