@@ -321,11 +321,14 @@ class Kernel:
         """
         Convert a dictionary to a list of arguments.
         {'arg': 'value'} becomes ['--arg', 'value'].
+        If the value is a bool, it becomes just ['--arg'] for True, and it is omitted for False.
         """
         arg_list = []
         for key, value in obj.items():
             arg_list.append(f'--{key}')
-            arg_list.append(value)
+
+            if not isinstance(value, bool):
+                arg_list.append(value)
 
         return arg_list
 

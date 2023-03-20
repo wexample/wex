@@ -4,11 +4,16 @@ from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 
 
 @click.command
+@click.pass_obj
 @click.option('--file', '-f', type=str, required=True)
 @click.option('--key', '-k', type=str, required=True)
 @click.option('--value', '-v', required=True)
 @click.option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-def default_config_set(file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
+@click.option('--verbose', '-vv', type=bool, default=False, is_flag=True)
+def default_config_set(kernel, file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT, verbose: bool=False):
+    if verbose:
+        kernel.log(f'Setting variable {key}{separator}{value} in {file}')
+
     with open(file, 'r') as f:
         lines = f.readlines()
 
