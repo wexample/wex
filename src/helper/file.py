@@ -44,12 +44,27 @@ def remove_duplicated_lines(file: str) -> None:
     with open(file, 'r') as f:
         lines = f.readlines()
 
-    unique_lines = list(set(lines))
+    filtered = []
+    for line in lines:
+        if line.strip() == "" or line not in filtered:
+            filtered.append(line)
 
     with open(file, 'w') as f:
-        f.writelines(unique_lines)
+        f.writelines(filtered)
 
 
-def merge_gitignore(src: str, dest: str) -> None:
+def merge_new_lines(src: str, dest: str) -> None:
     merge_files(src, dest)
     remove_duplicated_lines(dest)
+
+
+def create_directories_and_file(path: str) -> None:
+    if os.path.exists(path):
+        return
+
+    # Create all directories in the path
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    # Create and close the file
+    with open(path, 'w') as _:
+        pass
