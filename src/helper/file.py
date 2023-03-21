@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def list_subdirectories(path: str) -> []:
@@ -31,3 +32,24 @@ def create_from_template(template_path, dest_path, parameters):
 
     with open(dest_path, 'w') as output_file:
         output_file.write(formatted_content)
+
+
+def merge_files(src: str, dest: str) -> None:
+    with open(src, 'r') as src_file, open(dest, 'a') as dest_file:
+        dest_file.write('\n')
+        shutil.copyfileobj(src_file, dest_file)
+
+
+def remove_duplicated_lines(file: str) -> None:
+    with open(file, 'r') as f:
+        lines = f.readlines()
+
+    unique_lines = list(set(lines))
+
+    with open(file, 'w') as f:
+        f.writelines(unique_lines)
+
+
+def merge_gitignore(src: str, dest: str) -> None:
+    merge_files(src, dest)
+    remove_duplicated_lines(dest)
