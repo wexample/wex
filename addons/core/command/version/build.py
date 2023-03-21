@@ -3,6 +3,7 @@ import git
 import click
 from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, PATH_GLOBALS
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
+from src.helper.shell import shell_exec
 import subprocess
 from addons.default.command.version.increment import default_version_increment
 from addons.core.command.globals.set import core_globals_set
@@ -62,7 +63,7 @@ def core_version_build(kernel, commit) -> None:
 
         # Changelog
         kernel.log('Building CHANGELOG.md...')
-        kernel.shell_exec(
+        shell_exec(
             f'github_changelog_generator -u {GITHUB_GROUP} -p {GITHUB_PROJECT} -t {env_core_github_token}'
         )
 

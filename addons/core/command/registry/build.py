@@ -3,6 +3,8 @@ import os
 import json
 from src.const.globals import FILE_REGISTRY
 
+from src.helper.file import list_subdirectories
+
 
 @click.command
 @click.pass_obj
@@ -20,7 +22,7 @@ def core_registry_build(kernel) -> None:
                         'file': os.path.join(addon_command_dir, group, command),
                         'test': test_file if os.path.exists(test_file) else None
                     }
-                    for group in kernel.list_subdirectories(addon_command_dir)
+                    for group in list_subdirectories(addon_command_dir)
                     for command in os.listdir(os.path.join(addon_command_dir, group))
                     if command.endswith('.py')
                     for command_name, ext in [os.path.splitext(command)]

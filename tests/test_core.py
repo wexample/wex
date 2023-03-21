@@ -3,6 +3,8 @@ from AbstractTestCase import AbstractTestCase
 import click
 import importlib
 
+from src.helper.args import convert_args_to_dict, convert_dict_to_args
+
 
 def test_index_fake_click_function():
     pass
@@ -21,7 +23,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_args_to_dict(self):
-        args = self.kernel.convert_args_to_dict(
+        args = convert_args_to_dict(
             self.create_fake_click_function(),
             [
                 '--name', 'John',
@@ -40,7 +42,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_dict_to_args(self):
-        args = self.kernel.convert_dict_to_args(
+        args = convert_dict_to_args(
             {
                 'name': "John",
                 'greetings': True,
@@ -50,15 +52,6 @@ class TestCore(AbstractTestCase):
         self.assertEqual(
             args,
             ['--name', 'John', '--greetings']
-        )
-
-    def test_command_line_args(self):
-        self.assertTrue(
-            self.kernel.validate_argv([True, True]),
-        )
-
-        self.assertFalse(
-            self.kernel.validate_argv([True]),
         )
 
     def test_tests_coverage(self):
