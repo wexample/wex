@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 from ..helper.file import list_subdirectories
 from ..helper.args import convert_args_to_dict, convert_dict_to_args
-from ..helper.command import build_command_match
+from ..helper.command import build_command_match, build_function_name_from_match
 from ..const.globals import \
     COLOR_GRAY_DARK, \
     COLOR_RED, WEX_VERSION, \
@@ -50,6 +50,7 @@ class Kernel:
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['logs'] = self.path['tmp'] + 'logs/'
+        self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
@@ -112,7 +113,7 @@ class Kernel:
             parameters
         )
 
-    def error(self, code: str, parameters: object = {}, log_level: int = logging.ERROR) -> None:
+    def error(self, code: str, parameters: object = {}, log_level: int = logging.FATAL) -> None:
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
 
         click.echo(
@@ -125,7 +126,8 @@ class Kernel:
 
         self.logger.log(log_level, message)
 
-        exit(1)
+        if log_level == logging.FATAL:
+            exit(1)
 
     log_indent: int = 0
 
@@ -195,6 +197,19 @@ class Kernel:
     def setup_test_manager(self, test_manager):
         self.test_manager = test_manager
 
+    def build_match_or_fail(self, command: str):
+        # Check command formatting.
+        match = build_command_match(
+            command
+        )
+
+        if not match:
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+                'command': command
+            })
+
+        return match
+
     def exec(self, command: str, command_args=None):
         if command_args is None:
             command_args = []
@@ -215,15 +230,9 @@ class Kernel:
             return action.exec(command, command_args)
 
         # Check command formatting.
-        match = build_command_match(
+        match = self.build_match_or_fail(
             command
         )
-
-        if not match:
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
-                'command': command
-            })
-            return
 
         # Get valid path.
         command_path: str = self.build_command_path_from_match(match)
@@ -267,14 +276,6 @@ class Kernel:
                 group_names.add(group_name)
         return list(group_names)
 
-    def build_command_path_from_command(self, command: str, subdir=None):
-        return self.build_command_path_from_match(
-            build_command_match(
-                command
-            ),
-            subdir
-        )
-
     def build_command_path_from_match(self, match, subdir=None):
         base_path = f"{self.path['addons']}{match.group(1)}/"
 
@@ -294,11 +295,14 @@ class Kernel:
         command_path = self.build_command_path_from_match(match)
 
         # Import module and load function.
-        function_name: str = f'{match.group(1)}_{match.group(2)}_{match.group(3)}'
         spec = importlib.util.spec_from_file_location(command_path, command_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        return getattr(module, function_name)
+
+        return getattr(
+            module,
+            build_function_name_from_match(match)
+        )
 
     def exec_function(self, function, args=None):
         if not args:

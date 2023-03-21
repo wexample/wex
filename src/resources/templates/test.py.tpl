@@ -2,7 +2,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class {class_name}(AbstractTestCase):
-    def {function_name}(self):
+    def {method_name}(self):
         # self.kernel.exec('{command}', {{
         #     'name': 'test'
         # }})
