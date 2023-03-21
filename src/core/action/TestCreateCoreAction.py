@@ -9,11 +9,15 @@ from src.helper.file import create_from_template
 class TestCreateCoreAction(TestCoreAction):
     def exec(self, command, command_args):
         if not command:
+            output = []
+
             # Create all missing tests
             for command, command_data in self.kernel.get_all_commands().items():
-                self.create_test(command)
+                output.append(self.create_test(command))
+
+            return output
         else:
-            self.create_test(command)
+            return self.create_test(command)
 
     def create_test(self, command):
         kernel = self.kernel
@@ -22,7 +26,7 @@ class TestCreateCoreAction(TestCoreAction):
         test_path = kernel.build_command_path_from_match(match, 'tests')
 
         if os.path.exists(test_path):
-            return
+            return test_path
 
         class_name = self.file_path_to_class_name(test_path)
         method_name = self.file_path_to_test_method(test_path)
