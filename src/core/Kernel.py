@@ -24,7 +24,7 @@ from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
-from ..helper.string import camel_to_snake_case, format_ignore_missing
+from ..helper.string import to_snake_case, format_ignore_missing
 
 
 class Kernel:
@@ -216,7 +216,7 @@ class Kernel:
         elif isinstance(command_args, dict):
             command_args = convert_dict_to_args(command_args)
 
-        command = camel_to_snake_case(command)
+        command = to_snake_case(command)
 
         # Handle core action : test, hi, etc...
         if command in self.core_actions:
