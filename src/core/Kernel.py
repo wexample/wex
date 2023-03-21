@@ -267,6 +267,15 @@ class Kernel:
 
     ctx = None
 
+    def get_all_commands(self):
+        output = {}
+
+        for addon, addon_data in self.registry['addons'].items():
+            for command, command_data in addon_data['commands'].items():
+                output[command] = command_data
+
+        return output
+
     def get_group_names(self, addon):
         group_names = set()
 
