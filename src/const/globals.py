@@ -11,4 +11,4 @@ GITHUB_PROJECT = 'wex'
 LOG_FILENAME = 'app.log'
 LOG_MAX_DAYS = 90
 PATH_GLOBALS = 'src/const/globals.py'
-WEX_VERSION = '5.0.0-dev.3+build.20230320141652'
+WEX_VERSION = '5.0.0-dev.4+build.20230321054915'
