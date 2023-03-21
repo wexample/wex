@@ -10,8 +10,6 @@ class TestCoreCommandLogsRotate(AbstractTestCase):
         os.utime(test_log_path, (new_modification_time, new_modification_time))
 
     def test_rotate(self):
-        self.assertTrue(True)
-
         test_log_path = os.path.join(self.kernel.path['logs'], 'test.log')
         with open(test_log_path, 'w') as test_log:
             test_log.write('TEST_CONTENT')

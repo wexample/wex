@@ -26,5 +26,8 @@ def create_from_template(template_path, dest_path, parameters):
         exist_ok=True
     )
 
+    # Replace the TO DOs, to prevent IDE warnings.
+    formatted_content = formatted_content.replace("O/DO", "ODO")
+
     with open(dest_path, 'w') as output_file:
         output_file.write(formatted_content)
