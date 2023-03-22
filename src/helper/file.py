@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 
@@ -74,3 +75,25 @@ def write_dict_to_config(dict, dest: str):
     with open(dest, 'w') as f:
         for key, value in dict.items():
             f.write(f"{key.upper()}={str(value).lower()}\n")
+
+
+def get_json_file_item(file_path: str, key: str):
+    # Load the JSON file
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+
+    return get_json_item(data, key)
+
+
+def get_json_item(json_data, key: str):
+    # Split the key into its individual parts
+    keys = key.split('.')
+
+    # Traverse the data dictionary using the key parts
+    for k in keys:
+        if k in json_data:
+            json_data = json_data[k]
+        else:
+            return None
+
+    return json_data
