@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   wex_interpreter:
     container_name: wex_interpreter_dev

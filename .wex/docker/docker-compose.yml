@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   wex_dev:
     container_name: wex_local_dev
@@ -14,5 +12,6 @@ services:
     volumes:
       - ${APP_PATH_ROOT}:/var/www/html
       - ${SSH_AUTH_SOCK}:/ssh-agent
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - SSH_AUTH_SOCK=/ssh-agent
