@@ -68,3 +68,9 @@ def create_directories_and_file(path: str) -> None:
     # Create and close the file
     with open(path, 'w') as _:
         pass
+
+
+def write_dict_to_config(dict, dest: str):
+    with open(dest, 'w') as f:
+        for key, value in dict.items():
+            f.write(f"{key.upper()}={str(value).lower()}\n")
