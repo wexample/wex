@@ -315,6 +315,10 @@ class Kernel:
         if not args:
             args = []
 
+        # Enforce sudo.
+        if hasattr(function.callback, 'as_sudo') and os.geteuid() != 0:
+            os.execvp('sudo', ['sudo'] + sys.argv)
+
         if isinstance(args, dict):
             args = convert_dict_to_args(args)
 

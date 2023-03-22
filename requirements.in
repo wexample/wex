@@ -4,3 +4,4 @@ python-dotenv
 python-json-logger
 pyyaml
 InquirerPy
+psutil

@@ -16,6 +16,8 @@ pfzy==0.3.4
     # via inquirerpy
 prompt-toolkit==3.0.38
     # via inquirerpy
+psutil==5.9.4
+    # via -r requirements.in
 python-dotenv==1.0.0
     # via -r requirements.in
 python-json-logger==2.0.7
