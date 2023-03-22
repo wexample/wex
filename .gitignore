@@ -27,8 +27,8 @@ build/
 *.egg
 
 # Virtualenv
-venv/
-env/
-ENV/
-.venv/
-.ENV/
+/venv/
+/env/
+/ENV/
+/.venv/
+/.ENV/

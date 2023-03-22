@@ -21,10 +21,3 @@ __pycache__/
 dist/
 build/
 *.egg
-
-# Virtualenv
-venv/
-env/
-ENV/
-.venv/
-.ENV/
