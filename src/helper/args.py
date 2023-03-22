@@ -15,19 +15,28 @@ def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str
         return list(arg)
 
 
-def convert_dict_to_args(obj):
+def convert_dict_to_args(function, args):
     """
-    Convert a dictionary to a list of arguments.
-    {'arg': 'value'} becomes ['--arg', 'value'].
-    If the value is a bool, it becomes just ['--arg'] for True, and it is omitted for False.
+    Convert args {"arg": "value"} to list ["--arg", "value"].
+    Any key in `args` that is not found in `function.params` is added to the
+    argument list as a key-value pair.
     """
     arg_list = []
-    for key, value in obj.items():
-        arg_list.append(f'--{key}')
-
-        if not isinstance(value, bool):
+    for param in function.params:
+        if param.name in args:
+            if isinstance(param, click.Option):
+                if param.is_flag:
+                    if args[param.name]:
+                        arg_list.append(f'--{param.name}')
+                    # Flag passed to False is just removed
+                else:
+                    arg_list.append(f'--{param.name}')
+                    arg_list.append(args[param.name])
+    # Append any remaining arguments as key-value pairs
+    for key, value in args.items():
+        if key not in [param.name for param in function.params]:
+            arg_list.append(f'--{key}')
             arg_list.append(value)
-
     return arg_list
 
 

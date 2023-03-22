@@ -77,14 +77,14 @@ def write_dict_to_config(dict, dest: str):
             f.write(f"{key.upper()}={str(value).lower()}\n")
 
 
-def get_json_file_item(file_path: str, key: str):
+def get_json_file_item(file_path: str, key: str, default=None):
     if os.path.exists(file_path):
         # Load the JSON file
         with open(file_path, 'r') as f:
             data = json.load(f)
 
         return get_json_item(data, key)
-    return None
+    return default
 
 
 def get_json_item(json_data, key: str):

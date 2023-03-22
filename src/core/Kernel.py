@@ -211,8 +211,6 @@ class Kernel:
     def exec(self, command: str, command_args=None):
         if command_args is None:
             command_args = []
-        elif isinstance(command_args, dict):
-            command_args = convert_dict_to_args(command_args)
 
         # Handle core action : test, hi, etc...
         if command in self.core_actions:
@@ -242,6 +240,9 @@ class Kernel:
             return
 
         function = self.get_function_from_match(match)
+
+        if isinstance(command_args, dict):
+            command_args = convert_dict_to_args(function, command_args)
 
         addon, group, name = match.groups()
 
@@ -320,7 +321,7 @@ class Kernel:
             os.execvp('sudo', ['sudo'] + sys.argv)
 
         if isinstance(args, dict):
-            args = convert_dict_to_args(args)
+            args = convert_dict_to_args(function, args)
 
         ctx = function.make_context('', args or [])
         ctx.obj = self
