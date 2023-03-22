@@ -1,10 +1,11 @@
 import os
 import git
 import click
+import subprocess
+from dotenv import load_dotenv
 from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT, PATH_GLOBALS
 from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 from src.helper.shell import shell_exec
-import subprocess
 from addons.default.command.version.increment import default_version_increment
 from addons.core.command.globals.set import core_globals_set
 
@@ -26,6 +27,7 @@ def core_version_build(kernel, commit) -> None:
 
         # Check requirements
         # GitHub token for changelog build
+        load_dotenv()
         env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
         if not env_core_github_token:
             kernel.error(ERR_ENV_VAR_MISSING)
