@@ -1,5 +1,6 @@
 import click
-
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
 
 def build_progress_bar(steps, **kwargs):
     return click.progressbar(
@@ -9,3 +10,16 @@ def build_progress_bar(steps, **kwargs):
         color='cyan',
         **kwargs
     )
+
+
+def prompt_choice(question, choices, default):
+    envs = choices.copy()
+    envs.append(
+        Choice(value=None, name='> Abort')
+    )
+
+    return inquirer.select(
+        message=question,
+        choices=envs,
+        default=default,
+    ).execute()
