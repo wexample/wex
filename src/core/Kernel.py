@@ -103,6 +103,8 @@ class Kernel:
         log_handler.setFormatter(formatter)
         self.logger.addHandler(log_handler)
 
+        self.exec_middlewares('init')
+
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         return format_ignore_missing(
             self.messages.get(key, default or key),
