@@ -6,7 +6,6 @@ import os
 import json
 import sys
 from typing import Optional
-from dotenv import load_dotenv
 
 from ..helper.file import list_subdirectories
 from ..helper.args import convert_args_to_dict, convert_dict_to_args
@@ -92,9 +91,6 @@ class Kernel:
         # Create the log folder if it does not exist
         if not os.path.exists(self.path['logs']):
             os.makedirs(self.path['logs'])
-
-        # Load env
-        load_dotenv()
 
         # Create logger, in json format for better parsing.
         self.logger = logging.getLogger()
