@@ -26,6 +26,9 @@ from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import to_snake_case, format_ignore_missing
 
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
+
 
 class Kernel:
     addons: [str] = {}
@@ -312,6 +315,18 @@ class Kernel:
             module,
             build_function_name_from_match(match)
         )
+
+    def prompt_choice(self, question, choices, default):
+        envs = choices.copy()
+        envs.append(
+            Choice(value=None, name='> Abort')
+        )
+
+        return inquirer.select(
+            message=question,
+            choices=envs,
+            default=default,
+        ).execute()
 
     def exec_function(self, function, args=None):
         if not args:
