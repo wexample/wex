@@ -216,8 +216,6 @@ class Kernel:
         elif isinstance(command_args, dict):
             command_args = convert_dict_to_args(command_args)
 
-        command = to_snake_case(command)
-
         # Handle core action : test, hi, etc...
         if command in self.core_actions:
             action = command
@@ -228,6 +226,8 @@ class Kernel:
             action = self.core_actions[action](self)
 
             return action.exec(command, command_args)
+
+        command = to_snake_case(command)
 
         # Check command formatting.
         match = self.build_match_or_fail(
