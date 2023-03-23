@@ -99,3 +99,13 @@ def get_json_item(json_data, key: str):
             return None
 
     return json_data
+
+
+def json_load(file, default=None):
+    if default is None:
+        default = {}
+    try:
+        with open(file) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return default
