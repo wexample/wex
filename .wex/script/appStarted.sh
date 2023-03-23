@@ -11,6 +11,8 @@ wex app::app/exec -vv -u="${CONTAINER_USER}" -c="git config --global user.name '
 wex app::app/exec -vv -u="${CONTAINER_USER}" -c="git config --global user.email '${GIT_USER_EMAIL}'"
 
 # Get rid of old branches
+
+wex app::app/exec -vv -u="${CONTAINER_USER}" -c="cd /var/www/html && git prune"wex app::app/exec -vv -c="chown -R ${CONTAINER_USER}:${CONTAINER_USER} /var/www/html"
 wex app::app/exec -vv -u="${CONTAINER_USER}" -c="cd /var/www/html && git prune"
 
 # Install wex.
