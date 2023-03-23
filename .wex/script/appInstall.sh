@@ -1,5 +1,4 @@
 
 _wexMessage "Install pip requirements"
 
-wex app::app/exec -c="cd /var/www/html && sudo pip-compile requirements.in"
-wex app::app/exec -c="cd /var/www/html && sudo pip install -r requirements.txt"
+wex app::app/exec -c="cd /opt/wex && sudo pip-compile requirements.in && sudo pip install -r requirements.txt"

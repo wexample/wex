@@ -1,2 +1,2 @@
 
-echo "cd /var/www/html"
+echo "cd /opt/wex"
