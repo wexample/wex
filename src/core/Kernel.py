@@ -223,8 +223,6 @@ class Kernel:
 
             return action.exec(command, command_args)
 
-        command = to_snake_case(command)
-
         # Check command formatting.
         match = self.build_match_or_fail(
             command

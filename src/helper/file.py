@@ -2,6 +2,8 @@ import json
 import os
 import shutil
 
+from src.helper.string import to_snake_case
+
 
 def list_subdirectories(path: str) -> []:
     subdirectories = []
@@ -75,7 +77,6 @@ def write_dict_to_config(dict, dest: str):
     with open(dest, 'w') as f:
         for key, value in dict.items():
             f.write(f"{key.upper()}={str(value).lower()}\n")
-
 
 def get_json_file_item(file_path: str, key: str, default=None):
     if os.path.exists(file_path):

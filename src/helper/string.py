@@ -2,11 +2,9 @@ import re
 
 
 def to_snake_case(text: str) -> str:
-    return re.sub(
-        r'(?<!^)(?=[A-Z])',
-        '_',
-        text.replace('-', '_')
-    ).lower()
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', text)
+    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    return re.sub('[_\\W]+', '_', s2)
 
 
 def to_kebab_case(text: str) -> str:
