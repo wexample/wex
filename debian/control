@@ -1,1 +1,11 @@
-Depends: ${misc:Depends}, python3
+Source: wex-python
+Section: python
+Priority: optional
+Maintainer: weeger <romain.weeger@wexample.com>
+Build-Depends: debhelper (>= 13), python3-all, python3-setuptools
+Standards-Version: 4.5.1
+
+Package: wex
+Architecture: all
+Depends: ${python3:Depends}, docker-ce-cli, docker-compose
+Description: A single entrypoint to execute custom bash scripts, and run Docker application on several environments.

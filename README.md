@@ -1,6 +1,6 @@
 # wex v5.0.0-beta
 
-A single command to execute your bash scripts, and run Docker application on several environments. See description for more info.
+A single entrypoint to execute custom bash scripts, and run Docker application on several environments. See description for more info.
 
 Join our community, support us, and find work at https://wexample.com 🤝❤️👨‍💻
 
