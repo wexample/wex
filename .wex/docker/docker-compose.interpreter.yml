@@ -4,8 +4,8 @@ services:
     image: wexample/wex:interpreter
     tty: true
     build:
-      context: ${CONTEXT_DIR}
+      context: ${APP_PATH_ROOT}
       dockerfile: ./.wex/docker/Dockerfile.dev
     volumes:
       # Mount wex outside the apps list
-      - ${CONTEXT_DIR}:/opt/wex
+      - ${APP_PATH_ROOT}:/opt/wex
