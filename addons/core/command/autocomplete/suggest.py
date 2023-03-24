@@ -21,7 +21,7 @@ def core_autocomplete_suggest(kernel, cursor: int, search: str) -> str:
 
     # Mismatch between parts and cursor index.
     if cursor > len(search_split):
-        return
+        return ''
 
     search_part = search_split[cursor]
 
@@ -65,7 +65,7 @@ def core_autocomplete_suggest(kernel, cursor: int, search: str) -> str:
         )
 
         if not match:
-            return
+            return ''
 
         # Merge all params in a list,
         # but ignore already given args,
