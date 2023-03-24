@@ -1,8 +1,9 @@
 import click
 import os
 import json
-from src.const.globals import FILE_REGISTRY
 
+from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from src.const.globals import FILE_REGISTRY
 from src.helper.file import list_subdirectories
 
 
@@ -46,7 +47,12 @@ def core_registry_build(kernel) -> None:
             for service_dir in [os.path.join(addon_dir, 'services')]
             if os.path.exists(service_dir)
             for service in os.listdir(service_dir)
-            for service_config_file in [os.path.join(service_dir, service, 'service.config.json')]
+            for service_config_file in [
+                os.path.join(
+                    service_dir,
+                    service,
+                    APP_FILE_APP_SERVICE_CONFIG
+                )]
         }
     }
 
