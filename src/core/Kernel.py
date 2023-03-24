@@ -16,3 +16,5 @@ class Kernel:
     def call(self):
         if not len(sys.argv) > 3:
             return
+
+        print('hi!')
