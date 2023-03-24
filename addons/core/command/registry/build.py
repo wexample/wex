@@ -38,6 +38,7 @@ def core_registry_build(kernel) -> None:
             service: {
                 'name': service,
                 'addon': addon,
+                'dir': service_dir + '/' + service + '/',
                 "config": json.load(open(service_config_file)) if os.path.exists(service_config_file) else {}
             }
             for addon in addons
