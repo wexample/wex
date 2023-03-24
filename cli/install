@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Use a separated file to contains sudo-only script.
-. "$(dirname "${BASH_SOURCE[0]}")/install-root"
-
-echo "Reload bashrc changes"
-. ~/.bashrc
