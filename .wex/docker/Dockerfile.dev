@@ -3,7 +3,7 @@ FROM python:3.12.0a6-bullseye
 # Create a username for pid 1000
 # which is the default pid given by Docker
 # Add it to sudo as we may need to install some packages as sudo
-RUN useradd --uid 1000 owner \
+RUN useradd --uid 1000 owner --create-home \
   && adduser owner sudo \
   && mkdir -p /etc/sudoers.d \
   && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
