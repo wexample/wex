@@ -13,7 +13,7 @@ services:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/opt/wex
       # Mount apps
-      - /var/www/${CONTEXT_ENV}:/var/www/html
+      - /var/www/${APP_ENV}:/var/www/html
       # Authorize app to reuse ssh authentications
       - ${SSH_AUTH_SOCK}:/ssh-agent
       # Allow to run docker from inside container
