@@ -14,5 +14,5 @@ class Kernel:
         self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
 
     def call(self):
-        if not len(sys.argv) > 1:
+        if not len(sys.argv) > 3:
             return
