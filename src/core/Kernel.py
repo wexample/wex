@@ -1,6 +1,8 @@
+import argparse
 import os
-import sys
 from typing import Optional
+
+from src.helper.process import process_post_exec
 
 
 class Kernel:
@@ -8,13 +10,25 @@ class Kernel:
         'root': None,
         'addons': None
     }
+    process_id: int = None
 
-    def __init__(self, path_root):
+    def __init__(self, entrypoint_path):
         # Initialize global variables.
-        self.path['root'] = os.path.dirname(os.path.realpath(path_root)) + '/'
+        self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
+        self.path['tmp'] = self.path['root'] + 'tmp/'
 
     def call(self):
-        if not len(sys.argv) > 3:
+        # Store pid.
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--proc-id', type=str, help='The process ID')
+        args = parser.parse_args()
+        self.process_id = args.proc_id
+
+        if not self.process_id:
             return
 
-        print('hi!')
+        process_post_exec(self, [
+            'ls',
+            '-la'
+        ])
+
