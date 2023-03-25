@@ -1,5 +1,11 @@
 from setuptools import setup, find_packages
 from src.const.globals import WEX_VERSION
+import os
+
+
+def read(file_name):
+    return open(os.path.join(os.path.dirname(__file__), file_name)).read()
+
 
 setup(
     name='wex',
