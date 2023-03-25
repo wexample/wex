@@ -39,7 +39,8 @@ RUN apt-get install -y \
     build-essential \
     debhelper \
     devscripts \
-    dh-make
+    dh-make \
+    dh-python
 
 # Interpreter configuration
 COPY .wex/docker/entrypoint.sh /entrypoint.sh
