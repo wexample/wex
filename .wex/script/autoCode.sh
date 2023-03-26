@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 _wexMessage "Use this file to paste custom code, then rollback it before commit."
 
