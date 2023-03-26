@@ -11,7 +11,9 @@ services:
       dockerfile: ./.wex/docker/Dockerfile.dev
     volumes:
       # Mount wex outside the apps list
-      - ${APP_PATH_ROOT}:/opt/wex
+      - ${APP_PATH_ROOT}:/opt/wex-dev
+      # It should contain the debian installed version
+#      - ${APP_PATH_ROOT}../../install:/opt/wex
       # Build folder
       - ${APP_PATH_ROOT}../../build/:/var/www/build
       # Mount apps

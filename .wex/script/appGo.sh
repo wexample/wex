@@ -1,2 +1,2 @@
 
-echo "cd /opt/wex"
+echo "cd /opt/wex-dev"
