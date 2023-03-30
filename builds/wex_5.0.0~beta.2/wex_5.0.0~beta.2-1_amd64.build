@@ -1,0 +1,64 @@
+ dpkg-buildpackage -us -uc -ui
+dpkg-buildpackage: info: source package wex
+dpkg-buildpackage: info: source version 5.0.0~beta.2-1
+dpkg-buildpackage: info: source distribution unstable
+dpkg-buildpackage: info: source changed by wexample <contact@wexample.com>
+ dpkg-source --before-build .
+dpkg-buildpackage: info: host architecture amd64
+ debian/rules clean
+dh clean --with python3
+   dh_clean
+ dpkg-source -b .
+dpkg-source: warning: source directory 'wex_5.0.0~beta.2' is not <sourcepackage>-<upstreamversion> 'wex-5.0.0~beta.2'
+dpkg-source: warning: .orig directory name wex_5.0.0~beta.2.orig is not <package>-<upstreamversion> (wanted wex-5.0.0~beta.2.orig)
+dpkg-source: info: using source format '1.0'
+dpkg-source: info: building wex using existing wex_5.0.0~beta.2.orig.tar.gz
+dpkg-source: info: building wex in wex_5.0.0~beta.2-1.diff.gz
+dpkg-source: warning: file wex_5.0.0~beta.2/debian/source/format has no final newline (either original or modified version)
+dpkg-source: warning: file wex_5.0.0~beta.2/debian/wex.lintian-overrides has no final newline (either original or modified version)
+dpkg-source: warning: the diff modifies the following upstream files: 
+ wex.1
+dpkg-source: info: use the '3.0 (quilt)' format to have separate and documented changes to upstream files, see dpkg-source(1)
+dpkg-source: info: building wex in wex_5.0.0~beta.2-1.dsc
+ debian/rules build
+dh build --with python3
+   dh_update_autotools_config
+   dh_autoreconf
+   create-stamp debian/debhelper-build-stamp
+ debian/rules binary
+dh binary --with python3
+   dh_testroot
+   dh_prep
+   debian/rules override_dh_auto_install
+make[1]: Entering directory '/var/www/build/workdir/wex_5.0.0~beta.2'
+dh_auto_install
+mkdir -p debian/wex/usr/bin
+ln -s wex/cli/wex debian/wex/usr/bin/wex
+make[1]: Leaving directory '/var/www/build/workdir/wex_5.0.0~beta.2'
+   dh_install
+   dh_installdocs
+   dh_installchangelogs
+   dh_installman
+   dh_python3
+   dh_lintian
+   dh_perl
+   dh_link
+Use of uninitialized value in string eq at /usr/share/perl5/Debian/Debhelper/Dh_Lib.pm line 2309.
+   dh_strip_nondeterminism
+   dh_compress
+   dh_fixperms
+   dh_missing
+   dh_installdeb
+   dh_gencontrol
+   dh_md5sums
+   dh_builddeb
+dpkg-deb: building package 'wex' in '../wex_5.0.0~beta.2-1_all.deb'.
+ dpkg-genbuildinfo
+ dpkg-genchanges  >../wex_5.0.0~beta.2-1_amd64.changes
+dpkg-genchanges: info: including full source code in upload
+ dpkg-source --after-build .
+dpkg-buildpackage: info: full upload (original source is included)
+Now running lintian wex_5.0.0~beta.2-1_amd64.changes ...
+warning: running with root privileges is not recommended!
+N: 1 hint overridden (1 warning)
+Finished running lintian.

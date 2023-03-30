@@ -1,0 +1,8 @@
+./wex/__main__.py
+./wex/cli
+./wex/LICENCE
+./wex/README.md
+./wex/setup.py
+./wex/src
+./wex/tmp
+./wex.1

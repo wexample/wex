@@ -1,0 +1,11 @@
+Package: wex
+Version: 5.0.0~beta.2-1
+Architecture: all
+Maintainer: wexample <contact@wexample.com>
+Installed-Size: 42
+Depends: python3:any, python3, docker-ce-cli, docker-compose
+Section: web
+Priority: optional
+Homepage: https://wexample.com
+Description: Single entrypoint to execute custom bash scripts,
+ and run Docker application on several environments.

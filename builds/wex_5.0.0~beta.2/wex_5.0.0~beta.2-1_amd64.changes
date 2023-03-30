@@ -1,0 +1,50 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Format: 1.8
+Date: Fri, 24 Mar 2023 13:28:43 +0000
+Source: wex
+Binary: wex
+Architecture: source all
+Version: 5.0.0~beta.2-1
+Distribution: unstable
+Urgency: low
+Maintainer: wexample <contact@wexample.com>
+Changed-By: wexample <contact@wexample.com>
+Description:
+ wex        - Single entrypoint to execute custom bash scripts,
+Changes:
+ wex (5.0.0~beta.2-1) unstable; urgency=low
+ .
+   * Maintainer upload.
+   * Beta empty version, packaging initialization
+Checksums-Sha1:
+ bfe6cc94b0bf86ce52c677c3b78deaf27b0bc903 1395 wex_5.0.0~beta.2-1.dsc
+ 7395c12b98b18a9ebae3233e27f4709dd51c20f4 5470 wex_5.0.0~beta.2.orig.tar.gz
+ 0ca254ebb3a2bd69248c767c699f9f46d26c96d5 1867 wex_5.0.0~beta.2-1.diff.gz
+ 2342cde01eace5547bdca91ab3289eae724cf70a 5628 wex_5.0.0~beta.2-1_all.deb
+ e06a2b4b815f9f274bd53aac0112b39286821c42 6260 wex_5.0.0~beta.2-1_amd64.buildinfo
+Checksums-Sha256:
+ 47541cfb0f2bb6e82b6d2e6f822557f033507d00074535a969ad38686bf5aad5 1395 wex_5.0.0~beta.2-1.dsc
+ 76c1bf13f82674650123b743a34431f1a5440eb28e7fc7864e4e07f208da1774 5470 wex_5.0.0~beta.2.orig.tar.gz
+ dab08133741c1bbaa03284aa3799d88d2d9901b4c0709338ea96ae5dbfc96144 1867 wex_5.0.0~beta.2-1.diff.gz
+ 771a15e5f2e97503411885a1035ab787b1c24c4e30a254ac69268821a6499aa8 5628 wex_5.0.0~beta.2-1_all.deb
+ 6654f8898eccb0033d7db3e53ef76518d188c21553a83b00f6509627703bcb0f 6260 wex_5.0.0~beta.2-1_amd64.buildinfo
+Files:
+ 5504b805db4a6ddcdb4463ded2e04746 1395 web optional wex_5.0.0~beta.2-1.dsc
+ 899941990d2d42b7312e31fe2af58587 5470 web optional wex_5.0.0~beta.2.orig.tar.gz
+ ccd0c6c523c72c77ccd5ebecb1ab1adc 1867 web optional wex_5.0.0~beta.2-1.diff.gz
+ fd8c4c7c8a2c19ec0eb5731ca2230a76 5628 web optional wex_5.0.0~beta.2-1_all.deb
+ c9523c4ac3705481e01abb10d8ccae81 6260 web optional wex_5.0.0~beta.2-1_amd64.buildinfo
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFJBAEBCgAzFiEEmjndFmB6IUErgly3TX41v/2z4LsFAmQkYeoVHGNvbnRhY3RA
+d2V4YW1wbGUuY29tAAoJEE1+Nb/9s+C7kK8IAN09Ewi+bskU7kCST7se1JLzb+oQ
+qHXBV9zxAKiWQvwmXX7z2pYzjS16AY4Qtme4jycnDHFdORm0MSzuKi6kOaMiYJth
+BnAF2x1zHQZody2oWqKJmQhWIIBH8QXxepzsACEylwuNNBUUg540sIQ9mlPPOm+e
+lb69fDqxuFuZwfWBS/kCyBDBHxDIfqt/KLOJ3WGgOxHysj1RtF42Qwh46Bj6qLyP
+TFPMYPz4Mz8ajnnHqMA5tUNE2olElJohVAos+dJ3viJ171ufcY6qxr7FbXfNjynt
+nusYX66kJ6ToaNA2XuiInVmQp94H4funRmsMZ8m87tVlj57UEfHvTH5kj9M=
+=wpU8
+-----END PGP SIGNATURE-----

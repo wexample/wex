@@ -1,0 +1,28 @@
+services:
+  wex_dev:
+    container_name: wex_local_dev
+    image: wexample/wex:dev
+    privileged: true
+    extends:
+        file: ${WEX_COMPOSE_YML_DEFAULT}
+        service: default
+    build:
+      context: ${APP_PATH_ROOT}
+      dockerfile: ./.wex/docker/Dockerfile.dev
+    volumes:
+      # Mount wex outside the apps list
+      - ${APP_PATH_ROOT}:/opt/wex-dev
+      # It should contain the debian installed version
+#      - ${APP_PATH_ROOT}../../install:/opt/wex
+      # Build folder
+      - ${APP_PATH_ROOT}../../build/:/var/www/build
+      # Mount apps
+      - /var/www/${APP_ENV}:/var/www/html
+      # Authorize app to reuse ssh authentications
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+      # Allow to run docker from inside container
+      - /var/run/docker.sock:/var/run/docker.sock
+      # For debug purposes
+      - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
