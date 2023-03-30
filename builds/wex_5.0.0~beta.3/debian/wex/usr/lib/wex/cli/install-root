@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+wex_install() {
+  echo "Install.."
+}
+
+wex_install

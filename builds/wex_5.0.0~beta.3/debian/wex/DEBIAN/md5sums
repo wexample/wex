@@ -1,0 +1,17 @@
+dbf049a6fa94964a69394d3e6649374d  usr/lib/wex/LICENCE
+aa5c9babbeb14c2d4fc50835329d9b91  usr/lib/wex/README.md
+8cc2e416372d4e09a8848a4b210c27da  usr/lib/wex/__main__.py
+47416799f21f45a4a568cf01b4c864c0  usr/lib/wex/cli/install
+59f8130de5f4b134e29e0ecf1bd2b9f2  usr/lib/wex/cli/install-root
+d06b50e1202a0291a70661967d955211  usr/lib/wex/cli/wex
+1f83d35a6a481f285b97102423715948  usr/lib/wex/setup.py
+8772e3d60c17223d0dc785cd959ee85e  usr/lib/wex/src/const/globals.py
+fad8217568c81cfef4af46d04b2f9e2b  usr/lib/wex/src/core/Kernel.py
+3cb24ba9e0ff5fa6206d8a6fd7534744  usr/lib/wex/src/helper/process.py
+d41d8cd98f00b204e9800998ecf8427e  usr/lib/wex/tmp/.gitkeep
+d41d8cd98f00b204e9800998ecf8427e  usr/lib/wex/tmp/process/.gitkeep
+265ce627698bc19f4f1edfcc2c1eded2  usr/share/doc/wex/changelog.Debian.gz
+b9e37dc7a123af621d8947a96f0e577b  usr/share/doc/wex/copyright
+8262c9d801c460bea967346d992232c6  usr/share/lintian/overrides/wex
+79d627492160d0698a3850502782d52d  usr/share/man/man1/wex.1.gz
+16be7044983fd397bd7e1134a4d036a7  usr/share/python3/runtime.d/wex.rtupdate

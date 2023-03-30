@@ -1,0 +1,7 @@
+#! /bin/sh
+set -e
+
+if [ "$1" = rtupdate ]; then
+	py3clean -p wex /usr/lib/wex
+	py3compile -p wex  /usr/lib/wex
+fi

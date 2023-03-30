@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/wex/usr/bin
+	ln -s wex/cli/wex debian/wex/usr/bin/wex
