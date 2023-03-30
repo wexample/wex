@@ -1,0 +1,13 @@
+Source: wex
+Section: web
+Priority: optional
+Maintainer: wexample <contact@wexample.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-setuptools, python3-all
+Standards-Version: 4.5.1
+Homepage: https://wexample.com
+
+Package: wex
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}, python3, docker-ce-cli, docker-compose
+Description:Single entrypoint to execute custom bash scripts,
+ and run Docker application on several environments.
