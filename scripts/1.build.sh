@@ -26,10 +26,11 @@ find . -name ".gitignore" -type f -delete
 
 cd "${PATH_BUILD}" || return
 tar -czvf "${BUILD_NAME}.orig.tar.gz" "${BUILD_NAME}/wex"
-chown -R owner:owner .
+chown -R owner:owner "${PATH_BUILD}"
 
 echo "Copy debian files"
 cp -r "${PATH_ROOT}templates/debian" "${PATH_BUILD_BUILD}"
+cp "${PATH_ROOT}templates/wex.1" "${PATH_BUILD_BUILD}"
 
 echo "Build changelog"
 python3 "${PATH_ROOT}scripts/1.build.py" -n "${APP_NAME}" -v "${VERSION}"
