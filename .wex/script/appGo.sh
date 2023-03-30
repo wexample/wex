@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-echo "cd /opt/wex-dev"
+echo "cd /opt/wex"
