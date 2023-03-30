@@ -1,0 +1,12 @@
+%echo Generating a basic OpenPGP key
+Key-Type: RSA
+Key-Length: 2048
+Subkey-Type: ELG-E
+Subkey-Length: 2048
+Name-Real: wexample
+Name-Comment: wexample
+Name-Email: contact@wexample.com
+Expire-Date: 0
+%no-protection
+%commit
+%echo done

@@ -12,17 +12,8 @@ services:
     volumes:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/opt/wex
+      # Source repo before build
+      - ${APP_PATH_ROOT}source:/var/www/source
       # Use GPG key for package signature
-      - ${APP_PATH_WEX}/source/gpg/:/root/.gnupg
-      # Build folder
-      - ${APP_PATH_ROOT}../../build/:/var/www/build
-      # Mount apps
-      - /var/www/${APP_ENV}:/var/www/html
-      # Authorize app to reuse ssh authentications
-      #- ${SSH_AUTH_SOCK}:/ssh-agent
-      # Allow to run docker from inside container
-      - /var/run/docker.sock:/var/run/docker.sock
-      # For debug purposes
-      - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
-#    environment:
-#      - SSH_AUTH_SOCK=/ssh-agent
+      - ${APP_PATH_ROOT}gpg/:/root/.gnupg
+
