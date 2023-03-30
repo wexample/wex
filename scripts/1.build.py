@@ -1,8 +1,6 @@
 import os
 import datetime
-import sys
 import argparse
-import re
 
 
 class BuildManager:
@@ -23,6 +21,16 @@ class BuildManager:
         ) + '/'
         self.path['templates'] = self.path['root'] + 'templates/'
 
+        steps = [
+            self.step_init_vars,
+            self.step_build_changelog,
+        ]
+
+        for step in steps:
+            print('Build step ' + step.__name__)
+            step()
+
+    def step_init_vars(self):
         parser = argparse.ArgumentParser()
         parser.add_argument('-v', type=str)
         parser.add_argument('-n', type=str)
@@ -31,8 +39,6 @@ class BuildManager:
         self.version = args.v
         self.name = args.n
         self.build_name = f'{self.name}_{self.version}'
-
-        self.build_changelog()
 
     def get_latest_build(self, build_folder):
         builds = []
@@ -46,7 +52,7 @@ class BuildManager:
 
         return None
 
-    def build_changelog(self):
+    def step_build_changelog(self):
         last_version = self.get_latest_build('.')
         last_changelog_path = f'{last_version}/debian/changelog'
         history = ''
