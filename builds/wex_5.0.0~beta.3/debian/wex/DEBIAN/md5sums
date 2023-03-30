@@ -10,7 +10,7 @@ fad8217568c81cfef4af46d04b2f9e2b  usr/lib/wex/src/core/Kernel.py
 3cb24ba9e0ff5fa6206d8a6fd7534744  usr/lib/wex/src/helper/process.py
 d41d8cd98f00b204e9800998ecf8427e  usr/lib/wex/tmp/.gitkeep
 d41d8cd98f00b204e9800998ecf8427e  usr/lib/wex/tmp/process/.gitkeep
-265ce627698bc19f4f1edfcc2c1eded2  usr/share/doc/wex/changelog.Debian.gz
+6e5042a539c3ccf25bcdad4042510961  usr/share/doc/wex/changelog.Debian.gz
 b9e37dc7a123af621d8947a96f0e577b  usr/share/doc/wex/copyright
 8262c9d801c460bea967346d992232c6  usr/share/lintian/overrides/wex
 79d627492160d0698a3850502782d52d  usr/share/man/man1/wex.1.gz

@@ -3,13 +3,7 @@ wex (5.0.0~beta.3-1) unstable; urgency=low
       * Automated deployment
   * Something else
 
-     -- wexample <contact@wexample.com>  Thu, 30 Mar 2023 19:13:43 +0000
+     -- wexample <contact@wexample.com>  Thu, 30 Mar 2023 20:03:09 +0000
 
-    wex (5.0.0~beta.2-1) unstable; urgency=low
-
-  * Maintainer upload.
-  * Beta empty version, packaging initialization
-
- -- wexample <contact@wexample.com>  Fri, 24 Mar 2023 13:28:43 +0000
-
+    
 

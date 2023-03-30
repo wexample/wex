@@ -10,11 +10,11 @@ Build-Depends: debhelper-compat (= 13), dh-python, python3-setuptools, python3-a
 Package-List:
  wex deb web optional arch=all
 Checksums-Sha1:
- 16089402df82e5e0699704d61fb3b3a65402147f 2783 wex_5.0.0~beta.3.orig.tar.gz
- b340854811d6753d74be8100537005c401c44d2c 1920 wex_5.0.0~beta.3-1.diff.gz
+ 1f534b4a329353ffaef881a081d22b9b24d006e9 3066 wex_5.0.0~beta.3.orig.tar.gz
+ bb60ad1cbe8abd776b9bcd632145c94dacda36bb 3456 wex_5.0.0~beta.3-1.diff.gz
 Checksums-Sha256:
- 359bf2ce9faef26da675bb457e8ebcbab187397398a9889ea61aae767c123d64 2783 wex_5.0.0~beta.3.orig.tar.gz
- 57f81fa2adc9992c784ee27bd1ea7b6ac3f4692e20c5d3ea3465ecfc3a14dd4b 1920 wex_5.0.0~beta.3-1.diff.gz
+ b474db08a6f2db99a7e80d7c05e0963a37d30cef20c6fd0c22f637cb301fff86 3066 wex_5.0.0~beta.3.orig.tar.gz
+ 82dde5491f0becacf1b9f2b2d278fe790fc6792a3540aa912cff566613887343 3456 wex_5.0.0~beta.3-1.diff.gz
 Files:
- e0c53cbe299e7ab0812e7fea2e9adb1a 2783 wex_5.0.0~beta.3.orig.tar.gz
- a9785198c22ead317ee88c963cb0e439 1920 wex_5.0.0~beta.3-1.diff.gz
+ e20b42416ab396b99d1e3e0e1ce7494d 3066 wex_5.0.0~beta.3.orig.tar.gz
+ 2cff6373dc17a763aff7eceef43b839b 3456 wex_5.0.0~beta.3-1.diff.gz

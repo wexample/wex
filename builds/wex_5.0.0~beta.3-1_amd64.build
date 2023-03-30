@@ -1,23 +1,66 @@
  dpkg-buildpackage -us -uc -ui
+dpkg-buildpackage: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
 dpkg-buildpackage: info: source package wex
 dpkg-buildpackage: info: source version 5.0.0~beta.3-1
 dpkg-buildpackage: info: source distribution unstable
-dpkg-buildpackage: info: source changed by wexample <contact@wexample.com>
+dpkg-buildpackage: info: source changed by 
  dpkg-source --before-build .
 dpkg-buildpackage: info: host architecture amd64
+dpkg-source: warning: wex_5.0.0~beta.3/debian/changelog(l9): found end of file where expected more change data or trailer
  fakeroot debian/rules clean
 dh clean --with python3
    dh_clean
  dpkg-source -b .
+dpkg-source: warning: wex_5.0.0~beta.3/debian/changelog(l9): found end of file where expected more change data or trailer
 dpkg-source: warning: source directory 'wex_5.0.0~beta.3' is not <sourcepackage>-<upstreamversion> 'wex-5.0.0~beta.3'
 dpkg-source: warning: .orig directory name wex_5.0.0~beta.3.orig is not <package>-<upstreamversion> (wanted wex-5.0.0~beta.3.orig)
 dpkg-source: info: using source format '1.0'
 dpkg-source: info: building wex using existing wex_5.0.0~beta.3.orig.tar.gz
 dpkg-source: info: building wex in wex_5.0.0~beta.3-1.diff.gz
+dpkg-source: warning: ignoring deletion of directory www
+dpkg-source: warning: ignoring deletion of directory www/builds
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/LICENCE
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/__main__.py
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/setup.py
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/README.md
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/tmp
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/tmp/.gitkeep
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/tmp/process
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/tmp/process/.gitkeep
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/cli
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/cli/install-root
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/cli/wex
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/cli/install
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/src
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/src/helper
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/src/helper/process.py
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/src/const
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/src/const/globals.py
+dpkg-source: warning: ignoring deletion of directory www/builds/wex_5.0.0~beta.3/wex/src/core
+dpkg-source: warning: ignoring deletion of file www/builds/wex_5.0.0~beta.3/wex/src/core/Kernel.py
 dpkg-source: warning: file wex_5.0.0~beta.3/debian/source/format has no final newline (either original or modified version)
 dpkg-source: warning: file wex_5.0.0~beta.3/debian/wex.lintian-overrides has no final newline (either original or modified version)
+dpkg-source: warning: file wex_5.0.0~beta.3/wex/LICENCE has no final newline (either original or modified version)
+dpkg-source: warning: executable mode 0755 of 'wex/cli/install' will not be represented in diff
+dpkg-source: warning: executable mode 0755 of 'wex/cli/install-root' will not be represented in diff
+dpkg-source: warning: file wex_5.0.0~beta.3/wex/cli/wex has no final newline (either original or modified version)
+dpkg-source: warning: executable mode 0755 of 'wex/cli/wex' will not be represented in diff
+dpkg-source: warning: newly created empty file 'wex/tmp/.gitkeep' will not be represented in diff
+dpkg-source: warning: newly created empty file 'wex/tmp/process/.gitkeep' will not be represented in diff
 dpkg-source: warning: the diff modifies the following upstream files: 
  wex.1
+ wex/LICENCE
+ wex/README.md
+ wex/__main__.py
+ wex/cli/install
+ wex/cli/install-root
+ wex/cli/wex
+ wex/setup.py
+ wex/src/const/globals.py
+ wex/src/core/Kernel.py
+ wex/src/helper/process.py
 dpkg-source: info: use the '3.0 (quilt)' format to have separate and documented changes to upstream files, see dpkg-source(1)
 dpkg-source: info: building wex in wex_5.0.0~beta.3-1.dsc
  debian/rules build
@@ -38,6 +81,7 @@ make[1]: Leaving directory '/var/www/builds/wex_5.0.0~beta.3'
    dh_install
    dh_installdocs
    dh_installchangelogs
+dh_installchangelogs: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
    dh_installman
    dh_python3
    dh_lintian
@@ -50,14 +94,21 @@ Use of uninitialized value in string eq at /usr/share/perl5/Debian/Debhelper/Dh_
    dh_missing
    dh_installdeb
    dh_gencontrol
+dpkg-gencontrol: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
    dh_md5sums
    dh_builddeb
 dpkg-deb: building package 'wex' in '../wex_5.0.0~beta.3-1_all.deb'.
  dpkg-genbuildinfo
+dpkg-genbuildinfo: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
+dpkg-genbuildinfo: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
  dpkg-genchanges  >../wex_5.0.0~beta.3-1_amd64.changes
+dpkg-genchanges: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
+dpkg-genchanges: warning:     debian/changelog(l9): found end of file where expected more change data or trailer
 dpkg-genchanges: info: including full source code in upload
  dpkg-source --after-build .
+dpkg-source: warning: wex_5.0.0~beta.3/debian/changelog(l9): found end of file where expected more change data or trailer
 dpkg-buildpackage: info: full upload (original source is included)
 Now running lintian wex_5.0.0~beta.3-1_amd64.changes ...
-N: 0 hints overridden; 1 unused override
+W: wex: syntax-error-in-debian-changelog line 8 "found eof where expected more change data or trailer"
+N: 1 hint overridden (1 warning)
 Finished running lintian.

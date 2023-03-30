@@ -1,5 +1,5 @@
 Format: 1.8
-Date: Thu, 30 Mar 2023 14:27:23 +0000
+Date: Thu, 30 Mar 2023 20:03:49 +0000
 Source: wex
 Binary: wex
 Architecture: source all
@@ -7,29 +7,30 @@ Version: 5.0.0~beta.3-1
 Distribution: unstable
 Urgency: low
 Maintainer: wexample <contact@wexample.com>
-Changed-By: wexample <contact@wexample.com>
 Description:
  wex        - Single entrypoint to execute custom bash scripts,
 Changes:
  wex (5.0.0~beta.3-1) unstable; urgency=low
  .
-   * Automated deployment
+       * Automated deployment
    * Something else
+ .
+      -- wexample <contact@wexample.com>  Thu, 30 Mar 2023 20:03:09 +0000
 Checksums-Sha1:
- e49cd677019800ba3d3a106894cf7df19e3a9a27 829 wex_5.0.0~beta.3-1.dsc
- 16089402df82e5e0699704d61fb3b3a65402147f 2783 wex_5.0.0~beta.3.orig.tar.gz
- b340854811d6753d74be8100537005c401c44d2c 1920 wex_5.0.0~beta.3-1.diff.gz
- a476e1246ba3d0ec304a94350f84ef8287cfbc3b 5696 wex_5.0.0~beta.3-1_all.deb
- 887358a903c42bac0ad2caa42284857bff48df00 5691 wex_5.0.0~beta.3-1_amd64.buildinfo
+ e8455e854b23ec109dbe7774b4de6f4549284adc 829 wex_5.0.0~beta.3-1.dsc
+ 1f534b4a329353ffaef881a081d22b9b24d006e9 3066 wex_5.0.0~beta.3.orig.tar.gz
+ bb60ad1cbe8abd776b9bcd632145c94dacda36bb 3456 wex_5.0.0~beta.3-1.diff.gz
+ af1cebc3d9ccac7b1200363edc152ff0a12cba99 5636 wex_5.0.0~beta.3-1_all.deb
+ 828d715f5bf009a80bcedb7e1c71552e9ebfaf70 5691 wex_5.0.0~beta.3-1_amd64.buildinfo
 Checksums-Sha256:
- 6147cb3141057e098e8dbf5ad8830c1cda4f208abf1e44319563ac0ddf1282a8 829 wex_5.0.0~beta.3-1.dsc
- 359bf2ce9faef26da675bb457e8ebcbab187397398a9889ea61aae767c123d64 2783 wex_5.0.0~beta.3.orig.tar.gz
- 57f81fa2adc9992c784ee27bd1ea7b6ac3f4692e20c5d3ea3465ecfc3a14dd4b 1920 wex_5.0.0~beta.3-1.diff.gz
- d4c89d3e168449516413f12c9f15f2b37e4b90e188a63bdb2afd36ab01b661b4 5696 wex_5.0.0~beta.3-1_all.deb
- d275b633d335f0869f9843bdf14f4b71fe1581a9a3f5c7451cc86343a3bc5a5a 5691 wex_5.0.0~beta.3-1_amd64.buildinfo
+ 141f84eacd5846f48da003b779c2b977bc82ef7dae0e25fd2d0bff538bc30b69 829 wex_5.0.0~beta.3-1.dsc
+ b474db08a6f2db99a7e80d7c05e0963a37d30cef20c6fd0c22f637cb301fff86 3066 wex_5.0.0~beta.3.orig.tar.gz
+ 82dde5491f0becacf1b9f2b2d278fe790fc6792a3540aa912cff566613887343 3456 wex_5.0.0~beta.3-1.diff.gz
+ 8db8b03ddcb3865a39e8fc8d5090ff24477193691ff4db1045624c5d05f934ab 5636 wex_5.0.0~beta.3-1_all.deb
+ 71642875e86416399e2f07e4bedee28f8a6d2417dec10b0c402f7049424946ba 5691 wex_5.0.0~beta.3-1_amd64.buildinfo
 Files:
- bb4b91e888a317814bcd03c21b05425a 829 web optional wex_5.0.0~beta.3-1.dsc
- e0c53cbe299e7ab0812e7fea2e9adb1a 2783 web optional wex_5.0.0~beta.3.orig.tar.gz
- a9785198c22ead317ee88c963cb0e439 1920 web optional wex_5.0.0~beta.3-1.diff.gz
- 9e5c26bd9da16b8ec0e1ab1d9bb68fde 5696 web optional wex_5.0.0~beta.3-1_all.deb
- 598325170d3232d53ecb1288bf4a2160 5691 web optional wex_5.0.0~beta.3-1_amd64.buildinfo
+ 2113c2a34b2b7a0242d857e62c56b385 829 web optional wex_5.0.0~beta.3-1.dsc
+ e20b42416ab396b99d1e3e0e1ce7494d 3066 web optional wex_5.0.0~beta.3.orig.tar.gz
+ 2cff6373dc17a763aff7eceef43b839b 3456 web optional wex_5.0.0~beta.3-1.diff.gz
+ c19e6239240ff99c2dc0dd5b33ee0eaa 5636 web optional wex_5.0.0~beta.3-1_all.deb
+ 13deadc4ce53c1d6cf5b823cfeac7ccd 5691 web optional wex_5.0.0~beta.3-1_amd64.buildinfo
