@@ -11,8 +11,8 @@ services:
       dockerfile: ./.wex/docker/Dockerfile.dev
     volumes:
       # Mount wex outside the apps list
-      - ${APP_PATH_ROOT}:/opt/wex
-      # Source repo before build
+      - ${APP_PATH_ROOT}:/var/www/
+      # Source repo before build, override to support symlink.
       - ${APP_PATH_ROOT}source:/var/www/source
       # Use GPG key for package signature
       - ${APP_PATH_ROOT}gpg/:/root/.gnupg
