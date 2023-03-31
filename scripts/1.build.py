@@ -19,11 +19,10 @@ class BuildManager:
     }
 
     def __init__(self, entrypoint_path):
-        self.path['root'] = os.path.dirname(
-            os.path.dirname(
-                os.path.realpath(entrypoint_path)
-            )
-        ) + '/'
+        self.path['current'] = os.path.dirname(
+            os.path.realpath(entrypoint_path)
+        )
+        self.path['root'] = os.path.dirname(self.path['current']) + '/'
         self.path['builds'] = self.path['root'] + 'builds/'
         self.path['templates'] = self.path['root'] + 'templates/'
 
@@ -35,6 +34,8 @@ class BuildManager:
             self.step_create_tarball,
             self.step_copy_debian,
             self.step_build_changelog,
+            self.step_set_permissions,
+            self.step_debuild,
         ]
 
         for step in steps:
@@ -58,6 +59,8 @@ class BuildManager:
         self.path['tarball'] = self.path['builds'] + self.build_name + '.orig.tar.gz'
 
     def step_cleanup_old_build(self):
+        self.change_owner_recursive_current(self.path['build'])
+
         self.delete_dir(self.path['build'])
         self.delete_file(self.path['tarball'])
         os.mkdir(self.path['build'])
@@ -79,9 +82,12 @@ class BuildManager:
         with tarfile.open(self.path['tarball'], 'w:gz') as tar:
             tar.add(self.path['build'] + '/wex')
 
+        self.change_owner_recursive_current(self.path['build'])
+
+    def change_owner_recursive_current(self, path):
         owner_uid = pwd.getpwnam('owner').pw_uid
         owner_gid = grp.getgrnam('owner').gr_gid
-        self.change_owner_recursive(self.path['build'], owner_uid, owner_gid)
+        self.change_owner_recursive(path, owner_uid, owner_gid)
 
     def step_copy_debian(self):
         shutil.copytree(
@@ -124,6 +130,52 @@ class BuildManager:
         with open(f'{self.path["build"]}/debian/changelog', "w") as f:
             f.write(changelog)
 
+    def step_set_permissions(self):
+        self.change_owner_recursive_current(self.path['build'])
+
+        # Execution permission for cli only
+        subprocess.run(['chmod', '-R', '-x', self.path['build_source']])
+        subprocess.run(['chmod', '-R', '+x', self.path['build_source'] + 'cli'])
+
+        # Execution permission for .sh files
+        subprocess.run([
+            'find',
+            self.path['build_source'],
+            '-name',
+            '*.sh',
+            '-type',
+            'f',
+            '-exec',
+            'chmod',
+            '+x',
+            '{}',
+            ';'
+        ])
+
+        # All "folders" have 755 permission
+        subprocess.run([
+            'find',
+            self.path['build_source'],
+            '-type',
+            'd',
+            '-exec',
+            'chmod',
+            '755',
+            '{}',
+            ';'
+        ])
+
+    def step_debuild(self):
+        os.chdir(self.path['build'])
+
+        subprocess.run([
+            'debuild',
+            '-us',
+            '-uc',
+        ])
+
+        os.chdir(self.path['current'])
+
     def get_latest_build(self, build_folder):
         builds = []
         items = os.listdir(build_folder)
@@ -137,10 +189,10 @@ class BuildManager:
         return None
 
     def change_owner_recursive(self, path, owner_uid, owner_gid):
-        for dirpath, dirnames, filenames in os.walk(path):
-            shutil.chown(dirpath, owner_uid, owner_gid)
+        for dir_path, dir_names, filenames in os.walk(path):
+            shutil.chown(dir_path, owner_uid, owner_gid)
             for filename in filenames:
-                filepath = os.path.join(dirpath, filename)
+                filepath = os.path.join(dir_path, filename)
                 shutil.chown(filepath, owner_uid, owner_gid)
 
     def delete_file_recursive(self, file_name, start_path):

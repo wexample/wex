@@ -7,7 +7,7 @@ dpkg-buildpackage: info: source changed by
  dpkg-source --before-build .
 dpkg-buildpackage: info: host architecture amd64
 dpkg-source: warning: wex_5.0.0~beta.3/debian/changelog(l9): found end of file where expected more change data or trailer
- fakeroot debian/rules clean
+ debian/rules clean
 dh clean --with python3
    dh_clean
  dpkg-source -b .
@@ -68,7 +68,7 @@ dh build --with python3
    dh_update_autotools_config
    dh_autoreconf
    create-stamp debian/debhelper-build-stamp
- fakeroot debian/rules binary
+ debian/rules binary
 dh binary --with python3
    dh_testroot
    dh_prep
@@ -109,6 +109,7 @@ dpkg-genchanges: info: including full source code in upload
 dpkg-source: warning: wex_5.0.0~beta.3/debian/changelog(l9): found end of file where expected more change data or trailer
 dpkg-buildpackage: info: full upload (original source is included)
 Now running lintian wex_5.0.0~beta.3-1_amd64.changes ...
+warning: running with root privileges is not recommended!
 W: wex: syntax-error-in-debian-changelog line 8 "found eof where expected more change data or trailer"
 N: 1 hint overridden (1 warning)
 Finished running lintian.
