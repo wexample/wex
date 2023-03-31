@@ -6,6 +6,8 @@ import subprocess
 import tarfile
 import grp
 import pwd
+import urllib.request
+import urllib.parse
 
 
 class BuildManager:
@@ -17,6 +19,9 @@ class BuildManager:
         'root': None,
         'addons': None
     }
+    gitlab_ci_api_v4_url = 'gitlab.wexample.com/api/v4'
+    ci_project_id = None
+    private_token = None
 
     def __init__(self, entrypoint_path):
         self.path['current'] = os.path.dirname(
@@ -36,6 +41,7 @@ class BuildManager:
             self.step_build_changelog,
             self.step_set_permissions,
             self.step_debuild,
+            self.step_post_package,
         ]
 
         for step in steps:
@@ -48,10 +54,14 @@ class BuildManager:
         parser = argparse.ArgumentParser()
         parser.add_argument('-v', type=str)
         parser.add_argument('-n', type=str)
+        parser.add_argument('-gid', type=int)
+        parser.add_argument('-gtk', type=str)
         args = parser.parse_args()
 
         self.version = args.v
         self.name = args.n
+        self.ci_project_id = args.gid
+        self.private_token = args.gtk
         self.build_name = f'{self.name}_{self.version}'
 
         self.path['build'] = self.path['builds'] + f'{self.build_name}/'
@@ -85,9 +95,10 @@ class BuildManager:
         self.change_owner_recursive_current(self.path['build'])
 
     def change_owner_recursive_current(self, path):
-        owner_uid = pwd.getpwnam('owner').pw_uid
-        owner_gid = grp.getgrnam('owner').gr_gid
-        self.change_owner_recursive(path, owner_uid, owner_gid)
+        if os.path.exists(path):
+            owner_uid = pwd.getpwnam('owner').pw_uid
+            owner_gid = grp.getgrnam('owner').gr_gid
+            self.change_owner_recursive(path, owner_uid, owner_gid)
 
     def step_copy_debian(self):
         shutil.copytree(
@@ -176,6 +187,22 @@ class BuildManager:
 
         os.chdir(self.path['current'])
 
+    def step_post_package(self):
+        deb_file_path = self.build_name + '-1_all.deb'
+        # Tilde is not supported
+        version = self.version.replace('~', '-')
+        package_name = self.build_name.replace('~', '-') + '.deb'
+
+        url = f"https://{self.gitlab_ci_api_v4_url}/projects/{self.ci_project_id}/packages/generic/wex/{version}/{package_name}"
+        headers = {'PRIVATE-TOKEN': self.private_token}
+
+        with open(self.path['builds'] + deb_file_path, 'rb') as f:
+            data = f.read()
+            req = urllib.request.Request(url, data=data, headers=headers, method='PUT')
+
+        with urllib.request.urlopen(req) as response:
+            print(response.read().decode('utf-8'))
+
     def get_latest_build(self, build_folder):
         builds = []
         items = os.listdir(build_folder)
@@ -193,7 +220,10 @@ class BuildManager:
             shutil.chown(dir_path, owner_uid, owner_gid)
             for filename in filenames:
                 filepath = os.path.join(dir_path, filename)
-                shutil.chown(filepath, owner_uid, owner_gid)
+                if os.path.islink(filepath):
+                    os.lchown(filepath, owner_uid, owner_gid)
+                else:
+                    shutil.chown(filepath, owner_uid, owner_gid)
 
     def delete_file_recursive(self, file_name, start_path):
         for root, _, files in os.walk(start_path):
