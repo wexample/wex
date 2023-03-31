@@ -1,6 +1,6 @@
 Example :
 
-    sudo python3 scripts/1.build.py \
+    sudo python3 script/build.py \
       -n wex \
       -gid 155 \
       -gtk "glpat-ZZZZ"
