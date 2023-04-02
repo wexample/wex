@@ -4,4 +4,4 @@ stages:
 deploy:
   stage: deploy
   script:
-    - cat version.txt
+    - mkdir -p /var/www/build && rm -rf /var/www/build/* /var/www/build/.[!.]* || true
