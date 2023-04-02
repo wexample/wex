@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from src.const.globals import WEX_VERSION
+from src.helper.core import core_get_version
 import os
 
 
@@ -9,7 +9,7 @@ def read(file_name):
 
 setup(
     name='wex',
-    version=WEX_VERSION,
+    version=core_get_version(),
     description='A bash command manager',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
