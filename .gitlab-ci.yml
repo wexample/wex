@@ -15,4 +15,4 @@ deploy:
     # Checkout build branch
     - git fetch && git checkout build
     # Run container
-    - docker compose -f .wex/docker/docker-compose.ci.yml up -d
+    #- docker compose -f .wex/docker/docker-compose.ci.yml up -d
