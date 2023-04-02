@@ -10,3 +10,5 @@ deploy:
     - cp -r .git ./tmp/build
     # Go to build folder
     - cd ./tmp/build
+    # Checkout build branch
+    - git checkout build
