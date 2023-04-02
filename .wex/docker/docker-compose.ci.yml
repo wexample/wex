@@ -11,9 +11,9 @@ services:
     tty: true
     volumes:
       # Mount wex outside the apps list
-      - ./:/var/www/
+      - ./../../:/var/www/
       # Source repo before build, override to support symlink.
-      - ./source:/var/www/source
+      - ./../../source:/var/www/source
       # Use GPG key for package signature
-      - ./gpg/:/root/.gnupg
+      - ./../../gpg/:/root/.gnupg
 
