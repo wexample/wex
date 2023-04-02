@@ -1,9 +1,9 @@
 services:
-  wex_dev:
+  wex_build:
     build:
       context: ./
       dockerfile: ./.wex/docker/Dockerfile.dev
-    container_name: wex_local_dev
+    container_name: wex_build
     image: wexample/wex:dev
     privileged: true
     restart: unless-stopped
