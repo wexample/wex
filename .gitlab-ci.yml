@@ -4,4 +4,5 @@ stages:
 deploy:
   stage: deploy
   script:
-    - mkdir -p /var/www/build && rm -rf /var/www/build/* /var/www/build/.[!.]* || true
+    # Create or empty temp build folder
+    - mkdir -p ./tmp/build && rm -rf ./tmp/build/* ./tmp/build/.[!.]* || true
