@@ -7,4 +7,6 @@ deploy:
     # Create or empty temp build folder
     - mkdir -p ./tmp/build && rm -rf ./tmp/build/* ./tmp/build/.[!.]* || true
     # Create a copy of current git repo
-    - cp -r .git ./tmp/
+    - cp -r .git ./tmp/build
+    # Go to build folder
+    - cd ./tmp/build
