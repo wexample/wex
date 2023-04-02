@@ -1,7 +1,7 @@
 services:
   wex_build:
     build:
-      context: ./
+      context: ./../../
       dockerfile: ./.wex/docker/Dockerfile.dev
     container_name: wex_build
     image: wexample/wex:dev
