@@ -3,17 +3,17 @@ services:
     build:
       context: ./
       dockerfile: ./.wex/docker/Dockerfile.dev
-    container_name: wex_build
-    image: wexample/wex:dev
-    privileged: true
-    restart: unless-stopped
-    stdin_open: true
-    tty: true
-    volumes:
-      # Mount wex outside the apps list
-      - ./:/var/www/
-      # Source repo before build, override to support symlink.
-      - ./source:/var/www/source
-      # Use GPG key for package signature
-      - ./gpg/:/root/.gnupg
+#    container_name: wex_build
+#    image: wexample/wex:dev
+#    privileged: true
+#    restart: unless-stopped
+#    stdin_open: true
+#    tty: true
+#    volumes:
+#      # Mount wex outside the apps list
+#      - ./:/var/www/
+#      # Source repo before build, override to support symlink.
+#      - ./source:/var/www/source
+#      # Use GPG key for package signature
+#      - ./gpg/:/root/.gnupg
 
