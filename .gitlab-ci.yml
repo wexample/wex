@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - BUILD_VERSION=$(cat ../../version.txt)
+    - BUILD_VERSION=$(cat version.txt)
     # Stop running container
     - docker stop wex_build 2>/dev/null && docker rm wex_build 2>/dev/null || true
     # Create or empty temp build folder
