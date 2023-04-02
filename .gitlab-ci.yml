@@ -4,4 +4,4 @@ stages:
 deploy:
   stage: deploy
   script:
-    - realpath .
+    - cat version.txt
