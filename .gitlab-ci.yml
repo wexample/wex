@@ -6,9 +6,13 @@ deploy:
   script:
     # Create or empty temp build folder
     - mkdir -p ./tmp/build && rm -rf ./tmp/build/* ./tmp/build/.[!.]* || true
+    # Stop running container
+    - docker stop wex_build 2>/dev/null && docker rm wex_build 2>/dev/null || true
     # Create a copy of current git repo
     - cp -r .git ./tmp/build
     # Go to build folder
     - cd ./tmp/build
     # Checkout build branch
     - git fetch && git checkout build
+    # Run container
+    - docker compose -f .wex/docker/docker-compose.ci.yml up -d
