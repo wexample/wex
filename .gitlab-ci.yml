@@ -4,4 +4,4 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "ok"
+    - realpath .
