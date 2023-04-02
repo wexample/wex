@@ -14,8 +14,8 @@ deploy:
     - cd /home/gitlab-runner/builds/wex
     # Checkout build branch
     - git fetch && git checkout build
-    - git status
-    - sleep 2
-    - git status
+    - git checkout .wex/*
+    - git clean -fd
+    - git reset --hard origin/build
     # Run container
-    #- docker compose -f .wex/docker/docker-compose.ci.yml up -d
+    - docker compose -f .wex/docker/docker-compose.ci.yml up -d
