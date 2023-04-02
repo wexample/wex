@@ -7,11 +7,11 @@ deploy:
     # Stop running container
     - docker stop wex_build 2>/dev/null && docker rm wex_build 2>/dev/null || true
     # Create or empty temp build folder
-    - mkdir -p ./tmp/build && rm -rf ./tmp/build/* ./tmp/build/.[!.]* || true
+    - mkdir -p /home/gitlab-runner/builds/ && rm -rf /home/gitlab-runner/builds//* /home/gitlab-runner/builds//.[!.]* || true
     # Create a copy of current git repo
-    - cp -r .git ./tmp/build
+    - cp -r .git /home/gitlab-runner/builds/
     # Go to build folder
-    - cd ./tmp/build
+    - cd /home/gitlab-runner/builds/
     # Checkout build branch
     - git fetch && git checkout build
     # Run container
