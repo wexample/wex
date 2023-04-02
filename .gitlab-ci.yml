@@ -11,4 +11,4 @@ deploy:
     # Go to build folder
     - cd ./tmp/build
     # Checkout build branch
-    - git checkout build
+    - git fetch && git checkout build
