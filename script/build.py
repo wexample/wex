@@ -250,6 +250,7 @@ class BuildManager:
         )
 
         print(result.stdout)
+        print(result.stderr)
 
 
 if __name__ == "__main__":
