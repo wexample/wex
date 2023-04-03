@@ -19,6 +19,6 @@ deploy:
     - git clean -fd
     - git reset --hard origin/build
     # Run container
-    - docker compose -f .wex/docker/docker-compose.ci.yml up -d
+    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
     # Run build
     - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid 155 -gtk 'glpat-PAHuLocqyf1ZGuY58GYb' -v '${BUILD_VERSION}'"
