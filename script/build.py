@@ -240,7 +240,7 @@ class BuildManager:
         if os.path.exists(path) and os.path.isdir(path):
             shutil.rmtree(path)
 
-    def run(command):
+    def run(self, command):
         result = self.run(
           command,
           capture_output=True,
