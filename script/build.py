@@ -76,7 +76,7 @@ class BuildManager:
         os.mkdir(self.path['build'])
 
     def step_clone_source(self):
-        subprocess.run([
+        self.run([
             'git',
             'clone',
             self.path['root'] + 'source',
@@ -145,11 +145,11 @@ class BuildManager:
         self.change_owner_recursive_current(self.path['build'])
 
         # Execution permission for cli only
-        subprocess.run(['chmod', '-R', '-x', self.path['build_source']])
-        subprocess.run(['chmod', '-R', '+x', self.path['build_source'] + 'cli'])
+        self.run(['chmod', '-R', '-x', self.path['build_source']])
+        self.run(['chmod', '-R', '+x', self.path['build_source'] + 'cli'])
 
         # Execution permission for .sh files
-        subprocess.run([
+        self.run([
             'find',
             self.path['build_source'],
             '-name',
@@ -164,7 +164,7 @@ class BuildManager:
         ])
 
         # All "folders" have 755 permission
-        subprocess.run([
+        self.run([
             'find',
             self.path['build_source'],
             '-type',
@@ -179,7 +179,7 @@ class BuildManager:
     def step_debuild(self):
         os.chdir(self.path['build'])
 
-        subprocess.run([
+        self.run([
             'debuild',
             '-us',
             '-uc',
@@ -239,6 +239,15 @@ class BuildManager:
     def delete_dir(self, path):
         if os.path.exists(path) and os.path.isdir(path):
             shutil.rmtree(path)
+
+    def run(command):
+        result = self.run(
+          command,
+          capture_output=True,
+          text=True
+        )
+
+        print(result.stdout)
 
 
 if __name__ == "__main__":
