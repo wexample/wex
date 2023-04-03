@@ -76,6 +76,7 @@ class BuildManager:
         os.mkdir(self.path['build'])
 
     def step_clone_source(self):
+        print('Cloning source to ' + self.path['build_source'])
         self.run([
             'git',
             'clone',
