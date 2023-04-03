@@ -18,6 +18,8 @@ deploy:
     - git checkout .wex/*
     - git clean -fd
     - git reset --hard origin/build
+    # Create link to source
+    - ln -s ${CI_PROJECT_DIR} source
     # Run container
     - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
     # Run build
