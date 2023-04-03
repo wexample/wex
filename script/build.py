@@ -243,8 +243,9 @@ class BuildManager:
     def run(self, command):
         result = self.run(
           command,
-          capture_output=True,
-          text=True
+          stdout=subprocess.PIPE,
+          stderr=subprocess.PIPE,
+          universal_newlines=True
         )
 
         print(result.stdout)
