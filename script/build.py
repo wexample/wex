@@ -241,7 +241,7 @@ class BuildManager:
             shutil.rmtree(path)
 
     def run(self, command):
-        result = self.run(
+        result = subprocess.run(
           command,
           stdout=subprocess.PIPE,
           stderr=subprocess.PIPE,
