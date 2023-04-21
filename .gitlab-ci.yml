@@ -23,4 +23,4 @@ deploy:
     # Run container
     - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
     # Run build
-    - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid 155 -gtk 'glpat-PAHuLocqyf1ZGuY58GYb' -v '${BUILD_VERSION}'"
+    - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'"
