@@ -1,0 +1,13 @@
+[Unit]
+Description=Wexd Daemon
+After=network.target
+
+[Service]
+ExecStart=/opt/wex/python/wexd.py
+Restart=always
+#User=nobody
+#Group=nogroup
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
