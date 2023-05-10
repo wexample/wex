@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 _wexMessage "No auto code here. ${BASH_SOURCE[0]}" "Use this file to paste custom code, then rollback it before commit."
 
