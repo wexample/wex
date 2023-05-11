@@ -38,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
 
     def parse_url(self, parsed_url):
         path = parsed_url.path
-        pattern = r'^\/webhook/([a-zA-Z]+)/([a-zA-Z]+)$'
+        pattern = r'^\/webhook/([a-zA-Z_-]+)/([a-zA-Z_-]+)$'
         match = re.match(pattern, path)
 
         if match:
