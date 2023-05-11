@@ -45,12 +45,17 @@ class handler(BaseHTTPRequestHandler):
             app_name, webhook = match.groups()
             query_string_data = parse_qs(parsed_url.query)
 
+            # Get the 'args[]' parameters
+            args = query_string_data.get('args[]', [])
+
             env = self.get_env()
             working_directory = f"/var/www/{env}/{app_name}"
             hook_file = f".wex/webhook/{webhook}.sh"
 
             if os.path.isdir(working_directory) and os.path.isfile(os.path.join(working_directory, hook_file)):
-                self.execute_command(['bash', hook_file], working_directory)
+                # Add the arguments to the command
+                command = ['bash', hook_file] + args
+                self.execute_command(command, working_directory)
                 self.wfile.write(b'RUNNING')
             else:
                 self.wfile.write(b'NOT_FOUND')
