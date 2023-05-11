@@ -33,6 +33,9 @@ class handler(BaseHTTPRequestHandler):
 
         return None
 
+    def execute_command(self, command, working_directory):
+        subprocess.Popen(command, cwd=working_directory)
+
     def parse_url(self, parsed_url):
         path = parsed_url.path
         pattern = r'^\/webhook/([a-zA-Z]+)/([a-zA-Z]+)$'
@@ -46,13 +49,11 @@ class handler(BaseHTTPRequestHandler):
             working_directory = f"/var/www/{env}/{app_name}"
             hook_file = f".wex/webhook/{webhook}.sh"
 
-            if os.path.isdir(working_directory):
-                if os.path.isfile(os.path.join(working_directory, hook_file)):
-                    print(working_directory)
-
-                    output = subprocess.check_output(['bash' ,hook_file], cwd=working_directory)
-                    self.wfile.write(output)
-                    return
+            if os.path.isdir(working_directory) and os.path.isfile(os.path.join(working_directory, hook_file)):
+                self.execute_command(['bash', hook_file], working_directory)
+                self.wfile.write(b'RUNNING')
+            else:
+                self.wfile.write(b'NOT_FOUND')
 
 def serve(port):
     with HTTPServer(('', port), handler) as server:
