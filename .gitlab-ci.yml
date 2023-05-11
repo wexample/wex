@@ -24,3 +24,6 @@ deploy:
     - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
     # Run build
     - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'"
+    # Ask apt repo to publish release
+    - echo http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}
+    - curl http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}
