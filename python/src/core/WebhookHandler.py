@@ -16,11 +16,8 @@ class WebhookHandler(Kernel):
         os.makedirs(self.path['webhook_logs'], exist_ok=True)
 
     def execute_command(self, command, working_directory):
-        # Create a timestamp
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
         # Create a log file with the timestamp in its name
-        log_file = os.path.join(self.path['webhook_logs'], f"log_{timestamp}.txt")
+        log_file = os.path.join(self.path['webhook_logs'], f"{self.process_id}.log")
 
         with open(log_file, 'w') as file:
             subprocess.Popen(command, cwd=working_directory, stdout=file, stderr=subprocess.STDOUT)
