@@ -2,6 +2,7 @@ import os
 import subprocess
 from urllib.parse import urlparse, parse_qs
 import re
+import datetime
 
 from src.core.Kernel import Kernel
 
@@ -11,12 +12,16 @@ class WebhookHandler(Kernel):
         super().__init__(entrypoint_path)
 
         # Create logs folder.
-        self.path['webhook_logs'] = os.path.join(self.path['tmp'], 'webhook')
-        os.makedirs(self.path['webhook_logs'], exist_ok=True)
+        self.path['webhook'] = os.path.join(self.path['tmp'], 'webhook')
+        self.path['webhook_log'] = os.path.join(self.path['webhook'], 'log')
+        os.makedirs(self.path['webhook_log'], exist_ok=True)
 
     def execute_command(self, command, working_directory):
+        date_now = datetime.date.today()
+        date_formatted = date_now.strftime("%Y-%m-%d")
+
         # Create a log file with the timestamp in its name
-        log_file = os.path.join(self.path['webhook_logs'], f"{self.process_id}.log")
+        log_file = os.path.join(self.path['webhook_log'], f"{date_formatted}-{self.process_id}.log")
 
         with open(log_file, 'w') as file:
             subprocess.Popen(command, cwd=working_directory, stdout=file, stderr=subprocess.STDOUT)

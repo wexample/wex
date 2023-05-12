@@ -9,3 +9,10 @@ class WebhookHandlerTestCase(unittest.TestCase):
         )
 
         self.assertTrue(success)
+
+    def test_args(self):
+        success = WebhookHandler(os.getcwd()).parse_url_and_execute(
+            'http://localhost:4242/webhook/wex-test/test?lorem=ipsum'
+        )
+
+        self.assertTrue(success)
