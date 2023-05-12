@@ -9,6 +9,7 @@ RUN useradd --uid 1000 owner --create-home \
   && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
 # Ruby is required for changelog generator
+# Recent python version is expected
 RUN apt-get update && apt-get install -y \
   cron \
   nano \
