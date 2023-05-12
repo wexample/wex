@@ -59,6 +59,12 @@ wex scripts/install -d="${WEX_DIR_BASH}"
 #_wexLog "Installing addons (submodules)..."
 #git submodule update --init --recursive
 
+# TODO Install deamon
+#sudo cp wexd.service "${WEX_DIR_ROOT}/etc/systemd/system/"
+#sudo systemctl daemon-reload
+#sudo systemctl enable wexd.service
+#sudo systemctl start wexd.service
+
 _wexLog "Registering..."
 wex default::core/register
 

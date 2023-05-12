@@ -3,18 +3,49 @@ import subprocess
 from urllib.parse import urlparse, parse_qs
 import re
 import datetime
+import json
 
 from src.core.Kernel import Kernel
 
 
 class WebhookHandler(Kernel):
+    history_days_keep_limit = 30
+
     def __init__(self, entrypoint_path):
         super().__init__(entrypoint_path)
 
         # Create logs folder.
         self.path['webhook'] = os.path.join(self.path['tmp'], 'webhook')
         self.path['webhook_log'] = os.path.join(self.path['webhook'], 'log')
+        self.path['webhook_history'] = os.path.join(self.path['webhook'], 'history.json')
         os.makedirs(self.path['webhook_log'], exist_ok=True)
+
+        self.cleanup_logs()
+        self.cleanup_history()
+
+    def cleanup_logs(self):
+        today = datetime.date.today()
+
+        for filename in os.listdir(self.path['webhook_log']):
+            date_str = filename.split('-')[0:3]
+            date_str = '-'.join(date_str)
+            file_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+
+            if (today - file_date).days > self.history_days_keep_limit:
+                os.remove(os.path.join(self.path['webhook_log'], filename))
+
+    def cleanup_history(self):
+        with open(self.path['webhook_history'], 'r') as f:
+            history = json.load(f)
+
+        current_date = datetime.datetime.now()
+
+        filtered_history = [entry for entry in history if (
+                current_date - datetime.datetime.strptime(entry['date'], '%Y-%m-%d %H:%M:%S.%f')
+        ).days <= self.history_days_keep_limit]
+
+        with open(self.path['webhook_history'], 'w') as f:
+            json.dump(filtered_history, f, indent=4)
 
     def execute_command(self, command, working_directory):
         date_now = datetime.date.today()
@@ -25,6 +56,28 @@ class WebhookHandler(Kernel):
 
         with open(log_file, 'w') as file:
             subprocess.Popen(command, cwd=working_directory, stdout=file, stderr=subprocess.STDOUT)
+
+    def add_to_history(self, url, command):
+        command_info = {
+            'url': url,
+            'command': command,
+            'date': str(datetime.datetime.now()),
+            'process_id': self.process_id,
+        }
+
+        if os.path.exists(self.path['webhook_history']):
+            try:
+                with open(self.path['webhook_history'], 'r') as f:
+                    history = json.load(f)
+            except json.JSONDecodeError:
+                history = []
+        else:
+            history = []
+
+        history.append(command_info)
+
+        with open(self.path['webhook_history'], 'w') as f:
+            json.dump(history, f, indent=4)
 
     def parse_url_and_execute(self, url):
         parsed_url = urlparse(url)
@@ -54,6 +107,9 @@ class WebhookHandler(Kernel):
             if os.path.isdir(working_directory) and os.path.isfile(os.path.join(working_directory, hook_file)):
                 # Add the arguments to the command
                 command = ['bash', hook_file] + args
+
+                self.add_to_history(url, command)
+
                 self.execute_command(command, working_directory)
                 return True
             else:
