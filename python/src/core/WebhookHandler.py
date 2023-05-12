@@ -25,7 +25,7 @@ class WebhookHandler(Kernel):
     def parse_url_and_execute(self, url):
         parsed_url = urlparse(url)
         path = parsed_url.path
-        pattern = r'^\/webhook/([a-zA-Z_-]+)/([a-zA-Z_-]+)$'
+        pattern = r'^\/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$'
         match = re.match(pattern, path)
 
         if match:
@@ -35,8 +35,12 @@ class WebhookHandler(Kernel):
             # Get all query parameters
             args = []
             for key, value in query_string_data.items():
-                # Use only the first value for each key
+                # Prevent risky data.
+                if re.search(r'[^a-zA-Z0-9_\-]', key) or re.search(r'[^a-zA-Z0-9_\-.~]', value[0]):
+                    return False
+
                 args.append(key)
+                # Use only the first value for each key
                 args.append(value[0])
 
             env = self.get_env()
