@@ -12,6 +12,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1].startswith("http://"):
         WebhookHandler(entrypoint_path).parse_url_and_execute(sys.argv[1])
     else:
-        WebhookHttpServer(entrypoint_path, 4241)
-
-
+        WebhookHttpServer(entrypoint_path, 4242)

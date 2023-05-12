@@ -10,6 +10,11 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        WebhookHandler(self.entrypoint_path).parse_url_and_execute(
+        success = WebhookHandler(self.entrypoint_path).parse_url_and_execute(
             self.path
         )
+
+        if success:
+            self.wfile.write(b'RUNNING')
+        else:
+            self.wfile.write(b'ERROR')
