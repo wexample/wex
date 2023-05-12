@@ -2,7 +2,6 @@ import os
 import subprocess
 from urllib.parse import urlparse, parse_qs
 import re
-import datetime
 
 from src.core.Kernel import Kernel
 

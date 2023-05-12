@@ -45,6 +45,10 @@ RUN apt-get install -y \
     python3-setuptools \
     python3-all
 
+# Prepare unit test env.
+RUN sudo mkdir /var/www/local && \
+    sudo ln -s /opt/wex /var/www/local/wex-test
+
 # Interpreter configuration
 COPY .wex/docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
