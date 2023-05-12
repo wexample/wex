@@ -1,0 +1,50 @@
+FROM python:3.12.0a6-bullseye
+
+# Create a username for pid 1000
+# which is the default pid given by Docker
+# Add it to sudo as we may need to install some packages as sudo
+RUN useradd --uid 1000 owner --create-home \
+  && adduser owner sudo \
+  && mkdir -p /etc/sudoers.d \
+  && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
+
+# Ruby is required for changelog generator
+RUN apt-get update && apt-get install -y \
+  cron \
+  nano \
+  ruby-full \
+  sudo
+
+# Install Ruby packages
+RUN gem install github_changelog_generator
+
+# Need last version for compatibility with python module
+RUN apt-get upgrade git -y
+
+RUN pip install \
+  click \
+  pip-tools \
+  pytest
+
+# Install Docker client
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" -y && \
+    apt-get update && \
+    apt-get install -y docker-ce-cli
+
+# Install debian deployment tools
+RUN apt-get install -y \
+    build-essential \
+    debhelper \
+    devscripts \
+    dh-make \
+    dh-python \
+    python3-setuptools \
+    python3-all
+
+# Interpreter configuration
+COPY .wex/docker/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "-u"]

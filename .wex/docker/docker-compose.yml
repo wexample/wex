@@ -1,0 +1,20 @@
+services:
+  wex_dev:
+    container_name: wex_local_dev
+    image: wexample/wex:dev
+    privileged: true
+    extends:
+        file: ${WEX_COMPOSE_YML_DEFAULT}
+        service: default
+    build:
+      context: ${APP_PATH_ROOT}
+      dockerfile: ./.wex/docker/Dockerfile.dev
+    volumes:
+      # Mount wex outside the apps list
+      - ${APP_PATH_ROOT}:/opt/wex
+      # Mount apps
+      - /var/www/${APP_ENV}:/var/www/html
+      # Allow to run docker from inside container
+      - /var/run/docker.sock:/var/run/docker.sock
+      # For debug purposes
+      - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
