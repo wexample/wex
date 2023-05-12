@@ -34,7 +34,9 @@ coreUpdate() {
   for ADDON in "${WEX_ADDONS[@]}"; do
     if [ -d "${WEX_DIR_ADDONS}${ADDON}" ]; then
       _wexLog "Updating ${ADDON}..."
-      cd "${WEX_DIR_ADDONS}${ADDON}" && git pull
+      cd "${WEX_DIR_ADDONS}${ADDON}"
+      wex git/permsReset
+      git pull
     fi
   done
 
