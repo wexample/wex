@@ -10,7 +10,7 @@ class Kernel:
         'root': None,
         'addons': None
     }
-    process_id: int = None
+    process_id: str = None
 
     def __init__(self, entrypoint_path):
         # Initialize global variables.
