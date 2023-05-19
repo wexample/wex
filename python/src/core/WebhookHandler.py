@@ -35,6 +35,12 @@ class WebhookHandler(Kernel):
                 os.remove(os.path.join(self.path['webhook_log'], filename))
 
     def cleanup_history(self):
+        history = self.load_json_if_valid(self.path['webhook_history'])
+
+        # Ignore if missing or invalid
+        if not history:
+            return
+
         with open(self.path['webhook_history'], 'r') as f:
             history = json.load(f)
 
@@ -57,29 +63,37 @@ class WebhookHandler(Kernel):
         with open(log_file, 'w') as file:
             subprocess.Popen(command, cwd=working_directory, stdout=file, stderr=subprocess.STDOUT)
 
-    def add_to_history(self, url, command):
+    def add_to_history(self, url, command, source_data, success):
         command_info = {
-            'url': url,
             'command': command,
             'date': str(datetime.datetime.now()),
             'process_id': self.process_id,
+            'source': source_data,
+            'success': success,
+            'url': url,
         }
 
-        if os.path.exists(self.path['webhook_history']):
-            try:
-                with open(self.path['webhook_history'], 'r') as f:
-                    history = json.load(f)
-            except json.JSONDecodeError:
-                history = []
-        else:
-            history = []
+        history = self.load_json_if_valid(self.path['webhook_history']) or []
 
         history.append(command_info)
 
         with open(self.path['webhook_history'], 'w') as f:
             json.dump(history, f, indent=4)
 
-    def parse_url_and_execute(self, url):
+    def load_json_if_valid(self, path):
+        if os.path.exists(path):
+            try:
+                with open(path, 'r') as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                return False
+
+        return False
+
+    def parse_url_and_execute(self, url, source_data=None):
+        if source_data is None:
+            source_data = {}
+
         parsed_url = urlparse(url)
         path = parsed_url.path
         pattern = r'^\/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$'
@@ -87,30 +101,46 @@ class WebhookHandler(Kernel):
 
         if match:
             app_name, webhook = match.groups()
-            query_string_data = parse_qs(parsed_url.query)
+            query_string = parsed_url.query.replace('+', '%2B')
+            query_string_data = parse_qs(query_string)
+            has_error = False
 
             # Get all query parameters
             args = []
             for key, value in query_string_data.items():
                 # Prevent risky data.
-                if re.search(r'[^a-zA-Z0-9_\-]', key) or re.search(r'[^a-zA-Z0-9_\-.~]', value[0]):
-                    return False
+                if re.search(r'[^a-zA-Z0-9_\-]', key):
+                    has_error = True
+                    source_data['invalid_key'] = key
+
+                if re.search(r'[^a-zA-Z0-9_\-\\.~\\+]', value[0]):
+                    has_error = True
+                    source_data['invalid_value'] = value[0]
 
                 args.append(key)
                 # Use only the first value for each key
                 args.append(value[0])
 
-            env = self.get_env()
-            working_directory = f"/var/www/{env}/{app_name}"
-            hook_file = f".wex/webhook/{webhook}.sh"
+            if not has_error:
+                env = self.get_env()
+                working_directory = f"/var/www/{env}/{app_name}"
+                source_data['working_directory'] = working_directory
+                hook_file = f".wex/webhook/{webhook}.sh"
 
-            if os.path.isdir(working_directory) and os.path.isfile(os.path.join(working_directory, hook_file)):
-                # Add the arguments to the command
-                command = ['bash', hook_file] + args
+                if os.path.isdir(working_directory):
+                    if os.path.isfile(os.path.join(working_directory, hook_file)):
+                        # Add the arguments to the command
+                        command = ['bash', hook_file] + args
 
-                self.add_to_history(url, command)
+                        self.add_to_history(url, command, source_data, True)
 
-                self.execute_command(command, working_directory)
-                return True
-            else:
-                return False
+                        self.execute_command(command, working_directory)
+                        return True
+
+                    source_data['missing_file'] = hook_file
+                else:
+                    source_data['missing_workdir'] = working_directory
+
+        self.add_to_history(url, [], source_data, False)
+
+        return False

@@ -11,7 +11,12 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
         success = WebhookHandler(self.entrypoint_path).parse_url_and_execute(
-            self.path
+            self.path,
+            {
+                'ip': self.request.remote_addr,
+                'method': self.request.method,
+                'user_agent': self.request.user_agent
+            }
         )
 
         if success:
