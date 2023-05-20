@@ -25,10 +25,7 @@ setup:
 test:
   stage: test
   script:
-    - |
-      cd ${CI_PROJECT_DIR}
-      # Temporary
-      wex app/exec -l -c="ls -la"
+    - cd ${CI_PROJECT_DIR} && wex app/exec -c=". /opt/wex/cli/wex test"
   needs:
     - setup
 
