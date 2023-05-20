@@ -187,6 +187,15 @@ class Kernel:
 
         return result
 
+
+    def get_all_commands(self):
+        output = {}
+
+        for addon, addon_data in self.registry['addons'].items():
+            for command, command_data in addon_data['commands'].items():
+                output[command] = command_data
+
+        return output
     def build_command_path_from_match(self, match, subdir=None):
         base_path = f"{self.path['addons']}{match.group(1)}/"
 
