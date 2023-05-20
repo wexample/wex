@@ -9,13 +9,19 @@ WEX_FILE_MESSAGE_FUNCTION="${WEX_DIR_ROOT}includes/function/messages.sh"
 WEX_FILE_ALL_SCRIPTS=${WEX_DIR_TMP}all-scripts
 WEX_FILE_MIDDLEWARES=${WEX_DIR_TMP}middlewares
 WEX_FILE_ALL_SCRIPTS_PATHS=${WEX_FILE_ALL_SCRIPTS}-paths
-WEX_SCREEN_WIDTH=$([ "${TERM}" != "unknown" ] && tput cols || echo 100)
 WEX_TMP_GLOBAL_VAR=${WEX_DIR_TMP}globalVariablesLocalStorage
 WEX_QUIET_MODE=false
 WEX_DEFAULT_INSECURE_PASSWORD="thisIsAReallyNotSecurePassword!"
 WEX_DOCKER_COMPOSE_YML_VERSION="3.9"
 WEX_USER_PATH_HOME=$(realpath ~)/
 WEX_DOCKER_COMPOSE_TTY=${WEX_DOCKER_COMPOSE_TTY:-true}
+
+# Avoid error in no tty.
+if [ -t 1 ]; then
+    WEX_SCREEN_WIDTH=$(tput cols)
+else
+    WEX_SCREEN_WIDTH=100
+fi
 
 . "${WEX_DIR_ROOT}includes/colors.sh"
 . "${WEX_DIR_ROOT}includes/function/common.sh"
