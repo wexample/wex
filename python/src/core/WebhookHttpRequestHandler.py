@@ -7,19 +7,19 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-
             success = WebhookHandler(self.entrypoint_path).parse_url_and_execute(
                 self.path,
                 {
                     'ip': self.client_address[0],
                     'port': self.client_address[1],
-                    'method': self.request.method,
-                    'user_agent': self.request.user_agent
+                    'method': self.command,
+                    'user_agent': self.headers.get('User-Agent')
                 }
             )
+
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
 
             if success:
                 self.wfile.write(b'RUNNING')
