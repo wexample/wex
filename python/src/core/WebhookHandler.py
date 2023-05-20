@@ -117,7 +117,7 @@ class WebhookHandler(Kernel):
                     has_error = True
                     source_data['invalid_value'] = value[0]
 
-                args.append(key)
+                args.append(f'-{key}')
                 # Use only the first value for each key
                 args.append(value[0])
 
