@@ -1,8 +1,28 @@
 stages:
+  - setup
+  - test
   - deploy
+
+setup:
+  stage: setup
+  script:
+    # Remove all old running container.
+    - sudo wex docker/stopAll
+    # Start container
+    - cd ${CI_PROJECT_DIR} && wex app/start
+
+test:
+  stage: test
+  script:
+    # Temporary
+    - ls -la
+  needs:
+    - setup
 
 deploy:
   stage: deploy
+  needs:
+    - test
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Stop running container
