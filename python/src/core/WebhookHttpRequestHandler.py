@@ -14,7 +14,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             success = WebhookHandler(self.entrypoint_path).parse_url_and_execute(
                 self.path,
                 {
-                    'ip': self.request.remote_addr,
+                    'ip': self.client_address[0],
+                    'port': self.client_address[1],
                     'method': self.request.method,
                     'user_agent': self.request.user_agent
                 }
