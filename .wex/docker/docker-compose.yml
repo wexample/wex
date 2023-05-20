@@ -1,5 +1,6 @@
 services:
   wex_dev:
+    container_name: wex_${APP_ENV}_dev
     image: wexample/wex:dev
     privileged: true
     extends:
