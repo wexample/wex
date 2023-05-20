@@ -4,7 +4,7 @@ WEX_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
 WEX_PROC_ID="$$.$(date +%s.%N)"
 
 # Load main python script
-python3 "${WEX_ROOT}__main__.py"  --proc-id "${WEX_PROC_ID}" "${@}"
+python3 "${WEX_ROOT}__main__.py" "${WEX_PROC_ID}" "${@}"
 
 # If a post-exec process has been defined.
 WEX_POST_EXEC="${WEX_ROOT}tmp/process/${WEX_PROC_ID}.post-exec"
