@@ -68,7 +68,7 @@ class Kernel:
             }
 
         # Load the messages from the JSON file
-        with open(self.path['root'] + '/locale/messages.json') as f:
+        with open(self.path['root'] + 'locale/messages.json') as f:
             self.messages = json.load(f)
 
         # Initialize addons config
