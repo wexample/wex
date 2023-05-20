@@ -34,6 +34,9 @@ deploy:
   stage: deploy
   needs:
     - test
+  only:
+    changes:
+      - version.txt
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Stop running container
