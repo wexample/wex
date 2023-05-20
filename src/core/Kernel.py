@@ -105,10 +105,10 @@ class Kernel:
     def log_indent_down(self) -> None:
         self.log_indent -= 1
 
-    def log(self, message: str, color=COLOR_GRAY_DARK) -> None:
+    def log(self, message: str, color=COLOR_GRAY_DARK, increment: int = 0) -> None:
         click.echo(
             click.style(
-                f'{"  " * self.log_indent}{message}',
+                f'{"  " * (self.log_indent + increment)}{message}',
                 fg=color
             )
         )
