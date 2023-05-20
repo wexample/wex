@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 import importlib
 
@@ -32,7 +33,11 @@ class TestCoreAction(AbstractCoreAction):
                     spec.loader.exec_module(module)
                     suite.addTests(loader.loadTestsFromModule(module))
 
-        unittest.TextTestRunner().run(suite)
+        result = unittest.TextTestRunner().run(suite)
+
+        if not result.wasSuccessful():
+            sys.exit(1)
+
 
     def file_path_to_class_name(self, file_path: str) -> str:
         """

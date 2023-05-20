@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+set -o pipefail
+
 WEX_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
 WEX_PROC_ID="$$.$(date +%s.%N)"
 
