@@ -6,10 +6,16 @@ stages:
 setup:
   stage: setup
   script:
-    # Remove all old running container.
-    - sudo wex docker/stopAll
-    # Start container
-    - cd ${CI_PROJECT_DIR} && wex app/start
+    - |
+      cd ${CI_PROJECT_DIR}
+      # Stops script on failure
+      set -e 
+      # Remove all old running container
+      sudo wex docker/stopAll
+      # Create env file
+      echo "APP_ENV=dev" > ".wex/.env"
+      # Start container
+      wex app/start
 
 test:
   stage: test
