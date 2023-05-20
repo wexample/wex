@@ -16,6 +16,8 @@ setup:
       echo "APP_ENV=dev" > ".wex/.env"
       # Start container
       wex app/start
+      # Check setup complete
+      docker inspect wex_dev_dev
 
 test:
   stage: test
