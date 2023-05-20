@@ -25,7 +25,9 @@ setup:
 test:
   stage: test
   script:
-    - cd ${CI_PROJECT_DIR} && wex app/exec -c=". /opt/wex/cli/wex test" --non_interactive
+#    - cd ${CI_PROJECT_DIR} && wex app/exec -c=". /opt/wex/cli/wex test" --non_interactive
+    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit"
+
   needs:
     - setup
 
