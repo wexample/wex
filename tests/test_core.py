@@ -7,5 +7,3 @@ class TestCore(AbstractTestCase):
             self.kernel.exec('hi'),
             'hi!'
         )
-
-        self.assertTrue(False)
