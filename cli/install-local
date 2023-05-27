@@ -6,6 +6,6 @@
 # Use a separated file to contains sudo-only script.
 . "$(dirname "${BASH_SOURCE[0]}")/install-local-root"
 
-_wexLog "Reload bashrc changes"
+echo "Reload bashrc changes"
 # shellcheck disable=SC1090
 . ~/.bashrc
