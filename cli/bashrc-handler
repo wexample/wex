@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+. "$(dirname "${BASH_SOURCE[0]}")/globals"
+
+. "${WEX_DIR_ROOT}.wex/.env"
+
+echo "TODO AUTOCOMPLETE"

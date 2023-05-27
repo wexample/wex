@@ -1,7 +1,30 @@
 #!/usr/bin/env bash
 
 wex_install() {
-  echo "Install.."
+  WEX_USER=${WEX_USER:-$(whoami)}
+  WEX_GROUP=${WEX_GROUP:-$(id -gn "${WEX_USER}")}
+  WEX_USER_PATH_HOME="/home/${WEX_USER}/"
+
+  # Check if user directory exists, create it if missing,
+  # expected for .bashrc edition.
+  if [ ! -d "${WEX_USER_PATH_HOME}" ]; then
+    sudo mkdir "${WEX_USER_PATH_HOME}"
+    sudo chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
+  fi
+
+  WEX_BASHRC_PATH=${WEX_BASHRC_PATH:-$(realpath "${WEX_USER_PATH_HOME}.bashrc")}
+  touch "${WEX_BASHRC_PATH}"
+  local DIR_CLI
+  DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
+  local WEX_DIR_ROOT
+  WEX_DIR_ROOT="$(realpath "${DIR_CLI}../")/"
+
+  local WEX_FILE_BASHRC_HANDLER="${DIR_CLI}bashrc-handler"
+  local WEX_FILE_BASHRC_COMMAND=". ${WEX_FILE_BASHRC_HANDLER}"
+
+  echo "Adding autocompletion script to ${WEX_BASHRC_PATH}..."
+  echo "Bashrc handler path : ${WEX_FILE_BASHRC_COMMAND}"
+  bash "${WEX_DIR_ROOT}cli/wex" default::file/append_once -f "${WEX_BASHRC_PATH}" -l "${WEX_FILE_BASHRC_COMMAND}"
 }
 
 wex_install
