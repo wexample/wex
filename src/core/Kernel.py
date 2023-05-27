@@ -50,27 +50,6 @@ class Kernel:
 
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
-        # Load registry from file or initialize it.
-        if os.path.exists(path_registry):
-            with open(path_registry) as f:
-                self.registry = json.load(f)
-
-        else:
-            self.registry = {
-                'addons': {
-                    'core': {
-                        'commands': {
-                            'core::registry/build': self.path['addons'] + 'core/command/registry/build.py'
-                        }
-                    },
-                    'default': {
-                        'commands': {
-
-                        }
-                    }
-                }
-            }
-
         # Load the messages from the JSON file
         with open(self.path['root'] + 'locale/messages.json') as f:
             self.messages = json.load(f)
@@ -87,6 +66,17 @@ class Kernel:
 
         # Create logger, in json format for better parsing.
         self.logger = logging.getLogger()
+
+        # Load registry if empty.
+        if not os.path.exists(path_registry):
+            self.exec_function(
+                core_registry_build
+            )
+
+        with open(path_registry) as f:
+            self.registry = json.load(f)
+
+        self.exec_middlewares('init')
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         return format_ignore_missing(
