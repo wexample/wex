@@ -1,3 +1,3 @@
-def core_get_version(kernel) -> str:
-    with open(f'{kernel.path["root"]}version.txt', 'r') as file:
+def core_get_version(path: str) -> str:
+    with open(f'{path}version.txt', 'r') as file:
         return file.read().strip()

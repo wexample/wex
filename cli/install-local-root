@@ -8,7 +8,7 @@ wex_install() {
   # Check if user directory exists, create it if missing,
   # expected for .bashrc edition.
   if [ ! -d "${WEX_USER_PATH_HOME}" ]; then
-    sudo mkdir "${WEX_USER_PATH_HOME}"
+    sudo mkdir -p "${WEX_USER_PATH_HOME}"
     sudo chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
   fi
 
@@ -25,6 +25,9 @@ wex_install() {
   echo "Adding autocompletion script to ${WEX_BASHRC_PATH}..."
   echo "Bashrc handler path : ${WEX_FILE_BASHRC_COMMAND}"
   bash "${WEX_DIR_ROOT}cli/wex" default::file/append_once -f "${WEX_BASHRC_PATH}" -l "${WEX_FILE_BASHRC_COMMAND}"
+
+  echo "Installing with python..."
+  pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 }
 
 wex_install

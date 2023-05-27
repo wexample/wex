@@ -6,7 +6,7 @@ from src.helper.core import core_get_version
 @click.command
 @click.pass_obj
 def core_version_build(kernel) -> None:
-    version = core_get_version(kernel)
+    version = core_get_version(kernel.path["root"])
 
     kernel.log(f'Building from {version}...')
 

@@ -2,14 +2,16 @@ from setuptools import setup, find_packages
 from src.helper.core import core_get_version
 import os
 
+current_dir = os.path.dirname(__file__) + '/'
+
 
 def read(file_name):
-    return open(os.path.join(os.path.dirname(__file__), file_name)).read()
+    return open(os.path.join(os.path.dirname(current_dir), file_name)).read()
 
 
 setup(
     name='wex',
-    version=core_get_version(),
+    version=core_get_version(current_dir),
     description='A bash command manager',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
