@@ -77,6 +77,13 @@ class Kernel:
         # Initialize addons config
         self.addons = {addon: {'config': {}} for addon in list_subdirectories(self.path['addons'])}
 
+        for addon in self.addons:
+            messages_path = self.path['addons'] + f'{addon}/locale/messages.json'
+
+            if os.path.exists(messages_path):
+                with open(messages_path) as file:
+                    self.messages.update(json.load(file))
+
         # Create logger, in json format for better parsing.
         self.logger = logging.getLogger()
 
