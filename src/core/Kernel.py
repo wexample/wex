@@ -8,8 +8,9 @@ import json
 import sys
 from typing import Optional
 
+from addons.core.command.registry.build import core_registry_build
 from ..helper.file import list_subdirectories
-from ..helper.args import convert_dict_to_args
+from ..helper.args import convert_args_to_dict, convert_dict_to_args
 from ..helper.command import build_command_match, build_function_name_from_match
 from ..const.globals import \
     COLOR_GRAY_DARK, \
@@ -133,6 +134,12 @@ class Kernel:
         command: str = sys.argv[2]
         command_args: [] = sys.argv[3:]
 
+        # Init addons
+        self.exec_middlewares('call', {
+            'command': command,
+            'args': command_args
+        })
+
         result = self.exec(
             command,
             command_args
@@ -140,6 +147,29 @@ class Kernel:
 
         if result is not None:
             print(result)
+
+    def exec_middlewares(self, name: str, args=None):
+        if args is None:
+            args = {}
+
+        # Init addons
+        for addon in self.addons:
+            self.exec_middleware(addon, name, args)
+
+    def exec_middleware(self, addon: str, name: str, args=None):
+        if args is None:
+            args = {}
+
+        middleware_enabled_path = self.path['addons'] + f'{addon}/middleware/{name}.py'
+
+        if os.path.exists(middleware_enabled_path):
+            function_name = f'{addon}_middleware_{name}'
+            spec = importlib.util.spec_from_file_location(name, middleware_enabled_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            function = getattr(module, function_name, None)
+
+            return function(self, **args)
 
     def setup_test_manager(self, test_manager):
         self.test_manager = test_manager
@@ -191,7 +221,23 @@ class Kernel:
         if isinstance(command_args, dict):
             command_args = convert_dict_to_args(function, command_args)
 
+        addon, group, name = match.groups()
+
+        middleware_args = {
+            'addon': addon,
+            'args': convert_args_to_dict(function, command_args),
+            'args_list': command_args,
+            'command': command,
+            'function': function,
+            'group': group,
+            'name': name,
+        }
+
+        self.exec_middlewares('exec', middleware_args)
+
         result = self.exec_function(function, command_args)
+
+        self.exec_middlewares('exec_post', middleware_args)
 
         return result
 
