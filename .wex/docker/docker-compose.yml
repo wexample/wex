@@ -18,3 +18,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
       - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
+      # TODO Remove on RC
+      - ${APP_PATH_ROOT}.wex-5-dev:/opt/wex/.wex

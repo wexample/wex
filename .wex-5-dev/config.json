@@ -1,0 +1,32 @@
+{
+ "global": {
+  "author": "root",
+  "created": "2023-03-23 17:13:28",
+  "name": "wex-core",
+  "services": [],
+  "wex_version": "5.0.0-dev.4+build.20230321054915"
+ },
+ "docker": {
+  "compose": {
+   "tty": true,
+   "stdin_open": true
+  }
+ },
+ "env": {
+  "local": {
+   "domains": "wex-core.wex",
+   "domain_main": "wex_proxy.wex",
+   "email": "contact@wexample.com"
+  },
+  "dev": {
+   "domains": [],
+   "domain_main": "wexample.com",
+   "email": "contact@wexample.com"
+  },
+  "prod": {
+   "domains": [],
+   "domain_main": "wexample.com",
+   "email": "contact@wexample.com"
+  }
+ }
+}
