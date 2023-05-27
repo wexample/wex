@@ -59,6 +59,13 @@ def merge_new_lines(src: str, dest: str) -> None:
     remove_duplicated_lines(dest)
 
 
+def create_directories_and_copy(path_from: str, path_to: str) -> None:
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(path_to), exist_ok=True)
+    # Copy the file
+    shutil.copy2(path_from, path_to)
+
+
 def create_directories_and_file(path: str) -> None:
     if os.path.exists(path):
         return
@@ -109,3 +116,8 @@ def json_load(file, default=None):
             return json.load(f)
     except FileNotFoundError:
         return default
+
+
+def remove_file_if_exists(file:str):
+    if os.path.isfile(file):
+        os.remove(file)

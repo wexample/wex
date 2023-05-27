@@ -3,7 +3,7 @@ import unittest
 import shutil
 from src.core.Kernel import Kernel
 from src.core.action.TestCoreAction import TestCoreAction
-
+from src.helper.file import create_directories_and_copy
 
 class AbstractTestCase(unittest.TestCase):
     @classmethod
@@ -23,11 +23,11 @@ class AbstractTestCase(unittest.TestCase):
             f'The file does not exists : {file_path}'
         )
 
-    def build_test_file_path(self, fine_name) -> str:
-        dst_file = self.kernel.path['tmp'] + 'tests/' + fine_name
+    def build_test_file_path(self, file_name: str) -> str:
+        src_file = os.path.join(self.kernel.path['root'], 'tests', 'samples', file_name)
+        dst_file = os.path.join(self.kernel.path['tmp'], 'tests', file_name)
 
-        shutil.copy2(
-            self.kernel.path['root'] + 'tests/samples/' + fine_name,
-            dst_file)
+        # Use the function to create directories and copy the file
+        create_directories_and_copy(src_file, dst_file)
 
         return dst_file
