@@ -16,5 +16,5 @@ wex app::app/exec -vv -c="chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/own
 wex app::app/exec -vv -c="chown -R ${CONTAINER_USER}:${CONTAINER_USER} /opt/wex"
 wex app::app/exec -vv -u="${CONTAINER_USER}" -c="cd /opt/wex && git prune"
 
-# Install wex.
-wex app::app/exec -vv -u="${CONTAINER_USER}" -c=". /opt/wex/cli/install"
+# Install wex locally, faking an apt install.
+wex app::app/exec -vv -u="${CONTAINER_USER}" -c=". /opt/wex/cli/install-local"

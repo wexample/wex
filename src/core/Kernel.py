@@ -8,7 +8,7 @@ import sys
 from typing import Optional
 
 from ..helper.file import list_subdirectories
-from ..helper.args import convert_args_to_dict, convert_dict_to_args
+from ..helper.args import convert_dict_to_args
 from ..helper.command import build_command_match, build_function_name_from_match
 from ..const.globals import \
     COLOR_GRAY_DARK, \
@@ -20,7 +20,7 @@ from ..const.error import \
 
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
-from ..helper.string import to_snake_case, format_ignore_missing
+from ..helper.string import format_ignore_missing
 
 
 class Kernel:
@@ -38,7 +38,9 @@ class Kernel:
         'test': TestCoreAction,
     }
 
-    def __init__(self, entrypoint_path):
+    def __init__(self, entrypoint_path, process_id: str=None):
+        self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
+
         # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
@@ -120,8 +122,6 @@ class Kernel:
         if not len(sys.argv) > 2:
             return
 
-        self.process_id = sys.argv[1]
-
         command: str = sys.argv[2]
         command_args: [] = sys.argv[3:]
 
@@ -187,7 +187,6 @@ class Kernel:
 
         return result
 
-
     def get_all_commands(self):
         output = {}
 
@@ -196,6 +195,7 @@ class Kernel:
                 output[command] = command_data
 
         return output
+
     def build_command_path_from_match(self, match, subdir=None):
         base_path = f"{self.path['addons']}{match.group(1)}/"
 
