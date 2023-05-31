@@ -8,7 +8,7 @@ from src.helper.file import list_subdirectories
 
 @click.command
 @click.pass_obj
-def core_registry_build(kernel) -> None:
+def core__registry__build(kernel) -> None:
     kernel.log('Building registry...')
 
     addons = kernel.addons

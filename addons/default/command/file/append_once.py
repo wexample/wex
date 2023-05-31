@@ -4,7 +4,7 @@ import click
 @click.command
 @click.option('--file', '-f', type=str, required=True)
 @click.option('--line', '-l', type=str, required=True)
-def default_file_append_once(file: str, line: str) -> None:
+def default__file__append_once(file: str, line: str) -> None:
     """
     Append a line to a file if it doesn't exist already.
 

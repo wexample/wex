@@ -70,7 +70,7 @@ class Kernel:
         # Load registry if empty.
         if not os.path.exists(path_registry):
             self.exec_function(
-                core_registry_build
+                core__registry__build
             )
 
         with open(path_registry) as f:

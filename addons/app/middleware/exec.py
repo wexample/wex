@@ -1,6 +1,6 @@
 import os
 
-from addons.app.command.location.find import app_location_find
+from addons.app.command.location.find import app__location__find
 from addons.app.const.app import ERR_APP_NOT_FOUND
 from addons.app.helpers.app import set_app_workdir
 
@@ -18,7 +18,7 @@ def app_middleware_exec(kernel, *, addon=None, command=None, args=None, args_lis
             app_dir = os.getcwd()
 
         app_dir_resolved = kernel.exec_function(
-            app_location_find,
+            app__location__find,
             {
                 'app-dir': app_dir
             }
