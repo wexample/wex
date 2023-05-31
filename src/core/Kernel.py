@@ -38,6 +38,7 @@ class Kernel:
     core_actions = {
         'hi': HiCoreAction,
         'test': TestCoreAction,
+        'test-create': TestCreateCoreAction,
     }
 
     def __init__(self, entrypoint_path, process_id: str=None):
