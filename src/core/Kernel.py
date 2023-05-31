@@ -8,18 +8,21 @@ import json
 import sys
 from typing import Optional
 
-from addons.core.command.registry.build import core_registry_build
+from addons.core.command.registry.build import core__registry__build
 from ..helper.file import list_subdirectories
 from ..helper.args import convert_args_to_dict, convert_dict_to_args
 from ..helper.command import build_command_match, build_function_name_from_match
 from ..const.globals import \
     COLOR_GRAY_DARK, \
     COLOR_RED, \
+    COLOR_CYAN, \
     FILE_REGISTRY
 from ..const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND
 
+
+from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import format_ignore_missing
@@ -48,6 +51,7 @@ class Kernel:
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
+        self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
@@ -116,6 +120,9 @@ class Kernel:
         )
 
         self.logger.info(message)
+
+    def log_notice(self, message: str) -> None:
+        self.log(message, color=COLOR_CYAN)
 
     def call(self):
         # No arg found except process id
