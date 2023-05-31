@@ -12,6 +12,6 @@ python3 "${WEX_ROOT}__main__.py" "${WEX_PROC_ID}" "${@}"
 # If a post-exec process has been defined.
 WEX_POST_EXEC="${WEX_ROOT}tmp/process/${WEX_PROC_ID}.post-exec"
 if [ -f "${WEX_POST_EXEC}" ];then
-  bash "${WEX_POST_EXEC}"
+  . "${WEX_POST_EXEC}"
   rm "${WEX_POST_EXEC}"
 fi
