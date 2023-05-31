@@ -53,7 +53,7 @@ class TestCore(AbstractTestCase):
 
         self.assertEqual(
             args,
-            ['--name', 'John', '--greetings', True]
+            ['--name', 'John', '--greetings']
         )
 
     def test_core_action(self):

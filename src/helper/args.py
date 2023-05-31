@@ -29,14 +29,16 @@ def convert_dict_to_args(function, args):
                     if args[param.name]:
                         arg_list.append(f'--{param.name}')
                     # Flag passed to False is just removed
-                else:
+                elif args[param.name] is not None:
                     arg_list.append(f'--{param.name}')
-                    arg_list.append(args[param.name])
+                    if not isinstance(args[param.name], bool):
+                        arg_list.append(str(args[param.name]))
     # Append any remaining arguments as key-value pairs
     for key, value in args.items():
-        if key not in [param.name for param in function.params]:
+        if key not in [param.name for param in function.params] and value is not None:
             arg_list.append(f'--{key}')
-            arg_list.append(value)
+            if not isinstance(value, bool):
+                arg_list.append(str(value))
     return arg_list
 
 
