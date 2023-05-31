@@ -1,4 +1,10 @@
 COLOR_GRAY_DARK = [80, 80, 80]
 COLOR_RED = [240, 81, 66]
+COLOR_CYAN = 'cyan'
+COMMAND_SEPARATOR_ADDON = '::'
+COMMAND_SEPARATOR_FUNCTION_PARTS = '__'
+COMMAND_SEPARATOR_GROUP = '/'
 COMMAND_PATTERN = '^(?:(\\w+)::)?([\\w-]+)/([\\w-]+)$'
+CORE_COMMAND_FILE = '/opt/wex/cli/wex'
+CORE_COMMAND_NAME = 'wex'
 FILE_REGISTRY = 'registry.json'

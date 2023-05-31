@@ -1,3 +1,4 @@
+from src.const.globals import CORE_COMMAND_NAME
 from src.helper.process import process_post_exec
 
 
@@ -6,6 +7,6 @@ def current_version_build(kernel):
         'dch',
         '--increment',
         '--package',
-        'wex',
+        CORE_COMMAND_NAME,
         'Update version'
     ])
