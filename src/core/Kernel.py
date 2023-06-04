@@ -277,6 +277,7 @@ class Kernel:
         return function.invoke(ctx)
 
     def add_to_history(self, data: dict):
+        max_entries = 100
         history = load_json_if_valid(self.path['history']) or []
 
         history.append({
@@ -284,6 +285,9 @@ class Kernel:
             'process_id': self.process_id,
             'data': data,
         })
+
+        # if len(history) > max_entries:
+        del history[0:len(history) - max_entries]
 
         with open(self.path['history'], 'w') as f:
             json.dump(history, f, indent=4)
