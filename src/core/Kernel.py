@@ -1,7 +1,6 @@
 import importlib
 import importlib.util
 import logging
-import click
 import datetime
 import os
 import json
@@ -9,18 +8,16 @@ import sys
 from typing import Optional
 
 from addons.core.command.registry.build import core__registry__build
+from ..helper.json import load_json_if_valid
 from ..helper.file import list_subdirectories
 from ..helper.args import convert_args_to_dict, convert_dict_to_args
 from ..helper.command import build_command_match, build_function_name_from_match
 from ..const.globals import \
-    COLOR_GRAY_DARK, \
-    COLOR_RED, \
     COLOR_CYAN, \
-    FILE_REGISTRY
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY
 from ..const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
-    ERR_COMMAND_FILE_NOT_FOUND
-
+    ERR_COMMAND_FILE_NOT_FOUND, COLORS
 
 from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
@@ -44,13 +41,14 @@ class Kernel:
         'test-create': TestCreateCoreAction,
     }
 
-    def __init__(self, entrypoint_path, process_id: str=None):
+    def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
 
         # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
+        self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
         self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
@@ -68,9 +66,6 @@ class Kernel:
             if os.path.exists(messages_path):
                 with open(messages_path) as file:
                     self.messages.update(json.load(file))
-
-        # Create logger, in json format for better parsing.
-        self.logger = logging.getLogger()
 
         # Load registry if empty.
         if not os.path.exists(path_registry):
@@ -92,12 +87,15 @@ class Kernel:
     def error(self, code: str, parameters: object = {}, log_level: int = logging.FATAL) -> None:
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
 
-        click.echo(
-            click.style(
-                message,
-                fg=COLOR_RED,
-                bold=True
-            )
+        self.log(
+            message,
+            COLORS[log_level],
+        )
+
+        self.add_to_history(
+            {
+                'error': code
+            }
         )
 
         if log_level == logging.FATAL:
@@ -111,15 +109,8 @@ class Kernel:
     def log_indent_down(self) -> None:
         self.log_indent -= 1
 
-    def log(self, message: str, color=COLOR_GRAY_DARK, increment: int = 0) -> None:
-        click.echo(
-            click.style(
-                f'{"  " * (self.log_indent + increment)}{message}',
-                fg=color
-            )
-        )
-
-        self.logger.info(message)
+    def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
+        print(f'{"  " * (self.log_indent + increment)}{color}{message}{COLOR_RESET}')
 
     def log_notice(self, message: str) -> None:
         self.log(message, color=COLOR_CYAN)
@@ -284,3 +275,15 @@ class Kernel:
         ctx.obj = self
 
         return function.invoke(ctx)
+
+    def add_to_history(self, data: dict):
+        history = load_json_if_valid(self.path['history']) or []
+
+        history.append({
+            'date': str(datetime.datetime.now()),
+            'process_id': self.process_id,
+            'data': data,
+        })
+
+        with open(self.path['history'], 'w') as f:
+            json.dump(history, f, indent=4)
