@@ -1,19 +1,16 @@
 from http.server import BaseHTTPRequestHandler
-from src.core.WebhookHandler import WebhookHandler
+from addons.core.command.webhook.exec import core__webhook__exec
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
-    entrypoint_path = False
+    kernel = None
 
     def do_GET(self):
         try:
-            success = WebhookHandler(self.entrypoint_path).parse_url_and_execute(
-                self.path,
+            success = self.kernel.exec_function(
+                core__webhook__exec,
                 {
-                    'ip': self.client_address[0],
-                    'port': self.client_address[1],
-                    'method': self.command,
-                    'user_agent': self.headers.get('User-Agent')
+                    'url': self.path,
                 }
             )
 
@@ -30,4 +27,5 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             self.send_response(500)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
+
             self.wfile.write("ERROR : {}".format(e).encode())

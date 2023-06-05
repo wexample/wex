@@ -4,11 +4,14 @@ services:
     image: wexample/wex:dev
     privileged: true
     extends:
-        file: ${WEX_COMPOSE_YML_DEFAULT}
-        service: default
+      file: ${WEX_COMPOSE_YML_DEFAULT}
+      service: default
     build:
       context: ${APP_PATH_ROOT}
       dockerfile: ./.wex/docker/Dockerfile.dev
+    ports:
+      # Webhooks listening port
+      - 4242:4242
     volumes:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/opt/wex
@@ -19,4 +22,5 @@ services:
       # For debug purposes
       - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
       # TODO Remove on RC
+      # Use an updated .wex folder structure for internal dev an testing.
       - ${APP_PATH_ROOT}.wex-5-dev:/opt/wex/.wex

@@ -1,5 +1,5 @@
 import click
-from addons.default.command.version.increment import default_version_increment
+from addons.default.command.version.increment import default__version__increment
 from src.helper.core import core_get_version
 
 
@@ -10,7 +10,7 @@ def core__version__build(kernel) -> None:
 
     kernel.log(f'Building from {version}...')
 
-    new_version = default_version_increment.callback(
+    new_version = default__version__increment.callback(
         version,
     )
 
