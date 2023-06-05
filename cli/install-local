@@ -4,7 +4,7 @@
 # to emulate installation as an apt package
 
 # Use a separated file to contains sudo-only script.
-. "$(dirname "${BASH_SOURCE[0]}")/install-local-root"
+sudo bash "$(dirname "${BASH_SOURCE[0]}")/install-local-root"
 
 echo "Reload bashrc changes"
 # shellcheck disable=SC1090

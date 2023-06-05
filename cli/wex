@@ -3,7 +3,9 @@
 set -e
 set -o pipefail
 
-WEX_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+# Resolve symlinks
+CURRENT_FILE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+WEX_ROOT="$(realpath "${CURRENT_FILE}/../")/"
 WEX_PROC_ID="$$.$(date +%s.%N)"
 
 # Load main python script

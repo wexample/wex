@@ -4,12 +4,13 @@ wex_install() {
   WEX_USER=${WEX_USER:-$(whoami)}
   WEX_GROUP=${WEX_GROUP:-$(id -gn "${WEX_USER}")}
   WEX_USER_PATH_HOME="/home/${WEX_USER}/"
+  WEX_BIN="/usr/local/bin/wex"
 
   # Check if user directory exists, create it if missing,
   # expected for .bashrc edition.
   if [ ! -d "${WEX_USER_PATH_HOME}" ]; then
-    sudo mkdir -p "${WEX_USER_PATH_HOME}"
-    sudo chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
+    mkdir -p "${WEX_USER_PATH_HOME}"
+    chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
   fi
 
   WEX_BASHRC_PATH=${WEX_BASHRC_PATH:-$(realpath "${WEX_USER_PATH_HOME}.bashrc")}
@@ -28,6 +29,17 @@ wex_install() {
 
   echo "Installing with python..."
   pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
+
+  _wexLog "Adding symlink.."
+  if [ -L ${WEX_BIN} ]; then
+    rm "${WEX_BIN}"
+  fi
+
+  ln -fs "${WEX_DIR_ROOT}cli/wex" ${WEX_BIN}
+  chmod -R +x ${WEX_BIN}
+
+  echo "Running Webhook listener"
+  nohup wex core::webhook/serve -p 4242 &
 }
 
 wex_install
