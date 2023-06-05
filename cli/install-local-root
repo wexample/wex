@@ -30,7 +30,7 @@ wex_install() {
   echo "Installing with python..."
   pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
-  _wexLog "Adding symlink.."
+  echo "Adding symlink.."
   if [ -L ${WEX_BIN} ]; then
     rm "${WEX_BIN}"
   fi
@@ -39,7 +39,13 @@ wex_install() {
   chmod -R +x ${WEX_BIN}
 
   echo "Running Webhook listener"
-  nohup wex core::webhook/serve -p 4242 &
+  LISTENER_COMMAND="wex core::webhook/serve -p 4242"
+  LOG_FILE="${WEX_DIR_ROOT}tmp/webhook-server.out"
+  MAX_LINES=1000
+
+  # Stop any existing listeners
+  pkill -f "${LISTENER_COMMAND}"
+  nohup ${LISTENER_COMMAND} > "${WEX_DIR_ROOT}tmp/webhook-server.out" 2>&1 &
 }
 
 wex_install
