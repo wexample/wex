@@ -37,30 +37,3 @@ class TestCoreAction(AbstractCoreAction):
 
         if not result.wasSuccessful():
             sys.exit(1)
-
-
-    def file_path_to_class_name(self, file_path: str) -> str:
-        """
-        Convert a file path to a test class name.
-
-        Example: "addon/tests/command/group/name.py" becomes "TestAddonGroupName"
-        """
-        file_path = os.path.relpath(file_path, self.kernel.path['addons'])
-        parts = file_path.split('/')
-        parts = [p.capitalize() for p in parts]
-        del parts[1]
-        parts[-1] = f"{parts[-1][:-3]}"
-        class_name = ''.join(parts)
-        return f'Test{class_name}'
-
-    def file_path_to_test_method(self, file_path: str) -> str:
-        """
-        Convert a file path to a test method name.
-
-        Example: "addon/tests/command/group/name.py"  becomes "test_name"
-        """
-        file_path = os.path.relpath(file_path, self.kernel.path['addons'])
-        parts = file_path.split('/')
-        file_name = parts[-1][:-3]
-        test_method = f'test_{file_name}'
-        return test_method

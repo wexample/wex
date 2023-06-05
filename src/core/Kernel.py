@@ -20,7 +20,6 @@ from ..const.error import \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
 
 from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
-from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
 from ..core.action.HiCoreAction import HiCoreAction
 from ..helper.string import format_ignore_missing
@@ -40,7 +39,6 @@ class Kernel:
         'core-actions': CoreActionsCoreAction,
         'hi': HiCoreAction,
         'test': TestCoreAction,
-        'test-create': TestCreateCoreAction,
     }
     http_server = None
 

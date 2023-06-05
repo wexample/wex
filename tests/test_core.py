@@ -2,6 +2,7 @@ import click
 import importlib
 
 from AbstractTestCase import AbstractTestCase
+from helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
 
 
@@ -78,14 +79,14 @@ class TestCore(AbstractTestCase):
                 spec.loader.exec_module(test_module)
 
                 # Check that the class and method exist
-                test_class_name = self.kernel.test_manager.file_path_to_class_name(test_file_path)
+                test_class_name = file_path_to_test_class_name(self.kernel, test_file_path)
                 self.assertTrue(
                     hasattr(test_module, test_class_name),
                     f'Class {test_class_name} not found in {test_file_path}'
                 )
 
                 test_class = getattr(test_module, test_class_name)
-                test_method_name = self.kernel.test_manager.file_path_to_test_method(test_file_path)
+                test_method_name = file_path_to_test_method(self.kernel, test_file_path)
                 self.assertTrue(
                     hasattr(test_class, test_method_name),
                     f'Method {test_method_name} not found in {test_class_name} class in {test_file_path}'
