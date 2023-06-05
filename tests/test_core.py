@@ -2,7 +2,7 @@ import click
 import importlib
 
 from AbstractTestCase import AbstractTestCase
-from helper.test import file_path_to_test_class_name, file_path_to_test_method
+from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
 
 
