@@ -1,0 +1,11 @@
+[Unit]
+Description=Wexd Daemon for webhooks listening
+After=network.target
+
+[Service]
+ExecStart=wex core::webhook/serve -p 4242
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
