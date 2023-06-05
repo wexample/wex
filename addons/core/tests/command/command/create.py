@@ -42,5 +42,3 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
                 test_file_path_test
             )
         )
-
-        self.assertTrue(True)
