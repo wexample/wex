@@ -13,7 +13,7 @@ services:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/opt/wex
       # Mount apps
-      - /var/www/${APP_ENV}:/var/www/html
+      - /var/www/${APP_ENV}:/var/www/${APP_ENV}
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
