@@ -1,7 +1,30 @@
 #!/usr/bin/env bash
 
-. "$(dirname "${BASH_SOURCE[0]}")/globals"
-
-. "${WEX_DIR_ROOT}.wex/.env"
+. "$(dirname "${BASH_SOURCE[0]}")/../.wex/.env"
 
 echo "TODO AUTOCOMPLETE"
+
+if [ "${APP_ENV}" == "local" ]; then
+  COLOR="\033[0;32m"
+elif [ "${APP_ENV}" == "dev" ]; then
+  COLOR="\033[0;33m"
+else
+  COLOR="\033[0;31m"
+fi
+
+PREFIX=${APP_ENV^^}
+# We are in a docker container.
+if [ -e /.dockerenv ]; then
+  PREFIX="~${PREFIX,,}"
+fi
+
+PS1="\[${COLOR}\][${PREFIX}]\[\033[0m\] \\u:\\W\\$ "
+
+# Bashrc caches the completion file.
+# Therefore, we use a separate file that
+# allows us to modify it live during script creation.
+_wexAutocomplete() {
+  . "${WEX_DIR_ROOT}cli/autocomplete"
+}
+
+complete -o nospace -F _wexAutocomplete wex
