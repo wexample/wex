@@ -50,6 +50,7 @@ class Kernel:
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
+        self.path['log'] = self.path['tmp'] + 'log/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
         self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
