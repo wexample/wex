@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+autocomplete() {
+  # Get the current word being completed
+  local CURRENT=${COMP_WORDS[${COMP_CWORD}]}
+  # Get the search query, everything after the first word
+  local SEARCH=("${COMP_WORDS[*]:1}")
+  # Set the current position of the cursor
+  local CURSOR=$((COMP_CWORD - 1))
+
+  # If the first word is a core action ("test", "hi", etc.), skip it
+  if autocomplete_in_array "${CORE_ACTIONS}" "${COMP_WORDS[1]}"; then
+    SEARCH=("${COMP_WORDS[*]:2}")
+    CURSOR=$((CURSOR - 1))
+  fi
+
+  # Get autocomplete suggestions
+  local SUGGESTIONS=""
+  SUGGESTIONS=($(wex core::autocomplete/suggest -c "${CURSOR}" -s "${SEARCH[*]}"))
+
+  # If current position is just after "::", suggest all groups
+  if [ "${CURRENT}" == "::" ]; then
+    CURRENT=""
+  fi
+
+  # Generate autocomplete suggestions using compgen
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CURRENT}))
+
+  # Check for single suggestion
+  if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
+    # We are on the first part.
+    if [[ ${CURSOR} == "0" ]]; then
+      # Add trailing "::" is integrated in the suggestion
+      # if it matches an addon name, if not,
+      # this is a core action, so add a trailing space
+      if [[ ! ${COMPREPLY} == *'::' ]]; then
+        COMPREPLY+=" "
+      fi
+    # Add trailing slash separator
+    elif [[ ${CURSOR} == "2" ]]; then
+      if [[ "${COMPREPLY[@]}" != *"/"* ]];then
+        COMPREPLY[0]+="/"
+      else
+        COMPREPLY+=" "
+      fi
+    fi
+  fi
+}
+
+autocomplete_in_array() {
+  local CORE_ACTIONS
+  CORE_ACTIONS=($(wex core-actions))
+
+  for VALUE in "${CORE_ACTIONS[@]}"; do
+    if [[ "${VALUE}" == "${2}" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+autocomplete

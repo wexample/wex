@@ -2,8 +2,6 @@
 
 . "$(dirname "${BASH_SOURCE[0]}")/../.wex/.env"
 
-echo "TODO AUTOCOMPLETE"
-
 if [ "${APP_ENV}" == "local" ]; then
   COLOR="\033[0;32m"
 elif [ "${APP_ENV}" == "dev" ]; then
