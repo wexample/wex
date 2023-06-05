@@ -19,7 +19,6 @@ from ..const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
 
-from ..core.action.WebhookServeCoreAction import WebhookServeCoreAction
 from ..core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from ..core.action.TestCreateCoreAction import TestCreateCoreAction
 from ..core.action.TestCoreAction import TestCoreAction
@@ -42,7 +41,6 @@ class Kernel:
         'hi': HiCoreAction,
         'test': TestCoreAction,
         'test-create': TestCreateCoreAction,
-        'webhook-serve': WebhookServeCoreAction,
     }
     http_server = None
 
