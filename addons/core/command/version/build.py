@@ -4,6 +4,7 @@ import click
 
 from addons.default.command.version.increment import default__version__increment
 from addons.app.command.version.build import app__version__build
+from addons.app.command.config.set import app__config__set
 from src.const.error import ERR_CORE_REPO_DIRTY
 from src.const.globals import FILE_VERSION
 from src.helper.core import core_kernel_get_version
@@ -34,6 +35,15 @@ def core__version__build(kernel, commit: bool = False) -> None:
         # Write new_version to file
         with open(f'{kernel.path["root"]}{FILE_VERSION}', 'w') as version_file:
             version_file.write(str(new_version))
+
+        # Set wex version for itself.
+        kernel.exec_function(
+            app__config__set,
+            {
+                'key': 'global.wex_version',
+                'value': new_version
+            }
+        )
 
         # Enforce new version for wex app.
         kernel.exec_function(
