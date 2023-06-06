@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-. "$(dirname "${BASH_SOURCE[0]}")/../.wex/.env"
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+
+. "${WEX_DIR_ROOT}.wex/.env"
 
 if [ "${APP_ENV}" == "local" ]; then
   COLOR="\033[0;32m"
