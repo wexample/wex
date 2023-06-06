@@ -94,6 +94,30 @@ def get_json_file_item(file_path: str, key: str, default=None):
     return default
 
 
+def set_json_file_item(file_path: str, key: str, value):
+    if not os.path.exists(file_path):
+        return
+
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+
+    keys = key.split('.')
+    _set_json_file_item(data, keys, value)
+
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+def _set_json_file_item(dic, keys, value):
+    key = keys.pop(0)
+    if key not in dic:
+        return
+    if keys:
+        _set_json_file_item(dic[key], keys, value)
+    else:
+        dic[key] = value
+
+
 def get_json_item(json_data, key: str):
     # Split the key into its individual parts
     keys = key.split('.')

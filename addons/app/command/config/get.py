@@ -1,0 +1,21 @@
+import click
+from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_BUILD
+from src.helper.file import get_json_file_item
+
+
+@click.command
+@click.option('--key', '-k', type=str, required=True)
+@click.option('--default', '-d', required=False)
+@click.option('--build', '-b', is_flag=True, required=False, default=False)
+@click.option('--app-dir', '-a', type=str, required=False)
+def app__config__get(key: str, default: str = None, build: bool = False, app_dir: str = None):
+    if build:
+        config_file = APP_FILEPATH_REL_CONFIG_BUILD
+    else:
+        config_file = APP_FILEPATH_REL_CONFIG
+
+    return get_json_file_item(
+        config_file,
+        key,
+        default
+    )
