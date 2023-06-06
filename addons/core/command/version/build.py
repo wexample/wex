@@ -65,5 +65,6 @@ def core__version__build(kernel, commit: bool = False) -> None:
             app__version__build,
             {
                 'commit': commit,
+                'app-dir': kernel.path['root']
             }
         )

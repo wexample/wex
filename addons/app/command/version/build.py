@@ -80,7 +80,7 @@ def app__version__build(kernel, version=None, commit: bool = False, app_dir: Opt
             # origin.push()
         except Exception as e:
             kernel.error(ERR_UNEXPECTED, {
-                'error': 'Git push : ' + str(e),
+                'error': 'Git commit : ' + str(e),
             })
 
         kernel.log_notice(f'New version : {new_version}')

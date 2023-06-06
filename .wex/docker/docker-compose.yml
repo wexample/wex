@@ -20,7 +20,7 @@ services:
       # Mount apps
       - /var/www/${APP_ENV}:/var/www/${APP_ENV}
       # Authorize app to reuse ssh authentications (i.e.: git operations)
-      - ${WEX_RUNNER_SSH_AUTH_SOCK}:/ssh-agent
+      - ${WEX_RUNNER_SSH_AUTH_SOCK}:${WEX_RUNNER_SSH_AUTH_SOCK}
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
