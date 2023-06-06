@@ -110,12 +110,13 @@ def set_json_file_item(file_path: str, key: str, value):
 
 def _set_json_file_item(dic, keys, value):
     key = keys.pop(0)
-    if key not in dic:
-        return
     if keys:
+        if key not in dic:
+            dic[key] = {}
         _set_json_file_item(dic[key], keys, value)
     else:
         dic[key] = value
+
 
 
 def get_json_item(json_data, key: str):
