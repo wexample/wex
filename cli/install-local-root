@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 
 wex_install() {
-  WEX_USER=${WEX_USER:-$(whoami)}
-  WEX_GROUP=${WEX_GROUP:-$(id -gn "${WEX_USER}")}
-  WEX_USER_PATH_HOME="/home/${WEX_USER}/"
+  local WEX_GROUP
+  local WEX_USER_PATH_HOME
+  local WEX_BIN
+  local WEX_BASHRC_PATH
+  local DIR_CLI
+  local WEX_DIR_ROOT
+  local LISTENER_COMMAND
+
+  WEX_GROUP=$(getent group "${SUDO_GID}" | cut -d: -f1)
+  WEX_USER_PATH_HOME="/home/${SUDO_USER}/"
   WEX_BIN="/usr/local/bin/wex"
 
   # Check if user directory exists, create it if missing,
   # expected for .bashrc edition.
   if [ ! -d "${WEX_USER_PATH_HOME}" ]; then
     mkdir -p "${WEX_USER_PATH_HOME}"
-    chown "${WEX_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
+    chown "${SUDO_USER}:${WEX_GROUP}" "${WEX_USER_PATH_HOME}"
   fi
 
   WEX_BASHRC_PATH=${WEX_BASHRC_PATH:-$(realpath "${WEX_USER_PATH_HOME}.bashrc")}
@@ -40,8 +47,6 @@ wex_install() {
 
   echo "Running Webhook listener"
   LISTENER_COMMAND="wex core::webhook/serve -p 4242"
-  LOG_FILE="${WEX_DIR_ROOT}tmp/webhook-server.out"
-  MAX_LINES=1000
 
   # Stop any existing listeners
   pkill -f "${LISTENER_COMMAND}"
