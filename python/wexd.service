@@ -3,7 +3,7 @@ Description=Wexd Daemon
 After=network.target
 
 [Service]
-ExecStart=/opt/wex/python/wexd.py
+ExecStart=/opt/wex/cli/wex wex core::daemon/start
 Restart=always
 Environment=PYTHONUNBUFFERED=1
 
