@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root or using sudo"
+    exit
+fi
+
 wex_install() {
   local WEX_GROUP
   local WEX_USER_PATH_HOME
