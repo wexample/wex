@@ -11,6 +11,8 @@ if [ ! -f /.dockerenv ]; then
   # Start the service
   systemctl start wexd
 
+  wex core::logo/show
+
 # Running in a container
 else
   . /opt/wex/cli/install-local
