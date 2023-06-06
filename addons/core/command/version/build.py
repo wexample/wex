@@ -2,10 +2,13 @@ import os
 import git
 import click
 
+from dotenv import load_dotenv
+from src.const.globals import GITHUB_GROUP, GITHUB_PROJECT
 from addons.default.command.version.increment import default__version__increment
 from addons.app.command.version.build import app__version__build
 from addons.app.command.config.set import app__config__set
-from src.const.error import ERR_CORE_REPO_DIRTY
+from src.helper.process import process_post_exec
+from src.const.error import ERR_CORE_REPO_DIRTY, ERR_ENV_VAR_MISSING
 from src.const.globals import FILE_VERSION
 from src.helper.core import core_kernel_get_version
 
@@ -19,6 +22,13 @@ def core__version__build(kernel, commit: bool = False) -> None:
 
     if not commit:
         kernel.log(f'Building new version from {version}...')
+
+        # Check requirements
+        # GitHub token for changelog build
+        load_dotenv()
+        env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
+        if not env_core_github_token:
+            kernel.error(ERR_ENV_VAR_MISSING)
 
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
@@ -52,6 +62,21 @@ def core__version__build(kernel, commit: bool = False) -> None:
                 'version': new_version,
                 'app-dir': kernel.path['root']
             }
+        )
+
+        # Changelog
+        kernel.log('Building CHANGELOG.md...')
+        process_post_exec(
+            kernel,
+            [
+                'github_changelog_generator',
+                '-u',
+                GITHUB_GROUP,
+                '-p',
+                GITHUB_PROJECT,
+                '-t',
+                env_core_github_token
+            ]
         )
 
     else:
