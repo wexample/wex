@@ -1,10 +1,11 @@
+from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
     def check_suggestion(self, cursor, should_success=True):
-        suggestions = self.kernel.exec(
-            'core::autocomplete/suggest',
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
             {
                 'cursor': cursor,
                 'search': '  '.join([
@@ -20,7 +21,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         if should_success:
             self.assertTrue(bool(suggestions.strip()))
         else:
-            self.assertIsNone(suggestions)
+            self.assertEqual(suggestions, '')
 
     def test_suggest(self):
         self.check_suggestion(0)
