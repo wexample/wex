@@ -13,14 +13,14 @@ services:
       # Webhooks listening port
       - 4242:4242
     environment:
-      - SSH_AUTH_SOCK=/ssh-agent
+      - SSH_AUTH_SOCK=${WEX_RUNNER_SSH_AUTH_SOCK}
     volumes:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/opt/wex
       # Mount apps
       - /var/www/${APP_ENV}:/var/www/${APP_ENV}
       # Authorize app to reuse ssh authentications (i.e.: git operations)
-      - /ssh-agent:/ssh-agent
+      - ${WEX_RUNNER_SSH_AUTH_SOCK}:/ssh-agent
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
