@@ -25,3 +25,10 @@ def format_ignore_missing(string, substitutions):
         return substitutions.get(key, match.group(0))
 
     return re.sub(pattern, replace, string)
+
+
+def text_truncate(text: str, max_width: int, indent: int = 0) -> str:
+    lines = []
+    for i in range(0, len(text), max_width):
+        lines.append((" " * indent) + text[i:i + max_width])
+    return "\n".join(lines)

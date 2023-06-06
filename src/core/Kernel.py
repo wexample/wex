@@ -112,7 +112,10 @@ class Kernel:
         self.log_indent -= 1
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
-        print(f'{"  " * (self.log_indent + increment)}{color}{message}{COLOR_RESET}')
+        self.print(f'{"  " * (self.log_indent + increment)}{color}{message}{COLOR_RESET}')
+
+    def print(self, message):
+        print(message)
 
     def log_notice(self, message: str) -> None:
         self.log(message, color=COLOR_CYAN)

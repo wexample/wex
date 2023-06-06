@@ -6,14 +6,14 @@ from addons.default.command.version.increment import default__version__increment
 from addons.app.command.version.build import app__version__build
 from src.const.error import ERR_CORE_REPO_DIRTY
 from src.const.globals import FILE_VERSION
-from src.helper.core import core_get_version
+from src.helper.core import core_kernel_get_version
 
 
 @click.command
 @click.pass_obj
 @click.option('--commit', '-ok', required=False, is_flag=True, default=False)
 def core__version__build(kernel, commit: bool = False) -> None:
-    version = core_get_version(kernel.path["root"])
+    version = core_kernel_get_version(kernel)
     repo = git.Repo(kernel.path['root'])
 
     if not commit:
