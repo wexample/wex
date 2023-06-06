@@ -46,6 +46,8 @@ wex_install() {
   # Stop any existing listeners
   pkill -f "${LISTENER_COMMAND}"
   nohup ${LISTENER_COMMAND} > "${WEX_DIR_ROOT}tmp/webhook-server.out" 2>&1 &
+
+  wex core::logo/show
 }
 
 wex_install
