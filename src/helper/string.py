@@ -32,3 +32,8 @@ def text_truncate(text: str, max_width: int, indent: int = 0) -> str:
     for i in range(0, len(text), max_width):
         lines.append((" " * indent) + text[i:i + max_width])
     return "\n".join(lines)
+
+
+def text_center(text: str, width: int) -> str:
+    lines = text.split('\n')
+    return '\n'.join(line.center(width) for line in lines)
