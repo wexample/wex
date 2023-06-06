@@ -36,7 +36,7 @@ def core__version__build(kernel, commit: bool = False) -> None:
             version_file.write(str(new_version))
 
         # Enforce new version for wex app.
-        kernel.exec(
+        kernel.exec_function(
             app__version__build,
             {
                 'version': new_version,
@@ -51,7 +51,7 @@ def core__version__build(kernel, commit: bool = False) -> None:
 
         repo.index.add(kernel.path['root'] + FILE_VERSION)
 
-        kernel.exec(
+        kernel.exec_function(
             app__version__build,
             {
                 'commit': commit,
