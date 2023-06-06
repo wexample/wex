@@ -4,7 +4,8 @@
   "created": "2023-03-23 17:13:28",
   "name": "wex-core",
   "services": [],
-  "wex_version": "5.0.0-dev.4+build.20230321054915"
+  "wex_version": "5.0.0-beta.12+build.20230520200644",
+  "version": "5.0.0-beta.12+build.20230520200644"
  },
  "docker": {
   "compose": {
