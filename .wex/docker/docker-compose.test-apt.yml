@@ -1,0 +1,11 @@
+services:
+  wex_build:
+    build:
+      context: ./../../
+      dockerfile: ./.wex/docker/Dockerfile.test-apt
+    container_name: wex_build
+    image: wexample/wex-apt:test
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
