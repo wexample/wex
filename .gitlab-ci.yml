@@ -23,8 +23,7 @@ setup:
     paths:
       - .wex/.env
   only:
-    changes:
-      - version.txt
+    - tags
 
 test:
   stage: test
