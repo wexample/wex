@@ -3,6 +3,7 @@ stages:
   - test
   - build
   - deploy
+  - test_apt_install
 
 setup:
   stage: setup
@@ -73,3 +74,21 @@ deploy:
     - BUILD_VERSION=$(cat version.txt)
     # Ask apt repo to publish release
     - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+
+test_apt_install:
+  stage: test_apt_install
+  only:
+    - tags
+  needs:
+    - deploy
+  script:
+    - sleep(10)
+    # Go to build folder
+    - cd /home/gitlab-runner/builds/wex
+    # Remove all old running container
+    - docker stop wex_build || true && docker rm wex_build || true
+    - docker rmi wexample/wex-apt:test || true
+    # Run install test container
+    - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
+    # Run hello message
+    - docker exec -ti wex_build wex hi
