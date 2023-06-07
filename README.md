@@ -7,9 +7,8 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 ## Install
 
 ### Debian
-
     # Install dependencies
-    sudo apt install gnupg
+    sudo apt install gnupg2 wget -y
     
     # Add GPG key
     sudo wget -O - https://apt.wexample.com/gpg | sudo apt-key add -
@@ -19,7 +18,7 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
     sudo apt-get update
     
     # Install
-    sudo apt-get install wex
+    sudo apt install wex
 
 ## License
 
