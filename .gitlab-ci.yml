@@ -1,23 +1,13 @@
 stages:
-  - start
   - setup
 #  - test
 #  - deploy
 
-start:
-  stage: start
-  only:
-    - tags
-  script:
-    - echo "Starting..."
-
 setup:
   stage: setup
-  needs:
-    - start
-#  script:
-#    - |
-#      cd ${CI_PROJECT_DIR}
+  script:
+    - |
+      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
 #      set -e
 #      # Remove all old running container
