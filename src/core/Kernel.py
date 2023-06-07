@@ -158,9 +158,6 @@ class Kernel:
 
         self.print(output)
 
-    def log_notice(self, message: str) -> None:
-        self.log(message, color=COLOR_CYAN)
-
     def call(self):
         # No arg found except process id
         if not len(sys.argv) > 2:

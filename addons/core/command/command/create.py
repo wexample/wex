@@ -28,7 +28,7 @@ def core__command__create(kernel, command: str) -> {}:
         }
     )
 
-    kernel.log_notice(f'Created command file : {command_path}')
+    kernel.message(f'Created command file : {command_path}')
 
     test_file = kernel.exec_function(core__test__create, {
         'command': command

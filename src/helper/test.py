@@ -64,6 +64,6 @@ def create_test_from_command(kernel, command) -> str:
         core__registry__build
     )
 
-    kernel.log_notice(f'Created test file : {test_path}')
+    kernel.message(f'Created test file : {test_path}')
 
     return test_path

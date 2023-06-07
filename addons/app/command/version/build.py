@@ -83,6 +83,6 @@ def app__version__build(kernel, version=None, commit: bool = False, app_dir: Opt
                 'error': 'Git commit : ' + str(e),
             })
 
-        kernel.log_notice(f'New version : {new_version}')
+        kernel.message(f'New version : {new_version}')
 
     return new_version
