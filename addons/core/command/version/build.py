@@ -23,13 +23,6 @@ def core__version__build(kernel, commit: bool = False) -> None:
     if not commit:
         kernel.log(f'Building new version from {version}...')
 
-        # Check requirements
-        # GitHub token for changelog build
-        load_dotenv()
-        env_core_github_token: str = os.getenv('CORE_GITHUB_TOKEN')
-        if not env_core_github_token:
-            kernel.error(ERR_ENV_VAR_MISSING)
-
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
             kernel.error(ERR_CORE_REPO_DIRTY, {
@@ -62,21 +55,6 @@ def core__version__build(kernel, commit: bool = False) -> None:
                 'version': new_version,
                 'app-dir': kernel.path['root']
             }
-        )
-
-        # Changelog
-        kernel.log('Building CHANGELOG.md...')
-        process_post_exec(
-            kernel,
-            [
-                'github_changelog_generator',
-                '-u',
-                GITHUB_GROUP,
-                '-p',
-                GITHUB_PROJECT,
-                '-t',
-                env_core_github_token
-            ]
         )
 
     else:

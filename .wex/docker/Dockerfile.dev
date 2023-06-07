@@ -12,11 +12,7 @@ RUN useradd --uid 1000 owner --create-home \
 RUN apt-get update && apt-get install -y \
   cron \
   nano \
-  ruby-full \
   sudo
-
-# Install Ruby packages
-RUN gem install github_changelog_generator
 
 # Need last version for compatibility with python module
 RUN apt-get upgrade git -y
