@@ -1,12 +1,12 @@
 import git
 import click
-import re
 import os
 from addons.default.command.version.increment import default__version__increment
 from addons.app.command.version.build import app__version__build
 from addons.app.command.config.set import app__config__set
+from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from src.const.error import ERR_CORE_REPO_DIRTY
-from src.const.globals import FILE_VERSION
+from src.const.globals import FILE_VERSION, FILE_README
 from src.helper.core import core_kernel_get_version
 
 
@@ -55,7 +55,7 @@ def core__version__build(kernel, commit: bool = False) -> None:
         )
 
         # Update README.md
-        readme_path = os.path.join(kernel.path["root"], 'README.md')
+        readme_path = os.path.join(kernel.path["root"], FILE_README)
 
         with open(readme_path, 'r') as file:
             readme_content = file.read()
@@ -72,6 +72,8 @@ def core__version__build(kernel, commit: bool = False) -> None:
             return
 
         repo.index.add(kernel.path['root'] + FILE_VERSION)
+        repo.index.add(kernel.path['root'] + FILE_README)
+        repo.index.add(kernel.path['root'] + APP_FILEPATH_REL_CONFIG)
 
         kernel.exec_function(
             app__version__build,
