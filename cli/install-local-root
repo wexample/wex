@@ -39,8 +39,10 @@ wex_install() {
   echo "Bashrc handler path : ${WEX_FILE_BASHRC_COMMAND}"
   bash "${WEX_DIR_ROOT}cli/wex" default::file/append_once -f "${WEX_BASHRC_PATH}" -l "${WEX_FILE_BASHRC_COMMAND}"
 
-  echo "Installing with python..."
-  pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
+  # TODO Remove or reactivate
+  #      Event we are in docker, the python dependencies should be installed by apt, not here
+  # echo "Installing with python..."
+  # pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
   echo "Adding symlink.."
   if [ -L ${WEX_BIN} ]; then
