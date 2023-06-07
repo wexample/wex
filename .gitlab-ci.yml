@@ -5,6 +5,9 @@ stages:
 
 setup:
   stage: setup
+  only:
+    changes:
+      - version.txt
   script:
     - |
       cd ${CI_PROJECT_DIR}
@@ -25,19 +28,15 @@ setup:
 
 test:
   stage: test
-  script:
-    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
-
   needs:
     - setup
+  script:
+    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
 
 deploy:
   stage: deploy
   needs:
     - test
-  only:
-    changes:
-      - version.txt
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Stop running container
