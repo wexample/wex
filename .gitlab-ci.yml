@@ -6,8 +6,7 @@ stages:
 setup:
   stage: setup
   only:
-    changes:
-      - version.txt
+    - tags
   script:
     - |
       cd ${CI_PROJECT_DIR}
