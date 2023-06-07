@@ -6,6 +6,8 @@ stages:
 setup:
   stage: setup
   only:
+  script:
+    - echo "OK"
     - tags
 #  script:
 #    - |
