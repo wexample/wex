@@ -12,4 +12,9 @@ This project is licensed under the MIT License. For more information, please see
 
 - Once new features are ready to deploy :
 
-    wex core::version/build 
+
+    # Update version number
+    wex core::version/build
+    # ... check changes then ...
+    # Commit and tag new version
+    wex core::version/build -ok
