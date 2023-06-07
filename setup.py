@@ -9,6 +9,9 @@ def read(file_name):
     return open(os.path.join(os.path.dirname(current_dir), file_name)).read()
 
 
+with open('requirements.in') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='wex',
     version=core_get_version(current_dir),
@@ -19,14 +22,14 @@ setup(
     author_email='contact@wexample.com',
     url='https://github.com/wexample/wex',
     packages=find_packages(),
+    install_requires=requirements,
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    entry_points={
-        'console_scripts': [
-            'wex = wex.__main__:main',
-        ],
-    },
+    scripts=[
+      'cli/install-local',
+      'cli/wex',
+    ],
 )
