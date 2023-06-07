@@ -8,6 +8,8 @@ start:
   stage: start
   only:
     - tags
+  script:
+    - echo "Starting..."
 
 setup:
   stage: setup
