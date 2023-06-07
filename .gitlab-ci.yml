@@ -1,6 +1,6 @@
 stages:
   - setup
-#  - test
+  - test
 #  - deploy
 
 setup:
@@ -26,13 +26,13 @@ setup:
     paths:
       - .wex/.env
 
-#test:
-#  stage: test
-#  needs:
-#    - setup
-#  script:
-#    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
-#
+test:
+  stage: test
+  needs:
+    - setup
+  script:
+    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
+
 #deploy:
 #  stage: deploy
 #  needs:
