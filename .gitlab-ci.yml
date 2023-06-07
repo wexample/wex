@@ -5,9 +5,6 @@ stages:
 
 setup:
   stage: setup
-  only:
-    changes:
-      - version.txt
   script:
     - |
       cd ${CI_PROJECT_DIR}
@@ -25,6 +22,9 @@ setup:
   artifacts:
     paths:
       - .wex/.env
+  only:
+    changes:
+      - version.txt
 
 test:
   stage: test
