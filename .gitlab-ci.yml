@@ -1,10 +1,18 @@
 stages:
+  - start
   - setup
   - test
   - deploy
 
+start:
+  stage: start
+  only:
+    - tags
+
 setup:
   stage: setup
+  needs:
+    - start
   script:
     - |
       cd ${CI_PROJECT_DIR}
@@ -22,8 +30,6 @@ setup:
   artifacts:
     paths:
       - .wex/.env
-  only:
-    - tags
 
 test:
   stage: test
