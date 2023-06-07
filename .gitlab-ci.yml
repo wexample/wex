@@ -12,6 +12,7 @@ setup:
       set -e 
       # Remove all old running container
       sudo wex docker/stopAll
+      docker rmi wexample/wex:dev
       # Create env file
       echo "APP_ENV=dev" > ".wex/.env"
       # Start container

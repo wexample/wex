@@ -2,7 +2,7 @@
 
 cd /opt/wex
 
- pip install -r requirements.txt
+pip install -r requirements.txt
 
 . .wex/.env
 
