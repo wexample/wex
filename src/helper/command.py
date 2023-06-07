@@ -2,6 +2,7 @@ import datetime
 import os
 import re
 import subprocess
+from src.helper.args import convert_dict_to_args
 
 from src.const.globals import COMMAND_PATTERN, COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, \
     COMMAND_SEPARATOR_FUNCTION_PARTS
@@ -22,6 +23,12 @@ def build_command_parts(function_name: callable) -> list:
 def build_command_from_function(function: callable) -> str:
     parts = build_command_parts(function.callback.__name__)
     return f'{parts[0]}{COMMAND_SEPARATOR_ADDON}{parts[1]}{COMMAND_SEPARATOR_GROUP}{parts[2]}'
+
+
+def build_full_command_from_function(function: callable, args: dict = None) -> str:
+    output = build_command_from_function(function) + ' '
+    output += ' '.join(convert_dict_to_args(function, args))
+    return output
 
 
 def execute_command(kernel, command, working_directory):

@@ -5,16 +5,18 @@ import datetime
 import os
 import json
 import sys
+import textwrap
 from typing import Optional
 
 from addons.core.command.registry.build import core__registry__build
 from ..helper.json import load_json_if_valid
 from ..helper.file import list_subdirectories
 from ..helper.args import convert_args_to_dict, convert_dict_to_args
-from ..helper.command import build_command_match, build_function_name_from_match
+from ..helper.command import build_command_match, build_function_name_from_match, build_command_from_function, \
+    build_full_command_from_function
 from ..const.globals import \
     COLOR_CYAN, \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, CORE_COMMAND_NAME
 from ..const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
@@ -104,6 +106,7 @@ class Kernel:
             exit(1)
 
     log_indent: int = 0
+    indent_string = '  '
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
@@ -111,11 +114,49 @@ class Kernel:
     def log_indent_down(self) -> None:
         self.log_indent -= 1
 
+    def build_indent(self, increment: int = 0) -> str:
+        return self.indent_string * (self.log_indent + increment)
+
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
-        self.print(f'{"  " * (self.log_indent + increment)}{color}{message}{COLOR_RESET}')
+        self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
 
     def print(self, message):
         print(message)
+
+    def message(self, message: str, text: str = None):
+        message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
+
+        if text:
+            message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
+
+        self.print(message)
+
+    def message_next_command(self, command, args={}, message: str = 'You might want now to execute'):
+        return self.message_all_next_commands(
+            [
+                build_full_command_from_function(
+                    command,
+                    args
+                )
+            ],
+            message
+        )
+
+    def message_all_next_commands(
+            self,
+            commands,
+            message: str = 'You might want now to execute one of the following command'
+    ):
+        self.message(message + ':')
+
+        output = ''
+        for command in commands:
+            if not isinstance(command, str):
+                command = build_command_from_function(command)
+
+            output += f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {CORE_COMMAND_NAME} {command}\n'
+
+        self.print(output)
 
     def log_notice(self, message: str) -> None:
         self.log(message, color=COLOR_CYAN)

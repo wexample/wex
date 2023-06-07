@@ -18,8 +18,6 @@ def core__version__build(kernel, commit: bool = False) -> None:
     repo = git.Repo(kernel.path['root'])
 
     if not commit:
-        kernel.log(f'Building new version from {version}...')
-
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
             kernel.error(ERR_CORE_REPO_DIRTY, {
@@ -29,8 +27,6 @@ def core__version__build(kernel, commit: bool = False) -> None:
         new_version = default__version__increment.callback(
             version,
         )
-
-        kernel.log(f'New version : {new_version}', increment=1)
 
         # Write new_version to file
         with open(f'{kernel.path["root"]}{FILE_VERSION}', 'w') as version_file:
@@ -65,6 +61,13 @@ def core__version__build(kernel, commit: bool = False) -> None:
 
         with open(readme_path, 'w') as file:
             file.write(updated_content)
+
+        kernel.message_next_command(
+            core__version__build,
+            {
+                'commit': True
+            }
+        )
 
     else:
         if not repo.is_dirty(untracked_files=True):
