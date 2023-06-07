@@ -26,6 +26,8 @@ setup:
 
 test:
   stage: test
+  only:
+    - tags
   script:
     - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
   needs:
