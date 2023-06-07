@@ -30,7 +30,9 @@ test:
   stage: test
   script:
     - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
-
+  only:
+    changes:
+      - version.txt
   needs:
     - setup
 
