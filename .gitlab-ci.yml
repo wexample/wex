@@ -1,15 +1,15 @@
 stages:
   - setup
-  - test
+#  - test
 #  - deploy
 
 setup:
   stage: setup
   only:
     - tags
-  script:
-    - |
-      cd ${CI_PROJECT_DIR}
+#  script:
+#    - |
+#      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
 #      set -e
 #      # Remove all old running container
@@ -21,17 +21,17 @@ setup:
 #      wex app/start
 #      # Check setup complete
 #      docker inspect wex_dev_dev
-  artifacts:
-    paths:
-      - .wex/.env
+#  artifacts:
+#    paths:
+#      - .wex/.env
 
-test:
-  stage: test
-  script:
-    - echo "OK"
-#    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
-  needs:
-    - setup
+#test:
+#  stage: test
+#  script:
+#    - echo "OK"
+##    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
+#  needs:
+#    - setup
 
 #deploy:
 #  stage: deploy
