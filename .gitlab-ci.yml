@@ -82,7 +82,7 @@ test_apt_install:
   needs:
     - deploy
   script:
-    - sleep(10)
+    - sleep 10
     # Go to build folder
     - cd /home/gitlab-runner/builds/wex
     # Remove all old running container
