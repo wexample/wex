@@ -6,4 +6,19 @@ setup:
   only:
     - tags
   script:
-    - echo "OK"
+    - |
+      cd ${CI_PROJECT_DIR}
+      # Stops script on failure
+      set -e 
+      # Remove all old running container
+      sudo wex docker/stopAll
+      docker rmi wexample/wex:dev
+      # Create env file
+      echo "APP_ENV=dev" > ".wex/.env"
+      # Start container
+      wex app/start
+      # Check setup complete
+      docker inspect wex_dev_dev
+  artifacts:
+    paths:
+      - .wex/.env
