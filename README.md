@@ -18,3 +18,5 @@ This project is licensed under the MIT License. For more information, please see
     # ... check changes then ...
     # Commit and tag new version
     wex core::version/build -ok
+    # Push when ready to deploy
+    git push
