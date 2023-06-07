@@ -34,8 +34,8 @@ test:
 #  only:
 #    changes:
 #      - version.txt
-#  needs:
-#    - setup
+  needs:
+    - setup
 
 #deploy:
 #  stage: deploy
