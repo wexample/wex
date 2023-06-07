@@ -19,10 +19,10 @@ setup:
 #      wex app/start
 #      # Check setup complete
 #      docker inspect wex_dev_dev
-#  artifacts:
-#    paths:
-#      - .wex/.env
-#
+  artifacts:
+    paths:
+      - .wex/.env
+
 test:
   stage: test
   script:
