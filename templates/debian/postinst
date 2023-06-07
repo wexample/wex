@@ -15,7 +15,7 @@ if [ ! -f /.dockerenv ]; then
 
 # Running in a container
 else
-  . /opt/wex/cli/install-local
+  . /usr/lib/wex/install-local
 fi
 
 exit 0
