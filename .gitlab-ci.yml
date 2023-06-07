@@ -28,10 +28,11 @@ setup:
 
 test:
   stage: test
-  needs:
-    - setup
   script:
     - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
+
+  needs:
+    - setup
 
 #deploy:
 #  stage: deploy
