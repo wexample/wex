@@ -6,9 +6,9 @@ stages:
 setup:
   stage: setup
   only:
+    - tags
   script:
     - echo "OK"
-    - tags
 #  script:
 #    - |
 #      cd ${CI_PROJECT_DIR}
