@@ -5,7 +5,7 @@ import subprocess
 from src.helper.args import convert_dict_to_args
 
 from src.const.globals import COMMAND_PATTERN, COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, \
-    COMMAND_SEPARATOR_FUNCTION_PARTS
+    COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME
 
 
 def build_command_match(command: str):
@@ -26,25 +26,33 @@ def build_command_from_function(function: callable) -> str:
 
 
 def build_full_command_from_function(function: callable, args: dict = None) -> str:
-    output = build_command_from_function(function) + ' '
+    output = f'{CORE_COMMAND_NAME} '
+    output += build_command_from_function(function) + ' '
     output += ' '.join(convert_dict_to_args(function, args))
     return output
 
 
-def execute_command(kernel, command, working_directory):
+def execute_command(kernel, command, working_directory=os.getcwd(), stdout=None, stderr=subprocess.STDOUT):
     date_now = datetime.date.today()
     date_formatted = date_now.strftime("%Y-%m-%d")
 
     # Create a log file with the timestamp in its name
-    log_file = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.log")
+    out_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.out")
+    err_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.err")
 
     os.makedirs(
         kernel.path['log'],
         exist_ok=True
     )
 
-    with open(log_file, 'w') as file:
-        subprocess.Popen(command, cwd=working_directory, stdout=file, stderr=subprocess.STDOUT)
+    with open(out_path, 'w') as out_file:
+        with open(err_path, 'w') as err_file:
+            return subprocess.Popen(
+                command,
+                cwd=working_directory,
+                stdout=stdout or out_file,
+                stderr=stderr or err_file,
+            )
 
 
 def get_commands_groups_names(kernel, addon):

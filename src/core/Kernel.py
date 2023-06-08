@@ -50,6 +50,7 @@ class Kernel:
         # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
+        self.path['core.cli'] = os.path.join(self.path['root'], 'cli', 'wex')
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['log'] = self.path['tmp'] + 'log/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
@@ -154,7 +155,7 @@ class Kernel:
             if not isinstance(command, str):
                 command = build_command_from_function(command)
 
-            output += f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {CORE_COMMAND_NAME} {command}\n'
+            output += f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {command}\n'
 
         self.print(output)
 
