@@ -14,7 +14,7 @@ class TestLogging(AbstractTestCase):
             log_level=logging.DEBUG
         )
 
-        self.assertFileExists(
+        self.assertPathExists(
             self.kernel.path['history']
         )
 
@@ -28,6 +28,6 @@ class TestLogging(AbstractTestCase):
             }
         )
 
-        self.assertFileExists(
+        self.assertPathExists(
             self.kernel.path['history']
         )

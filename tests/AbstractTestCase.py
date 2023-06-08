@@ -13,14 +13,14 @@ class AbstractTestCase(unittest.TestCase):
             TestCoreAction(cls.kernel)
         )
 
-    def assertFileExists(self, file_path, exists=True):
+    def assertPathExists(self, file_path, exists=True):
         """
         Assert that the specified file exists.
         """
         self.assertEqual(
             os.path.exists(file_path),
             exists,
-            f'The file does not exists : {file_path}'
+            f'No such file or directory : {file_path}'
         )
 
     def build_test_file_path(self, file_name: str) -> str:

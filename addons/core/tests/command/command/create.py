@@ -22,11 +22,11 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
             }
         )
 
-        self.assertFileExists(
+        self.assertPathExists(
             test_file_path
         )
 
-        self.assertFileExists(
+        self.assertPathExists(
             test_file_path_test
         )
 

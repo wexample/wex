@@ -29,7 +29,8 @@ setup(
         'Operating System :: OS Independent',
     ],
     scripts=[
-      'cli/install-local',
+      'cli/install',
+      'cli/uninstall',
       'cli/wex',
     ],
 )

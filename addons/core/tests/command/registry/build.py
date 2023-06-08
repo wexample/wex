@@ -13,4 +13,4 @@ class TestCoreCommandRegistryBuild(AbstractTestCase):
 
         self.kernel.exec('core::registry/build')
 
-        self.assertFileExists(registry_path)
+        self.assertPathExists(registry_path)
