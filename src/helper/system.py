@@ -2,8 +2,12 @@ import os
 import grp
 import signal
 import socket
+import subprocess
 from contextlib import closing
 import psutil
+
+from helper.command import execute_command
+
 
 def get_sudo_username():
     return os.getenv('SUDO_USER')
@@ -43,4 +47,22 @@ def kill_process_by_port(port: int):
     pid = get_pid_from_port(port)
 
     if pid:
+        os.kill(int(pid), signal.SIGTERM)
+
+
+def kill_process_by_command(kernel, command: str):
+    process = execute_command(
+        kernel,
+        [
+            'pgrep',
+            '-f',
+            command
+        ],
+        # Sync mode.
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    out, err = process.communicate()
+
+    for pid in out.splitlines():
         os.kill(int(pid), signal.SIGTERM)
