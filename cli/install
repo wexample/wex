@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+. /opt/wex/cli/wex core::core/install
