@@ -19,7 +19,7 @@ def core__core__install(kernel):
     __core__core__install_user_home(kernel)
     __core__core__install_bashrc(kernel)
     __core__core__install_symlink(kernel)
-    __core__core__install_daemon(kernel)
+    __core__core__install_webhook_server(kernel)
     return kernel.exec_function(core__logo__show)
 
 
@@ -86,7 +86,7 @@ def __core__core__install_symlink(kernel):
     kernel.message(f'Created symlink in {CORE_BIN_FILE}')
 
 
-def __core__core__install_daemon(kernel):
+def __core__core__install_webhook_server(kernel):
     kernel.exec_function(
         core__webhook__serve,
         {
