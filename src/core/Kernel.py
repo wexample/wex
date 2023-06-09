@@ -179,7 +179,7 @@ class Kernel:
         )
 
         if result is not None:
-            print(result)
+            self.print(result)
 
     def exec_middlewares(self, name: str, args=None):
         if args is None:

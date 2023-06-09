@@ -1,10 +1,7 @@
-import os
-import signal
-import subprocess
 import click
 
 from src.helper.command import execute_command, build_full_command_from_function
-from src.helper.system import is_port_open, kill_process_by_port
+from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command
 from src.const.error import ERR_UNEXPECTED
 from src.core.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from src.decorator.as_sudo import as_sudo
@@ -37,38 +34,32 @@ def core__webhook__serve(
             return False
 
     if asynchronous:
-        base_kernel.log("Running Webhook listener...")
+        use_daemon = False
 
-        command = build_full_command_from_function(
-            core__webhook__serve,
-            {
-                'port': port
-            }
-        )
+        if use_daemon:
+            # TODO If we are not in Docker, we should use a daemon instead.
+            pass
+        else:
+            base_kernel.log("Running Webhook listener...")
 
-        process = execute_command(
-            base_kernel,
-            [
-                'pgrep',
-                '-f',
-                command
-            ],
-            # Sync mode.
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        out, err = process.communicate()
+            # Build command
+            command = build_full_command_from_function(
+                core__webhook__serve,
+                {
+                    'port': port
+                }
+            )
 
-        for pid in out.splitlines():
-            os.kill(int(pid), signal.SIGTERM)
+            # Kill old process
+            kill_process_by_command(base_kernel, command)
 
-        # Start a new listener
-        execute_command(
-            base_kernel,
-            command.split()
-        )
+            # Start a new listener
+            execute_command(
+                base_kernel,
+                command.split()
+            )
 
-        base_kernel.message(f'Started webhook listener on port {port}')
+            base_kernel.message(f'Started webhook listener on port {port}')
 
     else:
         class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):

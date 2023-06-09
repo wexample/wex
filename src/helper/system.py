@@ -6,7 +6,7 @@ import subprocess
 from contextlib import closing
 import psutil
 
-from helper.command import execute_command
+from src.helper.command import execute_command
 
 
 def get_sudo_username():

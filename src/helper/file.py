@@ -118,7 +118,6 @@ def _set_json_file_item(dic, keys, value):
         dic[key] = value
 
 
-
 def get_json_item(json_data, key: str):
     # Split the key into its individual parts
     keys = key.split('.')
@@ -143,6 +142,6 @@ def json_load(file, default=None):
         return default
 
 
-def remove_file_if_exists(file:str):
+def remove_file_if_exists(file: str):
     if os.path.isfile(file):
         os.remove(file)
