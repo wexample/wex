@@ -1,21 +1,5 @@
 #!/bin/bash
 
-# If not running in a Docker container
-if [ ! -f /.dockerenv ]; then
-  # Reload the systemd daemon
-  systemctl daemon-reload
-
-  # Enable the service
-  systemctl enable wexd
-
-  # Start the service
-  systemctl start wexd
-
-  wex core::logo/show
-
-# Running in a container
-else
-  . /usr/lib/wex/cli/install
-fi
+. /usr/lib/wex/cli/install
 
 exit 0
