@@ -60,6 +60,7 @@ build:
     # Create link to source
     - ln -s ${CI_PROJECT_DIR} source
     # Run container
+    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env build -no-cache
     - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
     # Run build
     - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'"
@@ -89,6 +90,7 @@ test_apt_install:
     - docker stop wex_build || true && docker rm wex_build || true
     - docker rmi wexample/wex-apt:test || true
     # Run install test container
+    - docker compose -f .wex/docker/docker-compose.test-apt.yml build --no-cache
     - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
     # Run hello message
     - docker exec -ti wex_build wex hi
