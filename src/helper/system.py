@@ -66,3 +66,21 @@ def kill_process_by_command(kernel, command: str):
 
     for pid in out.splitlines():
         os.kill(int(pid), signal.SIGTERM)
+
+
+def service_daemon_reload(kernel, command: str = 'daemon-reload'):
+    execute_command(
+        kernel,
+        ['systemctl', command]
+    )
+
+
+def service_exec(kernel, service, action: str):
+    execute_command(
+        kernel,
+        [
+            'systemctl',
+            action,
+            service
+        ]
+    )

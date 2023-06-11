@@ -1,7 +1,13 @@
+import shutil
 import click
 
+from addons.system.command.system.is_docker import system__system__is_docker
+from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH
+from src.helper.core import get_daemon_service_resource_path
+from src.helper.file import remove_file_if_exists
 from src.helper.command import execute_command, build_full_command_from_function
-from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command
+from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
+    service_daemon_reload
 from src.const.error import ERR_UNEXPECTED
 from src.core.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from src.decorator.as_sudo import as_sudo
@@ -22,7 +28,6 @@ def core__webhook__serve(
         asynchronous: bool = False,
         force: bool = False
 ):
-
     if is_port_open(port):
         if force:
             base_kernel.log(f'Port already in use {port}, killing process...')
@@ -33,12 +38,23 @@ def core__webhook__serve(
             })
             return False
 
+    # Remove old service file
+    remove_file_if_exists(SERVICE_DAEMON_PATH)
+
     if asynchronous:
-        use_daemon = False
+        use_daemon = not base_kernel.exec_function(system__system__is_docker)
 
         if use_daemon:
-            # TODO If we are not in Docker, we should use a daemon instead.
-            pass
+            daemon_path = get_daemon_service_resource_path(base_kernel)
+
+            shutil.copy(
+                daemon_path,
+                SYSTEM_SERVICES_PATH
+            )
+
+            service_daemon_reload(base_kernel)
+            service_exec(base_kernel, SERVICE_DAEMON_NAME, 'enable')
+            service_exec(base_kernel, SERVICE_DAEMON_NAME, 'start')
         else:
             base_kernel.log("Running Webhook listener...")
 
