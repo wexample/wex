@@ -1,3 +1,4 @@
+from default.command.file.append_once import default__file__append_once
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -9,10 +10,13 @@ class TestDefaultCommandFileAppend_once(AbstractTestCase):
             file_original = f.read()
             first_line = f.readline()
 
-        self.kernel.exec('default::file/append_once', {
-            'file': file,
-            'line': first_line
-        })
+        self.kernel.exec_function(
+            default__file__append_once,
+            {
+                'file': file,
+                'line': first_line
+            }
+        )
 
         with open(file, 'r', newline='') as f:
             file_modified = f.read()
@@ -23,10 +27,13 @@ class TestDefaultCommandFileAppend_once(AbstractTestCase):
             'The file should not be modified'
         )
 
-        self.kernel.exec('default::file/append_once', {
-            'file': file,
-            'line': 'NEW_LINE=yes'
-        })
+        self.kernel.exec_function(
+            default__file__append_once,
+            {
+                'file': file,
+                'line': 'NEW_LINE=yes'
+            }
+        )
 
         with open(file, 'r', newline='') as f:
             file_modified = f.read()
