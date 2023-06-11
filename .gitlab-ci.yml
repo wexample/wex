@@ -76,6 +76,7 @@ deploy:
     # Ask apt repo to publish release
     - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
+# Try to install using the new debian apt repository.
 test_apt_install:
   stage: test_apt_install
   only:
@@ -93,4 +94,7 @@ test_apt_install:
     - docker compose -f .wex/docker/docker-compose.test-apt.yml build --no-cache
     - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
     # Run hello message
-    - docker exec -ti wex_build wex hi
+    - docker exec -t wex_build wex hi
+    # Remove container
+    - docker stop wex_build || true && docker rm wex_build || true
+    - docker rmi wexample/wex-apt:test || true
