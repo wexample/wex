@@ -1,9 +1,11 @@
 import click
 
 from src.helper.test import create_test_from_command
+from src.decorator.as_sudo import as_sudo
 
 
 @click.command
+@as_sudo
 @click.pass_obj
 @click.option('--command', '-c', type=str, required=False, help="Command name, if empty it will create all missing "
                                                                 "tests")
