@@ -4,8 +4,8 @@
     "created": "2023-03-23 17:13:28",
     "name": "wex",
     "services": [],
-    "wex_version": "5.0.0-beta.28+build.20230611121916",
-    "version": "5.0.0-beta.28+build.20230611121916"
+    "wex_version": "5.0.0-beta.29+build.20230611122715",
+    "version": "5.0.0-beta.29+build.20230611122715"
   },
   "docker": {
     "compose": {
