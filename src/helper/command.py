@@ -16,6 +16,12 @@ def build_function_name_from_match(match: list) -> str:
     return f"{match.group(1)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(2)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(3)}"
 
 
+def build_function_name_from_command(kernel, command) -> str:
+    return build_function_name_from_match(
+        kernel.build_match_or_fail(command)
+    )
+
+
 def build_command_parts(function_name: callable) -> list:
     return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 

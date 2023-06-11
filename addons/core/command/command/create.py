@@ -13,12 +13,13 @@ def core__command__create(kernel, command: str) -> {}:
     kernel.log('Creating command file...')
 
     match = kernel.build_match_or_fail(command)
-
-    command_path: str = kernel.build_command_path_from_match(match)
-    dir = os.path.dirname(command_path)
     function_name = build_function_name_from_match(match)
+    command_path: str = kernel.build_command_path_from_match(match)
 
-    os.makedirs(dir, exist_ok=True)
+    os.makedirs(
+        os.path.dirname(command_path),
+        exist_ok=True
+    )
 
     create_from_template(
         kernel.path['templates'] + 'command.py.tpl',

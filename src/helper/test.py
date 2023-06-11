@@ -1,6 +1,7 @@
 import os
 
 from addons.core.command.registry.build import core__registry__build
+from src.helper.command import build_function_name_from_match
 from src.helper.file import create_from_template
 
 
@@ -41,6 +42,7 @@ def create_test_from_command(kernel, command) -> str:
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
+    command_function_name = build_function_name_from_match(match)
 
     kernel.log(f'Creating test for command {command}')
 
@@ -54,9 +56,13 @@ def create_test_from_command(kernel, command) -> str:
         kernel.path['templates'] + 'test.py.tpl',
         test_path,
         {
+            'addon_name': match[1],
             'class_name': class_name,
+            'command': command,
+            'command_function_name': command_function_name,
+            'group_name': match[2],
             'method_name': method_name,
-            'command': command
+            'name': match[3],
         }
     )
 
