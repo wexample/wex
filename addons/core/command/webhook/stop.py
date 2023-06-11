@@ -2,7 +2,7 @@ import click
 
 from addons.core.command.webhook.serve import core__webhook__serve
 from addons.system.command.system.is_docker import system__system__is_docker
-from helper.file import remove_file_if_exists
+from src.helper.file import remove_file_if_exists
 from src.const.globals import SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH
 from src.helper.system import kill_process_by_command, service_exec, service_daemon_reload
 from src.helper.command import build_command_from_function
