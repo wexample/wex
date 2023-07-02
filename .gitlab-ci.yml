@@ -1,0 +1,16 @@
+stages:
+  - build_image_wex_dev
+
+variables:
+  DOCKER_DRIVER: overlay2
+  IMAGE_TAG: $CI_REGISTRY_IMAGE/wex/dev:latest
+
+build_image_wex_dev:
+  stage: build_image_wex_dev
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f .wex/docker/Dockerfile.dev -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  rules:
+    - changes:
+        - .wex/docker/Dockerfile.dev
