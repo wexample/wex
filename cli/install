@@ -3,7 +3,7 @@
 WEX_DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
 WEX_DIR_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 
-echo "Installing python..."
+echo "Installing python requirements..."
 pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
 echo "Installing wex"
