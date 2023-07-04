@@ -1,14 +1,11 @@
 services:
   wex_dev:
     container_name: wex_${APP_ENV}_dev
-    image: wexample/wex:dev
+    image: gitlab-docker.wexample.com/wexample/wex/dev:latest
     privileged: true
     extends:
       file: ${WEX_COMPOSE_YML_DEFAULT}
       service: default
-    build:
-      context: ${APP_PATH_ROOT}
-      dockerfile: ./.wex/docker/Dockerfile.dev
     ports:
       # Webhooks listening port
       - 4242:4242
