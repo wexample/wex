@@ -1,14 +1,11 @@
 services:
   wex_dev:
     container_name: wex_local_dev
-    image: wexample/wex:dev
+    image: gitlab-docker.wexample.com/wexample/wex/dev:latest
     privileged: true
     extends:
         file: ${WEX_COMPOSE_YML_DEFAULT}
         service: default
-    build:
-      context: ${APP_PATH_ROOT}
-      dockerfile: ./.wex/docker/Dockerfile.dev
     volumes:
       # Mount wex outside the apps list
       - ${APP_PATH_ROOT}:/var/www/

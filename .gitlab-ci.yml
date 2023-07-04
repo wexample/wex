@@ -8,8 +8,8 @@ build_image_wex_dev:
   stage: build_image_wex_dev
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -f .wex/docker/Dockerfile.dev -t wex/dev:latest -t gitlab.docker.wexample.com/wexample/wex/dev:latest .
-    - docker push gitlab.docker.wexample.com/wexample/wex/dev:latest
+    - docker build -f .wex/docker/Dockerfile.dev -t wex/dev:latest -t gitlab-docker.wexample.com/wexample/wex/dev:latest .
+    - docker push gitlab-docker.wexample.com/wexample/wex/dev:latest
   rules:
     - changes:
         - .wex/docker/Dockerfile.dev
