@@ -1,23 +1,16 @@
 stages:
-  - setup
+#  - setup
 #  - test
 #  - build
 #  - deploy
-#  - test_apt_install
+  - test_apt_install
 
-setup:
-  stage: setup
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+#setup:
+#  stage: setup
+#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
 #  only:
 #    - tags
-  script:
-    - apt update
-    - apt install gnupg2 wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt-get update
-    - apt install wex -y
-
+#  script:
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
@@ -83,26 +76,22 @@ setup:
 #    - BUILD_VERSION=$(cat version.txt)
 #    # Ask apt repo to publish release
 #    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-#
-## Try to install using the new debian apt repository.
-#test_apt_install:
-#  stage: test_apt_install
+
+
+# Try to install using the new debian apt repository.
+test_apt_install:
+  stage: test_apt_install
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
 #  only:
 #    - tags
 #  needs:
 #    - deploy
-#  script:
-#    - sleep 10
-#    # Go to build folder
-#    - cd /home/gitlab-runner/builds/wex
-#    # Remove all old running container
-#    - docker stop wex_build || true && docker rm wex_build || true
-#    - docker rmi wexample/wex-apt:test || true
-#    # Run install test container
-#    - docker compose -f .wex/docker/docker-compose.test-apt.yml build --no-cache
-#    - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
-#    # Run hello message
-#    - docker exec -t wex_build wex hi
-#    # Remove container
-#    - docker stop wex_build || true && docker rm wex_build || true
-#    - docker rmi wexample/wex-apt:test || true
+  script:
+    - sleep 10
+    - apt update
+    - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt-get update
+    - apt install wex -y
+
