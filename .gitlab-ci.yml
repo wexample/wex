@@ -11,6 +11,7 @@ setup:
 #    - tags
   script:
     - echo "ok"
+    - . /opt/wex/cli/wex test;
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
