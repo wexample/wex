@@ -8,6 +8,6 @@ Homepage: https://wexample.com
 
 Package: wex
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}, python3
+Depends: ${python3:Depends}, ${misc:Depends}, python3, python3-pip
 Description:Single entrypoint to execute custom bash scripts,
  and run Docker application on several environments.
