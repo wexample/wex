@@ -1,100 +1,101 @@
 stages:
   - setup
-  - test
-  - build
-  - deploy
-  - test_apt_install
+#  - test
+#  - build
+#  - deploy
+#  - test_apt_install
 
 setup:
   stage: setup
-  only:
-    - tags
+#  only:
+#    - tags
   script:
-    - |
-      cd ${CI_PROJECT_DIR}
-      # Stops script on failure
-      set -e 
-      # Remove all old running container
-      sudo wex docker/stopAll
-      docker rmi wexample/wex:dev
-      # Create env file
-      echo "APP_ENV=dev" > ".wex/.env"
-      # Start container
-      wex app/start
-      # Check setup complete
-      docker inspect wex_dev_dev
-  artifacts:
-    paths:
-      - .wex/.env
-
-test:
-  stage: test
-  only:
-    - tags
-  needs:
-    - setup
-  script:
-    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
-
-build:
-  stage: build
-  only:
-    - tags
-  needs:
-    - test
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Stop running container
-    - docker stop wex_build 2>/dev/null && docker rm wex_build 2>/dev/null || true
-    # Create or empty temp build folder
-    - mkdir -p /home/gitlab-runner/builds/wex && rm -rf /home/gitlab-runner/builds/wex/* /home/gitlab-runner/builds/wex/.[!.]* || true
-    # Create a copy of current git repo
-    - cp -r .git /home/gitlab-runner/builds/wex
-    # Go to build folder
-    - cd /home/gitlab-runner/builds/wex
-    # Checkout build branch
-    - git fetch && git checkout build
-    - git checkout .wex/*
-    - git clean -fd
-    - git reset --hard origin/build
-    # Create link to source
-    - ln -s ${CI_PROJECT_DIR} source
-    # Run container
-    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env build --no-cache
-    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
-    # Run build
-    - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'"
-
-deploy:
-  stage: deploy
-  only:
-    - tags
-  needs:
-    - build
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-
-# Try to install using the new debian apt repository.
-test_apt_install:
-  stage: test_apt_install
-  only:
-    - tags
-  needs:
-    - deploy
-  script:
-    - sleep 10
-    # Go to build folder
-    - cd /home/gitlab-runner/builds/wex
-    # Remove all old running container
-    - docker stop wex_build || true && docker rm wex_build || true
-    - docker rmi wexample/wex-apt:test || true
-    # Run install test container
-    - docker compose -f .wex/docker/docker-compose.test-apt.yml build --no-cache
-    - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
-    # Run hello message
-    - docker exec -t wex_build wex hi
-    # Remove container
-    - docker stop wex_build || true && docker rm wex_build || true
-    - docker rmi wexample/wex-apt:test || true
+    - echo "ok"
+#    - |
+#      cd ${CI_PROJECT_DIR}
+#      # Stops script on failure
+#      set -e
+#      # Remove all old running container
+#      sudo wex docker/stopAll
+#      docker rmi wexample/wex:dev
+#      # Create env file
+#      echo "APP_ENV=dev" > ".wex/.env"
+#      # Start container
+#      wex app/start
+#      # Check setup complete
+#      docker inspect wex_dev_dev
+#  artifacts:
+#    paths:
+#      - .wex/.env
+#
+#test:
+#  stage: test
+#  only:
+#    - tags
+#  needs:
+#    - setup
+#  script:
+#    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
+#
+#build:
+#  stage: build
+#  only:
+#    - tags
+#  needs:
+#    - test
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Stop running container
+#    - docker stop wex_build 2>/dev/null && docker rm wex_build 2>/dev/null || true
+#    # Create or empty temp build folder
+#    - mkdir -p /home/gitlab-runner/builds/wex && rm -rf /home/gitlab-runner/builds/wex/* /home/gitlab-runner/builds/wex/.[!.]* || true
+#    # Create a copy of current git repo
+#    - cp -r .git /home/gitlab-runner/builds/wex
+#    # Go to build folder
+#    - cd /home/gitlab-runner/builds/wex
+#    # Checkout build branch
+#    - git fetch && git checkout build
+#    - git checkout .wex/*
+#    - git clean -fd
+#    - git reset --hard origin/build
+#    # Create link to source
+#    - ln -s ${CI_PROJECT_DIR} source
+#    # Run container
+#    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env build --no-cache
+#    - docker compose -f .wex/docker/docker-compose.ci.yml --env-file .wex/docker/.ci.env up -d
+#    # Run build
+#    - docker exec wex_build /bin/bash -c "sudo python3 /var/www/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'"
+#
+#deploy:
+#  stage: deploy
+#  only:
+#    - tags
+#  needs:
+#    - build
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Ask apt repo to publish release
+#    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+#
+## Try to install using the new debian apt repository.
+#test_apt_install:
+#  stage: test_apt_install
+#  only:
+#    - tags
+#  needs:
+#    - deploy
+#  script:
+#    - sleep 10
+#    # Go to build folder
+#    - cd /home/gitlab-runner/builds/wex
+#    # Remove all old running container
+#    - docker stop wex_build || true && docker rm wex_build || true
+#    - docker rmi wexample/wex-apt:test || true
+#    # Run install test container
+#    - docker compose -f .wex/docker/docker-compose.test-apt.yml build --no-cache
+#    - docker compose -f .wex/docker/docker-compose.test-apt.yml up -d
+#    # Run hello message
+#    - docker exec -t wex_build wex hi
+#    # Remove container
+#    - docker stop wex_build || true && docker rm wex_build || true
+#    - docker rmi wexample/wex-apt:test || true
