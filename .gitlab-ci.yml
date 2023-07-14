@@ -7,11 +7,11 @@ stages:
 
 setup:
   stage: setup
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
 #  only:
 #    - tags
   script:
-    - echo "ok"
-    - . /opt/wex/cli/wex test;
+    - echo "ok !"
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
