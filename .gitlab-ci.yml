@@ -12,6 +12,12 @@ setup:
 #    - tags
   script:
     - apt update
+    - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt-get update
+    - apt install wex -y
+
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
