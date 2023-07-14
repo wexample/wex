@@ -11,7 +11,7 @@ setup:
 #  only:
 #    - tags
   script:
-    - echo "ok !"
+    - apt update
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
