@@ -1,7 +1,7 @@
 services:
   wex_dev:
     container_name: wex_${APP_ENV}_dev
-    image: gitlab-docker.wexample.com/wexample/wex/dev:latest
+    image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
     privileged: true
     extends:
       file: ${WEX_COMPOSE_YML_DEFAULT}
