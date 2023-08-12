@@ -17,7 +17,9 @@ test:
     - apt install procps python3-pip sudo -y
     # Install
     - sudo bash ./cli/install
-    - sudo bash ./cli/wex core::webhook/serve --dry-run
+    # Create env file
+    - echo "APP_ENV=dev" > ".wex/.env"
+    # Test
     - sudo bash ./cli/wex test
 
 build:
