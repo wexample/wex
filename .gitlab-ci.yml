@@ -11,12 +11,15 @@ setup:
 #  only:
 #    - tags
   script:
-    - apt install python-pip
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    - apt install python-pip -y
+    # Install
     - . ./cli/install
 #    - |
 #      cd ${CI_PROJECT_DIR}
-#      # Stops script on failure
-#      set -e
 #      # Remove all old running container
 #      sudo wex docker/stopAll
 #      docker rmi wexample/wex:dev
