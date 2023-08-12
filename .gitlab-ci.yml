@@ -17,7 +17,7 @@ setup:
     - apt update
     - apt install python3-pip sudo -y
     # Install
-    - sudo ./cli/install
+    - sudo bash ./cli/install
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Remove all old running container
