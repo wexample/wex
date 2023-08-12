@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-. ../wex core::core/uninstall
+WEX_DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
+WEX_DIR_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
+
+. "${WEX_DIR_ROOT}wex" core::core/uninstall

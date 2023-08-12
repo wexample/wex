@@ -10,7 +10,7 @@ echo "Installing python requirements..."
 pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
 echo "Installing wex"
-. ../wex core::core/install
+. "${WEX_DIR_ROOT}wex" core::core/install
 
 echo "Reload bashrc changes..."
 # shellcheck disable=SC1090
