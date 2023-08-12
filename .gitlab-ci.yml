@@ -11,8 +11,7 @@ setup:
 #  only:
 #    - tags
   script:
-    # TODO TMP
-    - ls -la
+    - . ./cli/install
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Stops script on failure
