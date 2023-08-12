@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+# Exit immediately if a command exits with a non-zero status.
 set -e
+# This setting ensures that pipes will return an error code if any command in the pipe fails.
 set -o pipefail
 
 # Resolve symlinks
@@ -17,3 +19,6 @@ if [ -f "${WEX_POST_EXEC}" ];then
   . "${WEX_POST_EXEC}"
   rm "${WEX_POST_EXEC}"
 fi
+
+# TODO TEMP
+echo "end"
