@@ -18,17 +18,8 @@ setup:
     - apt install procps python3-pip sudo -y
     # Install
     - sudo bash ./cli/install
-#    - |
-#      cd ${CI_PROJECT_DIR}
-#      # Remove all old running container
-#      sudo wex docker/stopAll
-#      docker rmi wexample/wex:dev
-#      # Create env file
-#      echo "APP_ENV=dev" > ".wex/.env"
-#      # Start container
-#      wex app/start
-#      # Check setup complete
-#      docker inspect wex_dev_dev
+    # Create env file
+    # - echo "APP_ENV=dev" > ".wex/.env"
   artifacts:
     paths:
       - .wex/.env
@@ -40,9 +31,7 @@ test:
   needs:
     - setup
   script:
-    # TODO TMP
-    - ls -la
-#    - docker exec wex_dev_dev /bin/bash -c ". /opt/wex/cli/wex test; exit $?"
+    - sudo bash ./cli/wex test
 
 build:
   stage: build
