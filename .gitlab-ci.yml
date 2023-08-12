@@ -15,7 +15,7 @@ setup:
     - set -e
     # We install manually as apt package does not exist at this point
     - apt update
-    - apt install python3-pip -y
+    - apt install python3-pip sudo -y
     # Install
     - sudo . ./cli/install
 #    - |
