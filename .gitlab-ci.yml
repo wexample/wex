@@ -17,6 +17,9 @@ test:
     - apt install procps python3-pip sudo -y
     # Install
     - sudo bash ./cli/install
+    # Fake local app
+    - mkdir -p /var/www/dev
+    - ln -s /opt/wex "/var/www/dev/wex"
     # Create env file
     - echo "APP_ENV=dev" > ".wex/.env"
     # Test
