@@ -19,6 +19,3 @@ if [ -f "${WEX_POST_EXEC}" ];then
   . "${WEX_POST_EXEC}"
   rm "${WEX_POST_EXEC}"
 fi
-
-# TODO TEMP
-echo "end"

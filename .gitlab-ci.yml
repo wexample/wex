@@ -17,6 +17,7 @@ test:
     - apt install procps python3-pip sudo -y
     # Install
     - sudo bash ./cli/install
+    - sudo bash ./cli/wex core::webhook/serve --dry-run
     - sudo bash ./cli/wex test
 
 build:
