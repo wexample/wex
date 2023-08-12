@@ -7,7 +7,7 @@ stages:
 
 setup:
   stage: setup
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+  image: gitlab-docker.wexample.com/wexample-public/wex/latest
 #  only:
 #    - tags
   script:
