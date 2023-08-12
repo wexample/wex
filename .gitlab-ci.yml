@@ -48,7 +48,7 @@ build:
     # Create link to source
     - ln -s ${CI_PROJECT_DIR} source
     # Build
-    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk '${WEX_BUILD_TOKEN}' -v '${BUILD_VERSION}'
+    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
 
 deploy:
   stage: deploy
