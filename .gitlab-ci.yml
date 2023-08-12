@@ -7,7 +7,7 @@ stages:
 
 setup:
   stage: setup
-  image: gitlab-docker.wexample.com/wexample-public/wex/latest
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
 #  only:
 #    - tags
   script:
@@ -17,7 +17,7 @@ setup:
     - apt update
     - apt install python3-pip -y
     # Install
-    - . ./cli/install
+    - sudo . ./cli/install
 #    - |
 #      cd ${CI_PROJECT_DIR}
 #      # Remove all old running container
