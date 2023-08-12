@@ -1,12 +1,11 @@
 stages:
-  - setup
   - test
   - build
   - deploy
   - test_apt_install
 
-setup:
-  stage: setup
+test:
+  stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
 #  only:
 #    - tags
@@ -18,19 +17,6 @@ setup:
     - apt install procps python3-pip sudo -y
     # Install
     - sudo bash ./cli/install
-    # Create env file
-    # - echo "APP_ENV=dev" > ".wex/.env"
-  artifacts:
-    paths:
-      - .wex/.env
-
-test:
-  stage: test
-#  only:
-#    - tags
-  needs:
-    - setup
-  script:
     - sudo bash ./cli/wex test
 
 build:
