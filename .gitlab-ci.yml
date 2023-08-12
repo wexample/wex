@@ -94,7 +94,8 @@ test_apt_install:
   needs:
     - deploy
   script:
-    - sleep 10
+      # Stops script on failure
+    - set -e
     - apt update
     - apt install gnupg2 wget -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
