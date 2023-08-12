@@ -11,6 +11,7 @@ setup:
 #  only:
 #    - tags
   script:
+    - apt install python-pip
     - . ./cli/install
 #    - |
 #      cd ${CI_PROJECT_DIR}
