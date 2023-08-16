@@ -61,8 +61,7 @@ def __remove_source_file_for_docker(kernel, file_path):
 
 def __remove_source_file_in_bashrc(kernel, file_path, bashrc_path):
     if not os.path.exists(bashrc_path):
-        with open(bashrc_path, 'w') as f:
-            pass
+        return
 
     kernel.log(f'Removing autocompletion script to {bashrc_path}...')
 
