@@ -7,8 +7,10 @@ class TestDefaultCommandFileRemove_line(AbstractTestCase):
         file = self.build_test_file_path('config_bash')
 
         with open(file, 'r', newline='') as f:
-            file_original = f.read()
             first_line = f.readline()
+
+        with open(file, 'r', newline='') as f:
+            file_original = f.read()
 
         self.kernel.exec_function(
             default__file__remove_line,
