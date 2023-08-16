@@ -67,10 +67,11 @@ test_apt_install:
   needs:
     - deploy
   script:
-      # Stops script on failure
+    # Stops script on failure
     - set -e
     - apt update
-    - apt install gnupg2 wget -y
+    # TODO : temp ? Sudo sould be in control file ?
+    - apt install gnupg2 wget sudo -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
     - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
     - apt-get update
