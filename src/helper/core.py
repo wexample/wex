@@ -16,10 +16,6 @@ def get_bashrc_handler_path(kernel):
     return os.path.join(kernel.path['root'], 'cli', "bashrc-handler")
 
 
-def get_bashrc_handler_command(kernel):
-    return f'. {get_bashrc_handler_path(kernel)}'
-
-
 def get_daemon_service_path(kernel):
     return f'. {get_bashrc_handler_path(kernel)}'
 
