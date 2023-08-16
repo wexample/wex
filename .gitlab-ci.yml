@@ -78,4 +78,4 @@ test_apt_install:
     - apt update
     - apt install wex -y
     - wex hi
-    - apt uninstall wex -y
+    - apt remove wex -y
