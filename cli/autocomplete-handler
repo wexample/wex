@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+
+# Bashrc caches the completion file.
+# Therefore, we use a separate file that
+# allows us to modify it live during script creation.
+_wexAutocomplete() {
+  . "${WEX_DIR_ROOT}cli/autocomplete"
+}
+
+complete -o nospace -F _wexAutocomplete wex
