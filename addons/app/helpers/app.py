@@ -3,6 +3,7 @@ import os
 import shutil
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY
+from src.helper.file import create_directories_and_file
 from src.helper.string import to_snake_case
 
 
@@ -23,6 +24,11 @@ def create_test_app(kernel, name='test-app', services: [] = []):
 
 
 def create_env(env, app_dir):
+    create_directories_and_file(
+        os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV),
+        f'APP_ENV={env}\n'
+    )
+
     with open(os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV), 'w') as f:
         f.write(f'APP_ENV={env}\n')
 
