@@ -1,6 +1,8 @@
 import json
 import os
 import shutil
+import pwd
+import grp
 
 
 def list_subdirectories(path: str) -> []:
@@ -13,6 +15,15 @@ def list_subdirectories(path: str) -> []:
     subdirectories.sort()
 
     return subdirectories
+
+
+def set_owner(file, username):
+    # Get UID and GID of the sudo_user
+    uid = pwd.getpwnam(username).pw_uid
+    gid = grp.getgrnam(username).gr_gid
+
+    # Change the ownership of the file to username:username
+    os.chown(file, uid, gid)
 
 
 def create_from_template(template_path, dest_path, parameters):
