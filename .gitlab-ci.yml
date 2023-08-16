@@ -78,4 +78,5 @@ test_apt_install:
     - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
     - apt update
     - apt install wex -y
-
+    - wex hi
+    - apt uninstall wex -y
