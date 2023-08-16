@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+WEX_DIR_ROOT="$(dirname "${BASH_SOURCE[0]}")/../"
+
+. "${WEX_DIR_ROOT}.wex/.env"
+
+if [ "${APP_ENV}" == "local" ]; then
+  COLOR="\033[0;32m"
+elif [ "${APP_ENV}" == "dev" ]; then
+  COLOR="\033[0;33m"
+else
+  COLOR="\033[0;31m"
+fi
+
+PREFIX=${APP_ENV^^}
+# We are in a docker container.
+if [ -e /.dockerenv ]; then
+  PREFIX="~${PREFIX,,}"
+fi
+
+PS1="\[${COLOR}\][${PREFIX}]\[\033[0m\] \\u:\\W\\$ "
