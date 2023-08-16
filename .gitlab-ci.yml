@@ -24,6 +24,8 @@ test:
     - echo "APP_ENV=dev" > ".wex/.env"
     # Test
     - sudo bash ./cli/wex test
+    # Uninstall
+    - sudo bash ./cli/uninstall
 
 build:
   stage: build
@@ -70,10 +72,7 @@ test_apt_install:
     # Stops script on failure
     - set -e
     - apt update
-    # TODO : temp ? procps / sudo should be in control file ?
-    - echo $SUDO_USER
-    - apt install gnupg2 procps sudo wget -y
-    - echo $SUDO_USER
+    - apt install gnupg2 wget -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
     - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
     - apt update
