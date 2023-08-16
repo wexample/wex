@@ -30,6 +30,8 @@ test:
 build:
   stage: build
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
+  only:
+    - tags
   needs:
     - test
   script:
@@ -49,6 +51,8 @@ build:
 
 deploy:
   stage: deploy
+  only:
+    - tags
   needs:
     - build
   script:
@@ -60,6 +64,8 @@ deploy:
 test_apt_install:
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
+  only:
+    - tags
   needs:
     - deploy
   script:
