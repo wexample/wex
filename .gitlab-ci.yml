@@ -42,9 +42,6 @@ build:
     - cd /var/www/build
     # Checkout build branch
     - git fetch && git checkout build
-    - git checkout .wex/*
-    - git clean -fd
-    - git reset --hard origin/build
     # Create link to source
     - ln -s ${CI_PROJECT_DIR} source
     # Build
