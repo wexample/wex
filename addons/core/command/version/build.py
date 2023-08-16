@@ -26,6 +26,7 @@ def core__version__build(kernel, commit: bool = False) -> None:
 
         new_version = default__version__increment.callback(
             version,
+            build=True
         )
 
         # Write new_version to file
