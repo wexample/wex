@@ -21,4 +21,4 @@ def default__file__remove_line(kernel, file_path: str, line: str) -> None:
         for existing_line in lines:
             # Ignore empty lines and the line to remove
             if existing_line.strip() != "" and existing_line.strip() != line:
-                file.write(line)
+                file.write(existing_line)
