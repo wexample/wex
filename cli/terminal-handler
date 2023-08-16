@@ -15,7 +15,9 @@ fi
 PREFIX=${APP_ENV^^}
 # We are in a docker container.
 if [ -e /.dockerenv ]; then
-  PREFIX="~${PREFIX,,}"
+  PREFIX="~${PREFIX,,}>"
+else
+  PREFIX="[${PREFIX,,}]"
 fi
 
-PS1="\[${COLOR}\][${PREFIX}]\[\033[0m\] \\u:\\W\\$ "
+export PS1="\[${COLOR}\]${PREFIX}\[\033[0m\] \\u:\\W\\$ "
