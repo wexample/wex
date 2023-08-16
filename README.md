@@ -1,4 +1,4 @@
-# wex v5.0.0-beta.35
+# wex v5.0.0-beta.36
 
 A single entrypoint to execute custom bash scripts, and run Docker application on several environments. See description for more info.
 
