@@ -1,7 +1,6 @@
 
 import click
 import os
-import pwd
 
 from addons.default.command.file.append_once import default__file__append_once
 from addons.core.command.logo.show import core__logo__show
@@ -9,8 +8,6 @@ from addons.core.command.webhook.serve import core__webhook__serve
 from src.helper.core import get_bashrc_handler_command, get_bashrc_handler_path
 from src.helper.file import remove_file_if_exists
 from src.const.globals import CORE_BIN_FILE
-from src.helper.command import execute_command
-from src.helper.system import get_sudo_user_home_path, get_sudo_username, get_sudo_gid
 from src.decorator.as_sudo import as_sudo
 
 
@@ -18,38 +15,10 @@ from src.decorator.as_sudo import as_sudo
 @click.pass_obj
 @as_sudo
 def core__core__install(kernel):
-    __core__core__install_user_home(kernel)
     __core__core__install_bashrc(kernel)
     __core__core__install_symlink(kernel)
     __core__core__install_webhook_server(kernel)
     return kernel.exec_function(core__logo__show)
-
-
-def __core__core__install_user_home(kernel):
-    user_home_path = get_sudo_user_home_path()
-    user = get_sudo_username()
-
-    # Check if user directory exists, create it if missing
-    if not os.path.isdir(user_home_path):
-        os.makedirs(user_home_path)
-
-        uid = pwd.getpwnam(user).pw_uid
-
-        os.chown(
-            user_home_path,
-            uid,
-            get_sudo_gid()
-        )
-
-        # Mark dir as default for this user.
-        execute_command(kernel, [
-            'usermod',
-            '-d',
-            user_home_path,
-            user
-        ])
-
-    kernel.message('User folder exists ' + user_home_path)
 
 
 def __core__core__install_bashrc(kernel):
