@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/lib/wex/cli/wex "$@"
+
