@@ -7,10 +7,11 @@ import json
 from typing import Optional
 from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND, ERR_CORE_ACTION_NOT_FOUND
 from src.helper.file import list_subdirectories
-from src.helper.args import convert_dict_to_args
-from src.helper.command import build_command_match, build_command_path_from_match
+from src.helper.args import convert_dict_to_args, convert_args_to_dict
+from src.helper.command import build_command_match, build_command_path_from_match, build_full_command_from_function, \
+    get_function_from_match, build_command_from_function
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE, COMMAND_TYPE_CORE
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE, COMMAND_TYPE_CORE, COLOR_CYAN
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
@@ -23,7 +24,9 @@ class Kernel:
         'root': None,
         'addons': None
     }
+    test_manager = None
     core_actions = None
+    http_server = None
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -32,7 +35,9 @@ class Kernel:
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
+        self.path['log'] = self.path['tmp'] + 'log/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
+        self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
@@ -49,6 +54,8 @@ class Kernel:
 
         with open(path_registry) as f:
             self.registry = json.load(f)
+
+        self.exec_middlewares('init')
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
@@ -113,6 +120,43 @@ class Kernel:
     def print(self, message):
         print(message)
 
+    def message(self, message: str, text: str = None):
+        import textwrap
+
+        message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
+
+        if text:
+            message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
+
+        self.print(message)
+
+    def message_next_command(self, command, args={}, message: str = 'You might want now to execute'):
+        return self.message_all_next_commands(
+            [
+                build_full_command_from_function(
+                    command,
+                    args
+                )
+            ],
+            message
+        )
+
+    def message_all_next_commands(
+            self,
+            commands,
+            message: str = 'You might want now to execute one of the following command'
+    ):
+        self.message(message + ':')
+
+        output = ''
+        for command in commands:
+            if not isinstance(command, str):
+                command = build_command_from_function(command)
+
+            output += f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {command}\n'
+
+        self.print(output)
+
     def call(self):
         # No arg found except process id
         if not len(sys.argv) > 2:
@@ -160,6 +204,9 @@ class Kernel:
 
             return function(self, **args)
 
+    def setup_test_manager(self, test_manager):
+        self.test_manager = test_manager
+
     def build_match_or_fail(self, command: str):
         # Check command formatting.
         match, command_type = build_command_match(
@@ -200,24 +247,16 @@ class Kernel:
                 return
         # Run core action.
         elif command_type == COMMAND_TYPE_CORE:
-            from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
-            from src.core.action.TestCoreAction import TestCoreAction
-            from src.core.action.HiCoreAction import HiCoreAction
-
-            self.core_actions = {
-                CoreActionsCoreAction.command(): CoreActionsCoreAction,
-                HiCoreAction.command(): HiCoreAction,
-                TestCoreAction.command(): TestCoreAction,
-            }
+            core_actions = self.get_core_actions()
 
             # Handle core action : test, hi, etc...
-            if command in self.core_actions:
+            if command in core_actions:
                 action = command
                 command = None
                 if command_args:
                     command = command_args.pop(0)
 
-                action = self.core_actions[action](self)
+                action = core_actions[action](self)
 
                 return action.exec(command, command_args)
 
@@ -236,8 +275,44 @@ class Kernel:
             })
             return
 
-        # TODO
-        print(command_path)
+        function = get_function_from_match(self, match, command_type)
+
+        if isinstance(command_args, dict):
+            command_args = convert_dict_to_args(function, command_args)
+
+        addon, group, name = match.groups()
+
+        middleware_args = {
+            'addon': addon,
+            'args': convert_args_to_dict(function, command_args),
+            'args_list': command_args,
+            'command': command,
+            'function': function,
+            'group': group,
+            'name': name,
+        }
+
+        self.exec_middlewares('exec', middleware_args)
+
+        result = self.exec_function(function, command_args)
+
+        self.exec_middlewares('exec_post', middleware_args)
+
+        return result
+
+    def get_core_actions(self):
+        if not self.core_actions:
+            from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
+            from src.core.action.TestCoreAction import TestCoreAction
+            from src.core.action.HiCoreAction import HiCoreAction
+
+            self.core_actions = {
+                CoreActionsCoreAction.command(): CoreActionsCoreAction,
+                HiCoreAction.command(): HiCoreAction,
+                TestCoreAction.command(): TestCoreAction,
+            }
+
+        return self.core_actions
 
     def exec_function(self, function, args=None):
         if not args:
