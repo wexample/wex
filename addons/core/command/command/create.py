@@ -3,7 +3,7 @@ import os
 
 from addons.core.command.test.create import core__test__create
 from src.helper.file import create_from_template
-from src.helper.command import build_function_name_from_match
+from src.helper.command import build_function_name_from_match, build_command_path_from_match
 
 
 @click.command()
@@ -11,10 +11,9 @@ from src.helper.command import build_function_name_from_match
 @click.option('--command', '-c', type=str, required=True, help="Full name of the command, i.e. addon::some/thing")
 def core__command__create(kernel, command: str) -> {}:
     kernel.log('Creating command file...')
-
-    match = kernel.build_match_or_fail(command)
-    function_name = build_function_name_from_match(match)
-    command_path: str = kernel.build_command_path_from_match(match)
+    match, command_type = kernel.build_match_or_fail(command)
+    function_name = build_function_name_from_match(match, command_type)
+    command_path: str = build_command_path_from_match(kernel, match, command_type)
 
     os.makedirs(
         os.path.dirname(command_path),

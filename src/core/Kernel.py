@@ -24,6 +24,7 @@ class Kernel:
         'root': None,
         'addons': None
     }
+    process_id: str = None
     test_manager = None
     core_actions = None
     http_server = None
@@ -34,6 +35,7 @@ class Kernel:
         # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
         self.path['addons'] = self.path['root'] + 'addons/'
+        self.path['core.cli'] = os.path.join(self.path['root'], 'cli', 'wex')
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['log'] = self.path['tmp'] + 'log/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
@@ -178,8 +180,6 @@ class Kernel:
 
         if result is not None:
             self.print(result)
-
-        # TODO..
 
     def exec_middlewares(self, name: str, args=None):
         if args is None:

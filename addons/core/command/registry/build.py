@@ -2,12 +2,15 @@ import click
 import os
 import json
 
+from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY
-from src.helper.file import list_subdirectories
+from src.helper.file import list_subdirectories, set_sudo_user_owner
 
 
 @click.command
 @click.pass_obj
+@as_sudo
 def core__registry__build(kernel) -> None:
     kernel.log('Building registry...')
 
@@ -34,9 +37,31 @@ def core__registry__build(kernel) -> None:
             for addon_command_dir in [os.path.join(addon_dir, 'command')]
             if os.path.exists(addon_command_dir)
         },
+        'services': {
+            service: {
+                'name': service,
+                'addon': addon,
+                'dir': service_dir + '/' + service + '/',
+                "config": json.load(open(service_config_file)) if os.path.exists(service_config_file) else {}
+            }
+            for addon in addons
+            for addon_dir in [os.path.join(kernel.path['addons'], addon)]
+            for service_dir in [os.path.join(addon_dir, 'services')]
+            if os.path.exists(service_dir)
+            for service in os.listdir(service_dir)
+            for service_config_file in [
+                os.path.join(
+                    service_dir,
+                    service,
+                    APP_FILE_APP_SERVICE_CONFIG
+                )]
+        }
     }
 
-    with open(f'{kernel.path["tmp"]}{FILE_REGISTRY}', 'w') as f:
+    registry_path = f'{kernel.path["tmp"]}{FILE_REGISTRY}'
+    with open(registry_path, 'w') as f:
         json.dump(registry, f, indent=True)
+
+    set_sudo_user_owner(registry_path)
 
     kernel.log('Building complete ...')
