@@ -2,13 +2,15 @@ import importlib.util
 import datetime
 import os
 import sys
+import json
 
 from typing import Optional
-from addons.app.const.app import ERR_APP_NOT_FOUND
+from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND
 from src.helper.file import list_subdirectories
+from src.helper.args import convert_dict_to_args
 from src.helper.command import build_command_match, build_command_path_from_match
 from src.const.globals import \
-    COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
@@ -31,12 +33,24 @@ class Kernel:
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
 
+        path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
+
         # Initialize addons config
         self.addons = {addon: {'config': {}, 'path': {}} for addon in list_subdirectories(self.path['addons'])}
 
+        # Load registry if empty
+        if not os.path.exists(path_registry):
+            from addons.core.command.registry.build import core__registry__build
+
+            self.exec_function(
+                core__registry__build
+            )
+
+        with open(path_registry) as f:
+            self.registry = json.load(f)
+
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
-        import json
         from src.helper.string import format_ignore_missing
 
         # Load the messages from the JSON file
@@ -175,10 +189,17 @@ class Kernel:
                     'dir': os.getcwd(),
                 })
                 return
+        elif command_type == COMMAND_TYPE_SERVICE:
+            if match[1] not in self.registry['services']:
+                self.error(ERR_SERVICE_NOT_FOUND, {
+                    'command': command,
+                    'service': match[1],
+                })
+                return
 
         # Get valid path.
         command_path: str = build_command_path_from_match(self, match, command_type)
-        if not os.path.exists(command_path):
+        if not os.path.isfile(command_path):
             self.error(ERR_COMMAND_FILE_NOT_FOUND, {
                 'command': command,
                 'path': command_path,
@@ -188,9 +209,23 @@ class Kernel:
         # TODO
         print(command_path)
 
+    def exec_function(self, function, args=None):
+        if not args:
+            args = []
+
+        # Enforce sudo.
+        if hasattr(function.callback, 'as_sudo') and os.geteuid() != 0:
+            os.execvp('sudo', ['sudo'] + sys.argv)
+
+        if isinstance(args, dict):
+            args = convert_dict_to_args(function, args)
+
+        ctx = function.make_context('', args or [])
+        ctx.obj = self
+
+        return function.invoke(ctx)
 
     def add_to_history(self, data: dict):
-        import json
         from src.helper.json import load_json_if_valid
         from src.helper.file import set_sudo_user_owner
 

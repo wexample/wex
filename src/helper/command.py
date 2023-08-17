@@ -57,7 +57,11 @@ def build_command_path_from_match(kernel, match, command_type: str, subdir=None)
             match[2] + '.py'
         )
     elif command_type == COMMAND_TYPE_SERVICE:
-        return command_type
+        return os.path.join(
+            kernel.registry['services'][match[1]]['dir'],
+            'command',
+            match[2] + '.py'
+        )
     elif command_type == COMMAND_TYPE_USER:
         return command_type
     elif command_type == COMMAND_TYPE_CORE:
