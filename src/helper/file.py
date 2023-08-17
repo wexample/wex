@@ -4,6 +4,8 @@ import shutil
 import pwd
 import grp
 
+from src.helper.system import get_sudo_username
+
 
 def list_subdirectories(path: str) -> []:
     subdirectories = []
@@ -15,6 +17,12 @@ def list_subdirectories(path: str) -> []:
     subdirectories.sort()
 
     return subdirectories
+
+
+def set_sudo_user_owner(file):
+    sudo_user = get_sudo_username()
+    if sudo_user:
+        set_owner(file, sudo_user)
 
 
 def set_owner(file, username):
