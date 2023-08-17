@@ -11,22 +11,25 @@ def app_middleware_exec(kernel, *, addon=None, command=None, args=None, args_lis
         if hasattr(function.callback, 'app_location_optional'):
             return
 
-        if 'app-dir' in args:
-            app_dir = args['app-dir']
-            del args['app-dir']
+        if 'call_app_dir' in kernel.addons['app']['config']:
+            app_dir_resolved = kernel.addons['app']['path']['call_app_dir']
         else:
-            app_dir = os.getcwd()
+            if 'app-dir' in args:
+                app_dir = args['app-dir']
+                del args['app-dir']
+            else:
+                app_dir = os.getcwd()
 
-        app_dir_resolved = kernel.exec_function(
-            app__location__find,
-            {
-                'app-dir': app_dir
-            }
-        )
+            app_dir_resolved = kernel.exec_function(
+                app__location__find,
+                {
+                    'app-dir': app_dir
+                }
+            )
 
         if app_dir_resolved:
             # First test, create config.
-            if not hasattr(kernel.addons['app']['config'], 'call_command_level'):
+            if 'call_command_level' not in kernel.addons['app']['config']:
                 set_app_workdir(kernel, app_dir_resolved)
 
                 # Append to original apps list.
