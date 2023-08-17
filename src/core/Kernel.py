@@ -11,6 +11,7 @@ from src.const.error import \
 
 
 class Kernel:
+    addons: [str] = {}
     messages = None
     path: dict[str, Optional[str]] = {
         'root': None,
@@ -22,8 +23,12 @@ class Kernel:
 
         # Initialize global variables.
         self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
+        self.path['addons'] = self.path['root'] + 'addons/'
         self.path['tmp'] = self.path['root'] + 'tmp/'
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
+
+        # Initialize addons config
+        self.addons = {addon: {'config': {}} for addon in list_subdirectories(self.path['addons'])}
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
