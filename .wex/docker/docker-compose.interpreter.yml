@@ -1,8 +1,0 @@
-services:
-  wex_interpreter:
-    container_name: wex_interpreter_dev
-    image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
-    tty: true
-    volumes:
-      # Mount wex outside the apps list
-      - ${APP_PATH_ROOT}:/opt/wex
