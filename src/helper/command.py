@@ -1,5 +1,7 @@
+import os
 import re
 
+from addons.app.const.app import APP_DIR_APP_DATA
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
     COMMAND_PATTERN_APP,
@@ -37,6 +39,31 @@ def build_command_match(command: str):
 
     return None, None
 
+
+def build_command_path_from_match(kernel, match, command_type: str, subdir=None):
+    if command_type == COMMAND_TYPE_ADDON:
+        base_path = f"{kernel.path['addons']}{match.group(1)}/"
+
+        # if subdir:
+        #     base_path += f"{subdir}/"
+
+        return f"{base_path}command/{match.group(2)}/{match.group(3)}.py"
+    elif command_type == COMMAND_TYPE_APP:
+        return os.path.join(
+            kernel.addons['app']['path']['call_app_dir'],
+            APP_DIR_APP_DATA,
+            'command',
+            match[1],
+            match[2] + '.py'
+        )
+    elif command_type == COMMAND_TYPE_SERVICE:
+        return command_type
+    elif command_type == COMMAND_TYPE_USER:
+        return command_type
+    elif command_type == COMMAND_TYPE_CORE:
+        return command_type
+
+    return None
 
 def execute_command(kernel, command, working_directory=None, stdout=None, stderr=None):
     # Performance optimisation

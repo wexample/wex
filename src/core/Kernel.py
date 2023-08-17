@@ -1,3 +1,4 @@
+import importlib.util
 import datetime
 import os
 import sys
@@ -31,7 +32,7 @@ class Kernel:
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
 
         # Initialize addons config
-        self.addons = {addon: {'config': {}} for addon in list_subdirectories(self.path['addons'])}
+        self.addons = {addon: {'config': {}, 'path': {}} for addon in list_subdirectories(self.path['addons'])}
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
@@ -105,6 +106,12 @@ class Kernel:
         command: str = sys.argv[2]
         command_args: [] = sys.argv[3:]
 
+        # Init addons
+        self.exec_middlewares('call', {
+            'command': command,
+            'args': command_args
+        })
+
         result = self.exec(
             command,
             command_args
@@ -114,6 +121,29 @@ class Kernel:
             self.print(result)
 
         # TODO..
+
+    def exec_middlewares(self, name: str, args=None):
+        if args is None:
+            args = {}
+
+        # Init addons
+        for addon in self.addons:
+            self.exec_middleware(addon, name, args)
+
+    def exec_middleware(self, addon: str, name: str, args=None):
+        if args is None:
+            args = {}
+
+        middleware_enabled_path = self.path['addons'] + f'{addon}/middleware/{name}.py'
+
+        if os.path.exists(middleware_enabled_path):
+            function_name = f'{addon}_middleware_{name}'
+            spec = importlib.util.spec_from_file_location(name, middleware_enabled_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            function = getattr(module, function_name, None)
+
+            return function(self, **args)
 
     def build_match_or_fail(self, command: str):
         # Check command formatting.
@@ -136,6 +166,28 @@ class Kernel:
         match, command_type = self.build_match_or_fail(
             command
         )
+
+        # App commands should be run in an app dir or subdir
+        if command_type == COMMAND_TYPE_APP:
+            if not self.addons['app']['path']['call_app_dir']:
+                self.error(ERR_APP_NOT_FOUND, {
+                    'command': command,
+                    'dir': os.getcwd(),
+                })
+                return
+
+        # Get valid path.
+        command_path: str = build_command_path_from_match(self, match, command_type)
+        if not os.path.exists(command_path):
+            self.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                'command': command,
+                'path': command_path,
+            })
+            return
+
+        # TODO
+        print(command_path)
+
 
     def add_to_history(self, data: dict):
         import json
