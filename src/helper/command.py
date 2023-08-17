@@ -1,7 +1,9 @@
 import os
 import re
+import importlib.util
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from src.helper.args import convert_dict_to_args
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
     COMMAND_PATTERN_APP,
@@ -12,7 +14,8 @@ from src.const.globals import (
     COMMAND_TYPE_APP,
     COMMAND_TYPE_CORE,
     COMMAND_TYPE_SERVICE,
-    COMMAND_TYPE_USER,
+    COMMAND_TYPE_USER, COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON,
+    COMMAND_SEPARATOR_GROUP,
 )
 
 
@@ -40,34 +43,86 @@ def build_command_match(command: str):
     return None, None
 
 
-def build_command_path_from_match(kernel, match, command_type: str):
+def build_function_name_from_match(match: list, command_type: str) -> str:
+    return f"{match.group(1)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(2)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(3)}"
+
+
+def build_command_path_from_match(kernel, match, command_type: str, subdir: str = None) -> str | None:
     if command_type == COMMAND_TYPE_ADDON:
         base_path = f"{kernel.path['addons']}{match.group(1)}/"
+
+        if subdir:
+            base_path += f"{subdir}/"
+
         return f"{base_path}command/{match.group(2)}/{match.group(3)}.py"
     elif command_type == COMMAND_TYPE_APP:
+        base_path = f"{kernel.addons['app']['path']['call_app_dir']}{APP_DIR_APP_DATA}/"
+
+        if subdir:
+            base_path += f"{subdir}/"
+
         return os.path.join(
-            kernel.addons['app']['path']['call_app_dir'],
-            APP_DIR_APP_DATA,
+            base_path,
             'command',
             match[1],
             match[2] + '.py'
         )
     elif command_type == COMMAND_TYPE_SERVICE:
+        base_path = f"{kernel.registry['services'][match[1]]['dir']}/"
+
+        if subdir:
+            base_path += f"{subdir}/"
+
         return os.path.join(
-            kernel.registry['services'][match[1]]['dir'],
+            base_path,
             'command',
             match[2] + '.py'
         )
     elif command_type == COMMAND_TYPE_USER:
+        base_path = f"{os.path.expanduser('~')}{APP_DIR_APP_DATA}/"
+
+        if subdir:
+            base_path += f"{subdir}/"
+
         return os.path.join(
-            os.path.expanduser('~'),
-            APP_DIR_APP_DATA,
+            base_path,
             'command',
             match[1],
             match[2] + '.py'
         )
 
     return None
+
+
+def get_function_from_match(kernel, match, command_type: str) -> str:
+    command_path = build_command_path_from_match(kernel, match, command_type)
+
+    # Import module and load function.
+    spec = importlib.util.spec_from_file_location(command_path, command_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    return getattr(
+        module,
+        build_function_name_from_match(match, command_type)
+    )
+
+
+def build_command_parts(function_name: callable) -> list:
+    return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
+
+
+def build_command_from_function(function: callable) -> str:
+    parts = build_command_parts(function.callback.__name__)
+    return f'{parts[0]}{COMMAND_SEPARATOR_ADDON}{parts[1]}{COMMAND_SEPARATOR_GROUP}{parts[2]}'
+
+
+def build_full_command_from_function(function: callable, args: dict = None) -> str:
+    output = f'{CORE_COMMAND_NAME} '
+    output += build_command_from_function(function) + ' '
+    output += ' '.join(convert_dict_to_args(function, args))
+    return output
+
 
 def execute_command(kernel, command, working_directory=None, stdout=None, stderr=None):
     # Performance optimisation
