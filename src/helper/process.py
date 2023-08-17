@@ -2,8 +2,7 @@ import os
 
 from src.helper.args import convert_dict_to_args
 from src.helper.command import build_command_from_function
-from src.helper.file import set_owner
-from src.helper.system import get_sudo_username
+from src.helper.file import set_sudo_user_owner
 
 
 def process_post_exec(kernel, args):
@@ -16,11 +15,7 @@ def process_post_exec(kernel, args):
             + '\n'
         )
 
-    # Post exec file will be removed after execution,
-    # so we need to give proper user permission to do it.
-    sudo_user = get_sudo_username()
-    if sudo_user:
-        set_owner(post_exec_file_path, sudo_user)
+    set_sudo_user_owner(post_exec_file_path)
 
 
 def process_post_exec_wex(kernel, function: callable, args={}, is_async=False):
