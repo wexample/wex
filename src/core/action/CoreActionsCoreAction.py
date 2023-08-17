@@ -7,4 +7,4 @@ class CoreActionsCoreAction(AbstractCoreAction):
         return 'core-actions'
 
     def exec(self, command, command_args):
-        return "\n".join(self.kernel.core_actions.keys())
+        return "\n".join(self.kernel.get_core_actions().keys())

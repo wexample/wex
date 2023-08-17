@@ -1,7 +1,7 @@
 import os
 import sys
 import unittest
-import importlib
+import importlib.util
 
 from src.core.action.AbstractCoreAction import AbstractCoreAction
 
