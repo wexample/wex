@@ -50,48 +50,23 @@ def build_function_name_from_match(match: list, command_type: str) -> str:
 def build_command_path_from_match(kernel, match, command_type: str, subdir: str = None) -> str | None:
     if command_type == COMMAND_TYPE_ADDON:
         base_path = f"{kernel.path['addons']}{match.group(1)}/"
-
-        if subdir:
-            base_path += f"{subdir}/"
-
-        return f"{base_path}command/{match.group(2)}/{match.group(3)}.py"
+        command_path = os.path.join(match.group(2), match.group(3))
     elif command_type == COMMAND_TYPE_APP:
         base_path = f"{kernel.addons['app']['path']['call_app_dir']}{APP_DIR_APP_DATA}/"
-
-        if subdir:
-            base_path += f"{subdir}/"
-
-        return os.path.join(
-            base_path,
-            'command',
-            match[1],
-            match[2] + '.py'
-        )
+        command_path = os.path.join(match[1], match[2])
     elif command_type == COMMAND_TYPE_SERVICE:
         base_path = f"{kernel.registry['services'][match[1]]['dir']}/"
-
-        if subdir:
-            base_path += f"{subdir}/"
-
-        return os.path.join(
-            base_path,
-            'command',
-            match[2] + '.py'
-        )
+        command_path = match[2]
     elif command_type == COMMAND_TYPE_USER:
         base_path = f"{os.path.expanduser('~')}{APP_DIR_APP_DATA}/"
+        command_path = os.path.join(match[1], match[2])
+    else:
+        return None
 
-        if subdir:
-            base_path += f"{subdir}/"
+    if subdir:
+        base_path += f"{subdir}/"
 
-        return os.path.join(
-            base_path,
-            'command',
-            match[1],
-            match[2] + '.py'
-        )
-
-    return None
+    return os.path.join(base_path, 'command', command_path + '.py')
 
 
 def get_function_from_match(kernel, match, command_type: str) -> str:
