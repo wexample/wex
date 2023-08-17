@@ -20,6 +20,28 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
     # Install
     sudo apt install wex
 
+## Calling command
+    
+    # Basic call
+    wex core::logo/show
+
+    # User defined command, stored in home directory
+    wex ~local_command_group/local_command_name
+
+    # Custom command inside an app
+    wex .custom_command_group/custom_command_name
+
+    # Service command
+    wex @service_name/command_name
+
+## Addons
+
+Commands and services are organised in several "addons".
+
+### Services
+
+Each service has a unique name for all addons.
+
 ## License
 
 This project is licensed under the MIT License. For more information, please see the [MIT License on the official Open Source Initiative (OSI) website](https://opensource.org/licenses/MIT).
