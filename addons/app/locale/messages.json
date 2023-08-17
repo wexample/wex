@@ -1,5 +1,5 @@
 {
-  "ERR_APP_NOT_FOUND": "No application directory found when running \"{command}\", starting at : {dir}",
+  "ERR_APP_NOT_FOUND": "No application directory found when running \"{command}\", searching from : {dir}",
   "ERR_SERVICE_NOT_FOUND": "Service not found : {service}",
   "ERR_SERVICE_EXISTS": "Service already exists : {service}"
 }
