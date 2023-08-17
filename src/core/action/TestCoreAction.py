@@ -7,6 +7,10 @@ from src.core.action.AbstractCoreAction import AbstractCoreAction
 
 
 class TestCoreAction(AbstractCoreAction):
+    @staticmethod
+    def command() -> str:
+        return 'test'
+
     def exec(self, command, command_args):
         self.kernel.log('Starting test suite..')
 

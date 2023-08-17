@@ -10,3 +10,8 @@ class AbstractCoreAction:
     @abstractmethod
     def exec(self, command, command_args):
         pass
+
+    @staticmethod
+    @abstractmethod
+    def command() -> str:
+        pass
