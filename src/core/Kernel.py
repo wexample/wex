@@ -3,11 +3,14 @@ import os
 import sys
 
 from typing import Optional
-from src.helper.command import build_command_match
+from addons.app.const.app import ERR_APP_NOT_FOUND
+from src.helper.file import list_subdirectories
+from src.helper.command import build_command_match, build_command_path_from_match
 from src.const.globals import \
-    COLOR_RESET, COLOR_GRAY
+    COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED
+    ERR_ARGUMENT_COMMAND_MALFORMED, \
+    ERR_COMMAND_FILE_NOT_FOUND, COLORS
 
 
 class Kernel:
@@ -39,6 +42,13 @@ class Kernel:
         if self.messages is None:
             with open(self.path['root'] + 'locale/messages.json') as f:
                 self.messages = json.load(f)
+
+                for addon in self.addons:
+                    messages_path = self.path['addons'] + f'{addon}/locale/messages.json'
+
+                    if os.path.exists(messages_path):
+                        with open(messages_path) as file:
+                            self.messages.update(json.load(file))
 
         return format_ignore_missing(
             self.messages.get(key, default or key),
