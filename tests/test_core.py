@@ -2,6 +2,7 @@ import click
 import importlib
 
 from AbstractTestCase import AbstractTestCase
+from src.helper.registry import get_all_commands
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
 
@@ -64,12 +65,12 @@ class TestCore(AbstractTestCase):
         )
 
     def test_tests_coverage(self):
-        for command, command_data in self.kernel.get_all_commands().items():
+        for command, command_data in get_all_commands(self.kernel).items():
             test_file_path = command_data['test']
 
             self.assertIsNotNone(
                 command_data['test'],
-                f'Command {command} has a test file'
+                f'Command {command} has a test file in : {test_file_path}'
             )
 
             if test_file_path:

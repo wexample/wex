@@ -1,7 +1,7 @@
 import os
 
 from addons.core.command.registry.build import core__registry__build
-from src.helper.command import build_function_name_from_match
+from src.helper.command import build_function_name_from_match, build_command_path_from_match
 from src.helper.file import create_from_template
 
 
@@ -34,15 +34,15 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
 
 
 def create_test_from_command(kernel, command) -> str:
-    match = kernel.build_match_or_fail(command)
-    test_path = kernel.build_command_path_from_match(match, 'tests')
+    match, command_type = kernel.build_match_or_fail(command)
+    test_path = build_command_path_from_match(kernel, match, command_type, 'tests')
 
     if os.path.exists(test_path):
         return test_path
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
-    command_function_name = build_function_name_from_match(match)
+    command_function_name = build_function_name_from_match(match, command_type)
 
     kernel.log(f'Creating test for command {command}')
 
