@@ -5,12 +5,12 @@ import sys
 import json
 
 from typing import Optional
-from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND
+from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND, ERR_CORE_ACTION_NOT_FOUND
 from src.helper.file import list_subdirectories
 from src.helper.args import convert_dict_to_args
 from src.helper.command import build_command_match, build_command_path_from_match
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE, COMMAND_TYPE_CORE
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
     ERR_COMMAND_FILE_NOT_FOUND, COLORS
@@ -23,6 +23,7 @@ class Kernel:
         'root': None,
         'addons': None
     }
+    core_actions = None
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -189,11 +190,40 @@ class Kernel:
                     'dir': os.getcwd(),
                 })
                 return
+        # Service should exist
         elif command_type == COMMAND_TYPE_SERVICE:
             if match[1] not in self.registry['services']:
                 self.error(ERR_SERVICE_NOT_FOUND, {
                     'command': command,
                     'service': match[1],
+                })
+                return
+        # Run core action.
+        elif command_type == COMMAND_TYPE_CORE:
+            from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
+            from src.core.action.TestCoreAction import TestCoreAction
+            from src.core.action.HiCoreAction import HiCoreAction
+
+            self.core_actions = {
+                CoreActionsCoreAction.command(): CoreActionsCoreAction,
+                HiCoreAction.command(): HiCoreAction,
+                TestCoreAction.command(): TestCoreAction,
+            }
+
+            # Handle core action : test, hi, etc...
+            if command in self.core_actions:
+                action = command
+                command = None
+                if command_args:
+                    command = command_args.pop(0)
+
+                action = self.core_actions[action](self)
+
+                return action.exec(command, command_args)
+
+            else:
+                self.error(ERR_CORE_ACTION_NOT_FOUND, {
+                    'command': command,
                 })
                 return
 
