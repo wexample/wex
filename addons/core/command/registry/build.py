@@ -3,6 +3,7 @@ import os
 import json
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from helper.registry import scan_commands
 from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY, COMMAND_CHAR_SERVICE
 from src.helper.file import list_subdirectories, set_sudo_user_owner
@@ -11,68 +12,52 @@ from src.helper.file import list_subdirectories, set_sudo_user_owner
 @click.command
 @click.pass_obj
 @as_sudo
-def core__registry__build(kernel) -> None:
+def core__registry__build(kernel):
     kernel.log('Building registry...')
-
     addons = kernel.addons
+    addons_dict = {}
+
+    for addon in addons:
+        if os.path.exists(os.path.join(kernel.path['addons'], addon, 'command')):
+            command_dict = {}
+            for group in list_subdirectories(os.path.join(kernel.path['addons'], addon, 'command')):
+                command_dict.update(scan_commands(
+                    os.path.join(kernel.path['addons'], addon, 'command', group),
+                    group,
+                    f"{addon}::"
+                ))
+            addons_dict[addon] = {
+                'name': addon,
+                'commands': command_dict
+            }
 
     registry = {
-        'addons': {
-            addon: {
-                'name': addon,
-                'commands': {
-                    f"{addon}::{group}/{os.path.splitext(command_name)[0]}": {
-                        'file': os.path.join(addon_command_dir, group, command),
-                        'test': test_file if os.path.exists(test_file) else None
-                    }
-                    for group in list_subdirectories(addon_command_dir)
-                    for command in os.listdir(os.path.join(addon_command_dir, group))
-                    if command.endswith('.py')
-                    for command_name, ext in [os.path.splitext(command)]
-                    for test_file in [os.path.join(addon_dir, 'tests', 'command', group, command)]
-                }
-            }
-            for addon in addons
-            for addon_dir in [os.path.join(kernel.path['addons'], addon)]
-            for addon_command_dir in [os.path.join(addon_dir, 'command')]
-            if os.path.exists(addon_command_dir)
-        },
+        'addons': addons_dict,
         'services': {
             service: {
                 'name': service,
-                'commands': {
-                    f"{COMMAND_CHAR_SERVICE}{service}/{os.path.splitext(command_name)[0]}": {
-                        'file': os.path.join(service_command_dir, command),
-                        # TODO 'test': test_file if os.path.exists(test_file) else None
-                    }
-                    for service_command_dir in [os.path.join(service_dir, service, 'command')]
-                    if os.path.exists(service_command_dir)
-                    for command in os.listdir(service_command_dir)
-                    if command.endswith('.py')
-                    for command_name, ext in [os.path.splitext(command)]
-                },
+                'commands': scan_commands(
+                    os.path.join(services_dir, service, 'command'),
+                    service,
+                    f"{COMMAND_CHAR_SERVICE}"
+                ),
                 'addon': addon,
-                'dir': service_dir + '/' + service + '/',
-                "config": json.load(open(service_config_file)) if os.path.exists(service_config_file) else {}
+                'dir': os.path.join(services_dir, service) + '/',
+                "config": json.load(
+                    open(os.path.join(services_dir, service, APP_FILE_APP_SERVICE_CONFIG))) if os.path.exists(
+                    os.path.join(services_dir, service, APP_FILE_APP_SERVICE_CONFIG)) else {}
             }
             for addon in addons
             for addon_dir in [os.path.join(kernel.path['addons'], addon)]
-            for service_dir in [os.path.join(addon_dir, 'services')]
-            if os.path.exists(service_dir)
-            for service in os.listdir(service_dir)
-            for service_config_file in [
-                os.path.join(
-                    service_dir,
-                    service,
-                    APP_FILE_APP_SERVICE_CONFIG
-                )]
+            for services_dir in [os.path.join(addon_dir, 'services')]
+            if os.path.exists(services_dir)
+            for service in os.listdir(os.path.join(kernel.path['addons'], addon, 'services'))
         }
     }
 
-    registry_path = f'{kernel.path["tmp"]}{FILE_REGISTRY}'
+    registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
     with open(registry_path, 'w') as f:
-        json.dump(registry, f, indent=True)
+        json.dump(registry, f, indent=4)
 
     set_sudo_user_owner(registry_path)
-
-    kernel.log('Building complete ...')
+    kernel.log('Building complete...')
