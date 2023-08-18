@@ -8,11 +8,20 @@ def get_commands_groups_names(kernel, addon):
     return list(group_names)
 
 
-def get_all_commands(kernel):
+def get_all_commands(registry_part):
     output = {}
 
-    for addon, addon_data in kernel.registry['addons'].items():
+    for addon, addon_data in registry_part.items():
         for command, command_data in addon_data['commands'].items():
             output[command] = command_data
+
+    return output
+
+
+def get_all_services_names(kernel):
+    output = []
+
+    for service in kernel.registry['services']:
+        output.append(kernel.registry['services'][service]['name'])
 
     return output

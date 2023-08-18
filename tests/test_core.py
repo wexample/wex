@@ -65,7 +65,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_tests_coverage(self):
-        for command, command_data in get_all_commands(self.kernel).items():
+        for command, command_data in get_all_commands(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']
 
             self.assertIsNotNone(

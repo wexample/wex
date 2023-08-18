@@ -23,6 +23,12 @@ autocomplete() {
     CURRENT=""
   fi
 
+  # The @ char, which is user for services, is used as a word separator in compgen
+  # so completion is affected, is given, we have to
+  if [[ ${SEARCH[0]} =~ ^@ ]] && [[ "${CURRENT}" != "@" ]]; then
+    CURRENT="@${CURRENT}"
+  fi
+
   # Generate autocomplete suggestions using compgen
   COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CURRENT}))
 

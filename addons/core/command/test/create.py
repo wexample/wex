@@ -15,7 +15,7 @@ def core__test__create(kernel, command: str = None) -> list:
         output = []
 
         # Create all missing tests
-        for command, command_data in get_all_commands(kernel).items():
+        for command, command_data in get_all_commands(kernel.registry['addons']).items():
             output.append(create_test_from_command(kernel, command))
 
         return output
