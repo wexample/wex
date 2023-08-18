@@ -37,7 +37,7 @@ class TestCoreAction(AbstractCoreAction):
                     spec.loader.exec_module(module)
                     suite.addTests(loader.loadTestsFromModule(module))
 
-        result = unittest.TextTestRunner().run(suite)
+        result = unittest.TextTestRunner(failfast=True).run(suite)
 
         if not result.wasSuccessful():
             sys.exit(1)
