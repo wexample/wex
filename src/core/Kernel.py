@@ -167,12 +167,6 @@ class Kernel:
         command: str = sys.argv[2]
         command_args: [] = sys.argv[3:]
 
-        # Init addons
-        self.exec_middlewares('call', {
-            'command': command,
-            'args': command_args
-        })
-
         result = self.exec(
             command,
             command_args
@@ -280,16 +274,13 @@ class Kernel:
         if isinstance(command_args, dict):
             command_args = convert_dict_to_args(function, command_args)
 
-        addon, group, name = match.groups()
-
         middleware_args = {
-            'addon': addon,
             'args': convert_args_to_dict(function, command_args),
             'args_list': command_args,
             'command': command,
+            'command_type': command_type,
             'function': function,
-            'group': group,
-            'name': name,
+            'match': match,
         }
 
         self.exec_middlewares('exec', middleware_args)

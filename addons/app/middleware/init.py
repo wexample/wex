@@ -1,7 +1,9 @@
+import os
 import platform
 
 from addons.app.const.app import PROXY_APP_NAME, PROXY_FILE_APPS_REGISTRY
 from src.helper.file import json_load
+from addons.app.command.location.find import app__location__find
 
 
 def app_middleware_init(kernel, **kwargs) -> None:
@@ -17,7 +19,10 @@ def app_middleware_init(kernel, **kwargs) -> None:
 
     kernel.addons['app'] = {**kernel.addons['app'], **{
         'path': {
-            'proxy': proxy_dir
+            'proxy': proxy_dir,
+            'call_app_dir': app__location__find.callback(
+                os.getcwd()
+            )
         },
         'proxy': {
             'apps': json_load(proxy_dir + PROXY_FILE_APPS_REGISTRY)
