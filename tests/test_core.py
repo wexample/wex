@@ -64,6 +64,11 @@ class TestCore(AbstractTestCase):
             'hi!'
         )
 
+    def test_call_command_addon(self):
+        self.assertIsNotNone(
+            self.kernel.exec('core::logo/show')
+        )
+
     def test_call_command_app(self):
         self.assertEqual(
             self.kernel.exec('.local_command/test', {'arg_one': 'YES'}),
