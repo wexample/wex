@@ -58,7 +58,13 @@ class TestCore(AbstractTestCase):
             ['--name', 'John', '--greetings']
         )
 
-    def test_core_action(self):
+    def test_call_command_core_action(self):
+        self.assertEqual(
+            self.kernel.exec('hi'),
+            'hi!'
+        )
+
+    def test_call_command_app(self):
         self.assertEqual(
             self.kernel.exec('.local_command/test', {'arg_one': 'YES'}),
             'OK:YES'
