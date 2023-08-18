@@ -38,8 +38,9 @@ autocomplete() {
     if [[ ${CURSOR} == "0" ]]; then
       # Add trailing "::" is integrated in the suggestion
       # if it matches an addon name, if not,
+      # and if no leading . or ~ exists,
       # this is a core action, so add a trailing space
-      if [[ ! ${COMPREPLY} == *'::' ]]; then
+      if [[ ! ${COMPREPLY} == *'::' ]] && [[ "${COMPREPLY:0:1}" != "." ]] && [[ "${COMPREPLY:0:1}" != "~" ]]; then
         COMPREPLY+=" "
       fi
     # Add trailing slash separator

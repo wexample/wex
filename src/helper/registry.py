@@ -35,11 +35,24 @@ def get_all_services_names(kernel):
     return output
 
 
-def scan_commands(directory, group, prefix, endswith='.py'):
+def scan_commands_groups(directory, prefix):
+    command_dict = {}
+    for group in list_subdirectories(directory):
+        group_path = os.path.join(directory, group)
+        command_dict.update(scan_commands(
+            group_path,
+            group,
+            prefix
+        ))
+
+    return command_dict
+
+
+def scan_commands(directory, group, prefix):
     """Scans the given directory for command files and returns a dictionary of found commands."""
     commands = {}
     for command in os.listdir(directory):
-        if command.endswith(endswith):
+        if command.endswith('.py'):
             command_name, ext = os.path.splitext(command)
             test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
             commands[f"{prefix}{group}/{command_name}"] = {
@@ -53,13 +66,16 @@ def build_registry_addons(addons, kernel):
     addons_dict = {}
 
     for addon in addons:
-        addon_path = os.path.join(kernel.path['addons'], addon, 'command')
-        if os.path.exists(addon_path):
-            command_dict = {}
-            for group in list_subdirectories(addon_path):
-                group_path = os.path.join(addon_path, group)
-                command_dict.update(scan_commands(group_path, group, f"{addon}::"))
-            addons_dict[addon] = {'name': addon, 'commands': command_dict}
+        addon_command_path = os.path.join(kernel.path['addons'], addon, 'command')
+
+        if os.path.exists(addon_command_path):
+            addons_dict[addon] = {
+                'name': addon,
+                'commands': scan_commands_groups(
+                    addon_command_path,
+                    f'{addon}::'
+                )
+            }
 
     return addons_dict
 
@@ -75,7 +91,8 @@ def build_registry_services(addons, kernel):
                 config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
                 services_dict[service] = {
                     'name': service,
-                    'commands': scan_commands(os.path.join(service_path, 'command'), service, f"{COMMAND_CHAR_SERVICE}"),
+                    'commands': scan_commands(os.path.join(service_path, 'command'), service,
+                                              f"{COMMAND_CHAR_SERVICE}"),
                     'addon': addon,
                     'dir': service_path + '/',
                     "config": json.load(open(config_file_path)) if os.path.exists(config_file_path) else {}

@@ -29,8 +29,54 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
         if search_split[0] == COMMAND_CHAR_USER:
             suggestion = '~A ~B ~C'
         # User typed "wex ."
-        elif search_split[0] == COMMAND_CHAR_APP:
-            suggestion = '.A .B .C'
+        elif search_split[0].startswith(COMMAND_CHAR_APP):
+            from src.helper.registry import scan_commands_groups
+            from addons.app.command.location.find import app__location__find
+
+            app_path = kernel.exec_function(app__location__find)
+            # We are in an app dir or subdir
+            if app_path:
+                commands = scan_commands_groups(app_path + '.wex/command/', '.')
+                commands_names = []
+
+                # User typed "wex .group/" and expect command name
+                if COMMAND_SEPARATOR_GROUP in search_split[0]:
+                    for command, command_data in commands.items():
+                        commands_names.append(command)
+
+                    # Ignore non relevant values
+                    commands_names = [
+                        name for name in commands_names if name.startswith(search_split[0])
+                    ]
+
+                    suggestion = ' '.join(commands_names)
+                else:
+                    groups = []
+                    for command, command_data in commands.items():
+                        groups.append(command.split('/')[0])
+                        commands_names.append(command)
+
+                    # Ignore non relevant values
+                    groups = [
+                        name for name in groups if name.startswith(search_split[0])
+                    ]
+
+                    suggestion = ' '.join(groups)
+
+                    # There is only one group matching search
+                    if len(groups) == 1:
+                        full_commands = [
+                            name for name in commands_names if name.startswith(search_split[0])
+                        ]
+
+                        # There is only one command in this group
+                        if len(full_commands) == 1:
+                            # Override suggestion with full command
+                            suggestion = full_commands[0]
+                        else:
+                            # Prepare user to search command name part
+                            suggestion += COMMAND_SEPARATOR_GROUP
+
         # User typed "wex @"
         elif search_split[0] == COMMAND_CHAR_SERVICE:
             suggestion = _get_all_services_names_suggestions(kernel)
@@ -59,7 +105,7 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     elif cursor == 1:
         # User typed "wex @x" so we can suggest service names.
         if search_split[0] == COMMAND_CHAR_SERVICE:
-            if '/' in search_split[1]:
+            if COMMAND_SEPARATOR_GROUP in search_split[1]:
                 split = search_split[1].split('/', 1)
                 service_name = split[0]
 
