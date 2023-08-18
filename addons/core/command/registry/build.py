@@ -4,7 +4,7 @@ import json
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 from src.decorator.as_sudo import as_sudo
-from src.const.globals import FILE_REGISTRY
+from src.const.globals import FILE_REGISTRY, COMMAND_CHAR_SERVICE
 from src.helper.file import list_subdirectories, set_sudo_user_owner
 
 
@@ -40,6 +40,17 @@ def core__registry__build(kernel) -> None:
         'services': {
             service: {
                 'name': service,
+                'commands': {
+                    f"{COMMAND_CHAR_SERVICE}{service}/{os.path.splitext(command_name)[0]}": {
+                        'file': os.path.join(service_command_dir, command),
+                        # TODO 'test': test_file if os.path.exists(test_file) else None
+                    }
+                    for service_command_dir in [os.path.join(service_dir, service, 'command')]
+                    if os.path.exists(service_command_dir)
+                    for command in os.listdir(service_command_dir)
+                    if command.endswith('.py')
+                    for command_name, ext in [os.path.splitext(command)]
+                },
                 'addon': addon,
                 'dir': service_dir + '/' + service + '/',
                 "config": json.load(open(service_config_file)) if os.path.exists(service_config_file) else {}
