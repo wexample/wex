@@ -43,8 +43,17 @@ def build_command_match(command: str):
     return None, None
 
 
-def build_function_name_from_match(match: list, command_type: str) -> str:
-    return f"{match.group(1)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(2)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(3)}"
+def build_function_name_from_match(match: list, command_type: str) -> str | None:
+    if command_type == COMMAND_TYPE_ADDON:
+        return f'{match.group(1)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(2)}{COMMAND_SEPARATOR_FUNCTION_PARTS}{match.group(3)}'
+    elif command_type == COMMAND_TYPE_APP:
+        return COMMAND_SEPARATOR_FUNCTION_PARTS.join([
+            'app',
+            match.group(1),
+            match.group(2)
+        ])
+
+    return None
 
 
 def build_command_path_from_match(kernel, match, command_type: str, subdir: str = None) -> str | None:
