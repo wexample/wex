@@ -60,8 +60,8 @@ class TestCore(AbstractTestCase):
 
     def test_core_action(self):
         self.assertEqual(
-            self.kernel.exec('hi'),
-            'hi!'
+            self.kernel.exec('.local_command/test', {'arg_one': 'YES'}),
+            'OK:YES'
         )
 
     def test_tests_coverage(self):
