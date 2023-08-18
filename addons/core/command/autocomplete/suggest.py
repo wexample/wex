@@ -27,59 +27,29 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     if cursor == 0:
         # User typed "wex ~"
         if search_split[0] == COMMAND_CHAR_USER:
-            suggestion = '~A ~B ~C'
+            import os
+            from src.helper.suggest import suggest_from_path
+            from addons.app.const.app import APP_DIR_APP_DATA
+
+            suggestion = suggest_from_path(
+                f'{os.path.expanduser("~")}/',
+                search_split[0]
+            )
         # User typed "wex ."
         elif search_split[0].startswith(COMMAND_CHAR_APP):
-            from src.helper.registry import scan_commands_groups
             from addons.app.command.location.find import app__location__find
+            from src.helper.suggest import suggest_from_path
 
             app_path = kernel.exec_function(app__location__find)
             # We are in an app dir or subdir
             if app_path:
-                commands = scan_commands_groups(app_path + '.wex/command/', '.')
-                commands_names = []
-
-                # User typed "wex .group/" and expect command name
-                if COMMAND_SEPARATOR_GROUP in search_split[0]:
-                    for command, command_data in commands.items():
-                        commands_names.append(command)
-
-                    # Ignore non relevant values
-                    commands_names = [
-                        name for name in commands_names if name.startswith(search_split[0])
-                    ]
-
-                    suggestion = ' '.join(commands_names)
-                else:
-                    groups = []
-                    for command, command_data in commands.items():
-                        groups.append(command.split('/')[0])
-                        commands_names.append(command)
-
-                    # Ignore non relevant values
-                    groups = [
-                        name for name in groups if name.startswith(search_split[0])
-                    ]
-
-                    suggestion = ' '.join(groups)
-
-                    # There is only one group matching search
-                    if len(groups) == 1:
-                        full_commands = [
-                            name for name in commands_names if name.startswith(search_split[0])
-                        ]
-
-                        # There is only one command in this group
-                        if len(full_commands) == 1:
-                            # Override suggestion with full command
-                            suggestion = full_commands[0]
-                        else:
-                            # Prepare user to search command name part
-                            suggestion += COMMAND_SEPARATOR_GROUP
+                suggestion = suggest_from_path(app_path, search_split[0])
 
         # User typed "wex @"
         elif search_split[0] == COMMAND_CHAR_SERVICE:
-            suggestion = _get_all_services_names_suggestions(kernel)
+            from src.helper.suggest import get_all_services_names_suggestions
+
+            suggestion = get_all_services_names_suggestions(kernel)
         # User typed "wex ", we suggest all addons names and special chars.
         else:
             suggestion = ' '.join(addon + '::' for addon in kernel.registry['addons'].keys())
@@ -91,7 +61,7 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
             import os
             from addons.app.const.app import APP_DIR_APP_DATA
             # User local command path exists
-            base_path = f'{os.path.expanduser("~")}{APP_DIR_APP_DATA}/command'
+            base_path = f'{os.path.expanduser("~")}/{APP_DIR_APP_DATA}command'
             if os.path.exists(base_path):
                 # Suggest to execute local user command
                 suggestion += f' \\{COMMAND_CHAR_USER}'
@@ -115,7 +85,9 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
 
                     return ' '.join(commands)
             else:
-                suggestion = _get_all_services_names_suggestions(kernel)
+                from src.helper.suggest import get_all_services_names_suggestions
+
+                suggestion = get_all_services_names_suggestions(kernel)
                 # If there's only one suggestion (no space separator), add a trailing "/" at the end
                 if ' ' not in suggestion:
                     suggestion += COMMAND_SEPARATOR_GROUP
@@ -172,9 +144,3 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     return suggestion
 
 
-def _get_all_services_names_suggestions(kernel):
-    from src.helper.registry import get_all_services_names
-
-    return ' '.join([
-        f'@{service}' for service in get_all_services_names(kernel)]
-    )

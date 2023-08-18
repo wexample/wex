@@ -35,15 +35,17 @@ def get_all_services_names(kernel):
     return output
 
 
-def scan_commands_groups(directory, prefix):
+def scan_commands_groups(directory: str, prefix: str):
     command_dict = {}
-    for group in list_subdirectories(directory):
-        group_path = os.path.join(directory, group)
-        command_dict.update(scan_commands(
-            group_path,
-            group,
-            prefix
-        ))
+
+    if os.path.exists(directory):
+        for group in list_subdirectories(directory):
+            group_path = os.path.join(directory, group)
+            command_dict.update(scan_commands(
+                group_path,
+                group,
+                prefix
+            ))
 
     return command_dict
 
