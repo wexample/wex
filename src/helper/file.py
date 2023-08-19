@@ -21,7 +21,7 @@ def list_subdirectories(path: str) -> []:
 
 def set_sudo_user_owner(file):
     sudo_user = get_sudo_username()
-    if sudo_user:
+    if sudo_user is not None:
         set_owner(file, sudo_user)
 
 
@@ -52,6 +52,8 @@ def create_from_template(template_path, dest_path, parameters):
 
     with open(dest_path, 'w') as output_file:
         output_file.write(formatted_content)
+
+    set_sudo_user_owner(dest_path)
 
 
 def merge_files(src: str, dest: str) -> None:
