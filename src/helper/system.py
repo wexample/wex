@@ -6,6 +6,7 @@ import subprocess
 from contextlib import closing
 import psutil
 
+from src.helper.user import get_user_home_data_path
 from src.helper.command import execute_command
 
 
@@ -25,6 +26,19 @@ def get_sudo_group():
 
 def get_sudo_user_home_path():
     return f'/home/{get_sudo_username()}/'
+
+
+def create_user_home_data_path():
+    path = get_user_home_data_path()
+
+    os.makedirs(
+        os.path.dirname(
+            path
+        ),
+        exist_ok=True
+    )
+
+    return path
 
 
 def is_port_open(port: int, host: str = 'localhost') -> bool:
