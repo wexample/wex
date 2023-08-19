@@ -6,6 +6,7 @@ import json
 
 from typing import Optional
 from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND, ERR_CORE_ACTION_NOT_FOUND
+from src.helper.user import get_user_home_data_path
 from src.helper.file import list_subdirectories
 from src.helper.args import convert_dict_to_args, convert_args_to_dict
 from src.helper.command import build_command_match, build_command_path_from_match, build_full_command_from_function, \
@@ -14,7 +15,7 @@ from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE, COMMAND_TYPE_CORE, COLOR_CYAN
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, \
-    ERR_COMMAND_FILE_NOT_FOUND, COLORS
+    ERR_COMMAND_FILE_NOT_FOUND
 
 
 class Kernel:
@@ -56,6 +57,12 @@ class Kernel:
 
         with open(path_registry) as f:
             self.registry = json.load(f)
+
+        # Add user command dir to path.
+        user_data_path = get_user_home_data_path()
+        commands_path = os.path.join(user_data_path, 'command')
+        if os.path.exists(commands_path) and commands_path not in sys.path:
+            sys.path.append(commands_path)
 
         self.exec_middlewares('init')
 
