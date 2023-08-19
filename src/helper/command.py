@@ -3,6 +3,7 @@ import re
 import importlib.util
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from src.helper.user import get_user_home_data_path
 from src.helper.args import convert_dict_to_args
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
@@ -58,16 +59,20 @@ def build_function_name_from_match(match: list, command_type: str) -> str | None
 
 def build_command_path_from_match(kernel, match, command_type: str, subdir: str = None) -> str | None:
     if command_type == COMMAND_TYPE_ADDON:
+        # Unable to fin command path if no addon name found.
+        if match.group(1) is None:
+            return
+
         base_path = f"{kernel.path['addons']}{match.group(1)}/"
         command_path = os.path.join(match.group(2), match.group(3))
     elif command_type == COMMAND_TYPE_APP:
         base_path = f"{kernel.addons['app']['path']['call_app_dir']}{APP_DIR_APP_DATA}"
         command_path = os.path.join(match[1], match[2])
     elif command_type == COMMAND_TYPE_SERVICE:
-        base_path = f"{kernel.registry['services'][match[1]]['dir']}/"
+        base_path = f"{kernel.registry['services'][match[1]]['dir']}"
         command_path = match[2]
     elif command_type == COMMAND_TYPE_USER:
-        base_path = f"{os.path.expanduser('~')}/{APP_DIR_APP_DATA}"
+        base_path = get_user_home_data_path()
         command_path = os.path.join(match[1], match[2])
     else:
         return None
