@@ -16,7 +16,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             }
         )
 
-        self.kernel.log(f'Autocomplete suggestion : "{suggestions}"')
+        self.kernel.log(f'Autocomplete suggestion (cursor {cursor}) : "{suggestions}"')
 
         if should_success:
             self.assertTrue(bool(suggestions.strip()))
@@ -35,12 +35,18 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             }
         )
 
-        self.kernel.log(f'Autocomplete suggestion : "{suggestions}"')
+        self.kernel.log(f'Autocomplete suggestion (cursor {cursor}) : "{suggestions}"')
 
     def test_suggest(self):
+        self.check_suggest_addon()
+        self.check_suggest_service()
+
+    def check_suggest_addon(self):
         self.check_suggestion_command(0)
         self.check_suggestion_command(1)
         self.check_suggestion_command(2)
         self.check_suggestion_command(3, False)
+        self.check_suggestion_command(4, False)
 
+    def check_suggest_service(self):
         self.check_suggestion_service(0)

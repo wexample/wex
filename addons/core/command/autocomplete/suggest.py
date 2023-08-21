@@ -129,7 +129,7 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
         # Merge all params in a list,
         # but ignore already given args,
         # i.e : if -d is already given, do not suggest "-d" or "--default"
-        function = processor.get_function()
+        function = processor.get_function(kernel)
         params = []
         for param in function.params:
             if any(opt in params_current for opt in param.opts):
