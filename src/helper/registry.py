@@ -2,21 +2,34 @@ import json
 import os
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
-from src.const.globals import COMMAND_CHAR_SERVICE
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import list_subdirectories
+
+
+def get_all_commands(kernel):
+    registry = {}
+
+    for processor in kernel.processors:
+        registry = {**registry, **kernel.processors[processor].get_commands_registry(kernel)}
+
+    return registry
+
+
+def get_all_commands_from_addons(kernel):
+    return get_all_commands_from_registry_part(kernel.registry['addons'])
 
 
 def get_commands_groups_names(kernel, addon):
     group_names = set()
 
     if addon in kernel.registry['addons']:
-        for command in kernel.registry['addons'][addon]['commands'].keys():
-            group_name = command.split("::")[1].split("/")[0]
+        for command in get_all_commands_from_addons(kernel).keys():
+            group_name = command.split(COMMAND_SEPARATOR_ADDON)[1].split("/")[0]
             group_names.add(group_name)
     return list(group_names)
 
 
-def get_all_commands(registry_part):
+def get_all_commands_from_registry_part(registry_part: dict) -> dict:
     output = {}
 
     for addon, addon_data in registry_part.items():
@@ -101,3 +114,9 @@ def build_registry_services(addons, kernel):
                 }
 
     return services_dict
+
+
+def remove_addons(commands_list: []) -> []:
+    return [
+        command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list
+    ]

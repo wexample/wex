@@ -1,5 +1,6 @@
 import click
 
+from src.helper.registry import get_all_commands, remove_addons
 from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, COMMAND_CHAR_APP, COMMAND_CHAR_SERVICE, \
     COMMAND_CHAR_USER
 
@@ -15,21 +16,16 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     Returns a string with suggestions to transmit to bash compgen.
     """
     suggestion = ''
-
     search_split = search.split(' ')
 
     # Mismatch between parts and cursor index.
     if cursor > len(search_split):
         return ''
 
-    search_part = search_split[cursor]
-
     if cursor == 0:
         # User typed "wex ~"
         if search_split[0] == COMMAND_CHAR_USER:
-            import os
-            from src.helper.suggest import suggest_from_path
-            from addons.app.const.app import APP_DIR_APP_DATA
+            pass
 
             suggestion = suggest_from_path(
                 f'{os.path.expanduser("~")}/',
@@ -40,19 +36,16 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
             from addons.app.command.location.find import app__location__find
             from src.helper.suggest import suggest_from_path
 
-            app_path = kernel.exec_function(app__location__find)
-            # We are in an app dir or subdir
-            if app_path:
-                suggestion = suggest_from_path(app_path, search_split[0])
+        # User typed "wex co"
+        elif search_split[0] != '':
+            suggestion = ' ' . join([addon + COMMAND_SEPARATOR_ADDON for addon in kernel.registry['addons'].keys() if addon.startswith(search_split[0])])
 
-        # User typed "wex @"
-        elif search_split[0] == COMMAND_CHAR_SERVICE:
-            from src.helper.suggest import get_all_services_names_suggestions
-
-            suggestion = get_all_services_names_suggestions(kernel)
+            # If only one result, autocomplete
+            from src.helper.suggest import suggest_autocomplete_if_single
+            suggestion = suggest_autocomplete_if_single(kernel, suggestion)
         # User typed "wex ", we suggest all addons names and special chars.
         else:
-            suggestion = ' '.join(addon + '::' for addon in kernel.registry['addons'].keys())
+            suggestion = ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in kernel.registry['addons'].keys())
             # Adds also all core actions.
             suggestion += ' ' + ' '.join(kernel.get_core_actions().keys())
             # Suggest to execute service command
@@ -75,47 +68,43 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     elif cursor == 1:
         # User typed "wex @x" so we can suggest service names.
         if search_split[0] == COMMAND_CHAR_SERVICE:
-            if COMMAND_SEPARATOR_GROUP in search_split[1]:
-                split = search_split[1].split('/', 1)
-                service_name = split[0]
-
-                if service_name in kernel.registry['services']:
-                    from src.helper.registry import get_all_commands
-                    commands = get_all_commands({service_name: kernel.registry['services'][service_name]})
-
-                    return ' '.join(commands)
-            else:
-                from src.helper.suggest import get_all_services_names_suggestions
-
-                suggestion = get_all_services_names_suggestions(kernel)
-                # If there's only one suggestion (no space separator), add a trailing "/" at the end
-                if ' ' not in suggestion:
-                    suggestion += COMMAND_SEPARATOR_GROUP
-        # User typed "app::", we suggest all addon groups.
+            pass
+    #         if COMMAND_SEPARATOR_GROUP in search_split[1]:
+    #             split = search_split[1].split('/', 1)
+    #             service_name = split[0]
+    #
+    #             if service_name in kernel.registry['services']:
+    #                 from src.helper.registry import get_all_commands
+    #                 commands = get_all_commands_from_registry_part({service_name: kernel.registry['services'][service_name]})
+    #
+    #                 return ' '.join(commands)
+    #         else:
+    #             from src.helper.suggest import get_all_services_names_suggestions
+    #
+    #             suggestion = get_all_services_names_suggestions(kernel)
+    #             # If there's only one suggestion (no space separator), add a trailing "/" at the end
+    #             if ' ' not in suggestion:
+    #                 suggestion += COMMAND_SEPARATOR_GROUP
+        # User typed "wex core::", we suggest all addon groups.
         elif search_split[1] == COMMAND_SEPARATOR_ADDON:
             from src.helper.registry import get_commands_groups_names
             suggestion = ' '.join(get_commands_groups_names(kernel, search_split[0]))
         else:
-            # User types "app:", we add a second ":"
+            # User types "core:", we add a second ":"
             suggestion = ':'
     elif cursor == 2:
         addon = search_split[0]
 
-        if addon in kernel.registry['addons']:
-            # User typed "wex app::conf".
-            for command, command_data in kernel.registry['addons'][addon]['commands'].items():
-                command_parts = command.split(COMMAND_SEPARATOR_ADDON)
-                command_split = command_parts[1].split(COMMAND_SEPARATOR_GROUP)
+        # Get all matching commands
+        all_commands = [command for command in get_all_commands(kernel) if command.startswith(
+            addon + COMMAND_SEPARATOR_ADDON + search_split[2]
+        )]
 
-                if COMMAND_SEPARATOR_GROUP in search_part:
-                    if command_split[0] == search_split[2].split(COMMAND_SEPARATOR_GROUP)[0]:
-                        suggestion += f' {" ".join(command_parts)}'
-                else:
-                    if command_split[0].startswith(search_split[2]):
-                        suggestion += f' {command_split[0]}'
+        suggestion = ' '.join(remove_addons(all_commands))
 
-            # Reduce unique values
-            suggestion = " ".join(set(suggestion.split()))
+        from src.helper.suggest import suggest_autocomplete_if_single
+        suggestion = suggest_autocomplete_if_single(kernel, suggestion)
+
     # Complete arguments.
     elif cursor >= 3:
         processor = kernel.build_command_processor(

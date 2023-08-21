@@ -76,6 +76,10 @@ class AbstractCommandProcessor:
     def get_pattern(self) -> str:
         pass
 
+    @staticmethod
+    def get_commands_registry(kernel) -> dict:
+        return {}
+
     @abstractmethod
     def get_type(self) -> str:
         pass
@@ -97,7 +101,6 @@ class AbstractCommandProcessor:
 
         return None
 
-
     def build_command_from_function(self, function_or_command) -> str | None:
         if isinstance(function_or_command, str):
             return function_or_command
@@ -109,3 +112,7 @@ class AbstractCommandProcessor:
             base_path += f"{subdir}/"
 
         return os.path.join(base_path, 'command', command_path + '.py')
+
+    def autocomplete_suggest(self, cursor: int, search_split: [], search: str) -> str | None:
+
+        return None

@@ -1,52 +1,141 @@
 from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
+from src.const.globals import COMMAND_CHAR_USER, COMMAND_CHAR_SERVICE, COMMAND_CHAR_APP, COMMAND_SEPARATOR_ADDON, \
+    COMMAND_SEPARATOR_GROUP
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
-    def check_suggestion_command(self, cursor, should_success=True):
-        suggestions = self.kernel.exec_function(
-            core__autocomplete__suggest,
-            {
-                'cursor': cursor,
-                'search': '  '.join([
-                    'app',
-                    '::',
-                    'config/set',
-                ])
-            }
-        )
-
-        self.kernel.log(f'Autocomplete suggestion (cursor {cursor}) : "{suggestions}"')
-
-        if should_success:
-            self.assertTrue(bool(suggestions.strip()))
-        else:
-            self.assertEqual(suggestions, '')
-
-    def check_suggestion_service(self, cursor, should_success=True):
-        suggestions = self.kernel.exec_function(
-            core__autocomplete__suggest,
-            {
-                'cursor': cursor,
-                'search': '  '.join([
-                    '@proxy',
-                    'started',
-                ])
-            }
-        )
-
-        self.kernel.log(f'Autocomplete suggestion (cursor {cursor}) : "{suggestions}"')
-
     def test_suggest(self):
         self.check_suggest_addon()
-        self.check_suggest_service()
+        self.check_suggest_addon_args()
 
     def check_suggest_addon(self):
-        self.check_suggestion_command(0)
-        self.check_suggestion_command(1)
-        self.check_suggestion_command(2)
-        self.check_suggestion_command(3, False)
-        self.check_suggestion_command(4, False)
+        # User ask "", it should suggest all
+        # addons names suffixed by "::",
+        # and every special char namespaces : ~, ., @
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 0,
+                'search': ''
+            }
+        )
 
-    def check_suggest_service(self):
-        self.check_suggestion_service(0)
+        self.assertTrue(COMMAND_CHAR_APP in suggestions)
+        self.assertTrue(COMMAND_CHAR_SERVICE in suggestions)
+        self.assertTrue(COMMAND_CHAR_USER in suggestions)
+
+        # User ask "co", it should suggest "core::",
+        # with addon separator as there is no more
+        # addon name starting with "co"
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 0,
+                'search': 'co'
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) >= 1
+        )
+
+        # User ask "core:", it should suggest "core::"
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 1,
+                'search': ' '.join(['core', ':'])
+            }
+        )
+
+        self.assertTrue(
+            suggestions == ':'
+        )
+
+        # User ask "core::", it should suggest all groups in core::*
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 1,
+                'search': ' '.join(['core', COMMAND_SEPARATOR_ADDON])
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) >= 2
+        )
+
+        # User ask "core::co", it should suggest all groups in core::co*
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': ' '.join([
+                    'core',
+                    COMMAND_SEPARATOR_ADDON,
+                    'co'
+                ])
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) >= 2
+        )
+
+        # User ask "core::logo", it should suggest single result core::logo/show
+        # It may fail in the future if we add a new logo/xx command
+        # We'll found another command in this case
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': ' '.join([
+                    'core',
+                    COMMAND_SEPARATOR_ADDON,
+                    'logo'
+                ])
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) == 1
+        )
+
+        # User ask "core::logo/show",
+        # it suggests only the found command
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': ' '.join([
+                    'core',
+                    COMMAND_SEPARATOR_ADDON,
+                    'logo',
+                    COMMAND_SEPARATOR_GROUP,
+                    'show'
+                ])
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) == 1
+        )
+
+    def check_suggest_addon_args(self):
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 3,
+                'search': ' '.join([
+                    'core',
+                    COMMAND_SEPARATOR_ADDON,
+                    'autocomplete' + COMMAND_SEPARATOR_GROUP + 'suggest'
+                    ' '
+                ])
+            }
+        )
+
+        self.assertTrue(
+            len(suggestions.split(' ')) >= 2
+        )

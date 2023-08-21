@@ -1,5 +1,6 @@
 import os
 
+from src.helper.registry import get_all_commands_from_addons
 from src.helper.args import convert_dict_to_args
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_FUNCTION_PARTS, \
     COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, CORE_COMMAND_NAME
@@ -58,3 +59,7 @@ class AddonCommandProcessor(AbstractCommandProcessor):
             output += ' '.join(convert_dict_to_args(function, args))
 
         return output
+
+    @staticmethod
+    def get_commands_registry(kernel) -> dict:
+        return get_all_commands_from_addons(kernel)

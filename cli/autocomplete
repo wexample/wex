@@ -18,7 +18,8 @@ autocomplete() {
   local SUGGESTIONS=""
   SUGGESTIONS=($(wex core::autocomplete/suggest -c "${CURSOR}" -s "${SEARCH[*]}"))
 
-  # If current position is just after "::", suggest all groups
+  # If current position is right after "::",
+  # we need to empty var to allow suggestions
   if [ "${CURRENT}" == "::" ]; then
     CURRENT=""
   fi

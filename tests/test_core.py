@@ -6,7 +6,7 @@ from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.version.build import core__version__build
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.helper.registry import get_all_commands
+from src.helper.registry import get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
 
@@ -104,7 +104,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_tests_coverage(self):
-        for command, command_data in get_all_commands(self.kernel.registry['addons']).items():
+        for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']
 
             self.assertIsNotNone(
