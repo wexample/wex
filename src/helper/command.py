@@ -1,26 +1,3 @@
-from src.const.globals import (
-    COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON,
-    COMMAND_SEPARATOR_GROUP,
-)
-from src.helper.args import convert_dict_to_args
-
-
-def build_command_parts(function_name: callable) -> list:
-    return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
-
-
-def build_command_from_function(function: callable) -> str:
-    parts = build_command_parts(function.callback.__name__)
-    return f'{parts[0]}{COMMAND_SEPARATOR_ADDON}{parts[1]}{COMMAND_SEPARATOR_GROUP}{parts[2]}'
-
-
-def build_full_command_from_function(function: callable, args: dict = None) -> str:
-    output = f'{CORE_COMMAND_NAME} '
-    output += build_command_from_function(function) + ' '
-    output += ' '.join(convert_dict_to_args(function, args))
-    return output
-
-
 def execute_command(kernel, command, working_directory=None, stdout=None, stderr=None):
     # Performance optimisation
     import datetime

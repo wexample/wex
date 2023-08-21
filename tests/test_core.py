@@ -3,6 +3,9 @@ import importlib
 
 from AbstractTestCase import AbstractTestCase
 from addons.core.command.command.create import core__command__create
+from addons.core.command.logo.show import core__logo__show
+from addons.core.command.version.build import core__version__build
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.helper.registry import get_all_commands
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
@@ -128,3 +131,18 @@ class TestCore(AbstractTestCase):
                     hasattr(test_class, test_method_name),
                     f'Method {test_method_name} not found in {test_class_name} class in {test_file_path}'
                 )
+
+    def test_build_command(self):
+        self.assertEqual(
+            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_command_from_function(core__logo__show),
+            'core::logo/show'
+        )
+        self.assertEqual(
+            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(core__version__build),
+            'wex core::version/build'
+        )
+
+    def test_message_next_command(self):
+        self.kernel.message_next_command(
+            core__logo__show
+        )

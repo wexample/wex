@@ -2,10 +2,10 @@ import shutil
 import click
 
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH
+from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
 from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
-from src.helper.command import execute_command, build_full_command_from_function
+from src.helper.command import execute_command
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
 from src.const.error import ERR_UNEXPECTED
@@ -59,7 +59,7 @@ def core__webhook__serve(
             base_kernel.log("Running Webhook listener...")
 
             # Build command
-            command = build_full_command_from_function(
+            command = base_kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__webhook__serve,
                 {
                     'port': port

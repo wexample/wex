@@ -17,11 +17,13 @@ class AbstractCommandProcessor:
     kernel: 'Kernel'
     match: Optional[re.Match] = None
 
-    def __init__(self, kernel: 'Kernel', command: str, command_args: []):
+    def __init__(self, kernel: 'Kernel', command: str = None, command_args: [] = []):
         self.kernel = kernel
         self.command = command
         self.command_args = command_args
-        self.match = self.parse(command)
+
+        if command is not None:
+            self.match = self.parse(command)
 
     def exec(self) -> str | None:
         # Get valid path.
@@ -88,6 +90,19 @@ class AbstractCommandProcessor:
     @abstractmethod
     def get_function_name(self):
         pass
+
+    def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:
+        if isinstance(function_or_command, str):
+            return function_or_command
+
+        return None
+
+
+    def build_command_from_function(self, function_or_command) -> str | None:
+        if isinstance(function_or_command, str):
+            return function_or_command
+
+        return None
 
     def build_command_path(self, base_path, subdir: str | None, command_path):
         if subdir:

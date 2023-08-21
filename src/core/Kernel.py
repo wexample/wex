@@ -8,7 +8,7 @@ from typing import Optional
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 from src.core.command.AddonCommandProcessor import AddonCommandProcessor
 from src.core.command.AppCommandProcessor import AppCommandProcessor
@@ -30,13 +30,14 @@ class Kernel:
     test_manager = None
     core_actions = None
     http_server = None
-    processors = [
-        AddonCommandProcessor,
-        ServiceCommandProcessor,
-        AppCommandProcessor,
-        UserCommandProcessor,
-        CoreCommandProcessor,
-    ]
+    processors = {
+        # Order is important
+        AddonCommandProcessor.get_type(AddonCommandProcessor): AddonCommandProcessor,
+        ServiceCommandProcessor.get_type(ServiceCommandProcessor): ServiceCommandProcessor,
+        AppCommandProcessor.get_type(AppCommandProcessor): AppCommandProcessor,
+        UserCommandProcessor.get_type(UserCommandProcessor): UserCommandProcessor,
+        CoreCommandProcessor.get_type(CoreCommandProcessor): CoreCommandProcessor,
+    }
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -141,32 +142,36 @@ class Kernel:
 
         self.print(message)
 
-    def message_next_command(self, command, args={}, message: str = 'You might want now to execute'):
+    def message_next_command(self, function_or_command, args: dict = {}, command_type: str = COMMAND_TYPE_ADDON,
+                             message: str = 'You might want now to execute'):
         return self.message_all_next_commands(
             [
-                build_full_command_from_function(
-                    command,
-                    args
+                self.build_command_processor_by_type(command_type).build_full_command_from_function(
+                    function_or_command,
+                    args,
                 )
             ],
             message
         )
 
+    def build_full_command_from_function(self, function_or_command, args: dict = {},
+                                         command_type: str = COMMAND_TYPE_ADDON):
+        return self.build_command_processor_by_type(command_type).build_full_command_from_function(
+            function_or_command,
+            args
+        )
+
     def message_all_next_commands(
             self,
             commands,
-            message: str = 'You might want now to execute one of the following command'
+            message: str = 'You might want now to execute one of the following command',
     ):
         self.message(message + ':')
 
-        output = ''
-        for command in commands:
-            if not isinstance(command, str):
-                command = build_command_from_function(command)
-
-            output += f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {command}\n'
-
-        self.print(output)
+        commands = "\n".join(commands)
+        self.print(
+            f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {commands}\n'
+        )
 
     def call(self):
         # No arg found except process id
@@ -274,9 +279,15 @@ class Kernel:
             json.dump(history, f, indent=4)
             set_sudo_user_owner(self.path['history'])
 
+    def build_command_processor_by_type(self, command_type: str) -> AbstractCommandProcessor | None:
+        processor_class = self.processors[command_type]
+        processor = processor_class(self)
+
+        return processor
+
     def build_command_processor(self, command, command_args=None) -> AbstractCommandProcessor | None:
-        for processor_class in self.processors:
-            processor = processor_class(
+        for processor_name in self.processors:
+            processor = self.processors[processor_name](
                 self,
                 command,
                 command_args
