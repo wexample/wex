@@ -19,11 +19,12 @@ class AbstractCommandProcessor:
 
     def __init__(self, kernel: 'Kernel', command: str = None, command_args: [] = []):
         self.kernel = kernel
-        self.command = command
-        self.command_args = command_args
 
-        if command is not None:
-            self.match = self.parse(command)
+        self.set_command(
+            command,
+            command_args
+        )
+
 
     def exec(self) -> str | None:
         # Get valid path.
@@ -60,7 +61,7 @@ class AbstractCommandProcessor:
         return result
 
     def get_function(self, kernel) -> str:
-        command_path = self.get_path()
+        command_path = kernel.get_path()
 
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(command_path, command_path)
@@ -84,8 +85,12 @@ class AbstractCommandProcessor:
     def get_type(self) -> str:
         pass
 
-    def parse(self, command):
-        return re.match(self.get_pattern(), command)
+    def set_command(self, command:str|None, args: [] = []):
+        self.command = command
+        self.command_args = args
+        self.match = re.match(self.get_pattern(), command) if command else None
+
+        return self.match
 
     @abstractmethod
     def get_path(self, subdir: str = None):
@@ -113,6 +118,5 @@ class AbstractCommandProcessor:
 
         return os.path.join(base_path, 'command', command_path + '.py')
 
-    def autocomplete_suggest(self, cursor: int, search_split: [], search: str) -> str | None:
-
+    def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         return None
