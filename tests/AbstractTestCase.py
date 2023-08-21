@@ -1,9 +1,9 @@
 import os
 import unittest
-import shutil
 from src.core.Kernel import Kernel
 from src.core.action.TestCoreAction import TestCoreAction
 from src.helper.file import create_directories_and_copy
+
 
 class AbstractTestCase(unittest.TestCase):
     @classmethod
@@ -12,6 +12,10 @@ class AbstractTestCase(unittest.TestCase):
         cls.kernel.setup_test_manager(
             TestCoreAction(cls.kernel)
         )
+
+    def setUp(self):
+        # Add a new line between each test
+        self.kernel.print("")
 
     def assertPathExists(self, file_path, exists=True):
         """
