@@ -2,6 +2,7 @@ import click
 import importlib
 
 from AbstractTestCase import AbstractTestCase
+from addons.core.command.command.create import core__command__create
 from src.helper.registry import get_all_commands
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
@@ -67,6 +68,24 @@ class TestCore(AbstractTestCase):
     def test_call_command_addon(self):
         self.assertIsNotNone(
             self.kernel.exec('core::logo/show')
+        )
+
+    def test_call_command_user(self):
+        self.kernel.exec_function(
+            core__command__create,
+            {
+                'command': '~test/command_call'
+            }
+        )
+
+        self.assertEqual(
+            self.kernel.exec(
+                '~test/command_call',
+                {
+                    'arg': 'test'
+                }),
+            # No return from newly created command
+            None
         )
 
     def test_call_command_app(self):

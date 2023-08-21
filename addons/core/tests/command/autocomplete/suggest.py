@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
-    def check_suggestion(self, cursor, should_success=True):
+    def check_suggestion_command(self, cursor, should_success=True):
         suggestions = self.kernel.exec_function(
             core__autocomplete__suggest,
             {
@@ -23,8 +23,24 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         else:
             self.assertEqual(suggestions, '')
 
+    def check_suggestion_service(self, cursor, should_success=True):
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': cursor,
+                'search': '  '.join([
+                    '@proxy',
+                    'started',
+                ])
+            }
+        )
+
+        self.kernel.log(f'Autocomplete suggestion : "{suggestions}"')
+
     def test_suggest(self):
-        self.check_suggestion(0)
-        self.check_suggestion(1)
-        self.check_suggestion(2)
-        self.check_suggestion(3, False)
+        self.check_suggestion_command(0)
+        self.check_suggestion_command(1)
+        self.check_suggestion_command(2)
+        self.check_suggestion_command(3, False)
+
+        self.check_suggestion_service(0)

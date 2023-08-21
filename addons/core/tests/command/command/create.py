@@ -42,3 +42,11 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
                 test_file_path_test
             )
         )
+
+    def test_create_local(self):
+        self.kernel.exec_function(
+            core__command__create,
+            {
+                'command': '~test/create'
+            }
+        )

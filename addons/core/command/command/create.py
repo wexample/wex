@@ -4,7 +4,6 @@ import os
 from addons.core.command.test.create import core__test__create
 from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER
 from src.helper.file import create_from_template
-from src.helper.command import build_function_name_from_match, build_command_path_from_match
 
 
 @click.command()
@@ -12,10 +11,14 @@ from src.helper.command import build_function_name_from_match, build_command_pat
 @click.option('--command', '-c', type=str, required=True, help="Full name of the command, i.e. addon::some/thing")
 def core__command__create(kernel, command: str) -> {}:
     kernel.log('Creating command file...')
-    match, command_type = kernel.build_match_or_fail(command)
+    processor = kernel.build_command_processor(command)
 
-    function_name = build_function_name_from_match(match, command_type)
-    command_path: str = build_command_path_from_match(kernel, match, command_type)
+    if not processor:
+        kernel.message(f'Unable to process command : {command}')
+        return
+
+    command_path: str = processor.get_path()
+    command_type = processor.get_type()
 
     if command_type == COMMAND_TYPE_CORE:
         kernel.message(f'Unable to create core command : {command}')
@@ -37,6 +40,8 @@ def core__command__create(kernel, command: str) -> {}:
         os.path.dirname(command_path),
         exist_ok=True
     )
+
+    function_name = processor.get_function_name()
 
     create_from_template(
         kernel.path['templates'] + 'command.py.tpl',

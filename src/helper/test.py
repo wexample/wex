@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import os
 
 from addons.core.command.registry.build import core__registry__build
-from src.helper.command import build_function_name_from_match, build_command_path_from_match
 from src.helper.file import create_from_template
 
 
@@ -33,16 +34,16 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
     return test_method
 
 
-def create_test_from_command(kernel, command) -> str:
-    match, command_type = kernel.build_match_or_fail(command)
-    test_path = build_command_path_from_match(kernel, match, command_type, 'tests')
+def create_test_from_command(kernel: 'Kernel', command) -> str:
+    processor = kernel.build_command_processor(command)
+    test_path = processor.get_path('tests')
 
     if os.path.exists(test_path):
         return test_path
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
-    command_function_name = build_function_name_from_match(match, command_type)
+    command_function_name = processor.get_function_name()
 
     kernel.log(f'Creating test for command {command}')
 
@@ -56,13 +57,13 @@ def create_test_from_command(kernel, command) -> str:
         kernel.path['templates'] + 'test.py.tpl',
         test_path,
         {
-            'addon_name': match[1],
+            'addon_name': processor.match[1],
             'class_name': class_name,
             'command': command,
             'command_function_name': command_function_name,
-            'group_name': match[2],
+            'group_name': processor.match[2],
             'method_name': method_name,
-            'name': match[3],
+            'name': processor.match[3],
         }
     )
 

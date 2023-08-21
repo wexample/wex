@@ -117,22 +117,19 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
             suggestion = " ".join(set(suggestion.split()))
     # Complete arguments.
     elif cursor >= 3:
-        from src.helper.command import build_command_match, get_function_from_match
-
-        command = search_split[0:3]
-        params_current = [val for val in search_split[3:] if val.startswith("-")]
-
-        match, command_type = build_command_match(
-            ''.join(command)
+        processor = kernel.build_command_processor(
+            ''.join(search_split[0:3])
         )
 
-        if not match:
+        if not processor:
             return ''
+
+        params_current = [val for val in search_split[3:] if val.startswith("-")]
 
         # Merge all params in a list,
         # but ignore already given args,
         # i.e : if -d is already given, do not suggest "-d" or "--default"
-        function = get_function_from_match(kernel, match, command_type)
+        function = processor.get_function()
         params = []
         for param in function.params:
             if any(opt in params_current for opt in param.opts):
@@ -142,5 +139,3 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
         suggestion = ' '.join(params)
 
     return suggestion
-
-

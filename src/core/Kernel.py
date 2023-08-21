@@ -1,21 +1,22 @@
-import importlib.util
 import datetime
+import importlib.util
+import json
 import os
 import sys
-import json
-
 from typing import Optional
-from addons.app.const.app import ERR_APP_NOT_FOUND, ERR_SERVICE_NOT_FOUND, ERR_CORE_ACTION_NOT_FOUND
-from src.helper.user import get_user_home_data_path
-from src.helper.file import list_subdirectories
-from src.helper.args import convert_dict_to_args, convert_args_to_dict
-from src.helper.command import build_command_match, build_command_path_from_match, build_full_command_from_function, \
-    get_function_from_match, build_command_from_function
-from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COMMAND_TYPE_APP, COMMAND_TYPE_SERVICE, COMMAND_TYPE_CORE, COLOR_CYAN
+
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED, \
-    ERR_COMMAND_FILE_NOT_FOUND
+    ERR_ARGUMENT_COMMAND_MALFORMED
+from src.const.globals import \
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN
+from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from src.core.command.AddonCommandProcessor import AddonCommandProcessor
+from src.core.command.AppCommandProcessor import AppCommandProcessor
+from src.core.command.CoreCommandProcessor import CoreCommandProcessor
+from src.core.command.ServiceCommandProcessor import ServiceCommandProcessor
+from src.core.command.UserCommandProcessor import UserCommandProcessor
+from src.helper.args import convert_dict_to_args
+from src.helper.file import list_subdirectories
 
 
 class Kernel:
@@ -29,6 +30,13 @@ class Kernel:
     test_manager = None
     core_actions = None
     http_server = None
+    processors = [
+        AddonCommandProcessor,
+        ServiceCommandProcessor,
+        AppCommandProcessor,
+        UserCommandProcessor,
+        CoreCommandProcessor,
+    ]
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -57,12 +65,6 @@ class Kernel:
 
         with open(path_registry) as f:
             self.registry = json.load(f)
-
-        # Add user command dir to path.
-        user_data_path = get_user_home_data_path()
-        commands_path = os.path.join(user_data_path, 'command')
-        if os.path.exists(commands_path) and commands_path not in sys.path:
-            sys.path.append(commands_path)
 
         self.exec_middlewares('init')
 
@@ -208,95 +210,19 @@ class Kernel:
     def setup_test_manager(self, test_manager):
         self.test_manager = test_manager
 
-    def build_match_or_fail(self, command: str):
-        # Check command formatting.
-        match, command_type = build_command_match(
-            command
-        )
-
-        if not match or not command_type:
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
-                'command': command
-            })
-
-        return match, command_type
-
     def exec(self, command: str, command_args=None):
         if command_args is None:
             command_args = []
 
-        # Check command formatting.
-        match, command_type = self.build_match_or_fail(
-            command
-        )
+        processor = self.build_command_processor(command, command_args)
 
-        # App commands should be run in an app dir or subdir
-        if command_type == COMMAND_TYPE_APP:
-            if not self.addons['app']['path']['call_app_dir']:
-                self.error(ERR_APP_NOT_FOUND, {
-                    'command': command,
-                    'dir': os.getcwd(),
-                })
-                return
-        # Service should exist
-        elif command_type == COMMAND_TYPE_SERVICE:
-            if match[1] not in self.registry['services']:
-                self.error(ERR_SERVICE_NOT_FOUND, {
-                    'command': command,
-                    'service': match[1],
-                })
-                return
-        # Run core action.
-        elif command_type == COMMAND_TYPE_CORE:
-            core_actions = self.get_core_actions()
-
-            # Handle core action : test, hi, etc...
-            if command in core_actions:
-                action = command
-                command = None
-                if command_args:
-                    command = command_args.pop(0)
-
-                action = core_actions[action](self)
-
-                return action.exec(command, command_args)
-
-            else:
-                self.error(ERR_CORE_ACTION_NOT_FOUND, {
-                    'command': command,
-                })
-                return
-
-        # Get valid path.
-        command_path: str = build_command_path_from_match(self, match, command_type)
-        if not os.path.isfile(command_path):
-            self.error(ERR_COMMAND_FILE_NOT_FOUND, {
-                'command': command,
-                'path': command_path,
+        if not processor:
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+                'command': command
             })
             return
 
-        function = get_function_from_match(self, match, command_type)
-
-        if isinstance(command_args, dict):
-            command_args = convert_dict_to_args(function, command_args)
-
-        middleware_args = {
-            'args': convert_args_to_dict(function, command_args),
-            'args_list': command_args,
-            'command': command,
-            'command_type': command_type,
-            'function': function,
-            'match': match,
-        }
-
-        self.exec_middlewares('exec', middleware_args)
-
-        result = self.exec_function(function, command_args)
-
-        self.exec_middlewares('exec_post', middleware_args)
-
-        return result
+        return processor.exec()
 
     def get_core_actions(self):
         if not self.core_actions:
@@ -347,3 +273,17 @@ class Kernel:
         with open(self.path['history'], 'w') as f:
             json.dump(history, f, indent=4)
             set_sudo_user_owner(self.path['history'])
+
+    def build_command_processor(self, command, command_args=None) -> AbstractCommandProcessor | None:
+        for processor_class in self.processors:
+            processor = processor_class(
+                self,
+                command,
+                command_args
+            )
+
+            # Regex succeed to match command
+            if processor.match:
+                return processor
+
+        return None

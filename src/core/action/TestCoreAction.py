@@ -3,6 +3,7 @@ import sys
 import unittest
 import importlib.util
 
+from addons.core.command.registry.build import core__registry__build
 from src.core.action.AbstractCoreAction import AbstractCoreAction
 
 
@@ -12,6 +13,10 @@ class TestCoreAction(AbstractCoreAction):
         return 'test'
 
     def exec(self, command, command_args):
+        self.kernel.exec_function(
+            core__registry__build
+        )
+
         self.kernel.log('Starting test suite..')
 
         loader = unittest.TestLoader()
