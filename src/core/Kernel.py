@@ -30,14 +30,14 @@ class Kernel:
     test_manager = None
     core_actions = None
     http_server = None
-    processors = {
-        # Order is important
-        AddonCommandProcessor.get_type(AddonCommandProcessor): AddonCommandProcessor,
-        ServiceCommandProcessor.get_type(ServiceCommandProcessor): ServiceCommandProcessor,
-        AppCommandProcessor.get_type(AppCommandProcessor): AppCommandProcessor,
-        UserCommandProcessor.get_type(UserCommandProcessor): UserCommandProcessor,
-        CoreCommandProcessor.get_type(CoreCommandProcessor): CoreCommandProcessor,
-    }
+    processor_classes = [
+        AddonCommandProcessor,
+        ServiceCommandProcessor,
+        AppCommandProcessor,
+        UserCommandProcessor,
+        CoreCommandProcessor
+    ]
+    processors = {class_definition.get_type(class_definition): class_definition for class_definition in processor_classes}
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
