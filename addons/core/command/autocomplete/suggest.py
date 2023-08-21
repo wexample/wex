@@ -102,7 +102,7 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
         addon = search_split[0]
 
         if addon in kernel.registry['addons']:
-            # User typed "wex app::conf", we suggest full addon commands list.
+            # User typed "wex app::conf".
             for command, command_data in kernel.registry['addons'][addon]['commands'].items():
                 command_parts = command.split(COMMAND_SEPARATOR_ADDON)
                 command_split = command_parts[1].split(COMMAND_SEPARATOR_GROUP)
@@ -111,7 +111,8 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
                     if command_split[0] == search_split[2].split(COMMAND_SEPARATOR_GROUP)[0]:
                         suggestion += f' {" ".join(command_parts)}'
                 else:
-                    suggestion += f' {command_split[0]}'
+                    if command_split[0].startswith(search_split[2]):
+                        suggestion += f' {command_split[0]}'
 
             # Reduce unique values
             suggestion = " ".join(set(suggestion.split()))
