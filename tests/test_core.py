@@ -94,6 +94,12 @@ class TestCore(AbstractTestCase):
             'OK:YES'
         )
 
+    def test_call_command_service(self):
+        self.assertEqual(
+            self.kernel.exec('@test/first'),
+            'FIRST'
+        )
+
     def test_tests_coverage(self):
         for command, command_data in get_all_commands(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']
