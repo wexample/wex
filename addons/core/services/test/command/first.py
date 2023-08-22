@@ -4,5 +4,5 @@ import click
 @click.command()
 @click.option('--option', '-o', is_flag=True, required=False)
 @click.option('--another-option', '-ao', is_flag=True, required=False)
-def service__test__first():
+def service__test__first(option=None, another_option=None):
     return 'FIRST'
