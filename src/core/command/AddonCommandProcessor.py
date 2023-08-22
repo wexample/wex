@@ -85,8 +85,12 @@ class AddonCommandProcessor(AbstractCommandProcessor):
         elif cursor == 1:
             # User typed "wex core::", we suggest all addon groups.
             if search_split[1] == COMMAND_SEPARATOR_ADDON:
-                from src.helper.registry import get_commands_groups_names
-                return ' '.join(get_commands_groups_names(self.kernel, search_split[0]))
+                if search_split[0] in self.kernel.registry['addons']:
+                    return ' '.join([
+                        command[len(search_split[0] + COMMAND_SEPARATOR_ADDON):]
+                        for command in self.kernel.registry['addons'][search_split[0]]['commands']
+                        if command.startswith(search_split[0] + COMMAND_SEPARATOR_ADDON)
+                    ])
             elif search_split[1] == ':':
                 # User types "core:", we add a second ":"
                 return ':'
