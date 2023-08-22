@@ -4,5 +4,6 @@
   "ERR_CORE_REPO_DIRTY": "{diff}\nThere is uncommitted changes in the repository",
   "ERR_ENV_VAR_MISSING": "Missing env var",
   "ERR_EXEC_NON_CLICK_METHOD": "Trying to execute a non-click function '{function_name}', did you forget @click.command decorator ?",
+  "ERR_PYTHON_MINIMAL_VERSION": "Python {expected} or later is required, actually running on {current}",
   "ERR_UNEXPECTED": "Unexpected error : {error}"
 }
