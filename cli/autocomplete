@@ -8,12 +8,6 @@ autocomplete() {
   # Set the current position of the cursor
   local CURSOR=$((COMP_CWORD - 1))
 
-  # If the first word is a core action ("test", "hi", etc.), skip it
-  if autocomplete_in_array "${CORE_ACTIONS}" "${COMP_WORDS[1]}"; then
-    SEARCH=("${COMP_WORDS[*]:2}")
-    CURSOR=$((CURSOR - 1))
-  fi
-
   # Get autocomplete suggestions
   local SUGGESTIONS=""
   SUGGESTIONS=($(wex core::autocomplete/suggest -c "${CURSOR}" -s "${SEARCH[*]}"))
@@ -25,7 +19,6 @@ autocomplete() {
   fi
 
   # The @ char, which is user for services, is used as a word separator in compgen
-  # so completion is affected, is given, we have to
   if [[ ${SEARCH[0]} =~ ^@ ]] && [[ "${CURRENT}" != "@" ]]; then
     CURRENT="@${CURRENT}"
   fi
@@ -35,37 +28,10 @@ autocomplete() {
 
   # Check for single suggestion
   if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
-    # We are on the first part.
-    if [[ ${CURSOR} == "0" ]]; then
-      # Add trailing "::" is integrated in the suggestion
-      # if it matches an addon name, if not,
-      # and if no leading . or ~ exists,
-      # this is a core action, so add a trailing space
-      if [[ ! ${COMPREPLY} == *'::' ]] && [[ "${COMPREPLY:0:1}" != "." ]] && [[ "${COMPREPLY:0:1}" != "~" ]]; then
-        COMPREPLY+=" "
-      fi
-    # Add trailing slash separator
-    elif [[ ${CURSOR} == "2" ]]; then
-      if [[ "${COMPREPLY[@]}" != *"/"* ]];then
-        COMPREPLY[0]+="/"
-      else
-        COMPREPLY+=" "
-      fi
+    if [[ "${COMPREPLY[@]}" = *"/"* ]];then
+      COMPREPLY+=" "
     fi
   fi
-}
-
-autocomplete_in_array() {
-  local CORE_ACTIONS
-  CORE_ACTIONS=($(wex core-actions))
-
-  for VALUE in "${CORE_ACTIONS[@]}"; do
-    if [[ "${VALUE}" == "${2}" ]]; then
-      return 0
-    fi
-  done
-
-  return 1
 }
 
 autocomplete
