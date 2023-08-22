@@ -2,6 +2,7 @@ import click
 import os
 
 from addons.core.command.test.create import core__test__create
+from addons.core.command.registry.build import core__registry__build
 from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER
 from src.helper.file import create_from_template
 
@@ -58,6 +59,10 @@ def core__command__create(kernel, command: str) -> {}:
         {
             'command': command
         }
+    )
+
+    kernel.exec_function(
+        core__registry__build
     )
 
     return {
