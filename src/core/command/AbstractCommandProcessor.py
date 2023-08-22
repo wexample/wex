@@ -85,7 +85,28 @@ class AbstractCommandProcessor:
     def get_type(self) -> str:
         pass
 
-    def set_command(self, command:str|None, args: [] = []):
+    def get_base_path(self) -> str | None:
+        return None
+
+    def get_base_command_path(self) -> str | None:
+        base_path = self.get_base_path()
+
+        if not base_path:
+            return None
+
+        return os.path.join(base_path, 'command') + '/'
+
+    def set_command_file_permission(self, command_path: str):
+        base_path = self.get_base_path()
+
+        if base_path:
+            set_owner_recursive(
+                base_path,
+                trim_leading(command_path, base_path),
+                get_user_or_sudo_user(),
+            )
+
+    def set_command(self, command: str | None, args: [] = []):
         self.command = command
         self.command_args = args
         self.match = re.match(self.get_pattern(), command) if command else None

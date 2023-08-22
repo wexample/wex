@@ -7,7 +7,7 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 class AppCommandProcessor(AbstractCommandProcessor):
     def exec(self) -> str | None:
-        if not self.kernel.addons['app']['path']['call_app_dir']:
+        if not self.get_base_path():
             self.kernel.error(ERR_APP_NOT_FOUND, {
                 'command': self.command,
                 'dir': os.getcwd(),
@@ -25,7 +25,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
 
     def get_path(self, subdir: str = None) -> str | None:
         return self.build_command_path(
-            f"{self.kernel.addons['app']['path']['call_app_dir']}{APP_DIR_APP_DATA}",
+            self.get_base_path(),
             subdir,
             os.path.join(self.match[2], self.match[3])
         )
@@ -37,28 +37,32 @@ class AppCommandProcessor(AbstractCommandProcessor):
             self.match.group(3)
         ])
 
+    def get_base_path(self):
+        if self.kernel.addons['app']['path']['call_app_dir']:
+            return f'{self.kernel.addons["app"]["path"]["call_app_dir"]}{APP_DIR_APP_DATA}'
+
+        return None
+
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
             # User typed "."
             if search_split[0].startswith(COMMAND_CHAR_APP):
-                from addons.app.command.location.find import app__location__find
                 from src.helper.suggest import suggest_from_path
+                app_path = self.get_base_command_path()
 
-                app_path = self.kernel.exec_function(app__location__find)
                 # We are in an app dir or subdir
                 if app_path:
                     return ' '.join(
                         suggest_from_path(
-                            f'{app_path}{APP_DIR_APP_DATA}command/',
+                            app_path,
                             search_split[0],
                             COMMAND_CHAR_APP
                         )
                     )
 
             elif search_split[0] == '':
-                from addons.app.command.location.find import app__location__find
-                # # We are in an app dir or subdir
-                if self.kernel.exec_function(app__location__find):
+                # We are in an app dir or subdir
+                if self.get_base_command_path():
                     # Suggest to execute local app command
                     return COMMAND_CHAR_APP
 
