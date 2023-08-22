@@ -80,11 +80,7 @@ class AddonCommandProcessor(AbstractCommandProcessor):
                 return suggest_autocomplete_if_single(self.kernel, suggestion)
             # User typed "wex ", we suggest all addons names and special chars.
             else:
-                suggestion = ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys())
-                # Adds also all core actions.
-                suggestion += ' ' + ' '.join(self.kernel.get_core_actions().keys())
-
-                return suggestion
+                return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys())
 
         elif cursor == 1:
             # User typed "wex core::", we suggest all addon groups.

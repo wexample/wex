@@ -34,3 +34,8 @@ class CoreCommandProcessor(AbstractCommandProcessor):
 
     def get_function_name(self):
         return None
+
+    def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
+        if cursor == 0:
+            # Adds also all core actions.
+            return ' '.join([command for command in self.kernel.get_core_actions() if command.startswith(search_split[0])])
