@@ -6,7 +6,7 @@ import subprocess
 from contextlib import closing
 import psutil
 
-from src.helper.user import get_user_home_data_path
+from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.command import execute_command
 
 
@@ -24,12 +24,20 @@ def get_sudo_group():
     ).gr_name
 
 
-def get_sudo_user_home_path():
-    return f'/home/{get_sudo_username()}/'
+def get_user_or_sudo_user_home_data_path():
+    sudo_username = get_sudo_username()
+    if sudo_username is None:
+        return f"{os.path.expanduser('~')}/"
+    else:
+        return f'/home/{get_sudo_username()}/'
+
+
+def get_user_home_data_path():
+    return f"{os.path.expanduser('~')}/{APP_DIR_APP_DATA}"
 
 
 def create_user_home_data_path():
-    path = get_user_home_data_path()
+    path = f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
 
     os.makedirs(
         os.path.dirname(

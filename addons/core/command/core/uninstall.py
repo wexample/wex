@@ -3,7 +3,7 @@ import os
 
 from addons.core.command.webhook.stop import core__webhook__stop
 from addons.default.command.file.remove_line import default__file__remove_line
-from src.helper.system import get_sudo_username, get_sudo_user_home_path
+from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import CORE_BIN_FILE
 from src.decorator.as_sudo import as_sudo
@@ -54,7 +54,7 @@ def __remove_source_file_for_docker(kernel, file_path):
     # If sudo has a parent user.
     sudo_user = get_sudo_username()
     if sudo_user:
-        __remove_source_file_in_bashrc(kernel, file_path, f'{get_sudo_user_home_path()}.bashrc')
+        __remove_source_file_in_bashrc(kernel, file_path, f'{get_user_or_sudo_user_home_data_path()}.bashrc')
 
     __remove_source_file_in_bashrc(kernel, file_path, os.path.expanduser('~/.bashrc'))
 

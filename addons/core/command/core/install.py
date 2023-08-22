@@ -7,7 +7,7 @@ from addons.core.command.logo.show import core__logo__show
 from addons.core.command.webhook.serve import core__webhook__serve
 from addons.default.command.file.append_once import default__file__append_once
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.helper.system import get_sudo_username, get_sudo_user_home_path
+from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from src.helper.file import remove_file_if_exists, create_from_template
 from src.const.globals import CORE_BIN_FILE
 from src.decorator.as_sudo import as_sudo
@@ -94,7 +94,7 @@ def __source_file_for_docker(kernel, file_path):
     # If sudo has a parent user.
     sudo_user = get_sudo_username()
     if sudo_user:
-        __source_file_in_bashrc(kernel, file_path, f'{get_sudo_user_home_path()}.bashrc')
+        __source_file_in_bashrc(kernel, file_path, f'{get_user_or_sudo_user_home_data_path()}.bashrc')
 
     __source_file_in_bashrc(kernel, file_path, os.path.expanduser('~/.bashrc'))
 
