@@ -41,7 +41,7 @@ class UserCommandProcessor(AbstractCommandProcessor):
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
-
+            # User typed "~"
             if search_split[0].startswith(COMMAND_CHAR_USER):
                 import os
                 from src.helper.suggest import suggest_from_path
