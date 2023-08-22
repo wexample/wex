@@ -26,3 +26,5 @@ def core__registry__build(kernel):
 
     set_sudo_user_owner(registry_path)
     kernel.log('Building complete...')
+
+    kernel.load_registry()
