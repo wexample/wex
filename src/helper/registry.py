@@ -18,6 +18,9 @@ def get_all_commands(kernel):
 def get_all_commands_from_addons(kernel):
     return get_all_commands_from_registry_part(kernel.registry['addons'])
 
+def get_all_commands_from_services(kernel):
+    return get_all_commands_from_registry_part(kernel.registry['services'])
+
 
 def get_commands_groups_names(kernel, addon):
     group_names = set()

@@ -87,26 +87,6 @@ class AddonCommandProcessor(AbstractCommandProcessor):
                 return suggestion
 
         elif cursor == 1:
-            # # User typed "wex @x" so we can suggest service names.
-            # if search_split[0] == COMMAND_CHAR_SERVICE:
-            #     pass
-            # #         if COMMAND_SEPARATOR_GROUP in search_split[1]:
-            # #             split = search_split[1].split('/', 1)
-            # #             service_name = split[0]
-            # #
-            # #             if service_name in self.kernel.registry['services']:
-            # #                 from src.helper.registry import get_all_commands
-            # #                 commands = get_all_commands_from_registry_part({service_name: self.kernel.registry['services'][service_name]})
-            # #
-            # #                 return ' '.join(commands)
-            # #         else:
-            # #             from src.helper.suggest import get_all_services_names_suggestions
-            # #
-            # #             suggestion = get_all_services_names_suggestions(self.kernel)
-            # #             # If there's only one suggestion (no space separator), add a trailing "/" at the end
-            # #             if ' ' not in suggestion:
-            # #                 suggestion += COMMAND_SEPARATOR_GROUP
-
             # User typed "wex core::", we suggest all addon groups.
             if search_split[1] == COMMAND_SEPARATOR_ADDON:
                 from src.helper.registry import get_commands_groups_names

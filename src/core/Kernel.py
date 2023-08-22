@@ -51,10 +51,15 @@ class Kernel:
         self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
         self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
-        path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
-
         # Initialize addons config
         self.addons = {addon: {'config': {}, 'path': {}} for addon in list_subdirectories(self.path['addons'])}
+
+        self.load_registry()
+
+        self.exec_middlewares('init')
+
+    def load_registry(self):
+        path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
 
         # Load registry if empty
         if not os.path.exists(path_registry):
@@ -66,8 +71,6 @@ class Kernel:
 
         with open(path_registry) as f:
             self.registry = json.load(f)
-
-        self.exec_middlewares('init')
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
