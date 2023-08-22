@@ -1,9 +1,5 @@
 import click
 
-from src.helper.registry import get_all_commands, remove_addons
-from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, COMMAND_CHAR_APP, COMMAND_CHAR_SERVICE, \
-    COMMAND_CHAR_USER
-
 
 @click.command
 @click.pass_obj
@@ -21,11 +17,12 @@ def core__autocomplete__suggest(kernel, cursor: int, search: str) -> str:
     if cursor > len(search_split):
         return ''
 
+    suggestions = ''
     for name in kernel.processors:
         processor = kernel.processors[name](kernel)
-        suggestion = processor.autocomplete_suggest(cursor, search_split)
+        new_suggestions = processor.autocomplete_suggest(cursor, search_split)
 
-        if suggestion is not None:
-            return suggestion
+        if new_suggestions is not None:
+            suggestions += ' ' + new_suggestions
 
-    print('ERR')
+    return suggestions.strip()
