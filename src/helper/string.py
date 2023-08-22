@@ -37,3 +37,10 @@ def text_truncate(text: str, max_width: int, indent: int = 0) -> str:
 def text_center(text: str, width: int) -> str:
     lines = text.split('\n')
     return '\n'.join(line.center(width) for line in lines)
+
+
+def trim_leading(text: str, leading_text: str) -> str:
+    if text.startswith(leading_text):
+        return text[len(leading_text):]
+    else:
+        return text

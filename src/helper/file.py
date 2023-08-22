@@ -34,6 +34,28 @@ def set_owner(file, username):
     os.chown(file, uid, gid)
 
 
+def set_owner_recursive(base_path: str, sub_path: str, owner: str, group: str = None):
+    # Get the UID and GID
+    uid = pwd.getpwnam(owner).pw_uid
+
+    if group:
+        gid = grp.getgrnam(group).gr_gid
+    else:
+        gid = pwd.getpwnam(owner).pw_gid
+
+    # Compute the full path
+    full_path = os.path.join(base_path, sub_path)
+
+    # Change the ownership of the full path
+    os.chown(full_path, uid, gid)
+
+    current_path = base_path
+    # Split sub_path into segments and loop through them
+    for segment in sub_path.strip(os.sep).split(os.sep):
+        current_path = os.path.join(current_path, segment)
+        os.chown(current_path, uid, gid)
+
+
 def create_from_template(template_path, dest_path, parameters):
     with open(template_path, 'r') as template_file:
         template_content = template_file.read()

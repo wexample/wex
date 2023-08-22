@@ -65,6 +65,10 @@ def core__command__create(kernel, command: str) -> {}:
         core__registry__build
     )
 
+    kernel.log('Giving files permission...')
+    processor.set_command_file_permission(command_path)
+    processor.set_command_file_permission(test_file)
+
     return {
         'command': command_path,
         'test': test_file

@@ -5,6 +5,7 @@ import socket
 import subprocess
 from contextlib import closing
 import psutil
+import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.command import execute_command
@@ -12,6 +13,15 @@ from src.helper.command import execute_command
 
 def get_sudo_username():
     return os.getenv('SUDO_USER')
+
+
+def get_user_or_sudo_user() -> str:
+    sudo_username = get_sudo_username()
+
+    if sudo_username is None:
+        return getpass.getuser()
+    else:
+        return get_sudo_username()
 
 
 def get_sudo_gid():
@@ -30,6 +40,11 @@ def get_user_or_sudo_user_home_data_path():
         return f"{os.path.expanduser('~')}/"
     else:
         return f'/home/{get_sudo_username()}/'
+
+def set_home_path_permissions():
+    os.chown(
+        f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
+    )
 
 
 def get_user_home_data_path():
