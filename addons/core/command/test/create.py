@@ -8,16 +8,17 @@ from src.decorator.as_sudo import as_sudo
 @click.command
 @as_sudo
 @click.pass_obj
-@click.option('--command', '-c', type=str, required=False, help="Command name, if empty it will create all missing "
-                                                                "tests")
-def core__test__create(kernel, command: str = None) -> list:
+@click.option('--all', '-a', type=str, is_flag=True, required=False, help="Create all missing tests")
+@click.option('--command', '-c', type=str, required=False, help="Command name")
+def core__test__create(kernel, command: str = None, all: bool = False) -> str | list:
     if not command:
-        output = []
+        if all:
+            output = []
 
-        # Create all missing tests
-        for command, command_data in get_all_commands_from_addons(kernel).items():
-            output.append(create_test_from_command(kernel, command))
+            # Create all missing tests
+            for command, command_data in get_all_commands_from_addons(kernel).items():
+                output.append(create_test_from_command(kernel, command))
 
-        return output
+            return output
     else:
-        return [create_test_from_command(kernel, command)]
+        return create_test_from_command(kernel, command)
