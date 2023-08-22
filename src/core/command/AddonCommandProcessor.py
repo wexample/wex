@@ -56,7 +56,7 @@ class AddonCommandProcessor(AbstractCommandProcessor):
         output += self.build_command_from_function(function)
 
         if len(args):
-            output += ' '.join(convert_dict_to_args(function, args))
+            output += ' ' + (' '.join(convert_dict_to_args(function, args)))
 
         return output
 
