@@ -264,7 +264,7 @@ class Kernel:
 
     def add_to_history(self, data: dict):
         from src.helper.json import load_json_if_valid
-        from src.helper.file import set_sudo_user_owner
+        from src.helper.file import set_user_or_sudo_user_owner
 
         max_entries = 100
         history = load_json_if_valid(self.path['history']) or []
@@ -280,7 +280,7 @@ class Kernel:
 
         with open(self.path['history'], 'w') as f:
             json.dump(history, f, indent=4)
-            set_sudo_user_owner(self.path['history'])
+            set_user_or_sudo_user_owner(self.path['history'])
 
     def build_command_processor_by_type(self, command_type: str) -> AbstractCommandProcessor | None:
         processor_class = self.processors[command_type]

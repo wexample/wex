@@ -5,7 +5,7 @@ import json
 from src.helper.registry import build_registry_addons, build_registry_services
 from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY
-from src.helper.file import set_sudo_user_owner
+from src.helper.file import set_user_or_sudo_user_owner
 
 
 @click.command
@@ -24,7 +24,7 @@ def core__registry__build(kernel):
     with open(registry_path, 'w') as f:
         json.dump(registry, f, indent=4)
 
-    set_sudo_user_owner(registry_path)
+    set_user_or_sudo_user_owner(registry_path)
     kernel.log('Building complete...')
 
     kernel.load_registry()

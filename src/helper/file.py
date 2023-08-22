@@ -4,7 +4,7 @@ import shutil
 import pwd
 import grp
 
-from src.helper.system import get_sudo_username
+from src.helper.system import get_user_or_sudo_user
 
 
 def list_subdirectories(path: str) -> []:
@@ -19,8 +19,8 @@ def list_subdirectories(path: str) -> []:
     return subdirectories
 
 
-def set_sudo_user_owner(file):
-    sudo_user = get_sudo_username()
+def set_user_or_sudo_user_owner(file):
+    sudo_user = get_user_or_sudo_user()
     if sudo_user is not None:
         set_owner(file, sudo_user)
 
@@ -53,7 +53,7 @@ def create_from_template(template_path, dest_path, parameters):
     with open(dest_path, 'w') as output_file:
         output_file.write(formatted_content)
 
-    set_sudo_user_owner(dest_path)
+    set_user_or_sudo_user_owner(dest_path)
 
 
 def merge_files(src: str, dest: str) -> None:

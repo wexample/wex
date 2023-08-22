@@ -2,7 +2,7 @@ import os
 
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.helper.args import convert_dict_to_args
-from src.helper.file import set_sudo_user_owner
+from src.helper.file import set_user_or_sudo_user_owner
 
 
 def process_post_exec(kernel, args):
@@ -15,7 +15,7 @@ def process_post_exec(kernel, args):
             + '\n'
         )
 
-    set_sudo_user_owner(post_exec_file_path)
+    set_user_or_sudo_user_owner(post_exec_file_path)
 
 
 def process_post_exec_wex(kernel, function: callable, args: dict = {}, is_async=False):
