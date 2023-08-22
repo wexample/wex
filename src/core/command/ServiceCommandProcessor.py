@@ -36,20 +36,15 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
         ])
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
-        if cursor == 0:
+        if cursor == 0 or cursor == 1:
             if search_split[0] == COMMAND_CHAR_SERVICE:
                 from src.helper.registry import get_all_commands_from_services
 
-                commands = [command for command in get_all_commands_from_services(self.kernel).keys() if command.startswith(search_split[0])]
+                commands = [
+                    command for command in get_all_commands_from_services(self.kernel).keys()
+                    if command.startswith(search_split[0])
+                ]
 
                 return ' '.join(commands)
             elif search_split[0] == '':
                 return COMMAND_CHAR_SERVICE
-        elif cursor == 1:
-            # User typed "wex @x" so we can suggest service names.
-            if search_split[0] == COMMAND_CHAR_SERVICE:
-                from src.helper.registry import get_all_commands_from_services
-
-                commands = [command for command in get_all_commands_from_services(self.kernel).keys() if command.startswith(search_split[0])]
-
-                return ' '.join(commands)

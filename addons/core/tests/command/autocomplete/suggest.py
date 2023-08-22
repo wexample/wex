@@ -191,9 +191,6 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             }
         )
 
-        print(prefix)
-        print(suggestions)
-
         self.assertTrue(
             command in suggestions
         )
