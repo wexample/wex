@@ -143,3 +143,32 @@ class AbstractCommandProcessor:
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         return None
+
+    def suggest_arguments(self, command: str, search_params: []):
+        self.set_command(
+            command
+        )
+
+        # Command is not recognised
+        if not self.match:
+            return
+
+        # File does not exist
+        if not os.path.isfile(self.get_path()):
+            return
+
+        search_params = [val for val in search_params if val.startswith("-")]
+
+        # Merge all params in a list,
+        # but ignore already given args,
+        # i.e : if -d is already given, do not suggest "-d" or "--default"
+        function = self.get_function(self)
+
+        params = []
+        for param in function.params:
+            if any(opt in search_params for opt in param.opts):
+                continue
+
+            params += param.opts
+
+        return ' '.join(params)

@@ -2,6 +2,6 @@ import click
 
 
 @click.command
-@click.option('--arg_one', '-a', type=str, required=True)
-def app__local_command__test(arg_one: str):
-    return f'OK:{arg_one}'
+@click.option('--local-option', '-lo', is_flag=True, required=False)
+def app__local_command__test(local_option: str):
+    return f'OK:{local_option}'

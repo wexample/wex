@@ -13,8 +13,11 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         self.check_suggest_addon()
         self.check_suggest_addon_args()
         self.check_suggest_app()
+        self.check_suggest_app_args()
         self.check_suggest_service()
+        self.check_suggest_service_args()
         self.check_suggest_user()
+        self.check_suggest_user_args()
 
     def check_suggest_addon(self):
         # User ask "", it should suggest all
@@ -139,7 +142,6 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'core',
                     COMMAND_SEPARATOR_ADDON,
                     'autocomplete' + COMMAND_SEPARATOR_GROUP + 'suggest'
-                                                               ' '
                 ])
             }
         )
@@ -168,7 +170,20 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             '@ te'
         )
 
-    def create_and_test_created_command(self, prefix:str, search:str = None):
+    def check_suggest_service_args(self):
+        suggestions: str = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': '@ test/first '
+            }
+        )
+
+        self.assertTrue(
+            'another-option' in suggestions
+        )
+
+    def create_and_test_created_command(self, prefix: str, search: str = None):
         command = prefix + 'test/autocomplete_command'
         if not search:
             search = prefix + 'te'
@@ -227,9 +242,37 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             COMMAND_CHAR_APP,
         )
 
+    def check_suggest_app_args(self):
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 1,
+                'search': COMMAND_CHAR_APP + 'local_command' + COMMAND_SEPARATOR_GROUP + 'test '
+            }
+        )
+
+        self.assertTrue(
+            'local-option' in suggestions
+        )
+
     def check_suggest_user(self):
         # Search "~te", to find created command
         self.create_and_test_created_command(
             COMMAND_CHAR_USER,
         )
 
+    def check_suggest_user_args(self):
+        suggestions = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 1,
+                'search': COMMAND_CHAR_USER + 'undefined/command '
+            }
+        )
+
+        # User command may not exist during test,
+        # we just check if undefined command completion does not fail.
+        self.assertEqual(
+            suggestions,
+            ''
+        )

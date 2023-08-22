@@ -66,14 +66,14 @@ class AddonCommandProcessor(AbstractCommandProcessor):
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         # Performance optimisation
-        from src.helper.registry import get_all_commands, remove_addons
-        from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_CHAR_SERVICE, COMMAND_CHAR_USER, COMMAND_CHAR_APP
+        from src.const.globals import COMMAND_SEPARATOR_ADDON
 
         if cursor == 0:
             # User typed "co"
             if search_split[0] != '':
-                suggestion = ' '.join([addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys() if
-                                       addon.startswith(search_split[0])])
+                suggestion = ' '.join(
+                    [addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys() if
+                     addon.startswith(search_split[0])])
 
                 # If only one result, autocomplete
                 from src.helper.suggest import suggest_autocomplete_if_single
@@ -91,6 +91,7 @@ class AddonCommandProcessor(AbstractCommandProcessor):
                 # User types "core:", we add a second ":"
                 return ':'
         elif cursor == 2:
+            from src.helper.registry import get_all_commands, remove_addons
             addon = search_split[0]
 
             # Get all matching commands
@@ -105,22 +106,12 @@ class AddonCommandProcessor(AbstractCommandProcessor):
 
             # Complete arguments.
         elif cursor >= 3:
-            self.set_command(
-                ''.join(search_split[0:3])
+            from src.helper.registry import get_all_commands
+
+            # Command validity is checked inside
+            return self.suggest_arguments(
+                ''.join(search_split[0:3]),
+                search_split[3:],
             )
-
-            params_current = [val for val in search_split[3:] if val.startswith("-")]
-
-            # Merge all params in a list,
-            # but ignore already given args,
-            # i.e : if -d is already given, do not suggest "-d" or "--default"
-            function = self.get_function(self)
-            params = []
-            for param in function.params:
-                if any(opt in params_current for opt in param.opts):
-                    continue
-                params += param.opts
-
-            return ' '.join(params)
 
         return None

@@ -48,3 +48,11 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
                 return ' '.join(commands)
             elif search_split[0] == '':
                 return COMMAND_CHAR_SERVICE
+
+        # Arguments
+        elif cursor >= 2:
+            if search_split[0] == COMMAND_CHAR_SERVICE:
+                return self.suggest_arguments(
+                    ''.join(search_split[0:2]),
+                    search_split[2:],
+                )

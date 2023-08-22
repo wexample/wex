@@ -46,7 +46,6 @@ class UserCommandProcessor(AbstractCommandProcessor):
             base_command_path = self.get_base_command_path()
 
             if os.path.exists(base_command_path):
-
                 # User typed "~"
                 if search_split[0].startswith(COMMAND_CHAR_USER):
                     from src.helper.suggest import suggest_from_path
@@ -61,4 +60,11 @@ class UserCommandProcessor(AbstractCommandProcessor):
                     # Wrap to avoid resolution
                     return f'\\{COMMAND_CHAR_USER}'
 
+        # Arguments
+        elif cursor >= 1:
+            if search_split[0].startswith(COMMAND_CHAR_USER):
+                return self.suggest_arguments(
+                    search_split[0],
+                    search_split[1:],
+                )
         return None

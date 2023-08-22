@@ -7,6 +7,8 @@ autocomplete() {
   local SEARCH=("${COMP_WORDS[*]:1}")
   # Set the current position of the cursor
   local CURSOR=$((COMP_CWORD - 1))
+  # Activate for dev
+  # local AUTOCOMPLETE_DEBUG=true
 
   # Get autocomplete suggestions
   local SUGGESTIONS=""
@@ -18,19 +20,55 @@ autocomplete() {
     CURRENT=""
   fi
 
-  # The @ char, which is user for services, is used as a word separator in compgen
-  if [[ ${SEARCH[0]} =~ ^@ ]] && [[ "${CURRENT}" != "@" ]]; then
-    CURRENT="@${CURRENT}"
+  # Command type : service
+  if [[ ${SEARCH[0]} =~ ^@ ]]; then
+    # The @ char, which is user for services, is used as a word separator in compgen
+    if [[ "${CURRENT}" != "@" ]] && ([[ "${CURSOR}" == "1" ]]); then
+      CURRENT="@${CURRENT}"
+    fi
   fi
 
   # Generate autocomplete suggestions using compgen
   COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- ${CURRENT}))
 
-  # Check for single suggestion
+  local ARGS_CURSOR=0
+  # There is only one suggestion, so we search
+  # if we can add a final space to enter to arguments section
+  # Each type of command may have a different position of arguments section
   if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
-    if [[ "${COMPREPLY[@]}" = *"/"* ]];then
+    if [[ ${COMPREPLY[*]} =~ ^@ ]]; then
+      # Command type : service
+      ARGS_CURSOR=2
+    elif [[ ${COMPREPLY[*]} =~ ^'.' ]]; then
+      # Command type : app
+      ARGS_CURSOR=1
+    elif [[ ${COMPREPLY[*]} =~ ^'~' ]]; then
+      COMMAND_TYPE='user'
+      ARGS_CURSOR=1
+    elif [[ " ${COMPREPLY[*]}" = *"::"* ]] || [[ " ${COMPREPLY[*]}" = *"/"* ]];then
+      # Command type : addon
+      ARGS_CURSOR=3
+    else
+      local TRIMMED=$(echo  ${COMPREPLY[*]} | xargs)
+      if [[ "${TRIMMED}" =~ ^[a-z\-]+$ ]];then
+        # Command type : core
+        ARGS_CURSOR=1
+      fi
+    fi
+
+    # We know the minimum cursor number
+    if [[ "${ARGS_CURSOR}" -gt 0 ]]; then
       COMPREPLY+=" "
     fi
+  fi
+
+  if [[ "${AUTOCOMPLETE_DEBUG}" = "true" ]];then
+    echo "____________"
+    echo "CURSOR       : ${CURSOR}"
+    echo "ARGS_CURSOR  : ${ARGS_CURSOR}"
+    echo "SUGGESTIONS  : ${SUGGESTIONS[*]}"
+    echo "CURRENT      : ${CURRENT}"
+    echo "COMPREPLY    : ${COMPREPLY[*]}"
   fi
 }
 

@@ -93,7 +93,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_app(self):
         self.assertEqual(
-            self.kernel.exec('.local_command/test', {'arg_one': 'YES'}),
+            self.kernel.exec('.local_command/test', {'local-option': 'YES'}),
             'OK:YES'
         )
 

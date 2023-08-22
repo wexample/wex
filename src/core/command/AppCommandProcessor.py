@@ -66,4 +66,12 @@ class AppCommandProcessor(AbstractCommandProcessor):
                     # Suggest to execute local app command
                     return COMMAND_CHAR_APP
 
+        # Arguments
+        elif cursor >= 1:
+            if search_split[0].startswith(COMMAND_CHAR_APP):
+                return self.suggest_arguments(
+                    search_split[0],
+                    search_split[1:],
+                )
+
         return None
