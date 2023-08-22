@@ -43,11 +43,14 @@ autocomplete() {
       # Command type : app
       ARGS_CURSOR=1
     elif [[ ${COMPREPLY[*]} =~ ^'~' ]]; then
-      COMMAND_TYPE='user'
+      # Command type : 'user'
       ARGS_CURSOR=1
     elif [[ " ${COMPREPLY[*]}" = *"::"* ]] || [[ " ${COMPREPLY[*]}" = *"/"* ]];then
-      # Command type : addon
-      ARGS_CURSOR=3
+      # Ignore if completion terminates with a ":", as we don't want final space in this case.
+      if [[ " ${COMPREPLY[*]}" != *":" ]];then
+        # Command type : addon
+        ARGS_CURSOR=3
+      fi
     else
       local TRIMMED=$(echo  ${COMPREPLY[*]} | xargs)
       if [[ "${TRIMMED}" =~ ^[a-z\-]+$ ]];then
