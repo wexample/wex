@@ -248,6 +248,8 @@ class Kernel:
         return self.core_actions
 
     def exec_function(self, function, args=None):
+        import click
+
         if not args:
             args = []
 
@@ -260,6 +262,9 @@ class Kernel:
 
         try:
             ctx = function.make_context('', args or [])
+        # Click explicitly asked to exit, for example when using --help.
+        except click.exceptions.Exit:
+            return
         except Exception as e:
             import logging
 
