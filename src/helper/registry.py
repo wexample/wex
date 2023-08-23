@@ -107,10 +107,15 @@ def build_registry_services(addons, kernel):
             for service in os.listdir(services_dir):
                 service_path = os.path.join(services_dir, service)
                 config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
+                commands_path = os.path.join(service_path, 'command')
+
                 services_dict[service] = {
                     'name': service,
-                    'commands': scan_commands(os.path.join(service_path, 'command'), service,
-                                              f"{COMMAND_CHAR_SERVICE}"),
+                    'commands': scan_commands(
+                        os.path.join(service_path, 'command'),
+                        service,
+                        f"{COMMAND_CHAR_SERVICE}"
+                    ) if os.path.isdir(commands_path) else [],
                     'addon': addon,
                     'dir': service_path + '/',
                     "config": json.load(open(config_file_path)) if os.path.exists(config_file_path) else {}
