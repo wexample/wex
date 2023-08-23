@@ -8,7 +8,7 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 class ServiceCommandProcessor(AbstractCommandProcessor):
     def exec(self, quiet: bool = False) -> str | None:
-        if self.match[2] not in self.kernel.registry['services']:
+        if self.match[1] not in self.kernel.registry['services']:
             if not quiet:
                 self.kernel.error(ERR_SERVICE_NOT_FOUND, {
                     'command': self.command,
