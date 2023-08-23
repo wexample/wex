@@ -17,10 +17,14 @@ from http.server import HTTPServer
 @click.command()
 @click.pass_obj
 @as_sudo
-@click.option('--port', '-p', type=int, required=False, default=4242)
-@click.option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True)
-@click.option('--asynchronous', '-a', type=bool, required=False, default=False, is_flag=True)
-@click.option('--force', '-f', type=bool, required=False, default=False, is_flag=True)
+@click.option('--port', '-p', type=int, required=False, default=4242,
+              help="Which port is used by service to listen incoming webhooks")
+@click.option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,
+              help="Do not start real service, useful for testing")
+@click.option('--asynchronous', '-a', type=bool, required=False, default=False, is_flag=True,
+              help="Use a daemon or not. Can't use daemon in a docker container")
+@click.option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
+              help="Kill existing process if already running")
 def core__webhook__serve(
         base_kernel,
         port: int = 4242,
