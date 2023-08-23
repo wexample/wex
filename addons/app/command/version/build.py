@@ -10,8 +10,10 @@ from src.const.error import ERR_UNEXPECTED
 
 @click.command
 @click.pass_obj
-@click.option('--version', '-v', type=str, required=False)
-@click.option('--commit', '-ok', required=False, is_flag=True, default=False)
+@click.option('--version', '-v', type=str, required=False,
+              help="New version number, auto generated if missing")
+@click.option('--commit', '-ok', required=False, is_flag=True, default=False,
+              help="New version changes has been validated, ask to commit changes")
 @click.option('--app-dir', '-a', type=str, required=False,
               help="App directory")
 def app__version__build(kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
