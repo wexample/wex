@@ -1,0 +1,28 @@
+global:
+  author: root
+  created: "2023-03-23 17:13:28"
+  name: wex
+  services: []
+  wex_version: "5.0.0-beta.41+build.20230822134237"
+  version: "5.0.0-beta.41+build.20230822134237"
+
+docker:
+  compose:
+    stdin_open: true
+    tty: true
+env:
+  dev:
+    domain_main: wex.wex
+    domains: []
+    email: contact@wexample.com
+  local:
+    domain_main: wex.wex
+    domains: wex.wex
+    email: contact@wexample.com
+  prod:
+    domain_main: wex.wex
+    domains: []
+    email: contact@wexample.com
+
+wex:
+  version: 5.0.0-beta.41+build.20230822134237
