@@ -4,16 +4,18 @@ import shutil
 import click
 from addons.app.const.app import ERR_SERVICE_EXISTS, APP_DIR_APP_DATA
 from addons.app.helpers.app import config_save
-from addons.core.command.service.exec import core__service__exec
-from addons.docker.helpers import merge_docker_compose_files
+from addons.docker.helpers.docker import merge_docker_compose_files
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
 
 
 @click.command
 @click.pass_obj
-@click.option('--service', '-s', type=str, required=True)
-@click.option('--app-dir', '-a', type=str, required=False)
+@click.option('--service', '-s', type=str, required=True,
+              help="Service name")
+@click.option('--app-dir', '-a', type=str, required=False,
+              help="App directory")
 @click.option('--install-config', '-ic', type=bool, required=False, is_flag=True, default=True,
               help='Add to config')
 @click.option('--install-docker', '-id', type=bool, required=False, is_flag=True, default=True,
@@ -64,9 +66,10 @@ def core__service__install(
 
     config_save(kernel)
 
-    kernel.exec_function(core__service__exec, {
-        'hook': 'service_install'
-    })
+    kernel.exec(
+        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}service/install',
+        quiet=True
+    )
 
 
 def app_service_install_merge_dir(
