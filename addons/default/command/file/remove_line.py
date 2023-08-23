@@ -4,8 +4,10 @@ import click
 
 @click.command
 @click.pass_obj
-@click.option('--file-path', '-f', type=str, required=True)
-@click.option('--line', '-l', type=str, required=True)
+@click.option('--file-path', '-f', type=str, required=True,
+              help="File to work on")
+@click.option('--line', '-l', type=str, required=True,
+              help="Exact line, ending an trailing spaces will be ignored")
 def default__file__remove_line(kernel, file_path: str, line: str) -> None:
     if not os.path.isfile(file_path):
         kernel.log("File does not exist.")
