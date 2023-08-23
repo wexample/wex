@@ -34,12 +34,12 @@ class UserCommandProcessor(AbstractCommandProcessor):
     def get_base_path(self):
         return f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
 
-    def get_function_name(self):
-        return COMMAND_SEPARATOR_FUNCTION_PARTS.join([
+    def get_function_name_parts(self) -> []:
+        return [
             'user',
             self.match.group(2),
             self.match.group(3)
-        ])
+        ]
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:

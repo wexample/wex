@@ -7,10 +7,11 @@ from abc import abstractmethod
 
 from typing import Optional
 
+from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
 from src.helper.args import convert_dict_to_args, convert_args_to_dict
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 from src.helper.file import set_owner_recursive
-from src.helper.string import trim_leading
+from src.helper.string import trim_leading, to_snake_case
 from src.helper.system import get_user_or_sudo_user
 
 
@@ -120,8 +121,15 @@ class AbstractCommandProcessor:
     def get_path(self, subdir: str = None):
         pass
 
+    def get_function_name(self) -> str | None:
+        return to_snake_case(
+            COMMAND_SEPARATOR_FUNCTION_PARTS.join(
+                self.get_function_name_parts()
+            )
+        )
+
     @abstractmethod
-    def get_function_name(self):
+    def get_function_name_parts(self) -> []:
         pass
 
     def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:

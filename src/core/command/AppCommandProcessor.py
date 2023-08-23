@@ -31,12 +31,12 @@ class AppCommandProcessor(AbstractCommandProcessor):
             os.path.join(self.match[2], self.match[3])
         )
 
-    def get_function_name(self):
-        return COMMAND_SEPARATOR_FUNCTION_PARTS.join([
+    def get_function_name_parts(self) -> []:
+        return [
             'app',
             self.match.group(2),
             self.match.group(3)
-        ])
+        ]
 
     def get_base_path(self):
         if self.kernel.addons['app']['path']['call_app_dir']:

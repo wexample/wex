@@ -33,7 +33,7 @@ class CoreCommandProcessor(AbstractCommandProcessor):
     def get_path(self, subdir: str = None) -> str | None:
         return None
 
-    def get_function_name(self):
+    def get_function_name(self) -> str | None:
         return None
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:

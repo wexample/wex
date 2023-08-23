@@ -29,12 +29,12 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
             self.match[3]
         )
 
-    def get_function_name(self):
-        return COMMAND_SEPARATOR_FUNCTION_PARTS.join([
-            'service',
+    def get_function_name_parts(self) -> []:
+        return [
+            self.match.group(1),
             self.match.group(2),
             self.match.group(3)
-        ])
+        ]
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0 or cursor == 1:
