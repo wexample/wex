@@ -39,7 +39,7 @@ class AbstractCommandProcessor:
             })
             return
 
-        function = self.get_function(self)
+        function = self.get_function()
 
         command_args = self.command_args
         if isinstance(self.command_args, dict):
@@ -62,8 +62,8 @@ class AbstractCommandProcessor:
 
         return result
 
-    def get_function(self, kernel) -> str:
-        command_path = kernel.get_path()
+    def get_function(self) -> str:
+        command_path = self.get_path()
 
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(command_path, command_path)
@@ -162,7 +162,7 @@ class AbstractCommandProcessor:
         # Merge all params in a list,
         # but ignore already given args,
         # i.e : if -d is already given, do not suggest "-d" or "--default"
-        function = self.get_function(self)
+        function = self.get_function()
 
         params = []
         for param in function.params:
