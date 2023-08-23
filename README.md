@@ -22,7 +22,7 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 
 ## Calling command
     
-    # Basic call
+    # Basic call in core addons folders
     wex core::logo/show
 
     # User defined command, stored in home directory
