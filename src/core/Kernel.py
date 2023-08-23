@@ -6,7 +6,7 @@ import sys
 from typing import Optional
 
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED
+    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
@@ -37,7 +37,8 @@ class Kernel:
         UserCommandProcessor,
         CoreCommandProcessor
     ]
-    processors = {class_definition.get_type(class_definition): class_definition for class_definition in processor_classes}
+    processors = {class_definition.get_type(class_definition): class_definition for class_definition in
+                  processor_classes}
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -257,7 +258,30 @@ class Kernel:
         if isinstance(args, dict):
             args = convert_dict_to_args(function, args)
 
-        ctx = function.make_context('', args or [])
+        try:
+            ctx = function.make_context('', args or [])
+        except Exception as e:
+            import logging
+
+            # Show error message
+            self.error(
+                ERR_COMMAND_CONTEXT,
+                {
+                    'function': function.callback.__name__,
+                    'error': str(e)
+                },
+                logging.ERROR
+            )
+
+            # Show help
+            self.print(
+                function.get_help(
+                    function.make_context('', [])
+                )
+            )
+
+            return
+
         ctx.obj = self
 
         return function.invoke(ctx)
