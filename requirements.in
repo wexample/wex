@@ -1,4 +1,5 @@
 click
 gitpython
+InquirerPy
 psutil
 python-dotenv
