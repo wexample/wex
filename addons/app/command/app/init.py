@@ -148,7 +148,6 @@ def app__app__init(
                     'tty': True,
                     'stdin_open': True,
                 }
-
             },
             'env': {
                 'local': {

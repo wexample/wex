@@ -38,7 +38,7 @@ def core__version__build(kernel, commit: bool = False) -> None:
         kernel.exec_function(
             app__config__set,
             {
-                'key': 'global.wex_version',
+                'key': 'wex.version',
                 'value': new_version
             }
         )

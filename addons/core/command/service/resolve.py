@@ -11,7 +11,7 @@ from src.helper.args import split_arg_array
 @app_location_optional
 @click.option('--service', '-s', type=str, required=True,
               help="Find all service dependencies")
-def app__service__resolve(kernel, service: Union[str, List[str]]) -> List[str]:
+def core__service__resolve(kernel, service: Union[str, List[str]]) -> List[str]:
     services = split_arg_array(service)
 
     resolved_services = set()

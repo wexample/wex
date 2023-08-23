@@ -1,7 +1,7 @@
 import yaml
 import os
 
-from yaml import BaseLoader
+from yaml import SafeLoader
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY
 from src.helper.file import create_directories_and_file
@@ -27,7 +27,7 @@ def set_app_workdir(kernel, app_dir):
     # might not be initialized at this point.
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
-            file_config = yaml.load(f, Loader=BaseLoader)
+            file_config = yaml.load(f, Loader=SafeLoader)
     else:
         file_config = {}
 
