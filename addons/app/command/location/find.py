@@ -7,7 +7,8 @@ from addons.app.helpers.app import is_app_root
 
 
 @click.command
-@click.option('--app-dir', '-a', type=str, required=False)
+@click.option('--app-dir', '-a', type=str, required=False,
+              help="App directory")
 @app_location_optional
 def app__location__find(app_dir: Optional[str] = False) -> Optional[str]:
     """Search for the config file in the given directory path or its parent directories.
