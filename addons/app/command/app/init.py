@@ -69,11 +69,15 @@ def app__app__init(
         nonlocal services
         nonlocal kernel
 
+        services = split_arg_array(services)
+        if len(services) == 0:
+            return
+
         # Resolve dependencies for all services
         services = kernel.exec_function(
             core__service__resolve,
             {
-                'service': split_arg_array(services)
+                'service': services
             }
         )
 
