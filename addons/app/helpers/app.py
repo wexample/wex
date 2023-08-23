@@ -1,26 +1,9 @@
 import json
 import os
-import shutil
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY
 from src.helper.file import create_directories_and_file
 from src.helper.string import to_snake_case
-
-
-def create_test_app(kernel, name='test-app', services: [] = []):
-    kernel.log('Creating test app...')
-
-    app_dir = kernel.path["tmp"] + 'tests/test-app/'
-
-    # Recreate test app dir.
-    shutil.rmtree(app_dir, True)
-    os.makedirs(app_dir)
-
-    kernel.exec('app::app/init', {
-        'name': name,
-        'app-dir': app_dir,
-        'services': ','.join(services)
-    })
 
 
 def create_env(env, app_dir):
