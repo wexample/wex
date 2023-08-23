@@ -12,7 +12,8 @@ from src.helper.core import core_kernel_get_version
 
 @click.command
 @click.pass_obj
-@click.option('--commit', '-ok', required=False, is_flag=True, default=False)
+@click.option('--commit', '-ok', required=False, is_flag=True, default=False,
+              help="New version changes has been validated, ask to commit changes")
 def core__version__build(kernel, commit: bool = False) -> None:
     version = core_kernel_get_version(kernel)
     repo = git.Repo(kernel.path['root'])
