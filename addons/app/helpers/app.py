@@ -1,5 +1,7 @@
-import json
+import yaml
 import os
+
+from yaml import BaseLoader
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY
 from src.helper.file import create_directories_and_file
@@ -17,7 +19,7 @@ def create_env(env, app_dir):
 
 
 def set_app_workdir(kernel, app_dir):
-    import json
+    import yaml
 
     config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
 
@@ -25,7 +27,7 @@ def set_app_workdir(kernel, app_dir):
     # might not be initialized at this point.
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
-            file_config = json.load(f)
+            file_config = yaml.load(f, Loader=BaseLoader)
     else:
         file_config = {}
 
@@ -62,7 +64,7 @@ def config_save(kernel):
             kernel.addons['app']['config']['context']['dir'],
             APP_FILEPATH_REL_CONFIG
     ), 'w') as f:
-        json.dump(kernel.addons['app']['config'], f, indent=True)
+        yaml.dump(kernel.addons['app']['config'], f, indent=True)
 
 
 def app_config_to_docker_env(d, parent_key='', sep='_'):
@@ -80,7 +82,7 @@ def app_config_to_docker_env(d, parent_key='', sep='_'):
 
 def save_proxy_apps(kernel):
     with open(kernel.addons['app']['path']['proxy'] + PROXY_FILE_APPS_REGISTRY, 'w') as f:
-        json.dump(
+        yaml.dump(
             kernel.addons['app']['proxy']['apps'], f,
             indent=True
         )
