@@ -105,6 +105,21 @@ class TestCore(AbstractTestCase):
             'FIRST'
         )
 
+    def test_help_coverage(self):
+        self._test_help_coverage(self.kernel.registry['addons'])
+        self._test_help_coverage(self.kernel.registry['services'])
+
+    def _test_help_coverage(self, registry_part):
+        for command, command_data in get_all_commands_from_registry_part(registry_part).items():
+            processor = self.kernel.build_command_processor(command)
+            function = processor.get_function()
+
+            for param in function.params:
+                self.assertTrue(
+                    param.help is not None,
+                    f'Option --{param.name} for command {command} should have a help section'
+                )
+
     def test_tests_coverage(self):
         for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']
@@ -136,11 +151,13 @@ class TestCore(AbstractTestCase):
 
     def test_build_command(self):
         self.assertEqual(
-            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_command_from_function(core__logo__show),
+            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_command_from_function(
+                core__logo__show),
             'core::logo/show'
         )
         self.assertEqual(
-            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(core__version__build),
+            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(
+                core__version__build),
             'wex core::version/build'
         )
 
