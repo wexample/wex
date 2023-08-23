@@ -32,7 +32,7 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
     wex .custom_command_group/custom_command_name
 
     # Service command
-    wex @service_name/command_name
+    wex @service_name::custom_command_group/command_name
 
 ## Addons
 
