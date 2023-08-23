@@ -6,16 +6,17 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class AppCommandProcessor(AbstractCommandProcessor):
-    def exec(self) -> str | None:
+    def exec(self, quiet: bool = False) -> str | None:
         if not self.get_base_path():
-            self.kernel.error(ERR_APP_NOT_FOUND, {
-                'command': self.command,
-                'dir': os.getcwd(),
-            })
+            if not quiet:
+                self.kernel.error(ERR_APP_NOT_FOUND, {
+                    'command': self.command,
+                    'dir': os.getcwd(),
+                })
 
             return None
 
-        return super().exec()
+        return super().exec(quiet)
 
     def get_pattern(self) -> str:
         return COMMAND_PATTERN_APP

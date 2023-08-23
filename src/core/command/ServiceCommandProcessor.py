@@ -5,15 +5,16 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class ServiceCommandProcessor(AbstractCommandProcessor):
-    def exec(self) -> str | None:
+    def exec(self, quiet: bool = False) -> str | None:
         if self.match[2] not in self.kernel.registry['services']:
-            self.kernel.error(ERR_SERVICE_NOT_FOUND, {
-                'command': self.command,
-                'service': self.match[2],
-            })
-            return
+            if not quiet:
+                self.kernel.error(ERR_SERVICE_NOT_FOUND, {
+                    'command': self.command,
+                    'service': self.match[2],
+                })
+            return None
 
-        return super().exec()
+        return super().exec(quiet)
 
     def get_pattern(self) -> str:
         return COMMAND_PATTERN_SERVICE

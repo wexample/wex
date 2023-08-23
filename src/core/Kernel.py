@@ -219,19 +219,20 @@ class Kernel:
     def setup_test_manager(self, test_manager):
         self.test_manager = test_manager
 
-    def exec(self, command: str, command_args=None):
+    def exec(self, command: str, command_args=None, quiet: bool = False):
         if command_args is None:
             command_args = []
 
         processor = self.build_command_processor(command, command_args)
 
         if not processor:
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
-                'command': command
-            })
+            if not quiet:
+                self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+                    'command': command
+                })
             return
 
-        return processor.exec()
+        return processor.exec(quiet)
 
     def get_core_actions(self):
         if not self.core_actions:

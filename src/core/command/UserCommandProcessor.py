@@ -9,14 +9,14 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class UserCommandProcessor(AbstractCommandProcessor):
-    def exec(self) -> str | None:
+    def exec(self, quiet: bool = False) -> str | None:
         # Add user command dir to path
         # It allows to use imports in custom user scripts
         commands_path = os.path.join(self.get_base_path(), 'command')
         if os.path.exists(commands_path) and commands_path not in sys.path:
             sys.path.append(commands_path)
 
-        return super().exec()
+        return super().exec(quiet)
 
     def get_pattern(self) -> str:
         return COMMAND_PATTERN_USER

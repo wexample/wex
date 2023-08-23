@@ -28,16 +28,17 @@ class AbstractCommandProcessor:
             command_args
         )
 
-    def exec(self) -> str | None:
+    def exec(self, quiet: bool = False) -> str | None:
         # Get valid path.
         command_path: str = self.get_path()
 
         if not os.path.isfile(command_path):
-            self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
-                'command': self.command,
-                'path': command_path,
-            })
-            return
+            if not quiet:
+                self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                    'command': self.command,
+                    'path': command_path,
+                })
+            return None
 
         function = self.get_function()
 

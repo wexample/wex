@@ -4,7 +4,7 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class CoreCommandProcessor(AbstractCommandProcessor):
-    def exec(self) -> str | None:
+    def exec(self, quiet: bool = False) -> str | None:
         core_actions = self.kernel.get_core_actions()
 
         # Handle core action : test, hi, etc...
@@ -18,10 +18,11 @@ class CoreCommandProcessor(AbstractCommandProcessor):
 
             return action.exec(command, self.command_args)
         else:
-            self.kernel.error(ERR_CORE_ACTION_NOT_FOUND, {
-                'command': self.command,
-            })
-            return
+            if not quiet:
+                self.kernel.error(ERR_CORE_ACTION_NOT_FOUND, {
+                    'command': self.command,
+                })
+            return None
 
     def get_pattern(self) -> str:
         return COMMAND_PATTERN_CORE
