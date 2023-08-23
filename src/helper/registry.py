@@ -91,7 +91,7 @@ def build_registry_addons(addons, kernel):
                 'name': addon,
                 'commands': scan_commands_groups(
                     addon_command_path,
-                    f'{addon}::'
+                    f'{addon}{COMMAND_SEPARATOR_ADDON}'
                 )
             }
 
