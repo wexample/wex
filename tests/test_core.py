@@ -117,7 +117,7 @@ class TestCore(AbstractTestCase):
             for param in function.params:
                 self.assertTrue(
                     param.help is not None,
-                    f'Option --{param.name} for command {command} should have a help section'
+                    f'Option {param.opts} for command {command} should have a help section'
                 )
 
     def test_tests_coverage(self):
