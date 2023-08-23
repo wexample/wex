@@ -279,12 +279,8 @@ class Kernel:
                 logging.ERROR
             )
 
-            # Show help
-            self.print(
-                function.get_help(
-                    function.make_context('', [])
-                )
-            )
+            with click.Context(function) as ctx:
+                self.print(function.get_help(ctx))
 
             return
 
