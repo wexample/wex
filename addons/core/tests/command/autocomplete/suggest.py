@@ -9,17 +9,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
-    def test_suggest(self):
-        self.check_suggest_addon()
-        self.check_suggest_addon_args()
-        self.check_suggest_app()
-        self.check_suggest_app_args()
-        self.check_suggest_service()
-        self.check_suggest_service_args()
-        self.check_suggest_user()
-        self.check_suggest_user_args()
-
-    def check_suggest_addon(self):
+    def tests_suggest_addon(self):
         # User ask "", it should suggest all
         # addons names suffixed by "::",
         # and every special char namespaces : ~, ., @
@@ -132,7 +122,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             len(suggestions.split(' ')) == 1
         )
 
-    def check_suggest_addon_args(self):
+    def tests_suggest_addon_args(self):
         # Search full addon command name with a final space
         suggestions = self.kernel.exec_function(
             core__autocomplete__suggest,
@@ -150,7 +140,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             len(suggestions.split(' ')) >= 2
         )
 
-    def check_suggest_service(self):
+    def tests_suggest_service(self):
         # Search only "@", should return all service commands
         suggestions: str = self.kernel.exec_function(
             core__autocomplete__suggest,
@@ -164,23 +154,80 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             len(suggestions.split(' ')) >= 2
         )
 
-        # Search "@te", to find created command
-        self.create_and_test_created_command(
-            COMMAND_CHAR_SERVICE,
-            '@ te'
+        self.assertTrue(
+            COMMAND_CHAR_SERVICE + 'test::demo-command' in suggestions
         )
 
-    def check_suggest_service_args(self):
         suggestions: str = self.kernel.exec_function(
             core__autocomplete__suggest,
             {
-                'cursor': 2,
-                'search': '@ test/first '
+                'cursor': 1,
+                'search': COMMAND_CHAR_SERVICE + ' t'
             }
         )
 
         self.assertTrue(
-            'another-option' in suggestions
+            COMMAND_CHAR_SERVICE + 'test::demo-command' in suggestions
+        )
+
+        suggestions: str = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': ' '.join(
+                    [
+                        COMMAND_CHAR_SERVICE,
+                        'test',
+                        ':'
+                    ]
+                )
+            }
+        )
+
+        # It should be only one suggestion for test-2
+        self.assertEqual(
+            suggestions,
+            ':'
+        )
+
+        suggestions: str = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 2,
+                'search': ' '.join(
+                    [
+                        COMMAND_CHAR_SERVICE,
+                        'test-2',
+                        COMMAND_SEPARATOR_ADDON
+                    ]
+                )
+            }
+        )
+
+        # It should be only one suggestion for test-2
+        self.assertEqual(
+            suggestions,
+            'another-demo-command/test'
+        )
+
+    def tests_suggest_service_args(self):
+        suggestions: str = self.kernel.exec_function(
+            core__autocomplete__suggest,
+            {
+                'cursor': 4,
+                'search': ' '.join(
+                    [
+                        COMMAND_CHAR_SERVICE,
+                        'test',
+                        COMMAND_SEPARATOR_ADDON,
+                        'demo-command' + COMMAND_SEPARATOR_GROUP + 'first',
+                    ]
+                ) + ' '
+            }
+        )
+
+        self.assertTrue(
+            '--option' in suggestions
         )
 
     def create_and_test_created_command(self, prefix: str, search: str = None):
@@ -207,7 +254,8 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         )
 
         self.assertTrue(
-            command in suggestions
+            command in suggestions,
+            f'Suggestions "{suggestions}" contains "{command}"'
         )
 
         self.assertTrue(
@@ -222,7 +270,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         if info['test']:
             os.remove(info['test'])
 
-    def check_suggest_app(self):
+    def tests_suggest_app(self):
         # Search only ".", should return all app commands
         suggestions: str = self.kernel.exec_function(
             core__autocomplete__suggest,
@@ -242,7 +290,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             COMMAND_CHAR_APP,
         )
 
-    def check_suggest_app_args(self):
+    def tests_suggest_app_args(self):
         suggestions = self.kernel.exec_function(
             core__autocomplete__suggest,
             {
@@ -255,13 +303,13 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             'local-option' in suggestions
         )
 
-    def check_suggest_user(self):
+    def tests_suggest_user(self):
         # Search "~te", to find created command
         self.create_and_test_created_command(
             COMMAND_CHAR_USER,
         )
 
-    def check_suggest_user_args(self):
+    def tests_suggest_user_args(self):
         suggestions = self.kernel.exec_function(
             core__autocomplete__suggest,
             {

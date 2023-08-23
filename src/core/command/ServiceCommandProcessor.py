@@ -1,6 +1,8 @@
+import os
+
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, COMMAND_SEPARATOR_FUNCTION_PARTS, \
-    COMMAND_CHAR_SERVICE
+    COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
@@ -24,9 +26,9 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
 
     def get_path(self, subdir: str = None):
         return self.build_command_path(
-            f"{self.kernel.registry['services'][self.match[2]]['dir']}",
+            f"{self.kernel.registry['services'][self.match[1]]['dir']}",
             subdir,
-            self.match[3]
+            os.path.join(self.match.group(2), self.match.group(3))
         )
 
     def get_function_name_parts(self) -> []:
@@ -37,23 +39,46 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
         ]
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
-        if cursor == 0 or cursor == 1:
-            if search_split[0] == COMMAND_CHAR_SERVICE:
-                from src.helper.registry import get_all_commands_from_services
+        # Suggest @
+        if cursor == 0 and search_split[0] == '':
+            return COMMAND_CHAR_SERVICE
 
-                commands = [
-                    command for command in get_all_commands_from_services(self.kernel).keys()
-                    if command.startswith(search_split[0])
-                ]
+        # In every other case, search should start with @
+        if search_split[0] == COMMAND_CHAR_SERVICE:
+            if cursor <= 1:
+                if search_split[0] == COMMAND_CHAR_SERVICE:
+                    from src.helper.registry import get_all_commands_from_services
 
-                return ' '.join(commands)
-            elif search_split[0] == '':
-                return COMMAND_CHAR_SERVICE
+                    commands = [
+                        command for command in get_all_commands_from_services(self.kernel).keys()
+                        if command.startswith(''.join(search_split))
+                    ]
 
-        # Arguments
-        elif cursor >= 2:
-            if search_split[0] == COMMAND_CHAR_SERVICE:
+                    return ' '.join(commands)
+
+                elif search_split[0] == '':
+                    return COMMAND_CHAR_SERVICE
+            elif cursor == 2 or cursor == 3:
+                if search_split[2] == COMMAND_SEPARATOR_ADDON:
+                    from src.helper.registry import get_all_commands_from_services
+
+                    search_service = ''.join(search_split[:3])
+                    search = ''.join(search_split)
+
+                    commands = [
+                        command[len(search_service):] for command in get_all_commands_from_services(self.kernel).keys()
+                        if command.startswith(search)
+                    ]
+
+                    return ' '.join(commands)
+                elif cursor == 2 and search_split[2] == ':':
+                    # User types "core:", we add a second ":"
+                    return ':'
+            # Arguments
+            elif cursor >= 4:
                 return self.suggest_arguments(
-                    ''.join(search_split[0:2]),
-                    search_split[2:],
+                    ''.join(search_split[0:4]),
+                    search_split[4:],
                 )
+
+        return None

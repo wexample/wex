@@ -23,7 +23,7 @@ autocomplete() {
   # Command type : service
   if [[ ${SEARCH[0]} =~ ^@ ]]; then
     # The @ char, which is user for services, is used as a word separator in compgen
-    if [[ "${CURRENT}" != "@" ]] && ([[ "${CURSOR}" == "1" ]]); then
+    if [[ "${CURRENT}" != "@" ]] && [[ "${CURSOR}" == "1" ]]; then
       CURRENT="@${CURRENT}"
     fi
   fi
@@ -38,7 +38,7 @@ autocomplete() {
   if [[ "${COMPREPLY}" != "" ]] && ! [[ ${COMPREPLY[*]} =~ [\ ] ]]; then
     if [[ ${COMPREPLY[*]} =~ ^@ ]]; then
       # Command type : service
-      ARGS_CURSOR=2
+      ARGS_CURSOR=3
     elif [[ ${COMPREPLY[*]} =~ ^'.' ]]; then
       # Command type : app
       ARGS_CURSOR=1

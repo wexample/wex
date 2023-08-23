@@ -111,11 +111,10 @@ def build_registry_services(addons, kernel):
 
                 services_dict[service] = {
                     'name': service,
-                    'commands': scan_commands(
-                        os.path.join(service_path, 'command'),
-                        service,
-                        f"{COMMAND_CHAR_SERVICE}"
-                    ) if os.path.isdir(commands_path) else [],
+                    'commands': scan_commands_groups(
+                        commands_path,
+                        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}'
+                    ),
                     'addon': addon,
                     'dir': service_path + '/',
                     "config": json.load(open(config_file_path)) if os.path.exists(config_file_path) else {}
