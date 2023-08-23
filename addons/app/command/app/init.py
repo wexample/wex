@@ -207,7 +207,8 @@ def app__app__init(
         kernel.exec_function(
             app__hook__exec,
             {
-                'hook': 'appInit'
+                'app-dir': app_dir,
+                'hook': 'app/init'
             }
         )
 
