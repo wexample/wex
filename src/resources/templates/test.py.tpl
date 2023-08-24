@@ -8,4 +8,4 @@ class {class_name}(AbstractTestCase):
         # self.kernel.exec_function({command_function_name}, {{
         #     'name': 'test'
         # }})
-        self.assertTrue(True)
+        self.assertTrue(False)
