@@ -101,7 +101,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_service(self):
         self.assertEqual(
-            self.kernel.exec('@test/first'),
+            self.kernel.exec('@test::demo-command/first'),
             'FIRST'
         )
 
@@ -111,6 +111,8 @@ class TestCore(AbstractTestCase):
 
     def _test_help_coverage(self, registry_part):
         for command, command_data in get_all_commands_from_registry_part(registry_part).items():
+            self.kernel.log(f'Checking syntax of command {command}')
+
             processor = self.kernel.build_command_processor(command)
             function = processor.get_function()
 
