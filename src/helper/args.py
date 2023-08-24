@@ -7,7 +7,7 @@ from click.types import BoolParamType
 def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str]:
     if not arg:
         return []
-    
+
     if isinstance(arg, str):
         arg = re.sub(r'[\[\]"\']', '', arg)
         return arg.split(separator)

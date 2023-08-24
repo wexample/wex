@@ -1,14 +1,29 @@
 import os
 import grp
+import pwd
 import signal
 import socket
 import subprocess
 from contextlib import closing
+from typing import Optional
+
 import psutil
 import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.command import execute_command
+
+
+def get_processes_by_port(port: int) -> Optional[psutil.Process]:
+    for process in psutil.process_iter():
+        try:
+            connections = process.connections()
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            continue
+        for connection in connections:
+            if connection.laddr.port == port:
+                return process
+    return None
 
 
 def get_sudo_username():
@@ -22,6 +37,22 @@ def get_user_or_sudo_user() -> str:
         return getpass.getuser()
     else:
         return get_sudo_username()
+
+
+def get_uid_from_user_name(user: str) -> int:
+    return pwd.getpwnam(user).pw_uid
+
+
+def get_gid_from_group_name(group: str) -> int:
+    return grp.getgrnam(group).gr_gid
+
+
+def get_user_group_name(user: str):
+    user_info = pwd.getpwnam(user)
+    # Get the group's entry using the user's gid
+    group = grp.getgrgid(user_info.pw_gid)
+
+    return group.gr_name
 
 
 def get_sudo_gid():
@@ -41,10 +72,20 @@ def get_user_or_sudo_user_home_data_path():
     else:
         return f'/home/{get_sudo_username()}/'
 
+
 def set_home_path_permissions():
     os.chown(
         f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
     )
+
+
+def set_permissions_recursively(user: str, group: str, path: str):
+    subprocess.run(['sudo', 'chown', '-R', f'{user}:{group}', path])
+    subprocess.run(['sudo', 'chmod', '-R', 'g+w', '.'])
+
+
+def is_current_user_sudo() -> bool:
+    return os.getuid() == 0
 
 
 def get_user_home_data_path():

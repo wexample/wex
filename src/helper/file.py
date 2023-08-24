@@ -1,8 +1,11 @@
+from yaml import SafeLoader
+
 import json
 import os
 import shutil
 import pwd
 import grp
+import yaml
 
 from src.helper.system import get_user_or_sudo_user
 
@@ -131,13 +134,13 @@ def write_dict_to_config(dict, dest: str):
             f.write(f"{key.upper()}={str(value).lower()}\n")
 
 
-def get_json_file_item(file_path: str, key: str, default=None):
+def get_yml_file_item(file_path: str, key: str, default=None):
     if os.path.exists(file_path):
         # Load the JSON file
         with open(file_path, 'r') as f:
-            data = json.load(f)
+            data = yaml.load(f, Loader=SafeLoader)
 
-        return get_json_item(data, key)
+        return get_dict_item_by_path(data, key)
     return default
 
 
@@ -165,26 +168,26 @@ def _set_json_file_item(dic, keys, value):
         dic[key] = value
 
 
-def get_json_item(json_data, key: str):
+def get_dict_item_by_path(data: dict, key: str):
     # Split the key into its individual parts
     keys = key.split('.')
 
     # Traverse the data dictionary using the key parts
     for k in keys:
-        if k in json_data:
-            json_data = json_data[k]
+        if k in data:
+            data = data[k]
         else:
             return None
 
-    return json_data
+    return data
 
 
-def json_load(file, default=None):
+def yaml_load_or_default(file, default=None):
     if default is None:
         default = {}
     try:
         with open(file) as f:
-            return json.load(f)
+            return yaml.load(f, SafeLoader)
     except FileNotFoundError:
         return default
 
