@@ -5,6 +5,7 @@ import click
 from addons.app.const.app import ERR_SERVICE_EXISTS, APP_DIR_APP_DATA
 from addons.app.helpers.app import config_save
 from addons.docker.helpers.docker import merge_docker_compose_files
+from src.helper.array import array_unique
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
@@ -14,7 +15,7 @@ from src.helper.service import get_service_dir
 @click.pass_obj
 @click.option('--service', '-s', type=str, required=True,
               help="Service name")
-@click.option('--app-dir', '-a', type=str, required=False,
+@click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
 @click.option('--install-config', '-ic', type=bool, required=False, is_flag=True, default=True,
               help='Add to config')
@@ -22,17 +23,20 @@ from src.helper.service import get_service_dir
               help='Merge docker files')
 @click.option('--install-git', '-ig', type=bool, required=False, is_flag=True, default=True,
               help='Merge git files')
-def core__service__install(
+@click.option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
+              help='Force install even service already installed')
+def app__service__install(
         kernel,
         service: str,
         install_config: bool = True,
         install_docker: bool = True,
         install_git: bool = True,
         app_dir: str = None,
+        force: bool = False
 ):
     kernel.log(f'Installing service : {service}')
 
-    if service in kernel.addons['app']['config']['global']['services']:
+    if service in kernel.addons['app']['config']['global']['services'] and not force:
         kernel.error(ERR_SERVICE_EXISTS, {
             'service': service
         })
@@ -40,6 +44,10 @@ def core__service__install(
     if install_config:
         kernel.addons['app']['config']['global']['services'].append(service)
         config_save(kernel)
+
+    # Remove duplicates
+    kernel.addons['app']['config']['global']['services'] = array_unique(
+        kernel.addons['app']['config']['global']['services'])
 
     service_dir = get_service_dir(kernel, service)
 
