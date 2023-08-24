@@ -1,6 +1,6 @@
 click
 gitpython
-InquirerPy
+inquirerpy
 psutil
 python-dotenv
-PyYAML
+pyyaml
