@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import os
 import re
+import sys
 from abc import abstractmethod
 
 from typing import Optional
@@ -42,6 +43,10 @@ class AbstractCommandProcessor:
             return None
 
         function = self.get_function()
+
+        # Enforce sudo.
+        if hasattr(function.callback, 'as_sudo') and os.geteuid() != 0:
+            os.execvp('sudo', ['sudo'] + sys.argv)
 
         command_args = self.command_args
         if isinstance(self.command_args, dict):
