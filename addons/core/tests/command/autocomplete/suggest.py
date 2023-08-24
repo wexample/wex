@@ -9,7 +9,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
-    def tests_suggest_addon(self):
+    def test_suggest(self):
         # User ask "", it should suggest all
         # addons names suffixed by "::",
         # and every special char namespaces : ~, ., @
