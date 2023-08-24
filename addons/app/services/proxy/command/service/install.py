@@ -20,8 +20,8 @@ def proxy__service__install(kernel):
         proxy_dir = '/opt/{}/'.format(PROXY_APP_NAME)
 
     kernel.addons['app']['config']['global'].update({
-        'default_port': port,
-        'default_port_secure': port_secure,
+        'port_public': port,
+        'port_public_secure': port_secure,
     })
 
     kernel.addons['app']['config']['path'].update({
