@@ -282,7 +282,7 @@ class Kernel:
             with click.Context(function) as ctx:
                 self.print(function.get_help(ctx))
 
-            return
+            exit(1)
 
         ctx.obj = self
 
