@@ -31,13 +31,15 @@ def set_app_workdir(kernel, app_dir):
     else:
         file_config = {}
 
+    kernel.addons['app']['call_command_level'] = 0
+
     kernel.addons['app']['config'] = {
         'context': {
-            'call_command_level': 0,
             'call_working_dir': os.getcwd(),
             'dir': app_dir,
             'dir_wex': app_dir + APP_DIR_APP_DATA,
         },
+        'path': {},
         'proxy': {
             'dir': kernel.addons['app']['path']['proxy']
         }
@@ -52,7 +54,7 @@ def unset_app_workdir(kernel):
     # Restore previous working dir.
     os.chdir(kernel.addons['app']['config']['context']['call_working_dir'])
 
-    del kernel.addons['app']['config']['context']['call_command_level']
+    del kernel.addons['app']['call_command_level']
     del kernel.addons['app']['config']['context']['call_working_dir']
     del kernel.addons['app']['config']['context']['dir']
 
