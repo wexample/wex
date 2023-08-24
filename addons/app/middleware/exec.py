@@ -33,21 +33,22 @@ def app_middleware_exec(kernel, *, match=None, command=None, command_type: str =
                 )
 
             if app_dir_resolved:
-                # First test, create config.
-                if 'call_command_level' not in kernel.addons['app']['config']:
-                    set_app_workdir(kernel, app_dir_resolved)
+                args['app_dir'] = app_dir_resolved
 
-                    # Append to original apps list.
-                    args_list.append('--app-dir')
-                    args_list.append(app_dir_resolved)
+                # First test, create config.
+                if 'call_command_level' not in kernel.addons['app']:
+                    set_app_workdir(kernel, app_dir_resolved)
                 # Config exists.
                 else:
                     # Count deep level,
                     # used to restore working dir when reverted to 0.
-                    kernel.addons['app']['config']['call_command_level'] += 1
+                    kernel.addons['app']['call_command_level'] += 1
 
+                # Append to original apps list.
+                args_list.append('--app-dir')
+                args_list.append(app_dir_resolved)
             else:
                 kernel.error(ERR_APP_NOT_FOUND, {
                     'command': command,
-                    'dir': app_dir,
+                    'dir': app_dir_resolved,
                 })
