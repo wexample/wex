@@ -1,0 +1,29 @@
+services:
+  proxy:
+    image: nginxproxy/nginx-proxy:1.0.0
+    container_name: ${CONTEXT_NAME}_proxy
+    volumes:
+      # Nginx configuration
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ${CONTEXT_DIR}proxy/certs:/etc/nginx/certs:ro
+      - ${CONTEXT_DIR}proxy/vhost.d:/etc/nginx/vhost.d
+      - ${CONTEXT_DIR}proxy/html:/usr/share/nginx/html
+      - ${CONTEXT_DIR}proxy/logs:/var/log/nginx
+      - ${CONTEXT_DIR}proxy/wex.conf:/etc/nginx/conf.d/wex.conf
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: nginx_proxy
+    privileged: true
+    extends:
+      file: ${SERVICE_DEFAULT_YML_ENV}
+      service: default
+  certs:
+    image: nginxproxy/acme-companion:2.2.1
+    container_name: ${CONTEXT_NAME}_certs
+    volumes:
+      - ${CONTEXT_DIR}proxy/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - ${GLOBAL_NAME}_proxy
+    extends:
+      file: ${SERVICE_DEFAULT_YML_ENV}
+      service: default

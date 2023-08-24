@@ -1,0 +1,8 @@
+services:
+  proxy:
+    extends:
+      file: ${SERVICE_PROXY_YML_ENV}
+      service: proxy
+    ports:
+      - ${GLOBAL_PORT_PUBLIC}:80
+      - ${GLOBAL_PORT_PUBLIC_SECURE}:443

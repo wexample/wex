@@ -1,0 +1,12 @@
+# We use intensive files concatenation and service extensions
+# in order to keep as possible a minimum of services definition in websites
+# and let to pick and control expected container.
+# See app::app/compose to see concatenation method detail.
+
+services:
+  default:
+    stdin_open: ${DOCKER_COMPOSE_STDIN_OPEN}
+    tty: ${DOCKER_COMPOSE_TTY}
+    restart: unless-stopped
+    networks:
+      - wex_net
