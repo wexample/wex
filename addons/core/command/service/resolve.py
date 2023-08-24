@@ -9,9 +9,9 @@ from src.helper.args import split_arg_array
 @click.command
 @click.pass_obj
 @app_location_optional
-@click.option('--service', '-s', type=str, required=True,
+@click.option('--service', '-s', required=True,
               help="Find all service dependencies")
-def core__service__resolve(kernel, service: Union[str, List[str]]) -> List[str]:
+def core__service__resolve(kernel, service) -> List[str]:
     services = split_arg_array(service)
 
     resolved_services = set()
