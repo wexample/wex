@@ -9,18 +9,18 @@ from typing import Iterable, Union
 
 from src.helper.core import core_kernel_get_version
 from src.helper.prompt import build_progress_bar
+from src.helper.string import to_snake_case, to_kebab_case
+from src.helper.args import split_arg_array
+
 from addons.app.command.app.start import app__app__start
 from addons.app.decorator.app_location_optional import app_location_optional
 from addons.core.command.service.resolve import core__service__resolve
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA, APP_FILEPATH_REL_CONFIG
 from addons.app.const.app import APP_ENV_PROD
 from addons.app.helpers.app import create_env
-from addons.core.command.service.install import core__service__install
+from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.helpers.app import set_app_workdir, unset_app_workdir
-
-from src.helper.string import to_snake_case, to_kebab_case
-from src.helper.args import split_arg_array
 
 
 @click.command
@@ -188,7 +188,7 @@ def app__app__init(
         kernel.log('Installing services...')
         for service in services:
             services = kernel.exec_function(
-                core__service__install,
+                app__service__install,
                 {
                     'app-dir': app_dir,
                     'service': service
