@@ -64,11 +64,10 @@ def exec_app_docker_compose(
         result = subprocess.run(args, capture_output=True, text=True)
 
         if result.stderr:
-            print(result.stderr)
             kernel.error(
                 ERR_UNEXPECTED,
                 {
-                    'error': f'Error during running docker compose "{command}"'
+                    'error': f'Error during running docker compose "{command}" : {result.stderr}'
                 }
             )
 
