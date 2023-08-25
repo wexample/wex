@@ -34,7 +34,7 @@ class AbstractCommandProcessor:
         # Get valid path.
         command_path: str = self.get_path()
 
-        if not os.path.isfile(command_path):
+        if not command_path or not os.path.isfile(command_path):
             if not quiet:
                 self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': self.command,
