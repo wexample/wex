@@ -5,8 +5,10 @@ from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.command.service.used import app__service__used
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.command.env.get import app__env__get
+from addons.docker.helpers.docker import user_has_docker_permission
+from src.helper.system import get_user_or_sudo_user
 from src.helper.process import process_post_exec
-from src.const.error import ERR_UNEXPECTED
+from src.const.error import ERR_UNEXPECTED, ERR_USER_HAS_NO_DOCKER_PERMISSION
 
 
 def get_app_docker_compose_files(kernel, app_dir):
@@ -37,6 +39,12 @@ def exec_app_docker_compose(
         profile=None,
         sync=True
 ):
+    username = get_user_or_sudo_user()
+    if not user_has_docker_permission(username):
+        kernel.error(ERR_USER_HAS_NO_DOCKER_PERMISSION, {
+            'username': username
+        })
+
     env = app__env__get.callback()
 
     args = [

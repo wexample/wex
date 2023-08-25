@@ -1,6 +1,23 @@
 import yaml
+import grp
+import pwd
 
+from src.helper.system import is_sudo
 from src.helper.dict import merge_dicts
+
+
+def user_has_docker_permission(username: str) -> bool:
+    if is_sudo(username):
+        return True
+
+    try:
+        user_groups = [g.gr_name for g in grp.getgrall() if username in g.gr_mem]
+        gid = pwd.getpwnam(username).pw_gid
+        user_groups.append(grp.getgrgid(gid).gr_name)
+
+        return "docker" in user_groups
+    except KeyError:
+        return False
 
 
 def merge_docker_compose_files(src, dest):
@@ -16,4 +33,3 @@ def merge_docker_compose_files(src, dest):
     # Write the merged data to a new file
     with open(dest, 'w') as f:
         yaml.dump(merged_data, f)
-

@@ -162,3 +162,25 @@ def service_exec(kernel, service, action: str):
             service
         ]
     )
+
+
+def is_sudo(username: str) -> bool:
+    try:
+        with open("/etc/sudoers", "r") as f:
+            content = f.readlines()
+
+        for line in content:
+            if line.strip().startswith(username):
+                return True
+
+        import os
+        for file in os.listdir("/etc/sudoers.d/"):
+            with open(os.path.join("/etc/sudoers.d/", file), "r") as f:
+                content = f.readlines()
+            for line in content:
+                if line.strip().startswith(username):
+                    return True
+
+        return False
+    except Exception as e:
+        return False
