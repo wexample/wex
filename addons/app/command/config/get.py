@@ -19,7 +19,7 @@ def app__config__get(key: str, default: str = None, build: bool = False, app_dir
         config_file = APP_FILEPATH_REL_CONFIG
 
     return get_yml_file_item(
-        config_file,
+        f'{app_dir}{config_file}',
         key,
         default
     )
