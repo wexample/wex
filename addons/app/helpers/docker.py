@@ -45,7 +45,9 @@ def exec_app_docker_compose(
             'username': username
         })
 
-    env = app__env__get.callback()
+    env = app__env__get.callback(
+        kernel.addons['app']['config']['context']['dir']
+    )
 
     args = [
         'docker',

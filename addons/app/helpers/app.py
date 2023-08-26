@@ -3,7 +3,8 @@ import os
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY, \
     APP_FILEPATH_REL_CONFIG_BUILD
-from src.helper.file import create_directories_and_file, yaml_load_or_default
+from src.const.globals import COLOR_GRAY
+from src.helper.file import create_directories_and_file, yaml_load_or_default, get_dict_item_by_path
 from src.helper.string import to_snake_case
 
 
@@ -63,7 +64,7 @@ def unset_app_workdir(kernel):
 
 
 def config_save(kernel, key: str = 'config', config_path: str = APP_FILEPATH_REL_CONFIG):
-    kernel.log('Updating app config...')
+    app_log(kernel, 'Updating app config...')
 
     with open(os.path.join(
             kernel.addons['app']['config']['context']['dir'],
@@ -122,3 +123,11 @@ def app_exec_in_workdir(kernel, app_dir: str, callback):
     kernel.log_indent_down()
 
     return response
+
+
+def app_log(kernel, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
+    return kernel.log(
+        f'[{get_dict_item_by_path(kernel.addons["app"]["config"], "global.name")}] {message}',
+        color,
+        increment + 1
+    )

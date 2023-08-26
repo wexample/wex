@@ -12,14 +12,14 @@ from src.helper.file import set_json_file_item
               help="Edit auto generated config or source config (default)")
 @click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
-def app__config__set(key, value, build: bool = False, app_dir: str = None):
+def app__config__set(app_dir: str, key: str, value, build: bool = False):
     if build:
         config_file = APP_FILEPATH_REL_CONFIG_BUILD
     else:
         config_file = APP_FILEPATH_REL_CONFIG
 
     set_json_file_item(
-        config_file,
+        f'{app_dir}{config_file}',
         key,
         value
     )

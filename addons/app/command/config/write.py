@@ -10,6 +10,8 @@ from src.helper.system import set_permissions_recursively, get_gid_from_group_na
     get_uid_from_user_name
 from src.helper.file import write_dict_to_config
 from src.helper.system import get_user_or_sudo_user, get_user_group_name
+from addons.app.helpers.app import app_log
+
 
 @click.command
 @click.pass_obj
@@ -19,16 +21,16 @@ from src.helper.system import get_user_or_sudo_user, get_user_group_name
               help="Owner of application files")
 @click.option('--group', '-g', type=str, required=False,
               help="Group of application files")
-def app__config__write(kernel, app_dir: str = './', user: str = None, group: str = None):
+def app__config__write(kernel, app_dir: str, user: str = None, group: str = None):
     """Build config file used in docker based on services and base config"""
     config = kernel.addons['app']['config']
-    env = app__env__get.callback()
+    env = app__env__get.callback(app_dir)
     env_config = config['env'].get(env, {})
 
     user = user or get_user_or_sudo_user()
     group = group or get_user_group_name(user)
 
-    kernel.log(f'Using user {user}:{group}')
+    app_log(kernel, f'Using user {user}:{group}')
     set_permissions_recursively(user, group, app_dir)
 
     config['context'].update({
@@ -66,7 +68,7 @@ def app__config__write(kernel, app_dir: str = './', user: str = None, group: str
             }
         }
 
-    kernel.log(f'Build config file')
+    app_log(kernel, f'Build config file')
     kernel.addons['app']['config_build'] = kernel.addons['app']['config']
     config_save_build(kernel)
 
@@ -82,7 +84,7 @@ def app__config__write(kernel, app_dir: str = './', user: str = None, group: str
         APP_FILEPATH_REL_DOCKER_ENV
     )
 
-    kernel.log(f'Creating docker compose file')
+    app_log(kernel, f'Creating docker compose file...')
     yml_content = exec_app_docker_compose(
         kernel,
         get_app_docker_compose_files(

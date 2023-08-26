@@ -13,6 +13,7 @@ from addons.app.command.config.get import app__config__get
 from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
 from src.helper.prompt import prompt_choice
+from addons.app.helpers.app import app_log
 
 
 @click.command()
@@ -25,7 +26,7 @@ from src.helper.prompt import prompt_choice
               help="Group of application files")
 @click.option('--env', '-e', type=str, required=False,
               help="App environment")
-def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = None, env: str = None):
+def app__app__start(kernel, app_dir: str, user: str = None, group: str = None, env: str = None):
     if not os.path.exists(APP_FILEPATH_REL_ENV):
         if not env:
             if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
@@ -44,7 +45,7 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
 
         kernel.message(f'Created .env file for env "{env}"')
     else:
-        env = app__env__get.callback()
+        env = app__env__get.callback(app_dir)
 
     if kernel.exec_function(app__app__started, {
         'app-dir': app_dir
@@ -54,7 +55,7 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
 
     name = app__config__get.callback(app_dir, 'global.name')
     proxy_path = kernel.addons['app']['path']['proxy']
-    kernel.log(f"Starting app : {name}")
+    app_log(kernel, f"Starting app : {name}")
 
     # Current app is not the reverse proxy itself.
     if not kernel.exec_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
@@ -95,7 +96,7 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
     })
 
     # Save app in proxy apps.
-    kernel.log('Registering app')
+    app_log(kernel, 'Registering app...')
     kernel.addons['app']['proxy']['apps'][name] = True
     save_proxy_apps(kernel)
 
@@ -131,4 +132,3 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
             'app-dir': app_dir
         }
     )
-

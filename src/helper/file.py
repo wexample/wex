@@ -140,7 +140,7 @@ def get_yml_file_item(file_path: str, key: str, default=None):
         with open(file_path, 'r') as f:
             data = yaml.load(f, Loader=SafeLoader)
 
-        return get_dict_item_by_path(data, key)
+        return get_dict_item_by_path(data, key, default)
     return default
 
 
@@ -168,7 +168,7 @@ def _set_json_file_item(dic, keys, value):
         dic[key] = value
 
 
-def get_dict_item_by_path(data: dict, key: str):
+def get_dict_item_by_path(data: dict, key: str, default = None):
     # Split the key into its individual parts
     keys = key.split('.')
 
@@ -177,7 +177,7 @@ def get_dict_item_by_path(data: dict, key: str):
         if k in data:
             data = data[k]
         else:
-            return None
+            return default
 
     return data
 
