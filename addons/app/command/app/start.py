@@ -29,7 +29,8 @@ from addons.app.helpers.app import app_log
               help="Group of application files")
 @click.option('--env', '-e', type=str, required=False,
               help="App environment")
-def app__app__start(kernel, app_dir: str, clear_cache:bool = False, user: str = None, group: str = None, env: str = None):
+def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str = None, group: str = None,
+                    env: str = None):
     if not os.path.exists(APP_FILEPATH_REL_ENV):
         if not env:
             if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
@@ -107,6 +108,20 @@ def app__app__start(kernel, app_dir: str, clear_cache:bool = False, user: str = 
 
     if clear_cache:
         compose_options.append('--build')
+
+    service_results = kernel.exec_function(
+        app__hook__exec,
+        {
+            'app-dir': app_dir,
+            'hook': 'app/start-options',
+            'arguments': {
+                'options': compose_options
+            }
+            # 'arguments': 'youpi'
+        }
+    )
+
+    compose_options += [item for value in service_results.values() if isinstance(value, list) for item in value]
 
     # Start containers
     exec_app_docker_compose(
