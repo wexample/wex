@@ -3,9 +3,11 @@ import click
 
 from addons.app.command.config.write import app__config__write
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_BUILD_YML
-from addons.app.helpers.app import create_env, set_app_workdir, save_proxy_apps, config_save_build
+from addons.app.helpers.app import create_env, save_proxy_apps, config_save_build, app_exec_in_workdir
 from addons.app.command.env.get import app__env__get
 from addons.app.command.app.started import app__app__started
+from addons.app.command.app.perms import app__app__perms
+from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
 from addons.app.command.config.get import app__config__get
 from addons.app.helpers.docker import exec_app_docker_compose
@@ -50,16 +52,41 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
         kernel.log('App already running')
         return
 
-    name = app__config__get.callback('global.name')
-    kernel.log(f"Starting app : {name}")
-
+    name = app__config__get.callback(app_dir, 'global.name')
     proxy_path = kernel.addons['app']['path']['proxy']
+    kernel.log(f"Starting app : {name}")
 
     # Current app is not the reverse proxy itself.
     if not kernel.exec_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
         # The reverse proxy is not running.
         if not kernel.exec_function(app__app__started, {'app-dir': proxy_path}):
-            app_start_proxy_and_retry(kernel, env, user, group)
+            kernel.log('Starting proxy server')
+
+            def start_proxy():
+                from addons.app.command.proxy.start import app__proxy__start
+
+                kernel.exec_function(
+                    app__proxy__start,
+                    {
+                        'user': user,
+                        'group': group,
+                        'env': env,
+                    }
+                )
+
+            app_exec_in_workdir(
+                kernel,
+                kernel.addons['app']['path']['proxy'],
+                start_proxy
+            )
+
+    kernel.exec_function(
+        app__hook__exec,
+        {
+            'app-dir': app_dir,
+            'hook': 'app/start-pre'
+        }
+    )
 
     kernel.exec_function(app__config__write, {
         'app-dir': app_dir,
@@ -87,27 +114,21 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
         app__hook__exec,
         {
             'app-dir': app_dir,
-            'hook': 'app/started'
+            'hook': 'app/start-post'
         }
     )
-
-
-def app_start_proxy_and_retry(kernel, env, user: str = None, group: str = None):
-    from addons.app.command.proxy.start import app__proxy__start
-
-    kernel.log('Starting proxy server')
-    kernel.log_indent_up()
-    app_dir = os.getcwd() + '/'
 
     kernel.exec_function(
-        app__proxy__start,
+        app__app__perms,
         {
-            'user': user,
-            'group': group,
-            'env': env,
+            'app-dir': app_dir
         }
     )
 
-    kernel.log_indent_down()
-    # Reset current dir as app dir.
-    set_app_workdir(kernel, app_dir)
+    kernel.exec_function(
+        app__app__serve,
+        {
+            'app-dir': app_dir
+        }
+    )
+

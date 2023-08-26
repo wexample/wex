@@ -30,7 +30,7 @@ def app__app__stop(kernel, app_dir: str = './',
         kernel.log('App already stopped')
         return
 
-    name = app__config__get.callback('global.name')
+    name = app__config__get.callback(app_dir, 'global.name')
 
     kernel.exec_function(
         app__hook__exec,
