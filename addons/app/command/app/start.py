@@ -94,6 +94,7 @@ def app_start_proxy_and_retry(kernel, env, user: str = None, group: str = None):
 
     kernel.log('Starting proxy server')
     kernel.log_indent_up()
+    app_dir = os.getcwd() + '/'
 
     kernel.exec_function(
         app__proxy__start,
@@ -106,4 +107,4 @@ def app_start_proxy_and_retry(kernel, env, user: str = None, group: str = None):
 
     kernel.log_indent_down()
     # Reset current dir as app dir.
-    set_app_workdir(kernel, os.getcwd() + '/')
+    set_app_workdir(kernel, app_dir)
