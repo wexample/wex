@@ -9,6 +9,7 @@ from addons.app.command.app.started import app__app__started
 from addons.app.command.service.used import app__service__used
 from addons.app.command.config.get import app__config__get
 from addons.app.helpers.docker import exec_app_docker_compose
+from addons.app.command.hook.exec import app__hook__exec
 from src.helper.prompt import prompt_choice
 
 
@@ -77,6 +78,14 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
         [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
         ['up', '-d'],
         sync=False
+    )
+
+    kernel.exec_function(
+        app__hook__exec,
+        {
+            'app-dir': app_dir,
+            'hook': 'app/started'
+        }
     )
 
 
