@@ -109,3 +109,16 @@ def is_app_root(app_dir: str) -> bool:
     return os.path.exists(
         os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
     )
+
+
+def app_exec_in_workdir(kernel, app_dir: str, callback):
+    kernel.log_indent_up()
+    app_dir_previous = os.getcwd() + '/'
+    set_app_workdir(kernel, app_dir)
+
+    response = callback()
+
+    set_app_workdir(kernel, app_dir_previous)
+    kernel.log_indent_down()
+
+    return response

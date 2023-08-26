@@ -1,10 +1,9 @@
 import os
-import pwd
 import socket
 import click
 
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV, APP_FILEPATH_REL_COMPOSE_BUILD_YML
-from addons.app.helpers.app import app_config_to_docker_env
+from addons.app.helpers.app import app_config_to_docker_env, config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
 from src.helper.system import set_permissions_recursively, get_gid_from_group_name, \
@@ -66,6 +65,10 @@ def app__config__write(kernel, app_dir: str = './', user: str = None, group: str
                 'env': env_yml,
             }
         }
+
+    kernel.log(f'Build config file')
+    kernel.addons['app']['config_build'] = kernel.addons['app']['config']
+    config_save_build(kernel)
 
     # Write as docker env file
     write_dict_to_config(
