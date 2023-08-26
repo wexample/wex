@@ -83,3 +83,13 @@ def convert_args_to_dict(function, arg_list):
             i += 1
 
     return args_dict
+
+
+def parse_arg(argument):
+    if argument == None or argument == '':
+        return argument
+
+    try:
+        return ast.literal_eval(argument)
+    except (SyntaxError, ValueError) as argument:
+        return argument
