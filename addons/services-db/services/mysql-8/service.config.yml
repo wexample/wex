@@ -1,0 +1,4 @@
+dependencies:
+  phpmyadmin
+tags:
+  - db
