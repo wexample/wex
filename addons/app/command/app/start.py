@@ -3,7 +3,7 @@ import click
 
 from addons.app.command.config.write import app__config__write
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_BUILD_YML
-from addons.app.helpers.app import create_env, set_app_workdir, save_proxy_apps
+from addons.app.helpers.app import create_env, set_app_workdir, save_proxy_apps, config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.command.app.started import app__app__started
 from addons.app.command.service.used import app__service__used
@@ -79,6 +79,9 @@ def app__app__start(kernel, app_dir: str = './', user: str = None, group: str = 
         ['up', '-d'],
         sync=False
     )
+
+    kernel.addons['app']['config_build']['context']['started'] = True
+    config_save_build(kernel)
 
     kernel.exec_function(
         app__hook__exec,
