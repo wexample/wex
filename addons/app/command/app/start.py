@@ -20,13 +20,16 @@ from addons.app.helpers.app import app_log
 @click.pass_obj
 @click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
+@click.option(
+    '--clear-cache', '-cc', is_flag=True, default=False,
+    help="Forces a rebuild of images")
 @click.option('--user', '-u', type=str, required=False,
               help="Owner of application files")
 @click.option('--group', '-g', type=str, required=False,
               help="Group of application files")
 @click.option('--env', '-e', type=str, required=False,
               help="App environment")
-def app__app__start(kernel, app_dir: str, user: str = None, group: str = None, env: str = None):
+def app__app__start(kernel, app_dir: str, clear_cache:bool = False, user: str = None, group: str = None, env: str = None):
     if not os.path.exists(APP_FILEPATH_REL_ENV):
         if not env:
             if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
@@ -100,11 +103,16 @@ def app__app__start(kernel, app_dir: str, user: str = None, group: str = None, e
     kernel.addons['app']['proxy']['apps'][name] = True
     save_proxy_apps(kernel)
 
+    compose_options = ['up', '-d']
+
+    if clear_cache:
+        compose_options.append('--build')
+
     # Start containers
     exec_app_docker_compose(
         kernel,
         [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
-        ['up', '-d'],
+        compose_options,
         sync=False
     )
 
