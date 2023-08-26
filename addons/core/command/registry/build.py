@@ -1,6 +1,7 @@
 import click
 import os
-import json
+
+import yaml
 
 from src.helper.registry import build_registry_addons, build_registry_services
 from src.decorator.as_sudo import as_sudo
@@ -22,7 +23,7 @@ def core__registry__build(kernel):
 
     registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
     with open(registry_path, 'w') as f:
-        json.dump(registry, f, indent=4)
+        yaml.dump(registry, f)
 
     set_user_or_sudo_user_owner(registry_path)
     kernel.log('Building complete...')

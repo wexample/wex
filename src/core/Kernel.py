@@ -3,7 +3,10 @@ import importlib.util
 import json
 import os
 import sys
+import yaml
 from typing import Optional
+
+from yaml import SafeLoader
 
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT
@@ -29,6 +32,7 @@ class Kernel:
     process_id: str = None
     test_manager = None
     core_actions = None
+    registry: dict[str, Optional[str]] = {}
     http_server = None
     processor_classes = [
         AddonCommandProcessor,
@@ -71,7 +75,7 @@ class Kernel:
             )
 
         with open(path_registry) as f:
-            self.registry = json.load(f)
+            self.registry = yaml.load(f, SafeLoader)
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
