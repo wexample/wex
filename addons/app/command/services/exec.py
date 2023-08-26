@@ -1,6 +1,8 @@
 import click
 
+from addons.app.helpers.app import app_exec_in_workdir
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.helper.args import parse_arg
 
 
 @click.command()
@@ -11,14 +13,24 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
               help="Hook name")
 @click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
-def app__services__exec(kernel, hook, arguments: str = '', app_dir: str = None):
-    output = {}
+def app__services__exec(kernel, app_dir: str, hook, arguments: str):
+    def callback():
+        nonlocal arguments
+        output = {}
 
-    for service in kernel.addons['app']['config']['global']['services']:
-        output[service] = kernel.exec(
-            f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}',
-            arguments,
-            quiet=True
-        )
+        arguments = parse_arg(arguments)
 
-    return output
+        for service in kernel.addons['app']['config']['global']['services']:
+            output[service] = kernel.exec(
+                f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}',
+                arguments,
+                quiet=True
+            )
+
+        return output
+
+    return app_exec_in_workdir(
+        kernel,
+        app_dir,
+        callback
+    )
