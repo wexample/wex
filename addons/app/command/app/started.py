@@ -11,4 +11,6 @@ APP_STARTED_CHECK_MODE_FULL = 'full'
 def app__app__started(kernel, app_dir: str, check_mode: str = APP_STARTED_CHECK_MODE_FULL):
     if check_mode == APP_STARTED_CHECK_MODE_FULL or check_mode == APP_STARTED_CHECK_MODE_CONFIG:
         if not kernel.addons['app']['config_build']['context']['started']:
-            return kernel.addons['app']['config_build']['context']['started']
+            return False
+
+    return True
