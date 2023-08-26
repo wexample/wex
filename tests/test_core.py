@@ -68,6 +68,17 @@ class TestCore(AbstractTestCase):
             'hi!'
         )
 
+    def test_call_invalid(self):
+        self.assertIsNone(
+            self.kernel.exec('something/unexpected')
+        )
+        self.assertIsNone(
+            self.kernel.exec('nvfjkdvnfdkjvndfkjvnfd')
+        )
+        self.assertIsNone(
+            self.kernel.exec('*ù:-//;!,@"#^~§')
+        )
+
     def test_call_command_addon(self):
         self.assertIsNotNone(
             self.kernel.exec('core::logo/show')
