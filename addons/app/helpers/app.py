@@ -1,10 +1,9 @@
 import yaml
 import os
 
-from yaml import SafeLoader
-
-from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY
-from src.helper.file import create_directories_and_file
+from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY, \
+    APP_FILEPATH_REL_CONFIG_BUILD
+from src.helper.file import create_directories_and_file, yaml_load_or_default
 from src.helper.string import to_snake_case
 
 
@@ -19,17 +18,8 @@ def create_env(env, app_dir):
 
 
 def set_app_workdir(kernel, app_dir):
-    import yaml
-
     config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
-
-    # Support invalid folders as work dir
-    # might not be initialized at this point.
-    if os.path.exists(config_path):
-        with open(config_path, 'r') as f:
-            file_config = yaml.load(f, Loader=SafeLoader)
-    else:
-        file_config = {}
+    file_config = yaml_load_or_default(config_path)
 
     kernel.addons['app']['call_command_level'] = 0
 
@@ -47,6 +37,19 @@ def set_app_workdir(kernel, app_dir):
 
     kernel.addons['app']['config'].update(file_config)
 
+    # Load build config if app started
+    kernel.addons['app']['config_build'] = yaml_load_or_default(
+        os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_CONFIG_BUILD
+        ),
+        {
+            'context': {
+                'started': False
+            }
+        }
+    )
+
     os.chdir(app_dir)
 
 
@@ -59,14 +62,22 @@ def unset_app_workdir(kernel):
     del kernel.addons['app']['config']['context']['dir']
 
 
-def config_save(kernel):
+def config_save(kernel, key: str = 'config', config_path: str = APP_FILEPATH_REL_CONFIG):
     kernel.log('Updating app config...')
 
     with open(os.path.join(
             kernel.addons['app']['config']['context']['dir'],
-            APP_FILEPATH_REL_CONFIG
+            config_path
     ), 'w') as f:
-        yaml.dump(kernel.addons['app']['config'], f, indent=True)
+        yaml.dump(kernel.addons['app'][key], f, indent=True)
+
+
+def config_save_build(kernel):
+    config_save(
+        kernel,
+        'config_build',
+        APP_FILEPATH_REL_CONFIG_BUILD
+    )
 
 
 def app_config_to_docker_env(d, parent_key='', sep='_'):
