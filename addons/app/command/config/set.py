@@ -1,6 +1,6 @@
 import click
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_BUILD
-from src.helper.file import set_json_file_item
+from src.helper.file import set_yml_file_item
 
 
 @click.command
@@ -18,7 +18,7 @@ def app__config__set(app_dir: str, key: str, value, build: bool = False):
     else:
         config_file = APP_FILEPATH_REL_CONFIG
 
-    set_json_file_item(
+    set_yml_file_item(
         f'{app_dir}{config_file}',
         key,
         value

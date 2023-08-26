@@ -1,6 +1,5 @@
 from yaml import SafeLoader
 
-import json
 import os
 import shutil
 import pwd
@@ -144,26 +143,26 @@ def get_yml_file_item(file_path: str, key: str, default=None):
     return default
 
 
-def set_json_file_item(file_path: str, key: str, value):
+def set_yml_file_item(file_path: str, key: str, value):
     if not os.path.exists(file_path):
         return
 
     with open(file_path, 'r') as f:
-        data = json.load(f)
+        data = yaml.load(f, SafeLoader)
 
     keys = key.split('.')
-    _set_json_file_item(data, keys, value)
+    _set_yml_file_item(data, keys, value)
 
     with open(file_path, 'w') as f:
-        json.dump(data, f, indent=2)
+        yaml.dump(data, f)
 
 
-def _set_json_file_item(dic, keys, value):
+def _set_yml_file_item(dic, keys, value):
     key = keys.pop(0)
     if keys:
         if key not in dic:
             dic[key] = {}
-        _set_json_file_item(dic[key], keys, value)
+        _set_yml_file_item(dic[key], keys, value)
     else:
         dic[key] = value
 
