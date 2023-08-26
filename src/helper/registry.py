@@ -1,4 +1,6 @@
-import json
+import yaml
+from yaml import SafeLoader
+
 import os
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
@@ -17,6 +19,7 @@ def get_all_commands(kernel):
 
 def get_all_commands_from_addons(kernel):
     return get_all_commands_from_registry_part(kernel.registry['addons'])
+
 
 def get_all_commands_from_services(kernel):
     return get_all_commands_from_registry_part(kernel.registry['services'])
@@ -117,7 +120,12 @@ def build_registry_services(addons, kernel):
                     ),
                     'addon': addon,
                     'dir': service_path + '/',
-                    "config": json.load(open(config_file_path)) if os.path.exists(config_file_path) else {}
+                    "config": yaml.load(
+                        open(config_file_path),
+                        SafeLoader
+                    ) if os.path.exists(config_file_path) else {
+                        'dependencies': []
+                    }
                 }
 
     return services_dict
