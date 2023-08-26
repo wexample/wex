@@ -27,14 +27,30 @@ from src.helper.service import get_service_dir
               help='Force install even service already installed')
 def app__service__install(
         kernel,
+        app_dir: str,
         service: str,
         install_config: bool = True,
         install_docker: bool = True,
         install_git: bool = True,
-        app_dir: str = None,
         force: bool = False
 ):
     kernel.log(f'Installing service : {service}')
+
+    # Install dependencies
+    for dependency in kernel.registry['services'][service]['config'].get('dependencies', []):
+        kernel.log(f'Expected dependency : {dependency}')
+        kernel.log_indent_up()
+
+        app__service__install.callback(
+            app_dir,
+            dependency,
+            install_config,
+            install_docker,
+            install_git,
+            force
+        )
+
+        kernel.log_indent_down()
 
     if service in kernel.addons['app']['config']['global']['services'] and not force:
         kernel.error(ERR_SERVICE_EXISTS, {
