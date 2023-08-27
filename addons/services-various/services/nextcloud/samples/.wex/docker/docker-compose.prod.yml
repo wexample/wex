@@ -1,0 +1,6 @@
+services:
+  nextcloud:
+    environment:
+      - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+      - LETSENCRYPT_HOST=${CONTEXT_DOMAINS}
+      - LETSENCRYPT_EMAIL=${CONTEXT_EMAIL}
