@@ -1,0 +1,7 @@
+services:
+  laravel_5:
+    extends:
+      file: ${SERVICE_LARAVEL_5_YML_ENV}
+      service: laravel_5
+    depends_on:
+      - ${GLOBAL_NAME}_mysql-8

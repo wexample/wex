@@ -1,0 +1,8 @@
+services:
+    laravel_5:
+        container_name: '${CONTEXT_NAME}_laravel_5'
+        # Needs downgraded version.
+        image: 'wexample/php-8.2:latest'
+        extends:
+            file: ${SERVICE_PHP_8_YML_ENV}
+            service: php_8

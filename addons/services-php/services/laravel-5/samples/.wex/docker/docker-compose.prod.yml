@@ -1,0 +1,5 @@
+services:
+  laravel_5:
+    environment:
+      - LETSENCRYPT_HOST=${CONTEXT_DOMAINS}
+      - LETSENCRYPT_EMAIL=${CONTEXT_EMAIL}
