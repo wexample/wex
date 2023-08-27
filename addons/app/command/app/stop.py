@@ -31,7 +31,7 @@ def app__app__stop(kernel, app_dir: str):
         }
     )
 
-    # Start containers
+    # Stop containers
     exec_app_docker_compose(
         kernel,
         [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
