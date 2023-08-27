@@ -2,9 +2,10 @@ import yaml
 import os
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV, APP_FILEPATH_REL_CONFIG, PROXY_FILE_APPS_REGISTRY, \
-    APP_FILEPATH_REL_CONFIG_BUILD
+    APP_FILEPATH_REL_CONFIG_BUILD, APP_FILEPATH_REL_DOCKER_ENV
 from src.const.globals import COLOR_GRAY
-from src.helper.file import create_directories_and_file, yaml_load_or_default, get_dict_item_by_path
+from src.helper.file import create_directories_and_file, yaml_load_or_default, get_dict_item_by_path, \
+    write_dict_to_config
 from src.helper.string import to_snake_case
 
 
@@ -78,6 +79,18 @@ def config_save_build(kernel):
         kernel,
         'config_build',
         APP_FILEPATH_REL_CONFIG_BUILD
+    )
+
+    # Write as docker env file
+    write_dict_to_config(
+        app_config_to_docker_env(
+            dict(
+                sorted(
+                    kernel.addons['app']['config_build'].items()
+                )
+            )
+        ),
+        APP_FILEPATH_REL_DOCKER_ENV
     )
 
 

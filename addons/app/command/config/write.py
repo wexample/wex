@@ -2,15 +2,15 @@ import os
 import socket
 import click
 
-from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV, APP_FILEPATH_REL_COMPOSE_BUILD_YML
-from addons.app.helpers.app import app_config_to_docker_env, config_save_build
+from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_BUILD_YML
+from addons.app.helpers.app import config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
 from src.helper.system import set_permissions_recursively, get_gid_from_group_name, \
     get_uid_from_user_name
-from src.helper.file import write_dict_to_config
 from src.helper.system import get_user_or_sudo_user, get_user_group_name
 from addons.app.helpers.app import app_log
+from addons.app.command.hook.exec import app__hook__exec
 
 
 @click.command
@@ -72,16 +72,12 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
     kernel.addons['app']['config_build'] = kernel.addons['app']['config']
     config_save_build(kernel)
 
-    # Write as docker env file
-    write_dict_to_config(
-        app_config_to_docker_env(
-            dict(
-                sorted(
-                    config.items()
-                )
-            )
-        ),
-        APP_FILEPATH_REL_DOCKER_ENV
+    kernel.exec_function(
+        app__hook__exec,
+        {
+            'app-dir': app_dir,
+            'hook': 'config/write-compose-pre'
+        }
     )
 
     app_log(kernel, f'Creating docker compose file...')
