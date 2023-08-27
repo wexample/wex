@@ -16,4 +16,4 @@ services:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default
         ports:
-            - ${MYSQL_DB_PORT}:3306
+            - ${MARIA_10_PORT}:3306
