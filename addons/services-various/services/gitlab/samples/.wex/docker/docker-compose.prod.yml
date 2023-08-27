@@ -1,0 +1,6 @@
+services:
+  gitlab:
+    environment:
+      - LETSENCRYPT_EMAIL=${CONTEXT_EMAIL}
+      - LETSENCRYPT_HOST=${CONTEXT_DOMAINS}
+      - VIRTUAL_PROTO=https

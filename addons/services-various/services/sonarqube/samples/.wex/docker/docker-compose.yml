@@ -1,0 +1,7 @@
+services:
+  sonarqube:
+    extends:
+      file: ${SERVICE_SONARQUBE_YML_ENV}
+      service: sonarqube
+    depends_on:
+      - ${GLOBAL_NAME}_postgres

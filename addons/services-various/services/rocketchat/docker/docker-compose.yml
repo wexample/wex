@@ -1,0 +1,16 @@
+services:
+    rocketchat:
+        image: rocket.chat:${ROCKETCHAT_VERSION}
+        container_name: ${CONTEXT_NAME}_rocketchat
+        environment:
+          - ROOT_URL=http://localhost:3000
+          - MONGO_URL=mongodb://${CONTEXT_NAME}_mongo:27017/rocketchat
+          - MONGO_OPLOG_URL=mongodb://${CONTEXT_NAME}_mongo:27017/local
+          - MAIL_URL=smtp://smtp.mailgun.org
+        volumes:
+          - ${CONTEXT_DIR}uploads:/app/uploads
+        extends:
+            file: ${SERVICE_DEFAULT_YML_ENV}
+            service: default
+        depends_on:
+          - ${GLOBAL_NAME}_mongo-6

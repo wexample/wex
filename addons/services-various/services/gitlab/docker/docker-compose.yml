@@ -1,0 +1,20 @@
+services:
+    gitlab:
+      container_name: ${CONTEXT_NAME}_gitlab
+      image: gitlab/gitlab-ce:${GITLAB_VERSION}
+      hostname: ${DOMAIN_MAIN}
+      ports:
+        - '4567:22'
+      volumes:
+        - ${CONTEXT_DIR}backups:/var/opt/gitlab/backups
+        - ${CONTEXT_DIR}config:/etc/gitlab
+        - ${CONTEXT_DIR}logs:/var/log/gitlab
+        - ${CONTEXT_DIR}data:/var/opt/gitlab
+      environment:
+        - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+        - SMTP_DOMAIN=${DOMAIN_MAIN}
+        - VIRTUAL_PORT=80
+        - GITLAB_SHELL_SSH_PORT=4567
+      extends:
+          file: ${SERVICE_DEFAULT_YML_ENV}
+          service: default

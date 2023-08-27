@@ -1,0 +1,5 @@
+services:
+  mysql_8:
+    extends:
+      file: ${SERVICE_MYSQL_8_YML_ENV}
+      service: mysql_8

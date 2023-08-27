@@ -1,0 +1,23 @@
+services:
+    sonarqube:
+        container_name: '${CONTEXT_NAME}_sonarqube'
+        image: sonarqube:${SONARQUBE_VERSION}
+        expose:
+            - 9000
+        environment:
+            - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+            - VIRTUAL_PORT=9000
+            - SONARQUBE_JDBC_USERNAME=${POSTGRES_DB_USER}
+            - SONARQUBE_JDBC_PASSWORD=${POSTGRES_DB_PASSWORD}
+            - SONARQUBE_JDBC_URL=jdbc:postgresql://${POSTGRES_DB_HOST}:${POSTGRES_DB_PORT}/${POSTGRES_DB_NAME}
+        volumes:
+            - ${CONTEXT_DIR}conf:/opt/sonarqube/conf
+            - ${CONTEXT_DIR}data:/opt/sonarqube/data
+            - ${CONTEXT_DIR}logs:/opt/sonarqube/logs:rw
+            - ${CONTEXT_DIR}extensions:/opt/sonarqube/extensions:rw
+        extends:
+            file: ${SERVICE_DEFAULT_YML_ENV}
+            service: default
+        # Disabling mmapfs to avoid "max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]" error.
+        command: "-Dsonar.search.javaAdditionalOpts=-Dnode.store.allow_mmap=false"
+

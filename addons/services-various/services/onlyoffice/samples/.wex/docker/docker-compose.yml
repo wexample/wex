@@ -1,0 +1,5 @@
+services:
+  onlyoffice:
+    extends:
+      file: ${SERVICE_ONLYOFFICE_YML_ENV}
+      service: onlyoffice

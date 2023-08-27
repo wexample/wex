@@ -1,0 +1,5 @@
+services:
+  jenkins:
+    extends:
+      file: ${SERVICE_JENKINS_YML_ENV}
+      service: jenkins

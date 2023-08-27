@@ -1,0 +1,6 @@
+services:
+  jenkins:
+    environment:
+      #- VIRTUAL_PROTO=https
+      - LETSENCRYPT_HOST=${CONTEXT_DOMAINS}
+      - LETSENCRYPT_EMAIL=${CONTEXT_EMAIL}

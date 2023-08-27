@@ -1,0 +1,5 @@
+services:
+  n8n:
+    extends:
+      file: ${SERVICE_N8N_YML_ENV}
+      service: n8n
