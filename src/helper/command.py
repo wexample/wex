@@ -3,6 +3,19 @@ import datetime
 import os
 
 
+def command_exists(command) -> bool:
+    process = subprocess.Popen(
+        'command -v ' + command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    out_content, err_content = process.communicate()
+
+    return out_content.decode() != ''
+
+
 def execute_command(kernel, command, working_directory=None) -> list[str]:
     if working_directory is None:
         working_directory = os.getcwd()
