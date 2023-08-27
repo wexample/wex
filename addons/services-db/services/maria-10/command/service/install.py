@@ -10,13 +10,11 @@ def maria_10__service__install(kernel):
     name = kernel.addons['app']['config']['global']['name']
 
     kernel.addons['app']['config']['maria-10'] = {
-        'db': {
-            'host': f'{name}_maria_10',
-            'name': f'{name}',
-            'password': PASSWORD_INSECURE,
-            'port': 3306,
-            'user': 'root',
-        }
+        'host': f'{name}_maria_10',
+        'name': f'{name}',
+        'password': PASSWORD_INSECURE,
+        'port': 3306,
+        'user': 'root',
     }
 
     config_save(kernel)
