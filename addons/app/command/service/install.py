@@ -131,7 +131,7 @@ def app_service_install_merge_dir(
 
         if basename == '.gitignore.sample':
             if install_git:
-                kernel.log('GIT ignore')
+                kernel.log('Mixing GIT ignore')
 
                 # Override file name.
                 dest_file = os.path.join(
@@ -148,7 +148,7 @@ def app_service_install_merge_dir(
                 )
         elif basename.startswith('docker-compose.') and basename.endswith('.yml'):
             if install_docker:
-                kernel.log('Docker compose YML')
+                kernel.log('Mixing Docker compose YML')
 
                 create_directories_and_file(dest_file)
 

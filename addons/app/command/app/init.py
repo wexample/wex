@@ -208,7 +208,7 @@ def app__app__init(
             app__hook__exec,
             {
                 'app-dir': app_dir,
-                'hook': 'app/init'
+                'hook': 'app/init-post'
             }
         )
 
