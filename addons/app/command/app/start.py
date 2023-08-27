@@ -101,7 +101,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
 
     # Save app in proxy apps.
     app_log(kernel, 'Registering app...')
-    kernel.addons['app']['proxy']['apps'][name] = True
+    kernel.addons['app']['proxy']['apps'][name] = app_dir
     save_proxy_apps(kernel)
 
     compose_options = ['up', '-d']
