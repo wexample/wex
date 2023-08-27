@@ -1,10 +1,6 @@
-import yaml
-from yaml import SafeLoader
-
 import os
 
-from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.const.globals import COMMAND_SEPARATOR_ADDON
 from src.helper.file import list_subdirectories
 
 
@@ -81,54 +77,6 @@ def scan_commands(directory, group, prefix):
                 'test': test_file if os.path.exists(test_file) else None
             }
     return commands
-
-
-def build_registry_addons(addons, kernel):
-    addons_dict = {}
-
-    for addon in addons:
-        addon_command_path = os.path.join(kernel.path['addons'], addon, 'command')
-
-        if os.path.exists(addon_command_path):
-            addons_dict[addon] = {
-                'name': addon,
-                'commands': scan_commands_groups(
-                    addon_command_path,
-                    f'{addon}{COMMAND_SEPARATOR_ADDON}'
-                )
-            }
-
-    return addons_dict
-
-
-def build_registry_services(addons, kernel):
-    services_dict = {}
-
-    for addon in addons:
-        services_dir = os.path.join(kernel.path['addons'], addon, 'services')
-        if os.path.exists(services_dir):
-            for service in os.listdir(services_dir):
-                service_path = os.path.join(services_dir, service)
-                config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
-                commands_path = os.path.join(service_path, 'command')
-
-                services_dict[service] = {
-                    'name': service,
-                    'commands': scan_commands_groups(
-                        commands_path,
-                        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}'
-                    ),
-                    'addon': addon,
-                    'dir': service_path + '/',
-                    "config": yaml.load(
-                        open(config_file_path),
-                        SafeLoader
-                    ) if os.path.exists(config_file_path) else {
-                        'dependencies': []
-                    }
-                }
-
-    return services_dict
 
 
 def remove_addons(commands_list: []) -> []:
