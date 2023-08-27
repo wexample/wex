@@ -39,6 +39,7 @@ FILE_REGISTRY = 'registry.yml'
 FILE_VERSION = 'version.txt'
 GITHUB_GROUP = 'wexample'
 GITHUB_PROJECT = 'wex'
+PASSWORD_INSECURE = 'thisIsAReallyNotSecurePassword!'
 PYTHON_MIN_VERSION = (3, 10)
 SYSTEM_SERVICES_PATH = '/etc/systemd/system/'
 SERVICE_DAEMON_NAME = 'wexd.service'
