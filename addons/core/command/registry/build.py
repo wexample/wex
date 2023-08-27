@@ -18,6 +18,8 @@ def core__registry__build(kernel):
     kernel.log('Building registry...')
     addons = kernel.addons
 
+    kernel.log_indent_up()
+
     registry = {
         'addons': build_registry_addons(addons, kernel),
         'services': build_registry_services(addons, kernel)
@@ -31,6 +33,7 @@ def core__registry__build(kernel):
     kernel.log('Building complete...')
 
     kernel.load_registry()
+    kernel.log_indent_down()
 
 
 def build_registry_addons(addons, kernel):
@@ -58,6 +61,7 @@ def build_registry_services(addons, kernel):
         services_dir = os.path.join(kernel.path['addons'], addon, 'services')
         if os.path.exists(services_dir):
             for service in os.listdir(services_dir):
+                kernel.log(f'Found service {service}')
                 service_path = os.path.join(services_dir, service)
                 config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
                 commands_path = os.path.join(service_path, 'command')

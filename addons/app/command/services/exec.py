@@ -10,7 +10,7 @@ from src.helper.args import parse_arg
 @click.option('--hook', '-h', type=str, required=True,
               help="Hook name")
 @click.option('--arguments', '-args', type=str, required=False,
-              help="Hook name")
+              help="Arguments")
 @click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
 def app__services__exec(kernel, app_dir: str, hook, arguments: str):

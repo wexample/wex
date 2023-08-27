@@ -6,6 +6,7 @@ from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_BUILD_YML
 from addons.app.helpers.app import config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
+from src.const.globals import PASSWORD_INSECURE
 from src.helper.system import set_permissions_recursively, get_gid_from_group_name, \
     get_uid_from_user_name
 from src.helper.system import get_user_or_sudo_user, get_user_group_name
@@ -70,6 +71,12 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
 
     app_log(kernel, f'Build config file')
     kernel.addons['app']['config_build'] = kernel.addons['app']['config']
+
+    kernel.addons['app']['config_build'].update({
+        'password': {
+            'insecure': PASSWORD_INSECURE
+        }
+    })
     config_save_build(kernel)
 
     kernel.exec_function(
@@ -92,3 +99,11 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
 
     with open(APP_FILEPATH_REL_COMPOSE_BUILD_YML, 'w') as f:
         f.write(yml_content)
+
+    kernel.exec_function(
+        app__hook__exec,
+        {
+            'app-dir': app_dir,
+            'hook': 'config/write-post'
+        }
+    )
