@@ -167,7 +167,7 @@ def _set_yml_file_item(dic, keys, value):
         dic[key] = value
 
 
-def get_dict_item_by_path(data: dict, key: str, default = None):
+def get_dict_item_by_path(data: dict, key: str, default=None):
     # Split the key into its individual parts
     keys = key.split('.')
 
@@ -194,3 +194,11 @@ def yaml_load_or_default(file, default=None):
 def remove_file_if_exists(file: str):
     if os.path.isfile(file):
         os.remove(file)
+
+
+def human_readable_size(size, decimal_places=2):
+    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB']:
+        if size < 1024.0:
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
