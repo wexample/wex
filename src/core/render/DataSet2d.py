@@ -20,7 +20,8 @@ class DataSet2d:
     def get_body(self):
         return self.body
 
-    def render(self, render_mode):
+    def render(self, kernel, render_mode: str = DATASET_RENDER_MODE_CLI):
+        # We'll adjust render mode with kernel call method info
 
         if render_mode == DATASET_RENDER_MODE_CLI:
             header = self.header
@@ -42,7 +43,7 @@ class DataSet2d:
             total_line_length = sum(max_widths) + (num_columns * 3) + (num_columns - 1)  # padding and separators
 
             # Generate the horizontal separator line
-            separator_line = "+" + "-" * (total_line_length - 2) + "+\n"
+            separator_line = "+" + "-" * (total_line_length) + "+\n"
 
             bash_array = separator_line
 

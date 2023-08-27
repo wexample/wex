@@ -3,10 +3,13 @@ import os
 
 from src.helper.file import human_readable_size
 
+from src.core.render.DataSet2d import DataSet2d
+
 
 @click.command()
+@click.pass_obj
 @click.option('--dir', '-d', type=str, required=False, help="Directory to inspect")
-def system__dir__spaces(dir: str = None):
+def system__dir__spaces(kernel, dir: str = None):
     if dir is None:
         dir = os.getcwd()
 
@@ -18,24 +21,25 @@ def system__dir__spaces(dir: str = None):
                 total_size += os.path.getsize(fp)
         return total_size
 
+    # Initialize DataSet2d object
+    output_list = DataSet2d()
+    output_list.set_header(['Size', 'Name'])
+
     dir_list = [os.path.join(dir, d) for d in os.listdir(dir) if
                 os.path.isdir(os.path.join(dir, d))]
     file_list = [os.path.join(dir, f) for f in os.listdir(dir) if
                  os.path.isfile(os.path.join(dir, f))]
     all_list = dir_list + file_list
 
-    sizes = {}
+    body = []
     for entry in all_list:
         if os.path.isdir(entry):
-            sizes[entry] = get_dir_size(entry)
+            size = get_dir_size(entry)
         else:
-            sizes[entry] = os.path.getsize(entry)
+            size = os.path.getsize(entry)
 
-    # Sort by size
-    sorted_sizes = {k: v for k, v in sorted(sizes.items(), key=lambda item: item[1])}
+        body.append([human_readable_size(size), os.path.basename(entry)])
 
-    # Print sorted list in human-readable format
-    for k, v in sorted_sizes.items():
-        print(f"{human_readable_size(v)}\t\t{os.path.basename(k)}")
+    output_list.set_body(body)
 
-
+    return output_list.render(kernel)
