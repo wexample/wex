@@ -117,7 +117,6 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
             'arguments': {
                 'options': compose_options
             }
-            # 'arguments': 'youpi'
         }
     )
 
