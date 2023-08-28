@@ -115,6 +115,8 @@ class Kernel:
         )
 
         if log_level == logging.FATAL:
+            from src.core.FatalError import FatalError
+
             raise FatalError(f'{COLORS[log_level]}{message}{COLOR_RESET}')
 
     log_indent: int = 1
@@ -322,8 +324,3 @@ class Kernel:
                 return processor
 
         return None
-
-
-class FatalError(Exception):
-    """Custom exception for fatal errors."""
-    pass
