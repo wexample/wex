@@ -1,11 +1,11 @@
 import os
-import subprocess
 
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.command.service.used import app__service__used
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.command.env.get import app__env__get
 from addons.docker.helpers.docker import user_has_docker_permission
+from src.helper.command import execute_command
 from src.helper.system import get_user_or_sudo_user
 from src.helper.process import process_post_exec
 from src.const.error import ERR_UNEXPECTED, ERR_USER_HAS_NO_DOCKER_PERMISSION
@@ -39,8 +39,9 @@ def get_app_docker_compose_files(kernel, app_dir):
 
 def exec_app_docker_compose(
         kernel,
+        app_dir: str,
         compose_files,
-        command,
+        docker_command,
         profile=None,
         sync=True
 ):
@@ -51,41 +52,44 @@ def exec_app_docker_compose(
         })
 
     env = app__env__get.callback(
-        kernel.addons['app']['config']['context']['dir']
+        app_dir
     )
 
-    args = [
+    command = [
         'docker',
         'compose',
     ]
 
     for file in compose_files:
-        args.append('-f')
-        args.append(file)
+        command.append('-f')
+        command.append(file)
 
-    args += [
+    command += [
         '--profile',
         (profile or f'env_{env}'),
         '--env-file',
-        APP_FILEPATH_REL_DOCKER_ENV,
+        os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_DOCKER_ENV
+        ),
     ]
 
-    if type(command) == str:
-        command = [command]
+    if type(docker_command) == str:
+        docker_command = [docker_command]
 
-    args += command
+    command += docker_command
 
     if sync:
-        result = subprocess.run(args, capture_output=True, text=True)
+        success, output = execute_command(kernel, command)
 
-        if result.stderr:
+        if not success:
             kernel.error(
                 ERR_UNEXPECTED,
                 {
-                    'error': f'Error during running docker compose "{command}" : {result.stderr}'
+                    'error': f'Error during running docker compose "{docker_command}" : {output}'
                 }
             )
 
-        return str(result.stdout)
+        return ' '.join(output)
 
-    process_post_exec(kernel, args)
+    process_post_exec(kernel, command)

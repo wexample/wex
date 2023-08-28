@@ -5,7 +5,7 @@ import os
 
 @click.command()
 @click.pass_obj
-def maria_10__app__perms(kernel):
+def mysql_8__app__perms(kernel):
     kernel.log("Maria : setting permissions my.cnf")
 
     config = kernel.addons['app']['config_build']

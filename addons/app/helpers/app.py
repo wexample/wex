@@ -28,8 +28,6 @@ def set_app_workdir(kernel, app_dir):
     kernel.addons['app']['config'] = {
         'context': {
             'call_working_dir': os.getcwd(),
-            'dir': app_dir,
-            'dir_wex': app_dir + APP_DIR_APP_DATA,
         },
         'path': {},
         'proxy': {
@@ -47,7 +45,8 @@ def set_app_workdir(kernel, app_dir):
         ),
         {
             'context': {
-                'started': False
+                'started': False,
+                'dir_wex': app_dir + APP_DIR_APP_DATA,
             }
         }
     )
@@ -61,17 +60,18 @@ def unset_app_workdir(kernel):
 
     del kernel.addons['app']['call_command_level']
     del kernel.addons['app']['config']['context']['call_working_dir']
-    del kernel.addons['app']['config']['context']['dir']
 
 
 def config_save(kernel, app_dir, key: str = 'config', config_path: str = APP_FILEPATH_REL_CONFIG):
     app_log(kernel, 'Updating app config...')
 
     if config_path is None:
-        config_path = os.path.join(
-            app_dir,
-            APP_FILEPATH_REL_CONFIG
-        )
+        config_path = APP_FILEPATH_REL_CONFIG
+
+    config_path = os.path.join(
+        app_dir,
+        config_path
+    )
 
     with open(config_path, 'w') as f:
         yaml.dump(kernel.addons['app'][key], f, indent=True)
@@ -94,9 +94,11 @@ def config_save_build(kernel, app_dir: str):
                 )
             )
         ),
-        APP_FILEPATH_REL_DOCKER_ENV
+        os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_DOCKER_ENV
+        )
     )
-
 
 def app_config_to_docker_env(d, parent_key='', sep='_'):
     items = []

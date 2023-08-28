@@ -34,6 +34,7 @@ def app__app__stop(kernel, app_dir: str):
     # Stop containers
     exec_app_docker_compose(
         kernel,
+        app_dir,
         [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
         ['down'],
         sync=False

@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlparse, parse_qs
 
 from addons.app.command.env.get import app__env__get
-from src.helper.command import execute_command_sync
+from src.helper.command import execute_command
 
 
 @click.command()
@@ -69,7 +69,7 @@ def core__webhook__exec(kernel, url: str) -> bool:
                         'success': True
                     })
 
-                    execute_command_sync(kernel, command, working_directory)
+                    execute_command(kernel, command, working_directory)
                     return True
 
                 source_data['missing_file'] = hook_file

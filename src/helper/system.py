@@ -10,7 +10,7 @@ import psutil
 import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
-from src.helper.command import execute_command_sync
+from src.helper.command import execute_command
 
 
 def get_processes_by_port(port: int) -> Optional[psutil.Process]:
@@ -152,7 +152,7 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    pids = execute_command_sync(
+    pids = execute_command(
         kernel,
         [
             'pgrep',
@@ -167,14 +167,14 @@ def kill_process_by_command(kernel, command: str):
 
 
 def service_daemon_reload(kernel, command: str = 'daemon-reload'):
-    execute_command_sync(
+    execute_command(
         kernel,
         ['systemctl', command]
     )
 
 
 def service_exec(kernel, service, action: str):
-    execute_command_sync(
+    execute_command(
         kernel,
         [
             'systemctl',

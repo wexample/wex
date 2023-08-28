@@ -28,7 +28,7 @@ def prepare_logs(kernel):
     return out_path, err_path
 
 
-def execute_command_sync(kernel, command, working_directory=None) -> list[str]:
+def execute_command(kernel, command, working_directory=None, async_mode=False):
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -41,30 +41,20 @@ def execute_command_sync(kernel, command, working_directory=None) -> list[str]:
         stderr=subprocess.PIPE,
     )
 
-    out_content, err_content = process.communicate()
+    if async_mode:
+        # Just return the process object, and the caller can decide what to do with it.
+        return process
+    else:
+        out_content, err_content = process.communicate()
+        success = (process.returncode == 0)
 
-    # Log stdout and stderr
-    with open(out_path, 'a') as out_file:
-        out_file.write(out_content.decode())
-    with open(err_path, 'a') as err_file:
-        err_file.write(err_content.decode())
+        # Log stdout and stderr
+        with open(out_path, 'a') as out_file:
+            out_file.write(out_content.decode())
+        with open(err_path, 'a') as err_file:
+            err_file.write(err_content.decode())
 
-    return out_content.decode().splitlines() + err_content.decode().splitlines()
-
-
-def execute_command_async(kernel, command, working_directory=None):
-    if working_directory is None:
-        working_directory = os.getcwd()
-
-    out_path, err_path = prepare_logs(kernel)
-
-    with open(out_path, 'a') as out_file, open(err_path, 'a') as err_file:
-        subprocess.Popen(
-            command,
-            cwd=working_directory,
-            stdout=out_file,
-            stderr=err_file,
-        )
+        return success, out_content.decode().splitlines() if success else err_content.decode().splitlines()
 
 
 def command_to_string(command):

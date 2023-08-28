@@ -2,10 +2,11 @@ import os
 import socket
 import click
 
-from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_BUILD_YML
+from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_BUILD_YML, APP_DIR_APP_DATA
 from addons.app.helpers.app import config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
+from src.helper.dict import merge_dicts
 from src.const.globals import PASSWORD_INSECURE
 from src.helper.system import get_gid_from_group_name, \
     get_uid_from_user_name
@@ -24,23 +25,23 @@ from addons.app.command.hook.exec import app__hook__exec
               help="Group of application files")
 def app__config__write(kernel, app_dir: str, user: str = None, group: str = None):
     """Build config file used in docker based on services and base config"""
-    config = kernel.addons['app']['config']
+    config_build = kernel.addons['app']['config'].copy()
     env = app__env__get.callback(app_dir)
-    env_config = config['env'].get(env, {})
-
+    env_config = config_build['env'].get(env, {})
     user = user or get_user_or_sudo_user()
     group = group or get_user_group_name(user)
 
     app_log(kernel, f'Using user {user}:{group}')
 
-    config['context'].update({
+    config_build['context'].update({
+        'dir': app_dir,
         'env': env,
         'host': {
             'ip': socket.gethostbyname(
                 socket.gethostname()
             )
         },
-        'name': f'{config["global"]["name"]}_{env}',
+        'name': f'{config_build["global"]["name"]}_{env}',
         'started': False,
         'user': {
             'group': group,
@@ -50,8 +51,8 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
         }
     })
 
-    config['context'].update(env_config)
-    config['service'] = {}
+    config_build['context'].update(env_config)
+    config_build['service'] = {}
 
     # Build paths to services docker compose yml files.
     for service, service_data in kernel.registry['services'].items():
@@ -61,7 +62,7 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
         if not os.path.exists(env_yml):
             env_yml = base_yml
 
-        config['service'][service] = {
+        config_build['service'][service] = {
             'yml': {
                 'base': base_yml,
                 'env': env_yml,
@@ -69,13 +70,21 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
         }
 
     app_log(kernel, f'Build config file')
-    kernel.addons['app']['config_build'] = kernel.addons['app']['config']
 
-    kernel.addons['app']['config_build'].update({
-        'password': {
-            'insecure': PASSWORD_INSECURE
+    config_build = merge_dicts(
+        config_build,
+        {
+            'context': {
+                'call_working_dir': os.getcwd(),
+                'dir_wex': app_dir + APP_DIR_APP_DATA,
+            },
+            'password': {
+                'insecure': PASSWORD_INSECURE
+            }
         }
-    })
+    )
+
+    kernel.addons['app']['config_build'] = config_build
 
     config_save_build(
         kernel,
@@ -100,6 +109,7 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
 
         yml_content = exec_app_docker_compose(
             kernel,
+            app_dir,
             compose_files,
             'config'
         )

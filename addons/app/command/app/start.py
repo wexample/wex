@@ -122,6 +122,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
             'app-dir': app_dir,
             'hook': 'app/start-options',
             'arguments': {
+                'app-dir': app_dir,
                 'options': compose_options
             }
         }
@@ -132,6 +133,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     # Start containers
     exec_app_docker_compose(
         kernel,
+        app_dir,
         [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
         compose_options,
         sync=False
