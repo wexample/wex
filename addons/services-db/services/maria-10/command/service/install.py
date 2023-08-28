@@ -1,12 +1,14 @@
 import click
 
 from addons.app.helpers.app import config_save
+from addons.app.decorator.app_dir_option import app_dir_option
 from src.const.globals import PASSWORD_INSECURE
 
 
 @click.command()
 @click.pass_obj
-def maria_10__service__install(kernel):
+@app_dir_option()
+def maria_10__service__install(kernel, app_dir:str):
     name = kernel.addons['app']['config']['global']['name']
 
     kernel.addons['app']['config']['maria-10'] = {
@@ -17,4 +19,4 @@ def maria_10__service__install(kernel):
         'user': 'root',
     }
 
-    config_save(kernel, kernel.addons['app']['config']['context']['dir'])
+    config_save(kernel, app_dir)

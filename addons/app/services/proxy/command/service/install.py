@@ -3,11 +3,13 @@ import platform
 
 from addons.app.const.app import PROXY_APP_NAME
 from addons.app.helpers.app import config_save
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command()
 @click.pass_obj
-def proxy__service__install(kernel):
+@app_dir_option()
+def proxy__service__install(kernel, app_dir:str):
     port = 80
     port_secure = 443
 
@@ -28,4 +30,4 @@ def proxy__service__install(kernel):
         'proxy': proxy_dir
     })
 
-    config_save(kernel, kernel.addons['app']['config']['context']['dir'])
+    config_save(kernel, app_dir)
