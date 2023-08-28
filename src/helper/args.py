@@ -33,12 +33,14 @@ def convert_dict_to_args(function, args):
                 elif args[param.name] is not None:
                     arg_list.append(f'--{param.name}')
                     if not isinstance(args[param.name], bool):
+                        # Convert to str to allow joining array.
                         arg_list.append(str(args[param.name]))
     # Append any remaining arguments as key-value pairs
     for key, value in args.items():
         if key not in [param.name for param in function.params] and value is not None:
             arg_list.append(f'--{key}')
             if not isinstance(value, bool):
+                # Convert to str to allow joining array.
                 arg_list.append(str(value))
     return arg_list
 
