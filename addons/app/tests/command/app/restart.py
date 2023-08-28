@@ -5,7 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helpers.test import create_test_app
 
 
-class TestAppCommandAppRestartPy(AbstractTestCase):
+class TestAppCommandAppRestart(AbstractTestCase):
     def test_restart(self):
         app_dir = create_test_app(self.kernel, services=['php-8'])
 

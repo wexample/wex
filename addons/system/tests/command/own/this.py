@@ -5,7 +5,7 @@ from src.helper.file import get_file_owner
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestSystemCommandOwnThisPy(AbstractTestCase):
+class TestSystemCommandOwnThis(AbstractTestCase):
     def test_this(self):
         test_file = self.build_test_file_path('config_bash')
 

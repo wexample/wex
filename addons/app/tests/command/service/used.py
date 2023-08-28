@@ -4,7 +4,7 @@ from addons.app.command.service.install import app__service__install
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestAppCommandServiceUsedPy(AbstractTestCase):
+class TestAppCommandServiceUsed(AbstractTestCase):
     def test_used(self):
         app_dir = create_test_app(self.kernel)
 

@@ -3,7 +3,7 @@ from addons.app.command.proxy.stop import app__proxy__stop
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestAppCommandProxyStopPy(AbstractTestCase):
+class TestAppCommandProxyStop(AbstractTestCase):
     def test_stop(self):
         self.kernel.exec_function(
             app__proxy__start

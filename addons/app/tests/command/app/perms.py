@@ -8,7 +8,7 @@ from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helpers.test import create_test_app
 
 
-class TestAppCommandAppPermsPy(AbstractTestCase):
+class TestAppCommandAppPerms(AbstractTestCase):
     def test_perms(self):
         app_dir = create_test_app(self.kernel)
         test_file = os.path.join(

@@ -2,7 +2,7 @@ from addons.default.command.file.remove_line import default__file__remove_line
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestDefaultCommandFileRemove_line(AbstractTestCase):
+class TestDefaultCommandFileRemoveLine(AbstractTestCase):
     def test_remove_line(self):
         file = self.build_test_file_path('config_bash')
 

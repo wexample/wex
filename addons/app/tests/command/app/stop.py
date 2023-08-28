@@ -4,7 +4,7 @@ from addons.app.helpers.test import create_test_app
 from addons.app.command.app.start import app__app__start
 
 
-class TestAppCommandAppStopPy(AbstractTestCase):
+class TestAppCommandAppStop(AbstractTestCase):
     def test_stop(self):
         app_dir = create_test_app(self.kernel, services=['php-8'])
 

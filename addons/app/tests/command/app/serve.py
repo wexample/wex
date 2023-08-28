@@ -5,7 +5,7 @@ from addons.app.command.app.stop import app__app__stop
 from addons.app.helpers.test import create_test_app
 
 
-class TestAppCommandAppServePy(AbstractTestCase):
+class TestAppCommandAppServe(AbstractTestCase):
     def test_serve(self):
         app_dir = create_test_app(self.kernel, services=['php-8'])
 
