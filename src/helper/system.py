@@ -129,20 +129,17 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    process = execute_command(
+    pids = execute_command(
         kernel,
         [
             'pgrep',
             '-f',
             command
-        ],
-        # Sync mode.
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
+        ]
     )
-    out, err = process.communicate()
 
-    for pid in out.splitlines():
+    for pid in pids:
+        kernel.log(f'Killing process {pid}')
         os.kill(int(pid), signal.SIGTERM)
 
 
