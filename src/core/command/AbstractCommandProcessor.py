@@ -126,6 +126,18 @@ class AbstractCommandProcessor:
     def get_path(self, subdir: str = None):
         pass
 
+    def get_path_or_fail(self, subdir: str = None):
+        path = self.get_path(subdir)
+
+        if path is None:
+            self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                'command': self.command,
+                'path': path,
+            })
+
+        return path
+
+
     def get_function_name(self) -> str | None:
         return to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(

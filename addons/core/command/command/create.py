@@ -18,7 +18,12 @@ def core__command__create(kernel, command: str) -> {}:
         kernel.message(f'Unable to process command : {command}')
         return
 
-    command_path: str = processor.get_path()
+    command_path: str = processor.get_path_or_fail()
+
+    # File exists
+    if os.path.exists(command_path):
+        return command_path
+
     command_type = processor.get_type()
 
     if command_type == COMMAND_TYPE_CORE:

@@ -36,8 +36,9 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
 
 def create_test_from_command(kernel: 'Kernel', command) -> str:
     processor = kernel.build_command_processor(command)
-    test_path = processor.get_path('tests')
+    test_path = processor.get_path_or_fail('tests')
 
+    # File exists
     if os.path.exists(test_path):
         return test_path
 
