@@ -1,12 +1,12 @@
 import click
 
 from addons.app.command.config.get import app__config__get
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command()
 @click.pass_obj
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 @click.option('--service', '-s', type=str, required=True,
               help="Service name to check in app configuration")
 def app__service__used(kernel, service, app_dir):

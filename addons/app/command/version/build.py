@@ -6,6 +6,7 @@ from addons.default.command.version.increment import default__version__increment
 from addons.app.command.config.get import app__config__get
 from addons.app.command.config.set import app__config__set
 from src.const.error import ERR_UNEXPECTED
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command
@@ -14,8 +15,7 @@ from src.const.error import ERR_UNEXPECTED
               help="New version number, auto generated if missing")
 @click.option('--commit', '-ok', required=False, is_flag=True, default=False,
               help="New version changes has been validated, ask to commit changes")
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 def app__version__build(kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
     if not commit:
         if version:

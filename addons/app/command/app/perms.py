@@ -3,12 +3,12 @@ import click
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.helpers.app import app_log
 from src.helper.system import set_owner_recursively, set_permissions_recursively, get_user_or_sudo_user
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command()
 @click.pass_obj
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 def app__app__perms(kernel, app_dir: str):
     user = get_user_or_sudo_user()
 

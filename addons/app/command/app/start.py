@@ -14,12 +14,12 @@ from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
 from src.helper.prompt import prompt_choice
 from addons.app.helpers.app import app_log
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command()
 @click.pass_obj
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 @click.option(
     '--clear-cache', '-cc', is_flag=True, default=False,
     help="Forces a rebuild of images")

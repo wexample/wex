@@ -9,14 +9,14 @@ from src.helper.array import array_unique
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command
 @click.pass_obj
 @click.option('--service', '-s', type=str, required=True,
               help="Service name")
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 @click.option('--install-config', '-ic', type=bool, required=False, is_flag=True, default=True,
               help='Add to config')
 @click.option('--install-docker', '-id', type=bool, required=False, is_flag=True, default=True,

@@ -3,6 +3,7 @@ import click
 from addons.app.helpers.app import app_exec_in_workdir
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.args import parse_arg
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 @click.command()
@@ -11,8 +12,7 @@ from src.helper.args import parse_arg
               help="Hook name")
 @click.option('--arguments', '-args', type=str, required=False,
               help="Arguments")
-@click.option('--app-dir', '-a', type=str, required=True,
-              help="App directory")
+@app_dir_option()
 def app__services__exec(kernel, app_dir: str, hook, arguments: str):
     def callback():
         nonlocal arguments
