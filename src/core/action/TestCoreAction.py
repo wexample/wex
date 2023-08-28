@@ -34,7 +34,7 @@ class TestCoreAction(AbstractCoreAction):
         for addon_data in self.kernel.registry['addons'].values():
             for command_name, command_data in addon_data['commands'].items():
                 if 'test' in command_data and command_data['test'] and (
-                        (not command) or command_name.startswith(command)):
+                        (not command) or command_name == command):
                     self.kernel.log(f'Found test for command: {command_name}')
 
                     spec = importlib.util.spec_from_file_location(f'{command_name}_test', command_data['test'])
