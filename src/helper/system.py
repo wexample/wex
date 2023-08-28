@@ -89,22 +89,24 @@ def set_owner_recursively(path: str, user: str = None, group: str = None):
     uid = get_uid_from_user_name(user)
     gid = get_gid_from_group_name(group)
 
-    for root, dirs, files in os.walk(path):
-        os.chown(root, uid, gid)
-        for dirpath in dirs:
-            os.chown(os.path.join(root, dirpath), uid, gid)
-        for filepath in files:
-            os.chown(os.path.join(root, filepath), uid, gid)
+    # Change owner for the current path
+    os.chown(path, uid, gid)
 
+    # If the path is a directory, loop through its contents and call the function recursively
+    if os.path.isdir(path):
+        for item in os.listdir(path):
+            item_path = os.path.join(path, item)
+            set_owner_recursively(item_path, user, group)
 
 def set_permissions_recursively(path: str, mode: int):
-    for root, dirs, files in os.walk(path):
-        os.chmod(root, mode)
-        for dirpath in dirs:
-            os.chmod(os.path.join(root, dirpath), mode)
-        for filepath in files:
-            os.chmod(os.path.join(root, filepath), mode)
+    # Change permissions for the current path
+    os.chmod(path, mode)
 
+    # If the path is a directory, loop through its contents and call the function recursively
+    if os.path.isdir(path):
+        for item in os.listdir(path):
+            item_path = os.path.join(path, item)
+            set_permissions_recursively(item_path, mode)
 
 def is_current_user_sudo() -> bool:
     return os.getuid() == 0
