@@ -76,7 +76,11 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
             'insecure': PASSWORD_INSECURE
         }
     })
-    config_save_build(kernel)
+
+    config_save_build(
+        kernel,
+        app_dir
+    )
 
     kernel.exec_function(
         app__hook__exec,
@@ -86,18 +90,22 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
         }
     )
 
-    app_log(kernel, f'Creating docker compose file...')
-    yml_content = exec_app_docker_compose(
+    compose_files = get_app_docker_compose_files(
         kernel,
-        get_app_docker_compose_files(
-            kernel,
-            app_dir
-        ),
-        'config'
+        app_dir
     )
 
-    with open(APP_FILEPATH_REL_COMPOSE_BUILD_YML, 'w') as f:
-        f.write(yml_content)
+    if len(compose_files) != 0:
+        app_log(kernel, f'Creating docker compose file...')
+
+        yml_content = exec_app_docker_compose(
+            kernel,
+            compose_files,
+            'config'
+        )
+
+        with open(APP_FILEPATH_REL_COMPOSE_BUILD_YML, 'w') as f:
+            f.write(yml_content)
 
     kernel.exec_function(
         app__hook__exec,

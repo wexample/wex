@@ -12,7 +12,12 @@ from src.const.error import ERR_UNEXPECTED, ERR_USER_HAS_NO_DOCKER_PERMISSION
 
 
 def get_app_docker_compose_files(kernel, app_dir):
+    app_compose_file = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.yml'
     compose_files = []
+
+    if not os.path.isfile(app_compose_file):
+        return compose_files
+
     if kernel.exec_function(app__service__used, {
         'app-dir': app_dir,
         'service': 'proxy',
@@ -22,7 +27,7 @@ def get_app_docker_compose_files(kernel, app_dir):
         compose_files.append(kernel.path['addons'] + 'app/containers/network/docker-compose.yml')
 
     compose_files.append(
-        app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.yml'
+        app_compose_file
     )
 
     env_yml = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.' + app__env__get.callback(app_dir=app_dir) + '.yml'

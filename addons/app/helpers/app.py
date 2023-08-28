@@ -64,21 +64,28 @@ def unset_app_workdir(kernel):
     del kernel.addons['app']['config']['context']['dir']
 
 
-def config_save(kernel, key: str = 'config', config_path: str = APP_FILEPATH_REL_CONFIG):
+def config_save(kernel, key: str = 'config', config_path: str = APP_FILEPATH_REL_CONFIG, app_dir: str = None):
     app_log(kernel, 'Updating app config...')
 
-    with open(os.path.join(
-            kernel.addons['app']['config']['context']['dir'],
-            config_path
-    ), 'w') as f:
+    if app_dir is None:
+        app_dir = kernel.addons['app']['config']['context']['dir']
+
+    if config_path is None:
+        config_path = os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_CONFIG
+        )
+
+    with open(config_path, 'w') as f:
         yaml.dump(kernel.addons['app'][key], f, indent=True)
 
 
-def config_save_build(kernel):
+def config_save_build(kernel, app_dir: str = None):
     config_save(
         kernel,
         'config_build',
-        APP_FILEPATH_REL_CONFIG_BUILD
+        APP_FILEPATH_REL_CONFIG_BUILD,
+        app_dir
     )
 
     # Write as docker env file
