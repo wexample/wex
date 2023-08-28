@@ -1,7 +1,8 @@
 import os
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
-from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, COMMAND_SEPARATOR_FUNCTION_PARTS, \
+from src.helper.string import to_snake_case
+from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
@@ -28,7 +29,7 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
         return self.build_command_path(
             f"{self.kernel.registry['services'][self.match[1]]['dir']}",
             subdir,
-            os.path.join(self.match.group(2), self.match.group(3))
+            os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
         )
 
     def get_function_name_parts(self) -> []:

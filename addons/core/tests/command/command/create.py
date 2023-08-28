@@ -50,3 +50,23 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
                 'command': '~test/create'
             }
         )
+
+    def test_create_dash(self):
+        result = self.kernel.exec_function(
+            core__command__create,
+            {
+                'command': 'core::test-with-dash/create'
+            }
+        )
+
+        shutil.rmtree(
+            os.path.dirname(
+                result.command
+            )
+        )
+
+        shutil.rmtree(
+            os.path.dirname(
+                result.test
+            )
+        )

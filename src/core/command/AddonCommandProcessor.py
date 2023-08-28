@@ -1,5 +1,6 @@
 import os
 
+from src.helper.string import to_snake_case
 from src.helper.registry import get_all_commands_from_addons
 from src.helper.args import convert_dict_to_args
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_FUNCTION_PARTS, \
@@ -21,9 +22,9 @@ class AddonCommandProcessor(AbstractCommandProcessor):
             return None
 
         return self.build_command_path(
-            f"{self.kernel.path['addons']}{self.match.group(1)}/",
+            f"{self.kernel.path['addons']}{to_snake_case(self.match.group(1))}/",
             subdir,
-            os.path.join(self.match.group(2), self.match.group(3))
+            os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
         )
 
     def get_function_name_parts(self) -> []:

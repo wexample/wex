@@ -16,6 +16,16 @@ def to_kebab_case(text: str) -> str:
         re.sub(r'([a-z])([A-Z])', r'\1-\2', text)
     ).lower()
 
+def to_camel_case(text: str) -> str:
+    s1 = to_snake_case(text)
+    return re.sub(r'_([a-z])', lambda x: x.group(1).upper(), s1)
+
+def to_pascal_case(text: str) -> str:
+    # Use to_camel_case to convert to camelCase first
+    camel_case = to_camel_case(text)
+    # Convert the first letter to uppercase to get PascalCase
+    return camel_case[0].upper() + camel_case[1:]
+
 
 def format_ignore_missing(string, substitutions):
     pattern = r'{(\w+)}'

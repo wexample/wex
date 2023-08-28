@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import os
+import re
 
 from addons.core.command.registry.build import core__registry__build
+from src.helper.string import to_snake_case, to_pascal_case
 from src.helper.file import create_from_template
 
 
@@ -14,10 +16,12 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
     """
     file_path = os.path.relpath(file_path, kernel.path['addons'])
     parts = file_path.split('/')
-    parts = [p.capitalize() for p in parts]
+    parts = [to_pascal_case(re.sub(r'[-_]', ' ', p)) for p in parts]
+
     del parts[1]
-    parts[-1] = f"{parts[-1][:-3]}"
+    parts[-1] = parts[-1][:-3]
     class_name = ''.join(parts)
+
     return f'Test{class_name}'
 
 
@@ -62,6 +66,8 @@ def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False
             'class_name': class_name,
             'command': command,
             'command_function_name': command_function_name,
+            'dir_group': to_snake_case(processor.match[2]),
+            'dir_name': to_snake_case(processor.match[3]),
             'group_name': processor.match[2],
             'method_name': method_name,
             'name': processor.match[3],

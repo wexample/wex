@@ -1,6 +1,7 @@
 import os
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
+from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_SEPARATOR_FUNCTION_PARTS, COMMAND_CHAR_APP
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
@@ -28,7 +29,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
         return self.build_command_path(
             self.get_base_path(),
             subdir,
-            os.path.join(self.match[2], self.match[3])
+            os.path.join(to_snake_case(self.match[2]), to_snake_case(self.match[3]))
         )
 
     def get_function_name_parts(self) -> []:

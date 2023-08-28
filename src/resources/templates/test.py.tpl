@@ -1,4 +1,4 @@
-from addons.{addon_name}.command.{group_name}.{name} import {command_function_name}
+from addons.{addon_name}.command.{dir_group}.{dir_name} import {command_function_name}
 from tests.AbstractTestCase import AbstractTestCase
 
 
