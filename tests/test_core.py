@@ -5,7 +5,7 @@ from AbstractTestCase import AbstractTestCase
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.version.build import core__version__build
-from src.core.Kernel import FatalError
+from src.core.FatalError import FatalError
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.helper.registry import get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
