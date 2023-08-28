@@ -108,11 +108,6 @@ class Kernel:
 
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
 
-        self.log(
-            message,
-            COLORS[log_level],
-        )
-
         self.add_to_history(
             {
                 'error': code
@@ -120,7 +115,7 @@ class Kernel:
         )
 
         if log_level == logging.FATAL:
-            exit(1)
+            raise FatalError(f'{COLORS[log_level]}{message}{COLOR_RESET}')
 
     log_indent: int = 1
     indent_string = '  '
@@ -327,3 +322,8 @@ class Kernel:
                 return processor
 
         return None
+
+
+class FatalError(Exception):
+    """Custom exception for fatal errors."""
+    pass
