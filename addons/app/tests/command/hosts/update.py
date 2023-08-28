@@ -4,8 +4,8 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandHostsUpdate(AbstractTestCase):
     def test_update(self):
-        self.kernel.exec_function(app__hosts__update, {
-            'name': 'test'
-        })
-
-        self.assertTrue(False)
+        self.assertIsNone(
+            self.kernel.exec_function(
+                app__hosts__update
+            )
+        )
