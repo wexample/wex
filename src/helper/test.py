@@ -34,12 +34,12 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
     return test_method
 
 
-def create_test_from_command(kernel: 'Kernel', command) -> str:
+def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False) -> str:
     processor = kernel.build_command_processor(command)
     test_path = processor.get_path_or_fail('tests')
 
     # File exists
-    if os.path.exists(test_path):
+    if os.path.exists(test_path) and not force:
         return test_path
 
     class_name = file_path_to_test_class_name(kernel, test_path)

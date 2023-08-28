@@ -9,8 +9,11 @@ from src.helper.file import create_from_template
 
 @click.command()
 @click.pass_obj
-@click.option('--command', '-c', type=str, required=True, help="Full name of the command, i.e. addon::some/thing")
-def core__command__create(kernel, command: str) -> {}:
+@click.option('--command', '-c', type=str, required=True,
+              help="Full name of the command, i.e. addon::some/thing")
+@click.option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
+              help='Force to create file if exists')
+def core__command__create(kernel, command: str, force: bool = False) -> {}:
     kernel.log('Creating command file...')
     processor = kernel.build_command_processor(command)
 
@@ -21,7 +24,7 @@ def core__command__create(kernel, command: str) -> {}:
     command_path: str = processor.get_path_or_fail()
 
     # File exists
-    if os.path.exists(command_path):
+    if os.path.exists(command_path) and not force:
         return command_path
 
     command_type = processor.get_type()
