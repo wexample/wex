@@ -20,6 +20,8 @@ def execute_command(kernel, command, working_directory=None) -> list[str]:
     if working_directory is None:
         working_directory = os.getcwd()
 
+    kernel.log(f'Command : {command_to_string(command)}')
+
     date_now = datetime.date.today()
     date_formatted = date_now.strftime("%Y-%m-%d")
 
