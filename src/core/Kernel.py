@@ -122,7 +122,7 @@ class Kernel:
         if log_level == logging.FATAL:
             exit(1)
 
-    log_indent: int = 0
+    log_indent: int = 1
     indent_string = '  '
 
     def log_indent_up(self) -> None:
