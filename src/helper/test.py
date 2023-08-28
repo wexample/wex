@@ -19,7 +19,6 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
     parts = [to_pascal_case(re.sub(r'[-_]', ' ', p)) for p in parts]
 
     del parts[1]
-    parts[-1] = parts[-1][:-3]
     class_name = ''.join(parts)
 
     return f'Test{class_name}'
