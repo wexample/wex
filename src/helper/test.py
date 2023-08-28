@@ -16,6 +16,10 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
     """
     file_path = os.path.relpath(file_path, kernel.path['addons'])
     parts = file_path.split('/')
+
+    # Remove the file extension from the last part
+    parts[-1] = os.path.splitext(parts[-1])[0]
+
     parts = [to_pascal_case(re.sub(r'[-_]', ' ', p)) for p in parts]
 
     del parts[1]
