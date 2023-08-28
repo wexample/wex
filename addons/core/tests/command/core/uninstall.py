@@ -1,10 +1,9 @@
+from addons.core.command.core.uninstall import core__core__uninstall
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandCoreUninstall(AbstractTestCase):
     def test_uninstall(self):
-        # TODO
-        # self.kernel.exec_function(test_uninstall, {
-        #     'name': 'test'
-        # })
-        self.assertTrue(True)
+        self.assertIsNotNone(
+            core__core__uninstall
+        )
