@@ -191,7 +191,9 @@ def app__app__init(
                 app__service__install,
                 {
                     'app-dir': app_dir,
-                    'service': service
+                    'service': service,
+                    # Dependencies have already been resolved
+                    'ignore-dependencies': True
                 }
             )
 
