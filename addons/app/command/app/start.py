@@ -138,7 +138,10 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     )
 
     kernel.addons['app']['config_build']['context']['started'] = True
-    config_save_build(kernel)
+    config_save_build(
+        kernel,
+        app_dir
+    )
 
     kernel.exec_function(
         app__hook__exec,

@@ -28,4 +28,4 @@ def proxy__service__install(kernel):
         'proxy': proxy_dir
     })
 
-    config_save(kernel)
+    config_save(kernel, kernel.addons['app']['config']['context']['dir'])

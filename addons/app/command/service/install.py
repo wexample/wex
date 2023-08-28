@@ -63,7 +63,7 @@ def app__service__install(
 
     if install_config:
         kernel.addons['app']['config']['global']['services'].append(service)
-        config_save(kernel)
+        config_save(kernel, app_dir)
 
     # Remove duplicates
     kernel.addons['app']['config']['global']['services'] = array_unique(
@@ -92,7 +92,7 @@ def app__service__install(
     if 'global' in kernel.registry['services'][service]['config']:
         config['global'].update(kernel.registry['services'][service]['config']['global'])
 
-    config_save(kernel)
+    config_save(kernel, app_dir)
 
     kernel.exec(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}service/install',

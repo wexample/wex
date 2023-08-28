@@ -17,4 +17,4 @@ def maria_10__service__install(kernel):
         'user': 'root',
     }
 
-    config_save(kernel)
+    config_save(kernel, kernel.addons['app']['config']['context']['dir'])
