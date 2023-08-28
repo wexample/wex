@@ -202,3 +202,15 @@ def human_readable_size(size, decimal_places=2):
             break
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
+
+
+def get_file_owner(file_path):
+    # Get the file stat object
+    file_stat = os.stat(file_path)
+
+    # Get the file owner UID
+    uid = file_stat.st_uid
+
+    # Get the owner's username
+    owner_info = pwd.getpwuid(uid)
+    return owner_info.pw_name

@@ -13,7 +13,6 @@ from src.helper.args import split_arg_array
               help="Find all service dependencies")
 def core__service__resolve(kernel, service) -> List[str]:
     services = split_arg_array(service)
-
     resolved_services = set()
 
     def resolve_dependencies(service: str, resolved_services: set):
