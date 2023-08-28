@@ -5,13 +5,14 @@ import yaml
 from yaml import SafeLoader
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from src.decorator.command import command
 from src.helper.registry import scan_commands_groups
 from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY, COMMAND_SEPARATOR_ADDON, COMMAND_CHAR_SERVICE
 from src.helper.file import set_user_or_sudo_user_owner
 
 
-@click.command
+@command()
 @click.pass_obj
 @as_sudo
 def core__registry__build(kernel):
