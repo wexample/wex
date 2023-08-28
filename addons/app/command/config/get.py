@@ -14,13 +14,15 @@ from src.helper.file import get_dict_item_by_path
 @click.option('--app-dir', '-a', type=str, required=True,
               help="App directory")
 def app__config__get(kernel, app_dir: str, key: str, default: str = None, build: bool = False):
-    return app_exec_in_workdir(
-        kernel,
-        app_dir,
-        # Callback
-        lambda: get_dict_item_by_path(
+    def callback():
+        return get_dict_item_by_path(
             kernel.addons['app']['config' if not build else 'config_build'],
             key,
             default
         )
+
+    return app_exec_in_workdir(
+        kernel,
+        app_dir,
+        callback
     )
