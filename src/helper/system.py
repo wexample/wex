@@ -79,9 +79,31 @@ def set_home_path_permissions():
     )
 
 
-def set_permissions_recursively(user: str, group: str, path: str):
-    subprocess.run(['sudo', 'chown', '-R', f'{user}:{group}', path])
-    subprocess.run(['sudo', 'chmod', '-R', 'g+w', '.'])
+def set_owner_recursively(path: str, user: str = None, group: str = None):
+    if user is None:
+        user = get_user_or_sudo_user()
+
+    if group is None:
+        group = get_user_group_name(user)
+
+    uid = get_uid_from_user_name(user)
+    gid = get_gid_from_group_name(group)
+
+    for root, dirs, files in os.walk(path):
+        os.chown(root, uid, gid)
+        for dirpath in dirs:
+            os.chown(os.path.join(root, dirpath), uid, gid)
+        for filepath in files:
+            os.chown(os.path.join(root, filepath), uid, gid)
+
+
+def set_permissions_recursively(path: str, mode: int):
+    for root, dirs, files in os.walk(path):
+        os.chmod(root, mode)
+        for dirpath in dirs:
+            os.chmod(os.path.join(root, dirpath), mode)
+        for filepath in files:
+            os.chmod(os.path.join(root, filepath), mode)
 
 
 def is_current_user_sudo() -> bool:

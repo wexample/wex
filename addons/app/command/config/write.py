@@ -32,7 +32,6 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
     group = group or get_user_group_name(user)
 
     app_log(kernel, f'Using user {user}:{group}')
-    set_permissions_recursively(user, group, app_dir)
 
     config['context'].update({
         'env': env,

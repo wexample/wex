@@ -5,9 +5,9 @@ from addons.app.command.app.init import app__app__init
 
 
 def create_test_app(kernel, name='test-app', services: [] = []) -> str:
-    kernel.log('Creating test app...')
-
     app_dir = kernel.path["tmp"] + 'tests/test-app/'
+
+    kernel.log('Creating test app in : ' + app_dir)
 
     # Recreate test app dir.
     shutil.rmtree(app_dir, True)

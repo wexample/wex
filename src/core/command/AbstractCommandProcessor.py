@@ -11,7 +11,7 @@ from typing import Optional
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
 from src.helper.args import convert_dict_to_args, convert_args_to_dict
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
-from src.helper.file import set_owner_recursive
+from src.helper.file import set_owner_for_path_and_ancestors
 from src.helper.string import trim_leading, to_snake_case
 from src.helper.system import get_user_or_sudo_user
 
@@ -109,7 +109,7 @@ class AbstractCommandProcessor:
         base_path = self.get_base_path()
 
         if base_path:
-            set_owner_recursive(
+            set_owner_for_path_and_ancestors(
                 base_path,
                 trim_leading(command_path, base_path),
                 get_user_or_sudo_user(),

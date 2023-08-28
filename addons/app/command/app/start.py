@@ -86,6 +86,13 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
             )
 
     kernel.exec_function(
+        app__app__perms,
+        {
+            'app-dir': app_dir
+        }
+    )
+
+    kernel.exec_function(
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -138,13 +145,6 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         {
             'app-dir': app_dir,
             'hook': 'app/start-post'
-        }
-    )
-
-    kernel.exec_function(
-        app__app__perms,
-        {
-            'app-dir': app_dir
         }
     )
 

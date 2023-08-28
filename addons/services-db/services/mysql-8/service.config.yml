@@ -1,4 +1,4 @@
 dependencies:
-  phpmyadmin
+  - phpmyadmin
 tags:
   - db

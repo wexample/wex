@@ -36,7 +36,7 @@ def set_owner(file, username):
     os.chown(file, uid, gid)
 
 
-def set_owner_recursive(base_path: str, sub_path: str, owner: str, group: str = None):
+def set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: str, group: str = None):
     # Get the UID and GID
     uid = pwd.getpwnam(owner).pw_uid
 
