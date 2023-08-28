@@ -17,6 +17,19 @@ class AbstractTestCase(unittest.TestCase):
         # Add a new line between each test
         self.kernel.print("")
 
+        self.test_dir = os.getcwd()
+
+    def tearDown(self):
+        # Add a new line between each test
+        self.kernel.print("")
+
+        # If workdir changed.
+        current_dir = os.getcwd()
+        if current_dir != self.test_dir:
+            self.kernel.log(f'Reset working directory to : {self.test_dir}')
+
+            os.chdir(self.test_dir)
+
     def assertPathExists(self, file_path, exists=True):
         """
         Assert that the specified file exists.
