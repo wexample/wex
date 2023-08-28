@@ -273,13 +273,8 @@ class Kernel:
                     'function': function.callback.__name__,
                     'error': str(e)
                 },
-                logging.ERROR
+                logging.FATAL
             )
-
-            with click.Context(function) as ctx:
-                self.print(function.get_help(ctx))
-
-            exit(1)
 
         ctx.obj = self
 

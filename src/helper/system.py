@@ -3,7 +3,6 @@ import grp
 import pwd
 import signal
 import socket
-import subprocess
 from contextlib import closing
 from typing import Optional
 
@@ -11,7 +10,7 @@ import psutil
 import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
-from src.helper.command import execute_command
+from src.helper.command import execute_command_sync
 
 
 def get_processes_by_port(port: int) -> Optional[psutil.Process]:
@@ -153,7 +152,7 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    pids = execute_command(
+    pids = execute_command_sync(
         kernel,
         [
             'pgrep',
@@ -168,14 +167,14 @@ def kill_process_by_command(kernel, command: str):
 
 
 def service_daemon_reload(kernel, command: str = 'daemon-reload'):
-    execute_command(
+    execute_command_sync(
         kernel,
         ['systemctl', command]
     )
 
 
 def service_exec(kernel, service, action: str):
-    execute_command(
+    execute_command_sync(
         kernel,
         [
             'systemctl',

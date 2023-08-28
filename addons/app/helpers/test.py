@@ -6,6 +6,7 @@ from addons.app.command.app.init import app__app__init
 
 def create_test_app(kernel, name='test-app', services: [] = []) -> str:
     app_dir = kernel.path["tmp"] + 'tests/test-app/'
+    test_dir = os.getcwd()
 
     kernel.log('Creating test app in : ' + app_dir)
 
@@ -18,5 +19,7 @@ def create_test_app(kernel, name='test-app', services: [] = []) -> str:
         'app-dir': app_dir,
         'services': ','.join(services)
     })
+
+    os.chdir(test_dir)
 
     return app_dir

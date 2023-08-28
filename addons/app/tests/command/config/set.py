@@ -1,3 +1,4 @@
+from addons.app.helpers.test import create_test_app
 from tests.AbstractTestCase import AbstractTestCase
 
 from addons.app.command.config.set import app__config__set
@@ -6,8 +7,11 @@ from addons.app.command.config.get import app__config__get
 
 class TestAppCommandConfigSet(AbstractTestCase):
     def test_set(self):
+        app_dir = create_test_app(self.kernel)
+
         # Change value.
         self.kernel.exec_function(app__config__set, {
+            'app-dir': app_dir,
             'key': 'global.name',
             'value': 'wex-test-config-set'
         })
@@ -15,12 +19,14 @@ class TestAppCommandConfigSet(AbstractTestCase):
         self.assertEqual(self.kernel.exec_function(
             app__config__get,
             {
+                'app-dir': app_dir,
                 'key': 'global.name'
             }
         ), 'wex-test-config-set')
 
         # Rollback.
         self.kernel.exec_function(app__config__set, {
+            'app-dir': app_dir,
             'key': 'global.name',
             'value': 'wex'
         })
@@ -28,6 +34,7 @@ class TestAppCommandConfigSet(AbstractTestCase):
         self.assertEqual(self.kernel.exec_function(
             app__config__get,
             {
+                'app-dir': app_dir,
                 'key': 'global.name'
             }
         ), 'wex')

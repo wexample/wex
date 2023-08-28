@@ -16,42 +16,55 @@ def command_exists(command) -> bool:
     return out_content.decode() != ''
 
 
-def execute_command(kernel, command, working_directory=None) -> list[str]:
-    if working_directory is None:
-        working_directory = os.getcwd()
-
-    kernel.log(f'Command : {command_to_string(command)}')
-
+def prepare_logs(kernel):
     date_now = datetime.date.today()
     date_formatted = date_now.strftime("%Y-%m-%d")
 
-    # Create a log file with the timestamp in its name
+    os.makedirs(kernel.path['log'], exist_ok=True)
+
     out_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.out")
     err_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.err")
 
-    os.makedirs(
-        kernel.path['log'],
-        exist_ok=True
-    )
+    return out_path, err_path
+
+
+def execute_command_sync(kernel, command, working_directory=None) -> list[str]:
+    if working_directory is None:
+        working_directory = os.getcwd()
+
+    out_path, err_path = prepare_logs(kernel)
 
     process = subprocess.Popen(
         command,
         cwd=working_directory,
-        stdout=subprocess.PIPE,  # We'll capture stdout here
-        stderr=subprocess.PIPE,  # ... and stderr here
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
 
     out_content, err_content = process.communicate()
 
-    # Now, we'll write the captured stdout and stderr to the log files
-    with open(out_path, 'w') as out_file:
+    # Log stdout and stderr
+    with open(out_path, 'a') as out_file:
         out_file.write(out_content.decode())
-
-    with open(err_path, 'w') as err_file:
+    with open(err_path, 'a') as err_file:
         err_file.write(err_content.decode())
 
-    return (out_content.decode().splitlines()
-            + err_content.decode().splitlines())
+    return out_content.decode().splitlines() + err_content.decode().splitlines()
+
+
+def execute_command_async(kernel, command, working_directory=None):
+    if working_directory is None:
+        working_directory = os.getcwd()
+
+    out_path, err_path = prepare_logs(kernel)
+
+    with open(out_path, 'a') as out_file, open(err_path, 'a') as err_file:
+        subprocess.Popen(
+            command,
+            cwd=working_directory,
+            stdout=out_file,
+            stderr=err_file,
+        )
 
 
 def command_to_string(command):

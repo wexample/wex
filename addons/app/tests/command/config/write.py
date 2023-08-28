@@ -7,7 +7,7 @@ from addons.app.helpers.test import create_test_app
 
 class TestAppCommandConfigWrite(AbstractTestCase):
     def test_write(self):
-        app_dir = create_test_app(self.kernel, services=['php-8'])
+        app_dir = create_test_app(self.kernel)
 
         self.kernel.exec_function(
             app__config__write, {

@@ -2,7 +2,7 @@ import shutil
 import click
 
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.helper.process import process_post_exec
+from src.helper.command import execute_command_async
 from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
 from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
@@ -74,7 +74,7 @@ def core__webhook__serve(
             kill_process_by_command(base_kernel, command)
 
             # Start a new listener
-            process_post_exec(
+            execute_command_async(
                 base_kernel,
                 command.split()
             )
