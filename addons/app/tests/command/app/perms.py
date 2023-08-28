@@ -2,9 +2,9 @@ import os
 
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.command.app.perms import app__app__perms
+from src.helper.system import get_uid_from_user_name, get_gid_from_group_name
 from src.helper.file import get_file_owner
 from tests.AbstractTestCase import AbstractTestCase
-
 from addons.app.helpers.test import create_test_app
 
 
@@ -19,6 +19,12 @@ class TestAppCommandAppPerms(AbstractTestCase):
         os.chmod(
             test_file,
             0o777
+        )
+
+        os.chown(
+            test_file,
+            get_uid_from_user_name('root'),
+            get_gid_from_group_name('root')
         )
 
         self.assertEqual(

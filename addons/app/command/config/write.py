@@ -7,7 +7,7 @@ from addons.app.helpers.app import config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
 from src.const.globals import PASSWORD_INSECURE
-from src.helper.system import set_permissions_recursively, get_gid_from_group_name, \
+from src.helper.system import get_gid_from_group_name, \
     get_uid_from_user_name
 from src.helper.system import get_user_or_sudo_user, get_user_group_name
 from addons.app.helpers.app import app_log
