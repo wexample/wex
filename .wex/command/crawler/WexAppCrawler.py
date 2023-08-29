@@ -1,4 +1,4 @@
-from core.PythonAppCrawler import PythonAppCrawler
+from crawler.PythonAppCrawler import PythonAppCrawler
 
 
 class WexAppCrawler(PythonAppCrawler):

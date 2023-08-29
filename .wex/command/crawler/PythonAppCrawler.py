@@ -1,4 +1,4 @@
-from core.AppCrawler import AppCrawler
+from crawler.AppCrawler import AppCrawler
 
 
 class PythonAppCrawler(AppCrawler):

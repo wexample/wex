@@ -18,11 +18,6 @@ children:
       command:
         children:
           autocode.py: {}
-          core:
-            children:
-              AppCrawler.py: {}
-              PythonAppCrawler.py: {}
-              WexAppCrawler.py: {}
           local_command:
             children:
               test.py: {}

@@ -1,5 +1,6 @@
-from core.WexAppCrawler import WexAppCrawler
+from crawler.WexAppCrawler import WexAppCrawler
 
-# Usage
+# Update tree info
 crawler = WexAppCrawler('.', '.wex/ai/data/tree.yml')
 crawler.build()
+
