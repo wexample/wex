@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+
 import yaml
 
 
@@ -65,6 +67,8 @@ class AppCrawler:
         # Merge with existing tree
         self.merge_trees(tree, new_tree)
 
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        tree['last_updated'] = timestamp
         self.save_to_yaml(self.yaml_filepath, tree)
 
     def save_to_yaml(self, filepath, tree):

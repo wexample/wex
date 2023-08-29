@@ -6,7 +6,7 @@ class WexAppCrawler(PythonAppCrawler):
         tree = super().cleanup_tree(tree)
 
         # Useless folder
-        tree['tmp'] = {}
-        tree['wex.egg-info'] = {}
+        tree['children']['tmp'] = {}
+        tree['children']['wex.egg-info'] = {}
 
         return tree
