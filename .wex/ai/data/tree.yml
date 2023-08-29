@@ -1,165 +1,97 @@
 children:
-  .env:
-    description: ''
-  .gitignore:
-    description: ''
-  .gitlab-ci.yml:
-    description: ''
+  .env: true
+  .gitignore: true
+  .gitlab-ci.yml: true
   .wex:
     children:
-      .env:
-        description: ''
-      .gitignore:
-        description: ''
+      .env: true
+      .gitignore: true
       ai:
         children:
           data:
             children:
-              tree.yml:
-                description: ''
-            description: ''
-        description: ''
+              tree.yml: true
       backup:
         children:
-          .gitkeep:
-            description: ''
-        description: ''
+          .gitkeep: true
       command:
         children:
-          autocode.py:
-            description: ''
+          autocode.py: true
           core:
             children:
-              AppCrawler.py:
-                description: ''
-              PythonAppCrawler.py:
-                description: ''
-              WexAppCrawler.py:
-                description: ''
-            description: ''
+              AppCrawler.py: true
+              PythonAppCrawler.py: true
+              WexAppCrawler.py: true
           local_command:
             children:
-              test.py:
-                description: ''
-            description: ''
+              test.py: true
           test:
             children: {}
-            description: ''
           version:
             children:
-              build.py:
-                description: ''
-            description: ''
-        description: ''
-      config:
-        description: ''
-      config.yml:
-        description: ''
+              build.py: true
+      config: true
+      config.yml: true
       cron:
         children:
-          dev:
-            description: ''
-          local:
-            description: ''
-          prod:
-            description: ''
-        description: ''
+          dev: true
+          local: true
+          prod: true
       docker:
         children:
-          .gitkeep:
-            description: ''
-          docker-compose.yml:
-            description: ''
-        description: ''
+          .gitkeep: true
+          docker-compose.yml: true
       script:
         children:
-          appGo.sh:
-            description: ''
-          appInstall.sh:
-            description: ''
-          appPerms.sh:
-            description: ''
-          appStarted.sh:
-            description: ''
-          autoCode.sh:
-            description: ''
-          gpgExport.sh:
-            description: ''
-        description: ''
+          appGo.sh: true
+          appInstall.sh: true
+          appPerms.sh: true
+          appStarted.sh: true
+          autoCode.sh: true
+          gpgExport.sh: true
       source:
         children:
-          .gitkeep:
-            description: ''
-        description: ''
+          .gitkeep: true
       tests:
         children:
           command:
             children:
               test:
                 children: {}
-                description: ''
-            description: ''
-        description: ''
       tmp:
         children:
-          .gitkeep:
-            description: ''
-          config.build:
-            description: ''
-          config.build.json:
-            description: ''
-          config.build.yml:
-            description: ''
-          docker-compose.build.yml:
-            description: ''
-          docker.env:
-            description: ''
-        description: ''
+          .gitkeep: true
+          config.build: true
+          config.build.json: true
+          config.build.yml: true
+          docker-compose.build.yml: true
+          docker.env: true
       trash:
         children:
-          .gitkeep:
-            description: ''
-        description: ''
+          .gitkeep: true
       webhook:
         children:
-          test-wraped.sh:
-            description: ''
-          test.sh:
-            description: ''
-        description: ''
-    description: ''
+          test-wraped.sh: true
+          test.sh: true
     tmp: {}
   .wex-5-dev:
     children:
-      .env:
-        description: ''
+      .env: true
       command:
         children:
           local_command:
             children:
-              test.py:
-                description: ''
-            description: ''
-        description: ''
-      config.yml:
-        description: ''
+              test.py: true
+      config.yml: true
       docker:
         children: {}
-        description: ''
       webhook:
         children:
-          test-wraped.sh:
-            description: ''
-          test.sh:
-            description: ''
-        description: ''
-    description: ''
-  LICENCE:
-    description: ''
-  README.md:
-    description: ''
-  __main__.py:
-    description: ''
+          test-wraped.sh: true
+          test.sh: true
+  LICENCE: true
+  README.md: true
+  __main__.py: true
   addons:
     children:
       app:
@@ -168,484 +100,288 @@ children:
             children:
               app:
                 children:
-                  init.py:
-                    description: ''
-                  perms.py:
-                    description: ''
-                  restart.py:
-                    description: ''
-                  serve.py:
-                    description: ''
-                  start.py:
-                    description: ''
-                  started.py:
-                    description: ''
-                  stop.py:
-                    description: ''
-                description: ''
+                  init.py: true
+                  perms.py: true
+                  restart.py: true
+                  serve.py: true
+                  start.py: true
+                  started.py: true
+                  stop.py: true
               config:
                 children:
-                  get.py:
-                    description: ''
-                  set.py:
-                    description: ''
-                  write.py:
-                    description: ''
-                description: ''
+                  get.py: true
+                  set.py: true
+                  write.py: true
               env:
                 children:
-                  get.py:
-                    description: ''
-                description: ''
+                  get.py: true
               hook:
                 children:
-                  exec.py:
-                    description: ''
-                description: ''
+                  exec.py: true
               hosts:
                 children:
-                  update.py:
-                    description: ''
-                description: ''
+                  update.py: true
               location:
                 children:
-                  find.py:
-                    description: ''
-                description: ''
+                  find.py: true
               proxy:
                 children:
-                  start.py:
-                    description: ''
-                  stop.py:
-                    description: ''
-                description: ''
+                  start.py: true
+                  stop.py: true
               service:
                 children:
-                  install.py:
-                    description: ''
-                  used.py:
-                    description: ''
-                description: ''
+                  install.py: true
+                  used.py: true
               services:
                 children:
-                  exec.py:
-                    description: ''
-                description: ''
+                  exec.py: true
               version:
                 children:
-                  build.py:
-                    description: ''
-                description: ''
-            description: ''
+                  build.py: true
           const:
             children:
-              app.py:
-                description: ''
-            description: ''
+              app.py: true
           containers:
             children:
               default:
                 children:
-                  docker-compose.yml:
-                    description: ''
-                description: ''
+                  docker-compose.yml: true
               network:
                 children:
-                  docker-compose.yml:
-                    description: ''
-                description: ''
-            description: ''
+                  docker-compose.yml: true
           decorator:
             children:
-              app_dir_option.py:
-                description: ''
-              app_location_optional.py:
-                description: ''
-            description: ''
+              app_dir_option.py: true
+              app_location_optional.py: true
           helpers:
             children:
-              app.py:
-                description: ''
-              docker.py:
-                description: ''
-              test.py:
-                description: ''
-            description: ''
+              app.py: true
+              docker.py: true
+              test.py: true
           locale:
             children:
-              messages.json:
-                description: ''
-            description: ''
+              messages.json: true
           middleware:
             children:
-              exec.py:
-                description: ''
-              exec_post.py:
-                description: ''
-              init.py:
-                description: ''
-            description: ''
+              exec.py: true
+              exec_post.py: true
+              init.py: true
           samples:
             children:
               app:
                 children:
                   .wex:
                     children:
-                      .gitignore.sample:
-                        description: ''
+                      .gitignore.sample: true
                       backup:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       command:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       cron:
                         children:
-                          dev:
-                            description: ''
-                          local:
-                            description: ''
-                          prod:
-                            description: ''
-                        description: ''
+                          dev: true
+                          local: true
+                          prod: true
                       docker:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       source:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       tmp:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       trash:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
+                          .gitkeep: true
           services:
             children:
               default:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
-                description: ''
+                      docker-compose.yml: true
               proxy:
                 children:
                   command:
                     children:
                       service:
                         children:
-                          install.py:
-                            description: ''
-                        description: ''
-                    description: ''
+                          install.py: true
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
+                              docker-compose.yml: true
                       proxy:
                         children:
                           html:
                             children:
-                              .gitkeep:
-                                description: ''
-                              index.html:
-                                description: ''
-                            description: ''
-                        description: ''
+                              .gitkeep: true
+                              index.html: true
                       tmp:
                         children: {}
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
           tests:
             children:
               command:
                 children:
                   app:
                     children:
-                      init.py:
-                        description: ''
-                      perms.py:
-                        description: ''
-                      restart.py:
-                        description: ''
-                      serve.py:
-                        description: ''
-                      start.py:
-                        description: ''
-                      started.py:
-                        description: ''
-                      stop.py:
-                        description: ''
-                    description: ''
+                      init.py: true
+                      perms.py: true
+                      restart.py: true
+                      serve.py: true
+                      start.py: true
+                      started.py: true
+                      stop.py: true
                   config:
                     children:
-                      get.py:
-                        description: ''
-                      set.py:
-                        description: ''
-                      write.py:
-                        description: ''
-                    description: ''
+                      get.py: true
+                      set.py: true
+                      write.py: true
                   env:
                     children:
-                      get.py:
-                        description: ''
-                    description: ''
+                      get.py: true
                   hook:
                     children:
-                      exec.py:
-                        description: ''
-                    description: ''
+                      exec.py: true
                   hosts:
                     children:
-                      update.py:
-                        description: ''
-                    description: ''
+                      update.py: true
                   location:
                     children:
-                      find.py:
-                        description: ''
-                    description: ''
+                      find.py: true
                   proxy:
                     children:
-                      start.py:
-                        description: ''
-                      stop.py:
-                        description: ''
-                    description: ''
+                      start.py: true
+                      stop.py: true
                   service:
                     children:
-                      install.py:
-                        description: ''
-                      used.py:
-                        description: ''
-                    description: ''
+                      install.py: true
+                      used.py: true
                   services:
                     children:
-                      exec.py:
-                        description: ''
-                    description: ''
+                      exec.py: true
                   version:
                     children:
-                      build.py:
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                      build.py: true
       core:
         children:
           command:
             children:
               autocomplete:
                 children:
-                  suggest.py:
-                    description: ''
-                description: ''
+                  suggest.py: true
               command:
                 children:
-                  create.py:
-                    description: ''
-                description: ''
+                  create.py: true
               core:
                 children:
-                  install.py:
-                    description: ''
-                  uninstall.py:
-                    description: ''
-                description: ''
+                  install.py: true
+                  uninstall.py: true
               logo:
                 children:
-                  show.py:
-                    description: ''
-                description: ''
+                  show.py: true
               registry:
                 children:
-                  build.py:
-                    description: ''
-                description: ''
+                  build.py: true
               service:
                 children:
-                  resolve.py:
-                    description: ''
-                description: ''
+                  resolve.py: true
               test:
                 children:
-                  create.py:
-                    description: ''
-                description: ''
+                  create.py: true
               version:
                 children:
-                  build.py:
-                    description: ''
-                description: ''
+                  build.py: true
               webhook:
                 children:
-                  exec.py:
-                    description: ''
-                  serve.py:
-                    description: ''
-                  stop.py:
-                    description: ''
-                description: ''
-            description: ''
+                  exec.py: true
+                  serve.py: true
+                  stop.py: true
           tests:
             children:
               command:
                 children:
                   autocomplete:
                     children:
-                      suggest.py:
-                        description: ''
-                    description: ''
+                      suggest.py: true
                   command:
                     children:
-                      create.py:
-                        description: ''
-                    description: ''
+                      create.py: true
                   core:
                     children:
-                      install.py:
-                        description: ''
-                      uninstall.py:
-                        description: ''
-                    description: ''
+                      install.py: true
+                      uninstall.py: true
                   logo:
                     children:
-                      show.py:
-                        description: ''
-                    description: ''
+                      show.py: true
                   registry:
                     children:
-                      build.py:
-                        description: ''
-                    description: ''
+                      build.py: true
                   service:
                     children:
-                      install.py:
-                        description: ''
-                      resolve.py:
-                        description: ''
-                    description: ''
+                      install.py: true
+                      resolve.py: true
                   test:
                     children:
-                      create.py:
-                        description: ''
-                    description: ''
+                      create.py: true
                   version:
                     children:
-                      build.py:
-                        description: ''
-                    description: ''
+                      build.py: true
                   webhook:
                     children:
-                      exec.py:
-                        description: ''
-                      serve.py:
-                        description: ''
-                      stop.py:
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                      exec.py: true
+                      serve.py: true
+                      stop.py: true
       default:
         children:
           command:
             children:
               file:
                 children:
-                  append_once.py:
-                    description: ''
-                  remove_line.py:
-                    description: ''
-                description: ''
+                  append_once.py: true
+                  remove_line.py: true
               version:
                 children:
-                  increment.py:
-                    description: ''
-                description: ''
-            description: ''
+                  increment.py: true
           tests:
             children:
               command:
                 children:
                   file:
                     children:
-                      append_once.py:
-                        description: ''
-                      remove_line.py:
-                        description: ''
-                    description: ''
+                      append_once.py: true
+                      remove_line.py: true
                   version:
                     children:
-                      increment.py:
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                      increment.py: true
       docker:
         children:
           command:
             children:
               docker:
                 children:
-                  ip.py:
-                    description: ''
-                  stop_all.py:
-                    description: ''
-                description: ''
-            description: ''
+                  ip.py: true
+                  stop_all.py: true
           helpers:
             children:
-              docker.py:
-                description: ''
-            description: ''
+              docker.py: true
           tests:
             children:
               command:
                 children:
                   docker:
                     children:
-                      ip.py:
-                        description: ''
-                      stop_all.py:
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                      ip.py: true
+                      stop_all.py: true
       services-db:
         children:
           services:
@@ -656,181 +392,109 @@ children:
                     children:
                       app:
                         children:
-                          perms.py:
-                            description: ''
-                        description: ''
+                          perms.py: true
                       config:
                         children:
-                          write_post.py:
-                            description: ''
-                        description: ''
+                          write_post.py: true
                       service:
                         children:
-                          install.py:
-                            description: ''
-                        description: ''
-                    description: ''
+                          install.py: true
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
-                          .gitignore.sample:
-                            description: ''
+                          .gitignore.sample: true
                           docker:
                             children:
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.yml: true
                           maria:
                             children:
                               data:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
+                                  .gitkeep: true
                               dumps:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                              my.cnf:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
+                                  .gitkeep: true
+                              my.cnf: true
+                  service.config.yml: true
                   tests:
                     children:
                       command:
                         children:
                           config:
                             children: {}
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
               mongo-6:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
-                          .gitignore.sample:
-                            description: ''
+                          .gitignore.sample: true
                           docker:
                             children:
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.yml: true
                           mongo:
                             children:
-                              .gitkeep:
-                                description: ''
+                              .gitkeep: true
                               data:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                                  .gitkeep: true
+                  service.config.yml: true
               mysql-8:
                 children:
                   command:
                     children:
                       app:
                         children:
-                          perms.py:
-                            description: ''
-                        description: ''
+                          perms.py: true
                       config:
                         children:
-                          write_post.py:
-                            description: ''
-                        description: ''
+                          write_post.py: true
                       service:
                         children:
-                          install.py:
-                            description: ''
-                        description: ''
-                    description: ''
+                          install.py: true
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
-                          .gitignore.sample:
-                            description: ''
+                          .gitignore.sample: true
                           docker:
                             children:
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.yml: true
                           mysql:
                             children:
-                              .gitkeep:
-                                description: ''
+                              .gitkeep: true
                               data:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
+                                  .gitkeep: true
                               dumps:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                              my.cnf:
-                                description: ''
-                            description: ''
+                                  .gitkeep: true
+                              my.cnf: true
                           sonarqube:
                             children:
                               conf:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
+                                  .gitkeep: true
                               data:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
+                                  .gitkeep: true
                               extensions:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                                  .gitkeep: true
+                  service.config.yml: true
               postgres:
                 children:
-                  service.config.yml:
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                  service.config.yml: true
       services-php:
         children:
           services:
@@ -839,69 +503,41 @@ children:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.dev.yml:
-                                description: ''
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                              docker-compose.dev.yml: true
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
+                  service.config.yml: true
               php-8:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.dev.yml:
-                                description: ''
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
-                      index.php:
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                              docker-compose.dev.yml: true
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
+                      index.php: true
+                  service.config.yml: true
               phpmyadmin:
                 children: {}
-                description: ''
               symfony-6:
                 children:
-                  service.config.yml:
-                    description: ''
-                description: ''
+                  service.config.yml: true
               wordpress:
                 children:
-                  service.config.yml:
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                  service.config.yml: true
       services-various:
         children:
           services:
@@ -910,372 +546,226 @@ children:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
                           gitlab:
                             children:
-                              .gitignore.sample:
-                                description: ''
+                              .gitignore.sample: true
                               backups:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                                  .gitkeep: true
               grafana:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
                       grafana:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       provisioning:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                          .gitkeep: true
               jenkins:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
-                      .gitignore.sample:
-                        description: ''
+                      .gitignore.sample: true
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
                       config:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       home:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                          .gitkeep: true
               matomo:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
-                      .gitignore.sample:
-                        description: ''
+                      .gitignore.sample: true
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
+                  service.config.yml: true
               n8n:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.dev.yml:
-                                description: ''
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.dev.yml: true
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
                           n8n:
                             children:
-                              .gitkeep:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                              .gitkeep: true
               nextcloud:
                 children:
                   command:
                     children:
                       app:
                         children:
-                          start_options.py:
-                            description: ''
-                        description: ''
-                    description: ''
+                          start_options.py: true
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
-                      config.php:
-                        description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
+                      config.php: true
                       data:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
+                          .gitkeep: true
                       extra-addons:
                         children:
-                          .gitkeep:
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
+                          .gitkeep: true
+                  service.config.yml: true
                   tests:
                     children:
                       command:
                         children:
                           app:
                             children: {}
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
               onlyoffice:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
-                      .gitignore.sample:
-                        description: ''
+                      .gitignore.sample: true
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
               rocketchat:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.yml: true
                           hubot:
                             children:
                               scripts:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                            description: ''
+                                  .gitkeep: true
                           uploads:
                             children:
-                              .gitkeep:
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
+                              .gitkeep: true
+                  service.config.yml: true
               sonarqube:
                 children:
                   docker:
                     children:
-                      docker-compose.yml:
-                        description: ''
-                    description: ''
+                      docker-compose.yml: true
                   samples:
                     children:
-                      .gitignore.sample:
-                        description: ''
+                      .gitignore.sample: true
                       .wex:
                         children:
                           docker:
                             children:
-                              docker-compose.prod.yml:
-                                description: ''
-                              docker-compose.yml:
-                                description: ''
-                            description: ''
+                              docker-compose.prod.yml: true
+                              docker-compose.yml: true
                           sonarqube:
                             children:
                               conf:
                                 children:
-                                  sonar.properties:
-                                    description: ''
-                                  wrapper.conf:
-                                    description: ''
-                                description: ''
+                                  sonar.properties: true
+                                  wrapper.conf: true
                               data:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
+                                  .gitkeep: true
                               extensions:
                                 children:
-                                  .gitkeep:
-                                    description: ''
-                                description: ''
-                            description: ''
-                        description: ''
-                    description: ''
-                  service.config.yml:
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                                  .gitkeep: true
+                  service.config.yml: true
       system:
         children:
           command:
             children:
               dir:
                 children:
-                  spaces.py:
-                    description: ''
-                description: ''
+                  spaces.py: true
               disk:
                 children:
-                  spaces.py:
-                    description: ''
-                description: ''
+                  spaces.py: true
               os:
                 children:
-                  name.py:
-                    description: ''
-                description: ''
+                  name.py: true
               own:
                 children:
-                  this.py:
-                    description: ''
-                description: ''
+                  this.py: true
               system:
                 children:
-                  ip.py:
-                    description: ''
-                  is_docker.py:
-                    description: ''
-                description: ''
-            description: ''
+                  ip.py: true
+                  is_docker.py: true
           tests:
             children:
               command:
                 children:
                   dir:
                     children:
-                      spaces.py:
-                        description: ''
-                    description: ''
+                      spaces.py: true
                   disk:
                     children:
-                      spaces.py:
-                        description: ''
-                    description: ''
+                      spaces.py: true
                   os:
                     children:
-                      name.py:
-                        description: ''
-                    description: ''
+                      name.py: true
                   own:
                     children:
-                      this.py:
-                        description: ''
-                    description: ''
+                      this.py: true
                   system:
                     children:
-                      ip.py:
-                        description: ''
-                      is_docker.py:
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
+                      ip.py: true
+                      is_docker.py: true
       test:
         children:
           services:
@@ -1286,189 +776,104 @@ children:
                     children:
                       demo_command:
                         children:
-                          first.py:
-                            description: ''
-                          second.py:
-                            description: ''
-                        description: ''
+                          first.py: true
+                          second.py: true
                       demo_command_2:
                         children:
-                          third.py:
-                            description: ''
-                        description: ''
+                          third.py: true
                       other_demo_command:
                         children:
-                          other.py:
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
+                          other.py: true
               test_2:
                 children:
                   command:
                     children:
                       another_demo_command:
                         children:
-                          test.py:
-                            description: ''
-                        description: ''
-                    description: ''
-                description: ''
-            description: ''
-        description: ''
-    description: ''
+                          test.py: true
   cli:
     children:
-      autocomplete:
-        description: ''
-      autocomplete-handler:
-        description: ''
-      install:
-        description: ''
-      terminal-handler:
-        description: ''
-      uninstall:
-        description: ''
-      wex:
-        description: ''
-      wex-wrapper:
-        description: ''
-    description: ''
+      autocomplete: true
+      autocomplete-handler: true
+      install: true
+      terminal-handler: true
+      uninstall: true
+      wex: true
+      wex-wrapper: true
   locale:
     children:
-      messages.json:
-        description: ''
-    description: ''
-  requirements.in:
-    description: ''
-  requirements.txt:
-    description: ''
-  setup.py:
-    description: ''
+      messages.json: true
+  requirements.in: true
+  requirements.txt: true
+  setup.py: true
   src:
     children:
       const:
         children:
-          error.py:
-            description: ''
-          globals.py:
-            description: ''
-        description: ''
+          error.py: true
+          globals.py: true
       core:
         children:
-          FatalError.py:
-            description: ''
-          Kernel.py:
-            description: ''
-          WebhookHttpRequestHandler.py:
-            description: ''
+          FatalError.py: true
+          Kernel.py: true
+          WebhookHttpRequestHandler.py: true
           action:
             children:
-              AbstractCoreAction.py:
-                description: ''
-              CoreActionsCoreAction.py:
-                description: ''
-              HiCoreAction.py:
-                description: ''
-              TestCoreAction.py:
-                description: ''
-            description: ''
+              AbstractCoreAction.py: true
+              CoreActionsCoreAction.py: true
+              HiCoreAction.py: true
+              TestCoreAction.py: true
           command:
             children:
-              AbstractCommandProcessor.py:
-                description: ''
-              AddonCommandProcessor.py:
-                description: ''
-              AppCommandProcessor.py:
-                description: ''
-              CoreCommandProcessor.py:
-                description: ''
-              ServiceCommandProcessor.py:
-                description: ''
-              UserCommandProcessor.py:
-                description: ''
-            description: ''
+              AbstractCommandProcessor.py: true
+              AddonCommandProcessor.py: true
+              AppCommandProcessor.py: true
+              CoreCommandProcessor.py: true
+              ServiceCommandProcessor.py: true
+              UserCommandProcessor.py: true
           render:
             children:
-              DataSet2d.py:
-                description: ''
-            description: ''
-        description: ''
+              DataSet2d.py: true
       decorator:
         children:
-          as_sudo.py:
-            description: ''
-          command.py:
-            description: ''
-        description: ''
+          as_sudo.py: true
+          command.py: true
       helper:
         children:
-          args.py:
-            description: ''
-          array.py:
-            description: ''
-          command.py:
-            description: ''
-          core.py:
-            description: ''
-          dict.py:
-            description: ''
-          file.py:
-            description: ''
-          json.py:
-            description: ''
-          process.py:
-            description: ''
-          prompt.py:
-            description: ''
-          registry.py:
-            description: ''
-          service.py:
-            description: ''
-          string.py:
-            description: ''
-          suggest.py:
-            description: ''
-          system.py:
-            description: ''
-          test.py:
-            description: ''
-        description: ''
+          args.py: true
+          array.py: true
+          command.py: true
+          core.py: true
+          dict.py: true
+          file.py: true
+          json.py: true
+          process.py: true
+          prompt.py: true
+          registry.py: true
+          service.py: true
+          string.py: true
+          suggest.py: true
+          system.py: true
+          test.py: true
       resources:
         children:
           templates:
             children:
-              command.py.tpl:
-                description: ''
-              handler.sh.tpl:
-                description: ''
-              test.py.tpl:
-                description: ''
-            description: ''
-          wexd.service:
-            description: ''
-        description: ''
-    description: ''
+              command.py.tpl: true
+              handler.sh.tpl: true
+              test.py.tpl: true
+          wexd.service: true
   tests:
     children:
-      AbstractTestCase.py:
-        description: ''
+      AbstractTestCase.py: true
       resources:
         children:
-          test-wraped.sh:
-            description: ''
-        description: ''
+          test-wraped.sh: true
       samples:
         children:
-          config_bash:
-            description: ''
-        description: ''
-      test_core.py:
-        description: ''
-      test_logging.py:
-        description: ''
-    description: ''
+          config_bash: true
+      test_core.py: true
+      test_logging.py: true
   tmp: {}
-  version.txt:
-    description: ''
+  version.txt: true
   wex.egg-info: {}

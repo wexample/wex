@@ -24,7 +24,10 @@ class AppCrawler:
 
             for name, children in new_tree['children'].items():
                 if 'children' not in old_tree:
-                    merged_tree['children'][name] = children.copy()
+                    if isinstance(children, dict):
+                        merged_tree['children'][name] = children.copy()
+                    else:
+                        merged_tree['children'][name] = children
                 else:
                     old_children = {}
                     if name in old_tree['children']:
@@ -43,7 +46,7 @@ class AppCrawler:
         if tree is None:
             tree = {}
 
-        tree["description"] = ''
+        # tree["description"] = ''
         tree["children"] = {}
 
         for name in os.listdir(root):
@@ -52,9 +55,7 @@ class AppCrawler:
                 tree["children"][name] = {}
                 self.scan(path, tree=tree["children"][name])
             else:
-                tree["children"][name] = {
-                    "description": ''
-                }
+                tree["children"][name] = True
 
         return tree
 
