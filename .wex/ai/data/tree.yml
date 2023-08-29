@@ -1,1473 +1,3181 @@
-.env:
-  description: ''
-.gitignore:
-  description: ''
-.gitlab-ci.yml:
-  description: ''
-.wex:
-  children:
-    .env:
-      description: ''
-    .gitignore:
-      description: ''
-    ai:
-      children:
-        data:
-          children:
-            tree.yml:
-              description: ''
-          description: ''
-      description: ''
-    backup:
-      children:
-        .gitkeep:
-          description: ''
-      description: ''
-    command:
-      children:
-        autocode.py:
-          description: ''
-        core:
-          children:
-            AppCrawler.py:
-              description: ''
-            PythonAppCrawler.py:
-              description: ''
-            WexAppCrawler.py:
-              description: ''
-          description: ''
-        local_command:
-          children:
-            test.py:
-              description: ''
-          description: ''
-        test:
-          children: {}
-          description: ''
-        version:
-          children:
-            build.py:
-              description: ''
-          description: ''
-      description: ''
-    config:
-      description: ''
-    config.yml:
-      description: ''
-    cron:
-      children:
-        dev:
-          description: ''
-        local:
-          description: ''
-        prod:
-          description: ''
-      description: ''
-    docker:
-      children:
-        .gitkeep:
-          description: ''
-        docker-compose.yml:
-          description: ''
-      description: ''
-    script:
-      children:
-        appGo.sh:
-          description: ''
-        appInstall.sh:
-          description: ''
-        appPerms.sh:
-          description: ''
-        appStarted.sh:
-          description: ''
-        autoCode.sh:
-          description: ''
-        gpgExport.sh:
-          description: ''
-      description: ''
-    source:
-      children:
-        .gitkeep:
-          description: ''
-      description: ''
-    tests:
-      children:
-        command:
-          children:
-            test:
-              children: {}
-              description: ''
-          description: ''
-      description: ''
-    tmp:
-      children:
-        .gitkeep:
-          description: ''
-        config.build:
-          description: ''
-        config.build.json:
-          description: ''
-        config.build.yml:
-          description: ''
-        docker-compose.build.yml:
-          description: ''
-        docker.env:
-          description: ''
-      description: ''
-    trash:
-      children:
-        .gitkeep:
-          description: ''
-      description: ''
-    webhook:
-      children:
-        test-wraped.sh:
-          description: ''
-        test.sh:
-          description: ''
-      description: ''
-  description: ''
-  tmp: {}
-.wex-5-dev:
-  children:
-    .env:
-      description: ''
-    command:
-      children:
-        local_command:
-          children:
-            test.py:
-              description: ''
-          description: ''
-      description: ''
-    config.yml:
-      description: ''
-    docker:
-      children: {}
-      description: ''
-    webhook:
-      children:
-        test-wraped.sh:
-          description: ''
-        test.sh:
-          description: ''
-      description: ''
-  description: ''
-LICENCE:
-  description: ''
-README.md:
-  description: ''
-__main__.py:
-  description: ''
-addons:
-  children:
-    app:
-      children:
-        command:
-          children:
-            app:
-              children:
-                init.py:
-                  description: ''
-                perms.py:
-                  description: ''
-                restart.py:
-                  description: ''
-                serve.py:
-                  description: ''
-                start.py:
-                  description: ''
-                started.py:
-                  description: ''
-                stop.py:
-                  description: ''
-              description: ''
-            config:
-              children:
-                get.py:
-                  description: ''
-                set.py:
-                  description: ''
-                write.py:
-                  description: ''
-              description: ''
-            env:
-              children:
-                get.py:
-                  description: ''
-              description: ''
-            hook:
-              children:
-                exec.py:
-                  description: ''
-              description: ''
-            hosts:
-              children:
-                update.py:
-                  description: ''
-              description: ''
-            location:
-              children:
-                find.py:
-                  description: ''
-              description: ''
-            proxy:
-              children:
-                start.py:
-                  description: ''
-                stop.py:
-                  description: ''
-              description: ''
-            service:
-              children:
-                install.py:
-                  description: ''
-                used.py:
-                  description: ''
-              description: ''
-            services:
-              children:
-                exec.py:
-                  description: ''
-              description: ''
-            version:
-              children:
-                build.py:
-                  description: ''
-              description: ''
-          description: ''
-        const:
-          children:
-            app.py:
-              description: ''
-          description: ''
-        containers:
-          children:
-            default:
-              children:
-                docker-compose.yml:
-                  description: ''
-              description: ''
-            network:
-              children:
-                docker-compose.yml:
-                  description: ''
-              description: ''
-          description: ''
-        decorator:
-          children:
-            app_dir_option.py:
-              description: ''
-            app_location_optional.py:
-              description: ''
-          description: ''
-        helpers:
-          children:
-            app.py:
-              description: ''
-            docker.py:
-              description: ''
-            test.py:
-              description: ''
-          description: ''
-        locale:
-          children:
-            messages.json:
-              description: ''
-          description: ''
-        middleware:
-          children:
-            exec.py:
-              description: ''
-            exec_post.py:
-              description: ''
-            init.py:
-              description: ''
-          description: ''
-        samples:
-          children:
-            app:
-              children:
-                .wex:
-                  children:
-                    .gitignore.sample:
-                      description: ''
-                    backup:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    command:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    cron:
-                      children:
-                        dev:
-                          description: ''
-                        local:
-                          description: ''
-                        prod:
-                          description: ''
-                      description: ''
-                    docker:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    source:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    tmp:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    trash:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-        services:
-          children:
-            default:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-              description: ''
-            proxy:
-              children:
-                command:
-                  children:
-                    service:
-                      children:
-                        install.py:
-                          description: ''
-                      description: ''
-                  description: ''
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                    proxy:
-                      children:
-                        html:
-                          children:
-                            .gitkeep:
-                              description: ''
-                            index.html:
-                              description: ''
-                          description: ''
-                      description: ''
-                    tmp:
-                      children: {}
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-        tests:
-          children:
-            command:
-              children:
-                app:
-                  children:
-                    init.py:
-                      description: ''
-                    perms.py:
-                      description: ''
-                    restart.py:
-                      description: ''
-                    serve.py:
-                      description: ''
-                    start.py:
-                      description: ''
-                    started.py:
-                      description: ''
-                    stop.py:
-                      description: ''
-                  description: ''
-                config:
-                  children:
-                    get.py:
-                      description: ''
-                    set.py:
-                      description: ''
-                    write.py:
-                      description: ''
-                  description: ''
-                env:
-                  children:
-                    get.py:
-                      description: ''
-                  description: ''
-                hook:
-                  children:
-                    exec.py:
-                      description: ''
-                  description: ''
-                hosts:
-                  children:
-                    update.py:
-                      description: ''
-                  description: ''
-                location:
-                  children:
-                    find.py:
-                      description: ''
-                  description: ''
-                proxy:
-                  children:
-                    start.py:
-                      description: ''
-                    stop.py:
-                      description: ''
-                  description: ''
-                service:
-                  children:
-                    install.py:
-                      description: ''
-                    used.py:
-                      description: ''
-                  description: ''
-                services:
-                  children:
-                    exec.py:
-                      description: ''
-                  description: ''
-                version:
-                  children:
-                    build.py:
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    core:
-      children:
-        command:
-          children:
-            autocomplete:
-              children:
-                suggest.py:
-                  description: ''
-              description: ''
-            command:
-              children:
-                create.py:
-                  description: ''
-              description: ''
-            core:
-              children:
-                install.py:
-                  description: ''
-                uninstall.py:
-                  description: ''
-              description: ''
-            logo:
-              children:
-                show.py:
-                  description: ''
-              description: ''
-            registry:
-              children:
-                build.py:
-                  description: ''
-              description: ''
-            service:
-              children:
-                resolve.py:
-                  description: ''
-              description: ''
-            test:
-              children:
-                create.py:
-                  description: ''
-              description: ''
-            version:
-              children:
-                build.py:
-                  description: ''
-              description: ''
-            webhook:
-              children:
-                exec.py:
-                  description: ''
-                serve.py:
-                  description: ''
-                stop.py:
-                  description: ''
-              description: ''
-          description: ''
-        tests:
-          children:
-            command:
-              children:
-                autocomplete:
-                  children:
-                    suggest.py:
-                      description: ''
-                  description: ''
-                command:
-                  children:
-                    create.py:
-                      description: ''
-                  description: ''
-                core:
-                  children:
-                    install.py:
-                      description: ''
-                    uninstall.py:
-                      description: ''
-                  description: ''
-                logo:
-                  children:
-                    show.py:
-                      description: ''
-                  description: ''
-                registry:
-                  children:
-                    build.py:
-                      description: ''
-                  description: ''
-                service:
-                  children:
-                    install.py:
-                      description: ''
-                    resolve.py:
-                      description: ''
-                  description: ''
-                test:
-                  children:
-                    create.py:
-                      description: ''
-                  description: ''
-                version:
-                  children:
-                    build.py:
-                      description: ''
-                  description: ''
-                webhook:
-                  children:
-                    exec.py:
-                      description: ''
-                    serve.py:
-                      description: ''
-                    stop.py:
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    default:
-      children:
-        command:
-          children:
-            file:
-              children:
-                append_once.py:
-                  description: ''
-                remove_line.py:
-                  description: ''
-              description: ''
-            version:
-              children:
-                increment.py:
-                  description: ''
-              description: ''
-          description: ''
-        tests:
-          children:
-            command:
-              children:
-                file:
-                  children:
-                    append_once.py:
-                      description: ''
-                    remove_line.py:
-                      description: ''
-                  description: ''
-                version:
-                  children:
-                    increment.py:
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    docker:
-      children:
-        command:
-          children:
-            docker:
-              children:
-                ip.py:
-                  description: ''
-                stop_all.py:
-                  description: ''
-              description: ''
-          description: ''
-        helpers:
-          children:
-            docker.py:
-              description: ''
-          description: ''
-        tests:
-          children:
-            command:
-              children:
-                docker:
-                  children:
-                    ip.py:
-                      description: ''
-                    stop_all.py:
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    services-db:
-      children:
-        services:
-          children:
-            maria-10:
-              children:
-                command:
-                  children:
-                    app:
-                      children:
-                        perms.py:
-                          description: ''
-                      description: ''
-                    config:
-                      children:
-                        write_post.py:
-                          description: ''
-                      description: ''
-                    service:
-                      children:
-                        install.py:
-                          description: ''
-                      description: ''
-                  description: ''
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        .gitignore.sample:
-                          description: ''
-                        docker:
-                          children:
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        maria:
-                          children:
-                            data:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            dumps:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            my.cnf:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-                tests:
-                  children:
-                    command:
-                      children:
-                        config:
-                          children: {}
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            mongo-6:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        .gitignore.sample:
-                          description: ''
-                        docker:
-                          children:
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        mongo:
-                          children:
-                            .gitkeep:
-                              description: ''
-                            data:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            mysql-8:
-              children:
-                command:
-                  children:
-                    app:
-                      children:
-                        perms.py:
-                          description: ''
-                      description: ''
-                    config:
-                      children:
-                        write_post.py:
-                          description: ''
-                      description: ''
-                    service:
-                      children:
-                        install.py:
-                          description: ''
-                      description: ''
-                  description: ''
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        .gitignore.sample:
-                          description: ''
-                        docker:
-                          children:
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        mysql:
-                          children:
-                            .gitkeep:
-                              description: ''
-                            data:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            dumps:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            my.cnf:
-                              description: ''
-                          description: ''
-                        sonarqube:
-                          children:
-                            conf:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            data:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            extensions:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            postgres:
-              children:
-                service.config.yml:
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    services-php:
-      children:
-        services:
-          children:
-            laravel-5:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.dev.yml:
-                              description: ''
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            php-8:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.dev.yml:
-                              description: ''
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                    index.php:
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            phpmyadmin:
-              children: {}
-              description: ''
-            symfony-6:
-              children:
-                service.config.yml:
-                  description: ''
-              description: ''
-            wordpress:
-              children:
-                service.config.yml:
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    services-various:
-      children:
-        services:
-          children:
-            gitlab:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        gitlab:
-                          children:
-                            .gitignore.sample:
-                              description: ''
-                            backups:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            grafana:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                    grafana:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    provisioning:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            jenkins:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .gitignore.sample:
-                      description: ''
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                    config:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    home:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            matomo:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .gitignore.sample:
-                      description: ''
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            n8n:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.dev.yml:
-                              description: ''
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        n8n:
-                          children:
-                            .gitkeep:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            nextcloud:
-              children:
-                command:
-                  children:
-                    app:
-                      children:
-                        start_options.py:
-                          description: ''
-                      description: ''
-                  description: ''
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                    config.php:
-                      description: ''
-                    data:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                    extra-addons:
-                      children:
-                        .gitkeep:
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-                tests:
-                  children:
-                    command:
-                      children:
-                        app:
-                          children: {}
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            onlyoffice:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .gitignore.sample:
-                      description: ''
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            rocketchat:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        hubot:
-                          children:
-                            scripts:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                          description: ''
-                        uploads:
-                          children:
-                            .gitkeep:
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-            sonarqube:
-              children:
-                docker:
-                  children:
-                    docker-compose.yml:
-                      description: ''
-                  description: ''
-                samples:
-                  children:
-                    .gitignore.sample:
-                      description: ''
-                    .wex:
-                      children:
-                        docker:
-                          children:
-                            docker-compose.prod.yml:
-                              description: ''
-                            docker-compose.yml:
-                              description: ''
-                          description: ''
-                        sonarqube:
-                          children:
-                            conf:
-                              children:
-                                sonar.properties:
-                                  description: ''
-                                wrapper.conf:
-                                  description: ''
-                              description: ''
-                            data:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                            extensions:
-                              children:
-                                .gitkeep:
-                                  description: ''
-                              description: ''
-                          description: ''
-                      description: ''
-                  description: ''
-                service.config.yml:
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    system:
-      children:
-        command:
-          children:
-            dir:
-              children:
-                spaces.py:
-                  description: ''
-              description: ''
-            disk:
-              children:
-                spaces.py:
-                  description: ''
-              description: ''
-            os:
-              children:
-                name.py:
-                  description: ''
-              description: ''
-            own:
-              children:
-                this.py:
-                  description: ''
-              description: ''
-            system:
-              children:
-                ip.py:
-                  description: ''
-                is_docker.py:
-                  description: ''
-              description: ''
-          description: ''
-        tests:
-          children:
-            command:
-              children:
-                dir:
-                  children:
-                    spaces.py:
-                      description: ''
-                  description: ''
-                disk:
-                  children:
-                    spaces.py:
-                      description: ''
-                  description: ''
-                os:
-                  children:
-                    name.py:
-                      description: ''
-                  description: ''
-                own:
-                  children:
-                    this.py:
-                      description: ''
-                  description: ''
-                system:
-                  children:
-                    ip.py:
-                      description: ''
-                    is_docker.py:
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-    test:
-      children:
-        services:
-          children:
-            test:
-              children:
-                command:
-                  children:
-                    demo_command:
-                      children:
-                        first.py:
-                          description: ''
-                        second.py:
-                          description: ''
-                      description: ''
-                    demo_command_2:
-                      children:
-                        third.py:
-                          description: ''
-                      description: ''
-                    other_demo_command:
-                      children:
-                        other.py:
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-            test_2:
-              children:
-                command:
-                  children:
-                    another_demo_command:
-                      children:
-                        test.py:
-                          description: ''
-                      description: ''
-                  description: ''
-              description: ''
-          description: ''
-      description: ''
-  description: ''
-cli:
-  children:
-    autocomplete:
-      description: ''
-    autocomplete-handler:
-      description: ''
-    install:
-      description: ''
-    terminal-handler:
-      description: ''
-    uninstall:
-      description: ''
-    wex:
-      description: ''
-    wex-wrapper:
-      description: ''
-  description: ''
-locale:
-  children:
-    messages.json:
-      description: ''
-  description: ''
-requirements.in:
-  description: ''
-requirements.txt:
-  description: ''
-setup.py:
-  description: ''
-src:
-  children:
-    const:
-      children:
-        error.py:
-          description: ''
-        globals.py:
-          description: ''
-      description: ''
-    core:
-      children:
-        FatalError.py:
-          description: ''
-        Kernel.py:
-          description: ''
-        WebhookHttpRequestHandler.py:
-          description: ''
-        action:
-          children:
-            AbstractCoreAction.py:
-              description: ''
-            CoreActionsCoreAction.py:
-              description: ''
-            HiCoreAction.py:
-              description: ''
-            TestCoreAction.py:
-              description: ''
-          description: ''
-        command:
-          children:
-            AbstractCommandProcessor.py:
-              description: ''
-            AddonCommandProcessor.py:
-              description: ''
-            AppCommandProcessor.py:
-              description: ''
-            CoreCommandProcessor.py:
-              description: ''
-            ServiceCommandProcessor.py:
-              description: ''
-            UserCommandProcessor.py:
-              description: ''
-          description: ''
-        render:
-          children:
-            DataSet2d.py:
-              description: ''
-          description: ''
-      description: ''
-    decorator:
-      children:
-        as_sudo.py:
-          description: ''
-        command.py:
-          description: ''
-      description: ''
-    helper:
-      children:
-        args.py:
-          description: ''
-        array.py:
-          description: ''
-        command.py:
-          description: ''
-        core.py:
-          description: ''
-        dict.py:
-          description: ''
-        file.py:
-          description: ''
-        json.py:
-          description: ''
-        process.py:
-          description: ''
-        prompt.py:
-          description: ''
-        registry.py:
-          description: ''
-        service.py:
-          description: ''
-        string.py:
-          description: ''
-        suggest.py:
-          description: ''
-        system.py:
-          description: ''
-        test.py:
-          description: ''
-      description: ''
-    resources:
-      children:
-        templates:
-          children:
-            command.py.tpl:
-              description: ''
-            handler.sh.tpl:
-              description: ''
-            test.py.tpl:
-              description: ''
-          description: ''
-        wexd.service:
-          description: ''
-      description: ''
-  description: ''
-tests:
-  children:
-    AbstractTestCase.py:
-      description: ''
-    resources:
-      children:
-        test-wraped.sh:
-          description: ''
-      description: ''
-    samples:
-      children:
-        config_bash:
-          description: ''
-      description: ''
-    test_core.py:
-      description: ''
-    test_logging.py:
-      description: ''
-  description: ''
+children:
+  .env:
+    description: ''
+  .gitignore:
+    description: ''
+  .gitlab-ci.yml:
+    description: ''
+  .wex:
+    children:
+      .env:
+        description: ''
+      .gitignore:
+        description: ''
+      ai:
+        children:
+          data:
+            children: {}
+            description: ''
+        description: ''
+      backup:
+        children:
+          .gitkeep:
+            description: ''
+        description: ''
+      command:
+        children:
+          autocode.py:
+            description: ''
+          core:
+            children:
+              AppCrawler.py:
+                description: ''
+              PythonAppCrawler.py:
+                description: ''
+              WexAppCrawler.py:
+                description: ''
+            description: ''
+          local_command:
+            children:
+              test.py:
+                description: ''
+            description: ''
+          test:
+            children: {}
+            description: ''
+          version:
+            children:
+              build.py:
+                description: ''
+            description: ''
+        description: ''
+      config:
+        description: ''
+      config.yml:
+        description: ''
+      cron:
+        children:
+          dev:
+            description: ''
+          local:
+            description: ''
+          prod:
+            description: ''
+        description: ''
+      docker:
+        children:
+          .gitkeep:
+            description: ''
+          docker-compose.yml:
+            description: ''
+        description: ''
+      script:
+        children:
+          appGo.sh:
+            description: ''
+          appInstall.sh:
+            description: ''
+          appPerms.sh:
+            description: ''
+          appStarted.sh:
+            description: ''
+          autoCode.sh:
+            description: ''
+          gpgExport.sh:
+            description: ''
+        description: ''
+      source:
+        children:
+          .gitkeep:
+            description: ''
+        description: ''
+      tests:
+        children:
+          command:
+            children:
+              test:
+                children: {}
+                description: ''
+            description: ''
+        description: ''
+      tmp:
+        children:
+          .gitkeep:
+            description: ''
+          config.build:
+            description: ''
+          config.build.json:
+            description: ''
+          config.build.yml:
+            description: ''
+          docker-compose.build.yml:
+            description: ''
+          docker.env:
+            description: ''
+        description: ''
+      trash:
+        children:
+          .gitkeep:
+            description: ''
+        description: ''
+      webhook:
+        children:
+          test-wraped.sh:
+            description: ''
+          test.sh:
+            description: ''
+        description: ''
+    description: ''
+    tmp: {}
+  .wex-5-dev:
+    children:
+      .env:
+        description: ''
+      command:
+        children:
+          local_command:
+            children:
+              test.py:
+                description: ''
+            description: ''
+        description: ''
+      config.yml:
+        description: ''
+      docker:
+        children: {}
+        description: ''
+      webhook:
+        children:
+          test-wraped.sh:
+            description: ''
+          test.sh:
+            description: ''
+        description: ''
+    description: ''
+  LICENCE:
+    description: ''
+  README.md:
+    description: ''
+  __main__.py:
+    description: ''
+  addons:
+    children:
+      app:
+        children:
+          command:
+            children:
+              app:
+                children:
+                  init.py:
+                    description: ''
+                  perms.py:
+                    description: ''
+                  restart.py:
+                    description: ''
+                  serve.py:
+                    description: ''
+                  start.py:
+                    description: ''
+                  started.py:
+                    description: ''
+                  stop.py:
+                    description: ''
+                description: ''
+              config:
+                children:
+                  get.py:
+                    description: ''
+                  set.py:
+                    description: ''
+                  write.py:
+                    description: ''
+                description: ''
+              env:
+                children:
+                  get.py:
+                    description: ''
+                description: ''
+              hook:
+                children:
+                  exec.py:
+                    description: ''
+                description: ''
+              hosts:
+                children:
+                  update.py:
+                    description: ''
+                description: ''
+              location:
+                children:
+                  find.py:
+                    description: ''
+                description: ''
+              proxy:
+                children:
+                  start.py:
+                    description: ''
+                  stop.py:
+                    description: ''
+                description: ''
+              service:
+                children:
+                  install.py:
+                    description: ''
+                  used.py:
+                    description: ''
+                description: ''
+              services:
+                children:
+                  exec.py:
+                    description: ''
+                description: ''
+              version:
+                children:
+                  build.py:
+                    description: ''
+                description: ''
+            description: ''
+          const:
+            children:
+              app.py:
+                description: ''
+            description: ''
+          containers:
+            children:
+              default:
+                children:
+                  docker-compose.yml:
+                    description: ''
+                description: ''
+              network:
+                children:
+                  docker-compose.yml:
+                    description: ''
+                description: ''
+            description: ''
+          decorator:
+            children:
+              app_dir_option.py:
+                description: ''
+              app_location_optional.py:
+                description: ''
+            description: ''
+          helpers:
+            children:
+              app.py:
+                description: ''
+              docker.py:
+                description: ''
+              test.py:
+                description: ''
+            description: ''
+          locale:
+            children:
+              messages.json:
+                description: ''
+            description: ''
+          middleware:
+            children:
+              exec.py:
+                description: ''
+              exec_post.py:
+                description: ''
+              init.py:
+                description: ''
+            description: ''
+          samples:
+            children:
+              app:
+                children:
+                  .wex:
+                    children:
+                      .gitignore.sample:
+                        description: ''
+                      backup:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      command:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      cron:
+                        children:
+                          dev:
+                            description: ''
+                          local:
+                            description: ''
+                          prod:
+                            description: ''
+                        description: ''
+                      docker:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      source:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      tmp:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      trash:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+          services:
+            children:
+              default:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                description: ''
+              proxy:
+                children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                      proxy:
+                        children:
+                          html:
+                            children:
+                              .gitkeep:
+                                description: ''
+                              index.html:
+                                description: ''
+                            description: ''
+                        description: ''
+                      tmp:
+                        children: {}
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+          tests:
+            children:
+              command:
+                children:
+                  app:
+                    children:
+                      init.py:
+                        description: ''
+                      perms.py:
+                        description: ''
+                      restart.py:
+                        description: ''
+                      serve.py:
+                        description: ''
+                      start.py:
+                        description: ''
+                      started.py:
+                        description: ''
+                      stop.py:
+                        description: ''
+                    description: ''
+                  config:
+                    children:
+                      get.py:
+                        description: ''
+                      set.py:
+                        description: ''
+                      write.py:
+                        description: ''
+                    description: ''
+                  env:
+                    children:
+                      get.py:
+                        description: ''
+                    description: ''
+                  hook:
+                    children:
+                      exec.py:
+                        description: ''
+                    description: ''
+                  hosts:
+                    children:
+                      update.py:
+                        description: ''
+                    description: ''
+                  location:
+                    children:
+                      find.py:
+                        description: ''
+                    description: ''
+                  proxy:
+                    children:
+                      start.py:
+                        description: ''
+                      stop.py:
+                        description: ''
+                    description: ''
+                  service:
+                    children:
+                      install.py:
+                        description: ''
+                      used.py:
+                        description: ''
+                    description: ''
+                  services:
+                    children:
+                      exec.py:
+                        description: ''
+                    description: ''
+                  version:
+                    children:
+                      build.py:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      core:
+        children:
+          command:
+            children:
+              autocomplete:
+                children:
+                  suggest.py:
+                    description: ''
+                description: ''
+              command:
+                children:
+                  create.py:
+                    description: ''
+                description: ''
+              core:
+                children:
+                  install.py:
+                    description: ''
+                  uninstall.py:
+                    description: ''
+                description: ''
+              logo:
+                children:
+                  show.py:
+                    description: ''
+                description: ''
+              registry:
+                children:
+                  build.py:
+                    description: ''
+                description: ''
+              service:
+                children:
+                  resolve.py:
+                    description: ''
+                description: ''
+              test:
+                children:
+                  create.py:
+                    description: ''
+                description: ''
+              version:
+                children:
+                  build.py:
+                    description: ''
+                description: ''
+              webhook:
+                children:
+                  exec.py:
+                    description: ''
+                  serve.py:
+                    description: ''
+                  stop.py:
+                    description: ''
+                description: ''
+            description: ''
+          tests:
+            children:
+              command:
+                children:
+                  autocomplete:
+                    children:
+                      suggest.py:
+                        description: ''
+                    description: ''
+                  command:
+                    children:
+                      create.py:
+                        description: ''
+                    description: ''
+                  core:
+                    children:
+                      install.py:
+                        description: ''
+                      uninstall.py:
+                        description: ''
+                    description: ''
+                  logo:
+                    children:
+                      show.py:
+                        description: ''
+                    description: ''
+                  registry:
+                    children:
+                      build.py:
+                        description: ''
+                    description: ''
+                  service:
+                    children:
+                      install.py:
+                        description: ''
+                      resolve.py:
+                        description: ''
+                    description: ''
+                  test:
+                    children:
+                      create.py:
+                        description: ''
+                    description: ''
+                  version:
+                    children:
+                      build.py:
+                        description: ''
+                    description: ''
+                  webhook:
+                    children:
+                      exec.py:
+                        description: ''
+                      serve.py:
+                        description: ''
+                      stop.py:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      default:
+        children:
+          command:
+            children:
+              file:
+                children:
+                  append_once.py:
+                    description: ''
+                  remove_line.py:
+                    description: ''
+                description: ''
+              version:
+                children:
+                  increment.py:
+                    description: ''
+                description: ''
+            description: ''
+          tests:
+            children:
+              command:
+                children:
+                  file:
+                    children:
+                      append_once.py:
+                        description: ''
+                      remove_line.py:
+                        description: ''
+                    description: ''
+                  version:
+                    children:
+                      increment.py:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      docker:
+        children:
+          command:
+            children:
+              docker:
+                children:
+                  ip.py:
+                    description: ''
+                  stop_all.py:
+                    description: ''
+                description: ''
+            description: ''
+          helpers:
+            children:
+              docker.py:
+                description: ''
+            description: ''
+          tests:
+            children:
+              command:
+                children:
+                  docker:
+                    children:
+                      ip.py:
+                        description: ''
+                      stop_all.py:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      services-db:
+        children:
+          services:
+            children:
+              maria-10:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          perms.py:
+                            description: ''
+                        description: ''
+                      config:
+                        children:
+                          write_post.py:
+                            description: ''
+                        description: ''
+                      service:
+                        children:
+                          install.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            description: ''
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          maria:
+                            children:
+                              data:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              my.cnf:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                  tests:
+                    children:
+                      command:
+                        children:
+                          config:
+                            children: {}
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              mongo-6:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            description: ''
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          mongo:
+                            children:
+                              .gitkeep:
+                                description: ''
+                              data:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              mysql-8:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          perms.py:
+                            description: ''
+                        description: ''
+                      config:
+                        children:
+                          write_post.py:
+                            description: ''
+                        description: ''
+                      service:
+                        children:
+                          install.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            description: ''
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          mysql:
+                            children:
+                              .gitkeep:
+                                description: ''
+                              data:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              my.cnf:
+                                description: ''
+                            description: ''
+                          sonarqube:
+                            children:
+                              conf:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              data:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              extensions:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              postgres:
+                children:
+                  service.config.yml:
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      services-php:
+        children:
+          services:
+            children:
+              laravel-5:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                description: ''
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              php-8:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                description: ''
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                      index.php:
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              phpmyadmin:
+                children: {}
+                description: ''
+              symfony-6:
+                children:
+                  service.config.yml:
+                    description: ''
+                description: ''
+              wordpress:
+                children:
+                  service.config.yml:
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      services-various:
+        children:
+          services:
+            children:
+              gitlab:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          gitlab:
+                            children:
+                              .gitignore.sample:
+                                description: ''
+                              backups:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              grafana:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                      grafana:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      provisioning:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              jenkins:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        description: ''
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                      config:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      home:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              matomo:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        description: ''
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              n8n:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                description: ''
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          n8n:
+                            children:
+                              .gitkeep:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              nextcloud:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          start_options.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                      config.php:
+                        description: ''
+                      data:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      extra-addons:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                  tests:
+                    children:
+                      command:
+                        children:
+                          app:
+                            children: {}
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              onlyoffice:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        description: ''
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              rocketchat:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          hubot:
+                            children:
+                              scripts:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                            description: ''
+                          uploads:
+                            children:
+                              .gitkeep:
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+              sonarqube:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        description: ''
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                description: ''
+                              docker-compose.yml:
+                                description: ''
+                            description: ''
+                          sonarqube:
+                            children:
+                              conf:
+                                children:
+                                  sonar.properties:
+                                    description: ''
+                                  wrapper.conf:
+                                    description: ''
+                                description: ''
+                              data:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                              extensions:
+                                children:
+                                  .gitkeep:
+                                    description: ''
+                                description: ''
+                            description: ''
+                        description: ''
+                    description: ''
+                  service.config.yml:
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      system:
+        children:
+          command:
+            children:
+              dir:
+                children:
+                  spaces.py:
+                    description: ''
+                description: ''
+              disk:
+                children:
+                  spaces.py:
+                    description: ''
+                description: ''
+              os:
+                children:
+                  name.py:
+                    description: ''
+                description: ''
+              own:
+                children:
+                  this.py:
+                    description: ''
+                description: ''
+              system:
+                children:
+                  ip.py:
+                    description: ''
+                  is_docker.py:
+                    description: ''
+                description: ''
+            description: ''
+          tests:
+            children:
+              command:
+                children:
+                  dir:
+                    children:
+                      spaces.py:
+                        description: ''
+                    description: ''
+                  disk:
+                    children:
+                      spaces.py:
+                        description: ''
+                    description: ''
+                  os:
+                    children:
+                      name.py:
+                        description: ''
+                    description: ''
+                  own:
+                    children:
+                      this.py:
+                        description: ''
+                    description: ''
+                  system:
+                    children:
+                      ip.py:
+                        description: ''
+                      is_docker.py:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      test:
+        children:
+          services:
+            children:
+              test:
+                children:
+                  command:
+                    children:
+                      demo_command:
+                        children:
+                          first.py:
+                            description: ''
+                          second.py:
+                            description: ''
+                        description: ''
+                      demo_command_2:
+                        children:
+                          third.py:
+                            description: ''
+                        description: ''
+                      other_demo_command:
+                        children:
+                          other.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+              test_2:
+                children:
+                  command:
+                    children:
+                      another_demo_command:
+                        children:
+                          test.py:
+                            description: ''
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+    description: ''
+  cli:
+    children:
+      autocomplete:
+        description: ''
+      autocomplete-handler:
+        description: ''
+      install:
+        description: ''
+      terminal-handler:
+        description: ''
+      uninstall:
+        description: ''
+      wex:
+        description: ''
+      wex-wrapper:
+        description: ''
+    description: ''
+  locale:
+    children:
+      messages.json:
+        description: ''
+    description: ''
+  requirements.in:
+    description: ''
+  requirements.txt:
+    description: ''
+  setup.py:
+    description: ''
+  src:
+    children:
+      const:
+        children:
+          error.py:
+            description: ''
+          globals.py:
+            description: ''
+        description: ''
+      core:
+        children:
+          FatalError.py:
+            description: ''
+          Kernel.py:
+            description: ''
+          WebhookHttpRequestHandler.py:
+            description: ''
+          action:
+            children:
+              AbstractCoreAction.py:
+                description: ''
+              CoreActionsCoreAction.py:
+                description: ''
+              HiCoreAction.py:
+                description: ''
+              TestCoreAction.py:
+                description: ''
+            description: ''
+          command:
+            children:
+              AbstractCommandProcessor.py:
+                description: ''
+              AddonCommandProcessor.py:
+                description: ''
+              AppCommandProcessor.py:
+                description: ''
+              CoreCommandProcessor.py:
+                description: ''
+              ServiceCommandProcessor.py:
+                description: ''
+              UserCommandProcessor.py:
+                description: ''
+            description: ''
+          render:
+            children:
+              DataSet2d.py:
+                description: ''
+            description: ''
+        description: ''
+      decorator:
+        children:
+          as_sudo.py:
+            description: ''
+          command.py:
+            description: ''
+        description: ''
+      helper:
+        children:
+          args.py:
+            description: ''
+          array.py:
+            description: ''
+          command.py:
+            description: ''
+          core.py:
+            description: ''
+          dict.py:
+            description: ''
+          file.py:
+            description: ''
+          json.py:
+            description: ''
+          process.py:
+            description: ''
+          prompt.py:
+            description: ''
+          registry.py:
+            description: ''
+          service.py:
+            description: ''
+          string.py:
+            description: ''
+          suggest.py:
+            description: ''
+          system.py:
+            description: ''
+          test.py:
+            description: ''
+        description: ''
+      resources:
+        children:
+          templates:
+            children:
+              command.py.tpl:
+                description: ''
+              handler.sh.tpl:
+                description: ''
+              test.py.tpl:
+                description: ''
+            description: ''
+          wexd.service:
+            description: ''
+        description: ''
+    description: ''
+  tests:
+    children:
+      AbstractTestCase.py:
+        description: ''
+      resources:
+        children:
+          test-wraped.sh:
+            description: ''
+        description: ''
+      samples:
+        children:
+          config_bash:
+            description: ''
+        description: ''
+      test_core.py:
+        description: ''
+      test_logging.py:
+        description: ''
+    description: ''
+  tmp:
+    children:
+      .gitkeep:
+        description: ''
+      history.json:
+        description: ''
+      log:
+        children:
+          2023-06-08-101.1686221307.690611016.err:
+            description: ''
+          2023-06-08-101.1686221307.690611016.out:
+            description: ''
+          2023-06-08-1128.1686219135.510618700.err:
+            description: ''
+          2023-06-08-1128.1686219135.510618700.out:
+            description: ''
+          2023-06-08-173.1686221550.008981280.err:
+            description: ''
+          2023-06-08-173.1686221550.008981280.out:
+            description: ''
+          2023-06-08-189.1686221551.708067060.err:
+            description: ''
+          2023-06-08-189.1686221551.708067060.out:
+            description: ''
+          2023-06-08-205.1686221737.275947513.err:
+            description: ''
+          2023-06-08-205.1686221737.275947513.out:
+            description: ''
+          2023-06-08-221.1686221749.258142046.err:
+            description: ''
+          2023-06-08-221.1686221749.258142046.out:
+            description: ''
+          2023-06-08-237.1686222078.207198747.err:
+            description: ''
+          2023-06-08-237.1686222078.207198747.out:
+            description: ''
+          2023-06-09-155.1686317912.549293767.err:
+            description: ''
+          2023-06-09-155.1686317912.549293767.out:
+            description: ''
+          2023-06-09-176.1686318693.662552012.err:
+            description: ''
+          2023-06-09-176.1686318693.662552012.out:
+            description: ''
+          2023-06-09-191.1686318818.519096918.err:
+            description: ''
+          2023-06-09-191.1686318818.519096918.out:
+            description: ''
+          2023-06-09-206.1686318832.476430731.err:
+            description: ''
+          2023-06-09-206.1686318832.476430731.out:
+            description: ''
+          2023-06-09-221.1686318844.801892894.err:
+            description: ''
+          2023-06-09-221.1686318844.801892894.out:
+            description: ''
+          2023-06-09-237.1686318866.583625244.err:
+            description: ''
+          2023-06-09-237.1686318866.583625244.out:
+            description: ''
+          2023-06-09-237.1686318877.588572309.err:
+            description: ''
+          2023-06-09-237.1686318877.588572309.out:
+            description: ''
+          2023-06-09-292.1686319588.096769567.err:
+            description: ''
+          2023-06-09-292.1686319588.096769567.out:
+            description: ''
+          2023-06-09-69.1686317594.861085460.err:
+            description: ''
+          2023-06-09-69.1686317594.861085460.out:
+            description: ''
+          2023-06-11-135.1686479868.469831.err:
+            description: ''
+          2023-06-11-135.1686479868.469831.out:
+            description: ''
+          2023-06-11-147.1686479868.658191.err:
+            description: ''
+          2023-06-11-147.1686479868.658191.out:
+            description: ''
+          2023-06-11-361.1686485323.945588.err:
+            description: ''
+          2023-06-11-361.1686485323.945588.out:
+            description: ''
+          2023-06-11-370.1686485334.333406.err:
+            description: ''
+          2023-06-11-370.1686485334.333406.out:
+            description: ''
+          2023-06-11-379.1686485356.530394.err:
+            description: ''
+          2023-06-11-379.1686485356.530394.out:
+            description: ''
+          2023-06-11-455.1686485933.869835.err:
+            description: ''
+          2023-06-11-455.1686485933.869835.out:
+            description: ''
+          2023-06-11-455.1686485933.881162.err:
+            description: ''
+          2023-06-11-455.1686485933.881162.out:
+            description: ''
+          2023-06-11-49.1686479470.469475100.err:
+            description: ''
+          2023-06-11-49.1686479470.469475100.out:
+            description: ''
+          2023-07-02-49.1688325959.612580264.err:
+            description: ''
+          2023-07-02-49.1688325959.612580264.out:
+            description: ''
+          2023-07-04-131.1688460565.012635.err:
+            description: ''
+          2023-07-04-131.1688460565.012635.out:
+            description: ''
+          2023-07-04-131.1688460565.026171.err:
+            description: ''
+          2023-07-04-131.1688460565.026171.out:
+            description: ''
+          2023-07-04-83.1688460519.705717095.err:
+            description: ''
+          2023-07-04-83.1688460519.705717095.out:
+            description: ''
+          2023-08-12-116.1691852934.661183.err:
+            description: ''
+          2023-08-12-116.1691852934.661183.out:
+            description: ''
+          2023-08-12-116.1691852934.667886.err:
+            description: ''
+          2023-08-12-116.1691852934.667886.out:
+            description: ''
+          2023-08-12-137.1691863893.400594.err:
+            description: ''
+          2023-08-12-137.1691863893.400594.out:
+            description: ''
+          2023-08-12-137.1691863893.407945.err:
+            description: ''
+          2023-08-12-137.1691863893.407945.out:
+            description: ''
+          2023-08-12-158.1691864048.617066.err:
+            description: ''
+          2023-08-12-158.1691864048.617066.out:
+            description: ''
+          2023-08-12-158.1691864048.623867.err:
+            description: ''
+          2023-08-12-158.1691864048.623867.out:
+            description: ''
+          2023-08-12-50.1691847231.811535722.err:
+            description: ''
+          2023-08-12-50.1691847231.811535722.out:
+            description: ''
+          2023-08-12-52.1691846583.833142079.err:
+            description: ''
+          2023-08-12-52.1691846583.833142079.out:
+            description: ''
+          2023-08-12-59.1691845857.592482838.err:
+            description: ''
+          2023-08-12-59.1691845857.592482838.out:
+            description: ''
+          2023-08-12-81.1691846061.818075326.err:
+            description: ''
+          2023-08-12-81.1691846061.818075326.out:
+            description: ''
+          2023-08-12-95.1691852921.293861.err:
+            description: ''
+          2023-08-12-95.1691852921.293861.out:
+            description: ''
+          2023-08-12-95.1691852921.300285.err:
+            description: ''
+          2023-08-12-95.1691852921.300285.out:
+            description: ''
+          2023-08-16-1011.1692190391.516137460.err:
+            description: ''
+          2023-08-16-1011.1692190391.516137460.out:
+            description: ''
+          2023-08-16-1045.1692190416.239543732.err:
+            description: ''
+          2023-08-16-1045.1692190416.239543732.out:
+            description: ''
+          2023-08-16-1061.1692190444.366823523.err:
+            description: ''
+          2023-08-16-1061.1692190444.366823523.out:
+            description: ''
+          2023-08-16-1078.1692190452.814315444.err:
+            description: ''
+          2023-08-16-1078.1692190452.814315444.out:
+            description: ''
+          2023-08-16-109.1692192884.355937446.err:
+            description: ''
+          2023-08-16-109.1692192884.355937446.out:
+            description: ''
+          2023-08-16-1100.1692190460.039365020.err:
+            description: ''
+          2023-08-16-1100.1692190460.039365020.out:
+            description: ''
+          2023-08-16-1118.1692191060.038217780.err:
+            description: ''
+          2023-08-16-1118.1692191060.038217780.out:
+            description: ''
+          2023-08-16-1135.1692191103.786862423.err:
+            description: ''
+          2023-08-16-1135.1692191103.786862423.out:
+            description: ''
+          2023-08-16-1152.1692191243.740459924.err:
+            description: ''
+          2023-08-16-1152.1692191243.740459924.out:
+            description: ''
+          2023-08-16-1169.1692191342.328005024.err:
+            description: ''
+          2023-08-16-1169.1692191342.328005024.out:
+            description: ''
+          2023-08-16-1186.1692191539.730717182.err:
+            description: ''
+          2023-08-16-1186.1692191539.730717182.out:
+            description: ''
+          2023-08-16-1205.1692191594.308906311.err:
+            description: ''
+          2023-08-16-1205.1692191594.308906311.out:
+            description: ''
+          2023-08-16-1237.1692192584.233828154.err:
+            description: ''
+          2023-08-16-1237.1692192584.233828154.out:
+            description: ''
+          2023-08-16-138.1692193184.180373848.err:
+            description: ''
+          2023-08-16-138.1692193184.180373848.out:
+            description: ''
+          2023-08-16-168.1692193194.490946004.err:
+            description: ''
+          2023-08-16-168.1692193194.490946004.out:
+            description: ''
+          2023-08-16-193.1692193244.377460760.err:
+            description: ''
+          2023-08-16-193.1692193244.377460760.out:
+            description: ''
+          2023-08-16-202.1692193248.508725150.err:
+            description: ''
+          2023-08-16-202.1692193248.508725150.out:
+            description: ''
+          2023-08-16-307.1692195028.152739510.err:
+            description: ''
+          2023-08-16-307.1692195028.152739510.out:
+            description: ''
+          2023-08-16-332.1692195173.876941.err:
+            description: ''
+          2023-08-16-332.1692195173.876941.out:
+            description: ''
+          2023-08-16-332.1692195173.884822.err:
+            description: ''
+          2023-08-16-332.1692195173.884822.out:
+            description: ''
+          2023-08-16-427.1692185015.406378467.err:
+            description: ''
+          2023-08-16-427.1692185015.406378467.out:
+            description: ''
+          2023-08-16-492.1692187551.910108056.err:
+            description: ''
+          2023-08-16-492.1692187551.910108056.out:
+            description: ''
+          2023-08-16-496.1692196180.752196.err:
+            description: ''
+          2023-08-16-496.1692196180.752196.out:
+            description: ''
+          2023-08-16-496.1692196180.759912.err:
+            description: ''
+          2023-08-16-496.1692196180.759912.out:
+            description: ''
+          2023-08-16-508.1692187554.511071472.err:
+            description: ''
+          2023-08-16-508.1692187554.511071472.out:
+            description: ''
+          2023-08-16-51.1692192765.326194339.err:
+            description: ''
+          2023-08-16-51.1692192765.326194339.out:
+            description: ''
+          2023-08-16-527.1692187652.693607239.err:
+            description: ''
+          2023-08-16-527.1692187652.693607239.out:
+            description: ''
+          2023-08-16-544.1692187738.528808876.err:
+            description: ''
+          2023-08-16-544.1692187738.528808876.out:
+            description: ''
+          2023-08-16-561.1692188025.890429749.err:
+            description: ''
+          2023-08-16-561.1692188025.890429749.out:
+            description: ''
+          2023-08-16-649.1692188918.319353644.err:
+            description: ''
+          2023-08-16-649.1692188918.319353644.out:
+            description: ''
+          2023-08-16-700.1692189117.818441246.err:
+            description: ''
+          2023-08-16-700.1692189117.818441246.out:
+            description: ''
+          2023-08-16-717.1692189148.646793728.err:
+            description: ''
+          2023-08-16-717.1692189148.646793728.out:
+            description: ''
+          2023-08-16-748.1692189400.138640813.err:
+            description: ''
+          2023-08-16-748.1692189400.138640813.out:
+            description: ''
+          2023-08-16-779.1692189492.817525195.err:
+            description: ''
+          2023-08-16-779.1692189492.817525195.out:
+            description: ''
+          2023-08-16-814.1692189570.006067685.err:
+            description: ''
+          2023-08-16-814.1692189570.006067685.out:
+            description: ''
+          2023-08-16-887.1692190093.249421680.err:
+            description: ''
+          2023-08-16-887.1692190093.249421680.out:
+            description: ''
+          2023-08-16-903.1692190098.808177158.err:
+            description: ''
+          2023-08-16-903.1692190098.808177158.out:
+            description: ''
+          2023-08-16-92.1692192871.053572859.err:
+            description: ''
+          2023-08-16-92.1692192871.053572859.out:
+            description: ''
+          2023-08-16-927.1692190146.312075042.err:
+            description: ''
+          2023-08-16-927.1692190146.312075042.out:
+            description: ''
+          2023-08-16-943.1692190151.360339761.err:
+            description: ''
+          2023-08-16-943.1692190151.360339761.out:
+            description: ''
+          2023-08-16-988.1692190329.403565337.err:
+            description: ''
+          2023-08-16-988.1692190329.403565337.out:
+            description: ''
+          2023-08-17-2623.1692280802.053966.err:
+            description: ''
+          2023-08-17-2623.1692280802.053966.out:
+            description: ''
+          2023-08-17-2623.1692280802.061671.err:
+            description: ''
+          2023-08-17-2623.1692280802.061671.out:
+            description: ''
+          2023-08-17-2646.1692280851.570569.err:
+            description: ''
+          2023-08-17-2646.1692280851.570569.out:
+            description: ''
+          2023-08-17-2646.1692280851.579130.err:
+            description: ''
+          2023-08-17-2646.1692280851.579130.out:
+            description: ''
+          2023-08-17-2669.1692280921.880603.err:
+            description: ''
+          2023-08-17-2669.1692280921.880603.out:
+            description: ''
+          2023-08-17-2669.1692280921.888060.err:
+            description: ''
+          2023-08-17-2669.1692280921.888060.out:
+            description: ''
+          2023-08-17-2692.1692281162.950040.err:
+            description: ''
+          2023-08-17-2692.1692281162.950040.out:
+            description: ''
+          2023-08-17-2692.1692281162.956835.err:
+            description: ''
+          2023-08-17-2692.1692281162.956835.out:
+            description: ''
+          2023-08-17-2715.1692281310.186039.err:
+            description: ''
+          2023-08-17-2715.1692281310.186039.out:
+            description: ''
+          2023-08-17-2715.1692281310.193119.err:
+            description: ''
+          2023-08-17-2715.1692281310.193119.out:
+            description: ''
+          2023-08-17-2747.1692281408.811546.err:
+            description: ''
+          2023-08-17-2747.1692281408.811546.out:
+            description: ''
+          2023-08-17-2747.1692281408.817561.err:
+            description: ''
+          2023-08-17-2747.1692281408.817561.out:
+            description: ''
+          2023-08-17-2770.1692281523.907810.err:
+            description: ''
+          2023-08-17-2770.1692281523.907810.out:
+            description: ''
+          2023-08-17-2770.1692281523.913196.err:
+            description: ''
+          2023-08-17-2770.1692281523.913196.out:
+            description: ''
+          2023-08-17-2793.1692281573.427822.err:
+            description: ''
+          2023-08-17-2793.1692281573.427822.out:
+            description: ''
+          2023-08-17-2793.1692281573.433852.err:
+            description: ''
+          2023-08-17-2793.1692281573.433852.out:
+            description: ''
+          2023-08-17-2816.1692281652.761267.err:
+            description: ''
+          2023-08-17-2816.1692281652.761267.out:
+            description: ''
+          2023-08-17-2816.1692281652.767600.err:
+            description: ''
+          2023-08-17-2816.1692281652.767600.out:
+            description: ''
+          2023-08-17-2839.1692281731.851511.err:
+            description: ''
+          2023-08-17-2839.1692281731.851511.out:
+            description: ''
+          2023-08-17-2839.1692281731.858101.err:
+            description: ''
+          2023-08-17-2839.1692281731.858101.out:
+            description: ''
+          2023-08-17-2862.1692281745.525397.err:
+            description: ''
+          2023-08-17-2862.1692281745.525397.out:
+            description: ''
+          2023-08-17-2862.1692281745.531537.err:
+            description: ''
+          2023-08-17-2862.1692281745.531537.out:
+            description: ''
+          2023-08-17-2885.1692281800.506643.err:
+            description: ''
+          2023-08-17-2885.1692281800.506643.out:
+            description: ''
+          2023-08-17-2885.1692281800.512830.err:
+            description: ''
+          2023-08-17-2885.1692281800.512830.out:
+            description: ''
+          2023-08-17-2908.1692281827.221677.err:
+            description: ''
+          2023-08-17-2908.1692281827.221677.out:
+            description: ''
+          2023-08-17-2908.1692281827.227894.err:
+            description: ''
+          2023-08-17-2908.1692281827.227894.out:
+            description: ''
+          2023-08-17-2931.1692281853.209944.err:
+            description: ''
+          2023-08-17-2931.1692281853.209944.out:
+            description: ''
+          2023-08-17-2931.1692281853.216041.err:
+            description: ''
+          2023-08-17-2931.1692281853.216041.out:
+            description: ''
+          2023-08-17-2954.1692281904.374718.err:
+            description: ''
+          2023-08-17-2954.1692281904.374718.out:
+            description: ''
+          2023-08-17-2954.1692281904.380846.err:
+            description: ''
+          2023-08-17-2954.1692281904.380846.out:
+            description: ''
+          2023-08-17-2979.1692281982.126635.err:
+            description: ''
+          2023-08-17-2979.1692281982.126635.out:
+            description: ''
+          2023-08-17-2979.1692281982.134702.err:
+            description: ''
+          2023-08-17-2979.1692281982.134702.out:
+            description: ''
+          2023-08-17-3002.1692282165.890112.err:
+            description: ''
+          2023-08-17-3002.1692282165.890112.out:
+            description: ''
+          2023-08-17-3002.1692282165.896044.err:
+            description: ''
+          2023-08-17-3002.1692282165.896044.out:
+            description: ''
+          2023-08-17-3089.1692282286.335397.err:
+            description: ''
+          2023-08-17-3089.1692282286.335397.out:
+            description: ''
+          2023-08-17-3089.1692282286.341222.err:
+            description: ''
+          2023-08-17-3089.1692282286.341222.out:
+            description: ''
+          2023-08-17-3112.1692282423.160531.err:
+            description: ''
+          2023-08-17-3112.1692282423.160531.out:
+            description: ''
+          2023-08-17-3112.1692282423.167735.err:
+            description: ''
+          2023-08-17-3112.1692282423.167735.out:
+            description: ''
+          2023-08-17-3135.1692282454.575657.err:
+            description: ''
+          2023-08-17-3135.1692282454.575657.out:
+            description: ''
+          2023-08-17-3135.1692282454.581452.err:
+            description: ''
+          2023-08-17-3135.1692282454.581452.out:
+            description: ''
+          2023-08-17-3158.1692282458.540001.err:
+            description: ''
+          2023-08-17-3158.1692282458.540001.out:
+            description: ''
+          2023-08-17-3158.1692282458.545779.err:
+            description: ''
+          2023-08-17-3158.1692282458.545779.out:
+            description: ''
+          2023-08-17-3181.1692282459.876698.err:
+            description: ''
+          2023-08-17-3181.1692282459.876698.out:
+            description: ''
+          2023-08-17-3181.1692282459.883712.err:
+            description: ''
+          2023-08-17-3181.1692282459.883712.out:
+            description: ''
+          2023-08-17-3204.1692282525.057631.err:
+            description: ''
+          2023-08-17-3204.1692282525.057631.out:
+            description: ''
+          2023-08-17-3204.1692282525.064692.err:
+            description: ''
+          2023-08-17-3204.1692282525.064692.out:
+            description: ''
+          2023-08-17-3227.1692282938.251927.err:
+            description: ''
+          2023-08-17-3227.1692282938.251927.out:
+            description: ''
+          2023-08-17-3227.1692282938.259891.err:
+            description: ''
+          2023-08-17-3227.1692282938.259891.out:
+            description: ''
+          2023-08-17-3249.1692282944.648568.err:
+            description: ''
+          2023-08-17-3249.1692282944.648568.out:
+            description: ''
+          2023-08-17-3249.1692282944.655564.err:
+            description: ''
+          2023-08-17-3249.1692282944.655564.out:
+            description: ''
+          2023-08-17-3302.1692284212.402022.err:
+            description: ''
+          2023-08-17-3302.1692284212.402022.out:
+            description: ''
+          2023-08-17-3302.1692284212.408195.err:
+            description: ''
+          2023-08-17-3302.1692284212.408195.out:
+            description: ''
+          2023-08-18-11569.1692365462.133022.err:
+            description: ''
+          2023-08-18-11569.1692365462.133022.out:
+            description: ''
+          2023-08-18-11569.1692365462.139009.err:
+            description: ''
+          2023-08-18-11569.1692365462.139009.out:
+            description: ''
+          2023-08-18-11885.1692376683.689827.err:
+            description: ''
+          2023-08-18-11885.1692376683.689827.out:
+            description: ''
+          2023-08-18-11885.1692376683.695737.err:
+            description: ''
+          2023-08-18-11885.1692376683.695737.out:
+            description: ''
+          2023-08-18-11908.1692376845.116755.err:
+            description: ''
+          2023-08-18-11908.1692376845.116755.out:
+            description: ''
+          2023-08-18-11908.1692376845.123371.err:
+            description: ''
+          2023-08-18-11908.1692376845.123371.out:
+            description: ''
+          2023-08-18-11931.1692376911.101582.err:
+            description: ''
+          2023-08-18-11931.1692376911.101582.out:
+            description: ''
+          2023-08-18-11931.1692376911.107909.err:
+            description: ''
+          2023-08-18-11931.1692376911.107909.out:
+            description: ''
+          2023-08-21-12968.1692614942.366023.err:
+            description: ''
+          2023-08-21-12968.1692614942.366023.out:
+            description: ''
+          2023-08-21-12968.1692614942.372694.err:
+            description: ''
+          2023-08-21-12968.1692614942.372694.out:
+            description: ''
+          2023-08-21-12989.1692614949.249294.err:
+            description: ''
+          2023-08-21-12989.1692614949.249294.out:
+            description: ''
+          2023-08-21-12989.1692614949.254733.err:
+            description: ''
+          2023-08-21-12989.1692614949.254733.out:
+            description: ''
+          2023-08-21-13010.1692615174.749730.err:
+            description: ''
+          2023-08-21-13010.1692615174.749730.out:
+            description: ''
+          2023-08-21-13010.1692615174.756583.err:
+            description: ''
+          2023-08-21-13010.1692615174.756583.out:
+            description: ''
+          2023-08-21-13031.1692615181.778089.err:
+            description: ''
+          2023-08-21-13031.1692615181.778089.out:
+            description: ''
+          2023-08-21-13031.1692615181.783855.err:
+            description: ''
+          2023-08-21-13031.1692615181.783855.out:
+            description: ''
+          2023-08-21-13052.1692615187.597352.err:
+            description: ''
+          2023-08-21-13052.1692615187.597352.out:
+            description: ''
+          2023-08-21-13052.1692615187.603204.err:
+            description: ''
+          2023-08-21-13052.1692615187.603204.out:
+            description: ''
+          2023-08-21-13083.1692615223.981623.err:
+            description: ''
+          2023-08-21-13083.1692615223.981623.out:
+            description: ''
+          2023-08-21-13083.1692615223.988087.err:
+            description: ''
+          2023-08-21-13083.1692615223.988087.out:
+            description: ''
+          2023-08-21-13104.1692615262.712055.err:
+            description: ''
+          2023-08-21-13104.1692615262.712055.out:
+            description: ''
+          2023-08-21-13104.1692615262.718303.err:
+            description: ''
+          2023-08-21-13104.1692615262.718303.out:
+            description: ''
+          2023-08-21-13185.1692615942.979746.err:
+            description: ''
+          2023-08-21-13185.1692615942.979746.out:
+            description: ''
+          2023-08-21-13185.1692615942.986789.err:
+            description: ''
+          2023-08-21-13185.1692615942.986789.out:
+            description: ''
+          2023-08-21-13216.1692616254.088689.err:
+            description: ''
+          2023-08-21-13216.1692616254.088689.out:
+            description: ''
+          2023-08-21-13216.1692616254.096136.err:
+            description: ''
+          2023-08-21-13216.1692616254.096136.out:
+            description: ''
+          2023-08-21-13237.1692616340.441986.err:
+            description: ''
+          2023-08-21-13237.1692616340.441986.out:
+            description: ''
+          2023-08-21-13237.1692616340.448417.err:
+            description: ''
+          2023-08-21-13237.1692616340.448417.out:
+            description: ''
+          2023-08-21-13303.1692616566.305349.err:
+            description: ''
+          2023-08-21-13303.1692616566.305349.out:
+            description: ''
+          2023-08-21-13303.1692616566.311153.err:
+            description: ''
+          2023-08-21-13303.1692616566.311153.out:
+            description: ''
+          2023-08-21-13344.1692616814.888722.err:
+            description: ''
+          2023-08-21-13344.1692616814.888722.out:
+            description: ''
+          2023-08-21-13364.1692617067.452800.err:
+            description: ''
+          2023-08-21-13364.1692617067.452800.out:
+            description: ''
+          2023-08-21-13364.1692617067.459410.err:
+            description: ''
+          2023-08-21-13364.1692617067.459410.out:
+            description: ''
+          2023-08-21-13385.1692617146.540893.err:
+            description: ''
+          2023-08-21-13385.1692617146.540893.out:
+            description: ''
+          2023-08-21-13385.1692617146.546851.err:
+            description: ''
+          2023-08-21-13385.1692617146.546851.out:
+            description: ''
+          2023-08-21-13446.1692617571.893795.err:
+            description: ''
+          2023-08-21-13446.1692617571.893795.out:
+            description: ''
+          2023-08-21-13446.1692617571.899877.err:
+            description: ''
+          2023-08-21-13446.1692617571.899877.out:
+            description: ''
+          2023-08-21-13467.1692617595.654196.err:
+            description: ''
+          2023-08-21-13467.1692617595.654196.out:
+            description: ''
+          2023-08-21-13467.1692617595.659908.err:
+            description: ''
+          2023-08-21-13467.1692617595.659908.out:
+            description: ''
+          2023-08-21-13495.1692617838.129823.err:
+            description: ''
+          2023-08-21-13495.1692617838.129823.out:
+            description: ''
+          2023-08-21-13495.1692617838.136407.err:
+            description: ''
+          2023-08-21-13495.1692617838.136407.out:
+            description: ''
+          2023-08-21-13536.1692617978.692719.err:
+            description: ''
+          2023-08-21-13536.1692617978.692719.out:
+            description: ''
+          2023-08-21-13536.1692617978.698844.err:
+            description: ''
+          2023-08-21-13536.1692617978.698844.out:
+            description: ''
+          2023-08-21-13557.1692618390.193282.err:
+            description: ''
+          2023-08-21-13557.1692618390.193282.out:
+            description: ''
+          2023-08-21-13557.1692618390.200638.err:
+            description: ''
+          2023-08-21-13557.1692618390.200638.out:
+            description: ''
+          2023-08-21-13638.1692618584.487731.err:
+            description: ''
+          2023-08-21-13638.1692618584.487731.out:
+            description: ''
+          2023-08-21-13638.1692618584.495050.err:
+            description: ''
+          2023-08-21-13638.1692618584.495050.out:
+            description: ''
+          2023-08-21-13659.1692618590.357196.err:
+            description: ''
+          2023-08-21-13659.1692618590.357196.out:
+            description: ''
+          2023-08-21-13659.1692618590.364553.err:
+            description: ''
+          2023-08-21-13659.1692618590.364553.out:
+            description: ''
+          2023-08-21-13690.1692618625.884052.err:
+            description: ''
+          2023-08-21-13690.1692618625.884052.out:
+            description: ''
+          2023-08-21-13690.1692618625.892135.err:
+            description: ''
+          2023-08-21-13690.1692618625.892135.out:
+            description: ''
+          2023-08-21-13781.1692619258.639305.err:
+            description: ''
+          2023-08-21-13781.1692619258.639305.out:
+            description: ''
+          2023-08-21-13781.1692619258.646028.err:
+            description: ''
+          2023-08-21-13781.1692619258.646028.out:
+            description: ''
+          2023-08-21-13802.1692619341.445097.err:
+            description: ''
+          2023-08-21-13802.1692619341.445097.out:
+            description: ''
+          2023-08-21-13802.1692619341.451742.err:
+            description: ''
+          2023-08-21-13802.1692619341.451742.out:
+            description: ''
+          2023-08-21-13823.1692619904.053566.err:
+            description: ''
+          2023-08-21-13823.1692619904.053566.out:
+            description: ''
+          2023-08-21-13823.1692619904.059851.err:
+            description: ''
+          2023-08-21-13823.1692619904.059851.out:
+            description: ''
+          2023-08-21-14689.1692620523.614262.err:
+            description: ''
+          2023-08-21-14689.1692620523.614262.out:
+            description: ''
+          2023-08-21-14689.1692620523.619868.err:
+            description: ''
+          2023-08-21-14689.1692620523.619868.out:
+            description: ''
+          2023-08-21-14710.1692620528.705959.err:
+            description: ''
+          2023-08-21-14710.1692620528.705959.out:
+            description: ''
+          2023-08-21-14710.1692620528.713777.err:
+            description: ''
+          2023-08-21-14710.1692620528.713777.out:
+            description: ''
+          2023-08-21-14731.1692620941.854474.err:
+            description: ''
+          2023-08-21-14731.1692620941.854474.out:
+            description: ''
+          2023-08-21-14731.1692620941.861350.err:
+            description: ''
+          2023-08-21-14731.1692620941.861350.out:
+            description: ''
+          2023-08-21-15135.1692621506.441491.err:
+            description: ''
+          2023-08-21-15135.1692621506.441491.out:
+            description: ''
+          2023-08-21-15135.1692621506.447976.err:
+            description: ''
+          2023-08-21-15135.1692621506.447976.out:
+            description: ''
+          2023-08-21-17013.1692629414.210626.err:
+            description: ''
+          2023-08-21-17013.1692629414.210626.out:
+            description: ''
+          2023-08-21-17013.1692629414.219226.err:
+            description: ''
+          2023-08-21-17013.1692629414.219226.out:
+            description: ''
+          2023-08-21-17096.1692629576.022434.err:
+            description: ''
+          2023-08-21-17096.1692629576.022434.out:
+            description: ''
+          2023-08-21-17096.1692629576.030300.err:
+            description: ''
+          2023-08-21-17096.1692629576.030300.out:
+            description: ''
+          2023-08-22-50.1692687670.183454175.err:
+            description: ''
+          2023-08-22-50.1692687670.183454175.out:
+            description: ''
+          2023-08-22-9356.1692711742.597285.err:
+            description: ''
+          2023-08-22-9356.1692711742.597285.out:
+            description: ''
+          2023-08-22-9356.1692711742.604187.err:
+            description: ''
+          2023-08-22-9356.1692711742.604187.out:
+            description: ''
+          2023-08-22-9564.1692712825.183123157.err:
+            description: ''
+          2023-08-22-9564.1692712825.183123157.out:
+            description: ''
+          2023-08-22-9564.1692712849.332857077.err:
+            description: ''
+          2023-08-22-9564.1692712849.332857077.out:
+            description: ''
+          2023-08-23-104.1692783917.631597.err:
+            description: ''
+          2023-08-23-104.1692783917.631597.out:
+            description: ''
+          2023-08-23-104.1692783917.638398.err:
+            description: ''
+          2023-08-23-104.1692783917.638398.out:
+            description: ''
+          2023-08-23-1049.1692788766.091383.err:
+            description: ''
+          2023-08-23-1049.1692788766.091383.out:
+            description: ''
+          2023-08-23-1049.1692788766.097577.err:
+            description: ''
+          2023-08-23-1049.1692788766.097577.out:
+            description: ''
+          2023-08-23-125.1692783930.783996.err:
+            description: ''
+          2023-08-23-125.1692783930.783996.out:
+            description: ''
+          2023-08-23-125.1692783930.791866.err:
+            description: ''
+          2023-08-23-125.1692783930.791866.out:
+            description: ''
+          2023-08-23-28.1692773690.925211813.err:
+            description: ''
+          2023-08-23-28.1692773690.925211813.out:
+            description: ''
+          2023-08-23-28.1692774528.995882474.err:
+            description: ''
+          2023-08-23-28.1692774528.995882474.out:
+            description: ''
+          2023-08-23-51.1692783880.056408201.err:
+            description: ''
+          2023-08-23-51.1692783880.056408201.out:
+            description: ''
+          2023-08-23-66.1692774227.526279920.err:
+            description: ''
+          2023-08-23-66.1692774227.526279920.out:
+            description: ''
+          2023-08-27-16043.1693138432.621050552.err:
+            description: ''
+          2023-08-27-16043.1693138432.621050552.out:
+            description: ''
+          2023-08-27-16077.1693138493.516439944.err:
+            description: ''
+          2023-08-27-16077.1693138493.516439944.out:
+            description: ''
+          2023-08-27-16094.1693138548.982497898.err:
+            description: ''
+          2023-08-27-16094.1693138548.982497898.out:
+            description: ''
+          2023-08-27-16109.1693138565.492745107.err:
+            description: ''
+          2023-08-27-16109.1693138565.492745107.out:
+            description: ''
+          2023-08-27-16126.1693138611.638892620.err:
+            description: ''
+          2023-08-27-16126.1693138611.638892620.out:
+            description: ''
+          2023-08-27-16143.1693138655.153831493.err:
+            description: ''
+          2023-08-27-16143.1693138655.153831493.out:
+            description: ''
+          2023-08-27-16160.1693138673.377266339.err:
+            description: ''
+          2023-08-27-16160.1693138673.377266339.out:
+            description: ''
+          2023-08-27-16176.1693138709.167509553.err:
+            description: ''
+          2023-08-27-16176.1693138709.167509553.out:
+            description: ''
+          2023-08-27-16185.1693138725.805925788.err:
+            description: ''
+          2023-08-27-16185.1693138725.805925788.out:
+            description: ''
+          2023-08-27-16205.1693138810.105944444.err:
+            description: ''
+          2023-08-27-16205.1693138810.105944444.out:
+            description: ''
+          2023-08-27-16215.1693138815.836680123.err:
+            description: ''
+          2023-08-27-16215.1693138815.836680123.out:
+            description: ''
+          2023-08-27-16224.1693138824.880252096.err:
+            description: ''
+          2023-08-27-16224.1693138824.880252096.out:
+            description: ''
+          2023-08-27-16240.1693139197.080092080.err:
+            description: ''
+          2023-08-27-16240.1693139197.080092080.out:
+            description: ''
+          2023-08-27-16256.1693139215.619812636.err:
+            description: ''
+          2023-08-27-16256.1693139215.619812636.out:
+            description: ''
+          2023-08-27-16273.1693139235.961145670.err:
+            description: ''
+          2023-08-27-16273.1693139235.961145670.out:
+            description: ''
+          2023-08-27-16290.1693139244.281983548.err:
+            description: ''
+          2023-08-27-16290.1693139244.281983548.out:
+            description: ''
+          2023-08-27-16306.1693139423.606624284.err:
+            description: ''
+          2023-08-27-16306.1693139423.606624284.out:
+            description: ''
+          2023-08-27-16322.1693139435.754307986.err:
+            description: ''
+          2023-08-27-16322.1693139435.754307986.out:
+            description: ''
+          2023-08-27-16339.1693139449.810282849.err:
+            description: ''
+          2023-08-27-16339.1693139449.810282849.out:
+            description: ''
+          2023-08-28-1669.1693207301.221729.err:
+            description: ''
+          2023-08-28-1669.1693207301.221729.out:
+            description: ''
+          2023-08-28-1678.1693207322.452302.err:
+            description: ''
+          2023-08-28-1678.1693207322.452302.out:
+            description: ''
+          2023-08-28-1694.1693207384.855145.err:
+            description: ''
+          2023-08-28-1694.1693207384.855145.out:
+            description: ''
+          2023-08-28-1710.1693207453.104647.err:
+            description: ''
+          2023-08-28-1710.1693207453.104647.out:
+            description: ''
+          2023-08-28-1726.1693207468.460023.err:
+            description: ''
+          2023-08-28-1726.1693207468.460023.out:
+            description: ''
+          2023-08-28-1758.1693207669.106534.err:
+            description: ''
+          2023-08-28-1758.1693207669.106534.out:
+            description: ''
+          2023-08-28-1767.1693207732.464544.err:
+            description: ''
+          2023-08-28-1767.1693207732.464544.out:
+            description: ''
+          2023-08-28-1784.1693207770.596745.err:
+            description: ''
+          2023-08-28-1784.1693207770.596745.out:
+            description: ''
+          2023-08-28-1793.1693207785.695567.err:
+            description: ''
+          2023-08-28-1793.1693207785.695567.out:
+            description: ''
+          2023-08-28-1802.1693208068.966812.err:
+            description: ''
+          2023-08-28-1802.1693208068.966812.out:
+            description: ''
+          2023-08-28-4322.1693235166.005848.err:
+            description: ''
+          2023-08-28-4322.1693235166.005848.out:
+            description: ''
+          2023-08-28-4363.1693235763.875815.err:
+            description: ''
+          2023-08-28-4363.1693235763.875815.out:
+            description: ''
+          2023-08-28-4408.1693235810.489516.err:
+            description: ''
+          2023-08-28-4408.1693235810.489516.out:
+            description: ''
+          2023-08-28-4480.1693235824.310155.err:
+            description: ''
+          2023-08-28-4480.1693235824.310155.out:
+            description: ''
+          2023-08-28-4558.1693235908.949552.err:
+            description: ''
+          2023-08-28-4558.1693235908.949552.out:
+            description: ''
+          2023-08-28-4638.1693235971.065085.err:
+            description: ''
+          2023-08-28-4638.1693235971.065085.out:
+            description: ''
+          2023-08-28-4864.1693237190.957404408.err:
+            description: ''
+          2023-08-28-4864.1693237190.957404408.out:
+            description: ''
+          2023-08-28-4935.1693237576.674418124.err:
+            description: ''
+          2023-08-28-4935.1693237576.674418124.out:
+            description: ''
+          2023-08-28-5074.1693238076.825523049.err:
+            description: ''
+          2023-08-28-5074.1693238076.825523049.out:
+            description: ''
+          2023-08-28-5116.1693238146.861453795.err:
+            description: ''
+          2023-08-28-5116.1693238146.861453795.out:
+            description: ''
+          2023-08-28-5157.1693238166.424351272.err:
+            description: ''
+          2023-08-28-5157.1693238166.424351272.out:
+            description: ''
+          2023-08-28-5196.1693238265.706593394.err:
+            description: ''
+          2023-08-28-5196.1693238265.706593394.out:
+            description: ''
+          2023-08-28-52.1693229642.879567751.err:
+            description: ''
+          2023-08-28-52.1693229642.879567751.out:
+            description: ''
+          2023-08-28-5237.1693238376.293523228.err:
+            description: ''
+          2023-08-28-5237.1693238376.293523228.out:
+            description: ''
+          2023-08-28-5277.1693238420.819856189.err:
+            description: ''
+          2023-08-28-5277.1693238420.819856189.out:
+            description: ''
+          2023-08-28-5317.1693238478.126288739.err:
+            description: ''
+          2023-08-28-5317.1693238478.126288739.out:
+            description: ''
+          2023-08-28-5357.1693238489.491337997.err:
+            description: ''
+          2023-08-28-5357.1693238489.491337997.out:
+            description: ''
+          2023-08-28-5398.1693238556.298693368.err:
+            description: ''
+          2023-08-28-5398.1693238556.298693368.out:
+            description: ''
+          2023-08-28-54.1693229796.165555020.err:
+            description: ''
+          2023-08-28-54.1693229796.165555020.out:
+            description: ''
+          2023-08-28-5461.1693238621.388067069.err:
+            description: ''
+          2023-08-28-5461.1693238621.388067069.out:
+            description: ''
+          2023-08-28-55.1693228582.732950669.err:
+            description: ''
+          2023-08-28-55.1693228582.732950669.out:
+            description: ''
+          2023-08-28-5500.1693238674.611318425.err:
+            description: ''
+          2023-08-28-5500.1693238674.611318425.out:
+            description: ''
+          2023-08-28-5557.1693238714.948490180.err:
+            description: ''
+          2023-08-28-5557.1693238714.948490180.out:
+            description: ''
+          2023-08-28-5596.1693238761.780819209.err:
+            description: ''
+          2023-08-28-5596.1693238761.780819209.out:
+            description: ''
+          2023-08-28-5636.1693238769.156087823.err:
+            description: ''
+          2023-08-28-5636.1693238769.156087823.out:
+            description: ''
+          2023-08-28-5676.1693240913.184161796.err:
+            description: ''
+          2023-08-28-5676.1693240913.184161796.out:
+            description: ''
+          2023-08-28-5761.1693241058.983233.err:
+            description: ''
+          2023-08-28-5761.1693241058.983233.out:
+            description: ''
+          2023-08-28-5809.1693241393.616216.err:
+            description: ''
+          2023-08-28-5809.1693241393.616216.out:
+            description: ''
+          2023-08-28-5880.1693241564.738917.err:
+            description: ''
+          2023-08-28-5880.1693241564.738917.out:
+            description: ''
+          2023-08-28-5926.1693241599.240105.err:
+            description: ''
+          2023-08-28-5926.1693241599.240105.out:
+            description: ''
+        description: ''
+      process:
+        children:
+          .gitkeep:
+            description: ''
+          1011.1692190391.516137460.post-exec:
+            description: ''
+          10156.1693054160.877740477.post-exec:
+            description: ''
+          1045.1692190416.239543732.post-exec:
+            description: ''
+          1061.1692190444.366823523.post-exec:
+            description: ''
+          10674.1693055088.145263035.post-exec:
+            description: ''
+          1078.1692190452.814315444.post-exec:
+            description: ''
+          1100.1692190460.039365020.post-exec:
+            description: ''
+          11076.1693055251.815124542.post-exec:
+            description: ''
+          1118.1692191060.038217780.post-exec:
+            description: ''
+          1135.1692191103.786862423.post-exec:
+            description: ''
+          11854.1693056146.736786732.post-exec:
+            description: ''
+          1318.1693231507.055572.post-exec:
+            description: ''
+          1330.1693231638.218737.post-exec:
+            description: ''
+          1342.1693231641.965534.post-exec:
+            description: ''
+          1342.1693231642.960071.post-exec:
+            description: ''
+          1342.1693231643.357720.post-exec:
+            description: ''
+          1342.1693231643.876769.post-exec:
+            description: ''
+          1342.1693231644.412405.post-exec:
+            description: ''
+          13863.1693067283.770103360.post-exec:
+            description: ''
+          13903.1693067356.879155534.post-exec:
+            description: ''
+          13974.1693067824.009126933.post-exec:
+            description: ''
+          15290.1693136154.624074259.post-exec:
+            description: ''
+          1551.1693231697.238011.post-exec:
+            description: ''
+          1551.1693231698.220035.post-exec:
+            description: ''
+          1551.1693231698.605308.post-exec:
+            description: ''
+          1551.1693231699.039375.post-exec:
+            description: ''
+          1551.1693231699.550875.post-exec:
+            description: ''
+          163.1693230192.128897.post-exec:
+            description: ''
+          163.1693230193.237293.post-exec:
+            description: ''
+          163.1693230193.617280.post-exec:
+            description: ''
+          163.1693230194.064798.post-exec:
+            description: ''
+          16417.1693145307.148725879.post-exec:
+            description: ''
+          16460.1693145373.729374925.post-exec:
+            description: ''
+          16497.1693145540.888732225.post-exec:
+            description: ''
+          16603.1693146008.271749698.post-exec:
+            description: ''
+          1758.1693207669.106534.post-exec:
+            description: ''
+          1765.1693231710.251202.post-exec:
+            description: ''
+          1765.1693231711.232008.post-exec:
+            description: ''
+          1765.1693231711.637658.post-exec:
+            description: ''
+          1765.1693231712.071761.post-exec:
+            description: ''
+          1765.1693231712.563388.post-exec:
+            description: ''
+          1793.1693207785.695567.post-exec:
+            description: ''
+          1802.1693208068.966812.post-exec:
+            description: ''
+          1973.1693231759.253203.post-exec:
+            description: ''
+          1973.1693231760.252055.post-exec:
+            description: ''
+          1973.1693231760.639388.post-exec:
+            description: ''
+          1973.1693231761.069408.post-exec:
+            description: ''
+          1973.1693231761.588961.post-exec:
+            description: ''
+          2193.1693231846.659411.post-exec:
+            description: ''
+          2193.1693231847.694515.post-exec:
+            description: ''
+          2193.1693231848.091690.post-exec:
+            description: ''
+          2193.1693231848.534257.post-exec:
+            description: ''
+          2193.1693231849.039062.post-exec:
+            description: ''
+          2193.1693231849.566051.post-exec:
+            description: ''
+          2193.1693231849.749631.post-exec:
+            description: ''
+          224.1686063154.556727501.post-exec:
+            description: ''
+          2438.1693232021.989577.post-exec:
+            description: ''
+          2438.1693232023.553577.post-exec:
+            description: ''
+          2438.1693232023.965250.post-exec:
+            description: ''
+          2438.1693232024.426551.post-exec:
+            description: ''
+          2438.1693232024.951404.post-exec:
+            description: ''
+          2438.1693232025.434883.post-exec:
+            description: ''
+          2438.1693232025.640224.post-exec:
+            description: ''
+          2686.1693215776.168828.post-exec:
+            description: ''
+          2715.1693232213.004131.post-exec:
+            description: ''
+          2715.1693232214.501707.post-exec:
+            description: ''
+          2715.1693232214.985050.post-exec:
+            description: ''
+          2715.1693232215.435430.post-exec:
+            description: ''
+          2715.1693232215.957819.post-exec:
+            description: ''
+          2715.1693232216.479452.post-exec:
+            description: ''
+          2715.1693232216.696412.post-exec:
+            description: ''
+          2731.1693217598.318544.post-exec:
+            description: ''
+          2887.1693218229.558056.post-exec:
+            description: ''
+          2991.1693232531.528596.post-exec:
+            description: ''
+          2991.1693232533.047564.post-exec:
+            description: ''
+          2991.1693232533.435093.post-exec:
+            description: ''
+          2991.1693232533.892684.post-exec:
+            description: ''
+          2991.1693232534.413249.post-exec:
+            description: ''
+          2991.1693232534.946672.post-exec:
+            description: ''
+          2991.1693232535.195591.post-exec:
+            description: ''
+          3361.1693233509.807775.post-exec:
+            description: ''
+          3361.1693233511.317876.post-exec:
+            description: ''
+          3361.1693233511.731813.post-exec:
+            description: ''
+          3361.1693233512.185723.post-exec:
+            description: ''
+          3361.1693233512.696479.post-exec:
+            description: ''
+          3361.1693233513.210854.post-exec:
+            description: ''
+          3361.1693233513.422336.post-exec:
+            description: ''
+          3691.1693233671.827778.post-exec:
+            description: ''
+          371.1693230259.556075.post-exec:
+            description: ''
+          371.1693230260.547519.post-exec:
+            description: ''
+          371.1693230260.964166.post-exec:
+            description: ''
+          371.1693230261.409512.post-exec:
+            description: ''
+          3823.1693226637.420466.post-exec:
+            description: ''
+          3851.1692891389.154770337.post-exec:
+            description: ''
+          3867.1692891447.873916977.post-exec:
+            description: ''
+          3868.1693226685.028709.post-exec:
+            description: ''
+          3868.1693226685.964033.post-exec:
+            description: ''
+          3868.1693226686.327842.post-exec:
+            description: ''
+          3868.1693226686.756552.post-exec:
+            description: ''
+          3883.1692891475.162377059.post-exec:
+            description: ''
+          3899.1692891483.969858592.post-exec:
+            description: ''
+          3915.1692891505.537546253.post-exec:
+            description: ''
+          3979.1692891521.425547197.post-exec:
+            description: ''
+          3985.1693234152.494268.post-exec:
+            description: ''
+          4078.1693226792.261407.post-exec:
+            description: ''
+          4078.1693226793.155549.post-exec:
+            description: ''
+          4078.1693226793.516248.post-exec:
+            description: ''
+          4078.1693226793.935405.post-exec:
+            description: ''
+          4124.1692891738.601752289.post-exec:
+            description: ''
+          4286.1693226819.320168.post-exec:
+            description: ''
+          4286.1693226820.318755.post-exec:
+            description: ''
+          4286.1693226820.675550.post-exec:
+            description: ''
+          4286.1693226821.109225.post-exec:
+            description: ''
+          4493.1693226852.683568.post-exec:
+            description: ''
+          4493.1693226853.591194.post-exec:
+            description: ''
+          4493.1693226853.950508.post-exec:
+            description: ''
+          4493.1693226854.350803.post-exec:
+            description: ''
+          4700.1693226931.888996.post-exec:
+            description: ''
+          4700.1693226932.786176.post-exec:
+            description: ''
+          4700.1693226933.153483.post-exec:
+            description: ''
+          4700.1693226933.579494.post-exec:
+            description: ''
+          4803.1692966014.095240534.post-exec:
+            description: ''
+          4909.1693226962.085176.post-exec:
+            description: ''
+          4909.1693226963.054150.post-exec:
+            description: ''
+          4909.1693226963.435093.post-exec:
+            description: ''
+          4909.1693226963.879553.post-exec:
+            description: ''
+          4984.1692966068.127818323.post-exec:
+            description: ''
+          5076.1692966233.693550243.post-exec:
+            description: ''
+          52.1693229642.879567751.post-exec:
+            description: ''
+          5258.1692966528.059407880.post-exec:
+            description: ''
+          55.1693228582.732950669.post-exec:
+            description: ''
+          5793.1692968023.050816.post-exec:
+            description: ''
+          580.1693230526.642331.post-exec:
+            description: ''
+          580.1693230527.680082.post-exec:
+            description: ''
+          580.1693230528.082766.post-exec:
+            description: ''
+          580.1693230528.534777.post-exec:
+            description: ''
+          792.1693230598.693667.post-exec:
+            description: ''
+          792.1693230599.665243.post-exec:
+            description: ''
+          792.1693230600.055002.post-exec:
+            description: ''
+          792.1693230600.487527.post-exec:
+            description: ''
+          800.1693156023.937898904.post-exec:
+            description: ''
+          988.1692190329.403565337.post-exec:
+            description: ''
+        description: ''
+      registry.yml:
+        description: ''
+      tests:
+        children:
+          config_bash:
+            description: ''
+          test-app:
+            children:
+              .git:
+                children:
+                  HEAD:
+                    description: ''
+                  branches:
+                    children: {}
+                    description: ''
+                  config:
+                    description: ''
+                  description:
+                    description: ''
+                  hooks:
+                    children:
+                      applypatch-msg.sample:
+                        description: ''
+                      commit-msg.sample:
+                        description: ''
+                      fsmonitor-watchman.sample:
+                        description: ''
+                      post-update.sample:
+                        description: ''
+                      pre-applypatch.sample:
+                        description: ''
+                      pre-commit.sample:
+                        description: ''
+                      pre-merge-commit.sample:
+                        description: ''
+                      pre-push.sample:
+                        description: ''
+                      pre-rebase.sample:
+                        description: ''
+                      pre-receive.sample:
+                        description: ''
+                      prepare-commit-msg.sample:
+                        description: ''
+                      push-to-checkout.sample:
+                        description: ''
+                      update.sample:
+                        description: ''
+                    description: ''
+                  info:
+                    children:
+                      exclude:
+                        description: ''
+                    description: ''
+                  objects:
+                    children:
+                      info:
+                        children: {}
+                        description: ''
+                      pack:
+                        children: {}
+                        description: ''
+                    description: ''
+                  refs:
+                    children:
+                      heads:
+                        children: {}
+                        description: ''
+                      tags:
+                        children: {}
+                        description: ''
+                    description: ''
+                description: ''
+              .wex:
+                children:
+                  .env:
+                    description: ''
+                  .gitignore:
+                    description: ''
+                  backup:
+                    children:
+                      .gitkeep:
+                        description: ''
+                    description: ''
+                  command:
+                    children:
+                      .gitkeep:
+                        description: ''
+                    description: ''
+                  config.yml:
+                    description: ''
+                  cron:
+                    children:
+                      dev:
+                        description: ''
+                      local:
+                        description: ''
+                      prod:
+                        description: ''
+                    description: ''
+                  docker:
+                    children:
+                      .gitkeep:
+                        description: ''
+                      docker-compose.dev.yml:
+                        description: ''
+                      docker-compose.prod.yml:
+                        description: ''
+                      docker-compose.yml:
+                        description: ''
+                    description: ''
+                  mysql:
+                    children:
+                      .gitkeep:
+                        description: ''
+                      data:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      dumps:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      my.cnf:
+                        description: ''
+                    description: ''
+                  sonarqube:
+                    children:
+                      conf:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      data:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                      extensions:
+                        children:
+                          .gitkeep:
+                            description: ''
+                        description: ''
+                    description: ''
+                  source:
+                    children:
+                      .gitkeep:
+                        description: ''
+                    description: ''
+                  tmp:
+                    children:
+                      .gitkeep:
+                        description: ''
+                      config.build.yml:
+                        description: ''
+                      docker.env:
+                        description: ''
+                    description: ''
+                  trash:
+                    children:
+                      .gitkeep:
+                        description: ''
+                    description: ''
+                description: ''
+            description: ''
+        description: ''
+      wex-proxy:
+        children:
+          .git:
+            children:
+              HEAD:
+                description: ''
+              branches:
+                children: {}
+                description: ''
+              config:
+                description: ''
+              description:
+                description: ''
+              hooks:
+                children:
+                  applypatch-msg.sample:
+                    description: ''
+                  commit-msg.sample:
+                    description: ''
+                  fsmonitor-watchman.sample:
+                    description: ''
+                  post-update.sample:
+                    description: ''
+                  pre-applypatch.sample:
+                    description: ''
+                  pre-commit.sample:
+                    description: ''
+                  pre-merge-commit.sample:
+                    description: ''
+                  pre-push.sample:
+                    description: ''
+                  pre-rebase.sample:
+                    description: ''
+                  pre-receive.sample:
+                    description: ''
+                  prepare-commit-msg.sample:
+                    description: ''
+                  push-to-checkout.sample:
+                    description: ''
+                  update.sample:
+                    description: ''
+                description: ''
+              info:
+                children:
+                  exclude:
+                    description: ''
+                description: ''
+              objects:
+                children:
+                  info:
+                    children: {}
+                    description: ''
+                  pack:
+                    children: {}
+                    description: ''
+                description: ''
+              refs:
+                children:
+                  heads:
+                    children: {}
+                    description: ''
+                  tags:
+                    children: {}
+                    description: ''
+                description: ''
+            description: ''
+          .wex:
+            children:
+              .env:
+                description: ''
+              .gitignore:
+                description: ''
+              backup:
+                children:
+                  .gitkeep:
+                    description: ''
+                description: ''
+              command:
+                children:
+                  .gitkeep:
+                    description: ''
+                description: ''
+              config.yml:
+                description: ''
+              cron:
+                children:
+                  dev:
+                    description: ''
+                  local:
+                    description: ''
+                  prod:
+                    description: ''
+                description: ''
+              docker:
+                children:
+                  .gitkeep:
+                    description: ''
+                  docker-compose.yml:
+                    description: ''
+                description: ''
+              source:
+                children:
+                  .gitkeep:
+                    description: ''
+                description: ''
+              tmp:
+                children:
+                  .gitkeep:
+                    description: ''
+                  config.build.yml:
+                    description: ''
+                  docker-compose.build.yml:
+                    description: ''
+                  docker.env:
+                    description: ''
+                description: ''
+              trash:
+                children:
+                  .gitkeep:
+                    description: ''
+                description: ''
+            description: ''
+          apps.yml:
+            description: ''
+        description: ''
+    description: ''
+  version.txt:
+    description: ''
+  wex.egg-info:
+    children:
+      PKG-INFO:
+        description: ''
+      SOURCES.txt:
+        description: ''
+      dependency_links.txt:
+        description: ''
+      requires.txt:
+        description: ''
+      top_level.txt:
+        description: ''
+    description: ''
+description: ''
 tmp: {}
-version.txt:
-  description: ''
 wex.egg-info: {}

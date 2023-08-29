@@ -14,7 +14,7 @@ class PythonAppCrawler(AppCrawler):
         for key in keys_to_remove:
             del tree[key]
 
-    def get_source_tree(self):
-        tree = super().get_source_tree()
+    def cleanup_tree(self, tree):
+        tree = super().cleanup_tree(tree)
         self.tree_remove(tree, '__pycache__')
         return tree

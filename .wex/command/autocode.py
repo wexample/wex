@@ -1,5 +1,5 @@
 from core.WexAppCrawler import WexAppCrawler
 
 # Usage
-crawler = WexAppCrawler('.')
+crawler = WexAppCrawler('.', '.wex/ai/data/tree.yml')
 crawler.build()

@@ -3,15 +3,34 @@ import yaml
 
 
 class AppCrawler:
-    def __init__(self, root):
+    def __init__(self, root, yaml_filepath):
         self.root = root
-        self.tree = {}
+        self.yaml_filepath = yaml_filepath
+
+    def load_existing_yaml(self):
+        try:
+            with open(self.yaml_filepath, 'r') as f:
+                return yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            return {}
+
+    def merge_trees(self, old_tree, new_tree):
+        for name, content in new_tree.items():
+            if name not in old_tree:
+                old_tree[name] = content
+            elif "children" in old_tree[name]:
+                self.merge_trees(old_tree[name]["children"], content["children"])
+
+        # Remove deleted items
+        for name in list(old_tree.keys()):
+            if name not in new_tree:
+                del old_tree[name]
 
     def scan(self, root=None, tree=None):
         if root is None:
             root = self.root
         if tree is None:
-            tree = self.tree
+            tree = {}
 
         tree["description"] = ''
         tree["children"] = {}
@@ -26,21 +45,27 @@ class AppCrawler:
                     "description": ''
                 }
 
-    def get_source_tree(self):
-        tree = self.tree['children']
+        return tree
 
+    def cleanup_tree(self, tree):
         # Do your specific removals here.
-        del tree['.git']
-        tree['.wex']['tmp'] = {}
+        del tree['children']['.git']
+        tree['children']['.wex']['tmp'] = {}
 
         return tree
 
-    # Run all steps
     def build(self):
-        self.scan()
-        tree = self.get_source_tree()
+        tree = self.load_existing_yaml()
 
-        self.save_to_yaml('.wex/ai/data/tree.yml', tree)
+        # Scan new files
+        new_tree = self.cleanup_tree(
+            self.scan()
+        )
+
+        # Merge with existing tree
+        self.merge_trees(tree, new_tree)
+
+        self.save_to_yaml(self.yaml_filepath, tree)
 
     def save_to_yaml(self, filepath, tree):
         with open(filepath, 'w') as f:
