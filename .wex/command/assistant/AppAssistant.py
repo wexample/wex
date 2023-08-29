@@ -33,7 +33,6 @@ class AppAssistant:
                     raise ValueError("Badly formed question!")
                 return field
 
-        # Configuration du parser et du template de l'invite
         parser = PydanticOutputParser(pydantic_object=Joke)
 
         prompt = PromptTemplate(
