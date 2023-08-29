@@ -60,7 +60,7 @@ class AppCrawler:
                 tree["children"][name] = {}
                 self.scan(path, tree=tree["children"][name])
             else:
-                tree["children"][name] = True
+                tree["children"][name] = {}
 
         return tree
 

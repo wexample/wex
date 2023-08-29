@@ -40,8 +40,8 @@ class AppCommandProcessor(AbstractCommandProcessor):
         ]
 
     def get_base_path(self):
-        if self.kernel.addons['app']['path']['call_app_dir']:
-            return f'{self.kernel.addons["app"]["path"]["call_app_dir"]}{APP_DIR_APP_DATA}'
+        # if self.kernel.addons['app']['path']['call_app_dir']:
+        #     return f'{self.kernel.addons["app"]["path"]["call_app_dir"]}{APP_DIR_APP_DATA}'
 
         return None
 
