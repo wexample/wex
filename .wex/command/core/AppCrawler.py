@@ -16,17 +16,26 @@ class AppCrawler:
         except FileNotFoundError:
             return {}
 
-    def merge_trees(self, old_tree, new_tree):
-        for name, content in new_tree.items():
-            if name not in old_tree:
-                old_tree[name] = content
-            elif "children" in old_tree[name]:
-                self.merge_trees(old_tree[name]["children"], content["children"])
+    def merge_tree(self, old_tree: dict, new_tree: dict):
+        merged_tree = old_tree.copy()
 
-        # Remove deleted items
-        for name in list(old_tree.keys()):
-            if name not in new_tree:
-                del old_tree[name]
+        if 'children' in new_tree:
+            merged_tree['children'] = {}
+
+            for name, children in new_tree['children'].items():
+                if 'children' not in old_tree:
+                    merged_tree['children'][name] = children.copy()
+                else:
+                    old_children = {}
+                    if name in old_tree['children']:
+                        old_children = old_tree['children'][name].copy()
+
+                    merged_tree['children'][name] = self.merge_tree(
+                        old_children,
+                        children.copy()
+                    )
+
+        return merged_tree
 
     def scan(self, root=None, tree=None):
         if root is None:
@@ -65,11 +74,11 @@ class AppCrawler:
         )
 
         # Merge with existing tree
-        self.merge_trees(tree, new_tree)
+        new_tree = self.merge_tree(tree, new_tree)
 
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         tree['last_updated'] = timestamp
-        self.save_to_yaml(self.yaml_filepath, tree)
+        self.save_to_yaml(self.yaml_filepath, new_tree)
 
     def save_to_yaml(self, filepath, tree):
         with open(filepath, 'w') as f:
