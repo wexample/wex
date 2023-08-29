@@ -2,7 +2,7 @@ diff --git a/main.py b/main.py
 index 1234567..abcdefg 100644
 --- a/main.py
 +++ b/main.py
-@@ -1,3 +1,3 @@
+@@ -1,2 +1,2 @@
  def my_program_main_function():
 -    return 'Hello World!'
 +    return 'Hello World!'.upper()
