@@ -13,18 +13,23 @@ class AppCrawler:
         if tree is None:
             tree = self.tree
 
+        tree["description"] = ''
+        tree["children"] = {}
+
         for name in os.listdir(root):
             path = os.path.join(root, name)
             if os.path.isdir(path):
-                if name not in tree:
-                    tree[name] = {}
-                self.scan(path, tree=tree[name])
+                tree["children"][name] = {}
+                self.scan(path, tree=tree["children"][name])
             else:
-                tree[name] = None
+                tree["children"][name] = {
+                    "description": ''
+                }
 
     def get_source_tree(self):
-        tree = self.tree
+        tree = self.tree['children']
 
+        # Do your specific removals here.
         del tree['.git']
         tree['.wex']['tmp'] = {}
 

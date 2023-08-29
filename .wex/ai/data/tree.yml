@@ -1,591 +1,1473 @@
-.env: null
-.gitignore: null
-.gitlab-ci.yml: null
+.env:
+  description: ''
+.gitignore:
+  description: ''
+.gitlab-ci.yml:
+  description: ''
 .wex:
-  .env: null
-  .gitignore: null
-  ai:
-    data:
-      tree.yml: null
-  backup:
-    .gitkeep: null
-  command:
-    autocode.py: null
-    core:
-      AppCrawler.py: null
-      PythonAppCrawler.py: null
-      WexAppCrawler.py: null
-    local_command:
-      test.py: null
-    test: {}
-    version:
-      build.py: null
-  config: null
-  config.yml: null
-  cron:
-    dev: null
-    local: null
-    prod: null
-  docker:
-    .gitkeep: null
-    docker-compose.yml: null
-  script:
-    appGo.sh: null
-    appInstall.sh: null
-    appPerms.sh: null
-    appStarted.sh: null
-    autoCode.sh: null
-    gpgExport.sh: null
-  source:
-    .gitkeep: null
-  tests:
+  children:
+    .env:
+      description: ''
+    .gitignore:
+      description: ''
+    ai:
+      children:
+        data:
+          children:
+            tree.yml:
+              description: ''
+          description: ''
+      description: ''
+    backup:
+      children:
+        .gitkeep:
+          description: ''
+      description: ''
     command:
-      test: {}
-  tmp: []
-  trash:
-    .gitkeep: null
-  webhook:
-    test-wraped.sh: null
-    test.sh: null
-.wex-5-dev:
-  .env: null
-  command:
-    local_command:
-      test.py: null
-  config.yml: null
-  docker: {}
-  webhook:
-    test-wraped.sh: null
-    test.sh: null
-LICENCE: null
-README.md: null
-__main__.py: null
-addons:
-  app:
-    command:
-      app:
-        init.py: null
-        perms.py: null
-        restart.py: null
-        serve.py: null
-        start.py: null
-        started.py: null
-        stop.py: null
-      config:
-        get.py: null
-        set.py: null
-        write.py: null
-      env:
-        get.py: null
-      hook:
-        exec.py: null
-      hosts:
-        update.py: null
-      location:
-        find.py: null
-      proxy:
-        start.py: null
-        stop.py: null
-      service:
-        install.py: null
-        used.py: null
-      services:
-        exec.py: null
-      version:
-        build.py: null
-    const:
-      app.py: null
-    containers:
-      default:
-        docker-compose.yml: null
-      network:
-        docker-compose.yml: null
-    decorator:
-      app_dir_option.py: null
-      app_location_optional.py: null
-    helpers:
-      app.py: null
-      docker.py: null
-      test.py: null
-    locale:
-      messages.json: null
-    middleware:
-      exec.py: null
-      exec_post.py: null
-      init.py: null
-    samples:
-      app:
-        .wex:
-          .gitignore.sample: null
-          backup:
-            .gitkeep: null
-          command:
-            .gitkeep: null
-          cron:
-            dev: null
-            local: null
-            prod: null
-          docker:
-            .gitkeep: null
-          source:
-            .gitkeep: null
-          tmp:
-            .gitkeep: null
-          trash:
-            .gitkeep: null
-    services:
-      default:
-        docker:
-          docker-compose.yml: null
-      proxy:
-        command:
-          service:
-            install.py: null
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.yml: null
-          proxy:
-            html:
-              .gitkeep: null
-              index.html: null
-          tmp: {}
-    tests:
-      command:
-        app:
-          init.py: null
-          perms.py: null
-          restart.py: null
-          serve.py: null
-          start.py: null
-          started.py: null
-          stop.py: null
-        config:
-          get.py: null
-          set.py: null
-          write.py: null
-        env:
-          get.py: null
-        hook:
-          exec.py: null
-        hosts:
-          update.py: null
-        location:
-          find.py: null
-        proxy:
-          start.py: null
-          stop.py: null
-        service:
-          install.py: null
-          used.py: null
-        services:
-          exec.py: null
-        version:
-          build.py: null
-  core:
-    command:
-      autocomplete:
-        suggest.py: null
-      command:
-        create.py: null
-      core:
-        install.py: null
-        uninstall.py: null
-      logo:
-        show.py: null
-      registry:
-        build.py: null
-      service:
-        resolve.py: null
-      test:
-        create.py: null
-      version:
-        build.py: null
-      webhook:
-        exec.py: null
-        serve.py: null
-        stop.py: null
-    tests:
-      command:
-        autocomplete:
-          suggest.py: null
-        command:
-          create.py: null
+      children:
+        autocode.py:
+          description: ''
         core:
-          install.py: null
-          uninstall.py: null
-        logo:
-          show.py: null
-        registry:
-          build.py: null
-        service:
-          install.py: null
-          resolve.py: null
+          children:
+            AppCrawler.py:
+              description: ''
+            PythonAppCrawler.py:
+              description: ''
+            WexAppCrawler.py:
+              description: ''
+          description: ''
+        local_command:
+          children:
+            test.py:
+              description: ''
+          description: ''
         test:
-          create.py: null
+          children: {}
+          description: ''
         version:
-          build.py: null
-        webhook:
-          exec.py: null
-          serve.py: null
-          stop.py: null
-  default:
-    command:
-      file:
-        append_once.py: null
-        remove_line.py: null
-      version:
-        increment.py: null
+          children:
+            build.py:
+              description: ''
+          description: ''
+      description: ''
+    config:
+      description: ''
+    config.yml:
+      description: ''
+    cron:
+      children:
+        dev:
+          description: ''
+        local:
+          description: ''
+        prod:
+          description: ''
+      description: ''
+    docker:
+      children:
+        .gitkeep:
+          description: ''
+        docker-compose.yml:
+          description: ''
+      description: ''
+    script:
+      children:
+        appGo.sh:
+          description: ''
+        appInstall.sh:
+          description: ''
+        appPerms.sh:
+          description: ''
+        appStarted.sh:
+          description: ''
+        autoCode.sh:
+          description: ''
+        gpgExport.sh:
+          description: ''
+      description: ''
+    source:
+      children:
+        .gitkeep:
+          description: ''
+      description: ''
     tests:
-      command:
-        file:
-          append_once.py: null
-          remove_line.py: null
-        version:
-          increment.py: null
-  docker:
-    command:
-      docker:
-        ip.py: null
-        stop_all.py: null
-    helpers:
-      docker.py: null
-    tests:
-      command:
-        docker:
-          ip.py: null
-          stop_all.py: null
-  services-db:
-    services:
-      maria-10:
+      children:
         command:
-          app:
-            perms.py: null
-          config:
-            write_post.py: null
-          service:
-            install.py: null
-        docker:
-          docker-compose.yml: null
+          children:
+            test:
+              children: {}
+              description: ''
+          description: ''
+      description: ''
+    tmp:
+      children:
+        .gitkeep:
+          description: ''
+        config.build:
+          description: ''
+        config.build.json:
+          description: ''
+        config.build.yml:
+          description: ''
+        docker-compose.build.yml:
+          description: ''
+        docker.env:
+          description: ''
+      description: ''
+    trash:
+      children:
+        .gitkeep:
+          description: ''
+      description: ''
+    webhook:
+      children:
+        test-wraped.sh:
+          description: ''
+        test.sh:
+          description: ''
+      description: ''
+  description: ''
+  tmp: {}
+.wex-5-dev:
+  children:
+    .env:
+      description: ''
+    command:
+      children:
+        local_command:
+          children:
+            test.py:
+              description: ''
+          description: ''
+      description: ''
+    config.yml:
+      description: ''
+    docker:
+      children: {}
+      description: ''
+    webhook:
+      children:
+        test-wraped.sh:
+          description: ''
+        test.sh:
+          description: ''
+      description: ''
+  description: ''
+LICENCE:
+  description: ''
+README.md:
+  description: ''
+__main__.py:
+  description: ''
+addons:
+  children:
+    app:
+      children:
+        command:
+          children:
+            app:
+              children:
+                init.py:
+                  description: ''
+                perms.py:
+                  description: ''
+                restart.py:
+                  description: ''
+                serve.py:
+                  description: ''
+                start.py:
+                  description: ''
+                started.py:
+                  description: ''
+                stop.py:
+                  description: ''
+              description: ''
+            config:
+              children:
+                get.py:
+                  description: ''
+                set.py:
+                  description: ''
+                write.py:
+                  description: ''
+              description: ''
+            env:
+              children:
+                get.py:
+                  description: ''
+              description: ''
+            hook:
+              children:
+                exec.py:
+                  description: ''
+              description: ''
+            hosts:
+              children:
+                update.py:
+                  description: ''
+              description: ''
+            location:
+              children:
+                find.py:
+                  description: ''
+              description: ''
+            proxy:
+              children:
+                start.py:
+                  description: ''
+                stop.py:
+                  description: ''
+              description: ''
+            service:
+              children:
+                install.py:
+                  description: ''
+                used.py:
+                  description: ''
+              description: ''
+            services:
+              children:
+                exec.py:
+                  description: ''
+              description: ''
+            version:
+              children:
+                build.py:
+                  description: ''
+              description: ''
+          description: ''
+        const:
+          children:
+            app.py:
+              description: ''
+          description: ''
+        containers:
+          children:
+            default:
+              children:
+                docker-compose.yml:
+                  description: ''
+              description: ''
+            network:
+              children:
+                docker-compose.yml:
+                  description: ''
+              description: ''
+          description: ''
+        decorator:
+          children:
+            app_dir_option.py:
+              description: ''
+            app_location_optional.py:
+              description: ''
+          description: ''
+        helpers:
+          children:
+            app.py:
+              description: ''
+            docker.py:
+              description: ''
+            test.py:
+              description: ''
+          description: ''
+        locale:
+          children:
+            messages.json:
+              description: ''
+          description: ''
+        middleware:
+          children:
+            exec.py:
+              description: ''
+            exec_post.py:
+              description: ''
+            init.py:
+              description: ''
+          description: ''
         samples:
-          .wex:
-            .gitignore.sample: null
-            docker:
-              docker-compose.yml: null
-            maria:
-              data:
-                .gitkeep: null
-              dumps:
-                .gitkeep: null
-              my.cnf: null
-        service.config.yml: null
+          children:
+            app:
+              children:
+                .wex:
+                  children:
+                    .gitignore.sample:
+                      description: ''
+                    backup:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    command:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    cron:
+                      children:
+                        dev:
+                          description: ''
+                        local:
+                          description: ''
+                        prod:
+                          description: ''
+                      description: ''
+                    docker:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    source:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    tmp:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    trash:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+        services:
+          children:
+            default:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+              description: ''
+            proxy:
+              children:
+                command:
+                  children:
+                    service:
+                      children:
+                        install.py:
+                          description: ''
+                      description: ''
+                  description: ''
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                    proxy:
+                      children:
+                        html:
+                          children:
+                            .gitkeep:
+                              description: ''
+                            index.html:
+                              description: ''
+                          description: ''
+                      description: ''
+                    tmp:
+                      children: {}
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
         tests:
-          command:
-            config: {}
-      mongo-6:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            .gitignore.sample: null
-            docker:
-              docker-compose.yml: null
-            mongo:
-              .gitkeep: null
-              data:
-                .gitkeep: null
-        service.config.yml: null
-      mysql-8:
+          children:
+            command:
+              children:
+                app:
+                  children:
+                    init.py:
+                      description: ''
+                    perms.py:
+                      description: ''
+                    restart.py:
+                      description: ''
+                    serve.py:
+                      description: ''
+                    start.py:
+                      description: ''
+                    started.py:
+                      description: ''
+                    stop.py:
+                      description: ''
+                  description: ''
+                config:
+                  children:
+                    get.py:
+                      description: ''
+                    set.py:
+                      description: ''
+                    write.py:
+                      description: ''
+                  description: ''
+                env:
+                  children:
+                    get.py:
+                      description: ''
+                  description: ''
+                hook:
+                  children:
+                    exec.py:
+                      description: ''
+                  description: ''
+                hosts:
+                  children:
+                    update.py:
+                      description: ''
+                  description: ''
+                location:
+                  children:
+                    find.py:
+                      description: ''
+                  description: ''
+                proxy:
+                  children:
+                    start.py:
+                      description: ''
+                    stop.py:
+                      description: ''
+                  description: ''
+                service:
+                  children:
+                    install.py:
+                      description: ''
+                    used.py:
+                      description: ''
+                  description: ''
+                services:
+                  children:
+                    exec.py:
+                      description: ''
+                  description: ''
+                version:
+                  children:
+                    build.py:
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    core:
+      children:
         command:
-          app:
-            perms.py: null
-          config:
-            write_post.py: null
-          service:
-            install.py: null
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            .gitignore.sample: null
+          children:
+            autocomplete:
+              children:
+                suggest.py:
+                  description: ''
+              description: ''
+            command:
+              children:
+                create.py:
+                  description: ''
+              description: ''
+            core:
+              children:
+                install.py:
+                  description: ''
+                uninstall.py:
+                  description: ''
+              description: ''
+            logo:
+              children:
+                show.py:
+                  description: ''
+              description: ''
+            registry:
+              children:
+                build.py:
+                  description: ''
+              description: ''
+            service:
+              children:
+                resolve.py:
+                  description: ''
+              description: ''
+            test:
+              children:
+                create.py:
+                  description: ''
+              description: ''
+            version:
+              children:
+                build.py:
+                  description: ''
+              description: ''
+            webhook:
+              children:
+                exec.py:
+                  description: ''
+                serve.py:
+                  description: ''
+                stop.py:
+                  description: ''
+              description: ''
+          description: ''
+        tests:
+          children:
+            command:
+              children:
+                autocomplete:
+                  children:
+                    suggest.py:
+                      description: ''
+                  description: ''
+                command:
+                  children:
+                    create.py:
+                      description: ''
+                  description: ''
+                core:
+                  children:
+                    install.py:
+                      description: ''
+                    uninstall.py:
+                      description: ''
+                  description: ''
+                logo:
+                  children:
+                    show.py:
+                      description: ''
+                  description: ''
+                registry:
+                  children:
+                    build.py:
+                      description: ''
+                  description: ''
+                service:
+                  children:
+                    install.py:
+                      description: ''
+                    resolve.py:
+                      description: ''
+                  description: ''
+                test:
+                  children:
+                    create.py:
+                      description: ''
+                  description: ''
+                version:
+                  children:
+                    build.py:
+                      description: ''
+                  description: ''
+                webhook:
+                  children:
+                    exec.py:
+                      description: ''
+                    serve.py:
+                      description: ''
+                    stop.py:
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    default:
+      children:
+        command:
+          children:
+            file:
+              children:
+                append_once.py:
+                  description: ''
+                remove_line.py:
+                  description: ''
+              description: ''
+            version:
+              children:
+                increment.py:
+                  description: ''
+              description: ''
+          description: ''
+        tests:
+          children:
+            command:
+              children:
+                file:
+                  children:
+                    append_once.py:
+                      description: ''
+                    remove_line.py:
+                      description: ''
+                  description: ''
+                version:
+                  children:
+                    increment.py:
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    docker:
+      children:
+        command:
+          children:
             docker:
-              docker-compose.yml: null
-            mysql:
-              .gitkeep: null
-              data:
-                .gitkeep: null
-              dumps:
-                .gitkeep: null
-              my.cnf: null
-            sonarqube:
-              conf:
-                .gitkeep: null
-              data:
-                .gitkeep: null
-              extensions:
-                .gitkeep: null
-        service.config.yml: null
-      postgres:
-        service.config.yml: null
-  services-php:
-    services:
-      laravel-5:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.dev.yml: null
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-        service.config.yml: null
-      php-8:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.dev.yml: null
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-          index.php: null
-        service.config.yml: null
-      phpmyadmin: {}
-      symfony-6:
-        service.config.yml: null
-      wordpress:
-        service.config.yml: null
-  services-various:
-    services:
-      gitlab:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
+              children:
+                ip.py:
+                  description: ''
+                stop_all.py:
+                  description: ''
+              description: ''
+          description: ''
+        helpers:
+          children:
+            docker.py:
+              description: ''
+          description: ''
+        tests:
+          children:
+            command:
+              children:
+                docker:
+                  children:
+                    ip.py:
+                      description: ''
+                    stop_all.py:
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    services-db:
+      children:
+        services:
+          children:
+            maria-10:
+              children:
+                command:
+                  children:
+                    app:
+                      children:
+                        perms.py:
+                          description: ''
+                      description: ''
+                    config:
+                      children:
+                        write_post.py:
+                          description: ''
+                      description: ''
+                    service:
+                      children:
+                        install.py:
+                          description: ''
+                      description: ''
+                  description: ''
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        .gitignore.sample:
+                          description: ''
+                        docker:
+                          children:
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        maria:
+                          children:
+                            data:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            dumps:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            my.cnf:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+                tests:
+                  children:
+                    command:
+                      children:
+                        config:
+                          children: {}
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            mongo-6:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        .gitignore.sample:
+                          description: ''
+                        docker:
+                          children:
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        mongo:
+                          children:
+                            .gitkeep:
+                              description: ''
+                            data:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
+            mysql-8:
+              children:
+                command:
+                  children:
+                    app:
+                      children:
+                        perms.py:
+                          description: ''
+                      description: ''
+                    config:
+                      children:
+                        write_post.py:
+                          description: ''
+                      description: ''
+                    service:
+                      children:
+                        install.py:
+                          description: ''
+                      description: ''
+                  description: ''
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        .gitignore.sample:
+                          description: ''
+                        docker:
+                          children:
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        mysql:
+                          children:
+                            .gitkeep:
+                              description: ''
+                            data:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            dumps:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            my.cnf:
+                              description: ''
+                          description: ''
+                        sonarqube:
+                          children:
+                            conf:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            data:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            extensions:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
+            postgres:
+              children:
+                service.config.yml:
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    services-php:
+      children:
+        services:
+          children:
+            laravel-5:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.dev.yml:
+                              description: ''
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
+            php-8:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.dev.yml:
+                              description: ''
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                    index.php:
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
+            phpmyadmin:
+              children: {}
+              description: ''
+            symfony-6:
+              children:
+                service.config.yml:
+                  description: ''
+              description: ''
+            wordpress:
+              children:
+                service.config.yml:
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    services-various:
+      children:
+        services:
+          children:
             gitlab:
-              .gitignore.sample: null
-              backups:
-                .gitkeep: null
-      grafana:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-          grafana:
-            .gitkeep: null
-          provisioning:
-            .gitkeep: null
-      jenkins:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .gitignore.sample: null
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-          config:
-            .gitkeep: null
-          home:
-            .gitkeep: null
-      matomo:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .gitignore.sample: null
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-        service.config.yml: null
-      n8n:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.dev.yml: null
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        gitlab:
+                          children:
+                            .gitignore.sample:
+                              description: ''
+                            backups:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            grafana:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                    grafana:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    provisioning:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            jenkins:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .gitignore.sample:
+                      description: ''
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                    config:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    home:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            matomo:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .gitignore.sample:
+                      description: ''
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
             n8n:
-              .gitkeep: null
-      nextcloud:
-        command:
-          app:
-            start_options.py: null
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-          config.php: null
-          data:
-            .gitkeep: null
-          extra-addons:
-            .gitkeep: null
-        service.config.yml: null
-        tests:
-          command:
-            app: {}
-      onlyoffice:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .gitignore.sample: null
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
-      rocketchat:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .wex:
-            docker:
-              docker-compose.yml: null
-            hubot:
-              scripts:
-                .gitkeep: null
-            uploads:
-              .gitkeep: null
-        service.config.yml: null
-      sonarqube:
-        docker:
-          docker-compose.yml: null
-        samples:
-          .gitignore.sample: null
-          .wex:
-            docker:
-              docker-compose.prod.yml: null
-              docker-compose.yml: null
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.dev.yml:
+                              description: ''
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        n8n:
+                          children:
+                            .gitkeep:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            nextcloud:
+              children:
+                command:
+                  children:
+                    app:
+                      children:
+                        start_options.py:
+                          description: ''
+                      description: ''
+                  description: ''
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                    config.php:
+                      description: ''
+                    data:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                    extra-addons:
+                      children:
+                        .gitkeep:
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+                tests:
+                  children:
+                    command:
+                      children:
+                        app:
+                          children: {}
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            onlyoffice:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .gitignore.sample:
+                      description: ''
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            rocketchat:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        hubot:
+                          children:
+                            scripts:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                          description: ''
+                        uploads:
+                          children:
+                            .gitkeep:
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
             sonarqube:
-              conf:
-                sonar.properties: null
-                wrapper.conf: null
-              data:
-                .gitkeep: null
-              extensions:
-                .gitkeep: null
-        service.config.yml: null
-  system:
-    command:
-      dir:
-        spaces.py: null
-      disk:
-        spaces.py: null
-      os:
-        name.py: null
-      own:
-        this.py: null
-      system:
-        ip.py: null
-        is_docker.py: null
-    tests:
-      command:
-        dir:
-          spaces.py: null
-        disk:
-          spaces.py: null
-        os:
-          name.py: null
-        own:
-          this.py: null
-        system:
-          ip.py: null
-          is_docker.py: null
-  test:
-    services:
-      test:
+              children:
+                docker:
+                  children:
+                    docker-compose.yml:
+                      description: ''
+                  description: ''
+                samples:
+                  children:
+                    .gitignore.sample:
+                      description: ''
+                    .wex:
+                      children:
+                        docker:
+                          children:
+                            docker-compose.prod.yml:
+                              description: ''
+                            docker-compose.yml:
+                              description: ''
+                          description: ''
+                        sonarqube:
+                          children:
+                            conf:
+                              children:
+                                sonar.properties:
+                                  description: ''
+                                wrapper.conf:
+                                  description: ''
+                              description: ''
+                            data:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                            extensions:
+                              children:
+                                .gitkeep:
+                                  description: ''
+                              description: ''
+                          description: ''
+                      description: ''
+                  description: ''
+                service.config.yml:
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    system:
+      children:
         command:
-          demo_command:
-            first.py: null
-            second.py: null
-          demo_command_2:
-            third.py: null
-          other_demo_command:
-            other.py: null
-      test_2:
-        command:
-          another_demo_command:
-            test.py: null
+          children:
+            dir:
+              children:
+                spaces.py:
+                  description: ''
+              description: ''
+            disk:
+              children:
+                spaces.py:
+                  description: ''
+              description: ''
+            os:
+              children:
+                name.py:
+                  description: ''
+              description: ''
+            own:
+              children:
+                this.py:
+                  description: ''
+              description: ''
+            system:
+              children:
+                ip.py:
+                  description: ''
+                is_docker.py:
+                  description: ''
+              description: ''
+          description: ''
+        tests:
+          children:
+            command:
+              children:
+                dir:
+                  children:
+                    spaces.py:
+                      description: ''
+                  description: ''
+                disk:
+                  children:
+                    spaces.py:
+                      description: ''
+                  description: ''
+                os:
+                  children:
+                    name.py:
+                      description: ''
+                  description: ''
+                own:
+                  children:
+                    this.py:
+                      description: ''
+                  description: ''
+                system:
+                  children:
+                    ip.py:
+                      description: ''
+                    is_docker.py:
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+    test:
+      children:
+        services:
+          children:
+            test:
+              children:
+                command:
+                  children:
+                    demo_command:
+                      children:
+                        first.py:
+                          description: ''
+                        second.py:
+                          description: ''
+                      description: ''
+                    demo_command_2:
+                      children:
+                        third.py:
+                          description: ''
+                      description: ''
+                    other_demo_command:
+                      children:
+                        other.py:
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+            test_2:
+              children:
+                command:
+                  children:
+                    another_demo_command:
+                      children:
+                        test.py:
+                          description: ''
+                      description: ''
+                  description: ''
+              description: ''
+          description: ''
+      description: ''
+  description: ''
 cli:
-  autocomplete: null
-  autocomplete-handler: null
-  install: null
-  terminal-handler: null
-  uninstall: null
-  wex: null
-  wex-wrapper: null
+  children:
+    autocomplete:
+      description: ''
+    autocomplete-handler:
+      description: ''
+    install:
+      description: ''
+    terminal-handler:
+      description: ''
+    uninstall:
+      description: ''
+    wex:
+      description: ''
+    wex-wrapper:
+      description: ''
+  description: ''
 locale:
-  messages.json: null
-requirements.in: null
-requirements.txt: null
-setup.py: null
+  children:
+    messages.json:
+      description: ''
+  description: ''
+requirements.in:
+  description: ''
+requirements.txt:
+  description: ''
+setup.py:
+  description: ''
 src:
-  const:
-    error.py: null
-    globals.py: null
-  core:
-    FatalError.py: null
-    Kernel.py: null
-    WebhookHttpRequestHandler.py: null
-    action:
-      AbstractCoreAction.py: null
-      CoreActionsCoreAction.py: null
-      HiCoreAction.py: null
-      TestCoreAction.py: null
-    command:
-      AbstractCommandProcessor.py: null
-      AddonCommandProcessor.py: null
-      AppCommandProcessor.py: null
-      CoreCommandProcessor.py: null
-      ServiceCommandProcessor.py: null
-      UserCommandProcessor.py: null
-    render:
-      DataSet2d.py: null
-  decorator:
-    as_sudo.py: null
-    command.py: null
-  helper:
-    args.py: null
-    array.py: null
-    command.py: null
-    core.py: null
-    dict.py: null
-    file.py: null
-    json.py: null
-    process.py: null
-    prompt.py: null
-    registry.py: null
-    service.py: null
-    string.py: null
-    suggest.py: null
-    system.py: null
-    test.py: null
-  resources:
-    templates:
-      command.py.tpl: null
-      handler.sh.tpl: null
-      test.py.tpl: null
-    wexd.service: null
+  children:
+    const:
+      children:
+        error.py:
+          description: ''
+        globals.py:
+          description: ''
+      description: ''
+    core:
+      children:
+        FatalError.py:
+          description: ''
+        Kernel.py:
+          description: ''
+        WebhookHttpRequestHandler.py:
+          description: ''
+        action:
+          children:
+            AbstractCoreAction.py:
+              description: ''
+            CoreActionsCoreAction.py:
+              description: ''
+            HiCoreAction.py:
+              description: ''
+            TestCoreAction.py:
+              description: ''
+          description: ''
+        command:
+          children:
+            AbstractCommandProcessor.py:
+              description: ''
+            AddonCommandProcessor.py:
+              description: ''
+            AppCommandProcessor.py:
+              description: ''
+            CoreCommandProcessor.py:
+              description: ''
+            ServiceCommandProcessor.py:
+              description: ''
+            UserCommandProcessor.py:
+              description: ''
+          description: ''
+        render:
+          children:
+            DataSet2d.py:
+              description: ''
+          description: ''
+      description: ''
+    decorator:
+      children:
+        as_sudo.py:
+          description: ''
+        command.py:
+          description: ''
+      description: ''
+    helper:
+      children:
+        args.py:
+          description: ''
+        array.py:
+          description: ''
+        command.py:
+          description: ''
+        core.py:
+          description: ''
+        dict.py:
+          description: ''
+        file.py:
+          description: ''
+        json.py:
+          description: ''
+        process.py:
+          description: ''
+        prompt.py:
+          description: ''
+        registry.py:
+          description: ''
+        service.py:
+          description: ''
+        string.py:
+          description: ''
+        suggest.py:
+          description: ''
+        system.py:
+          description: ''
+        test.py:
+          description: ''
+      description: ''
+    resources:
+      children:
+        templates:
+          children:
+            command.py.tpl:
+              description: ''
+            handler.sh.tpl:
+              description: ''
+            test.py.tpl:
+              description: ''
+          description: ''
+        wexd.service:
+          description: ''
+      description: ''
+  description: ''
 tests:
-  AbstractTestCase.py: null
-  resources:
-    test-wraped.sh: null
-  samples:
-    config_bash: null
-  test_core.py: null
-  test_logging.py: null
+  children:
+    AbstractTestCase.py:
+      description: ''
+    resources:
+      children:
+        test-wraped.sh:
+          description: ''
+      description: ''
+    samples:
+      children:
+        config_bash:
+          description: ''
+      description: ''
+    test_core.py:
+      description: ''
+    test_logging.py:
+      description: ''
+  description: ''
 tmp: {}
-version.txt: null
+version.txt:
+  description: ''
 wex.egg-info: {}
