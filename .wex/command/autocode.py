@@ -1,5 +1,5 @@
-from core.AppCrawler import AppCrawler
+from core.PythonAppCrawler import PythonAppCrawler
 
 # Usage
-crawler = AppCrawler('.')
+crawler = PythonAppCrawler('.')
 crawler.build()

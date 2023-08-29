@@ -13,16 +13,11 @@
     autocode.py: null
     core:
       AppCrawler.py: null
-      __pycache__:
-        AppCrawler.cpython-311.pyc: null
+      PythonAppCrawler.py: null
     local_command:
-      __pycache__:
-        test.cpython-311.pyc: null
       test.py: null
     test: {}
     version:
-      __pycache__:
-        build.cpython-311.pyc: null
       build.py: null
   config: null
   config.yml: null
@@ -74,14 +69,6 @@ addons:
   app:
     command:
       app:
-        __pycache__:
-          init.cpython-311.pyc: null
-          perms.cpython-311.pyc: null
-          restart.cpython-311.pyc: null
-          serve.cpython-311.pyc: null
-          start.cpython-311.pyc: null
-          started.cpython-311.pyc: null
-          stop.cpython-311.pyc: null
         init.py: null
         perms.py: null
         restart.py: null
@@ -90,59 +77,28 @@ addons:
         started.py: null
         stop.py: null
       config:
-        __pycache__:
-          get.cpython-311.pyc: null
-          get.cpython-312.pyc: null
-          set.cpython-311.pyc: null
-          set.cpython-312.pyc: null
-          write.cpython-311.pyc: null
         get.py: null
         set.py: null
         write.py: null
       env:
-        __pycache__:
-          get.cpython-311.pyc: null
-          get.cpython-312.pyc: null
         get.py: null
       hook:
-        __pycache__:
-          exec.cpython-311.pyc: null
         exec.py: null
       hosts:
-        __pycache__:
-          update.cpython-311.pyc: null
         update.py: null
       location:
-        __pycache__:
-          find.cpython-311.pyc: null
-          find.cpython-312.pyc: null
         find.py: null
       proxy:
-        __pycache__:
-          start.cpython-311.pyc: null
-          stop.cpython-311.pyc: null
         start.py: null
         stop.py: null
       service:
-        __pycache__:
-          install.cpython-311.pyc: null
-          used.cpython-311.pyc: null
         install.py: null
         used.py: null
       services:
-        __pycache__:
-          exec.cpython-311.pyc: null
         exec.py: null
       version:
-        __pycache__:
-          build.cpython-311.pyc: null
-          build.cpython-312.pyc: null
         build.py: null
     const:
-      __pycache__:
-        app.cpython-310.pyc: null
-        app.cpython-311.pyc: null
-        app.cpython-312.pyc: null
       app.py: null
     containers:
       default:
@@ -150,32 +106,15 @@ addons:
       network:
         docker-compose.yml: null
     decorator:
-      __pycache__:
-        app_dir_option.cpython-311.pyc: null
-        app_location_optional.cpython-311.pyc: null
-        app_location_optional.cpython-312.pyc: null
       app_dir_option.py: null
       app_location_optional.py: null
     helpers:
-      __pycache__:
-        app.cpython-311.pyc: null
-        app.cpython-312.pyc: null
-        docker.cpython-311.pyc: null
-        test.cpython-311.pyc: null
       app.py: null
       docker.py: null
       test.py: null
     locale:
       messages.json: null
     middleware:
-      __pycache__:
-        exec.cpython-311.pyc: null
-        exec.cpython-312.pyc: null
-        exec_post.cpython-311.pyc: null
-        exec_post.cpython-312.pyc: null
-        init.cpython-310.pyc: null
-        init.cpython-311.pyc: null
-        init.cpython-312.pyc: null
       exec.py: null
       exec_post.py: null
       init.py: null
@@ -205,11 +144,7 @@ addons:
           docker-compose.yml: null
       proxy:
         command:
-          __pycache__:
-            test.cpython-311.pyc: null
           service:
-            __pycache__:
-              install.cpython-311.pyc: null
             install.py: null
         docker:
           docker-compose.yml: null
@@ -225,14 +160,6 @@ addons:
     tests:
       command:
         app:
-          __pycache__:
-            init.cpython-311.pyc: null
-            perms.cpython-311.pyc: null
-            restart.cpython-311.pyc: null
-            serve.cpython-311.pyc: null
-            start.cpython-311.pyc: null
-            started.cpython-311.pyc: null
-            stop.cpython-311.pyc: null
           init.py: null
           perms.py: null
           restart.py: null
@@ -241,220 +168,98 @@ addons:
           started.py: null
           stop.py: null
         config:
-          __pycache__:
-            get.cpython-311.pyc: null
-            get.cpython-312.pyc: null
-            set.cpython-311.pyc: null
-            set.cpython-312.pyc: null
-            write.cpython-311.pyc: null
           get.py: null
           set.py: null
           write.py: null
         env:
-          __pycache__:
-            get.cpython-311.pyc: null
-            get.cpython-312.pyc: null
           get.py: null
         hook:
-          __pycache__:
-            exec.cpython-311.pyc: null
           exec.py: null
         hosts:
-          __pycache__:
-            update.cpython-311.pyc: null
           update.py: null
         location:
-          __pycache__:
-            find.cpython-311.pyc: null
-            find.cpython-312.pyc: null
           find.py: null
         proxy:
-          __pycache__:
-            start.cpython-311.pyc: null
-            stop.cpython-311.pyc: null
           start.py: null
           stop.py: null
         service:
-          __pycache__:
-            install.cpython-311.pyc: null
-            used.cpython-311.pyc: null
           install.py: null
           used.py: null
         services:
-          __pycache__:
-            exec.cpython-311.pyc: null
           exec.py: null
         version:
-          __pycache__:
-            build.cpython-311.pyc: null
-            build.cpython-312.pyc: null
           build.py: null
   core:
     command:
       autocomplete:
-        __pycache__:
-          suggest.cpython-311.pyc: null
-          suggest.cpython-312.pyc: null
         suggest.py: null
       command:
-        __pycache__:
-          create.cpython-311.pyc: null
-          create.cpython-312.pyc: null
         create.py: null
       core:
-        __pycache__:
-          install.cpython-311.pyc: null
-          install.cpython-312.pyc: null
-          uninstall.cpython-311.pyc: null
-          uninstall.cpython-312.pyc: null
         install.py: null
         uninstall.py: null
       logo:
-        __pycache__:
-          show.cpython-311.pyc: null
-          show.cpython-312.pyc: null
         show.py: null
       registry:
-        __pycache__:
-          build.cpython-310.pyc: null
-          build.cpython-311.pyc: null
-          build.cpython-312.pyc: null
         build.py: null
       service:
-        __pycache__:
-          exec.cpython-311.pyc: null
-          resolve.cpython-311.pyc: null
         resolve.py: null
       test:
-        __pycache__:
-          create.cpython-311.pyc: null
-          create.cpython-312.pyc: null
         create.py: null
       version:
-        __pycache__:
-          build.cpython-311.pyc: null
-          build.cpython-312.pyc: null
         build.py: null
       webhook:
-        __pycache__:
-          exec.cpython-311.pyc: null
-          exec.cpython-312.pyc: null
-          serve.cpython-311.pyc: null
-          serve.cpython-312.pyc: null
-          stop.cpython-311.pyc: null
-          stop.cpython-312.pyc: null
         exec.py: null
         serve.py: null
         stop.py: null
     tests:
       command:
         autocomplete:
-          __pycache__:
-            suggest.cpython-311.pyc: null
-            suggest.cpython-312.pyc: null
           suggest.py: null
         command:
-          __pycache__:
-            create.cpython-311.pyc: null
-            create.cpython-312.pyc: null
           create.py: null
         core:
-          __pycache__:
-            install.cpython-311.pyc: null
-            install.cpython-312.pyc: null
-            uninstall.cpython-311.pyc: null
-            uninstall.cpython-312.pyc: null
           install.py: null
           uninstall.py: null
         logo:
-          __pycache__:
-            show.cpython-311.pyc: null
-            show.cpython-312.pyc: null
           show.py: null
         registry:
-          __pycache__:
-            build.cpython-311.pyc: null
-            build.cpython-312.pyc: null
           build.py: null
         service:
-          __pycache__:
-            exec.cpython-311.pyc: null
-            install.cpython-311.pyc: null
-            resolve.cpython-311.pyc: null
-            used.cpython-311.pyc: null
           install.py: null
           resolve.py: null
         test:
-          __pycache__:
-            create.cpython-311.pyc: null
-            create.cpython-312.pyc: null
           create.py: null
         version:
-          __pycache__:
-            build.cpython-311.pyc: null
-            build.cpython-312.pyc: null
           build.py: null
         webhook:
-          __pycache__:
-            exec.cpython-311.pyc: null
-            exec.cpython-312.pyc: null
-            serve.cpython-311.pyc: null
-            serve.cpython-312.pyc: null
-            stop.cpython-311.pyc: null
-            stop.cpython-312.pyc: null
           exec.py: null
           serve.py: null
           stop.py: null
   default:
     command:
       file:
-        __pycache__:
-          append_once.cpython-311.pyc: null
-          append_once.cpython-312.pyc: null
-          remove_line.cpython-311.pyc: null
-          remove_line.cpython-312.pyc: null
         append_once.py: null
         remove_line.py: null
       version:
-        __pycache__:
-          increment.cpython-311.pyc: null
-          increment.cpython-312.pyc: null
         increment.py: null
     tests:
       command:
         file:
-          __pycache__:
-            append_once.cpython-311.pyc: null
-            append_once.cpython-312.pyc: null
-            remove_line.cpython-311.pyc: null
-            remove_line.cpython-312.pyc: null
           append_once.py: null
           remove_line.py: null
         version:
-          __pycache__:
-            increment.cpython-311.pyc: null
-            increment.cpython-312.pyc: null
           increment.py: null
   docker:
-    __pycache__:
-      helpers.cpython-311.pyc: null
     command:
       docker:
-        __pycache__:
-          ip.cpython-311.pyc: null
-          stop_all.cpython-311.pyc: null
         ip.py: null
         stop_all.py: null
     helpers:
-      __pycache__:
-        docker.cpython-311.pyc: null
       docker.py: null
     tests:
       command:
         docker:
-          __pycache__:
-            ip.cpython-311.pyc: null
-            stop_all.cpython-311.pyc: null
           ip.py: null
           stop_all.py: null
   services-db:
@@ -462,18 +267,10 @@ addons:
       maria-10:
         command:
           app:
-            __pycache__:
-              perms.cpython-311.pyc: null
             perms.py: null
           config:
-            __pycache__:
-              write_post.cpython-311.pyc: null
             write_post.py: null
           service:
-            __pycache__:
-              install.cpython-311.pyc: null
-              write-compose-pre.cpython-311.pyc: null
-              write-post.cpython-311.pyc: null
             install.py: null
         docker:
           docker-compose.yml: null
@@ -508,16 +305,10 @@ addons:
       mysql-8:
         command:
           app:
-            __pycache__:
-              perms.cpython-311.pyc: null
             perms.py: null
           config:
-            __pycache__:
-              write_post.cpython-311.pyc: null
             write_post.py: null
           service:
-            __pycache__:
-              install.cpython-311.pyc: null
             install.py: null
         docker:
           docker-compose.yml: null
@@ -634,8 +425,6 @@ addons:
       nextcloud:
         command:
           app:
-            __pycache__:
-              start_options.cpython-311.pyc: null
             start_options.py: null
         docker:
           docker-compose.yml: null
@@ -696,77 +485,43 @@ addons:
   system:
     command:
       dir:
-        __pycache__:
-          spaces.cpython-311.pyc: null
         spaces.py: null
       disk:
-        __pycache__:
-          spaces.cpython-311.pyc: null
         spaces.py: null
       os:
-        __pycache__:
-          name.cpython-311.pyc: null
         name.py: null
       own:
-        __pycache__:
-          this.cpython-311.pyc: null
         this.py: null
       system:
-        __pycache__:
-          ip.cpython-311.pyc: null
-          is_docker.cpython-311.pyc: null
-          is_docker.cpython-312.pyc: null
         ip.py: null
         is_docker.py: null
     tests:
       command:
         dir:
-          __pycache__:
-            spaces.cpython-311.pyc: null
           spaces.py: null
         disk:
-          __pycache__:
-            spaces.cpython-311.pyc: null
           spaces.py: null
         os:
-          __pycache__:
-            name.cpython-311.pyc: null
           name.py: null
         own:
-          __pycache__:
-            this.cpython-311.pyc: null
           this.py: null
         system:
-          __pycache__:
-            ip.cpython-311.pyc: null
-            is_docker.cpython-311.pyc: null
-            is_docker.cpython-312.pyc: null
           ip.py: null
           is_docker.py: null
   test:
     services:
       test:
         command:
-          __pycache__: {}
           demo_command:
-            __pycache__:
-              first.cpython-311.pyc: null
-              second.cpython-311.pyc: null
             first.py: null
             second.py: null
           demo_command_2:
-            __pycache__:
-              third.cpython-311.pyc: null
             third.py: null
           other_demo_command:
-            __pycache__:
-              other.cpython-311.pyc: null
             other.py: null
       test_2:
         command:
           another_demo_command:
-            __pycache__:
-              test.cpython-311.pyc: null
             test.py: null
 build:
   bdist.linux-x86_64: {}
@@ -789,45 +544,17 @@ requirements.txt: null
 setup.py: null
 src:
   const:
-    __pycache__:
-      error.cpython-310.pyc: null
-      error.cpython-311.pyc: null
-      error.cpython-312.pyc: null
-      globals.cpython-310.pyc: null
-      globals.cpython-311.pyc: null
-      globals.cpython-312.pyc: null
     error.py: null
     globals.py: null
   core:
     FatalError.py: null
     Kernel.py: null
     WebhookHttpRequestHandler.py: null
-    __pycache__:
-      FatalError.cpython-311.pyc: null
-      Kernel.cpython-310.pyc: null
-      Kernel.cpython-311.pyc: null
-      Kernel.cpython-312.pyc: null
-      WebhookHttpRequestHandler.cpython-311.pyc: null
-      WebhookHttpRequestHandler.cpython-312.pyc: null
     action:
       AbstractCoreAction.py: null
       CoreActionsCoreAction.py: null
       HiCoreAction.py: null
       TestCoreAction.py: null
-      __pycache__:
-        AbstractCoreAction.cpython-310.pyc: null
-        AbstractCoreAction.cpython-311.pyc: null
-        AbstractCoreAction.cpython-312.pyc: null
-        CoreActionsCoreAction.cpython-311.pyc: null
-        CoreActionsCoreAction.cpython-312.pyc: null
-        HiCoreAction.cpython-310.pyc: null
-        HiCoreAction.cpython-311.pyc: null
-        HiCoreAction.cpython-312.pyc: null
-        TestCoreAction.cpython-310.pyc: null
-        TestCoreAction.cpython-311.pyc: null
-        TestCoreAction.cpython-312.pyc: null
-        TestCreateCoreAction.cpython-310.pyc: null
-        TestCreateCoreAction.cpython-312.pyc: null
     command:
       AbstractCommandProcessor.py: null
       AddonCommandProcessor.py: null
@@ -835,56 +562,12 @@ src:
       CoreCommandProcessor.py: null
       ServiceCommandProcessor.py: null
       UserCommandProcessor.py: null
-      __pycache__:
-        AbstractCommandProcessor.cpython-311.pyc: null
-        AddonCommandProcessor.cpython-311.pyc: null
-        AppCommandProcessor.cpython-311.pyc: null
-        CoreCommandProcessor.cpython-311.pyc: null
-        ServiceCommandProcessor.cpython-311.pyc: null
-        UserCommandProcessor.cpython-311.pyc: null
     render:
       DataSet2d.py: null
-      __pycache__:
-        DataSet2d.cpython-311.pyc: null
   decorator:
-    __pycache__:
-      as_sudo.cpython-311.pyc: null
-      as_sudo.cpython-312.pyc: null
-      command.cpython-311.pyc: null
     as_sudo.py: null
     command.py: null
   helper:
-    __pycache__:
-      args.cpython-310.pyc: null
-      args.cpython-311.pyc: null
-      args.cpython-312.pyc: null
-      array.cpython-311.pyc: null
-      command.cpython-310.pyc: null
-      command.cpython-311.pyc: null
-      command.cpython-312.pyc: null
-      core.cpython-311.pyc: null
-      core.cpython-312.pyc: null
-      dict.cpython-311.pyc: null
-      file.cpython-310.pyc: null
-      file.cpython-311.pyc: null
-      file.cpython-312.pyc: null
-      json.cpython-310.pyc: null
-      json.cpython-311.pyc: null
-      json.cpython-312.pyc: null
-      process.cpython-311.pyc: null
-      process.cpython-312.pyc: null
-      prompt.cpython-311.pyc: null
-      registry.cpython-311.pyc: null
-      service.cpython-311.pyc: null
-      string.cpython-310.pyc: null
-      string.cpython-311.pyc: null
-      string.cpython-312.pyc: null
-      suggest.cpython-311.pyc: null
-      system.cpython-310.pyc: null
-      system.cpython-311.pyc: null
-      system.cpython-312.pyc: null
-      test.cpython-311.pyc: null
-      test.cpython-312.pyc: null
     args.py: null
     array.py: null
     command.py: null
@@ -908,15 +591,6 @@ src:
     wexd.service: null
 tests:
   AbstractTestCase.py: null
-  __pycache__:
-    AbstractTestCase.cpython-310.pyc: null
-    AbstractTestCase.cpython-311.pyc: null
-    AbstractTestCase.cpython-312.pyc: null
-    test_core.cpython-310.pyc: null
-    test_core.cpython-311.pyc: null
-    test_core.cpython-312.pyc: null
-    test_logging.cpython-311.pyc: null
-    test_logging.cpython-312.pyc: null
   resources:
     test-wraped.sh: null
   samples:
