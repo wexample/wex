@@ -26,6 +26,7 @@ class AppCrawler:
         tree = self.tree
 
         del tree['.git']
+        tree['.wex']['tmp'] = {}
 
         return tree
 

@@ -1,5 +1,5 @@
-from core.PythonAppCrawler import PythonAppCrawler
+from core.WexAppCrawler import WexAppCrawler
 
 # Usage
-crawler = PythonAppCrawler('.')
+crawler = WexAppCrawler('.')
 crawler.build()
