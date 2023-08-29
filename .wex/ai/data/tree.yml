@@ -92,7 +92,10 @@ children:
           test.sh: {}
   LICENCE: {}
   README.md: {}
-  __main__.py: {}
+  __main__.py:
+    description: This is not the real entrypoint, it should be called by the cli/wex
+      bash entrypoint, which allow to execute extra bash commands before and after
+      main python script.
   addons:
     children:
       app:
