@@ -23,20 +23,25 @@ class AppCrawler:
             merged_tree['children'] = {}
 
             for name, children in new_tree['children'].items():
+                if isinstance(children, dict):
+                    children = children.copy()
+
                 if 'children' not in old_tree:
-                    if isinstance(children, dict):
-                        merged_tree['children'][name] = children.copy()
-                    else:
-                        merged_tree['children'][name] = children
+                    merged_tree['children'][name] = children
                 else:
                     old_children = {}
                     if name in old_tree['children']:
-                        old_children = old_tree['children'][name].copy()
+                        old_children = old_tree['children'][name]
 
-                    merged_tree['children'][name] = self.merge_tree(
-                        old_children,
-                        children.copy()
-                    )
+                        if isinstance(old_children, dict):
+                            old_children = old_children.copy()
+
+                            merged_tree['children'][name] = self.merge_tree(
+                                old_children,
+                                children
+                            )
+                        else:
+                            merged_tree['children'][name] = children
 
         return merged_tree
 
