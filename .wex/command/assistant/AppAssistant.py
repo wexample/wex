@@ -1,11 +1,14 @@
 from crawler.WexAppCrawler import WexAppCrawler
 import os
 from dotenv import load_dotenv
-from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
 
-from langchain.prompts import PromptTemplate, ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain.output_parsers import PydanticOutputParser
-from pydantic import BaseModel, Field, field_validator
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.chains import LLMChain
 
 
 class AppAssistant:
@@ -18,32 +21,37 @@ class AppAssistant:
         # Load .env file to get API token
         load_dotenv(dotenv_path=self.root + '/.env')
 
-        self.model = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
-
-        print(self.get_joke())
-
-    def get_joke(self):
-        class Joke(BaseModel):
-            setup: str = Field(description="question to set up a joke")
-            punchline: str = Field(description="answer to resolve the joke")
-
-            @field_validator('setup')
-            def question_ends_with_question_mark(cls, field):
-                if field[-1] != '?':
-                    raise ValueError("Badly formed question!")
-                return field
-
-        parser = PydanticOutputParser(pydantic_object=Joke)
-
-        prompt = PromptTemplate(
-            template="Answer the user query.\n{format_instructions}\n{query}\n",
-            input_variables=["query"],
-            partial_variables={"format_instructions": parser.get_format_instructions()}
+        system_message_prompt = SystemMessagePromptTemplate.from_template(
+            """
+            You are a world class computer programming assistant.
+            User will pass in question with and code of an application.
+            You should generate a git patch to apply on the code to change the program behaviour.
+            ONLY return a git patch without any other text.
+            """
         )
 
-        joke_query = "Tell me a joke."
-        _input = prompt.format_prompt(query=joke_query)
+        code_message_prompt = HumanMessagePromptTemplate.from_template(
+            """
+            print('Hello World!')
+            """
+        )
 
-        output = self.model(_input.to_string())
+        human_message_prompt = HumanMessagePromptTemplate.from_template(
+            '{text}'
+        )
 
-        return parser.parse(output)
+        chat_prompt = ChatPromptTemplate.from_messages([
+            system_message_prompt,
+            code_message_prompt,
+            human_message_prompt
+        ])
+
+        chain = LLMChain(
+            llm=ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY")),
+            prompt=chat_prompt,
+        )
+
+        print(
+            chain.run('I want this code this code to format text in uppercase.')
+        )
+
