@@ -1,0 +1,8 @@
+diff --git a/.wex/command/samples/main.py b/.wex/command/samples/main.py
+index 1234567..abcdefg 100644
+--- a/.wex/command/samples/main.py
++++ b/.wex/command/samples/main.py
+@@ -1,2 +1,2 @@
+ def my_program_main_function():
+-    return 'Hello World!'
++    return 'Hello World!'.upper()
