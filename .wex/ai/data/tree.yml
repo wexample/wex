@@ -17,10 +17,48 @@ children:
           .gitkeep: {}
       command:
         children:
+          assistant:
+            children:
+              AppAssistant.py: {}
           autocode.py: {}
+          crawler:
+            children:
+              AppCrawler.py: {}
+              PythonAppCrawler.py: {}
+              WexAppCrawler.py: {}
           local_command:
             children:
               test.py: {}
+          samples:
+            children:
+              examples:
+                children:
+                  explain:
+                    children:
+                      code_comment:
+                        children:
+                          prompt.txt: {}
+                          response.patch: {}
+                          source.py: {}
+                          tree.yml: {}
+                  generate:
+                    children:
+                      program_hello_world:
+                        children:
+                          prompt.txt: {}
+                          response.patch: {}
+                  hello_world_capitalized:
+                    children:
+                      autocode.patch: {}
+                      example.py: {}
+                      output.py: {}
+              prompts:
+                children:
+                  git_patch_generator.txt: {}
+                  program_file_structure.txt: {}
+                  program_full_code.txt: {}
+                  programming_assistant.txt: {}
+                  simple_examples.txt: {}
           test:
             children: {}
           version:
@@ -802,6 +840,7 @@ children:
   locale:
     children:
       messages.json: {}
+  main.py: {}
   requirements.in: {}
   requirements.txt: {}
   setup.py: {}
