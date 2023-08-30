@@ -9,7 +9,7 @@ class AppCrawler:
         self.root = root
         self.yaml_filepath = yaml_filepath
 
-    def load_existing_yaml(self):
+    def load_tree(self):
         try:
             with open(self.yaml_filepath, 'r') as f:
                 return yaml.safe_load(f) or {}
@@ -42,6 +42,8 @@ class AppCrawler:
                             )
                         else:
                             merged_tree['children'][name] = children
+                    else:
+                        merged_tree['children'][name] = children
 
         return merged_tree
 
@@ -72,7 +74,7 @@ class AppCrawler:
         return tree
 
     def build(self):
-        tree = self.load_existing_yaml()
+        tree = self.load_tree()
 
         # Scan new files
         new_tree = self.cleanup_tree(
