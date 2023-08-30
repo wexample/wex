@@ -1,4 +1,5 @@
 import subprocess
+from pprint import pprint
 
 from crawler.WexAppCrawler import WexAppCrawler
 import os
@@ -80,17 +81,17 @@ class AppAssistant:
         ]
 
         # create a example template
-        example_template = """User request: 
+        example_template_base = """User request: 
 {prompt}
 Complete source code of application: 
 {source}
 AI response: 
-{patch}"""
+"""
 
         # create a prompt example from above template
         example_prompt = PromptTemplate(
             input_variables=["prompt", "source", "patch"],
-            template=example_template
+            template=example_template_base + """{patch}"""
         )
 
         # now break our previous prompt into a prefix and suffix
@@ -98,20 +99,15 @@ AI response:
         prefix = """You are a programming assistant. You generate Python code regarding the user request. Here are some
         examples: 
         """
-        # and the suffix our user input and output indicator
-        suffix = """User request: 
-{prompt}
-Complete source code of application: 
-{source}
-AI response: 
-"""
 
         # now create the few shot prompt template
         few_shot_prompt_template = FewShotPromptTemplate(
             examples=examples,
             example_prompt=example_prompt,
+            # The prefix is our instructions
             prefix=prefix,
-            suffix=suffix,
+            # The suffix our user input and output indicator
+            suffix=example_template_base,
             input_variables=["prompt", "source"],
             example_separator="----------------------------------"
         )
