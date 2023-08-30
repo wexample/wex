@@ -17,6 +17,7 @@ from langchain.prompts import (
     ChatPromptTemplate,
 )
 
+
 class AppAssistant:
     def __init__(self):
         self.root = os.getcwd() + '/'
@@ -106,7 +107,7 @@ class AppAssistant:
             prefix=prefix,
             suffix=suffix,
             input_variables=["prompt", "source"],
-            example_separator="\n\n"
+            example_separator="----------------------------------"
         )
 
         prompt = "Explain how to pass arguments to prefix the output value"
@@ -125,3 +126,14 @@ def create_random_process_id() -> int:
             )
         )
 
+    def apply_patch(self, patch):
+        # TODO : validate patch structure
+
+        patch_path = self.root + 'autocode.patch'
+
+        # Save the patch content to a file
+        with open(patch_path, 'w') as file:
+            file.write(patch + '\n')
+
+        # Apply patch
+        subprocess.run(['git', 'apply', '--ignore-whitespace', patch_path], cwd=self.root)
