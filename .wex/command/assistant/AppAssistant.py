@@ -62,10 +62,13 @@ class AppAssistant:
             return f.read()
 
     def load_example_patch(self, name):
+        base_path = f'{self.root}.wex/command/samples/examples/{name}/'
+
         return {
-            'prompt': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/prompt.txt'),
-            'source': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/source.py'),
-            'patch': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/response.patch'),
+            'prompt': self.load_file(f'{base_path}prompt.txt'),
+            'source': self.load_file(f'{base_path}source.py'),
+            'patch': self.load_file(f'{base_path}response.patch'),
+            'tree': self.load_file(f'{base_path}tree.yml'),
         }
 
     def patch(self, question: str):

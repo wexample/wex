@@ -47,11 +47,15 @@ children:
                         children:
                           prompt.txt: {}
                           response.patch: {}
-                  hello_world_capitalized:
+                          tree.yml: {}
+                  patch:
                     children:
-                      autocode.patch: {}
-                      example.py: {}
-                      output.py: {}
+                      hello_world_capitalized:
+                        children:
+                          prompt.txt: {}
+                          response.patch: {}
+                          source.py: {}
+                          tree.yml: {}
               prompts:
                 children:
                   git_patch_generator.txt: {}
@@ -915,3 +919,4 @@ children:
   tmp: {}
   version.txt: {}
   wex.egg-info: {}
+description: My application root directory
