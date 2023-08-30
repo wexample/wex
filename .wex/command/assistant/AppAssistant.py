@@ -73,6 +73,14 @@ class AppAssistant:
         }
 
     def patch(self, question: str):
+        # TODO This does not work due to max token reached (4096)
+        # TODO The idea : pass to the model
+        #      - The model base instructions and formatting
+        #      - The "tree" which is a commented version of the files structure
+        #      - The full source of files based on the tree
+        #      - The user question
+        # TODO There is a better way to pass application data, find id.
+
         # create our examples
 
         examples = [
@@ -85,17 +93,20 @@ class AppAssistant:
 {prompt}
 Complete source code of application: 
 {source}
+Source code files tree structure with helpful descriptions: 
+{tree}
 AI response: 
 """
 
         # create a prompt example from above template
         example_prompt = PromptTemplate(
-            input_variables=["prompt", "source", "patch"],
+            input_variables=["prompt", "source", "tree", "patch"],
             template=example_template_base + """{patch}"""
         )
 
         # now break our previous prompt into a prefix and suffix
         # the prefix is our instructions
+        # TODO More prompt are stored into .wex/command/samples/prompts/
         prefix = """You are a programming assistant. You generate Python code regarding the user request. Here are some
         examples: 
         """
@@ -108,23 +119,18 @@ AI response:
             prefix=prefix,
             # The suffix our user input and output indicator
             suffix=example_template_base,
-            input_variables=["prompt", "source"],
+            input_variables=["prompt", "source", "tree"],
             example_separator="----------------------------------"
         )
 
         prompt = "Explain how to pass arguments to prefix the output value"
-        source = """       
-
-import random
-
-def create_random_process_id() -> int:
-  return random.randint(1,1000)
-"""
+        tree = self.crawler.load_tree()
 
         return self.llm(
             few_shot_prompt_template.format(
                 prompt=prompt,
-                source=source
+                source=self.crawler.tree_content(tree),
+                tree=tree
             )
         )
 
