@@ -17,7 +17,10 @@ class AppCrawler:
             return {}
 
     def merge_tree(self, old_tree: dict, new_tree: dict):
-        merged_tree = old_tree.copy()
+        merged_tree = new_tree.copy()
+
+        if 'description' in old_tree:
+            new_tree['description'] = old_tree['description']
 
         if 'children' in new_tree:
             merged_tree['children'] = {}
@@ -69,6 +72,12 @@ class AppCrawler:
         return tree
 
     def cleanup_tree(self, tree):
+        tree['children']['.wex']['children']['ai']['children']['data']['children']['tree.yml'] = {
+            'type': 'file',
+            'status': 'hidden',
+            'description': 'This current file'
+        }
+
         tree['children']['.git'] = {
             'type': 'dir',
             'status': 'hidden'
