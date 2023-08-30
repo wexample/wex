@@ -1,5 +1,6 @@
 children:
   .env:
+    description: Application env parameters, used to store tokens and local configuration
     status: hidden
     type: file
   .git:
@@ -228,6 +229,9 @@ children:
   README.md:
     type: file
   __main__.py:
+    description: This is not the real entrypoint, it should be called by the cli/wex
+      bash entrypoint, which allow to execute extra bash commands before and after
+      main python script.
     type: file
   addons:
     children:
@@ -1547,3 +1551,4 @@ children:
   wex.egg-info:
     status: hidden
     type: dir
+description: My application root directory
