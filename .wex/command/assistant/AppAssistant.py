@@ -80,11 +80,12 @@ class AppAssistant:
         ]
 
         # create a example template
-        example_template = """
-        User: {prompt}
-        Source: {source}
-        AI: {patch}
-        """
+        example_template = """User request: 
+{prompt}
+Complete source code of application: 
+{source}
+AI response: 
+{patch}"""
 
         # create a prompt example from above template
         example_prompt = PromptTemplate(
@@ -98,10 +99,12 @@ class AppAssistant:
         examples: 
         """
         # and the suffix our user input and output indicator
-        suffix = """
-        User: {prompt}
-        Source: {source}
-        AI: """
+        suffix = """User request: 
+{prompt}
+Complete source code of application: 
+{source}
+AI response: 
+"""
 
         # now create the few shot prompt template
         few_shot_prompt_template = FewShotPromptTemplate(
