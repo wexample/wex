@@ -20,7 +20,7 @@ class AppCrawler:
         merged_tree = new_tree.copy()
 
         if 'description' in old_tree:
-            new_tree['description'] = old_tree['description']
+            merged_tree['description'] = old_tree['description']
 
         if 'children' in new_tree:
             merged_tree['children'] = {}
