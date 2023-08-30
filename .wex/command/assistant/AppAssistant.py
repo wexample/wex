@@ -3,15 +3,19 @@ import subprocess
 from crawler.WexAppCrawler import WexAppCrawler
 import os
 from dotenv import load_dotenv
-from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
 
 from langchain.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.chains import LLMChain
-
+from langchain.prompts import (
+    FewShotChatMessagePromptTemplate,
+    ChatPromptTemplate,
+)
 
 class AppAssistant:
     def __init__(self):
@@ -23,14 +27,12 @@ class AppAssistant:
         # Load .env file to get API token
         load_dotenv(dotenv_path=self.root + '.env')
 
-        self.llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
+        self.llm = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
 
     def create_chain(self, prompt_template):
         return LLMChain(
             llm=self.llm,
-            prompt=ChatPromptTemplate.from_messages(
-                prompt_template
-            ),
+            prompt=prompt_template,
         )
 
     def assist(self, question: str):
@@ -51,76 +53,75 @@ class AppAssistant:
     def test_patch(self):
         self.patch('I want this program return the text in uppercase.')
 
+    def load_file(self, file_path):
+        if not os.path.exists(file_path):
+            return None
+
+        with open(file_path, 'r') as f:
+            return f.read()
+
+    def load_example_patch(self, name):
+        return {
+            'prompt': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/prompt.txt'),
+            'source': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/source.py'),
+            'patch': self.load_file(f'{self.root}.wex/command/samples/examples/{name}/response.patch'),
+        }
+
     def patch(self, question: str):
-        system_message_prompt = SystemMessagePromptTemplate.from_template(
-            """
-            You are a world class computer programming assistant.
-            Below base information about the program named __PROGRAM__.
-            At the end user will pass in question with and code of an application.
-            """
+        # create our examples
+
+        examples = [
+            self.load_example_patch('generate/program_hello_world'),
+            self.load_example_patch('explain/code_comment')
+        ]
+
+        # create a example template
+        example_template = """
+        User: {prompt}
+        Source: {source}
+        AI: {patch}
+        """
+
+        # create a prompt example from above template
+        example_prompt = PromptTemplate(
+            input_variables=["prompt", "source", "patch"],
+            template=example_template
         )
 
-        git_message_prompt = SystemMessagePromptTemplate.from_template(
-            """
-            You should generate a git patch to apply on the code to change the program behaviour.
-            ONLY return a git patch without any other text.
-            """
+        # now break our previous prompt into a prefix and suffix
+        # the prefix is our instructions
+        prefix = """You are a programming assistant. You generate Python code regarding the user request. Here are some
+        examples: 
+        """
+        # and the suffix our user input and output indicator
+        suffix = """
+        User: {prompt}
+        Source: {source}
+        AI: """
+
+        # now create the few shot prompt template
+        few_shot_prompt_template = FewShotPromptTemplate(
+            examples=examples,
+            example_prompt=example_prompt,
+            prefix=prefix,
+            suffix=suffix,
+            input_variables=["prompt", "source"],
+            example_separator="\n\n"
         )
 
-        files_structure_message_prompt = HumanMessagePromptTemplate.from_template(
-            """
-            File structure of the program __PROGRAM__ :
-            .git
-              type: folder
-            .wex
-              type: folder
-              children:
-                command:
-                  type:folder
-                  children:
-                    samples:
-                    children:
-                      main.py:
-                        type: file
-                        description: The main entrypoint of the program.
-            """
+        prompt = "Explain how to pass arguments to prefix the output value"
+        source = """       
+
+import random
+
+def create_random_process_id() -> int:
+  return random.randint(1,1000)
+"""
+
+        return self.llm(
+            few_shot_prompt_template.format(
+                prompt=prompt,
+                source=source
+            )
         )
 
-        code_message_prompt = HumanMessagePromptTemplate.from_template(
-            """
-            Full code of the program __PROGRAM__,
-            after this line there is NO extra empty line at the beginning of the file :
-            def my_program_main_function():
-                return 'Hello World!'
-            """
-        )
-
-        human_message_prompt = HumanMessagePromptTemplate.from_template(
-            '{text}'
-        )
-
-        chain = self.create_chain(
-            ChatPromptTemplate.from_messages([
-                system_message_prompt,
-                git_message_prompt,
-                files_structure_message_prompt,
-                code_message_prompt,
-                human_message_prompt
-            ]))
-
-        # TODO : validate patch structure
-
-        patch_content = chain.run(question)
-        patch_path = self.root + 'autocode.patch'
-
-        # Save the patch content to a file
-        with open(patch_path, 'w') as file:
-            file.write(patch_content + '\n')
-
-        # Apply patch
-        subprocess.run(['git', 'apply', '--ignore-whitespace', patch_path], cwd=self.root)
-
-        # Delete patch
-        # os.remove(patch_path)
-
-        return patch_content
