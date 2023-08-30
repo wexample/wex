@@ -6,10 +6,19 @@ class WexAppCrawler(PythonAppCrawler):
         tree = super().cleanup_tree(tree)
 
         # Useless folder
-        tree['children']['tmp'] = {}
-        tree['children']['wex.egg-info'] = {}
+        tree['children']['tmp'] = {
+            'type': 'dir',
+            'status': 'hidden'
+        }
+        tree['children']['wex.egg-info'] = {
+            'type': 'dir',
+            'status': 'hidden'
+        }
 
         # Security tokens
-        tree['children']['.env'] = {'status': 'hidden'}
+        tree['children']['.env'] = {
+            'type': 'file',
+            'status': 'hidden'
+        }
 
         return tree

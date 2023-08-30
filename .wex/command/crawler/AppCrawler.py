@@ -29,7 +29,6 @@ class AppCrawler:
                 if 'children' not in old_tree:
                     merged_tree['children'][name] = children
                 else:
-                    old_children = {}
                     if name in old_tree['children']:
                         old_children = old_tree['children'][name]
 
@@ -53,23 +52,32 @@ class AppCrawler:
         if tree is None:
             tree = {}
 
-        # tree["description"] = ''
         tree["children"] = {}
 
         for name in os.listdir(root):
             path = os.path.join(root, name)
             if os.path.isdir(path):
-                tree["children"][name] = {}
+                tree["children"][name] = {
+                    'type': 'dir'
+                }
                 self.scan(path, tree=tree["children"][name])
             else:
-                tree["children"][name] = {}
+                tree["children"][name] = {
+                    'type': 'file'
+                }
 
         return tree
 
     def cleanup_tree(self, tree):
-        # Do your specific removals here.
-        del tree['children']['.git']
-        tree['children']['.wex']['tmp'] = {}
+        tree['children']['.git'] = {
+            'type': 'dir',
+            'status': 'hidden'
+        }
+
+        tree['children']['.wex']['tmp'] = {
+            'type': 'dir',
+            'status': 'hidden'
+        }
 
         return tree
 
@@ -91,3 +99,19 @@ class AppCrawler:
     def save_to_yaml(self, filepath, tree):
         with open(filepath, 'w') as f:
             yaml.dump(tree, f, default_flow_style=False)
+
+    def tree_content(self, data, path='', result=[]):
+        if 'status' in data and data['status'] == 'hidden':
+            return result
+
+        # This is a directory.
+        if 'children' in data:
+            for key, value in data['children'].items():
+                self.tree_content(value, os.path.join(path, key), result)
+        else:
+            result.append('---------------' + path)
+
+            with open(path, 'r') as f:
+                result.append(f.read())
+
+        return result
