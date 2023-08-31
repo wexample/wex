@@ -64,10 +64,8 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     name = manager.get_config('global.name')
     # Current app is not the reverse proxy itself.
     if not kernel.exec_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
-        proxy_path = manager.get_runtime_config('path.proxy')
-
         # The reverse proxy is not running.
-        if not kernel.exec_function(app__app__started, {'app-dir': proxy_path}):
+        if not kernel.exec_function(app__app__started, {'app-dir': manager.proxy_path}):
             manager.log('Starting proxy server')
 
             def start_proxy():
@@ -83,7 +81,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
                 )
 
             manager.exec_in_workdir(
-                proxy_path,
+                manager.proxy_path,
                 start_proxy
             )
 

@@ -3,13 +3,14 @@ import platform
 
 import yaml
 
+from src.helper.string import to_snake_case
 from src.const.globals import COLOR_GRAY
 from src.const.error import ERR_UNEXPECTED
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
-    PROXY_APP_NAME
+    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY
 from addons.app.command.location.find import app__location__find
-from src.helper.file import get_dict_item_by_path
+from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default
 
 
 class AppAddonManager(AddonManager):
@@ -40,7 +41,7 @@ class AppAddonManager(AddonManager):
 
             self.proxy_apps = yaml_load_or_default(
                 self.proxy_path + PROXY_FILE_APPS_REGISTRY,
-                []
+                {}
             )
 
             self.runtime_config = self._load_config(
