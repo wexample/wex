@@ -8,6 +8,8 @@ from typing import Optional
 
 from yaml import SafeLoader
 
+from addons.app.AppAddonManager import AppAddonManager
+from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT
 from src.const.globals import \
@@ -23,7 +25,9 @@ from src.helper.file import list_subdirectories
 
 
 class Kernel:
-    addons: [str] = {}
+    addons: [str] = {
+        'app': AppAddonManager
+    }
     messages = None
     path: dict[str, Optional[str]] = {
         'root': None,
@@ -57,7 +61,13 @@ class Kernel:
         self.path['templates'] = self.path['root'] + 'src/resources/templates/'
 
         # Initialize addons config
-        self.addons = {addon: {'config': {}, 'path': {}} for addon in list_subdirectories(self.path['addons'])}
+        for name in list_subdirectories(self.path['addons']):
+            if name in self.addons:
+                definition = self.addons[name]
+            else:
+                definition = AddonManager
+
+            self.addons[name] = definition(self, name)
 
         self.load_registry()
 
