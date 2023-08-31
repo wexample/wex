@@ -1,11 +1,13 @@
 import os
+import platform
 
 import yaml
 
 from src.const.globals import COLOR_GRAY
 from src.const.error import ERR_UNEXPECTED
 from src.core.AddonManager import AddonManager
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND
+from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
+    PROXY_APP_NAME
 from addons.app.command.location.find import app__location__find
 from src.helper.file import get_dict_item_by_path
 
@@ -20,25 +22,48 @@ class AppAddonManager(AddonManager):
         self.runtime_config = {}
 
     def load_current_app_configs(self):
-        app_path = app__location__find.callback(
-            os.getcwd()
+        app_path = self.kernel.exec_function(
+            app__location__find
         )
 
         if app_path:
             self.config_path = os.path.join(app_path, APP_FILEPATH_REL_CONFIG)
             self.runtime_config_path = os.path.join(app_path, APP_FILEPATH_REL_CONFIG_RUNTIME)
             self.config = self._load_config(self.config_path)
-            self.runtime_config = self._load_config(self.runtime_config_path)
+
+            if platform.system() == 'Darwin':
+                proxy_dir = '/Users/.wex/server/'
+            else:
+                proxy_dir = '/opt/{}/'.format(PROXY_APP_NAME)
+
+            self.runtime_config = self._load_config(
+                self.runtime_config_path,
+                {
+                    'path': {
+                        'proxy': proxy_dir
+                    }
+                }
+            )
 
         pass
 
     @staticmethod
-    def _load_config(path):
+    def is_app_root(app_dir: str) -> bool:
+        if not os.path.exists(app_dir):
+            return False
+
+        # Search for config file.
+        return os.path.exists(
+            os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
+        )
+
+    @staticmethod
+    def _load_config(path, default: dict = {}):
         try:
             with open(path, 'r') as file:
                 return yaml.safe_load(file)
         except FileNotFoundError:
-            return {}
+            return default
 
     def save_config(self):
         with open(self.config_path, 'w') as file:
