@@ -105,7 +105,7 @@ def app__config__write(kernel, app_dir: str, user: str = None, group: str = None
     )
 
     if len(compose_files) != 0:
-        app_log(kernel, f'Creating docker compose file...')
+        manager.log(f'Creating docker compose file...')
 
         yml_content = exec_app_docker_compose(
             kernel,

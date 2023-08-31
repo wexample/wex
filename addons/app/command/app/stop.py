@@ -13,12 +13,14 @@ from addons.app.decorator.app_dir_option import app_dir_option
 @click.command()
 @click.pass_obj
 @app_dir_option()
-def app__app__stop(kernel, app_dir: str):
+def app__app__stop(kernel: 'Kernel', app_dir: str):
+    manager: 'AppAddonManager' = kernel.addons['app']
+
     if not kernel.exec_function(app__app__started, {
         'app-dir': app_dir,
         'check-mode': APP_STARTED_CHECK_MODE_FULL
     }):
-        app_log(kernel, 'App already stopped')
+        manager.log('App already stopped')
         return
 
     name = app__config__get.callback(app_dir, 'global.name')
