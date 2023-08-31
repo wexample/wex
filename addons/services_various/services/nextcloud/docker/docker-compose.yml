@@ -9,9 +9,9 @@ services:
       - MARIA_10_USER=${MARIA_10_USER}
       - MARIA_10_PASSWORD=${MARIA_10_PASSWORD}
     volumes:
-      - ${CONTEXT_DIR}data:/var/www/html
-      - ${CONTEXT_DIR}extra-addons:/mnt/extra-addons
-      - ${CONTEXT_DIR}config.php:/var/www/html/config/wex.config.php
+      - ${PATH_APP}data:/var/www/html
+      - ${PATH_APP}extra-addons:/mnt/extra-addons
+      - ${PATH_APP}config.php:/var/www/html/config/wex.config.php
     extends:
       file: ${SERVICE_DEFAULT_YML_ENV}
       service: default

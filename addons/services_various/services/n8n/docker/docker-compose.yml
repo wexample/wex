@@ -18,7 +18,7 @@ services:
       - GENERIC_TIMEZONE=Europe/Paris
     volumes:
       # Minimal env files.
-      - ${CONTEXT_DIR}n8n:/home/node/.n8n
+      - ${PATH_APP}n8n:/home/node/.n8n
     extends:
       file: ${SERVICE_DEFAULT_YML_ENV}
       service: default

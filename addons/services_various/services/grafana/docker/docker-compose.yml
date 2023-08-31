@@ -3,8 +3,8 @@ services:
       container_name: ${RUNTIME_NAME}_grafana
       image: grafana/grafana:${GRAFANA_VERSION}
       volumes:
-        - ${CONTEXT_DIR}grafana:/var/lib/grafana
-        - ${CONTEXT_DIR}provisioning:/etc/grafana/provisioning/
+        - ${PATH_APP}grafana:/var/lib/grafana
+        - ${PATH_APP}provisioning:/etc/grafana/provisioning/
       environment:
         - VIRTUAL_HOST=${CONTEXT_DOMAINS}
         - VIRTUAL_PORT=80

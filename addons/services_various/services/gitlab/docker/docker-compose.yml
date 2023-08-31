@@ -6,10 +6,10 @@ services:
       ports:
         - '4567:22'
       volumes:
-        - ${CONTEXT_DIR}backups:/var/opt/gitlab/backups
-        - ${CONTEXT_DIR}config:/etc/gitlab
-        - ${CONTEXT_DIR}logs:/var/log/gitlab
-        - ${CONTEXT_DIR}data:/var/opt/gitlab
+        - ${PATH_APP}backups:/var/opt/gitlab/backups
+        - ${PATH_APP}config:/etc/gitlab
+        - ${PATH_APP}logs:/var/log/gitlab
+        - ${PATH_APP}data:/var/opt/gitlab
       environment:
         - VIRTUAL_HOST=${CONTEXT_DOMAINS}
         - SMTP_DOMAIN=${DOMAIN_MAIN}

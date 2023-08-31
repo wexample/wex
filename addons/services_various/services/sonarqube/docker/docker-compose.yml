@@ -11,10 +11,10 @@ services:
             - SONARQUBE_JDBC_PASSWORD=${POSTGRES_DB_PASSWORD}
             - SONARQUBE_JDBC_URL=jdbc:postgresql://${POSTGRES_DB_HOST}:${POSTGRES_DB_PORT}/${POSTGRES_DB_NAME}
         volumes:
-            - ${CONTEXT_DIR}conf:/opt/sonarqube/conf
-            - ${CONTEXT_DIR}data:/opt/sonarqube/data
-            - ${CONTEXT_DIR}logs:/opt/sonarqube/logs:rw
-            - ${CONTEXT_DIR}extensions:/opt/sonarqube/extensions:rw
+            - ${PATH_APP}conf:/opt/sonarqube/conf
+            - ${PATH_APP}data:/opt/sonarqube/data
+            - ${PATH_APP}logs:/opt/sonarqube/logs:rw
+            - ${PATH_APP}extensions:/opt/sonarqube/extensions:rw
         extends:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default

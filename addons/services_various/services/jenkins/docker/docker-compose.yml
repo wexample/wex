@@ -11,5 +11,5 @@ services:
       - VIRTUAL_HOST=${CONTEXT_DOMAINS}
       - VIRTUAL_PORT=8080
     volumes:
-      - ${CONTEXT_DIR}config:/jenkins_config
-      - ${CONTEXT_DIR}home:/var/jenkins_home
+      - ${PATH_APP}config:/jenkins_config
+      - ${PATH_APP}home:/var/jenkins_home

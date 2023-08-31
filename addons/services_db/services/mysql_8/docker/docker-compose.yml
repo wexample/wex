@@ -8,9 +8,9 @@ services:
 #            - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
 #            - MYSQL_TCP_PORT=${MYSQL_DB_PORT}
         volumes:
-            - ${CONTEXT_DIR_WEX}mysql/data:/var/lib/mysql
-            - ${CONTEXT_DIR_WEX}mysql/dumps:/var/www/dumps
-            - ${CONTEXT_DIR_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+            - ${PATH_APP_WEX}mysql/data:/var/lib/mysql
+            - ${PATH_APP_WEX}mysql/dumps:/var/www/dumps
+            - ${PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
         extends:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default

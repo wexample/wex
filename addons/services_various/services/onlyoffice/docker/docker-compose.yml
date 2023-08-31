@@ -9,8 +9,8 @@ services:
             - VIRTUAL_HOST=${CONTEXT_DOMAINS}
             - VIRTUAL_PORT=80
         volumes:
-            - ${CONTEXT_DIR}logs:/var/log/onlyoffice
-            - ${CONTEXT_DIR}data:/var/www/onlyoffice/Data
+            - ${PATH_APP}logs:/var/log/onlyoffice
+            - ${PATH_APP}data:/var/www/onlyoffice/Data
         extends:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default

@@ -9,7 +9,7 @@ services:
             - VIRTUAL_PORT=80
         volumes:
             # Site folder
-            - ${CONTEXT_DIR}:/var/www/html
+            - ${PATH_APP}:/var/www/html
             # Security ! Hide and .wex data containing passwords and databases !
             - /var/www/html/.wex
 #            # Apache
@@ -18,9 +18,9 @@ services:
 #            - ${CONF_WEB_PHP_INI}:/etc/php/8.2/fpm/conf.d/99-wex.ini
 #            - ${CONF_WEB_PHP_INI}:/etc/php/8.2/cli/conf.d/99-wex.ini
             # Mysql dumps
-            - ${CONTEXT_DIR_WEX}mysql/dumps:/var/www/mysql/dumps
+            - ${PATH_APP_WEX}mysql/dumps:/var/www/mysql/dumps
             # Cron management
-            - ${CONTEXT_DIR_WEX}cron/${CONTEXT_ENV}:/var/default.cron
+            - ${PATH_APP_WEX}cron/${CONTEXT_ENV}:/var/default.cron
         extends:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default

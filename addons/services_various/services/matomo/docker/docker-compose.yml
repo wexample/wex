@@ -13,7 +13,7 @@ services:
       - MATOMO_DATABASE_USERNAME=${MYSQL_DB_USER}
       - MATOMO_DATABASE_PASSWORD=${MYSQL_DB_PASSWORD}
     volumes:
-      - ${CONTEXT_DIR}data:/var/www/html
+      - ${PATH_APP}data:/var/www/html
     extends:
         file: ${SERVICE_DEFAULT_YML_ENV}
         service: default
