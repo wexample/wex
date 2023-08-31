@@ -15,11 +15,13 @@ from src.helper.file import get_dict_item_by_path
 class AppAddonManager(AddonManager):
     def __init__(self, kernel, name):
         super().__init__(kernel, name)
-        self.config_path = None
-        self.runtime_config_path = None
         self.call_command_level = None
         self.config = {}
+        self.config_path = None
+        self.proxy_apps = {}
+        self.proxy_path = None
         self.runtime_config = {}
+        self.runtime_config_path = None
 
     def load_current_app_configs(self):
         app_path = self.kernel.exec_function(
@@ -32,20 +34,24 @@ class AppAddonManager(AddonManager):
             self.config = self._load_config(self.config_path)
 
             if platform.system() == 'Darwin':
-                proxy_dir = '/Users/.wex/server/'
+                self.proxy_path = '/Users/.wex/server/'
             else:
-                proxy_dir = '/opt/{}/'.format(PROXY_APP_NAME)
+                self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
+
+            self.proxy_apps = yaml_load_or_default(
+                self.proxy_path + PROXY_FILE_APPS_REGISTRY,
+                []
+            )
 
             self.runtime_config = self._load_config(
                 self.runtime_config_path,
                 {
                     'path': {
-                        'proxy': proxy_dir
+                        'app': app_path,
+                        'proxy': self.proxy_path
                     }
                 }
             )
-
-        pass
 
     @staticmethod
     def is_app_root(app_dir: str) -> bool:
@@ -69,9 +75,49 @@ class AppAddonManager(AddonManager):
         with open(self.config_path, 'w') as file:
             yaml.safe_dump(self.config, file)
 
+    def save_config_file(self):
+        with open(self.config_path, 'w') as file:
+            yaml.safe_dump(self.config, file)
+
     def save_runtime_config(self):
+        # Build yml
         with open(self.runtime_config_path, 'w') as file:
             yaml.safe_dump(self.runtime_config, file)
+
+        # Write as docker env file
+        write_dict_to_config(
+            self.config_to_docker_env(),
+            os.path.join(
+                self.get_runtime_config('path.app'),
+                APP_FILEPATH_REL_DOCKER_ENV
+            )
+        )
+
+    def config_to_docker_env(self):
+        return self.dict_to_docker_env(
+            dict(
+                sorted(
+                    self.runtime_config.items()
+                )
+            )
+        )
+
+    def dict_to_docker_env(self, config, parent_key='', sep='_'):
+        items = []
+
+        for k, v in config.items():
+            new_key = parent_key + sep + k if parent_key else k
+            new_key = to_snake_case(new_key)
+            new_key = new_key.upper()
+            if isinstance(v, dict):
+                items.extend(self.dict_to_docker_env(
+                    v,
+                    new_key,
+                    sep=sep
+                ).items())
+            else:
+                items.append((new_key, v))
+        return dict(items)
 
     def update_config(self, key, value):
         self.config[key] = value
@@ -151,6 +197,13 @@ class AppAddonManager(AddonManager):
             self.kernel.error(ERR_UNEXPECTED, {
                 'error': 'More "post" execution than "pre" execution call'
             })
+
+    def save_proxy_apps(self):
+        with open(self.proxy_path + PROXY_FILE_APPS_REGISTRY, 'w') as f:
+            yaml.dump(
+                self.proxy_apps, f,
+                indent=True
+            )
 
     def set_app_workdir(self, app_dir: str):
         self.call_command_level = 1
