@@ -5,18 +5,15 @@ import click
 
 from addons.app.command.config.write import app__config__write
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
-from addons.app.helpers.app import create_env, config_save_build
 from addons.app.command.env.get import app__env__get
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
-from addons.app.command.config.get import app__config__get
 from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
 from src.helper.prompt import prompt_choice
-from addons.app.helpers.app import app_log
 from addons.app.decorator.app_dir_option import app_dir_option
 
 
@@ -144,11 +141,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         sync=False
     )
 
-    kernel.addons['app']['config_build']['context']['started'] = True
-    config_save_build(
-        kernel,
-        app_dir
-    )
+    manager.set_runtime_config('started', True)
 
     kernel.exec_function(
         app__hook__exec,
