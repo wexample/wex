@@ -2,11 +2,12 @@ import os
 
 import yaml
 
+from src.const.globals import COLOR_GRAY
 from src.const.error import ERR_UNEXPECTED
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND
 from addons.app.command.location.find import app__location__find
-from src.helper.file import yaml_load_or_default, get_dict_item_by_path
+from src.helper.file import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
@@ -54,12 +55,19 @@ class AppAddonManager(AddonManager):
     def get_config(self, key: str) -> int | str | bool:
         return get_dict_item_by_path(self.config, key)
 
+    def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
+        return self.kernel.log(
+            f'[{self.name}] {message}',
+            color,
+            increment + 1
+        )
+
     def update_runtime_config(self, key, value):
         self.runtime_config[key] = value
         self.save_runtime_config()
 
-    def get_runtime_config(self, key: str) -> int | str | bool:
-        return get_dict_item_by_path(self.runtime_config, key)
+    def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
+        return get_dict_item_by_path(self.runtime_config, key, default)
 
     def command_exec_pre(self, function, args, command, args_list):
         # Skip if the command allow to be executed without app location.
