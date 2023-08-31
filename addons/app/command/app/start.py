@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 import os.path
 import click
 
 from addons.app.command.config.write import app__config__write
-from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_BUILD_YML
-from addons.app.helpers.app import create_env, save_proxy_apps, config_save_build, app_exec_in_workdir
+from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+from addons.app.helpers.app import create_env, config_save_build
 from addons.app.command.env.get import app__env__get
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
@@ -57,15 +60,15 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         kernel.log('App already running')
         return
 
-    name = app__config__get.callback(app_dir, 'global.name')
-    proxy_path = kernel.addons['app']['path']['proxy']
-    app_log(kernel, f"Starting app : {name}")
-
+    manager: 'AppAddonManager' = kernel.addons['app']
+    name = manager.get_config('global.name')
     # Current app is not the reverse proxy itself.
     if not kernel.exec_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
+        proxy_path = manager.get_runtime_config('path.proxy')
+
         # The reverse proxy is not running.
         if not kernel.exec_function(app__app__started, {'app-dir': proxy_path}):
-            kernel.log('Starting proxy server')
+            manager.log('Starting proxy server')
 
             def start_proxy():
                 from addons.app.command.proxy.start import app__proxy__start
@@ -79,11 +82,12 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
                     }
                 )
 
-            app_exec_in_workdir(
-                kernel,
-                kernel.addons['app']['path']['proxy'],
+            manager.exec_in_workdir(
+                proxy_path,
                 start_proxy
             )
+
+    manager.log(f"Starting app : {name}")
 
     kernel.exec_function(
         app__app__perms,
