@@ -104,11 +104,13 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         }
     )
 
-    kernel.exec_function(app__config__write, {
-        'app-dir': app_dir,
-        'user': user,
-        'group': group,
-    })
+    kernel.exec_function(
+        app__config__write,
+        {
+            'app-dir': app_dir,
+            'user': user,
+            'group': group,
+        })
 
     # Save app in proxy apps.
     app_log(kernel, 'Registering app...')

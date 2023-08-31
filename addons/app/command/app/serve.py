@@ -1,15 +1,17 @@
 import click
 
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.helpers.app import app_log
 from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.AppAddonManager import AppAddonManager
+from src.decorator.command import command
+from src.core.Kernel import Kernel
 
 
-@click.command()
-@click.pass_obj
+@command()
 @app_dir_option()
-def app__app__serve(kernel, app_dir: str):
-    app_log(kernel, 'Serving app...')
+def app__app__serve(kernel: Kernel, app_dir: str):
+    manager: 'AppAddonManager' = kernel.addons['app']
+    manager.log('Serving app...')
 
     kernel.exec_function(
         app__hook__exec,

@@ -127,10 +127,10 @@ def create_directories_and_file(path: str, content: str = None) -> None:
             file.write(content)
 
 
-def write_dict_to_config(dict, dest: str):
+def write_dict_to_config(dict: dict, dest: str):
+    output = "\n".join(f"{key.upper()}={str(value).lower()}" for key, value in dict.items())
     with open(dest, 'w') as f:
-        for key, value in dict.items():
-            f.write(f"{key.upper()}={str(value).lower()}\n")
+        f.write(output)
 
 
 def get_yml_file_item(file_path: str, key: str, default=None):
