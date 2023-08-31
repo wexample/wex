@@ -73,17 +73,22 @@ class AppAddonManager(AddonManager):
             return default
 
     def save_config(self):
-        with open(self.config_path, 'w') as file:
-            yaml.safe_dump(self.config, file)
+        self._save_yml_file(
+            self.config_path,
+            self.config
+        )
 
-    def save_config_file(self):
-        with open(self.config_path, 'w') as file:
-            yaml.safe_dump(self.config, file)
+    def _save_yml_file(self, path, config):
+        self.log('Updating ' + path)
+
+        with open(path, 'w') as file:
+            yaml.safe_dump(config, file)
 
     def save_runtime_config(self):
-        # Build yml
-        with open(self.runtime_config_path, 'w') as file:
-            yaml.safe_dump(self.runtime_config, file)
+        self._save_yml_file(
+            self.runtime_config_path,
+            self.runtime_config
+        )
 
         # Write as docker env file
         write_dict_to_config(
@@ -120,9 +125,35 @@ class AppAddonManager(AddonManager):
                 items.append((new_key, v))
         return dict(items)
 
-    def update_config(self, key, value):
-        self.config[key] = value
+    @staticmethod
+    def _set_config_value(config, key, value):
+        # Avoid "#refs" in files
+        if isinstance(value, dict) or isinstance(value, list):
+            value = value.copy()
+
+        set_dict_item_by_path(
+            config,
+            key,
+            value
+        )
+
+    def set_config(self, key, value):
+        self._set_config_value(
+            self.config,
+            key,
+            value
+        )
+
         self.save_config()
+
+    def set_runtime_config(self, key, value):
+        self._set_config_value(
+            self.runtime_config,
+            key,
+            value
+        )
+
+        self.save_runtime_config()
 
     def get_config(self, key: str) -> int | str | bool:
         return get_dict_item_by_path(self.config, key)
@@ -133,10 +164,6 @@ class AppAddonManager(AddonManager):
             color,
             increment + 1
         )
-
-    def update_runtime_config(self, key, value):
-        self.runtime_config[key] = value
-        self.save_runtime_config()
 
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
         return get_dict_item_by_path(self.runtime_config, key, default)

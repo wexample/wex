@@ -2,14 +2,16 @@ import os
 import shutil
 
 import click
-from addons.app.const.app import ERR_SERVICE_EXISTS, APP_DIR_APP_DATA
-from addons.app.helpers.app import config_save
+from addons.app.const.app import APP_DIR_APP_DATA
 from addons.docker.helpers.docker import merge_docker_compose_files
+from src.helper.dict import merge_dicts
 from src.helper.array import array_unique
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
 from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
 
 
 @click.command
@@ -28,7 +30,7 @@ from addons.app.decorator.app_dir_option import app_dir_option
 @click.option('--ignore-dependencies', '-id', type=bool, required=False, is_flag=True, default=False,
               help='Install dependencies')
 def app__service__install(
-        kernel,
+        kernel: Kernel,
         app_dir: str,
         service: str,
         install_config: bool = True,
@@ -56,21 +58,21 @@ def app__service__install(
 
             kernel.log_indent_down()
 
-    if service in kernel.addons['app']['config']['global']['services'] and not force:
-        kernel.error(ERR_SERVICE_EXISTS, {
-            'service': service
-        })
+    manager: AppAddonManager = kernel.addons['app']
+    services = manager.get_config('global.services')
+    if service in services and not force:
+        kernel.log('Service already installed')
+        return
 
     if install_config:
-        kernel.addons['app']['config']['global']['services'].append(service)
-        config_save(kernel, app_dir)
+        kernel.log('Adding to config')
+        # Append once, and remove duplicates
+        services.append(service)
+        services = array_unique(services)
 
-    # Remove duplicates
-    kernel.addons['app']['config']['global']['services'] = array_unique(
-        kernel.addons['app']['config']['global']['services'])
+        manager.set_config('global.services', services)
 
     service_dir = get_service_dir(kernel, service)
-
     service_sample_dir = os.path.join(service_dir, 'samples') + '/'
     service_sample_dir_wex = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
 
@@ -87,17 +89,21 @@ def app__service__install(
                 install_git,
             )
 
-    # Merge service global configuration to root
-    config = kernel.addons['app']['config']
-    if 'global' in kernel.registry['services'][service]['config']:
-        config['global'].update(kernel.registry['services'][service]['config']['global'])
+    # Allow service to set global settings.
+    service_config = kernel.registry['services'][service]['config']
+    if 'global' in service_config:
+        config_global = merge_dicts(
+            manager.get_config('global'),
+            service_config['global']
+        )
 
-    config_save(kernel, app_dir)
+        manager.set_config('global', config_global)
 
     kernel.exec(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}service/install',
         {
-            'app-dir': app_dir
+            'app-dir': app_dir,
+            'service': service
         },
         quiet=True
     )

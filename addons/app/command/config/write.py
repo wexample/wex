@@ -4,7 +4,7 @@ import os
 import socket
 import click
 
-from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, APP_DIR_APP_DATA
+from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
 from src.helper.dict import merge_dicts
@@ -39,6 +39,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         manager.config.copy(),
         {
             'env': env,
+            'runtime_name': f'{manager.name}_{env}',
             'host': {
                 'ip': socket.gethostbyname(
                     socket.gethostname()
