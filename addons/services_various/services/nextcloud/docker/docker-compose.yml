@@ -1,0 +1,17 @@
+services:
+  nextcloud:
+    container_name: '${RUNTIME_NAME}_nextcloud'
+    image: nextcloud:25.0.3
+    environment:
+      - VIRTUAL_HOST=${GLOBAL_NAME}.wex
+      - MARIA_10_HOST=${MARIA_10_HOST}
+      - MARIA_10_DATABASE=${MARIA_10_NAME}
+      - MARIA_10_USER=${MARIA_10_USER}
+      - MARIA_10_PASSWORD=${MARIA_10_PASSWORD}
+    volumes:
+      - ${CONTEXT_DIR}data:/var/www/html
+      - ${CONTEXT_DIR}extra-addons:/mnt/extra-addons
+      - ${CONTEXT_DIR}config.php:/var/www/html/config/wex.config.php
+    extends:
+      file: ${SERVICE_DEFAULT_YML_ENV}
+      service: default

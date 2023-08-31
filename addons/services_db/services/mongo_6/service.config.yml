@@ -1,0 +1,7 @@
+tags:
+  - db
+global:
+  db_container_name: mongo
+  service:
+    mongo:
+      version: 6.0.3

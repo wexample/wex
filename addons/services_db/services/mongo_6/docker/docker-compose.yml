@@ -1,0 +1,11 @@
+services:
+    mongo_6:
+        container_name: '${RUNTIME_NAME}_mongo'
+        image: mongo:${MONGO_VERSION}
+        volumes:
+          - ${CONTEXT_DIR_WEX}mongo/data:/data/db
+          - ${CONTEXT_DIR_WEX}mongo/dumps:/dump
+        command: mongod --oplogSize 128 --replSet rs0 --storageEngine=wiredTiger --bind_ip_all --port 27017
+        extends:
+            file: ${SERVICE_DEFAULT_YML_ENV}
+            service: default

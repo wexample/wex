@@ -1,0 +1,16 @@
+services:
+    mysql_8:
+        container_name: '${RUNTIME_NAME}_mysql'
+        image: mysql:8.0.32
+#    TODO    environment:
+#            - MYSQL_DATABASE=${MYSQL_DB_NAME}
+#            - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+#            - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+#            - MYSQL_TCP_PORT=${MYSQL_DB_PORT}
+        volumes:
+            - ${CONTEXT_DIR_WEX}mysql/data:/var/lib/mysql
+            - ${CONTEXT_DIR_WEX}mysql/dumps:/var/www/dumps
+            - ${CONTEXT_DIR_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+        extends:
+            file: ${SERVICE_DEFAULT_YML_ENV}
+            service: default

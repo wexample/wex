@@ -86,10 +86,12 @@ def exec_app_docker_compose(
             kernel.error(
                 ERR_UNEXPECTED,
                 {
-                    'error': f'Error during running docker compose "{docker_command}" : {output}'
+                    'error': f'Error during running docker compose "{docker_command}" : \n\n'
+                             + ' '.join(command)
+                             + '\n'.join(output)
                 }
             )
 
-        return ' '.join(output)
+        return '\n'.join(output)
 
     process_post_exec(kernel, command)

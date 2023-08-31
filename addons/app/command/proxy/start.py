@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import getpass
 import os.path
 
@@ -9,14 +11,15 @@ from addons.app.command.env.get import app__env__get
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.decorator.app_location_optional import app_location_optional
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_CONFIG
-from addons.app.helpers.app import set_app_workdir, unset_app_workdir, is_app_root
 from src.const.error import ERR_UNEXPECTED
 from src.helper.system import get_processes_by_port
 from src.decorator.as_sudo import as_sudo
+from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
 @app_location_optional
 @click.option('--user', '-u', type=str, required=False, help="Owner of application files")
@@ -24,44 +27,53 @@ from src.decorator.as_sudo import as_sudo
 @click.option('--group', '-g', type=str, required=False, help="Group of application files")
 @click.option('--port', '-p', type=int, required=False, help="Port for web server")
 @click.option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
-def app__proxy__start(kernel,
+def app__proxy__start(kernel: Kernel,
                       env: str = None,
                       user: str = None,
                       group: str = None,
                       port: str = None,
                       port_secure: str = None):
-    proxy_path = kernel.addons['app']['path']['proxy']
+    manager: 'AppAddonManager' = kernel.addons['app']
 
     # Created
-    if is_app_root(proxy_path):
+    if manager.is_app_root(manager.proxy_path):
         if os.path.exists(APP_FILEPATH_REL_CONFIG):
             # Started
             if kernel.exec_function(app__app__started, {
-                'app-dir': proxy_path,
+                'app-dir': manager.proxy_path,
                 'check-mode': APP_STARTED_CHECK_MODE_CONFIG
             }):
                 return
     else:
-        kernel.log(f'Creating proxy dir {proxy_path}')
+        kernel.log(f'Creating proxy dir {manager.proxy_path}')
         os.makedirs(
-            proxy_path,
+            manager.proxy_path,
             exist_ok=True
         )
 
         kernel.exec_function(
             app__app__init,
             {
-                'app-dir': proxy_path,
+                'app-dir': manager.proxy_path,
                 'services': ['proxy'],
                 'git': False
             }
         )
 
-    set_app_workdir(kernel, proxy_path)
+    manager: AppAddonManager = kernel.addons['app']
+    manager.set_app_workdir(manager.proxy_path)
 
     user = user or getpass.getuser()
 
     def check_port(port_to_check: int):
+        if not port_to_check:
+            kernel.error(
+                ERR_UNEXPECTED,
+                {
+                    'error': f"Invalid port {port_to_check}"
+                }
+            )
+
         kernel.log(f'Checking that port {port_to_check} is free')
 
         # Check port availability.
@@ -74,13 +86,17 @@ def app__proxy__start(kernel,
                 }
             )
 
-    check_port(port or kernel.addons['app']['config']['global'].get('port_public'))
-    check_port(port_secure or kernel.addons['app']['config']['global'].get('port_public_secure'))
+    check_port(
+        manager.set_config('global.public_port', port)
+    )
+    check_port(
+        manager.set_config('global.port_public_secure', port_secure)
+    )
 
     kernel.exec_function(
         app__app__start,
         {
-            'app-dir': proxy_path,
+            'app-dir': manager.proxy_path,
             # If no env, use the global wex env.
             'env': env or app__env__get.callback(app_dir=kernel.path['root']),
             'user': user,
@@ -88,4 +104,4 @@ def app__proxy__start(kernel,
         }
     )
 
-    unset_app_workdir(kernel)
+    manager.unset_app_workdir()

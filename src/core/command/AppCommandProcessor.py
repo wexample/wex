@@ -1,12 +1,18 @@
-import os
+from __future__ import annotations
 
+import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_SEPARATOR_FUNCTION_PARTS, COMMAND_CHAR_APP
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from addons.app.AppAddonManager import AppAddonManager
 
 
 class AppCommandProcessor(AbstractCommandProcessor):
+    def __init__(self, kernel: 'Kernel', command: str = None, command_args: [] = []):
+        super().__init__(kernel, command, command_args)
+        self.app_addon: AppAddonManager = kernel.addons['app']
+
     def exec(self, quiet: bool = False) -> str | None:
         if not self.get_base_path():
             if not quiet:
@@ -40,8 +46,9 @@ class AppCommandProcessor(AbstractCommandProcessor):
         ]
 
     def get_base_path(self):
-        if self.kernel.addons['app']['path']['call_app_dir']:
-            return f'{self.kernel.addons["app"]["path"]["call_app_dir"]}{APP_DIR_APP_DATA}'
+        call_app_dir = self.app_addon.get_runtime_config("path.call_app_dir")
+        if call_app_dir:
+            return f'{call_app_dir}{APP_DIR_APP_DATA}'
 
         return None
 

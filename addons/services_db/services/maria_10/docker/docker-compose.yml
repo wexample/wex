@@ -1,0 +1,19 @@
+services:
+    maria_10:
+        container_name: '${RUNTIME_NAME}_maria'
+        image: mariadb:10.9
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_PASSWORD=${MARIA_10_PASSWORD}
+            - MYSQL_DATABASE=${MARIA_10_NAME}
+            - MYSQL_ROOT_PASSWORD=${MARIA_10_PASSWORD}
+            - MYSQL_USER=${MARIA_10_USER}
+        volumes:
+            - ${CONTEXT_DIR_WEX}maria/data:/var/lib/mysql
+            - ${CONTEXT_DIR_WEX}maria/dumps:/var/www/dumps
+            - ${CONTEXT_DIR_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+        extends:
+            file: ${SERVICE_DEFAULT_YML_ENV}
+            service: default
+        ports:
+            - ${MARIA_10_PORT}:3306
