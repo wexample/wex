@@ -87,14 +87,17 @@ def app__proxy__start(kernel: Kernel,
             )
 
     check_port(
-        manager.set_config('global.public_port', port)
+        manager.get_config('global.port_public')
     )
     check_port(
-        manager.set_config('global.port_public_secure', port_secure)
+        manager.get_config('global.port_public_secure')
     )
 
-    kernel.exec_function(
-        app__app__start,
+    manager.unset_app_workdir()
+
+    # Execute command string to trigger middlewares
+    kernel.exec(
+        'app::app/start',
         {
             'app-dir': manager.proxy_path,
             # If no env, use the global wex env.
@@ -103,5 +106,3 @@ def app__proxy__start(kernel: Kernel,
             'group': group,
         }
     )
-
-    manager.unset_app_workdir()

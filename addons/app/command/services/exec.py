@@ -17,25 +17,23 @@ from src.core.Kernel import Kernel
 def app__services__exec(kernel: Kernel, app_dir: str, hook, arguments: str):
     manager: AppAddonManager = kernel.addons['app']
 
-    def callback():
-        nonlocal arguments
-        output = {}
+    output = {}
 
-        arguments = parse_arg(arguments)
+    arguments = parse_arg(arguments)
 
-        for service in manager.get_config('global.services'):
-            arguments = arguments.copy()
-            arguments['service'] = service
+    for service in manager.get_config('global.services'):
+        arguments = arguments.copy()
+        arguments['service'] = service
 
-            output[service] = kernel.exec(
-                f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}',
-                arguments,
-                quiet=True
-            )
+        command_name = f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}'
 
-        return output
+        manager.log(command_name)
 
-    return manager.exec_in_workdir(
-        app_dir,
-        callback
-    )
+        output[service] = kernel.exec(
+            command_name,
+            arguments,
+            quiet=True
+        )
+
+    return output
+

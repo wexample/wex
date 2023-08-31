@@ -13,12 +13,14 @@ from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
 from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
+from src.helper.process import process_post_exec_wex
 from src.helper.prompt import prompt_choice
 from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.helpers.app import create_env
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @app_dir_option()
 @click.option(
     '--clear-cache', '-cc', is_flag=True, default=False,
@@ -141,9 +143,14 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         sync=False
     )
 
+    # TODO if build fails, app is still marked as started
+    #      We should create a queued steps system, to work with async bash scripts.
     manager.set_runtime_config('started', True)
 
-    kernel.exec_function(
+
+    # Postpone execution
+    process_post_exec_wex(
+        kernel,
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -151,7 +158,8 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         }
     )
 
-    kernel.exec_function(
+    process_post_exec_wex(
+        kernel,
         app__app__serve,
         {
             'app-dir': app_dir

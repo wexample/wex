@@ -9,9 +9,9 @@ services:
             - MYSQL_ROOT_PASSWORD=${MARIA_10_PASSWORD}
             - MYSQL_USER=${MARIA_10_USER}
         volumes:
-            - ${CONTEXT_DIR_WEX}maria/data:/var/lib/mysql
-            - ${CONTEXT_DIR_WEX}maria/dumps:/var/www/dumps
-            - ${CONTEXT_DIR_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+            - ${PATH_APP_WEX}maria/data:/var/lib/mysql
+            - ${PATH_APP_WEX}maria/dumps:/var/www/dumps
+            - ${PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
         extends:
             file: ${SERVICE_DEFAULT_YML_ENV}
             service: default

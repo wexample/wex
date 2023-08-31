@@ -1,8 +1,8 @@
 from addons.app.helpers.test import create_test_app
+from addons.app.command.config.get import app__config__get
 from tests.AbstractTestCase import AbstractTestCase
 
 from addons.app.command.config.set import app__config__set
-from addons.app.command.config.get import app__config__get
 
 
 class TestAppCommandConfigSet(AbstractTestCase):

@@ -13,7 +13,6 @@ from src.helper.file import set_user_or_sudo_user_owner
 
 
 @command()
-@click.pass_obj
 @as_sudo
 def core__registry__build(kernel):
     kernel.log('Building registry...')

@@ -11,11 +11,4 @@ from addons.app.decorator.service_option import service_option
 def app__service__used(kernel: Kernel, service: str, app_dir: str) -> bool:
     manager: AppAddonManager = kernel.addons['app']
 
-    def callback():
-        return service in manager.get_config('global.services')
-
-    return manager.exec_in_workdir(
-        app_dir,
-        callback
-    )
-
+    return service in manager.get_config('global.services')

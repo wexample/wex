@@ -21,9 +21,13 @@ class AppAddonManager(AddonManager):
         self.config = {}
         self.config_path = None
         self.proxy_apps = {}
-        self.proxy_path = None
         self.runtime_config = {}
         self.runtime_config_path = None
+
+        if platform.system() == 'Darwin':
+            self.proxy_path = '/Users/.wex/server/'
+        else:
+            self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
 
     @staticmethod
     def is_app_root(app_dir: str) -> bool:
@@ -189,10 +193,10 @@ class AppAddonManager(AddonManager):
 
         self.call_command_level -= 1
 
-        if self.call_command_level == 0:
+        if self.call_command_level == -1:
             self.unset_app_workdir()
 
-        elif self.call_command_level < 0:
+        elif self.call_command_level < -1:
             self.kernel.error(ERR_UNEXPECTED, {
                 'error': 'More "post" execution than "pre" execution call'
             })
@@ -205,7 +209,7 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        self.call_command_level = 1
+        self.call_command_level = 0
 
         app_dir = self.kernel.exec_function(
             app__location__find, {
@@ -219,11 +223,6 @@ class AppAddonManager(AddonManager):
             self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
             self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
             self.config = self._load_config(self.config_path)
-
-            if platform.system() == 'Darwin':
-                self.proxy_path = '/Users/.wex/server/'
-            else:
-                self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
 
             self.proxy_apps = yaml_load_or_default(
                 self.proxy_path + PROXY_FILE_APPS_REGISTRY,

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import click
-
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
 from addons.app.helpers.docker import exec_app_docker_compose
@@ -9,10 +7,10 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @app_dir_option()
 def app__app__stop(kernel: 'Kernel', app_dir: str):
     manager: 'AppAddonManager' = kernel.addons['app']

@@ -19,11 +19,4 @@ def app__config__get(
 ):
     manager: AppAddonManager = kernel.addons['app']
 
-    def callback():
-        return manager.get_config(key, default)
-
-    return manager.exec_in_workdir(
-        app_dir,
-        callback
-    )
-
+    return manager.get_config(key, default)

@@ -1,16 +1,12 @@
-from addons.app.command.config.get import app__config__get
 from addons.app.command.version.build import app__version__build
+from addons.app.AppAddonManager import AppAddonManager
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandVersionBuild(AbstractTestCase):
     def test_build(self):
-        current_version = self.kernel.exec_function(
-            app__config__get,
-            {
-                'key': 'global.version'
-            }
-        )
+        manager: AppAddonManager = self.kernel.addons['app']
+        current_version = manager.get_config('global.version')
 
         # Change version.
         version = self.kernel.exec_function(

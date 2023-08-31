@@ -22,9 +22,9 @@ def get_app_docker_compose_files(kernel, app_dir):
         'app-dir': app_dir,
         'service': 'proxy',
     }):
-        compose_files.append(kernel.path['addons'] + 'app/containers/default/docker-compose.yml')
-    else:
         compose_files.append(kernel.path['addons'] + 'app/containers/network/docker-compose.yml')
+    else:
+        compose_files.append(kernel.path['addons'] + 'app/containers/default/docker-compose.yml')
 
     compose_files.append(
         app_compose_file
@@ -62,7 +62,8 @@ def exec_app_docker_compose(
 
     for file in compose_files:
         command.append('-f')
-        command.append(file)
+
+        command.append(os.path.realpath(file))
 
     command += [
         '--profile',
