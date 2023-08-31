@@ -3,20 +3,23 @@ from typing import Optional
 import click
 import git
 from addons.default.command.version.increment import default__version__increment
-from addons.app.command.config.get import app__config__get
-from addons.app.command.config.set import app__config__set
 from src.const.error import ERR_UNEXPECTED
 from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command
+@command()
 @click.pass_obj
 @click.option('--version', '-v', type=str, required=False,
               help="New version number, auto generated if missing")
 @click.option('--commit', '-ok', required=False, is_flag=True, default=False,
               help="New version changes has been validated, ask to commit changes")
 @app_dir_option()
-def app__version__build(kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
+def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
+    manager: AppAddonManager = kernel.addons['app']
+
     if not commit:
         if version:
             new_version = version
@@ -24,32 +27,17 @@ def app__version__build(kernel, version=None, commit: bool = False, app_dir: Opt
             new_version = kernel.exec_function(
                 default__version__increment,
                 {
-                    'version': kernel.exec_function(
-                        app__config__get,
-                        {
-                            'key': 'global.version'
-                        }
-                    )
+                    'version': manager.get_config('global.version')
                 }
             )
 
         # Save new version
         kernel.log(f'New app version : {new_version}')
-        kernel.exec_function(
-            app__config__set,
-            {
-                'key': 'global.version',
-                'value': new_version
-            }
-        )
+
+        manager.set_config('global.version', new_version)
     else:
         repo = git.Repo(app_dir)
-        new_version = kernel.exec_function(
-            app__config__get,
-            {
-                'key': 'global.version'
-            }
-        )
+        new_version = manager.get_config('global.version')
 
         if not repo.is_dirty(untracked_files=True):
             kernel.log('No changes to commit')

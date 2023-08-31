@@ -10,49 +10,20 @@ from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY
 from addons.app.command.location.find import app__location__find
-from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default
+from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
     def __init__(self, kernel, name):
         super().__init__(kernel, name)
         self.call_command_level = None
+        self.call_working_dir = os.getcwd()
         self.config = {}
         self.config_path = None
         self.proxy_apps = {}
         self.proxy_path = None
         self.runtime_config = {}
         self.runtime_config_path = None
-
-    def load_current_app_configs(self):
-        app_path = self.kernel.exec_function(
-            app__location__find
-        )
-
-        if app_path:
-            self.config_path = os.path.join(app_path, APP_FILEPATH_REL_CONFIG)
-            self.runtime_config_path = os.path.join(app_path, APP_FILEPATH_REL_CONFIG_RUNTIME)
-            self.config = self._load_config(self.config_path)
-
-            if platform.system() == 'Darwin':
-                self.proxy_path = '/Users/.wex/server/'
-            else:
-                self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
-
-            self.proxy_apps = yaml_load_or_default(
-                self.proxy_path + PROXY_FILE_APPS_REGISTRY,
-                {}
-            )
-
-            self.runtime_config = self._load_config(
-                self.runtime_config_path,
-                {
-                    'path': {
-                        'app': app_path,
-                        'proxy': self.proxy_path
-                    }
-                }
-            )
 
     @staticmethod
     def is_app_root(app_dir: str) -> bool:
@@ -155,8 +126,8 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_config(self, key: str) -> int | str | bool:
-        return get_dict_item_by_path(self.config, key)
+    def get_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
+        return get_dict_item_by_path(self.config, key, default)
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
         return self.kernel.log(
@@ -233,8 +204,49 @@ class AppAddonManager(AddonManager):
                 indent=True
             )
 
-    def set_app_workdir(self, app_dir: str):
+    def set_app_workdir(self, app_dir: str = None):
         self.call_command_level = 1
+
+        app_dir = self.kernel.exec_function(
+            app__location__find, {
+                'app-dir': app_dir
+            }
+        )
+
+        if app_dir:
+            os.chdir(app_dir)
+
+            self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
+            self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
+            self.config = self._load_config(self.config_path)
+
+            if platform.system() == 'Darwin':
+                self.proxy_path = '/Users/.wex/server/'
+            else:
+                self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
+
+            self.proxy_apps = yaml_load_or_default(
+                self.proxy_path + PROXY_FILE_APPS_REGISTRY,
+                {}
+            )
+
+            self.runtime_config = self._load_config(
+                self.runtime_config_path)
 
     def unset_app_workdir(self):
         self.call_command_level = None
+
+        # Restore default working dir.
+        os.chdir(self.call_working_dir)
+
+    def exec_in_workdir(self, app_dir: str, callback):
+        self.kernel.log_indent_up()
+        app_dir_previous = os.getcwd() + '/'
+        self.set_app_workdir(app_dir)
+
+        response = callback()
+
+        self.set_app_workdir(app_dir_previous)
+        self.kernel.log_indent_down()
+
+        return response

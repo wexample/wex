@@ -1,17 +1,21 @@
-from __future__ import annotations
-
-import click
-
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
 from src.decorator.command import command
+from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.decorator.service_option import service_option
 
 
 @command()
 @app_dir_option()
-@click.option('--service', '-s', type=str, required=True,
-              help="Service name to check in app configuration")
-def app__service__used(kernel, service: str, app_dir: str) -> bool:
-    manager: 'AppAddonManager' = kernel.addons['app']
+@service_option()
+def app__service__used(kernel: Kernel, service: str, app_dir: str) -> bool:
+    manager: AppAddonManager = kernel.addons['app']
 
-    return service in manager.get_config('global.services')
+    def callback():
+        return service in manager.get_config('global.services')
+
+    return manager.exec_in_workdir(
+        app_dir,
+        callback
+    )
+
