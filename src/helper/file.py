@@ -181,6 +181,13 @@ def get_dict_item_by_path(data: dict, key: str, default=None):
     return data
 
 
+def set_dict_item_by_path(data: dict, key: str, value):
+    keys = key.split('.')
+    for k in keys[:-1]:
+        data = data.setdefault(k, {})
+    data[keys[-1]] = value
+
+
 def yaml_load_or_default(file, default=None):
     if default is None:
         default = {}
