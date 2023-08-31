@@ -111,10 +111,11 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         })
 
     # Save app in proxy apps.
-    app_log(kernel, 'Registering app...')
-    kernel.addons['app']['proxy']['apps'][name] = app_dir
-    save_proxy_apps(kernel)
+    manager.log('Registering app...')
+    manager.proxy_apps[name] = app_dir
+    manager.save_proxy_apps()
 
+    # Run docker compose
     compose_options = ['up', '-d']
 
     if clear_cache:
@@ -138,7 +139,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     exec_app_docker_compose(
         kernel,
         app_dir,
-        [APP_FILEPATH_REL_COMPOSE_BUILD_YML],
+        [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
         compose_options,
         sync=False
     )

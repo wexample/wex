@@ -20,8 +20,8 @@ from addons.app.const.app import APP_ENV_PROD
 from addons.app.helpers.app import create_env
 from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.helpers.app import set_app_workdir, unset_app_workdir
-
+from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
 
 @click.command
 @click.pass_obj
@@ -37,13 +37,15 @@ from addons.app.helpers.app import set_app_workdir, unset_app_workdir
 @click.option('--domains', '-d', type=str, required=False,
               help="Comma separated list of domains names")
 def app__app__init(
-        kernel,
+        kernel: Kernel,
         app_dir: str,
         name: str = None,
         services: Union[str, Iterable] = None,
         domains: str = '',
         git: bool = True
 ):
+    manager: AppAddonManager = kernel.addons['app']
+
     if not app_dir:
         app_dir = os.getcwd() + '/'
 
@@ -179,7 +181,9 @@ def app__app__init(
             yaml.dump(config, f, default_flow_style=False)
 
     def init_step_set_workdir():
-        set_app_workdir(kernel, app_dir)
+        nonlocal manager
+
+        manager.set_app_workdir(app_dir)
 
     def init_step_install_service():
         nonlocal services
@@ -215,8 +219,7 @@ def app__app__init(
         )
 
     def init_step_unset_workdir():
-        nonlocal kernel
-        unset_app_workdir(kernel)
+        manager.unset_app_workdir()
 
     steps = [
         init_step_check_vars,
