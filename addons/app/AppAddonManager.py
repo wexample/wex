@@ -18,6 +18,7 @@ class AppAddonManager(AddonManager):
         super().__init__(kernel, name)
         self.call_command_level = None
         self.call_working_dir = os.getcwd()
+        self.current_app_dir = None
         self.config = {}
         self.config_path = None
         self.proxy_apps = {}
@@ -148,9 +149,8 @@ class AppAddonManager(AddonManager):
         if hasattr(function.callback, 'app_location_optional'):
             return
 
-        call_app_dir = self.get_runtime_config('path.call_app_dir')
-        if call_app_dir is not None:
-            app_dir_resolved = call_app_dir
+        if self.current_app_dir is not None:
+            app_dir_resolved = self.current_app_dir
         else:
             if 'app-dir' in args:
                 app_dir = args['app-dir']
@@ -220,6 +220,7 @@ class AppAddonManager(AddonManager):
         if app_dir:
             os.chdir(app_dir)
 
+            self.current_app_dir = app_dir
             self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
             self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
             self.config = self._load_config(self.config_path)
@@ -234,6 +235,7 @@ class AppAddonManager(AddonManager):
 
     def unset_app_workdir(self):
         self.call_command_level = None
+        self.current_app_dir = None
 
         # Restore default working dir.
         os.chdir(self.call_working_dir)

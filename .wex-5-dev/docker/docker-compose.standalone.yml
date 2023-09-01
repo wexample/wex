@@ -11,6 +11,9 @@ services:
     volumes:
       # Work dir
       - ../../:/opt/wex/
+      # TODO Remove on RC
+      # Use an updated .wex folder structure for internal dev an testing.
+      - ../../.wex-5-dev:/opt/wex/.wex
       # Tests
       - ../../tmp/tests-standalone/wex-proxy:/opt/wex-proxy
       - ../../tmp/tests-standalone/my-app:/var/www/local/my-app

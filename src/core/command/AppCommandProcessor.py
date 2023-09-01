@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
+from addons.app.command.location.find import app__location__find
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_SEPARATOR_FUNCTION_PARTS, COMMAND_CHAR_APP
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
@@ -46,9 +47,17 @@ class AppCommandProcessor(AbstractCommandProcessor):
         ]
 
     def get_base_path(self):
-        call_app_dir = self.app_addon.get_runtime_config("path.call_app_dir")
-        if call_app_dir:
-            return f'{call_app_dir}{APP_DIR_APP_DATA}'
+        app_dir = self.app_addon.current_app_dir
+        if not self.app_addon.current_app_dir:
+            app_dir = self.kernel.exec_function(
+                app__location__find,
+                {
+                    'app-dir': self.app_addon.call_working_dir
+                }
+            )
+
+        if app_dir:
+            return f'{app_dir}{APP_DIR_APP_DATA}'
 
         return None
 
