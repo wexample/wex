@@ -23,54 +23,56 @@ from src.core.command.UserCommandProcessor import UserCommandProcessor
 from src.helper.args import convert_dict_to_args
 from src.helper.file import list_subdirectories
 
+PROCESSOR_CLASSES = [
+    AddonCommandProcessor,
+    ServiceCommandProcessor,
+    AppCommandProcessor,
+    UserCommandProcessor,
+    CoreCommandProcessor
+]
+
+ADDONS_DEFINITIONS = {
+    'app': AppAddonManager
+}
 
 class Kernel:
-    addons: [str] = {
-        'app': AppAddonManager
-    }
     messages = None
-    path: dict[str, Optional[str]] = {
-        'root': None,
-        'addons': None
-    }
     process_id: str = None
     test_manager = None
     core_actions = None
     registry: dict[str, Optional[str]] = {}
     http_server = None
-    processor_classes = [
-        AddonCommandProcessor,
-        ServiceCommandProcessor,
-        AppCommandProcessor,
-        UserCommandProcessor,
-        CoreCommandProcessor
-    ]
-    processors = {class_definition.get_type(class_definition): class_definition for class_definition in
-                  processor_classes}
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
 
         # Initialize global variables.
-        self.path['root'] = os.path.dirname(os.path.realpath(entrypoint_path)) + '/'
-        self.path['addons'] = self.path['root'] + 'addons/'
-        self.path['core.cli'] = os.path.join(self.path['root'], 'cli', 'wex')
-        self.path['tmp'] = self.path['root'] + 'tmp/'
-        self.path['log'] = self.path['tmp'] + 'log/'
-        self.path['history'] = os.path.join(self.path['tmp'], 'history.json')
-        self.path['templates'] = self.path['root'] + 'src/resources/templates/'
+        root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
+        tmp_path = os.path.join(root_path, 'tmp') + os.sep
+
+        self.path = {
+            'root': root_path,
+            'addons': os.path.join(root_path, 'addons') + os.sep,
+            'core.cli': os.path.join(root_path, 'cli', 'wex'),
+            'tmp': tmp_path,
+            'log': os.path.join(tmp_path, 'log') + os.sep,
+            'history': os.path.join(tmp_path, 'history.json'),
+            'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep
+        }
+
+        # Processors
+        self.processors = {
+            class_definition.get_type(class_definition): class_definition
+            for class_definition in PROCESSOR_CLASSES
+        }
 
         # Initialize addons config
+        self.addons = {}
         for name in list_subdirectories(self.path['addons']):
-            if name in self.addons:
-                definition = self.addons[name]
-            else:
-                definition = AddonManager
-
+            definition = ADDONS_DEFINITIONS.get(name, AddonManager)
             self.addons[name] = definition(self, name)
 
         self.load_registry()
-
         self.exec_middlewares('init')
 
     def load_registry(self):
