@@ -2,6 +2,7 @@ import os
 
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.command.app.perms import app__app__perms
+from src.const.globals import ROOT_USERNAME, OWNER_USERNAME
 from src.helper.system import get_uid_from_user_name, get_gid_from_group_name
 from src.helper.file import get_file_owner
 from tests.AbstractTestCase import AbstractTestCase
@@ -23,15 +24,15 @@ class TestAppCommandAppPerms(AbstractTestCase):
 
         os.chown(
             test_file,
-            get_uid_from_user_name('root'),
-            get_gid_from_group_name('root')
+            get_uid_from_user_name(ROOT_USERNAME),
+            get_gid_from_group_name(ROOT_USERNAME)
         )
 
         self.assertEqual(
             get_file_owner(
                 test_file
             ),
-            'root'
+            ROOT_USERNAME
         )
 
         self.kernel.exec_function(
@@ -45,5 +46,5 @@ class TestAppCommandAppPerms(AbstractTestCase):
             get_file_owner(
                 test_file
             ),
-            'owner'
+            OWNER_USERNAME
         )

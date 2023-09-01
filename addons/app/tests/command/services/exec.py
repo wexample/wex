@@ -5,7 +5,7 @@ from addons.app.command.services.exec import app__services__exec
 
 class TestAppCommandServicesExec(AbstractTestCase):
     def test_exec(self):
-        app_dir = create_test_app(self.kernel, services=['php-8'])
+        app_dir = create_test_app(self.kernel, services=['php_8'])
 
         response = self.kernel.exec_function(
             app__services__exec,
@@ -16,5 +16,5 @@ class TestAppCommandServicesExec(AbstractTestCase):
         )
 
         self.assertTrue(
-            response['php-8'] is None
+            response['php_8'] is None
         )

@@ -136,7 +136,7 @@ class AppAddonManager(AddonManager):
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
         return self.kernel.log(
-            f'[{self.name}] {message}',
+            f'[{self.get_config("global.name")}] {message}',
             color,
             increment + 1
         )
@@ -218,7 +218,7 @@ class AppAddonManager(AddonManager):
         )
 
         if app_dir:
-            os.chdir(app_dir)
+            self.log('Switching to app : ' + app_dir)
 
             self.current_app_dir = app_dir
             self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
@@ -232,6 +232,8 @@ class AppAddonManager(AddonManager):
 
             self.runtime_config = self._load_config(
                 self.runtime_config_path)
+
+            os.chdir(app_dir)
 
     def unset_app_workdir(self):
         self.call_command_level = None

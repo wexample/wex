@@ -4,4 +4,4 @@ services:
       file: ${SERVICE_MATOMO_YML_ENV}
       service: matomo
     depends_on:
-      - ${GLOBAL_NAME}_mysql-8
+      - ${GLOBAL_NAME}_mysql_8

@@ -6,7 +6,7 @@ from addons.app.command.app.start import app__app__start
 
 class TestAppCommandAppStop(AbstractTestCase):
     def test_stop(self):
-        app_dir = create_test_app(self.kernel, services=['php-8'])
+        app_dir = create_test_app(self.kernel, services=['php_8'])
 
         self.kernel.exec_function(
             app__app__start, {

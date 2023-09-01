@@ -67,21 +67,15 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         if not kernel.exec_function(app__app__started, {'app-dir': manager.proxy_path}):
             manager.log('Starting proxy server')
 
-            def start_proxy():
-                from addons.app.command.proxy.start import app__proxy__start
+            from addons.app.command.proxy.start import app__proxy__start
 
-                kernel.exec_function(
-                    app__proxy__start,
-                    {
-                        'user': user,
-                        'group': group,
-                        'env': env,
-                    }
-                )
-
-            manager.exec_in_workdir(
-                manager.proxy_path,
-                start_proxy
+            kernel.exec_function(
+                app__proxy__start,
+                {
+                    'user': user,
+                    'group': group,
+                    'env': env,
+                }
             )
 
     manager.log(f"Starting app : {name}")

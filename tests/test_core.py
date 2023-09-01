@@ -5,8 +5,9 @@ from AbstractTestCase import AbstractTestCase
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.version.build import core__version__build
+from src.helper.system import get_user_or_sudo_user, get_sudo_username
 from src.core.FatalError import FatalError
-from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME
 from src.helper.registry import get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
@@ -29,6 +30,21 @@ def create_fake_click_function():
 
 
 class TestCore(AbstractTestCase):
+    def test_init(self):
+        user = get_user_or_sudo_user()
+        message = f'Tests should be ran by sudo from a user called "owner"'
+
+        self.assertEqual(
+            user,
+            OWNER_USERNAME,
+            '\n'.join([
+                message,
+                f'  To create user : sudo adduser {OWNER_USERNAME}',
+                f'  To give it sudo power : sudo usermod -aG sudo {OWNER_USERNAME}',
+                f'  To switch to user : sudo su {OWNER_USERNAME}',
+                f'  Then run tests : sudo {CORE_COMMAND_NAME} test'
+            ])
+        )
 
     def test_convert_args_to_dict(self):
         args = convert_args_to_dict(

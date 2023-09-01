@@ -7,7 +7,7 @@ from addons.app.helpers.test import create_test_app
 
 class TestAppCommandAppServe(AbstractTestCase):
     def test_serve(self):
-        app_dir = create_test_app(self.kernel, services=['php-8'])
+        app_dir = create_test_app(self.kernel, services=['php_8'])
 
         self.kernel.exec_function(
             app__app__serve, {

@@ -6,7 +6,6 @@ import os.path
 import click
 
 from addons.app.command.app.init import app__app__init
-from addons.app.command.app.start import app__app__start
 from addons.app.command.env.get import app__env__get
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.decorator.app_location_optional import app_location_optional

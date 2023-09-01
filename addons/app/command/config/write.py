@@ -32,6 +32,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
     env = app__env__get.callback(app_dir)
     user = user or get_user_or_sudo_user()
     group = group or get_user_group_name(user)
+    name = manager.get_config('global.name')
 
     manager.log(f'Using user {user}:{group}')
 
@@ -39,7 +40,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         manager.config.copy(),
         {
             'env': env,
-            'runtime_name': f'{manager.name}_{env}',
+            'runtime_name': f'{name}_{env}',
             'host': {
                 'ip': socket.gethostbyname(
                     socket.gethostname()
@@ -107,7 +108,10 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             'config'
         )
 
-        with open(APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, 'w') as f:
+        with open(os.path.join(
+                app_dir,
+                APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+        ), 'w') as f:
             f.write(yml_content)
 
     kernel.exec_function(

@@ -6,7 +6,7 @@ from addons.app.command.version.build import app__version__build
 from addons.app.command.config.set import app__config__set
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from src.const.error import ERR_CORE_REPO_DIRTY
-from src.const.globals import FILE_VERSION, FILE_README
+from src.const.globals import FILE_VERSION, FILE_README, ROOT_USERNAME
 from src.helper.core import core_kernel_get_version
 
 

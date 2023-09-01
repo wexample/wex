@@ -86,14 +86,11 @@ def app__app__init(
         kernel.log('Checking services...')
         for service in services:
             if not service in kernel.registry['services']:
-                import logging
-
                 kernel.error(
                     ERR_SERVICE_NOT_FOUND,
                     {
                         'service': service
-                    },
-                    logging.ERROR
+                    }
                 )
 
                 return False

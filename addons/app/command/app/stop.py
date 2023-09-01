@@ -22,7 +22,7 @@ def app__app__stop(kernel: 'Kernel', app_dir: str):
         manager.log('App already stopped')
         return
 
-    name = manager.name
+    name = manager.get_config('global.name')
 
     kernel.exec_function(
         app__hook__exec,

@@ -6,7 +6,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandAppStart(AbstractTestCase):
     def test_start(self):
-        app_dir = create_test_app(self.kernel, services=['php-8'])
+        app_dir = create_test_app(self.kernel, services=['php_8'])
 
         self.kernel.exec_function(
             app__app__start, {

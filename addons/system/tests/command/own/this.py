@@ -1,6 +1,7 @@
 import os
 
 from addons.system.command.own.this import system__own__this
+from src.const.globals import OWNER_USERNAME
 from src.helper.file import get_file_owner
 from tests.AbstractTestCase import AbstractTestCase
 
@@ -23,7 +24,7 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             get_file_owner(
                 test_file
             ),
-            'owner'
+            OWNER_USERNAME
         )
 
         self.kernel.exec_function(system__own__this, {
@@ -34,5 +35,5 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             get_file_owner(
                 test_file
             ),
-            'owner'
+            OWNER_USERNAME
         )
