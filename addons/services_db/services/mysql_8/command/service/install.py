@@ -11,10 +11,11 @@ from src.decorator.command import command
 @service_option()
 def mysql_8__service__install(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
+    name = manager.get_config('global.name')
 
     manager.set_config(service, {
-        'host': f'{manager.name}_mysql_8',
-        'name': f'{manager.name}',
+        'host': f'{name}_mysql_8',
+        'name': f'{name}',
         'password': PASSWORD_INSECURE,
         'port': 3306,
         'user': 'root',
