@@ -5,9 +5,31 @@ set -e
 # This setting ensures that pipes will return an error code if any command in the pipe fails.
 set -o pipefail
 
+# Function to handle cleanup on exit or interruption
+cleanup() {
+    if [ -f "${WEX_POST_EXEC}" ]; then
+        rm "${WEX_POST_EXEC}"
+    fi
+}
+
+# Trap to handle interruptions and cleanup
+trap cleanup EXIT INT TERM
+
 # Resolve symlinks
-CURRENT_FILE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
-WEX_ROOT="$(realpath "${CURRENT_FILE}/../")/"
+# Using a more portable method to get the absolute path
+get_absolute_path() {
+    local target="$1"
+    while [ -L "$target" ]; do
+        local dir
+        dir=$(dirname "$target")
+        target=$(readlink "$target")
+        [[ $target != /* ]] && target="$dir/$target"
+    done
+    echo "$(cd "$(dirname "$target")" && pwd -P)/$(basename "$target")"
+}
+
+CURRENT_FILE=$(get_absolute_path "${BASH_SOURCE[0]}")
+WEX_ROOT="$(cd "$(dirname "${CURRENT_FILE}")"/.. && pwd -P)/"
 WEX_PROC_ID="$$.$(date +%s.%N)"
 
 # Load main python script
@@ -15,7 +37,13 @@ python3 "${WEX_ROOT}__main__.py" "${WEX_PROC_ID}" "${@}"
 
 # If a post-exec process has been defined.
 WEX_POST_EXEC="${WEX_ROOT}tmp/process/${WEX_PROC_ID}.post-exec"
-if [ -f "${WEX_POST_EXEC}" ];then
-  . "${WEX_POST_EXEC}"
-  rm "${WEX_POST_EXEC}"
+if [ -f "${WEX_POST_EXEC}" ]; then
+    # Ensure the file is only readable/writable by the owner for security
+    chmod 600 "${WEX_POST_EXEC}"
+
+    # Execute the commands in the file
+    . "${WEX_POST_EXEC}"
+
+    # Cleanup
+    rm "${WEX_POST_EXEC}"
 fi

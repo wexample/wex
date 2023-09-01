@@ -35,6 +35,13 @@ ADDONS_DEFINITIONS = {
     'app': AppAddonManager
 }
 
+CORE_ACTIONS = [
+    CoreActionsCoreAction,
+    HiCoreAction,
+    TestCoreAction,
+]
+
+
 class Kernel:
     messages = None
     process_id: str = None
@@ -60,9 +67,9 @@ class Kernel:
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep
         }
 
-        # Processors
+        # Create a registry for faster access
         self.processors = {
-            class_definition.get_type(class_definition): class_definition
+            class_definition.get_type(): class_definition
             for class_definition in PROCESSOR_CLASSES
         }
 
@@ -264,6 +271,10 @@ class Kernel:
     def exec_function(self, function, args=None):
         import click
 
+        print(function)
+        print(args)
+        exit
+
         if not args:
             args = []
 
@@ -314,9 +325,7 @@ class Kernel:
 
     def build_command_processor_by_type(self, command_type: str) -> AbstractCommandProcessor | None:
         processor_class = self.processors[command_type]
-        processor = processor_class(self)
-
-        return processor
+        return processor_class(self)
 
     def build_command_processor(self, command, command_args=None) -> AbstractCommandProcessor | None:
         for processor_name in self.processors:
