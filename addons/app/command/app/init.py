@@ -11,6 +11,7 @@ from src.helper.core import core_kernel_get_version
 from src.helper.prompt import build_progress_bar
 from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.args import split_arg_array
+from src.decorator.command import command
 
 from addons.app.command.app.start import app__app__start
 from addons.app.decorator.app_location_optional import app_location_optional
@@ -23,8 +24,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
-@click.command
-@click.pass_obj
+@command()
 @app_location_optional
 @click.option('--name', '-n', type=str, required=False,
               help="Name of new app")
