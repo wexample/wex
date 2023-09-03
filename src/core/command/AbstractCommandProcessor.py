@@ -61,7 +61,6 @@ class AbstractCommandProcessor:
             self.command_args = convert_dict_to_args(self.command_function, self.command_args)
 
         self.command_args_dict = convert_args_to_dict(self.command_function, self.command_args)
-        command_args = self.command_args
 
         middleware_args = {
             'processor': self,
@@ -70,7 +69,7 @@ class AbstractCommandProcessor:
         self.kernel.exec_middlewares('run_pre', middleware_args)
 
         try:
-            ctx = self.command_function.make_context('', command_args or [])
+            ctx = self.command_function.make_context('', self.command_args or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
             return AbortResponse()

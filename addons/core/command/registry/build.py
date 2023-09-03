@@ -7,7 +7,7 @@ from yaml import SafeLoader
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 from src.decorator.command import command
 from src.decorator.as_sudo import as_sudo
-from src.const.globals import FILE_REGISTRY, COMMAND_SEPARATOR_ADDON, COMMAND_CHAR_SERVICE, COMMAND_TYPE_ADDON, \
+from src.const.globals import FILE_REGISTRY, COMMAND_TYPE_ADDON, \
     COMMAND_TYPE_SERVICE
 from src.helper.file import set_user_or_sudo_user_owner
 
@@ -16,7 +16,9 @@ from src.helper.file import set_user_or_sudo_user_owner
 @as_sudo
 @click.option('--test', '-t', is_flag=True, default=False,
               help="Register also commands marked as only for testing")
-def core__registry__build(kernel, test: bool = False):
+@click.option('--write', '-w', type=bool, default=True,
+              help="Write registry file")
+def core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.log('Building registry...')
     addons = kernel.addons
 
@@ -27,15 +29,18 @@ def core__registry__build(kernel, test: bool = False):
         'services': build_registry_services(addons, kernel, test)
     }
 
-    registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
-    with open(registry_path, 'w') as f:
-        yaml.dump(registry, f)
+    if write:
+        registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
+        with open(registry_path, 'w') as f:
+            yaml.dump(registry, f)
 
-    set_user_or_sudo_user_owner(registry_path)
+        set_user_or_sudo_user_owner(registry_path)
+        kernel.load_registry()
+
     kernel.log('Building complete...')
-
-    kernel.load_registry()
     kernel.log_indent_down()
+
+    return registry
 
 
 def build_registry_addons(addons, kernel, test_commands: bool = False):
