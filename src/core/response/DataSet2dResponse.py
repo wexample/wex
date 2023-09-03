@@ -1,4 +1,4 @@
-DATASET_RENDER_MODE_CLI = 'cli'
+from src.const.globals import KERNEL_RENDER_MODE_CLI
 
 
 class DataSet2dResponse:
@@ -20,10 +20,10 @@ class DataSet2dResponse:
     def get_body(self):
         return self.body
 
-    def render(self, kernel, render_mode: str = DATASET_RENDER_MODE_CLI):
+    def render(self, kernel, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str:
         # We'll adjust render mode with kernel call method info
 
-        if render_mode == DATASET_RENDER_MODE_CLI:
+        if render_mode == KERNEL_RENDER_MODE_CLI:
             header = self.header
             array = self.body
 
@@ -43,7 +43,7 @@ class DataSet2dResponse:
             total_line_length = sum(max_widths) + (num_columns * 3) + (num_columns - 1)  # padding and separators
 
             # Generate the horizontal separator line
-            separator_line = "+" + "-" * (total_line_length) + "+\n"
+            separator_line = "+" + "-" * total_line_length + "+\n"
 
             bash_array = separator_line
 

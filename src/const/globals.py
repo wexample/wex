@@ -39,6 +39,7 @@ FILE_REGISTRY = 'registry.yml'
 FILE_VERSION = 'version.txt'
 GITHUB_GROUP = 'wexample'
 GITHUB_PROJECT = 'wex'
+KERNEL_RENDER_MODE_CLI = 'cli'
 PASSWORD_INSECURE = 'thisIsAReallyNotSecurePassword!'
 PYTHON_MIN_VERSION = (3, 10)
 OWNER_USERNAME = 'owner'

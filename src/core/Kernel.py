@@ -11,7 +11,7 @@ from yaml import SafeLoader
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.AddonManager import AddonManager
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT, ERR_UNEXPECTED
+    ERR_ARGUMENT_COMMAND_MALFORMED
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
@@ -20,7 +20,6 @@ from src.core.command.AppCommandProcessor import AppCommandProcessor
 from src.core.command.CoreCommandProcessor import CoreCommandProcessor
 from src.core.command.ServiceCommandProcessor import ServiceCommandProcessor
 from src.core.command.UserCommandProcessor import UserCommandProcessor
-from src.helper.args import convert_dict_to_args
 from src.helper.file import list_subdirectories
 from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from src.core.action.TestCoreAction import TestCoreAction
