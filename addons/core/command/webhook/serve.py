@@ -1,5 +1,4 @@
 import shutil
-import click
 
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.helper.command import execute_command
@@ -14,18 +13,19 @@ from src.decorator.as_sudo import as_sudo
 from http.server import HTTPServer
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
 @as_sudo
-@click.option('--port', '-p', type=int, required=False, default=4242,
-              help="Which port is used by service to listen incoming webhooks")
-@click.option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,
-              help="Do not start real service, useful for testing")
-@click.option('--asynchronous', '-a', type=bool, required=False, default=False, is_flag=True,
-              help="Use a daemon or not. Can't use daemon in a docker container")
-@click.option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
-              help="Kill existing process if already running")
+@option('--port', '-p', type=int, required=False, default=4242,
+        help="Which port is used by service to listen incoming webhooks")
+@option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,
+        help="Do not start real service, useful for testing")
+@option('--asynchronous', '-a', type=bool, required=False, default=False, is_flag=True,
+        help="Use a daemon or not. Can't use daemon in a docker container")
+@option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
+        help="Kill existing process if already running")
 def core__webhook__serve(
         base_kernel: Kernel,
         port: int = 4242,

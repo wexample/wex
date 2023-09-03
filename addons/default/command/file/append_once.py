@@ -1,14 +1,13 @@
-import click
-
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
-@click.option('--file', '-f', type=str, required=True,
-              help="File to work on")
-@click.option('--line', '-l', type=str, required=True,
-              help="Line to add if not already there somewhere in the file")
+@option('--file', '-f', type=str, required=True,
+        help="File to work on")
+@option('--line', '-l', type=str, required=True,
+        help="Line to add if not already there somewhere in the file")
 def default__file__append_once(kernel: Kernel, file: str, line: str) -> None:
     """
     Append a line to a file if it doesn't exist already.

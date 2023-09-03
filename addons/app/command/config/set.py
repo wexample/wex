@@ -1,14 +1,14 @@
-import click
 from src.decorator.command import command
+from src.decorator.option import option
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
 
 @command()
-@click.option('--key', '-k', type=str, required=True,
+@option('--key', '-k', type=str, required=True,
               help="Key in config file")
-@click.option('--value', '-v', required=True,
+@option('--value', '-v', required=True,
               help="Value to set")
 @app_dir_option()
 def app__config__set(

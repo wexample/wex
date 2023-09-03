@@ -1,4 +1,3 @@
-import click
 
 from addons.app.command.services.exec import app__services__exec
 from src.helper.args import parse_arg
@@ -7,12 +6,13 @@ from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
-@click.option('--hook', '-h', type=str, required=True,
+@option('--hook', '-h', type=str, required=True,
               help="Hook name")
-@click.option('--arguments', '-args', required=False,
+@option('--arguments', '-args', required=False,
               help="Hook name")
 @app_dir_option()
 def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):

@@ -12,6 +12,7 @@ from src.helper.prompt import build_progress_bar
 from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.args import split_arg_array
 from src.decorator.command import command
+from src.decorator.option import option
 
 from addons.app.command.app.start import app__app__start
 from addons.app.decorator.app_location_optional import app_location_optional
@@ -27,15 +28,15 @@ from src.core.Kernel import Kernel
 
 @command()
 @app_location_optional
-@click.option('--name', '-n', type=str, required=False,
+@option('--name', '-n', type=str, required=False,
               help="Name of new app")
-@click.option('--git', '-g', is_flag=True, required=False, default=True,
+@option('--git', '-g', is_flag=True, required=False, default=True,
               help="Initialize GIT repo")
-@click.option('--app-dir', '-a', type=str, required=False,
+@option('--app-dir', '-a', type=str, required=False,
               help="App directory")
-@click.option('--services', '-s', type=str, required=False,
+@option('--services', '-s', type=str, required=False,
               help="List of services to install")
-@click.option('--domains', '-d', type=str, required=False,
+@option('--domains', '-d', type=str, required=False,
               help="Comma separated list of domains names")
 def app__app__init(
         kernel: Kernel,

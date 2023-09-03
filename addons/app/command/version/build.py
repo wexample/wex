@@ -1,6 +1,5 @@
 from typing import Optional
 
-import click
 import git
 from addons.default.command.version.increment import default__version__increment
 from src.const.error import ERR_UNEXPECTED
@@ -8,13 +7,14 @@ from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
-@click.option('--version', '-v', type=str, required=False,
-              help="New version number, auto generated if missing")
-@click.option('--commit', '-ok', required=False, is_flag=True, default=False,
-              help="New version changes has been validated, ask to commit changes")
+@option('--version', '-v', type=str, required=False,
+        help="New version number, auto generated if missing")
+@option('--commit', '-ok', required=False, is_flag=True, default=False,
+        help="New version changes has been validated, ask to commit changes")
 @app_dir_option()
 def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
     manager: AppAddonManager = kernel.addons['app']

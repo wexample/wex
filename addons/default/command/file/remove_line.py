@@ -1,14 +1,15 @@
 import os
-import click
 
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
+
 
 @command()
-@click.option('--file-path', '-f', type=str, required=True,
-              help="File to work on")
-@click.option('--line', '-l', type=str, required=True,
-              help="Exact line, ending an trailing spaces will be ignored")
+@option('--file-path', '-f', type=str, required=True,
+        help="File to work on")
+@option('--line', '-l', type=str, required=True,
+        help="Exact line, ending an trailing spaces will be ignored")
 def default__file__remove_line(kernel: Kernel, file_path: str, line: str) -> None:
     if not os.path.isfile(file_path):
         kernel.log("File does not exist.")

@@ -1,7 +1,5 @@
-
 import os
 import socket
-import click
 
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, APP_DIR_APP_DATA
 from addons.app.command.env.get import app__env__get
@@ -15,14 +13,16 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
+
 
 @command()
-@click.option('--app-dir', '-a', type=str, required=False,
-              help="Add directory")
-@click.option('--user', '-u', type=str, required=False,
-              help="Owner of application files")
-@click.option('--group', '-g', type=str, required=False,
-              help="Group of application files")
+@option('--app-dir', '-a', type=str, required=False,
+        help="Add directory")
+@option('--user', '-u', type=str, required=False,
+        help="Owner of application files")
+@option('--group', '-g', type=str, required=False,
+        help="Group of application files")
 def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: str = None):
     """Build config file used in docker based on services and base config"""
     manager: AppAddonManager = kernel.addons['app']

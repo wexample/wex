@@ -1,8 +1,6 @@
 import getpass
 import os.path
 
-import click
-
 from addons.app.command.app.init import app__app__init
 from addons.app.command.env.get import app__env__get
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
@@ -15,16 +13,17 @@ from src.decorator.as_sudo import as_sudo
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
 @as_sudo
 @app_location_optional
-@click.option('--user', '-u', type=str, required=False, help="Owner of application files")
-@click.option('--env', '-e', type=str, required=False, help="Port for accessing apps")
-@click.option('--group', '-g', type=str, required=False, help="Group of application files")
-@click.option('--port', '-p', type=int, required=False, help="Port for web server")
-@click.option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
+@option('--user', '-u', type=str, required=False, help="Owner of application files")
+@option('--env', '-e', type=str, required=False, help="Port for accessing apps")
+@option('--group', '-g', type=str, required=False, help="Group of application files")
+@option('--port', '-p', type=int, required=False, help="Port for web server")
+@option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
 def app__proxy__start(kernel: Kernel,
                       env: str = None,
                       user: str = None,

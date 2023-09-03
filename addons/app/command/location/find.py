@@ -1,14 +1,14 @@
-
 import os
 from typing import Optional
-import click
 
 from src.decorator.command import command
+from src.decorator.option import option
 from addons.app.decorator.app_location_optional import app_location_optional
 
+
 @command()
-@click.option('--app-dir', '-a', type=str, required=False,
-              help="App directory")
+@option('--app-dir', '-a', type=str, required=False,
+        help="App directory")
 @app_location_optional
 def app__location__find(kernel, app_dir: Optional[str] = False) -> Optional[str]:
     """Search for the config file in the given directory path or its parent directories.

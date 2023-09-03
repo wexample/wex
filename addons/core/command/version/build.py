@@ -1,5 +1,4 @@
 import git
-import click
 import os
 from addons.default.command.version.increment import default__version__increment
 from addons.app.command.version.build import app__version__build
@@ -10,11 +9,12 @@ from src.const.globals import FILE_VERSION, FILE_README
 from src.helper.core import core_kernel_get_version
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
-@click.option('--commit', '-ok', required=False, is_flag=True, default=False,
-              help="New version changes has been validated, ask to commit changes")
+@option('--commit', '-ok', required=False, is_flag=True, default=False,
+        help="New version changes has been validated, ask to commit changes")
 def core__version__build(kernel: Kernel, commit: bool = False) -> None:
     version = core_kernel_get_version(kernel)
     repo = git.Repo(kernel.path['root'])

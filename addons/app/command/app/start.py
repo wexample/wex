@@ -17,18 +17,19 @@ from src.helper.prompt import prompt_choice
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helpers.app import create_env
 from src.decorator.command import command
+from src.decorator.option import option
 
 
 @command()
 @app_dir_option()
-@click.option(
+@option(
     '--clear-cache', '-cc', is_flag=True, default=False,
     help="Forces a rebuild of images")
-@click.option('--user', '-u', type=str, required=False,
+@option('--user', '-u', type=str, required=False,
               help="Owner of application files")
-@click.option('--group', '-g', type=str, required=False,
+@option('--group', '-g', type=str, required=False,
               help="Group of application files")
-@click.option('--env', '-e', type=str, required=False,
+@option('--env', '-e', type=str, required=False,
               help="App environment")
 def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str = None, group: str = None,
                     env: str = None):

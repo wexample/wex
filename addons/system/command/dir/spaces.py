@@ -1,14 +1,14 @@
-import click
 import os
 
 from src.helper.file import human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 from src.core.response.DataSet2dResponse import DataSet2dResponse
 
 
 @command()
-@click.option('--dir', '-d', type=str, required=False, help="Directory to inspect")
+@option('--dir', '-d', type=str, required=False, help="Directory to inspect")
 def system__dir__spaces(kernel: Kernel, dir: str = None):
     if dir is None:
         dir = os.getcwd()

@@ -1,5 +1,6 @@
 import click
 import datetime
+from src.decorator.option import option
 
 # Upgrade types
 UPGRADE_TYPE_MAJOR = 'major'
@@ -17,8 +18,8 @@ VERSION_BUILD_TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
 
 @click.command
-@click.option('--version', '-v', type=str, required=True,
-              help="Base version to increment")
+@option('--version', '-v', type=str, required=True,
+        help="Base version to increment")
 def default__version__increment(
         version: str,
         upgrade_type: str = UPGRADE_TYPE_MINOR,

@@ -6,6 +6,7 @@ from yaml import SafeLoader
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 from src.decorator.command import command
+from src.decorator.option import option
 from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY, COMMAND_TYPE_ADDON, \
     COMMAND_TYPE_SERVICE
@@ -14,10 +15,10 @@ from src.helper.file import set_user_or_sudo_user_owner
 
 @command()
 @as_sudo
-@click.option('--test', '-t', is_flag=True, default=False,
-              help="Register also commands marked as only for testing")
-@click.option('--write', '-w', type=bool, default=True,
-              help="Write registry file")
+@option('--test', '-t', is_flag=True, default=False,
+        help="Register also commands marked as only for testing")
+@option('--write', '-w', type=bool, default=True,
+        help="Write registry file")
 def core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.log('Building registry...')
     addons = kernel.addons

@@ -1,17 +1,18 @@
-import click
 import os
 
 from addons.core.command.test.create import core__test__create
 from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER
 from src.helper.file import create_from_template
 from src.decorator.command import command
+from src.decorator.option import option
 from src.core.Kernel import Kernel
 
+
 @command()
-@click.option('--command', '-c', type=str, required=True,
-              help="Full name of the command, i.e. addon::some/thing")
-@click.option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
-              help='Force to create file if exists')
+@option('--command', '-c', type=str, required=True,
+        help="Full name of the command, i.e. addon::some/thing")
+@option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
+        help='Force to create file if exists')
 def core__command__create(kernel: Kernel, command: str, force: bool = False) -> {}:
     kernel.log('Creating command file...')
     processor = kernel.create_command_processor_for_command(command)

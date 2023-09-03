@@ -1,16 +1,16 @@
 import os
-import click
 import re
 
 from urllib.parse import urlparse, parse_qs
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.option import option
 from addons.app.command.env.get import app__env__get
 from src.helper.command import execute_command
 
 
 @command()
-@click.option('--url', '-u', type=str, required=True, help="Argument")
+@option('--url', '-u', type=str, required=True, help="Argument")
 def core__webhook__exec(kernel: Kernel, url: str) -> bool:
     source_data = {}
     if kernel.http_server:
