@@ -1,14 +1,14 @@
 import click
 import psutil
 
-from src.core.render.DataSet2d import DataSet2d
+from src.core.response.DataSet2dResponse import DataSet2dResponse
 from src.helper.file import human_readable_size
 
 
 @click.command()
 @click.pass_obj
 def system__disk__spaces(kernel):
-    output_list = DataSet2d()
+    output_list = DataSet2dResponse()
     output_list.set_header([
         'Size',
         'Used',

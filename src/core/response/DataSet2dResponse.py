@@ -1,7 +1,7 @@
 DATASET_RENDER_MODE_CLI = 'cli'
 
 
-class DataSet2d:
+class DataSet2dResponse:
     header: list
     body: list
 

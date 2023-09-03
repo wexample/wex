@@ -3,7 +3,7 @@ import os
 
 from src.helper.file import human_readable_size
 
-from src.core.render.DataSet2d import DataSet2d
+from src.core.response.DataSet2dResponse import DataSet2dResponse
 
 
 @click.command()
@@ -21,8 +21,8 @@ def system__dir__spaces(kernel, dir: str = None):
                 total_size += os.path.getsize(fp)
         return total_size
 
-    # Initialize DataSet2d object
-    output_list = DataSet2d()
+    # Initialize DataSet2dResponse object
+    output_list = DataSet2dResponse()
     output_list.set_header(['Size', 'Name'])
 
     dir_list = [os.path.join(dir, d) for d in os.listdir(dir) if
