@@ -52,6 +52,7 @@ class Kernel:
     http_server = None
     log_indent: int = 1
     indent_string = '  '
+    test = False
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -95,14 +96,20 @@ class Kernel:
 
         # Load registry if empty
         if not os.path.exists(path_registry):
-            from addons.core.command.registry.build import core__registry__build
-
-            self.run_function(
-                core__registry__build
-            )
+            self.rebuild()
 
         with open(path_registry) as f:
             self.registry = yaml.load(f, SafeLoader)
+
+    def rebuild(self):
+        from addons.core.command.registry.build import core__registry__build
+
+        self.run_function(
+            core__registry__build,
+            {
+                'test': self.test
+            }
+        )
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation

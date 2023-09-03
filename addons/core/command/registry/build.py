@@ -14,15 +14,17 @@ from src.helper.file import set_user_or_sudo_user_owner
 
 @command()
 @as_sudo
-def core__registry__build(kernel):
+@click.option('--test', '-t', is_flag=True, default=False,
+              help="Register also commands marked as only for testing")
+def core__registry__build(kernel, test: bool = False):
     kernel.log('Building registry...')
     addons = kernel.addons
 
     kernel.log_indent_up()
 
     registry = {
-        'addons': build_registry_addons(addons, kernel),
-        'services': build_registry_services(addons, kernel)
+        'addons': build_registry_addons(addons, kernel, test),
+        'services': build_registry_services(addons, kernel, test)
     }
 
     registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
@@ -36,7 +38,7 @@ def core__registry__build(kernel):
     kernel.log_indent_down()
 
 
-def build_registry_addons(addons, kernel):
+def build_registry_addons(addons, kernel, test_commands: bool = False):
     addons_dict = {}
     processor = kernel.create_command_processor(COMMAND_TYPE_ADDON)
 
@@ -48,13 +50,14 @@ def build_registry_addons(addons, kernel):
                 'name': addon,
                 'commands': processor.scan_commands_groups(
                     addon_command_path,
+                    test_commands
                 )
             }
 
     return addons_dict
 
 
-def build_registry_services(addons, kernel):
+def build_registry_services(addons, kernel, test_commands: bool = False):
     services_dict = {}
     processor = kernel.create_command_processor(COMMAND_TYPE_SERVICE)
 
@@ -71,6 +74,7 @@ def build_registry_services(addons, kernel):
                     'name': service,
                     'commands': processor.scan_commands_groups(
                         commands_path,
+                        test_commands
                     ),
                     'addon': addon,
                     'dir': service_path + '/',

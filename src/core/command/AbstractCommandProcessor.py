@@ -273,8 +273,8 @@ class AbstractCommandProcessor:
 
         return ' '.join(params)
 
-    def suggest_from_path(self, commands_path: str, search_string: str) -> []:
-        commands = self.scan_commands_groups(commands_path)
+    def suggest_from_path(self, commands_path: str, search_string: str, test_commands: bool = False) -> []:
+        commands = self.scan_commands_groups(commands_path, test_commands)
         commands_names = []
 
         for command, command_data in commands.items():
@@ -287,7 +287,7 @@ class AbstractCommandProcessor:
 
         return commands_names
 
-    def scan_commands_groups(self, directory: str):
+    def scan_commands_groups(self, directory: str, test_commands: bool = False):
         command_dict = {}
 
         if os.path.exists(directory):
@@ -296,11 +296,12 @@ class AbstractCommandProcessor:
                 command_dict.update(self.scan_commands(
                     group_path,
                     group,
+                    test_commands
                 ))
 
         return command_dict
 
-    def scan_commands(self, directory: str, group: str):
+    def scan_commands(self, directory: str, group: str, test_commands: bool = False):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
         for command in os.listdir(directory):
@@ -315,7 +316,7 @@ class AbstractCommandProcessor:
                     parts
                 )
 
-                if not hasattr(function.callback, 'test_command'):
+                if test_commands or not hasattr(function.callback, 'test_command'):
                     commands[self.build_command_from_parts(parts)] = {
                         'file': command_file,
                         'test': test_file if os.path.exists(test_file) else None

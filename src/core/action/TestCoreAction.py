@@ -4,7 +4,6 @@ import unittest
 import importlib.util
 
 from addons.core.command.registry.build import core__registry__build
-from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.action.AbstractCoreAction import AbstractCoreAction
 
 
@@ -15,7 +14,10 @@ class TestCoreAction(AbstractCoreAction):
 
     def exec(self, command, command_args):
         self.kernel.run_function(
-            core__registry__build
+            core__registry__build,
+            {
+                'test': True
+            }
         )
 
         self.kernel.log('Starting test suite..')

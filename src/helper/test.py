@@ -2,7 +2,6 @@
 import os
 import re
 
-from addons.core.command.registry.build import core__registry__build
 from src.core import Kernel
 from src.helper.string import to_snake_case, to_pascal_case
 from src.helper.file import create_from_template
@@ -79,9 +78,7 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
         }
     )
 
-    kernel.run_function(
-        core__registry__build
-    )
+    kernel.rebuild()
 
     kernel.message(f'Created test file : {test_path}')
 
