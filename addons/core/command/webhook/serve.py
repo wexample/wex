@@ -12,10 +12,11 @@ from src.const.error import ERR_UNEXPECTED
 from src.core.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from src.decorator.as_sudo import as_sudo
 from http.server import HTTPServer
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
 @click.option('--port', '-p', type=int, required=False, default=4242,
               help="Which port is used by service to listen incoming webhooks")
@@ -26,7 +27,7 @@ from http.server import HTTPServer
 @click.option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
               help="Kill existing process if already running")
 def core__webhook__serve(
-        base_kernel,
+        base_kernel: Kernel,
         port: int = 4242,
         dry_run: bool = False,
         asynchronous: bool = False,

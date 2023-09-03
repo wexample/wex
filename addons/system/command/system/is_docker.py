@@ -1,7 +1,9 @@
 import os
-import click
+
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-def system__system__is_docker():
+@command()
+def system__system__is_docker(kernel: Kernel):
     return os.path.exists('/.dockerenv')

@@ -14,10 +14,9 @@ from src.helper.system import get_user_or_sudo_user, get_user_group_name
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command
-@click.pass_obj
+@command()
 @click.option('--app-dir', '-a', type=str, required=False,
               help="Add directory")
 @click.option('--user', '-u', type=str, required=False,

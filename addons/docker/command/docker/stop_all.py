@@ -1,11 +1,10 @@
-import click
-
 from src.helper.process import process_post_exec
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
-def docker__docker__stop_all(kernel):
+@command()
+def docker__docker__stop_all(kernel: Kernel):
     # Containers
     process_post_exec(kernel, [
         'docker',

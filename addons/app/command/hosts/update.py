@@ -1,15 +1,14 @@
 import click
 
 from addons.app.decorator.app_location_optional import app_location_optional
-from addons.docker.command.docker.ip import docker__docker__ip
 from src.decorator.as_sudo import as_sudo
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
 @app_location_optional
-def app__hosts__update(kernel):
+def app__hosts__update(kernel: Kernel):
     hosts_path = '/etc/hosts'
 
     # TODO This behavior is inherited, maybe we can now redirect local requests to containers without modifying the host file

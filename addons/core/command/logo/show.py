@@ -1,15 +1,12 @@
-import textwrap
-
-import click
-
 from src.helper.string import text_truncate, text_center
 from src.helper.core import core_kernel_get_version
 from src.const.globals import COLOR_RED, COLOR_RESET, COLOR_LIGHT_GRAY
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command
-@click.pass_obj
-def core__logo__show(kernel) -> str:
+@command()
+def core__logo__show(kernel: Kernel) -> str:
     width = 54
     padding = 2
 

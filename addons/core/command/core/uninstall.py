@@ -8,12 +8,13 @@ from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import CORE_BIN_FILE
 from src.decorator.as_sudo import as_sudo
 from src.helper.file import remove_file_if_exists
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
-def core__core__uninstall(kernel):
+def core__core__uninstall(kernel: Kernel):
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink()
     __core__core__uninstall_autocomplete(kernel)

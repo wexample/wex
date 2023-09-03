@@ -1,5 +1,7 @@
 import platform
-import click
+
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
 OS_NAME_LINUX = 'linux'
 OS_NAME_MAC = 'mac'
@@ -7,8 +9,8 @@ OS_NAME_UNDEFINED = 'undefined'
 OS_NAME_WINDOWS = 'windows'
 
 
-@click.command(help="Return the local OS name.")
-def system__os__name():
+@command(help="Return the local OS name.")
+def system__os__name(kernel: Kernel):
     os_name = platform.system()
 
     if os_name == "Darwin":

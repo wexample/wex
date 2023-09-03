@@ -1,4 +1,3 @@
-import click
 import os
 import sys
 
@@ -13,12 +12,12 @@ from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data
 from src.helper.file import remove_file_if_exists, create_from_template
 from src.const.globals import CORE_BIN_FILE, PYTHON_MIN_VERSION
 from src.decorator.as_sudo import as_sudo
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
-def core__core__install(kernel):
+def core__core__install(kernel: Kernel):
     __core__core__check_requirements(kernel)
     __core__core__install_env(kernel)
     __core__core__install_terminal(kernel)

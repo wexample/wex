@@ -1,4 +1,3 @@
-import click
 
 from addons.core.command.webhook.serve import core__webhook__serve
 from addons.system.command.system.is_docker import system__system__is_docker
@@ -6,13 +5,13 @@ from src.helper.file import remove_file_if_exists
 from src.const.globals import SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
 from src.helper.system import kill_process_by_command, service_exec, service_daemon_reload
 from src.decorator.as_sudo import as_sudo
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command()
-@click.pass_obj
+@command()
 @as_sudo
 def core__webhook__stop(
-        kernel,
+        kernel: Kernel,
 ):
     use_daemon = not kernel.run_function(system__system__is_docker)
 

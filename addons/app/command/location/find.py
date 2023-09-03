@@ -6,9 +6,7 @@ import click
 from src.decorator.command import command
 from addons.app.decorator.app_location_optional import app_location_optional
 
-
-@click.command()
-@click.pass_obj
+@command()
 @click.option('--app-dir', '-a', type=str, required=False,
               help="App directory")
 @app_location_optional

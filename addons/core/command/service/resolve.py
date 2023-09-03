@@ -1,17 +1,17 @@
-from typing import Union, List
+from typing import List
 
 import click
 from addons.app.decorator.app_location_optional import app_location_optional
-
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 from src.helper.args import split_arg_array
 
 
-@click.command
-@click.pass_obj
+@command()
 @app_location_optional
 @click.option('--service', '-s', required=True,
               help="Find all service dependencies")
-def core__service__resolve(kernel, service) -> List[str]:
+def core__service__resolve(kernel: Kernel, service) -> List[str]:
     services = split_arg_array(service)
     resolved_services = set()
 

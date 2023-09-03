@@ -12,10 +12,9 @@ from src.helper.service import get_service_dir
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command
-@click.pass_obj
+@command()
 @click.option('--service', '-s', type=str, required=True,
               help="Service name")
 @app_dir_option()

@@ -5,10 +5,9 @@ from src.helper.args import parse_arg
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-
-@click.command()
-@click.pass_obj
+@command()
 @click.option('--hook', '-h', type=str, required=True,
               help="Hook name")
 @click.option('--arguments', '-args', type=str, required=False,

@@ -3,15 +3,15 @@ import click
 import re
 
 from urllib.parse import urlparse, parse_qs
-
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 from addons.app.command.env.get import app__env__get
 from src.helper.command import execute_command
 
 
-@click.command()
-@click.pass_obj
+@command()
 @click.option('--url', '-u', type=str, required=True, help="Argument")
-def core__webhook__exec(kernel, url: str) -> bool:
+def core__webhook__exec(kernel: Kernel, url: str) -> bool:
     source_data = {}
     if kernel.http_server:
         source_data = {

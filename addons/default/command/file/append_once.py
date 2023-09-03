@@ -1,18 +1,17 @@
 import click
 
+from src.core.Kernel import Kernel
+from src.decorator.command import command
 
-@click.command
+
+@command()
 @click.option('--file', '-f', type=str, required=True,
               help="File to work on")
 @click.option('--line', '-l', type=str, required=True,
               help="Line to add if not already there somewhere in the file")
-def default__file__append_once(file: str, line: str) -> None:
+def default__file__append_once(kernel: Kernel, file: str, line: str) -> None:
     """
     Append a line to a file if it doesn't exist already.
-
-    :param file: path to the file
-    :param line: line to append to the file
-    :return: None
     """
     # Initialise a variable to store the last character of the file
     last_char = None
