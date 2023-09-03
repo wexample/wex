@@ -152,7 +152,7 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    pids = execute_command(
+    success, pids = execute_command(
         kernel,
         [
             'pgrep',
@@ -161,9 +161,10 @@ def kill_process_by_command(kernel, command: str):
         ]
     )
 
-    for pid in pids:
-        kernel.log(f'Killing process {pid}')
-        os.kill(int(pid), signal.SIGTERM)
+    if success:
+        for pid in pids:
+            kernel.log(f'Killing process {pid}')
+            os.kill(int(pid), signal.SIGTERM)
 
 
 def service_daemon_reload(kernel, command: str = 'daemon-reload'):
