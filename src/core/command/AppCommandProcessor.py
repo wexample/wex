@@ -1,6 +1,8 @@
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from addons.app.command.location.find import app__location__find
+from src.core.response.AbortResponse import AbortResponse
+from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
@@ -15,7 +17,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
         # Shortcut.
         self.app_addon: AppAddonManager = kernel.addons['app']
 
-    def run(self, quiet: bool = False) -> str | None:
+    def run(self, quiet: bool = False) -> AbstractResponse:
         if not self.get_base_path():
             if not quiet:
                 self.kernel.error(ERR_APP_NOT_FOUND, {
@@ -23,7 +25,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
                     'dir': os.getcwd(),
                 })
 
-            return None
+            return AbortResponse()
 
         return super().run(quiet)
 
@@ -47,7 +49,6 @@ class AppCommandProcessor(AbstractCommandProcessor):
         kebab_parts = [to_kebab_case(part) for part in parts]
 
         return f'{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
-
 
     def get_function_name_parts(self) -> []:
         return [

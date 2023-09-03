@@ -2,6 +2,7 @@ import os
 import sys
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user_home_data_path
 from src.const.globals import COMMAND_PATTERN_USER, COMMAND_TYPE_USER, \
@@ -10,7 +11,7 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class UserCommandProcessor(AbstractCommandProcessor):
-    def run(self, quiet: bool = False) -> str | None:
+    def run(self, quiet: bool = False) -> AbstractResponse:
         # Add user command dir to path
         # It allows to use imports in custom user scripts
         commands_path = os.path.join(self.get_base_path(), 'command')

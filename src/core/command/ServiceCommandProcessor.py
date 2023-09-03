@@ -1,6 +1,8 @@
 import os
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.AbortResponse import AbortResponse
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
@@ -8,7 +10,7 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class ServiceCommandProcessor(AbstractCommandProcessor):
-    def run(self, quiet: bool = False) -> str | None:
+    def run(self, quiet: bool = False) -> AbstractResponse:
         service = to_snake_case(self.match[1])
         if service not in self.kernel.registry['services']:
             if not quiet:
@@ -16,7 +18,7 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
                     'command': self.command,
                     'service': service,
                 })
-            return None
+            return AbortResponse()
 
         return super().run(quiet)
 

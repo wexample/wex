@@ -1,10 +1,13 @@
 from addons.app.const.app import ERR_CORE_ACTION_NOT_FOUND
+from src.core.response.AbortResponse import AbortResponse
+from src.core.response.DefaultResponse import DefaultResponse
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_PATTERN_CORE, COMMAND_TYPE_CORE
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class CoreCommandProcessor(AbstractCommandProcessor):
-    def run(self, quiet: bool = False) -> str | None:
+    def run(self, quiet: bool = False) -> AbstractResponse:
         core_actions = self.kernel.core_actions
 
         # Handle core action : test, hi, etc...
@@ -16,14 +19,15 @@ class CoreCommandProcessor(AbstractCommandProcessor):
 
             action = core_actions[action](self.kernel)
 
-            return action.exec(command, self.command_args)
+            return DefaultResponse(
+                action.exec(command, self.command_args)
+            )
         else:
             if not quiet:
                 self.kernel.error(ERR_CORE_ACTION_NOT_FOUND, {
                     'command': self.command,
                 })
-            return None
-
+            return AbortResponse()
 
     @classmethod
     def get_pattern(cls) -> str:

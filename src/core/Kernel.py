@@ -13,7 +13,7 @@ from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 from src.core.command.AddonCommandProcessor import AddonCommandProcessor
 from src.core.command.AppCommandProcessor import AppCommandProcessor
@@ -224,7 +224,8 @@ class Kernel:
                 'command': command
             })
 
-        return processor.run(quiet)
+        return self.render_response(
+            processor.run(quiet))
 
     def run_function(self, function, args=None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
         processor = self.create_command_processor(type)
@@ -234,7 +235,14 @@ class Kernel:
             args
         )
 
-        return processor.run(quiet)
+        return self.render_response(
+            processor.run(quiet))
+
+    def render_response(self, response):
+        return response.render(
+            self,
+            KERNEL_RENDER_MODE_CLI
+        )
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.processors:

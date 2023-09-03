@@ -6,6 +6,9 @@ from abc import abstractmethod
 
 from typing import Optional
 
+from src.core.response.DefaultResponse import DefaultResponse
+from src.core.response.AbortResponse import AbortResponse
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from src.helper.args import convert_dict_to_args, convert_args_to_dict
@@ -30,7 +33,7 @@ class AbstractCommandProcessor:
         # Useful to store data about the current command execution.
         self.storage = {}
 
-    def run(self, quiet: bool = False):
+    def run(self, quiet: bool = False) -> AbstractResponse:
         import click
 
         # Get valid path.
@@ -43,7 +46,7 @@ class AbstractCommandProcessor:
                     'command': self.command,
                     'path': self.command_path,
                 })
-            return None
+            return AbortResponse()
 
         self.command_function = self.get_function(self.command_path)
 
@@ -67,7 +70,7 @@ class AbstractCommandProcessor:
             ctx = self.command_function.make_context('', command_args or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
-            return
+            return AbortResponse()
         except Exception as e:
             # Show error message
             self.kernel.error(
@@ -81,6 +84,9 @@ class AbstractCommandProcessor:
         ctx.obj = self.kernel
 
         response = self.command_function.invoke(ctx)
+
+        if not isinstance(response, AbstractResponse):
+            response = DefaultResponse(response)
 
         self.kernel.exec_middlewares('run_post', middleware_args)
 
