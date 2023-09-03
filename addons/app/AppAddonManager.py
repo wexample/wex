@@ -16,7 +16,6 @@ from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_lo
 class AppAddonManager(AddonManager):
     def __init__(self, kernel, name):
         super().__init__(kernel, name)
-        self.call_command_level = None
         self.call_working_dir = os.getcwd()
         self.current_app_dir = None
         self.config = {}
@@ -144,21 +143,23 @@ class AppAddonManager(AddonManager):
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
         return get_dict_item_by_path(self.runtime_config, key, default)
 
-    def command_exec_pre(self, function, args, command, args_list):
+    def command_run_pre(self, processor):
         # Skip if the command allow to be executed without app location.
-        if hasattr(function.callback, 'app_location_optional'):
+        if hasattr(processor.command_function.callback, 'app_location_optional'):
             return
+
+        args_dict = processor.command_args_dict
 
         if self.current_app_dir is not None:
             app_dir_resolved = self.current_app_dir
         else:
-            if 'app-dir' in args:
-                app_dir = args['app-dir']
-                del args['app-dir']
+            if 'app-dir' in args_dict:
+                app_dir = args_dict['app-dir']
+                del args_dict['app-dir']
             else:
                 app_dir = os.getcwd()
 
-            app_dir_resolved = self.kernel.exec_function(
+            app_dir_resolved = self.kernel.run_function(
                 app__location__find,
                 {
                     'app-dir': app_dir
@@ -166,40 +167,36 @@ class AppAddonManager(AddonManager):
             )
 
         if app_dir_resolved:
-            args['app_dir'] = app_dir_resolved
+            args_dict['app_dir'] = app_dir_resolved
 
             # First test, create config.
-            if self.call_command_level is None:
-                self.set_app_workdir(app_dir_resolved)
-            # Config exists.
-            else:
-                # Count deep level,
-                # used to restore working dir when reverted to 0.
-                self.call_command_level += 1
+            if 'previous_app_dir' not in processor.storage:
+                dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
+
+                if dirs_differ or self.current_app_dir is None:
+                    self.set_app_workdir(app_dir_resolved)
+
+                if dirs_differ:
+                    processor.storage['previous_app_dir'] = app_dir_resolved
 
             # Append to original apps list.
+            args_list = processor.command_args
             args_list.append('--app-dir')
             args_list.append(app_dir_resolved)
         else:
             self.kernel.error(ERR_APP_NOT_FOUND, {
-                'command': command,
+                'command': processor.command,
                 'dir': app_dir_resolved,
             })
 
-    def command_exec_post(self, function):
+    def command_run_post(self, processor):
         # Skip if the command allow to be executed without app location.
-        if hasattr(function.callback, 'app_location_optional'):
+        if hasattr(processor.command_function.callback, 'app_location_optional'):
             return
 
-        self.call_command_level -= 1
-
-        if self.call_command_level == -1:
-            self.unset_app_workdir()
-
-        elif self.call_command_level < -1:
-            self.kernel.error(ERR_UNEXPECTED, {
-                'error': 'More "post" execution than "pre" execution call'
-            })
+        if 'previous_app_dir' in processor.storage:
+            self.unset_app_workdir(processor.storage['previous_app_dir'])
+            del processor.storage['previous_app_dir']
 
     def save_proxy_apps(self):
         with open(self.proxy_path + PROXY_FILE_APPS_REGISTRY, 'w') as f:
@@ -209,16 +206,14 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        self.call_command_level = 0
-
-        app_dir = self.kernel.exec_function(
+        app_dir = self.kernel.run_function(
             app__location__find, {
                 'app-dir': app_dir
             }
         )
 
         if app_dir:
-            self.log('Switching to app : ' + app_dir)
+            self.kernel.log('Switching to app : ' + app_dir)
 
             self.current_app_dir = app_dir
             self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
@@ -235,12 +230,13 @@ class AppAddonManager(AddonManager):
 
             os.chdir(app_dir)
 
-    def unset_app_workdir(self):
-        self.call_command_level = None
+    def unset_app_workdir(self, fallback_dir:str):
         self.current_app_dir = None
 
-        # Restore default working dir.
-        os.chdir(self.call_working_dir)
+        os.chdir(fallback_dir)
+
+        # Print log in normal kernel.
+        self.kernel.log('Switching to default : ' + self.call_working_dir)
 
     def exec_in_workdir(self, app_dir: str, callback):
         self.kernel.log_indent_up()

@@ -1,4 +1,3 @@
-from __future__ import annotations
 
 import os.path
 import click
@@ -33,6 +32,9 @@ from src.decorator.command import command
               help="App environment")
 def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str = None, group: str = None,
                     env: str = None):
+
+    manager: AppAddonManager = kernel.addons['app']
+
     if not os.path.exists(APP_FILEPATH_REL_ENV):
         if not env:
             if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
@@ -44,7 +46,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
 
             # User said "no" or chose "abort"
             if not env:
-                kernel.log('Abort')
+                manager.log('Abort')
                 return
 
         create_env(env, app_dir)
@@ -53,23 +55,22 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     else:
         env = app__env__get.callback(app_dir)
 
-    if kernel.exec_function(app__app__started, {
+    if kernel.run_function(app__app__started, {
         'app-dir': app_dir
     }):
-        kernel.log('App already running')
+        manager.log('App already running')
         return
 
-    manager: 'AppAddonManager' = kernel.addons['app']
     name = manager.get_config('global.name')
     # Current app is not the reverse proxy itself.
-    if not kernel.exec_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
+    if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
         # The reverse proxy is not running.
-        if not kernel.exec_function(app__app__started, {'app-dir': manager.proxy_path}):
+        if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
             manager.log('Starting proxy server')
 
             from addons.app.command.proxy.start import app__proxy__start
 
-            kernel.exec_function(
+            kernel.run_function(
                 app__proxy__start,
                 {
                     'user': user,
@@ -78,16 +79,16 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
                 }
             )
 
-    manager.log(f"Starting app : {name}")
+    kernel.log(f"Starting app : {name}")
 
-    kernel.exec_function(
+    kernel.run_function(
         app__app__perms,
         {
             'app-dir': app_dir
         }
     )
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -95,7 +96,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
         }
     )
 
-    kernel.exec_function(
+    kernel.run_function(
         app__config__write,
         {
             'app-dir': app_dir,
@@ -114,7 +115,7 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     if clear_cache:
         compose_options.append('--build')
 
-    service_results = kernel.exec_function(
+    service_results = kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -140,7 +141,6 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     # TODO if build fails, app is still marked as started
     #      We should create a queued steps system, to work with async bash scripts.
     manager.set_runtime_config('started', True)
-
 
     # Postpone execution
     process_post_exec_wex(

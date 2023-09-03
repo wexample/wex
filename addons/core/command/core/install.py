@@ -25,7 +25,7 @@ def core__core__install(kernel):
     __core__core__install_autocomplete(kernel)
     __core__core__install_symlink(kernel)
     __core__core__install_webhook_server(kernel)
-    return kernel.exec_function(core__logo__show)
+    return kernel.run_function(core__logo__show)
 
 
 def __core__core__check_requirements(kernel):
@@ -70,7 +70,7 @@ def __core__core__install_autocomplete(kernel):
 
     create_from_template(
         kernel.path['templates'] + 'handler.sh.tpl',
-        '/etc/bash_completion.d/wex',
+        script_path,
         {
             'handler_path': handler_path,
         }
@@ -95,7 +95,7 @@ def __core__core__install_symlink(kernel):
 def __core__core__install_webhook_server(kernel):
     kernel.log(f'Installing webhooks server ...')
 
-    kernel.exec_function(
+    kernel.run_function(
         core__webhook__serve,
         {
             'asynchronous': True,
@@ -105,7 +105,7 @@ def __core__core__install_webhook_server(kernel):
 
 
 def __source_file_for_docker(kernel, file_path):
-    if not kernel.exec_function(system__system__is_docker):
+    if not kernel.run_function(system__system__is_docker):
         return
 
     kernel.log(f'Installing Docker container specific setup ...')
@@ -124,7 +124,7 @@ def __source_file_in_bashrc(kernel, file_path, bashrc_path):
 
     kernel.log(f'Adding script to {bashrc_path}...')
 
-    kernel.exec_function(
+    kernel.run_function(
         default__file__append_once,
         {
             'file': bashrc_path,

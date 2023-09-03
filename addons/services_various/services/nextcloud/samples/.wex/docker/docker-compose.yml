@@ -4,7 +4,7 @@ services:
       file: ${SERVICE_NEXTCLOUD_YML_ENV}
       service: nextcloud
     depends_on:
-      - ${GLOBAL_NAME}_maria-10
+      - ${GLOBAL_NAME}_maria_10
     # Should be defined at least for first installation.
     environment:
       - NEXTCLOUD_ADMIN_USER=admin

@@ -4,8 +4,8 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class CoreCommandProcessor(AbstractCommandProcessor):
-    def exec(self, quiet: bool = False) -> str | None:
-        core_actions = self.kernel.get_core_actions()
+    def run(self, quiet: bool = False) -> str | None:
+        core_actions = self.kernel.core_actions
 
         # Handle core action : test, hi, etc...
         if self.command in core_actions:
@@ -24,19 +24,22 @@ class CoreCommandProcessor(AbstractCommandProcessor):
                 })
             return None
 
-    def get_pattern(self) -> str:
+
+    @classmethod
+    def get_pattern(cls) -> str:
         return COMMAND_PATTERN_CORE
 
-    def get_type(self) -> str:
+    @classmethod
+    def get_type(cls) -> str:
         return COMMAND_TYPE_CORE
 
-    def get_path(self, subdir: str = None) -> str | None:
-        return None
-
-    def get_function_name(self) -> str | None:
-        return None
-
+    # def get_path(self, subdir: str = None) -> str | None:
+    #     return None
+    #
+    # def get_function_name(self) -> str | None:
+    #     return None
+    #
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
             # Adds also all core actions.
-            return ' '.join([command for command in self.kernel.get_core_actions() if command.startswith(search_split[0])])
+            return ' '.join([command for command in self.kernel.core_actions if command.startswith(search_split[0])])

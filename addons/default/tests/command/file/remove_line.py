@@ -12,7 +12,7 @@ class TestDefaultCommandFileRemoveLine(AbstractTestCase):
         with open(file, 'r', newline='') as f:
             file_original = f.read()
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             default__file__remove_line,
             {
                 'file-path': file,

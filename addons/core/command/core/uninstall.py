@@ -22,7 +22,7 @@ def core__core__uninstall(kernel):
 
 
 def __core__core__uninstall_webhook_server(kernel):
-    kernel.exec_function(
+    kernel.run_function(
         core__webhook__stop
     )
 
@@ -48,7 +48,7 @@ def __core__core__uninstall_terminal(kernel):
 
 
 def __remove_source_file_for_docker(kernel, file_path):
-    if not kernel.exec_function(system__system__is_docker):
+    if not kernel.run_function(system__system__is_docker):
         return
 
     # If sudo has a parent user.
@@ -65,7 +65,7 @@ def __remove_source_file_in_bashrc(kernel, file_path, bashrc_path):
 
     kernel.log(f'Removing autocompletion script to {bashrc_path}...')
 
-    kernel.exec_function(
+    kernel.run_function(
         default__file__remove_line,
         {
             'file-path': bashrc_path,

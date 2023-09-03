@@ -5,5 +5,5 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestDockerCommandDockerIp(AbstractTestCase):
     def test_ip(self):
         self.assertIsNotNone(
-            self.kernel.exec_function(docker__docker__ip)
+            self.kernel.run_function(docker__docker__ip)
         )

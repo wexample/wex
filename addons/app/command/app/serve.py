@@ -10,10 +10,10 @@ from src.core.Kernel import Kernel
 @command()
 @app_dir_option()
 def app__app__serve(kernel: Kernel, app_dir: str):
-    manager: 'AppAddonManager' = kernel.addons['app']
+    manager: AppAddonManager = kernel.addons['app']
     manager.log('Serving app...')
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,

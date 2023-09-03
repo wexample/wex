@@ -8,7 +8,7 @@ class TestAppCommandServiceUsed(AbstractTestCase):
     def test_used(self):
         app_dir = create_test_app(self.kernel)
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__service__install, {
                 'app-dir': app_dir,
                 'service': 'nextcloud'
@@ -16,7 +16,7 @@ class TestAppCommandServiceUsed(AbstractTestCase):
         )
 
         self.assertTrue(
-            self.kernel.exec_function(
+            self.kernel.run_function(
                 app__service__used, {
                     'app-dir': app_dir,
                     'service': 'nextcloud'

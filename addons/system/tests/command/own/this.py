@@ -16,7 +16,7 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             0,
         )
 
-        self.kernel.exec_function(system__own__this, {
+        self.kernel.run_function(system__own__this, {
             'path': self.kernel.path['tmp']
         })
 
@@ -27,7 +27,7 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             OWNER_USERNAME
         )
 
-        self.kernel.exec_function(system__own__this, {
+        self.kernel.run_function(system__own__this, {
             'path': test_file
         })
 

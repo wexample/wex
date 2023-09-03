@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestCoreCommandWebhookServe(AbstractTestCase):
     def test_serve(self):
-        self.kernel.exec_function(core__webhook__serve, {
+        self.kernel.run_function(core__webhook__serve, {
             'dry-run': True
         })
 

@@ -24,6 +24,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
+
 @command()
 @app_location_optional
 @click.option('--name', '-n', type=str, required=False,
@@ -46,8 +47,9 @@ def app__app__init(
 ):
     manager: AppAddonManager = kernel.addons['app']
 
+    current_dir = os.getcwd() + '/'
     if not app_dir:
-        app_dir = os.getcwd() + '/'
+        app_dir = current_dir
 
     def init_step_check_vars():
         nonlocal name
@@ -76,7 +78,7 @@ def app__app__init(
             return
 
         # Resolve dependencies for all services
-        services = kernel.exec_function(
+        services = kernel.run_function(
             core__service__resolve,
             {
                 'service': services
@@ -188,7 +190,7 @@ def app__app__init(
 
         kernel.log('Installing services...')
         for service in services:
-            services = kernel.exec_function(
+            services = kernel.run_function(
                 app__service__install,
                 {
                     'app-dir': app_dir,
@@ -207,7 +209,7 @@ def app__app__init(
             Repo.init(app_dir)
 
     def init_step_hooks():
-        kernel.exec_function(
+        kernel.run_function(
             app__hook__exec,
             {
                 'app-dir': app_dir,
@@ -216,7 +218,7 @@ def app__app__init(
         )
 
     def init_step_unset_workdir():
-        manager.unset_app_workdir()
+        manager.unset_app_workdir(current_dir)
 
     steps = [
         init_step_check_vars,

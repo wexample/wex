@@ -10,8 +10,8 @@ from src.core.Kernel import Kernel
 
 @command()
 @app_dir_option()
-def app__app__perms(kernel: 'Kernel', app_dir: str):
-    manager: 'AppAddonManager' = kernel.addons['app']
+def app__app__perms(kernel: Kernel, app_dir: str):
+    manager: AppAddonManager = kernel.addons['app']
     user = get_user_or_sudo_user()
 
     manager.log(f'Setting owner of all files to "{user}"')
@@ -21,7 +21,7 @@ def app__app__perms(kernel: 'Kernel', app_dir: str):
     set_permissions_recursively(app_dir, 0o755)
 
     manager.log('Updating app permissions...')
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,

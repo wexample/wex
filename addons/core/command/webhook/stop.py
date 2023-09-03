@@ -14,7 +14,7 @@ from src.decorator.as_sudo import as_sudo
 def core__webhook__stop(
         kernel,
 ):
-    use_daemon = not kernel.exec_function(system__system__is_docker)
+    use_daemon = not kernel.run_function(system__system__is_docker)
 
     if use_daemon:
         service_exec(kernel, SERVICE_DAEMON_NAME, 'stop')
@@ -25,7 +25,7 @@ def core__webhook__stop(
     else:
         kill_process_by_command(
             kernel,
-            kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            kernel.create_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__webhook__serve
             )
         )

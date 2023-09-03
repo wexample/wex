@@ -46,7 +46,7 @@ def core__webhook__serve(
     remove_file_if_exists(SERVICE_DAEMON_PATH)
 
     if asynchronous:
-        use_daemon = not base_kernel.exec_function(system__system__is_docker)
+        use_daemon = not base_kernel.run_function(system__system__is_docker)
 
         if use_daemon:
             daemon_path = get_daemon_service_resource_path(base_kernel)
@@ -63,7 +63,7 @@ def core__webhook__serve(
             base_kernel.log("Running Webhook listener...")
 
             # Build command
-            command = base_kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            command = base_kernel.create_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__webhook__serve,
                 {
                     'port': port

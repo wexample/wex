@@ -8,7 +8,7 @@ from src.helper.command import execute_command, command_exists
 @click.command(help="Return the current docker local ip")
 @click.pass_obj
 def docker__docker__ip(kernel):
-    if kernel.exec_function(
+    if kernel.run_function(
             system__os__name
     ) == OS_NAME_MAC:
         return '127.0.0.1'
@@ -19,6 +19,6 @@ def docker__docker__ip(kernel):
             'ip'
         ])
     else:
-        return kernel.exec_function(
+        return kernel.run_function(
             system__system__ip
         )

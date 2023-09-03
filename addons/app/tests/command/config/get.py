@@ -7,7 +7,7 @@ class TestAppCommandConfigGet(AbstractTestCase):
     def test_get(self):
         app_dir = create_test_app(self.kernel)
 
-        value = self.kernel.exec_function(app__config__get, {
+        value = self.kernel.run_function(app__config__get, {
             'key': 'global.name',
             'app-dir': app_dir
         })

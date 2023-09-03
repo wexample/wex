@@ -81,27 +81,27 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_core_action(self):
         self.assertEqual(
-            self.kernel.exec('hi'),
+            self.kernel.run_command('hi'),
             'hi!'
         )
 
     def test_call_invalid(self):
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.exec('something/unexpected')
+            self.kernel.run_command('something/unexpected')
 
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.exec('nvfjkdvnfdkjvndfkjvnfd')
+            self.kernel.run_command('nvfjkdvnfdkjvndfkjvnfd')
 
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.exec('*ù:-//;!,@"#^~§')
+            self.kernel.run_command('*ù:-//;!,@"#^~§')
 
     def test_call_command_addon(self):
         self.assertIsNotNone(
-            self.kernel.exec('core::logo/show')
+            self.kernel.run_command('core::logo/show')
         )
 
     def test_call_command_user(self):
-        self.kernel.exec_function(
+        self.kernel.run_function(
             core__command__create,
             {
                 'command': '~test/command_call'
@@ -109,7 +109,7 @@ class TestCore(AbstractTestCase):
         )
 
         self.assertEqual(
-            self.kernel.exec(
+            self.kernel.run_command(
                 '~test/command_call',
                 {
                     'arg': 'test'
@@ -120,7 +120,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_app(self):
         self.assertEqual(
-            self.kernel.exec('.local_command/test', {
+            self.kernel.run_command('.local_command/test', {
                 'local-option': 'YES'
             }),
             'OK:YES'
@@ -128,7 +128,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_service(self):
         self.assertEqual(
-            self.kernel.exec('@test::demo-command/first'),
+            self.kernel.run_command('@test::demo-command/first'),
             'FIRST'
         )
 
@@ -140,8 +140,10 @@ class TestCore(AbstractTestCase):
         for command, command_data in get_all_commands_from_registry_part(registry_part).items():
             self.kernel.log(f'Checking syntax of command {command}')
 
-            processor = self.kernel.build_command_processor(command)
-            function = processor.get_function()
+            processor = self.kernel.create_command_processor_for_command(command)
+            function = processor.get_function(
+                processor.get_path()
+            )
 
             for param in function.params:
                 self.assertTrue(
@@ -180,12 +182,12 @@ class TestCore(AbstractTestCase):
 
     def test_build_command(self):
         self.assertEqual(
-            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_command_from_function(
+            self.kernel.create_command_processor(COMMAND_TYPE_ADDON).build_command_from_function(
                 core__logo__show),
             'core::logo/show'
         )
         self.assertEqual(
-            self.kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            self.kernel.create_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__version__build),
             'wex core::version/build'
         )

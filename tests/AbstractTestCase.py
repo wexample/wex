@@ -1,6 +1,7 @@
 import os
 import unittest
-from src.core.Kernel import Kernel
+
+from src.core.TestKernel import TestKernel
 from src.core.action.TestCoreAction import TestCoreAction
 from src.helper.file import create_directories_and_copy
 
@@ -8,7 +9,7 @@ from src.helper.file import create_directories_and_copy
 class AbstractTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.kernel = Kernel(os.getcwd() + '/__main__.py')
+        cls.kernel = TestKernel(os.getcwd() + '/__main__.py')
         cls.kernel.setup_test_manager(
             TestCoreAction(cls.kernel)
         )

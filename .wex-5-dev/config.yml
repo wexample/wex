@@ -1,11 +1,3 @@
-global:
-  author: root
-  created: "2023-03-23 17:13:28"
-  name: wex
-  services: []
-  wex_version: "5.0.0-beta.41+build.20230822134237"
-  version: "5.0.0-beta.41+build.20230822134237"
-
 docker:
   compose:
     stdin_open: true
@@ -23,6 +15,12 @@ env:
     domain_main: wex.wex
     domains: []
     email: contact@wexample.com
-
+global:
+  author: root
+  created: '2023-03-23 17:13:28'
+  name: wex
+  services: []
+  version: 1.0.1
+  wex_version: 5.0.0-beta.41+build.20230822134237
 wex:
   version: 5.0.0-beta.41+build.20230822134237

@@ -1,9 +1,9 @@
-from __future__ import annotations
 
 import os
 import re
 
 from addons.core.command.registry.build import core__registry__build
+from src.core import Kernel
 from src.helper.string import to_snake_case, to_pascal_case
 from src.helper.file import create_from_template
 
@@ -41,8 +41,8 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
     return test_method
 
 
-def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False) -> str:
-    processor = kernel.build_command_processor(command)
+def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> str:
+    processor = kernel.create_command_processor_for_command(command)
     test_path = processor.get_path_or_fail('tests')
 
     # File exists
@@ -77,7 +77,7 @@ def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False
         }
     )
 
-    kernel.exec_function(
+    kernel.run_function(
         core__registry__build
     )
 

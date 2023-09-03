@@ -1,4 +1,3 @@
-from __future__ import annotations
 
 import os
 import socket
@@ -85,7 +84,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
     manager.runtime_config = runtime_config
     manager.save_runtime_config()
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -114,7 +113,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         ), 'w') as f:
             f.write(yml_content)
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,

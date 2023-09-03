@@ -10,13 +10,13 @@ class TestAppCommandConfigSet(AbstractTestCase):
         app_dir = create_test_app(self.kernel)
 
         # Change value.
-        self.kernel.exec_function(app__config__set, {
+        self.kernel.run_function(app__config__set, {
             'app-dir': app_dir,
             'key': 'global.name',
             'value': 'wex-test-config-set'
         })
 
-        self.assertEqual(self.kernel.exec_function(
+        self.assertEqual(self.kernel.run_function(
             app__config__get,
             {
                 'app-dir': app_dir,
@@ -25,13 +25,13 @@ class TestAppCommandConfigSet(AbstractTestCase):
         ), 'wex-test-config-set')
 
         # Rollback.
-        self.kernel.exec_function(app__config__set, {
+        self.kernel.run_function(app__config__set, {
             'app-dir': app_dir,
             'key': 'global.name',
             'value': 'wex'
         })
 
-        self.assertEqual(self.kernel.exec_function(
+        self.assertEqual(self.kernel.run_function(
             app__config__get,
             {
                 'app-dir': app_dir,

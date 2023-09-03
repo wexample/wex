@@ -50,35 +50,6 @@ def get_all_services_names(kernel):
     return output
 
 
-def scan_commands_groups(directory: str, prefix: str):
-    command_dict = {}
-
-    if os.path.exists(directory):
-        for group in list_subdirectories(directory):
-            group_path = os.path.join(directory, group)
-            command_dict.update(scan_commands(
-                group_path,
-                group,
-                prefix
-            ))
-
-    return command_dict
-
-
-def scan_commands(directory, group, prefix):
-    """Scans the given directory for command files and returns a dictionary of found commands."""
-    commands = {}
-    for command in os.listdir(directory):
-        if command.endswith('.py'):
-            command_name, ext = os.path.splitext(command)
-            test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
-            commands[f"{prefix}{group}/{command_name}"] = {
-                'file': os.path.join(directory, command),
-                'test': test_file if os.path.exists(test_file) else None
-            }
-    return commands
-
-
 def remove_addons(commands_list: []) -> []:
     return [
         command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list

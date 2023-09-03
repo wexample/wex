@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import getpass
 import os.path
 
@@ -10,6 +8,7 @@ from addons.app.command.env.get import app__env__get
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.decorator.app_location_optional import app_location_optional
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_CONFIG
+from addons.app.command.app.start import app__app__start
 from src.const.error import ERR_UNEXPECTED
 from src.helper.system import get_processes_by_port
 from src.decorator.as_sudo import as_sudo
@@ -32,13 +31,15 @@ def app__proxy__start(kernel: Kernel,
                       group: str = None,
                       port: str = None,
                       port_secure: str = None):
-    manager: 'AppAddonManager' = kernel.addons['app']
+    manager: AppAddonManager = kernel.addons['app']
+
+    current_dir = os.getcwd()
 
     # Created
     if manager.is_app_root(manager.proxy_path):
         if os.path.exists(APP_FILEPATH_REL_CONFIG):
             # Started
-            if kernel.exec_function(app__app__started, {
+            if kernel.run_function(app__app__started, {
                 'app-dir': manager.proxy_path,
                 'check-mode': APP_STARTED_CHECK_MODE_CONFIG
             }):
@@ -50,7 +51,7 @@ def app__proxy__start(kernel: Kernel,
             exist_ok=True
         )
 
-        kernel.exec_function(
+        kernel.run_function(
             app__app__init,
             {
                 'app-dir': manager.proxy_path,
@@ -73,7 +74,7 @@ def app__proxy__start(kernel: Kernel,
                 }
             )
 
-        kernel.log(f'Checking that port {port_to_check} is free')
+        manager.log(f'Checking that port {port_to_check} is free')
 
         # Check port availability.
         process = get_processes_by_port(port_to_check)
@@ -92,11 +93,10 @@ def app__proxy__start(kernel: Kernel,
         manager.get_config('global.port_public_secure')
     )
 
-    manager.unset_app_workdir()
+    manager.unset_app_workdir(current_dir)
 
-    # Execute command string to trigger middlewares
-    kernel.exec(
-        'app::app/start',
+    kernel.run_function(
+        app__app__start,
         {
             'app-dir': manager.proxy_path,
             # If no env, use the global wex env.

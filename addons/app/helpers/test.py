@@ -14,7 +14,7 @@ def create_test_app(kernel, name='test-app', services: [] = []) -> str:
     shutil.rmtree(app_dir, True)
     os.makedirs(app_dir)
 
-    kernel.exec_function(app__app__init, {
+    kernel.run_function(app__app__init, {
         'name': name,
         'app-dir': app_dir,
         'services': ','.join(services)

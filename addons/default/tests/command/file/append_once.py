@@ -10,7 +10,7 @@ class TestDefaultCommandFileAppendOnce(AbstractTestCase):
             file_original = f.read()
             first_line = f.readline()
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             default__file__append_once,
             {
                 'file': file,
@@ -27,7 +27,7 @@ class TestDefaultCommandFileAppendOnce(AbstractTestCase):
             'The file should not be modified'
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             default__file__append_once,
             {
                 'file': file,

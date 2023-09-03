@@ -15,19 +15,18 @@ from src.core.Kernel import Kernel
 @click.option('--arguments', '-args', required=False,
               help="Hook name")
 @app_dir_option()
-def app__hook__exec(kernel: 'Kernel', hook, arguments, app_dir: str = None):
+def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
     arguments = parse_arg(arguments)
 
     if arguments is None:
         arguments = {}
 
-    manager: 'AppAddonManager' = kernel.addons['app']
+    manager: AppAddonManager = kernel.addons['app']
     manager.log(f'Hooking : {hook}')
-    kernel.log_indent_up()
 
     arguments['app-dir'] = app_dir
 
-    results = kernel.exec_function(
+    results = kernel.run_function(
         app__services__exec,
         {
             'app-dir': app_dir,
@@ -36,12 +35,10 @@ def app__hook__exec(kernel: 'Kernel', hook, arguments, app_dir: str = None):
         }
     )
 
-    results[COMMAND_CHAR_APP] = kernel.exec(
+    results[COMMAND_CHAR_APP] = kernel.run_command(
         COMMAND_CHAR_APP + hook,
         arguments,
         quiet=True
     )
-
-    kernel.log_indent_down()
 
     return results

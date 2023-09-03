@@ -7,7 +7,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            success = self.kernel.exec_function(
+            success = self.kernel.run_function(
                 core__webhook__exec,
                 {
                     'url': self.path,

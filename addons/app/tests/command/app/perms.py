@@ -35,7 +35,7 @@ class TestAppCommandAppPerms(AbstractTestCase):
             ROOT_USERNAME
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__perms,
             {
                 'app-dir': app_dir

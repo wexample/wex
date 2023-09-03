@@ -4,4 +4,4 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestCoreCommandCoreInstall(AbstractTestCase):
     def test_install(self):
-        self.kernel.exec_function(core__core__install)
+        self.kernel.run_function(core__core__install)

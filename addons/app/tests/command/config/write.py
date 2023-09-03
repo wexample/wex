@@ -9,25 +9,25 @@ class TestAppCommandConfigWrite(AbstractTestCase):
     def test_write(self):
         app_dir = create_test_app(self.kernel)
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__config__write, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__start, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__config__write, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__stop, {
                 'app-dir': app_dir
             }

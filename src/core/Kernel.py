@@ -11,7 +11,7 @@ from yaml import SafeLoader
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.AddonManager import AddonManager
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT
+    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_COMMAND_CONTEXT, ERR_UNEXPECTED
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
@@ -22,6 +22,9 @@ from src.core.command.ServiceCommandProcessor import ServiceCommandProcessor
 from src.core.command.UserCommandProcessor import UserCommandProcessor
 from src.helper.args import convert_dict_to_args
 from src.helper.file import list_subdirectories
+from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
+from src.core.action.TestCoreAction import TestCoreAction
+from src.core.action.HiCoreAction import HiCoreAction
 
 PROCESSOR_CLASSES = [
     AddonCommandProcessor,
@@ -45,10 +48,11 @@ CORE_ACTIONS = [
 class Kernel:
     messages = None
     process_id: str = None
-    test_manager = None
     core_actions = None
     registry: dict[str, Optional[str]] = {}
     http_server = None
+    log_indent: int = 1
+    indent_string = '  '
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -79,6 +83,11 @@ class Kernel:
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
             self.addons[name] = definition(self, name)
 
+        self.core_actions = {
+            definition.command(): definition
+            for definition in CORE_ACTIONS
+        }
+
         self.load_registry()
         self.exec_middlewares('init')
 
@@ -89,7 +98,7 @@ class Kernel:
         if not os.path.exists(path_registry):
             from addons.core.command.registry.build import core__registry__build
 
-            self.exec_function(
+            self.run_function(
                 core__registry__build
             )
 
@@ -138,9 +147,6 @@ class Kernel:
 
             raise FatalError(f'{COLORS[log_level]}{message}{COLOR_RESET}')
 
-    log_indent: int = 1
-    indent_string = '  '
-
     def log_indent_up(self) -> None:
         self.log_indent += 1
 
@@ -170,19 +176,12 @@ class Kernel:
                              message: str = 'You might want now to execute'):
         return self.message_all_next_commands(
             [
-                self.build_command_processor_by_type(command_type).build_full_command_from_function(
+                self.create_command_processor(command_type).build_full_command_from_function(
                     function_or_command,
                     args,
                 )
             ],
             message
-        )
-
-    def build_full_command_from_function(self, function_or_command, args: dict = {},
-                                         command_type: str = COMMAND_TYPE_ADDON):
-        return self.build_command_processor_by_type(command_type).build_full_command_from_function(
-            function_or_command,
-            args
         )
 
     def message_all_next_commands(
@@ -198,6 +197,11 @@ class Kernel:
         )
 
     def call(self):
+        """
+        Main entrypoint from bash call.
+        May never be called by an internal script.
+        :return:
+        """
         # No arg found except process id
         if not len(sys.argv) > 2:
             return
@@ -205,13 +209,38 @@ class Kernel:
         command: str = sys.argv[2]
         command_args: [] = sys.argv[3:]
 
-        result = self.exec(
+        result = self.run_command(
             command,
             command_args
         )
 
         if result is not None:
             self.print(result)
+
+    def run_command(self, command: str, args=None, quiet: bool = False):
+        processor = self.create_command_processor_for_command(command, args)
+
+        if not processor and not quiet:
+            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+                'command': command
+            })
+
+        return processor.run(quiet)
+
+    def run_function(self, function, args=None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
+        processor = self.create_command_processor(type)
+
+        processor.set_command(
+            processor.build_command_from_function(function),
+            args
+        )
+
+        return processor.run(quiet)
+
+    def guess_command_type(self, command: str) -> str | None:
+        for type in self.processors:
+            if self.processors[type].build_match(command):
+                return type
 
     def exec_middlewares(self, name: str, args=None):
         if args is None:
@@ -236,73 +265,6 @@ class Kernel:
 
             return function(self, **args)
 
-    def setup_test_manager(self, test_manager):
-        self.test_manager = test_manager
-
-    def exec(self, command: str, command_args=None, quiet: bool = False):
-        if command_args is None:
-            command_args = []
-
-        processor = self.build_command_processor(command, command_args)
-
-        if not processor:
-            if not quiet:
-                self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
-                    'command': command
-                })
-            return
-
-        return processor.exec(quiet)
-
-    def get_core_actions(self):
-        if not self.core_actions:
-            from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
-            from src.core.action.TestCoreAction import TestCoreAction
-            from src.core.action.HiCoreAction import HiCoreAction
-
-            self.core_actions = {
-                CoreActionsCoreAction.command(): CoreActionsCoreAction,
-                HiCoreAction.command(): HiCoreAction,
-                TestCoreAction.command(): TestCoreAction,
-            }
-
-        return self.core_actions
-
-    def exec_function(self, function, args=None):
-        import click
-
-        print(function)
-        print(args)
-        exit
-
-        if not args:
-            args = []
-
-        if isinstance(args, dict):
-            args = convert_dict_to_args(function, args)
-
-        try:
-            ctx = function.make_context('', args or [])
-        # Click explicitly asked to exit, for example when using --help.
-        except click.exceptions.Exit:
-            return
-        except Exception as e:
-            import logging
-
-            # Show error message
-            self.error(
-                ERR_COMMAND_CONTEXT,
-                {
-                    'function': function.callback.__name__,
-                    'error': str(e)
-                },
-                logging.FATAL
-            )
-
-        ctx.obj = self
-
-        return function.invoke(ctx)
-
     def add_to_history(self, data: dict):
         from src.helper.json import load_json_if_valid
         from src.helper.file import set_user_or_sudo_user_owner
@@ -323,20 +285,17 @@ class Kernel:
             json.dump(history, f, indent=4)
             set_user_or_sudo_user_owner(self.path['history'])
 
-    def build_command_processor_by_type(self, command_type: str) -> AbstractCommandProcessor | None:
-        processor_class = self.processors[command_type]
-        return processor_class(self)
+    def create_command_processor(self, type: str) -> AbstractCommandProcessor | None:
+        if type not in self.processors:
+            return None
+        return self.processors[type](self)
 
-    def build_command_processor(self, command, command_args=None) -> AbstractCommandProcessor | None:
-        for processor_name in self.processors:
-            processor = self.processors[processor_name](
-                self,
-                command,
-                command_args
-            )
+    def create_command_processor_for_command(self, command: str, args=None) -> AbstractCommandProcessor | None:
+        processor = self.create_command_processor(
+            self.guess_command_type(command)
+        )
 
-            # Regex succeed to match command
-            if processor.match:
-                return processor
+        if processor:
+            processor.set_command(command, args)
 
-        return None
+        return processor

@@ -18,7 +18,7 @@ def get_app_docker_compose_files(kernel, app_dir):
     if not os.path.isfile(app_compose_file):
         return compose_files
 
-    if kernel.exec_function(app__service__used, {
+    if kernel.run_function(app__service__used, {
         'app-dir': app_dir,
         'service': 'proxy',
     }):

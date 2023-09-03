@@ -7,7 +7,7 @@ class TestAppCommandServicesExec(AbstractTestCase):
     def test_exec(self):
         app_dir = create_test_app(self.kernel, services=['php_8'])
 
-        response = self.kernel.exec_function(
+        response = self.kernel.run_function(
             app__services__exec,
             {
                 'app-dir': app_dir,

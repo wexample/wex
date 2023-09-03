@@ -1,11 +1,12 @@
 import os.path
-import time
 
 from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
 from addons.core.command.command.create import core__command__create
+from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_USER, COMMAND_CHAR_SERVICE, COMMAND_CHAR_APP, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from tests.AbstractTestCase import AbstractTestCase
+from addons.app.helpers.test import create_test_app
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
@@ -13,7 +14,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         # User ask "", it should suggest all
         # addons names suffixed by "::",
         # and every special char namespaces : ~, ., @
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 0,
@@ -28,7 +29,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         # User ask "co", it should suggest "core::",
         # with addon separator as there is no more
         # addon name starting with "co"
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 0,
@@ -41,7 +42,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         )
 
         # User ask "core:", it should suggest "core::"
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 1,
@@ -54,7 +55,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         )
 
         # User ask "core::", it should suggest all groups in core::*
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 1,
@@ -67,7 +68,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         )
 
         # User ask "core::co", it should suggest all groups in core::co*
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 2,
@@ -86,7 +87,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         # User ask "core::logo", it should suggest single result core::logo/show
         # It may fail in the future if we add a new logo/xx command
         # We'll found another command in this case
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 2,
@@ -104,7 +105,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         # User ask "core::logo/show",
         # it suggests only the found command
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 2,
@@ -124,7 +125,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
     def tests_suggest_addon_args(self):
         # Search full addon command name with a final space
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 3,
@@ -142,7 +143,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
     def tests_suggest_service(self):
         # Search only "@", should return all service commands
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 0,
@@ -158,7 +159,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             COMMAND_CHAR_SERVICE + 'test::demo-command' in suggestions
         )
 
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 1,
@@ -170,7 +171,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             COMMAND_CHAR_SERVICE + 'test::demo-command' in suggestions
         )
 
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 2,
@@ -190,7 +191,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             ':'
         )
 
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 2,
@@ -211,7 +212,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         )
 
     def tests_suggest_service_args(self):
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 4,
@@ -230,22 +231,22 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             '--option' in suggestions
         )
 
-    def create_and_test_created_command(self, prefix: str, search: str = None):
-        command = prefix + 'test/autocomplete_command'
+    def _create_and_test_created_command(self, prefix: str, search: str = None):
+        command = prefix + 'test/autocomplete-command'
         if not search:
             search = prefix + 'te'
 
         self.kernel.log(f'Testing command {command}')
 
         # First create command
-        info = self.kernel.exec_function(
+        info = self.kernel.run_function(
             core__command__create,
             {
                 'command': command
             }
         )
 
-        suggestions: str = self.kernel.exec_function(
+        suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 0,
@@ -255,7 +256,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         self.assertTrue(
             command in suggestions,
-            f'Suggestions "{suggestions}" contains "{command}"'
+            f'Suggestions "{suggestions}" contains "{command}" when search for {search}'
         )
 
         self.assertTrue(
@@ -271,27 +272,36 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             os.remove(info['test'])
 
     def tests_suggest_app(self):
-        # Search only ".", should return all app commands
-        suggestions: str = self.kernel.exec_function(
-            core__autocomplete__suggest,
-            {
-                'cursor': 0,
-                'search': COMMAND_CHAR_APP
-            }
-        )
+        app_dir = create_test_app(self.kernel)
 
-        # There is at least on custom app command in wex
-        self.assertTrue(
-            len(suggestions.split(' ')) >= 1
-        )
+        def callback():
+            # Search only ".", should return all app commands
+            suggestions: str = self.kernel.run_function(
+                core__autocomplete__suggest,
+                {
+                    'cursor': 0,
+                    'search': COMMAND_CHAR_APP
+                }
+            )
 
-        # Search ".te", to find created command
-        self.create_and_test_created_command(
-            COMMAND_CHAR_APP,
+            # There is at least on custom app command in wex
+            self.assertTrue(
+                len(suggestions.split(' ')) >= 1
+            )
+
+            # Search ".te", to find created command
+            self._create_and_test_created_command(
+                COMMAND_CHAR_APP,
+            )
+
+        manager: AppAddonManager = self.kernel.addons['app']
+        manager.exec_in_workdir(
+            app_dir,
+            callback
         )
 
     def tests_suggest_app_args(self):
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 1,
@@ -305,12 +315,12 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
     def tests_suggest_user(self):
         # Search "~te", to find created command
-        self.create_and_test_created_command(
+        self._create_and_test_created_command(
             COMMAND_CHAR_USER,
         )
 
     def tests_suggest_user_args(self):
-        suggestions = self.kernel.exec_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 'cursor': 1,

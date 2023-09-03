@@ -8,7 +8,7 @@ class TestAppCommandHookExec(AbstractTestCase):
     def test_exec(self):
         app_dir = create_test_app(self.kernel, services=['php_8'])
 
-        results = self.kernel.exec_function(
+        results = self.kernel.run_function(
             app__hook__exec,
             {
                 'app-dir': app_dir,

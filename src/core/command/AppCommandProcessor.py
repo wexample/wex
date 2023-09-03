@@ -1,20 +1,21 @@
-from __future__ import annotations
-
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from addons.app.command.location.find import app__location__find
-from src.helper.string import to_snake_case
-from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_SEPARATOR_FUNCTION_PARTS, COMMAND_CHAR_APP
+from src.helper.string import to_snake_case, to_kebab_case
+from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
+    COMMAND_SEPARATOR_GROUP
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 from addons.app.AppAddonManager import AppAddonManager
 
 
 class AppCommandProcessor(AbstractCommandProcessor):
-    def __init__(self, kernel: 'Kernel', command: str = None, command_args: [] = []):
-        super().__init__(kernel, command, command_args)
+    def __init__(self, kernel):
+        super().__init__(kernel)
+
+        # Shortcut.
         self.app_addon: AppAddonManager = kernel.addons['app']
 
-    def exec(self, quiet: bool = False) -> str | None:
+    def run(self, quiet: bool = False) -> str | None:
         if not self.get_base_path():
             if not quiet:
                 self.kernel.error(ERR_APP_NOT_FOUND, {
@@ -24,12 +25,14 @@ class AppCommandProcessor(AbstractCommandProcessor):
 
             return None
 
-        return super().exec(quiet)
+        return super().run(quiet)
 
-    def get_pattern(self) -> str:
+    @classmethod
+    def get_pattern(cls) -> str:
         return COMMAND_PATTERN_APP
 
-    def get_type(self) -> str:
+    @classmethod
+    def get_type(cls) -> str:
         return COMMAND_TYPE_APP
 
     def get_path(self, subdir: str = None) -> str | None:
@@ -38,6 +41,13 @@ class AppCommandProcessor(AbstractCommandProcessor):
             subdir,
             os.path.join(to_snake_case(self.match[2]), to_snake_case(self.match[3]))
         )
+
+    def build_command_from_parts(self, parts: list) -> str:
+        # Convert each part to kebab-case
+        kebab_parts = [to_kebab_case(part) for part in parts]
+
+        return f'{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
+
 
     def get_function_name_parts(self) -> []:
         return [
@@ -49,7 +59,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
     def get_base_path(self):
         app_dir = self.app_addon.current_app_dir
         if not self.app_addon.current_app_dir:
-            app_dir = self.kernel.exec_function(
+            app_dir = self.kernel.run_function(
                 app__location__find,
                 {
                     'app-dir': self.app_addon.call_working_dir
@@ -65,16 +75,14 @@ class AppCommandProcessor(AbstractCommandProcessor):
         if cursor == 0:
             # User typed "."
             if search_split[0].startswith(COMMAND_CHAR_APP):
-                from src.helper.suggest import suggest_from_path
                 app_path = self.get_base_command_path()
 
                 # We are in an app dir or subdir
                 if app_path:
                     return ' '.join(
-                        suggest_from_path(
+                        self.suggest_from_path(
                             app_path,
                             search_split[0],
-                            COMMAND_CHAR_APP
                         )
                     )
 

@@ -60,6 +60,7 @@ def app__service__install(
 
     manager: AppAddonManager = kernel.addons['app']
     services = manager.get_config('global.services')
+
     if service in services and not force:
         kernel.log('Service already installed')
         return
@@ -99,7 +100,7 @@ def app__service__install(
 
         manager.set_config('global', config_global)
 
-    kernel.exec(
+    kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}service/install',
         {
             'app-dir': app_dir,

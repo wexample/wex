@@ -5,10 +5,10 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandProxyStart(AbstractTestCase):
     def test_start(self):
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__proxy__start
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__proxy__stop
         )

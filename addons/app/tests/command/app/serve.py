@@ -9,25 +9,25 @@ class TestAppCommandAppServe(AbstractTestCase):
     def test_serve(self):
         app_dir = create_test_app(self.kernel, services=['php_8'])
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__serve, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__start, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__serve, {
                 'app-dir': app_dir
             }
         )
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__stop, {
                 'app-dir': app_dir
             }

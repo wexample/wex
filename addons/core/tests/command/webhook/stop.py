@@ -4,4 +4,4 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestCoreCommandWebhookStop(AbstractTestCase):
     def test_stop(self):
-        self.kernel.exec_function(core__webhook__stop)
+        self.kernel.run_function(core__webhook__stop)

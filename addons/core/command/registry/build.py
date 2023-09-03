@@ -6,9 +6,9 @@ from yaml import SafeLoader
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 from src.decorator.command import command
-from src.helper.registry import scan_commands_groups
 from src.decorator.as_sudo import as_sudo
-from src.const.globals import FILE_REGISTRY, COMMAND_SEPARATOR_ADDON, COMMAND_CHAR_SERVICE
+from src.const.globals import FILE_REGISTRY, COMMAND_SEPARATOR_ADDON, COMMAND_CHAR_SERVICE, COMMAND_TYPE_ADDON, \
+    COMMAND_TYPE_SERVICE
 from src.helper.file import set_user_or_sudo_user_owner
 
 
@@ -38,6 +38,7 @@ def core__registry__build(kernel):
 
 def build_registry_addons(addons, kernel):
     addons_dict = {}
+    processor = kernel.create_command_processor(COMMAND_TYPE_ADDON)
 
     for addon in addons:
         addon_command_path = os.path.join(kernel.path['addons'], addon, 'command')
@@ -45,9 +46,8 @@ def build_registry_addons(addons, kernel):
         if os.path.exists(addon_command_path):
             addons_dict[addon] = {
                 'name': addon,
-                'commands': scan_commands_groups(
+                'commands': processor.scan_commands_groups(
                     addon_command_path,
-                    f'{addon}{COMMAND_SEPARATOR_ADDON}'
                 )
             }
 
@@ -56,6 +56,7 @@ def build_registry_addons(addons, kernel):
 
 def build_registry_services(addons, kernel):
     services_dict = {}
+    processor = kernel.create_command_processor(COMMAND_TYPE_SERVICE)
 
     for addon in addons:
         services_dir = os.path.join(kernel.path['addons'], addon, 'services')
@@ -68,9 +69,8 @@ def build_registry_services(addons, kernel):
 
                 services_dict[service] = {
                     'name': service,
-                    'commands': scan_commands_groups(
+                    'commands': processor.scan_commands_groups(
                         commands_path,
-                        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}'
                     ),
                     'addon': addon,
                     'dir': service_path + '/',

@@ -15,7 +15,7 @@ from src.helper.file import create_from_template
               help='Force to create file if exists')
 def core__command__create(kernel, command: str, force: bool = False) -> {}:
     kernel.log('Creating command file...')
-    processor = kernel.build_command_processor(command)
+    processor = kernel.create_command_processor_for_command(command)
 
     if not processor:
         kernel.message(f'Unable to process command : {command}')
@@ -24,52 +24,50 @@ def core__command__create(kernel, command: str, force: bool = False) -> {}:
     command_path: str = processor.get_path_or_fail()
 
     # File exists
-    if os.path.exists(command_path) and not force:
-        return command_path
+    if not os.path.exists(command_path) or force:
+        command_type = processor.get_type()
 
-    command_type = processor.get_type()
+        if command_type == COMMAND_TYPE_CORE:
+            kernel.message(f'Unable to create core command : {command}')
+            return
+        # User wants to create some/command, but with no addons name
+        # So we suggest user want to create a local user command.
+        elif command_type == COMMAND_TYPE_ADDON:
+            if not command_path:
+                kernel.log('No given addon name, creating a local user command...')
 
-    if command_type == COMMAND_TYPE_CORE:
-        kernel.message(f'Unable to create core command : {command}')
-        return
-    # User wants to create some/command, but with no addons name
-    # So we suggest user want to create a local user command.
-    elif command_type == COMMAND_TYPE_ADDON:
-        if not command_path:
-            kernel.log('No given addon name, creating a local user command...')
+                return kernel.run_function(
+                    core__command__create,
+                    {
+                        'command': f'{COMMAND_CHAR_USER}{command}'
+                    }
+                )
 
-            return kernel.exec_function(
-                core__command__create,
-                {
-                    'command': f'{COMMAND_CHAR_USER}{command}'
-                }
-            )
+        os.makedirs(
+            os.path.dirname(command_path),
+            exist_ok=True
+        )
 
-    os.makedirs(
-        os.path.dirname(command_path),
-        exist_ok=True
-    )
+        function_name = processor.get_function_name()
 
-    function_name = processor.get_function_name()
+        create_from_template(
+            kernel.path['templates'] + 'command.py.tpl',
+            command_path,
+            {
+                'function_name': function_name,
+            }
+        )
 
-    create_from_template(
-        kernel.path['templates'] + 'command.py.tpl',
-        command_path,
-        {
-            'function_name': function_name,
-        }
-    )
+        kernel.message(f'Created command file : {command_path}')
 
-    kernel.message(f'Created command file : {command_path}')
-
-    test_file = kernel.exec_function(
+    test_file = kernel.run_function(
         core__test__create,
         {
             'command': command
         }
     )
 
-    kernel.exec_function(
+    kernel.run_function(
         core__registry__build
     )
 

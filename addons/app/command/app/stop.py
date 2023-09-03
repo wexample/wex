@@ -1,4 +1,3 @@
-from __future__ import annotations
 
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
@@ -12,10 +11,10 @@ from src.decorator.command import command
 
 @command()
 @app_dir_option()
-def app__app__stop(kernel: 'Kernel', app_dir: str):
-    manager: 'AppAddonManager' = kernel.addons['app']
+def app__app__stop(kernel: Kernel, app_dir: str):
+    manager: AppAddonManager = kernel.addons['app']
 
-    if not kernel.exec_function(app__app__started, {
+    if not kernel.run_function(app__app__started, {
         'app-dir': app_dir,
         'check-mode': APP_STARTED_CHECK_MODE_FULL
     }):
@@ -24,7 +23,7 @@ def app__app__stop(kernel: 'Kernel', app_dir: str):
 
     name = manager.get_config('global.name')
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,
@@ -55,7 +54,7 @@ def app__app__stop(kernel: 'Kernel', app_dir: str):
 
     manager.set_runtime_config('started', False)
 
-    kernel.exec_function(
+    kernel.run_function(
         app__hook__exec,
         {
             'app-dir': app_dir,

@@ -22,7 +22,7 @@ def process_post_exec_wex(kernel, function: callable, args: dict = {}, is_async=
     command = [
                   'bash',
                   kernel.path['core.cli'],
-                  kernel.build_command_processor_by_type(COMMAND_TYPE_ADDON).build_command_from_function(function),
+                  kernel.create_command_processor(COMMAND_TYPE_ADDON).build_command_from_function(function),
               ] + convert_dict_to_args(function, args)
 
     if is_async:

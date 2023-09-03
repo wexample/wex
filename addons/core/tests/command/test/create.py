@@ -10,7 +10,7 @@ class TestCoreCommandTestCreate(AbstractTestCase):
         test_file_path_command = f'command/lorem/ipsum.py'
         test_file_path_test = f"{self.kernel.path['addons']}core/tests/{test_file_path_command}"
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             core__test__create,
             {
                 'command': 'core::lorem/ipsum'

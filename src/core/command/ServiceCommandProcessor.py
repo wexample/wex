@@ -8,26 +8,32 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class ServiceCommandProcessor(AbstractCommandProcessor):
-    def exec(self, quiet: bool = False) -> str | None:
-        if self.match[1] not in self.kernel.registry['services']:
+    def run(self, quiet: bool = False) -> str | None:
+        service = to_snake_case(self.match[1])
+        if service not in self.kernel.registry['services']:
             if not quiet:
                 self.kernel.error(ERR_SERVICE_NOT_FOUND, {
                     'command': self.command,
-                    'service': self.match[2],
+                    'service': service,
                 })
             return None
 
-        return super().exec(quiet)
+        return super().run(quiet)
 
-    def get_pattern(self) -> str:
+    @classmethod
+    def get_pattern(cls) -> str:
         return COMMAND_PATTERN_SERVICE
 
-    def get_type(self) -> str:
+    @classmethod
+    def get_type(cls) -> str:
         return COMMAND_TYPE_SERVICE
+
+    def build_command_from_parts(self, parts: list) -> str:
+        return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def get_path(self, subdir: str = None):
         return self.build_command_path(
-            f"{self.kernel.registry['services'][self.match[1]]['dir']}",
+            f"{self.kernel.registry['services'][to_snake_case(self.match[1])]['dir']}",
             subdir,
             os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
         )

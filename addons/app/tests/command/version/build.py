@@ -9,7 +9,7 @@ class TestAppCommandVersionBuild(AbstractTestCase):
         current_version = manager.get_config('global.version')
 
         # Change version.
-        version = self.kernel.exec_function(
+        version = self.kernel.run_function(
             app__version__build,
             {
                 'version': '1.0.0'
@@ -19,7 +19,7 @@ class TestAppCommandVersionBuild(AbstractTestCase):
         self.assertEqual(version, '1.0.0')
 
         # Rollback.
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__version__build,
             {
                 'version': current_version

@@ -14,7 +14,7 @@ from src.core.Kernel import Kernel
 @click.option('--arguments', '-args', type=str, required=False,
               help="Arguments")
 @app_dir_option()
-def app__services__exec(kernel: Kernel, app_dir: str, hook, arguments: str):
+def app__services__exec(kernel: Kernel, app_dir: str, hook: str, arguments: str):
     manager: AppAddonManager = kernel.addons['app']
 
     output = {}
@@ -29,11 +29,10 @@ def app__services__exec(kernel: Kernel, app_dir: str, hook, arguments: str):
 
         manager.log(command_name)
 
-        output[service] = kernel.exec(
+        output[service] = kernel.run_command(
             command_name,
             arguments,
             quiet=True
         )
 
     return output
-

@@ -11,7 +11,6 @@ from src.decorator.command import command
 
 
 @command()
-@click.pass_obj
 @click.option('--version', '-v', type=str, required=False,
               help="New version number, auto generated if missing")
 @click.option('--commit', '-ok', required=False, is_flag=True, default=False,
@@ -24,7 +23,7 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
         if version:
             new_version = version
         else:
-            new_version = kernel.exec_function(
+            new_version = kernel.run_function(
                 default__version__increment,
                 {
                     'version': manager.get_config('global.version')

@@ -9,7 +9,7 @@ class TestAppCommandAppRestart(AbstractTestCase):
     def test_restart(self):
         app_dir = create_test_app(self.kernel, services=['php_8'])
 
-        self.kernel.exec_function(
+        self.kernel.run_function(
             app__app__restart, {
                 'app-dir': app_dir
             }
