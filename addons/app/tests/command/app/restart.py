@@ -15,19 +15,19 @@ class TestAppCommandAppRestart(AbstractTestCase):
             }
         )
 
-        # self.kernel.exec_function(
+        # self.kernel.run_function(
         #     app__app__start, {
         #         'app-dir': app_dir
         #     }
         # )
         #
-        # self.kernel.exec_function(
+        # self.kernel.run_function(
         #     app__app__restart, {
         #         'app-dir': app_dir
         #     }
         # )
         #
-        # self.kernel.exec_function(
+        # self.kernel.run_function(
         #     app__app__stop, {
         #         'app-dir': app_dir
         #     }
