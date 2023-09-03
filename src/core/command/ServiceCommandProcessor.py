@@ -40,11 +40,11 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
             os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
         )
 
-    def get_function_name_parts(self) -> []:
+    def get_function_name_parts(self, parts: list) -> []:
         return [
-            self.match.group(1),
-            self.match.group(2),
-            self.match.group(3)
+            parts[0],
+            parts[1],
+            parts[2]
         ]
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:

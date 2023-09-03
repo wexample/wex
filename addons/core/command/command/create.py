@@ -48,7 +48,9 @@ def core__command__create(kernel, command: str, force: bool = False) -> {}:
             exist_ok=True
         )
 
-        function_name = processor.get_function_name()
+        function_name = processor.get_function_name(
+            list(processor.match.groups())
+        )
 
         create_from_template(
             kernel.path['templates'] + 'command.py.tpl',

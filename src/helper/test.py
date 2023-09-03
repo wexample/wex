@@ -51,7 +51,9 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
-    command_function_name = processor.get_function_name()
+    command_function_name = processor.get_function_name(
+        list(processor.match.groups())
+    )
 
     kernel.log(f'Creating test for command {command}')
 

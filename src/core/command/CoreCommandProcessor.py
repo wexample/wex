@@ -37,12 +37,12 @@ class CoreCommandProcessor(AbstractCommandProcessor):
     def get_type(cls) -> str:
         return COMMAND_TYPE_CORE
 
-    # def get_path(self, subdir: str = None) -> str | None:
-    #     return None
-    #
-    # def get_function_name(self) -> str | None:
-    #     return None
-    #
+    def get_path(self, subdir: str = None) -> str | None:
+        return None
+
+    def get_function_name(self, parts: list) -> str | None:
+        return None
+
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
             # Adds also all core actions.

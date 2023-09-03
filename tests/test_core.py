@@ -142,7 +142,8 @@ class TestCore(AbstractTestCase):
 
             processor = self.kernel.create_command_processor_for_command(command)
             function = processor.get_function(
-                processor.get_path()
+                processor.get_path(),
+                list(processor.match.groups())
             )
 
             for param in function.params:

@@ -48,7 +48,10 @@ class AbstractCommandProcessor:
                 })
             return AbortResponse()
 
-        self.command_function = self.get_function(self.command_path)
+        self.command_function = self.get_function(
+            self.command_path,
+            list(self.match.groups())
+        )
 
         # Enforce sudo.
         if hasattr(self.command_function.callback, 'as_sudo') and os.geteuid() != 0:
@@ -92,7 +95,7 @@ class AbstractCommandProcessor:
 
         return response
 
-    def get_function(self, command_path: str) -> str:
+    def get_function(self, command_path: str, parts: list) -> str:
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(command_path, command_path)
         module = importlib.util.module_from_spec(spec)
@@ -100,7 +103,7 @@ class AbstractCommandProcessor:
 
         return getattr(
             module,
-            self.get_function_name()
+            self.get_function_name(parts)
         )
 
     @classmethod
@@ -168,15 +171,15 @@ class AbstractCommandProcessor:
 
         return path
 
-    def get_function_name(self) -> str | None:
+    def get_function_name(self, parts: list) -> str | None:
         return to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(
-                self.get_function_name_parts()
+                self.get_function_name_parts(parts)
             )
         )
 
     @abstractmethod
-    def get_function_name_parts(self) -> []:
+    def get_function_name_parts(self, parts: list) -> []:
         pass
 
     def build_full_command_from_function(self, function_or_command, args=None) -> str | None:
@@ -200,14 +203,14 @@ class AbstractCommandProcessor:
         """
         return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 
-    def build_command_from_file_path(self, command_path: str) -> str | None:
+    def build_command_parts_from_file_path(self, command_path: str) -> list:
         path_parts = command_path.split(os.sep)
 
-        return self.build_command_from_parts([
+        return [
             path_parts[-4],
             path_parts[-2],
             os.path.splitext(path_parts[-1])[0]
-        ])
+        ]
 
     def build_command_from_parts(self, parts: list) -> str:
         """
@@ -257,7 +260,8 @@ class AbstractCommandProcessor:
         # but ignore already given args,
         # i.e : if -d is already given, do not suggest "-d" or "--default"
         function = self.get_function(
-            self.get_path()
+            self.get_path(),
+            list(self.match.groups())
         )
 
         params = []
@@ -296,7 +300,7 @@ class AbstractCommandProcessor:
 
         return command_dict
 
-    def scan_commands(self, directory, group):
+    def scan_commands(self, directory: str, group: str):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
         for command in os.listdir(directory):
@@ -304,8 +308,16 @@ class AbstractCommandProcessor:
                 command_file = os.path.join(directory, command)
                 test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
 
-                commands[self.build_command_from_file_path(command_file)] = {
-                    'file': command_file,
-                    'test': test_file if os.path.exists(test_file) else None
-                }
+                parts = self.build_command_parts_from_file_path(command_file)
+
+                function = self.get_function(
+                    command_file,
+                    parts
+                )
+
+                if not hasattr(function.callback, 'test_command'):
+                    commands[self.build_command_from_parts(parts)] = {
+                        'file': command_file,
+                        'test': test_file if os.path.exists(test_file) else None
+                    }
         return commands

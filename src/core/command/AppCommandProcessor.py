@@ -50,11 +50,11 @@ class AppCommandProcessor(AbstractCommandProcessor):
 
         return f'{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
 
-    def get_function_name_parts(self) -> []:
+    def get_function_name_parts(self, parts: list) -> []:
         return [
             'app',
-            self.match.group(2),
-            self.match.group(3)
+            parts[1],
+            parts[2]
         ]
 
     def get_base_path(self):

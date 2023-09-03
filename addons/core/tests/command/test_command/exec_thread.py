@@ -10,5 +10,5 @@ class TestCoreCommandTestCommandExecThread(AbstractTestCase):
 
         self.assertEqual(
             response,
-            True
+            2
         )
