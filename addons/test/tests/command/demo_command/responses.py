@@ -24,4 +24,7 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
             }
         )
 
-        self.assertTrue(callable(response))
+        self.assertEqual(
+            response,
+            'one'
+        )
