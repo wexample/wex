@@ -29,6 +29,9 @@ def core__registry__build(kernel, test: bool = False, write: bool = True):
         'services': build_registry_services(addons, kernel, test)
     }
 
+    kernel.log('Building complete...')
+    kernel.log_indent_down()
+
     if write:
         registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
         with open(registry_path, 'w') as f:
@@ -36,11 +39,8 @@ def core__registry__build(kernel, test: bool = False, write: bool = True):
 
         set_user_or_sudo_user_owner(registry_path)
         kernel.load_registry()
-
-    kernel.log('Building complete...')
-    kernel.log_indent_down()
-
-    return registry
+    else:
+        return registry
 
 
 def build_registry_addons(addons, kernel, test_commands: bool = False):
