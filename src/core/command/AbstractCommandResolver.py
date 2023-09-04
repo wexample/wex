@@ -61,18 +61,25 @@ class AbstractCommandResolver:
 
         ctx.obj = self.kernel
 
-        response = request.function.invoke(ctx)
+        response = self.wrap_response(
+            request.function.invoke(ctx)
+        )
 
-        if callable(response):
-            response = FunctionResponse(self.kernel, response)
-        if not isinstance(response, AbstractResponse):
-            response = DefaultResponse(self.kernel, response)
+        middleware_args['response'] = response
 
         self.kernel.exec_middlewares('run_post', middleware_args)
 
         return response
 
-    def get_function_from_request(self, request:CommandRequest) -> str:
+    def wrap_response(self, response) -> AbstractResponse:
+        if callable(response):
+            return FunctionResponse(self.kernel, response)
+        if not isinstance(response, AbstractResponse):
+            return DefaultResponse(self.kernel, response)
+
+        return response
+
+    def get_function_from_request(self, request: CommandRequest) -> str:
         return self.get_function(
             request.path,
             list(request.match.groups())

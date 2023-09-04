@@ -40,6 +40,7 @@ FILE_VERSION = 'version.txt'
 GITHUB_GROUP = 'wexample'
 GITHUB_PROJECT = 'wex'
 KERNEL_RENDER_MODE_CLI = 'cli'
+KERNEL_RENDER_MODE_COMMAND = 'command'
 PASSWORD_INSECURE = 'thisIsAReallyNotSecurePassword!'
 PYTHON_MIN_VERSION = (3, 10)
 OWNER_USERNAME = 'owner'
