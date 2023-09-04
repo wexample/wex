@@ -23,7 +23,6 @@ from src.core.command.UserCommandProcessor import UserCommandProcessor
 from src.helper.file import list_subdirectories
 from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
 from src.core.action.TestCoreAction import TestCoreAction
-from src.core.action.HiCoreAction import HiCoreAction
 
 PROCESSOR_CLASSES = [
     AddonCommandProcessor,
@@ -39,7 +38,6 @@ ADDONS_DEFINITIONS = {
 
 CORE_ACTIONS = [
     CoreActionsCoreAction,
-    HiCoreAction,
     TestCoreAction,
 ]
 
