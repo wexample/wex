@@ -14,6 +14,7 @@ def test__demo_command__response_collection(kernel: Kernel, response_collection_
         # Will be converted to FunctionResponse
         _test__demo_command__response_collection_one,
         _test__demo_command__response_collection_two,
+        _test__demo_command__response_collection_three,
         ShellCommandResponse(kernel, ['ls', '-la'])
     ])
 
@@ -26,4 +27,11 @@ def _test__demo_command__response_collection_two(args: dict = None):
     return {
         'old': args['previous'],
         'new': 'two'
+    }
+
+
+def _test__demo_command__response_collection_three(args: dict = None):
+    return {
+        'type': type(args['previous']),
+        'length': len(args['previous'])
     }

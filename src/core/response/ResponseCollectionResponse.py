@@ -1,5 +1,6 @@
 import inspect
 
+from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
 from src.helper.string import to_kebab_case
 from src.helper.process import process_post_exec_wex
@@ -57,8 +58,10 @@ class ResponseCollectionResponse(AbstractResponse):
             render_args = {}
 
             if step > 0:
-                render_args['previous'] = self.kernel.task_file_load(
-                    'response',
+                render_args['previous'] = parse_arg(
+                    self.kernel.task_file_load(
+                        'response',
+                    )
                 )
 
                 remove_file_if_exists(
