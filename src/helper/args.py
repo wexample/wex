@@ -89,9 +89,9 @@ def convert_args_to_dict(function, arg_list):
     return args_dict
 
 
-def parse_arg(argument):
+def parse_arg(argument, default=None):
     if argument is None or argument == '':
-        return None
+        return default
 
     try:
         return ast.literal_eval(argument)
