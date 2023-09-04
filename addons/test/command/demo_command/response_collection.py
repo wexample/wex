@@ -14,7 +14,7 @@ def test__demo_command__response_collection(kernel: Kernel, response_collection_
         # Will be converted to FunctionResponse
         _test__demo_command__response_collection_one,
         _test__demo_command__response_collection_two,
-        # ShellCommandResponse(kernel, ['ls', '-la', '{__prev__[2]}'])
+        ShellCommandResponse(kernel, ['ls', '-la'])
     ])
 
 
