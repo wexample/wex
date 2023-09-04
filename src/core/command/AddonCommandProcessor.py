@@ -2,9 +2,8 @@ import os
 
 from src.helper.string import to_snake_case
 from src.helper.registry import get_all_commands_from_addons
-from src.helper.args import convert_dict_to_args
-from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_FUNCTION_PARTS, \
-    COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP, CORE_COMMAND_NAME
+from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
+    COMMAND_SEPARATOR_GROUP
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
@@ -40,10 +39,20 @@ class AddonCommandProcessor(AbstractCommandProcessor):
     def get_commands_registry(kernel) -> dict:
         return get_all_commands_from_addons(kernel)
 
-    def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
-        # Performance optimisation
-        from src.const.globals import COMMAND_SEPARATOR_ADDON
+    def build_alias(self, function, alias: bool | str) -> str:
+        if alias == 'NO_ADDON_ALIAS':
+            parts = self.build_match(
+                self.build_command_from_function(function)
+            ).groups()
 
+            return COMMAND_SEPARATOR_GROUP.join([
+                parts[1],
+                parts[2]
+            ])
+
+        return super().build_alias(function, alias)
+
+    def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
             # User typed "co"
             if search_split[0] != '':

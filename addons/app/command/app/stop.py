@@ -5,12 +5,14 @@ from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
+from src.decorator.alias_without_addon import alias_without_addon
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
 @command()
 @app_dir_option()
+@alias_without_addon()
 def app__app__stop(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
 

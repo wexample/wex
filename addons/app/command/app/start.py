@@ -1,4 +1,3 @@
-
 import os.path
 import click
 
@@ -16,24 +15,25 @@ from src.helper.process import process_post_exec_wex
 from src.helper.prompt import prompt_choice
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helpers.app import create_env
+from src.decorator.alias_without_addon import alias_without_addon
 from src.decorator.command import command
 from src.decorator.option import option
 
 
 @command()
+@alias_without_addon()
 @app_dir_option()
 @option(
     '--clear-cache', '-cc', is_flag=True, default=False,
     help="Forces a rebuild of images")
 @option('--user', '-u', type=str, required=False,
-              help="Owner of application files")
+        help="Owner of application files")
 @option('--group', '-g', type=str, required=False,
-              help="Group of application files")
+        help="Group of application files")
 @option('--env', '-e', type=str, required=False,
-              help="App environment")
+        help="App environment")
 def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str = None, group: str = None,
                     env: str = None):
-
     manager: AppAddonManager = kernel.addons['app']
 
     if not os.path.exists(APP_FILEPATH_REL_ENV):
