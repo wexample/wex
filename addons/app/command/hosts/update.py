@@ -1,5 +1,3 @@
-import click
-
 from addons.app.decorator.app_location_optional import app_location_optional
 from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel

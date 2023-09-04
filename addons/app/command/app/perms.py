@@ -1,5 +1,3 @@
-import click
-
 from addons.app.command.hook.exec import app__hook__exec
 from src.decorator.command import command
 from src.helper.system import set_owner_recursively, set_permissions_recursively, get_user_or_sudo_user

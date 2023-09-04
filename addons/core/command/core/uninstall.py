@@ -1,4 +1,3 @@
-import click
 import os
 
 from addons.core.command.webhook.stop import core__webhook__stop

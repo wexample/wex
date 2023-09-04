@@ -1,5 +1,3 @@
-import click
-
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
