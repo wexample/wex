@@ -12,14 +12,16 @@ RESPONSES_DEFAULT_VALUES = {
 
 
 @test_command()
-@option('--type', '-y', required=True,
+@option('--type', '-t', required=True,
         help="Response type to test")
 def test__demo_command__responses(kernel: Kernel, type: str):
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
-    elif type is 'function':
+    elif type == 'function':
         return _test__demo_command__responses_one
-    elif type is 'response-collection':
+    elif type == 'shell':
+        return ShellCommandResponse(kernel, ['ls', '-la'])
+    elif type == 'response-collection':
         return ResponseCollectionResponse(kernel, [
             # Will be converted to PythonFunctionResponse
             _test__demo_command__responses_one,
