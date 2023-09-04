@@ -4,15 +4,13 @@ import re
 import sys
 from abc import abstractmethod
 
-from typing import Optional
-
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
-from src.helper.args import convert_dict_to_args, convert_args_to_dict
+from src.helper.args import convert_dict_to_args
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
@@ -28,7 +26,7 @@ class AbstractCommandResolver:
     def run_request(self, request: CommandRequest) -> AbstractResponse:
         import click
 
-        if not request.path or not os.path.isfile(request.path):
+        if not request.localized and (not request.path or not os.path.isfile(request.path)):
             if not request.quiet:
                 self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
@@ -36,16 +34,9 @@ class AbstractCommandResolver:
                 })
             return AbortResponse(self.kernel)
 
-        request.function = self.get_function_from_request(request)
-
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
             os.execvp('sudo', ['sudo'] + sys.argv)
-
-        if isinstance(request.args, dict):
-            request.args = convert_dict_to_args(request.function, request.args)
-
-        request.args_dict = convert_args_to_dict(request.function, request.args)
 
         middleware_args = {
             'request': request,
@@ -83,7 +74,7 @@ class AbstractCommandResolver:
 
     def get_function_from_request(self, request:CommandRequest) -> str:
         return self.get_function(
-            request.command,
+            request.path,
             list(request.match.groups())
         )
 
@@ -189,7 +180,7 @@ class AbstractCommandResolver:
     def get_function_name_parts(self, parts: list) -> []:
         pass
 
-    def build_full_command_from_function(self, function_or_command, args=None) -> str | None:
+    def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:
         if args is None:
             args = {}
 
@@ -254,19 +245,13 @@ class AbstractCommandResolver:
         )
 
         # Command is not recognised
-        if not request.match:
-            return
-
-        # File does not exist
-        if not os.path.isfile(request.path):
+        if not request.localized:
             return
 
         search_params = [val for val in search_params if val.startswith("-")]
 
-        function = self.get_function_from_request(request)
-
         params = []
-        for param in function.params:
+        for param in request.function.params:
             if any(opt in search_params for opt in param.opts):
                 continue
 

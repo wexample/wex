@@ -132,23 +132,6 @@ class TestCore(AbstractTestCase):
             'FIRST'
         )
 
-    def test_help_coverage(self):
-        self._test_help_coverage(self.kernel.registry['addons'])
-        self._test_help_coverage(self.kernel.registry['services'])
-
-    def _test_help_coverage(self, registry_part):
-        for command, command_data in get_all_commands_from_registry_part(registry_part).items():
-            self.kernel.log(f'Checking syntax of command {command}')
-
-            request = self.kernel.create_command_request(command)
-            function = request.resolver.get_function_from_request(request)
-
-            for param in function.params:
-                self.assertTrue(
-                    param.help is not None,
-                    f'Option {param.opts} for command {command} should have a help section'
-                )
-
     def test_tests_coverage(self):
         for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']

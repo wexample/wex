@@ -33,4 +33,4 @@ def system__disk__spaces(kernel: Kernel):
 
     output_list.set_body(body)
 
-    return output_list.render(kernel)
+    return output_list.render()

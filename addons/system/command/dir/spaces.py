@@ -42,4 +42,4 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
 
     output_list.set_body(body)
 
-    return output_list.render(kernel)
+    return output_list.render()

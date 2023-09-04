@@ -20,7 +20,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
     def build_path(self, request: CommandRequest, subdir: str = None) -> str | None:
         # Unable to find command path if no addon name found.
-        if not request.match or request.match.group(1) is None:
+        if request.match.group(1) is None:
             return None
 
         return self.build_command_path(

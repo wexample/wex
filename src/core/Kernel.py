@@ -208,7 +208,7 @@ class Kernel:
         if result is not None:
             self.print(result)
 
-    def run_command(self, command: str, args=None, quiet: bool = False):
+    def run_command(self, command: str, args: dict | list = None, quiet: bool = False):
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
@@ -221,7 +221,7 @@ class Kernel:
         return self.render_response(
             request.run())
 
-    def run_function(self, function, args=None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
+    def run_function(self, function, args: dict | list = None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
         resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
@@ -292,7 +292,7 @@ class Kernel:
             return None
         return self.resolvers[type](self)
 
-    def create_command_request(self, command: str, args=None) -> CommandRequest | None:
+    def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
         resolver = self.get_command_resolver(
             self.guess_command_type(command)
         )
