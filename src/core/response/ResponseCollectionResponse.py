@@ -2,7 +2,7 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
 
 
-class ExecThreadResponse(AbstractResponse):
+class ResponseCollectionResponse(AbstractResponse):
     def __init__(self, thread: list):
         self.thread: list = thread
 
