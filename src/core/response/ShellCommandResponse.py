@@ -9,7 +9,7 @@ class ShellCommandResponse(AbstractResponse):
 
         self.shell_command: list = shell_command
 
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str | int | bool | None:
+    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
         process_post_exec(
             self.kernel,
             self.shell_command

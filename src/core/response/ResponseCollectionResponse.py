@@ -1,9 +1,10 @@
 import inspect
 
+from src.helper.file import remove_file_if_exists
 from src.helper.string import to_kebab_case
 from src.helper.process import process_post_exec_wex
 from src.const.error import ERR_UNEXPECTED
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_COMMAND
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -23,7 +24,7 @@ class ResponseCollectionResponse(AbstractResponse):
             }
         )
 
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str | int | bool | None:
+    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
         request = self.kernel.current_request
         step_argument_name = 'response_collection_step'
         step_option_name = to_kebab_case(step_argument_name)
@@ -53,7 +54,21 @@ class ResponseCollectionResponse(AbstractResponse):
             return None
         # This is a valid execution step number.
         elif 0 <= step < len(collection):
-            output = collection[step].render()
+            render_args = {}
+
+            if step > 0:
+                render_args['previous'] = self.kernel.task_file_load(
+                    'response',
+                )
+
+                remove_file_if_exists(
+                    self.kernel.task_file_path('response')
+                )
+
+            output = collection[step].render(
+                args=render_args
+            )
+
             step_next = step + 1
 
             if step_next <= len(collection):

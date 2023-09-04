@@ -9,5 +9,5 @@ class AbstractResponse:
         self.kernel: Kernel = kernel
 
     @abstractmethod
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str | int | bool | None:
+    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args: dict = None) -> str | int | bool | None:
         pass

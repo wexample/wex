@@ -18,9 +18,12 @@ def test__demo_command__response_collection(kernel: Kernel, response_collection_
     ])
 
 
-def _test__demo_command__response_collection_one():
+def _test__demo_command__response_collection_one(args: dict = None):
     return 'one'
 
 
-def _test__demo_command__response_collection_two():
-    return []
+def _test__demo_command__response_collection_two(args: dict = None):
+    return {
+        'old': args['previous'],
+        'new': 'two'
+    }

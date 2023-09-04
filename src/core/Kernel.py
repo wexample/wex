@@ -236,9 +236,7 @@ class Kernel:
             request.run())
 
     def render_response(self, response):
-        output = response.render(
-            KERNEL_RENDER_MODE_CLI
-        )
+        output = response.render(KERNEL_RENDER_MODE_CLI)
 
         # Store command to execute after kernel execution,
         # it should be set at the last moment,

@@ -7,5 +7,5 @@ class DefaultResponse(AbstractResponse):
         super().__init__(kernel)
         self.body: str = body
 
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str | int | bool | None:
+    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args: dict = None) -> str | int | bool | None:
         return self.body
