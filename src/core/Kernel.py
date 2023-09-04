@@ -253,7 +253,7 @@ class Kernel:
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.processors:
-            if self.processors[type].build_match(command):
+            if self.processors[type].supports(self, command):
                 return type
 
     def exec_middlewares(self, name: str, args=None):

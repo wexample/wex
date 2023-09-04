@@ -148,12 +148,31 @@ class AbstractCommandProcessor:
         if args is None:
             args = []
 
+        command = self.resolve_alias(self.kernel, command)
+
         self.command = command
         self.command_args = args
 
         self.match = self.build_match(command)
 
         return self.match
+
+    @classmethod
+    def resolve_alias(cls, kernel, command: str) -> str:
+        registry = cls.get_commands_registry(kernel)
+        for item in registry:
+            if command in registry[item]['alias']:
+                return item
+        return command
+
+    @classmethod
+    def supports(cls, kernel, command: str) -> bool:
+        command = cls.resolve_alias(kernel, command)
+
+        if cls.build_match(command):
+            return True
+
+        return False
 
     @abstractmethod
     def get_path(self, subdir: str = None):
@@ -300,14 +319,17 @@ class AbstractCommandProcessor:
 
         return command_dict
 
+    def build_alias(self, function, alias: bool | str) -> str:
+        if isinstance(alias, bool) and alias:
+            return self.build_command_from_function(function)
+        return alias
+
     def scan_commands(self, directory: str, group: str, test_commands: bool = False):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
         for command in os.listdir(directory):
             if command.endswith('.py'):
                 command_file = os.path.join(directory, command)
-                test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
-
                 parts = self.build_command_parts_from_file_path(command_file)
 
                 function = self.get_function(
@@ -316,8 +338,16 @@ class AbstractCommandProcessor:
                 )
 
                 if test_commands or not hasattr(function.callback, 'test_command'):
+                    test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
+
+                    aliases_raw = function.callback.aliases if hasattr(function.callback, 'aliases') else []
+                    aliases = []
+                    for alias in aliases_raw:
+                        aliases.append(self.build_alias(function, alias))
+
                     commands[self.build_command_from_parts(parts)] = {
                         'file': command_file,
-                        'test': test_file if os.path.exists(test_file) else None
+                        'test': test_file if os.path.exists(test_file) else None,
+                        'alias': aliases
                     }
         return commands
