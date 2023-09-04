@@ -1,12 +1,14 @@
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 
 
-class DataSet2dResponse:
+class DataSet2dResponse(AbstractResponse):
     header: list
     body: list
 
-    def __init__(self):
-        pass
+    def __init__(self, kernel):
+        super().__init__(kernel)
+
 
     def set_header(self, header):
         self.header = header

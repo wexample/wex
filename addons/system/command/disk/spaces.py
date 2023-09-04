@@ -8,7 +8,7 @@ from src.decorator.command import command
 
 @command()
 def system__disk__spaces(kernel: Kernel):
-    output_list = DataSet2dResponse()
+    output_list = DataSet2dResponse(kernel)
     output_list.set_header([
         'Size',
         'Used',

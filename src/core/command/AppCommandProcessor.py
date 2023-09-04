@@ -25,7 +25,7 @@ class AppCommandProcessor(AbstractCommandProcessor):
                     'dir': os.getcwd(),
                 })
 
-            return AbortResponse()
+            return AbortResponse(self.kernel)
 
         return super().run(quiet)
 

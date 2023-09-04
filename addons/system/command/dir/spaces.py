@@ -22,7 +22,7 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
         return total_size
 
     # Initialize DataSet2dResponse object
-    output_list = DataSet2dResponse()
+    output_list = DataSet2dResponse(kernel)
     output_list.set_header(['Size', 'Name'])
 
     dir_list = [os.path.join(dir, d) for d in os.listdir(dir) if

@@ -46,7 +46,7 @@ class AbstractCommandProcessor:
                     'command': self.command,
                     'path': self.command_path,
                 })
-            return AbortResponse()
+            return AbortResponse(self.kernel)
 
         self.command_function = self.get_function(
             self.command_path,
@@ -72,7 +72,7 @@ class AbstractCommandProcessor:
             ctx = self.command_function.make_context('', self.command_args or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
-            return AbortResponse()
+            return AbortResponse(self.kernel)
         except Exception as e:
             # Show error message
             self.kernel.error(
@@ -88,7 +88,7 @@ class AbstractCommandProcessor:
         response = self.command_function.invoke(ctx)
 
         if not isinstance(response, AbstractResponse):
-            response = DefaultResponse(response)
+            response = DefaultResponse(self.kernel, response)
 
         self.kernel.exec_middlewares('run_post', middleware_args)
 

@@ -18,7 +18,7 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
                     'command': self.command,
                     'service': service,
                 })
-            return AbortResponse()
+            return AbortResponse(self.kernel)
 
         return super().run(quiet)
 

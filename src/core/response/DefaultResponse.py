@@ -3,7 +3,8 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class DefaultResponse(AbstractResponse):
-    def __init__(self, body: str):
+    def __init__(self, kernel, body):
+        super().__init__(kernel)
         self.body: str = body
 
     def render(self, kernel, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str | int | bool | None:
