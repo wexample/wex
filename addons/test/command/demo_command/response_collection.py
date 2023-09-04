@@ -13,7 +13,7 @@ def test__demo_command__response_collection(kernel: Kernel, response_collection_
         123,
         # Will be converted to FunctionResponse
         _test__demo_command__response_collection_one,
-        # _test__demo_command__response_collection_two,
+        _test__demo_command__response_collection_two,
         # ShellCommandResponse(kernel, ['ls', '-la', '{__prev__[2]}'])
     ])
 
@@ -22,5 +22,5 @@ def _test__demo_command__response_collection_one():
     return 'one'
 
 
-def _test__demo_command__response_collection_two(previous):
-    return previous.append('.')
+def _test__demo_command__response_collection_two():
+    return []

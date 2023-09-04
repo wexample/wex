@@ -57,6 +57,12 @@ class ResponseCollectionResponse(AbstractResponse):
             step_next = step + 1
 
             if step_next <= len(collection):
+                # Store response in a file to allow next step to access it.
+                self.kernel.task_file_write(
+                    'response',
+                    str(output)
+                )
+
                 args_dict[step_option_name] = step_next
                 process_post_exec_wex(self.kernel, request.function, args_dict)
 

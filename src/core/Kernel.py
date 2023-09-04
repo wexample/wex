@@ -12,7 +12,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED
+    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
@@ -20,7 +20,7 @@ from src.core.command.AddonCommandResolver import AddonCommandResolver
 from src.core.command.AppCommandResolver import AppCommandResolver
 from src.core.command.ServiceCommandResolver import ServiceCommandResolver
 from src.core.command.UserCommandResolver import UserCommandResolver
-from src.helper.file import list_subdirectories
+from src.helper.file import list_subdirectories, remove_file_if_exists
 
 PROCESSOR_CLASSES = [
     AddonCommandResolver,
@@ -36,7 +36,7 @@ ADDONS_DEFINITIONS = {
 
 class Kernel:
     messages = None
-    process_id: str = None
+    task_id: str = None
     registry: dict[str, Optional[str]] = {}
     http_server = None
     log_indent: int = 1
@@ -44,8 +44,7 @@ class Kernel:
     test = False
     current_request = None
 
-    def __init__(self, entrypoint_path, process_id: str = None):
-        self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
+    def __init__(self, entrypoint_path):
         self.post_exec = []
 
         # Initialize global variables.
@@ -74,6 +73,7 @@ class Kernel:
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
             self.addons[name] = definition(self, name)
 
+        self.store_task_id()
         self.load_registry()
         self.exec_middlewares('init')
 
@@ -244,19 +244,32 @@ class Kernel:
         # it should be set at the last moment,
         # to avoid execution if any error happened before
         for command in self.post_exec:
-            post_exec_file_path = os.path.join(
-                self.path['tmp'],
-                'process',
-                str(self.process_id) + '.post-exec'
+            from src.helper.command import command_to_string
+
+            self.task_file_write(
+                'post-exec',
+                command_to_string(command) + '\n',
             )
 
-            # Print joined command in a post process file.
-            with open(post_exec_file_path, 'a') as f:
-                from src.helper.command import command_to_string
-
-                f.write(command_to_string(command) + '\n')
-
         return output
+
+    def task_file_path(self, type: str):
+        task_dir = os.path.join(self.path['tmp'], 'task')
+        os.makedirs(task_dir, exist_ok=True)
+        return os.path.join(task_dir, f"{self.task_id}.{type}")
+
+    def task_file_load(self, type: str):
+        file_path = self.task_file_path(type)
+
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return f.read()
+        else:
+            return None
+
+    def task_file_write(self, type: str, body: str):
+        with open(self.task_file_path(type), 'a') as f:
+            f.write(body)
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.resolvers:
@@ -295,7 +308,7 @@ class Kernel:
 
         history.append({
             'date': str(datetime.datetime.now()),
-            'process_id': self.process_id,
+            'task_id': self.task_id,
             'data': data,
         })
 
@@ -320,3 +333,35 @@ class Kernel:
             return resolver.create_command_request(command, args)
 
         return None
+
+    def store_task_id(self):
+        task_id = sys.argv[1] if len(sys.argv) > 1 else None
+        if task_id is None:
+            self.error(
+                ERR_UNEXPECTED,
+                {
+                    'error': 'Please use the "bash ./cli/wex" file to run wex script.'
+                }
+            )
+            sys.exit(1)
+
+        self.task_id = sys.argv[1]
+
+        for i, arg in enumerate(sys.argv):
+            # There is a redirection
+            if arg == '--kernel-task-id' and i + 1 < len(sys.argv):
+                task_id = sys.argv[i + 1]
+
+                del sys.argv[i:i + 2]
+
+                self.task_file_write(
+                    'task-redirect',
+                    task_id
+                )
+
+                self.task_id = task_id
+
+                # Cleanup task files to avoid loops.
+                remove_file_if_exists(
+                    self.task_file_path('post-exec')
+                )

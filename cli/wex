@@ -10,6 +10,9 @@ cleanup() {
     if [ -f "${WEX_POST_EXEC}" ]; then
         rm "${WEX_POST_EXEC}"
     fi
+    if [ -f "${WEX_TASK_REDIRECT}" ]; then
+        rm "${WEX_TASK_REDIRECT}"
+    fi
 }
 
 # Trap to handle interruptions and cleanup
@@ -30,13 +33,22 @@ get_absolute_path() {
 
 CURRENT_FILE=$(get_absolute_path "${BASH_SOURCE[0]}")
 WEX_ROOT="$(cd "$(dirname "${CURRENT_FILE}")"/.. && pwd -P)/"
-WEX_PROC_ID="$$.$(date +%s.%N)"
+WEX_TASK_ID="$$.$(date +%s.%N)"
 
 # Load main python script
-python3 "${WEX_ROOT}__main__.py" "${WEX_PROC_ID}" "${@}"
+python3 "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
+
+TMP_TASK_DIR="${WEX_ROOT}tmp/task/"
+
+# Process found a --kernel-task-id which is redirecting to a give task id
+WEX_TASK_REDIRECT="${TMP_TASK_DIR}${WEX_TASK_ID}.task-redirect"
+if [ -f "${WEX_TASK_REDIRECT}" ]; then
+  WEX_TASK_ID=$(cat "${WEX_TASK_REDIRECT}")
+  rm "${WEX_TASK_REDIRECT}"
+fi
 
 # If a post-exec process has been defined.
-WEX_POST_EXEC="${WEX_ROOT}tmp/process/${WEX_PROC_ID}.post-exec"
+WEX_POST_EXEC="${TMP_TASK_DIR}${WEX_TASK_ID}.post-exec"
 if [ -f "${WEX_POST_EXEC}" ]; then
     # Ensure the file is only readable/writable by the owner for security
     chmod 600 "${WEX_POST_EXEC}"
@@ -44,6 +56,5 @@ if [ -f "${WEX_POST_EXEC}" ]; then
     # Execute the commands in the file
     . "${WEX_POST_EXEC}"
 
-    # Cleanup
-    rm "${WEX_POST_EXEC}"
+    cleanup
 fi

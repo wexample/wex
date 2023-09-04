@@ -12,3 +12,5 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
             response,
             None
         )
+
+        # TODO : in test mode, no post_exec scripts.

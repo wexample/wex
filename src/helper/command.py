@@ -22,8 +22,8 @@ def prepare_logs(kernel):
 
     os.makedirs(kernel.path['log'], exist_ok=True)
 
-    out_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.out")
-    err_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.process_id}.err")
+    out_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.task_id}.out")
+    err_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.task_id}.err")
 
     return out_path, err_path
 
