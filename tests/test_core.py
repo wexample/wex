@@ -183,12 +183,12 @@ class TestCore(AbstractTestCase):
 
     def test_build_command(self):
         self.assertEqual(
-            self.kernel.get_command_processor(COMMAND_TYPE_ADDON).build_command_from_function(
+            self.kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_command_from_function(
                 core__logo__show),
             'core::logo/show'
         )
         self.assertEqual(
-            self.kernel.get_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            self.kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__version__build),
             'wex core::version/build'
         )

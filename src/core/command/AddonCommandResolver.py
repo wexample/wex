@@ -5,10 +5,10 @@ from src.helper.string import to_snake_case
 from src.helper.registry import get_all_commands_from_addons
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
-from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 
 
-class AddonCommandProcessor(AbstractCommandProcessor):
+class AddonCommandResolver(AbstractCommandResolver):
 
     @classmethod
     def get_pattern(cls) -> str:

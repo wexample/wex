@@ -45,7 +45,7 @@ def core__registry__build(kernel, test: bool = False, write: bool = True):
 
 def build_registry_addons(addons, kernel, test_commands: bool = False):
     addons_dict = {}
-    processor = kernel.get_command_processor(COMMAND_TYPE_ADDON)
+    resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
 
     for addon in addons:
         addon_command_path = os.path.join(kernel.path['addons'], addon, 'command')
@@ -53,7 +53,7 @@ def build_registry_addons(addons, kernel, test_commands: bool = False):
         if os.path.exists(addon_command_path):
             addons_dict[addon] = {
                 'name': addon,
-                'commands': processor.scan_commands_groups(
+                'commands': resolver.scan_commands_groups(
                     addon_command_path,
                     test_commands
                 )
@@ -64,7 +64,7 @@ def build_registry_addons(addons, kernel, test_commands: bool = False):
 
 def build_registry_services(addons, kernel, test_commands: bool = False):
     services_dict = {}
-    processor = kernel.get_command_processor(COMMAND_TYPE_SERVICE)
+    resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 
     for addon in addons:
         services_dir = os.path.join(kernel.path['addons'], addon, 'services')
@@ -77,7 +77,7 @@ def build_registry_services(addons, kernel, test_commands: bool = False):
 
                 services_dict[service] = {
                     'name': service,
-                    'commands': processor.scan_commands_groups(
+                    'commands': resolver.scan_commands_groups(
                         commands_path,
                         test_commands
                     ),

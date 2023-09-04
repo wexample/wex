@@ -7,8 +7,8 @@ from src.helper.file import list_subdirectories
 def get_all_commands(kernel):
     registry = {}
 
-    for processor in kernel.processors:
-        registry = {**registry, **kernel.processors[processor].get_commands_registry(kernel)}
+    for resolver in kernel.resolvers:
+        registry = {**registry, **kernel.resolvers[resolver].get_commands_registry(kernel)}
 
     return registry
 

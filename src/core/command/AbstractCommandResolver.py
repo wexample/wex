@@ -21,7 +21,7 @@ from src.helper.system import get_user_or_sudo_user
 from src.core.CommandRequest import CommandRequest
 
 
-class AbstractCommandProcessor:
+class AbstractCommandResolver:
     def __init__(self, kernel):
         self.kernel = kernel
 

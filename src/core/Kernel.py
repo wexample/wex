@@ -15,18 +15,18 @@ from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI
-from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
-from src.core.command.AddonCommandProcessor import AddonCommandProcessor
-from src.core.command.AppCommandProcessor import AppCommandProcessor
-from src.core.command.ServiceCommandProcessor import ServiceCommandProcessor
-from src.core.command.UserCommandProcessor import UserCommandProcessor
+from src.core.command.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command.AddonCommandResolver import AddonCommandResolver
+from src.core.command.AppCommandResolver import AppCommandResolver
+from src.core.command.ServiceCommandResolver import ServiceCommandResolver
+from src.core.command.UserCommandResolver import UserCommandResolver
 from src.helper.file import list_subdirectories
 
 PROCESSOR_CLASSES = [
-    AddonCommandProcessor,
-    ServiceCommandProcessor,
-    AppCommandProcessor,
-    UserCommandProcessor,
+    AddonCommandResolver,
+    ServiceCommandResolver,
+    AppCommandResolver,
+    UserCommandResolver,
 ]
 
 ADDONS_DEFINITIONS = {
@@ -61,7 +61,7 @@ class Kernel:
         }
 
         # Create a registry for faster access
-        self.processors = {
+        self.resolvers = {
             class_definition.get_type(): class_definition
             for class_definition in PROCESSOR_CLASSES
         }
@@ -166,7 +166,7 @@ class Kernel:
                              message: str = 'You might want now to execute'):
         return self.message_all_next_commands(
             [
-                self.get_command_processor(command_type).build_full_command_from_function(
+                self.get_command_resolver(command_type).build_full_command_from_function(
                     function_or_command,
                     args,
                 )
@@ -221,10 +221,10 @@ class Kernel:
             request.run())
 
     def run_function(self, function, args=None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
-        processor = self.get_command_processor(type)
+        resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
-            processor.build_command_from_function(function),
+            resolver.build_command_from_function(function),
             args
         )
 
@@ -240,8 +240,8 @@ class Kernel:
         )
 
     def guess_command_type(self, command: str) -> str | None:
-        for type in self.processors:
-            if self.processors[type].supports(self, command):
+        for type in self.resolvers:
+            if self.resolvers[type].supports(self, command):
                 return type
 
     def exec_middlewares(self, name: str, args=None):
@@ -287,13 +287,13 @@ class Kernel:
             json.dump(history, f, indent=4)
             set_user_or_sudo_user_owner(self.path['history'])
 
-    def get_command_processor(self, type: str) -> AbstractCommandProcessor | None:
-        if type not in self.processors:
+    def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
+        if type not in self.resolvers:
             return None
-        return self.processors[type](self)
+        return self.resolvers[type](self)
 
     def create_command_request(self, command: str, args=None) -> CommandRequest | None:
-        resolver = self.get_command_processor(
+        resolver = self.get_command_resolver(
             self.guess_command_type(command)
         )
 

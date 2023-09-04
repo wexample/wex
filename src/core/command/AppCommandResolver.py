@@ -7,11 +7,11 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
-from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 from addons.app.AppAddonManager import AppAddonManager
 
 
-class AppCommandProcessor(AbstractCommandProcessor):
+class AppCommandResolver(AbstractCommandResolver):
     def __init__(self, kernel):
         super().__init__(kernel)
 

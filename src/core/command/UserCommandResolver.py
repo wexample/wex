@@ -8,10 +8,10 @@ from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user_home_data_path
 from src.const.globals import COMMAND_PATTERN_USER, COMMAND_TYPE_USER, \
     COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
-from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 
 
-class UserCommandProcessor(AbstractCommandProcessor):
+class UserCommandResolver(AbstractCommandResolver):
     def run_request(self, request: CommandRequest) -> AbstractResponse:
         # Add user command dir to path
         # It allows to use imports in custom user scripts

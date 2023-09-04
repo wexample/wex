@@ -19,9 +19,9 @@ def core__autocomplete__suggest(kernel: Kernel, cursor: int, search: str) -> str
         return ''
 
     suggestions = ''
-    for name in kernel.processors:
-        processor = kernel.processors[name](kernel)
-        new_suggestions = processor.autocomplete_suggest(cursor, search_split)
+    for name in kernel.resolvers:
+        resolver = kernel.resolvers[name](kernel)
+        new_suggestions = resolver.autocomplete_suggest(cursor, search_split)
 
         if new_suggestions is not None:
             suggestions += ' ' + new_suggestions

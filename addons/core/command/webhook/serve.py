@@ -64,7 +64,7 @@ def core__webhook__serve(
             base_kernel.log("Running Webhook listener...")
 
             # Build command
-            command = base_kernel.get_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            command = base_kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__webhook__serve,
                 {
                     'port': port

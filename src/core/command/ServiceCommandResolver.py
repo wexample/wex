@@ -7,10 +7,10 @@ from src.core.response.AbortResponse import AbortResponse
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
+from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 
 
-class ServiceCommandProcessor(AbstractCommandProcessor):
+class ServiceCommandResolver(AbstractCommandResolver):
     def run_request(self, request: CommandRequest) -> AbstractResponse:
         service = to_snake_case(request.match[1])
         if service not in self.kernel.registry['services']:
