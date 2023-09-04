@@ -46,6 +46,7 @@ class Kernel:
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
+        self.post_exec = []
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -235,9 +236,27 @@ class Kernel:
             request.run())
 
     def render_response(self, response):
-        return response.render(
+        output = response.render(
             KERNEL_RENDER_MODE_CLI
         )
+
+        # Store command to execute after kernel execution,
+        # it should be set at the last moment,
+        # to avoid execution if any error happened before
+        for command in self.post_exec:
+            post_exec_file_path = os.path.join(
+                self.path['tmp'],
+                'process',
+                str(self.process_id) + '.post-exec'
+            )
+
+            # Print joined command in a post process file.
+            with open(post_exec_file_path, 'a') as f:
+                from src.helper.command import command_to_string
+
+                f.write(command_to_string(command) + '\n')
+
+        return output
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.resolvers:

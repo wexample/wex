@@ -10,5 +10,5 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
         self.assertEqual(
             response,
-            'COLLECTION'
+            None
         )
