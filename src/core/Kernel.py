@@ -266,8 +266,13 @@ class Kernel:
             return None
 
     def task_file_write(self, type: str, body: str):
-        with open(self.task_file_path(type), 'a') as f:
+        from src.helper.file import set_user_or_sudo_user_owner
+        path = self.task_file_path(type)
+
+        with open(path, 'a') as f:
             f.write(body)
+
+            set_user_or_sudo_user_owner(path)
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.resolvers:

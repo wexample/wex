@@ -17,7 +17,6 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
                 RESPONSES_DEFAULT_VALUES[type]
             )
 
-        # TODO
         # Python function
         response = self.kernel.run_function(
             test__demo_command__responses,

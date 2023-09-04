@@ -58,11 +58,13 @@ class ResponseCollectionResponse(AbstractResponse):
             render_args = {}
 
             if step > 0:
-                render_args['previous'] = parse_arg(
-                    self.kernel.task_file_load(
-                        'response',
+                render_args = {
+                    'previous': parse_arg(
+                        self.kernel.task_file_load(
+                            'response',
+                        )
                     )
-                )
+                }
 
                 remove_file_if_exists(
                     self.kernel.task_file_path('response')

@@ -23,9 +23,9 @@ def test__demo_command__responses(kernel: Kernel, type: str):
         return ShellCommandResponse(kernel, ['ls', '-la'])
 
 
-def _test__demo_command__responses_one():
+def _test__demo_command__responses_one(kernel: Kernel):
     return 'one'
 
 
-def _test__demo_command__responses_two():
-    return 'two'
+def _test__demo_command__responses_two(kernel: Kernel, from_one: str):
+    return from_one + '+two'

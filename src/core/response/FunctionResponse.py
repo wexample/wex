@@ -8,7 +8,14 @@ class FunctionResponse(AbstractResponse):
 
         self.function = function
 
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args: dict = None) -> str | int | bool | None:
+    def render(self,
+               render_mode: str = KERNEL_RENDER_MODE_CLI,
+               args: dict = None
+               ) -> str | int | bool | None:
+        if args is None:
+            args = {}
+
         return self.function(
-            args
+            self.kernel,
+            **args
         )

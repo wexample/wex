@@ -19,19 +19,25 @@ def test__demo_command__response_collection(kernel: Kernel, response_collection_
     ])
 
 
-def _test__demo_command__response_collection_one(args: dict = None):
+def _test__demo_command__response_collection_one(
+        kernel: Kernel,
+        previous:int):
     return 'one'
 
 
-def _test__demo_command__response_collection_two(args: dict = None):
+def _test__demo_command__response_collection_two(
+        kernel: Kernel,
+        previous: str):
     return {
-        'old': args['previous'],
+        'old': previous,
         'new': 'two'
     }
 
 
-def _test__demo_command__response_collection_three(args: dict = None):
+def _test__demo_command__response_collection_three(
+        kernel: Kernel,
+        previous: dict = None):
     return {
-        'type': type(args['previous']),
-        'length': len(args['previous'])
+        'type': type(previous),
+        'length': len(previous)
     }
