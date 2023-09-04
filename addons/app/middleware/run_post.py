@@ -1,7 +1,8 @@
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_TYPE_ADDON
 
 
-def app_middleware_run_post(kernel, request) -> None:
+def app_middleware_run_post(kernel, request, response: AbstractResponse) -> None:
     if request.type == COMMAND_TYPE_ADDON:
         addon, group, name = request.match.groups()
 

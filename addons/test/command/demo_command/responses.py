@@ -21,13 +21,6 @@ def test__demo_command__responses(kernel: Kernel, type: str):
         return _test__demo_command__responses_one
     elif type == 'shell':
         return ShellCommandResponse(kernel, ['ls', '-la'])
-    elif type == 'response-collection':
-        return ResponseCollectionResponse(kernel, [
-            # Will be converted to PythonFunctionResponse
-            _test__demo_command__responses_one,
-            _test__demo_command__responses_two,
-            ShellCommandResponse(kernel, ['ls', '-la', '{__prev__}'])
-        ])
 
 
 def _test__demo_command__responses_one():
