@@ -36,10 +36,7 @@ class AbstractCommandResolver:
                 })
             return AbortResponse(self.kernel)
 
-        request.function = self.get_function(
-            request.path,
-            list(request.match.groups())
-        )
+        request.function = self.get_function_from_request(request)
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
@@ -83,6 +80,12 @@ class AbstractCommandResolver:
         self.kernel.exec_middlewares('run_post', middleware_args)
 
         return response
+
+    def get_function_from_request(self, request:CommandRequest) -> str:
+        return self.get_function(
+            request.command,
+            list(request.match.groups())
+        )
 
     def get_function(self, command_path: str, parts: list) -> str:
         # Import module and load function.
@@ -260,13 +263,7 @@ class AbstractCommandResolver:
 
         search_params = [val for val in search_params if val.startswith("-")]
 
-        # Merge all params in a list,
-        # but ignore already given args,
-        # i.e : if -d is already given, do not suggest "-d" or "--default"
-        function = self.get_function(
-            request.path,
-            list(request.match.groups())
-        )
+        function = self.get_function_from_request(request)
 
         params = []
         for param in function.params:

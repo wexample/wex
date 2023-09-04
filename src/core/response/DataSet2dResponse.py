@@ -22,7 +22,7 @@ class DataSet2dResponse(AbstractResponse):
     def get_body(self):
         return self.body
 
-    def render(self, kernel, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str:
+    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI) -> str:
         # We'll adjust render mode with kernel call method info
 
         if render_mode == KERNEL_RENDER_MODE_CLI:

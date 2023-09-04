@@ -42,6 +42,7 @@ class Kernel:
     log_indent: int = 1
     indent_string = '  '
     test = False
+    current_request = None
 
     def __init__(self, entrypoint_path, process_id: str = None):
         self.process_id = process_id or f"{os.getpid()}.{datetime.datetime.now().strftime('%s.%f')}"
@@ -235,7 +236,6 @@ class Kernel:
 
     def render_response(self, response):
         return response.render(
-            self,
             KERNEL_RENDER_MODE_CLI
         )
 

@@ -141,10 +141,7 @@ class TestCore(AbstractTestCase):
             self.kernel.log(f'Checking syntax of command {command}')
 
             request = self.kernel.create_command_request(command)
-            function = request.resolver.get_function(
-                request.path,
-                list(request.match.groups())
-            )
+            function = request.resolver.get_function_from_request(request)
 
             for param in function.params:
                 self.assertTrue(
