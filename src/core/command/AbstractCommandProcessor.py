@@ -18,59 +18,46 @@ from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectorie
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
 
+from src.core.CommandRequest import CommandRequest
+
 
 class AbstractCommandProcessor:
-    command: str
-    command_args: list
-    command_args_dict: dict
-    command_function: str
-    command_path: str
-    command_type: str
-    kernel = None
-    match: Optional[re.Match] = None
-
     def __init__(self, kernel):
         self.kernel = kernel
-        # Useful to store data about the current command execution.
-        self.storage = {}
 
-    def run(self, quiet: bool = False) -> AbstractResponse:
+    def run_request(self, request: CommandRequest) -> AbstractResponse:
         import click
 
-        # Get valid path.
-        self.command_type = self.get_type()
-        self.command_path: str = self.get_path()
-
-        if not self.command_path or not os.path.isfile(self.command_path):
-            if not quiet:
+        if not request.path or not os.path.isfile(request.path):
+            if not request.quiet:
                 self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
-                    'command': self.command,
-                    'path': self.command_path,
+                    'command': request.command,
+                    'path': request.path,
                 })
             return AbortResponse(self.kernel)
 
-        self.command_function = self.get_function(
-            self.command_path,
-            list(self.match.groups())
+        request.function = self.get_function(
+            request.path,
+            list(request.match.groups())
         )
 
         # Enforce sudo.
-        if hasattr(self.command_function.callback, 'as_sudo') and os.geteuid() != 0:
+        if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
             os.execvp('sudo', ['sudo'] + sys.argv)
 
-        if isinstance(self.command_args, dict):
-            self.command_args = convert_dict_to_args(self.command_function, self.command_args)
+        if isinstance(request.args, dict):
+            request.args = convert_dict_to_args(request.function, request.args)
 
-        self.command_args_dict = convert_args_to_dict(self.command_function, self.command_args)
+        request.args_dict = convert_args_to_dict(request.function, request.args)
 
         middleware_args = {
-            'processor': self,
+            'request': request,
         }
 
         self.kernel.exec_middlewares('run_pre', middleware_args)
 
         try:
-            ctx = self.command_function.make_context('', self.command_args or [])
+            ctx = request.function.make_context('', request.args or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
             return AbortResponse(self.kernel)
@@ -79,14 +66,14 @@ class AbstractCommandProcessor:
             self.kernel.error(
                 ERR_COMMAND_CONTEXT,
                 {
-                    'function': self.command_function.callback.__name__,
+                    'function': request.function.callback.__name__,
                     'error': str(e)
                 }
             )
 
         ctx.obj = self.kernel
 
-        response = self.command_function.invoke(ctx)
+        response = request.function.invoke(ctx)
 
         if callable(response):
             response = FunctionResponse(self.kernel, response)
@@ -147,18 +134,14 @@ class AbstractCommandProcessor:
                 get_user_or_sudo_user(),
             )
 
-    def set_command(self, command: str, args=None):
-        if args is None:
-            args = []
+    def create_command_request(self, command: str, args=None):
+        request = CommandRequest(
+            self,
+            command,
+            args
+        )
 
-        command = self.resolve_alias(self.kernel, command)
-
-        self.command = command
-        self.command_args = args
-
-        self.match = self.build_match(command)
-
-        return self.match
+        return request
 
     @classmethod
     def resolve_alias(cls, kernel, command: str) -> str:
@@ -178,15 +161,15 @@ class AbstractCommandProcessor:
         return False
 
     @abstractmethod
-    def get_path(self, subdir: str = None):
+    def build_path(self, request: CommandRequest, subdir: str = None):
         pass
 
-    def get_path_or_fail(self, subdir: str = None):
-        path = self.get_path(subdir)
+    def build_path_or_fail(self, request: CommandRequest, subdir: str = None):
+        path = self.build_path(request, subdir)
 
         if path is None:
             self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
-                'command': self.command,
+                'command': request.command,
                 'path': path,
             })
 
@@ -263,16 +246,16 @@ class AbstractCommandProcessor:
         return None
 
     def suggest_arguments(self, command: str, search_params: []):
-        self.set_command(
+        request = self.create_command_request(
             command
         )
 
         # Command is not recognised
-        if not self.match:
+        if not request.match:
             return
 
         # File does not exist
-        if not os.path.isfile(self.get_path()):
+        if not os.path.isfile(request.path):
             return
 
         search_params = [val for val in search_params if val.startswith("-")]
@@ -281,8 +264,8 @@ class AbstractCommandProcessor:
         # but ignore already given args,
         # i.e : if -d is already given, do not suggest "-d" or "--default"
         function = self.get_function(
-            self.get_path(),
-            list(self.match.groups())
+            request.path,
+            list(request.match.groups())
         )
 
         params = []

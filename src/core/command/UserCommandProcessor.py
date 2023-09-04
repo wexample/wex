@@ -2,6 +2,7 @@ import os
 import sys
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user_home_data_path
@@ -11,14 +12,14 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class UserCommandProcessor(AbstractCommandProcessor):
-    def run(self, quiet: bool = False) -> AbstractResponse:
+    def run_request(self, request: CommandRequest) -> AbstractResponse:
         # Add user command dir to path
         # It allows to use imports in custom user scripts
         commands_path = os.path.join(self.get_base_path(), 'command')
         if os.path.exists(commands_path) and commands_path not in sys.path:
             sys.path.append(commands_path)
 
-        return super().run(quiet)
+        return super().run_request(request)
 
     @classmethod
     def get_pattern(cls) -> str:
@@ -28,11 +29,11 @@ class UserCommandProcessor(AbstractCommandProcessor):
     def get_type(cls) -> str:
         return COMMAND_TYPE_USER
 
-    def get_path(self, subdir: str = None):
+    def build_path(self, request: CommandRequest, subdir: str = None):
         return self.build_command_path(
             self.get_base_path(),
             subdir,
-            os.path.join(to_snake_case(self.match[2]), to_snake_case(self.match[3]))
+            os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
         )
 
     def get_base_path(self):

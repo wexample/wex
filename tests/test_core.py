@@ -140,10 +140,10 @@ class TestCore(AbstractTestCase):
         for command, command_data in get_all_commands_from_registry_part(registry_part).items():
             self.kernel.log(f'Checking syntax of command {command}')
 
-            processor = self.kernel.create_command_processor_for_command(command)
-            function = processor.get_function(
-                processor.get_path(),
-                list(processor.match.groups())
+            request = self.kernel.create_command_request(command)
+            function = request.resolver.get_function(
+                request.path,
+                list(request.match.groups())
             )
 
             for param in function.params:
@@ -183,12 +183,12 @@ class TestCore(AbstractTestCase):
 
     def test_build_command(self):
         self.assertEqual(
-            self.kernel.create_command_processor(COMMAND_TYPE_ADDON).build_command_from_function(
+            self.kernel.get_command_processor(COMMAND_TYPE_ADDON).build_command_from_function(
                 core__logo__show),
             'core::logo/show'
         )
         self.assertEqual(
-            self.kernel.create_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            self.kernel.get_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__version__build),
             'wex core::version/build'
         )

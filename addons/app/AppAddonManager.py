@@ -143,12 +143,12 @@ class AppAddonManager(AddonManager):
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
         return get_dict_item_by_path(self.runtime_config, key, default)
 
-    def command_run_pre(self, processor):
+    def command_run_pre(self, request):
         # Skip if the command allow to be executed without app location.
-        if hasattr(processor.command_function.callback, 'app_location_optional'):
+        if hasattr(request.function.callback, 'app_location_optional'):
             return
 
-        args_dict = processor.command_args_dict
+        args_dict = request.args_dict
 
         if self.current_app_dir is not None:
             app_dir_resolved = self.current_app_dir
@@ -170,33 +170,33 @@ class AppAddonManager(AddonManager):
             args_dict['app_dir'] = app_dir_resolved
 
             # First test, create config.
-            if 'previous_app_dir' not in processor.storage:
+            if 'previous_app_dir' not in request.storage:
                 dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
 
                 if dirs_differ or self.current_app_dir is None:
                     self.set_app_workdir(app_dir_resolved)
 
                 if dirs_differ:
-                    processor.storage['previous_app_dir'] = app_dir_resolved
+                    request.storage['previous_app_dir'] = app_dir_resolved
 
             # Append to original apps list.
-            args_list = processor.command_args
+            args_list = request.args
             args_list.append('--app-dir')
             args_list.append(app_dir_resolved)
         else:
             self.kernel.error(ERR_APP_NOT_FOUND, {
-                'command': processor.command,
+                'command': request.command,
                 'dir': app_dir_resolved,
             })
 
-    def command_run_post(self, processor):
+    def command_run_post(self, request):
         # Skip if the command allow to be executed without app location.
-        if hasattr(processor.command_function.callback, 'app_location_optional'):
+        if hasattr(request.function.callback, 'app_location_optional'):
             return
 
-        if 'previous_app_dir' in processor.storage:
-            self.unset_app_workdir(processor.storage['previous_app_dir'])
-            del processor.storage['previous_app_dir']
+        if 'previous_app_dir' in request.storage:
+            self.unset_app_workdir(request.storage['previous_app_dir'])
+            del request.storage['previous_app_dir']
 
     def save_proxy_apps(self):
         with open(self.proxy_path + PROXY_FILE_APPS_REGISTRY, 'w') as f:

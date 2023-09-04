@@ -41,8 +41,8 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
 
 
 def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> str:
-    processor = kernel.create_command_processor_for_command(command)
-    test_path = processor.get_path_or_fail('tests')
+    request = kernel.create_command_request(command)
+    test_path = request.resolver.build_path_or_fail(request, 'tests')
 
     # File exists
     if os.path.exists(test_path) and not force:
@@ -50,8 +50,8 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
-    command_function_name = processor.get_function_name(
-        list(processor.match.groups())
+    command_function_name = request.resolver.get_function_name(
+        list(request.match.groups())
     )
 
     kernel.log(f'Creating test for command {command}')
@@ -66,15 +66,15 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
         kernel.path['templates'] + 'test.py.tpl',
         test_path,
         {
-            'addon_name': processor.match[1],
+            'addon_name': request.match[1],
             'class_name': class_name,
             'command': command,
             'command_function_name': command_function_name,
-            'dir_group': to_snake_case(processor.match[2]),
-            'dir_name': to_snake_case(processor.match[3]),
-            'group_name': processor.match[2],
+            'dir_group': to_snake_case(request.match[2]),
+            'dir_name': to_snake_case(request.match[3]),
+            'group_name': request.match[2],
             'method_name': method_name,
-            'name': processor.match[3],
+            'name': request.match[3],
         }
     )
 

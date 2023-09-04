@@ -1,5 +1,6 @@
 import os
 
+from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
 from src.helper.registry import get_all_commands_from_addons
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
@@ -17,15 +18,15 @@ class AddonCommandProcessor(AbstractCommandProcessor):
     def get_type(cls) -> str:
         return COMMAND_TYPE_ADDON
 
-    def get_path(self, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, subdir: str = None) -> str | None:
         # Unable to find command path if no addon name found.
-        if self.match.group(1) is None:
+        if not request.match or request.match.group(1) is None:
             return None
 
         return self.build_command_path(
-            f"{self.kernel.path['addons']}{to_snake_case(self.match.group(1))}/",
+            f"{self.kernel.path['addons']}{to_snake_case(request.match.group(1))}/",
             subdir,
-            os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
+            os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
         )
 
     def get_function_name_parts(self, parts: list) -> []:

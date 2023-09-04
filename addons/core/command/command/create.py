@@ -15,17 +15,17 @@ from src.core.Kernel import Kernel
         help='Force to create file if exists')
 def core__command__create(kernel: Kernel, command: str, force: bool = False) -> {}:
     kernel.log('Creating command file...')
-    processor = kernel.create_command_processor_for_command(command)
+    request = kernel.create_command_request(command)
 
-    if not processor:
+    if not request:
         kernel.message(f'Unable to process command : {command}')
         return
 
-    command_path: str = processor.get_path_or_fail()
+    command_path: str = request.resolver.build_path_or_fail(request)
 
     # File exists
     if not os.path.exists(command_path) or force:
-        command_type = processor.get_type()
+        command_type = request.resolver.get_type()
 
         if command_type == COMMAND_TYPE_CORE:
             kernel.message(f'Unable to create core command : {command}')
@@ -48,8 +48,8 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
             exist_ok=True
         )
 
-        function_name = processor.get_function_name(
-            list(processor.match.groups())
+        function_name = request.resolver.get_function_name(
+            list(request.match.groups())
         )
 
         create_from_template(
@@ -72,8 +72,8 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
     kernel.rebuild()
 
     kernel.log('Giving files permission...')
-    processor.set_command_file_permission(command_path)
-    processor.set_command_file_permission(test_file)
+    request.resolver.set_command_file_permission(command_path)
+    request.resolver.set_command_file_permission(test_file)
 
     return {
         'command': command_path,

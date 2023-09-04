@@ -9,6 +9,7 @@ from typing import Optional
 from yaml import SafeLoader
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED
@@ -165,7 +166,7 @@ class Kernel:
                              message: str = 'You might want now to execute'):
         return self.message_all_next_commands(
             [
-                self.create_command_processor(command_type).build_full_command_from_function(
+                self.get_command_processor(command_type).build_full_command_from_function(
                     function_or_command,
                     args,
                 )
@@ -207,26 +208,30 @@ class Kernel:
             self.print(result)
 
     def run_command(self, command: str, args=None, quiet: bool = False):
-        processor = self.create_command_processor_for_command(command, args)
+        request = self.create_command_request(command, args)
 
-        if not processor and not quiet:
+        if not request and not quiet:
             self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
                 'command': command
             })
 
+        request.quiet = quiet
+
         return self.render_response(
-            processor.run(quiet))
+            request.run())
 
     def run_function(self, function, args=None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
-        processor = self.create_command_processor(type)
+        processor = self.get_command_processor(type)
 
-        processor.set_command(
+        request = self.create_command_request(
             processor.build_command_from_function(function),
             args
         )
 
+        request.quiet = quiet
+
         return self.render_response(
-            processor.run(quiet))
+            request.run())
 
     def render_response(self, response):
         return response.render(
@@ -282,17 +287,17 @@ class Kernel:
             json.dump(history, f, indent=4)
             set_user_or_sudo_user_owner(self.path['history'])
 
-    def create_command_processor(self, type: str) -> AbstractCommandProcessor | None:
+    def get_command_processor(self, type: str) -> AbstractCommandProcessor | None:
         if type not in self.processors:
             return None
         return self.processors[type](self)
 
-    def create_command_processor_for_command(self, command: str, args=None) -> AbstractCommandProcessor | None:
-        processor = self.create_command_processor(
+    def create_command_request(self, command: str, args=None) -> CommandRequest | None:
+        resolver = self.get_command_processor(
             self.guess_command_type(command)
         )
 
-        if processor:
-            processor.set_command(command, args)
+        if resolver:
+            return resolver.create_command_request(command, args)
 
-        return processor
+        return None

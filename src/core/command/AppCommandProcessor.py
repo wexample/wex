@@ -1,6 +1,7 @@
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from addons.app.command.location.find import app__location__find
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
@@ -17,17 +18,17 @@ class AppCommandProcessor(AbstractCommandProcessor):
         # Shortcut.
         self.app_addon: AppAddonManager = kernel.addons['app']
 
-    def run(self, quiet: bool = False) -> AbstractResponse:
+    def run_request(self, request:CommandRequest) -> AbstractResponse:
         if not self.get_base_path():
-            if not quiet:
+            if not request.quiet:
                 self.kernel.error(ERR_APP_NOT_FOUND, {
-                    'command': self.command,
+                    'command': request.command,
                     'dir': os.getcwd(),
                 })
 
             return AbortResponse(self.kernel)
 
-        return super().run(quiet)
+        return super().run_request(request)
 
     @classmethod
     def get_pattern(cls) -> str:
@@ -37,11 +38,11 @@ class AppCommandProcessor(AbstractCommandProcessor):
     def get_type(cls) -> str:
         return COMMAND_TYPE_APP
 
-    def get_path(self, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, subdir: str = None) -> str | None:
         return self.build_command_path(
             self.get_base_path(),
             subdir,
-            os.path.join(to_snake_case(self.match[2]), to_snake_case(self.match[3]))
+            os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
         )
 
     def build_command_from_parts(self, parts: list) -> str:

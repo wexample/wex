@@ -24,7 +24,7 @@ def core__webhook__stop(
     else:
         kill_process_by_command(
             kernel,
-            kernel.create_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
+            kernel.get_command_processor(COMMAND_TYPE_ADDON).build_full_command_from_function(
                 core__webhook__serve
             )
         )

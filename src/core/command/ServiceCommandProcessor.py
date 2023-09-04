@@ -1,6 +1,7 @@
 import os
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.helper.string import to_snake_case
@@ -10,17 +11,17 @@ from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 
 
 class ServiceCommandProcessor(AbstractCommandProcessor):
-    def run(self, quiet: bool = False) -> AbstractResponse:
-        service = to_snake_case(self.match[1])
+    def run_request(self, request: CommandRequest) -> AbstractResponse:
+        service = to_snake_case(request.match[1])
         if service not in self.kernel.registry['services']:
-            if not quiet:
+            if not request.quiet:
                 self.kernel.error(ERR_SERVICE_NOT_FOUND, {
-                    'command': self.command,
+                    'command': request.command,
                     'service': service,
                 })
             return AbortResponse(self.kernel)
 
-        return super().run(quiet)
+        return super().run_request(request)
 
     @classmethod
     def get_pattern(cls) -> str:
@@ -33,11 +34,11 @@ class ServiceCommandProcessor(AbstractCommandProcessor):
     def build_command_from_parts(self, parts: list) -> str:
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
-    def get_path(self, subdir: str = None):
+    def build_path(self, request: CommandRequest, subdir: str = None):
         return self.build_command_path(
-            f"{self.kernel.registry['services'][to_snake_case(self.match[1])]['dir']}",
+            f"{self.kernel.registry['services'][to_snake_case(request.match[1])]['dir']}",
             subdir,
-            os.path.join(to_snake_case(self.match.group(2)), to_snake_case(self.match.group(3)))
+            os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
         )
 
     def get_function_name_parts(self, parts: list) -> []:
