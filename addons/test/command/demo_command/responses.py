@@ -17,13 +17,15 @@ RESPONSES_DEFAULT_VALUES = {
 def test__demo_command__responses(kernel: Kernel, type: str):
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
-
-    return ResponseCollectionResponse(kernel, [
-        # Will be converted to PythonFunctionResponse
-        _test__demo_command__responses_one,
-        _test__demo_command__responses_two,
-        ShellCommandResponse(kernel, ['ls', '-la', '{__prev__}'])
-    ])
+    elif type is 'function':
+        return _test__demo_command__responses_one
+    elif type is 'response-collection':
+        return ResponseCollectionResponse(kernel, [
+            # Will be converted to PythonFunctionResponse
+            _test__demo_command__responses_one,
+            _test__demo_command__responses_two,
+            ShellCommandResponse(kernel, ['ls', '-la', '{__prev__}'])
+        ])
 
 
 def _test__demo_command__responses_one():

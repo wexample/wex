@@ -6,6 +6,7 @@ from abc import abstractmethod
 
 from typing import Optional
 
+from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -87,6 +88,8 @@ class AbstractCommandProcessor:
 
         response = self.command_function.invoke(ctx)
 
+        if callable(response):
+            response = FunctionResponse(self.kernel, response)
         if not isinstance(response, AbstractResponse):
             response = DefaultResponse(self.kernel, response)
 

@@ -16,3 +16,12 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
                 response,
                 RESPONSES_DEFAULT_VALUES[type]
             )
+
+        response = self.kernel.run_function(
+            test__demo_command__responses,
+            {
+                'type': 'function'
+            }
+        )
+
+        self.assertTrue(callable(response))
