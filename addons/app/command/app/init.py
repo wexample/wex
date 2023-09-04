@@ -24,9 +24,11 @@ from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from src.decorator.alias_without_addon import alias_without_addon
 
 
 @command()
+@alias_without_addon()
 @app_location_optional
 @option('--name', '-n', type=str, required=False,
               help="Name of new app")
