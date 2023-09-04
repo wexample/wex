@@ -2,7 +2,6 @@ import os
 import unittest
 
 from src.core.TestKernel import TestKernel
-from src.core.action.TestCoreAction import TestCoreAction
 from src.helper.file import create_directories_and_copy
 
 
@@ -10,9 +9,6 @@ class AbstractTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.kernel = TestKernel(os.getcwd() + '/__main__.py')
-        cls.kernel.setup_test_manager(
-            TestCoreAction(cls.kernel)
-        )
 
     def setUp(self):
         # Add a new line between each test

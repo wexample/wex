@@ -17,35 +17,25 @@ from src.const.globals import \
 from src.core.command.AbstractCommandProcessor import AbstractCommandProcessor
 from src.core.command.AddonCommandProcessor import AddonCommandProcessor
 from src.core.command.AppCommandProcessor import AppCommandProcessor
-from src.core.command.CoreCommandProcessor import CoreCommandProcessor
 from src.core.command.ServiceCommandProcessor import ServiceCommandProcessor
 from src.core.command.UserCommandProcessor import UserCommandProcessor
 from src.helper.file import list_subdirectories
-from src.core.action.CoreActionsCoreAction import CoreActionsCoreAction
-from src.core.action.TestCoreAction import TestCoreAction
 
 PROCESSOR_CLASSES = [
     AddonCommandProcessor,
     ServiceCommandProcessor,
     AppCommandProcessor,
     UserCommandProcessor,
-    CoreCommandProcessor
 ]
 
 ADDONS_DEFINITIONS = {
     'app': AppAddonManager
 }
 
-CORE_ACTIONS = [
-    CoreActionsCoreAction,
-    TestCoreAction,
-]
-
 
 class Kernel:
     messages = None
     process_id: str = None
-    core_actions = None
     registry: dict[str, Optional[str]] = {}
     http_server = None
     log_indent: int = 1
@@ -80,11 +70,6 @@ class Kernel:
         for name in list_subdirectories(self.path['addons']):
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
             self.addons[name] = definition(self, name)
-
-        self.core_actions = {
-            definition.command(): definition
-            for definition in CORE_ACTIONS
-        }
 
         self.load_registry()
         self.exec_middlewares('init')
