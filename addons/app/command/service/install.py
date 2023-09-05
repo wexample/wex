@@ -3,6 +3,7 @@ import shutil
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.docker.helpers.docker import merge_docker_compose_files
+from src.helper.string import to_snake_case
 from src.helper.dict import merge_dicts
 from src.helper.array import array_unique
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
@@ -41,6 +42,7 @@ def app__service__install(
         force: bool = False,
         ignore_dependencies: bool = False
 ):
+    service = to_snake_case(service)
     kernel.log(f'Installing service : {service}')
 
     if not ignore_dependencies:
