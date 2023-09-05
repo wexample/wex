@@ -13,9 +13,11 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from src.decorator.alias_without_addon import alias_without_addon
 
 
 @command()
+@alias_without_addon()
 @option('--service', '-s', type=str, required=True,
         help="Service name")
 @app_dir_option()
