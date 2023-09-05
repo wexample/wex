@@ -3,7 +3,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Append a line to a file, only if not already exist")
 @option('--file', '-f', type=str, required=True,
         help="File to work on")
 @option('--line', '-l', type=str, required=True,

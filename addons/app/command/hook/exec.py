@@ -9,7 +9,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Exec a command on services and local app")
 @option('--hook', '-h', type=str, required=True,
               help="Hook name")
 @option('--arguments', '-args', required=False,

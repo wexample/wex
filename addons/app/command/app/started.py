@@ -9,7 +9,7 @@ APP_STARTED_CHECK_MODE_CONFIG = 'config'
 APP_STARTED_CHECK_MODE_FULL = 'full'
 
 
-@command()
+@command(help="Return true if app is started")
 @app_dir_option()
 @option('--check-mode', '-cm', type=str, required=False, default=APP_STARTED_CHECK_MODE_FULL,
               help="Define how to define if app is started or not")

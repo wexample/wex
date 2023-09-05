@@ -5,7 +5,7 @@ from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.decorator.service_option import service_option
 
 
-@command()
+@command(help="Return ture if service is installed on app")
 @app_dir_option()
 @service_option()
 def app__service__used(kernel: Kernel, service: str, app_dir: str) -> bool:

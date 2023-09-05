@@ -6,7 +6,7 @@ from addons.app.decorator.service_option import service_option
 from src.decorator.command import command
 
 
-@command()
+@command(help="Set database configuration")
 @app_dir_option()
 @service_option()
 def maria_10__config__write_post(kernel: Kernel, app_dir: str, service: str):

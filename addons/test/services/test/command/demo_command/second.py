@@ -1,9 +1,9 @@
 from src.core.Kernel import Kernel
-from src.decorator.command import command
+from src.decorator.test_command import test_command
 from src.decorator.option import option
 
 
-@command()
+@test_command()
 @option('--option', '-o', is_flag=True, required=False,
         help="A first option as flag")
 @option('--another-option-second', '-aos', is_flag=True, required=False,

@@ -6,7 +6,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command()
+@command(help="Return space usage of current system disks")
 def system__disk__spaces(kernel: Kernel):
     output_list = DataSet2dResponse(kernel)
     output_list.set_header([

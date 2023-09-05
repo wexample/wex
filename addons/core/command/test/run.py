@@ -10,7 +10,7 @@ import importlib.util
 from addons.core.command.registry.build import core__registry__build
 
 
-@command()
+@command(help="Run all tests or given command test")
 @alias('test')
 @option('--command', '-c', type=str, required=False, help="Single command to test")
 def core__test__run(kernel: Kernel, command: str = None):

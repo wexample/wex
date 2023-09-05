@@ -5,7 +5,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command()
+@command(help="Show maintainers logo")
 def core__logo__show(kernel: Kernel) -> str:
     width = 54
     padding = 2

@@ -5,7 +5,7 @@ from src.decorator.command import command
 from src.core.Kernel import Kernel
 
 
-@command()
+@command(help="Service the app if need a service to start.")
 @app_dir_option()
 def app__app__serve(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']

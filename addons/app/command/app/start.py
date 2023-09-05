@@ -20,7 +20,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Start an app")
 @alias_without_addon()
 @app_dir_option()
 @option(

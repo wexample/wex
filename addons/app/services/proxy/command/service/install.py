@@ -7,7 +7,7 @@ from addons.app.decorator.service_option import service_option
 from src.decorator.command import command
 
 
-@command()
+@command(help="Install the proxy service")
 @app_dir_option()
 @service_option()
 def proxy__service__install(kernel: Kernel, app_dir: str, service: str):

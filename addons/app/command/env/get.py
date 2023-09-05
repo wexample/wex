@@ -7,7 +7,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Return the property value set in the .wex/.env file")
 @option('--key', '-k', type=str, required=False, default='APP_ENV',
         help="Key in env file")
 @app_dir_option()

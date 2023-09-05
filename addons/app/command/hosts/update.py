@@ -3,7 +3,7 @@ from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
-@command()
+@command(help="Update local /etc/hosts file")
 @as_sudo
 @app_location_optional
 def app__hosts__update(kernel: Kernel):

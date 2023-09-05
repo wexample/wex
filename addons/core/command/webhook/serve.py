@@ -16,7 +16,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Serve webhook listener daemon")
 @as_sudo
 @option('--port', '-p', type=int, required=False, default=4242,
         help="Which port is used by service to listen incoming webhooks")

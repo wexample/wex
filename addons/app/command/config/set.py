@@ -5,7 +5,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
 
-@command()
+@command(help="Set a configuration setting for given app")
 @option('--key', '-k', type=str, required=True,
               help="Key in config file")
 @option('--value', '-v', required=True,

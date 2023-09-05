@@ -9,7 +9,7 @@ from addons.app.command.env.get import app__env__get
 from src.helper.command import execute_command
 
 
-@command()
+@command(help="Execute a webhook")
 @option('--url', '-u', type=str, required=True, help="Argument")
 def core__webhook__exec(kernel: Kernel, url: str) -> bool:
     source_data = {}

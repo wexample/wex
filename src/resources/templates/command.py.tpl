@@ -3,7 +3,7 @@ from src.decorator.option import option
 from src.core import Kernel
 
 
-@command()
+@command(help="Description")
 @option('--arg', '-a', type=str, required=True, help="Argument")
 def {function_name}(kernel: Kernel, arg):
     pass

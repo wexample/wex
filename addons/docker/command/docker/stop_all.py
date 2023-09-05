@@ -3,7 +3,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command()
+@command(help="Stop all running docker feature : containers, networks, volumes")
 def docker__docker__stop_all(kernel: Kernel):
     # Containers
     process_post_exec(kernel, [

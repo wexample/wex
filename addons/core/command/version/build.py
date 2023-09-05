@@ -12,7 +12,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Build a new version of current core, or commit new version changes")
 @option('--commit', '-ok', required=False, is_flag=True, default=False,
         help="New version changes has been validated, ask to commit changes")
 def core__version__build(kernel: Kernel, commit: bool = False) -> None:

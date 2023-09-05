@@ -6,7 +6,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
 
-@command()
+@command(help="Add special options to docker up command")
 @app_dir_option()
 @option('--options', '-o', required=True, default='', help="Argument")
 def nextcloud__app__start_options(kernel: Kernel, app_dir, options: str):

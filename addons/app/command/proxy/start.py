@@ -16,7 +16,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Create and start the reverse proxy server")
 @as_sudo
 @app_location_optional
 @option('--user', '-u', type=str, required=False, help="Owner of application files")

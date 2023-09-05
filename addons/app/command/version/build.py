@@ -10,7 +10,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Build a new version of current app")
 @option('--version', '-v', type=str, required=False,
         help="New version number, auto generated if missing")
 @option('--commit', '-ok', required=False, is_flag=True, default=False,

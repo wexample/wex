@@ -3,7 +3,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Return suggestion for autocomplete search")
 @option('--cursor', '-c', type=int, required=True, help="Indicates which part of search string is focused")
 @option('--search', '-s', type=str, required=True, help="Separated arguments, without first command, i.e. : "
                                                         "app :: config/write")

@@ -16,7 +16,7 @@ from src.decorator.option import option
 from src.decorator.alias_without_addon import alias_without_addon
 
 
-@command()
+@command(help="Install given service in app configuration")
 @alias_without_addon()
 @option('--service', '-s', type=str, required=True,
         help="Service name")

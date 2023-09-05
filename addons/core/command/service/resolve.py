@@ -7,7 +7,7 @@ from src.decorator.option import option
 from src.helper.args import split_arg_array
 
 
-@command()
+@command(help="Resolve dependencies of a service")
 @app_location_optional
 @option('--service', '-s', required=True,
         help="Find all service dependencies")

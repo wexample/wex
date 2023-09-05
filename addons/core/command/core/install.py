@@ -15,7 +15,8 @@ from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
-@command()
+
+@command(help="Install core")
 @as_sudo
 def core__core__install(kernel: Kernel):
     __core__core__check_requirements(kernel)

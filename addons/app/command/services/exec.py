@@ -7,7 +7,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Execute a command for all installed services")
 @option('--hook', '-h', type=str, required=True,
         help="Hook name")
 @option('--arguments', '-args', type=str, required=False,

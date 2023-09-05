@@ -6,7 +6,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command()
+@command(help="Stop the running reverse proxy server")
 @as_sudo
 @app_location_optional
 def app__proxy__stop(kernel: Kernel):

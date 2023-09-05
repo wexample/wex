@@ -27,7 +27,7 @@ from src.core.Kernel import Kernel
 from src.decorator.alias_without_addon import alias_without_addon
 
 
-@command()
+@command(help="Create new app and services configuration")
 @alias_without_addon()
 @app_location_optional
 @option('--name', '-n', type=str, required=False,

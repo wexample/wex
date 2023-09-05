@@ -7,7 +7,7 @@ from src.decorator.option import option
 from src.core.response.DataSet2dResponse import DataSet2dResponse
 
 
-@command()
+@command(help="Return sizes of current directory subdirectories")
 @option('--dir', '-d', type=str, required=False, help="Directory to inspect")
 def system__dir__spaces(kernel: Kernel, dir: str = None):
     if dir is None:

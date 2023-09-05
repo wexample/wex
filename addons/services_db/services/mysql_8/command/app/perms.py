@@ -8,7 +8,7 @@ from addons.app.decorator.service_option import service_option
 from src.decorator.command import command
 
 
-@command()
+@command(help="Set database permissions")
 @app_dir_option()
 @service_option()
 def mysql_8__app__perms(kernel: Kernel, app_dir: str, service: str):

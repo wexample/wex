@@ -5,7 +5,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Remove a line from a file")
 @option('--file-path', '-f', type=str, required=True,
         help="File to work on")
 @option('--line', '-l', type=str, required=True,

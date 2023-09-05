@@ -10,7 +10,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command()
+@command(help="Stop the given app")
 @app_dir_option()
 @alias_without_addon()
 def app__app__stop(kernel: Kernel, app_dir: str):

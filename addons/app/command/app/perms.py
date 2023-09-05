@@ -6,7 +6,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 
 
-@command()
+@command(help="Set app files permissions")
 @app_dir_option()
 def app__app__perms(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']

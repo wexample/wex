@@ -6,7 +6,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Create a test file for command")
 @as_sudo
 @option('--all', '-a', type=str, is_flag=True, required=False, help="Create all missing tests")
 @option('--command', '-c', type=str, required=False, help="Command name")

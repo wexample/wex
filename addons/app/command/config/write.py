@@ -16,7 +16,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 
-@command()
+@command(help="Write the configuration file for services to start")
 @option('--app-dir', '-a', type=str, required=False,
         help="Add directory")
 @option('--user', '-u', type=str, required=False,
