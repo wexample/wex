@@ -20,6 +20,9 @@ def core__version__build(kernel: Kernel, commit: bool = False) -> None:
     repo = git.Repo(kernel.path['root'])
 
     if not commit:
+        current_version = core_kernel_get_version(kernel)
+        kernel.log(f'Building new version from {current_version}...')
+
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
             kernel.error(ERR_CORE_REPO_DIRTY, {
