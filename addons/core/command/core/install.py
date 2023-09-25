@@ -10,7 +10,7 @@ from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.error import ERR_PYTHON_MINIMAL_VERSION
 from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from src.helper.file import remove_file_if_exists, create_from_template
-from src.const.globals import CORE_BIN_FILE, PYTHON_MIN_VERSION
+from src.const.globals import CORE_BIN_FILE_ROOT, PYTHON_MIN_VERSION, CORE_BIN_FILE_LOCAL
 from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
@@ -23,7 +23,8 @@ def core__core__install(kernel: Kernel):
     __core__core__install_env(kernel)
     __core__core__install_terminal(kernel)
     __core__core__install_autocomplete(kernel)
-    __core__core__install_symlink(kernel)
+    __core__core__install_symlink(kernel, CORE_BIN_FILE_ROOT)
+    __core__core__install_symlink(kernel, CORE_BIN_FILE_LOCAL)
     __core__core__install_webhook_server(kernel)
     return kernel.run_function(core__logo__show)
 
@@ -79,17 +80,17 @@ def __core__core__install_autocomplete(kernel):
     __source_file_for_docker(kernel, script_path)
 
 
-def __core__core__install_symlink(kernel):
-    remove_file_if_exists(CORE_BIN_FILE)
+def __core__core__install_symlink(kernel, destination: str):
+    remove_file_if_exists(destination)
 
     os.symlink(
         kernel.path['core.cli'],
-        CORE_BIN_FILE
+        destination
     )
 
-    os.chmod(CORE_BIN_FILE, 0o755)
+    os.chmod(destination, 0o755)
 
-    kernel.log(f'Created symlink in {CORE_BIN_FILE}')
+    kernel.log(f'Created symlink in {destination}')
 
 
 def __core__core__install_webhook_server(kernel):

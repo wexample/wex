@@ -4,7 +4,7 @@ from addons.core.command.webhook.stop import core__webhook__stop
 from addons.default.command.file.remove_line import default__file__remove_line
 from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.const.globals import CORE_BIN_FILE
+from src.const.globals import CORE_BIN_FILE_ROOT, CORE_BIN_FILE_LOCAL
 from src.decorator.as_sudo import as_sudo
 from src.helper.file import remove_file_if_exists
 from src.core.Kernel import Kernel
@@ -15,7 +15,8 @@ from src.decorator.command import command
 @as_sudo
 def core__core__uninstall(kernel: Kernel):
     __core__core__uninstall_webhook_server(kernel)
-    __core__core__uninstall_symlink()
+    __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)
+    __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)
     __core__core__uninstall_autocomplete(kernel)
     __core__core__uninstall_terminal(kernel)
     kernel.log('Bye!')
@@ -27,8 +28,8 @@ def __core__core__uninstall_webhook_server(kernel):
     )
 
 
-def __core__core__uninstall_symlink():
-    remove_file_if_exists(CORE_BIN_FILE)
+def __core__core__uninstall_symlink(destination: str):
+    remove_file_if_exists(destination)
 
 
 def __core__core__uninstall_autocomplete(kernel):
