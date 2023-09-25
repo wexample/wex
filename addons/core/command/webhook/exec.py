@@ -3,7 +3,7 @@ import re
 
 from urllib.parse import urlparse, parse_qs
 
-from core.command.logs.rotate import core__logs__rotate
+from addons.core.command.logs.rotate import core__logs__rotate
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option

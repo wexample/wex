@@ -3,6 +3,7 @@ import json
 import os
 import time
 
+
 class Logger:
     current_command = None
 
@@ -20,6 +21,7 @@ class Logger:
             'dateStart': date_now,
             'dateLast': date_now,
             'commands': [],
+            'errors': [],
         }
 
         os.makedirs(self.kernel.path['log'], exist_ok=True)
@@ -40,7 +42,13 @@ class Logger:
         if parameters is None:
             parameters = {}
 
-        self.current_command['errors'].append({
+        # An error may occur before any command starts.
+        if self.current_command:
+            container = self.current_command
+        else:
+            container = self.log_data
+
+        container['errors'].append({
             'code': code,
             'date': self.get_time_string(),
             'parameters': parameters,
