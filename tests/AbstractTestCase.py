@@ -37,6 +37,10 @@ class AbstractTestCase(unittest.TestCase):
             f'No such file or directory : {file_path}'
         )
 
+    def assertDictKeysEquals(self, result, expected):
+        for key, value in expected.items():
+            self.assertEqual(result.get(key), value, f"Failed for key: {key}")
+
     def build_test_file_path(self, file_name: str) -> str:
         src_file = os.path.join(self.kernel.path['root'], 'tests', 'samples', file_name)
         dst_file = os.path.join(self.kernel.path['tmp'], 'tests', file_name)

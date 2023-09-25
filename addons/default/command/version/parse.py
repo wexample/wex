@@ -1,0 +1,42 @@
+from src.decorator.command import command
+from src.decorator.option import option
+from src.core import Kernel
+from typing import Dict, Optional
+
+
+@command(help="Parse a version string and return its components")
+@option('--version', '-v', type=str, required=True, help="The version string to parse")
+def default__version__parse(kernel: Kernel, version: str) -> Dict[str, Optional[str]]:
+    pre_build_number: Optional[int] = None
+    pre_build_type: Optional[str] = None
+
+    # Handle 1.0.0-beta.1+build.1234
+    if '-' in version:
+        base_version, pre_build = version.split('-')
+
+        if '.' in pre_build:
+            pre_build_parts = pre_build.split('.')
+            if len(pre_build_parts) == 2:
+                pre_build_type, pre_build_number = pre_build_parts
+            else:
+                pre_build_type, pre_build_number, _ = pre_build_parts
+
+            # pre_build_number can be : 1+build.1234
+            if '+' in pre_build_number:
+                pre_build_number, build_metadata = pre_build_number.split('+')
+            pre_build_number = int(pre_build_number)
+    else:
+        base_version, pre_build = version, ''
+
+    major, intermediate, minor = base_version.split('.')
+
+    # Create a dictionary to store the elements
+    version_dict = {
+        'major': major,
+        'intermediate': intermediate,
+        'minor': minor,
+        'pre_build_type': pre_build_type,
+        'pre_build_number': pre_build_number,
+    }
+
+    return version_dict
