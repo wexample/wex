@@ -132,7 +132,7 @@ class Kernel:
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
         message = f'{COLORS[log_level]}{message}{COLOR_RESET}'
 
-        self.logger.error(
+        self.logger.append_error(
             code,
             parameters,
             log_level

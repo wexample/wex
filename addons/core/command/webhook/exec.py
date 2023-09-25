@@ -62,7 +62,7 @@ def core__webhook__exec(kernel: Kernel, url: str) -> bool:
                     # Add the arguments to the command
                     command = ['bash', hook_file] + args
 
-                    kernel.add_to_history({
+                    kernel.logger.append_event({
                         'url': url,
                         'command': command,
                         'source_data': source_data,
@@ -76,7 +76,7 @@ def core__webhook__exec(kernel: Kernel, url: str) -> bool:
             else:
                 source_data['missing_workdir'] = working_directory
 
-    kernel.add_to_history({
+    kernel.logger.append_event({
         'url': url,
         'command': [],
         'source_data': source_data,

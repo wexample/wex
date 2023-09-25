@@ -53,7 +53,8 @@ class Logger:
         self.current_command = {
             'command': request.command,
             'date': self.get_time_string(),
-            'errors': []
+            'errors': [],
+            'events': [],
         }
 
         self.log_data['commands'].append(
