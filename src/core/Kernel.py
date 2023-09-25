@@ -1,4 +1,3 @@
-import datetime
 import importlib.util
 import json
 import os
@@ -9,6 +8,7 @@ from typing import Optional
 from yaml import SafeLoader
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
@@ -57,7 +57,6 @@ class Kernel:
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
             'tmp': tmp_path,
             'log': os.path.join(tmp_path, 'log') + os.sep,
-            'history': os.path.join(tmp_path, 'history.json'),
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep
         }
 
@@ -74,6 +73,10 @@ class Kernel:
             self.addons[name] = definition(self, name)
 
         self.store_task_id()
+
+        # Create the logger after task_id created.
+        self.logger = Logger(self)
+
         self.load_registry()
         self.exec_middlewares('init')
 
@@ -127,17 +130,20 @@ class Kernel:
             log_level = logging.FATAL
 
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
+        message = f'{COLORS[log_level]}{message}{COLOR_RESET}'
 
-        self.add_to_history(
-            {
-                'error': code
-            }
+        self.logger.error(
+            code,
+            parameters,
+            log_level
         )
 
         if log_level == logging.FATAL:
             from src.core.FatalError import FatalError
 
-            raise FatalError(f'{COLORS[log_level]}{message}{COLOR_RESET}')
+            raise FatalError(message)
+        else:
+            self.print(message)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
@@ -301,26 +307,6 @@ class Kernel:
             function = getattr(module, function_name, None)
 
             return function(self, **args)
-
-    def add_to_history(self, data: dict):
-        from src.helper.json import load_json_if_valid
-        from src.helper.file import set_user_or_sudo_user_owner
-
-        max_entries = 100
-        history = load_json_if_valid(self.path['history']) or []
-
-        history.append({
-            'date': str(datetime.datetime.now()),
-            'task_id': self.task_id,
-            'data': data,
-        })
-
-        # if len(history) > max_entries:
-        del history[0:len(history) - max_entries]
-
-        with open(self.path['history'], 'w') as f:
-            json.dump(history, f, indent=4)
-            set_user_or_sudo_user_owner(self.path['history'])
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
         if type not in self.resolvers:

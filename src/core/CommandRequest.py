@@ -47,4 +47,6 @@ class CommandRequest:
     def run(self):
         self.resolver.kernel.current_request = self
 
+        self.resolver.kernel.logger.append_request(self)
+
         return self.resolver.run_request(self)

@@ -7,7 +7,7 @@ from src.const.error import ERR_TEST
 
 class TestLogging(AbstractTestCase):
     def test_error(self):
-        remove_file_if_exists(self.kernel.path['history'])
+        remove_file_if_exists(self.kernel.path['log'])
 
         self.kernel.error(
             code=ERR_TEST,
@@ -15,13 +15,13 @@ class TestLogging(AbstractTestCase):
         )
 
         self.assertPathExists(
-            self.kernel.path['history']
+            self.kernel.path['log']
         )
 
     def test_history(self):
-        remove_file_if_exists(self.kernel.path['history'])
+        remove_file_if_exists(self.kernel.path['log'])
 
-        self.kernel.add_to_history(
+        self.kernel.logger.append_event(
             {
                 'command': 'test-command',
                 'success': True
@@ -29,5 +29,5 @@ class TestLogging(AbstractTestCase):
         )
 
         self.assertPathExists(
-            self.kernel.path['history']
+            self.kernel.path['log']
         )
