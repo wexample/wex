@@ -1,58 +1,35 @@
-import click
-import datetime
+from addons.default.command.version.parse import default__version__parse
+from src.decorator.command import command
+from src.core import Kernel
+
+from addons.default.const.default import UPGRADE_TYPE_MINOR, VERSION_PRE_BUILD_NUMBER, UPGRADE_TYPE_MAJOR, \
+    UPGRADE_TYPE_INTERMEDIATE, UPGRADE_TYPE_ALPHA, UPGRADE_TYPE_BETA, UPGRADE_TYPE_DEV, UPGRADE_TYPE_RC, \
+    UPGRADE_TYPE_NIGHTLY, UPGRADE_TYPE_SNAPSHOT, VERSION_BUILD_TIMESTAMP
 from src.decorator.option import option
 
-# Upgrade types
-UPGRADE_TYPE_MAJOR = 'major'
-UPGRADE_TYPE_INTERMEDIATE = 'intermediate'
-UPGRADE_TYPE_MINOR = 'minor'
-UPGRADE_TYPE_ALPHA = 'alpha'
-UPGRADE_TYPE_BETA = 'beta'
-UPGRADE_TYPE_DEV = 'dev'
-UPGRADE_TYPE_RC = 'rc'
-UPGRADE_TYPE_NIGHTLY = 'nightly'
-UPGRADE_TYPE_SNAPSHOT = 'snapshot'
 
-VERSION_PRE_BUILD_NUMBER = 0
-VERSION_BUILD_TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
-
-@click.command
+@command(help="Increment giver version number string")
 @option('--version', '-v', type=str, required=True,
         help="Base version to increment")
 def default__version__increment(
+        kernel: Kernel,
         version: str,
         upgrade_type: str = UPGRADE_TYPE_MINOR,
         increment: int = 1,
         build: bool = False
 ) -> str:
-    pre_build_number: int = VERSION_PRE_BUILD_NUMBER
+    version_dict = kernel.run_function(
+        default__version__parse,
+        {'version': version}
+    )
 
-    # Handle 1.0.0-beta.1+build.1234
-    if '-' in version:
-        base_version, pre_build = version.split('-')
+    major = version_dict['major']
+    intermediate = version_dict['intermediate']
+    minor = version_dict['minor']
+    pre_build_type = version_dict['pre_build_type']
+    pre_build_number = version_dict['pre_build_number'] or VERSION_PRE_BUILD_NUMBER
 
-        if '.' in pre_build:
-            pre_build_parts = pre_build.split('.')
-            if len(pre_build_parts) == 2:
-                pre_build, pre_build_number = pre_build_parts
-            else:
-                pre_build, pre_build_number, _ = pre_build_parts
-
-            upgrade_type = pre_build
-
-            # pre_build_number can be : 1+build.1234
-            if '+' in pre_build_number:
-                # Ignore last part which is a timestamp.
-                pre_build_number = int(pre_build_number.split('+')[0])
-            else:
-                pre_build_number = int(pre_build_number)
-    else:
-        base_version, pre_build = version, ''
-
-    major, intermediate, minor = base_version.split('.')
-
-    # Increment according type
+    # Increment according to type
     if upgrade_type == UPGRADE_TYPE_MAJOR:
         major = str(int(major) + increment)
         intermediate, minor = '0', '0'
@@ -83,7 +60,7 @@ def default__version__increment(
 
     # Build version string
     pre_build_info = ''
-    if pre_build:
-        pre_build_info = f'-{pre_build}.{pre_build_number}'
+    if pre_build_type:
+        pre_build_info = f'-{pre_build_type}.{pre_build_number}'
 
     return f"{major}.{intermediate}.{minor}{pre_build_info}{'+build.' + VERSION_BUILD_TIMESTAMP if build else ''}"
