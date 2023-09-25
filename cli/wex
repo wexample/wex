@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-. "${BASH_SOURCE[0]}/_init.sh"
+WEX_DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
+
+. "${WEX_DIR_CLI}/_init.sh"
 
 # Function to handle cleanup on exit or interruption
 cleanup() {
@@ -15,21 +17,7 @@ cleanup() {
 # Trap to handle interruptions and cleanup
 trap cleanup EXIT INT TERM
 
-# Resolve symlinks
-# Using a more portable method to get the absolute path
-get_absolute_path() {
-    local target="$1"
-    while [ -L "$target" ]; do
-        local dir
-        dir=$(dirname "$target")
-        target=$(readlink "$target")
-        [[ $target != /* ]] && target="$dir/$target"
-    done
-    echo "$(cd "$(dirname "$target")" && pwd -P)/$(basename "$target")"
-}
-
-CURRENT_FILE=$(get_absolute_path "${BASH_SOURCE[0]}")
-WEX_ROOT="$(cd "$(dirname "${CURRENT_FILE}")"/.. && pwd -P)/"
+WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
 # Load main python script

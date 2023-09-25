@@ -3,10 +3,11 @@
 WEX_DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
 
 . "${WEX_DIR_CLI}/_init.sh"
+. "${WEX_DIR_CLI}/_init_sudo.sh"
 
 WEX_DIR_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 
-echo "Checking bare minimum requirements..."
+echo "Checking python requirements..."
 if ! command -v pip >/dev/null 2>&1; then
     echo "Installing pip..."
     sudo apt-get update
@@ -14,11 +15,11 @@ if ! command -v pip >/dev/null 2>&1; then
 fi
 
 echo "Installing python requirements..."
-pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
+sudo pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
-echo "Installing wex"
-. "${WEX_DIR_CLI}wex" core::core/install
+echo "Installing core..."
+sudo bash "${WEX_DIR_CLI}wex" core::core/install
 
 echo "Reload bashrc changes..."
 # shellcheck disable=SC1090
-. ~/.bashrc
+sudo bash ~/.bashrc
