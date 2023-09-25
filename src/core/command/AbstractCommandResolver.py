@@ -28,10 +28,12 @@ class AbstractCommandResolver:
 
         if not request.localized and (not request.path or not os.path.isfile(request.path)):
             if not request.quiet:
+                import logging
+
                 self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
                     'path': request.path,
-                })
+                }, logging.ERROR)
             return AbortResponse(self.kernel)
 
         # Enforce sudo.
