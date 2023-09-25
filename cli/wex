@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status.
-set -e
-# This setting ensures that pipes will return an error code if any command in the pipe fails.
-set -o pipefail
+. "${BASH_SOURCE[0]}/_init.sh"
 
 # Function to handle cleanup on exit or interruption
 cleanup() {

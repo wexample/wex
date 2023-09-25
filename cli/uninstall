@@ -2,4 +2,5 @@
 
 WEX_DIR_CLI="$(realpath "$(dirname "${BASH_SOURCE[0]}")")/"
 
+. "${WEX_DIR_CLI}/_init.sh"
 . "${WEX_DIR_CLI}wex" core::core/uninstall
