@@ -32,7 +32,7 @@ def app__location__find(kernel, app_dir: Optional[str] = False, recursive: bool 
             return None
 
         if manager.is_app_root(app_dir):
-            return f'{app_dir}/'
+            return f'{app_dir}{os.sep}'
 
         if not recursive:
             return None
