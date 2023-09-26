@@ -58,7 +58,11 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
     if manager.config == {}:
         # Only create config but do not save it
         # until migration is completed
-        manager.config = manager.create_config(os.path.dirname(app_dir))
+        manager.config = manager.create_config(
+            os.path.basename(
+                os.path.normpath(app_dir)
+            )
+        )
 
     kernel.log(f'Current version defined as {app_version_string}')
 

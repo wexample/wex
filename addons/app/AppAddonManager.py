@@ -207,11 +207,15 @@ class AppAddonManager(AddonManager):
                     }
                 )
 
+                # Skip if the command allow to be executed without app location.
+                if hasattr(request.function.callback, 'app_location_optional'):
+                    return
+
+        if app_dir_resolved:
             # Ensure it always ends with a /
             if not app_dir_resolved.endswith(os.sep):
                 app_dir_resolved += os.sep
 
-        if app_dir_resolved:
             # First test, create config.
             if 'previous_app_dir' not in request.storage:
                 dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
@@ -222,8 +226,7 @@ class AppAddonManager(AddonManager):
                 if dirs_differ:
                     request.storage['previous_app_dir'] = app_dir_resolved
 
-            # Skip if the command allow to be executed without app location.
-            if not hasattr(request.function.callback, 'app_location_optional') or ('app-dir' in args_dict):
+            if 'app-dir' in args_dict:
                 args_dict['app-dir'] = app_dir_resolved
 
                 # Append to original apps list.
