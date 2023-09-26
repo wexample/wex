@@ -9,8 +9,10 @@ from addons.app.decorator.app_location_optional import app_location_optional
 @command(help="Search for the config file in the given directory path or its parent directories.")
 @option('--app-dir', '-a', type=str, required=False,
         help="App directory")
+@option('--recursive', '-r', type=bool, required=False, default=True,
+        help="App directory")
 @app_location_optional
-def app__location__find(kernel, app_dir: Optional[str] = False) -> Optional[str]:
+def app__location__find(kernel, app_dir: Optional[str] = False, recursive: bool = True) -> Optional[str]:
     """Search for the config file in the given directory path or its parent directories.
     Returns the path of the directory containing the config file, or None if not found.
     """
@@ -31,5 +33,9 @@ def app__location__find(kernel, app_dir: Optional[str] = False) -> Optional[str]
 
         if manager.is_app_root(app_dir):
             return f'{app_dir}/'
+
+        if not recursive:
+            return None
+
         app_dir = os.path.dirname(app_dir)
     return None

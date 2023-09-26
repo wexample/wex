@@ -1,16 +1,13 @@
-
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.command import command
 from src.core import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.decorator.app_location_optional import app_location_optional
 from addons.app.AppAddonManager import AppAddonManager
 
 
 @command(help="Return the configuration version number")
-@app_dir_option()
-def app__config__version(
-        kernel: Kernel,
-        app_dir: str):
+@app_location_optional
+def app__config__version(kernel: Kernel):
     manager: AppAddonManager = kernel.addons['app']
 
     try:
