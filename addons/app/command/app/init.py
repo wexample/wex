@@ -50,9 +50,12 @@ def app__app__init(
 ):
     manager: AppAddonManager = kernel.addons['app']
 
-    current_dir = os.getcwd() + '/'
+    current_dir = os.getcwd() + os.sep
     if not app_dir:
         app_dir = current_dir
+
+    if not app_dir.endswith('/'):
+        app_dir += '/'
 
     def init_step_check_vars():
         nonlocal name
