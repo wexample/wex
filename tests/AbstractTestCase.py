@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 
 from src.core.TestKernel import TestKernel
@@ -41,11 +42,27 @@ class AbstractTestCase(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(result.get(key), value, f"Failed for key: {key}")
 
-    def build_test_file_path(self, file_name: str) -> str:
+    def build_test_dir(self, source_dir: str) -> str:
+        # English comments as requested
+        # Get the directory name from source directory
+        dir_name = os.path.basename(source_dir)
+
+        # Build the destination directory path
+        dest_dir = os.path.join(self.kernel.path['tmp'], 'tests', dir_name)
+
+        # Delete the destination directory if it exists
+        if os.path.exists(dest_dir):
+            shutil.rmtree(dest_dir)
+
+        # Copy everything from source directory to destination directory
+        shutil.copytree(source_dir, dest_dir)
+
+        return dest_dir
+
+    def build_test_file(self, file_name: str) -> str:
         src_file = os.path.join(self.kernel.path['root'], 'tests', 'samples', file_name)
         dst_file = os.path.join(self.kernel.path['tmp'], 'tests', file_name)
 
-        # Use the function to create directories and copy the file
         create_directories_and_copy(src_file, dst_file)
 
         return dst_file

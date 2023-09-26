@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestDefaultCommandFileRemoveLine(AbstractTestCase):
     def test_remove_line(self):
-        file = self.build_test_file_path('config_bash')
+        file = self.build_test_file('config_bash')
 
         with open(file, 'r', newline='') as f:
             first_line = f.readline()

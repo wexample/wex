@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestDefaultCommandFileAppendOnce(AbstractTestCase):
     def test_append_once(self):
-        file = self.build_test_file_path('config_bash')
+        file = self.build_test_file('config_bash')
 
         with open(file, 'r', newline='') as f:
             file_original = f.read()

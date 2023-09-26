@@ -23,3 +23,18 @@ def is_greater_than(first, second, true_if_equal=False):
                 return True
 
     return true_if_equal
+
+
+def version_join(version: dict, add_build: bool = False) -> str:
+    output = f"{version['major']}.{version['intermediate']}.{version['minor']}"
+
+    # Build version string
+    version['pre_build_info'] = ''
+    if version['pre_build_type']:
+        output += f'-{version["pre_build_type"]}.{version["pre_build_number"]}'
+
+    if add_build:
+        import datetime
+        output += f'+build.' + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    return output
