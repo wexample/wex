@@ -1,23 +1,24 @@
 import os
 import platform
-
+import datetime
+import getpass
 import yaml
 
-from src.helper.string import to_snake_case
+from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY
-from src.const.error import ERR_UNEXPECTED
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY
 from addons.app.command.location.find import app__location__find
 from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
+from src.helper.core import core_kernel_get_version
 
 
 class AppAddonManager(AddonManager):
     def __init__(self, kernel, name):
         super().__init__(kernel, name)
-        self.call_working_dir = os.getcwd()
-        self.current_app_dir = None
+        self.call_working_dir = os.getcwd() + os.sep
+        self.app_dir = None
         self.config = {}
         self.config_path = None
         self.proxy_apps = {}
@@ -44,8 +45,50 @@ class AppAddonManager(AddonManager):
         try:
             with open(path, 'r') as file:
                 return yaml.safe_load(file)
-        except FileNotFoundError:
+        except Exception:
             return default
+
+    def create_config(self, app_name: str, domains=None):
+        if domains is None:
+            domains = []
+
+        domains_main = domains[0] if domains else f'{to_kebab_case(app_name)}.wex'
+        email = f'contact@{domains_main}'
+
+        return {
+            'global': {
+                'author': getpass.getuser(),
+                'created': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                'name': app_name,
+                'services': [],
+            },
+            'docker': {
+                'compose': {
+                    'tty': True,
+                    'stdin_open': True,
+                }
+            },
+            'env': {
+                'local': {
+                    'domains': f'{app_name}.wex',
+                    'domain_main': f'{app_name}.wex',
+                    'email': email
+                },
+                'dev': {
+                    'domains': domains.copy(),
+                    'domain_main': domains_main,
+                    'email': email
+                },
+                'prod': {
+                    'domains': domains.copy(),
+                    'domain_main': domains_main,
+                    'email': email
+                }
+            },
+            'wex': {
+                'version': core_kernel_get_version(self.kernel)
+            }
+        }
 
     def save_config(self):
         self._save_yml_file(
@@ -149,8 +192,8 @@ class AppAddonManager(AddonManager):
 
         args_dict = request.args_dict
 
-        if self.current_app_dir is not None:
-            app_dir_resolved = self.current_app_dir
+        if self.app_dir is not None:
+            app_dir_resolved = self.app_dir
         else:
             if 'app-dir' in args_dict:
                 app_dir_resolved = args_dict['app-dir']
@@ -173,7 +216,7 @@ class AppAddonManager(AddonManager):
             if 'previous_app_dir' not in request.storage:
                 dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
 
-                if dirs_differ or self.current_app_dir is None:
+                if dirs_differ or self.app_dir is None:
                     self.set_app_workdir(app_dir_resolved)
 
                 if dirs_differ:
@@ -210,32 +253,25 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        app_dir = self.kernel.run_function(
-            app__location__find, {
-                'app-dir': app_dir
-            }
+        self.kernel.log('Switching to app : ' + app_dir)
+
+        self.app_dir = app_dir
+        self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
+        self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
+        self.config = self._load_config(self.config_path)
+
+        self.proxy_apps = yaml_load_or_default(
+            self.proxy_path + PROXY_FILE_APPS_REGISTRY,
+            {}
         )
 
-        if app_dir:
-            self.kernel.log('Switching to app : ' + app_dir)
+        self.runtime_config = self._load_config(
+            self.runtime_config_path)
 
-            self.current_app_dir = app_dir
-            self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
-            self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
-            self.config = self._load_config(self.config_path)
+        os.chdir(app_dir)
 
-            self.proxy_apps = yaml_load_or_default(
-                self.proxy_path + PROXY_FILE_APPS_REGISTRY,
-                {}
-            )
-
-            self.runtime_config = self._load_config(
-                self.runtime_config_path)
-
-            os.chdir(app_dir)
-
-    def unset_app_workdir(self, fallback_dir:str):
-        self.current_app_dir = None
+    def unset_app_workdir(self, fallback_dir: str):
+        self.app_dir = None
 
         os.chdir(fallback_dir)
 

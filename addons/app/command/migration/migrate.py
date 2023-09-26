@@ -1,13 +1,14 @@
-import importlib
 import os
-import click
 
-from addons.app.command.config.version import app__config__version
-from addons.default.helpers.version import is_greater_than, version_join, version_exec
+from addons.default.helpers.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
 from addons.app.decorator.app_location_optional import app_location_optional
 from addons.app.command.location.find import app__location__find
-from src.core.response.AbortResponse import AbortResponse
+from addons.app.AppAddonManager import AppAddonManager
+from addons.default.helpers.migration import version_guess, get_migrations_files, migration_exec, \
+    MIGRATION_MINIMAL_VERSION
+from src.helper.core import core_kernel_get_version
+from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
@@ -20,8 +21,21 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
     if not app_dir:
         app_dir = kernel.run_function(app__location__find)
 
-    # Get the parsed version of application.
-    app_version_string = kernel.run_function(app__config__version)
+        if not app_dir:
+            app_dir = os.getcwd() + os.sep
+
+    # Create a dedicated manager
+    manager = AppAddonManager(kernel, 'app-migration')
+    manager.set_app_workdir(app_dir)
+    app_version_string = None
+    try:
+        # Trust regular config file
+        app_version_string = manager.config[CORE_COMMAND_NAME]['version']
+    except Exception:
+        pass
+
+    app_version_string = app_version_string or version_guess(kernel, app_dir)
+
     app_version = kernel.run_function(
         default__version__parse,
         {
@@ -29,31 +43,54 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
         }
     )
 
-    if not app_dir:
-        app_dir = os.getcwd()
-        kernel.message('No application directory found.')
-        if not click.confirm(f'Do you want to proceed migration from version {app_version_string} in : {app_dir}?',
-                             default=True):
-            return AbortResponse(kernel)
+    # Unable to parse version number.
+    if not app_version:
+        app_version_string = MIGRATION_MINIMAL_VERSION
 
-    path_migrations = os.path.join(kernel.path['addons'], 'app/migrations') + os.sep
+        app_version = kernel.run_function(
+            default__version__parse,
+            {
+                'version': app_version_string
+            }
+        )
 
-    for item in reversed(os.listdir(path_migrations)):
+    # Create an empty config
+    if manager.config == {}:
+        # Only create config but do not save it
+        # until migration is completed
+        manager.config = manager.create_config(os.path.dirname(app_dir))
+
+    kernel.log(f'Current version defined as {app_version_string}')
+
+    for migration_file in get_migrations_files(kernel):
+        migration_version_string = migration_file.replace(".py", "")
+
         migration_version = kernel.run_function(
             default__version__parse,
             {
-                'version': item
+                'version': migration_version_string
             }
         )
 
         if is_greater_than(migration_version, app_version):
-            kernel.log(f'Migrating to {version_join(migration_version)}')
+            kernel.log(f'Migrating to {migration_version_string}')
 
-            version_exec(
+            migration_exec(
                 kernel,
-                item.replace(".py", ""),
+                migration_version_string,
                 'migration',
+                [manager]
             )
 
-            kernel.message(f'Migration complete to {version_join(migration_version)}')
+            manager.set_config(
+                f'{CORE_COMMAND_NAME}.version',
+                migration_version_string
+            )
             app_version = migration_version
+
+
+    manager.set_config(
+        f'{CORE_COMMAND_NAME}.version',
+        core_kernel_get_version(kernel)
+    )
+    kernel.message(f'Migration complete')
