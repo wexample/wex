@@ -59,8 +59,8 @@ class AppCommandResolver(AbstractCommandResolver):
         ]
 
     def get_base_path(self):
-        app_dir = self.app_addon.current_app_dir
-        if not self.app_addon.current_app_dir:
+        app_dir = self.app_addon.app_dir
+        if not self.app_addon.app_dir:
             app_dir = self.kernel.run_function(
                 app__location__find,
                 {
