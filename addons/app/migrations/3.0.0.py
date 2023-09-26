@@ -1,5 +1,6 @@
 from src.core import Kernel
 
 
-def migrate_3_0_0(kernel: Kernel):
-    print('OK')
+def migration_3_0_0(kernel: Kernel):
+    # This is the older version.
+    pass
