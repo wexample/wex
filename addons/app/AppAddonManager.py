@@ -184,10 +184,14 @@ class AppAddonManager(AddonManager):
             args_list.append('--app-dir')
             args_list.append(app_dir_resolved)
         else:
+            import logging
+
             self.kernel.error(ERR_APP_NOT_FOUND, {
                 'command': request.command,
                 'dir': app_dir_resolved,
-            })
+            }, logging.ERROR)
+
+            exit(0)
 
     def command_run_post(self, request):
         # Skip if the command allow to be executed without app location.
