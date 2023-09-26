@@ -144,8 +144,7 @@ class AppAddonManager(AddonManager):
         return get_dict_item_by_path(self.runtime_config, key, default)
 
     def command_run_pre(self, request):
-        # Skip if the command allow to be executed without app location.
-        if hasattr(request.function.callback, 'app_location_optional'):
+        if request.is_click_command(app__location__find):
             return
 
         args_dict = request.args_dict
@@ -154,21 +153,22 @@ class AppAddonManager(AddonManager):
             app_dir_resolved = self.current_app_dir
         else:
             if 'app-dir' in args_dict:
-                app_dir = args_dict['app-dir']
-                del args_dict['app-dir']
+                app_dir_resolved = args_dict['app-dir']
             else:
                 app_dir = os.getcwd()
 
-            app_dir_resolved = self.kernel.run_function(
-                app__location__find,
-                {
-                    'app-dir': app_dir
-                }
-            )
+                app_dir_resolved = self.kernel.run_function(
+                    app__location__find,
+                    {
+                        'app-dir': app_dir
+                    }
+                )
+
+            # Ensure it always ends with a /
+            if not app_dir_resolved.endswith(os.sep):
+                app_dir_resolved += os.sep
 
         if app_dir_resolved:
-            args_dict['app_dir'] = app_dir_resolved
-
             # First test, create config.
             if 'previous_app_dir' not in request.storage:
                 dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
@@ -179,10 +179,14 @@ class AppAddonManager(AddonManager):
                 if dirs_differ:
                     request.storage['previous_app_dir'] = app_dir_resolved
 
-            # Append to original apps list.
-            args_list = request.args
-            args_list.append('--app-dir')
-            args_list.append(app_dir_resolved)
+            # Skip if the command allow to be executed without app location.
+            if not hasattr(request.function.callback, 'app_location_optional') or ('app-dir' in args_dict):
+                args_dict['app-dir'] = app_dir_resolved
+
+                # Append to original apps list.
+                args_list = request.args
+                args_list.append('--app-dir')
+                args_list.append(app_dir_resolved)
         else:
             import logging
 
@@ -194,10 +198,6 @@ class AppAddonManager(AddonManager):
             exit(0)
 
     def command_run_post(self, request):
-        # Skip if the command allow to be executed without app location.
-        if hasattr(request.function.callback, 'app_location_optional'):
-            return
-
         if 'previous_app_dir' in request.storage:
             self.unset_app_workdir(request.storage['previous_app_dir'])
             del request.storage['previous_app_dir']

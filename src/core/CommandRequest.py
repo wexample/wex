@@ -50,3 +50,6 @@ class CommandRequest:
         self.resolver.kernel.logger.append_request(self)
 
         return self.resolver.run_request(self)
+
+    def is_click_command(self, click_command) -> bool:
+        return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__
