@@ -3,11 +3,10 @@ import os
 import click
 
 from addons.app.command.config.version import app__config__version
-from addons.default.helpers.version import is_greater_than, version_join
+from addons.default.helpers.version import is_greater_than, version_join, version_exec
 from addons.default.command.version.parse import default__version__parse
 from addons.app.decorator.app_location_optional import app_location_optional
 from addons.app.command.location.find import app__location__find
-from src.const.error import ERR_UNEXPECTED
 from src.core.response.AbortResponse import AbortResponse
 from src.decorator.command import command
 from src.decorator.option import option
@@ -48,36 +47,13 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
         )
 
         if is_greater_than(migration_version, app_version):
-            # Create the method name based on item
-            version = item.replace(".py", "").replace(".", "_")
-            method_name = f"migration_{version}"
-
-            # Dynamically import the module
-            module_name = item.replace(".py", "")
-            print(method_name)
-            spec = importlib.util.spec_from_file_location(module_name, path_migrations + item)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-
-            # Get the method from the module
-            method_to_call = getattr(module, method_name, None)
-
-            if method_to_call is None:
-                import logging
-                kernel.error(
-                    ERR_UNEXPECTED,
-                    {
-                        'error': f"Method {method_name} not found in module {module_name}"
-                    },
-                    logging.ERROR
-                )
-
-                return AbortResponse(kernel)
-
             kernel.log(f'Migrating to {version_join(migration_version)}')
 
-            # Execute the method
-            method_to_call(kernel)
+            version_exec(
+                kernel,
+                item.replace(".py", ""),
+                'migration',
+            )
 
             kernel.message(f'Migration complete to {version_join(migration_version)}')
             app_version = migration_version
