@@ -38,11 +38,11 @@ class ResponseCollectionResponse(AbstractResponse):
         args_dict = request.args_dict.copy()
         current_step = step_list[step_position]
 
-        # First time
+        # First time, do not execute, wait next iteration.
         if current_step is None:
             step_list[step_position] = 0
-            args_dict['command-request-step'] = '.'.join(map(str, step_list))
-            process_post_exec_wex(self.kernel, request.function, args_dict)
+            self.enqueue_next_step(step_list)
+
             # Do not render, wait next iteration.
             return None
 
@@ -81,14 +81,20 @@ class ResponseCollectionResponse(AbstractResponse):
         step_next = current_step + 1
 
         if step_next < len(collection):
-            step_list[step_position] = step_next
             # Store response in a file to allow next step to access it.
             self.kernel.task_file_write(
                 'response',
                 str(output)
             )
 
-            args_dict['command-request-step'] = '.'.join(map(str, step_list))
-            process_post_exec_wex(self.kernel, request.function, args_dict)
+            step_list[step_position] = step_next
+            self.enqueue_next_step(step_list)
 
         return output
+
+    def enqueue_next_step(self, step_list):
+        request = self.kernel.current_request
+        args_dict = request.args_dict.copy()
+
+        args_dict['command-request-step'] = '.'.join(map(str, step_list))
+        process_post_exec_wex(self.kernel, request.function, args_dict)
