@@ -4,7 +4,10 @@ from src.helper.args import convert_dict_to_args
 
 
 def process_post_exec(kernel, command: []):
-    kernel.log('Queuing shell command : ' + command_to_string(command))
+    kernel.log(
+        'Queuing shell command : ' + command_to_string(command),
+        verbosity=VERBOSITY_LEVEL_MAXIMUM
+    )
     kernel.post_exec.append(command)
 
 

@@ -4,6 +4,8 @@ import click
 from typing import Iterable, Union, List
 from click.types import BoolParamType
 
+from src.helper.string import to_kebab_case
+
 
 def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str]:
     if not arg:
@@ -16,33 +18,55 @@ def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str
         return list(arg)
 
 
-def convert_dict_to_args(function, args):
+def convert_dict_to_long_names_dict(function, args: dict):
+    short_names = {}
+    for param in function.params:
+        for opt in param.opts:
+            # This is a short name
+            if opt.startswith('-') and opt[1:2] != '-':
+                short_names[opt[1:]] = to_kebab_case(param.name)
+
+    # Transform short named args to long named args.
+    args_long = {}
+    for name in args:
+        if name in short_names:
+            args_long[short_names[name]] = args[name]
+        else:
+            args_long[name] = args[name]
+
+    return args_long
+
+
+def convert_dict_to_args(function, args: dict):
     """
     Convert args {"arg": "value"} to list ["--arg", "value"].
     Any key in `args` that is not found in `function.params` is added to the
     argument list as a key-value pair.
     """
     arg_list = []
+    args_long = convert_dict_to_long_names_dict(function, args)
+
     for param in function.params:
-        if param.name in args:
+        if param.name in args_long:
             if isinstance(param, click.Option):
                 if param.is_flag:
-                    if args[param.name]:
+                    if args_long[param.name]:
                         arg_list.append(f'--{param.name}')
                     # Flag passed to False is just removed
-                elif args[param.name] is not None:
+                elif args_long[param.name] is not None:
                     arg_list.append(f'--{param.name}')
-                    value = args[param.name]
-                    if not isinstance(args[param.name], bool):
+                    value = args_long[param.name]
+                    if not isinstance(args_long[param.name], bool):
                         value = str(value)
                     arg_list.append(value)
     # Append any remaining arguments as key-value pairs
-    for key, value in args.items():
+    for key, value in args_long.items():
         if key not in [param.name for param in function.params] and value is not None:
             arg_list.append(f'--{key}')
             if not isinstance(value, bool):
                 # Convert to str to allow joining array.
                 arg_list.append(str(value))
+
     return arg_list
 
 
