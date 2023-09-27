@@ -10,7 +10,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     if config:
         for domain_env_name in ['LOCAL', 'DEV', 'PROD']:
             env_name = domain_env_name.lower()
-            manager.config['env'][env_name]['domains'] = _get_config_value(config, domain_env_name + '_DOMAINS')
+            manager.config['env'][env_name]['domains'] = sorted(_get_config_value(config, domain_env_name + '_DOMAINS'))
             manager.config['env'][env_name]['domain_main'] = _get_config_value(config, domain_env_name + '_DOMAIN_MAIN')
             manager.config['env'][env_name]['email'] = _get_config_value(config, domain_env_name + '_EMAIL', 'contact@domain.com')
 
