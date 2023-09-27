@@ -1,5 +1,5 @@
 import os
-from src.helper.args import convert_dict_to_args, convert_args_to_dict
+from src.helper.args import convert_dict_to_args, convert_args_to_dict, convert_dict_to_long_names_dict
 
 
 class CommandRequest:
@@ -32,10 +32,13 @@ class CommandRequest:
 
         if self.function:
             if self.args is not None:
-                self.args_dict = convert_args_to_dict(self.function, self.args)
+                self.args_dict = convert_dict_to_long_names_dict(
+                    self.function,
+                    convert_args_to_dict(self.function, self.args)
+                )
 
             if 'command-request-step' in self.args_dict:
-                self.step = int(self.args_dict['command-request-step'])
+                self.step = str(self.args_dict['command-request-step'])
 
             if 'quiet' in self.args_dict:
                 self.verbosity = 0

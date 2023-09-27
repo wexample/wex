@@ -27,52 +27,68 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
         request = self.kernel.current_request
-        step_option_name = 'command-request-step'
+
+        # Convert step to a list of integers
+        step_split = list(map(int, request.step.split('.'))) if request.step is not None else [None]
+
+        return self._render(step_split, 0)
+
+    def _render(self, step_list, step_position: int | None):
+        request = self.kernel.current_request
+        args_dict = request.args_dict.copy()
+        current_step = step_list[step_position]
+
+        # First time
+        if current_step is None:
+            step_list[step_position] = 0
+            args_dict['command-request-step'] = '.'.join(map(str, step_list))
+            process_post_exec_wex(self.kernel, request.function, args_dict)
+            # Do not render, wait next iteration.
+            return None
 
         # Wrap responses
         collection = []
         for item in self.collection:
             collection.append(request.resolver.wrap_response(item))
 
-        args_dict = request.args_dict.copy()
-
-        # First time
-        if request.step is None:
-            args_dict[step_option_name] = 0
-            process_post_exec_wex(self.kernel, request.function, args_dict)
-            # Do not render, wait next iteration.
-            return None
-        # This is a valid execution step number.
-        elif 0 <= request.step < len(collection):
-            render_args = {}
-
-            if request.step > 0:
-                render_args = {
-                    'previous': parse_arg(
-                        self.kernel.task_file_load(
-                            'response',
-                        )
+        render_args = {}
+        if current_step > 0:
+            render_args = {
+                'previous': parse_arg(
+                    self.kernel.task_file_load(
+                        'response',
                     )
-                }
-
-                remove_file_if_exists(
-                    self.kernel.task_file_path('response')
                 )
+            }
 
-            output = collection[request.step].render(
-                args=render_args
+            remove_file_if_exists(
+                self.kernel.task_file_path('response')
             )
 
-            step_next = request.step + 1
+        output = collection[current_step].render(
+            args=render_args
+        )
 
-            if step_next <= len(collection):
-                # Store response in a file to allow next step to access it.
-                self.kernel.task_file_write(
-                    'response',
-                    str(output)
-                )
+        # If the output is a sub-collection, append a new level to step
+        if isinstance(output, ResponseCollectionResponse):
+            step_position += 1
 
-                args_dict[step_option_name] = step_next
-                process_post_exec_wex(self.kernel, request.function, args_dict)
+            # Set value at step_position, extending the list with None values if necessary
+            step_list.extend([None] * (step_position - len(step_list) + 1)) if step_position >= len(step_list) else None
 
-            return output
+            return output._render(step_list, step_position)
+
+        step_next = current_step + 1
+
+        if step_next < len(collection):
+            step_list[step_position] = step_next
+            # Store response in a file to allow next step to access it.
+            self.kernel.task_file_write(
+                'response',
+                str(output)
+            )
+
+            args_dict['command-request-step'] = '.'.join(map(str, step_list))
+            process_post_exec_wex(self.kernel, request.function, args_dict)
+
+        return output
