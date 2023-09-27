@@ -1,11 +1,11 @@
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_optional import app_dir_optional
 from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 @command(help="Update local /etc/hosts file")
 @as_sudo
-@app_location_optional
+@app_dir_optional
 def app__hosts__update(kernel: Kernel):
     hosts_path = '/etc/hosts'
 

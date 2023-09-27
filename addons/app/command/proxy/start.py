@@ -4,7 +4,7 @@ import os.path
 from addons.app.command.app.init import app__app__init
 from addons.app.command.env.get import app__env__get
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_ignore import app_dir_ignore
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_CONFIG
 from addons.app.command.app.start import app__app__start
 from src.const.error import ERR_UNEXPECTED
@@ -18,7 +18,7 @@ from src.decorator.option import option
 
 @command(help="Create and start the reverse proxy server")
 @as_sudo
-@app_location_optional
+@app_dir_ignore
 @option('--user', '-u', type=str, required=False, help="Owner of application files")
 @option('--env', '-e', type=str, required=False, help="Port for accessing apps")
 @option('--group', '-g', type=str, required=False, help="Group of application files")

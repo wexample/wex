@@ -187,6 +187,10 @@ class AppAddonManager(AddonManager):
         return get_dict_item_by_path(self.runtime_config, key, default)
 
     def command_run_pre(self, request):
+        # Skip if the command allow to be executed without app location.
+        if hasattr(request.function.callback, 'app_dir_ignore'):
+            return
+
         if request.is_click_command(app__location__find):
             return
 
@@ -208,7 +212,7 @@ class AppAddonManager(AddonManager):
                 )
 
                 # Skip if the command allow to be executed without app location.
-                if hasattr(request.function.callback, 'app_location_optional'):
+                if hasattr(request.function.callback, 'app_dir_optional'):
                     return
 
         if app_dir_resolved:
@@ -226,13 +230,12 @@ class AppAddonManager(AddonManager):
                 if dirs_differ:
                     request.storage['previous_app_dir'] = app_dir_resolved
 
-            if 'app-dir' in args_dict:
-                args_dict['app-dir'] = app_dir_resolved
+            args_dict['app-dir'] = app_dir_resolved
 
-                # Append to original apps list.
-                args_list = request.args
-                args_list.append('--app-dir')
-                args_list.append(app_dir_resolved)
+            # Append to original apps list.
+            args_list = request.args
+            args_list.append('--app-dir')
+            args_list.append(app_dir_resolved)
         else:
             import logging
 

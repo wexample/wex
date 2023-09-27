@@ -1,6 +1,6 @@
 from typing import List
 
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_optional import app_dir_optional
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -8,7 +8,7 @@ from src.helper.args import split_arg_array
 
 
 @command(help="Resolve dependencies of a service")
-@app_location_optional
+@app_dir_optional
 @option('--service', '-s', required=True,
         help="Find all service dependencies")
 def core__service__resolve(kernel: Kernel, service) -> List[str]:

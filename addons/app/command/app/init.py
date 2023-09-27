@@ -11,7 +11,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 from addons.app.command.app.start import app__app__start
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_optional import app_dir_optional
 from addons.core.command.service.resolve import core__service__resolve
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA
 from addons.app.const.app import APP_ENV_PROD
@@ -25,7 +25,7 @@ from src.decorator.alias_without_addon import alias_without_addon
 
 @command(help="Create new app and services configuration")
 @alias_without_addon()
-@app_location_optional
+@app_dir_optional
 @option('--name', '-n', type=str, required=False,
         help="Name of new app")
 @option('--git', '-g', is_flag=True, required=False, default=True,

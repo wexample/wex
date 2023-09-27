@@ -3,7 +3,7 @@ from typing import Optional
 
 from src.decorator.command import command
 from src.decorator.option import option
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_optional import app_dir_optional
 
 
 @command(help="Search for the config file in the given directory path or its parent directories.")
@@ -11,7 +11,7 @@ from addons.app.decorator.app_location_optional import app_location_optional
         help="App directory")
 @option('--recursive', '-r', type=bool, required=False, default=True,
         help="App directory")
-@app_location_optional
+@app_dir_optional
 def app__location__find(kernel, app_dir: Optional[str] = False, recursive: bool = True) -> Optional[str]:
     """Search for the config file in the given directory path or its parent directories.
     Returns the path of the directory containing the config file, or None if not found.

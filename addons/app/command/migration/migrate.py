@@ -2,7 +2,7 @@ import os
 
 from addons.default.helpers.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
-from addons.app.decorator.app_location_optional import app_location_optional
+from addons.app.decorator.app_dir_optional import app_dir_optional
 from addons.app.command.location.find import app__location__find
 from addons.app.AppAddonManager import AppAddonManager
 from addons.default.helpers.migration import version_guess, get_migrations_files, migration_exec, \
@@ -15,7 +15,7 @@ from src.core import Kernel
 
 
 @command(help="Description")
-@app_location_optional
+@app_dir_optional
 @option('--app-dir', '-a', type=str, required=False, help="App directory")
 def app__migration__migrate(kernel: Kernel, app_dir: str = None):
     if not app_dir:
