@@ -15,7 +15,6 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
-from src.decorator.response_collection import response_collection
 
 
 @command(help="Create and start the reverse proxy server")
@@ -26,14 +25,12 @@ from src.decorator.response_collection import response_collection
 @option('--group', '-g', type=str, required=False, help="Group of application files")
 @option('--port', '-p', type=int, required=False, help="Port for web server")
 @option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
-@response_collection()
 def app__proxy__start(kernel: Kernel,
                       env: str = None,
                       user: str = None,
                       group: str = None,
                       port: str = None,
-                      port_secure: str = None,
-                      response_collection_step: int = None
+                      port_secure: str = None
                       ):
     manager: AppAddonManager = kernel.addons['app']
 

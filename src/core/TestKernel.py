@@ -2,4 +2,4 @@ from src.core.Kernel import Kernel
 
 
 class TestKernel(Kernel):
-    test = True
+    allow_post_exec = False

@@ -42,7 +42,6 @@ class Kernel:
     http_server = None
     log_indent: int = 1
     indent_string = '  '
-    test = False
     current_request = None
 
     def __init__(self, entrypoint_path):
