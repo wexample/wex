@@ -46,6 +46,8 @@ class Kernel:
 
     def __init__(self, entrypoint_path):
         self.post_exec = []
+        # Use a clone to keep original command.
+        self.sys_argv = sys.argv.copy()
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -201,11 +203,11 @@ class Kernel:
         :return:
         """
         # No arg found except process id
-        if not len(sys.argv) > 2:
+        if not len(self.sys_argv) > 2:
             return
 
-        command: str = sys.argv[2]
-        command_args: [] = sys.argv[3:]
+        command: str = self.sys_argv[2]
+        command_args: [] = self.sys_argv[3:]
 
         result = self.run_command(
             command,
@@ -271,11 +273,11 @@ class Kernel:
         else:
             return None
 
-    def task_file_write(self, type: str, body: str):
+    def task_file_write(self, type: str, body: str, replace: bool = False):
         from src.helper.file import set_user_or_sudo_user_owner
         path = self.task_file_path(type)
 
-        with open(path, 'a') as f:
+        with open(path, 'w' if replace else 'a') as f:
             f.write(body)
 
             set_user_or_sudo_user_owner(path)
@@ -324,7 +326,7 @@ class Kernel:
         return None
 
     def store_task_id(self):
-        task_id = sys.argv[1] if len(sys.argv) > 1 else None
+        task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.error(
                 ERR_UNEXPECTED,
@@ -334,18 +336,19 @@ class Kernel:
             )
             sys.exit(1)
 
-        self.task_id = sys.argv[1]
+        self.task_id = self.sys_argv[1]
 
-        for i, arg in enumerate(sys.argv):
+        for i, arg in enumerate(self.sys_argv):
             # There is a redirection
-            if arg == '--kernel-task-id' and i + 1 < len(sys.argv):
-                task_id = sys.argv[i + 1]
+            if arg == '--kernel-task-id' and i + 1 < len(self.sys_argv):
+                task_id = self.sys_argv[i + 1]
 
-                del sys.argv[i:i + 2]
+                del self.sys_argv[i:i + 2]
 
                 self.task_file_write(
                     'task-redirect',
-                    task_id
+                    task_id,
+                    True
                 )
 
                 self.task_id = task_id
