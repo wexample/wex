@@ -12,6 +12,11 @@ def command(*args, **kwargs):
             f = click.pass_obj(f)
             # Apply the original click.command decorator
             f = click.command(*args, **kwargs)(f)
+
+            # Add verbosity levels
+            f = click.option('--quiet', '-quiet', is_flag=True, required=False, help="Silent all logs")(f)
+            f = click.option('--vv', '-vv', is_flag=True, required=False, help="More verbosity")(f)
+            f = click.option('--vvv', '-vvv', is_flag=True, required=False, help="Maximum verbosity")(f)
         return f
 
     return decorator

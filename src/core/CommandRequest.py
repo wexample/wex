@@ -9,14 +9,14 @@ class CommandRequest:
     path = None
 
     def __init__(self, resolver, command: str, args: dict | list = None):
-        if args is None:
-            args = []
+        args = args or []
 
         self.quiet = False
         self.resolver = resolver
         self.command = resolver.resolve_alias(self.resolver.kernel, command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
+        self.verbosity = 1
 
         self.args_dict: dict | None = None
         self.args: dict | None = None
@@ -26,9 +26,27 @@ class CommandRequest:
         else:
             self.args: list = args
 
-        self.localize()
+        self.locate_function()
 
-    def localize(self):
+        if self.function:
+            if self.args is not None:
+                self.args_dict = convert_args_to_dict(self.function, self.args)
+
+            if 'quiet' in self.args_dict:
+                del self.args_dict['quiet']
+                self.verbosity = 0
+            elif 'vv' in self.args_dict:
+                del self.args_dict['vv']
+                self.verbosity = 2
+            elif 'vvv' in self.args_dict:
+                del self.args_dict['vvv']
+                self.verbosity = 3
+
+            self.args = convert_dict_to_args(self.function, self.args_dict)
+            print(self.args_dict)
+            print(self.args)
+
+    def locate_function(self):
         # Build dynamic variables
         self.match = self.resolver.build_match(self.command)
 
@@ -39,10 +57,8 @@ class CommandRequest:
                 self.localized = True
                 self.function: callable = self.resolver.get_function_from_request(self)
 
-                if self.args is None:
-                    self.args = convert_dict_to_args(self.function, self.args_dict)
-                else:
-                    self.args_dict = convert_args_to_dict(self.function, self.args)
+                return True
+        return False
 
     def run(self):
         self.resolver.kernel.current_request = self
