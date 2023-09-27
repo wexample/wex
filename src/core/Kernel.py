@@ -227,8 +227,7 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.render_response(
-            request.run())
+        return self.run_request(request)
 
     def run_function(self, function, args: dict | list = None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
         resolver = self.get_command_resolver(type)
@@ -240,10 +239,11 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.render_response(
-            request.run())
+        return self.run_request(request)
 
-    def render_response(self, response):
+    def run_request(self, request):
+        response = request.run()
+
         output = response.render(KERNEL_RENDER_MODE_CLI)
 
         # Store command to execute after kernel execution,
