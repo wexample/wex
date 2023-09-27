@@ -1,13 +1,11 @@
 from src.core.response.ShellCommandResponse import ShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
-from src.decorator.response_collection import response_collection
 from src.core import Kernel
 
 
 @test_command()
-@response_collection()
-def test__demo_command__response_collection(kernel: Kernel, response_collection_step: int = None):
+def test__demo_command__response_collection(kernel: Kernel):
     def _test__demo_command__response_collection_one(previous: int):
         return 'one'
 

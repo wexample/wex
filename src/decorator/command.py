@@ -19,8 +19,10 @@ def command(*args, **kwargs):
             f = click.option('--vvv', '-vvv', is_flag=True, required=False, help="Maximum verbosity")(f)
 
             # Step position control
-            f = click.option('--command-request-step', '-command-request-step', is_flag=True, required=False, help="Core option for proccesses collection execution")(f)
-            f = click.option('--kernel-task-id', '-kernel-task-id', is_flag=True, required=False, help="Core option for proccesses collection execution")(f)
+            f = click.option('--command-request-step', '-command-request-step', type=str, required=False,
+                             help="Core option for processes collection execution")(f)
+            f = click.option('--kernel-task-id', '-kernel-task-id', type=str, required=False,
+                             help="Core option for processes collection execution")(f)
         return f
 
     return decorator

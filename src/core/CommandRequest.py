@@ -36,6 +36,7 @@ class CommandRequest:
 
             # Remove core args.
             if 'command-request-step' in self.args_dict:
+                self.step = int(self.args_dict['command-request-step'])
                 del self.args_dict['command-request-step']
             if 'kernel-task-id' in self.args_dict:
                 del self.args_dict['kernel-task-id']

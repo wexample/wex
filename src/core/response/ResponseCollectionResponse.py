@@ -27,37 +27,26 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
         request = self.kernel.current_request
-        step_argument_name = 'response_collection_step'
-        step_option_name = to_kebab_case(step_argument_name)
-
-        if not hasattr(request.function.callback, 'response_collection'):
-            self.error(f'but has no @response_collection decorator')
-
-        sig = inspect.signature(request.function.callback)
-        if step_argument_name not in sig.parameters:
-            param = sig.parameters[step_argument_name]
-            if param.annotation == bool:
-                self.error(f'but has no response_collection_step:bool function argument')
+        step_option_name = 'command-request-step'
 
         # Wrap responses
         collection = []
         for item in self.collection:
             collection.append(request.resolver.wrap_response(item))
 
-        step = int(request.args_dict[step_option_name]) if step_option_name in request.args_dict else None
         args_dict = request.args_dict.copy()
 
         # First time
-        if step is None:
+        if request.step is None:
             args_dict[step_option_name] = 0
             process_post_exec_wex(self.kernel, request.function, args_dict)
             # Do not render, wait next iteration.
             return None
         # This is a valid execution step number.
-        elif 0 <= step < len(collection):
+        elif 0 <= request.step < len(collection):
             render_args = {}
 
-            if step > 0:
+            if request.step > 0:
                 render_args = {
                     'previous': parse_arg(
                         self.kernel.task_file_load(
@@ -70,11 +59,11 @@ class ResponseCollectionResponse(AbstractResponse):
                     self.kernel.task_file_path('response')
                 )
 
-            output = collection[step].render(
+            output = collection[request.step].render(
                 args=render_args
             )
 
-            step_next = step + 1
+            step_next = request.step + 1
 
             if step_next <= len(collection):
                 # Store response in a file to allow next step to access it.
