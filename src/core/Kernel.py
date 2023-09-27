@@ -343,8 +343,6 @@ class Kernel:
             if arg == '--kernel-task-id' and i + 1 < len(self.sys_argv):
                 task_id = self.sys_argv[i + 1]
 
-                del self.sys_argv[i:i + 2]
-
                 self.task_file_write(
                     'task-redirect',
                     task_id,

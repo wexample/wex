@@ -17,6 +17,8 @@ class CommandRequest:
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
         self.verbosity = 1
+        # For multiple steps commands like response collections
+        self.step = 0
 
         self.args_dict: dict | None = None
         self.args: dict | None = None
@@ -31,6 +33,12 @@ class CommandRequest:
         if self.function:
             if self.args is not None:
                 self.args_dict = convert_args_to_dict(self.function, self.args)
+
+            # Remove core args.
+            if 'command-request-step' in self.args_dict:
+                del self.args_dict['command-request-step']
+            if 'kernel-task-id' in self.args_dict:
+                del self.args_dict['kernel-task-id']
 
             if 'quiet' in self.args_dict:
                 del self.args_dict['quiet']

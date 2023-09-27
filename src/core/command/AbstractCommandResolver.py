@@ -62,6 +62,9 @@ class AbstractCommandResolver:
                 }
             )
 
+        # Override default params
+        ctx.params = request.args_dict
+
         ctx.obj = self.kernel
 
         response = self.wrap_response(
