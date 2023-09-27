@@ -11,7 +11,7 @@ class FunctionResponse(AbstractResponse):
     def render(self,
                render_mode: str = KERNEL_RENDER_MODE_CLI,
                args: dict = None
-               ) -> str | int | bool | None:
+               ):
         if args is None:
             args = {}
 

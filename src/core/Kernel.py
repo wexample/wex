@@ -36,6 +36,7 @@ ADDONS_DEFINITIONS = {
 
 
 class Kernel:
+    allow_post_exec = True
     messages = None
     task_id: str = None
     registry: dict[str, Optional[str]] = {}
@@ -217,6 +218,17 @@ class Kernel:
             command_args
         )
 
+        # Store command to execute after kernel execution,
+        # it should be set at the last moment,
+        # to avoid execution if any error happened before
+        for command in self.post_exec:
+            from src.helper.command import command_to_string
+
+            self.task_file_write(
+                'post-exec',
+                command_to_string(command) + '\n',
+            )
+
         if result is not None:
             self.print(result)
 
@@ -248,17 +260,6 @@ class Kernel:
         response = request.run()
 
         output = response.render(KERNEL_RENDER_MODE_CLI)
-
-        # Store command to execute after kernel execution,
-        # it should be set at the last moment,
-        # to avoid execution if any error happened before
-        for command in self.post_exec:
-            from src.helper.command import command_to_string
-
-            self.task_file_write(
-                'post-exec',
-                command_to_string(command) + '\n',
-            )
 
         return output
 
