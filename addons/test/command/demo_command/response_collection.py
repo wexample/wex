@@ -2,12 +2,14 @@ from src.core.response.ShellCommandResponse import ShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
+from addons.test.command.demo_command.response_collection_two import test__demo_command__response_collection_two
 
+TEST_DEMO_COMMAND_RESULT_ONE = 'one'
 
 @test_command()
 def test__demo_command__response_collection(kernel: Kernel):
     def _test__demo_command__response_collection_one(previous: int):
-        return 'one'
+        return TEST_DEMO_COMMAND_RESULT_ONE
 
     def _test__demo_command__response_collection_two(previous: str):
         return {
