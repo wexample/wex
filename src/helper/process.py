@@ -1,5 +1,5 @@
 from src.helper.command import command_to_string
-from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.helper.args import convert_dict_to_args
 
 
@@ -19,6 +19,13 @@ def process_post_exec_wex(kernel, function: callable, args: dict = {}, is_async=
                    '--kernel-task-id',
                    kernel.task_id
                ])
+
+    if kernel.current_request.verbosity == VERBOSITY_LEVEL_QUIET:
+        command += ['--quiet']
+    elif kernel.current_request.verbosity == VERBOSITY_LEVEL_MEDIUM:
+        command += ['--vv']
+    elif kernel.current_request.verbosity == VERBOSITY_LEVEL_MAXIMUM:
+        command += ['--vvv']
 
     if is_async:
         command.insert(0, 'nohup')

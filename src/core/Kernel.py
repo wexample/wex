@@ -14,7 +14,8 @@ from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI
+    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
+    VERBOSITY_LEVEL_DEFAULT
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.AddonCommandResolver import AddonCommandResolver
 from src.core.command.AppCommandResolver import AppCommandResolver
@@ -156,7 +157,10 @@ class Kernel:
     def build_indent(self, increment: int = 0) -> str:
         return self.indent_string * (self.log_indent + increment)
 
-    def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
+    def log(self, message: str, color=COLOR_GRAY, increment: int = 0, verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
+        if self.current_request and verbosity > self.current_request.verbosity:
+            return
+
         self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
 
     def print(self, message):

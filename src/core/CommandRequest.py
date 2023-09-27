@@ -18,7 +18,7 @@ class CommandRequest:
         self.storage = {}  # Useful to store data about the current command execution
         self.verbosity = 1
         # For multiple steps commands like response collections
-        self.step = 0
+        self.step = None
 
         self.args_dict: dict | None = None
         self.args: dict | None = None
@@ -34,26 +34,27 @@ class CommandRequest:
             if self.args is not None:
                 self.args_dict = convert_args_to_dict(self.function, self.args)
 
-            # Remove core args.
             if 'command-request-step' in self.args_dict:
                 self.step = int(self.args_dict['command-request-step'])
-                del self.args_dict['command-request-step']
-            if 'kernel-task-id' in self.args_dict:
-                del self.args_dict['kernel-task-id']
 
             if 'quiet' in self.args_dict:
-                del self.args_dict['quiet']
                 self.verbosity = 0
             elif 'vv' in self.args_dict:
-                del self.args_dict['vv']
                 self.verbosity = 2
             elif 'vvv' in self.args_dict:
-                del self.args_dict['vvv']
                 self.verbosity = 3
 
+            for name in [
+                'command-request-step',
+                'kernel-task-id',
+                'quiet',
+                'vv',
+                'vvv',
+            ]:
+                if name in self.args_dict:
+                    del self.args_dict[name]
+
             self.args = convert_dict_to_args(self.function, self.args_dict)
-            print(self.args_dict)
-            print(self.args)
 
     def locate_function(self):
         # Build dynamic variables
