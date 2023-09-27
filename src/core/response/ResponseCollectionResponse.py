@@ -1,8 +1,5 @@
-import inspect
-
 from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
-from src.helper.string import to_kebab_case
 from src.helper.process import process_post_exec_wex
 from src.const.error import ERR_UNEXPECTED
 from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_COMMAND
@@ -33,18 +30,16 @@ class ResponseCollectionResponse(AbstractResponse):
 
         return self._render(step_split, 0)
 
-    def _render(self, step_list, step_position: int | None):
+    def _render(self, step_list, step_position: int | None, output_bag: list = None):
+        output_bag = output_bag if output_bag is not None else []
+
         request = self.kernel.current_request
-        args_dict = request.args_dict.copy()
         current_step = step_list[step_position]
 
         # First time, do not execute, wait next iteration.
         if current_step is None:
-            step_list[step_position] = 0
-            self.enqueue_next_step(step_list)
-
-            # Do not render, wait next iteration.
-            return None
+            self.enqueue_next_step(step_list, step_position, 0, output_bag)
+            return None if self.kernel.allow_post_exec else output_bag
 
         # Wrap responses
         collection = []
@@ -69,6 +64,8 @@ class ResponseCollectionResponse(AbstractResponse):
             args=render_args
         )
 
+        output_bag.append(output)
+
         # If the output is a sub-collection, append a new level to step
         if isinstance(output, ResponseCollectionResponse):
             step_position += 1
@@ -76,7 +73,9 @@ class ResponseCollectionResponse(AbstractResponse):
             # Set value at step_position, extending the list with None values if necessary
             step_list.extend([None] * (step_position - len(step_list) + 1)) if step_position >= len(step_list) else None
 
-            return output._render(step_list, step_position)
+            sub_render = output._render(step_list, step_position, output_bag)
+
+            return sub_render if self.kernel.allow_post_exec else output_bag
 
         step_next = current_step + 1
 
@@ -87,14 +86,19 @@ class ResponseCollectionResponse(AbstractResponse):
                 str(output)
             )
 
-            step_list[step_position] = step_next
-            self.enqueue_next_step(step_list)
+            self.enqueue_next_step(step_list, step_position, step_next, output_bag)
 
-        return output
+        return output if self.kernel.allow_post_exec else output_bag
 
-    def enqueue_next_step(self, step_list):
-        request = self.kernel.current_request
-        args_dict = request.args_dict.copy()
+    def enqueue_next_step(self, step_list, step_position, step_next, output_bag: list):
+        step_list[step_position] = step_next
 
-        args_dict['command-request-step'] = '.'.join(map(str, step_list))
-        process_post_exec_wex(self.kernel, request.function, args_dict)
+        if self.kernel.allow_post_exec:
+            request = self.kernel.current_request
+            args_dict = request.args_dict.copy()
+
+            args_dict['command-request-step'] = '.'.join(map(str, step_list))
+            process_post_exec_wex(self.kernel, request.function, args_dict)
+        else:
+            # Run now.
+            self._render(step_list, step_position, output_bag)
