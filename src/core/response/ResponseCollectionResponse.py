@@ -6,6 +6,8 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class ResponseCollectionResponse(AbstractResponse):
+    previous_render_output = None
+
     def __init__(self, kernel, collection: list):
         super().__init__(kernel)
         self.collection = collection
@@ -33,23 +35,31 @@ class ResponseCollectionResponse(AbstractResponse):
 
         render_args = {}
         if current_step > 0:
-            render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
-            remove_file_if_exists(self.kernel.task_file_path('response'))
+            if self.kernel.allow_post_exec:
+                render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
+                remove_file_if_exists(self.kernel.task_file_path('response'))
+            else:
+                render_args = {'previous': self.previous_render_output}
 
-        output = collection[current_step].render(args=render_args)
-        output_bag.append(output)
+        self.previous_render_output = output = collection[current_step].render(args=render_args)
 
         # Handle nested collection response
         if isinstance(output, ResponseCollectionResponse):
             step_position += 1
             step_list += [None] * (step_position + 1 - len(step_list))
-            return output._render(step_list, step_position, output_bag) if self.kernel.allow_post_exec else output_bag
+            result = output._render(step_list, step_position, output_bag)
+
+            return result if self.kernel.allow_post_exec else output_bag
+        else:
+            output_bag.append(output)
 
         step_next = current_step + 1
 
         if step_next < len(collection):
-            # Store response in a file to allow next step to access it.
-            self.kernel.task_file_write('response', str(output))
+            if self.kernel.allow_post_exec:
+                # Store response in a file to allow next step to access it.
+                self.kernel.task_file_write('response', str(output))
+
             self.enqueue_next_step(step_list, step_position, step_next, output_bag)
 
         return output if self.kernel.allow_post_exec else output_bag
