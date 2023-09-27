@@ -1,8 +1,7 @@
 from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
 from src.helper.process import process_post_exec_wex
-from src.const.error import ERR_UNEXPECTED
-from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_COMMAND
+from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -11,16 +10,6 @@ class ResponseCollectionResponse(AbstractResponse):
         super().__init__(kernel)
 
         self.collection = collection
-
-    def error(self, message_end):
-        request = self.kernel.current_request
-
-        self.kernel.error(
-            ERR_UNEXPECTED,
-            {
-                'error': f'Command "{request.command}" returns a {str(type(self))} response, {message_end}'
-            }
-        )
 
     def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
         request = self.kernel.current_request
