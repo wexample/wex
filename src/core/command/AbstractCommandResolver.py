@@ -38,6 +38,7 @@ class AbstractCommandResolver:
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
+            # Uses the original argv argument to ignore any changes on it.
             os.execvp('sudo', ['sudo'] + sys.argv)
 
         middleware_args = {

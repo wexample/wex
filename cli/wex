@@ -27,7 +27,7 @@ python3 "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
 
 TMP_TASK_DIR="${WEX_ROOT}tmp/task/"
 
-# Process found a --kernel-task-id which is redirecting to a give task id
+# Process found a --kernel-task-id which is redirecting to a given task id
 WEX_TASK_REDIRECT="${TMP_TASK_DIR}${WEX_TASK_ID}.task-redirect"
 if [ -f "${WEX_TASK_REDIRECT}" ]; then
   WEX_TASK_ID=$(cat "${WEX_TASK_REDIRECT}")
