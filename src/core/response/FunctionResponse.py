@@ -16,6 +16,5 @@ class FunctionResponse(AbstractResponse):
             args = {}
 
         return self.function(
-            self.kernel,
             **args
         )

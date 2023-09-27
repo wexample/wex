@@ -14,6 +14,8 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.decorator.response_collection import response_collection
 
 
 @command(help="Create and start the reverse proxy server")
@@ -24,83 +26,100 @@ from src.decorator.option import option
 @option('--group', '-g', type=str, required=False, help="Group of application files")
 @option('--port', '-p', type=int, required=False, help="Port for web server")
 @option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
+@response_collection()
 def app__proxy__start(kernel: Kernel,
                       env: str = None,
                       user: str = None,
                       group: str = None,
                       port: str = None,
-                      port_secure: str = None):
+                      port_secure: str = None,
+                      response_collection_step: int = None
+                      ):
     manager: AppAddonManager = kernel.addons['app']
 
-    current_dir = os.getcwd()
+    def _app__proxy__start__create():
+        # Created
+        if manager.is_app_root(manager.proxy_path):
+            if os.path.exists(APP_FILEPATH_REL_CONFIG):
+                # Started
+                if kernel.run_function(app__app__started, {
+                    'app-dir': manager.proxy_path,
+                    'check-mode': APP_STARTED_CHECK_MODE_CONFIG
+                }):
+                    return
+        else:
+            kernel.log(f'Creating proxy dir {manager.proxy_path}')
+            os.makedirs(
+                manager.proxy_path,
+                exist_ok=True
+            )
 
-    # Created
-    if manager.is_app_root(manager.proxy_path):
-        if os.path.exists(APP_FILEPATH_REL_CONFIG):
-            # Started
-            if kernel.run_function(app__app__started, {
-                'app-dir': manager.proxy_path,
-                'check-mode': APP_STARTED_CHECK_MODE_CONFIG
-            }):
-                return
-    else:
-        kernel.log(f'Creating proxy dir {manager.proxy_path}')
-        os.makedirs(
-            manager.proxy_path,
-            exist_ok=True
+            kernel.run_function(
+                app__app__init,
+                {
+                    'app-dir': manager.proxy_path,
+                    'services': ['proxy'],
+                    'git': False
+                }
+            )
+
+    def _app__proxy__start__checkup(previous):
+        nonlocal user
+        current_dir = os.getcwd()
+
+        manager.set_app_workdir(manager.proxy_path)
+
+        user = user or getpass.getuser()
+
+        def check_port(port_to_check: int):
+            if not port_to_check:
+                kernel.error(
+                    ERR_UNEXPECTED,
+                    {
+                        'error': f"Invalid port {port_to_check}"
+                    }
+                )
+
+            manager.log(f'Checking that port {port_to_check} is free')
+
+            # Check port availability.
+            process = get_processes_by_port(port_to_check)
+            if process:
+                kernel.error(
+                    ERR_UNEXPECTED,
+                    {
+                        'error': f"Process {process.pid} ({process.name()}) is using port {port_to_check}"
+                    }
+                )
+
+        check_port(
+            manager.get_config('global.port_public')
+        )
+        check_port(
+            manager.get_config('global.port_public_secure')
         )
 
-        kernel.run_function(
-            app__app__init,
+        manager.unset_app_workdir(current_dir)
+
+    def _app__proxy__start__start(previous):
+        return kernel.run_function(
+            app__app__start,
             {
                 'app-dir': manager.proxy_path,
-                'services': ['proxy'],
-                'git': False
+                # If no env, use the global wex env.
+                'env': env or kernel.run_function(
+                    app__env__get,
+                    {
+                        'app-dir': kernel.path['root']
+                    }
+                ),
+                'user': user,
+                'group': group,
             }
         )
 
-    manager: AppAddonManager = kernel.addons['app']
-    manager.set_app_workdir(manager.proxy_path)
-
-    user = user or getpass.getuser()
-
-    def check_port(port_to_check: int):
-        if not port_to_check:
-            kernel.error(
-                ERR_UNEXPECTED,
-                {
-                    'error': f"Invalid port {port_to_check}"
-                }
-            )
-
-        manager.log(f'Checking that port {port_to_check} is free')
-
-        # Check port availability.
-        process = get_processes_by_port(port_to_check)
-        if process:
-            kernel.error(
-                ERR_UNEXPECTED,
-                {
-                    'error': f"Process {process.pid} ({process.name()}) is using port {port_to_check}"
-                }
-            )
-
-    check_port(
-        manager.get_config('global.port_public')
-    )
-    check_port(
-        manager.get_config('global.port_public_secure')
-    )
-
-    manager.unset_app_workdir(current_dir)
-
-    kernel.run_function(
-        app__app__start,
-        {
-            'app-dir': manager.proxy_path,
-            # If no env, use the global wex env.
-            'env': env or app__env__get.callback(app_dir=kernel.path['root']),
-            'user': user,
-            'group': group,
-        }
-    )
+    return ResponseCollectionResponse(kernel, [
+        _app__proxy__start__create,
+        _app__proxy__start__checkup,
+        _app__proxy__start__start,
+    ])
