@@ -61,7 +61,7 @@ def __core__core__install_terminal(kernel):
         }
     )
 
-    __source_file_for_docker(kernel, script_path)
+    __source_file(kernel, script_path)
 
 
 def __core__core__install_autocomplete(kernel):
@@ -77,7 +77,7 @@ def __core__core__install_autocomplete(kernel):
         }
     )
 
-    __source_file_for_docker(kernel, script_path)
+    __source_file(kernel, script_path)
 
 
 def __core__core__install_symlink(kernel, destination: str):
@@ -105,11 +105,8 @@ def __core__core__install_webhook_server(kernel):
     )
 
 
-def __source_file_for_docker(kernel, file_path):
-    if not kernel.run_function(system__system__is_docker):
-        return
-
-    kernel.log(f'Installing Docker container specific setup ...')
+def __source_file(kernel, file_path):
+    kernel.log(f'Sourcing file {file_path} in bashrc ...')
 
     # If sudo has a parent user.
     sudo_user = get_sudo_username()

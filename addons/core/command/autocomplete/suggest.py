@@ -13,6 +13,7 @@ def core__autocomplete__suggest(kernel: Kernel, cursor: int, search: str) -> str
     Returns a string with suggestions to transmit to bash compgen.
     """
     search_split = search.split(' ')
+    cursor = int(cursor)
 
     # Mismatch between parts and cursor index.
     if cursor > len(search_split):
