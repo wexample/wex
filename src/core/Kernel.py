@@ -8,6 +8,7 @@ from typing import Optional
 from yaml import SafeLoader
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
@@ -238,6 +239,9 @@ class Kernel:
                 'post-exec',
                 command_to_string(command) + '\n',
             )
+
+        if isinstance(result, AbstractResponse):
+            result = result.print()
 
         if result is not None:
             self.print(result)
