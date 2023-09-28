@@ -106,6 +106,13 @@ class Kernel:
             }
         )
 
+    def trace(self):
+        import traceback
+
+        for line in traceback.format_stack():
+            self.print(line.strip())
+        exit(1)
+
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation
         from src.helper.string import format_ignore_missing
@@ -368,14 +375,26 @@ class Kernel:
 
     def handle_core_args(self):
         new_sys_argv = []
+        skip_next = False
 
-        for arg in self.sys_argv:
+        for i, arg in enumerate(self.sys_argv):
+            if skip_next:
+                skip_next = False
+                continue
+
             if arg in ('-quiet', '--quiet'):
                 self.verbosity = VERBOSITY_LEVEL_QUIET
             elif arg in ('-vv', '--vv'):
                 self.verbosity = VERBOSITY_LEVEL_MEDIUM
             elif arg in ('-vvv', '--vvv'):
                 self.verbosity = VERBOSITY_LEVEL_MAXIMUM
+            elif arg in ('-log-indent', '--log-indent'):
+                try:
+                    next_value = self.sys_argv[i + 1]
+                    self.log_indent = int(next_value)
+                    skip_next = True
+                except (IndexError, ValueError):
+                    pass
             else:
                 new_sys_argv.append(arg)
 
