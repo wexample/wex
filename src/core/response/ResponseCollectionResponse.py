@@ -26,10 +26,11 @@ class ResponseCollectionResponse(AbstractResponse):
         request = self.kernel.current_request
         current_step = step_list[step_position]
 
+        # Collection is empty, nothing to do
         if not len(self.collection):
             return output
 
-        # First time, do not execute, wait next iteration.
+        # First time, do not execute, wait next iteration
         if current_step is None:
             self.enqueue_next_step(step_list, step_position, 0, output_bag)
             return self if self.kernel.allow_post_exec else output_bag
@@ -37,6 +38,7 @@ class ResponseCollectionResponse(AbstractResponse):
         # Wrap responses
         collection = [request.resolver.wrap_response(item) for item in self.collection]
 
+        # Prepare args
         render_args = {}
         if current_step > 0:
             if self.kernel.allow_post_exec:
@@ -44,6 +46,8 @@ class ResponseCollectionResponse(AbstractResponse):
                 remove_file_if_exists(self.kernel.task_file_path('response'))
             else:
                 render_args = {'previous': self.previous_render_output}
+
+        collection[current_step].parent = self
 
         self.previous_render_output = output = collection[current_step].render(args=render_args)
 
