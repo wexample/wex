@@ -18,6 +18,16 @@ def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str
         return list(arg)
 
 
+def convert_args_to_long_names_dict(function, args: dict):
+    return convert_dict_to_long_names_dict(
+        function,
+        convert_args_to_dict(
+            function,
+            args
+        )
+    )
+
+
 def convert_dict_to_long_names_dict(function, args: dict):
     short_names = {}
     for param in function.params:

@@ -15,13 +15,14 @@ from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
 from src.const.globals import \
     FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
-    VERBOSITY_LEVEL_DEFAULT
+    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.AddonCommandResolver import AddonCommandResolver
 from src.core.command.AppCommandResolver import AppCommandResolver
 from src.core.command.ServiceCommandResolver import ServiceCommandResolver
 from src.core.command.UserCommandResolver import UserCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
+from src.core.response.AbstractResponse import AbstractResponse
 
 PROCESSOR_CLASSES = [
     AddonCommandResolver,
@@ -44,6 +45,7 @@ class Kernel:
     log_indent: int = 1
     indent_string = '  '
     current_request = None
+    verbosity = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path):
         self.post_exec = []
@@ -76,6 +78,7 @@ class Kernel:
             self.addons[name] = definition(self, name)
 
         self.store_task_id()
+        self.handle_core_args()
 
         # Create the logger after task_id created.
         self.logger = Logger(self)
@@ -158,7 +161,7 @@ class Kernel:
         return self.indent_string * (self.log_indent + increment)
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0, verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
-        if self.current_request and verbosity > self.current_request.verbosity:
+        if verbosity > self.verbosity:
             return
 
         self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
@@ -359,3 +362,18 @@ class Kernel:
                 remove_file_if_exists(
                     self.task_file_path('post-exec')
                 )
+
+    def handle_core_args(self):
+        new_sys_argv = []
+
+        for arg in self.sys_argv:
+            if arg in ('-quiet', '--quiet'):
+                self.verbosity = VERBOSITY_LEVEL_QUIET
+            elif arg in ('-vv', '--vv'):
+                self.verbosity = VERBOSITY_LEVEL_MEDIUM
+            elif arg in ('-vvv', '--vvv'):
+                self.verbosity = VERBOSITY_LEVEL_MAXIMUM
+            else:
+                new_sys_argv.append(arg)
+
+        self.sys_argv = new_sys_argv

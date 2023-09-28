@@ -77,9 +77,6 @@ class Logger:
     def write(self):
         from src.helper.file import set_user_or_sudo_user_owner
 
-        # print(self.output_path)
-        # exit(1)
-
         with open(self.output_path, 'w') as f:
             json.dump(self.log_data, f, indent=4)
             set_user_or_sudo_user_owner(self.output_path)
