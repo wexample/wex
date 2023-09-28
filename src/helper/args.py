@@ -4,7 +4,7 @@ import click
 from typing import Iterable, Union, List
 from click.types import BoolParamType
 
-from src.helper.string import to_kebab_case
+from src.helper.string import to_kebab_case, to_snake_case
 
 
 def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str]:
@@ -47,24 +47,31 @@ def convert_dict_to_long_names_dict(function, args: dict):
     return args_long
 
 
+def convert_dict_to_snake_dict(dict: dict):
+    return {to_snake_case(key): value for key, value in dict.items()}
+
+
 def convert_dict_to_args(function, args: dict):
     """
-    Convert args {"arg": "value"} to list ["--arg", "value"].
+    Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
     Any key in `args` that is not found in `function.params` is added to the
     argument list as a key-value pair.
     """
     arg_list = []
     args_long = convert_dict_to_long_names_dict(function, args)
+    args_long = convert_dict_to_snake_dict(args_long)
 
     for param in function.params:
         if param.name in args_long:
             if isinstance(param, click.Option):
+                param_name_kebab = to_kebab_case(param.name)
+
                 if param.is_flag:
                     if args_long[param.name]:
-                        arg_list.append(f'--{param.name}')
+                        arg_list.append(f'--{param_name_kebab}')
                     # Flag passed to False is just removed
                 elif args_long[param.name] is not None:
-                    arg_list.append(f'--{param.name}')
+                    arg_list.append(f'--{param_name_kebab}')
                     value = args_long[param.name]
                     if not isinstance(args_long[param.name], bool):
                         value = str(value)

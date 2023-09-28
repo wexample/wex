@@ -10,7 +10,7 @@ from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
-from src.helper.args import convert_dict_to_args
+from src.helper.args import convert_dict_to_args, convert_dict_to_snake_dict
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
@@ -63,7 +63,8 @@ class AbstractCommandResolver:
             )
 
         # Override default params
-        ctx.params = request.args_dict
+        # With reworked version removing core params : verbosity, task id, ...
+        ctx.params = convert_dict_to_snake_dict(request.args_dict)
 
         ctx.obj = self.kernel
 

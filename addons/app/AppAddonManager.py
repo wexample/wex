@@ -202,7 +202,7 @@ class AppAddonManager(AddonManager):
             if 'app-dir' in args_dict:
                 app_dir_resolved = args_dict['app-dir']
             else:
-                app_dir = os.getcwd()
+                app_dir = os.getcwd() + os.sep
 
                 app_dir_resolved = self.kernel.run_function(
                     app__location__find,
