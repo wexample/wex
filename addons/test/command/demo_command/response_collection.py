@@ -23,12 +23,37 @@ def test__demo_command__response_collection(kernel: Kernel):
             'length': len(previous)
         }
 
+    def _test__demo_command__response_collection_deeper(previous):
+        def _test__demo_command__response_collection_deeper_two(previous):
+            return {
+                'ls': previous
+            }
+
+        return ResponseCollectionResponse(kernel, [
+            'sub-collection-free-text',
+            456,
+            # Will be converted to FunctionResponse
+            _test__demo_command__response_collection_one,
+            ShellCommandResponse(kernel, ['ls']),
+            _test__demo_command__response_collection_deeper_two
+        ])
+
+    def _test__demo_command__response_collection_run_another_collection(previous: dict = None):
+        print('             Là je suis dans la fonction qui retourne un sous-collection, en théorie')
+        return kernel.run_function(
+            test__demo_command__response_collection_two,
+        )
+
     return ResponseCollectionResponse(kernel, [
         'free-text',
+        'free-text-2',
         123,
         # Will be converted to FunctionResponse
         _test__demo_command__response_collection_one,
         _test__demo_command__response_collection_two,
         _test__demo_command__response_collection_three,
-        ShellCommandResponse(kernel, ['ls', '-la'])
+        ShellCommandResponse(kernel, ['ls', '-la']),
+        _test__demo_command__response_collection_deeper,
+        _test__demo_command__response_collection_run_another_collection,
+        'last-text'
     ])
