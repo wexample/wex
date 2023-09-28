@@ -1,4 +1,6 @@
 from abc import abstractmethod
+
+from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 
 
@@ -15,5 +17,9 @@ class AbstractResponse:
         return self
 
     @abstractmethod
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args: dict = None) -> str | int | bool | None:
+    def render(
+            self,
+            request: CommandRequest,
+            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            args: dict = None):
         pass

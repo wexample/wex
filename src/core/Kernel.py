@@ -39,7 +39,7 @@ ADDONS_DEFINITIONS = {
 class Kernel:
     allow_post_exec = True
     messages = None
-    task_id: str = None
+    task_id: str | None = None
     registry: dict[str, Optional[str]] = {}
     http_server = None
     log_indent: int = 1
@@ -127,7 +127,7 @@ class Kernel:
             parameters
         )
 
-    def error(self, code: str, parameters: object = {}, log_level: int = None) -> None:
+    def error(self, code: str, parameters: object = {}, log_level: int | None = None) -> None:
         # Performance optimisation
         import logging
         from src.const.error import COLORS
@@ -169,7 +169,7 @@ class Kernel:
     def print(self, message):
         print(message)
 
-    def message(self, message: str, text: str = None):
+    def message(self, message: str, text: None | str = None):
         import textwrap
 
         message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
@@ -232,6 +232,11 @@ class Kernel:
                 command_to_string(command) + '\n',
             )
 
+        if isinstance(result, AbstractResponse):
+            # If response has not been rendered
+            # do not return class object.
+            return
+
         if result is not None:
             self.print(result)
 
@@ -262,9 +267,7 @@ class Kernel:
     def run_request(self, request):
         response = request.run()
 
-        output = response.render(KERNEL_RENDER_MODE_CLI)
-
-        return output
+        return response.render(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.path['tmp'], 'task')

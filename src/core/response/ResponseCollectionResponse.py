@@ -1,3 +1,4 @@
+from src.core.CommandRequest import CommandRequest
 from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
 from src.helper.process import process_post_exec_wex
@@ -11,9 +12,13 @@ class ResponseCollectionResponse(AbstractResponse):
     def __init__(self, kernel, collection: list):
         super().__init__(kernel)
         self.collection = collection
+        self.request = None
 
-    def render(self, render_mode: str = KERNEL_RENDER_MODE_CLI, args={}) -> str | int | bool | None:
-        request = self.kernel.current_request
+    def render(self,
+               request: CommandRequest,
+               render_mode: str = KERNEL_RENDER_MODE_CLI,
+               args={}):
+        self.request = request
 
         # Convert step to a list of integers
         step_split = list(map(int, request.step.split('.'))) if request.step else [None]
@@ -23,7 +28,6 @@ class ResponseCollectionResponse(AbstractResponse):
     def _render(self, step_list, step_position: int | None, output_bag: list = None):
         output_bag = output_bag if output_bag is not None else []
         output = None
-        request = self.kernel.current_request
         current_step = step_list[step_position]
 
         # Collection is empty, nothing to do
@@ -36,7 +40,7 @@ class ResponseCollectionResponse(AbstractResponse):
             return self if self.kernel.allow_post_exec else output_bag
 
         # Wrap responses
-        collection = [request.resolver.wrap_response(item) for item in self.collection]
+        collection = [self.request.resolver.wrap_response(item) for item in self.collection]
 
         # Prepare args
         render_args = {}
@@ -49,7 +53,10 @@ class ResponseCollectionResponse(AbstractResponse):
 
         collection[current_step].parent = self
 
-        self.previous_render_output = output = collection[current_step].render(args=render_args)
+        self.previous_render_output = output = collection[current_step].render(
+            request=self.request,
+            args=render_args
+        )
 
         # Handle nested collection response
         if isinstance(output, ResponseCollectionResponse):
@@ -75,10 +82,22 @@ class ResponseCollectionResponse(AbstractResponse):
     def enqueue_next_step(self, step_list, step_position, step_next, output_bag: list):
         step_list[step_position] = step_next
 
-        if self.kernel.allow_post_exec:
-            args_dict = self.kernel.current_request.args_dict.copy()
+        if self.parent:
+            root = self.get_root_parent()
+            root.enqueue_next_step(
+                step_list,
+                step_position,
+                step_next,
+                output_bag
+            )
+        elif self.kernel.allow_post_exec:
+            args_dict = self.request.args_dict.copy()
             args_dict['command-request-step'] = '.'.join(map(str, step_list))
-            process_post_exec_wex(self.kernel, self.kernel.current_request.function, args_dict)
+            process_post_exec_wex(
+                self.kernel,
+                self.request.function,
+                args_dict
+            )
         else:
             # Run now.
             self._render(step_list, step_position, output_bag)
