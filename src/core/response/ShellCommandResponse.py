@@ -18,9 +18,11 @@ class ShellCommandResponse(AbstractResponse):
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None):
         if self.kernel.allow_post_exec:
-            return process_post_exec(
+            process_post_exec(
                 self.kernel,
                 self.shell_command
             )
         else:
-            return subprocess.run(self.shell_command, capture_output=True).stdout.decode('utf-8')
+            subprocess.run(self.shell_command, capture_output=True).stdout.decode('utf-8')
+
+        return self

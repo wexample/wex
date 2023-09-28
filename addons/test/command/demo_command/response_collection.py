@@ -6,6 +6,7 @@ from addons.test.command.demo_command.response_collection_two import test__demo_
 
 TEST_DEMO_COMMAND_RESULT_ONE = 'one'
 
+
 @test_command()
 def test__demo_command__response_collection(kernel: Kernel):
     def _test__demo_command__response_collection_one(previous: int):
@@ -45,14 +46,15 @@ def test__demo_command__response_collection(kernel: Kernel):
 
     return ResponseCollectionResponse(kernel, [
         'free-text',
-        # 'free-text-2',
-        # 123,
-        # # Will be converted to FunctionResponse
-        # _test__demo_command__response_collection_one,
-        # _test__demo_command__response_collection_two,
-        # _test__demo_command__response_collection_three,
-        # ShellCommandResponse(kernel, ['ls', '-la']),
-        # _test__demo_command__response_collection_deeper,
+        'free-text-2',
+        123,
+        # Will be converted to FunctionResponse
+        _test__demo_command__response_collection_one,
+        _test__demo_command__response_collection_two,
+        _test__demo_command__response_collection_three,
+        ShellCommandResponse(kernel, ['ls', '-la']),
+        'free-text-after-shell',
+        _test__demo_command__response_collection_deeper,
         _test__demo_command__response_collection_run_another_collection,
         'last-text'
     ])

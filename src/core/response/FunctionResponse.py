@@ -17,11 +17,6 @@ class FunctionResponse(AbstractResponse):
         if args is None:
             args = {}
 
-        result = self.function(
+        return self.function(
             **args
         )
-
-        if isinstance(result, AbstractResponse):
-            result.parent = self
-
-        return result

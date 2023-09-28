@@ -17,7 +17,7 @@ def test__demo_command__response_collection_two(kernel: Kernel):
 
     return ResponseCollectionResponse(kernel, [
         'this-is-a-test-TWO',
-        # ShellCommandResponse(kernel, ['echo', '"TWO"']),
-        # _test__demo_command__response_collection_two_one,
-        # _test__demo_command__response_collection_three_nested
+        ShellCommandResponse(kernel, ['echo', '"TWO"']),
+        _test__demo_command__response_collection_two_one,
+        _test__demo_command__response_collection_three_nested
     ])

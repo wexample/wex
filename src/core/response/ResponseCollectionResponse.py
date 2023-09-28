@@ -13,91 +13,100 @@ class ResponseCollectionResponse(AbstractResponse):
         super().__init__(kernel)
         self.collection = collection
         self.request = None
+        self.step_position: int = 0
+        self.parent = None
+        self.has_post_exec = None
 
     def render(self,
                request: CommandRequest,
                render_mode: str = KERNEL_RENDER_MODE_CLI,
                args={}):
+
         self.request = request
+        self.parent = self.kernel.current_response
+        self.kernel.current_response = self
 
-        # Convert step to a list of integers
-        step_split = list(map(int, request.step.split('.'))) if request.step else [None]
+        if self.parent:
+            self.step_position = self.parent.step_position + 1
 
-        return self._render(step_split, 0)
+            if self.step_position >= len(request.steps):
+                # Append a new step level,
+                # set to None to postpone processing
+                request.steps.append(None)
 
-    def _render(self, step_list, step_position: int | None, output_bag: list = None):
-        output_bag = output_bag if output_bag is not None else []
-        output = None
-        current_step = step_list[step_position]
+        self.kernel.log_indent += self.step_position
+
+        step_index = request.steps[self.step_position]
 
         # Collection is empty, nothing to do
         if not len(self.collection):
-            return output
+            return None
 
         # First time, do not execute, wait next iteration
-        if current_step is None:
-            self.enqueue_next_step(step_list, step_position, 0, output_bag)
-            return self if self.kernel.allow_post_exec else output_bag
+        if step_index is None:
+            self.enqueue_next_step(0)
+
+            return self
 
         # Wrap responses
         collection = [self.request.resolver.wrap_response(item) for item in self.collection]
 
         # Prepare args
         render_args = {}
-        if current_step > 0:
+        if step_index > 0:
             if self.kernel.allow_post_exec:
                 render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
                 remove_file_if_exists(self.kernel.task_file_path('response'))
             else:
                 render_args = {'previous': self.previous_render_output}
 
-        collection[current_step].parent = self
-
-        self.previous_render_output = output = collection[current_step].render(
+        output = self.previous_render_output = collection[step_index].render(
             request=self.request,
             args=render_args
         )
 
         # Handle nested collection response
         if isinstance(output, ResponseCollectionResponse):
-            step_position += 1
-            step_list += [None] * (step_position + 1 - len(step_list))
-            result = output._render(step_list, step_position, output_bag)
+            self.output_bag += output.output_bag
 
-            return result if self.kernel.allow_post_exec else output_bag
+            # The result is a collection which have enqueued something
+            # stop now, until the sub collection is not proceeded
+            if output.has_post_exec:
+                return output
+            else:
+                return output.render(
+                    request,
+                    render_mode,
+                    args
+                )
         else:
-            output_bag.append(output)
+            self.output_bag.append(output)
 
-        step_next = current_step + 1
+        step_next = step_index + 1
 
         if step_next < len(collection):
             if self.kernel.allow_post_exec:
                 # Store response in a file to allow next step to access it.
                 self.kernel.task_file_write('response', str(output))
 
-            self.enqueue_next_step(step_list, step_position, step_next, output_bag)
+            self.enqueue_next_step(step_next)
 
-        return output if self.kernel.allow_post_exec else output_bag
+        self.kernel.log_indent -= self.step_position
 
-    def enqueue_next_step(self, step_list, step_position, step_next, output_bag: list):
-        step_list[step_position] = step_next
+        return self
 
-        if self.parent:
-            root = self.get_root_parent()
-            root.enqueue_next_step(
-                step_list,
-                step_position,
-                step_next,
-                output_bag
-            )
-        elif self.kernel.allow_post_exec:
-            args_dict = self.request.args_dict.copy()
-            args_dict['command-request-step'] = '.'.join(map(str, step_list))
-            process_post_exec_wex(
-                self.kernel,
-                self.request.function,
-                args_dict
-            )
-        else:
-            # Run now.
-            self._render(step_list, step_position, output_bag)
+    def enqueue_next_step(self, next_step_index):
+        self.request.steps[self.step_position] = next_step_index
+        self.has_post_exec = True
+
+        args_dict = self.request.args_dict.copy()
+        args_dict['command-request-step'] = '.'.join(map(str, self.request.steps))
+        args_dict['log-indent'] = self.kernel.log_indent
+
+        root = self.get_root_parent()
+
+        process_post_exec_wex(
+            self.kernel,
+            root.request.function,
+            args_dict
+        )

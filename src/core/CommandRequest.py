@@ -18,7 +18,9 @@ class CommandRequest:
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
         # For multiple steps commands like response collections
-        self.step = None
+        # Share unique root request steps list.
+        current_request = self.resolver.kernel.current_request
+        self.steps = current_request.steps if current_request else [None]
 
         self.args_dict: dict | None = None
         self.args: dict | None = None
@@ -38,7 +40,8 @@ class CommandRequest:
                 )
 
             if 'command-request-step' in self.args_dict:
-                self.step = str(self.args_dict['command-request-step'])
+                step = str(self.args_dict['command-request-step'])
+                self.steps = list(map(int, step.split('.'))) if step else self.steps
 
             for name in [
                 'command-request-step',

@@ -10,6 +10,10 @@ class AbstractResponse:
         self.request = kernel.current_request
         self.kernel: Kernel = kernel
         self.parent = None
+        self.output_bag: list = []
+
+    def __str__(self):
+        return "\n".join(map(str, self.output_bag))
 
     def get_root_parent(self):
         if self.parent:

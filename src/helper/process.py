@@ -5,15 +5,7 @@ from src.helper.args import convert_dict_to_args
 
 def process_post_exec(
         kernel,
-        command: [],
-        queue: list = None):
-    if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
-        command += ['--quiet']
-    elif kernel.verbosity == VERBOSITY_LEVEL_MEDIUM:
-        command += ['--vv']
-    elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
-        command += ['--vvv']
-
+        command: []):
     kernel.log(
         'Queuing shell command : ' + command_to_string(command),
         verbosity=VERBOSITY_LEVEL_MAXIMUM
@@ -32,6 +24,13 @@ def process_post_exec_wex(kernel, function: callable, args: dict = {}, is_async=
                    '--kernel-task-id',
                    kernel.task_id
                ])
+
+    if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
+        command += ['--quiet']
+    elif kernel.verbosity == VERBOSITY_LEVEL_MEDIUM:
+        command += ['--vv']
+    elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
+        command += ['--vvv']
 
     if is_async:
         command.insert(0, 'nohup')

@@ -45,6 +45,7 @@ class Kernel:
     log_indent: int = 1
     indent_string = '  '
     current_request = None
+    current_response = None
     verbosity = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path):
@@ -239,11 +240,6 @@ class Kernel:
                 command_to_string(command) + '\n',
             )
 
-        if isinstance(result, AbstractResponse):
-            # If response has not been rendered
-            # do not return class object.
-            return
-
         if result is not None:
             self.print(result)
 
@@ -272,9 +268,7 @@ class Kernel:
         return self.run_request(request)
 
     def run_request(self, request):
-        response = request.run()
-
-        return response.render(request, KERNEL_RENDER_MODE_CLI)
+        return request.run().render(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.path['tmp'], 'task')
