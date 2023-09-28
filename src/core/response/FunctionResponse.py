@@ -17,6 +17,11 @@ class FunctionResponse(AbstractResponse):
         if args is None:
             args = {}
 
-        return self.function(
+        response = self.function(
             **args
         )
+
+        if response is not None:
+            self.output_bag.append(response)
+
+        return self

@@ -22,7 +22,6 @@ from src.core.command.AppCommandResolver import AppCommandResolver
 from src.core.command.ServiceCommandResolver import ServiceCommandResolver
 from src.core.command.UserCommandResolver import UserCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
-from src.core.response.AbstractResponse import AbstractResponse
 
 PROCESSOR_CLASSES = [
     AddonCommandResolver,
