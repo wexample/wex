@@ -46,6 +46,7 @@ class CommandRequest:
             for name in [
                 'command-request-step',
                 'kernel-task-id',
+                'log-indent',
                 'quiet',
                 'vv',
                 'vvv',
