@@ -10,7 +10,6 @@ class DataSet2dResponse(AbstractResponse):
     def __init__(self, kernel):
         super().__init__(kernel)
 
-
     def set_header(self, header):
         self.header = header
 
@@ -23,11 +22,11 @@ class DataSet2dResponse(AbstractResponse):
     def get_body(self):
         return self.body
 
-    def render(
+    def render_content(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
-            args: dict = None):
+            args: dict = None) -> AbstractResponse:
         # We'll adjust render mode with kernel call method info
 
         if render_mode == KERNEL_RENDER_MODE_CLI:
@@ -69,4 +68,6 @@ class DataSet2dResponse(AbstractResponse):
                 bash_array += row_str + "\n"
 
             bash_array += separator_line
-            return bash_array
+
+            self.output_bag.append(bash_array)
+        return self

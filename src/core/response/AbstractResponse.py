@@ -1,5 +1,5 @@
+from __future__ import annotations
 from abc import abstractmethod
-
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 
@@ -19,12 +19,23 @@ class AbstractResponse:
             return self.parent.get_root_parent()
         return self
 
-    @abstractmethod
     def render(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
-            args: dict = None):
+            args: dict = None) -> 'AbstractResponse':
+        return self.render_content(
+            request,
+            render_mode,
+            args,
+        )
+
+    @abstractmethod
+    def render_content(
+            self,
+            request: CommandRequest,
+            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            args: dict = None) -> 'AbstractResponse':
         pass
 
     def print(self) -> str | None:

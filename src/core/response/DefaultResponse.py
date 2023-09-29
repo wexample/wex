@@ -4,13 +4,15 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class DefaultResponse(AbstractResponse):
-    def __init__(self, kernel, body):
+    def __init__(self, kernel, content):
         super().__init__(kernel)
-        self.body: str = body
+        self.content: str = content
 
-    def render(
+    def render_content(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
-            args: dict = None):
-        return self.body
+            args: dict = None) -> AbstractResponse:
+        self.output_bag.append(self.content)
+
+        return self

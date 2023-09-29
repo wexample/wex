@@ -39,14 +39,14 @@ ADDONS_DEFINITIONS = {
 
 class Kernel:
     allow_post_exec = True
-    messages = None
-    task_id: str | None = None
-    registry: dict[str, Optional[str]] = {}
-    http_server = None
-    log_indent: int = 1
-    indent_string = '  '
     current_request = None
     current_response = None
+    http_server = None
+    indent_string = '  '
+    log_indent: int = 1
+    messages = None
+    registry: dict[str, Optional[str]] = {}
+    task_id: str | None = None
     verbosity = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path):
@@ -106,12 +106,14 @@ class Kernel:
         # TODO    self.test
         )
 
-    def trace(self):
+    def trace(self, _exit: bool = True):
         import traceback
 
         for line in traceback.format_stack():
             self.print(line.strip())
-        exit(1)
+
+        if _exit:
+            exit(1)
 
     def trans(self, key: str, parameters: object = {}, default=None) -> str:
         # Performance optimisation

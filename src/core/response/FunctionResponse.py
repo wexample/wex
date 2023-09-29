@@ -9,16 +9,13 @@ class FunctionResponse(AbstractResponse):
 
         self.function = function
 
-    def render(self,
+    def render_content(self,
                request: CommandRequest,
                render_mode: str = KERNEL_RENDER_MODE_CLI,
                args: dict = None
-               ):
-        if args is None:
-            args = {}
-
+               ) -> AbstractResponse:
         response = self.function(
-            **args
+            **(args or {})
         )
 
         if response is not None:

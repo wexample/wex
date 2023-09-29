@@ -12,11 +12,11 @@ class ShellCommandResponse(AbstractResponse):
 
         self.shell_command: list = shell_command
 
-    def render(
+    def render_content(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
-            args: dict = None):
+            args: dict = None) -> AbstractResponse:
         if self.kernel.allow_post_exec:
             process_post_exec(
                 self.kernel,

@@ -17,10 +17,10 @@ class ResponseCollectionResponse(AbstractResponse):
         self.parent = None
         self.has_post_exec = None
 
-    def render(self,
+    def render_content(self,
                request: CommandRequest,
                render_mode: str = KERNEL_RENDER_MODE_CLI,
-               args={}):
+               args: dict = {}) -> AbstractResponse:
 
         self.request = request
         self.parent = self.kernel.current_response
