@@ -8,6 +8,7 @@ from typing import Optional
 from yaml import SafeLoader
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
@@ -217,6 +218,7 @@ class Kernel:
         May never be called by an internal script.
         :return:
         """
+
         # No arg found except process id
         if not len(self.sys_argv) > 2:
             return
@@ -271,7 +273,7 @@ class Kernel:
         return self.run_request(request)
 
     def run_request(self, request):
-        return request.run().render(request, KERNEL_RENDER_MODE_CLI)
+        return request.resolver.run_request(request).render(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.path['tmp'], 'task')
@@ -371,28 +373,15 @@ class Kernel:
                 )
 
     def handle_core_args(self):
-        new_sys_argv = []
-        skip_next = False
+        if arg_shift(self.sys_argv, 'quiet', True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_QUIET
 
-        for i, arg in enumerate(self.sys_argv):
-            if skip_next:
-                skip_next = False
-                continue
+        if arg_shift(self.sys_argv, 'vv', True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_MEDIUM
 
-            if arg in ('-quiet', '--quiet'):
-                self.verbosity = VERBOSITY_LEVEL_QUIET
-            elif arg in ('-vv', '--vv'):
-                self.verbosity = VERBOSITY_LEVEL_MEDIUM
-            elif arg in ('-vvv', '--vvv'):
-                self.verbosity = VERBOSITY_LEVEL_MAXIMUM
-            elif arg in ('-log-indent', '--log-indent'):
-                try:
-                    next_value = self.sys_argv[i + 1]
-                    self.log_indent = int(next_value)
-                    skip_next = True
-                except (IndexError, ValueError):
-                    pass
-            else:
-                new_sys_argv.append(arg)
+        if arg_shift(self.sys_argv, 'vvv', True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_MAXIMUM
 
-        self.sys_argv = new_sys_argv
+        log_indent_value = arg_shift(self.sys_argv, 'log-indent')
+        if log_indent_value is not None:
+            self.log_indent = int(log_indent_value)

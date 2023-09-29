@@ -1,5 +1,6 @@
 import click
 
+COMMAND_HELP_PARAMS = ['quiet', 'vv', 'vvv', 'command_request_step', 'kernel_task_id', 'log_indent']
 
 # Define your custom decorator
 def command(*args, **kwargs):

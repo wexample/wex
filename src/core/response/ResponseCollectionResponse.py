@@ -48,8 +48,8 @@ class ResponseCollectionResponse(AbstractResponse):
 
             return self
 
-        # Wrap responses
-        collection = [self.request.resolver.wrap_response(item) for item in self.collection]
+        # Transform each item in a response object.
+        collection: List[AbstractResponse] = [self.request.resolver.wrap_response(item) for item in self.collection]
 
         # Prepare args
         render_args = {}
@@ -83,11 +83,12 @@ class ResponseCollectionResponse(AbstractResponse):
             self.output_bag.append(output)
 
         step_next = step_index + 1
-
         if step_next < len(collection):
             if self.kernel.allow_post_exec:
-                # Store response in a file to allow next step to access it.
-                self.kernel.task_file_write('response', str(output))
+                serialized = output.print()
+                if serialized is not None:
+                    # Store response in a file to allow next step to access it.
+                    self.kernel.task_file_write('response', serialized)
 
             self.enqueue_next_step(step_next)
 
@@ -99,14 +100,14 @@ class ResponseCollectionResponse(AbstractResponse):
         self.request.steps[self.step_position] = next_step_index
         self.has_post_exec = True
 
-        args_dict = self.request.args_dict.copy()
-        args_dict['command-request-step'] = '.'.join(map(str, self.request.steps))
-        args_dict['log-indent'] = self.kernel.log_indent
+        args = self.request.args.copy()
+        arg_push(args, 'command-request-step', '.'.join(map(str, self.request.steps)))
+        arg_push(args, 'log-indent', self.kernel.log_indent)
 
         root = self.get_root_parent()
 
         process_post_exec_wex(
             self.kernel,
             root.request.function,
-            args_dict
+            args
         )

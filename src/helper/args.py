@@ -7,6 +7,35 @@ from click.types import BoolParamType
 from src.helper.string import to_kebab_case, to_snake_case
 
 
+def arg_push(arg_list: list, arg_name: str, value):
+    arg_list.append(f'--{arg_name}')
+
+    if value:
+        arg_list.append(str(value))
+
+
+def arg_shift(arg_list: list, arg_name: str, is_flag: bool = False):
+    """
+    Alter arg list by removing arg names and returning arg value.
+    Take arg name without dash, and remove args with any count of prefixed dashes.
+    """
+    arg_pattern = re.compile(r'(-+)' + re.escape(arg_name) + r'$')
+
+    for i, arg in enumerate(arg_list):
+        if arg_pattern.match(arg):
+            del arg_list[i]
+
+            if is_flag:
+                return True
+            else:
+                try:
+                    next_value = arg_list.pop(i)
+                    return next_value
+                except IndexError:
+                    return None
+    return None
+
+
 def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str]:
     if not arg:
         return []

@@ -6,7 +6,9 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI
 
 class AbstractResponse:
     def __init__(self, kernel):
+        # Prevent circular imports
         from src.core.Kernel import Kernel
+
         self.request = kernel.current_request
         self.kernel: Kernel = kernel
         self.parent = None
@@ -34,7 +36,7 @@ class AbstractResponse:
                     if output_serialized is not None:
                         serialised.append(output_serialized)
                 else:
-                    serialised.append(output)
+                    serialised.append(str(output))
 
             if not len(serialised):
                 return None

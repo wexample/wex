@@ -4,6 +4,7 @@ import re
 import sys
 from abc import abstractmethod
 
+from src.decorator.command import COMMAND_HELP_PARAMS
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
@@ -26,7 +27,10 @@ class AbstractCommandResolver:
     def run_request(self, request: CommandRequest) -> AbstractResponse:
         import click
 
-        if not request.localized and (not request.path or not os.path.isfile(request.path)):
+        self.kernel.current_request = request
+        self.kernel.logger.append_request(request)
+
+        if not request.function and (not request.path or not os.path.isfile(request.path)):
             if not request.quiet:
                 import logging
 
@@ -62,10 +66,13 @@ class AbstractCommandResolver:
                 }
             )
 
-        # Override default params
-        # With reworked version removing core params : verbosity, task id, ...
-        ctx.params = convert_dict_to_snake_dict(request.args_dict)
+        # Remove click params which have been defined only
+        # to be shown in help section, but are used outside function
+        for arg in COMMAND_HELP_PARAMS:
+            if arg in ctx.params:
+                del ctx.params[arg]
 
+        # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.kernel
 
         response = self.wrap_response(
@@ -259,7 +266,7 @@ class AbstractCommandResolver:
         )
 
         # Command is not recognised
-        if not request.localized:
+        if not request.function:
             return
 
         search_params = [val for val in search_params if val.startswith("-")]

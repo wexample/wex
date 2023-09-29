@@ -1,6 +1,6 @@
 import os
 
-from src.helper.args import convert_dict_to_args, convert_args_to_long_names_dict
+from src.helper.args import arg_shift
 
 
 class CommandRequest:
@@ -9,7 +9,7 @@ class CommandRequest:
     match = None
     path = None
 
-    def __init__(self, resolver, command: str, args: dict | list = None):
+    def __init__(self, resolver, command: str, args: list = None):
         args = args or []
 
         self.quiet = False
@@ -17,44 +17,23 @@ class CommandRequest:
         self.command = resolver.resolve_alias(self.resolver.kernel, command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
+        self.args: list = args
+
+        self.locate_function()
+
+        if not self.function:
+            return
+
         # For multiple steps commands like response collections
         # Share unique root request steps list.
         current_request = self.resolver.kernel.current_request
         self.steps = current_request.steps if current_request else [None]
 
-        self.args_dict: dict | None = None
-        self.args: dict | None = None
+        steps = arg_shift(self.args, 'command-request-step')
+        self.steps = list(map(int, str(steps).split('.'))) if steps else self.steps
 
-        if isinstance(args, dict):
-            self.args_dict: dict = args
-        else:
-            self.args: list = args
-
-        self.locate_function()
-
-        if self.function:
-            if self.args is not None:
-                self.args_dict = convert_args_to_long_names_dict(
-                    self.function,
-                    self.args
-                )
-
-            if 'command-request-step' in self.args_dict:
-                step = str(self.args_dict['command-request-step'])
-                self.steps = list(map(int, step.split('.'))) if step else self.steps
-
-            for name in [
-                'command-request-step',
-                'kernel-task-id',
-                'log-indent',
-                'quiet',
-                'vv',
-                'vvv',
-            ]:
-                if name in self.args_dict:
-                    del self.args_dict[name]
-
-            self.args = convert_dict_to_args(self.function, self.args_dict)
+        # print(self.args)
+        # exit()
 
     def locate_function(self):
         # Build dynamic variables
@@ -64,18 +43,10 @@ class CommandRequest:
             self.path = self.resolver.build_path(self)
 
             if self.path and os.path.isfile(self.path):
-                self.localized = True
                 self.function: callable = self.resolver.get_function_from_request(self)
 
                 return True
         return False
-
-    def run(self):
-        self.resolver.kernel.current_request = self
-
-        self.resolver.kernel.logger.append_request(self)
-
-        return self.resolver.run_request(self)
 
     def is_click_command(self, click_command) -> bool:
         return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__
