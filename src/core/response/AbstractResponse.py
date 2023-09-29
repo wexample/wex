@@ -15,6 +15,7 @@ class AbstractResponse:
         self.output_bag: list = []
         self.request = None
         self.parent = None
+        self.rendered = False
 
     def get_root_parent(self):
         if self.parent:
@@ -42,6 +43,7 @@ class AbstractResponse:
         )
 
         self.kernel.current_response = previous_response
+        self.rendered = True
 
         return output
 
