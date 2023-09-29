@@ -79,10 +79,10 @@ class ResponseCollectionResponse(AbstractResponse):
         # Prepare args
         render_args = {}
         if step_index > 0:
-            if self.kernel.allow_post_exec:
-                render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
-            else:
+            if self.kernel.fast_mode:
                 render_args = {'previous': self.previous_render_response.print()}
+            else:
+                render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
 
         # Transform item in a response object.
         wrap = self.request.resolver.wrap_response(self.collection[step_index])
@@ -135,7 +135,10 @@ class ResponseCollectionResponse(AbstractResponse):
         self.log('Searching for next collection item')
         next_index = step_index + 1
         if next_index < len(self.collection):
-            if self.kernel.allow_post_exec:
+            # Storing response to a file is not needed
+            # when all scripts are ran in one single thread.
+            # The "previous_render_response" var will be used instead.
+            if not self.kernel.fast_mode:
                 serialized = response.print()
                 if serialized is not None:
                     # Store response in a file to allow next step to access it.

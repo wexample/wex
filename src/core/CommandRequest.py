@@ -32,9 +32,6 @@ class CommandRequest:
         steps = arg_shift(self.args, 'command-request-step')
         self.steps = list(map(int, str(steps).split('.'))) if steps else self.steps
 
-        # print(self.args)
-        # exit()
-
     def locate_function(self):
         # Build dynamic variables
         self.match = self.resolver.build_match(self.command)

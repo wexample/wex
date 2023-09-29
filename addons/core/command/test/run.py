@@ -14,12 +14,7 @@ from addons.core.command.registry.build import core__registry__build
 @alias('test')
 @option('--command', '-c', type=str, required=False, help="Single command to test")
 def core__test__run(kernel: Kernel, command: str = None):
-    kernel.run_function(
-        core__registry__build,
-        {
-            'test': True
-        }
-    )
+    kernel.rebuild(test=True)
 
     kernel.log('Starting test suite..')
 

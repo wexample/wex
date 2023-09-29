@@ -31,8 +31,11 @@ def test__demo_command__response_collection(kernel: Kernel):
             }
 
         return ResponseCollectionResponse(kernel, [
-            'sub-collection-free-text',
-            456,
+            '__sub-collection-free-text',
+            '__sub-2',
+            '__sub-3',
+            '__sub-4',
+            45600,
             # Will be converted to FunctionResponse
             _test__demo_command__response_collection_one,
             ShellCommandResponse(kernel, ['ls']),
@@ -55,6 +58,10 @@ def test__demo_command__response_collection(kernel: Kernel):
         ShellCommandResponse(kernel, ['ls', '-la']),
         'free-text-after-shell',
         _test__demo_command__response_collection_deeper,
+        _test__demo_command__response_collection_deeper,
+        _test__demo_command__response_collection_deeper,
+        _test__demo_command__response_collection_run_another_collection,
+        _test__demo_command__response_collection_run_another_collection,
         _test__demo_command__response_collection_run_another_collection,
         'last-text'
     ])

@@ -17,12 +17,12 @@ class ShellCommandResponse(AbstractResponse):
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> AbstractResponse:
-        if self.kernel.allow_post_exec:
+        if self.kernel.fast_mode:
+            subprocess.run(self.shell_command, capture_output=True).stdout.decode('utf-8')
+        else:
             process_post_exec(
                 self.kernel,
                 self.shell_command
             )
-        else:
-            subprocess.run(self.shell_command, capture_output=True).stdout.decode('utf-8')
 
         return self

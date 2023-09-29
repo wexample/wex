@@ -38,9 +38,9 @@ ADDONS_DEFINITIONS = {
 
 
 class Kernel:
-    allow_post_exec = True
     current_request = None
     current_response = None
+    fast_mode = False
     http_server = None
     indent_string = '  '
     log_indent: int = 1
@@ -99,13 +99,10 @@ class Kernel:
         with open(path_registry) as f:
             self.registry = yaml.load(f, SafeLoader)
 
-    def rebuild(self):
+    def rebuild(self, test: bool = False):
         from addons.core.command.registry.build import _core__registry__build
 
-        _core__registry__build(
-            self,
-            # TODO    self.test
-        )
+        _core__registry__build(self, test)
 
     def trace(self, _exit: bool = True):
         import traceback
@@ -243,8 +240,7 @@ class Kernel:
                 command_to_string(command) + '\n',
             )
 
-        if isinstance(result, AbstractResponse):
-            result = result.print()
+        result = result.print()
 
         if result is not None:
             self.print(result)
@@ -254,7 +250,10 @@ class Kernel:
             increment=-self.log_indent,
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
-    def run_command(self, command: str, args: dict | list = None, quiet: bool = False):
+    def run_command(self,
+                    command: str,
+                    args: dict | list = None,
+                    quiet: bool = False) -> AbstractResponse:
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
@@ -266,7 +265,11 @@ class Kernel:
 
         return self.run_request(request)
 
-    def run_function(self, function, args: dict | list = None, type: str = COMMAND_TYPE_ADDON, quiet: bool = False):
+    def run_function(self,
+                     function,
+                     args: dict | list = None,
+                     type: str = COMMAND_TYPE_ADDON,
+                     quiet: bool = False) -> AbstractResponse:
         resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
@@ -278,7 +281,7 @@ class Kernel:
 
         return self.run_request(request)
 
-    def run_request(self, request):
+    def run_request(self, request) -> AbstractResponse:
         return request.resolver.run_request(request).render(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
@@ -379,6 +382,9 @@ class Kernel:
                 )
 
     def handle_core_args(self):
+        if arg_shift(self.sys_argv, 'fast-mode', True) is not None:
+            self.fast_mode = True
+
         if arg_shift(self.sys_argv, 'quiet', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_QUIET
 

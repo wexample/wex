@@ -1,6 +1,7 @@
 import click
 
-COMMAND_HELP_PARAMS = ['quiet', 'vv', 'vvv', 'command_request_step', 'kernel_task_id', 'log_indent']
+COMMAND_HELP_PARAMS = ['fast_mode', 'quiet', 'vv', 'vvv', 'command_request_step', 'kernel_task_id', 'log_indent']
+
 
 # Define your custom decorator
 def command(*args, **kwargs):
@@ -15,9 +16,14 @@ def command(*args, **kwargs):
             f = click.command(*args, **kwargs)(f)
 
             # Add verbosity levels
-            f = click.option('--quiet', '-quiet', is_flag=True, required=False, help="Silent all logs")(f)
-            f = click.option('--vv', '-vv', is_flag=True, required=False, help="More verbosity")(f)
-            f = click.option('--vvv', '-vvv', is_flag=True, required=False, help="Maximum verbosity")(f)
+            f = click.option('--fast-mode', '-fast-mode', is_flag=True, required=False,
+                             help="Disable queued scripts execution. Will be faster, but less interactive.")(f)
+            f = click.option('--quiet', '-quiet', is_flag=True, required=False,
+                             help="Silent all logs")(f)
+            f = click.option('--vv', '-vv', is_flag=True, required=False,
+                             help="More verbosity")(f)
+            f = click.option('--vvv', '-vvv', is_flag=True, required=False,
+                             help="Maximum verbosity")(f)
 
             # Step position control
             f = click.option('--command-request-step', '-command-request-step', type=str, required=False,
