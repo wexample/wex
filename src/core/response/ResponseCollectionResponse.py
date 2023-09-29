@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import random
-from typing import List
 
-from src.helper.args import arg_push, parse_arg
+from src.helper.args import arg_push
 from src.core.CommandRequest import CommandRequest
 from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
@@ -19,9 +18,18 @@ class ResponseCollectionResponse(AbstractResponse):
         super().__init__(kernel)
         self.collection = collection
         self.step_position: int = 0
-        self.has_post_exec = None
+        self.has_post_exec = False
         # For debug purpose
         self.id = random.random()
+
+    def find_parent_response_collection(self) -> 'None|AbstractResponse':
+        current = self
+        while current is not None:
+            current = current.parent
+            if isinstance(current, ResponseCollectionResponse):
+                return current
+
+        return None
 
     def build_step_path(self) -> str:
         return '.'.join(map(str, self.request.steps))
@@ -43,19 +51,23 @@ class ResponseCollectionResponse(AbstractResponse):
 
         self.kernel.log_indent_up()
 
+        # Collection is empty, nothing to do
+        if not len(self.collection):
+            self.log('is empty')
+            return self
+
         if self.parent:
-            self.step_position = self.parent.step_position + 1
+            self.step_position = self.find_parent_response_collection().step_position + 1
 
-            if self.step_position >= len(request.steps):
-                # Append a new step level,
-                # set to None to postpone processing
-                request.steps.append(None)
-
-        self.kernel.log_indent += self.step_position
+        if self.step_position >= len(request.steps):
+            # Append a new step level,
+            # set to None to postpone processing
+            request.steps.append(None)
 
         step_index = request.steps[self.step_position]
         self.log(f'step position', self.step_position)
         self.log(f'step path', self.build_step_path())
+        self.log(f'step index', step_index)
 
         # First time, do not execute, wait next iteration
         if step_index is None:
@@ -64,36 +76,63 @@ class ResponseCollectionResponse(AbstractResponse):
 
             return self.render_content_complete()
 
-        # Transform each item in a response object.
-        collection: List[AbstractResponse] = [self.request.resolver.wrap_response(item) for item in self.collection]
-
         # Prepare args
         render_args = {}
         if step_index > 0:
             if self.kernel.allow_post_exec:
                 render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
-                remove_file_if_exists(self.kernel.task_file_path('response'))
             else:
                 render_args = {'previous': self.previous_render_response.print()}
 
-        # Handle nested collection response
-        if isinstance(output, ResponseCollectionResponse):
-            self.output_bag += output.output_bag
+        # Transform item in a response object.
+        wrap = self.request.resolver.wrap_response(self.collection[step_index])
+        response = self.previous_render_response = wrap.render(
+            request=self.request,
+            args=render_args
+        )
 
-            # The result is a collection which have enqueued something
-            # stop now, until the sub collection is not proceeded
-            if output.has_post_exec:
-                return output
-            else:
-                return output.render(
+        first_response_item = None
+        if len(response.output_bag) >= 1:
+            first_response_item = response.output_bag[0]
+
+        self.log('Response type', response)
+        self.log('First response item', first_response_item)
+
+        # Handle nested collection response
+        if isinstance(first_response_item, ResponseCollectionResponse):
+            self.log('First item is a collection')
+            self.log('Collection rendered', first_response_item.rendered)
+
+            # Collection has not been rendered :
+            # - When a function return a raw collection class, it has not been rendered
+            # - When a function runs a sub command request, it has already been rendered
+            if not first_response_item.rendered:
+                first_response_item.render(
                     request,
                     render_mode,
-                    args
+                    render_args
                 )
+
+            self.log('Returning rendered first collection item')
+
+            self.output_bag += first_response_item.output_bag
+
+            # The response has enqueued a post-exec request
+            if first_response_item.has_post_exec:
+                self.render_content_complete()
+                # Returns items as it keep interesting
+                # parameters like the blocking has_post_exec value.
+                # If we returned self we had to copy those parameters
+                # to current object to inform parent about final request status.
+                return first_response_item
         else:
-            self.output_bag.append(output)
             self.output_bag.append(response)
 
+        # Now that ever render() has ran,
+        # we can cleanup the temporary storage.
+        remove_file_if_exists(self.kernel.task_file_path('response'))
+
+        self.log('Searching for next collection item')
         next_index = step_index + 1
         if next_index < len(self.collection):
             if self.kernel.allow_post_exec:
@@ -113,13 +152,12 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def enqueue_next_step(self, next_step_index):
         self.request.steps[self.step_position] = next_step_index
+        # Remove obsolete parts.
+        del self.request.steps[self.step_position + 1:]
         self.has_post_exec = True
 
         args = self.request.args.copy()
         arg_push(args, 'command-request-step', self.build_step_path())
-        # Log level should be at the same level as
-        # before current execution
-        arg_push(args, 'log-indent', self.kernel.log_indent - 1)
 
         root = self.get_root_parent()
 
