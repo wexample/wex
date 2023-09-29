@@ -104,7 +104,7 @@ class Kernel:
 
         _core__registry__build(
             self,
-        # TODO    self.test
+            # TODO    self.test
         )
 
     def trace(self, _exit: bool = True):
@@ -249,7 +249,10 @@ class Kernel:
         if result is not None:
             self.print(result)
 
-        self.log('_' * 60, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        self.log(
+            '_' * 60,
+            increment=-self.log_indent,
+            verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
     def run_command(self, command: str, args: dict | list = None, quiet: bool = False):
         request = self.create_command_request(command, args)
