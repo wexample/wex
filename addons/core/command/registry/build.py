@@ -19,6 +19,10 @@ from src.helper.file import set_user_or_sudo_user_owner
 @option('--write', '-w', type=bool, default=True,
         help="Write registry file")
 def core__registry__build(kernel, test: bool = False, write: bool = True):
+    _core__registry__build(kernel, test, write)
+
+
+def _core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.log('Building registry...')
     addons = kernel.addons
 

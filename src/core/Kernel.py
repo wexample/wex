@@ -99,13 +99,11 @@ class Kernel:
             self.registry = yaml.load(f, SafeLoader)
 
     def rebuild(self):
-        from addons.core.command.registry.build import core__registry__build
+        from addons.core.command.registry.build import _core__registry__build
 
-        self.run_function(
-            core__registry__build,
-            {
-                'test': self.test
-            }
+        _core__registry__build(
+            self,
+        # TODO    self.test
         )
 
     def trace(self):
