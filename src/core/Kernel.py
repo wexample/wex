@@ -249,6 +249,8 @@ class Kernel:
         if result is not None:
             self.print(result)
 
+        self.log('_' * 60, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+
     def run_command(self, command: str, args: dict | list = None, quiet: bool = False):
         request = self.create_command_request(command, args)
 

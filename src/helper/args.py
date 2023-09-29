@@ -7,7 +7,7 @@ from click.types import BoolParamType
 from src.helper.string import to_kebab_case, to_snake_case
 
 
-def arg_push(arg_list: list, arg_name: str, value:None):
+def arg_push(arg_list: list, arg_name: str, value: any = None):
     arg_list.append(f'--{arg_name}')
 
     if value is not None:
