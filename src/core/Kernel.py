@@ -46,6 +46,7 @@ class Kernel:
     log_indent: int = 1
     messages = None
     registry: dict[str, Optional[str]] = {}
+    root_response = None
     task_id: str | None = None
     verbosity = VERBOSITY_LEVEL_DEFAULT
 

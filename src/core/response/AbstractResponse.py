@@ -13,6 +13,8 @@ class AbstractResponse:
         self.kernel: Kernel = kernel
         self.parent = None
         self.output_bag: list = []
+        self.request = None
+        self.parent = None
 
     def get_root_parent(self):
         if self.parent:
@@ -24,11 +26,24 @@ class AbstractResponse:
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> 'AbstractResponse':
-        return self.render_content(
+        self.request = request
+        self.parent = self.kernel.current_response
+
+        previous_response = self.parent = self.kernel.current_response
+        self.kernel.current_response = self
+
+        # Save root response once.
+        self.kernel.root_response = self.kernel.root_response or self
+
+        output = self.render_content(
             request,
             render_mode,
             args,
         )
+
+        self.kernel.current_response = previous_response
+
+        return output
 
     @abstractmethod
     def render_content(

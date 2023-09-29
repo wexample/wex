@@ -12,19 +12,15 @@ class ResponseCollectionResponse(AbstractResponse):
     def __init__(self, kernel, collection: list):
         super().__init__(kernel)
         self.collection = collection
-        self.request = None
         self.step_position: int = 0
-        self.parent = None
         self.has_post_exec = None
 
     def render_content(self,
-               request: CommandRequest,
-               render_mode: str = KERNEL_RENDER_MODE_CLI,
-               args: dict = {}) -> AbstractResponse:
+                       request: CommandRequest,
+                       render_mode: str = KERNEL_RENDER_MODE_CLI,
+                       args: dict = {}) -> AbstractResponse:
 
         self.request = request
-        self.parent = self.kernel.current_response
-        self.kernel.current_response = self
 
         if self.parent:
             self.step_position = self.parent.step_position + 1
