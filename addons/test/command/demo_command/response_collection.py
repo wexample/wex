@@ -1,4 +1,5 @@
-from src.core.response.ShellCommandResponse import ShellCommandResponse
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
@@ -27,7 +28,7 @@ def test__demo_command__response_collection(kernel: Kernel):
     def _test__demo_command__response_collection_deeper(previous):
         def _test__demo_command__response_collection_deeper_two(previous):
             return {
-                'ls': previous
+                'passed': previous
             }
 
         return ResponseCollectionResponse(kernel, [
@@ -38,7 +39,7 @@ def test__demo_command__response_collection(kernel: Kernel):
             45600,
             # Will be converted to FunctionResponse
             _test__demo_command__response_collection_one,
-            ShellCommandResponse(kernel, ['ls']),
+            NonInteractiveShellCommandResponse(kernel, ['echo', 'will-be-passed-to-next-function']),
             _test__demo_command__response_collection_deeper_two
         ])
 
@@ -55,7 +56,7 @@ def test__demo_command__response_collection(kernel: Kernel):
         _test__demo_command__response_collection_one,
         _test__demo_command__response_collection_two,
         _test__demo_command__response_collection_three,
-        ShellCommandResponse(kernel, ['ls', '-la']),
+        InteractiveShellCommandResponse(kernel, ['ls', '-la']),
         'free-text-after-shell',
         _test__demo_command__response_collection_deeper,
         _test__demo_command__response_collection_deeper,

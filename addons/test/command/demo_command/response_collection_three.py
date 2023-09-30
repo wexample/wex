@@ -1,4 +1,4 @@
-from src.core.response.ShellCommandResponse import ShellCommandResponse
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
@@ -11,6 +11,6 @@ def test__demo_command__response_collection_three(kernel: Kernel):
 
     return ResponseCollectionResponse(kernel, [
         'this-is-a-test-THREE',
-        ShellCommandResponse(kernel, ['echo', '"THREE"']),
+        InteractiveShellCommandResponse(kernel, ['echo', '"THREE"']),
         _test__demo_command__response_collection_three_one
     ])

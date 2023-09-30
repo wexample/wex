@@ -1,12 +1,10 @@
-import subprocess
-
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
 
 
-class ShellCommandResponse(AbstractResponse):
+class InteractiveShellCommandResponse(AbstractResponse):
     def __init__(self, kernel, shell_command: list):
         super().__init__(kernel)
 
@@ -17,12 +15,9 @@ class ShellCommandResponse(AbstractResponse):
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> AbstractResponse:
-        if self.kernel.fast_mode:
-            subprocess.run(self.shell_command, capture_output=True).stdout.decode('utf-8')
-        else:
-            process_post_exec(
-                self.kernel,
-                self.shell_command
-            )
+        process_post_exec(
+            self.kernel,
+            self.shell_command
+        )
 
         return self

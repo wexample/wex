@@ -1,4 +1,4 @@
-from src.core.response.ShellCommandResponse import ShellCommandResponse
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
@@ -19,7 +19,7 @@ def test__demo_command__response_collection_two(kernel: Kernel):
         'this-is-a-test-TWO',
         'this-is-a-test-TWO(2)',
         'this-is-a-test-TWO(3)',
-        ShellCommandResponse(kernel, ['echo', '"TWO"']),
+        InteractiveShellCommandResponse(kernel, ['echo', '"TWO"']),
         _test__demo_command__response_collection_two_one,
         _test__demo_command__response_collection_three_nested
     ])
