@@ -18,7 +18,7 @@ class ResponseCollectionResponse(AbstractResponse):
         super().__init__(kernel)
         self.collection = collection
         self.step_position: int = 0
-        self.has_post_exec = False
+        self.has_next_step = False
         # For debug purpose
         self.id = random.random()
 
@@ -80,7 +80,8 @@ class ResponseCollectionResponse(AbstractResponse):
         render_args = {}
         if step_index > 0:
             if self.kernel.fast_mode:
-                render_args = {'previous': self.previous_render_response.print()}
+                if self.previous_render_response:
+                    render_args = {'previous': self.previous_render_response.print()}
             else:
                 render_args = {'previous': parse_arg(self.kernel.task_file_load('response'))}
 
@@ -118,17 +119,17 @@ class ResponseCollectionResponse(AbstractResponse):
             self.output_bag += first_response_item.output_bag
 
             # The response has enqueued a post-exec request
-            if first_response_item.has_post_exec:
+            if first_response_item.has_next_step:
                 self.render_content_complete()
                 # Returns items as it keep interesting
-                # parameters like the blocking has_post_exec value.
+                # parameters like the blocking has_next_step value.
                 # If we returned self we had to copy those parameters
                 # to current object to inform parent about final request status.
                 return first_response_item
         else:
             self.output_bag.append(response)
 
-        # Now that ever render() has ran,
+        # Now that every render() has ran,
         # we can cleanup the temporary storage.
         remove_file_if_exists(self.kernel.task_file_path('response'))
 
@@ -157,7 +158,7 @@ class ResponseCollectionResponse(AbstractResponse):
         self.request.steps[self.step_position] = next_step_index
         # Remove obsolete parts.
         del self.request.steps[self.step_position + 1:]
-        self.has_post_exec = True
+        self.has_next_step = True
 
         args = self.request.args.copy()
         arg_push(args, 'command-request-step', self.build_step_path())
