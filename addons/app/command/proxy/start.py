@@ -89,6 +89,8 @@ def app__proxy__start(kernel: Kernel,
                     }
                 )
 
+            kernel.io.success(f'Port {port_to_check} free')
+
         check_port(
             manager.get_config('global.port_public')
         )

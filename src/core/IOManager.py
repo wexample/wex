@@ -2,7 +2,7 @@ import json
 import os
 
 from src.const.globals import \
-    COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT
+    COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT, COLOR_GREEN, COLOR_RED
 
 
 class IOManager:
@@ -72,6 +72,13 @@ class IOManager:
             return
 
         self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
+
+    def success(self, message):
+        self.log(f'{COLOR_GREEN}✓{COLOR_RESET} {message}')
+
+    def fail(self, message):
+        self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')
+
 
     def print(self, message):
         print(message)

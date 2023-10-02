@@ -21,10 +21,10 @@ from src.helper.file import set_user_or_sudo_user_owner
         help="Write registry file")
 @alias('rebuild')
 def core__registry__build(kernel, test: bool = False, write: bool = True):
-    return __core__registry__build(kernel, test, write)
+    return _core__registry__build(kernel, test, write)
 
 
-def __core__registry__build(kernel, test: bool = False, write: bool = True):
+def _core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.io.log('Building registry...')
     addons = kernel.addons
 
