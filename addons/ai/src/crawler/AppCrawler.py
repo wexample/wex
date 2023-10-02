@@ -90,7 +90,7 @@ class AppCrawler:
 
         return tree
 
-    def build(self):
+    def build(self) -> str:
         tree = self.load_tree()
 
         # Scan new files
@@ -104,6 +104,8 @@ class AppCrawler:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         tree['last_updated'] = timestamp
         self.save_to_yaml(self.yaml_filepath, new_tree)
+
+        return new_tree
 
     def save_to_yaml(self, filepath, tree):
         with open(filepath, 'w') as f:

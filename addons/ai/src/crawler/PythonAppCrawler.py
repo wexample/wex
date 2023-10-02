@@ -1,4 +1,4 @@
-from crawler.AppCrawler import AppCrawler
+from addons.ai.src.crawler.AppCrawler import AppCrawler
 
 
 class PythonAppCrawler(AppCrawler):

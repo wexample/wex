@@ -1,7 +1,5 @@
-import os
 
 from src.const.globals import COMMAND_SEPARATOR_ADDON
-from src.helper.file import list_subdirectories
 
 
 def get_all_commands(kernel):

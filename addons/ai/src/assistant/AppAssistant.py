@@ -1,9 +1,6 @@
 import subprocess
-from pprint import pprint
 
-from crawler.WexAppCrawler import WexAppCrawler
 import os
-from dotenv import load_dotenv
 from langchain.llms import OpenAI
 
 from langchain.prompts.chat import (
@@ -18,18 +15,19 @@ from langchain.prompts import (
     ChatPromptTemplate,
 )
 
+from addons.ai.src.crawler.WexAppCrawler import WexAppCrawler
+
 
 class AppAssistant:
-    def __init__(self):
-        self.root = os.getcwd() + '/'
+    def __init__(self, kernel):
+        self.kernel = kernel
 
         # Update tree info
-        self.crawler = WexAppCrawler(self.root, '.wex/ai/data/tree.yml')
+        self.crawler = WexAppCrawler(self.kernel.path['root'], '.wex/ai/data/tree.yml')
 
-        # Load .env file to get API token
-        load_dotenv(dotenv_path=self.root + '.env')
+        self.kernel.load_env()
 
-        self.llm = OpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
+        self.llm = OpenAI(openai_api_key=os.getenv('OPENAI_API_KEY'))
 
     def create_chain(self, prompt_template):
         return LLMChain(

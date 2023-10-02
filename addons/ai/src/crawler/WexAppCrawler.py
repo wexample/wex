@@ -1,5 +1,4 @@
-from crawler.PythonAppCrawler import PythonAppCrawler
-
+from addons.ai.src.crawler.PythonAppCrawler import PythonAppCrawler
 
 class WexAppCrawler(PythonAppCrawler):
     def cleanup_tree(self, tree):

@@ -304,3 +304,8 @@ class Kernel:
         log_indent_value = arg_shift(self.sys_argv, 'log-indent')
         if log_indent_value is not None:
             self.io.log_indent = int(log_indent_value)
+
+    def load_env(self):
+        from dotenv import load_dotenv
+        # Load .env file to get API token
+        load_dotenv(dotenv_path=self.path['root'] + '.env')
