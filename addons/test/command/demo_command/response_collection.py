@@ -56,7 +56,7 @@ def test__demo_command__response_collection(kernel: Kernel):
         _test__demo_command__response_collection_one,
         _test__demo_command__response_collection_two,
         _test__demo_command__response_collection_three,
-        InteractiveShellCommandResponse(kernel, ['ls', '-la']),
+        NonInteractiveShellCommandResponse(kernel, ['ls', '-la']),
         'free-text-after-shell',
         _test__demo_command__response_collection_deeper,
         _test__demo_command__response_collection_deeper,

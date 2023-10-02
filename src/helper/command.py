@@ -2,6 +2,34 @@ import subprocess
 import datetime
 import os
 
+from src.helper.args import convert_dict_to_args
+from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
+
+
+def core_call_to_shell_command(kernel, function: callable, args: dict = {}) -> list:
+    if isinstance(args, dict):
+        args = convert_dict_to_args(function, args)
+
+    command = ([
+                   'bash',
+                   kernel.path['core.cli'],
+                   kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_command_from_function(function),
+               ]
+               + args
+               + [
+                   '--kernel-task-id',
+                   kernel.task_id
+               ])
+
+    if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
+        command += ['--quiet']
+    elif kernel.verbosity == VERBOSITY_LEVEL_MEDIUM:
+        command += ['--vv']
+    elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
+        command += ['--vvv']
+
+    return command
+
 
 def command_exists(command) -> bool:
     process = subprocess.Popen(

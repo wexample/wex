@@ -45,6 +45,7 @@ class Kernel:
     indent_string = '  '
     log_indent: int = 1
     messages = None
+    previous_response = None
     registry: dict[str, Optional[str]] = {}
     root_response = None
     task_id: str | None = None
@@ -266,10 +267,10 @@ class Kernel:
         return self.run_request(request)
 
     def call_function(self,
-                     function,
-                     args: dict | list = None,
-                     type: str = COMMAND_TYPE_ADDON,
-                     quiet: bool = False):
+                      function,
+                      args: dict | list = None,
+                      type: str = COMMAND_TYPE_ADDON,
+                      quiet: bool = False):
         response = self.run_function(
             function,
             args,

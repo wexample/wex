@@ -1,4 +1,4 @@
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.decorator.test_command import test_command
 from src.decorator.option import option
 from src.core import Kernel
@@ -19,7 +19,7 @@ def test__demo_command__responses(kernel: Kernel, type: str):
     elif type == 'function':
         return _test__demo_command__responses_one
     elif type == 'shell':
-        return InteractiveShellCommandResponse(kernel, ['ls', '-la'])
+        return NonInteractiveShellCommandResponse(kernel, ['ls', '-la'])
 
 
 def _test__demo_command__responses_one(kernel: Kernel):

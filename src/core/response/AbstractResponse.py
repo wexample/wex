@@ -16,6 +16,10 @@ class AbstractResponse:
         self.request = None
         self.parent = None
         self.rendered = False
+        # Some data can ba part of the output
+        # but cannot be sent to the next functions call,
+        # we call it "interactive".
+        self.interactive_data = False
 
     def get_root_parent(self):
         if self.parent:
@@ -55,14 +59,15 @@ class AbstractResponse:
             args: dict = None) -> 'AbstractResponse':
         pass
 
-    def print(self) -> str | None:
+    def print(self, interactive_data: bool = True) -> str | None:
         if len(self.output_bag):
             serialised = []
             for output in self.output_bag:
                 if isinstance(output, AbstractResponse):
-                    output_serialized = output.print()
-                    if output_serialized is not None:
-                        serialised.append(output_serialized)
+                    if not output.interactive_data or interactive_data:
+                        output_serialized = output.print(interactive_data)
+                        if output_serialized is not None:
+                            serialised.append(output_serialized)
                 else:
                     serialised.append(str(output))
 
