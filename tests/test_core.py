@@ -102,7 +102,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_call_command_user(self):
-        self.kernel.call_function(
+        self.kernel.run_function(
             core__command__create,
             {
                 'command': '~test/command_call'

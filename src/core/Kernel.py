@@ -272,20 +272,6 @@ class Kernel:
 
         return self.run_request(request)
 
-    def call_function(self,
-                      function,
-                      args: dict | list = None,
-                      type: str = COMMAND_TYPE_ADDON,
-                      quiet: bool = False):
-        response = self.run_function(
-            function,
-            args,
-            type,
-            quiet
-        )
-
-        return response.print()
-
     def run_function(self,
                      function,
                      args: dict | list = None,
