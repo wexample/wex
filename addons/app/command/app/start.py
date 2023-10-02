@@ -11,13 +11,18 @@ from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
 from addons.app.helpers.docker import exec_app_docker_compose
 from addons.app.command.hook.exec import app__hook__exec
+from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.helper.process import process_post_exec_wex
 from src.helper.prompt import prompt_choice
 from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL
+from addons.app.helpers.app import create_env
+from src.helper.prompt import prompt_choice
 from addons.app.helpers.app import create_env
 from src.decorator.alias_without_addon import alias_without_addon
 from src.decorator.command import command
 from src.decorator.option import option
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 
 
 @command(help="Start an app")
@@ -32,56 +37,64 @@ from src.decorator.option import option
         help="Group of application files")
 @option('--env', '-e', type=str, required=False,
         help="App environment")
-def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str = None, group: str = None,
-                    env: str = None):
+def app__app__start(
+        kernel,
+        app_dir: str,
+        clear_cache: bool = False,
+        user: str = None,
+        group: str = None,
+        env: str = None):
     manager: AppAddonManager = kernel.addons['app']
+    name = manager.get_config('global.name')
 
-    if not os.path.exists(APP_FILEPATH_REL_ENV):
-        if not env:
-            if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
-                env = prompt_choice(
-                    'Select an env:',
-                    APP_ENVS,
-                    APP_ENV_LOCAL
+    def _app__app__start__checkup():
+        nonlocal env
+
+        if not os.path.exists(APP_FILEPATH_REL_ENV):
+            if not env:
+                if click.confirm('No .wex/.env file, would you like to create it ?', default=True):
+                    env = prompt_choice(
+                        'Select an env:',
+                        APP_ENVS,
+                        APP_ENV_LOCAL
+                    )
+
+                # User said "no" or chose "abort"
+                if not env:
+                    manager.log('Abort')
+                    return
+
+            create_env(env, app_dir)
+
+            kernel.io.message(f'Created .env file for env "{env}"')
+
+        if kernel.run_function(app__app__started, {
+            'app-dir': app_dir
+        }):
+            manager.log('App already running')
+            return ResponseCollectionStopResponse(kernel)
+
+    def _app__app__start__proxy(previous):
+        # Current app is not the reverse proxy itself.
+        if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
+            # The reverse proxy is not running.
+            if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
+                manager.log('Starting proxy server')
+
+                from addons.app.command.proxy.start import app__proxy__start
+
+                kernel.run_function(
+                    app__proxy__start,
+                    {
+                        'user': user,
+                        'group': group,
+                        'env': env,
+                    }
                 )
 
-            # User said "no" or chose "abort"
-            if not env:
-                manager.log('Abort')
-                return
+    def _app__app__start__app(previous):
+        kernel.io.log(f"Starting app : {name}")
 
-        create_env(env, app_dir)
-
-        kernel.message(f'Created .env file for env "{env}"')
-    else:
-        env = app__env__get.callback(app_dir)
-
-    # if kernel.run_function(app__app__started, {
-    #     'app-dir': app_dir
-    # }):
-    #     manager.log('App already running')
-    #     return
-    #
-    # name = manager.get_config('global.name')
-    # # Current app is not the reverse proxy itself.
-    # if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
-    #     # The reverse proxy is not running.
-    #     if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
-    #         manager.log('Starting proxy server')
-    #
-    #         from addons.app.command.proxy.start import app__proxy__start
-    #
-    #         kernel.run_function(
-    #             app__proxy__start,
-    #             {
-    #                 'user': user,
-    #                 'group': group,
-    #                 'env': env,
-    #             }
-    #         )
-    #
-    # kernel.io.log(f"Starting app : {name}")
-    #
     # kernel.run_function(
     #     app__app__perms,
     #     {
@@ -160,3 +173,9 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     #         'app-dir': app_dir
     #     }
     # )
+
+    return ResponseCollectionResponse(kernel, [
+        _app__app__start__checkup,
+        _app__app__start__proxy,
+        _app__app__start__app,
+    ])

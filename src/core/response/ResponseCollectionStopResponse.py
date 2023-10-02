@@ -7,7 +7,7 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
 
 
-class AbortResponse(AbstractResponse, ABC):
+class ResponseCollectionStopResponse(AbstractResponse, ABC):
     def render(
             self,
             request: CommandRequest,

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.helper.args import arg_push
 from src.core.CommandRequest import CommandRequest
 from src.helper.args import parse_arg
@@ -104,6 +105,10 @@ class ResponseCollectionResponse(AbstractResponse):
         first_response_item = None
         if len(response.output_bag) >= 1:
             first_response_item = response.output_bag[0]
+
+        if isinstance(first_response_item, ResponseCollectionStopResponse):
+            self.log('Collection execution aborted', response)
+            return self
 
         self.log('Response type', response)
         self.log('First response item', first_response_item)

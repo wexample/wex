@@ -18,7 +18,7 @@ class CommandRequest:
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
         self.args = []
-        self.steps = {}
+        self.steps = []
         self.locate_function()
 
         if not self.function:
