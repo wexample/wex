@@ -196,7 +196,6 @@ class AppAddonManager(AddonManager):
             return
 
         args = request.args.copy()
-        arg_shift(args, 'app-dir')
 
         if self.app_dir is not None:
             app_dir_resolved = self.app_dir

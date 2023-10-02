@@ -21,6 +21,8 @@ class TestLogging(AbstractTestCase):
     def test_history(self):
         remove_file_if_exists(self.kernel.path['log'])
 
+        self.kernel.run_command('hi')
+
         self.kernel.logger.append_event(
             {
                 'command': 'test-command',

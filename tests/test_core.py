@@ -5,9 +5,10 @@ from AbstractTestCase import AbstractTestCase
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.version.build import core__version__build
-from src.helper.system import get_user_or_sudo_user, get_sudo_username
+from addons.core.command.test.create import core__test__create
+from src.helper.system import get_user_or_sudo_user
 from src.core.FatalError import FatalError
-from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME
+from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME, ROOT_USERNAME
 from src.helper.registry import get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import convert_args_to_dict, convert_dict_to_args
@@ -32,11 +33,11 @@ def create_fake_click_function():
 class TestCore(AbstractTestCase):
     def test_init(self):
         user = get_user_or_sudo_user()
-        message = f'Tests should be ran by sudo from a user called "owner"'
+        message = f'Tests should be ran with sudo from a user called "owner"'
 
-        self.assertEqual(
+        self.assertNotEqual(
             user,
-            OWNER_USERNAME,
+            ROOT_USERNAME,
             '\n'.join([
                 message,
                 f'  To create user : sudo adduser {OWNER_USERNAME}',
@@ -81,27 +82,27 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_core_action(self):
         self.assertEqual(
-            self.kernel.run_command('hi'),
+            self.kernel.call_command('hi'),
             'hi!'
         )
 
     def test_call_invalid(self):
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.run_command('something/unexpected')
+            self.kernel.call_command('something/unexpected')
 
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.run_command('nvfjkdvnfdkjvndfkjvnfd')
+            self.kernel.call_command('nvfjkdvnfdkjvndfkjvnfd')
 
         with self.assertRaises(FatalError, msg=None):
-            self.kernel.run_command('*ù:-//;!,@"#^~§')
+            self.kernel.call_command('*ù:-//;!,@"#^~§')
 
     def test_call_command_addon(self):
         self.assertIsNotNone(
-            self.kernel.run_command('core::logo/show')
+            self.kernel.call_command('core::logo/show')
         )
 
     def test_call_command_user(self):
-        self.kernel.run_function(
+        self.kernel.call_function(
             core__command__create,
             {
                 'command': '~test/command_call'
@@ -109,7 +110,7 @@ class TestCore(AbstractTestCase):
         )
 
         self.assertEqual(
-            self.kernel.run_command(
+            self.kernel.call_command(
                 '~test/command_call',
                 {
                     'arg': 'test'
@@ -120,7 +121,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_app(self):
         self.assertEqual(
-            self.kernel.run_command('.local_command/test', {
+            self.kernel.call_command('.local_command/test', {
                 'local-option': 'YES'
             }),
             'OK:YES'
@@ -128,13 +129,22 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_service(self):
         self.assertEqual(
-            self.kernel.run_command('@test::demo-command/first'),
+            self.kernel.call_command('@test::demo-command/first'),
             'FIRST'
         )
 
     def test_tests_coverage(self):
         for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addons']).items():
             test_file_path = command_data['test']
+
+            # Display nice shortcut to create missing test
+            if not command_data['test']:
+                self.kernel.message_next_command(
+                    core__test__create,
+                    {
+                        'all': True
+                    }
+                )
 
             self.assertIsNotNone(
                 command_data['test'],

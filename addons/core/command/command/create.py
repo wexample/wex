@@ -41,7 +41,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
                     {
                         'command': f'{COMMAND_CHAR_USER}{command}'
                     }
-                )
+                ).first()
 
         os.makedirs(
             os.path.dirname(command_path),
