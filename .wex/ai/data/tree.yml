@@ -33,26 +33,183 @@ children:
         type: dir
       command:
         children:
-          assistant:
-            children:
-              AppAssistant.py:
-                type: file
-            type: dir
-          autocode.py:
-            type: file
-          crawler:
-            children:
-              AppCrawler.py:
-                type: file
-              PythonAppCrawler.py:
-                type: file
-              WexAppCrawler.py:
-                type: file
-            type: dir
           local_command:
             children:
               test.py:
                 type: file
+            type: dir
+          version:
+            children:
+              build.py:
+                type: file
+            type: dir
+        type: dir
+      config:
+        type: file
+      config.yml:
+        type: file
+      cron:
+        children:
+          dev:
+            type: file
+          local:
+            type: file
+          prod:
+            type: file
+        type: dir
+      docker:
+        children:
+          .gitkeep:
+            type: file
+          docker-compose.yml:
+            type: file
+        type: dir
+      mysql:
+        children:
+          data:
+            children: {}
+            type: dir
+          dumps:
+            children: {}
+            type: dir
+        type: dir
+      script:
+        children:
+          appGo.sh:
+            type: file
+          appInstall.sh:
+            type: file
+          appPerms.sh:
+            type: file
+          appStarted.sh:
+            type: file
+          autoCode.sh:
+            type: file
+          gpgExport.sh:
+            type: file
+        type: dir
+      sonarqube:
+        children:
+          conf:
+            children: {}
+            type: dir
+          data:
+            children: {}
+            type: dir
+          extensions:
+            children: {}
+            type: dir
+        type: dir
+      source:
+        children:
+          .gitkeep:
+            type: file
+        type: dir
+      tests:
+        children:
+          command:
+            children:
+              test:
+                children: {}
+                type: dir
+            type: dir
+        type: dir
+      tmp:
+        children:
+          .gitkeep:
+            type: file
+          config.build:
+            type: file
+          config.runtime.yml:
+            type: file
+          docker-compose.build.yml:
+            type: file
+        type: dir
+      trash:
+        children:
+          .gitkeep:
+            type: file
+        type: dir
+      webhook:
+        children:
+          test-wraped.sh:
+            type: file
+          test.sh:
+            type: file
+        type: dir
+    tmp:
+      status: hidden
+      type: dir
+    type: dir
+  .wex-5-dev:
+    children:
+      .env:
+        type: file
+      command:
+        children:
+          local_command:
+            children:
+              test.py:
+                type: file
+            type: dir
+          test:
+            children: {}
+            type: dir
+        type: dir
+      config.yml:
+        type: file
+      docker:
+        children:
+          docker-compose.standalone.yml:
+            type: file
+        type: dir
+      tests:
+        children:
+          command:
+            children:
+              test:
+                children: {}
+                type: dir
+            type: dir
+        type: dir
+      webhook:
+        children:
+          test-wraped.sh:
+            type: file
+          test.sh:
+            type: file
+        type: dir
+    type: dir
+  LICENCE:
+    type: file
+  README.md:
+    type: file
+  __main__.py:
+    description: This is not the real entrypoint, it should be called by the cli/wex
+      bash entrypoint, which allow to execute extra bash commands before and after
+      main python script.
+    type: file
+  addons:
+    children:
+      ai:
+        children:
+          command:
+            children:
+              code:
+                children:
+                  patch.py:
+                    type: file
+                type: dir
+              crawler:
+                children:
+                  update.py:
+                    type: file
+                type: dir
+              talk:
+                children:
+                  ask.py:
+                    type: file
+                type: dir
             type: dir
           samples:
             children:
@@ -113,130 +270,49 @@ children:
                     type: file
                 type: dir
             type: dir
-          version:
+          src:
             children:
-              build.py:
-                type: file
+              assistant:
+                children:
+                  AppAssistant.py:
+                    type: file
+                type: dir
+              crawler:
+                children:
+                  AppCrawler.py:
+                    type: file
+                  PythonAppCrawler.py:
+                    type: file
+                  WexAppCrawler.py:
+                    type: file
+                type: dir
             type: dir
-        type: dir
-      config:
-        type: file
-      config.yml:
-        type: file
-      cron:
-        children:
-          dev:
-            type: file
-          local:
-            type: file
-          prod:
-            type: file
-        type: dir
-      docker:
-        children:
-          .gitkeep:
-            type: file
-          docker-compose.yml:
-            type: file
-        type: dir
-      script:
-        children:
-          appGo.sh:
-            type: file
-          appInstall.sh:
-            type: file
-          appPerms.sh:
-            type: file
-          appStarted.sh:
-            type: file
-          autoCode.sh:
-            type: file
-          gpgExport.sh:
-            type: file
-        type: dir
-      source:
-        children:
-          .gitkeep:
-            type: file
-        type: dir
-      tests:
-        children:
-          command:
+          tests:
             children:
-              test:
-                children: {}
+              command:
+                children:
+                  code:
+                    children:
+                      patch.py:
+                        type: file
+                    type: dir
+                  crawler:
+                    children:
+                      update.py:
+                        type: file
+                    type: dir
+                  talk:
+                    children:
+                      ask.py:
+                        type: file
+                    type: dir
                 type: dir
             type: dir
         type: dir
-      tmp:
-        children:
-          .gitkeep:
-            type: file
-          config.build:
-            type: file
-          config.build.json:
-            type: file
-          config.build.yml:
-            type: file
-          docker-compose.build.yml:
-            type: file
-          docker.env:
-            type: file
-        type: dir
-      trash:
-        children:
-          .gitkeep:
-            type: file
-        type: dir
-      webhook:
-        children:
-          test-wraped.sh:
-            type: file
-          test.sh:
-            type: file
-        type: dir
-    tmp:
-      status: hidden
-      type: dir
-    type: dir
-  .wex-5-dev:
-    children:
-      .env:
-        type: file
-      command:
-        children:
-          local_command:
-            children:
-              test.py:
-                type: file
-            type: dir
-        type: dir
-      config.yml:
-        type: file
-      docker:
-        children: {}
-        type: dir
-      webhook:
-        children:
-          test-wraped.sh:
-            type: file
-          test.sh:
-            type: file
-        type: dir
-    type: dir
-  LICENCE:
-    type: file
-  README.md:
-    type: file
-  __main__.py:
-    description: This is not the real entrypoint, it should be called by the cli/wex
-      bash entrypoint, which allow to execute extra bash commands before and after
-      main python script.
-    type: file
-  addons:
-    children:
       app:
         children:
+          AppAddonManager.py:
+            type: file
           command:
             children:
               app:
@@ -285,6 +361,11 @@ children:
                   find.py:
                     type: file
                 type: dir
+              migration:
+                children:
+                  migrate.py:
+                    type: file
+                type: dir
               proxy:
                 children:
                   start.py:
@@ -330,9 +411,13 @@ children:
             type: dir
           decorator:
             children:
+              app_dir_ignore.py:
+                type: file
               app_dir_option.py:
                 type: file
-              app_location_optional.py:
+              app_dir_optional.py:
+                type: file
+              service_option.py:
                 type: file
             type: dir
           helpers:
@@ -351,11 +436,20 @@ children:
             type: dir
           middleware:
             children:
-              exec.py:
+              run_post.py:
                 type: file
-              exec_post.py:
+              run_pre.py:
                 type: file
-              init.py:
+            type: dir
+          migrations:
+            children:
+              .gitkeep:
+                type: file
+              3.0.0.py:
+                type: file
+              4.0.0.py:
+                type: file
+              5.0.0.py:
                 type: file
             type: dir
           samples:
@@ -428,6 +522,8 @@ children:
                             type: file
                         type: dir
                     type: dir
+                  config.yml:
+                    type: file
                   docker:
                     children:
                       docker-compose.yml:
@@ -509,6 +605,11 @@ children:
                       find.py:
                         type: file
                     type: dir
+                  migration:
+                    children:
+                      migrate.py:
+                        type: file
+                    type: dir
                   proxy:
                     children:
                       start.py:
@@ -545,6 +646,11 @@ children:
                   suggest.py:
                     type: file
                 type: dir
+              check:
+                children:
+                  hi.py:
+                    type: file
+                type: dir
               command:
                 children:
                   create.py:
@@ -552,6 +658,8 @@ children:
                 type: dir
               core:
                 children:
+                  cleanup.py:
+                    type: file
                   install.py:
                     type: file
                   uninstall.py:
@@ -561,6 +669,16 @@ children:
                 children:
                   show.py:
                     type: file
+                type: dir
+              logs:
+                children:
+                  rotate.py:
+                    type: file
+                  show.py:
+                    type: file
+                type: dir
+              migration:
+                children: {}
                 type: dir
               registry:
                 children:
@@ -576,10 +694,14 @@ children:
                 children:
                   create.py:
                     type: file
+                  run.py:
+                    type: file
                 type: dir
               version:
                 children:
                   build.py:
+                    type: file
+                  get.py:
                     type: file
                 type: dir
               webhook:
@@ -601,6 +723,11 @@ children:
                       suggest.py:
                         type: file
                     type: dir
+                  check:
+                    children:
+                      hi.py:
+                        type: file
+                    type: dir
                   command:
                     children:
                       create.py:
@@ -608,6 +735,8 @@ children:
                     type: dir
                   core:
                     children:
+                      cleanup.py:
+                        type: file
                       install.py:
                         type: file
                       uninstall.py:
@@ -617,6 +746,16 @@ children:
                     children:
                       show.py:
                         type: file
+                    type: dir
+                  logs:
+                    children:
+                      rotate.py:
+                        type: file
+                      show.py:
+                        type: file
+                    type: dir
+                  migration:
+                    children: {}
                     type: dir
                   registry:
                     children:
@@ -634,10 +773,14 @@ children:
                     children:
                       create.py:
                         type: file
+                      run.py:
+                        type: file
                     type: dir
                   version:
                     children:
                       build.py:
+                        type: file
+                      get.py:
                         type: file
                     type: dir
                   webhook:
@@ -667,7 +810,23 @@ children:
                 children:
                   increment.py:
                     type: file
+                  parse.py:
+                    type: file
                 type: dir
+            type: dir
+          const:
+            children:
+              default.py:
+                type: file
+            type: dir
+          helpers:
+            children:
+              git.py:
+                type: file
+              migration.py:
+                type: file
+              version.py:
+                type: file
             type: dir
           tests:
             children:
@@ -683,6 +842,8 @@ children:
                   version:
                     children:
                       increment.py:
+                        type: file
+                      parse.py:
                         type: file
                     type: dir
                 type: dir
@@ -719,11 +880,11 @@ children:
                 type: dir
             type: dir
         type: dir
-      services-db:
+      services_db:
         children:
           services:
             children:
-              maria-10:
+              maria_10:
                 children:
                   command:
                     children:
@@ -788,7 +949,7 @@ children:
                         type: dir
                     type: dir
                 type: dir
-              mongo-6:
+              mongo_6:
                 children:
                   docker:
                     children:
@@ -821,7 +982,7 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              mysql-8:
+              mysql_8:
                 children:
                   command:
                     children:
@@ -897,18 +1058,18 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              postgres:
+              postgres_15:
                 children:
                   service.config.yml:
                     type: file
                 type: dir
             type: dir
         type: dir
-      services-php:
+      services_php:
         children:
           services:
             children:
-              laravel-5:
+              laravel_5:
                 children:
                   docker:
                     children:
@@ -933,7 +1094,7 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              php-8:
+              php_8:
                 children:
                   docker:
                     children:
@@ -963,7 +1124,7 @@ children:
               phpmyadmin:
                 children: {}
                 type: dir
-              symfony-6:
+              symfony_6:
                 children:
                   service.config.yml:
                     type: file
@@ -975,7 +1136,7 @@ children:
                 type: dir
             type: dir
         type: dir
-      services-various:
+      services_various:
         children:
           services:
             children:
@@ -1351,6 +1512,29 @@ children:
         type: dir
       test:
         children:
+          command:
+            children:
+              demo_command:
+                children:
+                  alias.py:
+                    type: file
+                  response_collection.py:
+                    type: file
+                  response_collection_three.py:
+                    type: file
+                  response_collection_two.py:
+                    type: file
+                  responses.py:
+                    type: file
+                type: dir
+              return_type:
+                children:
+                  array.py:
+                    type: file
+                  string.py:
+                    type: file
+                type: dir
+            type: dir
           services:
             children:
               test:
@@ -1388,10 +1572,56 @@ children:
                     type: dir
                 type: dir
             type: dir
+          tests:
+            children:
+              command:
+                children:
+                  demo_command:
+                    children:
+                      alias.py:
+                        type: file
+                      response_collection.py:
+                        type: file
+                      response_collection_three.py:
+                        type: file
+                      response_collection_two.py:
+                        type: file
+                      responses.py:
+                        type: file
+                    type: dir
+                  return_type:
+                    children:
+                      array.py:
+                        type: file
+                      string.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+    type: dir
+  build:
+    children:
+      bdist.linux-x86_64:
+        children: {}
+        type: dir
+      scripts-3.10:
+        children:
+          wex-wrapper:
+            type: file
+        type: dir
+      scripts-3.11:
+        children:
+          wex-wrapper:
+            type: file
         type: dir
     type: dir
   cli:
     children:
+      _init.sh:
+        type: file
+      _init_sudo.sh:
+        type: file
       autocomplete:
         type: file
       autocomplete-handler:
@@ -1412,8 +1642,6 @@ children:
       messages.json:
         type: file
     type: dir
-  main.py:
-    type: file
   requirements.in:
     type: file
   requirements.txt:
@@ -1431,49 +1659,68 @@ children:
         type: dir
       core:
         children:
+          AddonManager.py:
+            type: file
+          CommandRequest.py:
+            type: file
           FatalError.py:
+            type: file
+          IOManager.py:
             type: file
           Kernel.py:
             type: file
+          Logger.py:
+            type: file
+          TestKernel.py:
+            type: file
           WebhookHttpRequestHandler.py:
             type: file
-          action:
-            children:
-              AbstractCoreAction.py:
-                type: file
-              CoreActionsCoreAction.py:
-                type: file
-              HiCoreAction.py:
-                type: file
-              TestCoreAction.py:
-                type: file
-            type: dir
           command:
             children:
-              AbstractCommandProcessor.py:
+              AbstractCommandResolver.py:
                 type: file
-              AddonCommandProcessor.py:
+              AddonCommandResolver.py:
                 type: file
-              AppCommandProcessor.py:
+              AppCommandResolver.py:
                 type: file
-              CoreCommandProcessor.py:
+              ServiceCommandResolver.py:
                 type: file
-              ServiceCommandProcessor.py:
-                type: file
-              UserCommandProcessor.py:
+              UserCommandResolver.py:
                 type: file
             type: dir
-          render:
+          response:
             children:
-              DataSet2d.py:
+              AbortResponse.py:
+                type: file
+              AbstractResponse.py:
+                type: file
+              DataSet2dResponse.py:
+                type: file
+              DefaultResponse.py:
+                type: file
+              FunctionResponse.py:
+                type: file
+              InteractiveShellCommandResponse.py:
+                type: file
+              NonInteractiveShellCommandResponse.py:
+                type: file
+              ResponseCollectionResponse.py:
                 type: file
             type: dir
         type: dir
       decorator:
         children:
+          alias.py:
+            type: file
+          alias_without_addon.py:
+            type: file
           as_sudo.py:
             type: file
           command.py:
+            type: file
+          option.py:
+            type: file
+          test_command.py:
             type: file
         type: dir
       helper:
@@ -1530,6 +1777,47 @@ children:
         type: file
       resources:
         children:
+          app:
+            children:
+              3.0.0:
+                children:
+                  .wex:
+                    type: file
+                  project:
+                    children:
+                      .gitignore:
+                        type: file
+                    type: dir
+                type: dir
+              4.0.0:
+                children:
+                  .wex:
+                    children:
+                      .env:
+                        type: file
+                      config:
+                        type: file
+                    type: dir
+                type: dir
+              5.0.0:
+                children:
+                  .wex:
+                    children:
+                      .env:
+                        type: file
+                      config.yml:
+                        type: file
+                    type: dir
+                type: dir
+              fuzzy:
+                children:
+                  .wex:
+                    children:
+                      config.yml:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
           test-wraped.sh:
             type: file
         type: dir
