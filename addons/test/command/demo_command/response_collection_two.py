@@ -4,6 +4,10 @@ from src.decorator.test_command import test_command
 from src.core import Kernel
 from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
 
+TEST_DEMO_COMMAND_TWO_RESULT_ONE = '__this-is-a-test-TWO'
+TEST_DEMO_COMMAND_TWO_RESULT_SHELL = '__TWO'
+TEST_DEMO_COMMAND_TWO_RESULT_FUNCTION = '__this-is-a-function-TWO'
+
 
 @test_command()
 def test__demo_command__response_collection_two(kernel: Kernel):
@@ -16,10 +20,11 @@ def test__demo_command__response_collection_two(kernel: Kernel):
         )
 
     return ResponseCollectionResponse(kernel, [
-        '__this-is-a-test-TWO',
-        '__this-is-a-test-TWO(2)',
-        '__this-is-a-test-TWO(3)',
-        InteractiveShellCommandResponse(kernel, ['echo', '"__TWO"']),
+        TEST_DEMO_COMMAND_TWO_RESULT_ONE,
+        _test__demo_command__response_collection_two_one,
+        f'{TEST_DEMO_COMMAND_TWO_RESULT_ONE}(2)',
+        f'{TEST_DEMO_COMMAND_TWO_RESULT_ONE}(3)',
+        InteractiveShellCommandResponse(kernel, ['echo', f'"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"']),
         _test__demo_command__response_collection_two_one,
         _test__demo_command__response_collection_three_nested
     ])
