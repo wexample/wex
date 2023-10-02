@@ -275,12 +275,12 @@ class Kernel:
     def call_function(self,
                       function,
                       args: dict | list = None,
-                      _type: str = COMMAND_TYPE_ADDON,
+                      type: str = COMMAND_TYPE_ADDON,
                       quiet: bool = False):
         response = self.run_function(
             function,
             args,
-            _type,
+            type,
             quiet
         )
 
@@ -289,9 +289,9 @@ class Kernel:
     def run_function(self,
                      function,
                      args: dict | list = None,
-                     _type: str = COMMAND_TYPE_ADDON,
+                     type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False) -> AbstractResponse:
-        resolver = self.get_command_resolver(_type)
+        resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
             resolver.build_command_from_function(function),

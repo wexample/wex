@@ -10,7 +10,7 @@ from src.core import Kernel
 @command(help="Remove old logs files")
 @option('--max-days', '-md', required=False, default=10)
 @option('--max-count', '-mc', required=False, default=100, type=int)
-def core__logs__rotate(kernel: Kernel, max_days: int = 10, max_count: int = 100):
+def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int | bool = 100):
     """
     Rotate and clean up log files older than a specified age limit.
 
@@ -37,7 +37,8 @@ def core__logs__rotate(kernel: Kernel, max_days: int = 10, max_count: int = 100)
         mod_time: datetime.datetime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file_path))
 
         # Check if the log file is older than the age limit
-        if now - mod_time > age_limit or deleted_count > max_count:
+        if ((max_days is False or now - mod_time > age_limit)
+                or (max_count is False or deleted_count > max_count)):
             # If it is, delete the log file
             os.remove(log_file_path)
 

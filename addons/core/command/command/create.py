@@ -67,7 +67,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         {
             'command': command
         }
-    )
+    ).first()
 
     kernel.rebuild()
 

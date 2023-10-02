@@ -12,12 +12,21 @@ def _change_modification_time(test_log_path, days):
 
 class TestCoreCommandLogsRotate(AbstractTestCase):
     def test_rotate(self):
+        # First remove all logs.
+        self.kernel.run_function(
+            core__logs__rotate,
+            {
+                'max-days': False,
+                'max-count': False
+            }
+        )
+
         test_log_path = os.path.join(self.kernel.path['log'], 'test.json')
 
         with open(test_log_path, 'w') as test_log:
             test_log.write('TEST_CONTENT')
 
-        # File has been modified 10 days ago.
+        # File has been modified 1 day ago.
         _change_modification_time(
             test_log_path,
             1

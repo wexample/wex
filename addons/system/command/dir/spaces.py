@@ -10,15 +10,18 @@ from src.core.response.DataSet2dResponse import DataSet2dResponse
 @command(help="Return sizes of current directory subdirectories")
 @option('--dir', '-d', type=str, required=False, help="Directory to inspect")
 def system__dir__spaces(kernel: Kernel, dir: str = None):
-    if dir is None:
-        dir = os.getcwd()
+    dir = dir or os.getcwd()
 
     def get_dir_size(directory):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(directory):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
-                total_size += os.path.getsize(fp)
+                if os.path.isfile(fp):
+                    try:
+                        total_size += os.path.getsize(fp)
+                    except OSError as e:
+                        pass
         return total_size
 
     # Initialize DataSet2dResponse object
@@ -33,13 +36,15 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
 
     body = []
     for entry in all_list:
+        size = None
         if os.path.isdir(entry):
             size = get_dir_size(entry)
-        else:
+        elif os.path.isfile(entry):
             size = os.path.getsize(entry)
 
-        body.append([human_readable_size(size), os.path.basename(entry)])
+        if size is not None:
+            body.append([human_readable_size(size), os.path.basename(entry)])
 
     output_list.set_body(body)
 
-    return output_list.render()
+    return output_list

@@ -19,7 +19,7 @@ from src.core import Kernel
 @option('--app-dir', '-a', type=str, required=False, help="App directory")
 def app__migration__migrate(kernel: Kernel, app_dir: str = None):
     if not app_dir:
-        app_dir = kernel.run_function(app__location__find)
+        app_dir = kernel.run_function(app__location__find).first()
 
         if not app_dir:
             app_dir = os.getcwd() + os.sep
@@ -41,7 +41,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
         {
             'version': app_version_string
         }
-    )
+    ).first()
 
     # Unable to parse version number.
     if not app_version:
@@ -52,7 +52,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
             {
                 'version': app_version_string
             }
-        )
+        ).first()
 
     # Create an empty config
     if manager.config == {}:
@@ -74,7 +74,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
             {
                 'version': migration_version_string
             }
-        )
+        ).first()
 
         if is_greater_than(migration_version, app_version):
             kernel.log(f'Migrating to {migration_version_string}')

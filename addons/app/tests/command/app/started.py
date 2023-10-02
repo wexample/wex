@@ -12,6 +12,6 @@ class TestAppCommandAppStarted(AbstractTestCase):
             {
                 'app-dir': app_dir,
             }
-        )
+        ).first()
 
         self.assertFalse(result)

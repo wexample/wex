@@ -22,7 +22,7 @@ class TestAppCommandConfigSet(AbstractTestCase):
                 'app-dir': app_dir,
                 'key': 'global.name'
             }
-        ), 'wex-test-config-set')
+        ).first(), 'wex-test-config-set')
 
         # Rollback.
         self.kernel.run_function(app__config__set, {
@@ -37,4 +37,4 @@ class TestAppCommandConfigSet(AbstractTestCase):
                 'app-dir': app_dir,
                 'key': 'global.name'
             }
-        ), 'wex')
+        ).first(), 'wex')

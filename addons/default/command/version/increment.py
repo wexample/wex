@@ -22,7 +22,7 @@ def default__version__increment(
     version_dict = kernel.run_function(
         default__version__parse,
         {'version': version}
-    )
+    ).first()
 
     # Increment according to type
     if upgrade_type == UPGRADE_TYPE_MAJOR:

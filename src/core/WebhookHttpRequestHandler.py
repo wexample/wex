@@ -12,7 +12,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 {
                     'url': self.path,
                 }
-            )
+            ).first()
 
             self.send_response(200)
             self.send_header('Content-type', 'text/html')

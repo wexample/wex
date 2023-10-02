@@ -10,7 +10,7 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
                 {
                     'type': type
                 }
-            )
+            ).first()
 
             self.assertEqual(
                 response,
@@ -23,7 +23,7 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
             {
                 'type': 'function'
             }
-        )
+        ).first()
 
         self.assertEqual(
             response,
@@ -36,7 +36,7 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
         #     {
         #         'type': 'shell'
         #     }
-        # )
+        # ).first()
         #
         # self.assertEqual(
         #     response,

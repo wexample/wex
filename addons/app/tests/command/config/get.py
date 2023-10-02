@@ -10,6 +10,6 @@ class TestAppCommandConfigGet(AbstractTestCase):
         value = self.kernel.run_function(app__config__get, {
             'key': 'global.name',
             'app-dir': app_dir
-        })
+        }).first()
 
         self.assertEqual(value, 'test_app')

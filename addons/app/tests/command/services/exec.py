@@ -13,7 +13,7 @@ class TestAppCommandServicesExec(AbstractTestCase):
                 'app-dir': app_dir,
                 'hook': 'hook/name'
             }
-        )
+        ).first()
 
         self.assertTrue(
             response['php_8'] is None

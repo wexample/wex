@@ -6,9 +6,9 @@ class TestTestCommandReturnTypeArray(AbstractTestCase):
     def test_array(self):
         response = self.kernel.run_function(test__return_type__array, {
             'arg': 'yes'
-        })
+        }).first()
 
         self.assertTrue(
-            type(response.first()),
+            type(response),
             list
         )

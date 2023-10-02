@@ -22,7 +22,7 @@ def arg_shift(arg_list: list, arg_name: str, is_flag: bool = False):
     arg_pattern = re.compile(r'(-+)' + re.escape(arg_name) + r'$')
 
     for i, arg in enumerate(arg_list):
-        if arg_pattern.match(arg):
+        if isinstance(arg, str) and arg_pattern.match(arg):
             del arg_list[i]
 
             if is_flag:

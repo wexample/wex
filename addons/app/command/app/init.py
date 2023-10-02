@@ -161,7 +161,7 @@ def app__app__init(
                     # Dependencies have already been resolved
                     'ignore-dependencies': True
                 }
-            )
+            ).first()
 
     def init_step_init_git():
         nonlocal git

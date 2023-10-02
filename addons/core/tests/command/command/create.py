@@ -57,7 +57,7 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
             {
                 'command': 'core::test-with-dash/create'
             }
-        )
+        ).first()
 
         shutil.rmtree(
             os.path.dirname(

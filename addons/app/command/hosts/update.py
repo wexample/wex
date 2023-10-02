@@ -14,7 +14,7 @@ def app__hosts__update(kernel: Kernel):
     # new_block_content = []
     # ip = kernel.run_function(
     #     docker__docker__ip
-    # )
+    # ).first()
     #
     # for app_name, app_dir in kernel.addons['app']['proxy']['apps'].items():
     #     new_block_content.append(f'{app_name}\t{ip}')

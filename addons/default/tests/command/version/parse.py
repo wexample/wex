@@ -64,5 +64,5 @@ class TestDefaultCommandVersionParse(AbstractTestCase):
         for version, expected in test_cases:
             self.kernel.log('Testing ' + version)
 
-            result = self.kernel.run_function(default__version__parse, {'version': version})
+            result = self.kernel.run_function(default__version__parse, {'version': version}).first()
             self.assertDictKeysEquals(expected, result)

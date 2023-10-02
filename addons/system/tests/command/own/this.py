@@ -1,6 +1,7 @@
 import os
 
 from addons.system.command.own.this import system__own__this
+from src.helper.system import get_user_or_sudo_user
 from src.const.globals import OWNER_USERNAME
 from src.helper.file import get_file_owner
 from tests.AbstractTestCase import AbstractTestCase
@@ -20,11 +21,13 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             'path': self.kernel.path['tmp']
         })
 
+        owner = get_user_or_sudo_user()
+
         self.assertEqual(
             get_file_owner(
                 test_file
             ),
-            OWNER_USERNAME
+            owner
         )
 
         self.kernel.run_function(system__own__this, {
@@ -35,5 +38,5 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             get_file_owner(
                 test_file
             ),
-            OWNER_USERNAME
+            owner
         )

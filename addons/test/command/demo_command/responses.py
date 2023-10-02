@@ -22,9 +22,9 @@ def test__demo_command__responses(kernel: Kernel, type: str):
         return NonInteractiveShellCommandResponse(kernel, ['ls', '-la'])
 
 
-def _test__demo_command__responses_one(kernel: Kernel):
+def _test__demo_command__responses_one():
     return 'one'
 
 
-def _test__demo_command__responses_two(kernel: Kernel, from_one: str):
+def _test__demo_command__responses_two(from_one: str):
     return from_one + '+two'

@@ -28,7 +28,7 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
                 {
                     'version': manager.get_config('global.version')
                 }
-            )
+            ).first()
 
         # Save new version
         kernel.log(f'New app version : {new_version}')

@@ -20,7 +20,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 0,
                 'search': ''
             }
-        )
+        ).first()
 
         self.assertTrue(COMMAND_CHAR_APP in suggestions)
         self.assertTrue(COMMAND_CHAR_SERVICE in suggestions)
@@ -35,7 +35,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 0,
                 'search': 'co'
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) >= 1
@@ -48,7 +48,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 1,
                 'search': ' '.join(['core', ':'])
             }
-        )
+        ).first()
 
         self.assertTrue(
             suggestions == ':'
@@ -61,7 +61,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 1,
                 'search': ' '.join(['core', COMMAND_SEPARATOR_ADDON])
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) >= 2
@@ -78,7 +78,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'co'
                 ])
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) >= 2
@@ -97,7 +97,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'logo'
                 ])
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) == 1
@@ -117,7 +117,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'show'
                 ])
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) == 1
@@ -135,7 +135,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'autocomplete' + COMMAND_SEPARATOR_GROUP + 'suggest'
                 ])
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) >= 2
@@ -149,7 +149,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 0,
                 'search': COMMAND_CHAR_SERVICE
             }
-        )
+        ).first()
 
         self.assertTrue(
             len(suggestions.split(' ')) >= 2
@@ -165,7 +165,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 1,
                 'search': COMMAND_CHAR_SERVICE + ' t'
             }
-        )
+        ).first()
 
         self.assertTrue(
             COMMAND_CHAR_SERVICE + 'test::demo-command' in suggestions
@@ -183,7 +183,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     ]
                 )
             }
-        )
+        ).first()
 
         # It should be only one suggestion for test-2
         self.assertEqual(
@@ -203,7 +203,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     ]
                 )
             }
-        )
+        ).first()
 
         # It should be only one suggestion for test-2
         self.assertEqual(
@@ -225,7 +225,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     ]
                 ) + ' '
             }
-        )
+        ).first()
 
         self.assertTrue(
             '--option' in suggestions
@@ -244,7 +244,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             {
                 'command': command
             }
-        )
+        ).first()
 
         suggestions: str = self.kernel.run_function(
             core__autocomplete__suggest,
@@ -252,7 +252,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 0,
                 'search': search
             }
-        )
+        ).first()
 
         self.assertTrue(
             command in suggestions,
@@ -282,7 +282,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     'cursor': 0,
                     'search': COMMAND_CHAR_APP
                 }
-            )
+            ).first()
 
             # There is at least on custom app command in wex
             self.assertTrue(
@@ -307,7 +307,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 1,
                 'search': COMMAND_CHAR_APP + 'local_command' + COMMAND_SEPARATOR_GROUP + 'test '
             }
-        )
+        ).first()
 
         self.assertTrue(
             'local-option' in suggestions
@@ -326,7 +326,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 'cursor': 1,
                 'search': COMMAND_CHAR_USER + 'undefined/command '
             }
-        )
+        ).first()
 
         # User command may not exist during test,
         # we just check if undefined command completion does not fail.

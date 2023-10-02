@@ -9,6 +9,6 @@ class TestDefaultCommandVersionIncrement(AbstractTestCase):
             {
                 'version': '1.0.0',
             }
-        )
+        ).first()
 
         self.assertTrue(version and version.startswith('1.0.1'))

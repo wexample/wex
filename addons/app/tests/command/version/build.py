@@ -14,7 +14,7 @@ class TestAppCommandVersionBuild(AbstractTestCase):
             {
                 'version': '1.0.0'
             }
-        )
+        ).first()
 
         self.assertEqual(version, '1.0.0')
 

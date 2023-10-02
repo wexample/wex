@@ -7,5 +7,5 @@ class TestAppCommandHostsUpdate(AbstractTestCase):
         self.assertIsNone(
             self.kernel.run_function(
                 app__hosts__update
-            )
+            ).first()
         )

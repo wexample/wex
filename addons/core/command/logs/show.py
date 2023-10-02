@@ -6,7 +6,7 @@ import json
 
 
 @command(help="Description")
-@alias(name='logs')
+@alias('logs')
 def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
     directory = kernel.path['log']

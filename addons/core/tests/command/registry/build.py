@@ -9,7 +9,7 @@ class TestCoreCommandRegistryBuild(AbstractTestCase):
             {
                 'write': False
             }
-        )
+        ).first()
 
         self.assertIsInstance(
             registry,

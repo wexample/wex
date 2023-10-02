@@ -14,7 +14,7 @@ class TestAppCommandHookExec(AbstractTestCase):
                 'app-dir': app_dir,
                 'hook': 'missing/hook'
             }
-        )
+        ).first()
 
         self.assertEqual(
             results['php_8'],

@@ -204,7 +204,7 @@ def remove_file_if_exists(file: str):
 
 
 def human_readable_size(size, decimal_places=2):
-    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB']:
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024.0:
             break
         size /= 1024.0

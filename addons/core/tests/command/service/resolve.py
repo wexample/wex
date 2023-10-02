@@ -8,7 +8,7 @@ class TestCoreCommandServiceResolve(AbstractTestCase):
             core__service__resolve,
             {
                 'service': 'php-8, matomo'
-            })
+            }).first()
 
         self.assertGreaterEqual(
             len(dependencies),
