@@ -2,5 +2,6 @@ from src.core.Kernel import Kernel
 
 
 class TestKernel(Kernel):
-    # Post-exec script cannot be tested with unitest.
+    # Post-exec script should be tested with
+    # dedicated subprocesses during tests
     fast_mode = True

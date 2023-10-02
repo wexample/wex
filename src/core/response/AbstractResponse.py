@@ -37,9 +37,6 @@ class AbstractResponse:
         previous_response = self.parent = self.kernel.current_response
         self.kernel.current_response = self
 
-        # Save root response once.
-        self.kernel.root_response = self.kernel.root_response or self
-
         output = self.render_content(
             request,
             render_mode,

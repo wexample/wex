@@ -38,27 +38,26 @@ ADDONS_DEFINITIONS = {
 
 
 class Kernel:
-    current_request = None
-    current_response = None
+    # Allow child classes override
     fast_mode = False
-    http_server = None
-    previous_response = None
-    registry: dict[str, Optional[str]] = {}
-    root_response = None
-    task_id: str | None = None
-    verbosity = VERBOSITY_LEVEL_DEFAULT
 
-    def __init__(self, entrypoint_path):
-        self.post_exec = []
-        # Use a clone to keep original command.
-        self.sys_argv = sys.argv.copy()
+    def __init__(self, entrypoint_path: str):
+        self.current_request: None | CommandRequest = None
+        self.current_response: None | AbstractResponse = None
         self.io = IOManager(self)
+        self.post_exec: list = []
+        # Use a clone to keep original command.
+        self.previous_response: None | AbstractResponse = None
+        self.registry: dict[str, Optional[str]] = {}
+        self.sys_argv: list[str] = sys.argv.copy()
+        self.task_id: str | None = None
+        self.verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
         tmp_path = os.path.join(root_path, 'tmp') + os.sep
 
-        self.path = {
+        self.path: dict = {
             'root': root_path,
             'addons': os.path.join(root_path, 'addons') + os.sep,
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
@@ -68,7 +67,7 @@ class Kernel:
         }
 
         # Create a registry for faster access
-        self.resolvers = {
+        self.resolvers: dict = {
             class_definition.get_type(): class_definition
             for class_definition in PROCESSOR_CLASSES
         }
@@ -77,13 +76,13 @@ class Kernel:
         self.addons = {}
         for name in list_subdirectories(self.path['addons']):
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
-            self.addons[name] = definition(self, name)
+            self.addons[name]: AddonManager = definition(self, name)
 
         self.store_task_id()
         self.handle_core_args()
 
         # Create the logger after task_id created.
-        self.logger = Logger(self)
+        self.logger: Logger = Logger(self)
 
         self.load_registry()
         self.exec_middlewares('init')
@@ -99,9 +98,9 @@ class Kernel:
             self.registry = yaml.load(f, SafeLoader)
 
     def rebuild(self, test: bool = False):
-        from addons.core.command.registry.build import _core__registry__build
+        from addons.core.command.registry.build import __core__registry__build
 
-        _core__registry__build(self, test)
+        __core__registry__build(self, test)
 
     def trace(self, _exit: bool = True):
         import traceback

@@ -15,13 +15,15 @@ from src.helper.command import execute_command
 @option('--url', '-u', type=str, required=True, help="Argument")
 def core__webhook__exec(kernel: Kernel, url: str) -> bool:
     source_data = {}
-    if kernel.http_server:
-        source_data = {
-            'ip': kernel.http_server.client_address[0],
-            'port': kernel.http_server.client_address[1],
-            'method': kernel.http_server.command,
-            'user_agent': kernel.http_server.headers.get('User-Agent')
-        }
+
+    # TODO dead code ?
+    # if kernel.http_server:
+    #     source_data = {
+    #         'ip': kernel.http_server.client_address[0],
+    #         'port': kernel.http_server.client_address[1],
+    #         'method': kernel.http_server.command,
+    #         'user_agent': kernel.http_server.headers.get('User-Agent')
+    #     }
 
     parsed_url = urlparse(url)
     path = parsed_url.path
