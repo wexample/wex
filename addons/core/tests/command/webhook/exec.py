@@ -35,7 +35,7 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         success = self.kernel.run_function(
             core__webhook__exec,
             {
-                'url': 'http://localhost:4242/webhook/wex-test-webhook/test-wraped?p=155&v=wex_5.0.0-beta.6+build.20230321054915'
+                'url': 'http://localhost:4242/webhook/wex-test-webhook/test-wrapped?p=155&v=wex_5.0.0-beta.6+build.20230321054915'
             }
         ).first()
 
