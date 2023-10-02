@@ -1,6 +1,6 @@
 import os
 
-from src.helper.args import arg_shift
+from src.helper.args import arg_shift, convert_dict_to_args
 
 
 class CommandRequest:
@@ -9,7 +9,7 @@ class CommandRequest:
     match = None
     path = None
 
-    def __init__(self, resolver, command: str, args: list = None):
+    def __init__(self, resolver, command: str, args: dict | list = None):
         args = args or []
 
         self.quiet = False
@@ -17,13 +17,17 @@ class CommandRequest:
         self.command = resolver.resolve_alias(self.resolver.kernel, command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
-        self.args: list = args
 
         self.locate_function()
 
         if not self.function:
             return
 
+        if isinstance(args, dict):
+            self.args = convert_dict_to_args(self.function, args)
+        else:
+            self.args = args
+            
         # For multiple steps commands like response collections
         # Share unique root request steps list.
         current_request = self.resolver.kernel.current_request
