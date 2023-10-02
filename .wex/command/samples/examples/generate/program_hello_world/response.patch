@@ -1,0 +1,7 @@
+diff --git a/.wex/command/samples/examples/generating/program_hello_world/response.py b/.wex/command/samples/examples/generating/program_hello_world/response.py
+new file mode 100644
+--- /dev/null
++++ b/.wex/command/samples/examples/generating/program_hello_world/response.py
+@@ -0,0 +1,2 @@
++def print_hello_world() -> str:
++    return 'Hello World!'

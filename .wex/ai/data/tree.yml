@@ -1,0 +1,1554 @@
+children:
+  .env:
+    description: Application env parameters, used to store tokens and local configuration
+    status: hidden
+    type: file
+  .git:
+    status: hidden
+    type: dir
+  .gitignore:
+    type: file
+  .gitlab-ci.yml:
+    type: file
+  .wex:
+    children:
+      .env:
+        type: file
+      .gitignore:
+        type: file
+      ai:
+        children:
+          data:
+            children:
+              tree.yml:
+                description: This current file
+                status: hidden
+                type: file
+            type: dir
+        type: dir
+      backup:
+        children:
+          .gitkeep:
+            type: file
+        type: dir
+      command:
+        children:
+          assistant:
+            children:
+              AppAssistant.py:
+                type: file
+            type: dir
+          autocode.py:
+            type: file
+          crawler:
+            children:
+              AppCrawler.py:
+                type: file
+              PythonAppCrawler.py:
+                type: file
+              WexAppCrawler.py:
+                type: file
+            type: dir
+          local_command:
+            children:
+              test.py:
+                type: file
+            type: dir
+          samples:
+            children:
+              examples:
+                children:
+                  explain:
+                    children:
+                      code_comment:
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          source.py:
+                            type: file
+                          tree.yml:
+                            type: file
+                        type: dir
+                    type: dir
+                  generate:
+                    children:
+                      program_hello_world:
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          tree.yml:
+                            type: file
+                        type: dir
+                    type: dir
+                  patch:
+                    children:
+                      hello_world_capitalized:
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          source.py:
+                            type: file
+                          tree.yml:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+              prompts:
+                children:
+                  git_patch_generator.txt:
+                    type: file
+                  program_file_structure.txt:
+                    type: file
+                  program_full_code.txt:
+                    type: file
+                  programming_assistant.txt:
+                    type: file
+                  simple_examples.txt:
+                    type: file
+                type: dir
+            type: dir
+          version:
+            children:
+              build.py:
+                type: file
+            type: dir
+        type: dir
+      config:
+        type: file
+      config.yml:
+        type: file
+      cron:
+        children:
+          dev:
+            type: file
+          local:
+            type: file
+          prod:
+            type: file
+        type: dir
+      docker:
+        children:
+          .gitkeep:
+            type: file
+          docker-compose.yml:
+            type: file
+        type: dir
+      script:
+        children:
+          appGo.sh:
+            type: file
+          appInstall.sh:
+            type: file
+          appPerms.sh:
+            type: file
+          appStarted.sh:
+            type: file
+          autoCode.sh:
+            type: file
+          gpgExport.sh:
+            type: file
+        type: dir
+      source:
+        children:
+          .gitkeep:
+            type: file
+        type: dir
+      tests:
+        children:
+          command:
+            children:
+              test:
+                children: {}
+                type: dir
+            type: dir
+        type: dir
+      tmp:
+        children:
+          .gitkeep:
+            type: file
+          config.build:
+            type: file
+          config.build.json:
+            type: file
+          config.build.yml:
+            type: file
+          docker-compose.build.yml:
+            type: file
+          docker.env:
+            type: file
+        type: dir
+      trash:
+        children:
+          .gitkeep:
+            type: file
+        type: dir
+      webhook:
+        children:
+          test-wraped.sh:
+            type: file
+          test.sh:
+            type: file
+        type: dir
+    tmp:
+      status: hidden
+      type: dir
+    type: dir
+  .wex-5-dev:
+    children:
+      .env:
+        type: file
+      command:
+        children:
+          local_command:
+            children:
+              test.py:
+                type: file
+            type: dir
+        type: dir
+      config.yml:
+        type: file
+      docker:
+        children: {}
+        type: dir
+      webhook:
+        children:
+          test-wraped.sh:
+            type: file
+          test.sh:
+            type: file
+        type: dir
+    type: dir
+  LICENCE:
+    type: file
+  README.md:
+    type: file
+  __main__.py:
+    description: This is not the real entrypoint, it should be called by the cli/wex
+      bash entrypoint, which allow to execute extra bash commands before and after
+      main python script.
+    type: file
+  addons:
+    children:
+      app:
+        children:
+          command:
+            children:
+              app:
+                children:
+                  init.py:
+                    type: file
+                  perms.py:
+                    type: file
+                  restart.py:
+                    type: file
+                  serve.py:
+                    type: file
+                  start.py:
+                    type: file
+                  started.py:
+                    type: file
+                  stop.py:
+                    type: file
+                type: dir
+              config:
+                children:
+                  get.py:
+                    type: file
+                  set.py:
+                    type: file
+                  write.py:
+                    type: file
+                type: dir
+              env:
+                children:
+                  get.py:
+                    type: file
+                type: dir
+              hook:
+                children:
+                  exec.py:
+                    type: file
+                type: dir
+              hosts:
+                children:
+                  update.py:
+                    type: file
+                type: dir
+              location:
+                children:
+                  find.py:
+                    type: file
+                type: dir
+              proxy:
+                children:
+                  start.py:
+                    type: file
+                  stop.py:
+                    type: file
+                type: dir
+              service:
+                children:
+                  install.py:
+                    type: file
+                  used.py:
+                    type: file
+                type: dir
+              services:
+                children:
+                  exec.py:
+                    type: file
+                type: dir
+              version:
+                children:
+                  build.py:
+                    type: file
+                type: dir
+            type: dir
+          const:
+            children:
+              app.py:
+                type: file
+            type: dir
+          containers:
+            children:
+              default:
+                children:
+                  docker-compose.yml:
+                    type: file
+                type: dir
+              network:
+                children:
+                  docker-compose.yml:
+                    type: file
+                type: dir
+            type: dir
+          decorator:
+            children:
+              app_dir_option.py:
+                type: file
+              app_location_optional.py:
+                type: file
+            type: dir
+          helpers:
+            children:
+              app.py:
+                type: file
+              docker.py:
+                type: file
+              test.py:
+                type: file
+            type: dir
+          locale:
+            children:
+              messages.json:
+                type: file
+            type: dir
+          middleware:
+            children:
+              exec.py:
+                type: file
+              exec_post.py:
+                type: file
+              init.py:
+                type: file
+            type: dir
+          samples:
+            children:
+              app:
+                children:
+                  .wex:
+                    children:
+                      .gitignore.sample:
+                        type: file
+                      backup:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      command:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      cron:
+                        children:
+                          dev:
+                            type: file
+                          local:
+                            type: file
+                          prod:
+                            type: file
+                        type: dir
+                      docker:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      source:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      tmp:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      trash:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+            type: dir
+          services:
+            children:
+              default:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                type: dir
+              proxy:
+                children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      proxy:
+                        children:
+                          html:
+                            children:
+                              .gitkeep:
+                                type: file
+                              index.html:
+                                type: file
+                            type: dir
+                        type: dir
+                      tmp:
+                        children: {}
+                        type: dir
+                    type: dir
+                type: dir
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  app:
+                    children:
+                      init.py:
+                        type: file
+                      perms.py:
+                        type: file
+                      restart.py:
+                        type: file
+                      serve.py:
+                        type: file
+                      start.py:
+                        type: file
+                      started.py:
+                        type: file
+                      stop.py:
+                        type: file
+                    type: dir
+                  config:
+                    children:
+                      get.py:
+                        type: file
+                      set.py:
+                        type: file
+                      write.py:
+                        type: file
+                    type: dir
+                  env:
+                    children:
+                      get.py:
+                        type: file
+                    type: dir
+                  hook:
+                    children:
+                      exec.py:
+                        type: file
+                    type: dir
+                  hosts:
+                    children:
+                      update.py:
+                        type: file
+                    type: dir
+                  location:
+                    children:
+                      find.py:
+                        type: file
+                    type: dir
+                  proxy:
+                    children:
+                      start.py:
+                        type: file
+                      stop.py:
+                        type: file
+                    type: dir
+                  service:
+                    children:
+                      install.py:
+                        type: file
+                      used.py:
+                        type: file
+                    type: dir
+                  services:
+                    children:
+                      exec.py:
+                        type: file
+                    type: dir
+                  version:
+                    children:
+                      build.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+      core:
+        children:
+          command:
+            children:
+              autocomplete:
+                children:
+                  suggest.py:
+                    type: file
+                type: dir
+              command:
+                children:
+                  create.py:
+                    type: file
+                type: dir
+              core:
+                children:
+                  install.py:
+                    type: file
+                  uninstall.py:
+                    type: file
+                type: dir
+              logo:
+                children:
+                  show.py:
+                    type: file
+                type: dir
+              registry:
+                children:
+                  build.py:
+                    type: file
+                type: dir
+              service:
+                children:
+                  resolve.py:
+                    type: file
+                type: dir
+              test:
+                children:
+                  create.py:
+                    type: file
+                type: dir
+              version:
+                children:
+                  build.py:
+                    type: file
+                type: dir
+              webhook:
+                children:
+                  exec.py:
+                    type: file
+                  serve.py:
+                    type: file
+                  stop.py:
+                    type: file
+                type: dir
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  autocomplete:
+                    children:
+                      suggest.py:
+                        type: file
+                    type: dir
+                  command:
+                    children:
+                      create.py:
+                        type: file
+                    type: dir
+                  core:
+                    children:
+                      install.py:
+                        type: file
+                      uninstall.py:
+                        type: file
+                    type: dir
+                  logo:
+                    children:
+                      show.py:
+                        type: file
+                    type: dir
+                  registry:
+                    children:
+                      build.py:
+                        type: file
+                    type: dir
+                  service:
+                    children:
+                      install.py:
+                        type: file
+                      resolve.py:
+                        type: file
+                    type: dir
+                  test:
+                    children:
+                      create.py:
+                        type: file
+                    type: dir
+                  version:
+                    children:
+                      build.py:
+                        type: file
+                    type: dir
+                  webhook:
+                    children:
+                      exec.py:
+                        type: file
+                      serve.py:
+                        type: file
+                      stop.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+      default:
+        children:
+          command:
+            children:
+              file:
+                children:
+                  append_once.py:
+                    type: file
+                  remove_line.py:
+                    type: file
+                type: dir
+              version:
+                children:
+                  increment.py:
+                    type: file
+                type: dir
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  file:
+                    children:
+                      append_once.py:
+                        type: file
+                      remove_line.py:
+                        type: file
+                    type: dir
+                  version:
+                    children:
+                      increment.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+      docker:
+        children:
+          command:
+            children:
+              docker:
+                children:
+                  ip.py:
+                    type: file
+                  stop_all.py:
+                    type: file
+                type: dir
+            type: dir
+          helpers:
+            children:
+              docker.py:
+                type: file
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  docker:
+                    children:
+                      ip.py:
+                        type: file
+                      stop_all.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+      services-db:
+        children:
+          services:
+            children:
+              maria-10:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          perms.py:
+                            type: file
+                        type: dir
+                      config:
+                        children:
+                          write_post.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            type: file
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          maria:
+                            children:
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              my.cnf:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                  tests:
+                    children:
+                      command:
+                        children:
+                          config:
+                            children: {}
+                            type: dir
+                        type: dir
+                    type: dir
+                type: dir
+              mongo-6:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            type: file
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          mongo:
+                            children:
+                              .gitkeep:
+                                type: file
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              mysql-8:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          perms.py:
+                            type: file
+                        type: dir
+                      config:
+                        children:
+                          write_post.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            type: file
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          mysql:
+                            children:
+                              .gitkeep:
+                                type: file
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              my.cnf:
+                                type: file
+                            type: dir
+                          sonarqube:
+                            children:
+                              conf:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              extensions:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              postgres:
+                children:
+                  service.config.yml:
+                    type: file
+                type: dir
+            type: dir
+        type: dir
+      services-php:
+        children:
+          services:
+            children:
+              laravel-5:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              php-8:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      index.php:
+                        type: file
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              phpmyadmin:
+                children: {}
+                type: dir
+              symfony-6:
+                children:
+                  service.config.yml:
+                    type: file
+                type: dir
+              wordpress:
+                children:
+                  service.config.yml:
+                    type: file
+                type: dir
+            type: dir
+        type: dir
+      services-various:
+        children:
+          services:
+            children:
+              gitlab:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          gitlab:
+                            children:
+                              .gitignore.sample:
+                                type: file
+                              backups:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
+                type: dir
+              grafana:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      grafana:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      provisioning:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+              jenkins:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        type: file
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      config:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      home:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+              matomo:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        type: file
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              n8n:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          n8n:
+                            children:
+                              .gitkeep:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                type: dir
+              nextcloud:
+                children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          start_options.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      config.php:
+                        type: file
+                      data:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                      extra-addons:
+                        children:
+                          .gitkeep:
+                            type: file
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                  tests:
+                    children:
+                      command:
+                        children:
+                          app:
+                            children: {}
+                            type: dir
+                        type: dir
+                    type: dir
+                type: dir
+              onlyoffice:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        type: file
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                type: dir
+              rocketchat:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          hubot:
+                            children:
+                              scripts:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                          uploads:
+                            children:
+                              .gitkeep:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              sonarqube:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .gitignore.sample:
+                        type: file
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          sonarqube:
+                            children:
+                              conf:
+                                children:
+                                  sonar.properties:
+                                    type: file
+                                  wrapper.conf:
+                                    type: file
+                                type: dir
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              extensions:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+            type: dir
+        type: dir
+      system:
+        children:
+          command:
+            children:
+              dir:
+                children:
+                  spaces.py:
+                    type: file
+                type: dir
+              disk:
+                children:
+                  spaces.py:
+                    type: file
+                type: dir
+              os:
+                children:
+                  name.py:
+                    type: file
+                type: dir
+              own:
+                children:
+                  this.py:
+                    type: file
+                type: dir
+              system:
+                children:
+                  ip.py:
+                    type: file
+                  is_docker.py:
+                    type: file
+                type: dir
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  dir:
+                    children:
+                      spaces.py:
+                        type: file
+                    type: dir
+                  disk:
+                    children:
+                      spaces.py:
+                        type: file
+                    type: dir
+                  os:
+                    children:
+                      name.py:
+                        type: file
+                    type: dir
+                  own:
+                    children:
+                      this.py:
+                        type: file
+                    type: dir
+                  system:
+                    children:
+                      ip.py:
+                        type: file
+                      is_docker.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+      test:
+        children:
+          services:
+            children:
+              test:
+                children:
+                  command:
+                    children:
+                      demo_command:
+                        children:
+                          first.py:
+                            type: file
+                          second.py:
+                            type: file
+                        type: dir
+                      demo_command_2:
+                        children:
+                          third.py:
+                            type: file
+                        type: dir
+                      other_demo_command:
+                        children:
+                          other.py:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+              test_2:
+                children:
+                  command:
+                    children:
+                      another_demo_command:
+                        children:
+                          test.py:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
+    type: dir
+  cli:
+    children:
+      autocomplete:
+        type: file
+      autocomplete-handler:
+        type: file
+      install:
+        type: file
+      terminal-handler:
+        type: file
+      uninstall:
+        type: file
+      wex:
+        type: file
+      wex-wrapper:
+        type: file
+    type: dir
+  locale:
+    children:
+      messages.json:
+        type: file
+    type: dir
+  main.py:
+    type: file
+  requirements.in:
+    type: file
+  requirements.txt:
+    type: file
+  setup.py:
+    type: file
+  src:
+    children:
+      const:
+        children:
+          error.py:
+            type: file
+          globals.py:
+            type: file
+        type: dir
+      core:
+        children:
+          FatalError.py:
+            type: file
+          Kernel.py:
+            type: file
+          WebhookHttpRequestHandler.py:
+            type: file
+          action:
+            children:
+              AbstractCoreAction.py:
+                type: file
+              CoreActionsCoreAction.py:
+                type: file
+              HiCoreAction.py:
+                type: file
+              TestCoreAction.py:
+                type: file
+            type: dir
+          command:
+            children:
+              AbstractCommandProcessor.py:
+                type: file
+              AddonCommandProcessor.py:
+                type: file
+              AppCommandProcessor.py:
+                type: file
+              CoreCommandProcessor.py:
+                type: file
+              ServiceCommandProcessor.py:
+                type: file
+              UserCommandProcessor.py:
+                type: file
+            type: dir
+          render:
+            children:
+              DataSet2d.py:
+                type: file
+            type: dir
+        type: dir
+      decorator:
+        children:
+          as_sudo.py:
+            type: file
+          command.py:
+            type: file
+        type: dir
+      helper:
+        children:
+          args.py:
+            type: file
+          array.py:
+            type: file
+          command.py:
+            type: file
+          core.py:
+            type: file
+          dict.py:
+            type: file
+          file.py:
+            type: file
+          json.py:
+            type: file
+          process.py:
+            type: file
+          prompt.py:
+            type: file
+          registry.py:
+            type: file
+          service.py:
+            type: file
+          string.py:
+            type: file
+          suggest.py:
+            type: file
+          system.py:
+            type: file
+          test.py:
+            type: file
+        type: dir
+      resources:
+        children:
+          templates:
+            children:
+              command.py.tpl:
+                type: file
+              handler.sh.tpl:
+                type: file
+              test.py.tpl:
+                type: file
+            type: dir
+          wexd.service:
+            type: file
+        type: dir
+    type: dir
+  tests:
+    children:
+      AbstractTestCase.py:
+        type: file
+      resources:
+        children:
+          test-wraped.sh:
+            type: file
+        type: dir
+      samples:
+        children:
+          config_bash:
+            type: file
+        type: dir
+      test_core.py:
+        type: file
+      test_logging.py:
+        type: file
+    type: dir
+  tmp:
+    status: hidden
+    type: dir
+  version.txt:
+    type: file
+  wex.egg-info:
+    status: hidden
+    type: dir
+description: My application root directory

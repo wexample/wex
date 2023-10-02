@@ -1,0 +1,25 @@
+Full code of the program __PROGRAM__,
+before and after the files separators (---------) there is NO extra empty line at the beginning or the end of the files :
+--------- # .wex/command/sample/__main__.py
+#!/usr/bin/env python3
+
+import RunningNotifier from core.RunningNotifier
+import sys
+
+if __name__ == '__main__':
+    process_id = sys.argv[1] if len(sys.argv) > 1 else None
+    if process_id is None:
+        print('Please use the "bash ./cli/wex" file to run wex script.')
+        sys.exit(1)
+
+    RunningNotifier(
+        __file__,
+        process_id
+    ).call()
+
+--------- # .wex/command/sample/core/RunningNotifier.py
+
+class RunningNotifier():
+  def __init__(self, process_id):
+    return 'Program is running at with pid #' + process_id
+
