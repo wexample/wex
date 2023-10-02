@@ -135,7 +135,18 @@ class Kernel:
             parameters
         )
 
-    def error(self, code: str, parameters: object = {}, log_level: int | None = None) -> None:
+    def validate_arg_type(self, got: any, expected: type):
+        if isinstance(got, expected):
+            return True
+
+        self.error(
+            ERR_UNEXPECTED,
+            {
+                'error': f"Bad arguments format, expected {expected}, got {type(got)}."
+            }
+        )
+
+    def error(self, code: str, parameters: None | dict = None, log_level: int | None = None) -> None:
         # Performance optimisation
         import logging
         from src.const.error import COLORS
@@ -148,7 +159,7 @@ class Kernel:
 
         self.logger.append_error(
             code,
-            parameters,
+            parameters or {},
             log_level
         )
 
@@ -233,12 +244,12 @@ class Kernel:
         # Store command to execute after kernel execution,
         # it should be set at the last moment,
         # to avoid execution if any error happened before
-        for command in self.post_exec:
+        for post_command in self.post_exec:
             from src.helper.command import command_to_string
 
             self.task_file_write(
                 'post-exec',
-                command_to_string(command) + '\n',
+                command_to_string(post_command) + '\n',
             )
 
         result = result.print()
@@ -269,12 +280,12 @@ class Kernel:
     def call_function(self,
                       function,
                       args: dict | list = None,
-                      type: str = COMMAND_TYPE_ADDON,
+                      _type: str = COMMAND_TYPE_ADDON,
                       quiet: bool = False):
         response = self.run_function(
             function,
             args,
-            type,
+            _type,
             quiet
         )
 
