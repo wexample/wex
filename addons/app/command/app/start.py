@@ -5,7 +5,8 @@ from addons.app.command.config.write import app__config__write
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.env.get import app__env__get
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.command.app.started import app__app__started
+from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL, \
+    APP_STARTED_CHECK_MODE_ANY_CONTAINER
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
@@ -69,8 +70,9 @@ def app__app__start(
             kernel.io.message(f'Created .env file for env "{env}"')
 
         if kernel.run_function(app__app__started, {
-            'app-dir': app_dir
-        }):
+            'app-dir': app_dir,
+            'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
+        }).first():
             manager.log('App already running')
             return ResponseCollectionStopResponse(kernel)
 
@@ -78,7 +80,10 @@ def app__app__start(
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
             # The reverse proxy is not running.
-            if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
+            if not kernel.run_function(app__app__started, {
+                'app-dir': manager.proxy_path,
+                'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
+            }):
                 manager.log('Starting proxy server')
 
                 from addons.app.command.proxy.start import app__proxy__start

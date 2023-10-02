@@ -41,7 +41,7 @@ def app__proxy__start(kernel: Kernel,
                 # Started
                 if kernel.run_function(app__app__started, {
                     'app-dir': manager.proxy_path,
-                    'check-mode': APP_STARTED_CHECK_MODE_CONFIG
+                    'mode': APP_STARTED_CHECK_MODE_CONFIG
                 }):
                     return
         else:

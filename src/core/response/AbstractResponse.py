@@ -65,7 +65,7 @@ class AbstractResponse:
                         output_serialized = output.print(interactive_data)
                         if output_serialized is not None:
                             serialised.append(output_serialized)
-                elif output:
+                elif output is not None:
                     serialised.append(str(output))
 
             if not len(serialised):

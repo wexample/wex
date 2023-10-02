@@ -18,7 +18,7 @@ def app__app__stop(kernel: Kernel, app_dir: str):
 
     if not kernel.run_function(app__app__started, {
         'app-dir': app_dir,
-        'check-mode': APP_STARTED_CHECK_MODE_FULL
+        'mode': APP_STARTED_CHECK_MODE_FULL
     }).first():
         manager.log('App already stopped')
         return

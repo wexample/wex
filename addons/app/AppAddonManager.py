@@ -6,10 +6,10 @@ import yaml
 
 from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
-from src.const.globals import COLOR_GRAY
+from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
-    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY
+    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.location.find import app__location__find
 from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 from src.helper.core import core_kernel_get_version
@@ -25,6 +25,8 @@ class AppAddonManager(AddonManager):
         self.proxy_apps = {}
         self.runtime_config = {}
         self.runtime_config_path = None
+        self.runtime_docker_compose = None
+        self.runtime_docker_compose_path = None
 
         if platform.system() == 'Darwin':
             self.proxy_path = '/Users/.wex/server/'
@@ -259,11 +261,15 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        self.kernel.io.log('Switching to app : ' + app_dir)
+        self.kernel.io.log(
+            'Switching to app : ' + app_dir,
+            verbosity=VERBOSITY_LEVEL_MEDIUM
+        )
 
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
+        self.runtime_docker_compose_path = os.path.join(app_dir, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML)
         self.config = self._load_config(self.config_path)
 
         self.proxy_apps = yaml_load_or_default(
@@ -273,6 +279,9 @@ class AppAddonManager(AddonManager):
 
         self.runtime_config = self._load_config(
             self.runtime_config_path)
+
+        self.runtime_docker_compose = self._load_config(
+            self.runtime_docker_compose_path)
 
         os.chdir(app_dir)
 
