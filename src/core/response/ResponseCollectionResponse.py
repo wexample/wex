@@ -34,7 +34,7 @@ class ResponseCollectionResponse(AbstractResponse):
         return '.'.join(map(str, self.request.steps))
 
     def log(self, message, detail: any = '__EMPTY__'):
-        self.kernel.log(
+        self.kernel.io.log(
             f'#{str(self.id)} ' +
             str(message) + (' : ' + str(detail) if detail != '__EMPTY__' else ''),
             verbosity=VERBOSITY_LEVEL_MAXIMUM
@@ -44,12 +44,12 @@ class ResponseCollectionResponse(AbstractResponse):
                        request: CommandRequest,
                        render_mode: str = KERNEL_RENDER_MODE_CLI,
                        args: dict = {}) -> AbstractResponse:
-        self.kernel.log(
+        self.kernel.io.log(
             f'Rendering collection #{self.id}',
             verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
 
-        self.kernel.log_indent_up()
+        self.kernel.io.log_indent_up()
 
         # Collection is empty, nothing to do
         if not len(self.collection):
@@ -145,7 +145,7 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def render_content_complete(self, output_collection=None):
         self.kernel.previous_response = self
-        self.kernel.log_indent_down()
+        self.kernel.io.log_indent_down()
 
         if self.kernel.fast_mode:
             if self.parent:

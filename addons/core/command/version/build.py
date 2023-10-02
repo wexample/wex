@@ -21,11 +21,11 @@ def core__version__build(kernel: Kernel, commit: bool = False) -> None:
 
     if not commit:
         current_version = core_kernel_get_version(kernel)
-        kernel.log(f'Building new version from {current_version}...')
+        kernel.io.log(f'Building new version from {current_version}...')
 
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
-            kernel.error(ERR_CORE_REPO_DIRTY, {
+            kernel.io.error(ERR_CORE_REPO_DIRTY, {
                 'diff': repo.git.diff()
             })
 
@@ -68,7 +68,7 @@ def core__version__build(kernel: Kernel, commit: bool = False) -> None:
         with open(readme_path, 'w') as file:
             file.write(updated_content)
 
-        kernel.message_next_command(
+        kernel.io.message_next_command(
             core__version__build,
             {
                 'commit': True
@@ -77,7 +77,7 @@ def core__version__build(kernel: Kernel, commit: bool = False) -> None:
 
     else:
         if not repo.is_dirty(untracked_files=True):
-            kernel.log('No changes to commit')
+            kernel.io.log('No changes to commit')
             return
 
         repo.index.add(kernel.path['root'] + FILE_VERSION)

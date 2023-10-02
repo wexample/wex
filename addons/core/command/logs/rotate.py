@@ -24,7 +24,7 @@ def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int
     # Get the list of log files
     log_files: List[str] = os.listdir(kernel.path['log'])
 
-    kernel.log(f'Starting cleanup of files older than {max_days} days, max count at {max_count}')
+    kernel.io.log(f'Starting cleanup of files older than {max_days} days, max count at {max_count}')
 
     deleted_count = 0
 
@@ -42,4 +42,4 @@ def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int
             # If it is, delete the log file
             os.remove(log_file_path)
 
-            kernel.log(f'Removed old log file : {log_file_path}')
+            kernel.io.log(f'Removed old log file : {log_file_path}')

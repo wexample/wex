@@ -163,7 +163,7 @@ def kill_process_by_command(kernel, command: str):
 
     if success:
         for pid in pids:
-            kernel.log(f'Killing process {pid}')
+            kernel.io.log(f'Killing process {pid}')
             os.kill(int(pid), signal.SIGTERM)
 
 

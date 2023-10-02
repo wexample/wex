@@ -54,13 +54,13 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
         list(request.match.groups())
     )
 
-    kernel.log(f'Creating test for command {command}')
+    kernel.io.log(f'Creating test for command {command}')
 
-    kernel.log_indent_up()
-    kernel.log(f'File : {test_path}')
-    kernel.log(f'Class : {class_name}')
-    kernel.log(f'Function : {method_name}')
-    kernel.log_indent_down()
+    kernel.io.log_indent_up()
+    kernel.io.log(f'File : {test_path}')
+    kernel.io.log(f'Class : {class_name}')
+    kernel.io.log(f'Function : {method_name}')
+    kernel.io.log_indent_down()
 
     create_from_template(
         kernel.path['templates'] + 'test.py.tpl',
@@ -80,6 +80,6 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
 
     kernel.rebuild()
 
-    kernel.message(f'Created test file : {test_path}')
+    kernel.io.message(f'Created test file : {test_path}')
 
     return test_path

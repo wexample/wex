@@ -4,6 +4,7 @@ import yaml
 from yaml import SafeLoader
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.option import option
 from src.decorator.as_sudo import as_sudo
@@ -18,23 +19,24 @@ from src.helper.file import set_user_or_sudo_user_owner
         help="Register also commands marked as only for testing")
 @option('--write', '-w', type=bool, default=True,
         help="Write registry file")
+@alias('rebuild')
 def core__registry__build(kernel, test: bool = False, write: bool = True):
     return _core__registry__build(kernel, test, write)
 
 
 def _core__registry__build(kernel, test: bool = False, write: bool = True):
-    kernel.log('Building registry...')
+    kernel.io.log('Building registry...')
     addons = kernel.addons
 
-    kernel.log_indent_up()
+    kernel.io.log_indent_up()
 
     registry = {
         'addons': build_registry_addons(addons, kernel, test),
         'services': build_registry_services(addons, kernel, test)
     }
 
-    kernel.log('Building complete...')
-    kernel.log_indent_down()
+    kernel.io.log('Building complete...')
+    kernel.io.log_indent_down()
 
     if write:
         registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
@@ -74,7 +76,7 @@ def build_registry_services(addons, kernel, test_commands: bool = False):
         services_dir = os.path.join(kernel.path['addons'], addon, 'services')
         if os.path.exists(services_dir):
             for service in os.listdir(services_dir):
-                kernel.log(f'Found service {service}')
+                kernel.io.log(f'Found service {service}')
                 service_path = os.path.join(services_dir, service)
                 config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
                 commands_path = os.path.join(service_path, 'command')

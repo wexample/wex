@@ -139,7 +139,7 @@ class TestCore(AbstractTestCase):
 
             # Display nice shortcut to create missing test
             if not command_data['test']:
-                self.kernel.message_next_command(
+                self.kernel.io.message_next_command(
                     core__test__create,
                     {
                         'all': True
@@ -184,6 +184,6 @@ class TestCore(AbstractTestCase):
         )
 
     def test_message_next_command(self):
-        self.kernel.message_next_command(
+        self.kernel.io.message_next_command(
             core__logo__show
         )

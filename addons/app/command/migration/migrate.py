@@ -64,7 +64,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
             )
         )
 
-    kernel.log(f'Current version defined as {app_version_string}')
+    kernel.io.log(f'Current version defined as {app_version_string}')
 
     for migration_file in get_migrations_files(kernel):
         migration_version_string = migration_file.replace(".py", "")
@@ -77,7 +77,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
         ).first()
 
         if is_greater_than(migration_version, app_version):
-            kernel.log(f'Migrating to {migration_version_string}')
+            kernel.io.log(f'Migrating to {migration_version_string}')
 
             migration_exec(
                 kernel,
@@ -97,4 +97,4 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
         f'{CORE_COMMAND_NAME}.version',
         core_kernel_get_version(kernel)
     )
-    kernel.message(f'Migration complete')
+    kernel.io.message(f'Migration complete')

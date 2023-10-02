@@ -21,7 +21,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def run_request(self, request:CommandRequest) -> AbstractResponse:
         if not self.get_base_path():
             if not request.quiet:
-                self.kernel.error(ERR_APP_NOT_FOUND, {
+                self.kernel.io.error(ERR_APP_NOT_FOUND, {
                     'command': request.command,
                     'dir': os.getcwd(),
                 })

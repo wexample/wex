@@ -13,18 +13,18 @@ class AbstractTestCase(unittest.TestCase):
 
     def setUp(self):
         # Add a new line between each test
-        self.kernel.print("")
+        self.kernel.io.print("")
 
         self.test_dir = os.getcwd()
 
     def tearDown(self):
         # Add a new line between each test
-        self.kernel.print("")
+        self.kernel.io.print("")
 
         # If workdir changed.
         current_dir = os.getcwd()
         if current_dir != self.test_dir:
-            self.kernel.log(f'Reset working directory to : {self.test_dir}')
+            self.kernel.io.log(f'Reset working directory to : {self.test_dir}')
 
             os.chdir(self.test_dir)
 

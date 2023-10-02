@@ -30,4 +30,4 @@ def core__webhook__stop(
             )
         )
 
-    kernel.message(f'Webhook server stopped')
+    kernel.io.message(f'Webhook server stopped')

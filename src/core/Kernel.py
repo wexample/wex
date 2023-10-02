@@ -1,5 +1,4 @@
 import importlib.util
-import json
 import os
 import sys
 import yaml
@@ -10,13 +9,14 @@ from yaml import SafeLoader
 from addons.app.AppAddonManager import AppAddonManager
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
 from src.const.globals import \
-    FILE_REGISTRY, COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
+    FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.AddonCommandResolver import AddonCommandResolver
@@ -42,9 +42,6 @@ class Kernel:
     current_response = None
     fast_mode = False
     http_server = None
-    indent_string = '  '
-    log_indent: int = 1
-    messages = None
     previous_response = None
     registry: dict[str, Optional[str]] = {}
     root_response = None
@@ -55,6 +52,7 @@ class Kernel:
         self.post_exec = []
         # Use a clone to keep original command.
         self.sys_argv = sys.argv.copy()
+        self.io = IOManager(self)
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -109,107 +107,10 @@ class Kernel:
         import traceback
 
         for line in traceback.format_stack():
-            self.print(line.strip())
+            self.io.print(line.strip())
 
         if _exit:
             exit(1)
-
-    def trans(self, key: str, parameters: object = {}, default=None) -> str:
-        # Performance optimisation
-        from src.helper.string import format_ignore_missing
-
-        # Load the messages from the JSON file
-        if self.messages is None:
-            with open(self.path['root'] + 'locale/messages.json') as f:
-                self.messages = json.load(f)
-
-                for addon in self.addons:
-                    messages_path = self.path['addons'] + f'{addon}/locale/messages.json'
-
-                    if os.path.exists(messages_path):
-                        with open(messages_path) as file:
-                            self.messages.update(json.load(file))
-
-        return format_ignore_missing(
-            self.messages.get(key, default or key),
-            parameters
-        )
-
-    def error(self, code: str, parameters: None | dict = None, log_level: int | None = None) -> None:
-        # Performance optimisation
-        import logging
-        from src.const.error import COLORS
-
-        if log_level is None:
-            log_level = logging.FATAL
-
-        message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
-        message = f'{COLORS[log_level]}{message}{COLOR_RESET}'
-
-        self.logger.append_error(
-            code,
-            parameters or {},
-            log_level
-        )
-
-        if log_level == logging.FATAL:
-            from src.core.FatalError import FatalError
-
-            raise FatalError(message)
-        else:
-            self.print(message)
-
-    def log_indent_up(self) -> None:
-        self.log_indent += 1
-
-    def log_indent_down(self) -> None:
-        self.log_indent -= 1
-
-    def build_indent(self, increment: int = 0) -> str:
-        return self.indent_string * (self.log_indent + increment)
-
-    def log(self, message: str, color=COLOR_GRAY, increment: int = 0, verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
-        if verbosity > self.verbosity:
-            return
-
-        self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
-
-    def print(self, message):
-        print(message)
-
-    def message(self, message: str, text: None | str = None):
-        import textwrap
-
-        message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
-
-        if text:
-            message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
-
-        self.print(message)
-
-    def message_next_command(self, function_or_command, args: dict = {}, command_type: str = COMMAND_TYPE_ADDON,
-                             message: str = 'You might want now to execute'):
-        return self.message_all_next_commands(
-            [
-                self.get_command_resolver(command_type).build_full_command_from_function(
-                    function_or_command,
-                    args,
-                )
-            ],
-            message
-        )
-
-    def message_all_next_commands(
-            self,
-            commands,
-            message: str = 'You might want now to execute one of the following command',
-    ):
-        self.message(message + ':')
-
-        commands = "\n".join(commands)
-        self.print(
-            f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {commands}\n'
-        )
 
     def call(self):
         """
@@ -231,11 +132,11 @@ class Kernel:
         )
 
         if result is not None:
-            self.print(result)
+            self.io.print(result)
 
-        self.log(
+        self.io.log(
             '_' * 60,
-            increment=-self.log_indent,
+            increment=-self.io.log_indent,
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
     def call_command(self, command: str, command_args: dict | list | None = None):
@@ -264,7 +165,7 @@ class Kernel:
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
-            self.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
+            self.io.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
                 'command': command
             })
 
@@ -360,7 +261,7 @@ class Kernel:
     def store_task_id(self):
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
-            self.error(
+            self.io.error(
                 ERR_UNEXPECTED,
                 {
                     'error': 'Please use the "bash ./cli/wex" file to run wex script.'
@@ -403,4 +304,4 @@ class Kernel:
 
         log_indent_value = arg_shift(self.sys_argv, 'log-indent')
         if log_indent_value is not None:
-            self.log_indent = int(log_indent_value)
+            self.io.log_indent = int(log_indent_value)

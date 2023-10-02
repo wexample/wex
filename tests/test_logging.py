@@ -9,7 +9,7 @@ class TestLogging(AbstractTestCase):
     def test_error(self):
         remove_file_if_exists(self.kernel.path['log'])
 
-        self.kernel.error(
+        self.kernel.io.error(
             code=ERR_TEST,
             log_level=logging.DEBUG
         )

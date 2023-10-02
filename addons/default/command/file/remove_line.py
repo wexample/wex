@@ -12,7 +12,7 @@ from src.decorator.option import option
         help="Exact line, ending an trailing spaces will be ignored")
 def default__file__remove_line(kernel: Kernel, file_path: str, line: str) -> None:
     if not os.path.isfile(file_path):
-        kernel.log("File does not exist.")
+        kernel.io.log("File does not exist.")
         return
 
     # Ensure line has no leading/trailing white space

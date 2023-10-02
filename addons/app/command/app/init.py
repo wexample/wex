@@ -53,7 +53,7 @@ def app__app__init(
     def init_step_check_vars():
         nonlocal name
 
-        kernel.log(f'Creating app in "{app_dir}"')
+        kernel.io.log(f'Creating app in "{app_dir}"')
 
         if not name:
             name = os.path.basename(
@@ -63,7 +63,7 @@ def app__app__init(
         # Cleanup name.
         name = to_snake_case(name)
 
-        kernel.log(f'Using name "{name}"')
+        kernel.io.log(f'Using name "{name}"')
 
         if not os.path.exists(app_dir):
             os.makedirs(app_dir, exist_ok=True)
@@ -84,10 +84,10 @@ def app__app__init(
             }
         ).first()
 
-        kernel.log('Checking services...')
+        kernel.io.log('Checking services...')
         for service in services:
             if not service in kernel.registry['services']:
-                kernel.error(
+                kernel.io.error(
                     ERR_SERVICE_NOT_FOUND,
                     {
                         'service': service
@@ -113,7 +113,7 @@ def app__app__init(
             copy_function=shutil.copy2
         )
 
-        kernel.log('Renaming .sample files...')
+        kernel.io.log('Renaming .sample files...')
         # Remove every .sample suffix after filenames
         # i.e .gitignore.sample becomes .gitignore
         app_data_path = os.path.join(app_dir, APP_DIR_APP_DATA)
@@ -122,10 +122,10 @@ def app__app__init(
         for sample_file in sample_files:
             new_file_name = os.path.splitext(sample_file)[0]
             os.rename(sample_file, new_file_name)
-            kernel.log(f'Renaming {sample_file}')
+            kernel.io.log(f'Renaming {sample_file}')
 
     def init_step_create_env():
-        kernel.log(f'Creating env file with env "{APP_ENV_PROD}"')
+        kernel.io.log(f'Creating env file with env "{APP_ENV_PROD}"')
         create_env(
             APP_ENV_PROD,
             app_dir
@@ -135,7 +135,7 @@ def app__app__init(
         nonlocal domains
         nonlocal manager
 
-        kernel.log(f'Creating config...')
+        kernel.io.log(f'Creating config...')
 
         domains = split_arg_array(domains)
         manager.config = manager.create_config(name, domains)
@@ -151,7 +151,7 @@ def app__app__init(
         nonlocal services
         nonlocal kernel
 
-        kernel.log('Installing services...')
+        kernel.io.log('Installing services...')
         for service in services:
             services = kernel.run_function(
                 app__service__install,
@@ -167,7 +167,7 @@ def app__app__init(
         nonlocal git
 
         if git:
-            kernel.log('Installing git repo...')
+            kernel.io.log('Installing git repo...')
 
             Repo.init(app_dir)
 
@@ -196,7 +196,7 @@ def app__app__init(
         init_step_unset_workdir,
     ])
 
-    kernel.message(f'Your app is initialized as" {name}"')
-    kernel.message_next_command(
+    kernel.io.message(f'Your app is initialized as" {name}"')
+    kernel.io.message_next_command(
         app__app__start
     )

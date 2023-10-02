@@ -67,8 +67,8 @@ def version_guess(kernel: Kernel, path: str):
 
 def migration_delete_dir_if_empty(kernel: Kernel, target_dir: str):
     if not os.path.exists(target_dir):
-        kernel.log(f'Dir already deleted : {target_dir}')
+        kernel.io.log(f'Dir already deleted : {target_dir}')
     elif len(os.listdir(target_dir)):
-        kernel.log(f'Dir not empty, leaving as it is : {target_dir}')
+        kernel.io.log(f'Dir not empty, leaving as it is : {target_dir}')
     else:
         os.rmdir(target_dir)

@@ -45,7 +45,7 @@ def app__proxy__start(kernel: Kernel,
                 }):
                     return
         else:
-            kernel.log(f'Creating proxy dir {manager.proxy_path}')
+            kernel.io.log(f'Creating proxy dir {manager.proxy_path}')
             os.makedirs(
                 manager.proxy_path,
                 exist_ok=True
@@ -70,7 +70,7 @@ def app__proxy__start(kernel: Kernel,
 
         def check_port(port_to_check: int):
             if not port_to_check:
-                kernel.error(
+                kernel.io.error(
                     ERR_UNEXPECTED,
                     {
                         'error': f"Invalid port {port_to_check}"
@@ -82,7 +82,7 @@ def app__proxy__start(kernel: Kernel,
             # Check port availability.
             process = get_processes_by_port(port_to_check)
             if process:
-                kernel.error(
+                kernel.io.error(
                     ERR_UNEXPECTED,
                     {
                         'error': f"Process {process.pid} ({process.name()}) is using port {port_to_check}"

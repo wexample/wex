@@ -31,7 +31,7 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
             ).first()
 
         # Save new version
-        kernel.log(f'New app version : {new_version}')
+        kernel.io.log(f'New app version : {new_version}')
 
         manager.set_config('global.version', new_version)
     else:
@@ -39,16 +39,16 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
         new_version = manager.get_config('global.version')
 
         if not repo.is_dirty(untracked_files=True):
-            kernel.log('No changes to commit')
+            kernel.io.log('No changes to commit')
             return
 
-        kernel.log('Updating repo...')
+        kernel.io.log('Updating repo...')
         try:
             origin = repo.remote(name='origin')
             origin.fetch(tags=True)
             origin.pull()
         except Exception as e:
-            kernel.error(ERR_UNEXPECTED, {
+            kernel.io.error(ERR_UNEXPECTED, {
                 'error': 'Git pull : ' + str(e),
             })
 
@@ -57,11 +57,11 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
         latest_tag = tags[-1]
 
         if str(latest_tag) == new_version:
-            kernel.error(ERR_UNEXPECTED, {
+            kernel.io.error(ERR_UNEXPECTED, {
                 'error': f'The version {new_version} has been already tagged, you should create a new version.',
             })
 
-        kernel.log('Committing new version...')
+        kernel.io.log('Committing new version...')
         try:
             repo.index.add('.wex/config')
             repo.index.commit(f"New version v{new_version}")
@@ -69,10 +69,10 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
 
             # origin.push()
         except Exception as e:
-            kernel.error(ERR_UNEXPECTED, {
+            kernel.io.error(ERR_UNEXPECTED, {
                 'error': 'Git commit : ' + str(e),
             })
 
-        kernel.message(f'New version : {new_version}')
+        kernel.io.message(f'New version : {new_version}')
 
     return new_version

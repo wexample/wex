@@ -57,7 +57,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
         # Execute in standard mode in a subshell.
         # Can take few seconds.
-        self.kernel.log('Running collection test in standard mode...')
+        self.kernel.io.log('Running collection test in standard mode...')
         standard_mode_response = (
             (subprocess
              .run(core_call_to_shell_command(

@@ -15,7 +15,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         service = to_snake_case(request.match[1])
         if service not in self.kernel.registry['services']:
             if not request.quiet:
-                self.kernel.error(ERR_SERVICE_NOT_FOUND, {
+                self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {
                     'command': request.command,
                     'service': service,
                 })

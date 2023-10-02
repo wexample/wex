@@ -19,7 +19,7 @@ def core__core__uninstall(kernel: Kernel):
     __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)
     __core__core__uninstall_autocomplete(kernel)
     __core__core__uninstall_terminal(kernel)
-    kernel.log('Bye!')
+    kernel.io.log('Bye!')
 
 
 def __core__core__uninstall_webhook_server(kernel):
@@ -64,7 +64,7 @@ def __remove_source_file_in_bashrc(kernel, file_path, bashrc_path):
     if not os.path.exists(bashrc_path):
         return
 
-    kernel.log(f'Removing autocompletion script to {bashrc_path}...')
+    kernel.io.log(f'Removing autocompletion script to {bashrc_path}...')
 
     kernel.run_function(
         default__file__remove_line,
@@ -74,4 +74,4 @@ def __remove_source_file_in_bashrc(kernel, file_path, bashrc_path):
         }
     )
 
-    kernel.message(f'Updated bashrc {bashrc_path}')
+    kernel.io.message(f'Updated bashrc {bashrc_path}')

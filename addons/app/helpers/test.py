@@ -8,7 +8,7 @@ def create_test_app(kernel, name='test-app', services: list | None = None) -> st
     app_dir = kernel.path["tmp"] + 'tests/test-app/'
     test_dir = os.getcwd()
 
-    kernel.log('Creating test app in : ' + app_dir)
+    kernel.io.log('Creating test app in : ' + app_dir)
 
     # Recreate test app dir.
     shutil.rmtree(app_dir, True)

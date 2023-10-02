@@ -14,11 +14,11 @@ from src.core.Kernel import Kernel
 @option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
         help='Force to create file if exists')
 def core__command__create(kernel: Kernel, command: str, force: bool = False) -> {}:
-    kernel.log('Creating command file...')
+    kernel.io.log('Creating command file...')
     request = kernel.create_command_request(command)
 
     if not request:
-        kernel.message(f'Unable to process command : {command}')
+        kernel.io.message(f'Unable to process command : {command}')
         return
 
     command_path: str = request.resolver.build_path_or_fail(request)
@@ -28,13 +28,13 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         command_type = request.resolver.get_type()
 
         if command_type == COMMAND_TYPE_CORE:
-            kernel.message(f'Unable to create core command : {command}')
+            kernel.io.message(f'Unable to create core command : {command}')
             return
         # User wants to create some/command, but with no addons name
         # So we suggest user want to create a local user command.
         elif command_type == COMMAND_TYPE_ADDON:
             if not command_path:
-                kernel.log('No given addon name, creating a local user command...')
+                kernel.io.log('No given addon name, creating a local user command...')
 
                 return kernel.run_function(
                     core__command__create,
@@ -60,7 +60,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
             }
         )
 
-        kernel.message(f'Created command file : {command_path}')
+        kernel.io.message(f'Created command file : {command_path}')
 
     test_file = kernel.run_function(
         core__test__create,
@@ -71,7 +71,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
 
     kernel.rebuild()
 
-    kernel.log('Giving files permission...')
+    kernel.io.log('Giving files permission...')
     request.resolver.set_command_file_permission(command_path)
     request.resolver.set_command_file_permission(test_file)
 

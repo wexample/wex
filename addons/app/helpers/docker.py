@@ -47,7 +47,7 @@ def exec_app_docker_compose(
 ):
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
-        kernel.error(ERR_USER_HAS_NO_DOCKER_PERMISSION, {
+        kernel.io.error(ERR_USER_HAS_NO_DOCKER_PERMISSION, {
             'username': username
         })
 
@@ -84,7 +84,7 @@ def exec_app_docker_compose(
         success, output = execute_command(kernel, command)
 
         if not success:
-            kernel.error(
+            kernel.io.error(
                 ERR_UNEXPECTED,
                 {
                     'error': f'Error during running docker compose "{docker_command}" : \n\n'

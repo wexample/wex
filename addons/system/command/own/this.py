@@ -11,5 +11,5 @@ def system__own__this(kernel, path: str = None):
     if path is None:
         path = os.getcwd()
 
-    kernel.log(f'Setting recursively ownership to "{get_user_or_sudo_user()}" on : {path}')
+    kernel.io.log(f'Setting recursively ownership to "{get_user_or_sudo_user()}" on : {path}')
     set_owner_recursively(path)

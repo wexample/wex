@@ -18,12 +18,12 @@ def build_progress_bar(steps, **kwargs):
 def progress_steps(kernel: Kernel, steps: [], title: str = 'Processing'):
     with build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
-            kernel.log(f'{title} : {step.__name__}')
-            kernel.log_indent_up()
+            kernel.io.log(f'{title} : {step.__name__}')
+            kernel.io.log_indent_up()
 
             response = step()
 
-            kernel.log_indent_down()
+            kernel.io.log_indent_down()
             click.echo("\n")
 
             # Step failed somewhere

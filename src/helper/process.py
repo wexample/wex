@@ -5,7 +5,7 @@ from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 def process_post_exec(
         kernel,
         command: []):
-    kernel.log(
+    kernel.io.log(
         'Queuing shell command : ' + command_to_string(command),
         verbosity=VERBOSITY_LEVEL_MAXIMUM
     )

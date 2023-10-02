@@ -35,10 +35,10 @@ def core__webhook__serve(
 ):
     if is_port_open(port):
         if force:
-            base_kernel.log(f'Port already in use {port}, killing process...')
+            base_kernel.io.log(f'Port already in use {port}, killing process...')
             kill_process_by_port(port)
         else:
-            base_kernel.error(ERR_UNEXPECTED, {
+            base_kernel.io.error(ERR_UNEXPECTED, {
                 'error': f'Port already in use {port}',
             })
             return False
@@ -61,7 +61,7 @@ def core__webhook__serve(
             service_exec(base_kernel, SERVICE_DAEMON_NAME, 'enable')
             service_exec(base_kernel, SERVICE_DAEMON_NAME, 'start')
         else:
-            base_kernel.log("Running Webhook listener...")
+            base_kernel.io.log("Running Webhook listener...")
 
             # Build command
             command = base_kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(
@@ -81,7 +81,7 @@ def core__webhook__serve(
                 async_mode=True
             )
 
-            base_kernel.message(f'Started webhook listener on port {port}')
+            base_kernel.io.message(f'Started webhook listener on port {port}')
 
     else:
         class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
@@ -89,7 +89,7 @@ def core__webhook__serve(
 
         if not dry_run:
             with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:
-                base_kernel.log(f'Starting HTTP server on port {port}')
+                base_kernel.io.log(f'Starting HTTP server on port {port}')
                 server.serve_forever()
 
-        base_kernel.message(f'Webhook server started on port {port}')
+        base_kernel.io.message(f'Webhook server started on port {port}')

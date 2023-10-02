@@ -56,107 +56,107 @@ def app__app__start(kernel, app_dir: str, clear_cache: bool = False, user: str =
     else:
         env = app__env__get.callback(app_dir)
 
-    if kernel.run_function(app__app__started, {
-        'app-dir': app_dir
-    }):
-        manager.log('App already running')
-        return
-
-    name = manager.get_config('global.name')
-    # Current app is not the reverse proxy itself.
-    if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
-        # The reverse proxy is not running.
-        if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
-            manager.log('Starting proxy server')
-
-            from addons.app.command.proxy.start import app__proxy__start
-
-            kernel.run_function(
-                app__proxy__start,
-                {
-                    'user': user,
-                    'group': group,
-                    'env': env,
-                }
-            )
-
-    kernel.log(f"Starting app : {name}")
-
-    kernel.run_function(
-        app__app__perms,
-        {
-            'app-dir': app_dir
-        }
-    )
-
-    kernel.run_function(
-        app__hook__exec,
-        {
-            'app-dir': app_dir,
-            'hook': 'app/start-pre'
-        }
-    )
-
-    kernel.run_function(
-        app__config__write,
-        {
-            'app-dir': app_dir,
-            'user': user,
-            'group': group,
-        })
-
-    # Save app in proxy apps.
-    manager.log('Registering app...')
-    manager.proxy_apps[name] = app_dir
-    manager.save_proxy_apps()
-
-    # Run docker compose
-    compose_options = ['up', '-d']
-
-    if clear_cache:
-        compose_options.append('--build')
-
-    service_results = kernel.run_function(
-        app__hook__exec,
-        {
-            'app-dir': app_dir,
-            'hook': 'app/start-options',
-            'arguments': {
-                'app-dir': app_dir,
-                'options': compose_options
-            }
-        }
-    )
-
-    compose_options += [item for value in service_results.values() if isinstance(value, list) for item in value]
-
-    # Start containers
-    exec_app_docker_compose(
-        kernel,
-        app_dir,
-        [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
-        compose_options,
-        sync=False
-    )
-
-    # TODO if build fails, app is still marked as started
-    #      We should create a queued steps system, to work with async bash scripts.
-    manager.set_runtime_config('started', True)
-
-    # Postpone execution
-    process_post_exec_wex(
-        kernel,
-        app__hook__exec,
-        {
-            'app-dir': app_dir,
-            'hook': 'app/start-post'
-        }
-    )
-
-    process_post_exec_wex(
-        kernel,
-        app__app__serve,
-        {
-            'app-dir': app_dir
-        }
-    )
+    # if kernel.run_function(app__app__started, {
+    #     'app-dir': app_dir
+    # }):
+    #     manager.log('App already running')
+    #     return
+    #
+    # name = manager.get_config('global.name')
+    # # Current app is not the reverse proxy itself.
+    # if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}):
+    #     # The reverse proxy is not running.
+    #     if not kernel.run_function(app__app__started, {'app-dir': manager.proxy_path}):
+    #         manager.log('Starting proxy server')
+    #
+    #         from addons.app.command.proxy.start import app__proxy__start
+    #
+    #         kernel.run_function(
+    #             app__proxy__start,
+    #             {
+    #                 'user': user,
+    #                 'group': group,
+    #                 'env': env,
+    #             }
+    #         )
+    #
+    # kernel.io.log(f"Starting app : {name}")
+    #
+    # kernel.run_function(
+    #     app__app__perms,
+    #     {
+    #         'app-dir': app_dir
+    #     }
+    # )
+    #
+    # kernel.run_function(
+    #     app__hook__exec,
+    #     {
+    #         'app-dir': app_dir,
+    #         'hook': 'app/start-pre'
+    #     }
+    # )
+    #
+    # kernel.run_function(
+    #     app__config__write,
+    #     {
+    #         'app-dir': app_dir,
+    #         'user': user,
+    #         'group': group,
+    #     })
+    #
+    # # Save app in proxy apps.
+    # manager.log('Registering app...')
+    # manager.proxy_apps[name] = app_dir
+    # manager.save_proxy_apps()
+    #
+    # # Run docker compose
+    # compose_options = ['up', '-d']
+    #
+    # if clear_cache:
+    #     compose_options.append('--build')
+    #
+    # service_results = kernel.run_function(
+    #     app__hook__exec,
+    #     {
+    #         'app-dir': app_dir,
+    #         'hook': 'app/start-options',
+    #         'arguments': {
+    #             'app-dir': app_dir,
+    #             'options': compose_options
+    #         }
+    #     }
+    # ).first()
+    #
+    # compose_options += [item for value in service_results.values() if isinstance(value, list) for item in value]
+    #
+    # # Start containers
+    # exec_app_docker_compose(
+    #     kernel,
+    #     app_dir,
+    #     [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
+    #     compose_options,
+    #     sync=False
+    # )
+    #
+    # # TODO if build fails, app is still marked as started
+    # #      We should create a queued steps system, to work with async bash scripts.
+    # manager.set_runtime_config('started', True)
+    #
+    # # Postpone execution
+    # process_post_exec_wex(
+    #     kernel,
+    #     app__hook__exec,
+    #     {
+    #         'app-dir': app_dir,
+    #         'hook': 'app/start-post'
+    #     }
+    # )
+    #
+    # process_post_exec_wex(
+    #     kernel,
+    #     app__app__serve,
+    #     {
+    #         'app-dir': app_dir
+    #     }
+    # )

@@ -32,7 +32,7 @@ class AbstractCommandResolver:
 
         if not request.function and (not request.path or not os.path.isfile(request.path)):
             if not request.quiet:
-                self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
                     'path': request.path,
                 })
@@ -57,7 +57,7 @@ class AbstractCommandResolver:
             return AbortResponse(self.kernel)
         except Exception as e:
             # Show error message
-            self.kernel.error(
+            self.kernel.io.error(
                 ERR_COMMAND_CONTEXT,
                 {
                     'function': request.function.callback.__name__,
@@ -184,7 +184,7 @@ class AbstractCommandResolver:
         path = self.build_path(request, subdir)
 
         if path is None:
-            self.kernel.error(ERR_COMMAND_FILE_NOT_FOUND, {
+            self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                 'command': request.command,
                 'path': path,
             })

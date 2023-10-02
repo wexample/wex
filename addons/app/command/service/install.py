@@ -43,13 +43,13 @@ def app__service__install(
         ignore_dependencies: bool = False
 ):
     service = to_snake_case(service)
-    kernel.log(f'Installing service : {service}')
+    kernel.io.log(f'Installing service : {service}')
 
     if not ignore_dependencies:
         # Install dependencies
         for dependency in kernel.registry['services'][service]['config'].get('dependencies', []):
-            kernel.log(f'Expected dependency : {dependency}')
-            kernel.log_indent_up()
+            kernel.io.log(f'Expected dependency : {dependency}')
+            kernel.io.log_indent_up()
 
             app__service__install.callback(
                 app_dir,
@@ -60,17 +60,17 @@ def app__service__install(
                 force
             )
 
-            kernel.log_indent_down()
+            kernel.io.log_indent_down()
 
     manager: AppAddonManager = kernel.addons['app']
     services = manager.get_config('global.services')
 
     if service in services and not force:
-        kernel.log('Service already installed')
+        kernel.io.log('Service already installed')
         return
 
     if install_config:
-        kernel.log('Adding to config')
+        kernel.io.log('Adding to config')
         # Append once, and remove duplicates
         services.append(service)
         services = array_unique(services)
@@ -122,10 +122,10 @@ def app_service_install_merge_dir(
         install_docker,
         install_git,
 ):
-    kernel.log_indent_up()
+    kernel.io.log_indent_up()
 
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)
-    kernel.log(f'Merging {current_item}')
+    kernel.io.log(f'Merging {current_item}')
 
     if os.path.isdir(abs_path):
         items = os.listdir(abs_path)
@@ -149,7 +149,7 @@ def app_service_install_merge_dir(
 
         if basename == '.gitignore.sample':
             if install_git:
-                kernel.log('Mixing GIT ignore')
+                kernel.io.log('Mixing GIT ignore')
 
                 # Override file name.
                 dest_file = os.path.join(
@@ -166,7 +166,7 @@ def app_service_install_merge_dir(
                 )
         elif basename.startswith('docker-compose.') and basename.endswith('.yml'):
             if install_docker:
-                kernel.log('Mixing Docker compose YML')
+                kernel.io.log('Mixing Docker compose YML')
 
                 create_directories_and_file(dest_file)
 
@@ -182,4 +182,4 @@ def app_service_install_merge_dir(
                 dest_file
             )
 
-    kernel.log_indent_down()
+    kernel.io.log_indent_down()

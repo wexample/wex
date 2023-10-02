@@ -20,7 +20,7 @@ def app__hosts__update(kernel: Kernel):
     #     new_block_content.append(f'{app_name}\t{ip}')
     # new_block_content = '\n'.join(new_block_content)
     #
-    # kernel.log(f'Updating {hosts_path}')
+    # kernel.io.log(f'Updating {hosts_path}')
     #
     # with open(hosts_path, 'r') as f:
     #     hosts_content = f.read()

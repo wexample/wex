@@ -178,7 +178,7 @@ class AppAddonManager(AddonManager):
         return get_dict_item_by_path(self.config, key, default)
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
-        return self.kernel.log(
+        return self.kernel.io.log(
             f'[{self.get_config("global.name")}] {message}',
             color,
             increment + 1
@@ -239,7 +239,7 @@ class AppAddonManager(AddonManager):
         else:
             import logging
 
-            self.kernel.error(ERR_APP_NOT_FOUND, {
+            self.kernel.io.error(ERR_APP_NOT_FOUND, {
                 'command': request.command,
                 'dir': app_dir_resolved,
             }, logging.ERROR)
@@ -259,7 +259,7 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        self.kernel.log('Switching to app : ' + app_dir)
+        self.kernel.io.log('Switching to app : ' + app_dir)
 
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
@@ -282,16 +282,16 @@ class AppAddonManager(AddonManager):
         os.chdir(fallback_dir)
 
         # Print log in normal kernel.
-        self.kernel.log('Switching to default : ' + self.call_working_dir)
+        self.kernel.io.log('Switching to default : ' + self.call_working_dir)
 
     def exec_in_workdir(self, app_dir: str, callback):
-        self.kernel.log_indent_up()
+        self.kernel.io.log_indent_up()
         app_dir_previous = os.getcwd() + '/'
         self.set_app_workdir(app_dir)
 
         response = callback()
 
         self.set_app_workdir(app_dir_previous)
-        self.kernel.log_indent_down()
+        self.kernel.io.log_indent_down()
 
         return response
