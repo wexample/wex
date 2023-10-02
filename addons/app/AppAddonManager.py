@@ -4,6 +4,7 @@ import datetime
 import getpass
 import yaml
 
+from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY
 from src.core.AddonManager import AddonManager
@@ -194,14 +195,18 @@ class AppAddonManager(AddonManager):
         if request.is_click_command(app__location__find):
             return
 
-        args_dict = request.args_dict
+        args = request.args.copy()
+        arg_shift(args, 'app-dir')
 
         if self.app_dir is not None:
             app_dir_resolved = self.app_dir
         else:
-            if 'app-dir' in args_dict:
-                app_dir_resolved = args_dict['app-dir']
-            else:
+            app_dir_resolved = arg_shift(args, 'app-dir')
+            if not app_dir_resolved:
+                # Skip if the command allow to be executed without app location.
+                if hasattr(request.function.callback, 'app_dir_optional'):
+                    return
+
                 app_dir = os.getcwd() + os.sep
 
                 app_dir_resolved = self.kernel.run_function(
@@ -209,11 +214,7 @@ class AppAddonManager(AddonManager):
                     {
                         'app-dir': app_dir
                     }
-                )
-
-                # Skip if the command allow to be executed without app location.
-                if hasattr(request.function.callback, 'app_dir_optional'):
-                    return
+                ).first()
 
         if app_dir_resolved:
             # Ensure it always ends with a /
@@ -230,12 +231,12 @@ class AppAddonManager(AddonManager):
                 if dirs_differ:
                     request.storage['previous_app_dir'] = app_dir_resolved
 
-            args_dict['app-dir'] = app_dir_resolved
-
             # Append to original apps list.
-            args_list = request.args
-            args_list.append('--app-dir')
-            args_list.append(app_dir_resolved)
+            request.args = args
+            arg_push(
+                args,
+                'app-dir',
+                app_dir_resolved)
         else:
             import logging
 

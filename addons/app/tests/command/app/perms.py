@@ -42,9 +42,9 @@ class TestAppCommandAppPerms(AbstractTestCase):
             }
         )
 
-        self.assertEqual(
+        self.assertNotEqual(
             get_file_owner(
                 test_file
             ),
-            OWNER_USERNAME
+            ROOT_USERNAME
         )

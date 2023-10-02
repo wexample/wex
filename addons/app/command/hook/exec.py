@@ -33,7 +33,7 @@ def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
             'arguments': arguments,
             'hook': hook,
         }
-    )
+    ).first()
 
     results[COMMAND_CHAR_APP] = kernel.run_command(
         COMMAND_CHAR_APP + hook,

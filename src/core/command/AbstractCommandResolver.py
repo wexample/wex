@@ -149,7 +149,9 @@ class AbstractCommandResolver:
                 get_user_or_sudo_user(),
             )
 
-    def create_command_request(self, command: str, args=None):
+    def create_command_request(self, command: str, args: None | list = None):
+        args = args or []
+
         request = CommandRequest(
             self,
             command,

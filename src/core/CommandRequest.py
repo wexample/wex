@@ -17,10 +17,13 @@ class CommandRequest:
         self.command = resolver.resolve_alias(self.resolver.kernel, command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
-
+        self.args = []
+        self.steps = {}
         self.locate_function()
 
         if not self.function:
+            # Do not return any error if function is missing,
+            # as it is managed outside.
             return
 
         if isinstance(args, dict):
@@ -34,7 +37,8 @@ class CommandRequest:
         self.steps = current_request.steps if current_request else [None]
 
         steps = arg_shift(self.args, 'command-request-step')
-        self.steps = list(map(int, str(steps).split('.'))) if steps else self.steps
+        if steps:
+            self.steps = list(map(int, str(steps).split('.')))
 
     def locate_function(self):
         # Build dynamic variables

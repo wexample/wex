@@ -135,17 +135,6 @@ class Kernel:
             parameters
         )
 
-    def validate_arg_type(self, got: any, expected: type):
-        if isinstance(got, expected):
-            return True
-
-        self.error(
-            ERR_UNEXPECTED,
-            {
-                'error': f"Bad arguments format, expected {expected}, got {type(got)}."
-            }
-        )
-
     def error(self, code: str, parameters: None | dict = None, log_level: int | None = None) -> None:
         # Performance optimisation
         import logging
@@ -236,9 +225,23 @@ class Kernel:
         command: str = self.sys_argv[2]
         command_args: [] = self.sys_argv[3:]
 
-        result = self.run_command(
+        result = self.call_command(
             command,
             command_args
+        )
+
+        if result is not None:
+            self.print(result)
+
+        self.log(
+            '_' * 60,
+            increment=-self.log_indent,
+            verbosity=VERBOSITY_LEVEL_MAXIMUM)
+
+    def call_command(self, command: str, command_args: dict | list | None = None):
+        result = self.run_command(
+            command,
+            command_args or []
         )
 
         # Store command to execute after kernel execution,
@@ -252,15 +255,7 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        result = result.print()
-
-        if result is not None:
-            self.print(result)
-
-        self.log(
-            '_' * 60,
-            increment=-self.log_indent,
-            verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        return result.print() if result else None
 
     def run_command(self,
                     command: str,
@@ -294,9 +289,9 @@ class Kernel:
     def run_function(self,
                      function,
                      args: dict | list = None,
-                     type: str = COMMAND_TYPE_ADDON,
+                     _type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False) -> AbstractResponse:
-        resolver = self.get_command_resolver(type)
+        resolver = self.get_command_resolver(_type)
 
         request = self.create_command_request(
             resolver.build_command_from_function(function),

@@ -68,7 +68,7 @@ class AbstractResponse:
                         output_serialized = output.print(interactive_data)
                         if output_serialized is not None:
                             serialised.append(output_serialized)
-                else:
+                elif output:
                     serialised.append(str(output))
 
             if not len(serialised):
@@ -77,3 +77,14 @@ class AbstractResponse:
             return '\n'.join(serialised)
 
         return None
+
+    def first(self):
+        """
+            Return the first valid response which is not a Response object.
+            Useful to retrieve result of a function without to serialize it.
+        """
+        response = self
+        while isinstance(response, AbstractResponse):
+            response = response.output_bag[0]
+
+        return response

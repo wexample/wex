@@ -82,7 +82,7 @@ def app__app__init(
             {
                 'service': services
             }
-        )
+        ).first()
 
         kernel.log('Checking services...')
         for service in services:
@@ -188,8 +188,8 @@ def app__app__init(
         init_step_check_services,
         init_step_copy_app,
         init_step_create_env,
-        init_step_create_config,
         init_step_set_workdir,
+        init_step_create_config,
         init_step_install_service,
         init_step_init_git,
         init_step_hooks,
