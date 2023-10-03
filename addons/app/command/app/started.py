@@ -17,9 +17,9 @@ APP_STARTED_CHECK_MODE_ANY_CONTAINER = 'any-container'
 
 @command(help="Return true if app is started")
 @app_dir_option()
-@option('--mode', '-m', type=str, required=False, default=APP_STARTED_CHECK_MODE_FULL,
+@option('--mode', '-m', type=str, required=False, default=APP_STARTED_CHECK_MODE_ANY_CONTAINER,
         help="Define how to define if app is started or not")
-def app__app__started(kernel: Kernel, app_dir: str, mode: str = APP_STARTED_CHECK_MODE_FULL):
+def app__app__started(kernel: Kernel, app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER):
     if not kernel.addons['app'].get_runtime_config('started', False):
         return False
 

@@ -38,9 +38,13 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
 
         manager.log(f'Using user {user}:{group}')
 
-        runtime_config = manager.config['env'][env].copy()
-        runtime_config.update(manager.config)
+        # Get a full config copy
+        runtime_config = manager.config.copy()
+        # Add the per-environment config.
+        runtime_config.update(manager.config['env'][env])
+        # Add extra runtime config.
         runtime_config.update({
+            'domains_string': ','.join(runtime_config['domains'] if 'domains' in runtime_config else []),
             'env': env,
             'name': f'{name}_{env}',
             'host': {
@@ -64,8 +68,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
                 'name': user,
                 'uid': get_uid_from_user_name(user),
             }
-        }
-        )
+        })
 
         # Build paths to services docker compose yml files.
         for service, service_data in kernel.registry['services'].items():

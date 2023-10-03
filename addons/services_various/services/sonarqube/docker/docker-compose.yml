@@ -5,7 +5,7 @@ services:
         expose:
             - 9000
         environment:
-            - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+            - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
             - VIRTUAL_PORT=9000
             - SONARQUBE_JDBC_USERNAME=${POSTGRES_DB_USER}
             - SONARQUBE_JDBC_PASSWORD=${POSTGRES_DB_PASSWORD}

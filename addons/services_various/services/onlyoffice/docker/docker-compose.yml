@@ -6,7 +6,7 @@ services:
             # MPP-compatible instant messaging client (for ONLYOFFICE Talk correct work)
             - "5222:5222"
         environment:
-            - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+            - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
             - VIRTUAL_PORT=80
         volumes:
             - ${RUNTIME_PATH_APP}logs:/var/log/onlyoffice

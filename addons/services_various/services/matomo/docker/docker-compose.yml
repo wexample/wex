@@ -5,7 +5,7 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
       - VIRTUAL_PORT=80
       # Database
       - MATOMO_DATABASE_HOST=${MYSQL_DB_HOST}

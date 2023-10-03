@@ -21,7 +21,7 @@ def get_app_docker_compose_files(kernel, app_dir):
     if kernel.run_function(app__service__used, {
         'app-dir': app_dir,
         'service': 'proxy',
-    }):
+    }).first():
         compose_files.append(kernel.path['addons'] + 'app/containers/network/docker-compose.yml')
     else:
         compose_files.append(kernel.path['addons'] + 'app/containers/default/docker-compose.yml')
@@ -101,9 +101,9 @@ def exec_app_docker_compose(
     )
 
     if sync:
-        success, output = execute_command(kernel, command)
+        output = execute_command(kernel, command)
 
-        if not success:
+        if not output:
             kernel.io.error(
                 ERR_UNEXPECTED,
                 {

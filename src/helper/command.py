@@ -82,7 +82,10 @@ def execute_command(kernel, command, working_directory=None, async_mode=False):
         with open(err_path, 'a') as err_file:
             err_file.write(err_content.decode())
 
-        return success, out_content.decode().splitlines() if success else err_content.decode().splitlines()
+        if not success:
+            return False
+
+        return out_content.decode().splitlines() if success else err_content.decode().splitlines()
 
 
 def command_to_string(command):

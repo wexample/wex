@@ -8,7 +8,7 @@ services:
     ports:
       - "50000:50000"
     environment:
-      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
       - VIRTUAL_PORT=8080
     volumes:
       - ${RUNTIME_PATH_APP}config:/jenkins_config

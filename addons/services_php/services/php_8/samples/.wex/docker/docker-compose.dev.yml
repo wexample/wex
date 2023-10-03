@@ -1,5 +1,5 @@
 services:
   php_8:
     environment:
-      - LETSENCRYPT_HOST=${RUNTIME_DOMAINS}
+      - LETSENCRYPT_HOST=${RUNTIME_DOMAINS_STRING}
       - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}

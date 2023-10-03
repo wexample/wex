@@ -6,7 +6,7 @@ services:
         - ${RUNTIME_PATH_APP}grafana:/var/lib/grafana
         - ${RUNTIME_PATH_APP}provisioning:/etc/grafana/provisioning/
       environment:
-        - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+        - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
         - VIRTUAL_PORT=80
       extends:
           file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}

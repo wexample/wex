@@ -164,7 +164,7 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    success, pids = execute_command(
+    pids = execute_command(
         kernel,
         [
             'pgrep',
@@ -173,7 +173,7 @@ def kill_process_by_command(kernel, command: str):
         ]
     )
 
-    if success:
+    if pids:
         for pid in pids:
             kernel.io.log(f'Killing process {pid}')
             os.kill(int(pid), signal.SIGTERM)

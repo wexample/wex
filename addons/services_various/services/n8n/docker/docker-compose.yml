@@ -5,7 +5,7 @@ services:
     ports:
       - 5678:5678
     environment:
-      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
       - VIRTUAL_PORT=5678
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}

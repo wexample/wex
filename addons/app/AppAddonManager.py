@@ -198,12 +198,15 @@ class AppAddonManager(AddonManager):
             return
 
         args = request.args.copy()
+        app_dir_arg = arg_shift(args, 'app-dir')
+        app_dir_resolved = None
 
-        if self.app_dir is not None:
-            app_dir_resolved = self.app_dir
+        if app_dir_arg is not None:
+            app_dir_resolved = app_dir_arg
         else:
-            app_dir_resolved = arg_shift(args, 'app-dir')
-            if not app_dir_resolved:
+            if self.app_dir is not None:
+                app_dir_resolved = self.app_dir
+            else:
                 # Skip if the command allow to be executed without app location.
                 if hasattr(request.function.callback, 'app_dir_optional'):
                     return

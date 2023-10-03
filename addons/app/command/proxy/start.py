@@ -15,6 +15,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 
 
 @command(help="Create and start the reverse proxy server")
@@ -35,15 +36,16 @@ def app__proxy__start(kernel: Kernel,
     manager: AppAddonManager = kernel.addons['app']
 
     def _app__proxy__start__create():
+        manager.log('Starting proxy server')
+
         # Created
         if manager.is_app_root(manager.proxy_path):
-            if os.path.exists(APP_FILEPATH_REL_CONFIG):
-                # Started
-                if kernel.run_function(app__app__started, {
-                    'app-dir': manager.proxy_path,
-                    'mode': APP_STARTED_CHECK_MODE_CONFIG
-                }):
-                    return
+            # Started
+            if kernel.run_function(app__app__started, {
+                'app-dir': manager.proxy_path,
+                'mode': APP_STARTED_CHECK_MODE_CONFIG
+            }).first():
+                return ResponseCollectionStopResponse(kernel)
         else:
             kernel.io.log(f'Creating proxy dir {manager.proxy_path}')
             os.makedirs(
@@ -111,7 +113,7 @@ def app__proxy__start(kernel: Kernel,
                     {
                         'app-dir': kernel.path['root']
                     }
-                ),
+                ).first(),
                 'user': user,
                 'group': group,
             }
