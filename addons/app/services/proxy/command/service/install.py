@@ -1,4 +1,6 @@
+import os
 import platform
+import shutil
 
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
@@ -24,6 +26,13 @@ def proxy__service__install(kernel: Kernel, app_dir: str, service: str):
 
         manager.set_config('global.port_public', port)
         manager.set_config('global.port_public_secure', port_secure)
+
+    shutil.copytree(
+        os.path.join(kernel.registry['services']['proxy']['dir'], 'samples') + os.sep + 'proxy/',
+        app_dir + 'proxy/',
+        dirs_exist_ok=True,
+        copy_function=shutil.copy2
+    )
 
     # TODO : Ensure this service hook is run from app work dir.
     #        We can create a decorator for that : @in_app_location
