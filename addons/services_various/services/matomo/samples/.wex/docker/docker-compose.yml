@@ -1,7 +1,7 @@
 services:
   matomo:
     extends:
-      file: ${SERVICE_MATOMO_YML_ENV}
+      file: ${RUNTIME_SERVICE_MATOMO_YML_ENV}
       service: matomo
     depends_on:
       - ${GLOBAL_NAME}_mysql_8

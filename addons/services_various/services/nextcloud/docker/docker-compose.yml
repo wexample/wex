@@ -9,9 +9,9 @@ services:
       - MARIA_10_USER=${MARIA_10_USER}
       - MARIA_10_PASSWORD=${MARIA_10_PASSWORD}
     volumes:
-      - ${PATH_APP}data:/var/www/html
-      - ${PATH_APP}extra-addons:/mnt/extra-addons
-      - ${PATH_APP}config.php:/var/www/html/config/wex.config.php
+      - ${RUNTIME_PATH_APP}data:/var/www/html
+      - ${RUNTIME_PATH_APP}extra-addons:/mnt/extra-addons
+      - ${RUNTIME_PATH_APP}config.php:/var/www/html/config/wex.config.php
     extends:
-      file: ${SERVICE_DEFAULT_YML_ENV}
+      file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
       service: default

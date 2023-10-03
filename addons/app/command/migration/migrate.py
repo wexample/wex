@@ -17,7 +17,8 @@ from src.core import Kernel
 @command(help="Description")
 @app_dir_optional
 @option('--app-dir', '-a', type=str, required=False, help="App directory")
-def app__migration__migrate(kernel: Kernel, app_dir: str = None):
+@option('--from-version', '-f', type=str, required=False, help="Force initial version number")
+def app__migration__migrate(kernel: Kernel, app_dir: str = None, from_version: str = None):
     if not app_dir:
         app_dir = kernel.run_function(app__location__find).first()
 
@@ -27,12 +28,16 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
     # Create a dedicated manager
     manager = AppAddonManager(kernel, 'app-migration')
     manager.set_app_workdir(app_dir)
-    app_version_string = None
-    try:
-        # Trust regular config file
-        app_version_string = manager.config[CORE_COMMAND_NAME]['version']
-    except Exception:
-        pass
+
+    if from_version:
+        app_version_string = from_version
+    else:
+        app_version_string = None
+        try:
+            # Trust regular config file
+            app_version_string = manager.config[CORE_COMMAND_NAME]['version']
+        except Exception:
+            pass
 
     app_version_string = app_version_string or version_guess(kernel, app_dir)
 
@@ -91,7 +96,6 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None):
                 migration_version_string
             )
             app_version = migration_version
-
 
     manager.set_config(
         f'{CORE_COMMAND_NAME}.version',

@@ -5,20 +5,20 @@ services:
     ports:
       - 5678:5678
     environment:
-      - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
       - VIRTUAL_PORT=5678
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
-      - N8N_HOST=${DOMAIN_MAIN}
+      - N8N_HOST=${RUNTIME_DOMAIN_MAIN}
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_TUNNEL_URL=https://${DOMAIN_MAIN}/
+      - WEBHOOK_TUNNEL_URL=https://${RUNTIME_DOMAIN_MAIN}/
       - GENERIC_TIMEZONE=Europe/Paris
     volumes:
       # Minimal env files.
-      - ${PATH_APP}n8n:/home/node/.n8n
+      - ${RUNTIME_PATH_APP}n8n:/home/node/.n8n
     extends:
-      file: ${SERVICE_DEFAULT_YML_ENV}
+      file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
       service: default

@@ -34,6 +34,9 @@ class AbstractResponse:
         self.request = request
         self.parent = self.kernel.current_response
 
+        previous_request = self.kernel.current_request
+        self.kernel.current_request = request
+
         previous_response = self.parent = self.kernel.current_response
         self.kernel.current_response = self
 
@@ -43,6 +46,7 @@ class AbstractResponse:
             args,
         )
 
+        self.kernel.current_request = previous_request
         self.kernel.current_response = previous_response
         self.rendered = True
 

@@ -1,0 +1,16 @@
+services:
+    phpmyadmin:
+        container_name: '${RUNTIME_NAME}_phpmyadmin'
+        image: phpmyadmin/phpmyadmin:5.2
+        environment:
+          - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}
+          # TODO - LETSENCRYPT_HOST=${DOMAIN_PMA}
+#          - PMA_HOST=${RUNTIME_NAME}_${DB_CONTAINER}
+#          - PMA_PORT=${MYSQL_DB_PORT}
+          # TODO - VIRTUAL_HOST=${DOMAIN_PMA}
+        extends:
+            file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
+            service: default
+        profiles:
+          - env_dev
+          - env_local

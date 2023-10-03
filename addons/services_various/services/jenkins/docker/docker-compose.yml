@@ -1,15 +1,15 @@
 services:
   jenkins:
     extends:
-        file: ${SERVICE_DEFAULT_YML_ENV}
+        file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
         service: default
     container_name: '${RUNTIME_NAME}_jenkins'
     image: 'jenkins/jenkins:${JENKINS_VERSION}'
     ports:
       - "50000:50000"
     environment:
-      - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
       - VIRTUAL_PORT=8080
     volumes:
-      - ${PATH_APP}config:/jenkins_config
-      - ${PATH_APP}home:/var/jenkins_home
+      - ${RUNTIME_PATH_APP}config:/jenkins_config
+      - ${RUNTIME_PATH_APP}home:/var/jenkins_home

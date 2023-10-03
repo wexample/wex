@@ -1,7 +1,7 @@
 services:
   proxy:
     extends:
-      file: ${SERVICE_PROXY_YML_ENV}
+      file: ${RUNTIME_SERVICE_PROXY_YML_ENV}
       service: proxy
     ports:
       - ${GLOBAL_PORT_PUBLIC}:80

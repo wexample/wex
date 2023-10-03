@@ -1,5 +1,5 @@
 services:
   mongo_6:
     extends:
-      file: ${SERVICE_MONGO_6_YML_ENV}
+      file: ${RUNTIME_SERVICE_MONGO_6_YML_ENV}
       service: mongo_6

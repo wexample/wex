@@ -1,5 +1,5 @@
 services:
   onlyoffice:
     extends:
-      file: ${SERVICE_ONLYOFFICE_YML_ENV}
+      file: ${RUNTIME_SERVICE_ONLYOFFICE_YML_ENV}
       service: onlyoffice

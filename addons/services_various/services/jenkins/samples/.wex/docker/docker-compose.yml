@@ -1,5 +1,5 @@
 services:
   jenkins:
     extends:
-      file: ${SERVICE_JENKINS_YML_ENV}
+      file: ${RUNTIME_SERVICE_JENKINS_YML_ENV}
       service: jenkins

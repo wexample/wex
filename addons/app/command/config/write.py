@@ -4,7 +4,6 @@ import socket
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, APP_DIR_APP_DATA
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
-from src.helper.dict import merge_dicts
 from src.const.globals import PASSWORD_INSECURE
 from src.helper.system import get_gid_from_group_name, \
     get_uid_from_user_name
@@ -14,6 +13,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 
 
 @command(help="Write the configuration file for services to start")
@@ -27,18 +27,22 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
     """Build config file used in docker based on services and base config"""
     manager: AppAddonManager = kernel.addons['app']
 
-    env = app__env__get.callback(app_dir)
-    user = user or get_user_or_sudo_user()
-    group = group or get_user_group_name(user)
-    name = manager.get_config('global.name')
+    def _app__config__write__runtime():
+        nonlocal user
+        nonlocal group
 
-    manager.log(f'Using user {user}:{group}')
+        env = kernel.run_function(app__env__get, {'app-dir': app_dir}).first()
+        user = user or get_user_or_sudo_user()
+        group = group or get_user_group_name(user)
+        name = manager.get_config('global.name')
 
-    runtime_config = merge_dicts(
-        manager.config.copy(),
-        {
+        manager.log(f'Using user {user}:{group}')
+
+        runtime_config = manager.config['env'][env].copy()
+        runtime_config.update(manager.config)
+        runtime_config.update({
             'env': env,
-            'runtime_name': f'{name}_{env}',
+            'name': f'{name}_{env}',
             'host': {
                 'ip': socket.gethostbyname(
                     socket.gethostname()
@@ -61,61 +65,67 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
                 'uid': get_uid_from_user_name(user),
             }
         }
-    )
-
-    # Build paths to services docker compose yml files.
-    for service, service_data in kernel.registry['services'].items():
-        base_yml = service_data['dir'] + 'docker/docker-compose.yml'
-        env_yml = service_data['dir'] + f'docker/docker-compose.{env}.yml'
-
-        if not os.path.exists(env_yml):
-            env_yml = base_yml
-
-        runtime_config['service'][service] = {
-            'yml': {
-                'base': base_yml,
-                'env': env_yml,
-            }
-        }
-
-    manager.log(f'Build config file')
-
-    manager.runtime_config = runtime_config
-    manager.save_runtime_config()
-
-    kernel.run_function(
-        app__hook__exec,
-        {
-            'app-dir': app_dir,
-            'hook': 'config/write-compose-pre'
-        }
-    )
-
-    compose_files = get_app_docker_compose_files(
-        kernel,
-        app_dir
-    )
-
-    if len(compose_files) != 0:
-        manager.log(f'Creating docker compose file...')
-
-        yml_content = exec_app_docker_compose(
-            kernel,
-            app_dir,
-            compose_files,
-            'config'
         )
 
-        with open(os.path.join(
-                app_dir,
-                APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
-        ), 'w') as f:
-            f.write(yml_content)
+        # Build paths to services docker compose yml files.
+        for service, service_data in kernel.registry['services'].items():
+            base_yml = service_data['dir'] + 'docker/docker-compose.yml'
+            env_yml = service_data['dir'] + f'docker/docker-compose.{env}.yml'
 
-    kernel.run_function(
-        app__hook__exec,
-        {
-            'app-dir': app_dir,
-            'hook': 'config/write-post'
-        }
-    )
+            if not os.path.exists(env_yml):
+                env_yml = base_yml
+
+            runtime_config['service'][service] = {
+                'yml': {
+                    'base': base_yml,
+                    'env': env_yml,
+                }
+            }
+
+        manager.log(f'Build config file')
+
+        manager.runtime_config = runtime_config
+        manager.save_runtime_config()
+
+    def _app__config__write__docker(previous):
+        kernel.run_function(
+            app__hook__exec,
+            {
+                'app-dir': app_dir,
+                'hook': 'config/write-compose-pre'
+            }
+        )
+
+        compose_files = get_app_docker_compose_files(
+            kernel,
+            app_dir
+        )
+
+        if len(compose_files) != 0:
+            manager.log(f'Creating docker compose file...')
+
+            yml_content = exec_app_docker_compose(
+                kernel,
+                app_dir,
+                compose_files,
+                'config'
+            )
+
+            with open(os.path.join(
+                    app_dir,
+                    APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+            ), 'w') as f:
+                f.write(yml_content)
+
+            kernel.run_function(
+                app__hook__exec,
+                {
+                    'app-dir': app_dir,
+                    'hook': 'config/write-post'
+                }
+            )
+
+    return ResponseCollectionResponse(kernel, [
+        _app__config__write__runtime,
+        _app__config__write__docker,
+    ])

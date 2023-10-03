@@ -121,13 +121,13 @@ class AppAddonManager(AddonManager):
         )
 
     def config_to_docker_env(self):
-        return self.dict_to_docker_env(
-            dict(
-                sorted(
-                    self.runtime_config.items()
+        config = self.config.copy()
+        config['runtime'] = dict(
+                    sorted(
+                        self.runtime_config.items()
+                    )
                 )
-            )
-        )
+        return self.dict_to_docker_env(config)
 
     def dict_to_docker_env(self, config, parent_key='', sep='_'):
         items = []

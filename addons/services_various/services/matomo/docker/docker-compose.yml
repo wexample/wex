@@ -5,7 +5,7 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=${CONTEXT_DOMAINS}
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS}
       - VIRTUAL_PORT=80
       # Database
       - MATOMO_DATABASE_HOST=${MYSQL_DB_HOST}
@@ -13,7 +13,7 @@ services:
       - MATOMO_DATABASE_USERNAME=${MYSQL_DB_USER}
       - MATOMO_DATABASE_PASSWORD=${MYSQL_DB_PASSWORD}
     volumes:
-      - ${PATH_APP}data:/var/www/html
+      - ${RUNTIME_PATH_APP}data:/var/www/html
     extends:
-        file: ${SERVICE_DEFAULT_YML_ENV}
+        file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
         service: default

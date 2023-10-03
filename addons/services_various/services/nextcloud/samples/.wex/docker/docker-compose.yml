@@ -1,7 +1,7 @@
 services:
   nextcloud:
     extends:
-      file: ${SERVICE_NEXTCLOUD_YML_ENV}
+      file: ${RUNTIME_SERVICE_NEXTCLOUD_YML_ENV}
       service: nextcloud
     depends_on:
       - ${GLOBAL_NAME}_maria_10

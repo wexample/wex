@@ -1,5 +1,5 @@
 services:
   php_8:
     extends:
-      file: ${SERVICE_PHP_8_YML_ENV}
+      file: ${RUNTIME_SERVICE_PHP_8_YML_ENV}
       service: php_8

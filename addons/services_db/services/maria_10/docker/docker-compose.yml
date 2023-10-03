@@ -9,11 +9,11 @@ services:
             - MYSQL_ROOT_PASSWORD=${MARIA_10_PASSWORD}
             - MYSQL_USER=${MARIA_10_USER}
         volumes:
-            - ${PATH_APP_WEX}maria/data:/var/lib/mysql
-            - ${PATH_APP_WEX}maria/dumps:/var/www/dumps
-            - ${PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+            - ${RUNTIME_PATH_APP_WEX}maria/data:/var/lib/mysql
+            - ${RUNTIME_PATH_APP_WEX}maria/dumps:/var/www/dumps
+            - ${RUNTIME_PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
         extends:
-            file: ${SERVICE_DEFAULT_YML_ENV}
+            file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
         ports:
             - ${MARIA_10_PORT}:3306

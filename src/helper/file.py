@@ -128,7 +128,7 @@ def create_directories_and_file(path: str, content: str = None) -> None:
 
 
 def write_dict_to_config(dict: dict, dest: str):
-    output = "\n".join(f"{key.upper()}={str(value).lower()}" for key, value in dict.items())
+    output = "\n".join(f"{key.upper()}={str(value)}" for key, value in dict.items())
     with open(dest, 'w') as f:
         f.write(output)
 

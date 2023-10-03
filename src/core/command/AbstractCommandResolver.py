@@ -27,7 +27,6 @@ class AbstractCommandResolver:
     def run_request(self, request: CommandRequest) -> AbstractResponse:
         import click
 
-        self.kernel.current_request = request
         self.kernel.logger.append_request(request)
 
         if not request.function and (not request.path or not os.path.isfile(request.path)):

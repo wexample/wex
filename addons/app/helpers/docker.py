@@ -3,8 +3,8 @@ import os
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.command.service.used import app__service__used
 from addons.app.const.app import APP_DIR_APP_DATA
-from addons.app.command.env.get import app__env__get
 from addons.docker.helpers.docker import user_has_docker_permission
+from addons.app.AppAddonManager import AppAddonManager
 from src.helper.command import execute_command
 from src.helper.system import get_user_or_sudo_user
 from src.helper.process import process_post_exec
@@ -30,14 +30,17 @@ def get_app_docker_compose_files(kernel, app_dir):
         app_compose_file
     )
 
-    env_yml = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.' + app__env__get.callback(app_dir=app_dir) + '.yml'
+    manager: AppAddonManager = kernel.addons['app']
+    env = manager.get_runtime_config('env')
+
+    env_yml = f'{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{env}.yml'
     if os.path.isfile(env_yml):
         compose_files.append(env_yml)
 
     return compose_files
 
 
-def exec_app_docker_compose(
+def exec_app_docker_compose_command(
         kernel,
         app_dir: str,
         compose_files,
@@ -51,9 +54,8 @@ def exec_app_docker_compose(
             'username': username
         })
 
-    env = app__env__get.callback(
-        app_dir
-    )
+    manager: AppAddonManager = kernel.addons['app']
+    env = manager.get_runtime_config('env')
 
     command = [
         'docker',
@@ -78,7 +80,25 @@ def exec_app_docker_compose(
     if type(docker_command) == str:
         docker_command = [docker_command]
 
-    command += docker_command
+    return command + docker_command
+
+
+def exec_app_docker_compose(
+        kernel,
+        app_dir: str,
+        compose_files,
+        docker_command,
+        profile=None,
+        sync=True
+):
+    command = exec_app_docker_compose_command(
+        kernel,
+        app_dir,
+        compose_files,
+        docker_command,
+        profile,
+        sync
+    )
 
     if sync:
         success, output = execute_command(kernel, command)

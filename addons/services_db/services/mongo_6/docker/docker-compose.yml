@@ -3,9 +3,9 @@ services:
         container_name: '${RUNTIME_NAME}_mongo'
         image: mongo:${MONGO_VERSION}
         volumes:
-          - ${PATH_APP_WEX}mongo/data:/data/db
-          - ${PATH_APP_WEX}mongo/dumps:/dump
+          - ${RUNTIME_PATH_APP_WEX}mongo/data:/data/db
+          - ${RUNTIME_PATH_APP_WEX}mongo/dumps:/dump
         command: mongod --oplogSize 128 --replSet rs0 --storageEngine=wiredTiger --bind_ip_all --port 27017
         extends:
-            file: ${SERVICE_DEFAULT_YML_ENV}
+            file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default

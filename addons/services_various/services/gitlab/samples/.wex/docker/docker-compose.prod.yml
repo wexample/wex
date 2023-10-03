@@ -1,6 +1,6 @@
 services:
   gitlab:
     environment:
-      - LETSENCRYPT_EMAIL=${CONTEXT_EMAIL}
-      - LETSENCRYPT_HOST=${CONTEXT_DOMAINS}
+      - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}
+      - LETSENCRYPT_HOST=${RUNTIME_DOMAINS}
       - VIRTUAL_PROTO=https

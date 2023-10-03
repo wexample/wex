@@ -89,17 +89,29 @@ def set_owner_recursively(path: str, user: str = None, group: str = None):
     gid = get_gid_from_group_name(group)
 
     # Change owner for the current path
-    os.chown(path, uid, gid)
+    try:
+        if os.path.islink(path):
+            os.lchown(path, uid, gid)  # Change owner of the symlink itself
+        else:
+            os.chown(path, uid, gid)  # Change owner of the file/directory
+    except FileNotFoundError:
+        pass
 
     # If the path is a directory, loop through its contents and call the function recursively
-    if os.path.isdir(path):
+    if os.path.isdir(path) and not os.path.islink(path):
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
             set_owner_recursively(item_path, user, group)
 
+
 def set_permissions_recursively(path: str, mode: int):
     # Change permissions for the current path
-    os.chmod(path, mode)
+
+    try:
+        if not os.path.islink(path):
+            os.chmod(path, mode)  # Change owner of the file/directory
+    except FileNotFoundError:
+        pass
 
     # If the path is a directory, loop through its contents and call the function recursively
     if os.path.isdir(path):

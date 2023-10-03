@@ -1,5 +1,5 @@
 services:
   grafana:
     extends:
-      file: ${SERVICE_GRAFANA_YML_ENV}
+      file: ${RUNTIME_SERVICE_GRAFANA_YML_ENV}
       service: grafana
