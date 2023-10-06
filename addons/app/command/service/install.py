@@ -45,9 +45,15 @@ def app__service__install(
     service = to_snake_case(service)
     kernel.io.log(f'Installing service : {service}')
 
+    all_services = kernel.registry['services']
+
+    if not service in all_services:
+        kernel.io.log('Service does not exists')
+        return
+
     if not ignore_dependencies:
         # Install dependencies
-        for dependency in kernel.registry['services'][service]['config'].get('dependencies', []):
+        for dependency in all_services[service]['config'].get('dependencies', []):
             kernel.io.log(f'Expected dependency : {dependency}')
             kernel.io.log_indent_up()
 
@@ -63,7 +69,7 @@ def app__service__install(
             kernel.io.log_indent_down()
 
     manager: AppAddonManager = kernel.addons['app']
-    services = manager.get_config('global.services')
+    services = manager.get_config('service') or {}
 
     if service in services and not force:
         kernel.io.log('Service already installed')
@@ -72,10 +78,9 @@ def app__service__install(
     if install_config:
         kernel.io.log('Adding to config')
         # Append once, and remove duplicates
-        services.append(service)
-        services = array_unique(services)
+        services[service] = {}
 
-        manager.set_config('global.services', services)
+        manager.set_config('service', services)
 
     service_dir = get_service_dir(kernel, service)
     service_sample_dir = os.path.join(service_dir, 'samples') + '/'
@@ -95,7 +100,8 @@ def app__service__install(
             )
 
     # Allow service to set global settings.
-    service_config = kernel.registry['services'][service]['config']
+    service_config = all_services[service]['config']
+
     if 'global' in service_config:
         config_global = merge_dicts(
             manager.get_config('global'),
