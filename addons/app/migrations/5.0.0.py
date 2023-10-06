@@ -4,6 +4,8 @@ import glob
 import yaml
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from addons.app.command.service.install import app__service__install
+from src.helper.string import to_snake_case
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 
@@ -18,12 +20,35 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             manager.config['env'][env_name]['domains'] = sorted(
                 _get_config_value(config, domain_env_name + '_DOMAINS', []))
             manager.config['env'][env_name]['domain_main'] = _get_config_value(config, domain_env_name + '_DOMAIN_MAIN')
+
             manager.config['env'][env_name]['email'] = _get_config_value(config, domain_env_name + '_EMAIL',
                                                                          'contact@domain.com')
-
+        # Global
         manager.config['global']['name'] = _get_config_value(config, 'NAME',
                                                              manager.get_config('global.config', 'undefined'))
-        manager.config['global']['services'] = _get_config_value(config, 'SERVICES', [])
+
+        # Services
+        services = _get_config_value(config, 'SERVICES', [])
+        for service_name in services:
+            kernel.run_function(
+                app__service__install,
+                {
+                    'service': to_snake_case(service_name),
+                    'install-docker': False,
+                    'install-git': False,
+                    'force': True
+                }
+            )
+
+        # # Database
+        # db_container = _get_config_value(config, 'DB_CONTAINER')
+        # if db_container:
+        #     manager.config['db'] = manager.config['db'] if 'db' in manager.config else {'main': {}}
+        #     manager.config['db']['main']['name'] = db_container
+
+        mysql_db_password = _get_config_value(config, 'MYSQL_DB_PASSWORD')
+        if mysql_db_password:
+            manager.config['service']['mysql_8']['password'] = mysql_db_password
 
     # Convert docker files.
     os.scandir(f'{env_dir}docker/')
@@ -38,6 +63,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
         "APP_PATH_WEX": "RUNTIME_PATH_APP_WEX",
         "APP_NAME": "GLOBAL_NAME",
         "CONTEXT_ENV": "RUNTIME_ENV",
+        "DB_CONTAINER": "DB_MAIN_NAME",
         "DOMAINS": "RUNTIME_DOMAINS_STRING",
         "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
         "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_8_YML_ENV",
@@ -54,7 +80,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
 
         # Replace strings based on the mapping dictionary
         for old_str, new_str in replacement_mapping.items():
-            content = content.replace(old_str, new_str)
+            content = content.replace('${' + old_str + '}', '${' + new_str + '}')
 
         # Override the file with updated content
         with open(docker_file, 'w') as f:
