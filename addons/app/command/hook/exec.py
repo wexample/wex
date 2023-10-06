@@ -23,6 +23,7 @@ def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
 
     manager: AppAddonManager = kernel.addons['app']
     manager.log(f'Hooking : {hook}')
+    kernel.io.log_indent_up()
 
     arguments['app-dir'] = app_dir
 
@@ -40,5 +41,7 @@ def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
         arguments,
         quiet=True
     )
+
+    kernel.io.log_indent_down()
 
     return results
