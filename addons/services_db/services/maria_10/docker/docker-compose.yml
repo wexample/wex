@@ -1,6 +1,6 @@
 services:
     maria_10:
-        container_name: '${RUNTIME_NAME}_maria'
+        container_name: '${RUNTIME_NAME}_maria_10'
         image: mariadb:10.9
         environment:
             - MYSQL_ROOT_HOST=%

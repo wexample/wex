@@ -1,6 +1,6 @@
 services:
     mysql_8:
-        container_name: '${RUNTIME_NAME}_mysql'
+        container_name: '${RUNTIME_NAME}_mysql_8'
         image: mysql:8.0.32
 #    TODO    environment:
 #            - MYSQL_DATABASE=${MYSQL_DB_NAME}
