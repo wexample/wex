@@ -164,7 +164,7 @@ def kill_process_by_port(port: int):
 
 
 def kill_process_by_command(kernel, command: str):
-    pids = execute_command(
+    success, pids = execute_command(
         kernel,
         [
             'pgrep',

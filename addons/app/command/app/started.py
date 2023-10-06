@@ -38,7 +38,7 @@ def app__app__started(kernel: Kernel, app_dir: str, mode: str = APP_STARTED_CHEC
     ).first()
 
     # for container_name in list:
-    running_containers = execute_command(
+    success, running_containers = execute_command(
         kernel,
         ['docker', 'ps', '--format', '{{.Names}}']
     )

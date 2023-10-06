@@ -101,9 +101,9 @@ def exec_app_docker_compose(
     )
 
     if sync:
-        output = execute_command(kernel, command)
+        success, output = execute_command(kernel, command)
 
-        if not output:
+        if not success:
             kernel.io.error(
                 ERR_UNEXPECTED,
                 {
