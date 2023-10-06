@@ -176,7 +176,7 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
+    def get_config(self, key: str, default: any = None) -> any:
         return get_dict_item_by_path(self.config, key, default)
 
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:

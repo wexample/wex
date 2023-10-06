@@ -44,6 +44,9 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         runtime_config.update(manager.config['env'][env])
         # Add extra runtime config.
         runtime_config.update({
+            'domain_tld': (runtime_config['domain_tld']
+                           if 'domain_tld' in runtime_config
+                           else runtime_config['domain_main']),
             'domains_string': ','.join(runtime_config['domains'] if 'domains' in runtime_config else []),
             'env': env,
             'name': f'{name}_{env}',

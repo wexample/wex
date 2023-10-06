@@ -20,7 +20,7 @@ def app__services__exec(kernel: Kernel, app_dir: str, hook: str, arguments: str)
 
     arguments = parse_arg(arguments, {})
 
-    for service in manager.get_config('global.services'):
+    for service in manager.get_config('service', {}):
         arguments = arguments.copy()
         arguments['service'] = service
 

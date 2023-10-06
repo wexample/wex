@@ -11,9 +11,9 @@ def is_greater_than(first: dict, second: dict, true_if_equal=False) -> bool:
         first_value = first.get(key, None)
         second_value = second.get(key, None)
 
-        if first_value is None and second_value is not None:
+        if first_value is not None and second_value is None:
             return False
-        elif first_value is not None and second_value is None:
+        elif first_value is None and second_value is not None:
             return True
 
         if first_value is not None and second_value is not None:
