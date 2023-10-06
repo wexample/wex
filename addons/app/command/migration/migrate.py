@@ -1,5 +1,7 @@
 import os
 
+import click
+
 from addons.default.helpers.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
 from addons.app.decorator.app_dir_optional import app_dir_optional
@@ -18,7 +20,8 @@ from src.core import Kernel
 @app_dir_optional
 @option('--app-dir', '-a', type=str, required=False, help="App directory")
 @option('--from-version', '-f', type=str, required=False, help="Force initial version number")
-def app__migration__migrate(kernel: Kernel, app_dir: str = None, from_version: str = None):
+@option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
+def app__migration__migrate(kernel: Kernel, app_dir: str = None, from_version: str = None, yes: bool = False):
     if not app_dir:
         app_dir = kernel.run_function(app__location__find).first()
 
@@ -59,6 +62,11 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None, from_version: s
             }
         ).first()
 
+    if not yes and click.confirm(
+            f'Do you want to migrate {manager.get_config("global.name")} from version {app_version_string}',
+            default=True):
+        return False
+
     # Create an empty config
     if manager.config == {}:
         # Only create config but do not save it
@@ -95,6 +103,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str = None, from_version: s
                 f'{CORE_COMMAND_NAME}.version',
                 migration_version_string
             )
+
             app_version = migration_version
 
     manager.set_config(
