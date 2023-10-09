@@ -12,14 +12,14 @@ from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 
 
 class UserCommandResolver(AbstractCommandResolver):
-    def run_request(self, request: CommandRequest) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         # Add user command dir to path
         # It allows to use imports in custom user scripts
         commands_path = os.path.join(self.get_base_path(), 'command')
         if os.path.exists(commands_path) and commands_path not in sys.path:
             sys.path.append(commands_path)
 
-        return super().run_request(request)
+        return super().render_request(request, render_mode)
 
     @classmethod
     def get_pattern(cls) -> str:

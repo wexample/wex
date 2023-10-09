@@ -65,8 +65,9 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
                 test__demo_command__response_collection
             ),
                 capture_output=True)
-             .stdout.
-             decode('utf-8').strip()))
+             .stdout
+             .decode('utf-8')
+             .strip()))
 
         # Compare outputs.
         self.assertMultiLineEqual(

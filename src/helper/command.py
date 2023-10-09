@@ -56,44 +56,50 @@ def prepare_logs(kernel):
     return out_path, err_path
 
 
-def execute_command(kernel, command, working_directory=None, async_mode=False):
+def execute_command(kernel, command, working_directory=None, async_mode=False, **kwargs):
     if working_directory is None:
         working_directory = os.getcwd()
 
     out_path, err_path = prepare_logs(kernel)
 
-    process = subprocess.Popen(
-        command,
-        cwd=working_directory,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    # Merge kwargs with existing arguments
+    popen_args = {
+        'cwd': working_directory,
+        'stdout': subprocess.PIPE,
+        'stderr': subprocess.STDOUT,
+        **kwargs  # This will overwrite existing keys with values from kwargs, if any
+    }
+
+    process = subprocess.Popen(command, **popen_args)
 
     if async_mode:
         # Just return the process object, and the caller can decide what to do with it.
         return process
     else:
-        out_content, err_content = process.communicate()
+        out_content, _ = process.communicate()
         success = (process.returncode == 0)
 
-        # Log stdout and stderr
+        # Log stdout (which now also includes stderr)
         with open(out_path, 'a') as out_file:
             out_file.write(out_content.decode())
-        with open(err_path, 'a') as err_file:
-            err_file.write(err_content.decode())
 
-        return success, out_content.decode().splitlines() if success else err_content.decode().splitlines()
+        return success, out_content.decode().splitlines()
 
-
-def command_to_string(command):
+def command_to_string(command: list, add_quotes: bool = True, quote_char: str = '"'):
     output = []
 
     for item in command:
         if isinstance(item, list):
             output.append(
-                '$(' + command_to_string(item) + ')'
+                '$(' + command_to_string(item, add_quotes, quote_char) + ')'
             )
         else:
-            output.append('"' + item + '"' if ' ' in item else item)
+            if add_quotes and ' ' in item:
+                # Escape existing quotes
+                item = item.replace(quote_char, '\\' + quote_char)
+                # Add quotes around the item
+                output.append(quote_char + item + quote_char)
+            else:
+                output.append(item)
 
     return ' '.join(output)

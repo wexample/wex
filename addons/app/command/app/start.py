@@ -61,7 +61,7 @@ def app__app__start(
                 # User said "no" or chose "abort"
                 if not env:
                     manager.log('Abort')
-                    return
+                    return ResponseCollectionStopResponse(kernel)
 
             create_env(env, app_dir)
 
@@ -83,8 +83,7 @@ def app__app__start(
                 'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
             }).first():
                 from addons.app.command.proxy.start import app__proxy__start
-
-                kernel.run_function(
+                return kernel.run_function(
                     app__proxy__start,
                     {
                         'user': user,
@@ -93,11 +92,7 @@ def app__app__start(
                     }
                 )
 
-                return
-
     def _app__app__start__config(previous):
-        manager.log(f"Starting app : {name}")
-
         kernel.run_function(
             app__app__perms,
             {

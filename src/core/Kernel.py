@@ -58,6 +58,7 @@ class Kernel:
         tmp_path = os.path.join(root_path, 'tmp') + os.sep
 
         self.path: dict = {
+            'call': os.getcwd() + os.sep,
             'root': root_path,
             'addons': os.path.join(root_path, 'addons') + os.sep,
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
@@ -170,7 +171,7 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.run_request(request)
+        return self.render_request(request)
 
     def run_function(self,
                      function,
@@ -186,10 +187,10 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.run_request(request)
+        return self.render_request(request)
 
-    def run_request(self, request) -> AbstractResponse:
-        return request.resolver.run_request(request).render(request, KERNEL_RENDER_MODE_CLI)
+    def render_request(self, request) -> AbstractResponse:
+        return request.resolver.render_request(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.path['tmp'], 'task')

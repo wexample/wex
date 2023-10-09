@@ -1,6 +1,5 @@
-import subprocess
 
-from src.helper.command import command_to_string
+from src.helper.command import command_to_string, execute_command
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
 from src.const.globals import KERNEL_RENDER_MODE_CLI
@@ -32,13 +31,16 @@ class InteractiveShellCommandResponse(AbstractResponse):
             # Ex : ['echo', '"OK"'] should return OK without quotes.
             # As we don't use shlex to wrap arguments,
             # we need to enable shell=True here.
-            self.output_bag.append(
-                subprocess
-                .run(command_to_string(self.shell_command),
-                     capture_output=True,
-                     shell=True)
-                .stdout.
-                decode('utf-8').strip())
+
+            success, content = execute_command(
+                self.kernel,
+                command_to_string(self.shell_command),
+                shell=True
+            )
+
+            if success:
+                self.output_bag.append(content)
+
         # Do not add to render bag, but append only once.
         elif not self.rendered:
             process_post_exec(

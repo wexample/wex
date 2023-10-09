@@ -74,7 +74,7 @@ class IOManager:
         self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
 
     def success(self, message):
-        self.log(f'{COLOR_GREEN}✓{COLOR_RESET} {message}')
+        self.log(f'{COLOR_GREEN}✔{COLOR_RESET} {message}')
 
     def fail(self, message):
         self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')

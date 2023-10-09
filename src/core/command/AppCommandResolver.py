@@ -18,7 +18,7 @@ class AppCommandResolver(AbstractCommandResolver):
         # Shortcut.
         self.app_addon: AppAddonManager = kernel.addons['app']
 
-    def run_request(self, request:CommandRequest) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         if not self.get_base_path():
             if not request.quiet:
                 self.kernel.io.error(ERR_APP_NOT_FOUND, {
@@ -28,7 +28,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
             return AbortResponse(self.kernel)
 
-        return super().run_request(request)
+        return super().render_request(request, render_mode)
 
     @classmethod
     def get_pattern(cls) -> str:
@@ -64,7 +64,7 @@ class AppCommandResolver(AbstractCommandResolver):
             app_dir = self.kernel.run_function(
                 app__location__find,
                 {
-                    'app-dir': self.app_addon.call_working_dir
+                    'app-dir': self.kernel.path['call']
                 }
             ).first()
 

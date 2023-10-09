@@ -1,8 +1,10 @@
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.helper.command import command_to_string
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
 from src.decorator.alias import alias
+from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_ANY_CONTAINER
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
@@ -24,6 +26,13 @@ def app__app__exec(
         user: str | None = None):
     manager: AppAddonManager = kernel.addons['app']
     container_name = manager.get_config(f'docker.main_container', container_name)
+
+    if not kernel.run_function(app__app__started, {
+        'app-dir': app_dir,
+        'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
+    }).first():
+        manager.log('App not running')
+        return
 
     if not container_name:
         manager.log('No main container configured')
@@ -83,7 +92,7 @@ def app__app__exec(
     final_command += [command]
 
     # Append the final command to docker_command
-    docker_command += ['-c', command_to_string(final_command)]
+    docker_command += ['-c', command_to_string(final_command, add_quotes=False)]
 
     return InteractiveShellCommandResponse(
         kernel,

@@ -24,7 +24,7 @@ class AbstractCommandResolver:
     def __init__(self, kernel):
         self.kernel = kernel
 
-    def run_request(self, request: CommandRequest) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         import click
 
         self.kernel.logger.append_request(request)
@@ -78,6 +78,8 @@ class AbstractCommandResolver:
         )
 
         middleware_args['response'] = response
+
+        response = response.render(request, render_mode)
 
         self.kernel.exec_middlewares('run_post', middleware_args)
 

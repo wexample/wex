@@ -1,5 +1,6 @@
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_TYPE_ADDON
+from addons.app.AppAddonManager import AppAddonManager
 
 
 def app_middleware_run_post(kernel, request, response: AbstractResponse) -> None:
@@ -8,6 +9,8 @@ def app_middleware_run_post(kernel, request, response: AbstractResponse) -> None
 
         # This is an app::xxx/yyy command.
         if addon == 'app':
-            kernel.addons['app'].command_run_post(
+            manager: AppAddonManager = kernel.addons['app']
+
+            manager.command_run_post(
                 request
             )

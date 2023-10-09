@@ -86,6 +86,9 @@ class AbstractResponse:
         """
         response = self
         while isinstance(response, AbstractResponse):
-            response = response.output_bag[0]
+            if len(response.output_bag):
+                response = response.output_bag[0]
+            else:
+                return response.output_bag
 
         return response

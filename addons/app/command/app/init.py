@@ -47,6 +47,7 @@ def app__app__init(
     manager: AppAddonManager = kernel.addons['app']
 
     current_dir = os.getcwd() + os.sep
+
     if not app_dir:
         app_dir = current_dir
 

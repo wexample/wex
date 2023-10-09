@@ -11,7 +11,7 @@ from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
-    def run_request(self, request: CommandRequest) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         service = to_snake_case(request.match[1])
         if service not in self.kernel.registry['services']:
             if not request.quiet:
@@ -21,7 +21,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 })
             return AbortResponse(self.kernel)
 
-        return super().run_request(request)
+        return super().render_request(request, render_mode)
 
     @classmethod
     def get_pattern(cls) -> str:

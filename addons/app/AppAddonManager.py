@@ -19,10 +19,10 @@ from src.helper.dict import get_dict_item_by_path
 class AppAddonManager(AddonManager):
     def __init__(self, kernel, name):
         super().__init__(kernel, name)
-        self.call_working_dir = os.getcwd() + os.sep
         self.app_dir = None
         self.config = {}
         self.config_path = None
+        self.app_dirs_stack = []
         self.proxy_apps = {}
         self.runtime_config = {}
         self.runtime_config_path = None
@@ -193,26 +193,34 @@ class AppAddonManager(AddonManager):
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
         return get_dict_item_by_path(self.runtime_config, key, default)
 
-    def command_run_pre(self, request):
+    def skip_app_location(self, request) -> bool:
         # Skip if the command allow to be executed without app location.
         if hasattr(request.function.callback, 'app_dir_ignore'):
-            return
+            return True
 
         if request.is_click_command(app__location__find):
+            return True
+
+        return False
+
+    def command_run_pre(self, request):
+        if self.skip_app_location(request):
             return
 
         args = request.args.copy()
         app_dir_arg = arg_shift(args, 'app-dir')
-        app_dir_resolved = None
 
+        # User specified the app dir arg.
         if app_dir_arg is not None:
             app_dir_resolved = app_dir_arg
         else:
+            # Previous app dir already exists.
             if self.app_dir is not None:
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
                 if hasattr(request.function.callback, 'app_dir_optional'):
+                    self.set_app_workdir(None)
                     return
 
                 app_dir = os.getcwd() + os.sep
@@ -230,14 +238,10 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved += os.sep
 
             # First test, create config.
-            if 'previous_app_dir' not in request.storage:
-                dirs_differ = os.path.realpath(app_dir_resolved) != os.path.realpath(os.getcwd())
+            if self.app_dir != app_dir_resolved:
+                self.set_app_workdir(app_dir_resolved)
 
-                if dirs_differ or self.app_dir is None:
-                    self.set_app_workdir(app_dir_resolved)
-
-                if dirs_differ:
-                    request.storage['previous_app_dir'] = app_dir_resolved
+            self.app_dirs_stack.append(app_dir_resolved)
 
             # Append to original apps list.
             request.args = args
@@ -256,9 +260,20 @@ class AppAddonManager(AddonManager):
             exit(0)
 
     def command_run_post(self, request):
-        if 'previous_app_dir' in request.storage:
-            self.unset_app_workdir(request.storage['previous_app_dir'])
-            del request.storage['previous_app_dir']
+        if self.skip_app_location(request):
+            return
+
+        self.app_dirs_stack.pop()
+        app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else None
+        # Previous app dir was an app.
+        if app_dir:
+            # Reinit app dir if not the same.
+            if app_dir != self.app_dir:
+                self.set_app_workdir(app_dir)
+        else:
+            self.unset_app_workdir(
+                app_dir
+            )
 
     def save_proxy_apps(self):
         with open(self.proxy_path + PROXY_FILE_APPS_REGISTRY, 'w') as f:
@@ -294,11 +309,19 @@ class AppAddonManager(AddonManager):
 
     def unset_app_workdir(self, fallback_dir: str):
         self.app_dir = None
+        self.config_path = None
+        self.runtime_config_path = None
+        self.runtime_docker_compose_path = None
+        self.config = None
+        self.proxy_apps = None
+        self.runtime_config = None
+        self.runtime_docker_compose = None
 
+        fallback_dir = fallback_dir or self.kernel.path['call']
         os.chdir(fallback_dir)
 
         # Print log in normal kernel.
-        self.kernel.io.log('Switching to default : ' + self.call_working_dir)
+        self.kernel.io.log('Unset app dir to : ' + fallback_dir)
 
     def exec_in_workdir(self, app_dir: str, callback):
         self.kernel.io.log_indent_up()

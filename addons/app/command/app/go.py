@@ -25,6 +25,7 @@ def app__app__go(kernel: Kernel, app_dir: str, container_name: str | None = None
         {
             'app-dir': app_dir,
             'container-name': container_name,
+            # Ask to execute bash
             'command': shell_command,
             'user': user,
         }
