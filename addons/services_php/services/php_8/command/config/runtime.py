@@ -8,7 +8,7 @@ from addons.app.command.config.bind_files import app__config__bind_files
 @command(help="Set configuration")
 @app_dir_option()
 @service_option()
-def php_8__config__write_compose_pre(kernel: Kernel, app_dir: str, service: str):
+def php_8__config__runtime(kernel: Kernel, app_dir: str, service: str):
     kernel.run_function(
         app__config__bind_files,
         {

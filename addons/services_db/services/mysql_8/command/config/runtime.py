@@ -8,9 +8,13 @@ from addons.app.AppAddonManager import AppAddonManager
 @command(help="Set configuration")
 @app_dir_option()
 @service_option()
-def mysql_8__config__write_compose_pre(kernel: Kernel, app_dir: str, service: str):
+def mysql_8__config__runtime(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
     # Set db as main database.
-    manager.set_config(f'db.main', manager.get_config(f'service.{service}'))
+    manager.set_runtime_config(
+        f'db.main',
+        manager.get_config(f'service.{service}'),
+        False
+    )
 
 

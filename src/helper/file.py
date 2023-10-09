@@ -181,10 +181,14 @@ def get_dict_item_by_path(data: dict, key: str, default=None):
     return data
 
 
-def set_dict_item_by_path(data: dict, key: str, value):
+def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     keys = key.split('.')
     for k in keys[:-1]:
         data = data.setdefault(k, {})
+
+    if not replace and keys[-1] in data:
+        return
+
     data[keys[-1]] = value
 
 

@@ -102,6 +102,14 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         manager.runtime_config = runtime_config
         manager.save_runtime_config()
 
+        kernel.run_function(
+            app__hook__exec,
+            {
+                'app-dir': app_dir,
+                'hook': 'config/runtime'
+            }
+        )
+
     def _app__config__write__docker(previous):
         kernel.run_function(
             app__hook__exec,
