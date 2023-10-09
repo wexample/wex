@@ -10,6 +10,7 @@ from addons.app.decorator.service_option import service_option
 @service_option()
 @option('--container', '-c', type=str, required=False, help="Target container")
 def php_8__app__go(kernel: Kernel, app_dir: str, service: str, container: None):
-    if container == 'php_8':
+    # Prevent returning data when entering another container.
+    if container == service:
         return ['cd', '/var/www/html']
     return None

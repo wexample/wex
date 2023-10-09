@@ -1,9 +1,9 @@
 import os
-
 import yaml
-from yaml import SafeLoader
 
+from yaml import SafeLoader
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from src.helper.dict import merge_dicts
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.option import option
@@ -68,6 +68,16 @@ def build_registry_addons(addons, kernel, test_commands: bool = False):
     return addons_dict
 
 
+def resolve_service_inheritance(service, services_dict):
+    if 'extends' in service['config']:
+        parent_name = service['config']['extends']
+        if parent_name in services_dict:
+            parent_service = services_dict[parent_name]
+            resolve_service_inheritance(parent_service, services_dict)
+            service['config'] = merge_dicts(parent_service['config'], service['config'])
+    return service
+
+
 def build_registry_services(addons, kernel, test_commands: bool = False):
     services_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
@@ -96,5 +106,9 @@ def build_registry_services(addons, kernel, test_commands: bool = False):
                         'dependencies': []
                     }
                 }
+
+    # Resolve inheritance
+    for service_name, service_data in services_dict.items():
+        resolve_service_inheritance(service_data, services_dict)
 
     return services_dict

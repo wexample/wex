@@ -11,8 +11,9 @@ from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.location.find import app__location__find
-from src.helper.file import get_dict_item_by_path, write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
+from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 from src.helper.core import core_kernel_get_version
+from src.helper.dict import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):

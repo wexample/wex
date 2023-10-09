@@ -167,20 +167,6 @@ def _set_yml_file_item(dic, keys, value):
         dic[key] = value
 
 
-def get_dict_item_by_path(data: dict, key: str, default=None):
-    # Split the key into its individual parts
-    keys = key.split('.')
-
-    # Traverse the data dictionary using the key parts
-    for k in keys:
-        if k in data:
-            data = data[k]
-        else:
-            return default
-
-    return data
-
-
 def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     keys = key.split('.')
     for k in keys[:-1]:
