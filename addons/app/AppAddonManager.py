@@ -123,10 +123,10 @@ class AppAddonManager(AddonManager):
     def config_to_docker_env(self):
         config = self.config.copy()
         config['runtime'] = dict(
-                    sorted(
-                        self.runtime_config.items()
-                    )
-                )
+            sorted(
+                self.runtime_config.items()
+            )
+        )
         return self.dict_to_docker_env(config)
 
     def dict_to_docker_env(self, config, parent_key='', sep='_'):
@@ -147,7 +147,7 @@ class AppAddonManager(AddonManager):
         return dict(items)
 
     @staticmethod
-    def _set_config_value(config, key, value):
+    def _set_config_value(config, key, value, replace: bool = True):
         # Avoid "#refs" in files
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
@@ -155,23 +155,26 @@ class AppAddonManager(AddonManager):
         set_dict_item_by_path(
             config,
             key,
-            value
+            value,
+            replace
         )
 
-    def set_config(self, key, value):
+    def set_config(self, key, value, replace: bool = True):
         self._set_config_value(
             self.config,
             key,
-            value
+            value,
+            replace
         )
 
         self.save_config()
 
-    def set_runtime_config(self, key, value):
+    def set_runtime_config(self, key, value, replace: bool = True):
         self._set_config_value(
             self.runtime_config,
             key,
-            value
+            value,
+            replace
         )
 
         self.save_runtime_config()
