@@ -1,1 +1,0 @@
-Create a Python function that prints "Hello World"
