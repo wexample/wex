@@ -1,8 +1,6 @@
 click
 gitpython
 inquirerpy
-langchain
-openai
 psutil
 python-dotenv
 pyyaml
