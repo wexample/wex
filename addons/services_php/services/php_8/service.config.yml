@@ -1,2 +1,4 @@
+container:
+  shell: /bin/bash
 dependencies:
   - mysql_8

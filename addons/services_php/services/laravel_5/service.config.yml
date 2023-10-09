@@ -1,3 +1,3 @@
 dependencies:
   - mysql_8
-extends: php-8
+extends: php_8
