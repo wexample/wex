@@ -17,7 +17,7 @@ def php_8__config__runtime(kernel: Kernel, app_dir: str, service: str):
         }
     )
 
-    # TODO : legacy, should be removed.
+    #   TODO : legacy, should be removed.
     kernel.run_function(
         app__config__bind_files,
         {
