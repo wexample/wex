@@ -1,10 +1,10 @@
 services:
   wex_dev:
-    container_name: wex_${APP_ENV}_dev
+    container_name: wex_${RUNTIME_ENV}_dev
     image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
     privileged: true
     extends:
-      file: ${WEX_COMPOSE_YML_DEFAULT}
+      file: ${RUNTIME_SERVICE_DEFAULT_YML_BASE}
       service: default
     ports:
       # Webhooks listening port
@@ -13,15 +13,15 @@ services:
       - SSH_AUTH_SOCK=/ssh-agent
     volumes:
       # Mount wex outside the apps list
-      - ${APP_PATH_ROOT}:/opt/wex
+      - ${RUNTIME_PATH_APP}:/opt/wex
       # Mount apps
-      - /var/www/${APP_ENV}:/var/www/${APP_ENV}
+      - /var/www/${RUNTIME_ENV}:/var/www/${RUNTIME_ENV}
       # Authorize app to reuse ssh authentications (i.e.: git operations)
       - ${WEX_RUNNER_SSH_AUTH_SOCK:-/dev/null}:/ssh-agent
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
-      - ${APP_PATH_ROOT}tmp/wex-proxy:/opt/wex-proxy
+      - ${RUNTIME_PATH_APP}tmp/wex-proxy:/opt/wex-proxy
       # TODO Remove on RC
       # Use an updated .wex folder structure for internal dev an testing.
-#      - ${APP_PATH_ROOT}.wex-5-dev:/opt/wex/.wex
+#      - ${RUNTIME_PATH_APP}.wex-5-dev:/opt/wex/.wex
