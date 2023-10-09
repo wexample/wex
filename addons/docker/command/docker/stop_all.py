@@ -1,45 +1,52 @@
-from src.helper.process import process_post_exec
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 
 
 @command(help="Stop all running docker feature : containers, networks, volumes")
 def docker__docker__stop_all(kernel: Kernel):
-    # Containers
-    process_post_exec(kernel, [
-        'docker',
-        'stop',
-        [
+    return ResponseCollectionResponse(kernel, [
+        InteractiveShellCommandResponse(kernel, [
             'docker',
-            'ps',
-            '-qa',
-        ]
-    ])
-
-    # Networks
-    process_post_exec(kernel, [
-        'docker',
-        'network',
-        'rm',
-        [
+            'stop',
+            [
+                'docker',
+                'ps',
+                '-qa',
+            ]
+        ], True),
+        InteractiveShellCommandResponse(kernel, [
+            'docker',
+            'rm',
+            [
+                'docker',
+                'ps',
+                '-qa',
+            ]
+        ], True),
+        InteractiveShellCommandResponse(kernel, [
             'docker',
             'network',
-            'ls',
-            '-q',
-            '--filter',
-            'type=custom'
-        ]
-    ])
-
-    # Volumes
-    process_post_exec(kernel, [
-        'docker',
-        'volume',
-        'rm',
-        [
+            'rm',
+            [
+                'docker',
+                'network',
+                'ls',
+                '-q',
+                '--filter',
+                'type=custom'
+            ]
+        ], True),
+        InteractiveShellCommandResponse(kernel, [
             'docker',
             'volume',
-            'ls',
-            '-q'
-        ]
+            'rm',
+            [
+                'docker',
+                'volume',
+                'ls',
+                '-q'
+            ]
+        ], True),
     ])
