@@ -42,12 +42,21 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         runtime_config = manager.config.copy()
         # Add the per-environment config.
         runtime_config.update(manager.config['env'][env])
+
+        domains = []
+        if 'domains' in runtime_config:
+            domains = runtime_config['domains']
+
+        if 'domain_main' in runtime_config and runtime_config['domain_main'] not in domains:
+            domains.append(runtime_config['domain_main'])
+
         # Add extra runtime config.
         runtime_config.update({
+            'domains': domains,
+            'domains_string': ','.join(domains),
             'domain_tld': (runtime_config['domain_tld']
                            if 'domain_tld' in runtime_config
                            else runtime_config['domain_main']),
-            'domains_string': ','.join(runtime_config['domains'] if 'domains' in runtime_config else []),
             'env': env,
             'name': f'{name}_{env}',
             'host': {
