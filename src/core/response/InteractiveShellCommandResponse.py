@@ -23,7 +23,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             # When using fast mode, we need to preserve consistency between shell executions.
             # Ex : ['echo', '"OK"'] should return OK without quotes.
             # As we don't use shlex to wrap arguments,
-            # we need to enable sell=True here.
+            # we need to enable shell=True here.
             self.output_bag.append(
                 subprocess
                 .run(command_to_string(self.shell_command),
@@ -31,7 +31,8 @@ class InteractiveShellCommandResponse(AbstractResponse):
                      shell=True)
                 .stdout.
                 decode('utf-8').strip())
-        else:
+        # Do not add to render bag, but append only once.
+        elif not self.rendered:
             process_post_exec(
                 self.kernel,
                 self.shell_command

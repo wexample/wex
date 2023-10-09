@@ -12,7 +12,7 @@ def php_8__service__install(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
 
     manager.set_config(
-        f'docker.main_service',
+        f'docker.main_container',
         service,
         False
     )
