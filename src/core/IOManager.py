@@ -79,7 +79,6 @@ class IOManager:
     def fail(self, message):
         self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')
 
-
     def print(self, message):
         print(message)
 
@@ -96,7 +95,7 @@ class IOManager:
     def message_next_command(
             self,
             function_or_command,
-            args: dict|None = None,
+            args: dict | None = None,
             command_type: str = COMMAND_TYPE_ADDON,
             message: str = 'You might want now to execute'):
         return self.message_all_next_commands(
@@ -106,15 +105,28 @@ class IOManager:
                     args or {},
                 )
             ],
+            command_type,
             message
         )
 
     def message_all_next_commands(
             self,
-            commands,
+            functions_or_command,
+            command_type: str = COMMAND_TYPE_ADDON,
             message: str = 'You might want now to execute one of the following command',
     ):
         self.message(message + ':')
+
+        commands = []
+        for command in functions_or_command:
+            if not isinstance(command, str):
+                # Only supports commands without args
+                commands.append(
+                    self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+                        command,
+                        {},
+                    )
+                )
 
         commands = '\n'.join(commands)
         self.print(

@@ -10,6 +10,7 @@ from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
 from addons.app.helpers.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
+from addons.app.command.app.go import app__app__go
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
@@ -172,6 +173,13 @@ def app__app__start(
             {
                 'app-dir': app_dir
             }
+        )
+
+        kernel.io.message(f'Your app is initialized as" {name}"')
+        kernel.io.message_all_next_commands(
+            [
+                app__app__go,
+            ]
         )
 
     return ResponseCollectionResponse(kernel, [
