@@ -1,16 +1,11 @@
 from addons.app.command.app.exec import app__app__exec
-from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app
 from addons.app.command.app.stop import app__app__stop
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandAppExec(AbstractTestCase):
+class TestAppCommandAppExec(AbstractAppTestCase):
     def test_exec(self):
-        app_dir = create_test_app(
-            self.kernel,
-            services=['php_8'],
-            start=True
-        )
+        app_dir = self.create_and_start_text_app(services=['php_8'])
 
         response = self.kernel.run_function(
             app__app__exec, {
