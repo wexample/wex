@@ -151,7 +151,6 @@ def app__app__start(
                     app_dir,
                     [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
                     compose_options,
-                    sync=False
                 )
             )
         ])

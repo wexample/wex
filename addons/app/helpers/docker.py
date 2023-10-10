@@ -46,7 +46,6 @@ def exec_app_docker_compose_command(
         compose_files,
         docker_command,
         profile=None,
-        sync=True
 ):
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
