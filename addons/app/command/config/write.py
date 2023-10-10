@@ -124,29 +124,33 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             app_dir
         )
 
-        if len(compose_files) != 0:
-            manager.log(f'Creating docker compose file...')
+        if not len(compose_files) != 0:
+            manager.log('No docker compose file')
+            return
 
-            yml_content = exec_app_docker_compose(
-                kernel,
+        manager.log(f'Compiling docker compose file...')
+        yml_content = exec_app_docker_compose(
+            kernel,
+            app_dir,
+            compose_files,
+            'config'
+        )
+
+        print(yml_content)
+
+        with open(os.path.join(
                 app_dir,
-                compose_files,
-                'config'
-            )
+                APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+        ), 'w') as f:
+            f.write(yml_content)
 
-            with open(os.path.join(
-                    app_dir,
-                    APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
-            ), 'w') as f:
-                f.write(yml_content)
-
-            kernel.run_function(
-                app__hook__exec,
-                {
-                    'app-dir': app_dir,
-                    'hook': 'config/write-post'
-                }
-            )
+        kernel.run_function(
+            app__hook__exec,
+            {
+                'app-dir': app_dir,
+                'hook': 'config/write-post'
+            }
+        )
 
     return ResponseCollectionResponse(kernel, [
         _app__config__write__runtime,
