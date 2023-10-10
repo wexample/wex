@@ -69,7 +69,7 @@ def app__app__exec(
             'arguments': {
                 'container': container_name
             },
-            'hook': 'app/go',
+            'hook': 'app/exec',
         }
     )
 
