@@ -4,8 +4,13 @@ import shutil
 from addons.app.command.app.init import app__app__init
 
 
-def create_test_app(kernel, name='test-app', services: list | None = None) -> str:
-    app_dir = kernel.path["tmp"] + 'tests/test-app/'
+def create_test_app_dir(kernel, name: str | None = None) -> str:
+    return f'{kernel.path["tmp"]}tests/{name or "test-app"}/'
+
+
+def create_test_app(kernel, name: str | None = None, services: list | None = None) -> str:
+    name = name or 'test-app'
+    app_dir = create_test_app_dir(kernel, name)
     test_dir = os.getcwd()
 
     kernel.io.log('Creating test app in : ' + app_dir)
