@@ -16,8 +16,10 @@ class AbstractAppTestCase(AbstractTestCase):
             }
         )
 
+        shell_response = response.output_bag[-2].first()
+
         self.assertTrue(
-            response.output_bag[-2].first().find('Running') > 0,
+            shell_response.find('Started') > 0,
         )
 
         return app_dir
