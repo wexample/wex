@@ -15,7 +15,7 @@ class TestAppCommandAppExec(AbstractAppTestCase):
         )
 
         self.assertEqual(
-            response.first()[0],
+            response.first(),
             'TEST'
         )
 

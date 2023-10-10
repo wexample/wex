@@ -16,11 +16,8 @@ class AbstractAppTestCase(AbstractTestCase):
             }
         )
 
-        shell_message, success = response.output_bag[-2].output_bag
-
         self.assertTrue(
-            success,
-            shell_message
+            response.output_bag[-2].first().find('Running') > 0,
         )
 
         return app_dir
