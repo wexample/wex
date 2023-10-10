@@ -1,11 +1,10 @@
 from addons.app.command.config.get import app__config__get
-from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandConfigGet(AbstractTestCase):
+class TestAppCommandConfigGet(AbstractAppTestCase):
     def test_get(self):
-        app_dir = create_test_app(self.kernel)
+        app_dir = self.create_and_start_test_app(services=['php_8'])
 
         value = self.kernel.run_function(app__config__get, {
             'key': 'global.name',
@@ -13,3 +12,5 @@ class TestAppCommandConfigGet(AbstractTestCase):
         }).first()
 
         self.assertEqual(value, 'test_app')
+
+        self.stop_test_app()

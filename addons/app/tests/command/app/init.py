@@ -1,8 +1,7 @@
-from tests.AbstractTestCase import AbstractTestCase
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
-from addons.app.helpers.test import create_test_app
-
-
-class TestAppCommandAppInit(AbstractTestCase):
+class TestAppCommandAppInit(AbstractAppTestCase):
     def test_init(self):
-        create_test_app(self.kernel, services=['php_8'])
+        self.create_and_start_test_app(services=['php_8'])
+
+        self.stop_test_app()

@@ -322,7 +322,10 @@ class AppAddonManager(AddonManager):
         os.chdir(fallback_dir)
 
         # Print log in normal kernel.
-        self.kernel.io.log('Unset app dir to : ' + fallback_dir)
+        self.kernel.io.log(
+            'Unset app dir to : ' + fallback_dir,
+            verbosity=VERBOSITY_LEVEL_MEDIUM
+        )
 
     def exec_in_workdir(self, app_dir: str, callback):
         self.kernel.io.log_indent_up()

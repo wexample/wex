@@ -1,13 +1,11 @@
-from addons.app.helpers.test import create_test_app
 from addons.app.command.config.get import app__config__get
-from tests.AbstractTestCase import AbstractTestCase
-
 from addons.app.command.config.set import app__config__set
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandConfigSet(AbstractTestCase):
+class TestAppCommandConfigSet(AbstractAppTestCase):
     def test_set(self):
-        app_dir = create_test_app(self.kernel)
+        app_dir = self.create_test_app()
 
         # Change value.
         self.kernel.run_function(app__config__set, {
@@ -38,3 +36,5 @@ class TestAppCommandConfigSet(AbstractTestCase):
                 'key': 'global.name'
             }
         ).first(), 'wex')
+
+        self.stop_test_app()

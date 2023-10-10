@@ -26,7 +26,7 @@ class AppCommandResolver(AbstractCommandResolver):
                     'dir': os.getcwd(),
                 })
 
-            return AbortResponse(self.kernel)
+            return AbortResponse(self.kernel, reason=ERR_APP_NOT_FOUND)
 
         return super().render_request(request, render_mode)
 

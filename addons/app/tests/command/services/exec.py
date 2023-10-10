@@ -1,11 +1,11 @@
-from addons.app.helpers.test import create_test_app
-from tests.AbstractTestCase import AbstractTestCase
 from addons.app.command.services.exec import app__services__exec
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
 
-class TestAppCommandServicesExec(AbstractTestCase):
+class TestAppCommandServicesExec(AbstractAppTestCase):
     def test_exec(self):
-        app_dir = create_test_app(self.kernel, services=['php_8'])
+        app_dir = self.create_and_start_test_app(services=['php_8'])
 
         response = self.kernel.run_function(
             app__services__exec,
@@ -13,8 +13,12 @@ class TestAppCommandServicesExec(AbstractTestCase):
                 'app-dir': app_dir,
                 'hook': 'hook/name'
             }
-        ).first()
-
-        self.assertTrue(
-            response['php_8'] is None
         )
+
+        # The command does not exist
+        self.assertEqual(
+            response.first()['php_8'].reason,
+            ERR_COMMAND_FILE_NOT_FOUND
+        )
+
+        self.stop_test_app()

@@ -8,6 +8,11 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AbortResponse(AbstractResponse, ABC):
+    def __init__(self, kernel, reason: str):
+        super().__init__(kernel)
+
+        self.reason = reason
+
     def render(
             self,
             request: CommandRequest,

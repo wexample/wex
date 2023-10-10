@@ -1,11 +1,9 @@
 from addons.app.command.app.started import app__app__started
-from addons.app.helpers.test import create_test_app
-from tests.AbstractTestCase import AbstractTestCase
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
-
-class TestAppCommandAppStarted(AbstractTestCase):
+class TestAppCommandAppStarted(AbstractAppTestCase):
     def test_started(self):
-        app_dir = create_test_app(self.kernel, services=['php_8'])
+        app_dir = self.create_and_start_test_app(services=['php_8'])
 
         result = self.kernel.run_function(
             app__app__started,
@@ -14,4 +12,6 @@ class TestAppCommandAppStarted(AbstractTestCase):
             }
         ).first()
 
-        self.assertFalse(result)
+        self.assertTrue(result)
+
+        self.stop_test_app()

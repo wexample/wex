@@ -62,7 +62,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
         # Execute in standard mode in a subshell.
         # Can take few seconds.
-        self.kernel.io.log('Running collection test in standard mode...')
+        self.log('Running collection test in standard mode...')
         current_verbosity = self.kernel.verbosity
         self.kernel.verbosity = 0
 

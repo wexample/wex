@@ -236,7 +236,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         if not search:
             search = prefix + 'te'
 
-        self.kernel.io.log(f'Testing command {command}')
+        self.log(f'Testing command {command}')
 
         # First create command
         info = self.kernel.run_function(

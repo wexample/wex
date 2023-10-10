@@ -1,7 +1,9 @@
 import os
 import shutil
 import unittest
+import inspect
 
+from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.file import create_directories_and_copy
 
@@ -24,7 +26,7 @@ class AbstractTestCase(unittest.TestCase):
         # If workdir changed.
         current_dir = os.getcwd()
         if current_dir != self.test_dir:
-            self.kernel.io.log(f'Reset working directory to : {self.test_dir}')
+            self.log(f'Reset working directory to : {self.test_dir}')
 
             os.chdir(self.test_dir)
 
@@ -75,3 +77,11 @@ class AbstractTestCase(unittest.TestCase):
 
         with open(f'{result_path}/{name}.txt', 'w') as file_a:
             file_a.write(data)
+
+    def log(self, message: str):
+        message = f'\n{message}' if message.count('\n') > 0 else message
+
+        self.kernel.io.log(
+            f'test[{inspect.currentframe().f_code.co_name}]:' + str(message),
+            color=COLOR_LIGHT_MAGENTA
+        )

@@ -136,8 +136,6 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             'config'
         )
 
-        print(yml_content)
-
         with open(os.path.join(
                 app_dir,
                 APP_FILEPATH_REL_COMPOSE_RUNTIME_YML

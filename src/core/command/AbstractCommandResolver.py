@@ -36,7 +36,7 @@ class AbstractCommandResolver:
                     'path': request.path,
                 })
 
-            return AbortResponse(self.kernel)
+            return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
@@ -53,7 +53,7 @@ class AbstractCommandResolver:
             ctx = request.function.make_context('', request.args or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
-            return AbortResponse(self.kernel)
+            return AbortResponse(self.kernel, reason='INFO_COMMAND')
         except Exception as e:
             # Show error message
             self.kernel.io.error(

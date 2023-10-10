@@ -1,11 +1,10 @@
-from addons.app.helpers.test import create_test_app
 from addons.app.command.service.install import app__service__install
-from tests.AbstractTestCase import AbstractTestCase
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandServiceInstall(AbstractTestCase):
+class TestAppCommandServiceInstall(AbstractAppTestCase):
     def test_install(self):
-        app_dir = create_test_app(self.kernel)
+        app_dir = self.create_test_app()
 
         self.kernel.run_function(
             app__service__install, {
@@ -13,3 +12,5 @@ class TestAppCommandServiceInstall(AbstractTestCase):
                 'service': 'nextcloud'
             }
         )
+
+        self.stop_test_app()

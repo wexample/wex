@@ -2,16 +2,16 @@ import os
 
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.command.app.perms import app__app__perms
-from src.const.globals import ROOT_USERNAME, OWNER_USERNAME
+from src.const.globals import ROOT_USERNAME
 from src.helper.system import get_uid_from_user_name, get_gid_from_group_name
 from src.helper.file import get_file_owner
-from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandAppPerms(AbstractTestCase):
+class TestAppCommandAppPerms(AbstractAppTestCase):
     def test_perms(self):
-        app_dir = create_test_app(self.kernel)
+        app_dir = self.create_test_app()
+
         test_file = os.path.join(
             app_dir,
             APP_FILEPATH_REL_CONFIG
@@ -48,3 +48,5 @@ class TestAppCommandAppPerms(AbstractTestCase):
             ),
             ROOT_USERNAME
         )
+
+        self.stop_test_app()
