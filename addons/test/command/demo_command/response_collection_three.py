@@ -3,9 +3,9 @@ from src.core.response.ResponseCollectionResponse import ResponseCollectionRespo
 from src.decorator.test_command import test_command
 from src.core import Kernel
 
-TEST_DEMO_COMMAND_THREE_RESULT_ONE = '____this-is-a-test-THREE'
-TEST_DEMO_COMMAND_THREE_RESULT_SHELL = '____THREE'
-TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION = '____this-is-a-function-THREE'
+TEST_DEMO_COMMAND_THREE_RESULT_ONE = '....THREE:simple-text'
+TEST_DEMO_COMMAND_THREE_RESULT_SHELL = '....THREE:shell-response'
+TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION = '....THREE:function-response-text'
 
 
 @test_command()

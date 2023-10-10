@@ -66,3 +66,12 @@ class AbstractTestCase(unittest.TestCase):
         create_directories_and_copy(src_file, dst_file)
 
         return dst_file
+
+    def write_test_result(self, name: str, data: str):
+        result_path = os.path.join(self.kernel.path['tmp'], 'tests', 'results')
+        os.makedirs(
+            result_path,
+            exist_ok=True)
+
+        with open(f'{result_path}/{name}.txt', 'w') as file_a:
+            file_a.write(data)

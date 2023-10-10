@@ -114,7 +114,7 @@ class ResponseCollectionResponse(AbstractResponse):
         self.log('First response item', first_response_item)
 
         # Handle nested collection response
-        if isinstance(first_response_item, ResponseCollectionResponse):
+        if isinstance(first_response_item, AbstractResponse):
             self.log('First item is a collection')
             self.log('Collection rendered', first_response_item.rendered)
 
@@ -129,18 +129,15 @@ class ResponseCollectionResponse(AbstractResponse):
                 )
 
             self.output_bag += first_response_item.output_bag
-            self.has_next_step = first_response_item.has_next_step
 
-            # The response has enqueued a post-exec request
-            if not first_response_item.has_next_step:
-                self.enqueue_next_step(step_index, response)
+            if isinstance(first_response_item, ResponseCollectionResponse):
+                self.has_next_step = first_response_item.has_next_step
 
-            self.log('Returning rendered first collection item')
-            # Returns first item, keeping interesting
-            # parameters like the blocking has_next_step value.
-            # If we returned self we had to copy those parameters
-            # to current object to inform parent about final request status.
-            return self.render_content_complete(first_response_item)
+                # The response has enqueued a post-exec request
+                if not first_response_item.has_next_step:
+                    self.enqueue_next_step(step_index, response)
+
+            return self.render_content_complete()
         else:
             self.output_bag.append(response)
 
@@ -148,7 +145,7 @@ class ResponseCollectionResponse(AbstractResponse):
 
         return self.render_content_complete()
 
-    def render_content_complete(self, output_collection=None):
+    def render_content_complete(self):
         self.kernel.previous_response = self
         self.kernel.io.log_indent_down()
 
@@ -171,7 +168,7 @@ class ResponseCollectionResponse(AbstractResponse):
                     self.output_bag += response.output_bag
             return self
 
-        return output_collection or self
+        return self
 
     def enqueue_next_step(self, current_step_index, response):
         # Now that every render() has ran,
