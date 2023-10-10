@@ -220,7 +220,8 @@ class AppAddonManager(AddonManager):
             else:
                 # Skip if the command allow to be executed without app location.
                 if hasattr(request.function.callback, 'app_dir_optional'):
-                    self.set_app_workdir(None)
+                    self.app_dirs_stack.append(None)
+                    self.unset_app_workdir()
                     return
 
                 app_dir = os.getcwd() + os.sep
@@ -307,7 +308,7 @@ class AppAddonManager(AddonManager):
 
         os.chdir(app_dir)
 
-    def unset_app_workdir(self, fallback_dir: str):
+    def unset_app_workdir(self, fallback_dir: str | None = None):
         self.app_dir = None
         self.config_path = None
         self.runtime_config_path = None

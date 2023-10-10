@@ -51,7 +51,6 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             manager.config['service']['mysql_8']['password'] = mysql_db_password
 
     # Convert docker files.
-    os.scandir(f'{env_dir}docker/')
     docker_dir = f'{env_dir}docker/'
 
     # Use glob to search for all docker-compose.*.yml files in the specified directory

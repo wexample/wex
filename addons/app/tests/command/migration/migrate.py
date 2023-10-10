@@ -26,7 +26,8 @@ class TestAppCommandMigrationMigrate(AbstractTestCase):
 
             self.kernel.run_function(
                 app__migration__migrate, {
-                    'app-dir': test_app_dir
+                    'app-dir': test_app_dir,
+                    'yes': True
                 }
             )
 
