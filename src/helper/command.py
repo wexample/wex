@@ -56,7 +56,7 @@ def prepare_logs(kernel):
     return out_path, err_path
 
 
-def execute_command(kernel, command, working_directory=None, async_mode=False, **kwargs):
+def execute_command(kernel, command: list | str, working_directory=None, async_mode=False, **kwargs):
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -70,6 +70,7 @@ def execute_command(kernel, command, working_directory=None, async_mode=False, *
         **kwargs  # This will overwrite existing keys with values from kwargs, if any
     }
 
+    kernel.io.log(f'Running shell command : {command}', verbosity=VERBOSITY_LEVEL_MAXIMUM)
     process = subprocess.Popen(command, **popen_args)
 
     if async_mode:
@@ -84,6 +85,7 @@ def execute_command(kernel, command, working_directory=None, async_mode=False, *
             out_file.write(out_content.decode())
 
         return success, out_content.decode().splitlines()
+
 
 def command_to_string(command: list, add_quotes: bool = True, quote_char: str = '"'):
     output = []
