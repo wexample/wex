@@ -70,7 +70,8 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         **kwargs  # This will overwrite existing keys with values from kwargs, if any
     }
 
-    kernel.io.log(f'Running shell command : {command}', verbosity=VERBOSITY_LEVEL_MAXIMUM)
+    command_str = command if isinstance(command, str) else command_to_string(command)
+    kernel.io.log(f'Running shell command : {command_str}', verbosity=VERBOSITY_LEVEL_MAXIMUM)
     process = subprocess.Popen(command, **popen_args)
 
     if async_mode:

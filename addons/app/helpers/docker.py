@@ -96,7 +96,6 @@ def exec_app_docker_compose(
         compose_files,
         docker_command,
         profile,
-        sync
     )
 
     if sync:

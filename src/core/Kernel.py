@@ -39,7 +39,8 @@ ADDONS_DEFINITIONS = {
 
 class Kernel:
     # Allow child classes override
-    fast_mode = False
+    fast_mode: bool = False
+    verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path: str):
         self.current_request: None | CommandRequest = None
@@ -51,7 +52,6 @@ class Kernel:
         self.registry: dict[str, Optional[str]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = None
-        self.verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep

@@ -38,8 +38,8 @@ class InteractiveShellCommandResponse(AbstractResponse):
                 shell=True
             )
 
-            if success:
-                self.output_bag.append(content)
+            self.output_bag.append(content)
+            self.output_bag.append(success)
 
         # Do not add to render bag, but append only once.
         elif not self.rendered:

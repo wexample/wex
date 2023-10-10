@@ -54,7 +54,6 @@ def app__app__stop(kernel: Kernel, app_dir: str):
                     app_dir,
                     [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
                     ['down'],
-                    sync=False
                 )
             )
         ])

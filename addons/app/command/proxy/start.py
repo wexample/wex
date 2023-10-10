@@ -43,11 +43,10 @@ def app__proxy__start(kernel: Kernel,
             # Started
             if kernel.run_function(app__app__started, {
                 'app-dir': manager.proxy_path,
-                'mode': APP_STARTED_CHECK_MODE_CONFIG
             }).first():
                 return ResponseCollectionStopResponse(kernel)
         else:
-            kernel.io.log(f'Creating proxy dir {manager.proxy_path}')
+            manager.log(f'Creating proxy dir {manager.proxy_path}')
             os.makedirs(
                 manager.proxy_path,
                 exist_ok=True
