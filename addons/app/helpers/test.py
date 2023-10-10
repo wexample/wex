@@ -2,9 +2,10 @@ import os
 import shutil
 
 from addons.app.command.app.init import app__app__init
+from addons.app.command.app.start import app__app__start
 
 
-def create_test_app(kernel, name='test-app', services: list | None = None) -> str:
+def create_test_app(kernel, name='test-app', services: list | None = None, start: bool = False) -> str:
     app_dir = kernel.path["tmp"] + 'tests/test-app/'
     test_dir = os.getcwd()
 
@@ -21,5 +22,12 @@ def create_test_app(kernel, name='test-app', services: list | None = None) -> st
     })
 
     os.chdir(test_dir)
+
+    if start:
+        kernel.run_function(
+            app__app__start, {
+                'app-dir': app_dir
+            }
+        )
 
     return app_dir
