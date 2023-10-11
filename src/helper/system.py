@@ -5,7 +5,6 @@ import signal
 import socket
 from contextlib import closing
 from typing import Optional
-
 import psutil
 import getpass
 
@@ -14,6 +13,8 @@ from src.helper.command import execute_command
 
 
 def get_processes_by_port(port: int) -> Optional[psutil.Process]:
+    port = int(port)
+
     for process in psutil.process_iter():
         try:
             connections = process.connections()
@@ -119,6 +120,7 @@ def set_permissions_recursively(path: str, mode: int):
             item_path = os.path.join(path, item)
             set_permissions_recursively(item_path, mode)
 
+
 def is_current_user_sudo() -> bool:
     return os.getuid() == 0
 
@@ -148,19 +150,22 @@ def is_port_open(port: int, host: str = 'localhost') -> bool:
             return False
 
 
-def get_pid_from_port(port: int):
-    for proc in psutil.process_iter(['pid', 'connections']):
-        for conn in proc.info['connections']:
-            if conn.laddr.port == port:
-                return proc.info['pid']
-    return None
+def kill_process(process: Optional[psutil.Process]):
+    if process is None:
+        return False
+    try:
+        process.terminate()
+        return True
+    except (psutil.AccessDenied, psutil.NoSuchProcess):
+        return False
 
 
 def kill_process_by_port(port: int):
-    pid = get_pid_from_port(port)
-
-    if pid:
-        os.kill(int(pid), signal.SIGTERM)
+    kill_process(
+        get_processes_by_port(
+            port
+        )
+    )
 
 
 def kill_process_by_command(kernel, command: str):
