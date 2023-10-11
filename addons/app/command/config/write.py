@@ -1,9 +1,12 @@
 import os
 import socket
 
+import yaml
+
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, APP_DIR_APP_DATA
 from addons.app.command.env.get import app__env__get
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
+from src.const.error import ERR_UNEXPECTED
 from src.const.globals import PASSWORD_INSECURE
 from src.helper.system import get_gid_from_group_name, \
     get_uid_from_user_name
@@ -135,6 +138,15 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             compose_files,
             'config'
         )
+
+        try:
+            yaml.safe_load(yml_content)
+        except yaml.YAMLError:
+            kernel.io.print(yml_content)
+
+            kernel.io.error(ERR_UNEXPECTED, {
+                'error': 'Wrong yaml from docker compose',
+            })
 
         with open(os.path.join(
                 app_dir,
