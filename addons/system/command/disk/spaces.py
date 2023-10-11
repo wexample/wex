@@ -4,9 +4,11 @@ from src.core.response.DataSet2dResponse import DataSet2dResponse
 from src.helper.file import human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.alias_without_addon import alias_without_addon
 
 
 @command(help="Return space usage of current system disks")
+@alias_without_addon()
 def system__disk__spaces(kernel: Kernel):
     output_list = DataSet2dResponse(kernel)
     output_list.set_header([
