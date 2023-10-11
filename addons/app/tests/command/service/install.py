@@ -1,16 +1,30 @@
 from addons.app.command.service.install import app__service__install
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from addons.app.command.config.write import app__config__write
+from src.helper.registry import get_all_services_names
 
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
     def test_install(self):
-        app_dir = self.create_test_app()
+        services = get_all_services_names(self.kernel)
 
-        self.kernel.run_function(
-            app__service__install, {
-                'app-dir': app_dir,
-                'service': 'nextcloud'
-            }
-        )
+        for service in services:
+            if service not in ['default', 'proxy']:
+                self.log(f'Testing service install {service}')
+                app_dir = self.create_test_app()
 
-        self.stop_test_app()
+                self.kernel.run_function(
+                    app__service__install, {
+                        'app-dir': app_dir,
+                        'service': service
+                    }
+                )
+
+                self.kernel.run_function(
+                    app__config__write, {
+                        'app-dir': app_dir
+                    }
+                )
+
+                # self.start_test_app()
+                # self.stop_test_app()

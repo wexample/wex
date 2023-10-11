@@ -5,22 +5,17 @@ from addons.app.command.app.stop import app__app__stop
 
 
 class AbstractAppTestCase(AbstractTestCase):
-    def create_test_app(self, services: list | None = None) -> str:
+    def create_test_app(self, name: str | None = None, services: list | None = None) -> str:
         return create_test_app(
             self.kernel,
+            name=name,
             services=services or [],
         )
 
-    def create_and_start_test_app(self, services: list | None = None) -> str:
-        self.stop_test_app()
-
-        app_dir = self.create_test_app(
-            services=services,
-        )
-
+    def start_test_app(self, name: str | None = None):
         response = self.kernel.run_function(
             app__app__start, {
-                'app-dir': app_dir
+                'app-dir': create_test_app_dir(self.kernel, name)
             }
         )
 
@@ -31,6 +26,15 @@ class AbstractAppTestCase(AbstractTestCase):
         self.assertTrue(
             shell_response.find('Started') > 0,
         )
+
+    def create_and_start_test_app(self, name: str | None = None, services: list | None = None) -> str:
+        self.stop_test_app()
+
+        app_dir = self.create_test_app(
+            services=services,
+        )
+
+        self.start_test_app(name)
 
         return app_dir
 
