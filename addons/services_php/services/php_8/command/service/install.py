@@ -11,6 +11,7 @@ from src.decorator.command import command
 def php_8__service__install(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
 
+    # Define itself as main container.
     manager.set_config(
         'docker.main_container',
         manager.get_config(
