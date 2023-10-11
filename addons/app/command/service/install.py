@@ -1,6 +1,8 @@
 import os
 import shutil
 
+import yaml
+
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.docker.helpers.docker import merge_docker_compose_files
 from src.helper.string import to_snake_case
@@ -82,25 +84,32 @@ def app__service__install(
 
         manager.set_config('service', services)
 
-    service_dir = get_service_dir(kernel, service)
-    service_sample_dir = os.path.join(service_dir, 'samples') + '/'
-    service_sample_dir_wex = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
+    from src.helper.service import service_get_inheritance_tree
+    inheritance_tree = service_get_inheritance_tree(kernel, service)
+    inheritance_tree.reverse()
 
-    if os.path.isdir(service_sample_dir_wex):
-        items = os.listdir(service_sample_dir_wex)
+    for service_part in inheritance_tree:
+        kernel.io.log(f'Copying files from {service_part}')
 
-        for item in items:
-            app_service_install_merge_dir(
-                kernel,
-                item,
-                service_sample_dir,
-                app_dir,
-                install_docker,
-                install_git,
-            )
+        service_dir = get_service_dir(kernel, service_part)
+        service_sample_dir = os.path.join(service_dir, 'samples') + '/'
+        service_sample_dir_wex = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
 
-    # Allow service to set global settings.
-    service_config = all_services[service]['config']
+        if os.path.isdir(service_sample_dir_wex):
+            items = os.listdir(service_sample_dir_wex)
+
+            for item in items:
+                app_service_install_merge_dir(
+                    kernel,
+                    item,
+                    service_sample_dir,
+                    app_dir,
+                    install_docker if service_part == service else False,
+                    install_git,
+                )
+
+        # Allow service to set global settings.
+        service_config = all_services[service]['config']
 
     if 'global' in service_config:
         config_global = merge_dicts(
@@ -174,12 +183,27 @@ def app_service_install_merge_dir(
             if install_docker:
                 kernel.io.log('Mixing Docker compose YML')
 
-                create_directories_and_file(dest_file)
+                create_directories_and_file(dest_file, default='services: {}')
 
-                merge_docker_compose_files(
-                    abs_path,
-                    dest_file
-                )
+                with open(dest_file, 'r') as f:
+                    app_compose = yaml.safe_load(f)
+                with open(abs_path, 'r') as f:
+                    extra_compose = yaml.safe_load(f) or {}
+
+                manager: AppAddonManager = kernel.addons['app']
+                app_name = manager.get_config('global.name')
+
+                if 'services' in extra_compose:
+                    extra_services = {}
+                    for service in extra_compose['services']:
+                        extra_services[f'{app_name}_{service}'] = extra_compose['services'][service]
+
+                    extra_compose['services'] = extra_services
+
+                merged_data = merge_dicts(app_compose, extra_compose)
+
+                with open(dest_file, 'w') as f:
+                    yaml.dump(merged_data, f)
         else:
             create_directories_and_file(dest_file)
 
