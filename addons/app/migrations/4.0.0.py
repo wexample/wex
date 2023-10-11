@@ -9,6 +9,7 @@ from addons.app.AppAddonManager import AppAddonManager
 
 def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     repo = get_or_create_repo(manager.app_dir)
+    projects_dirs = ['project', 'wordpress']
 
     # Rename ".wex" file to "config"
     def _migration_4_0_0_config():
@@ -25,19 +26,20 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     # Move every file and folder to ".wex", except the "project" dir
     def _migration_4_0_0_move_root_environment_files():
         for item in os.listdir(manager.app_dir):
-            if item in ["project", ".git", ".wex"]:
+            if item in projects_dirs + [".git", ".wex"]:
                 continue
             file_move_or_git_move(repo, item, f'.wex/{item}')
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files():
-        dir_project = os.path.join(manager.app_dir, "project")
+        for projects_dir in projects_dirs:
+            dir_project = os.path.join(manager.app_dir, projects_dir)
 
-        if os.path.exists(dir_project):
-            for item in os.listdir(dir_project):
-                file_move_or_git_move(repo, f'project/{item}', item)
+            if os.path.exists(dir_project):
+                for item in os.listdir(dir_project):
+                    file_move_or_git_move(repo, f'{projects_dir}/{item}', item)
 
-        migration_delete_dir_if_empty(kernel, dir_project)
+            migration_delete_dir_if_empty(kernel, dir_project)
 
     progress_steps(kernel, [
         _migration_4_0_0_config,

@@ -89,7 +89,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
 
         # Replace strings based on the mapping dictionary
         for old_str, new_str in replacement_mapping.items():
-            content = content.replace('${' + old_str + '}', '${' + new_str + '}')
+            content = content.replace('${' + str(old_str) + '}', '${' + str(new_str) + '}')
 
         # Override the file with updated content
         with open(docker_file, 'w') as f:
