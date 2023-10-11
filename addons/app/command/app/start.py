@@ -11,6 +11,7 @@ from addons.app.command.service.used import app__service__used
 from addons.app.helpers.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.app.go import app__app__go
+from addons.app.command.hosts.update import app__hosts__update
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
@@ -162,8 +163,14 @@ def app__app__start(
             )
         ])
 
-    def _app__app__start__complete(previous):
+    def _app__app__start__update_hosts(previous):
         manager.set_runtime_config('started', True)
+
+        kernel.run_function(
+            app__hosts__update
+        )
+
+    def _app__app__start__complete(previous):
 
         # Postpone execution
         kernel.run_function(
@@ -193,5 +200,6 @@ def app__app__start(
         _app__app__start__proxy,
         _app__app__start__config,
         _app__app__start__starting,
+        _app__app__start__update_hosts,
         _app__app__start__complete,
     ])

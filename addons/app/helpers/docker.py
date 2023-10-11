@@ -1,4 +1,6 @@
+import json
 import os
+import subprocess
 
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.command.service.used import app__service__used
@@ -114,3 +116,10 @@ def exec_app_docker_compose(
         return '\n'.join(output)
 
     process_post_exec(kernel, command)
+
+
+def get_container_pid(container_name):
+    cmd = f"docker inspect {container_name}"
+    result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+    data = json.loads(result.stdout.decode('utf-8'))
+    return data[0]['State']['Pid']

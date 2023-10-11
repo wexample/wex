@@ -24,7 +24,6 @@ class AppAddonManager(AddonManager):
         self.config = {}
         self.config_path = None
         self.app_dirs_stack = []
-        self.proxy_apps = {}
         self.runtime_config = {}
         self.runtime_config_path = None
         self.runtime_docker_compose = None
@@ -34,6 +33,11 @@ class AppAddonManager(AddonManager):
             self.proxy_path = '/Users/.wex/server/'
         else:
             self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
+
+        self.proxy_apps = yaml_load_or_default(
+            self.proxy_path + PROXY_FILE_APPS_REGISTRY,
+            {}
+        )
 
     @staticmethod
     def is_app_root(app_dir: str) -> bool:
@@ -302,11 +306,6 @@ class AppAddonManager(AddonManager):
     def load_config(self):
         self.config = self._load_config(self.config_path)
 
-        self.proxy_apps = yaml_load_or_default(
-            self.proxy_path + PROXY_FILE_APPS_REGISTRY,
-            {}
-        )
-
         self.runtime_config = self._load_config(
             self.runtime_config_path)
 
@@ -319,7 +318,6 @@ class AppAddonManager(AddonManager):
         self.runtime_config_path = None
         self.runtime_docker_compose_path = None
         self.config = None
-        self.proxy_apps = None
         self.runtime_config = None
         self.runtime_docker_compose = None
 

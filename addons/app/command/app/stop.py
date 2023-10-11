@@ -1,9 +1,10 @@
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
-from addons.app.helpers.docker import exec_app_docker_compose, exec_app_docker_compose_command
+from addons.app.helpers.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.hosts.update import app__hosts__update
 from src.decorator.alias_without_addon import alias_without_addon
 from src.core.Kernel import Kernel
 from src.decorator.command import command
@@ -58,18 +59,16 @@ def app__app__stop(kernel: Kernel, app_dir: str):
             )
         ])
 
-    def _app__app__stop__config(previous):
+    def _app__app__stop__update_hosts(previous):
         manager.log('Unregistering app')
         if name in manager.proxy_apps:
             del manager.proxy_apps[name]
-            manager.save_proxy_apps()
 
-        # # TODO
-        # # # Reload file
-        # # # Rebuild hosts in wex registry.
-        # # wex-exec app::hosts / update
-        # # # Rebuild hosts global /etc/hosts.
-        # # wex-exec app::hosts / updateLocal
+        manager.save_proxy_apps()
+
+        kernel.run_function(
+            app__hosts__update
+        )
 
     def _app__app__stop__complete(previous):
         manager.set_runtime_config('started', False)
@@ -85,6 +84,6 @@ def app__app__stop(kernel: Kernel, app_dir: str):
     return ResponseCollectionResponse(kernel, [
         _app__app__stop__checkup,
         _app__app__stop__stop,
-        _app__app__stop__config,
+        _app__app__stop__update_hosts,
         _app__app__stop__complete,
     ])

@@ -1,53 +1,67 @@
-from addons.app.decorator.app_dir_optional import app_dir_optional
+from addons.app.decorator.app_dir_ignore import app_dir_ignore
+from addons.docker.command.docker.ip import docker__docker__ip
+from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.app.started import app__app__started
+from src.const.globals import SYSTEM_HOSTS_PATH, CORE_COMMAND_NAME
 from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
+
 @command(help="Update local /etc/hosts file")
 @as_sudo
-@app_dir_optional
+@app_dir_ignore
 def app__hosts__update(kernel: Kernel):
-    hosts_path = '/etc/hosts'
+    new_block_content = []
+    ip = kernel.run_function(
+        docker__docker__ip
+    ).first()
 
-    # TODO This behavior is inherited, maybe we can now redirect local requests to containers without modifying the host file
+    manager: AppAddonManager = AppAddonManager(kernel, 'updating')
+    for app_name, app_dir in manager.proxy_apps.items():
+        manager.set_app_workdir(app_dir)
 
-    # new_block_content = []
-    # ip = kernel.run_function(
-    #     docker__docker__ip
-    # ).first()
-    #
-    # for app_name, app_dir in kernel.addons['app']['proxy']['apps'].items():
-    #     new_block_content.append(f'{app_name}\t{ip}')
-    # new_block_content = '\n'.join(new_block_content)
-    #
-    # kernel.io.log(f'Updating {hosts_path}')
-    #
-    # with open(hosts_path, 'r') as f:
-    #     hosts_content = f.read()
-    #
-    # # Remove old wex block
-    # hosts_content = remove_wex_block(hosts_content)
-    #
-    # # Add the new wex block
-    # hosts_content = add_wex_block(hosts_content, new_block_content)
-    #
-    # # Write the updated content back to the file
-    # with open(hosts_path, 'w') as f:
-    #     f.write(hosts_content)
+        if kernel.run_function(
+                app__app__started,
+                {
+                    'app-dir': app_dir
+                }
+        ).first():
+            kernel.io.log(f'Found app [{app_name}]')
+
+            domains = manager.get_runtime_config('domains')
+            for domain in domains:
+                new_block_content.append(f'{ip}\t{domain}')
+
+    new_block_content = '\n'.join(new_block_content)
+
+    kernel.io.log(f'Updating {SYSTEM_HOSTS_PATH}')
+
+    with open(SYSTEM_HOSTS_PATH, 'r') as f:
+        hosts_content = f.read()
+
+    # Remove old wex block
+    hosts_content = remove_wex_block(hosts_content)
+    # Add the new wex block
+    hosts_content = add_wex_block(hosts_content, new_block_content)
+
+    # Write the updated content back to the file
+    with open(SYSTEM_HOSTS_PATH, 'w') as f:
+        f.write(hosts_content)
 
 
 def remove_wex_block(text):
     """
-    Removes any text surrounded by "#[ wex ]#...#[ endwex ]#" in a given string variable.
+    Removes any text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
     lines = text.split("\n")
     new_lines = []
     in_wex_block = False
 
     for line in lines:
-        if "#[ wex ]#" in line:
+        if f'#[ {CORE_COMMAND_NAME} ]#' in line:
             in_wex_block = True
-        elif "#[ endwex ]#" in line:
+        elif f'#[ end-{CORE_COMMAND_NAME} ]#' in line:
             in_wex_block = False
             continue
 
@@ -59,6 +73,6 @@ def remove_wex_block(text):
 
 def add_wex_block(text, block_content):
     """
-    Adds a text surrounded by "#[ wex ]#...#[ endwex ]#" in a given string variable.
+    Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
-    return text + "\n#[ wex ]#\n" + block_content + "\n#[ endwex ]#\n"
+    return text + f'\n#[ {CORE_COMMAND_NAME} ]#\n' + block_content + f'\n#[ end-{CORE_COMMAND_NAME} ]#\n'
