@@ -1,7 +1,7 @@
 import os
 import glob
 
-from addons.app.const.app import APP_DIR_APP_DATA
+from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
 from addons.default.helpers.git import file_move_or_git_move, get_or_create_repo
 from addons.default.helpers.migration import migration_delete_dir_if_empty
 from addons.app.helpers.app import create_env
@@ -35,7 +35,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
             file_move_or_git_move(repo, item, f'.wex/{item}')
 
         if not os.path.exists('.wex/.env'):
-            create_env('prod', manager.app_dir)
+            create_env(APP_ENV_LOCAL, manager.app_dir)
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files():

@@ -293,6 +293,12 @@ class AppAddonManager(AddonManager):
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
         self.runtime_docker_compose_path = os.path.join(app_dir, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML)
+
+        self.load_config()
+
+        os.chdir(app_dir)
+
+    def load_config(self):
         self.config = self._load_config(self.config_path)
 
         self.proxy_apps = yaml_load_or_default(
@@ -305,8 +311,6 @@ class AppAddonManager(AddonManager):
 
         self.runtime_docker_compose = self._load_config(
             self.runtime_docker_compose_path)
-
-        os.chdir(app_dir)
 
     def unset_app_workdir(self, fallback_dir: str | None = None):
         self.app_dir = None

@@ -16,6 +16,11 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     # Convert main config file.
     config = _parse_4_0_0_config_file(f'{env_dir}config')
 
+    services_names_map = {
+        'mysql8': 'mysql_8',
+        'wordpress5': 'wordpress',
+    }
+
     def _migration_5_0_0_update_config():
         if config:
             for domain_env_name in ['LOCAL', 'DEV', 'PROD']:
@@ -33,19 +38,6 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             manager.config['global']['name'] = _get_config_value(config, 'NAME',
                                                                  manager.get_config('global.config', 'undefined'))
 
-            # Services
-            services = _get_config_value(config, 'SERVICES', [])
-            for service_name in services:
-                kernel.run_function(
-                    app__service__install,
-                    {
-                        'service': to_snake_case(service_name),
-                        'install-docker': False,
-                        'install-git': False,
-                        'force': True
-                    }
-                )
-
             # # Database
             # db_container = _get_config_value(config, 'DB_CONTAINER')
             # if db_container:
@@ -55,6 +47,27 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             mysql_db_password = _get_config_value(config, 'MYSQL_DB_PASSWORD')
             if mysql_db_password:
                 manager.config['service']['mysql_8']['password'] = mysql_db_password
+
+            manager.save_config()
+
+    def _migration_5_0_0_install_services():
+        # Services
+        services = _get_config_value(config, 'SERVICES', [])
+        for service_name in services:
+            service_name = services_names_map[service_name] if service_name in services_names_map else service_name
+
+            kernel.run_function(
+                app__service__install,
+                {
+                    'service': to_snake_case(service_name),
+                    'install-docker': False,
+                    'install-git': False,
+                    'force': True
+                }
+            )
+
+        # Reload config as it may change during services install
+        manager.load_config()
 
     def _migration_5_0_0_update_docker():
         docker_files = _migration_4_0_0_et_docker_files(manager)
@@ -70,43 +83,42 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             if 'version' in content:
                 del content['version']
 
-            migration_5_0_0_replace_docker_services_names(content, {
-                'mysql8': 'mysql_8',
-                'wordpress5': 'wordpress',
-            })
+            migration_5_0_0_replace_docker_services_names(content, services_names_map)
 
             # Override the YAML file
             with open(docker_file, 'w') as f:
                 yaml.dump(content, f)
 
-    _migration_4_0_0_replace_docker_placeholders(manager, {
-        "APP_ENV": "RUNTIME_ENV",
-        "APP_PATH_ROOT": "RUNTIME_PATH_APP",
-        "APP_PATH_WEX": "RUNTIME_PATH_APP_WEX",
-        "APP_NAME": "GLOBAL_NAME",
-        "CONTEXT_ENV": "RUNTIME_ENV",
-        "DB_CONTAINER": "DB_MAIN_CONTAINER",
-        "DOMAINS": "RUNTIME_DOMAINS_STRING",
-        "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
-        "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_8_YML_ENV",
-        "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_5_YML_ENV",
-        "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
-        "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
-        'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_8_YML_ENV',
-        "GITLAB_VERSION": _get_config_value(config, 'GITLAB_VERSION', '16.4.1-ce.0'),
-        "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
-        "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),
-        "NEXTCLOUD_VERSION": _get_config_value(config, 'NEXTCLOUD_VERSION'),
-        "GRAFANA_VERSION": _get_config_value(config, 'GRAFANA_VERSION', '9.5.12'),
-        "JENKINS_VERSION": _get_config_value(config, 'JENKINS_VERSION', '2.60.3-alpine'),
-        "MONGO_VERSION": _get_config_value(config, 'MONGO_VERSION'),
-        "MATOMO_VERSION": _get_config_value(config, 'MATOMO_VERSION'),
-        "ONLYOFFICE_DOCUMENT_SERVER_VERSION": _get_config_value(config, 'ONLYOFFICE_DOCUMENT_SERVER_VERSION'),
-        "SONARQUBE_VERSION": _get_config_value(config, 'SONARQUBE_VERSION'),
-    })
+        _migration_4_0_0_replace_docker_placeholders(manager, {
+            "APP_ENV": "RUNTIME_ENV",
+            "APP_PATH_ROOT": "RUNTIME_PATH_APP",
+            "APP_PATH_WEX": "RUNTIME_PATH_APP_WEX",
+            "APP_NAME": "GLOBAL_NAME",
+            "CONTEXT_ENV": "RUNTIME_ENV",
+            "DB_CONTAINER": "DOCKER_MAIN_DB_CONTAINER",
+            "DOMAINS": "RUNTIME_DOMAINS_STRING",
+            "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
+            "EMAIL": "RUNTIME_EMAIL",
+            "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_8_YML_ENV",
+            "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_5_YML_ENV",
+            "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
+            "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
+            'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_8_YML_ENV',
+            "GITLAB_VERSION": _get_config_value(config, 'GITLAB_VERSION', '16.4.1-ce.0'),
+            "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
+            "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),
+            "NEXTCLOUD_VERSION": _get_config_value(config, 'NEXTCLOUD_VERSION'),
+            "GRAFANA_VERSION": _get_config_value(config, 'GRAFANA_VERSION', '9.5.12'),
+            "JENKINS_VERSION": _get_config_value(config, 'JENKINS_VERSION', '2.60.3-alpine'),
+            "MONGO_VERSION": _get_config_value(config, 'MONGO_VERSION'),
+            "MATOMO_VERSION": _get_config_value(config, 'MATOMO_VERSION'),
+            "ONLYOFFICE_DOCUMENT_SERVER_VERSION": _get_config_value(config, 'ONLYOFFICE_DOCUMENT_SERVER_VERSION'),
+            "SONARQUBE_VERSION": _get_config_value(config, 'SONARQUBE_VERSION'),
+        })
 
     progress_steps(kernel, [
         _migration_5_0_0_update_config,
+        _migration_5_0_0_install_services,
         _migration_5_0_0_update_docker,
     ])
 
