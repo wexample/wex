@@ -295,7 +295,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             )
 
         manager: AppAddonManager = self.kernel.addons['app']
-        manager.exec_in_workdir(
+        manager.exec_in_app_workdir(
             app_dir,
             callback
         )
