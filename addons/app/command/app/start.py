@@ -37,13 +37,16 @@ from src.decorator.as_sudo import as_sudo
         help="Group of application files")
 @option('--env', '-e', type=str, required=False,
         help="App environment")
+@option('--no-proxy', '-nopx', is_flag=True, required=False,
+        help="Do not start proxy")
 def app__app__start(
         kernel,
         app_dir: str,
         clear_cache: bool = False,
         user: str = None,
         group: str = None,
-        env: str = None):
+        env: str = None,
+        no_proxy: bool = False):
     manager: AppAddonManager = kernel.addons['app']
     name = manager.get_config('global.name')
 
@@ -76,6 +79,9 @@ def app__app__start(
             return ResponseCollectionStopResponse(kernel)
 
     def _app__app__start__proxy(previous):
+        if no_proxy:
+            return
+
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}).first():
             # The reverse proxy is not running.
