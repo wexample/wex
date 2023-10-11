@@ -5,7 +5,7 @@ from addons.default.helpers.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
 from addons.app.decorator.app_dir_optional import app_dir_optional
 from addons.default.helpers.migration import version_guess, get_migrations_files, migration_exec, \
-    MIGRATION_MINIMAL_VERSION
+    MIGRATION_MINIMAL_VERSION, extract_version_from_file_name
 from addons.app.helpers.app import create_manager
 from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
@@ -71,7 +71,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_versi
     kernel.io.log(f'Current version defined as {app_version_string}')
 
     for migration_file in get_migrations_files(kernel):
-        migration_version_string = migration_file.replace(".py", "")
+        migration_version_string = extract_version_from_file_name(migration_file)
 
         migration_version = kernel.run_function(
             default__version__parse,

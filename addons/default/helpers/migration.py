@@ -1,5 +1,6 @@
 import importlib
 import os
+import re
 
 from src.core.Kernel import Kernel
 
@@ -24,10 +25,7 @@ def migration_get_function(kernel: Kernel, version: str, method_part: str):
     path_migrations = get_migrations_path(kernel)
     method_name = f"{method_part}_{version_snake}"
 
-    # Dynamically import the module
-    module_name = version.replace(".py", "")
-
-    spec = importlib.util.spec_from_file_location(module_name, path_migrations + version + '.py')
+    spec = importlib.util.spec_from_file_location('migration_' + version_snake, path_migrations + 'migration_' + version_snake + '.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
 
@@ -51,6 +49,7 @@ def migration_exec(kernel: Kernel, version: str, method_part: str, arguments: []
 def version_guess(kernel: Kernel, path: str):
     for migration_file in get_migrations_files(kernel):
         version_string = migration_file.replace(".py", "")
+        version_string = version_string.replace("migration_", "")
 
         result = migration_exec(
             kernel,
@@ -72,3 +71,11 @@ def migration_delete_dir_if_empty(kernel: Kernel, target_dir: str):
         kernel.io.log(f'Dir not empty, leaving as it is : {target_dir}')
     else:
         os.rmdir(target_dir)
+
+
+def extract_version_from_file_name(filename: str) -> None | str:
+    match = re.search(r'migration_(\d+_\d+_\d+)\.py', filename)
+    if match:
+        version = match.group(1).replace('_', '.')
+        return version
+    return None
