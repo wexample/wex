@@ -11,14 +11,6 @@ from addons.app.AppAddonManager import AppAddonManager
 @app_dir_option()
 @service_option()
 def phpmyadmin__config__runtime(kernel: Kernel, app_dir: str, service: str):
-    kernel.run_function(
-        app__config__bind_files,
-        {
-            'app-dir': app_dir,
-            'dir': 'php'
-        }
-    )
-
     # Save config
     manager: AppAddonManager = kernel.addons['app']
     domain_pma = manager.get_runtime_config('domain_pma')

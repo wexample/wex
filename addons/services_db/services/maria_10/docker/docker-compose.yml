@@ -4,10 +4,10 @@ services:
         image: mariadb:10.9
         environment:
             - MYSQL_ROOT_HOST=%
-            - MYSQL_PASSWORD=${MARIA_10_PASSWORD}
-            - MYSQL_DATABASE=${MARIA_10_NAME}
-            - MYSQL_ROOT_PASSWORD=${MARIA_10_PASSWORD}
-            - MYSQL_USER=${MARIA_10_USER}
+            - MYSQL_PASSWORD=${SERVICE_MARIA_10_PASSWORD}
+            - MYSQL_DATABASE=${SERVICE_MARIA_10_NAME}
+            - MYSQL_ROOT_PASSWORD=${SERVICE_MARIA_10_PASSWORD}
+            - MYSQL_USER=${SERVICE_MARIA_10_USER}
         volumes:
             - ${RUNTIME_PATH_APP_WEX}maria/data:/var/lib/mysql
             - ${RUNTIME_PATH_APP_WEX}maria/dumps:/var/www/dumps
@@ -16,4 +16,4 @@ services:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
         ports:
-            - ${MARIA_10_PORT}:3306
+            - ${SERVICE_MARIA_10_PORT}:3306

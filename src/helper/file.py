@@ -111,7 +111,7 @@ def create_directories_and_copy(path_from: str, path_to: str) -> None:
     shutil.copy2(path_from, path_to)
 
 
-def create_directories_and_file(path: str, content: str = None) -> None:
+def create_directories_and_file(path: str, content: str = None, default: str = None) -> None:
     if os.path.exists(path):
         if content is not None:
             with open(path, 'w') as file:
@@ -123,8 +123,8 @@ def create_directories_and_file(path: str, content: str = None) -> None:
 
     # Create and close the file
     with open(path, 'w') as file:
-        if content:
-            file.write(content)
+        if default or content:
+            file.write(default or content)
 
 
 def write_dict_to_config(dict: dict, dest: str):

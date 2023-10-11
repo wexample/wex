@@ -67,7 +67,17 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
         "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
         "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_8_YML_ENV",
         "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_5_YML_ENV",
-        "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV"
+        "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
+        "GITLAB_VERSION": _get_config_value(config, 'GITLAB_VERSION', '16.4.1-ce.0'),
+        "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
+        "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),
+        "NEXTCLOUD_VERSION": _get_config_value(config, 'NEXTCLOUD_VERSION'),
+        "GRAFANA_VERSION": _get_config_value(config, 'GRAFANA_VERSION', '9.5.12'),
+        "JENKINS_VERSION": _get_config_value(config, 'JENKINS_VERSION', '2.60.3-alpine'),
+        "MONGO_VERSION": _get_config_value(config, 'MONGO_VERSION'),
+        "MATOMO_VERSION": _get_config_value(config, 'MATOMO_VERSION'),
+        "ONLYOFFICE_DOCUMENT_SERVER_VERSION": _get_config_value(config, 'ONLYOFFICE_DOCUMENT_SERVER_VERSION'),
+        "SONARQUBE_VERSION": _get_config_value(config, 'SONARQUBE_VERSION'),
     }
 
     # Raw file replacements

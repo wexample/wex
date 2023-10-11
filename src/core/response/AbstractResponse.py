@@ -13,7 +13,7 @@ class AbstractResponse:
         self.kernel: Kernel = kernel
         self.parent = None
         self.output_bag: list = []
-        self.request = None
+        self.request: CommandRequest | None = None
         self.parent = None
         self.rendered = False
         # Some data can ba part of the output
@@ -31,6 +31,7 @@ class AbstractResponse:
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> 'AbstractResponse':
+
         self.request = request
         self.parent = self.kernel.current_response
 

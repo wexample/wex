@@ -30,7 +30,7 @@ class CommandRequest:
             self.args = convert_dict_to_args(self.function, args)
         else:
             self.args = args
-            
+
         # For multiple steps commands like response collections
         # Share unique root request steps list.
         current_request = self.resolver.kernel.current_request
@@ -39,6 +39,7 @@ class CommandRequest:
         steps = arg_shift(self.args, 'command-request-step')
         if steps:
             self.steps = list(map(int, str(steps).split('.')))
+
 
     def locate_function(self):
         # Build dynamic variables

@@ -1,7 +1,7 @@
 services:
     onlyoffice:
         container_name: '${RUNTIME_NAME}_onlyoffice'
-        image: 'onlyoffice/documentserver:${ONLYOFFICE_DOCUMENT_SERVER_VERSION}'
+        image: 'onlyoffice/documentserver:7.4.1'
         ports:
             # MPP-compatible instant messaging client (for ONLYOFFICE Talk correct work)
             - "5222:5222"

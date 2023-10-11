@@ -1,15 +1,15 @@
 services:
   n8n:
     container_name: ${RUNTIME_NAME}_n8n
-    image: n8nio/n8n:${N8N_VERSION}
+    image: n8nio/n8n:1.9.3
     ports:
       - 5678:5678
     environment:
       - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
       - VIRTUAL_PORT=5678
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_BASIC_AUTH_USER=${SERVICE_N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${SERVICE_N8N_BASIC_AUTH_PASSWORD}
       - N8N_HOST=${RUNTIME_DOMAIN_MAIN}
       - N8N_PORT=5678
       - N8N_PROTOCOL=https

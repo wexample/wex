@@ -1,7 +1,7 @@
 services:
     mongo_6:
         container_name: '${RUNTIME_NAME}_mongo'
-        image: mongo:${MONGO_VERSION}
+        image: mongo:7.0.2
         volumes:
           - ${RUNTIME_PATH_APP_WEX}mongo/data:/data/db
           - ${RUNTIME_PATH_APP_WEX}mongo/dumps:/dump

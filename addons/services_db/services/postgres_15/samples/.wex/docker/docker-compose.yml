@@ -1,0 +1,5 @@
+services:
+  postgres_15:
+    extends:
+      file: ${RUNTIME_SERVICE_POSTGRES_15_YML_ENV}
+      service: postgres_15

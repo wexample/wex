@@ -1,13 +1,13 @@
 services:
   nextcloud:
     container_name: '${RUNTIME_NAME}_nextcloud'
-    image: nextcloud:25.0.3
+    image: nextcloud:25.0.12
     environment:
       - VIRTUAL_HOST=${GLOBAL_NAME}.wex
-      - MARIA_10_HOST=${MARIA_10_HOST}
-      - MARIA_10_DATABASE=${MARIA_10_NAME}
-      - MARIA_10_USER=${MARIA_10_USER}
-      - MARIA_10_PASSWORD=${MARIA_10_PASSWORD}
+      - MARIA_10_HOST=${SERVICE_MARIA_10_HOST}
+      - MARIA_10_DATABASE=${SERVICE_MARIA_10_NAME}
+      - MARIA_10_USER=${SERVICE_MARIA_10_USER}
+      - MARIA_10_PASSWORD=${SERVICE_MARIA_10_PASSWORD}
     volumes:
       - ${RUNTIME_PATH_APP}data:/var/www/html
       - ${RUNTIME_PATH_APP}extra-addons:/mnt/extra-addons

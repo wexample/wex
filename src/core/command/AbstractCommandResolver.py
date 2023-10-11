@@ -50,7 +50,7 @@ class AbstractCommandResolver:
         self.kernel.exec_middlewares('run_pre', middleware_args)
 
         try:
-            ctx = request.function.make_context('', request.args or [])
+            ctx = request.function.make_context('', request.args.copy() or [])
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
             return AbortResponse(self.kernel, reason='INFO_COMMAND')

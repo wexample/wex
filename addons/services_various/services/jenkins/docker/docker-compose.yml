@@ -4,7 +4,7 @@ services:
         file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
         service: default
     container_name: '${RUNTIME_NAME}_jenkins'
-    image: 'jenkins/jenkins:${JENKINS_VERSION}'
+    image: 'jenkins/jenkins:2.60.3'
     ports:
       - "50000:50000"
     environment:

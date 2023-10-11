@@ -1,7 +1,7 @@
 services:
     grafana:
       container_name: ${RUNTIME_NAME}_grafana
-      image: grafana/grafana:${GRAFANA_VERSION}
+      image: grafana/grafana:9.5.12
       volumes:
         - ${RUNTIME_PATH_APP}grafana:/var/lib/grafana
         - ${RUNTIME_PATH_APP}provisioning:/etc/grafana/provisioning/

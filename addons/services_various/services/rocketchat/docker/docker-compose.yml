@@ -1,6 +1,6 @@
 services:
     rocketchat:
-        image: rocket.chat:${ROCKETCHAT_VERSION}
+        image: rocket.chat:6.4.1
         container_name: ${RUNTIME_NAME}_rocketchat
         environment:
           - ROOT_URL=http://localhost:3000
@@ -13,4 +13,4 @@ services:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
         depends_on:
-          - ${GLOBAL_NAME}_mongo-6
+          - ${GLOBAL_NAME}_mongo_6
