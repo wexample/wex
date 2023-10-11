@@ -28,6 +28,7 @@ class AppAddonManager(AddonManager):
         self.runtime_config_path = None
         self.runtime_docker_compose = None
         self.runtime_docker_compose_path = None
+        self.first_log_indent = None
 
         if platform.system() == 'Darwin':
             self.proxy_path = '/Users/.wex/server/'
@@ -188,11 +189,17 @@ class AppAddonManager(AddonManager):
     def get_config(self, key: str, default: any = None) -> any:
         return get_dict_item_by_path(self.config, key, default)
 
-    def log(self, message: str, color=COLOR_GRAY, increment: int = 0) -> None:
+    def log(self, message: str, color=COLOR_GRAY, indent: int = 0) -> None:
+        if self.first_log_indent is None:
+            self.first_log_indent = self.kernel.io.log_indent
+
+        if self.kernel.io.log_indent == self.first_log_indent:
+            message = f'[{self.get_config("global.name")}] {message}'
+
         return self.kernel.io.log(
-            f'[{self.get_config("global.name")}] {message}',
+            message,
             color,
-            increment + 1
+            indent
         )
 
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
