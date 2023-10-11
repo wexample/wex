@@ -9,7 +9,8 @@ from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
-    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
+    APP_DIR_APP_DATA
 from addons.app.command.location.find import app__location__find
 from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 from src.helper.core import core_kernel_get_version
@@ -342,3 +343,91 @@ class AppAddonManager(AddonManager):
         self.kernel.io.log_indent_down()
 
         return response
+
+    def build_runtime_config(self, user: str = None, group: str = None):
+        import socket
+        from addons.app.command.env.get import app__env__get
+        from src.const.globals import PASSWORD_INSECURE
+        from src.helper.system import get_gid_from_group_name, \
+            get_uid_from_user_name
+        from src.helper.system import get_user_or_sudo_user, get_user_group_name
+        from addons.app.command.hook.exec import app__hook__exec
+
+        env = self.kernel.run_function(app__env__get, {'app-dir': self.app_dir}).first()
+        user = user or get_user_or_sudo_user()
+        group = group or get_user_group_name(user)
+        name = self.get_config('global.name')
+
+        self.log(f'Using user {user}:{group}')
+
+        # Get a full config copy
+        runtime_config = self.config.copy()
+        # Add the per-environment config.
+        runtime_config.update(self.config['env'][env])
+
+        domains = []
+        if 'domains' in runtime_config:
+            domains = runtime_config['domains']
+
+        if 'domain_main' in runtime_config and runtime_config['domain_main'] not in domains:
+            domains.append(runtime_config['domain_main'])
+
+        # Add extra runtime config.
+        runtime_config.update({
+            'domains': domains,
+            'domains_string': ','.join(domains),
+            'domain_tld': (runtime_config['domain_tld']
+                           if 'domain_tld' in runtime_config
+                           else runtime_config['domain_main']),
+            'env': env,
+            'name': f'{name}_{env}',
+            'host': {
+                'ip': socket.gethostbyname(
+                    socket.gethostname()
+                )
+            },
+            'password': {
+                'insecure': PASSWORD_INSECURE
+            },
+            'path': {
+                'app': self.app_dir,
+                'app_wex': os.path.join(self.app_dir, APP_DIR_APP_DATA) + '/',
+                'proxy': self.proxy_path
+            },
+            'service': {},
+            'started': False,
+            'user': {
+                'group': group,
+                'gid': get_gid_from_group_name(group),
+                'name': user,
+                'uid': get_uid_from_user_name(user),
+            }
+        })
+
+        # Build paths to services docker compose yml files.
+        for service, service_data in self.kernel.registry['services'].items():
+            base_yml = service_data['dir'] + 'docker/docker-compose.yml'
+            env_yml = service_data['dir'] + f'docker/docker-compose.{env}.yml'
+
+            if not os.path.exists(env_yml):
+                env_yml = base_yml
+
+            runtime_config['service'][service] = {
+                'yml': {
+                    'base': base_yml,
+                    'env': env_yml,
+                }
+            }
+
+        self.log(f'Build config file')
+
+        self.runtime_config = runtime_config
+        self.save_runtime_config()
+
+        self.kernel.run_function(
+            app__hook__exec,
+            {
+                'app-dir': self.app_dir,
+                'hook': 'config/runtime'
+            }
+        )
