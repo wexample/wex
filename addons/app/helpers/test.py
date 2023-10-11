@@ -16,7 +16,7 @@ def create_test_app(kernel, name: str | None = None, services: list | None = Non
     kernel.io.log('Creating test app in : ' + app_dir)
 
     # Recreate test app dir.
-    shutil.rmtree(app_dir, True)
+    shutil.rmtree(app_dir)
     os.makedirs(app_dir)
 
     kernel.run_function(app__app__init, {
