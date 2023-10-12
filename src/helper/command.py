@@ -2,6 +2,7 @@ import subprocess
 import datetime
 import os
 
+from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.args import convert_dict_to_args
 from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 
@@ -27,6 +28,12 @@ def core_call_to_shell_command(kernel, function: callable, args: dict = {}) -> l
         command += ['--vv']
     elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
         command += ['--vvv']
+
+    if kernel.io.log_length != IO_DEFAULT_LOG_LENGTH:
+        command += [
+            '--log-length',
+            str(kernel.io.log_length)
+        ]
 
     return command
 

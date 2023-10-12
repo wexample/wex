@@ -6,13 +6,14 @@ from src.helper.string import count_lines_needed
 from src.const.globals import \
     COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT, COLOR_GREEN, COLOR_RED
 
+IO_DEFAULT_LOG_LENGTH=20
 
 class IOManager:
     messages = None
 
     def __init__(self, kernel):
         self.log_indent: int = 1
-        self.frame_height: int = 10
+        self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: list = []
         self.indent_string = '  '
         self.kernel = kernel
@@ -71,12 +72,13 @@ class IOManager:
     def build_indent(self, increment: int = 0) -> str:
         return self.indent_string * (self.log_indent + increment)
 
-    def calc_log_length(self):
+    def calc_log_messages_length(self):
         return sum(message['lines'] for message in self.log_messages)
 
     def log_hide(self):
-        total_lines_needed = self.calc_log_length()
-        self.clear_last_n_lines(total_lines_needed)
+        if self.log_length > 0:
+            total_lines_needed = self.calc_log_messages_length()
+            self.clear_last_n_lines(total_lines_needed)
 
     def clear_last_n_lines(self, n):
         for _ in range(n):
@@ -95,20 +97,23 @@ class IOManager:
 
         message = f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}'
 
-        # Calculate the number of lines needed for the message
-        lines_needed = count_lines_needed(message)
+        if self.log_length:
+            # Calculate the number of lines needed for the message
+            lines_needed = count_lines_needed(message)
 
-        # Save the message along with its line count
-        self.log_messages.append({
-            'message': message,
-            'lines': lines_needed
-        })
+            # Save the message along with its line count
+            self.log_messages.append({
+                'message': message,
+                'lines': lines_needed
+            })
 
-        # Remove the oldest message if the log exceeds the frame height
-        if len(self.log_messages) > self.frame_height:
-            self.log_messages.pop(0)
+            # Remove the oldest message if the log exceeds the frame height
+            if len(self.log_messages) > self.log_length:
+                self.log_messages.pop(0)
 
-        self.log_show()
+            self.log_show()
+        else:
+            self.print(message)
 
     def success(self, message):
         def _success():

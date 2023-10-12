@@ -307,9 +307,16 @@ class Kernel:
         if arg_shift(self.sys_argv, 'vvv', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MAXIMUM
 
-        log_indent_value = arg_shift(self.sys_argv, 'log-indent')
-        if log_indent_value is not None:
-            self.io.log_indent = int(log_indent_value)
+        value = arg_shift(self.sys_argv, 'log-indent')
+        if value is not None:
+            self.io.log_indent = int(value)
+
+        value = arg_shift(self.sys_argv, 'log-length')
+        # Setting max verbosity will disable logging frame.
+        if self.verbosity == VERBOSITY_LEVEL_MAXIMUM:
+            value = 0
+        if value is not None:
+            self.io.log_length = int(value)
 
     def load_env(self):
         from dotenv import load_dotenv

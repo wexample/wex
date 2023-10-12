@@ -129,7 +129,7 @@ def app__app__start(
                 'group': group,
             })
 
-    def _app__app__start__starting(previous):
+    def _app__app__start__start_hooks(previous):
         # Run docker compose
         compose_options = ['up', '-d']
 
@@ -150,18 +150,19 @@ def app__app__start(
 
         compose_options += [item for value in service_results.values() if isinstance(value, list) for item in value]
 
-        # TODO Return directly InteractiveShellCommandResponse when working.
-        return ResponseCollectionResponse(kernel, [
-            InteractiveShellCommandResponse(
+        # TODO Use another way to store "previous" that should not be printed.
+        return compose_options
+
+    def _app__app__start__starting(previous):
+        return InteractiveShellCommandResponse(
+            kernel,
+            exec_app_docker_compose_command(
                 kernel,
-                exec_app_docker_compose_command(
-                    kernel,
-                    app_dir,
-                    [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
-                    compose_options,
-                )
+                app_dir,
+                [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
+                previous,
             )
-        ])
+        )
 
     def _app__app__start__update_hosts(previous):
         manager.set_runtime_config('started', True)
@@ -198,6 +199,7 @@ def app__app__start(
         _app__app__start__checkup,
         _app__app__start__proxy,
         _app__app__start__config,
+        _app__app__start__start_hooks,
         _app__app__start__starting,
         _app__app__start__update_hosts,
         _app__app__start__complete,

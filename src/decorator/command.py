@@ -1,6 +1,15 @@
 import click
 
-COMMAND_HELP_PARAMS = ['fast_mode', 'quiet', 'vv', 'vvv', 'command_request_step', 'kernel_task_id', 'log_indent']
+COMMAND_HELP_PARAMS = [
+    'fast_mode',
+    'quiet',
+    'vv',
+    'vvv',
+    'command_request_step',
+    'kernel_task_id',
+    'log_indent',
+    'log_length'
+]
 
 
 # Define your custom decorator
@@ -32,6 +41,8 @@ def command(*args, **kwargs):
                              help="Core option for processes collection execution")(f)
             f = click.option('--log-indent', '-log-indent', type=str, required=False,
                              help="Core option for processes collection execution")(f)
+            f = click.option('--log-length', '-log-length', type=int, required=False,
+                             help="Change logging frame height, set 0 to disable it")(f)
         return f
 
     return decorator
