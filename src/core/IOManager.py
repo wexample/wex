@@ -115,20 +115,18 @@ class IOManager:
             command_type: str = COMMAND_TYPE_ADDON,
             message: str = 'You might want now to execute one of the following command',
     ):
-        self.message(message + ':')
-
         commands = []
         for command in functions_or_command:
             if not isinstance(command, str):
+                command_string = self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+                    command,
+                    {},
+                )
+
                 # Only supports commands without args
                 commands.append(
-                    self.kernel.get_command_resolver(command_type).build_full_command_from_function(
-                        command,
-                        {},
-                    )
+                    f'{COLOR_CYAN}>{COLOR_RESET} {command_string}'
                 )
 
         commands = '\n'.join(commands)
-        self.print(
-            f'{self.build_indent(2)}{COLOR_GRAY}>{COLOR_RESET} {commands}\n'
-        )
+        self.message(message + ':', commands)
