@@ -1,34 +1,35 @@
-from src.helper.dict import get_dict_item_by_path
+from addons.app.AppAddonManager import AppAddonManager
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.decorator.command import command
 from src.core import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.command.app.exec import app__app__exec
-from addons.app.command.services.exec import app__services__exec
+from src.decorator.alias_without_addon import alias_without_addon
+
 
 @command(help="Enter into database management CLI")
+@alias_without_addon()
 @app_dir_option()
 def app__db__go(
         kernel: Kernel,
         app_dir: str):
+    manager: AppAddonManager = kernel.addons['app']
+    service = manager.get_config('docker.main_db_container')
     container_name = 'mysql_8'
 
-    shell_command = get_dict_item_by_path(
-        kernel.registry,
-        f'services.{container_name}.config.container.go',
-        '/bin/bash'
+    go_command = kernel.run_command(
+        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/go',
+        {
+            'app-dir': app_dir,
+            'service': service
+        }
+    ).first()
+
+    kernel.run_function(
+        app__app__exec,
+        {
+            'app-dir': app_dir,
+            'container-name': container_name,
+            'command': go_command
+        }
     )
-
-    # db_go_command = kernel.run_function(
-    #     app__services__exec,
-    #     {
-    #         'app-dir': app_dir
-    #     }
-    # )
-
-
-    # kernel.run_function(
-    #     app__app__exec,
-    #     {
-    #         'app-dir': app_dir
-    #     }
-    # )

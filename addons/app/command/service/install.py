@@ -1,13 +1,10 @@
 import os
 import shutil
-
 import yaml
 
 from addons.app.const.app import APP_DIR_APP_DATA
-from addons.docker.helpers.docker import merge_docker_compose_files
 from src.helper.string import to_snake_case
 from src.helper.dict import merge_dicts
-from src.helper.array import array_unique
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
