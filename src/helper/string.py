@@ -1,4 +1,5 @@
 import re
+import shutil
 
 
 def to_snake_case(text: str) -> str:
@@ -17,9 +18,11 @@ def to_kebab_case(text: str) -> str:
         re.sub(r'([a-z])([A-Z])', r'\1-\2', text)
     ).lower()
 
+
 def to_camel_case(text: str) -> str:
     s1 = to_snake_case(text)
     return re.sub(r'_([a-z])', lambda x: x.group(1).upper(), s1)
+
 
 def to_pascal_case(text: str) -> str:
     # Use to_camel_case to convert to camelCase first
@@ -55,3 +58,28 @@ def trim_leading(text: str, leading_text: str) -> str:
         return text[len(leading_text):]
     else:
         return text
+
+
+def count_lines_needed(message: str) -> int:
+    """Calculate the number of lines needed to display a message in the terminal."""
+    # Get terminal size
+    terminal_width, _ = shutil.get_terminal_size()
+
+    # Count invisible characters (ANSI escape sequences)
+    invisible_chars = 0
+    in_escape_sequence = False
+    for char in message:
+        if char == '\033':
+            in_escape_sequence = True
+        if in_escape_sequence:
+            invisible_chars += 1
+        if char == 'm':
+            in_escape_sequence = False
+
+    # Calculate the visible length of the message
+    visible_length = len(message) - invisible_chars
+
+    # Calculate the number of lines needed, equivalent to math.ceil(visible_length / terminal_width)
+    lines_needed = -(-visible_length // terminal_width)
+
+    return lines_needed
