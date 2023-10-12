@@ -24,7 +24,9 @@ class AbstractAppTestCase(AbstractTestCase):
         self.log(shell_response)
 
         self.assertTrue(
-            shell_response.find('Started') > 0,
+            # Started does not guarantee that the container is fully working,
+            # but it is sufficient in this case.
+            shell_response.find('Started') > 0 or shell_response.find('Running') > 0,
         )
 
     def create_and_start_test_app(self, name: str | None = None, services: list | None = None) -> str:

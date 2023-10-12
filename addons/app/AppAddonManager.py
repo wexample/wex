@@ -436,3 +436,11 @@ class AppAddonManager(AddonManager):
                 'hook': 'config/runtime'
             }
         )
+
+    def run_app_function(self, function: callable, args: dict):
+        args['app-dir'] = self.app_dir
+
+        return self.kernel.run_function(
+            function,
+            args
+        )

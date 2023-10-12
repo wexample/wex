@@ -26,9 +26,11 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             for domain_env_name in ['LOCAL', 'DEV', 'PROD']:
                 env_name = domain_env_name.lower()
                 domains = _get_config_value(config, domain_env_name + '_DOMAINS')
-                manager.config['env'][env_name]['domains'] = sorted(
-                    domains.split(',') if isinstance(domains, str) else domains
-                )
+
+                if domains:
+                    manager.config['env'][env_name]['domains'] = sorted(
+                        domains.split(',') if isinstance(domains, str) else domains
+                    )
                 manager.config['env'][env_name]['domain_main'] = _get_config_value(config,
                                                                                    domain_env_name + '_DOMAIN_MAIN')
 
@@ -189,7 +191,7 @@ def _get_config_value(config: dict, key: str, default=None):
 
 def _parse_4_0_0_config_file(file_path: str):
     if not os.path.isfile(file_path):
-        return None
+        return {}
 
     config = {}
 
