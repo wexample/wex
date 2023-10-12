@@ -87,7 +87,9 @@ class ResponseCollectionResponse(AbstractResponse):
                 if self.kernel.previous_response:
                     has_previous = True
                     # Serialize previous data to keep consistency with non-fast mode.
-                    previous = self.kernel.previous_response.print(False)
+                    previous = self.kernel.previous_response.print(
+                        interactive_data=False
+                    )
             else:
                 has_previous = True
                 previous = self.kernel.task_file_load('response')
@@ -182,7 +184,7 @@ class ResponseCollectionResponse(AbstractResponse):
             # when all scripts are ran in one single thread.
             # The "previous_response" var will be used instead.
             if not self.kernel.fast_mode:
-                serialized = response.print()
+                serialized = response.print(interactive_data=False)
                 if serialized is not None:
                     # Store response in a file to allow next step to access it.
                     self.kernel.task_file_write('response', serialized)

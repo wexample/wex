@@ -67,7 +67,9 @@ class AbstractResponse:
             for output in self.output_bag:
                 if isinstance(output, AbstractResponse):
                     if not output.interactive_data or interactive_data:
-                        output_serialized = output.print(interactive_data)
+                        output_serialized = output.print(
+                            interactive_data=interactive_data,
+                        )
                         if output_serialized is not None:
                             serialised.append(output_serialized)
                 elif output is not None:
