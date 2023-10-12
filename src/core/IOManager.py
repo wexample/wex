@@ -1,6 +1,8 @@
 import json
 import os
+import sys
 
+from src.helper.string import count_lines_needed
 from src.const.globals import \
     COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT, COLOR_GREEN, COLOR_RED
 
@@ -10,6 +12,8 @@ class IOManager:
 
     def __init__(self, kernel):
         self.log_indent: int = 1
+        self.frame_height: int = 10
+        self.log_messages: list = []
         self.indent_string = '  '
         self.kernel = kernel
 
@@ -67,30 +71,85 @@ class IOManager:
     def build_indent(self, increment: int = 0) -> str:
         return self.indent_string * (self.log_indent + increment)
 
+    def calc_log_length(self):
+        return sum(message['lines'] for message in self.log_messages)
+
+    def log_hide(self):
+        total_lines_needed = self.calc_log_length()
+        self.clear_last_n_lines(total_lines_needed)
+
+    def clear_last_n_lines(self, n):
+        for _ in range(n):
+            sys.stdout.write("\x1b[1A")  # Move cursor up by 1 line
+            sys.stdout.write("\x1b[2K")  # Clear current line
+
+    def log_show(self):
+        for message in self.log_messages:
+            self.print(message['message'])
+
     def log(self, message: str, color=COLOR_GRAY, increment: int = 0, verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
         if verbosity > self.kernel.verbosity:
             return
 
-        self.print(f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}')
+        self.log_hide()
+
+        message = f'{self.build_indent(increment)}{color}{message}{COLOR_RESET}'
+
+        # Calculate the number of lines needed for the message
+        lines_needed = count_lines_needed(message)
+
+        # Save the message along with its line count
+        self.log_messages.append({
+            'message': message,
+            'lines': lines_needed
+        })
+
+        # Remove the oldest message if the log exceeds the frame height
+        if len(self.log_messages) > self.frame_height:
+            self.log_messages.pop(0)
+
+        self.log_show()
 
     def success(self, message):
-        self.log(f'{COLOR_GREEN}✔{COLOR_RESET} {message}')
+        def _success():
+            nonlocal message
+            self.log(f'{COLOR_GREEN}✔{COLOR_RESET} {message}')
+            self.print(message)
+
+        self.exec_outside_log_frame(_success)
 
     def fail(self, message):
-        self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')
+        def _fail():
+            nonlocal message
+            self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')
+            self.print(message)
 
-    def print(self, message):
-        print(message)
+        self.exec_outside_log_frame(_fail)
+
+    def print(self, message, **kwargs):
+        print(message, **kwargs)
 
     def message(self, message: str, text: None | str = None):
         import textwrap
 
-        message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
+        def _message():
+            nonlocal message
+            nonlocal text
+            message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
 
-        if text:
-            message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
+            if text:
+                message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
 
-        self.print(message)
+            self.print(message)
+
+        self.exec_outside_log_frame(_message)
+
+    def exec_outside_log_frame(self, callback: callable):
+        self.log_hide()
+
+        callback()
+
+        self.log_show()
 
     def message_next_command(
             self,

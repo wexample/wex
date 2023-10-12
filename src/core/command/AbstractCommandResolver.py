@@ -40,6 +40,8 @@ class AbstractCommandResolver:
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
+            # Mask printed logs as it may not be relevant.
+            self.kernel.io.log_hide()
             # Uses the original argv argument to ignore any changes on it.
             os.execvp('sudo', ['sudo'] + sys.argv)
 
