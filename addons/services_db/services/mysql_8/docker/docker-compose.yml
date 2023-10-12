@@ -1,12 +1,12 @@
 services:
     mysql_8:
         container_name: '${RUNTIME_NAME}_mysql_8'
-        image: mysql:8.0.32
-#    TODO    environment:
-#            - MYSQL_DATABASE=${SERVICE_MYSQL_8_NAME}
-#            - MYSQL_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
-#            - MYSQL_ROOT_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
-#            - MYSQL_TCP_PORT=${SERVICE_MYSQL_8_PORT}
+        image: mysql:8.1
+        environment:
+            - MYSQL_DATABASE=${SERVICE_MYSQL_8_NAME}
+            - MYSQL_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
+            - MYSQL_TCP_PORT=${SERVICE_MYSQL_8_PORT}
         volumes:
             - ${RUNTIME_PATH_APP_WEX}mysql/data:/var/lib/mysql
             - ${RUNTIME_PATH_APP_WEX}mysql/dumps:/var/www/dumps
