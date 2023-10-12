@@ -187,7 +187,7 @@ def app__app__start(
             }
         )
 
-        kernel.io.message(f'Your app is initialized as" {name}"')
+        kernel.io.message(f'Your app is initialized as "{name}"')
         kernel.io.message_all_next_commands(
             [
                 app__app__go,

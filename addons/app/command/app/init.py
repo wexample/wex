@@ -1,4 +1,3 @@
-
 import os.path
 from pathlib import Path
 from git import Repo
@@ -184,7 +183,7 @@ def app__app__init(
     def init_step_unset_workdir():
         manager.unset_app_workdir(current_dir)
 
-    progress_steps(kernel,  [
+    progress_steps(kernel, [
         init_step_check_vars,
         init_step_check_services,
         init_step_copy_app,
@@ -197,7 +196,7 @@ def app__app__init(
         init_step_unset_workdir,
     ])
 
-    kernel.io.message(f'Your app is initialized as" {name}"')
     kernel.io.message_next_command(
-        app__app__start
+        app__app__start,
+        message=f'Your app is running as "{name}" on {manager.get_config("env")} environment'
     )
