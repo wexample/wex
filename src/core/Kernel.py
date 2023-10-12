@@ -276,24 +276,6 @@ class Kernel:
 
         self.task_id = self.sys_argv[1]
 
-        for i, arg in enumerate(self.sys_argv):
-            # There is a redirection
-            if arg == '--kernel-task-id' and i + 1 < len(self.sys_argv):
-                task_id = self.sys_argv[i + 1]
-
-                self.task_file_write(
-                    'task-redirect',
-                    task_id,
-                    True
-                )
-
-                self.task_id = task_id
-
-                # Cleanup task files to avoid loops.
-                remove_file_if_exists(
-                    self.task_file_path('post-exec')
-                )
-
     def handle_core_args(self):
         if arg_shift(self.sys_argv, 'fast-mode', True) is not None:
             self.fast_mode = True
@@ -317,6 +299,22 @@ class Kernel:
             value = 0
         if value is not None:
             self.io.log_length = int(value)
+
+        # There is a task id redirection
+        value = arg_shift(self.sys_argv, 'kernel-task-id')
+        if value:
+            self.task_file_write(
+                'task-redirect',
+                value,
+                True
+            )
+
+            self.task_id = value
+
+            # Cleanup task files to avoid loops.
+            remove_file_if_exists(
+                self.task_file_path('post-exec')
+            )
 
     def load_env(self):
         from dotenv import load_dotenv
