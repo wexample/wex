@@ -131,6 +131,11 @@ class Kernel:
             command_args
         )
 
+        # Empty log message to keep visual stability
+        # even executing post exec bash scripts.
+        if not self.fast_mode and len(self.post_exec):
+            self.io.log_hide()
+
         if result is not None:
             self.io.print(result)
 
