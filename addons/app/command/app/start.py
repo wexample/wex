@@ -171,7 +171,6 @@ def app__app__start(
         )
 
     def _app__app__start__complete(previous):
-
         # Postpone execution
         kernel.run_function(
             app__hook__exec,

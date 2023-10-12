@@ -14,8 +14,9 @@ def app__db__go(
         kernel: Kernel,
         app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
+    # There is a probable mismatch between container / service names
+    # but for now each service have only one container.
     service = manager.get_config('docker.main_db_container')
-    container_name = 'mysql_8'
 
     go_command = kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/go',
@@ -29,7 +30,7 @@ def app__db__go(
         app__app__exec,
         {
             'app-dir': app_dir,
-            'container-name': container_name,
+            'container-name': service,
             'command': go_command
         }
     )

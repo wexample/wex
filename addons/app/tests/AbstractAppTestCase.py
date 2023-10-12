@@ -19,7 +19,7 @@ class AbstractAppTestCase(AbstractTestCase):
             }
         )
 
-        shell_response = response.output_bag[-2].first()
+        shell_response = response.output_bag[-3].first()
 
         self.log(shell_response)
 
