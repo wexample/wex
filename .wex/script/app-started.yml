@@ -1,0 +1,12 @@
+# TODO
+command:
+  - CONTAINER_USER=owner
+  - GIT_USER_NAME=$(sudo -u "${SUDO_USER}" git config --global user.name)
+  - GIT_USER_EMAIL=$(sudo -u "${SUDO_USER}" git config --global user.email)
+  - git config --global user.name "${GIT_USER_NAME}"
+  - git config --global user.email "${GIT_USER_EMAIL}"
+  - touch /home/owner/.gitconfig
+  - chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/owner/
+  - chown -R ${CONTAINER_USER}:${CONTAINER_USER} /opt/wex
+  - cd /opt/wex && git prune
+  - . /opt/wex/cli/install
