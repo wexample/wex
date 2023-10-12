@@ -1,6 +1,6 @@
         # We use this container
         extends:
-          file: ${SERVICE_WORDPRESS_YML_ENV}
+          file: ${RUNTIME_SERVICE_WORDPRESS_YML_ENV}
           service: cli
         depends_on:
           - ${GLOBAL_NAME}_wordpress

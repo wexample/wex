@@ -1,7 +1,7 @@
 services:
   wordpress:
     extends:
-      file: ${SERVICE_WORDPRESS_YML_ENV}
+      file: ${RUNTIME_SERVICE_WORDPRESS_YML_ENV}
       service: wordpress
     depends_on:
-      - ${GLOBAL_NAME}_mysql-8
+      - ${GLOBAL_NAME}_mysql_8

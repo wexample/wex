@@ -12,7 +12,6 @@ services:
             - WORDPRESS_DB_NAME=${SERVICE_MYSQL_8_NAME}
             - WORDPRESS_DB_USER=${SERVICE_MYSQL_8_USER}
             - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
-            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
             - WORDPRESS_DEBUG=1
             - WORDPRESS_CONFIG_EXTRA=
         volumes:
@@ -33,7 +32,6 @@ services:
             - WORDPRESS_DB_NAME=${SERVICE_MYSQL_8_NAME}
             - WORDPRESS_DB_USER=${SERVICE_MYSQL_8_USER}
             - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
-            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
         volumes:
             # Wordpress
             - ${RUNTIME_PATH_APP}:/var/www/html
