@@ -8,13 +8,13 @@ services:
             - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
             - VIRTUAL_PORT=80
             # Database
-#            - WORDPRESS_DB_HOST=${MYSQL_DB_HOST}
-#            - WORDPRESS_DB_NAME=${MYSQL_DB_NAME}
-#            - WORDPRESS_DB_USER=${MYSQL_DB_USER}
-#            - WORDPRESS_DB_PASSWORD=${MYSQL_DB_PASSWORD}
-#            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
-            #- WORDPRESS_DEBUG=1
-            #- WORDPRESS_CONFIG_EXTRA=
+            - WORDPRESS_DB_HOST=${SERVICE_MYSQL_8_HOST}
+            - WORDPRESS_DB_NAME=${SERVICE_MYSQL_8_NAME}
+            - WORDPRESS_DB_USER=${SERVICE_MYSQL_8_USER}
+            - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
+            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
+            - WORDPRESS_DEBUG=1
+            - WORDPRESS_CONFIG_EXTRA=
         volumes:
             # Wordpress
             - ${RUNTIME_PATH_APP}:/var/www/html
@@ -28,13 +28,12 @@ services:
     cli:
         container_name: '${RUNTIME_NAME}_cli'
         image: wordpress:cli-2.7.1-php8.2
-#        environment:
-            # Database
-#            - WORDPRESS_DB_HOST=${MYSQL_DB_HOST}
-#            - WORDPRESS_DB_NAME=${MYSQL_DB_NAME}
-#            - WORDPRESS_DB_USER=${MYSQL_DB_USER}
-#            - WORDPRESS_DB_PASSWORD=${MYSQL_DB_PASSWORD}
-#            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
+        environment:
+            - WORDPRESS_DB_HOST=${SERVICE_MYSQL_8_HOST}
+            - WORDPRESS_DB_NAME=${SERVICE_MYSQL_8_NAME}
+            - WORDPRESS_DB_USER=${SERVICE_MYSQL_8_USER}
+            - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_8_PASSWORD}
+            - WORDPRESS_TABLE_PREFIX=${WP_DB_TABLE_PREFIX}
         volumes:
             # Wordpress
             - ${RUNTIME_PATH_APP}:/var/www/html
