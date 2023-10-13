@@ -4,8 +4,10 @@ from src.helper.system import set_owner_recursively, get_user_or_sudo_user
 from src.decorator.command import command
 from src.decorator.option import option
 from src.decorator.alias_without_addon import alias_without_addon
+from src.decorator.as_sudo import as_sudo
 
 
+@as_sudo
 @command(help="Make current user owner of this directory and every files or subdirectories")
 @alias_without_addon()
 @option('--path', '-p', type=str, required=False, default=None, help="Argument")
