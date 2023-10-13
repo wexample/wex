@@ -1,4 +1,4 @@
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+from src.helper.args import parse_arg
 from src.helper.command import command_to_string
 from src.decorator.command import command
 from src.decorator.option import option
@@ -75,6 +75,11 @@ def app__app__exec(
             # Last result overrides previous to avoid
             # merging which can result to an unexpected final command
             sub_command = result[index].first()
+
+    # Convert command in list to string
+    command = parse_arg(command)
+    if isinstance(command, list):
+        command = command_to_string(command)
 
     # Prepare the final command to be executed
     final_command = []
