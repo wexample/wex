@@ -10,10 +10,12 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.helper.dict import get_dict_item_by_path
+from addons.app.decorator.app_should_run import app_should_run
 
 
 @command(help="Exec a command into app container")
 @alias('app/exec')
+@app_should_run
 @app_dir_option()
 @option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
 @option('--command', '-c', type=str, required=True, help="Command to execute")
@@ -25,14 +27,7 @@ def app__app__exec(
         container_name: str | None = None,
         user: str | None = None):
     manager: AppAddonManager = kernel.addons['app']
-    container_name = manager.get_config(f'docker.main_container', container_name)
-
-    if not kernel.run_function(app__app__started, {
-        'app-dir': app_dir,
-        'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
-    }).first():
-        manager.log('App not running')
-        return
+    container_name = container_name or manager.get_config(f'docker.main_container', None)
 
     if not container_name:
         manager.log('No main container configured')
