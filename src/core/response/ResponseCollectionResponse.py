@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.core.response.AbortResponse import AbortResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.helper.args import arg_push
 from src.core.CommandRequest import CommandRequest
@@ -108,40 +109,43 @@ class ResponseCollectionResponse(AbstractResponse):
         if len(response.output_bag) >= 1:
             first_response_item = response.output_bag[0]
 
-        if isinstance(first_response_item, ResponseCollectionStopResponse):
-            self.log('Collection execution aborted', response)
-            return self
-
-        self.log('Response type', response)
-        self.log('First response item', first_response_item)
-
-        # Handle nested collection response
+        # If first item is of type "response"
+        # the base response is probably a function
+        # which have been executed and returning a new response
         if isinstance(first_response_item, AbstractResponse):
-            self.log('First item is a collection')
-            self.log('Collection rendered', first_response_item.rendered)
+            response = first_response_item
 
-            # Collection has not been rendered :
-            # - When a function return a raw collection class, it has not been rendered
-            # - When a function runs a sub command request, it has already been rendered
-            if not first_response_item.rendered:
-                first_response_item.render(
-                    request,
-                    render_mode,
-                    render_args
-                )
+        # Support simple abort response, with is an alias of a stop response.
+        if isinstance(response, AbortResponse):
+            response = ResponseCollectionStopResponse(self.kernel, response.reason)
 
-            self.output_bag += first_response_item.output_bag
+        self.output_bag.append(response)
 
-            if isinstance(first_response_item, ResponseCollectionResponse):
-                self.has_next_step = first_response_item.has_next_step
+        # If response is a collection, it can have two different states
+        # according the way they have been returned :
+        # - When a function return a response class, it has not been rendered
+        # - When a function runs a sub command request, it has already been rendered
+        if isinstance(response, AbstractResponse) and not response.rendered:
+            response.render(
+                request,
+                render_mode,
+                render_args
+            )
 
-                # The response has enqueued a post-exec request
-                if not first_response_item.has_next_step:
-                    self.enqueue_next_step(step_index, response)
+        # Response asks to stop all process
+        if isinstance(response, ResponseCollectionStopResponse):
+            self.log('Collection execution aborted', response)
+
+            # Mark having next step to block enqueuing
+            self.has_next_step = True
 
             return self.render_content_complete()
-        else:
-            self.output_bag.append(response)
+
+        if (isinstance(response, ResponseCollectionResponse)
+                and response.has_next_step):
+            self.has_next_step = response.has_next_step
+
+            return self.render_content_complete()
 
         self.enqueue_next_step(step_index, response)
 
@@ -154,8 +158,9 @@ class ResponseCollectionResponse(AbstractResponse):
         if self.kernel.fast_mode:
             if self.parent:
                 self.parent.has_next_step = self.has_next_step
+            # This is the root collection
             else:
-                while self.has_next_step:
+                while self.has_next_step and not isinstance(self.first(), ResponseCollectionStopResponse):
                     self.has_next_step = False
                     self.kernel.previous_response = self
                     self.kernel.current_response = None
@@ -167,8 +172,8 @@ class ResponseCollectionResponse(AbstractResponse):
                         args
                     )
 
+                    # In fast mode we merge all outputs in the root output bag.
                     self.output_bag += response.output_bag
-            return self
 
         return self
 

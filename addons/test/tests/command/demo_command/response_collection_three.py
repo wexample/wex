@@ -8,16 +8,16 @@ class TestTestCommandDemoCommandResponseCollectionThree(AbstractTestCase):
         result = self.kernel.run_function(test__demo_command__response_collection_three)
 
         self.assertEqual(
-            result.output_bag[0].output_bag[0],
+            result.first(),
+            TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION
+        )
+
+        self.assertEqual(
+            result.output_bag[1].first(),
             TEST_DEMO_COMMAND_THREE_RESULT_ONE
         )
 
         self.assertEqual(
-            result.output_bag[1].output_bag[0],
+            result.output_bag[2].first(),
             TEST_DEMO_COMMAND_THREE_RESULT_SHELL
-        )
-
-        self.assertEqual(
-            result.output_bag[2].output_bag[0],
-            TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION
         )

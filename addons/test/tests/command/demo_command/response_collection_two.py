@@ -24,16 +24,16 @@ class TestTestCommandDemoCommandResponseCollectionTwo(AbstractTestCase):
         )
 
         self.assertEqual(
-            result.output_bag[5].first(),
+            result.output_bag[7].first(),
             TEST_DEMO_COMMAND_THREE_RESULT_ONE
         )
 
         self.assertEqual(
-            result.output_bag[6].first(),
+            result.output_bag[8].first(),
             '....THREE:shell-response'
         )
 
         self.assertEqual(
-            result.output_bag[8],
+            result.output_bag[9].first(),
             '..TWO:interactive-shell-response',
         )

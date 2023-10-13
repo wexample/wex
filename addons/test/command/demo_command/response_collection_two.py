@@ -3,6 +3,7 @@ from src.core.response.InteractiveShellCommandResponse import InteractiveShellCo
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
+from src.decorator.option import option
 from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
 
 TEST_DEMO_COMMAND_TWO_RESULT_FIRST = '..TWO:simple-text'
@@ -10,11 +11,14 @@ TEST_DEMO_COMMAND_TWO_RESULT_SHELL = '..TWO:shell-response'
 
 
 @test_command()
-def test__demo_command__response_collection_two(kernel: Kernel):
-    def _test__demo_command__response_collection_two__simple_function(previous: int):
-        return f'..TWO:simple-function-previous-value:{previous}'
+@option('--abort', '-a', is_flag=True, required=False, help="Ask to abort")
+def test__demo_command__response_collection_two(kernel: Kernel, abort: bool = False):
+    def _test__demo_command__response_collection_two__simple_function(previous: None):
+        return f'..TWO:simple-function-previous-value:should-be-none={previous}'
 
     def _test__demo_command__response_collection_two__run_another_collection(previous: int = None):
+        nonlocal abort
+
         # This run will return unused response.
         kernel.run_function(
             core__check__hi,
@@ -22,6 +26,9 @@ def test__demo_command__response_collection_two(kernel: Kernel):
 
         return kernel.run_function(
             test__demo_command__response_collection_three,
+            {
+                'abort': abort
+            }
         )
 
     def _test__demo_command__response_collection_three_command(previous):
