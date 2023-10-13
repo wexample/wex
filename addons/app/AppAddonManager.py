@@ -10,7 +10,7 @@ from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
-    APP_DIR_APP_DATA
+    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN
 from addons.app.command.location.find import app__location__find
 from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 from src.helper.core import core_kernel_get_version
@@ -245,24 +245,7 @@ class AppAddonManager(AddonManager):
                     }
                 ).first()
 
-        if app_dir_resolved:
-            # Ensure it always ends with a /
-            if not app_dir_resolved.endswith(os.sep):
-                app_dir_resolved += os.sep
-
-            # First test, create config.
-            if self.app_dir != app_dir_resolved:
-                self.set_app_workdir(app_dir_resolved)
-
-            self.app_dirs_stack.append(app_dir_resolved)
-
-            # Append to original apps list.
-            request.args = args
-            arg_push(
-                args,
-                'app-dir',
-                app_dir_resolved)
-        else:
+        if not app_dir_resolved:
             import logging
 
             self.kernel.io.error(ERR_APP_NOT_FOUND, {
@@ -271,6 +254,39 @@ class AppAddonManager(AddonManager):
             }, logging.ERROR)
 
             exit(0)
+
+        # Ensure it always ends with a /
+        if not app_dir_resolved.endswith(os.sep):
+            app_dir_resolved += os.sep
+
+        # First test, create config.
+        if self.app_dir != app_dir_resolved:
+            self.set_app_workdir(app_dir_resolved)
+
+        self.app_dirs_stack.append(app_dir_resolved)
+
+        # Append to original apps list.
+        request.args = args
+        arg_push(
+            args,
+            'app-dir',
+            app_dir_resolved)
+
+        if hasattr(request.function.callback, 'app_should_run'):
+            from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
+
+            if not self.kernel.run_function(app__app__started, {
+                'app-dir': self.app_dir,
+                'mode': APP_STARTED_CHECK_MODE_FULL
+            }).first():
+                import logging
+
+                self.kernel.io.error(ERR_APP_SHOULD_RUN, {
+                    'command': request.command,
+                    'dir': app_dir_resolved,
+                }, logging.ERROR)
+
+                exit(0)
 
     def command_run_post(self, request):
         if self.skip_app_location(request):
