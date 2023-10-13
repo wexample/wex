@@ -145,7 +145,7 @@ class Kernel:
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
     def call_command(self, command: str, command_args: dict | list | None = None):
-        result = self.run_command(
+        response = self.run_command(
             command,
             command_args or []
         )
@@ -161,7 +161,7 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        return result.print() if result else None
+        return response.print() if response else None
 
     def run_command(self,
                     command: str,
