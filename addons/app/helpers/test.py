@@ -2,6 +2,7 @@ import os
 import shutil
 
 from addons.app.command.app.init import app__app__init
+from addons.app.const.app import APP_ENV_TEST
 
 
 def create_test_app_dir(kernel, name: str | None = None) -> str:
@@ -20,6 +21,7 @@ def create_test_app(kernel, name: str | None = None, services: list | None = Non
     os.makedirs(app_dir)
 
     kernel.run_function(app__app__init, {
+        'env': APP_ENV_TEST,
         'name': name,
         'app-dir': app_dir,
         'services': ','.join(services or [])

@@ -35,16 +35,18 @@ from src.decorator.alias_without_addon import alias_without_addon
         help="List of services to install")
 @option('--domains', '-d', type=str, required=False,
         help="Comma separated list of domains names")
+@option('--env', '-e', type=str, required=False,
+        help="App environment")
 def app__app__init(
         kernel: Kernel,
         app_dir: str,
         name: str = None,
         services: Union[str, Iterable] = None,
         domains: str = '',
-        git: bool = True
+        git: bool = True,
+        env: str = APP_ENV_PROD
 ):
     manager: AppAddonManager = kernel.addons['app']
-
     current_dir = os.getcwd() + os.sep
 
     if not app_dir:
@@ -125,9 +127,9 @@ def app__app__init(
             kernel.io.log(f'Renaming {sample_file}')
 
     def init_step_create_env():
-        kernel.io.log(f'Creating env file with env "{APP_ENV_PROD}"')
+        kernel.io.log(f'Creating env file with env "{env}"')
         create_env(
-            APP_ENV_PROD,
+            env,
             app_dir
         )
 
@@ -183,6 +185,12 @@ def app__app__init(
     def init_step_unset_workdir():
         manager.unset_app_workdir(current_dir)
 
+    def init_step_complete():
+        kernel.io.message_next_command(
+            app__app__start,
+            message=f'Your app has been created in {env} environment'
+        )
+
     progress_steps(kernel, [
         init_step_check_vars,
         init_step_check_services,
@@ -194,9 +202,5 @@ def app__app__init(
         init_step_init_git,
         init_step_hooks,
         init_step_unset_workdir,
+        init_step_complete,
     ])
-
-    kernel.io.message_next_command(
-        app__app__start,
-        message=f'Your app is running as "{name}" on {manager.get_config("env")} environment'
-    )

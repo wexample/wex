@@ -10,7 +10,7 @@ from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
-    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN
+    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN, APP_ENV_TEST, APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD
 from addons.app.command.location.find import app__location__find
 from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
 from src.helper.core import core_kernel_get_version
@@ -79,17 +79,22 @@ class AppAddonManager(AddonManager):
                 }
             },
             'env': {
-                'local': {
+                APP_ENV_TEST: {
+                    'domains': f'{app_name}.test',
+                    'domain_main': f'{app_name}.test',
+                    'email': email
+                },
+                APP_ENV_LOCAL: {
                     'domains': f'{app_name}.wex',
                     'domain_main': f'{app_name}.wex',
                     'email': email
                 },
-                'dev': {
+                APP_ENV_DEV: {
                     'domains': domains.copy(),
                     'domain_main': domains_main,
                     'email': email
                 },
-                'prod': {
+                APP_ENV_PROD: {
                     'domains': domains.copy(),
                     'domain_main': domains_main,
                     'email': email

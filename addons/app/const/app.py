@@ -3,6 +3,7 @@ APP_DIR_TMP = f'{APP_DIR_APP_DATA}tmp/'
 APP_ENV_DEV = 'dev'
 APP_ENV_LOCAL = 'local'
 APP_ENV_PROD = 'prod'
+APP_ENV_TEST = 'test'
 APP_ENVS = [APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD]
 APP_FILE_APP_ENV = '.env'
 APP_FILE_APP_CONFIG = 'config.yml'
