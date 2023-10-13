@@ -31,7 +31,7 @@ def progress_steps(kernel: Kernel, steps: [], title: str = 'Processing'):
                 return
 
 
-def prompt_choice(question, choices, default):
+def prompt_choice(question, choices, default=None, **kwargs):
     envs = choices.copy()
     envs.append(
         Choice(value=None, name='> Abort')
@@ -41,4 +41,5 @@ def prompt_choice(question, choices, default):
         message=question,
         choices=envs,
         default=default,
+        **kwargs
     ).execute()

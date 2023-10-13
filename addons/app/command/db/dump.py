@@ -37,7 +37,7 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
     # but for now each service have only one container.
     service = manager.get_config('docker.main_db_container')
 
-    output_dump_file_path = kernel.run_command(
+    output_path = dump_path = kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dump',
         {
             'app-dir': app_dir,
@@ -48,13 +48,15 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
 
     if zip:
         manager.log('Creating zip file')
-        output_dump_file_path_zip = output_dump_file_path + '.zip'
+        zip_path = dump_path + '.zip'
 
-        with zipfile.ZipFile(f'{output_dump_file_path_zip}', 'w') as zipf:
-            zipf.write(output_dump_file_path, os.path.basename(output_dump_file_path))
+        with zipfile.ZipFile(f'{zip_path}', 'w') as zipf:
+            zipf.write(dump_path, os.path.basename(dump_path))
 
         # Remove original dump file
-        os.remove(output_dump_file_path)
-        return output_dump_file_path_zip
+        os.remove(dump_path)
+        output_path = zip_path
 
-    return output_dump_file_path
+    kernel.io.message('Dump created at ' + output_path)
+
+    return output_path
