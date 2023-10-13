@@ -84,7 +84,7 @@ class AbstractResponse:
 
     def first(self):
         """
-            Return the first valid response which is not a Response object.
+            Return the first valid response.
             Useful to retrieve result of a function without to serialize it.
         """
         response = self
@@ -92,6 +92,6 @@ class AbstractResponse:
             if len(response.output_bag):
                 response = response.output_bag[0]
             else:
-                return response.output_bag
+                return response
 
         return response
