@@ -135,6 +135,8 @@ def write_dict_to_config(dict: dict, dest: str):
 
 def get_yml_file_item(file_path: str, key: str, default=None):
     if os.path.exists(file_path):
+        from src.helper.dict import get_dict_item_by_path
+
         # Load the JSON file
         with open(file_path, 'r') as f:
             data = yaml.load(f, Loader=SafeLoader)
@@ -211,3 +213,8 @@ def get_file_owner(file_path):
     # Get the owner's username
     owner_info = pwd.getpwuid(uid)
     return owner_info.pw_name
+
+
+def date_time_file_name():
+    from datetime import datetime
+    return datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
