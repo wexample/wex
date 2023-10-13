@@ -24,7 +24,7 @@ class AbstractCommandResolver:
     def __init__(self, kernel):
         self.kernel = kernel
 
-    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse|None:
         import click
 
         self.kernel.logger.append_request(request)
@@ -36,7 +36,9 @@ class AbstractCommandResolver:
                     'path': request.path,
                 })
 
-            return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
+                return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
+
+            return None
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
