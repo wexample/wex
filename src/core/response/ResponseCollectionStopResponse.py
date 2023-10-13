@@ -8,6 +8,10 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class ResponseCollectionStopResponse(AbstractResponse, ABC):
+    def __init__(self, kernel, reason: str | None = None):
+        super().__init__(kernel)
+        self.reason: str | None = reason
+
     def render(
             self,
             request: CommandRequest,
