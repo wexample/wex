@@ -7,6 +7,13 @@ from click.types import BoolParamType
 from src.helper.string import to_kebab_case, to_snake_case
 
 
+def arg_replace(arg_list: list, arg_name: str, value: any = None, is_flag: bool = False):
+    previous = arg_shift(arg_list, arg_name, is_flag)
+    arg_push(arg_list, arg_name, value)
+
+    return previous
+
+
 def arg_push(arg_list: list, arg_name: str, value: any = None):
     arg_list.append(f'--{arg_name}')
 

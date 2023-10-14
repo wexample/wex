@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
-from src.helper.args import arg_push
+from src.helper.args import arg_push, arg_replace
 from src.core.CommandRequest import CommandRequest
 from src.helper.args import parse_arg
 from src.helper.file import remove_file_if_exists
-from src.helper.process import process_post_exec_wex
+from src.helper.process import process_post_exec_function
 from src.const.globals import KERNEL_RENDER_MODE_CLI, VERBOSITY_LEVEL_MAXIMUM
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -47,7 +47,7 @@ class ResponseCollectionResponse(AbstractResponse):
                        render_mode: str = KERNEL_RENDER_MODE_CLI,
                        args: dict = {}) -> AbstractResponse:
         self.kernel.io.log(
-            f'Rendering collection #{self.id}',
+            f'Rendering collection #{self.id} : ' + request.command,
             verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
 
@@ -203,10 +203,9 @@ class ResponseCollectionResponse(AbstractResponse):
         self.has_next_step = True
 
         if not self.kernel.fast_mode:
-            args = self.request.args.copy()
-            arg_push(args, 'command-request-step', self.build_step_path())
-
             root = self.get_root_parent()
+            args = root.request.args.copy()
+            arg_replace(args, 'command-request-step', self.build_step_path())
 
             process_post_exec_wex(
                 self.kernel,
