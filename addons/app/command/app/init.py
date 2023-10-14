@@ -44,10 +44,11 @@ def app__app__init(
         services: Union[str, Iterable] = None,
         domains: str = '',
         git: bool = True,
-        env: str = APP_ENV_PROD
+        env: str | None = None
 ):
     manager: AppAddonManager = kernel.addons['app']
     current_dir = os.getcwd() + os.sep
+    env = env or APP_ENV_PROD
 
     if not app_dir:
         app_dir = current_dir
