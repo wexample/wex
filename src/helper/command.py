@@ -7,7 +7,7 @@ from src.helper.args import convert_dict_to_args
 from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 
 
-def core_call_to_shell_command(kernel, function: callable, args: dict = {}) -> list:
+def core_call_to_shell_command(kernel, function: callable, args: list | dict = {}) -> list:
     if isinstance(args, dict):
         args = convert_dict_to_args(function, args)
 

@@ -12,7 +12,7 @@ def process_post_exec(
     kernel.post_exec.append(command)
 
 
-def process_post_exec_wex(kernel, function: callable, args: dict = {}, is_async=False):
+def process_post_exec_function(kernel, function: callable, args: list | dict = {}, is_async=False):
     command = core_call_to_shell_command(
         kernel,
         function,

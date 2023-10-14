@@ -207,7 +207,7 @@ class ResponseCollectionResponse(AbstractResponse):
             args = root.request.args.copy()
             arg_replace(args, 'command-request-step', self.build_step_path())
 
-            process_post_exec_wex(
+            process_post_exec_function(
                 self.kernel,
                 root.request.function,
                 args
