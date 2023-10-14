@@ -41,3 +41,11 @@ def proxy__service__install(kernel: Kernel, app_dir: str, service: str):
         app_dir,
         callback
     )
+
+    manager.set_config(
+        'docker.main_container',
+        manager.get_config(
+            'docker.main_container',
+            service
+        )
+    )
