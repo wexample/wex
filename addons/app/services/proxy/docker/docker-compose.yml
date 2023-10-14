@@ -1,14 +1,15 @@
 services:
   proxy:
-    image: nginxproxy/nginx-proxy:1.0.0
+    image: nginxproxy/nginx-proxy:1.3
     container_name: ${RUNTIME_NAME}_proxy
     volumes:
       # Nginx configuration
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ${RUNTIME_PATH_APP}proxy/certs:/etc/nginx/certs:ro
-      - ${RUNTIME_PATH_APP}proxy/vhost.d:/etc/nginx/vhost.d
+      - ${RUNTIME_PATH_APP}proxy/default.conf:/etc/nginx/vhost.d/default.conf:ro
       - ${RUNTIME_PATH_APP}proxy/html:/usr/share/nginx/html
       - ${RUNTIME_PATH_APP}proxy/logs:/var/log/nginx
+      - ${RUNTIME_PATH_APP}proxy/vhost.d:/etc/nginx/vhost.d
       - ${RUNTIME_PATH_APP}proxy/wex.conf:/etc/nginx/conf.d/wex.conf
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: nginx_proxy
