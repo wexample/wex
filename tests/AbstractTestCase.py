@@ -79,6 +79,7 @@ class AbstractTestCase(unittest.TestCase):
             file_a.write(data)
 
     def log(self, message: str):
+        message = str(message)
         message = f'\n{message}' if message.count('\n') > 0 else message
 
         self.kernel.io.log(

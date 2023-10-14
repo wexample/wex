@@ -119,7 +119,6 @@ class IOManager:
         def _success():
             nonlocal message
             self.log(f'{COLOR_GREEN}✔{COLOR_RESET} {message}')
-            self.print(message)
 
         self.exec_outside_log_frame(_success)
 
