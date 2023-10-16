@@ -99,10 +99,10 @@ def build_registry_services(addons, kernel, test_commands: bool = False):
                     ),
                     'addon': addon,
                     'dir': service_path + '/',
-                    "config": yaml.load(
+                    "config": (yaml.load(
                         open(config_file_path),
                         SafeLoader
-                    ) if os.path.exists(config_file_path) else {
+                    ) or {}) if os.path.exists(config_file_path) else {
                         'dependencies': []
                     }
                 }
