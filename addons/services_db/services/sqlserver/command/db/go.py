@@ -14,4 +14,4 @@ def sqlserver__db__go(kernel: Kernel, app_dir: str, service: str):
     password = manager.get_config(f'service.{service}.password')
     name = manager.get_config(f'service.{service}.name')
 
-    return f'/opt/mssql-tools/bin/sqlcmd -S localhost -U {user} -P {password} -d {name}'
+    return f'/opt/mssql-tools/bin/sqlcmd -S localhost -U {user} -P "{password}" -d {name}'
