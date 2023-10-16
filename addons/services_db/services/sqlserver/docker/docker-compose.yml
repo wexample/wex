@@ -1,0 +1,16 @@
+services:
+    sqlserver:
+        container_name: '${RUNTIME_NAME}_sqlserver'
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        environment:
+          - MSSQL_SA_PASSWORD=${SERVICE_SQLSERVER_PASSWORD}
+          - PGDATA=/var/lib/sqlserverql/data/pgdata
+          - ACCEPT_EULA='Y'
+        volumes:
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/mssql:/var/opt/mssql
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/data:/var/opt/sqlserver/data
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/log:/var/opt/sqlserver/log
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/dumps:/var/opt/sqlserver/dumps
+        extends:
+            file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
+            service: default

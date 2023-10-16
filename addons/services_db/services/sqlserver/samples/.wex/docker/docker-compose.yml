@@ -1,0 +1,5 @@
+services:
+  sqlserver:
+    extends:
+      file: ${RUNTIME_SERVICE_SQLSERVER_YML_ENV}
+      service: sqlserver

@@ -1,7 +1,7 @@
 import os.path
 
 from addons.services_db.services.postgres.command.db.connect import postgres__db__connect
-from app.helpers.db import get_db_service_dumps_path
+from addons.app.helpers.db import get_db_service_dumps_path
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option

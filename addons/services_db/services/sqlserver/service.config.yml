@@ -1,4 +1,4 @@
 tags:
   - db
 test:
-  exec_command: "SELECT * FROM sys.syslogins"
+  exec_command: "SELECT TOP(1)* FROM sys.syslogins"
