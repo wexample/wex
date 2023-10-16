@@ -81,32 +81,25 @@ def app__service__install(
 
         manager.set_config('service', services)
 
-    from src.helper.service import service_get_inheritance_tree
-    inheritance_tree = service_get_inheritance_tree(kernel, service)
-    inheritance_tree.reverse()
+    service_dir = get_service_dir(kernel, service)
+    service_sample_dir = os.path.join(service_dir, 'samples') + '/'
+    service_sample_dir_wex = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
 
-    for service_part in inheritance_tree:
-        kernel.io.log(f'Copying files from {service_part}')
+    if os.path.isdir(service_sample_dir_wex):
+        items = os.listdir(service_sample_dir_wex)
 
-        service_dir = get_service_dir(kernel, service_part)
-        service_sample_dir = os.path.join(service_dir, 'samples') + '/'
-        service_sample_dir_wex = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
+        for item in items:
+            app_service_install_merge_dir(
+                kernel,
+                item,
+                service_sample_dir,
+                app_dir,
+                install_docker,
+                install_git,
+            )
 
-        if os.path.isdir(service_sample_dir_wex):
-            items = os.listdir(service_sample_dir_wex)
-
-            for item in items:
-                app_service_install_merge_dir(
-                    kernel,
-                    item,
-                    service_sample_dir,
-                    app_dir,
-                    install_docker if service_part == service else False,
-                    install_git,
-                )
-
-        # Allow service to set global settings.
-        service_config = all_services[service]['config']
+    # Allow service to set global settings.
+    service_config = all_services[service]['config']
 
     if 'global' in service_config:
         config_global = merge_dicts(
