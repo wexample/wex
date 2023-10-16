@@ -7,6 +7,7 @@ from addons.app.command.app.exec import app__app__exec
 from src.decorator.alias_without_addon import alias_without_addon
 from src.decorator.option import option
 
+
 @command(help="Execute command in database container service")
 @alias_without_addon()
 @app_dir_option()

@@ -6,7 +6,7 @@ from src.helper.string import count_lines_needed
 from src.const.globals import \
     COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT, COLOR_GREEN, COLOR_RED
 
-IO_DEFAULT_LOG_LENGTH = 10
+IO_DEFAULT_LOG_LENGTH = 1
 
 
 class IOManager:

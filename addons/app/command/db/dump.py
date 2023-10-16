@@ -1,5 +1,5 @@
 import os
-import subprocess
+import shutil
 import zipfile
 
 from addons.app.decorator.app_should_run import app_should_run
@@ -55,7 +55,10 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
                 zipf.write(dump_path, os.path.basename(dump_path))
 
             # Remove original dump file
-            os.remove(dump_path)
+            if os.path.isdir(dump_path):
+                shutil.rmtree(dump_path)
+            else:
+                os.remove(dump_path)
             output_path = zip_path
 
         kernel.io.message('Dump created at ' + output_path)

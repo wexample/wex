@@ -5,3 +5,5 @@ global:
   service:
     mongo:
       version: 6.0.3
+test:
+  exec_command: 'db.runCommand({ ping: 1 })'
