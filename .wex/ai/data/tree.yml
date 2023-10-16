@@ -884,7 +884,7 @@ children:
         children:
           services:
             children:
-              maria_10:
+              maria:
                 children:
                   command:
                     children:
@@ -949,7 +949,7 @@ children:
                         type: dir
                     type: dir
                 type: dir
-              mongo_6:
+              mongo:
                 children:
                   docker:
                     children:
@@ -982,7 +982,7 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              mysql_8:
+              mysql:
                 children:
                   command:
                     children:
@@ -1069,7 +1069,7 @@ children:
         children:
           services:
             children:
-              laravel_5:
+              laravel:
                 children:
                   docker:
                     children:
@@ -1094,7 +1094,7 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              php_8:
+              php:
                 children:
                   docker:
                     children:
@@ -1124,7 +1124,7 @@ children:
               phpmyadmin:
                 children: {}
                 type: dir
-              symfony_6:
+              symfony:
                 children:
                   service.config.yml:
                     type: file

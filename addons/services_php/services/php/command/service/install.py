@@ -8,7 +8,7 @@ from src.decorator.command import command
 @command(help="Install database service")
 @app_dir_option()
 @service_option()
-def php_8__service__install(kernel: Kernel, app_dir: str, service: str):
+def php__service__install(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
 
     # Define itself as main container.

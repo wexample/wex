@@ -9,7 +9,7 @@ from addons.app.decorator.service_option import service_option
 @app_dir_option()
 @service_option()
 @option('--container', '-c', type=str, required=False, help="Target container")
-def php_8__app__exec(kernel: Kernel, app_dir: str, service: str, container: None):
+def php__app__exec(kernel: Kernel, app_dir: str, service: str, container: None):
     # Prevent returning data when entering another container.
     if container == service:
         return ['cd', '/var/www/html']

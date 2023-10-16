@@ -1,6 +1,6 @@
 services:
-    php_8:
-        container_name: '${RUNTIME_NAME}_php_8'
+    php:
+        container_name: '${RUNTIME_NAME}_php'
         image: 'wexample/php-8.2:latest'
         expose:
             - 80
