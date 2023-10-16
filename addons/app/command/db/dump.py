@@ -46,17 +46,20 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
         }
     ).first()
 
-    if zip and os.path.exists(dump_path):
-        manager.log('Creating zip file')
-        zip_path = dump_path + '.zip'
+    if dump_path and os.path.exists(dump_path):
+        if zip:
+            manager.log('Creating zip file')
+            zip_path = dump_path + '.zip'
 
-        with zipfile.ZipFile(f'{zip_path}', 'w') as zipf:
-            zipf.write(dump_path, os.path.basename(dump_path))
+            with zipfile.ZipFile(f'{zip_path}', 'w') as zipf:
+                zipf.write(dump_path, os.path.basename(dump_path))
 
-        # Remove original dump file
-        os.remove(dump_path)
-        output_path = zip_path
+            # Remove original dump file
+            os.remove(dump_path)
+            output_path = zip_path
 
-    kernel.io.message('Dump created at ' + output_path)
+        kernel.io.message('Dump created at ' + output_path)
 
-    return output_path
+        return output_path
+
+    return False

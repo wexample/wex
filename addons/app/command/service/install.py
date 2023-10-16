@@ -101,6 +101,13 @@ def app__service__install(
     # Allow service to set global settings.
     service_config = all_services[service]['config']
 
+    if 'tags' in service_config and 'db' in service_config['tags']:
+        main_db_container = manager.get_config('docker.main_db_container')
+        if not main_db_container:
+            manager.set_config(
+                'docker.main_db_container',
+                service)
+
     if 'global' in service_config:
         config_global = merge_dicts(
             manager.get_config('global'),

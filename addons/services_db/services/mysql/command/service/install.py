@@ -19,12 +19,3 @@ def mysql__service__install(kernel: Kernel, app_dir: str, service: str):
         'port': 3306,
         'user': 'root',
     })
-
-    # Define itself as main db container.
-    manager.set_config(
-        'docker.main_db_container',
-        manager.get_config(
-            'docker.main_db_container',
-            service
-        )
-    )

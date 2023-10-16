@@ -1,4 +1,3 @@
-db_name: maria
 tags:
   - db
 extends: mysql

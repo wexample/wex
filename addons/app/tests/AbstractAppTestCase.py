@@ -1,5 +1,7 @@
 import os.path
+import re
 
+from src.helper.string import to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helpers.test import create_test_app, create_test_app_dir
 from addons.app.command.app.start import app__app__start
@@ -21,14 +23,21 @@ class AbstractAppTestCase(AbstractTestCase):
             }
         )
 
-        shell_response = response.output_bag[6].print()
+        app_name_snake = to_snake_case(name or "test-app")
+
+        patterns = [
+            f"Container {app_name_snake}_test_.*  Creating",
+            f"Container {app_name_snake}_test_.*  Started"
+        ]
+
+        shell_response = response.print()
 
         self.log(shell_response)
 
         self.assertTrue(
             # Started does not guarantee that the container is fully working,
             # but it is sufficient in this case.
-            shell_response.find('Started') > 0 or shell_response.find('Running') > 0,
+            any(re.search(pattern, shell_response) for pattern in patterns),
         )
 
     def create_and_start_test_app(self, name: str | None = None, services: list | None = None) -> str:
