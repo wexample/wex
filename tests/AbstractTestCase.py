@@ -6,6 +6,7 @@ import inspect
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.file import create_directories_and_copy
+from src.helper.command import execute_command
 
 
 class AbstractTestCase(unittest.TestCase):
@@ -85,4 +86,42 @@ class AbstractTestCase(unittest.TestCase):
         self.kernel.io.log(
             f'test[{inspect.currentframe().f_code.co_name}]:' + str(message),
             color=COLOR_LIGHT_MAGENTA
+        )
+
+    def start_docker_container(self, name: str = 'test_container'):
+        return execute_command(
+            self.kernel,
+            [
+                'docker',
+                'run',
+                '-d',
+                '--name',
+                name,
+                'debian:latest',
+                'tail',
+                '-f',
+                '/dev/null'
+            ],
+        )
+
+    def remove_docker_container(self, name: str = 'test_container'):
+        success, content = execute_command(
+            self.kernel,
+            [
+                'docker',
+                'stop',
+                name,
+            ],
+        )
+
+        if not success:
+            return success, content
+
+        return execute_command(
+            self.kernel,
+            [
+                'docker',
+                'rm',
+                name,
+            ],
         )
