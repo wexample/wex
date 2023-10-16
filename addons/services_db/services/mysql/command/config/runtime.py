@@ -12,7 +12,7 @@ from addons.services_db.const.mysql import MYSQL_CONF_FILE
 @command(help="Set configuration")
 @app_dir_option()
 @service_option()
-def mysql_8__config__runtime(kernel: Kernel, app_dir: str, service: str):
+def mysql__config__runtime(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
     # Set db as main database.
     manager.set_runtime_config(

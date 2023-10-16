@@ -17,7 +17,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     config = _parse_4_0_0_config_file(f'{env_dir}config')
 
     services_names_map = {
-        'mysql8': 'mysql_8',
+        'mysql8': 'mysql',
         'wordpress5': 'wordpress',
     }
 
@@ -100,11 +100,11 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             "DOMAINS": "RUNTIME_DOMAINS_STRING",
             "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
             "EMAIL": "RUNTIME_EMAIL",
-            "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_8_YML_ENV",
-            "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_5_YML_ENV",
+            "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
+            "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_YML_ENV",
             "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
             "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
-            'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_8_YML_ENV',
+            'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_YML_ENV',
             "GITLAB_VERSION": _get_config_value(config, 'GITLAB_VERSION', '16.4.1-ce.0'),
             "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
             "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),

@@ -4,7 +4,7 @@ services:
       file: ${RUNTIME_SERVICE_NEXTCLOUD_YML_ENV}
       service: nextcloud
     depends_on:
-      - ${GLOBAL_NAME}_maria_10
+      - ${GLOBAL_NAME}_maria
     # Should be defined at least for first installation.
     environment:
       - NEXTCLOUD_ADMIN_USER=admin

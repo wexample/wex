@@ -4,4 +4,4 @@
           service: cli
         depends_on:
           - ${GLOBAL_NAME}_wordpress
-          - ${GLOBAL_NAME}_mysql-8
+          - ${GLOBAL_NAME}_mysql

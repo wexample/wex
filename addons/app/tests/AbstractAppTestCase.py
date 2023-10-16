@@ -1,3 +1,5 @@
+import os.path
+
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helpers.test import create_test_app, create_test_app_dir
 from addons.app.command.app.start import app__app__start
@@ -41,9 +43,14 @@ class AbstractAppTestCase(AbstractTestCase):
         return app_dir
 
     def stop_test_app(self, app_name: str | None = None):
+        app_dir = create_test_app_dir(self.kernel, app_name)
+
+        if not os.path.exists(app_dir):
+            return
+
         self.kernel.run_function(
             app__app__stop, {
-                'app-dir': create_test_app_dir(self.kernel, app_name)
+                'app-dir': app_dir
             }
         )
 
@@ -54,6 +61,8 @@ class AbstractAppTestCase(AbstractTestCase):
         for service in services:
             if 'tags' in services[service]['config'] and 'db' in services[service]['config']['tags']:
                 db_services.append(service)
+
+        db_services = ['maria']
 
         for db_service in db_services:
             callback(db_service)

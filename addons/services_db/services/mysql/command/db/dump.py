@@ -1,4 +1,7 @@
-from addons.services_db.services.mysql_8.command.db.connect import mysql_8__db__connect
+import os.path
+
+from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
+from addons.app.const.app import APP_DIR_APP_DATA
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option
@@ -13,13 +16,15 @@ from addons.app.command.app.exec import app__app__exec
 @app_dir_option()
 @service_option()
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
-def mysql_8__db__restore(kernel: Kernel, app_dir: str, service: str, file_name:str):
+def mysql__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     manager: AppAddonManager = kernel.addons['app']
 
+    file_name += '.sql'
+
     command = [
-        'mysql',
+        'mysqldump',
         kernel.run_function(
-            mysql_8__db__connect,
+            mysql__db__connect,
             {
                 'app-dir': app_dir,
                 'service': service,
@@ -27,7 +32,7 @@ def mysql_8__db__restore(kernel: Kernel, app_dir: str, service: str, file_name:s
             type=COMMAND_TYPE_SERVICE
         ).first(),
         manager.get_config('global.name'),
-        '<',
+        '>',
         '/var/www/dumps/' + file_name
     ]
 
@@ -41,3 +46,13 @@ def mysql_8__db__restore(kernel: Kernel, app_dir: str, service: str, file_name:s
             'sync': True
         }
     )
+
+    return os.path.join(
+        mysql__db__get_host_dumps_path(kernel, service),
+        file_name)
+
+
+def mysql__db__get_host_dumps_path(kernel, service: str):
+    manager: AppAddonManager = kernel.addons['app']
+    env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
+    return os.path.join(env_dir, service, 'dumps')

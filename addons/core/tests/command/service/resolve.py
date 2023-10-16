@@ -7,7 +7,7 @@ class TestCoreCommandServiceResolve(AbstractTestCase):
         dependencies = self.kernel.run_function(
             core__service__resolve,
             {
-                'service': 'php-8, matomo'
+                'service': 'php, matomo'
             }).first()
 
         self.assertGreaterEqual(

@@ -7,5 +7,5 @@ from src.decorator.command import command
 @command(help="Return connexion info")
 @app_dir_option()
 @service_option()
-def mysql_8__db__connect(kernel: Kernel, app_dir: str, service: str):
+def mysql__db__connect(kernel: Kernel, app_dir: str, service: str):
     return '--defaults-extra-file=/tmp/mysql.cnf'

@@ -5,7 +5,7 @@ from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
 class TestAppCommandServicesExec(AbstractAppTestCase):
     def test_exec(self):
-        app_dir = self.create_and_start_test_app(services=['php_8'])
+        app_dir = self.create_and_start_test_app(services=['php'])
 
         response = self.kernel.run_function(
             app__services__exec,
@@ -17,7 +17,7 @@ class TestAppCommandServicesExec(AbstractAppTestCase):
 
         # The command does not exist
         self.assertEqual(
-            response.first()['php_8'].reason,
+            response.first()['php'].reason,
             ERR_COMMAND_FILE_NOT_FOUND
         )
 
