@@ -1,0 +1,5 @@
+services:
+  mysql:
+    extends:
+      file: ${RUNTIME_SERVICE_MYSQL_YML_ENV}
+      service: mysql

@@ -68,7 +68,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
         if not mysql_db_password:
             mysql_db_password = _get_config_value(config, 'MYSQL_DB_PASSWORD')
         if mysql_db_password:
-            manager.config['service']['mysql_8']['password'] = mysql_db_password
+            manager.config['service']['mysql']['password'] = mysql_db_password
 
     def _migration_5_0_0_update_docker():
         docker_files = _migration_4_0_0_et_docker_files(manager)

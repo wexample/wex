@@ -1,0 +1,5 @@
+services:
+  maria:
+    extends:
+      file: ${RUNTIME_SERVICE_MARIA_YML_ENV}
+      service: maria
