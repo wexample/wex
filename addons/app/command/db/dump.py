@@ -46,7 +46,7 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
         }
     ).first()
 
-    if zip:
+    if zip and os.path.exists(dump_path):
         manager.log('Creating zip file')
         zip_path = dump_path + '.zip'
 
