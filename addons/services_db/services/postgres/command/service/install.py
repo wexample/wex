@@ -17,5 +17,5 @@ def postgres__service__install(kernel: Kernel, app_dir: str, service: str):
         'name': f'{name}',
         'password': PASSWORD_INSECURE,
         'port': 5432,
-        'user': 'root',
+        'user': 'postgres',
     })
