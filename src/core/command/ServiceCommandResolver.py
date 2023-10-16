@@ -92,3 +92,28 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 )
 
         return None
+
+    def locate_function(self, request) -> bool:
+        """
+            Support services inheritance, if a function is not found in a service,
+            search it into parent service.
+        """
+        from src.helper.service import service_get_inheritance_tree
+        request.match = self.build_match(request.command)
+
+        if request.match:
+            tree = service_get_inheritance_tree(
+                self.kernel,
+                to_snake_case(request.match[1]))
+
+            for service_tree_item in tree:
+                request.command = self.build_command_from_parts([
+                    service_tree_item,
+                    request.match[2],
+                    request.match[3],
+                ])
+
+                if super().locate_function(request):
+                    return True
+
+        return False

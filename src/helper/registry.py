@@ -1,5 +1,5 @@
-
 from src.const.globals import COMMAND_SEPARATOR_ADDON
+from src.helper.dict import merge_dicts
 
 
 def get_all_commands(kernel):
@@ -52,3 +52,13 @@ def remove_addons(commands_list: []) -> []:
     return [
         command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list
     ]
+
+
+def resolve_service_inheritance(service, services_dict):
+    if 'extends' in service['config']:
+        parent_name = service['config']['extends']
+        if parent_name in services_dict:
+            parent_service = services_dict[parent_name]
+            resolve_service_inheritance(parent_service, services_dict)
+            service['config'] = merge_dicts(parent_service['config'], service['config'])
+    return service

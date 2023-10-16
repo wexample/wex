@@ -24,7 +24,7 @@ class AbstractCommandResolver:
     def __init__(self, kernel):
         self.kernel = kernel
 
-    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse|None:
+    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse | None:
         import click
 
         self.kernel.logger.append_request(request)
