@@ -346,3 +346,16 @@ class AbstractCommandResolver:
                         'alias': aliases
                     }
         return commands
+
+    def locate_function(self, request) -> bool:
+        # Build dynamic variables
+        request.match = self.build_match(request.command)
+
+        if request.match:
+            request.path = self.build_path(request)
+
+            if request.path and os.path.isfile(request.path):
+                request.function = self.get_function_from_request(request)
+
+                return True
+        return False

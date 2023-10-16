@@ -19,7 +19,7 @@ class CommandRequest:
         self.storage = {}  # Useful to store data about the current command execution
         self.args = []
         self.steps = []
-        self.locate_function()
+        self.resolver.locate_function(self)
 
         if not self.function:
             # Do not return any error if function is missing,
@@ -40,19 +40,6 @@ class CommandRequest:
         if steps:
             self.steps = list(map(int, str(steps).split('.')))
 
-
-    def locate_function(self):
-        # Build dynamic variables
-        self.match = self.resolver.build_match(self.command)
-
-        if self.match:
-            self.path = self.resolver.build_path(self)
-
-            if self.path and os.path.isfile(self.path):
-                self.function: callable = self.resolver.get_function_from_request(self)
-
-                return True
-        return False
 
     def is_click_command(self, click_command) -> bool:
         return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__
