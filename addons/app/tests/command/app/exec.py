@@ -5,7 +5,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandAppExec(AbstractAppTestCase):
     def test_exec(self):
-        app_dir = self.create_and_start_test_app(services=['php_8'])
+        app_dir = self.create_and_start_test_app(services=['php'])
 
         response = self.kernel.run_function(
             app__app__exec, {
