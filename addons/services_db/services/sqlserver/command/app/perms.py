@@ -16,5 +16,6 @@ def sqlserver__app__perms(kernel: Kernel, app_dir: str, service: str):
 
     # Need full permissions to start
     set_permissions_recursively(env_dir + 'sqlserver/data', 0o777)
+    set_permissions_recursively(env_dir + 'sqlserver/dumps', 0o777)
     set_permissions_recursively(env_dir + 'sqlserver/log', 0o777)
     set_permissions_recursively(env_dir + 'sqlserver/mssql', 0o777)

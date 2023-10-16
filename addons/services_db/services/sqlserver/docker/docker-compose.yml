@@ -7,10 +7,10 @@ services:
           - PGDATA=/var/lib/sqlserverql/data/pgdata
           - ACCEPT_EULA='Y'
         volumes:
-          - ${RUNTIME_PATH_APP_WEX}sqlserver/mssql:/var/opt/mssql
           - ${RUNTIME_PATH_APP_WEX}sqlserver/data:/var/opt/sqlserver/data
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/dumps:/var/opt/mssql/dumps
           - ${RUNTIME_PATH_APP_WEX}sqlserver/log:/var/opt/sqlserver/log
-          - ${RUNTIME_PATH_APP_WEX}sqlserver/dumps:/var/opt/sqlserver/dumps
+          - ${RUNTIME_PATH_APP_WEX}sqlserver/mssql:/var/opt/mssql
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
