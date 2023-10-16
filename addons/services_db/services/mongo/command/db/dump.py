@@ -43,3 +43,9 @@ def mongo__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     )
 
     return os.path.join(env_dir, service, 'dumps', file_name)
+
+
+def mongo__db__get_host_dumps_path(kernel, service: str):
+    manager: AppAddonManager = kernel.addons['app']
+    env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
+    return os.path.join(env_dir, service, 'dumps')

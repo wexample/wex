@@ -218,3 +218,10 @@ def get_file_owner(file_path):
 def date_time_file_name():
     from datetime import datetime
     return datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+
+
+def delete_file_or_dir(path):
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+    else:
+        os.remove(path)

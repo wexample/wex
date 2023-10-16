@@ -1,7 +1,7 @@
 import os.path
 from glob import glob
 
-from addons.services_db.services.mysql.command.db.dump import mysql__db__get_host_dumps_path
+from addons.services_db.services.mongo.command.db.dump import mongo__db__get_host_dumps_path
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.decorator.service_option import service_option
@@ -11,11 +11,11 @@ from src.decorator.command import command
 @command(help="Set database permissions")
 @app_dir_option()
 @service_option()
-def mysql__db__dumps_list(kernel: Kernel, app_dir: str, service: str):
-    dumps_dir = mysql__db__get_host_dumps_path(kernel, service)
+def mongo__db__dumps_list(kernel: Kernel, app_dir: str, service: str):
+    dumps_dir = mongo__db__get_host_dumps_path(kernel, service)
 
     # Search for .zip and .sql files
-    search_patterns = ['*.zip', '*.sql']
+    search_patterns = ['*.zip', '*.bson']
     dump_files = []
 
     for pattern in search_patterns:

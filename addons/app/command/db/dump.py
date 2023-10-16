@@ -1,12 +1,11 @@
 import os
-import shutil
 import zipfile
 
 from addons.app.decorator.app_should_run import app_should_run
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.helper.file import date_time_file_name
+from src.helper.file import date_time_file_name, delete_file_or_dir
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
@@ -55,10 +54,7 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
                 zipf.write(dump_path, os.path.basename(dump_path))
 
             # Remove original dump file
-            if os.path.isdir(dump_path):
-                shutil.rmtree(dump_path)
-            else:
-                os.remove(dump_path)
+            delete_file_or_dir(dump_path)
             output_path = zip_path
 
         kernel.io.message('Dump created at ' + output_path)

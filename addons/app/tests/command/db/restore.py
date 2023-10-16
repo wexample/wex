@@ -5,27 +5,32 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandDbRestore(AbstractAppTestCase):
     def test_restore(self):
-        app_dir = self.create_and_start_test_app(services=[
-            'mysql'
-        ])
+        def callback(db_service):
+            self.log(f'Testing database {db_service}')
 
-        response = self.kernel.run_function(
-            app__db__dump,
-            {
-                'app-dir': app_dir,
-            }
-        )
+            app_dir = self.create_and_start_test_app(services=[
+                db_service
+            ])
 
-        dump_file = response.print()
+            response = self.kernel.run_function(
+                app__db__dump,
+                {
+                    'app-dir': app_dir,
+                }
+            )
 
-        self.assertPathExists(
-            dump_file
-        )
+            dump_file = response.print()
 
-        response = self.kernel.run_function(
-            app__db__restore,
-            {
-                'app-dir': app_dir,
-                'file-path': dump_file
-            }
-        )
+            self.assertPathExists(
+                dump_file
+            )
+
+            self.kernel.run_function(
+                app__db__restore,
+                {
+                    'app-dir': app_dir,
+                    'file-path': dump_file
+                }
+            )
+
+        self.for_each_db_service(callback)
