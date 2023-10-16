@@ -7,9 +7,9 @@ services:
         environment:
             - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
             - VIRTUAL_PORT=9000
-            - SONARQUBE_JDBC_USERNAME=${SERVICE_POSTGRES_15_USER}
-            - SONARQUBE_JDBC_PASSWORD=${SERVICE_POSTGRES_15_PASSWORD}
-            - SONARQUBE_JDBC_URL=jdbc:postgresql://${SERVICE_POSTGRES_15_HOST}:${SERVICE_POSTGRES_15_PORT}/${SERVICE_POSTGRES_15_NAME}
+            - SONARQUBE_JDBC_USERNAME=${SERVICE_POSTGRES_USER}
+            - SONARQUBE_JDBC_PASSWORD=${SERVICE_POSTGRES_PASSWORD}
+            - SONARQUBE_JDBC_URL=jdbc:postgresql://${SERVICE_POSTGRES_HOST}:${SERVICE_POSTGRES_PORT}/${SERVICE_POSTGRES_NAME}
         volumes:
             - ${RUNTIME_PATH_APP}conf:/opt/sonarqube/conf
             - ${RUNTIME_PATH_APP}data:/opt/sonarqube/data

@@ -1,2 +1,2 @@
 dependencies:
-  - postgres_15
+  - postgres

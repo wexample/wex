@@ -1,11 +1,11 @@
 services:
-    postgres_15:
-        container_name: '${RUNTIME_NAME}_postgres_15'
+    postgres:
+        container_name: '${RUNTIME_NAME}_postgres'
         image: postgres:15.4
         environment:
-          - POSTGRES_DB=${SERVICE_POSTGRES_15_NAME}
-          - POSTGRES_USER=${SERVICE_POSTGRES_15_USER}
-          - POSTGRES_PASSWORD=${SERVICE_POSTGRES_15_PASSWORD}
+          - POSTGRES_DB=${SERVICE_POSTGRES_NAME}
+          - POSTGRES_USER=${SERVICE_POSTGRES_USER}
+          - POSTGRES_PASSWORD=${SERVICE_POSTGRES_PASSWORD}
           - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
           - ${RUNTIME_PATH_APP_WEX}postgres/data:/var/lib/postgresql/data

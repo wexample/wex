@@ -9,11 +9,11 @@ from src.decorator.command import command
 @command(help="Install database service")
 @app_dir_option()
 @service_option()
-def postgres_15__service__install(kernel: Kernel, app_dir: str, service: str):
+def postgres__service__install(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
     name = manager.get_config('global.name')
     manager.set_config(f'service.{service}', {
-        'host': f'{name}_postgres_15',
+        'host': f'{name}_postgres',
         'name': f'{name}',
         'password': PASSWORD_INSECURE,
         'port': 5432,

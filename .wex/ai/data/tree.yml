@@ -1058,7 +1058,7 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              postgres_15:
+              postgres:
                 children:
                   service.config.yml:
                     type: file
