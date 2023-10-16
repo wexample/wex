@@ -46,3 +46,14 @@ class AbstractAppTestCase(AbstractTestCase):
                 'app-dir': create_test_app_dir(self.kernel, app_name)
             }
         )
+
+    def for_each_db_service(self, callback: callable):
+        db_services = []
+
+        services = self.kernel.registry['services']
+        for service in services:
+            if 'tags' in services[service]['config'] and 'db' in services[service]['config']['tags']:
+                db_services.append(service)
+
+        for db_service in db_services:
+            callback(db_service)
