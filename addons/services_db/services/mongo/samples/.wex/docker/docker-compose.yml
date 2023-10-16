@@ -1,0 +1,5 @@
+services:
+  mongo:
+    extends:
+      file: ${RUNTIME_SERVICE_MONGO_YML_ENV}
+      service: mongo

@@ -1,5 +1,5 @@
 services:
-    mongo_6:
+    mongo:
         container_name: '${RUNTIME_NAME}_mongo'
         image: mongo:7.0.2
         volumes:

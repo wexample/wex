@@ -13,4 +13,4 @@ services:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
         depends_on:
-          - ${GLOBAL_NAME}_mongo_6
+          - ${GLOBAL_NAME}_mongo
