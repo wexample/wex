@@ -1,0 +1,8 @@
+services:
+    laravel:
+        container_name: '${RUNTIME_NAME}_laravel'
+        # Needs downgraded version.
+        image: 'wexample/php-8.2:latest'
+        extends:
+            file: ${RUNTIME_SERVICE_PHP_YML_ENV}
+            service: php

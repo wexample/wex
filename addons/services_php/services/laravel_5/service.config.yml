@@ -1,3 +1,0 @@
-dependencies:
-  - mysql_8
-extends: php_8
