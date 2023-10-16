@@ -18,20 +18,18 @@ def mongo__db__restore(kernel: Kernel, app_dir: str, service: str, file_name: st
     manager: AppAddonManager = kernel.addons['app']
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
 
-    print(file_name)
-
-    # kernel.run_function(
-    #     app__app__exec,
-    #     {
-    #         'app-dir': app_dir,
-    #         'container-name': service,
-    #         'command': [
-    #             'mongorestore',
-    #             '--drop',
-    #             f'/dump/{file_name}',
-    #         ],
-    #         'sync': True
-    #     }
-    # )
+    kernel.run_function(
+        app__app__exec,
+        {
+            'app-dir': app_dir,
+            'container-name': service,
+            'command': [
+                'mongorestore',
+                '--drop',
+                f'/dump/{file_name}',
+            ],
+            'sync': True
+        }
+    )
 
     return os.path.join(env_dir, service, 'dumps', file_name)

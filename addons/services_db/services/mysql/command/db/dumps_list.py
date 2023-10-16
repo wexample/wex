@@ -1,7 +1,7 @@
 import os.path
 from glob import glob
 
-from addons.services_db.services.mysql.command.db.dump import mysql__db__get_host_dumps_path
+from addons.app.helpers.db import get_db_service_dumps_path
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.decorator.service_option import service_option
@@ -12,7 +12,7 @@ from src.decorator.command import command
 @app_dir_option()
 @service_option()
 def mysql__db__dumps_list(kernel: Kernel, app_dir: str, service: str):
-    dumps_dir = mysql__db__get_host_dumps_path(kernel, service)
+    dumps_dir = get_db_service_dumps_path(kernel, service)
 
     # Search for .zip and .sql files
     search_patterns = ['*.zip', '*.sql']

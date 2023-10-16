@@ -1,0 +1,8 @@
+services:
+  proxy:
+    extends:
+      file: ${SERVICE_PROXY_YML_ENV}
+      service: certs
+    profiles:
+      - env_dev
+      - env_prod

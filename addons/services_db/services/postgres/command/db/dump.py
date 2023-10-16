@@ -1,13 +1,12 @@
 import os.path
 
-from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
-from addons.app.helpers.db import get_db_service_dumps_path
+from addons.services_db.services.postgres.command.db.connect import postgres__db__connect
+from app.helpers.db import get_db_service_dumps_path
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.decorator.service_option import service_option
 from src.decorator.command import command
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec
 
@@ -16,23 +15,20 @@ from addons.app.command.app.exec import app__app__exec
 @app_dir_option()
 @service_option()
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
-def mysql__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
-    manager: AppAddonManager = kernel.addons['app']
-
+def postgres__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     file_name += '.sql'
 
     command = [
-        'mysqldump',
+        'pg_dump',
         kernel.run_function(
-            mysql__db__connect,
+            postgres__db__connect,
             {
                 'app-dir': app_dir,
                 'service': service,
             },
             type=COMMAND_TYPE_SERVICE
         ).first(),
-        manager.get_config('global.name'),
-        '>',
+        '-f',
         '/var/www/dumps/' + file_name
     ]
 
@@ -50,4 +46,5 @@ def mysql__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     return os.path.join(
         get_db_service_dumps_path(kernel, service),
         file_name)
+
 

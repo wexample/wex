@@ -1,0 +1,4 @@
+tags:
+  - db
+test:
+  exec_command: "SELECT * FROM sys.syslogins"
