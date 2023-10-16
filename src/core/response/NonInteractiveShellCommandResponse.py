@@ -1,4 +1,3 @@
-
 from src.helper.command import execute_command
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI
@@ -9,6 +8,7 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
     def __init__(self, kernel, shell_command: list):
         super().__init__(kernel)
 
+        self.success: bool | None = None
         self.shell_command: list = shell_command
 
     def render_content(
@@ -20,6 +20,8 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
             self.kernel,
             self.shell_command,
         )
+
+        self.success = success
 
         if success:
             self.output_bag.append(content)

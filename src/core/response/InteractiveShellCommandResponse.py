@@ -1,4 +1,3 @@
-
 from src.helper.command import command_to_string, execute_command
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
@@ -37,6 +36,8 @@ class InteractiveShellCommandResponse(AbstractResponse):
                 command_to_string(self.shell_command),
                 shell=True
             )
+
+            self.success = success
 
             # Output data as it was printed in a shell.
             self.output_bag.append('\n'.join(content))

@@ -1,5 +1,6 @@
-db_name: mysql
 dependencies:
   - phpmyadmin
 tags:
   - db
+test:
+  exec_command: "SELECT * FROM mysql.user"
