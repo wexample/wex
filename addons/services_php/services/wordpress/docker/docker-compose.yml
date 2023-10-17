@@ -24,7 +24,7 @@ services:
             service: default
 
     # From : https://stackoverflow.com/a/51001043
-    cli:
+    wordpress_cli:
         container_name: '${RUNTIME_NAME}_cli'
         image: wordpress:cli-2.7.1-php8.2
         environment:

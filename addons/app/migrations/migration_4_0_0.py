@@ -15,6 +15,15 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     projects_dirs = ['project', 'wordpress']
 
     # Rename ".wex" file to "config"
+    def _migration_4_0_0_env():
+        _migration_4_0_0_replace_placeholders(
+            manager.app_dir + '.wex/.env',
+            {
+                'SITE_ENV': 'APP_ENV',
+            }
+        )
+
+    # Rename ".wex" file to "config"
     def _migration_4_0_0_config():
         if os.path.isfile('.wex'):
             # Rename old config file
@@ -50,14 +59,17 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
 
     def _migration_4_0_0_update_docker():
         _migration_4_0_0_replace_docker_placeholders(manager, {
+            'SITE_ENV': 'APP_ENV',
             'SITE_NAME': 'APP_NAME',
+            'SITE_PATH_ROOT': 'APP_PATH_ROOT'
         })
 
     progress_steps(kernel, [
-        _migration_4_0_0_config,
-        _migration_4_0_0_dir,
-        _migration_4_0_0_move_root_environment_files,
-        _migration_4_0_0_move_project_files,
+        _migration_4_0_0_env,
+        # _migration_4_0_0_config,
+        # _migration_4_0_0_dir,
+        # _migration_4_0_0_move_root_environment_files,
+        # _migration_4_0_0_move_project_files,
         _migration_4_0_0_update_docker,
     ])
 
@@ -71,23 +83,34 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager):
     return glob.glob(f"{docker_dir}docker-compose.*")
 
 
+def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: dict):
+    # Read the file content
+    with open(file_path, 'r') as f:
+        content = f.read()
+
+    # Replace strings based on the mapping dictionary
+    for old_str, new_str in replacement_mapping.items():
+        content = content.replace(str(old_str), str(new_str))
+
+    # Override the file with updated content
+    with open(file_path, 'w') as f:
+        f.write(content)
+
+
 def _migration_4_0_0_replace_docker_placeholders(manager: AppAddonManager, replacement_mapping: dict):
     docker_files = _migration_4_0_0_et_docker_files(manager)
+    converted_mapping = {}
+
+    for old_str, new_str in replacement_mapping.items():
+        converted_mapping['${' + str(old_str) + '}'] = '${' + str(new_str) + '}'
 
     # Raw file replacements
     # Loop through each docker-compose file
     for docker_file in docker_files:
-        # Read the file content
-        with open(docker_file, 'r') as f:
-            content = f.read()
-
-        # Replace strings based on the mapping dictionary
-        for old_str, new_str in replacement_mapping.items():
-            content = content.replace('${' + str(old_str) + '}', '${' + str(new_str) + '}')
-
-        # Override the file with updated content
-        with open(docker_file, 'w') as f:
-            f.write(content)
+        _migration_4_0_0_replace_placeholders(
+            docker_file,
+            converted_mapping
+        )
 
 
 def is_version_4_0_0(kernel: Kernel, path: str):

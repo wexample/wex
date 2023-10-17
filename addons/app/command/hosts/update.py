@@ -41,16 +41,16 @@ def app__hosts__update(kernel: Kernel):
         hosts_content = f.read()
 
     # Remove old wex block
-    hosts_content = remove_wex_block(hosts_content)
+    hosts_content = remove_domains_block(hosts_content)
     # Add the new wex block
-    hosts_content = add_wex_block(hosts_content, new_block_content)
+    hosts_content = add_domains_block(hosts_content, new_block_content)
 
     # Write the updated content back to the file
     with open(SYSTEM_HOSTS_PATH, 'w') as f:
         f.write(hosts_content)
 
 
-def remove_wex_block(text):
+def remove_domains_block(text):
     """
     Removes any text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
@@ -71,8 +71,8 @@ def remove_wex_block(text):
     return "\n".join(new_lines)
 
 
-def add_wex_block(text, block_content):
+def add_domains_block(text, block_content):
     """
     Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
-    return text + f'\n#[ {CORE_COMMAND_NAME} ]#\n' + block_content + f'\n#[ end-{CORE_COMMAND_NAME} ]#\n'
+    return text + f'#[ {CORE_COMMAND_NAME} ]#\n' + block_content + f'\n#[ end-{CORE_COMMAND_NAME} ]#\n'

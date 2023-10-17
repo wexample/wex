@@ -54,7 +54,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_versi
         ).first()
 
     if not yes and not click.confirm(
-            f'Do you want to migrate {manager.get_config("global.name")} from version {app_version_string}',
+            f'Are you ready to migrate {manager.get_config("global.name")} from version {app_version_string}',
             default=True):
         return False
 

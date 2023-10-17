@@ -291,8 +291,6 @@ class AppAddonManager(AddonManager):
                     'dir': app_dir_resolved,
                 }, logging.ERROR)
 
-                print(self.app_dir)
-
                 exit(0)
 
     def command_run_post(self, request):

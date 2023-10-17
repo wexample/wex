@@ -236,6 +236,7 @@ def app__app__start(
             manager.set_runtime_config('initialized', True)
 
     def _app__app__start__complete(previous):
+        env = manager.get_runtime_config('env')
         domains = manager.get_runtime_config('domains')
         domains_string = []
 
