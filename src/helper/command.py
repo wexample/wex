@@ -92,7 +92,10 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         with open(out_path, 'a') as out_file:
             out_file.write(out_content.decode())
 
-        return success, out_content.decode().splitlines()
+        out_content_decoded = out_content.decode().splitlines()
+        kernel.io.log(out_content, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+
+        return success, out_content_decoded
 
 
 def command_to_string(command: list, add_quotes: bool = True, quote_char: str = '"'):
