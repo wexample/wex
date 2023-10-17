@@ -32,6 +32,11 @@ class AbstractResponse:
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> 'AbstractResponse':
 
+        # If response passes from a function to another,
+        # it may be already rendered.
+        if self.rendered:
+            return self
+
         self.request = request
         self.parent = self.kernel.current_response
 
