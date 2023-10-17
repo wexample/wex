@@ -191,7 +191,7 @@ def yaml_load_or_default(file, default=None):
 
 
 def remove_file_if_exists(file: str):
-    if os.path.isfile(file):
+    if os.path.isfile(file) or os.path.islink(file):
         os.remove(file)
 
 
