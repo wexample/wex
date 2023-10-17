@@ -10,7 +10,7 @@ from addons.services_php.services.php.command.service.install import php__servic
 @command(help="Install service")
 @app_dir_option()
 @service_option()
-def laravel__service__install(kernel: Kernel, app_dir: str, service: str):
+def symfony__service__install(kernel: Kernel, app_dir: str, service: str):
     kernel.run_function(
         php__service__install,
         {
