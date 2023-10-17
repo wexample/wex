@@ -236,7 +236,15 @@ def app__app__start(
             manager.set_runtime_config('initialized', True)
 
     def _app__app__start__complete(previous):
-        kernel.io.message(f'Your app is initialized as "{name}"')
+        domains = manager.get_runtime_config('domains')
+        domains_string = []
+
+        for domain in domains:
+            domains_string.append(f'- http{"s" if env != APP_ENV_LOCAL else ""}://{domain}')
+
+        kernel.io.message(f'Your app is initialized as "{name}" in {env} environment',
+                          '\n'.join(domains_string))
+
         kernel.io.message_all_next_commands(
             [
                 app__app__go,
