@@ -1,4 +1,6 @@
 import os.path
+import time
+
 import click
 
 from addons.app.command.config.write import app__config__write
@@ -176,6 +178,29 @@ def app__app__start(
             app__hosts__update
         )
 
+    def _app__app__start__pending(previous):
+        def _check():
+            # Postpone execution
+            response = kernel.run_function(
+                app__hook__exec,
+                {
+                    'app-dir': app_dir,
+                    'hook': 'service/ready'
+                }
+            )
+
+            responses = response.first()
+            for context in responses:
+                if context and responses[context] and responses[context].first() == False:
+                    kernel.io.log(f'@{context} is not running..')
+                    return False
+
+            return True
+
+        while not _check():
+            kernel.io.log(f'Waiting services..')
+            time.sleep(2)
+
     def _app__app__start__serve(previous):
         # Postpone execution
         kernel.run_function(
@@ -225,6 +250,7 @@ def app__app__start(
         _app__app__start__start_hooks,
         _app__app__start__starting,
         _app__app__start__update_hosts,
+        _app__app__start__pending,
         _app__app__start__serve,
         _app__app__start__first_init,
         _app__app__start__complete,
