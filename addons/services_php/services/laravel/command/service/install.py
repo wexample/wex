@@ -18,3 +18,7 @@ def laravel__service__install(kernel: Kernel, app_dir: str, service: str):
         },
         COMMAND_TYPE_SERVICE
     )
+
+    copy_service_sample_dir(kernel, 'php', 'php')
+    # TODO Old version
+    copy_service_sample_dir(kernel, 'php', 'apache')

@@ -16,7 +16,6 @@ from addons.app.command.app.exec import app__app__exec
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
 def mongo__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     manager: AppAddonManager = kernel.addons['app']
-
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
 
     kernel.run_function(
