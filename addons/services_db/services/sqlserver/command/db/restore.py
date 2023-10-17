@@ -17,8 +17,6 @@ def sqlserver__db__restore(kernel: Kernel, app_dir: str, service: str, file_name
     manager: AppAddonManager = kernel.addons['app']
     app_name = manager.get_config('global.name')
 
-    print(file_name)
-
     exec_command = kernel.run_function(
         sqlserver__db__exec,
         {

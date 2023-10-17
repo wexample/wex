@@ -71,7 +71,5 @@ class AbstractAppTestCase(AbstractTestCase):
             if 'tags' in services[service]['config'] and 'db' in services[service]['config']['tags']:
                 db_services.append(service)
 
-        db_services = ['maria']
-
         for db_service in db_services:
             callback(db_service)

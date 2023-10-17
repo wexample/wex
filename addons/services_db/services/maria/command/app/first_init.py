@@ -15,7 +15,6 @@ def maria__app__first_init(kernel: Kernel, app_dir: str, service: str):
         app__db__exec,
         {
             'app-dir': app_dir,
-            'container-name': service,
             'command': 'GRANT ALL PRIVILEGES ON *.* TO root@localhost WITH GRANT OPTION',
         }
     )
@@ -24,7 +23,6 @@ def maria__app__first_init(kernel: Kernel, app_dir: str, service: str):
         app__db__exec,
         {
             'app-dir': app_dir,
-            'container-name': service,
             'command': 'FLUSH PRIVILEGES',
         }
     )
