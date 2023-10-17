@@ -11,10 +11,12 @@ from src.decorator.option import option
 @app_dir_option()
 @service_option()
 @option('--command', '-c', type=str, required=True, help="Command to execute in database")
-def postgres__db__exec(kernel: Kernel, app_dir: str, service: str, command: str):
+@option('--database', '-d', type=str, required=False, help="Database name")
+def postgres__db__exec(kernel: Kernel, app_dir: str, service: str, command: str, database: str = None):
     return kernel.run_function(
         postgres__db__go,
         {
             'app-dir': app_dir,
-            'service': service
-        }, COMMAND_TYPE_SERVICE).first() + f' --pset=pager=off -t -c "{command}"'
+            'service': service,
+            'database': database,
+        }, COMMAND_TYPE_SERVICE).first() + f' --pset=pager=off -t -A -c "{command}"'
