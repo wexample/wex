@@ -14,7 +14,7 @@ def sqlserver__service__install(kernel: Kernel, app_dir: str, service: str):
     name = manager.get_config('global.name')
     manager.set_config(f'service.{service}', {
         'host': f'{name}_sqlserver',
-        'name': f'master',
+        'name': name,
         'password': PASSWORD_INSECURE,
         'port': 1433,
         'user': 'sa',

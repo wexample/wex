@@ -9,6 +9,7 @@ from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec
 from addons.services_db.services.sqlserver.command.db.exec import sqlserver__db__exec
 from src.const.globals import COMMAND_TYPE_SERVICE
+from addons.app.AppAddonManager import AppAddonManager
 
 
 @command(help="Set database permissions")
@@ -17,13 +18,15 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
 def sqlserver__db__dump(kernel: Kernel, app_dir: str, service: str, file_name: str):
     file_name += '.bak'
+    manager: AppAddonManager = kernel.addons['app']
+    app_name = manager.get_config('global.name')
 
     exec_command = kernel.run_function(
         sqlserver__db__exec,
         {
             'app-dir': app_dir,
             'service': service,
-            'command': f"BACKUP DATABASE [master] TO DISK = '/var/opt/mssql/dumps/{file_name}'"
+            'command': f"BACKUP DATABASE [{app_name}] TO DISK = '/var/opt/mssql/dumps/{file_name}'"
         },
         type=COMMAND_TYPE_SERVICE
     ).first()

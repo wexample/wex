@@ -15,7 +15,8 @@ def sqlserver__service__ready(kernel: Kernel, app_dir: str, service: str):
         sqlserver__db__exec, {
             'app-dir': app_dir,
             'service': service,
-            'command': 'SELECT 1'
+            'command': 'SELECT 1',
+            'database': 'master'
         }, COMMAND_TYPE_SERVICE
     ).print()
 

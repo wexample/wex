@@ -16,6 +16,7 @@ def sqlserver__app__first_init(kernel: Kernel, app_dir: str, service: str):
         app__db__exec,
         {
             'app-dir': app_dir,
+            'database': 'master',
             # Ask to execute bash
             'command': f'CREATE DATABASE {manager.get_config("global.name")}',
         }

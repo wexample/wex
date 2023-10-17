@@ -12,10 +12,12 @@ from src.decorator.option import option
 @alias_without_addon()
 @app_dir_option()
 @option('--command', '-c', type=str, required=True, help="Command to execute in database")
+@option('--database', '-d', type=str, required=False, help="Database name")
 def app__db__exec(
         kernel: Kernel,
         app_dir: str,
-        command: str):
+        command: str,
+        database: str = None):
     manager: AppAddonManager = kernel.addons['app']
     service = manager.get_config('docker.main_db_container')
 
@@ -24,7 +26,8 @@ def app__db__exec(
         {
             'app-dir': app_dir,
             'service': service,
-            'command': command
+            'command': command,
+            'database': database
         }
     ).first()
 
