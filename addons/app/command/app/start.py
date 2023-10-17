@@ -91,7 +91,7 @@ def app__app__start(
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}).first():
             # The reverse proxy is not running.
-            if not kernel.run_function(app__app__started, {
+            if not os.path.exists(manager.proxy_path) or not kernel.run_function(app__app__started, {
                 'app-dir': manager.proxy_path,
                 'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
             }).first():

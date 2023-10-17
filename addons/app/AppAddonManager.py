@@ -6,7 +6,7 @@ import yaml
 
 from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
-from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM
+from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -62,8 +62,8 @@ class AppAddonManager(AddonManager):
         if domains is None:
             domains = []
 
-        domains_main = domains[0] if domains else f'{to_kebab_case(app_name)}.wex'
-        email = f'contact@{domains_main}'
+        domain_main = domains[0] if domains else f'{to_kebab_case(app_name)}.{CORE_COMMAND_NAME}'
+        email = f'contact@{domain_main}'
 
         return {
             'global': {
@@ -80,23 +80,23 @@ class AppAddonManager(AddonManager):
             },
             'env': {
                 APP_ENV_TEST: {
-                    'domains': f'{app_name}.test',
-                    'domain_main': f'{app_name}.test',
+                    'domains': domains.copy(),
+                    'domain_main': domain_main,
                     'email': email
                 },
                 APP_ENV_LOCAL: {
-                    'domains': f'{app_name}.wex',
-                    'domain_main': f'{app_name}.wex',
+                    'domains': domains.copy(),
+                    'domain_main': domain_main,
                     'email': email
                 },
                 APP_ENV_DEV: {
                     'domains': domains.copy(),
-                    'domain_main': domains_main,
+                    'domain_main': domain_main,
                     'email': email
                 },
                 APP_ENV_PROD: {
                     'domains': domains.copy(),
-                    'domain_main': domains_main,
+                    'domain_main': domain_main,
                     'email': email
                 }
             },
@@ -290,6 +290,8 @@ class AppAddonManager(AddonManager):
                     'command': request.command,
                     'dir': app_dir_resolved,
                 }, logging.ERROR)
+
+                print(self.app_dir)
 
                 exit(0)
 
