@@ -12,12 +12,14 @@ from addons.app.decorator.app_command import app_command
 @option('--command', '-c', type=str, required=True, help="Command to execute in database")
 @option('--database', '-d', type=str, required=False, help="Database name")
 @option('--service', '-s', type=str, required=False, help="Database service name")
+@option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
 def app__db__exec(
         kernel: Kernel,
         app_dir: str,
         command: str,
         service: str = None,
-        database: str = None):
+        database: str = None,
+        sync: bool = False):
     manager: AppAddonManager = kernel.addons['app']
     service = service or manager.get_config('docker.main_db_container')
 
@@ -36,6 +38,7 @@ def app__db__exec(
         {
             'app-dir': app_dir,
             'container-name': service,
-            'command': exec_command
+            'command': exec_command,
+            'sync': sync,
         }
     )
