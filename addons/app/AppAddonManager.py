@@ -220,7 +220,7 @@ class AppAddonManager(AddonManager):
 
         return False
 
-    def command_run_pre(self, request):
+    def hook_render_request_pre(self, request):
         if self.skip_app_location(request):
             return
 
@@ -293,8 +293,8 @@ class AppAddonManager(AddonManager):
 
                 exit(0)
 
-    def command_run_post(self, request):
-        if self.skip_app_location(request):
+    def hook_render_request_post(self, response):
+        if self.skip_app_location(response.request):
             return
 
         self.app_dirs_stack.pop()

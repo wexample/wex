@@ -47,11 +47,7 @@ class AbstractCommandResolver:
             # Uses the original argv argument to ignore any changes on it.
             os.execvp('sudo', ['sudo'] + sys.argv)
 
-        middleware_args = {
-            'request': request,
-        }
-
-        self.kernel.exec_middlewares('run_pre', middleware_args)
+        self.kernel.hook_addons('render_request_pre', {'request': request})
 
         try:
             ctx = request.function.make_context('', request.args.copy() or [])
@@ -81,11 +77,9 @@ class AbstractCommandResolver:
             request.function.invoke(ctx)
         )
 
-        middleware_args['response'] = response
-
         response = response.render(request, render_mode)
 
-        self.kernel.exec_middlewares('run_post', middleware_args)
+        self.kernel.hook_addons('render_request_post', {'response': response})
 
         return response
 

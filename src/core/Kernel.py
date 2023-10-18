@@ -1,4 +1,3 @@
-import importlib.util
 import os
 import sys
 import yaml
@@ -86,7 +85,6 @@ class Kernel:
         self.logger: Logger = Logger(self)
 
         self.load_registry()
-        self.exec_middlewares('init')
 
     def load_registry(self):
         path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
@@ -225,28 +223,18 @@ class Kernel:
             if self.resolvers[type].supports(self, command):
                 return type
 
-    def exec_middlewares(self, name: str, args=None):
+    def hook_addons(self, name: str, args=None):
         if args is None:
             args = {}
 
+        hook = f'hook_{name}'
         # Init addons
         for addon in self.addons:
-            self.exec_middleware(addon, name, args)
-
-    def exec_middleware(self, addon: str, name: str, args=None):
-        if args is None:
-            args = {}
-
-        middleware_enabled_path = self.path['addons'] + f'{addon}/middleware/{name}.py'
-
-        if os.path.exists(middleware_enabled_path):
-            function_name = f'{addon}_middleware_{name}'
-            spec = importlib.util.spec_from_file_location(name, middleware_enabled_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            function = getattr(module, function_name, None)
-
-            return function(self, **args)
+            addon_manager = self.addons[addon]
+            # Dynamically call the hook method if it exists
+            hook_method = getattr(addon_manager, hook, None)
+            if hook_method:
+                hook_method(**args)
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
         if type not in self.resolvers:
