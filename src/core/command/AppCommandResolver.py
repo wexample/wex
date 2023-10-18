@@ -1,6 +1,5 @@
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
-from addons.app.command.location.find import app__location__find
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -8,7 +7,6 @@ from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
-from addons.app.AppAddonManager import AppAddonManager
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -16,7 +14,7 @@ class AppCommandResolver(AbstractCommandResolver):
         super().__init__(kernel)
 
         # Shortcut.
-        self.app_addon: AppAddonManager = kernel.addons['app']
+        self.app_addon_manager = kernel.addons['app']
 
     def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         if not self.get_base_path():
@@ -59,8 +57,10 @@ class AppCommandResolver(AbstractCommandResolver):
         ]
 
     def get_base_path(self):
-        app_dir = self.app_addon.app_dir
-        if not self.app_addon.app_dir:
+        app_dir = self.app_addon_manager.app_dir
+        if not self.app_addon_manager.app_dir:
+            from addons.app.command.location.find import app__location__find
+
             app_dir = self.kernel.run_function(
                 app__location__find,
                 {

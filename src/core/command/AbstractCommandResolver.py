@@ -4,7 +4,7 @@ import re
 import sys
 from abc import abstractmethod
 
-from src.decorator.command import COMMAND_HELP_PARAMS
+from src.const.args import ARGS_HELP
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
@@ -66,7 +66,7 @@ class AbstractCommandResolver:
 
         # Remove click params which have been defined only
         # to be shown in help section, but are used outside function
-        for arg in COMMAND_HELP_PARAMS:
+        for arg in ARGS_HELP:
             if arg in ctx.params:
                 del ctx.params[arg]
 
@@ -353,3 +353,7 @@ class AbstractCommandResolver:
 
                 return True
         return False
+
+    @classmethod
+    def decorate_command(cls, command, kwargs):
+        pass

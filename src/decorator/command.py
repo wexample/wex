@@ -1,15 +1,5 @@
 import click
-
-COMMAND_HELP_PARAMS = [
-    'fast_mode',
-    'quiet',
-    'vv',
-    'vvv',
-    'command_request_step',
-    'kernel_task_id',
-    'log_indent',
-    'log_length'
-]
+from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 
 
 # Define your custom decorator
@@ -19,6 +9,12 @@ def command(*args, **kwargs):
 
     def decorator(f):
         if callable(f):
+            f.command_type = kwargs.pop('command_type', False)
+            if f.command_type:
+                for resolver in COMMAND_RESOLVERS_CLASSES:
+                    if resolver.get_type() == f.command_type:
+                        f = resolver.decorate_command(f, kwargs)
+
             # Apply the click.pass_obj decorator
             f = click.pass_obj(f)
             # Apply the original click.command decorator

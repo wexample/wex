@@ -21,6 +21,13 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 })
             return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)
 
+        # Guess service name from command prefix if not passed.
+        if '--service' not in request.args:
+            request.args.extend([
+                '--service',
+                request.match[1]
+            ])
+
         return super().render_request(request, render_mode)
 
     @classmethod
@@ -117,3 +124,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     return True
 
         return False
+
+    @classmethod
+    def decorate_command(cls, function, kwargs):
+        from addons.app.decorator.service_option import service_option
+        return service_option(**kwargs)(function)

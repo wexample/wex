@@ -6,6 +6,7 @@ from typing import Optional
 from yaml import SafeLoader
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.IOManager import IOManager
@@ -18,18 +19,7 @@ from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
-from src.core.command.AddonCommandResolver import AddonCommandResolver
-from src.core.command.AppCommandResolver import AppCommandResolver
-from src.core.command.ServiceCommandResolver import ServiceCommandResolver
-from src.core.command.UserCommandResolver import UserCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
-
-PROCESSOR_CLASSES = [
-    AddonCommandResolver,
-    ServiceCommandResolver,
-    AppCommandResolver,
-    UserCommandResolver,
-]
 
 ADDONS_DEFINITIONS = {
     'app': AppAddonManager
@@ -69,7 +59,7 @@ class Kernel:
         # Create a registry for faster access
         self.resolvers: dict = {
             class_definition.get_type(): class_definition
-            for class_definition in PROCESSOR_CLASSES
+            for class_definition in COMMAND_RESOLVERS_CLASSES
         }
 
         # Initialize addons config
