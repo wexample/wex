@@ -2,12 +2,16 @@ import click
 
 
 def app_dir_option(*args, **kwargs):
-    def decorator(f):
-        if callable(f):
+    def decorator(function):
+        if callable(function):
             # Add the --app-dir option
-            f = click.option('--app-dir', '-a', type=str, required=True,
-                             help="App directory")(f)
-
-        return f
+            function = click.option(
+                '--app-dir',
+                '-a',
+                type=str,
+                help="App directory",
+                **kwargs
+            )(function)
+        return function
 
     return decorator

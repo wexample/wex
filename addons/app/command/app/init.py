@@ -6,11 +6,9 @@ from typing import Iterable, Union
 from src.helper.prompt import progress_steps
 from src.helper.string import to_snake_case
 from src.helper.args import split_arg_array
-from src.decorator.command import command
 from src.decorator.option import option
 
 from addons.app.command.app.start import app__app__start
-from addons.app.decorator.app_dir_optional import app_dir_optional
 from addons.core.command.service.resolve import core__service__resolve
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA
 from addons.app.const.app import APP_ENV_PROD
@@ -20,11 +18,11 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.alias_without_addon import alias_without_addon
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Create new app and services configuration")
+@app_command(help="Create new app and services configuration", dir_required=False)
 @alias_without_addon()
-@app_dir_optional
 @option('--name', '-n', type=str, required=False,
         help="Name of new app")
 @option('--git', '-g', is_flag=True, required=False, default=True,

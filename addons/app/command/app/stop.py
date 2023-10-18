@@ -2,21 +2,19 @@ from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
 from addons.app.helpers.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hosts.update import app__hosts__update
 from src.decorator.alias_without_addon import alias_without_addon
 from src.core.Kernel import Kernel
-from src.decorator.command import command
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from addons.app.command.app.perms import app__app__perms
 from src.decorator.as_sudo import as_sudo
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Stop the given app")
-@app_dir_option()
+@app_command(help="Stop the given app")
 @alias_without_addon()
 @as_sudo
 def app__app__stop(kernel: Kernel, app_dir: str):

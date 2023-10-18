@@ -2,19 +2,17 @@
 from addons.app.command.services.exec import app__services__exec
 from src.helper.args import parse_arg
 from src.const.globals import COMMAND_CHAR_APP
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
-from src.decorator.command import command
 from src.decorator.option import option
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Exec a command on services and local app")
+@app_command(help="Exec a command on services and local app")
 @option('--hook', '-h', type=str, required=True,
               help="Hook name")
 @option('--arguments', '-args', required=False,
               help="Hook name")
-@app_dir_option()
 def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
     arguments = parse_arg(arguments)
 

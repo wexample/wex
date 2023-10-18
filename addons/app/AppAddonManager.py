@@ -210,18 +210,14 @@ class AppAddonManager(AddonManager):
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
         return get_dict_item_by_path(self.runtime_config, key, default)
 
-    def skip_app_location(self, request) -> bool:
-        # Skip if the command allow to be executed without app location.
-        if hasattr(request.function.callback, 'app_dir_ignore'):
-            return True
-
-        if request.is_click_command(app__location__find):
-            return True
-
-        return False
+    def ignore_app_dir(self, request) -> bool:
+        # Only specified commands will expect app location.
+        if getattr(request.function.callback, 'app_command', False):
+            return False
+        return True
 
     def hook_render_request_pre(self, request):
-        if self.skip_app_location(request):
+        if self.ignore_app_dir(request):
             return
 
         args = request.args.copy()
@@ -236,7 +232,7 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if hasattr(request.function.callback, 'app_dir_optional'):
+                if not getattr(request.function.callback, 'app_dir_required'):
                     self.app_dirs_stack.append(None)
                     self.unset_app_workdir()
                     return
@@ -277,7 +273,7 @@ class AppAddonManager(AddonManager):
             'app-dir',
             app_dir_resolved)
 
-        if hasattr(request.function.callback, 'app_should_run'):
+        if getattr(request.function.callback, 'app_should_run', False):
             from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
 
             if not self.kernel.run_function(app__app__started, {
@@ -294,7 +290,7 @@ class AppAddonManager(AddonManager):
                 exit(0)
 
     def hook_render_request_post(self, response):
-        if self.skip_app_location(response.request):
+        if self.ignore_app_dir(response.request):
             return
 
         self.app_dirs_stack.pop()

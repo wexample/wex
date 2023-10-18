@@ -1,19 +1,15 @@
 import os
 import zipfile
 
-from addons.app.decorator.app_should_run import app_should_run
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import date_time_file_name, delete_file_or_dir
-from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Create a database dump")
-@app_should_run
-@app_dir_option()
+@app_command(help="Create a database dump", should_run=True)
 @option('--file-name', '-f', type=str, required=False, help="Output file name")
 @option('--zip', '-z', type=bool, required=False, default=True, help="Zip output file")
 @option('--tag', '-t', type=str, required=False, help="Add tag as suffix")

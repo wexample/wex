@@ -3,7 +3,6 @@ import os.path
 
 from addons.app.command.app.init import app__app__init
 from addons.app.command.env.get import app__env__get
-from addons.app.decorator.app_dir_ignore import app_dir_ignore
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.start import app__app__start
 from src.const.error import ERR_UNEXPECTED
@@ -19,7 +18,6 @@ from src.core.response.ResponseCollectionStopResponse import ResponseCollectionS
 
 @command(help="Create and start the reverse proxy server")
 @as_sudo
-@app_dir_ignore
 @option('--user', '-u', type=str, required=False, help="Owner of application files")
 @option('--env', '-e', type=str, required=False, help="Port for accessing apps")
 @option('--group', '-g', type=str, required=False, help="Group of application files")

@@ -1,12 +1,10 @@
 
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
-from src.decorator.command import command
 from src.core import Kernel
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Return list of containers for given app")
-@app_dir_option()
+@app_command(help="Return list of containers for given app")
 def app__container__list(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     container_names = []

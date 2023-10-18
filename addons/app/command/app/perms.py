@@ -1,14 +1,12 @@
 from addons.app.command.hook.exec import app__hook__exec
 from src.decorator.as_sudo import as_sudo
-from src.decorator.command import command
 from src.helper.system import set_owner_recursively, set_permissions_recursively, get_user_or_sudo_user
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Set app files permissions")
-@app_dir_option()
+@app_command(help="Set app files permissions")
 @as_sudo
 def app__app__perms(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']

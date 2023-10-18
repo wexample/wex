@@ -8,19 +8,17 @@ from src.helper.dict import merge_dicts, get_dict_item_by_path
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
-from src.decorator.command import command
 from src.decorator.option import option
 from src.decorator.alias_without_addon import alias_without_addon
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Install given service in app configuration")
+@app_command(help="Install given service in app configuration")
 @alias_without_addon()
 @option('--service', '-s', type=str, required=True,
         help="Service name")
-@app_dir_option()
 @option('--install-config', '-ic', type=bool, required=False, is_flag=True, default=True,
         help='Add to config')
 @option('--install-docker', '-id', type=bool, required=False, is_flag=True, default=True,

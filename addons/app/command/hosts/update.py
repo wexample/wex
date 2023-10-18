@@ -1,4 +1,3 @@
-from addons.app.decorator.app_dir_ignore import app_dir_ignore
 from addons.docker.command.docker.ip import docker__docker__ip
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
@@ -10,7 +9,6 @@ from src.decorator.command import command
 
 @command(help="Update local /etc/hosts file")
 @as_sudo
-@app_dir_ignore
 def app__hosts__update(kernel: Kernel):
     new_block_content = []
     ip = kernel.run_function(

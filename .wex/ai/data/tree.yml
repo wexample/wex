@@ -411,11 +411,7 @@ children:
             type: dir
           decorator:
             children:
-              app_dir_ignore.py:
-                type: file
               app_dir_option.py:
-                type: file
-              app_dir_optional.py:
                 type: file
               service_option.py:
                 type: file

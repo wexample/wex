@@ -3,15 +3,13 @@ import os
 from addons.app.AppAddonManager import AppAddonManager
 
 from addons.app.const.app import APP_DIR_APP_DATA
-from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Create env variable pointing to files regarding environment extension")
+@app_command(help="Create env variable pointing to files regarding environment extension")
 @option('--dir', '-d', type=str, required=True, help="Argument")
-@app_dir_option()
 def app__config__bind_files(kernel: Kernel, app_dir: str, dir: str):
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)

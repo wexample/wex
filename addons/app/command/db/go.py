@@ -1,15 +1,13 @@
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.decorator.command import command
 from src.core import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.command.app.exec import app__app__exec
 from src.decorator.alias_without_addon import alias_without_addon
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Enter into database management CLI")
+@app_command(help="Enter into database management CLI")
 @alias_without_addon()
-@app_dir_option()
 def app__db__go(
         kernel: Kernel,
         app_dir: str):

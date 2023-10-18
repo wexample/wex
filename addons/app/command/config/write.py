@@ -7,14 +7,12 @@ from src.const.error import ERR_UNEXPECTED
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
-from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Write the configuration file for services to start")
-@option('--app-dir', '-a', type=str, required=False,
-        help="Add directory")
+@app_command(help="Write the configuration file for services to start")
 @option('--user', '-u', type=str, required=False,
         help="Owner of application files")
 @option('--group', '-g', type=str, required=False,

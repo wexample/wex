@@ -2,20 +2,16 @@ import os
 import zipfile
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.decorator.app_should_run import app_should_run
-from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helpers.db import get_db_service_dumps_path
 from src.helper.file import delete_file_or_dir
 from src.helper.prompt import prompt_choice
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.decorator.command import command
 from src.decorator.option import option
 from src.core import Kernel
+from addons.app.decorator.app_command import app_command
 
 
-@command(help="Restore a database dump")
-@app_should_run
-@app_dir_option()
+@app_command(help="Restore a database dump", should_run=True)
 @option('--file-path', '-f', type=str, required=False, help="Force file path")
 def app__db__restore(kernel: Kernel, app_dir: str, file_path: str | None = None):
     manager: AppAddonManager = kernel.addons['app']
