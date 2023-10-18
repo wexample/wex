@@ -1,15 +1,11 @@
 from src.core.Kernel import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.decorator.service_option import service_option
-from src.decorator.command import command
 from addons.app.command.app.exec import app__app__exec
 from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
+from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 
-@command(help="Return true if database runs")
-@app_dir_option()
-@service_option()
+@app_command(help="Return true if database runs", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 def mysql__service__ready(kernel: Kernel, app_dir: str, service: str):
     response = kernel.run_function(
         app__app__exec, {

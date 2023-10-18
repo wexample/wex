@@ -1,17 +1,14 @@
 import os
 
 from src.core.Kernel import Kernel
-from src.decorator.command import command
 from addons.app.const.app import APP_DIR_TMP
-from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.decorator.service_option import service_option
 from addons.app.AppAddonManager import AppAddonManager
 from addons.services_db.const.mysql import MYSQL_CONF_FILE
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
-@command(help="Set configuration")
-@app_dir_option()
-@service_option()
+@app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
 def mysql__config__runtime(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
     # Set db as main database.

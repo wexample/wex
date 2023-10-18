@@ -3,14 +3,11 @@ import os
 from addons.app.AppAddonManager import AppAddonManager
 from addons.services_db.services.mysql.command.config.write_post import mysql_get_my_cnf_path
 from src.core.Kernel import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.decorator.service_option import service_option
-from src.decorator.command import command
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
-@command(help="Set database permissions")
-@app_dir_option()
-@service_option()
+@app_command(help="Set service permissions", command_type=COMMAND_TYPE_SERVICE)
 def mysql__app__perms(kernel: Kernel, app_dir: str, service: str):
     manager: AppAddonManager = kernel.addons['app']
     manager.log(service + " : setting permissions to my.cnf")

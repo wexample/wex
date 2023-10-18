@@ -1,15 +1,11 @@
 from src.helper.service import copy_service_sample_dir
-from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.Kernel import Kernel
-from src.decorator.command import command
-from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.decorator.service_option import service_option
 from addons.services_php.services.php.command.service.install import php__service__install
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
-@command(help="Install service")
-@app_dir_option()
-@service_option()
+@app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
 def laravel__service__install(kernel: Kernel, app_dir: str, service: str):
     kernel.run_function(
         php__service__install,

@@ -1,15 +1,11 @@
 from src.core.Kernel import Kernel
-from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.decorator.service_option import service_option
-from src.decorator.command import command
 from addons.services_db.services.mongo.command.db.exec import mongo__db__exec
-from src.const.globals import COMMAND_TYPE_SERVICE
 from addons.app.command.app.exec import app__app__exec
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
-@command(help="Return true if database runs")
-@app_dir_option()
-@service_option()
+@app_command(help="Return true if database runs", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 def mongo__service__ready(kernel: Kernel, app_dir: str, service: str):
     exec_command = kernel.run_function(
         mongo__db__exec, {
