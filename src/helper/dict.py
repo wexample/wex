@@ -1,5 +1,6 @@
 import copy
 
+
 def merge_dicts(dict1, dict2):
     """
     Recursively merge two dictionaries.
@@ -26,3 +27,7 @@ def get_dict_item_by_path(data: dict, key: str, default=None):
             return default
 
     return data
+
+
+def dict_sort_values(dict: dict):
+    return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
