@@ -1,6 +1,6 @@
 services:
   nextcloud:
-    container_name: '${RUNTIME_NAME}_nextcloud'
+    container_name: ${RUNTIME_NAME}_nextcloud
     image: nextcloud:25.0.12
     environment:
       - VIRTUAL_HOST=${GLOBAL_NAME}.wex

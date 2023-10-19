@@ -1,6 +1,6 @@
 services:
     sonarqube:
-        container_name: '${RUNTIME_NAME}_sonarqube'
+        container_name: ${RUNTIME_NAME}_sonarqube
         image: sonarqube:9.9.2-community
         expose:
             - 9000

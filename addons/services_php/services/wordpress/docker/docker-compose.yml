@@ -1,6 +1,6 @@
 services:
     wordpress:
-        container_name: '${RUNTIME_NAME}_wordpress'
+        container_name: ${RUNTIME_NAME}_wordpress
         image: wordpress:6.3.1-php8.2-apache
         expose:
             - 80
@@ -12,12 +12,12 @@ services:
             - WORDPRESS_DB_NAME=${SERVICE_MYSQL_NAME}
             - WORDPRESS_DB_USER=${SERVICE_MYSQL_USER}
             - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_PASSWORD}
-            - WORDPRESS_DEBUG=1
-            - WORDPRESS_CONFIG_EXTRA=
+            # Wordpress helper vars.
+            - RUNTIME_DOMAIN_MAIN=${RUNTIME_DOMAIN_MAIN}
         volumes:
-            # Wordpress
             - ${RUNTIME_PATH_APP}:/var/www/html
-            # Security ! Hide and .wex data containing passwords and databases !
+            # Security ! Hide sensitive data containing passwords and databases !
+            - /var/www/html/.git
             - /var/www/html/.wex
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
@@ -25,19 +25,21 @@ services:
 
     # From : https://stackoverflow.com/a/51001043
     wordpress_cli:
-        container_name: '${RUNTIME_NAME}_cli'
+        container_name: ${RUNTIME_NAME}_wordpress_cli
         image: wordpress:cli-2.7.1-php8.2
         environment:
             - WORDPRESS_DB_HOST=${SERVICE_MYSQL_HOST}
             - WORDPRESS_DB_NAME=${SERVICE_MYSQL_NAME}
             - WORDPRESS_DB_USER=${SERVICE_MYSQL_USER}
             - WORDPRESS_DB_PASSWORD=${SERVICE_MYSQL_PASSWORD}
+            # Wordpress helper vars.
+            - RUNTIME_DOMAIN_MAIN=${RUNTIME_DOMAIN_MAIN}
         volumes:
-            # Wordpress
             - ${RUNTIME_PATH_APP}:/var/www/html
-            # Security ! Hide and .wex data containing passwords and databases !
+            # Security ! Hide sensitive data containing passwords and databases !
+            - /var/www/html/.git
             - /var/www/html/.wex
-            - ${RUNTIME_PATH_APP_WEX}wp-cli/:/.wp-cli/
+            - ${RUNTIME_PATH_APP_ENV}wp-cli/:/.wp-cli/
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default

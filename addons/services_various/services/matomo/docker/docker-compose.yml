@@ -1,7 +1,7 @@
 services:
   matomo:
-    container_name: '${RUNTIME_NAME}_matomo'
-    image: 'matomo:4.15.1-apache'
+    container_name: ${RUNTIME_NAME}_matomo
+    image: matomo:4.15.1-apache
     expose:
       - 80
     environment:

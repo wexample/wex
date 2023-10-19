@@ -8,9 +8,9 @@ services:
             - MYSQL_ROOT_PASSWORD=${SERVICE_MYSQL_PASSWORD}
             - MYSQL_TCP_PORT=${SERVICE_MYSQL_PORT}
         volumes:
-            - ${RUNTIME_PATH_APP_WEX}mysql/data:/var/lib/mysql
-            - ${RUNTIME_PATH_APP_WEX}mysql/dumps:/var/www/dumps
-            - ${RUNTIME_PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+            - ${RUNTIME_PATH_APP_ENV}mysql/data:/var/lib/mysql
+            - ${RUNTIME_PATH_APP_ENV}mysql/dumps:/var/www/dumps
+            - ${RUNTIME_PATH_APP_ENV}tmp/mysql.cnf:/tmp/mysql.cnf
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default

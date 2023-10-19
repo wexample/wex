@@ -1,6 +1,6 @@
 services:
     phpmyadmin:
-        container_name: '${RUNTIME_NAME}_phpmyadmin'
+        container_name: ${RUNTIME_NAME}_phpmyadmin
         image: phpmyadmin/phpmyadmin:5.2
         environment:
           - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}

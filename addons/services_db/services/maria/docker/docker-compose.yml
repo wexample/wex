@@ -1,6 +1,6 @@
 services:
     maria:
-        container_name: '${RUNTIME_NAME}_maria'
+        container_name: ${RUNTIME_NAME}_maria
         image: mariadb:10.9
         environment:
             - MYSQL_ROOT_HOST=%
@@ -9,9 +9,9 @@ services:
             - MYSQL_ROOT_PASSWORD=${SERVICE_MARIA_PASSWORD}
             - MYSQL_USER=${SERVICE_MARIA_USER}
         volumes:
-            - ${RUNTIME_PATH_APP_WEX}maria/data:/var/lib/mysql
-            - ${RUNTIME_PATH_APP_WEX}maria/dumps:/var/www/dumps
-            - ${RUNTIME_PATH_APP_WEX}tmp/mysql.cnf:/tmp/mysql.cnf
+            - ${RUNTIME_PATH_APP_ENV}maria/data:/var/lib/mysql
+            - ${RUNTIME_PATH_APP_ENV}maria/dumps:/var/www/dumps
+            - ${RUNTIME_PATH_APP_ENV}tmp/mysql.cnf:/tmp/mysql.cnf
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default

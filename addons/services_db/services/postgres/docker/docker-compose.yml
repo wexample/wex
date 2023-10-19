@@ -1,6 +1,6 @@
 services:
     postgres:
-        container_name: '${RUNTIME_NAME}_postgres'
+        container_name: ${RUNTIME_NAME}_postgres
         image: postgres:15.4
         environment:
           - POSTGRES_DB=${SERVICE_POSTGRES_NAME}
@@ -8,8 +8,8 @@ services:
           - POSTGRES_PASSWORD=${SERVICE_POSTGRES_PASSWORD}
           - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
-          - ${RUNTIME_PATH_APP_WEX}postgres/data:/var/lib/postgresql/data
-          - ${RUNTIME_PATH_APP_WEX}postgres/dumps:/var/www/dumps
+          - ${RUNTIME_PATH_APP_ENV}postgres/data:/var/lib/postgresql/data
+          - ${RUNTIME_PATH_APP_ENV}postgres/dumps:/var/www/dumps
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default

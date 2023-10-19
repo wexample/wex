@@ -1,7 +1,7 @@
 services:
     php:
-        container_name: '${RUNTIME_NAME}_php'
-        image: 'wexample/php-8.2:latest'
+        container_name: ${RUNTIME_NAME}_php
+        image: wexample/php-8.2:latest
         expose:
             - 80
         environment:
@@ -10,12 +10,13 @@ services:
         volumes:
             # Site folder
             - ${RUNTIME_PATH_APP}:/var/www/html
-            # Security ! Hide and .wex data containing passwords and databases !
+            # Security ! Hide sensitive data containing passwords and databases !
+            - /var/www/html/.git
             - /var/www/html/.wex
             # Mysql dumps
-            - ${RUNTIME_PATH_APP_WEX}mysql/dumps:/var/www/mysql/dumps
+            - ${RUNTIME_PATH_APP_ENV}mysql/dumps:/var/www/mysql/dumps
             # Cron management
-            - ${RUNTIME_PATH_APP_WEX}cron/${RUNTIME_ENV}:/var/default.cron
+            - ${RUNTIME_PATH_APP_ENV}cron/${RUNTIME_ENV}:/var/default.cron
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
