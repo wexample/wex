@@ -17,7 +17,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     # Rename ".wex" file to "config"
     def _migration_4_0_0_env():
         _migration_4_0_0_replace_placeholders(
-            manager.app_dir + '.wex/.env',
+            manager.app_dir + '.env',
             {
                 'SITE_ENV': 'APP_ENV',
             }
@@ -66,10 +66,10 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
 
     progress_steps(kernel, [
         _migration_4_0_0_env,
-        # _migration_4_0_0_config,
-        # _migration_4_0_0_dir,
-        # _migration_4_0_0_move_root_environment_files,
-        # _migration_4_0_0_move_project_files,
+        _migration_4_0_0_config,
+        _migration_4_0_0_dir,
+        _migration_4_0_0_move_root_environment_files,
+        _migration_4_0_0_move_project_files,
         _migration_4_0_0_update_docker,
     ])
 
@@ -84,6 +84,9 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager):
 
 
 def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: dict):
+    if not os.path.exists(file_path):
+        return
+
     # Read the file content
     with open(file_path, 'r') as f:
         content = f.read()
