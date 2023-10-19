@@ -23,8 +23,7 @@ def app__app__stop(kernel: Kernel, app_dir: str):
 
     def _app__app__stop__checkup():
         if not kernel.run_function(app__app__started, {
-            'app-dir': app_dir,
-            'mode': APP_STARTED_CHECK_MODE_FULL
+            'app-dir': app_dir
         }).first():
             manager.log('App already stopped')
             return ResponseCollectionStopResponse(kernel)
