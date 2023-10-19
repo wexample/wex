@@ -29,16 +29,14 @@ def phpmyadmin__config__runtime(kernel: Kernel, app_dir: str, service: str):
             domain_pma
         )
 
-        domains = manager.get_runtime_config(
-            'domains',
-            []
-        )
+    domains = manager.get_runtime_config(
+        'domains',
+        []
+    )
 
-        domains.append(domain_pma)
+    domains.append(domain_pma)
 
-        print(domains)
-
-        manager.set_runtime_config(
-            'domains',
-            domains
-        )
+    manager.set_runtime_config(
+        'domains',
+        domains
+    )
