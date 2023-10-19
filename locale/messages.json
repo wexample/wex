@@ -1,7 +1,8 @@
 {
   "ERR_ARGUMENT_COMMAND_MALFORMED": "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
   "ERR_COMMAND_CONTEXT": "Error when creating context for command function {function} : {error}",
-  "ERR_COMMAND_FILE_NOT_FOUND": "Command file not found for {command}, in path \"{path}\"",
+  "ERR_COMMAND_FILE_NOT_FOUND": "Command file not found for command {command}, in path \"{path}\"",
+  "ERR_COMMAND_TYPE_MISMATCH": "Command type \"{command_type}\" does not match with resolver type \"{resolver_type}\" for command {command}",
   "ERR_CORE_REPO_DIRTY": "{diff}\nThere is uncommitted changes in the repository",
   "ERR_ENV_VAR_MISSING": "Missing env var",
   "ERR_EXEC_NON_CLICK_METHOD": "Trying to execute a non-click function '{function_name}', did you forget @click.command decorator ?",

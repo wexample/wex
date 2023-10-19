@@ -57,6 +57,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
             command_path,
             {
                 'function_name': function_name,
+                'command_type_constant': f'COMMAND_TYPE_{command_type.upper()}',
             }
         )
 

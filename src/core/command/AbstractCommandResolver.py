@@ -12,7 +12,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from src.helper.args import convert_dict_to_args, convert_dict_to_snake_dict
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT
+from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT, ERR_COMMAND_TYPE_MISMATCH
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
@@ -39,6 +39,18 @@ class AbstractCommandResolver:
                 return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
 
             return None
+
+        # Ensure command has proper type defined,
+        # i.e. check if command file location matches with defined command type
+        # and prevent it to be resolved with the wrong resolver.
+        if request.function.callback.command_type != self.get_type():
+            self.kernel.io.error(ERR_COMMAND_TYPE_MISMATCH, {
+                'command': request.command,
+                'command_type': request.function.callback.command_type,
+                'resolver_type': self.get_type(),
+            })
+
+            return AbortResponse(self.kernel, reason=ERR_COMMAND_TYPE_MISMATCH)
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
