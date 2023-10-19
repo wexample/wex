@@ -93,7 +93,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
         _migration_4_0_0_replace_docker_placeholders(manager, {
             "APP_ENV": "RUNTIME_ENV",
             "APP_PATH_ROOT": "RUNTIME_PATH_APP",
-            "APP_PATH_WEX": "RUNTIME_PATH_APP_WEX",
+            "APP_PATH_WEX": "RUNTIME_PATH_APP_ENV",
             "APP_NAME": "GLOBAL_NAME",
             "CONTEXT_ENV": "RUNTIME_ENV",
             "DB_CONTAINER": "DOCKER_MAIN_DB_CONTAINER",

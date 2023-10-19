@@ -413,7 +413,7 @@ class AppAddonManager(AddonManager):
             },
             'path': {
                 'app': self.app_dir,
-                'app_wex': os.path.join(self.app_dir, APP_DIR_APP_DATA) + '/',
+                'app_env': os.path.join(self.app_dir, APP_DIR_APP_DATA) + '/',
                 'proxy': self.proxy_path
             },
             'service': {},
