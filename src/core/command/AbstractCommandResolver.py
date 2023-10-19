@@ -355,5 +355,5 @@ class AbstractCommandResolver:
         return False
 
     @classmethod
-    def decorate_command(cls, command, kwargs):
-        pass
+    def decorate_command(cls, function, kwargs):
+        return function

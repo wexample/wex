@@ -14,7 +14,7 @@ def core_call_to_shell_command(kernel, function: callable, args: list | dict = {
     command = ([
                    'bash',
                    kernel.path['core.cli'],
-                   kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_command_from_function(function),
+                   kernel.get_command_resolver(function.callback.command_type).build_command_from_function(function),
                ]
                + args
                + [

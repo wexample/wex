@@ -1,6 +1,6 @@
 import click
 from src.const.resolver import COMMAND_RESOLVERS_CLASSES
-
+from src.const.globals import COMMAND_TYPE_ADDON
 
 # Define your custom decorator
 def command(*args, **kwargs):
@@ -9,7 +9,8 @@ def command(*args, **kwargs):
 
     def decorator(f):
         if callable(f):
-            f.command_type = kwargs.pop('command_type', False)
+            f.command_type = kwargs.pop('command_type', COMMAND_TYPE_ADDON)
+
             if f.command_type:
                 for resolver in COMMAND_RESOLVERS_CLASSES:
                     if resolver.get_type() == f.command_type:
