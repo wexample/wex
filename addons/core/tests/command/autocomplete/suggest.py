@@ -6,7 +6,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_USER, COMMAND_CHAR_SERVICE, COMMAND_CHAR_APP, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app
+from addons.app.helpers.test import create_test_app, DEFAULT_APP_TEST_NAME
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
@@ -272,7 +272,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             os.remove(info['test'])
 
     def tests_suggest_app(self):
-        app_dir = create_test_app(self.kernel)
+        app_dir = create_test_app(self.kernel, DEFAULT_APP_TEST_NAME)
 
         def callback():
             # Search only ".", should return all app commands
