@@ -13,5 +13,3 @@ class TestAppCommandAppStarted(AbstractAppTestCase):
         ).first()
 
         self.assertTrue(result)
-
-        self.stop_test_app()

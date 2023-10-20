@@ -22,5 +22,3 @@ class TestAppCommandServiceUsed(AbstractAppTestCase):
                 }
             )
         )
-
-        self.stop_test_app()

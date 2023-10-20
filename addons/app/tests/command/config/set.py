@@ -36,5 +36,3 @@ class TestAppCommandConfigSet(AbstractAppTestCase):
                 'key': 'global.name'
             }
         ).first(), 'wex')
-
-        self.stop_test_app()

@@ -20,5 +20,3 @@ class TestAppCommandConfigBindFiles(AbstractAppTestCase):
         self.assertTrue(
             isinstance(response.first()['web_php_ini'], str)
         )
-
-        self.stop_test_app()

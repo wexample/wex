@@ -20,5 +20,3 @@ class TestAppCommandServicesExec(AbstractAppTestCase):
             response.first()['php'],
             None
         )
-
-        self.stop_test_app()

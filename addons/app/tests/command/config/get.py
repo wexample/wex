@@ -12,5 +12,3 @@ class TestAppCommandConfigGet(AbstractAppTestCase):
         }).first()
 
         self.assertEqual(value, 'test_app')
-
-        self.stop_test_app()

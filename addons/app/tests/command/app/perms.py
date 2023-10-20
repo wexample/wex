@@ -48,5 +48,3 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
             ),
             ROOT_USERNAME
         )
-
-        self.stop_test_app()

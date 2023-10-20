@@ -17,5 +17,3 @@ class TestAppCommandAppRestart(AbstractAppTestCase):
                 'app-dir': app_dir
             }
         )
-
-        self.stop_test_app()

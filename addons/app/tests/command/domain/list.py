@@ -1,5 +1,6 @@
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.domain.list import app__domain__list
+from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
 
 
 class TestAppCommandDomainList(AbstractAppTestCase):
@@ -14,5 +15,5 @@ class TestAppCommandDomainList(AbstractAppTestCase):
         )
 
         self.assertTrue(
-            'test-app.wex' in response.first()
+            DEFAULT_APP_TEST_NAME + '.wex' in response.first()
         )

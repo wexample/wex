@@ -25,6 +25,3 @@ class TestAppCommandServiceInstall(AbstractAppTestCase):
                         'app-dir': app_dir
                     }
                 )
-
-                # self.start_test_app()
-                # self.stop_test_app()
