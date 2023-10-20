@@ -1,29 +1,44 @@
 import os.path
 import re
 
+from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.helper.string import to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app, create_test_app_dir
+from addons.app.helpers.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 
 
 class AbstractAppTestCase(AbstractTestCase):
-    def create_test_app(self, name: str | None = None, services: list | None = None) -> str:
+    def create_test_app(
+            self,
+            name: str = DEFAULT_APP_TEST_NAME,
+            services: list | None = None,
+            force_restart: bool = False) -> str:
         return create_test_app(
             self.kernel,
             name=name,
             services=services or [],
+            force_restart=force_restart
         )
 
-    def start_test_app(self, name: str | None = None):
+    def start_test_app(
+            self,
+            app_dir: str,
+            force_restart: bool = False):
         response = self.kernel.run_function(
             app__app__start, {
-                'app-dir': create_test_app_dir(self.kernel, name)
+                'app-dir': app_dir
             }
         )
 
-        app_name_snake = to_snake_case(name or "test-app")
+        first = response.first()
+        if isinstance(first, ResponseCollectionStopResponse):
+            if first.reason == 'APP_ALREADY_RUNNING' and not force_restart:
+                return
+
+        name = os.path.basename(app_dir.rstrip(os.sep))
+        app_name_snake = to_snake_case(name)
 
         patterns = [
             f"Container {app_name_snake}_test_.*  Creating",
@@ -41,20 +56,34 @@ class AbstractAppTestCase(AbstractTestCase):
             any(re.search(pattern, shell_response) for pattern in patterns),
         )
 
-    def create_and_start_test_app(self, name: str | None = None, services: list | None = None) -> str:
-        self.stop_test_app()
+    def create_and_start_test_app(
+            self,
+            name: str = DEFAULT_APP_TEST_NAME,
+            services: list | None = None,
+            force_restart: bool = False) -> str:
+
+        name = build_test_app_name(name, services)
 
         app_dir = self.create_test_app(
+            name=name,
             services=services,
+            force_restart=force_restart
         )
 
-        self.start_test_app(name)
+        if force_restart:
+            self.stop_test_app(
+                app_dir,
+            )
+
+        self.start_test_app(
+            app_dir,
+            force_restart=force_restart)
 
         return app_dir
 
-    def stop_test_app(self, app_name: str | None = None):
-        app_dir = create_test_app_dir(self.kernel, app_name)
-
+    def stop_test_app(
+            self,
+            app_dir: str):
         if not os.path.exists(app_dir):
             return
 

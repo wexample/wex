@@ -11,4 +11,4 @@ class TestAppCommandConfigGet(AbstractAppTestCase):
             'app-dir': app_dir
         }).first()
 
-        self.assertEqual(value, 'test_app')
+        self.assertEqual(value, 'test_app_62661704')

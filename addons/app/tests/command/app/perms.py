@@ -2,15 +2,18 @@ import os
 
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.command.app.perms import app__app__perms
+from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import ROOT_USERNAME
 from src.helper.system import get_uid_from_user_name, get_gid_from_group_name
 from src.helper.file import get_file_owner
-from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandAppPerms(AbstractAppTestCase):
     def test_perms(self):
-        app_dir = self.create_test_app()
+        app_dir = self.create_test_app(
+            DEFAULT_APP_TEST_NAME,
+            force_restart=True)
 
         test_file = os.path.join(
             app_dir,
