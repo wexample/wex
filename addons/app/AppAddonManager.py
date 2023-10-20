@@ -296,16 +296,12 @@ class AppAddonManager(AddonManager):
             return
 
         self.app_dirs_stack.pop()
-        app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else None
+        app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else self.kernel.path['call']
         # Previous app dir was an app.
         if app_dir:
             # Reinit app dir if not the same.
             if app_dir != self.app_dir:
                 self.set_app_workdir(app_dir)
-        else:
-            self.unset_app_workdir(
-                app_dir
-            )
 
     def add_proxy_app(self, name, app_dir):
         proxy_apps = self.get_proxy_apps()
@@ -320,19 +316,19 @@ class AppAddonManager(AddonManager):
             )
 
     def set_app_workdir(self, app_dir: str = None):
-        self.kernel.io.log(
-            'Switching to app : ' + app_dir,
-            verbosity=VERBOSITY_LEVEL_MEDIUM
-        )
-
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
         self.runtime_docker_compose_path = os.path.join(app_dir, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML)
-
         self.load_config()
 
-        os.chdir(app_dir)
+        if os.getcwd() != app_dir.rstrip(os.sep):
+            self.kernel.io.log(
+                'Switching to app : ' + app_dir,
+                verbosity=VERBOSITY_LEVEL_MEDIUM
+            )
+
+            os.chdir(app_dir)
 
     def load_config(self):
         self.config = self._load_config(self.config_path)
