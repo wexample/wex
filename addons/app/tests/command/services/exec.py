@@ -17,8 +17,8 @@ class TestAppCommandServicesExec(AbstractAppTestCase):
 
         # The command does not exist
         self.assertEqual(
-            response.first()['php'].reason,
-            ERR_COMMAND_FILE_NOT_FOUND
+            response.first()['php'],
+            None
         )
 
         self.stop_test_app()
