@@ -27,7 +27,8 @@ class AbstractAppTestCase(AbstractTestCase):
 
         patterns = [
             f"Container {app_name_snake}_test_.*  Creating",
-            f"Container {app_name_snake}_test_.*  Started"
+            f"Container {app_name_snake}_test_.*  Running",
+            f"Container {app_name_snake}_test_.*  Started",
         ]
 
         shell_response = response.print()
