@@ -12,7 +12,7 @@ services:
       # Work dir
       - ../../:/opt/wex/
       # Tests
-      - ../../tmp/tests-standalone/wex-proxy:/opt/wex-proxy
+      - ../../tmp/tests-standalone/wex-proxy:/var/www/local/wex-proxy
       - ../../tmp/tests-standalone/my-app:/var/www/local/my-app
       # Docker sharing
       - /var/run/docker.sock:/var/run/docker.sock

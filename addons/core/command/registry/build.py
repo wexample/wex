@@ -3,6 +3,7 @@ import yaml
 
 from yaml import SafeLoader
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
+from addons.app.command.env.get import app__env__get
 from src.helper.registry import resolve_service_inheritance
 from src.decorator.alias import alias
 from src.decorator.command import command
@@ -30,8 +31,15 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
 
     kernel.io.log_indent_up()
 
+    # Call function avoiding core command management.
+    env = app__env__get.callback.__wrapped__(
+        kernel,
+        kernel.path['root']
+    )
+
     registry = {
         'addons': build_registry_addons(addons, kernel, test),
+        'env': env,
         'services': build_registry_services(addons, kernel, test)
     }
 

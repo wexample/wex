@@ -31,28 +31,29 @@ def app__proxy__start(kernel: Kernel,
                       port_secure: str = None
                       ):
     manager: AppAddonManager = kernel.addons['app']
+    proxy_path = manager.get_proxy_path()
 
     def _app__proxy__start__create():
         manager.log('Starting proxy server')
 
         # Created
-        if manager.is_app_root(manager.proxy_path):
+        if manager.is_app_root(proxy_path):
             # Started
             if kernel.run_function(app__app__started, {
-                'app-dir': manager.proxy_path,
+                'app-dir': proxy_path,
             }).first():
                 return ResponseCollectionStopResponse(kernel)
         else:
-            manager.log(f'Creating proxy dir {manager.proxy_path}')
+            manager.log(f'Creating proxy dir {proxy_path}')
             os.makedirs(
-                manager.proxy_path,
+                proxy_path,
                 exist_ok=True
             )
 
             kernel.run_function(
                 app__app__init,
                 {
-                    'app-dir': manager.proxy_path,
+                    'app-dir': proxy_path,
                     'services': ['proxy'],
                     'git': False
                 }
@@ -62,7 +63,7 @@ def app__proxy__start(kernel: Kernel,
         nonlocal user
         current_dir = os.getcwd()
 
-        manager.set_app_workdir(manager.proxy_path)
+        manager.set_app_workdir(proxy_path)
 
         user = user or getpass.getuser()
 
@@ -102,7 +103,7 @@ def app__proxy__start(kernel: Kernel,
         return kernel.run_function(
             app__app__start,
             {
-                'app-dir': manager.proxy_path,
+                'app-dir': proxy_path,
                 # If no env, use the global wex env.
                 'env': env or kernel.run_function(
                     app__env__get,

@@ -58,10 +58,11 @@ def app__app__stop(kernel: Kernel, app_dir: str):
 
     def _app__app__stop__update_hosts(previous):
         manager.log('Unregistering app')
-        if name in manager.proxy_apps:
-            del manager.proxy_apps[name]
+        apps = manager.get_proxy_apps()
+        if name in apps:
+            del apps[name]
 
-        manager.save_proxy_apps()
+        manager.save_proxy_apps(apps)
 
         kernel.run_function(
             app__hosts__update

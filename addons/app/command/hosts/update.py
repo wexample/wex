@@ -16,7 +16,7 @@ def app__hosts__update(kernel: Kernel):
     ).first()
 
     manager: AppAddonManager = AppAddonManager(kernel, 'updating')
-    for app_name, app_dir in manager.proxy_apps.items():
+    for app_name, app_dir in manager.get_proxy_apps().items():
         manager.set_app_workdir(app_dir)
 
         if kernel.run_function(

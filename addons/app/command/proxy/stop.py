@@ -9,12 +9,13 @@ from src.decorator.command import command
 @as_sudo
 def app__proxy__stop(kernel: Kernel):
     manager: AppAddonManager = kernel.addons['app']
-    manager.set_app_workdir(manager.proxy_path)
+    proxy_path = manager.get_proxy_path()
+    manager.set_app_workdir(proxy_path)
 
     # Execute command string to trigger middlewares
     kernel.run_function(
         app__app__stop,
         {
-            'app-dir': manager.proxy_path
+            'app-dir': proxy_path
         }
     )

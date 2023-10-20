@@ -21,4 +21,4 @@ services:
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes
-      - ${RUNTIME_PATH_APP}tmp/wex-proxy:/opt/wex-proxy
+      - ${RUNTIME_PATH_APP}tmp/wex-proxy:/var/www/local/wex-proxy

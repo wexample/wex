@@ -88,9 +88,11 @@ def app__app__start(
 
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(app__service__used, {'service': 'proxy', 'app-dir': app_dir}).first():
+            proxy_path = manager.get_proxy_path()
+
             # The reverse proxy is not running.
-            if not os.path.exists(manager.proxy_path) or not kernel.run_function(app__app__started, {
-                'app-dir': manager.proxy_path,
+            if not os.path.exists(proxy_path) or not kernel.run_function(app__app__started, {
+                'app-dir': proxy_path,
                 'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
             }).first():
                 from addons.app.command.proxy.start import app__proxy__start
@@ -121,8 +123,7 @@ def app__app__start(
 
         # Save app in proxy apps.
         manager.log('Registering app...')
-        manager.proxy_apps[name] = app_dir
-        manager.save_proxy_apps()
+        manager.add_proxy_app(name, app_dir)
 
         return kernel.run_function(
             app__config__write,

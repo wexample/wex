@@ -30,13 +30,15 @@ class AppAddonManager(AddonManager):
         self.runtime_docker_compose_path = None
         self.first_log_indent = None
 
+    def get_proxy_path(self):
         if platform.system() == 'Darwin':
-            self.proxy_path = '/Users/.wex/server/'
+            return '/Users/.wex/proxy/'
         else:
-            self.proxy_path = '/opt/{}/'.format(PROXY_APP_NAME)
+            return f'/var/www/{self.kernel.registry["env"]}/{PROXY_APP_NAME}'
 
-        self.proxy_apps = yaml_load_or_default(
-            self.proxy_path + PROXY_FILE_APPS_REGISTRY,
+    def get_proxy_apps(self):
+        return yaml_load_or_default(
+            self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY,
             {}
         )
 
@@ -305,10 +307,15 @@ class AppAddonManager(AddonManager):
                 app_dir
             )
 
-    def save_proxy_apps(self):
-        with open(self.proxy_path + PROXY_FILE_APPS_REGISTRY, 'w') as f:
+    def add_proxy_app(self, name, app_dir):
+        proxy_apps = self.get_proxy_apps()
+        proxy_apps[name] = app_dir
+        self.save_proxy_apps(proxy_apps)
+
+    def save_proxy_apps(self, proxy_apps):
+        with open(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, 'w') as f:
             yaml.dump(
-                self.proxy_apps, f,
+                proxy_apps, f,
                 indent=True
             )
 
@@ -414,7 +421,7 @@ class AppAddonManager(AddonManager):
             'path': {
                 'app': self.app_dir,
                 'app_env': os.path.join(self.app_dir, APP_DIR_APP_DATA) + '/',
-                'proxy': self.proxy_path
+                'proxy': self.get_proxy_path()
             },
             'service': {},
             'started': False,
