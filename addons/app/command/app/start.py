@@ -80,7 +80,7 @@ def app__app__start(
             'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
         }).first():
             manager.log('App already running')
-            return ResponseCollectionStopResponse(kernel)
+            return ResponseCollectionStopResponse(kernel, reason='APP_ALREADY_RUNNING')
 
     def _app__app__start__proxy(previous):
         if no_proxy:
