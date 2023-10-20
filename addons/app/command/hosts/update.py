@@ -1,3 +1,5 @@
+import os.path
+
 from addons.docker.command.docker.ip import docker__docker__ip
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
@@ -17,19 +19,21 @@ def app__hosts__update(kernel: Kernel):
 
     manager: AppAddonManager = AppAddonManager(kernel, 'updating')
     for app_name, app_dir in manager.get_proxy_apps().items():
-        manager.set_app_workdir(app_dir)
+        # Filter out missing folders
+        if os.path.exists(app_dir):
+            manager.set_app_workdir(app_dir)
 
-        if kernel.run_function(
-                app__app__started,
-                {
-                    'app-dir': app_dir
-                }
-        ).first():
-            kernel.io.log(f'Found app [{app_name}]')
+            if kernel.run_function(
+                    app__app__started,
+                    {
+                        'app-dir': app_dir
+                    }
+            ).first():
+                kernel.io.log(f'Found app [{app_name}]')
 
-            domains = manager.get_runtime_config('domains')
-            for domain in domains:
-                new_block_content.append(f'{ip}\t{domain}')
+                domains = manager.get_runtime_config('domains')
+                for domain in domains:
+                    new_block_content.append(f'{ip}\t{domain}')
 
     new_block_content = '\n'.join(new_block_content)
 
