@@ -352,14 +352,14 @@ class AppAddonManager(AddonManager):
         self.runtime_config = None
         self.runtime_docker_compose = None
 
-        fallback_dir = fallback_dir or self.kernel.path['call']
-        os.chdir(fallback_dir)
+        if fallback_dir:
+            # Print log in normal kernel.
+            self.kernel.io.log(
+                'Unset app dir to : ' + fallback_dir,
+                verbosity=VERBOSITY_LEVEL_MEDIUM
+            )
 
-        # Print log in normal kernel.
-        self.kernel.io.log(
-            'Unset app dir to : ' + fallback_dir,
-            verbosity=VERBOSITY_LEVEL_MEDIUM
-        )
+            os.chdir(fallback_dir)
 
     def exec_in_app_workdir(self, app_dir: str, callback):
         self.kernel.io.log_indent_up()
