@@ -18,8 +18,9 @@ class TestAppCommandLocationFind(AbstractTestCase):
         self.assertEqual(app_location, self.kernel.path['root'])
 
         # Change to root, no app dir should be found.
-        os.chdir('/')
-        app_location = self.kernel.run_function(app__location__find).first()
+        app_location = self.kernel.run_function(
+            app__location__find,
+            {'app-dir': '/var/tmp'}).first()
         self.assertEqual(app_location, None)
 
         # Change from root with argument to a dir inside the app and test again.
