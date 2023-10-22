@@ -7,8 +7,12 @@ from addons.core.command.webhook.exec import core__webhook__exec
 
 class TestCoreCommandWebhookExec(AbstractTestCase):
     def test_exec(self):
-        test_webhook_app_path = '/var/www/local/wex-test-webhook'
-        if not os.path.exists(test_webhook_app_path):
+        test_webhook_app_path = '/var/www/test/wex-test-webhook'
+        if not os.path.islink(test_webhook_app_path):
+            os.makedirs(
+                os.path.dirname(test_webhook_app_path),
+                exist_ok=True
+            )
             os.symlink(
                 self.kernel.path['root'],
                 test_webhook_app_path
@@ -17,7 +21,8 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         success = self.kernel.run_function(
             core__webhook__exec,
             {
-                'url': 'http://localhost:4242/webhook/wex-test-webhook/test'
+                'url': 'http://localhost:4242/webhook/wex-test-webhook/test',
+                'env': 'test'
             }
         ).first()
 
@@ -26,7 +31,8 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         success = self.kernel.run_function(
             core__webhook__exec,
             {
-                'url': 'http://localhost:4242/webhook/wex-test-webhook/test?lorem=ipsum'
+                'url': 'http://localhost:4242/webhook/wex-test-webhook/test?lorem=ipsum',
+                'env': 'test'
             }
         ).first()
 
@@ -35,7 +41,8 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         success = self.kernel.run_function(
             core__webhook__exec,
             {
-                'url': 'http://localhost:4242/webhook/wex-test-webhook/test-wrapped?p=155&v=wex_5.0.0-beta.6+build.20230321054915'
+                'url': 'http://localhost:4242/webhook/wex-test-webhook/test-wrapped?p=155&v=wex_5.0.0-beta.6+build.20230321054915',
+                'env': 'test'
             }
         ).first()
 

@@ -19,7 +19,7 @@ from src.core.response.ResponseCollectionStopResponse import ResponseCollectionS
 @command(help="Create and start the reverse proxy server")
 @as_sudo
 @option('--user', '-u', type=str, required=False, help="Owner of application files")
-@option('--env', '-e', type=str, required=False, help="Port for accessing apps")
+@option('--env', '-e', type=str, required=False, help="Env for accessing apps")
 @option('--group', '-g', type=str, required=False, help="Group of application files")
 @option('--port', '-p', type=int, required=False, help="Port for web server")
 @option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")

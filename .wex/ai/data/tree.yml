@@ -132,7 +132,7 @@ children:
         type: dir
       webhook:
         children:
-          test-wraped.sh:
+          test-wrapped.sh:
             type: file
           test.sh:
             type: file
@@ -174,7 +174,7 @@ children:
         type: dir
       webhook:
         children:
-          test-wraped.sh:
+          test-wrapped.sh:
             type: file
           test.sh:
             type: file
@@ -1814,7 +1814,7 @@ children:
                     type: dir
                 type: dir
             type: dir
-          test-wraped.sh:
+          test-wrapped.sh:
             type: file
         type: dir
       samples:
