@@ -34,9 +34,7 @@ test:
     # Add the user to the sudoers file to allow password-less sudo
     - echo "owner ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
     # Switch to the new "owner" user
-    - sudo su - owner
-    # Test
-    - wex test
+    - sudo -u owner wex test
     # Uninstall
     - sudo bash ./cli/uninstall
 
