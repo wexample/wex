@@ -16,6 +16,7 @@ test:
   only:
     - tags
   script:
+    - echo $PATH # Debug
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
