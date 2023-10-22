@@ -34,7 +34,7 @@ class AppAddonManager(AddonManager):
         if platform.system() == 'Darwin':
             return '/Users/.wex/proxy/'
         else:
-            return f'/var/www/{self.kernel.registry["env"]}/{PROXY_APP_NAME}'
+            return f'/var/www/{self.kernel.registry["env"]}/{PROXY_APP_NAME}/'
 
     def get_proxy_apps(self):
         return yaml_load_or_default(
