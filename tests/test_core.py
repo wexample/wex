@@ -33,7 +33,7 @@ def create_fake_click_function():
 class TestCore(AbstractTestCase):
     def test_init(self):
         user = get_user_or_sudo_user()
-        message = f'Tests should be ran with sudo from a user called "owner"'
+        message = f'Tests should be ran with sudo from non sudo user'
 
         self.assertNotEqual(
             user,

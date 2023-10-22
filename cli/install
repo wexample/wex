@@ -40,8 +40,8 @@ python3 -m venv "$VENV_PATH"
 # shellcheck disable=SC1090
 source "${VENV_PATH}/bin/activate"
 
-echo "Installing python requirements..."
-pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
+echo "Installing Python requirements..."
+pip install -r "${WEX_DIR_ROOT}requirements.txt"
 
 echo "Installing core..."
 bash "${WEX_DIR_CLI}wex" core::core/install

@@ -57,7 +57,7 @@ class AbstractCommandResolver:
             # Mask printed logs as it may not be relevant.
             self.kernel.io.log_hide()
             # Uses the original argv argument to ignore any changes on it.
-            os.execvp('sudo', ['sudo'] + sys.argv)
+            os.execvp('sudo', ['sudo', sys.executable] + sys.argv)
 
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
