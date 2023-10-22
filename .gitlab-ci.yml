@@ -33,8 +33,8 @@ test:
     - sudo useradd -m owner
     # Add the user to the sudoers file to allow password-less sudo
     - echo "owner ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
-    # Switch to the new "owner" user
-    - sudo -u owner wex test
+    # Run wex test as owner with sudo
+    - sudo su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
 
