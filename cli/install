@@ -17,7 +17,7 @@ if ! command -v pip >/dev/null 2>&1; then
 fi
 
 echo "Installing python requirements..."
-sudo pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
+pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
 echo "Installing core..."
 sudo bash "${WEX_DIR_CLI}wex" core::core/install
