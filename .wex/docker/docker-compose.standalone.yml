@@ -1,3 +1,6 @@
+ # Use this file to run and test application
+ # using a standard docker composer command :
+ # docker compose -f .wex/docker/docker-compose.standalone.yml up -d
 services:
   wex_dev:
     container_name: wex_standalone
@@ -11,9 +14,5 @@ services:
     volumes:
       # Work dir
       - ../../:/opt/wex/
-      # Tests
-      - ../../tmp/tests-standalone/wex-proxy:/var/www/local/wex-proxy
-      - ../../tmp/tests-standalone/my-app:/var/www/local/my-app
       # Docker sharing
       - /var/run/docker.sock:/var/run/docker.sock
-
