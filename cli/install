@@ -13,14 +13,18 @@ echo "Checking python requirements..."
 if ! command -v pip >/dev/null 2>&1; then
     echo "Installing pip..."
     sudo apt-get update
-    sudo apt-get -y install python3-pip
+    sudo apt-get -y install procps python3-pip python3-venv
 fi
+
+# Create and activate virtual env.
+python3 -m venv ${WEX_DIR_ROOT}.wex/python/venv
+source ${WEX_DIR_ROOT}.wex/python/venv/bin/activate
 
 echo "Installing python requirements..."
 pip install "${WEX_DIR_ROOT}" -r "${WEX_DIR_ROOT}requirements.txt"
 
 echo "Installing core..."
-sudo bash "${WEX_DIR_CLI}wex" core::core/install
+bash "${WEX_DIR_CLI}wex" core::core/install
 
 echo "Reload bashrc changes..."
 # shellcheck disable=SC1090

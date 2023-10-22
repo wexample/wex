@@ -14,11 +14,8 @@ test:
     - set -e
     # We install manually as apt package does not exist at this point
     - apt update
-    - apt install procps python3-pip python3-venv sudo -y
-    # Create a virtual environment
-    - python3 -m venv wex-env
-    # Activate the virtual environment
-    - source wex-env/bin/activate  # On some systems you might need to use 'source myenv/bin/activate'
+    # Install minimum packages to launch install script
+    - apt install sudo -y
     # Install
     - sudo bash ./cli/install
     # Fake local app
