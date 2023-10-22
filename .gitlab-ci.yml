@@ -6,10 +6,12 @@ stages:
 
 test:
   stage: test
-  image: docker:24.0.6
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
   services:
-    - docker:24.0.6-dind
+    - name: docker:24.0.6-dind
+      alias: docker
   variables:
+    DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   only:
     - tags
