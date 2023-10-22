@@ -22,10 +22,10 @@ test:
     # Install
     - sudo bash ./cli/install
     # Fake local app
-    - mkdir -p /var/www/dev
-    - ln -s $(realpath .) "/var/www/dev/wex"
+    - mkdir -p /var/www/test
+    - ln -s $(realpath .) "/var/www/test/wex"
     # Create env file
-    - echo "APP_ENV=dev" > ".wex/.env"
+    - echo "APP_ENV=test" > ".wex/.env"
     # Test
     - sudo bash ./cli/wex test
     # Uninstall
