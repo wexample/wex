@@ -53,4 +53,4 @@ def default__version__increment(
     elif int(version_dict['minor']) < 0:
         version_dict['minor'] = '0'
 
-    return version_join(version_dict)
+    return version_join(version_dict, build)
