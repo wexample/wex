@@ -6,17 +6,19 @@ stages:
 
 test:
   stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
   services:
-    - name: docker:24.0.6-dind
-      alias: docker
+    - name: docker:dind
+  before_script:
+    - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
   only:
     - tags
   script:
-    - echo $PATH # Debug
+    # Check docker exists
+    - docker --version
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
