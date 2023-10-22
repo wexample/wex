@@ -3,9 +3,11 @@ from src.helper.core import core_kernel_get_version
 from src.const.globals import COLOR_RED, COLOR_RESET, COLOR_LIGHT_GRAY
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.alias import alias
 
 
 @command(help="Show maintainers logo")
+@alias('logo')
 def core__logo__show(kernel: Kernel) -> str:
     width = 54
     padding = 2
@@ -28,9 +30,9 @@ def core__logo__show(kernel: Kernel) -> str:
         + "`&&&&&&&&&&&&&&`\n"
         + "`°&&&&°`\n"
         + f"{COLOR_RESET}\n"
-        + ".-..-..-. .--. .-.,-. \n"
-        + ": `; `; :' '_.'`.  .'\n"
-        + "`.__.__.'`.__.':_,._;\n"
+        + ".-..-..--. .--. .-.,-.\n"
+        + ": `; `;  :' '_.'`.  .'\n"
+        + "`.__.__._'`.__.':_,._;\n"
         + "★ www.wexample.com ★\n"
         + f"{version_string}\n\n",
         width
