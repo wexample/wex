@@ -6,9 +6,15 @@ stages:
 
 test:
   stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+  image: docker:24.0.6
+  services:
+    - docker:24.0.6-dind
+  variables:
+    DOCKER_DRIVER: overlay2
   only:
     - tags
+  before_script:
+    - docker info # Output information for debugging
   script:
     # Stops script on failure
     - set -e
