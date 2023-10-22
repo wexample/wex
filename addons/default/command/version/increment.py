@@ -12,10 +12,16 @@ from src.decorator.option import option
 @command(help="Increment giver version number string")
 @option('--version', '-v', type=str, required=True,
         help="Base version to increment")
+@option('--type', '-t', type=str, required=False,
+        help="Type of update")
+@option('--increment', '-i', required=False, type=int, default=1,
+        help="Type of update")
+@option('--build', '-b', is_flag=True, required=False, default=False,
+        help="Include build number")
 def default__version__increment(
         kernel: Kernel,
         version: str,
-        upgrade_type: str = UPGRADE_TYPE_MINOR,
+        type: str = UPGRADE_TYPE_MINOR,
         increment: int = 1,
         build: bool = False
 ) -> str:
@@ -25,14 +31,14 @@ def default__version__increment(
     ).first()
 
     # Increment according to type
-    if upgrade_type == UPGRADE_TYPE_MAJOR:
+    if type == UPGRADE_TYPE_MAJOR:
         version_dict['major'] = str(int(version_dict['major']) + increment)
         version_dict['intermediate'], version_dict['minor'] = '0', '0'
-    elif upgrade_type == UPGRADE_TYPE_INTERMEDIATE:
+    elif type == UPGRADE_TYPE_INTERMEDIATE:
         version_dict['intermediate'] = str(int(version_dict['intermediate']) + increment)
         version_dict['minor'] = '0'
     # Any of pre-build version
-    elif upgrade_type in [
+    elif type in [
         UPGRADE_TYPE_ALPHA,
         UPGRADE_TYPE_BETA,
         UPGRADE_TYPE_DEV,
