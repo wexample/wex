@@ -42,8 +42,8 @@ class AppAddonManager(AddonManager):
             {}
         )
 
-    @staticmethod
-    def is_app_root(app_dir: str) -> bool:
+    @classmethod
+    def is_env_root(cls, app_dir: str) -> bool:
         if not os.path.exists(app_dir):
             return False
 
@@ -52,8 +52,19 @@ class AppAddonManager(AddonManager):
             os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         )
 
-    @staticmethod
-    def _load_config(path, default: dict = {}):
+    @classmethod
+    def is_app_root(cls, app_dir: str) -> bool:
+        if cls.is_env_root(app_dir):
+            config = cls._load_config(
+                os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
+            )
+
+            return ('global' in config
+                    and 'type' in config['global']
+                    and config['global']['type'] == 'app')
+
+    @classmethod
+    def _load_config(cls, path, default: dict = {}):
         try:
             with open(path, 'r') as file:
                 return yaml.safe_load(file)
@@ -73,6 +84,7 @@ class AppAddonManager(AddonManager):
                 'created': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 'name': app_name,
                 'services': [],
+                'type': 'app'
             },
             'docker': {
                 'compose': {

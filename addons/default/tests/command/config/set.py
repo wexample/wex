@@ -20,7 +20,6 @@ class TestDefaultCommandConfigSet(AbstractTestCase):
             'file': file,
             'key': 'DOLOR',
             'value': 'Test value',
-            'verbose': True
         })
 
         self.assertEqual(self.kernel.run_function(
@@ -36,7 +35,6 @@ class TestDefaultCommandConfigSet(AbstractTestCase):
             'file': file,
             'key': 'DOLOR',
             'value': original_value,
-            'verbose': True
         })
 
         self.assertEqual(self.kernel.run_function(

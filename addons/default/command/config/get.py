@@ -1,16 +1,17 @@
-import click
 import os
 import re
 
 from src.const.globals import CONFIG_SEPARATOR_DEFAULT
+from src.decorator.command import command
+from src.decorator.option import option
 
 
-@click.command
-@click.option('--file', '-f', type=str, required=True)
-@click.option('--key', '-k', type=str, required=True)
-@click.option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-@click.option('--default', '-d', default='')
-def default__config__get(file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default='') -> str:
+@command(help="Get config value to given file")
+@option('--file', '-f', type=str, required=True)
+@option('--key', '-k', type=str, required=True)
+@option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
+@option('--default', '-d', default='')
+def default__config__get(kernel, file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default='') -> str:
     if not file or not os.path.isfile(file):
         return ''
 
