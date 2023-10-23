@@ -28,6 +28,7 @@ test:
     - tags
   script:
     # Check docker exists
+    - sudo su - owner -c "echo \"Setting Docker to $DOCKER_HOST\""
     - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST"
     - sudo su - owner -c "docker --version"
     - sudo su - owner -c "python -c \"import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))\""
