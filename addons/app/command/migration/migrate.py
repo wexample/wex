@@ -66,9 +66,12 @@ def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_versi
         )
 
     kernel.io.log(f'Current version defined as {app_version_string}')
+    print(manager.config)
 
     for migration_file in get_migrations_files(kernel):
         migration_version_string = extract_version_from_file_name(migration_file)
+        print(migration_file)
+        print(migration_version_string)
 
         migration_version = kernel.run_function(
             default__version__parse,

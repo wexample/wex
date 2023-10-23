@@ -28,12 +28,12 @@ class TestAppCommandMigrationMigrate(AbstractTestCase):
             print(test_app_dir)
             print(os.path.exists(test_app_dir))
 
-            # self.kernel.run_function(
-            #     app__migration__migrate, {
-            #         'app-dir': test_app_dir,
-            #         'yes': True
-            #     }
-            # )
+            self.kernel.run_function(
+                app__migration__migrate, {
+                    'app-dir': test_app_dir,
+                    'yes': True
+                }
+            )
 
             manager = AppAddonManager(self.kernel, 'app-migration')
             manager.set_app_workdir(test_app_dir)
