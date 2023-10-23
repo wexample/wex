@@ -6,8 +6,8 @@ WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
 WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 
 # Source .env file if it exists
-if [ -f "${WEX_ROOT}/.wex/.env" ]; then
-    . "${WEX_ROOT}/.wex/.env"
+if [ -f "${WEX_ROOT}/.env" ]; then
+    . "${WEX_ROOT}/.env"
 fi
 
 . "${WEX_DIR_CLI}/_init.sh"
@@ -28,9 +28,6 @@ trap cleanup EXIT INT TERM
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
 if [ -z "${DOCKER_HOST}" ]; then
-    echo ${DOCKER_HOST}!!!
-    exit
-
     export DOCKER_HOST=${DOCKER_HOST}
 fi
 
