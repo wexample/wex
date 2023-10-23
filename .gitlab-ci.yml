@@ -41,6 +41,8 @@ test:
     - apt install sudo -y
     # Create env file
     - echo "APP_ENV=test" > ".wex/.env"
+    # Give everyone permission on docker to let owner run docker command via Python
+    - sudo chmod 666 /var/run/docker.sock
     # Install
     - sudo bash ./cli/install
     - sudo su - owner -c "sudo mkdir -p /var/www/test-app && cd /var/www/test-app && sudo wex app::app/init -s php && sudo wex app::app/start --fast-mode"
