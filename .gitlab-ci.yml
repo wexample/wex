@@ -33,6 +33,7 @@ test:
     - python -c "import subprocess; process = subprocess.Popen(['docker', 'info'], stdout=subprocess.PIPE); print(process.communicate()[0].decode())"
     - python -c "import subprocess, os; process = subprocess.Popen(['docker', 'info'], stdout=subprocess.PIPE, env=dict(os.environ, DOCKER_HOST='tcp://0.0.0.0:2375')); print(process.communicate()[0].decode())"
     - python -c "import subprocess, os; subprocess.run(['docker', 'info'], env=dict(os.environ, DOCKER_HOST='tcp://0.0.0.0:2375'))"
+    - cd /var/www && mkdir test-app && cd test-app && wex app::app/init -s php && wex app::app/start
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
