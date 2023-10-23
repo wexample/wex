@@ -15,20 +15,9 @@ test:
     - dockerd &> docker.log &
     - sleep 30  # Give it some time to start
     - cat docker.log
-#    # Wait until Docker service starts or timeout expires
-#    - timeout=30
-#    - |
-#      while [ $timeout -gt 0 ] && ! docker info; do
-#        echo 'Waiting for Docker service to start'
-#        sleep 1
-#        timeout=$((timeout - 1))
-#      done
-#    # Check if Docker service started on time
-#    - |
-#      if [ $timeout -eq 0 ]; then
-#        echo "Docker service did not start on time"
-#        exit 1
-#      fi
+    - service docker start
+    # Added a timeout to ensure that the loop does not run indefinitely
+    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: vfs
