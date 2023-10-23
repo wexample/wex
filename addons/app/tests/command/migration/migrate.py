@@ -2,8 +2,6 @@ import os
 from typing import List
 
 from addons.app.command.migration.migrate import app__migration__migrate
-from src.helper.core import core_kernel_get_version
-from src.const.globals import CORE_COMMAND_NAME
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.AppAddonManager import AppAddonManager
 
