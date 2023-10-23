@@ -13,6 +13,6 @@ services:
     tty: true
     volumes:
       # Work dir
-      - ../../:/opt/wex/
+      - ../../:/opt/wex
       # Docker sharing
       - /var/run/docker.sock:/var/run/docker.sock

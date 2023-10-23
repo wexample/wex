@@ -39,17 +39,17 @@ test:
     - apt update
     # Install minimum packages to launch install script
     - apt install sudo -y
+    # Create env file
+    - echo "APP_ENV=test" > ".wex/.env"
     # Install
     - sudo bash ./cli/install
     - mkdir -p /var/www/test-app && cd /var/www/test-app && wex app::app/init -s php && wex app::app/start
     - wex app::app/started
-    - cd /var/www/local/wex-proxy/
+    - cd /var/www/test/wex-proxy/
     - wex app::app/started
     # Fake local app
     - mkdir -p /var/www/test
     - ln -s $(realpath .) "/var/www/test/wex"
-    # Create env file
-    - echo "APP_ENV=test" > ".wex/.env"
     # Add the user to the sudoers file to allow password-less sudo
     - echo "owner ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
     # Run wex test as owner with sudo
