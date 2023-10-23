@@ -25,7 +25,6 @@ def core__core__install(kernel: Kernel):
     __core__core__install_autocomplete(kernel)
     __core__core__install_symlink(kernel, CORE_BIN_FILE_ROOT)
     __core__core__install_symlink(kernel, CORE_BIN_FILE_LOCAL)
-    __core__core__install_perms(kernel)
     __core__core__install_webhook_server(kernel)
     return kernel.run_function(core__logo__show)
 
@@ -92,17 +91,6 @@ def __core__core__install_symlink(kernel, destination: str):
     os.chmod(destination, 0o755)
 
     kernel.io.log(f'Created symlink in {destination}')
-
-
-def __core__core__install_perms(kernel):
-    kernel.io.log(f'Set current user permissions ...')
-
-    kernel.run_function(
-        system__own__this,
-        {
-            'path': kernel.path['root'],
-        }
-    )
 
 
 def __core__core__install_webhook_server(kernel):
