@@ -15,6 +15,7 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 ### Debian APT Package
 
     # Install dependencies
+    sudo apt update
     sudo apt install gnupg2 wget -y
     
     # Add GPG key
