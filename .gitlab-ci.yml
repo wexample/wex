@@ -40,10 +40,6 @@ test:
     - ln -s $(realpath .) "/var/www/test/wex"
     # Create env file
     - echo "APP_ENV=test" > ".wex/.env"
-    # Create a new user named "owner"
-    - sudo useradd -m owner
-    # Add the user to the sudoers file to allow password-less sudo
-    - echo "owner ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
     # Run wex test as owner with sudo
     - sudo su - owner -c "sudo wex test"
     # Uninstall
