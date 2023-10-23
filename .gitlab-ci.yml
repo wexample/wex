@@ -43,7 +43,7 @@ test:
     - echo "APP_ENV=test" > ".wex/.env"
     # Install
     - sudo bash ./cli/install
-    - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo mkdir -p /var/www/test-app && cd /var/www/test-app && sudo wex app::app/init -s php && sudo wex app::app/start --fast-mode"
+    - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo mkdir -p /var/www/test-app && cd /var/www/test-app && sudo wex app::app/init -s php && sudo wex app::app/start"
     - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo wex app::app/started"
     - sudo su - owner -c "cd /var/www/test/wex-proxy/"
     - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo wex app::app/started"
