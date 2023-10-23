@@ -29,23 +29,23 @@ test:
   script:
     # Stops script on failure
     - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - echo "APP_ENV=test" > ".wex/.env"
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    # Install
-#    - sudo bash ./cli/install # Ca marche
-#    - echo $(pwd) # /builds/wexample/wex
-##    - chown -R owner:owner . # Ok
-#    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
-#    - sudo su - owner -c "ls -la"
-#    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
-#    # Run wex test as owner with sudo
-#    - sudo su - owner -c "sudo wex test -c app::migration/migrate"
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - echo "APP_ENV=test" > ".wex/.env"
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    # Install
+    - sudo bash ./cli/install # Ca marche
+    - echo $(pwd) # /builds/wexample/wex
+#    - chown -R owner:owner . # Ok
+    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
+    - sudo su - owner -c "ls -la"
+    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
+    # Run wex test as owner with sudo
+    - sudo su - owner -c "sudo wex test -c app::migration/migrate"
 # TODO TMP
     - exit 1;
 #    - sudo -E su - owner -c "sudo wex test"
