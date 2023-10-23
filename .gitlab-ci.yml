@@ -11,6 +11,10 @@ test:
     # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
   before_script:
+    # Start Docker daemon manually and display logs
+    - dockerd &> docker.log &
+    - sleep 5  # Give it some time to start
+    - cat docker.log
     # Wait until Docker service starts or timeout expires
     - timeout=30
     - |
