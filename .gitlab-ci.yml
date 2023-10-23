@@ -43,6 +43,8 @@ test:
     - sudo bash ./cli/install
     - mkdir -p /var/www/test-app && cd /var/www/test-app && wex app::app/init -s php && wex app::app/start
     - wex app::app/started
+    - cd /var/www/local/wex-proxy/
+    - wex app::app/started
     # Fake local app
     - mkdir -p /var/www/test
     - ln -s $(realpath .) "/var/www/test/wex"
