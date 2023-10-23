@@ -81,7 +81,7 @@ deploy:
     - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 # Try to install using the new debian apt repository.
-test_apt_install:
+test_apt_install_debian:
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
   only:
@@ -93,6 +93,26 @@ test_apt_install:
     - set -e
     - apt update
     - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt update
+    - apt install wex -y
+    - wex hi
+    - apt remove wex -y
+
+# Try to install using the new debian apt repository.
+test_apt_install_ubuntu:
+  stage: test_apt_install
+  image: ubuntu:22.04
+  only:
+    - tags
+  needs:
+    - deploy
+  script:
+    # Stops script on failure
+    - set -e
+    - apt update
+    - apt install git gnupg2 sudo wget -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
     - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
     - apt update
