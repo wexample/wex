@@ -1,59 +1,59 @@
 stages:
-#  - test
+  - test
   - build
   - deploy
   - test_apt_install
 
-#test:
-#  stage: test
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-#  services:
-#    # Match the version number with image internal docker service.
-#    - name: docker:24.0.6-dind
-#  before_script:
-#    # Start Docker daemon manually and display logs
-#    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
-#    - sleep 30  # Give it some time to start
-#    - cat docker.log
-#    - apt-get update && apt-get install -y net-tools
-#    - netstat -tuln | grep 2375
-#    # Allow all users to access 2375
-#    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
-#      # Added a timeout to ensure that the loop does not run indefinitely
-#    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
-#  variables:
-#    DOCKER_HOST: tcp://0.0.0.0:2375
-#    DOCKER_DRIVER: vfs
-#  only:
-#    - tags
-#  script:
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - echo "APP_ENV=test" > ".wex/.env"
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    - cat ".env"
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Run wex test as owner with sudo
-#    - sudo su - owner -c "sudo wex test"
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
+test:
+  stage: test
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  services:
+    # Match the version number with image internal docker service.
+    - name: docker:24.0.6-dind
+  before_script:
+    # Start Docker daemon manually and display logs
+    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
+    - sleep 30  # Give it some time to start
+    - cat docker.log
+    - apt-get update && apt-get install -y net-tools
+    - netstat -tuln | grep 2375
+    # Allow all users to access 2375
+    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
+      # Added a timeout to ensure that the loop does not run indefinitely
+    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
+  variables:
+    DOCKER_HOST: tcp://0.0.0.0:2375
+    DOCKER_DRIVER: vfs
+  only:
+    - tags
+  script:
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - echo "APP_ENV=test" > ".wex/.env"
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    - cat ".env"
+    # Install
+    - INSTALL_PATH=$(pwd)
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+    # Run wex test as owner with sudo
+    - sudo su - owner -c "sudo wex test"
+    # Uninstall
+    - sudo bash ./cli/uninstall
 
 build:
   stage: build
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-#  only:
-#    - tags
-#  needs:
-#    - test
+  only:
+    - tags
+  needs:
+    - test
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Create build folder
@@ -71,8 +71,8 @@ build:
 
 deploy:
   stage: deploy
-#  only:
-#    - tags
+  only:
+    - tags
   needs:
     - build
   script:
@@ -84,8 +84,8 @@ deploy:
 test_apt_install:
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#  only:
-#    - tags
+  only:
+    - tags
   needs:
     - deploy
   script:
