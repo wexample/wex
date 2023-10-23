@@ -27,11 +27,6 @@ trap cleanup EXIT INT TERM
 
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
-# Export DOCKER_HOST only if it is set
-if [ -n "$DOCKER_HOST" ]; then
-    export DOCKER_HOST
-fi
-
 # Load main python script
 ${WEX_ROOT}.wex/python/venv/bin/python "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
 
