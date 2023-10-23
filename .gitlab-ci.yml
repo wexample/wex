@@ -38,10 +38,12 @@ test:
     # Define app local env with docker config
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     # Install
+    - sudo bash ./cli/install # Ca marche
+    - echo $(pwd) # /builds/wexample/wex
+    - chown -R owner:owner . # Ok
+    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
     - sudo su - owner -c "ls -la"
-    - echo $(pwd)
-    - chown -R owner:owner .
-    - sudo su - owner -c "sudo bash ./cli/install"
+    - sudo su - owner -c "sudo bash ./cli/install" # bash: ./cli/install: No such file or directory
     # Run wex test as owner with sudo
     - sudo su - owner -c "sudo wex test -c app::migration/migrate"
 # TODO TMP
