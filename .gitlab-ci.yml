@@ -52,8 +52,8 @@ build:
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
 #  only:
 #    - tags
-  needs:
-    - test
+#  needs:
+#    - test
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Create build folder
