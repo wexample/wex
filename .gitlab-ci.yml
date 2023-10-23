@@ -37,8 +37,9 @@ test:
     - echo "APP_ENV=test" > ".wex/.env"
     # Define app local env with docker config
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    - chown -R owner:owner /builds/wexample/wex/tests/
+    - chown -R owner:owner /builds/wexample/wex/tmp/
     # Install
-#    - sudo bash ./cli/install # Ca marche
     - INSTALL_PATH=$(pwd)
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     # Run wex test as owner with sudo
