@@ -28,8 +28,8 @@ test:
     - tags
   script:
     # Check docker exists
-    - docker --version
-    - python -c "import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))"
+    - sudo su - owner -c "docker --version"
+    - sudo su - owner -c "python -c \"import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))\""
     - python -c "import subprocess; subprocess.run(['docker', 'info'])"
     - python -c "import subprocess; subprocess.run('docker info', shell=True)"
     - python -c "import subprocess; process = subprocess.Popen(['docker', 'info'], stdout=subprocess.PIPE); print(process.communicate()[0].decode())"
