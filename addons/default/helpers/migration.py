@@ -24,7 +24,6 @@ def get_migrations_files(kernel: Kernel):
     return sorted_py_files
 
 
-
 def migration_get_function(kernel: Kernel, version: str, method_part: str):
     version_snake = version.replace(".", "_")
     path_migrations = get_migrations_path(kernel)
