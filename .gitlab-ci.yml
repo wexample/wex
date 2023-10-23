@@ -8,7 +8,8 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
   services:
-    - name: docker:dind
+    # Match the version number with image internal docker service.
+    - name: docker:24.0.6-dind
   before_script:
     # Wait until Docker service starts or timeout expires
     - timeout=30
