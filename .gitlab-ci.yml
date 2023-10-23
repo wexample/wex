@@ -40,7 +40,7 @@ test:
     # Install
 #    - sudo bash ./cli/install # Ca marche
     - INSTALL_PATH=$(pwd)
-    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install" # bash: ./cli/install: No such file or directory
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     # Run wex test as owner with sudo
     - sudo su - owner -c "sudo wex test -c app::migration/migrate"
 # TODO TMP
