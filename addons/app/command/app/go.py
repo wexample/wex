@@ -11,7 +11,6 @@ from addons.app.decorator.app_command import app_command
 @option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
 @option('--user', '-u', type=str, required=False, help="User name or uid")
 def app__app__go(kernel: Kernel, app_dir: str, container_name: str | None = None, user: str | None = None):
-
     shell_command = get_dict_item_by_path(
         kernel.registry,
         f'services.{container_name}.config.container.shell',
@@ -26,5 +25,6 @@ def app__app__go(kernel: Kernel, app_dir: str, container_name: str | None = None
             # Ask to execute bash
             'command': shell_command,
             'user': user,
+            'interactive': True
         }
     )

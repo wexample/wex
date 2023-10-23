@@ -29,6 +29,7 @@ def app__db__go(
         {
             'app-dir': app_dir,
             'container-name': service,
-            'command': go_command
+            'command': go_command,
+            'interactive': True
         }
     )

@@ -17,13 +17,15 @@ from addons.app.decorator.app_command import app_command
 @option('--command', '-c', type=str, required=True, help="Command to execute")
 @option('--user', '-u', type=str, required=False, help="User name or uid")
 @option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
+@option('--interactive', '-tty', type=bool, is_flag=True, required=False, help="Interactive shell")
 def app__app__exec(
         kernel: Kernel,
         app_dir: str,
         command: str,
         container_name: str | None = None,
         user: str | None = None,
-        sync: bool = False):
+        sync: bool = False,
+        interactive: bool = False):
     manager: AppAddonManager = kernel.addons['app']
     container_name = container_name or manager.get_config(f'docker.main_container', None)
 
@@ -34,8 +36,12 @@ def app__app__exec(
     docker_command = [
         'docker',
         'exec',
-        '-ti',
     ]
+
+    if interactive:
+        docker_command += [
+            '-ti',
+        ]
 
     if user:
         docker_command += [
