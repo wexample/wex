@@ -22,7 +22,7 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.0-beta.55+build.20231023075619
+  version: 5.0.0-beta.56+build.20231023075823
   wex_version: 5.0.0-beta.41+build.20230822134237
 wex:
-  version: 5.0.0-beta.55+build.20231023075619
+  version: 5.0.0-beta.56+build.20231023075823
