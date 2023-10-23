@@ -6,7 +6,7 @@ stages:
 
 test:
   stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:dev
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
   services:
     # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
