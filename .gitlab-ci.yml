@@ -94,7 +94,7 @@ test_apt_install_debian:
     - apt update
     - apt install gnupg2 wget -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
     - apt update
     - apt install wex -y
     - wex hi
@@ -114,7 +114,7 @@ test_apt_install_ubuntu:
     - apt update
     - apt install git gnupg2 sudo wget -y
     - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ beta main" | tee /etc/apt/sources.list.d/wexample.list
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
     - apt update
     - apt install wex -y
     - wex hi

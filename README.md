@@ -22,7 +22,7 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
     sudo wget -O - https://apt.wexample.com/gpg | sudo apt-key add -
     
     # Add repo
-    echo "deb http://apt.wexample.com/ beta main" | sudo tee /etc/apt/sources.list.d/wexample.list
+    echo "deb http://apt.wexample.com/ stable main" | sudo tee /etc/apt/sources.list.d/wexample.list
     sudo apt-get update
     
     # Install
