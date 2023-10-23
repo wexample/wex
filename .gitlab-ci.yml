@@ -41,9 +41,11 @@ test:
     - sudo bash ./cli/install
     # Run wex test as owner with sudo
     - sudo -E su - owner -c "sudo wex test -c app::migration/migrate"
-    - sudo -E su - owner -c "sudo wex test"
-    # Uninstall
-    - sudo bash ./cli/uninstall
+# TODO TMP
+    - exit 1;
+#    - sudo -E su - owner -c "sudo wex test"
+#    # Uninstall
+#    - sudo bash ./cli/uninstall
 
 build:
   stage: build
