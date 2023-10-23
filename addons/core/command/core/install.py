@@ -13,7 +13,7 @@ from src.const.globals import CORE_BIN_FILE_ROOT, PYTHON_MIN_VERSION, CORE_BIN_F
 from src.decorator.as_sudo import as_sudo
 from src.core.Kernel import Kernel
 from src.decorator.command import command
-from system.command.own.this import system__own__this
+from addons.system.command.own.this import system__own__this
 
 
 @command(help="Install core")
