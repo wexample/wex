@@ -38,9 +38,9 @@ test:
     # Define app local env with docker config
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     - cat ".env"
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    # Install
+    - INSTALL_PATH=$(pwd)
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
 #    # Run wex test as owner with sudo
 #    - sudo su - owner -c "sudo wex test"
     # Uninstall
