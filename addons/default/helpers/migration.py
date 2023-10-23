@@ -14,10 +14,15 @@ def get_migrations_path(kernel: Kernel) -> str:
 def get_migrations_files(kernel: Kernel):
     migrations_path = get_migrations_path(kernel)
 
+    # List .py files in the migrations path
     py_files = [f for f in os.listdir(migrations_path)
                 if os.path.isfile(os.path.join(migrations_path, f)) and f.endswith('.py')]
 
-    return reversed(py_files)
+    # Sort the list of files based on the version numbers
+    sorted_py_files = sorted(py_files, key=lambda f: tuple(map(int, re.findall(r'\d+', f))))
+
+    return sorted_py_files
+
 
 
 def migration_get_function(kernel: Kernel, version: str, method_part: str):
