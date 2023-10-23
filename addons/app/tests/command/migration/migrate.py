@@ -22,6 +22,9 @@ class TestAppCommandMigrationMigrate(AbstractTestCase):
         for test_app_dir in test_apps:
             # TODO TMP
             self.log(f'Migrating test app {test_app_dir}')
+            import subprocess
+            print(subprocess.check_output(['ls', '-la', source_apps_dir]).decode('utf-8'))
+
             test_app_dir = self.build_test_dir(
                 source_apps_dir + test_app_dir
             ) + os.sep

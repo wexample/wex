@@ -16,7 +16,7 @@ from addons.app.decorator.app_command import app_command
 @app_command(help="Description", dir_required=False)
 @option('--from-version', '-f', type=str, required=False, help="Force initial version number")
 @option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
-def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_version: str = None, yes: bool = False):
+def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_version: str = None, yes: bool = False):
     manager = create_manager(kernel, app_dir)
     app_dir = manager.app_dir
 
@@ -91,14 +91,20 @@ def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_versi
             )
 
             print('...')
+            print(app_dir)
             print(os.path.exists('/builds/'))
             print(os.path.exists('/builds/wexample/'))
             print(os.path.exists('/builds/wexample/wex/'))
             print(os.path.exists('/builds/wexample/wex/tmp/'))
             print(os.path.exists('/builds/wexample/wex/tmp/tests/'))
             print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/'))
+            # TODO A partir d'ici, fais moi de "ls -la" pour voir le propriétaire
             print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/'))
             print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/config.yml'))
+
+            import subprocess
+            print(subprocess.check_output(['ls', '-la', os.path.dirname(app_dir)]).decode('utf-8'))
+            print(subprocess.check_output(['ls', '-la', os.path.dirname(os.path.dirname(app_dir))]).decode('utf-8'))
 
             manager.set_config(
                 f'{CORE_COMMAND_NAME}.version',
