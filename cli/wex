@@ -3,6 +3,12 @@
 # Find current file directory
 # supporting symlinks
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
+WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
+
+# Source .env file if it exists
+if [ -f "${WEX_ROOT}/.wex/.env" ]; then
+    . "${WEX_ROOT}/.wex/.env"
+fi
 
 . "${WEX_DIR_CLI}/_init.sh"
 
@@ -19,11 +25,12 @@ cleanup() {
 # Trap to handle interruptions and cleanup
 trap cleanup EXIT INT TERM
 
-WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
-# TODO RM
-export DOCKER_HOST=tcp://0.0.0.0:2375
+# Export DOCKER_HOST only if it is set
+if [ -n "$DOCKER_HOST" ]; then
+    export DOCKER_HOST
+fi
 
 # Load main python script
 ${WEX_ROOT}.wex/python/venv/bin/python "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
