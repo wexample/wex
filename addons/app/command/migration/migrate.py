@@ -66,13 +66,9 @@ def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_ver
         )
 
     kernel.io.log(f'Current version defined as {app_version_string}')
-    print(manager.config)
-    print(list(get_migrations_files(kernel)))
 
     for migration_file in get_migrations_files(kernel):
         migration_version_string = extract_version_from_file_name(migration_file)
-        print(migration_file)
-        print(migration_version_string)
 
         migration_version = kernel.run_function(
             default__version__parse,
@@ -91,28 +87,10 @@ def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_ver
                 [manager]
             )
 
-            print('...')
-            print(app_dir)
-            print(os.path.exists('/builds/'))
-            print(os.path.exists('/builds/wexample/'))
-            print(os.path.exists('/builds/wexample/wex/'))
-            print(os.path.exists('/builds/wexample/wex/tmp/'))
-            print(os.path.exists('/builds/wexample/wex/tmp/tests/'))
-            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/'))
-            # TODO A partir d'ici, fais moi de "ls -la" pour voir le propriétaire
-            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/'))
-            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/config.yml'))
-
-            import subprocess
-            print(subprocess.check_output(['ls', '-la', os.path.dirname(app_dir)]).decode('utf-8'))
-            print(subprocess.check_output(['ls', '-la', os.path.dirname(os.path.dirname(app_dir))]).decode('utf-8'))
-
             manager.set_config(
                 f'{CORE_COMMAND_NAME}.version',
                 migration_version_string
             )
-
-            print('...')
 
             app_version = migration_version
 

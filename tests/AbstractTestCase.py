@@ -61,16 +61,6 @@ class AbstractTestCase(unittest.TestCase):
         # Copy everything from source directory to destination directory
         shutil.copytree(source_dir, dest_dir)
 
-        set_owner_recursively(
-            dest_dir
-        )
-
-        print('BUILD')
-        print(source_dir)
-        print(dest_dir)
-        print(os.path.exists(source_dir))
-        print(os.path.exists(dest_dir))
-
         return dest_dir
 
     def build_test_file(self, file_name: str) -> str:
