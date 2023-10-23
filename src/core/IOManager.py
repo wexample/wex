@@ -77,7 +77,7 @@ class IOManager:
         return sum(message['lines'] for message in self.log_messages)
 
     def log_hide(self):
-        if self.log_length > 0:
+        if self.log_length:
             total_lines_needed = self.calc_log_messages_length()
             self.clear_last_n_lines(total_lines_needed)
 

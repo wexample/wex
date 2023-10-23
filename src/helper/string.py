@@ -65,6 +65,9 @@ def count_lines_needed(message: str) -> int:
     # Get terminal size
     terminal_width, _ = shutil.get_terminal_size()
 
+    if terminal_width < 1:
+        return 1
+
     # Count invisible characters (ANSI escape sequences)
     invisible_chars = 0
     in_escape_sequence = False

@@ -271,10 +271,12 @@ class Kernel:
         if value is not None:
             self.io.log_indent = int(value)
 
-        value = arg_shift(self.sys_argv, 'log-length')
         # Setting verbosity will disable logging frame.
-        if self.verbosity != VERBOSITY_LEVEL_DEFAULT:
+        if not sys.stdout.isatty() or self.verbosity != VERBOSITY_LEVEL_DEFAULT:
             value = 0
+        else:
+            value = arg_shift(self.sys_argv, 'log-length')
+
         if value is not None:
             self.io.log_length = int(value)
 
