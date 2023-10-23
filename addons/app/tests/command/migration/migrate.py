@@ -26,6 +26,7 @@ class TestAppCommandMigrationMigrate(AbstractTestCase):
                 source_apps_dir + test_app_dir
             ) + os.sep
             print(test_app_dir)
+            print(os.path.exists(test_app_dir))
 
             # self.kernel.run_function(
             #     app__migration__migrate, {
