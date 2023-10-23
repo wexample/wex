@@ -43,10 +43,11 @@ test:
     - echo "APP_ENV=test" > ".wex/.env"
     # Install
     - sudo bash ./cli/install
-    - mkdir -p /var/www/test-app && cd /var/www/test-app && wex app::app/init -s php && wex app::app/start --fast-mode
-    - wex app::app/started
-    - cd /var/www/test/wex-proxy/
-    - wex app::app/started
+    - sudo su - owner -c "sudo mkdir -p /var/www/test-app && cd /var/www/test-app && sudo wex app::app/init -s php && sudo wex app::app/start --fast-mode"
+    - sudo su - owner -c "wex app::app/started"
+    - sudo su - owner -c "cd /var/www/test/wex-proxy/"
+    - sudo su - owner -c "wex app::app/started"
+    - docker ps -a
     # Run wex test as owner with sudo
     - sudo su - owner -c "sudo wex test"
     # Uninstall
