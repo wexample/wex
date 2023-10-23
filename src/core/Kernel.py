@@ -42,6 +42,10 @@ class Kernel:
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = None
 
+        # TODO RM
+        import os
+        os.environ["DOCKER_HOST"] = "tcp://0.0.0.0:2375"
+
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
         tmp_path = os.path.join(root_path, 'tmp') + os.sep
