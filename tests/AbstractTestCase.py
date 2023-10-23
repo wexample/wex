@@ -7,6 +7,7 @@ from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.file import create_directories_and_copy
 from src.helper.command import execute_command
+from src.helper.system import set_owner_recursively
 
 
 class AbstractTestCase(unittest.TestCase):
@@ -65,6 +66,10 @@ class AbstractTestCase(unittest.TestCase):
         print(dest_dir)
         print(os.path.exists(source_dir))
         print(os.path.exists(dest_dir))
+
+        set_owner_recursively(
+            dest_dir
+        )
 
         return dest_dir
 
