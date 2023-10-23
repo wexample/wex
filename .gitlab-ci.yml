@@ -40,12 +40,12 @@ test:
     - cat ".env"
     # Install
     - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Run wex test as owner with sudo
-#    - sudo su - owner -c "sudo wex test"
+    # Run wex test as owner with sudo
+    - sudo su - owner -c "sudo wex test"
     # Uninstall
-#    - sudo bash ./cli/uninstall
+    - sudo bash ./cli/uninstall
     - exit 1;
 
 build:
