@@ -38,7 +38,7 @@ test:
     # Define app local env with docker config
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     # Install
-    - sudo bash ./cli/install
+    - sudo -E su - owner -c "sudo bash ./cli/install"
     # Run wex test as owner with sudo
     - sudo -E su - owner -c "sudo wex test -c app::migration/migrate"
 # TODO TMP
