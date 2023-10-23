@@ -28,7 +28,7 @@ trap cleanup EXIT INT TERM
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
 
-cet "${WEX_ROOT}/.env"
+cat "${WEX_ROOT}/.env"
 echo ${DOCKER_HOST}!!!!!!!!!!!!
 
 ## Load main python script
