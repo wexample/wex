@@ -14,7 +14,6 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     repo = get_or_create_repo(manager.app_dir)
     projects_dirs = ['project', 'wordpress']
 
-    # Rename ".wex" file to "config"
     def _migration_4_0_0_env():
         _migration_4_0_0_replace_placeholders(
             manager.app_dir + '.env',
