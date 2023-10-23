@@ -90,10 +90,22 @@ def app__migration__migrate(kernel: Kernel, app_dir: str|None = None, from_versi
                 [manager]
             )
 
+            print('...')
+            print(os.path.exists('/builds/'))
+            print(os.path.exists('/builds/wexample/'))
+            print(os.path.exists('/builds/wexample/wex/'))
+            print(os.path.exists('/builds/wexample/wex/tmp/'))
+            print(os.path.exists('/builds/wexample/wex/tmp/tests/'))
+            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/'))
+            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/'))
+            print(os.path.exists('/builds/wexample/wex/tmp/tests/3.0.0/.wex/config.yml'))
+
             manager.set_config(
                 f'{CORE_COMMAND_NAME}.version',
                 migration_version_string
             )
+
+            print('...')
 
             app_version = migration_version
 
