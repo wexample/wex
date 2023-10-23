@@ -41,12 +41,9 @@ test:
     - INSTALL_PATH=$(pwd)
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     # Run wex test as owner with sudo
-    - sudo su - owner -c "sudo wex test -c app::migration/migrate"
-# TODO TMP
-    - exit 1;
-#    - sudo -E su - owner -c "sudo wex test"
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
+    - sudo su - owner -c "sudo wex test"
+    # Uninstall
+    - sudo bash ./cli/uninstall
 
 build:
   stage: build
