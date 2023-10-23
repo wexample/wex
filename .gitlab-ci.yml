@@ -10,7 +10,9 @@ test:
   services:
     - name: docker:dind
   before_script:
-    - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
+    - service docker start
+    # Added a timeout to ensure that the loop does not run indefinitely
+    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
