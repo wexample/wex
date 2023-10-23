@@ -12,15 +12,15 @@ test:
     - name: docker:24.0.6-dind
   before_script:
     # Start Docker daemon manually and display logs
-    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
-    - sleep 30  # Give it some time to start
-    - cat docker.log
+#    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
+#    - sleep 30  # Give it some time to start
+#    - cat docker.log
     - apt-get update && apt-get install -y net-tools
     - netstat -tuln | grep 2375
     # Added a timeout to ensure that the loop does not run indefinitely
-    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
+#    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
   variables:
-    DOCKER_HOST: tcp://0.0.0.0:2375
+    DOCKER_HOST: unix:///var/run/docker.sock
     DOCKER_DRIVER: vfs
   only:
     - tags
