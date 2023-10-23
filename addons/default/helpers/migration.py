@@ -59,7 +59,7 @@ def version_guess(kernel: Kernel, path: str):
         )
 
         if result:
-            return version_string
+            return version_string.replace('_', '.')
 
     return MIGRATION_MINIMAL_VERSION
 
