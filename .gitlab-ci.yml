@@ -39,7 +39,7 @@ test:
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     - cat ".env"
     # Install
-#    - INSTALL_PATH=$(pwd)
+    - INSTALL_PATH=$(pwd)
 #    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
 #    # Run wex test as owner with sudo
