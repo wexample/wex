@@ -27,26 +27,28 @@ trap cleanup EXIT INT TERM
 
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
-# Load main python script
-${WEX_ROOT}.wex/python/venv/bin/python "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
+echo ${DOCKER_HOST}
 
-TMP_TASK_DIR="${WEX_ROOT}tmp/task/"
-
-# Process found a --kernel-task-id which is redirecting to a given task id
-WEX_TASK_REDIRECT="${TMP_TASK_DIR}${WEX_TASK_ID}.task-redirect"
-if [ -f "${WEX_TASK_REDIRECT}" ]; then
-  WEX_TASK_ID=$(cat "${WEX_TASK_REDIRECT}")
-  rm "${WEX_TASK_REDIRECT}"
-fi
-
-# If a post-exec process has been defined.
-WEX_POST_EXEC="${TMP_TASK_DIR}${WEX_TASK_ID}.post-exec"
-if [ -f "${WEX_POST_EXEC}" ]; then
-    # Ensure the file is only readable/writable by the owner for security
-    chmod 600 "${WEX_POST_EXEC}"
-
-    # Execute the commands in the file
-    . "${WEX_POST_EXEC}"
-
-    cleanup
-fi
+## Load main python script
+#${WEX_ROOT}.wex/python/venv/bin/python "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
+#
+#TMP_TASK_DIR="${WEX_ROOT}tmp/task/"
+#
+## Process found a --kernel-task-id which is redirecting to a given task id
+#WEX_TASK_REDIRECT="${TMP_TASK_DIR}${WEX_TASK_ID}.task-redirect"
+#if [ -f "${WEX_TASK_REDIRECT}" ]; then
+#  WEX_TASK_ID=$(cat "${WEX_TASK_REDIRECT}")
+#  rm "${WEX_TASK_REDIRECT}"
+#fi
+#
+## If a post-exec process has been defined.
+#WEX_POST_EXEC="${TMP_TASK_DIR}${WEX_TASK_ID}.post-exec"
+#if [ -f "${WEX_POST_EXEC}" ]; then
+#    # Ensure the file is only readable/writable by the owner for security
+#    chmod 600 "${WEX_POST_EXEC}"
+#
+#    # Execute the commands in the file
+#    . "${WEX_POST_EXEC}"
+#
+#    cleanup
+#fi
