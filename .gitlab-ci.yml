@@ -27,12 +27,6 @@ test:
   only:
     - tags
   script:
-    # Check docker exists
-    - sudo -E su - owner -c "echo \"Setting Docker to $DOCKER_HOST\""
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST"
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && docker --version"
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && python -c \"import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))\""
-
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
@@ -41,15 +35,12 @@ test:
     - apt install sudo -y
     # Create env file
     - echo "APP_ENV=test" > ".wex/.env"
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     # Install
     - sudo bash ./cli/install
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo mkdir -p /var/www/test-app && cd /var/www/test-app && sudo wex app::app/init -s php && sudo wex app::app/start"
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo wex app::app/started"
-    - sudo -E su - owner -c "cd /var/www/test/wex-proxy/"
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo wex app::app/started"
-    - docker ps -a
     # Run wex test as owner with sudo
-    - sudo -E su - owner -c "export DOCKER_HOST=$DOCKER_HOST && sudo wex test"
+    - sudo -E su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
 
