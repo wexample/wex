@@ -46,7 +46,6 @@ test:
     - sudo su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
-    - exit 1;
 
 build:
   stage: build
