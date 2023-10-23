@@ -30,15 +30,8 @@ test:
     # Check docker exists
     - sudo su - owner -c "echo \"Setting Docker to $DOCKER_HOST\""
     - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST"
-    - sudo su - owner -c "docker --version"
-    - sudo su - owner -c "python -c \"import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))\""
-
-
-    - python -c "import subprocess; subprocess.run(['docker', 'info'])"
-    - python -c "import subprocess; subprocess.run('docker info', shell=True)"
-    - python -c "import subprocess; process = subprocess.Popen(['docker', 'info'], stdout=subprocess.PIPE); print(process.communicate()[0].decode())"
-    - python -c "import subprocess, os; process = subprocess.Popen(['docker', 'info'], stdout=subprocess.PIPE, env=dict(os.environ, DOCKER_HOST='tcp://0.0.0.0:2375')); print(process.communicate()[0].decode())"
-    - python -c "import subprocess, os; subprocess.run(['docker', 'info'], env=dict(os.environ, DOCKER_HOST='tcp://0.0.0.0:2375'))"
+    - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && docker --version"
+    - sudo su - owner -c "export DOCKER_HOST=$DOCKER_HOST && python -c \"import os; print(os.environ.get('DOCKER_HOST', 'DOCKER_HOST not set'))\""
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
