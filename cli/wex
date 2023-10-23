@@ -22,6 +22,9 @@ trap cleanup EXIT INT TERM
 WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 WEX_TASK_ID="$$.$(date +%s.%N)"
 
+# TODO RM
+export DOCKER_HOST=tcp://0.0.0.0:2375
+
 # Load main python script
 ${WEX_ROOT}.wex/python/venv/bin/python "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
 
