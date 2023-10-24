@@ -17,6 +17,9 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     config = _parse_4_0_0_config_file(f'{env_dir}config')
 
     services_names_map = {
+        'php8': 'php',
+        'php_8': 'php',
+        'php-8': 'php',
         'mysql8': 'mysql',
         'wordpress5': 'wordpress',
     }
@@ -45,6 +48,10 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     def _migration_5_0_0_install_services():
         # Services
         services = _get_config_value(config, 'SERVICES', [])
+
+        if isinstance(services, str):
+            services = [services]
+
         for service_name in services:
             service_name = services_names_map[service_name] if service_name in services_names_map else service_name
 
@@ -100,21 +107,22 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             "DOMAINS": "RUNTIME_DOMAINS_STRING",
             "DOMAIN_MAIN": "RUNTIME_DOMAIN_MAIN",
             "EMAIL": "RUNTIME_EMAIL",
-            "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
-            "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_YML_ENV",
-            "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
-            "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
-            'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_YML_ENV',
             "GITLAB_VERSION": _get_config_value(config, 'GITLAB_VERSION', '16.4.1-ce.0'),
-            "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
-            "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),
-            "NEXTCLOUD_VERSION": _get_config_value(config, 'NEXTCLOUD_VERSION'),
             "GRAFANA_VERSION": _get_config_value(config, 'GRAFANA_VERSION', '9.5.12'),
             "JENKINS_VERSION": _get_config_value(config, 'JENKINS_VERSION', '2.60.3-alpine'),
             "MONGO_VERSION": _get_config_value(config, 'MONGO_VERSION'),
             "MATOMO_VERSION": _get_config_value(config, 'MATOMO_VERSION'),
+            "N8N_VERSION": _get_config_value(config, 'N8N_VERSION'),
+            "NEXTCLOUD_VERSION": _get_config_value(config, 'NEXTCLOUD_VERSION'),
             "ONLYOFFICE_DOCUMENT_SERVER_VERSION": _get_config_value(config, 'ONLYOFFICE_DOCUMENT_SERVER_VERSION'),
+            "ROCKETCHAT_VERSION": _get_config_value(config, 'ROCKETCHAT_VERSION'),
             "SONARQUBE_VERSION": _get_config_value(config, 'SONARQUBE_VERSION'),
+            "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
+            "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_YML_ENV",
+            "WEX_COMPOSE_YML_PHP_8": "RUNTIME_SERVICE_PHP_YML_ENV",
+            "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
+            "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
+            'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_YML_ENV',
         })
 
     progress_steps(kernel, [
