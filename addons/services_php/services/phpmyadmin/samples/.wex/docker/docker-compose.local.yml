@@ -1,0 +1,7 @@
+services:
+  phpmyadmin:
+    extends:
+      file: ${RUNTIME_SERVICE_PHPMYADMIN_YML_ENV}
+      service: phpmyadmin
+    links:
+      - ${GLOBAL_NAME}_mysql
