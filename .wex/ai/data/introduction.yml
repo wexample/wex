@@ -1,0 +1,6 @@
+name: wex
+languages: Python, Bash, aptly
+description:
+  This is a CLI tool able to run any kind of useful command for system management, devops, applications development and deployment.
+  This application is launched with bash, core is written in Python and play with Docker containers.
+  This application is deployed with Aptly on a dedicated apt repository.
