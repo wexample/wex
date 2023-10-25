@@ -52,8 +52,9 @@ def core__version__build(
         kernel.run_function(
             app__config__set,
             {
+                'app-dir': kernel.path['root'],
                 'key': f'{CORE_COMMAND_NAME}.version',
-                'value': new_version
+                'value': new_version,
             }
         )
 
