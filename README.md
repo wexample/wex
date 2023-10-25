@@ -28,6 +28,10 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
     # Install
     sudo apt install wex
 
+Upgrading
+
+    sudo apt update && sudo apt install --only-upgrade wex
+
 ### Debian from sources
 
     # Inside repository
