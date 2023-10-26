@@ -1,0 +1,5 @@
+services:
+  wordpress:
+    environment:
+      - LETSENCRYPT_HOST=${RUNTIME_DOMAINS_STRING}
+      - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}
