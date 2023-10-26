@@ -14,6 +14,7 @@ from src.decorator.alias_without_addon import alias_without_addon
 def system__dir__spaces(kernel: Kernel, dir: str = None):
     dir = dir or os.getcwd()
 
+    # Function to calculate directory size
     def get_dir_size(directory):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(directory):
@@ -45,7 +46,15 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
             size = os.path.getsize(entry)
 
         if size is not None:
-            body.append([human_readable_size(size), os.path.basename(entry)])
+            # Storing raw size as a third element in the list for sorting later
+            body.append([human_readable_size(size), os.path.basename(entry), size])
+
+    # Sort the list by raw size (the third element of each sublist)
+    # The sort will be in ascending order, meaning smallest files will come first and largest last.
+    body = sorted(body, key=lambda x: x[2])
+
+    # Remove the raw size from the list
+    body = [[human_readable, name] for human_readable, name, _ in body]
 
     output_list.set_body(body)
 
