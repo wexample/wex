@@ -33,7 +33,6 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
         new_dir_path = f"{manager.app_dir}/.wex"
         # Make the directory
         os.makedirs(new_dir_path, exist_ok=True)
-        os.makedirs(new_dir_path + '/tmp', exist_ok=True)
 
     # Move every file and folder to ".wex", except the "project" dir
     def _migration_4_0_0_move_root_environment_files():
@@ -44,6 +43,9 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
 
         if not os.path.exists('.wex/.env'):
             create_env(APP_ENV_LOCAL, manager.app_dir)
+
+        # May be missing.
+        os.makedirs(f'.wex/tmp', exist_ok=True)
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files():
