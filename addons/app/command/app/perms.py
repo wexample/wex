@@ -6,6 +6,7 @@ from src.helper.system import set_owner_recursively, set_permissions_recursively
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
+from addons.app.command.env.get import app__env__get
 
 
 @app_command(help="Set app files permissions")
@@ -15,9 +16,16 @@ def app__app__perms(kernel: Kernel, app_dir: str):
     user = manager.get_config('permissions.user', None)
 
     if not user:
+        env = kernel.run_function(
+            app__env__get,
+            {
+                'app-dir': kernel.path['root']
+            }
+        ).first()
+
         # In local env get the "current" user, as it is probably
         # the code editor. In other envs, it uses www-data
-        if manager.get_runtime_config('env') == APP_ENV_LOCAL:
+        if env == APP_ENV_LOCAL:
             user = get_user_or_sudo_user()
         else:
             user = USER_WWW_DATA if user_exists(USER_WWW_DATA) else get_user_or_sudo_user()
