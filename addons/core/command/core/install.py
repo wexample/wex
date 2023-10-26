@@ -44,7 +44,8 @@ def __core__core__install_env(kernel):
 
     create_env(
         APP_ENV_LOCAL,
-        kernel.path['root']
+        kernel.path['root'],
+        False
     )
 
 

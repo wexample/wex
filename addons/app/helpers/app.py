@@ -6,14 +6,19 @@ from addons.app.command.location.find import app__location__find
 from addons.app.AppAddonManager import AppAddonManager
 
 
-def create_env(env, app_dir):
-    create_directories_and_file(
-        os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV),
-        f'APP_ENV={env}\n'
-    )
+def create_env(env, app_dir, rewrite=True) -> bool:
+    env_file_path = os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV)
 
-    with open(os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV), 'w') as f:
+    # Check if the file already exists
+    if os.path.exists(env_file_path) and not rewrite:
+        return False
+
+    create_directories_and_file(env_file_path, f'APP_ENV={env}\n')
+
+    with open(env_file_path, 'w') as f:
         f.write(f'APP_ENV={env}\n')
+
+    return True
 
 
 def create_manager(kernel, app_dir: str, name: str = 'app'):
