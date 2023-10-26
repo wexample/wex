@@ -14,7 +14,7 @@ def phpmyadmin__config__runtime(kernel: Kernel, app_dir: str, service: str):
     # Setting false to domain will disable domain setting,
     # used to disable phpmyadmin in some environment.
     if domain_pma is not False:
-        if domain_pma is not None:
+        if domain_pma is None:
             env = manager.get_runtime_config('env')
 
             domain_pma = ['pma']
