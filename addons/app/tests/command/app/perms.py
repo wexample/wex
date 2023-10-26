@@ -4,9 +4,10 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.command.app.perms import app__app__perms
 from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.globals import ROOT_USERNAME
-from src.helper.system import get_uid_from_user_name, get_gid_from_group_name
-from src.helper.file import get_file_owner
+from addons.app.AppAddonManager import AppAddonManager
+from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
+from src.helper.system import get_uid_from_user_name, get_gid_from_group_name, get_sudo_username, get_user_group_name
+from src.helper.file import get_file_owner, get_file_group
 
 
 class TestAppCommandAppPerms(AbstractAppTestCase):
@@ -45,9 +46,40 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
             }
         )
 
-        self.assertNotEqual(
+        self.assertEqual(
             get_file_owner(
                 test_file
             ),
-            ROOT_USERNAME
+            USER_WWW_DATA
+        )
+
+        # Use config
+        manager = AppAddonManager(self.kernel, 'test-perms')
+        manager.set_app_workdir(app_dir)
+
+        current_user = get_sudo_username()
+        current_group = get_user_group_name(current_user)
+
+        manager.set_config('permissions.user', current_user)
+        manager.set_config('permissions.group', current_group)
+
+        self.kernel.run_function(
+            app__app__perms,
+            {
+                'app-dir': app_dir
+            }
+        )
+
+        self.assertEqual(
+            get_file_owner(
+                test_file
+            ),
+            current_user
+        )
+
+        self.assertEqual(
+            get_file_group(
+                test_file
+            ),
+            current_group
         )

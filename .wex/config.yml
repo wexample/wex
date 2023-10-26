@@ -23,5 +23,8 @@ global:
   services: []
   type: app
   version: 5.0.7+build.20231025174004
+permissions:
+  user: null
+  group: null
 wex:
   version: 5.0.7+build.20231025174004

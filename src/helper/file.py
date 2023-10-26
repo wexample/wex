@@ -203,7 +203,7 @@ def human_readable_size(size, decimal_places=2):
     return f"{size:.{decimal_places}f} {unit}"
 
 
-def get_file_owner(file_path):
+def get_file_owner(file_path) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
 
@@ -213,6 +213,18 @@ def get_file_owner(file_path):
     # Get the owner's username
     owner_info = pwd.getpwuid(uid)
     return owner_info.pw_name
+
+
+def get_file_group(file_path) -> str:
+    # Get the file stat object
+    file_stat = os.stat(file_path)
+
+    # Get the file group GID
+    gid = file_stat.st_gid
+
+    # Get the group's name
+    group_info = grp.getgrgid(gid)
+    return group_info.gr_name
 
 
 def date_time_file_name():

@@ -142,6 +142,15 @@ def create_user_home_data_path():
     return path
 
 
+def user_exists(username: str) -> bool:
+    try:
+        # Attempt to get user details
+        pwd.getpwnam(username)
+        return True
+    except KeyError:
+        return False
+
+
 def is_port_open(port: int, host: str = 'localhost') -> bool:
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         if sock.connect_ex((host, port)) == 0:
