@@ -8,5 +8,8 @@
 # Sources files related to the project.
 /source/*
 
+# Used by scripts to run, place every temp files here.
+/tmp/*
+
 # Not versioned files, dead code, sources...
 /trash/*
