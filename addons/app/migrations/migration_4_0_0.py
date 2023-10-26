@@ -65,6 +65,11 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
             'SITE_PATH_ROOT': 'APP_PATH_ROOT'
         })
 
+        _migration_4_0_0_replace_docker_mapping(manager, {
+            # Moving files from root to env dir.
+            'dockerfile: ./docker/': 'dockerfile: ${RUNTIME_PATH_APP_ENV}docker/'
+        })
+
     progress_steps(kernel, [
         _migration_4_0_0_env,
         _migration_4_0_0_config,
@@ -102,18 +107,26 @@ def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: d
 
 
 def _migration_4_0_0_replace_docker_placeholders(manager: AppAddonManager, replacement_mapping: dict):
-    docker_files = _migration_4_0_0_et_docker_files(manager)
     converted_mapping = {}
 
     for old_str, new_str in replacement_mapping.items():
         converted_mapping['${' + str(old_str) + '}'] = '${' + str(new_str) + '}'
+
+    _migration_4_0_0_replace_docker_mapping(
+        manager,
+        converted_mapping
+    )
+
+
+def _migration_4_0_0_replace_docker_mapping(manager: AppAddonManager, replacement_mapping: dict):
+    docker_files = _migration_4_0_0_et_docker_files(manager)
 
     # Raw file replacements
     # Loop through each docker-compose file
     for docker_file in docker_files:
         _migration_4_0_0_replace_placeholders(
             docker_file,
-            converted_mapping
+            replacement_mapping
         )
 
 

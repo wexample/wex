@@ -8,7 +8,7 @@ from src.helper.string import to_snake_case
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_placeholders, \
-    _migration_4_0_0_et_docker_files
+    _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping
 
 
 def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
@@ -123,6 +123,11 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
             "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
             'WEX_COMPOSE_YML_MYSQL8': 'RUNTIME_SERVICE_MYSQL_YML_ENV',
+        })
+
+        _migration_4_0_0_replace_docker_mapping(manager, {
+            # The only cli known was wordpress_cli
+            'service: cli': 'service: wordpress_cli',
         })
 
     progress_steps(kernel, [
