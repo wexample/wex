@@ -12,9 +12,10 @@ class TestAppCommandMigrationMigrate(AbstractTestCase):
     def test_migrate(self):
         source_apps_dir = os.path.join(
             self.kernel.path['root'],
+            'addons',
+            'app',
             'tests',
             'resources',
-            'app',
         ) + os.sep
 
         test_apps: List[str] = os.listdir(source_apps_dir)
