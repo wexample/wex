@@ -59,6 +59,9 @@ def wordpress__url__replace(kernel: Kernel,
             )
 
             first = response.first()
+            if not first:
+                return
+            
             if len(first):
                 old_url = first[0]
 
