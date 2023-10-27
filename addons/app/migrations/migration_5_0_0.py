@@ -14,7 +14,8 @@ from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docke
 def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
     # Convert main config file.
-    config = _parse_4_0_0_config_file(f'{env_dir}config')
+    old_config_path = f'{env_dir}config'
+    config = _parse_4_0_0_config_file(old_config_path)
 
     services_names_map = {
         'php8': 'php',
@@ -130,11 +131,16 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             'service: cli': 'service: wordpress_cli',
         })
 
+    def _migration_5_0_0_delete_old_files():
+        if os.path.exists(old_config_path):
+            os.remove(old_config_path)
+
     progress_steps(kernel, [
         _migration_5_0_0_update_config,
         _migration_5_0_0_install_services,
         _migration_5_0_0_config_services,
         _migration_5_0_0_update_docker,
+        _migration_5_0_0_delete_old_files,
     ])
 
 
