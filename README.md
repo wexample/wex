@@ -12,6 +12,12 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 
 ## Install
 
+### Requirements
+
+ - Bash 5
+ - Python 3.10
+ - Docker 23
+
 ### Debian APT Package
 
     # Install dependencies
