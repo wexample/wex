@@ -10,9 +10,9 @@ from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_N
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
-    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN, APP_ENV_TEST, APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD
+    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN, APP_ENV_TEST, APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD, APP_FILEPATH_REL_ENV
 from addons.app.command.location.find import app__location__find
-from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path
+from src.helper.file import write_dict_to_config, yaml_load_or_default, set_dict_item_by_path, env_to_dict
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import get_dict_item_by_path
 
@@ -137,13 +137,38 @@ class AppAddonManager(AddonManager):
             self.runtime_config
         )
 
+        app_dir: str = self.get_runtime_config('path.app')
+
+        app_env_path = os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_ENV
+        )
+
+        env_dict = {
+            '# .env config': True
+        }
+
+        env_dict.update(
+            env_to_dict(app_env_path)
+        )
+
+        config_path = os.path.join(
+            app_dir,
+            APP_FILEPATH_REL_DOCKER_ENV
+        )
+
+        env_dict.update({
+            '# Build config': True
+        })
+
+        env_dict.update(
+            self.config_to_docker_env()
+        )
+
         # Write as docker env file
         write_dict_to_config(
-            self.config_to_docker_env(),
-            os.path.join(
-                self.get_runtime_config('path.app'),
-                APP_FILEPATH_REL_DOCKER_ENV
-            )
+            env_dict,
+            config_path
         )
 
     def config_to_docker_env(self):

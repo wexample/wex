@@ -128,7 +128,16 @@ def create_directories_and_file(path: str, content: str = None, default: str = N
 
 
 def write_dict_to_config(dict: dict, dest: str):
-    output = "\n".join(f"{key.upper()}={str(value)}" for key, value in dict.items())
+    output_lines = []
+    for key, value in dict.items():
+        # If the key starts with '#', write it as-is without the value
+        if key.startswith("#"):
+            output_lines.append(key)
+        else:
+            output_lines.append(f"{key.upper()}={str(value)}")
+
+    output = "\n".join(output_lines)
+
     with open(dest, 'w') as f:
         f.write(output)
 
@@ -237,3 +246,19 @@ def delete_file_or_dir(path):
         shutil.rmtree(path)
     else:
         os.remove(path)
+
+
+def env_to_dict(env_path: str) -> dict:
+    env_dict: dict = {}
+
+    with open(env_path, 'r') as f:
+        for line in f.readlines():
+            line = line.strip()
+
+            if line.startswith("#") or not line:
+                continue
+
+            key, value = line.split("=", 1)
+            env_dict[key] = value
+
+    return env_dict
