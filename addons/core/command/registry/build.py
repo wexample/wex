@@ -34,7 +34,7 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     # Call function avoiding core command management.
     env = app__env__get.callback.__wrapped__(
         kernel,
-        kernel.path['root']
+        kernel.get_path('root')
     )
 
     registry = {
@@ -47,7 +47,7 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.io.log_indent_down()
 
     if write:
-        registry_path = os.path.join(kernel.path["tmp"], FILE_REGISTRY)
+        registry_path = os.path.join(kernel.get_or_create_path('tmp'), FILE_REGISTRY)
         with open(registry_path, 'w') as f:
             yaml.dump(registry, f)
 
@@ -62,7 +62,7 @@ def build_registry_addons(addons, kernel, test_commands: bool = False):
     resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
 
     for addon in addons:
-        addon_command_path = os.path.join(kernel.path['addons'], addon, 'command')
+        addon_command_path = os.path.join(kernel.get_path('addons'), addon, 'command')
 
         if os.path.exists(addon_command_path):
             addons_dict[addon] = {
@@ -81,7 +81,7 @@ def build_registry_services(addons, kernel, test_commands: bool = False):
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 
     for addon in addons:
-        services_dir = os.path.join(kernel.path['addons'], addon, 'services')
+        services_dir = os.path.join(kernel.get_path('addons'), addon, 'services')
         if os.path.exists(services_dir):
             for service in os.listdir(services_dir):
                 kernel.io.log(f'Found service {service}')

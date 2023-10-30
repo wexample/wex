@@ -13,7 +13,7 @@ def core_call_to_shell_command(kernel, function: callable, args: list | dict = {
 
     command = ([
                    'bash',
-                   kernel.path['core.cli'],
+                   kernel.get_path('core.cli'),
                    kernel.get_command_resolver(function.callback.command_type).build_command_from_function(function),
                ]
                + args
@@ -55,10 +55,10 @@ def prepare_logs(kernel):
     date_now = datetime.date.today()
     date_formatted = date_now.strftime("%Y-%m-%d")
 
-    os.makedirs(kernel.path['log'], exist_ok=True)
+    os.makedirs(kernel.get_or_create_path('log'), exist_ok=True)
 
-    out_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.task_id}.out")
-    err_path = os.path.join(kernel.path['log'], f"{date_formatted}-{kernel.task_id}.err")
+    out_path = os.path.join(kernel.get_or_create_path('log'), f"{date_formatted}-{kernel.task_id}.out")
+    err_path = os.path.join(kernel.get_or_create_path('log'), f"{date_formatted}-{kernel.task_id}.err")
 
     return out_path, err_path
 

@@ -21,7 +21,7 @@ class TestCoreCommandLogsRotate(AbstractTestCase):
             }
         )
 
-        test_log_path = os.path.join(self.kernel.path['log'], 'test.json')
+        test_log_path = os.path.join(self.kernel.get_or_create_path('log'), 'test.json')
 
         with open(test_log_path, 'w') as test_log:
             test_log.write('TEST_CONTENT')

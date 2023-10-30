@@ -44,18 +44,18 @@ def __core__core__install_env(kernel):
 
     create_env(
         APP_ENV_LOCAL,
-        kernel.path['root'],
+        kernel.get_path('root'),
         False
     )
 
 
 def __core__core__install_terminal(kernel):
-    handler_path = os.path.join(kernel.path['root'], 'cli/terminal-handler')
+    handler_path = os.path.join(kernel.get_path('root'), 'cli/terminal-handler')
     script_path = '/etc/profile.d/wex'
     kernel.io.log(f'Adding terminal initialisation script in {script_path} sourcing {handler_path} ...')
 
     create_from_template(
-        kernel.path['templates'] + 'handler.sh.tpl',
+        kernel.get_path('templates') + 'handler.sh.tpl',
         script_path,
         {
             'handler_path': handler_path,
@@ -66,12 +66,12 @@ def __core__core__install_terminal(kernel):
 
 
 def __core__core__install_autocomplete(kernel):
-    handler_path = os.path.join(kernel.path['root'], 'cli/autocomplete-handler')
+    handler_path = os.path.join(kernel.get_path('root'), 'cli/autocomplete-handler')
     script_path = '/etc/bash_completion.d/wex'
     kernel.io.log(f'Adding autocompletion handler in {script_path} sourcing {handler_path} ...')
 
     create_from_template(
-        kernel.path['templates'] + 'handler.sh.tpl',
+        kernel.get_path('templates') + 'handler.sh.tpl',
         script_path,
         {
             'handler_path': handler_path,
@@ -85,7 +85,7 @@ def __core__core__install_symlink(kernel, destination: str):
     remove_file_if_exists(destination)
 
     os.symlink(
-        kernel.path['core.cli'],
+        kernel.get_path('core.cli'),
         destination
     )
 

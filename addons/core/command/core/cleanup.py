@@ -9,10 +9,11 @@ from src.decorator.command import command
 @command(help="Uninstall core")
 @alias('cleanup')
 def core__core__cleanup(kernel: Kernel):
-    shutil.rmtree(kernel.path['tmp'])
+    tmp_dir = kernel.get_or_create_path('tmp')
+    shutil.rmtree(tmp_dir)
 
-    os.makedirs(os.path.dirname(kernel.path['tmp']), exist_ok=True)
-    with open(os.path.join(kernel.path['tmp'], '.gitkeep'), 'a'):
+    os.makedirs(os.path.dirname(tmp_dir), exist_ok=True)
+    with open(os.path.join(tmp_dir, '.gitkeep'), 'a'):
         pass
 
     kernel.rebuild()

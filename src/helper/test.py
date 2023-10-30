@@ -13,7 +13,7 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
 
     Example: "addon/tests/command/group/name.py" becomes "TestAddonGroupName"
     """
-    file_path = os.path.relpath(file_path, kernel.path['addons'])
+    file_path = os.path.relpath(file_path, kernel.get_path('addons'))
     parts = file_path.split('/')
 
     # Remove the file extension from the last part
@@ -33,7 +33,7 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
 
     Example: "addon/tests/command/group/name.py"  becomes "test_name"
     """
-    file_path = os.path.relpath(file_path, kernel.path['addons'])
+    file_path = os.path.relpath(file_path, kernel.get_path('addons'))
     parts = file_path.split('/')
     file_name = parts[-1][:-3]
     test_method = f'test_{file_name}'
@@ -63,7 +63,7 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
     kernel.io.log_indent_down()
 
     create_from_template(
-        kernel.path['templates'] + 'test.py.tpl',
+        kernel.get_path('templates') + 'test.py.tpl',
         test_path,
         {
             'addon_name': request.match[1],

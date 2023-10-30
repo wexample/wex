@@ -18,7 +18,7 @@ class TestSystemCommandOwnThis(AbstractTestCase):
         )
 
         self.kernel.run_function(system__own__this, {
-            'path': self.kernel.path['tmp']
+            'path': self.kernel.get_or_create_path('tmp')
         })
 
         owner = get_user_or_sudo_user()

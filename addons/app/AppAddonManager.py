@@ -333,7 +333,7 @@ class AppAddonManager(AddonManager):
             return
 
         self.app_dirs_stack.pop()
-        app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else self.kernel.path['call']
+        app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else self.kernel.get_path('call')
         # Previous app dir was an app.
         if app_dir:
             # Reinit app dir if not the same.

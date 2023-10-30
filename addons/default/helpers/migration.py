@@ -8,7 +8,7 @@ MIGRATION_MINIMAL_VERSION = '3.0.0'
 
 
 def get_migrations_path(kernel: Kernel) -> str:
-    return os.path.join(kernel.path['addons'], 'app/migrations') + os.sep
+    return os.path.join(kernel.get_path('addons'), 'app/migrations') + os.sep
 
 
 def get_migrations_files(kernel: Kernel):

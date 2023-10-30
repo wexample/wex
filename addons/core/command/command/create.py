@@ -53,7 +53,7 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         )
 
         create_from_template(
-            kernel.path['templates'] + 'command.py.tpl',
+            kernel.get_path('templates') + 'command.py.tpl',
             command_path,
             {
                 'function_name': function_name,

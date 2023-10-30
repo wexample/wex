@@ -100,7 +100,7 @@ def app__app__init(
     def init_step_copy_app():
         import shutil
 
-        app_sample_dir = os.path.join(kernel.path['addons'], 'app', 'samples', 'app') + '/'
+        app_sample_dir = os.path.join(kernel.get_path('addons'), 'app', 'samples', 'app') + '/'
 
         os.makedirs(os.path.join(app_dir, APP_DIR_APP_DATA), exist_ok=True)
 

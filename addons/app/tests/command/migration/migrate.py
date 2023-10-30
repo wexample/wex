@@ -11,7 +11,7 @@ from addons.app.AppAddonManager import AppAddonManager
 class TestAppCommandMigrationMigrate(AbstractTestCase):
     def test_migrate(self):
         source_apps_dir = os.path.join(
-            self.kernel.path['root'],
+            self.kernel.get_path('root'),
             'addons',
             'app',
             'tests',

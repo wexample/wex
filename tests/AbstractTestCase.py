@@ -50,9 +50,10 @@ class AbstractTestCase(unittest.TestCase):
         # English comments as requested
         # Get the directory name from source directory
         dir_name = os.path.basename(source_dir)
+        tmp_dir = self.kernel.get_or_create_path('tmp')
 
         # Build the destination directory path
-        dest_dir = os.path.join(self.kernel.path['tmp'], 'tests', dir_name)
+        dest_dir = os.path.join(tmp_dir, 'tests', dir_name)
 
         # Delete the destination directory if it exists
         if os.path.exists(dest_dir):
@@ -64,15 +65,15 @@ class AbstractTestCase(unittest.TestCase):
         return dest_dir
 
     def build_test_file(self, file_name: str) -> str:
-        src_file = os.path.join(self.kernel.path['root'], 'tests', 'samples', file_name)
-        dst_file = os.path.join(self.kernel.path['tmp'], 'tests', file_name)
+        src_file = os.path.join(self.kernel.get_path('root'), 'tests', 'samples', file_name)
+        dst_file = os.path.join(self.kernel.get_or_create_path('tmp'), 'tests', file_name)
 
         create_directories_and_copy(src_file, dst_file)
 
         return dst_file
 
     def write_test_result(self, name: str, data: str):
-        result_path = os.path.join(self.kernel.path['tmp'], 'tests', 'results')
+        result_path = os.path.join(self.kernel.get_or_create_path('tmp'), 'tests', 'results')
         os.makedirs(
             result_path,
             exist_ok=True)

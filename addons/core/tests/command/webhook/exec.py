@@ -14,7 +14,7 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
                 exist_ok=True
             )
             os.symlink(
-                self.kernel.path['root'],
+                self.kernel.get_path('root'),
                 test_webhook_app_path
             )
 

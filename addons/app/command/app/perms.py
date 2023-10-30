@@ -19,7 +19,7 @@ def app__app__perms(kernel: Kernel, app_dir: str):
         env = kernel.run_function(
             app__env__get,
             {
-                'app-dir': kernel.path['root']
+                'app-dir': kernel.get_path('root')
             }
         ).first()
 

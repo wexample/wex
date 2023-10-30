@@ -10,7 +10,7 @@ class Logger:
     def __init__(self, kernel):
         self.kernel = kernel
         self.output_path = os.path.join(
-            self.kernel.path['log'],
+            self.kernel.get_or_create_path('log'),
             datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f') + '.json'
         )
 
@@ -24,7 +24,7 @@ class Logger:
             'errors': [],
         }
 
-        os.makedirs(self.kernel.path['log'], exist_ok=True)
+        os.makedirs(self.kernel.get_or_create_path('log'), exist_ok=True)
 
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())

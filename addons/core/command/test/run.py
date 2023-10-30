@@ -20,12 +20,12 @@ def core__test__run(kernel: Kernel, command: str = None):
 
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    os.chdir(kernel.path['root'])
+    os.chdir(kernel.get_path('root'))
 
     if not command:
         suite.addTests(
             loader.discover(
-                os.path.join(kernel.path['root'], 'tests')
+                os.path.join(kernel.get_path('root'), 'tests')
             )
         )
 

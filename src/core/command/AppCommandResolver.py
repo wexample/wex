@@ -64,7 +64,7 @@ class AppCommandResolver(AbstractCommandResolver):
             app_dir = self.kernel.run_function(
                 app__location__find,
                 {
-                    'app-dir': self.kernel.path['call']
+                    'app-dir': self.kernel.get_path('call')
                 }
             ).first()
 

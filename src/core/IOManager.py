@@ -25,11 +25,11 @@ class IOManager:
 
         # Load the messages from the JSON file
         if self.messages is None:
-            with open(self.kernel.path['root'] + 'locale/messages.json') as f:
+            with open(self.kernel.get_path('root') + 'locale/messages.json') as f:
                 self.messages = json.load(f)
 
                 for addon in self.kernel.addons:
-                    messages_path = self.kernel.path['addons'] + f'{addon}/locale/messages.json'
+                    messages_path = self.kernel.get_path('addons') + f'{addon}/locale/messages.json'
 
                     if os.path.exists(messages_path):
                         with open(messages_path) as file:

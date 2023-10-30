@@ -23,7 +23,8 @@ def core__version__build(
         commit: bool = False,
         type: str = UPGRADE_TYPE_MINOR) -> None:
     version = core_kernel_get_version(kernel)
-    repo = git.Repo(kernel.path['root'])
+    root_dir = kernel.get_path('root')
+    repo = git.Repo(root_dir)
 
     if not commit:
         current_version = core_kernel_get_version(kernel)
@@ -45,14 +46,14 @@ def core__version__build(
         ).first()
 
         # Write new_version to file
-        with open(f'{kernel.path["root"]}{FILE_VERSION}', 'w') as version_file:
+        with open(f'{root_dir}{FILE_VERSION}', 'w') as version_file:
             version_file.write(str(new_version))
 
         # Set wex version for itself.
         kernel.run_function(
             app__config__set,
             {
-                'app-dir': kernel.path['root'],
+                'app-dir': root_dir,
                 'key': f'{CORE_COMMAND_NAME}.version',
                 'value': new_version,
             }
@@ -63,12 +64,12 @@ def core__version__build(
             app__version__build,
             {
                 'version': new_version,
-                'app-dir': kernel.path['root']
+                'app-dir': root_dir
             }
         )
 
         # Update README.md
-        readme_path = os.path.join(kernel.path["root"], FILE_README)
+        readme_path = os.path.join(root_dir, FILE_README)
 
         with open(readme_path, 'r') as file:
             readme_content = file.read()
@@ -91,14 +92,14 @@ def core__version__build(
             kernel.io.log('No changes to commit')
             return
 
-        repo.index.add(kernel.path['root'] + FILE_VERSION)
-        repo.index.add(kernel.path['root'] + FILE_README)
-        repo.index.add(kernel.path['root'] + APP_FILEPATH_REL_CONFIG)
+        repo.index.add(root_dir + FILE_VERSION)
+        repo.index.add(root_dir + FILE_README)
+        repo.index.add(root_dir + APP_FILEPATH_REL_CONFIG)
 
         kernel.run_function(
             app__version__build,
             {
                 'commit': commit,
-                'app-dir': kernel.path['root']
+                'app-dir': root_dir
             }
         )

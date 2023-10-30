@@ -48,7 +48,7 @@ def core__webhook__exec(kernel: Kernel, url: str, env: None | str = None) -> boo
 
         if not has_error:
             env = env or kernel.run_function(app__env__get, {
-                'app-dir': kernel.path['root']
+                'app-dir': kernel.get_path('root')
             }).first()
             working_directory = f"/var/www/{env}/{app_name}"
             source_data['working_directory'] = working_directory

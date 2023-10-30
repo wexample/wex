@@ -108,7 +108,7 @@ def app__proxy__start(kernel: Kernel,
                 'env': env or kernel.run_function(
                     app__env__get,
                     {
-                        'app-dir': kernel.path['root']
+                        'app-dir': kernel.get_path('root')
                     }
                 ).first(),
                 'user': user,

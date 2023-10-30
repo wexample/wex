@@ -56,6 +56,9 @@ class Kernel:
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep
         }
 
+        # Check that script is called from a valid dir.
+        self.get_path('call')
+
         # Create a registry for faster access
         self.resolvers: dict = {
             class_definition.get_type(): class_definition
@@ -64,7 +67,7 @@ class Kernel:
 
         # Initialize addons config
         self.addons = {}
-        for name in list_subdirectories(self.path['addons']):
+        for name in list_subdirectories(self.get_path('addons')):
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
             self.addons[name]: AddonManager = definition(self, name)
 
@@ -76,8 +79,41 @@ class Kernel:
 
         self.load_registry()
 
+    def get_path(self, name: str) -> str:
+        """Get the path associated with the given name."""
+        if name in self.path:
+            return self.path[name]
+        else:
+            self.io.error(
+                ERR_UNEXPECTED,
+                {
+                    'error': f'Kernel path not found {name}.'
+                }
+            )
+
+            sys.exit(1)
+
+    def get_or_create_path(self, name: str) -> str:
+        path = self.get_path(name)
+
+        # Check if the directory exists, and if not, create it
+        if not os.path.exists(path):
+            try:
+                os.makedirs(path)
+            except PermissionError:
+                self.io.error(
+                    ERR_UNEXPECTED,
+                    {
+                        'error': f'Permission denied: Could not create {path}.'
+                    }
+                )
+                self.io['error'](f"Permission denied: Could not create {path}.")
+                sys.exit(1)
+
+        return path
+
     def load_registry(self):
-        path_registry = f'{self.path["tmp"]}{FILE_REGISTRY}'
+        path_registry = f"{self.get_or_create_path('tmp')}{FILE_REGISTRY}"
 
         # Load registry if empty
         if not os.path.exists(path_registry):
@@ -186,7 +222,7 @@ class Kernel:
         return request.resolver.render_request(request, KERNEL_RENDER_MODE_CLI)
 
     def task_file_path(self, type: str):
-        task_dir = os.path.join(self.path['tmp'], 'task')
+        task_dir = os.path.join(self.get_or_create_path('tmp'), 'task')
         os.makedirs(task_dir, exist_ok=True)
         return os.path.join(task_dir, f"{self.task_id}.{type}")
 
@@ -299,4 +335,4 @@ class Kernel:
     def load_env(self):
         from dotenv import load_dotenv
         # Load .env file to get API token
-        load_dotenv(dotenv_path=self.path['root'] + '.env')
+        load_dotenv(dotenv_path=self.get_path('root') + '.env')

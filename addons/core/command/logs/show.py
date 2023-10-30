@@ -9,7 +9,7 @@ import json
 @alias('logs')
 def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
-    directory = kernel.path['log']
+    directory = kernel.get_or_create_path('log')
 
     all_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     json_files = [f for f in all_files if f.endswith('.json')]

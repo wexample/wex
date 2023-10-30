@@ -24,9 +24,9 @@ def get_app_docker_compose_files(kernel, app_dir):
         'app-dir': app_dir,
         'service': 'proxy',
     }).first():
-        compose_files.append(kernel.path['addons'] + 'app/containers/network/docker-compose.yml')
+        compose_files.append(kernel.get_path('addons') + 'app/containers/network/docker-compose.yml')
     else:
-        compose_files.append(kernel.path['addons'] + 'app/containers/default/docker-compose.yml')
+        compose_files.append(kernel.get_path('addons') + 'app/containers/default/docker-compose.yml')
 
     compose_files.append(
         app_compose_file
