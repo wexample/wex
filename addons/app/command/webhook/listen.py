@@ -2,7 +2,8 @@ import shutil
 
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.helper.command import execute_command
-from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
+from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON, \
+    WEBHOOK_LISTEN_PORT_DEFAULT
 from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
@@ -18,7 +19,7 @@ from src.decorator.option import option
 
 @command(help="Serve webhook listener daemon")
 @as_sudo
-@option('--port', '-p', type=int, required=False, default=4242,
+@option('--port', '-p', type=int, required=False, default=WEBHOOK_LISTEN_PORT_DEFAULT,
         help="Which port is used by service to listen incoming webhooks")
 @option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,
         help="Do not start real service, useful for testing")
@@ -28,7 +29,7 @@ from src.decorator.option import option
         help="Kill existing process if already running")
 def app__webhook__listen(
         base_kernel: Kernel,
-        port: int = 4242,
+        port: int = WEBHOOK_LISTEN_PORT_DEFAULT,
         dry_run: bool = False,
         asynchronous: bool = False,
         force: bool = False

@@ -6,7 +6,7 @@ import yaml
 
 from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
-from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME
+from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -81,7 +81,7 @@ class AppAddonManager(AddonManager):
         return {
             'global': {
                 'author': getpass.getuser(),
-                'created': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                'created': datetime.datetime.utcnow().strftime(DATE_FORMAT_SECOND),
                 'name': app_name,
                 'services': [],
                 'type': 'app'
