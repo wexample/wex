@@ -2,6 +2,7 @@ import click
 from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 from src.const.globals import COMMAND_TYPE_ADDON
 
+
 # Define your custom decorator
 def command(*args, **kwargs):
     if 'help' not in kwargs:
