@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler
-from addons.core.command.webhook.exec import core__webhook__exec
+from addons.app.command.webhook.exec import app__webhook__exec
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
@@ -8,7 +8,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             success = self.kernel.run_function(
-                core__webhook__exec,
+                app__webhook__exec,
                 {
                     'url': self.path,
                 }

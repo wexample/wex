@@ -2,10 +2,10 @@ import os
 
 from tests.AbstractTestCase import AbstractTestCase
 
-from addons.core.command.webhook.exec import core__webhook__exec
+from addons.app.command.webhook.exec import app__webhook__exec
 
 
-class TestCoreCommandWebhookExec(AbstractTestCase):
+class TestAppCommandWebhookExec(AbstractTestCase):
     def test_exec(self):
         test_webhook_app_path = '/var/www/test/wex-test-webhook'
         if not os.path.islink(test_webhook_app_path):
@@ -19,7 +19,7 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
             )
 
         success = self.kernel.run_function(
-            core__webhook__exec,
+            app__webhook__exec,
             {
                 'url': 'http://localhost:4242/webhook/wex-test-webhook/test',
                 'env': 'test'
@@ -29,7 +29,7 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         self.assertTrue(success)
 
         success = self.kernel.run_function(
-            core__webhook__exec,
+            app__webhook__exec,
             {
                 'url': 'http://localhost:4242/webhook/wex-test-webhook/test?lorem=ipsum',
                 'env': 'test'
@@ -39,7 +39,7 @@ class TestCoreCommandWebhookExec(AbstractTestCase):
         self.assertTrue(success)
 
         success = self.kernel.run_function(
-            core__webhook__exec,
+            app__webhook__exec,
             {
                 'url': 'http://localhost:4242/webhook/wex-test-webhook/test-wrapped?p=155&v=wex_5.0.0-beta.6+build.20230321054915',
                 'env': 'test'

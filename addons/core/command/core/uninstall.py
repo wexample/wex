@@ -1,6 +1,6 @@
 import os
 
-from addons.core.command.webhook.stop import core__webhook__stop
+from addons.app.command.webhook.stop import app__webhook__stop
 from addons.default.command.file.remove_line import default__file__remove_line
 from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from addons.system.command.system.is_docker import system__system__is_docker
@@ -24,7 +24,7 @@ def core__core__uninstall(kernel: Kernel):
 
 def __core__core__uninstall_webhook_server(kernel):
     kernel.run_function(
-        core__webhook__stop
+        app__webhook__stop
     )
 
 

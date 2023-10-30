@@ -8,7 +8,7 @@ from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
 from src.const.error import ERR_UNEXPECTED
-from src.core.WebhookHttpRequestHandler import WebhookHttpRequestHandler
+from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from src.decorator.as_sudo import as_sudo
 from http.server import HTTPServer
 from src.core.Kernel import Kernel
@@ -26,7 +26,7 @@ from src.decorator.option import option
         help="Use a daemon or not. Can't use daemon in a docker container")
 @option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
         help="Kill existing process if already running")
-def core__webhook__serve(
+def app__webhook__listen(
         base_kernel: Kernel,
         port: int = 4242,
         dry_run: bool = False,
@@ -65,7 +65,7 @@ def core__webhook__serve(
 
             # Build command
             command = base_kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(
-                core__webhook__serve,
+                app__webhook__listen,
                 {
                     'port': port
                 }

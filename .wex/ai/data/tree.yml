@@ -1669,8 +1669,6 @@ children:
             type: file
           TestKernel.py:
             type: file
-          WebhookHttpRequestHandler.py:
-            type: file
           command:
             children:
               AbstractCommandResolver.py:

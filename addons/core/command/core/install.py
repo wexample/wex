@@ -4,7 +4,7 @@ import sys
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.helpers.app import create_env
 from addons.core.command.logo.show import core__logo__show
-from addons.core.command.webhook.serve import core__webhook__serve
+from addons.app.command.webhook.listen import app__webhook__listen
 from addons.default.command.file.append_once import default__file__append_once
 from src.const.error import ERR_PYTHON_MINIMAL_VERSION
 from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
@@ -98,7 +98,7 @@ def __core__core__install_webhook_server(kernel):
     kernel.io.log(f'Installing webhooks server ...')
 
     kernel.run_function(
-        core__webhook__serve,
+        app__webhook__listen,
         {
             'asynchronous': True,
             'force': True

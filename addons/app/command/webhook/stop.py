@@ -1,5 +1,5 @@
 
-from addons.core.command.webhook.serve import core__webhook__serve
+from addons.app.command.webhook.listen import app__webhook__listen
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.helper.file import remove_file_if_exists
 from src.const.globals import SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
@@ -11,7 +11,7 @@ from src.decorator.command import command
 
 @command(help="Stop webhook daemon")
 @as_sudo
-def core__webhook__stop(
+def app__webhook__stop(
         kernel: Kernel,
 ):
     use_daemon = not kernel.run_function(system__system__is_docker)
@@ -26,7 +26,7 @@ def core__webhook__stop(
         kill_process_by_command(
             kernel,
             kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(
-                core__webhook__serve
+                app__webhook__listen
             )
         )
 
