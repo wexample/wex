@@ -3,8 +3,7 @@ from addons.system.command.process.by_port import system__process__by_port
 
 
 class TestSystemCommandProcessByPort(AbstractPortTestCase):
-    def test_by_port(self):
-        port = 45678
+    def test_by_port(self, port: int = 45678):
         server_process = self.start_test_process(port)
 
         response = self.kernel.run_function(system__process__by_port, {
