@@ -6,8 +6,10 @@ from src.helper.file import create_from_template
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.Kernel import Kernel
+from src.decorator.as_sudo import as_sudo
 
 
+@as_sudo
 @command(help="Create a new command and test files")
 @option('--command', '-c', type=str, required=True,
         help="Full name of the command, i.e. addon::some/thing")

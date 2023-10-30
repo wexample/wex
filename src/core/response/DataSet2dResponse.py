@@ -4,11 +4,11 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI
 
 
 class DataSet2dResponse(AbstractResponse):
-    header: list
-    body: list
-
     def __init__(self, kernel):
         super().__init__(kernel)
+
+        self.header: list | None = None
+        self.body: list | None = None
 
     def set_header(self, header):
         self.header = header
