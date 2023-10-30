@@ -24,8 +24,6 @@ class Logger:
             'errors': [],
         }
 
-        os.makedirs(self.kernel.get_or_create_path('log'), exist_ok=True)
-
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
 
