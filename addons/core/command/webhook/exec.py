@@ -50,9 +50,11 @@ def core__webhook__exec(kernel: Kernel, url: str, env: None | str = None) -> boo
             env = env or kernel.run_function(app__env__get, {
                 'app-dir': kernel.get_path('root')
             }).first()
-            working_directory = f"/var/www/{env}/{app_name}"
+            working_directory = f'/var/www/{env}/{app_name}/'
             source_data['working_directory'] = working_directory
             hook_file = f".wex/webhook/{webhook}.sh"
+
+            kernel.io.log(f'Searching for hook {working_directory}{hook_file}')
 
             if os.path.isdir(working_directory):
                 if os.path.isfile(os.path.join(working_directory, hook_file)):
