@@ -1,27 +1,12 @@
 from addons.system.command.kill.by_port import system__kill__by_port
+from addons.system.tests.AbstractPortTestCase import AbstractPortTestCase
 from src.helper.system import get_processes_by_port
-from tests.AbstractTestCase import AbstractTestCase
-from multiprocessing import Process
-import socket
 
 
-class TestSystemCommandKillByPort(AbstractTestCase):
-    def start_temp_server(self, port: int):
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.bind(('localhost', port))
-        server_socket.listen(1)
-        self.log(f"Listening on port {port}")
-
-        while True:
-            client_socket, address = server_socket.accept()
-            self.log(f"Accepted connection from {address}")
-            client_socket.close()
-
+class TestSystemCommandKillByPort(AbstractPortTestCase):
     def test_by_port(self):
         port = 45678
-
-        server_process = Process(target=self.start_temp_server, args=(port,))
-        server_process.start()
+        server_process = self.start_test_process(port)
 
         # Running
         process = get_processes_by_port(port)
@@ -34,8 +19,7 @@ class TestSystemCommandKillByPort(AbstractTestCase):
             }
         )
 
-        server_process.terminate()
-        server_process.join()
+        self.stop_test_process(server_process)
 
         # Not running
         process = get_processes_by_port(port)
