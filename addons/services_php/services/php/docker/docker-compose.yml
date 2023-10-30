@@ -8,8 +8,6 @@ services:
             - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
             - VIRTUAL_PORT=80
         volumes:
-            # App folder
-            - ${RUNTIME_PATH_APP}:/var/www/html
             # Security ! Hide sensitive data containing passwords and databases !
             - /var/www/html/.git
             - /var/www/html/.wex

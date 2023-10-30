@@ -1,0 +1,8 @@
+services:
+  php:
+    environment:
+      - LETSENCRYPT_HOST=${RUNTIME_DOMAINS_STRING}
+      - LETSENCRYPT_EMAIL=${RUNTIME_EMAIL}
+    volumes:
+        # App folder for local development.
+        - ${RUNTIME_PATH_APP}:/var/www/html
