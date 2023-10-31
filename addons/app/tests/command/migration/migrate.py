@@ -28,8 +28,7 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
                 }
             )
 
-            manager = AppAddonManager(self.kernel)
-            manager.set_app_workdir(test_app_dir)
+            manager = AppAddonManager(self.kernel, test_app_dir)
 
             self.assertEqual(
                 manager.config[CORE_COMMAND_NAME]['version'],

@@ -18,7 +18,7 @@ from src.helper.dict import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
-    def __init__(self, kernel):
+    def __init__(self, kernel, app_dir: None | str = None):
         super().__init__(kernel)
         self.app_dir = None
         self.config = {}
@@ -29,6 +29,9 @@ class AppAddonManager(AddonManager):
         self.runtime_docker_compose = None
         self.runtime_docker_compose_path = None
         self.first_log_indent = None
+
+        if app_dir:
+            self.set_app_workdir(app_dir)
 
     def get_applications_path(self) -> str:
         return os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
