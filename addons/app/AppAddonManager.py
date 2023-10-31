@@ -30,11 +30,14 @@ class AppAddonManager(AddonManager):
         self.runtime_docker_compose_path = None
         self.first_log_indent = None
 
-    def get_proxy_path(self):
+    def get_applications_path(self) -> str:
+        return os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
+
+    def get_proxy_path(self) -> str:
         if platform.system() == 'Darwin':
             return '/Users/.wex/proxy/'
         else:
-            return f'/var/www/{self.kernel.registry["env"]}/{PROXY_APP_NAME}/'
+            return f'{self.get_applications_path()}{PROXY_APP_NAME}/'
 
     def get_proxy_apps(self):
         return yaml_load_or_default(
