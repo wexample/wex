@@ -9,5 +9,5 @@ Homepage: https://wexample.com
 Package: wex
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}, bash-completion, git, python3 (>= 3.10), python3-pip, python3-venv, procps, sudo
-Description:Single entrypoint to execute custom bash scripts,
+Description:Single entrypoint to execute custom scripts,
  and run Docker application on several environments.
