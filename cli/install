@@ -11,7 +11,7 @@ WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
 . "${WEX_DIR_CLI}/_init_sudo.sh"
 
 # Set WEX_DIR_ROOT
-WEX_DIR_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
+WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
 
 echo "Checking Python requirements..."
 
@@ -38,8 +38,8 @@ fi
 sudo rm -rf .wex/python/venv
 VENV_PATH="${WEX_DIR_ROOT}.wex/python/venv"
 python3 -m venv "$VENV_PATH"
-# shellcheck disable=SC1090
-source "${VENV_PATH}/bin/activate"
+# Activate virtual environment
+. "${VENV_PATH}/bin/activate"
 
 echo "Installing Python requirements..."
 pip install -r "${WEX_DIR_ROOT}requirements.txt"
