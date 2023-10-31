@@ -54,7 +54,7 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
         )
 
         # Use config
-        manager = AppAddonManager(self.kernel, app_dir)
+        manager = AppAddonManager(self.kernel, app_dir=app_dir)
 
         current_user = get_sudo_username()
         current_group = get_user_group_name(current_user)

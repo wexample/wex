@@ -69,7 +69,7 @@ class Kernel:
         self.addons = {}
         for name in list_subdirectories(self.get_path('addons')):
             definition = ADDONS_DEFINITIONS.get(name, AddonManager)
-            self.addons[name]: AddonManager = definition(self, name)
+            self.addons[name]: AddonManager = definition(self, name=name)
 
         self.store_task_id()
         self.handle_core_args()

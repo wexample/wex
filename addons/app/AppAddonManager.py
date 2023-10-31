@@ -18,8 +18,8 @@ from src.helper.dict import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
-    def __init__(self, kernel, app_dir: None | str = None):
-        super().__init__(kernel)
+    def __init__(self, kernel, name: str = 'app', app_dir: None | str = None):
+        super().__init__(kernel, name)
         self.app_dir = None
         self.config = {}
         self.config_path = None
@@ -34,13 +34,59 @@ class AppAddonManager(AddonManager):
             self.set_app_workdir(app_dir)
 
     def get_applications_path(self) -> str:
-        return os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
+        return os.sep + os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
+
+    def get_env_file_path(self, file_relative_path: str, create: bool = False) -> str:
+        relative_dir = os.path.dirname(
+            file_relative_path
+        )
+
+        env_file_path = self.get_env_dir(relative_dir, create) + os.path.basename(file_relative_path)
+
+        if create and not os.path.exists(env_file_path):
+            with open(env_file_path, 'w'):
+                pass
+
+        return env_file_path
+
+    def get_env_dir(self, dir: str, create: bool = False) -> str:
+        if not self.app_dir:
+            from src.const.error import ERR_UNEXPECTED
+
+            self.kernel.io.error(ERR_UNEXPECTED, {
+                'error': 'Trying to get env directory before setting working directory',
+            })
+
+        env_dir = os.path.join(
+            self.app_dir,
+            APP_DIR_APP_DATA,
+            dir
+        ) + os.sep
+
+        if create and not os.path.exists(env_dir):
+            os.makedirs(env_dir, exist_ok=True)
+
+        return env_dir
+
+    def load_script(self, name: str) -> dict | None:
+        script_dir = self.get_env_file_path(
+            os.path.join(
+                'script',
+                name + '.yml'
+            ))
+
+        if not os.path.exists(script_dir):
+            return None
+
+        # Load the configuration file
+        with open(script_dir, 'r') as file:
+            return yaml.safe_load(file)
 
     def get_proxy_path(self) -> str:
         if platform.system() == 'Darwin':
-            return '/Users/.wex/proxy/'
+            return os.sep + os.path.join('Users', '.wex', 'proxy') + os.sep
         else:
-            return f'{self.get_applications_path()}{PROXY_APP_NAME}/'
+            return f'{self.get_applications_path()}{PROXY_APP_NAME}{os.sep}'
 
     def get_proxy_apps(self):
         return yaml_load_or_default(
