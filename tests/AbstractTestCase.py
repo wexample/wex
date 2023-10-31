@@ -47,7 +47,6 @@ class AbstractTestCase(unittest.TestCase):
             self.assertEqual(result.get(key), value, f"Failed for key: {key}")
 
     def build_test_dir(self, source_dir: str) -> str:
-        # English comments as requested
         # Get the directory name from source directory
         dir_name = os.path.basename(source_dir)
         tmp_dir = self.kernel.get_or_create_path('tmp')
