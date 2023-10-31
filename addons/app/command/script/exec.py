@@ -68,15 +68,34 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str):
         if script_part_type == COMMAND_TYPE_BASH:
             script = script_part.get('script', '')
         elif script_part_type == COMMAND_TYPE_BASH_FILE:
-            script = [
-                'bash',
-                os.path.join(
-                    manager.app_dir,
-                    script_part['file']
-                )
-            ]
-        # elif script_part_type == COMMAND_TYPE_PYTHON:
-        # elif script_part_type == COMMAND_TYPE_PYTHON_FILE:
+            # File is required in this case.
+            if 'file' in script_part_type:
+                script = [
+                    'bash',
+                    os.path.join(
+                        manager.app_dir,
+                        script_part['file']
+                    )
+                ]
+        elif script_part_type == COMMAND_TYPE_PYTHON:
+            if 'script' in script_part:
+                escaped_script = script_part['script'].replace('"', r'\"')
+
+                script = [
+                    'python3',
+                    '-c',
+                    f'"{escaped_script}"'
+                ]
+        elif script_part_type == COMMAND_TYPE_PYTHON_FILE:
+            # File is required in this case.
+            if 'file' in script_part_type:
+                script = [
+                    'python3',
+                    os.path.join(
+                        manager.app_dir,
+                        script_part['file']
+                    )
+                ]
 
         if script:
             commands_collection.append(

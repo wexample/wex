@@ -4,7 +4,6 @@ import shutil
 from addons.app.command.script.exec import app__script__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.const.app import APP_DIR_APP_DATA
-from src.helper.file import create_directories_and_copy
 
 
 class TestAppCommandScriptExec(AbstractAppTestCase):
@@ -57,4 +56,14 @@ class TestAppCommandScriptExec(AbstractAppTestCase):
         self.assertEqual(
             response.output_bag[2].first(),
             'BASH_RESPONSE_FROM_FILE'
+        )
+
+        self.assertEqual(
+            response.output_bag[3].first(),
+            'PYTHON_SUCCESS'
+        )
+
+        self.assertEqual(
+            response.output_bag[4].first(),
+            'PYTHON_SUCCESS_FROM_FILE'
         )

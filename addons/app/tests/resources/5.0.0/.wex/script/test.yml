@@ -12,8 +12,8 @@ scripts:
 
   - title: Inline python
     type: python
-    file: print('PYTHON_SUCCESS')
+    script: print('PYTHON_SUCCESS')
 
   - title: File in python
     type: python-file
-    file: file.py
+    file: .wex/script/test.py
