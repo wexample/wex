@@ -1,0 +1,24 @@
+# Default type is "bash"
+scripts:
+  - echo "SIMPLE_COMMAND"
+
+  - title: Testing new scripts format
+    context: host
+    script: echo "OUTSIDE"
+
+  - title: Another test
+    context: container
+    container_name: php
+    script: echo "INSIDE"
+
+  - title: Another in bash
+    type: bash-file
+    file: test.sh
+
+  - title: Inline python
+    type: python
+    file: print('PYTHON_SUCCESS')
+
+  - title: File in python
+    type: python-file
+    file: file.py

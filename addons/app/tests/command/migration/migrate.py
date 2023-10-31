@@ -4,19 +4,13 @@ from typing import List
 from addons.app.command.migration.migrate import app__migration__migrate
 from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
-from tests.AbstractTestCase import AbstractTestCase
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandMigrationMigrate(AbstractTestCase):
+class TestAppCommandMigrationMigrate(AbstractAppTestCase):
     def test_migrate(self):
-        source_apps_dir = os.path.join(
-            self.kernel.get_path('root'),
-            'addons',
-            'app',
-            'tests',
-            'resources',
-        ) + os.sep
+        source_apps_dir = self.get_app_resources_path()
 
         test_apps: List[str] = os.listdir(source_apps_dir)
 

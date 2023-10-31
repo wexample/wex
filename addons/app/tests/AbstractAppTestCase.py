@@ -56,6 +56,15 @@ class AbstractAppTestCase(AbstractTestCase):
             any(re.search(pattern, shell_response) for pattern in patterns),
         )
 
+    def get_app_resources_path(self) -> str:
+        return os.path.join(
+            self.kernel.get_path('root'),
+            'addons',
+            'app',
+            'tests',
+            'resources',
+        ) + os.sep
+
     def create_and_start_test_app(
             self,
             name: str = DEFAULT_APP_TEST_NAME,

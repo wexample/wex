@@ -98,7 +98,10 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         return success, out_content_decoded
 
 
-def command_to_string(command: list, add_quotes: bool = True, quote_char: str = '"'):
+def command_to_string(command: list | str, add_quotes: bool = True, quote_char: str = '"'):
+    if isinstance(command, str):
+        return command
+
     output = []
 
     for item in command:

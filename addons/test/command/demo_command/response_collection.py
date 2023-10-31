@@ -1,5 +1,4 @@
 from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command

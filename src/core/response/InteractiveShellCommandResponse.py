@@ -6,10 +6,10 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class InteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel, shell_command: list, ignore_error: bool = False):
+    def __init__(self, kernel, shell_command: list | str, ignore_error: bool = False):
         super().__init__(kernel)
 
-        self.shell_command: list = shell_command
+        self.shell_command: list | str = shell_command
         self.interactive_data = True
         self.ignore_error = ignore_error
 
