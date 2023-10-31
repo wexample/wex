@@ -93,7 +93,7 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
             out_file.write(out_content.decode())
 
         out_content_decoded = out_content.decode().splitlines()
-        kernel.io.log(out_content, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         return success, out_content_decoded
 

@@ -1,19 +1,14 @@
 # Default type is "bash"
 scripts:
-  - echo "SIMPLE_COMMAND"
+  - echo "MINIMAL_BASH_RESPONSE"
 
   - title: Testing new scripts format
     context: host
-    script: echo "OUTSIDE"
-
-  - title: Another test
-    context: container
-    container_name: php
-    script: echo "INSIDE"
+    script: echo "BASH_RESPONSE"
 
   - title: Another in bash
     type: bash-file
-    file: test.sh
+    file: .wex/script/test.sh
 
   - title: Inline python
     type: python

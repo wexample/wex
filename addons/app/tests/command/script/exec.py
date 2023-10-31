@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from addons.app.command.script.exec import app__script__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
@@ -8,21 +9,22 @@ from src.helper.file import create_directories_and_copy
 
 class TestAppCommandScriptExec(AbstractAppTestCase):
     def test_exec(self):
-        app_dir = self.create_test_app(services=['php'])
+        app_dir = self.create_test_app(
+            services=['php'],
+            force_restart=True
+        )
 
-        create_directories_and_copy(
+        shutil.copytree(
             os.path.join(
                 self.get_app_resources_path(),
                 '5.0.0',
                 APP_DIR_APP_DATA,
                 'script',
-                'test.yml'
             ),
             os.path.join(
                 app_dir,
                 APP_DIR_APP_DATA,
                 'script',
-                'test.yml'
             )
         )
 
@@ -44,15 +46,15 @@ class TestAppCommandScriptExec(AbstractAppTestCase):
 
         self.assertEqual(
             response.output_bag[0].first(),
-            'SIMPLE_COMMAND'
+            'MINIMAL_BASH_RESPONSE'
         )
 
         self.assertEqual(
             response.output_bag[1].first(),
-            'OUTSIDE'
+            'BASH_RESPONSE'
         )
 
         self.assertEqual(
             response.output_bag[2].first(),
-            'INSIDE'
+            'BASH_RESPONSE_FROM_FILE'
         )
