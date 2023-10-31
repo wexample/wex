@@ -7,8 +7,8 @@ from src.decorator.alias_without_addon import alias_without_addon
 from src.decorator.as_sudo import as_sudo
 
 
-@as_sudo
 @command(help="Make current user owner of this directory and every files or subdirectories")
+@as_sudo
 @alias_without_addon()
 @option('--path', '-p', type=str, required=False, default=None, help="Argument")
 def system__own__this(kernel, path: str = None):
