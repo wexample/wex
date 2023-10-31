@@ -1,14 +1,12 @@
-import os
 import re
 
+from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
-
 from addons.core.command.logs.rotate import core__logs__rotate
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
-from addons.app.command.env.get import app__env__get
-from src.helper.command import execute_command
+from addons.app.AppAddonManager import AppAddonManager
 
 
 @command(help="Execute a webhook")
@@ -47,37 +45,32 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None) -> bool
             args.append(value[0])
 
         if not has_error:
-            env = env or kernel.run_function(app__env__get, {
-                'app-dir': kernel.get_path('root')
-            }).first()
-            working_directory = f'/var/www/{env}/{app_name}/'
-            source_data['working_directory'] = working_directory
-            hook_file = f".wex/webhook/{webhook}.sh"
+            manager = AppAddonManager(kernel)
+            apps = manager.get_proxy_apps()
 
-            kernel.io.log(f'Searching for hook {working_directory}{hook_file}')
+            # App exists somewhere.
+            if app_name in apps:
+                manager.set_app_workdir(apps[app_name])
+                source_data['app_dir'] = manager.app_dir
 
-            if os.path.isdir(working_directory):
-                if os.path.isfile(os.path.join(working_directory, hook_file)):
-                    # Add the arguments to the command
-                    command = ['bash', hook_file] + args
+                response_collection = kernel.run_function(
+                    app__script__exec,
+                    {
+                        'name': webhook,
+                        'app-dir': manager.app_dir,
+                    }
+                ).first()
 
-                    kernel.logger.append_event({
-                        'url': url,
-                        'command': command,
-                        'source_data': source_data,
-                        'success': True
-                    })
+                kernel.logger.append_event({
+                    'url': url,
+                    'source_data': source_data,
+                    'success': response_collection is not None
+                })
 
-                    execute_command(kernel, command, working_directory)
-                    return True
-
-                source_data['missing_file'] = hook_file
-            else:
-                source_data['missing_workdir'] = working_directory
+                return True
 
     kernel.logger.append_event({
         'url': url,
-        'command': [],
         'source_data': source_data,
         'success': False
     })

@@ -21,25 +21,15 @@ COMMAND_TYPE_PYTHON_FILE = 'python-file'
 @option('--name', '-n', type=str, required=True, help="Script name")
 def app__script__exec(kernel: Kernel, app_dir: str, name: str):
     manager: AppAddonManager = kernel.addons['app']
-    script_dir: str = os.path.join(
-        manager.app_dir,
-        APP_DIR_APP_DATA,
-        'script',
-        name + '.yml'
-    )
+    script_config = manager.load_script(name)
 
-    if not os.path.exists(script_dir):
+    if not script_config:
         return None
 
-    # Load the configuration file
-    with open(script_dir, 'r') as file:
-        command = yaml.safe_load(file)
-
     commands_collection = []
-
     counter = 0
     # Iterate through each command in the configuration
-    for script in command.get('scripts', []):
+    for script in script_config.get('scripts', []):
         if isinstance(script, str):
             script = {
                 'script': script,
