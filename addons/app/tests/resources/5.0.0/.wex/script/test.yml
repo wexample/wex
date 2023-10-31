@@ -1,3 +1,4 @@
+webhook: true
 # Default type is "bash"
 scripts:
   - echo "MINIMAL_BASH_RESPONSE"

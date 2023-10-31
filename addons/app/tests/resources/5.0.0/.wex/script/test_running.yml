@@ -1,3 +1,4 @@
+webhook: true
 scripts:
   - title: Test outside but with running app
     app_should_run: true
