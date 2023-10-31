@@ -1,0 +1,14 @@
+scripts:
+  - title: Test outside but with running app
+    app_should_run: true
+    script: echo "BASH_RESPONSE_RUNNING"
+
+  - title: Test inside container
+    context: container
+    container_name: php
+    script: ls -la /var/tmp/ && echo "TEST_EXECUTION_ORDER" > /var/tmp/test-file-two
+
+  - title: Test removing previously created file
+    context: container
+    container_name: php
+    script: cat /var/tmp/test-file-two
