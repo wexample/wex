@@ -43,44 +43,44 @@ class TestAppCommandScriptExec(AbstractAppTestCase):
             'app-dir': app_dir
         })
 
-        # self.assertIsNone(
-        #     response.first()
-        # )
-        #
-        # # Test script
-        # response = self.kernel.run_function(app__script__exec, {
-        #     'name': 'test',
-        #     'app-dir': app_dir
-        # })
-        #
-        # self.assertEqual(
-        #     response.output_bag[0].first(),
-        #     'MINIMAL_BASH_RESPONSE'
-        # )
-        #
-        # self.assertEqual(
-        #     response.output_bag[1].first(),
-        #     'BASH_RESPONSE'
-        # )
-        #
-        # self.assertEqual(
-        #     response.output_bag[2].first(),
-        #     'BASH_RESPONSE_FROM_FILE'
-        # )
-        #
-        # self.assertEqual(
-        #     response.output_bag[3].first(),
-        #     'PYTHON_SUCCESS'
-        # )
-        #
-        # self.assertEqual(
-        #     response.output_bag[4].first(),
-        #     'PYTHON_SUCCESS_FROM_FILE'
-        # )
+        self.assertIsNone(
+            response.first()
+        )
+
+        # Test script
+        response = self.kernel.run_function(app__script__exec, {
+            'name': 'test',
+            'app-dir': app_dir
+        })
+
+        self.assertEqual(
+            response.output_bag[0].first(),
+            'MINIMAL_BASH_RESPONSE'
+        )
+
+        self.assertEqual(
+            response.output_bag[1].first(),
+            'BASH_RESPONSE'
+        )
+
+        self.assertEqual(
+            response.output_bag[2].first(),
+            'BASH_RESPONSE_FROM_FILE'
+        )
+
+        self.assertEqual(
+            response.output_bag[3].first(),
+            'PYTHON_SUCCESS'
+        )
+
+        self.assertEqual(
+            response.output_bag[4].first(),
+            'PYTHON_SUCCESS_FROM_FILE'
+        )
 
         # Inside container, should fail when app not started
         with self.assertRaises(FatalError, msg=None):
-            response = self.kernel.run_function(app__script__exec, {
+            self.kernel.run_function(app__script__exec, {
                 'name': 'test_running',
                 'app-dir': app_dir
             })
