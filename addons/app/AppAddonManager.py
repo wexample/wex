@@ -18,8 +18,8 @@ from src.helper.dict import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
-    def __init__(self, kernel, name):
-        super().__init__(kernel, name)
+    def __init__(self, kernel):
+        super().__init__(kernel)
         self.app_dir = None
         self.config = {}
         self.config_path = None

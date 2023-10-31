@@ -33,7 +33,7 @@ def create_manager(kernel, app_dir: str, name: str = 'app'):
             app_dir = os.getcwd() + os.sep
 
     # Create a dedicated manager
-    manager = AppAddonManager(kernel, name)
+    manager = AppAddonManager(kernel)
     manager.set_app_workdir(app_dir)
 
     return manager

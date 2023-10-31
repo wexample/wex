@@ -17,7 +17,7 @@ def app__hosts__update(kernel: Kernel):
         docker__docker__ip
     ).first()
 
-    manager: AppAddonManager = AppAddonManager(kernel, 'updating')
+    manager: AppAddonManager = AppAddonManager(kernel)
     for app_name, app_dir in manager.get_proxy_apps().items():
         # Filter out missing folders
         if os.path.exists(app_dir):
