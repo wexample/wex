@@ -519,7 +519,7 @@ class AppAddonManager(AddonManager):
         })
 
         # Build paths to services docker compose yml files.
-        for service, service_data in self.kernel.registry['services'].items():
+        for service, service_data in self.kernel.registry['service'].items():
             base_yml = service_data['dir'] + 'docker/docker-compose.yml'
             env_yml = service_data['dir'] + f'docker/docker-compose.{env}.yml'
 

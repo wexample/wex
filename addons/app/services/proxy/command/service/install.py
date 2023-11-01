@@ -25,7 +25,7 @@ def proxy__service__install(kernel: Kernel, app_dir: str, service: str):
         manager.set_config('global.port_public_secure', port_secure)
 
     shutil.copytree(
-        os.path.join(kernel.registry['services']['proxy']['dir'], 'samples') + os.sep + 'proxy/',
+        os.path.join(kernel.registry['service']['proxy']['dir'], 'samples') + os.sep + 'proxy/',
         app_dir + 'proxy/',
         dirs_exist_ok=True,
         copy_function=shutil.copy2

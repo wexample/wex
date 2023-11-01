@@ -13,7 +13,7 @@ from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
         service = to_snake_case(request.match[1])
-        if service not in self.kernel.registry['services']:
+        if service not in self.kernel.registry['service']:
             if not request.quiet:
                 self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {
                     'command': request.command,
@@ -43,7 +43,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def build_path(self, request: CommandRequest, subdir: str = None):
         return self.build_command_path(
-            f"{self.kernel.registry['services'][to_snake_case(request.match[1])]['dir']}",
+            f"{self.kernel.registry['service'][to_snake_case(request.match[1])]['dir']}",
             subdir,
             os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
         )
@@ -64,10 +64,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
         if search_split[0] == COMMAND_CHAR_SERVICE:
             if cursor <= 1:
                 if search_split[0] == COMMAND_CHAR_SERVICE:
-                    from src.helper.registry import get_all_commands_from_services
-
                     commands = [
-                        command for command in get_all_commands_from_services(self.kernel).keys()
+                        command for command in self.get_commands_registry().keys()
                         if command.startswith(''.join(search_split))
                     ]
 
@@ -77,13 +75,11 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     return COMMAND_CHAR_SERVICE
             elif cursor == 2 or cursor == 3:
                 if search_split[2] == COMMAND_SEPARATOR_ADDON:
-                    from src.helper.registry import get_all_commands_from_services
-
                     search_service = ''.join(search_split[:3])
                     search = ''.join(search_split)
 
                     commands = [
-                        command[len(search_service):] for command in get_all_commands_from_services(self.kernel).keys()
+                        command[len(search_service):] for command in self.get_commands_registry().keys()
                         if command.startswith(search)
                     ]
 

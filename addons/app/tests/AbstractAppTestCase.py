@@ -105,7 +105,7 @@ class AbstractAppTestCase(AbstractTestCase):
     def for_each_db_service(self, callback: callable):
         db_services = []
 
-        services = self.kernel.registry['services']
+        services = self.kernel.registry['service']
         for service in services:
             if 'tags' in services[service]['config'] and 'db' in services[service]['config']['tags']:
                 db_services.append(service)

@@ -30,7 +30,7 @@ def core__test__run(kernel: Kernel, command: str = None):
         )
 
     kernel.io.log('Starting addons tests suites..')
-    for addon_data in kernel.registry['addons'].values():
+    for addon_data in kernel.registry['addon'].values():
         for command_name, command_data in addon_data['commands'].items():
             if 'test' in command_data and command_data['test'] and (
                     (not command) or command_name == command):

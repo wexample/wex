@@ -6,7 +6,7 @@ class TestAppCommandDbExec(AbstractAppTestCase):
     def test_exec(self):
         def callback(db_service):
             self.log(f'Testing database exec {db_service}')
-            test_config = self.kernel.registry['services'][db_service]['config']['test']
+            test_config = self.kernel.registry['service'][db_service]['config']['test']
 
             self.assertTrue(
                 'exec_command' in test_config,

@@ -2,7 +2,6 @@ import os
 
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
-from src.helper.registry import get_all_commands_from_addons
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
@@ -36,10 +35,6 @@ class AddonCommandResolver(AbstractCommandResolver):
             parts[2],
         ]
 
-    @staticmethod
-    def get_commands_registry(kernel) -> dict:
-        return get_all_commands_from_addons(kernel)
-
     def build_alias(self, function, alias: bool | str) -> str:
         if alias == 'NO_ADDON_ALIAS':
             parts = self.build_match(
@@ -58,7 +53,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             # User typed "co"
             if search_split[0] != '':
                 suggestion = ' '.join(
-                    [addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys() if
+                    [addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys() if
                      addon.startswith(search_split[0])])
 
                 # If only one result, autocomplete
@@ -66,15 +61,15 @@ class AddonCommandResolver(AbstractCommandResolver):
                 return suggest_autocomplete_if_single(self.kernel, suggestion)
             # User typed "wex ", we suggest all addons names and special chars.
             else:
-                return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addons'].keys())
+                return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys())
 
         elif cursor == 1:
             # User typed "wex core::", we suggest all addon groups.
             if search_split[1] == COMMAND_SEPARATOR_ADDON:
-                if search_split[0] in self.kernel.registry['addons']:
+                if search_split[0] in self.kernel.registry['addon']:
                     return ' '.join([
                         command[len(search_split[0] + COMMAND_SEPARATOR_ADDON):]
-                        for command in self.kernel.registry['addons'][search_split[0]]['commands']
+                        for command in self.kernel.registry['addon'][search_split[0]]['commands']
                         if command.startswith(search_split[0] + COMMAND_SEPARATOR_ADDON)
                     ])
             elif search_split[1] == ':':

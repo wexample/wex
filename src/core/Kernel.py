@@ -59,12 +59,6 @@ class Kernel:
         # Check that script is called from a valid dir.
         self.get_path('call')
 
-        # Create a registry for faster access
-        self.resolvers: dict = {
-            class_definition.get_type(): class_definition
-            for class_definition in COMMAND_RESOLVERS_CLASSES
-        }
-
         # Initialize addons config
         self.addons = {}
         for name in list_subdirectories(self.get_path('addons')):
@@ -76,6 +70,12 @@ class Kernel:
 
         # Create the logger after task_id created.
         self.logger: Logger = Logger(self)
+
+        # Create resolvers
+        self.resolvers: dict = {
+            class_definition.get_type(): class_definition(self)
+            for class_definition in COMMAND_RESOLVERS_CLASSES
+        }
 
         self.load_registry()
 
@@ -246,7 +246,7 @@ class Kernel:
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.resolvers:
-            if self.resolvers[type].supports(self, command):
+            if self.resolvers[type].supports(command):
                 return type
 
     def hook_addons(self, name: str, args=None):
@@ -263,9 +263,7 @@ class Kernel:
                 hook_method(**args)
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
-        if type not in self.resolvers:
-            return None
-        return self.resolvers[type](self)
+        return self.resolvers[type] or None
 
     def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
         resolver = self.get_command_resolver(

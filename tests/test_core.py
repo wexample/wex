@@ -134,7 +134,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_tests_coverage(self):
-        for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addons']).items():
+        for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addon']).items():
             test_file_path = command_data['test']
 
             # Display nice shortcut to create missing test

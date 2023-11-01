@@ -87,7 +87,7 @@ def app__app__init(
 
         kernel.io.log('Checking services...')
         for service in services:
-            if not service in kernel.registry['services']:
+            if not service in kernel.registry['service']:
                 kernel.io.error(
                     ERR_SERVICE_NOT_FOUND,
                     {

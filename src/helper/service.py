@@ -6,7 +6,7 @@ from addons.app.AppAddonManager import AppAddonManager
 
 
 def get_service_dir(kernel, service: str) -> str:
-    addon = kernel.registry['services'][service]['addon']
+    addon = kernel.registry['service'][service]['addon']
 
     return os.path.join(kernel.get_path('addons'), addon, 'services', service)
 
@@ -16,7 +16,7 @@ def service_get_inheritance_tree(kernel, service):
     inheritance_tree = []
 
     # Get the configuration of the given service
-    service_config = kernel.registry['services'].get(service, {})
+    service_config = kernel.registry['service'].get(service, {})
 
     # Check if the service has an 'extends' property
     parent_service = service_config.get('config', {}).get('extends')

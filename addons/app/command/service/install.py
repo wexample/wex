@@ -42,7 +42,7 @@ def app__service__install(
     service = to_snake_case(service)
     kernel.io.log(f'Installing service : {service}')
 
-    all_services = kernel.registry['services']
+    all_services = kernel.registry['service']
 
     if not service in all_services:
         kernel.io.log('Service does not exists')

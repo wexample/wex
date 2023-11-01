@@ -26,3 +26,10 @@ class TestCoreCommandTestCreate(AbstractTestCase):
                 test_file_path_test
             )
         )
+
+        self.kernel.run_function(
+            core__test__create,
+            {
+                'all': True
+            }
+        )

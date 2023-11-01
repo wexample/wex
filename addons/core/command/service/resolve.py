@@ -19,8 +19,8 @@ def core__service__resolve(kernel: Kernel, service) -> List[str]:
 
         resolved_services.add(service)
 
-        if service in kernel.registry['services']:
-            config = kernel.registry['services'][service]['config']
+        if service in kernel.registry['service']:
+            config = kernel.registry['service'][service]['config']
             dependencies = config.get('dependencies', [])
 
             for dependency in dependencies:

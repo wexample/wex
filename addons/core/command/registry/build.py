@@ -38,9 +38,9 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     )
 
     registry = {
-        'addons': build_registry_addons(addons, kernel, test),
+        COMMAND_TYPE_ADDON: build_registry_addons(addons, kernel, test),
+        COMMAND_TYPE_SERVICE: build_registry_services(addons, kernel, test),
         'env': env,
-        'services': build_registry_services(addons, kernel, test)
     }
 
     kernel.io.log('Building complete...')

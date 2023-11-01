@@ -14,7 +14,7 @@ class CommandRequest:
 
         self.quiet = False
         self.resolver = resolver
-        self.command = resolver.resolve_alias(self.resolver.kernel, command)
+        self.command = resolver.resolve_alias(command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
         self.args = []

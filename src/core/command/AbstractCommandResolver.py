@@ -11,12 +11,12 @@ from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
-from src.helper.args import convert_dict_to_args, convert_dict_to_snake_dict
+from src.helper.args import convert_dict_to_args
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT, ERR_COMMAND_TYPE_MISMATCH
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
-
+from src.helper.registry import get_all_commands_from_registry_part
 from src.core.CommandRequest import CommandRequest
 
 
@@ -125,8 +125,9 @@ class AbstractCommandResolver:
     def get_pattern(cls) -> str:
         pass
 
-    @staticmethod
-    def get_commands_registry(kernel) -> dict:
+    def get_commands_registry(self) -> dict:
+        if self.get_type() in self.kernel.registry:
+            return get_all_commands_from_registry_part(self.kernel.registry[self.get_type()])
         return {}
 
     @classmethod
@@ -170,19 +171,17 @@ class AbstractCommandResolver:
 
         return request
 
-    @classmethod
-    def resolve_alias(cls, kernel, command: str) -> str:
-        registry = cls.get_commands_registry(kernel)
+    def resolve_alias(self, command: str) -> str:
+        registry = self.get_commands_registry()
         for item in registry:
             if command in registry[item]['alias']:
                 return item
         return command
 
-    @classmethod
-    def supports(cls, kernel, command: str) -> bool:
-        command = cls.resolve_alias(kernel, command)
+    def supports(self, command: str) -> bool:
+        command = self.resolve_alias(command)
 
-        if cls.build_match(command):
+        if self.build_match(command):
             return True
 
         return False
