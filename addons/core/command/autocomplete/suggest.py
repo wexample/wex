@@ -1,9 +1,11 @@
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from src.decorator.no_log import no_log
 
 
 @command(help="Return suggestion for autocomplete search")
+@no_log
 @option('--cursor', '-c', type=int, required=True, help="Indicates which part of search string is focused")
 @option('--search', '-s', type=str, required=True, help="Separated arguments, without first command, i.e. : "
                                                         "app :: config/write")
