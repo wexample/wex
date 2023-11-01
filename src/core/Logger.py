@@ -3,6 +3,8 @@ import json
 import os
 import time
 
+LOG_STATUS_STARTED = 'started'
+
 
 class Logger:
     current_command = None
@@ -18,10 +20,11 @@ class Logger:
 
         date_now = self.get_time_string()
         self.log_data = {
+            'commands': [],
             'dateStart': date_now,
             'dateLast': date_now,
-            'commands': [],
             'errors': [],
+            'status': LOG_STATUS_STARTED
         }
 
     def get_time_string(self) -> str:
@@ -56,6 +59,9 @@ class Logger:
         self.write()
 
     def append_request(self, request):
+        if hasattr(request.function.callback, 'no_log') and os.geteuid() != 0:
+            return
+
         self.current_command = {
             'command': request.command,
             'date': self.get_time_string(),
