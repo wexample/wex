@@ -109,7 +109,7 @@ class AbstractCommandResolver:
             list(request.match.groups())
         )
 
-    def get_function(self, command_path: str, parts: list) -> str:
+    def get_function(self, command_path: str, parts: list) -> callable:
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(command_path, command_path)
         module = importlib.util.module_from_spec(spec)
@@ -340,17 +340,15 @@ class AbstractCommandResolver:
                 if test_commands or not hasattr(function.callback, 'test_command'):
                     test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
 
-                    aliases_raw = function.callback.aliases if hasattr(function.callback, 'aliases') else []
-                    aliases = []
-                    for alias in aliases_raw:
-                        aliases.append(self.build_alias(function, alias))
-
                     commands[self.build_command_from_parts(parts)] = {
                         'file': command_file,
                         'test': test_file if os.path.exists(test_file) else None,
-                        'alias': aliases
+                        'alias': self.get_function_aliases(function)
                     }
         return commands
+
+    def get_function_aliases(self, function) -> list:
+        return function.callback.aliases if hasattr(function.callback, 'aliases') else []
 
     def locate_function(self, request) -> bool:
         # Build dynamic variables

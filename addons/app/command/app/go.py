@@ -7,7 +7,6 @@ from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Enter into app container", should_run=True)
-@alias('app/go')
 @option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
 @option('--user', '-u', type=str, required=False, help="User name or uid")
 def app__app__go(kernel: Kernel, app_dir: str, container_name: str | None = None, user: str | None = None):

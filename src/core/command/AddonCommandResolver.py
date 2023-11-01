@@ -1,6 +1,6 @@
 import os
 
-from helper.registry import get_all_commands
+from src.helper.registry import get_all_commands
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
@@ -36,18 +36,21 @@ class AddonCommandResolver(AbstractCommandResolver):
             parts[2],
         ]
 
-    def build_alias(self, function, alias: bool | str) -> str:
-        if alias == 'NO_ADDON_ALIAS':
-            parts = self.build_match(
-                self.build_command_from_function(function)
-            ).groups()
+    def get_function_aliases(self, function) -> list:
+        aliases = super().get_function_aliases(function)
 
-            return COMMAND_SEPARATOR_GROUP.join([
+        parts = self.build_match(
+            self.build_command_from_function(function)
+        ).groups()
+
+        aliases.append(
+            COMMAND_SEPARATOR_GROUP.join([
                 parts[1],
                 parts[2]
             ])
+        )
 
-        return super().build_alias(function, alias)
+        return aliases
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:

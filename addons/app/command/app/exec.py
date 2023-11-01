@@ -2,7 +2,6 @@ from src.helper.args import parse_arg
 from src.helper.command import command_to_string
 from src.decorator.option import option
 from src.core import Kernel
-from src.decorator.alias import alias
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
@@ -12,7 +11,6 @@ from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Exec a command into app container", should_run=True)
-@alias('app/exec')
 @option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
 @option('--command', '-c', type=str, required=True, help="Command to execute")
 @option('--user', '-u', type=str, required=False, help="User name or uid")

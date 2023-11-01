@@ -266,12 +266,13 @@ class Kernel:
         return self.resolvers[type] or None
 
     def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
-        resolver = self.get_command_resolver(
-            self.guess_command_type(command)
-        )
+        type = self.guess_command_type(command)
 
-        if resolver:
-            return resolver.create_command_request(command, args)
+        if type:
+            resolver = self.get_command_resolver(type)
+
+            if resolver:
+                return resolver.create_command_request(command, args)
 
         return None
 
