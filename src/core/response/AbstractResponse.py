@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_NONE
 
 
 class AbstractResponse:
@@ -39,6 +39,11 @@ class AbstractResponse:
 
         self.request = request
         self.parent = self.kernel.current_response
+
+        # When reusing response internally,
+        # rendering might be delayed.
+        if render_mode == KERNEL_RENDER_MODE_NONE:
+            return self
 
         previous_request = self.kernel.current_request
         self.kernel.current_request = request

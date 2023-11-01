@@ -102,7 +102,8 @@ class ResponseCollectionResponse(AbstractResponse):
         wrap = self.request.resolver.wrap_response(self.collection[step_index])
         response = wrap.render(
             request=self.request,
-            args=render_args
+            args=render_args,
+            render_mode=render_mode
         )
 
         first_response_item = None

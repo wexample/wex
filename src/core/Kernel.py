@@ -190,7 +190,8 @@ class Kernel:
     def run_command(self,
                     command: str,
                     args: dict | list = None,
-                    quiet: bool = False) -> AbstractResponse:
+                    quiet: bool = False,
+                    render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
@@ -200,13 +201,14 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.render_request(request)
+        return self.render_request(request, render_mode)
 
     def run_function(self,
                      function,
                      args: dict | list = None,
                      type: str = COMMAND_TYPE_ADDON,
-                     quiet: bool = False) -> AbstractResponse:
+                     quiet: bool = False,
+                     render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
         resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
@@ -216,10 +218,10 @@ class Kernel:
 
         request.quiet = quiet
 
-        return self.render_request(request)
+        return self.render_request(request, render_mode)
 
-    def render_request(self, request) -> AbstractResponse:
-        return request.resolver.render_request(request, KERNEL_RENDER_MODE_CLI)
+    def render_request(self, request, render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
+        return request.resolver.render_request(request, render_mode)
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.get_or_create_path('tmp'), 'task')

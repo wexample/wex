@@ -12,8 +12,7 @@ class FunctionResponse(AbstractResponse):
     def render_content(self,
                request: CommandRequest,
                render_mode: str = KERNEL_RENDER_MODE_CLI,
-               args: dict = None
-               ) -> AbstractResponse:
+               args: dict = None) -> AbstractResponse:
         response = self.function(
             **(args or {})
         )
