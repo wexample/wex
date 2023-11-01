@@ -17,12 +17,10 @@ from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
-from src.decorator.alias_without_addon import alias_without_addon
 from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Create new app and services configuration", dir_required=False)
-@alias_without_addon()
 @option('--name', '-n', type=str, required=False,
         help="Name of new app")
 @option('--git', '-g', is_flag=True, required=False, default=True,

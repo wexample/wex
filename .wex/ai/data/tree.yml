@@ -1706,8 +1706,6 @@ children:
         children:
           alias.py:
             type: file
-          alias_without_addon.py:
-            type: file
           as_sudo.py:
             type: file
           command.py:

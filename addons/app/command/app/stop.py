@@ -4,7 +4,6 @@ from addons.app.helpers.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hosts.update import app__hosts__update
-from src.decorator.alias_without_addon import alias_without_addon
 from src.core.Kernel import Kernel
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
@@ -15,7 +14,6 @@ from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Stop the given app")
-@alias_without_addon()
 @as_sudo
 def app__app__stop(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']

@@ -11,12 +11,10 @@ from src.helper.service import get_service_dir
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.option import option
-from src.decorator.alias_without_addon import alias_without_addon
 from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Install given service in app configuration")
-@alias_without_addon()
 @option('--service', '-s', type=str, required=True,
         help="Service name")
 @option('--install-config', '-ic', type=bool, required=False, is_flag=True, default=True,
