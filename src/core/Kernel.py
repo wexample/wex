@@ -156,13 +156,14 @@ class Kernel:
             command_args
         )
 
-        self.logger.log_data['status'] = LOG_STATUS_COMPLETE
-        self.logger.write()
-
-        # Empty log message to keep visual stability
-        # even executing post exec bash scripts.
         if not self.fast_mode and len(self.post_exec):
+            # Empty log message to keep visual stability
+            # even executing post exec bash scripts.
             self.io.log_hide()
+        # This is the real end as fast mode can't have post exec.
+        else:
+            self.logger.log_data['status'] = LOG_STATUS_COMPLETE
+            self.logger.write()
 
         if result is not None:
             self.io.print(result)
