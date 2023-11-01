@@ -1,4 +1,5 @@
 from src.decorator.alias import alias
+from src.decorator.no_log import no_log
 from src.decorator.command import command
 from src.core import Kernel
 import json
@@ -6,6 +7,7 @@ import json
 
 @command(help="Description")
 @alias('logs')
+@no_log
 def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()

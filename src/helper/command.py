@@ -51,23 +51,9 @@ def command_exists(command) -> bool:
     return out_content.decode() != ''
 
 
-def prepare_logs(kernel):
-    date_now = datetime.date.today()
-    date_formatted = date_now.strftime("%Y-%m-%d")
-
-    os.makedirs(kernel.get_or_create_path('log'), exist_ok=True)
-
-    out_path = os.path.join(kernel.get_or_create_path('log'), f"{date_formatted}-{kernel.task_id}.out")
-    err_path = os.path.join(kernel.get_or_create_path('log'), f"{date_formatted}-{kernel.task_id}.err")
-
-    return out_path, err_path
-
-
 def execute_command(kernel, command: list | str, working_directory=None, async_mode=False, **kwargs):
     if working_directory is None:
         working_directory = os.getcwd()
-
-    out_path, err_path = prepare_logs(kernel)
 
     # Merge kwargs with existing arguments
     popen_args = {
@@ -86,16 +72,13 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         return process
     else:
         out_content, _ = process.communicate()
-        success = (process.returncode == 0)
+        out_content_decoded: str = out_content.decode()
+        success: bool = (process.returncode == 0)
 
-        # Log stdout (which now also includes stderr)
-        with open(out_path, 'a') as out_file:
-            out_file.write(out_content.decode())
-
-        out_content_decoded = out_content.decode().splitlines()
+        kernel.logger.write_output(out_content_decoded)
         kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
-        return success, out_content_decoded
+        return success, out_content_decoded.splitlines()
 
 
 def command_to_string(command: list | str, add_quotes: bool = True, quote_char: str = '"'):

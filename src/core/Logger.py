@@ -11,18 +11,25 @@ class Logger:
 
     def __init__(self, kernel):
         self.kernel = kernel
-        self.output_path = os.path.join(
-            self.kernel.get_or_create_path('log'),
+
+        log_dir = self.kernel.get_or_create_path('log')
+
+        self.path_log = os.path.join(
+            log_dir,
             kernel.task_id + '.json'
+        )
+        self.path_output = os.path.join(
+            log_dir,
+            f'{kernel.task_id}.out'
         )
 
         self.time_start = time.time()
         date_now = self.get_time_string()
 
         # Check if the output file already exists
-        if os.path.exists(self.output_path):
+        if os.path.exists(self.path_log):
             # If it exists, load it
-            with open(self.output_path, 'r') as f:
+            with open(self.path_log, 'r') as f:
                 self.log_data = json.load(f)
         else:
             # If it doesn't exist, create a new log_data
@@ -40,7 +47,7 @@ class Logger:
     def append_event(self, parameters):
         if not 'events' in self.current_command:
             self.current_command['events'] = []
-            
+
         self.current_command['events'].append(parameters)
 
         self.write()
@@ -89,9 +96,14 @@ class Logger:
     def write(self):
         from src.helper.file import set_user_or_sudo_user_owner
 
-        with open(self.output_path, 'w') as f:
+        with open(self.path_log, 'w') as f:
             json.dump(self.log_data, f, indent=4)
-            set_user_or_sudo_user_owner(self.output_path)
+            set_user_or_sudo_user_owner(self.path_log)
+
+    def write_output(self, output: str):
+        # Log stdout (which now also includes stderr)
+        with open(self.path_output, 'a') as out_file:
+            out_file.write(output)
 
     def get_all_logs_files(self) -> list:
         directory = self.kernel.get_or_create_path('log')
