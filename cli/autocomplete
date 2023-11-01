@@ -69,6 +69,7 @@ autocomplete() {
     echo "____________"
     echo "CURSOR       : ${CURSOR}"
     echo "ARGS_CURSOR  : ${ARGS_CURSOR}"
+    echo "SEARCH       : ${SEARCH}"
     echo "SUGGESTIONS  : ${SUGGESTIONS[*]}"
     echo "CURRENT      : ${CURRENT}"
     echo "COMPREPLY    : ${COMPREPLY[*]}"
