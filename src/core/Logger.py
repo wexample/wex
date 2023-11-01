@@ -3,6 +3,9 @@ import json
 import os
 import time
 
+from src.helper.json import load_json_if_valid
+from src.const.globals import COMMAND_TYPE_ADDON
+
 LOG_STATUS_COMPLETE = 'complete'
 LOG_STATUS_STARTED = 'started'
 
@@ -27,12 +30,9 @@ class Logger:
         self.time_start = time.time()
         date_now = self.get_time_string()
 
+        self.log_data = load_json_if_valid(self.path_log)
         # Check if the output file already exists
-        if os.path.exists(self.path_log):
-            # If it exists, load it
-            with open(self.path_log, 'r') as f:
-                self.log_data = json.load(f)
-        else:
+        if not self.log_data:
             # If it doesn't exist, create a new log_data
             self.log_data = {
                 'commands': [],
@@ -113,3 +113,33 @@ class Logger:
         all_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
         json_files = [directory + f for f in all_files if f.endswith('.json')]
         return sorted(json_files)
+
+    def find_by_command(self, command):
+        all = self.get_all_logs_files()
+        filtered = []
+
+        for file in all:
+            log = load_json_if_valid(file)
+            if len(log['commands']):
+                command_data = log['commands'][0]
+
+                if command_data['command'] == command:
+                    filtered.append(log)
+
+        return filtered
+
+    def find_by_function(self, function):
+        return self.find_by_command(
+            self.kernel.get_command_resolver(
+                COMMAND_TYPE_ADDON
+            ).build_command_from_function(
+                function
+            )
+        )
+
+    def build_summary(self, data) -> list:
+        return [
+            data['dateStart'],
+            data['commands'][0]['command'] if len(data['commands']) else '-',
+            data['status']
+        ]

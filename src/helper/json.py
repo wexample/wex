@@ -2,7 +2,7 @@ import json
 import os
 
 
-def load_json_if_valid(path) -> bool:
+def load_json_if_valid(path) -> dict | bool:
     if os.path.exists(path):
         try:
             with open(path, 'r') as f:

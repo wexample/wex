@@ -26,7 +26,7 @@ class DataSet2dResponse(AbstractResponse):
     def get_body(self):
         return self.current_section['body']
 
-    def new_section(self):
+    def new_section(self, title: str | None = None):
         self.current_section = {
             'title': None,
             'header': None,
@@ -36,6 +36,9 @@ class DataSet2dResponse(AbstractResponse):
         self.sections.append(
             self.current_section
         )
+
+        if title:
+            self.set_title(title)
 
     def render_content(
             self,

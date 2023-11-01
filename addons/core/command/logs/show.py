@@ -1,8 +1,8 @@
+from src.helper.json import load_json_if_valid
 from src.decorator.alias import alias
 from src.decorator.no_log import no_log
 from src.decorator.command import command
 from src.core import Kernel
-import json
 from src.core.response.DataSet2dResponse import DataSet2dResponse
 
 
@@ -22,14 +22,14 @@ def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     ])
 
     for filepath in last_files:
-        with open(filepath) as file:
-            data = json.load(file)
+        log = load_json_if_valid(filepath)
 
-            output.append([
-                data['dateStart'],
-                data['commands'][0]['command'] if len(data['commands']) else '-',
-                data['status']
-            ])
+        if log:
+            output.append(
+                kernel.logger.build_summary(
+                    log
+                )
+            )
 
     response.set_body(output)
 
