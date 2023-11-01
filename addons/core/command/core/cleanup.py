@@ -4,9 +4,11 @@ import shutil
 from src.decorator.alias import alias
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.no_log import no_log
 
 
 @command(help="Uninstall core")
+@no_log
 @alias('cleanup')
 def core__core__cleanup(kernel: Kernel):
     tmp_dir = kernel.get_or_create_path('tmp')

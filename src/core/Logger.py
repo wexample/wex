@@ -3,6 +3,7 @@ import json
 import os
 import time
 
+LOG_STATUS_COMPLETE = 'complete'
 LOG_STATUS_STARTED = 'started'
 
 
@@ -45,7 +46,7 @@ class Logger:
         return str(datetime.datetime.now())
 
     def append_event(self, parameters):
-        if not 'events' in self.current_command:
+        if 'events' not in self.current_command:
             self.current_command['events'] = []
 
         self.current_command['events'].append(parameters)
@@ -76,9 +77,6 @@ class Logger:
         self.write()
 
     def append_request(self, request):
-        if hasattr(request.function.callback, 'no_log') and os.geteuid() != 0:
-            return
-
         self.current_command = {
             'command': request.command,
             'date': self.get_time_string(),
@@ -94,6 +92,10 @@ class Logger:
         self.write()
 
     def write(self):
+        if (self.kernel.root_request
+                and hasattr(self.kernel.root_request.function.callback, 'no_log')):
+            return
+
         from src.helper.file import set_user_or_sudo_user_owner
 
         with open(self.path_log, 'w') as f:

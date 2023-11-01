@@ -10,7 +10,7 @@ from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.IOManager import IOManager
-from src.core.Logger import Logger
+from src.core.Logger import Logger, LOG_STATUS_COMPLETE
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
@@ -32,6 +32,7 @@ class Kernel:
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path: str):
+        self.root_request: None | CommandRequest = None
         self.current_request: None | CommandRequest = None
         self.current_response: None | AbstractResponse = None
         self.io = IOManager(self)
@@ -154,6 +155,9 @@ class Kernel:
             command,
             command_args
         )
+
+        self.logger.log_data['status'] = LOG_STATUS_COMPLETE
+        self.logger.write()
 
         # Empty log message to keep visual stability
         # even executing post exec bash scripts.
