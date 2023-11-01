@@ -1,4 +1,3 @@
-import shutil
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import KERNEL_RENDER_MODE_CLI
@@ -53,34 +52,44 @@ class DataSet2dResponse(AbstractResponse):
 
         return self
 
+    def calculate_max_widths(self, array, header=None):
+        """
+        Calculate the maximum widths for each column based on header and array.
+        """
+        # Find the row with the maximum number of columns
+        max_columns_row = max(array, key=len) if array else []
+        num_columns = max(len(header) if header else 0, len(max_columns_row))
+
+        # Initialize max widths with zeros
+        max_widths = [0] * num_columns
+
+        for row in array:
+            for i, cell in enumerate(row):
+                if i < num_columns:
+                    max_widths[i] = max(max_widths[i], len(str(cell)))
+
+        if header:
+            for i, cell in enumerate(header):
+                max_widths[i] = max(max_widths[i], len(str(cell)))
+
+        return max_widths
+
     def render_content_section(
             self,
             section,
             render_mode: str = KERNEL_RENDER_MODE_CLI):
-
-        terminal_size = shutil.get_terminal_size()
 
         if render_mode == KERNEL_RENDER_MODE_CLI:
             header = section['header'] if section['header'] else []  # check for None or empty header
             array = section['body']
             title = section.get('title', '')
 
-            # Initialize max widths with zeros
-            num_columns = len(header) if header else len(array[0]) if array else 0  # infer the number of columns
-            max_widths = [0] * num_columns
-
-            # Calculate the maximum widths for each column
-            for row in array:
-                for i, cell in enumerate(row):
-                    max_widths[i] = max(max_widths[i], len(str(cell)))
-
-            # Update max widths based on header if exists
-            if header:
-                for i, cell in enumerate(header):
-                    max_widths[i] = max(max_widths[i], len(str(cell)))
+            # Calculate maximum widths for each column
+            max_widths = self.calculate_max_widths(array, header)
 
             # Calculate the total line length (cell widths + padding + borders)
-            total_line_length = sum(max_widths) + (num_columns * 2) + (num_columns - 1)  # padding and separators
+            num_columns = len(max_widths)
+            total_line_length = sum(max_widths) + (num_columns * 2) + (num_columns - 1)
 
             # Generate the horizontal separator line
             separator_line = "+" + "-" * total_line_length + "+\n"
@@ -112,7 +121,8 @@ class DataSet2dResponse(AbstractResponse):
             # Add data rows
             for row in array:
                 row_str = "|"
-                for i, cell in enumerate(row):
+                for i in range(num_columns):  # Use the maximum number of columns based on header or first row
+                    cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
                     row_str += f" {str(cell):<{max_widths[i]}} |"
                 bash_array += row_str + "\n"
 
