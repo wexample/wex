@@ -2,7 +2,6 @@ from addons.app.command.app.exec import app__app__exec
 from src.helper.dict import get_dict_item_by_path
 from src.core import Kernel
 from src.decorator.option import option
-from src.decorator.alias import alias
 from addons.app.decorator.app_command import app_command
 
 

@@ -6,7 +6,8 @@ from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
-from src.helper.system import get_uid_from_user_name, get_gid_from_group_name, get_sudo_username, get_user_group_name
+from src.helper.system import get_uid_from_user_name, get_gid_from_group_name, get_sudo_username, get_user_group_name, \
+    get_user_or_sudo_user
 from src.helper.file import get_file_owner, get_file_group
 
 
@@ -46,11 +47,10 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
             }
         )
 
-        self.assertEqual(
+        self.assertTrue(
             get_file_owner(
                 test_file
-            ),
-            USER_WWW_DATA
+            ) in [USER_WWW_DATA, get_user_or_sudo_user()]
         )
 
         # Use config

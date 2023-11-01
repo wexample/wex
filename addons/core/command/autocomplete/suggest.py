@@ -21,7 +21,7 @@ def core__autocomplete__suggest(kernel: Kernel, cursor: int, search: str) -> str
 
     suggestions = ''
     for name in kernel.resolvers:
-        resolver = kernel.resolvers[name](kernel)
+        resolver = kernel.resolvers[name]
         new_suggestions = resolver.autocomplete_suggest(cursor, search_split)
 
         if new_suggestions is not None:

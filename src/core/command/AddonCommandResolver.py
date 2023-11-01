@@ -56,9 +56,19 @@ class AddonCommandResolver(AbstractCommandResolver):
         if cursor == 0:
             # User typed "wex co"
             if search_split[0] != '':
+                addons = self.kernel.registry['addon']
+                commands_suggestions: list = list(addons.keys())
+                # Add separator
+                commands_suggestions = [addon + COMMAND_SEPARATOR_ADDON for addon in commands_suggestions]
+
+                for addon in addons:
+                    for command in addons[addon]['commands']:
+                        commands_suggestions += addons[addon]['commands'][command]['alias']
+
+                # Filter
                 suggestion = ' '.join(
-                    [addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys() if
-                     addon.startswith(search_split[0])])
+                    [addon for addon in commands_suggestions if addon.startswith(search_split[0])]
+                )
 
                 # If only one result, autocomplete
                 return self.suggest_autocomplete_if_single(suggestion)

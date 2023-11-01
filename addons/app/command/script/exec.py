@@ -1,7 +1,6 @@
 import os
-import yaml
 
-from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN
+from addons.app.const.app import ERR_APP_SHOULD_RUN
 from src.decorator.option import option
 from src.core import Kernel
 from addons.app.decorator.app_command import app_command
