@@ -1,5 +1,6 @@
 import os
 
+from helper.registry import get_all_commands
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
@@ -50,15 +51,14 @@ class AddonCommandResolver(AbstractCommandResolver):
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         if cursor == 0:
-            # User typed "co"
+            # User typed "wex co"
             if search_split[0] != '':
                 suggestion = ' '.join(
                     [addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys() if
                      addon.startswith(search_split[0])])
 
                 # If only one result, autocomplete
-                from src.helper.suggest import suggest_autocomplete_if_single
-                return suggest_autocomplete_if_single(self.kernel, suggestion)
+                return self.suggest_autocomplete_if_single(suggestion)
             # User typed "wex ", we suggest all addons names and special chars.
             else:
                 return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys())
@@ -73,7 +73,7 @@ class AddonCommandResolver(AbstractCommandResolver):
                         if command.startswith(search_split[0] + COMMAND_SEPARATOR_ADDON)
                     ])
             elif search_split[1] == ':':
-                # User types "core:", we add a second ":"
+                # User typed "core:", we add a second ":"
                 return ':'
         elif cursor == 2:
             from src.helper.registry import get_all_commands, remove_addons
@@ -86,8 +86,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
             suggestion = ' '.join(remove_addons(all_commands))
 
-            from src.helper.suggest import suggest_autocomplete_if_single
-            return suggest_autocomplete_if_single(self.kernel, suggestion)
+            return self.suggest_autocomplete_if_single(suggestion)
 
             # Complete arguments.
         elif cursor >= 3:
@@ -100,3 +99,17 @@ class AddonCommandResolver(AbstractCommandResolver):
             )
 
         return None
+
+    def suggest_autocomplete_if_single(self, search_string):
+        all_commands = get_all_commands(self.kernel)
+
+        all_commands = [
+            name for name in all_commands if name.startswith(search_string)
+        ]
+
+        if len(all_commands) == 1:
+            # Adding a trailing space indicates
+            # that command is found
+            return all_commands[0] + ' '
+
+        return search_string
