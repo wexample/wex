@@ -13,24 +13,34 @@ class Logger:
         self.kernel = kernel
         self.output_path = os.path.join(
             self.kernel.get_or_create_path('log'),
-            datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f') + '.json'
+            kernel.task_id + '.json'
         )
 
         self.time_start = time.time()
-
         date_now = self.get_time_string()
-        self.log_data = {
-            'commands': [],
-            'dateStart': date_now,
-            'dateLast': date_now,
-            'errors': [],
-            'status': LOG_STATUS_STARTED
-        }
+
+        # Check if the output file already exists
+        if os.path.exists(self.output_path):
+            # If it exists, load it
+            with open(self.output_path, 'r') as f:
+                self.log_data = json.load(f)
+        else:
+            # If it doesn't exist, create a new log_data
+            self.log_data = {
+                'commands': [],
+                'dateStart': date_now,
+                'dateLast': date_now,
+                'errors': [],
+                'status': LOG_STATUS_STARTED
+            }
 
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
 
     def append_event(self, parameters):
+        if not 'events' in self.current_command:
+            self.current_command['events'] = []
+            
         self.current_command['events'].append(parameters)
 
         self.write()
@@ -65,8 +75,6 @@ class Logger:
         self.current_command = {
             'command': request.command,
             'date': self.get_time_string(),
-            'errors': [],
-            'events': [],
         }
 
         self.log_data['commands'].append(
