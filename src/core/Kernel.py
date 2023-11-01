@@ -163,10 +163,14 @@ class Kernel:
         if result is not None:
             self.io.print(result)
 
-        self.io.log(
-            '_' * 60,
-            increment=-self.io.log_indent,
-            verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        if self.verbosity >= VERBOSITY_LEVEL_MAXIMUM:
+            import shutil
+            terminal_width, _ = shutil.get_terminal_size()
+
+            self.io.log(
+                '_' * terminal_width,
+                increment=-self.io.log_indent,
+                verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
     def call_command(self, command: str, command_args: dict | list | None = None):
         response = self.run_command(
