@@ -25,7 +25,7 @@ cleanup() {
 # Trap to handle interruptions and cleanup
 trap cleanup EXIT INT TERM
 
-WEX_TASK_ID="$$.$(date +%s.%N)"
+WEX_TASK_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
 
 if [ ! -z "${DOCKER_HOST}" ]; then
     export DOCKER_HOST=${DOCKER_HOST}
