@@ -78,3 +78,10 @@ class Logger:
         with open(self.output_path, 'w') as f:
             json.dump(self.log_data, f, indent=4)
             set_user_or_sudo_user_owner(self.output_path)
+
+    def get_all_logs_files(self) -> list:
+        directory = self.kernel.get_or_create_path('log')
+
+        all_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+        json_files = [directory + f for f in all_files if f.endswith('.json')]
+        return sorted(json_files)
