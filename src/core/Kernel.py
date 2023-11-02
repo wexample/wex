@@ -36,6 +36,7 @@ class Kernel:
         self.current_request: None | CommandRequest = None
         self.current_response: None | AbstractResponse = None
         self.io = IOManager(self)
+        self.logger = None
         self.post_exec: list = []
         # Use a clone to keep original command.
         self.previous_response: None | AbstractResponse = None

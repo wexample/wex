@@ -51,11 +51,13 @@ class IOManager:
         message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
         message = f'{COLORS[log_level]}{message}{COLOR_RESET}'
 
-        self.kernel.logger.append_error(
-            code,
-            parameters or {},
-            log_level
-        )
+        # Support errors before logger loading
+        if self.kernel.logger:
+            self.kernel.logger.append_error(
+                code,
+                parameters or {},
+                log_level
+            )
 
         if log_level == logging.FATAL:
             from src.core.FatalError import FatalError
