@@ -1,7 +1,6 @@
 import os
 
 from tests.AbstractTestCase import AbstractTestCase
-
 from addons.app.command.webhook.exec import app__webhook__exec
 
 

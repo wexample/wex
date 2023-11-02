@@ -10,6 +10,7 @@ from src.helper.system import is_port_open, kill_process_by_port, kill_process_b
     service_daemon_reload
 from src.const.error import ERR_UNEXPECTED
 from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler
+from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
 from src.decorator.as_sudo import as_sudo
 from http.server import HTTPServer
 from src.core.Kernel import Kernel
@@ -76,13 +77,15 @@ def app__webhook__listen(
             kill_process_by_command(base_kernel, command)
 
             # Start a new listener
-            execute_command(
+            process = execute_command(
                 base_kernel,
                 command.split(),
                 async_mode=True
             )
 
             base_kernel.io.message(f'Started webhook listener on port {port}')
+
+            return ResponseCollectionHiddenResponse(base_kernel, process)
 
     else:
         class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
