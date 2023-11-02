@@ -3,7 +3,7 @@ import click
 
 from addons.app.const.app import APP_NO_SSL_ENVS
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
-from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
+from src.core.response.HiddenResponse import HiddenResponse
 from src.decorator.option import option
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
@@ -86,7 +86,7 @@ def wordpress__url__replace(kernel: Kernel,
                                                                                                             "")
         }
 
-        return ResponseCollectionHiddenResponse(kernel, url_map)
+        return HiddenResponse(kernel, url_map)
 
     def _replace(previous):
         responses = []

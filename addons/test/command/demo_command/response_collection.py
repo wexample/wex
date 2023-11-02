@@ -1,4 +1,4 @@
-from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
+from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.test_command import test_command
@@ -33,7 +33,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
             ['echo', '--sub-function-shell:' + previous[0]])
 
     def _test__demo_command__response_collection__callback_hidden_response(previous):
-        return ResponseCollectionHiddenResponse(
+        return HiddenResponse(
             kernel,
             previous + '-has-been-passed-to-hidden'
         )

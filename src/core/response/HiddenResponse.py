@@ -3,7 +3,7 @@ from __future__ import annotations
 from src.core.response.DefaultResponse import DefaultResponse
 
 
-class ResponseCollectionHiddenResponse(DefaultResponse):
+class HiddenResponse(DefaultResponse):
     def print(self, interactive_data: bool = True) -> str | None:
         if interactive_data:
             return None

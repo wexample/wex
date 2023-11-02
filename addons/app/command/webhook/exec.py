@@ -10,7 +10,7 @@ from src.decorator.option import option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
-from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
+from src.core.response.HiddenResponse import HiddenResponse
 
 
 @command(help="Execute a webhook")
@@ -66,7 +66,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
 
             # App exists somewhere.
             if app_name in apps:
-                return ResponseCollectionHiddenResponse(kernel, apps[app_name])
+                return HiddenResponse(kernel, apps[app_name])
 
         kernel.logger.append_event({
             'url': url,

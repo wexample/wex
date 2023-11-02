@@ -152,7 +152,7 @@ def app__app__start(
 
         compose_options += [item for value in service_results.values() if isinstance(value, list) for item in value]
 
-        return ResponseCollectionHiddenResponse(
+        return HiddenResponse(
             kernel,
             compose_options
         )
