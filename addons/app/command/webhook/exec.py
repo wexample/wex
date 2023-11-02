@@ -3,6 +3,7 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
+from src.core.response.DataSet2dResponse import DataSet2dResponse
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -32,8 +33,10 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
 
     kernel.run_function(core__logs__rotate)
 
-    if match:
-        app_name, webhook = match.groups()
+    if not match:
+        return
+
+    app_name, webhook = match.groups()
 
     def _check():
         query_string = parsed_url.query.replace('+', '%2B')

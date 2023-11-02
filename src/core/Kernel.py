@@ -177,10 +177,15 @@ class Kernel:
                 increment=-self.io.log_indent,
                 verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
-    def call_command(self, command: str, command_args: dict | list | None = None):
+    def call_command(
+            self,
+            command: str,
+            command_args: dict | list | None = None,
+            render_mode: str = KERNEL_RENDER_MODE_CLI):
         response = self.run_command(
             command,
-            command_args or []
+            command_args or [],
+            render_mode=render_mode
         )
 
         # Store command to execute after kernel execution,

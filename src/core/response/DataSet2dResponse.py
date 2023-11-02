@@ -84,11 +84,14 @@ class DataSet2dResponse(AbstractResponse):
 
         if render_mode == KERNEL_RENDER_MODE_CLI:
             header = section['header'] if section['header'] else []  # check for None or empty header
-            array = section['body']
+            body = section['body'] if section['body'] else []
             title = section.get('title', '')
 
+            if not title and not len(header) and not len(body):
+                return
+
             # Calculate maximum widths for each column
-            max_widths = self.calculate_max_widths(array, header)
+            max_widths = self.calculate_max_widths(body, header)
 
             # Calculate the total line length (cell widths + padding + borders)
             num_columns = len(max_widths)

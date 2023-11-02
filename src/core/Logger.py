@@ -67,6 +67,9 @@ class Logger:
         else:
             container = self.log_data
 
+        if 'errors' not in self.current_command:
+            self.current_command['errors'] = []
+
         container['errors'].append({
             'code': code,
             'date': self.get_time_string(),
@@ -93,6 +96,7 @@ class Logger:
 
     def write(self):
         if (self.kernel.root_request
+                and self.kernel.root_request.function
                 and hasattr(self.kernel.root_request.function.callback, 'no_log')):
             return
 
