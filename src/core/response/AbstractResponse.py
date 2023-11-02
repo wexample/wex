@@ -51,6 +51,19 @@ class AbstractResponse:
         previous_response = self.parent = self.kernel.current_response
         self.kernel.current_response = self
 
+        # Append to log tree.
+        if previous_request:
+            log_parent = previous_request.log
+        else:
+            log_parent = self.kernel.logger.log_data
+
+        if 'commands' not in log_parent:
+            log_parent['commands'] = []
+
+        log_parent['commands'].append(
+            self.kernel.current_request.log
+        )
+
         output = self.render_content(
             request,
             render_mode,

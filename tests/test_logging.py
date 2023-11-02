@@ -24,6 +24,7 @@ class TestLogging(AbstractTestCase):
         self.kernel.run_command('hi')
 
         self.kernel.logger.append_event(
+            'EVENT_TEST',
             {
                 'command': 'test-command',
                 'success': True

@@ -1,4 +1,3 @@
-from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 from addons.app.command.webhook.exec import app__webhook__exec
 from src.const.globals import KERNEL_RENDER_MODE_HTTP
@@ -25,18 +24,25 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             if success:
                 self.wfile.write(success.encode())
             else:
-                self.wfile.write(b'{"error":"empty"}')
+                empty = '{"response":"' + str(success) + '"}'
+                self.wfile.write(empty.encode())
 
         except Exception as e:
             import traceback
 
-            self.kernel.logger.append_event({
-                "error": 'Error during server execution: ' + str(e),
-                'trace': traceback.format_exc()
-            })
+            message = 'Error during server execution: ' + str(e)
+
+            self.kernel.logger.append_event(
+                'EVENT_ERROR_HTTP_SERVER',
+                {
+                    "error": message,
+                    'trace': traceback.format_exc()
+                })
 
             self.send_response(500)
             self.end_headers()
-            self.wfile.write(b'{"error":"Error during server execution: ' + str(e) + '"}')
+
+            empty = '{"error":"Error during server execution: ' + str(e) + '"}'
+            self.wfile.write(empty.encode())
 
             raise

@@ -1,5 +1,6 @@
 import subprocess
 
+from src.helper.file import create_file_path
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.args import convert_dict_to_args
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
@@ -50,26 +51,39 @@ def command_exists(command) -> bool:
 
 
 def execute_command(kernel, command: list | str, working_directory=None, async_mode=False, **kwargs):
-    import threading
     import subprocess
     import os
 
     if working_directory is None:
         working_directory = os.getcwd()
 
-    # Merge kwargs with existing arguments
-    popen_args = {
-        'cwd': working_directory,
-        'stdout': subprocess.PIPE,
-        'stderr': subprocess.STDOUT,
-        **kwargs  # This will overwrite existing keys with values from kwargs, if any
-    }
-
     command_str = command if isinstance(command, str) else command_to_string(command)
     kernel.io.log(f'Running shell command : {command_str}', verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
-    # Define the function to run the process
-    def run_process():
+    if async_mode:
+        tmp_dir = os.path.join(kernel.get_or_create_path('tmp'), 'subprocess') + os.sep
+
+        popen_args = {
+            'cwd': working_directory,
+            'start_new_session': True,
+            'stdout': open(create_file_path(tmp_dir + kernel.task_id + '.stdout'), 'a'),
+            'stderr': open(create_file_path(tmp_dir + kernel.task_id + '.stderr'), 'a'),
+            **kwargs
+        }
+
+        return subprocess.Popen(
+            command,
+            **popen_args,
+        )
+    else:
+        popen_args = {
+            'cwd': working_directory,
+            'stdout': subprocess.PIPE,
+            'stderr': subprocess.STDOUT,
+            **kwargs
+        }
+
+        # If async mode is False, run the process in the current thread
         process = subprocess.Popen(command, **popen_args)
         out_content, _ = process.communicate()
         out_content_decoded: str = out_content.decode()
@@ -79,16 +93,6 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         return success, out_content_decoded.splitlines()
-
-    if async_mode:
-        # If async mode is True, start a thread to run the process
-        thread = threading.Thread(target=run_process)
-        thread.daemon = True  # Daemon threads exit when the main program does
-        thread.start()
-        return thread
-    else:
-        # If async mode is False, run the process in the current thread
-        return run_process()
 
 
 def command_to_string(command: list | str, add_quotes: bool = True, quote_char: str = '"'):

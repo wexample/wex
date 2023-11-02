@@ -68,7 +68,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
             if app_name in apps:
                 return HiddenResponse(kernel, apps[app_name])
 
-        kernel.logger.append_event({
+        kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
             'url': url,
             'source_data': source_data,
             'success': False
@@ -89,7 +89,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
             }
         ).first()
 
-        kernel.logger.append_event({
+        kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
             'url': url,
             'source_data': source_data,
             'success': True

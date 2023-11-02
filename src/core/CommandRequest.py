@@ -40,6 +40,16 @@ class CommandRequest:
         if steps:
             self.steps = list(map(int, str(steps).split('.')))
 
+        # Build log
+        log = {'command': self.command,}
+
+        if len(self.args):
+            log['args'] = self.args
+
+        if steps:
+            log['steps'] = self.steps
+
+        self.log = log
 
     def is_click_command(self, click_command) -> bool:
         return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__

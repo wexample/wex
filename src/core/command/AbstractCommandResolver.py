@@ -30,8 +30,6 @@ class AbstractCommandResolver:
         # Save unique root request
         self.kernel.root_request = self.kernel.root_request if self.kernel.root_request else request
 
-        self.kernel.logger.append_request(request)
-
         if not request.function and (not request.path or not os.path.isfile(request.path)):
             if not request.quiet:
                 self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
@@ -57,6 +55,7 @@ class AbstractCommandResolver:
 
         # Enforce sudo.
         if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
+            self.kernel.logger.append_event('EVENT_SWITCH_SUDO')
             # Mask printed logs as it may not be relevant.
             self.kernel.io.log_hide()
             # Uses the original argv argument to ignore any changes on it.

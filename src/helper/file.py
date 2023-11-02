@@ -6,8 +6,6 @@ import pwd
 import grp
 import yaml
 
-from src.helper.system import get_user_or_sudo_user
-
 
 def list_subdirectories(path: str) -> []:
     subdirectories = []
@@ -22,15 +20,26 @@ def list_subdirectories(path: str) -> []:
 
 
 def set_user_or_sudo_user_owner(file):
+    from src.helper.system import get_user_or_sudo_user
+
     sudo_user = get_user_or_sudo_user()
     if sudo_user is not None:
         set_owner(file, sudo_user)
 
 
-def set_owner(file, username):
+def set_owner(file: str, username: str | None = None, group: str | None = None):
+    if not username:
+        from helper.system import get_user_or_sudo_user
+        username = get_user_or_sudo_user()
+
     # Get UID and GID of the sudo_user
     uid = pwd.getpwnam(username).pw_uid
-    gid = grp.getgrnam(username).gr_gid
+
+    if group:
+        from helper.system import get_gid_from_group_name
+        gid = get_gid_from_group_name(username)
+    else:
+        gid = grp.getgrnam(username).gr_gid
 
     # Change the ownership of the file to username:username
     os.chown(file, uid, gid)
@@ -111,20 +120,36 @@ def create_directories_and_copy(path_from: str, path_to: str) -> None:
     shutil.copy2(path_from, path_to)
 
 
-def create_directories_and_file(path: str, content: str = None, default: str = None) -> None:
+def create_file_path(path: str):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    return path
+
+
+def create_directories_and_file(
+        path: str,
+        content: str = None,
+        default: str = None,
+        mode: str = 'a'):
     if os.path.exists(path):
         if content is not None:
-            with open(path, 'w') as file:
+            with open(path, mode) as file:
                 file.write(content)
+
+                set_owner(path)
+                return file
         return
 
     # Create all directories in the path
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
     # Create and close the file
-    with open(path, 'w') as file:
+    with open(path, mode) as file:
         if default or content:
             file.write(default or content)
+
+            set_owner(path)
+            return file
+    return
 
 
 def write_dict_to_config(dict: dict, dest: str):

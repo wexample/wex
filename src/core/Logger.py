@@ -3,6 +3,7 @@ import json
 import os
 import time
 
+from src.helper.file import set_user_or_sudo_user_owner
 from src.helper.json import load_json_if_valid
 from src.const.globals import COMMAND_TYPE_ADDON
 
@@ -45,11 +46,20 @@ class Logger:
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
 
-    def append_event(self, parameters):
-        if 'events' not in self.current_command:
-            self.current_command['events'] = []
+    def append_event(self, name, data: dict | None = None):
+        log = self.kernel.current_request.log if self.kernel.current_request else self.log_data
 
-        self.current_command['events'].append(parameters)
+        if 'events' not in log:
+            log['events'] = []
+
+        event = {
+            'name': name
+        }
+
+        if data:
+            event['data'] = data
+
+        log['events'].append(event)
 
         self.write()
 
@@ -99,8 +109,6 @@ class Logger:
                 and self.kernel.root_request.function
                 and hasattr(self.kernel.root_request.function.callback, 'no_log')):
             return
-
-        from src.helper.file import set_user_or_sudo_user_owner
 
         with open(self.path_log, 'w') as f:
             json.dump(self.log_data, f, indent=4)

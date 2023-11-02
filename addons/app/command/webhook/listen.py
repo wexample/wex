@@ -51,6 +51,11 @@ def app__webhook__listen(
         use_daemon = not base_kernel.run_function(system__system__is_docker)
 
         if use_daemon:
+            base_kernel.logger.append_event('EVENT_WEBHOOK_LISTEN', {
+                "launcher": "daemon",
+                "name": SERVICE_DAEMON_NAME,
+            })
+
             daemon_path = get_daemon_service_resource_path(base_kernel)
 
             shutil.copy(
@@ -76,23 +81,44 @@ def app__webhook__listen(
             kill_process_by_command(base_kernel, command)
 
             # Start a new listener
-            thread = execute_command(
+            process = execute_command(
                 base_kernel,
                 command.split(),
                 async_mode=True
             )
 
+            base_kernel.logger.append_event('EVENT_WEBHOOK_LISTEN', {
+                "launcher": "async",
+                "command": command,
+            })
+
             base_kernel.io.message(f'Started webhook listener on port {port}')
 
-            return thread
+            return process
 
     else:
-        class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
-            kernel = base_kernel
+        try:
+            base_kernel.logger.append_event('EVENT_WEBHOOK_LISTEN', {
+                "launcher": "sync"
+            })
 
-        if not dry_run:
-            with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:
-                base_kernel.io.log(f'Starting HTTP server on port {port}')
-                server.serve_forever()
+            class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
+                kernel = base_kernel
 
-        base_kernel.io.message(f'Webhook server started on port {port}')
+            if not dry_run:
+                with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:
+                    base_kernel.io.log(f'Starting HTTP server on port {port}')
+                    base_kernel.logger.append_event('EVENT_WEBHOOK_SERVER_STARTING')
+                    server.serve_forever()
+
+            base_kernel.io.message(f'Webhook server started on port {port}')
+
+        except Exception as e:
+            import traceback
+
+            base_kernel.logger.append_event('EVENT_ERROR_WEBHOOK_SERVER', {
+                "error": 'Error during webhook listener execution: ' + str(e),
+                'trace': traceback.format_exc()
+            })
+
+            raise
