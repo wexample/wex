@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 from addons.app.command.webhook.exec import app__webhook__exec
+from src.const.globals import KERNEL_RENDER_MODE_HTTP
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
@@ -11,7 +12,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 app__webhook__exec,
                 {
                     'url': self.path,
-                }
+                },
+                render_mode=KERNEL_RENDER_MODE_HTTP
             ).first()
 
             self.send_response(200)
@@ -19,9 +21,9 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
             if success:
-                self.wfile.write(b'RUNNING')
+                self.wfile.write(success.encode())
             else:
-                self.wfile.write(b'ERROR')
+                self.wfile.write(b'{"error":true}')
 
         except Exception as e:
             self.send_response(500)

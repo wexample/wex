@@ -1,6 +1,8 @@
+import json
+
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_HTTP
 
 
 class DataSet2dResponse(AbstractResponse):
@@ -81,15 +83,15 @@ class DataSet2dResponse(AbstractResponse):
             self,
             section,
             render_mode: str = KERNEL_RENDER_MODE_CLI):
+        # check for None or empty header
+        header = section['header'] if section['header'] else []
+        body = section['body'] if section['body'] else []
+        title = section.get('title', '')
+
+        if not title and not len(header) and not len(body):
+            return
 
         if render_mode == KERNEL_RENDER_MODE_CLI:
-            header = section['header'] if section['header'] else []  # check for None or empty header
-            body = section['body'] if section['body'] else []
-            title = section.get('title', '')
-
-            if not title and not len(header) and not len(body):
-                return
-
             # Calculate maximum widths for each column
             max_widths = self.calculate_max_widths(body, header)
 
@@ -125,7 +127,7 @@ class DataSet2dResponse(AbstractResponse):
                 bash_array += separator_line
 
             # Add data rows
-            for row in array:
+            for row in body:
                 row_str = "|"
                 for i in range(num_columns):  # Use the maximum number of columns based on header or first row
                     cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
@@ -135,3 +137,9 @@ class DataSet2dResponse(AbstractResponse):
             bash_array += separator_line
 
             self.output_bag.append(bash_array)
+        elif render_mode == KERNEL_RENDER_MODE_HTTP:
+            self.output_bag.append(json.dumps({
+                "body": body,
+                "header": header,
+                "title": title,
+            }))
