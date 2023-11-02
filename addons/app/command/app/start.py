@@ -15,7 +15,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.app.go import app__app__go
 from addons.app.command.hosts.update import app__hosts__update
 from src.const.globals import CORE_COMMAND_NAME
-from src.core.response.ResponseCollectionHiddenResponse import ResponseCollectionHiddenResponse
+from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
