@@ -61,11 +61,23 @@ Upgrading
 
 Commands and services are organised in several "addons".
 
-### Services
+## Services
 
 Each service has a unique name for all addons.
 
-### Execution Flow
+## Webhook listener
+
+A webhook listener allow you to control your server and applications remotely.
+
+    # Start listener on port 4242
+    wex app::webhook/listen 
+
+This is existing entrypoints :
+
+- `/status` : Return the current status of listener, useful to check availability
+- `/webhook/app_name/script_name` : Execute the given script of given application
+
+## Execution Flow
 
 1. **Initialization**:
     - The entry point is a Bash script.

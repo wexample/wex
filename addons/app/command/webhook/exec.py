@@ -19,6 +19,14 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     source_data = {}
     parsed_url = urlparse(url)
     path = parsed_url.path
+
+    if path == '/status':
+        response = DataSet2dResponse(kernel)
+        response.set_body([
+            ['running', True]
+        ])
+        return response
+
     pattern = r'^\/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$'
     match = re.match(pattern, path)
 
