@@ -1,10 +1,11 @@
 import os
 
+from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.command.webhook.exec import app__webhook__exec
 
 
-class TestAppCommandWebhookExec(AbstractTestCase):
+class TestAppCommandWebhookExec(AbstractWebhookTestCase):
     def test_exec(self):
         test_webhook_app_path = '/var/www/test/wex-test-webhook'
         if not os.path.islink(test_webhook_app_path):

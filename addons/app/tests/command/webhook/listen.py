@@ -1,12 +1,13 @@
 import json
 import time
 
+from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
 from tests.AbstractTestCase import AbstractTestCase
 from http.client import HTTPConnection
 
 
-class TestAppCommandWebhookListen(AbstractTestCase):
+class TestAppCommandWebhookListen(AbstractWebhookTestCase):
     def test_listen(self):
         port = 6543
 
