@@ -49,6 +49,7 @@ class Kernel:
         self.task_id: str | None = task_id
         self.children: list = []
         self.default_render_mode = KERNEL_RENDER_MODE_CLI
+        self.parent_task_id: None | str = None
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -350,6 +351,10 @@ class Kernel:
         value = arg_shift(self.sys_argv, 'render-mode')
         if value is not None:
             self.default_render_mode = value
+
+        value = arg_shift(self.sys_argv, 'parent-task-id')
+        if value is not None:
+            self.parent_task_id = value
 
         # There is a task id redirection
         value = arg_shift(self.sys_argv, 'kernel-task-id')

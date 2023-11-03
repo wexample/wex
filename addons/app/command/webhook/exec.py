@@ -24,7 +24,8 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     if path == '/status':
         response = DictResponse(kernel)
         response.set_dictionary({
-            'running': True
+            'running': True,
+            'task_id': kernel.parent_task_id
         })
         return response
 

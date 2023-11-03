@@ -103,18 +103,25 @@ def app__webhook__listen(
                 "launcher": "sync"
             })
 
+            # prepare base command to launch.
+            command = kernel.get_command_resolver(
+                COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
+                app__webhook__exec,
+                {
+                    'render-mode': KERNEL_RENDER_MODE_HTTP,
+                    'url': WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                },
+            )
+
+            command += [
+                '--parent-task-id',
+                kernel.task_id
+            ]
+
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
                 log_path = kernel.path['tmp'] + 'webhook.log'
-                # prepare base command to launch.
-                command_base = kernel.get_command_resolver(
-                    COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
-                    app__webhook__exec,
-                    {
-                        'render-mode': KERNEL_RENDER_MODE_HTTP,
-                        'url': WEBHOOK_COMMAND_URL_PLACEHOLDER,
-                    },
-                )
+                command_base = command
 
             if not dry_run:
                 with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:

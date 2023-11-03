@@ -7,5 +7,6 @@ ARGS_HELP = [
     'kernel_task_id',
     'log_indent',
     'log_length',
+    'parent_task_id',
     'render_mode',
 ]

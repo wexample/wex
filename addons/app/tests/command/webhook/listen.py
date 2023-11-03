@@ -42,3 +42,11 @@ class TestAppCommandWebhookListen(AbstractTestCase):
             isinstance(data, dict)
         )
 
+        self.assertTrue(
+            data['running']
+        )
+
+        self.assertIsNotNone(
+            data['task_id']
+        )
+

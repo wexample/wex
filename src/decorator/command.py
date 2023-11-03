@@ -37,6 +37,8 @@ def command(*args, **kwargs):
                              help="Core option for processes collection execution")(f)
             f = click.option('--kernel-task-id', '-kernel-task-id', type=str, required=False,
                              help="Core option for processes collection execution")(f)
+            f = click.option('--parent-task-id', '-parent-task-id', type=str, required=False,
+                             help="Inform about the parent kernel which have launched current script")(f)
             f = click.option('--log-indent', '-log-indent', type=str, required=False,
                              help="Core option for processes collection execution")(f)
             f = click.option('--log-length', '-log-length', type=int, required=False,
