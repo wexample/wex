@@ -20,6 +20,7 @@ def system__process__by_port(kernel: Kernel, port: int):
             'Pid': process.pid,
             'Status': process.status(),
             'Started': datetime.fromtimestamp(process.create_time()).strftime(DATE_FORMAT_SECOND),
+            'Command': process.cmdline(),
         })
 
     else:

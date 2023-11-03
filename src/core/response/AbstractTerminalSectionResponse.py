@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from abc import ABC
 
 from src.core.response.AbstractResponse import AbstractResponse
@@ -14,6 +15,9 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
         self.title = title
 
     def render_cli_title(self, line_width: int) -> str:
+        terminal_width, _ = shutil.get_terminal_size()
+        line_width = terminal_width if line_width > terminal_width else line_width
+
         # Add title if exists, aligned to the left and fill with underscores
         if self.title:
             # Calculate how much padding is needed on each side of the title
