@@ -8,7 +8,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.option import option
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from addons.app.decorator.app_command import app_command
 
 
@@ -76,7 +76,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             }
         )
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _app__config__write__runtime,
         _app__config__write__docker,
     ])

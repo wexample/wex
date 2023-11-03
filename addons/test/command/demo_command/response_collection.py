@@ -1,6 +1,6 @@
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
 from src.decorator.option import option
@@ -47,7 +47,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
                 'passed': previous
             }
 
-        return ResponseCollectionResponse(kernel, [
+        return QueuedCollectionResponse(kernel, [
             '--sub-collection-in-function:simple-text',
             '--sub-collection-in-function:simple-text-2',
             45600,
@@ -68,7 +68,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
             }
         )
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         'simple-response-text',
         'simple-response-text-2',
         123456,
@@ -84,7 +84,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
         'free-text-after-shell',
         _test__demo_command__response_collection__callback_hidden_response,
         _test__demo_command__response_collection__previous,
-        ResponseCollectionResponse(kernel, [
+        QueuedCollectionResponse(kernel, [
             '--sub-collection-direct:simple-text'
         ]),
         _test__demo_command__response_collection__run_another_collection,

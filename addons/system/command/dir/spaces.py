@@ -4,7 +4,7 @@ from src.helper.file import human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core.response.DataSet2dResponse import DataSet2dResponse
+from src.core.response.TableResponse import TableResponse
 
 
 @command(help="Return sizes of current directory subdirectories")
@@ -25,8 +25,8 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
                         pass
         return total_size
 
-    # Initialize DataSet2dResponse object
-    output_list = DataSet2dResponse(kernel)
+    # Initialize TableResponse object
+    output_list = TableResponse(kernel)
     output_list.set_header(['Size', 'Name'])
 
     dir_list = [os.path.join(dir, d) for d in os.listdir(dir) if

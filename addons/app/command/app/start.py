@@ -16,7 +16,7 @@ from addons.app.command.app.go import app__app__go
 from addons.app.command.hosts.update import app__hosts__update
 from src.const.globals import CORE_COMMAND_NAME
 from src.core.response.HiddenResponse import HiddenResponse
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -249,7 +249,7 @@ def app__app__start(
             ]
         )
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _app__app__start__checkup,
         _app__app__start__proxy,
         _app__app__start__config,

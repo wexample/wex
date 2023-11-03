@@ -5,7 +5,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hosts.update import app__hosts__update
 from src.core.Kernel import Kernel
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from addons.app.command.app.perms import app__app__perms
@@ -42,7 +42,7 @@ def app__app__stop(kernel: Kernel, app_dir: str):
             }
         )
 
-        return ResponseCollectionResponse(kernel, [
+        return QueuedCollectionResponse(kernel, [
             InteractiveShellCommandResponse(
                 kernel,
                 exec_app_docker_compose_command(
@@ -77,7 +77,7 @@ def app__app__stop(kernel: Kernel, app_dir: str):
             }
         )
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _app__app__stop__checkup,
         _app__app__stop__stop,
         _app__app__stop__update_hosts,

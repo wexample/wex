@@ -3,7 +3,7 @@ from src.decorator.alias import alias
 from src.decorator.no_log import no_log
 from src.decorator.command import command
 from src.core import Kernel
-from src.core.response.DataSet2dResponse import DataSet2dResponse
+from src.core.response.TableResponse import TableResponse
 
 
 @command(help="Show a summary of log files")
@@ -13,7 +13,7 @@ def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()
     last_files = files[-max:]
-    response = DataSet2dResponse(kernel)
+    response = TableResponse(kernel)
 
     response.set_header([
         'Command',

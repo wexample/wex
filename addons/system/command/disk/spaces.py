@@ -1,6 +1,6 @@
 import psutil
 
-from src.core.response.DataSet2dResponse import DataSet2dResponse
+from src.core.response.TableResponse import TableResponse
 from src.helper.file import human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
@@ -8,7 +8,7 @@ from src.decorator.command import command
 
 @command(help="Return space usage of current system disks")
 def system__disk__spaces(kernel: Kernel):
-    output_list = DataSet2dResponse(kernel)
+    output_list = TableResponse(kernel)
     output_list.set_header([
         'Size',
         'Used',

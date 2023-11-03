@@ -1,9 +1,8 @@
 import subprocess
 
-from addons.test.command.demo_command.response_collection import test__demo_command__response_collection, \
-    TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION
+from addons.test.command.demo_command.response_collection import test__demo_command__response_collection
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.helper.command import core_call_to_shell_command
 from tests.AbstractTestCase import AbstractTestCase
 
@@ -42,7 +41,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         self.assertTrue(
             isinstance(
                 response.output_bag[14],
-                ResponseCollectionResponse
+                QueuedCollectionResponse
             ),
             'This item should be a collection of responses, returned by a function'
         )

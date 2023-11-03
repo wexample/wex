@@ -1,3 +1,5 @@
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.TableResponse import TableResponse
 from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_NONE
 from addons.system.command.process.by_port import system__process__by_port
@@ -17,22 +19,34 @@ def app__webhook__info(kernel: Kernel):
         render_mode=KERNEL_RENDER_MODE_NONE
     )
 
-    response.new_section('Log')
-
     logs = kernel.logger.find_by_function(
         app__webhook__exec
     )
 
-    output = []
-
+    table = []
     for log in logs:
-        output.append(
+        table.append(
             kernel.logger.build_summary(
                 log
             )
         )
 
-    response.set_body(output)
+    table_response = TableResponse(kernel)
+    table_response.set_title('Log')
+    table_response.set_body(table)
+
+    return ResponseCollectionResponse(
+        kernel,
+        [
+            response,
+            table_response
+        ])
+
+    # response.new_section('Log')
+    #
+
+
+    # response.set_body(output)
 
     return response
 

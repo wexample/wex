@@ -1,6 +1,6 @@
 from addons.core.command.check.hi import core__check__hi
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.test_command import test_command
 from src.core import Kernel
 from src.decorator.option import option
@@ -34,7 +34,7 @@ def test__demo_command__response_collection_two(kernel: Kernel, abort: bool = Fa
     def _test__demo_command__response_collection_three_command(previous):
         return InteractiveShellCommandResponse(kernel, ['echo', '..TWO:interactive-shell-response'])
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         TEST_DEMO_COMMAND_TWO_RESULT_FIRST,
         f'{TEST_DEMO_COMMAND_TWO_RESULT_FIRST}(2)',
         _test__demo_command__response_collection_two__simple_function,

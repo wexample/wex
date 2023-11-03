@@ -3,12 +3,12 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
-from src.core.response.DataSet2dResponse import DataSet2dResponse
+from src.core.response.TableResponse import TableResponse
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.response.HiddenResponse import HiddenResponse
 
@@ -22,7 +22,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     path = parsed_url.path
 
     if path == '/status':
-        response = DataSet2dResponse(kernel)
+        response = TableResponse(kernel)
         response.set_body([
             ['running', True]
         ])
@@ -97,7 +97,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
 
         return response
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _check,
         _execute
     ])

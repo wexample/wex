@@ -6,7 +6,7 @@ from src.core import Kernel
 from addons.app.decorator.app_command import app_command
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.exec import app__app__exec
 
@@ -101,7 +101,7 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str):
                     InteractiveShellCommandResponse(kernel, command)
                 )
 
-    return ResponseCollectionResponse(kernel, commands_collection)
+    return QueuedCollectionResponse(kernel, commands_collection)
 
 
 def _app__script__exec__create_callback(

@@ -12,7 +12,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 
 
@@ -116,7 +116,7 @@ def app__proxy__start(kernel: Kernel,
             }
         )
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _app__proxy__start__create,
         _app__proxy__start__checkup,
         _app__proxy__start__start,

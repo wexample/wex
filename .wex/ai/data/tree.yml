@@ -1688,7 +1688,7 @@ children:
                 type: file
               AbstractResponse.py:
                 type: file
-              DataSet2dResponse.py:
+              TableResponse.py:
                 type: file
               DefaultResponse.py:
                 type: file

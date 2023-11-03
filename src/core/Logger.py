@@ -132,7 +132,7 @@ class Logger:
 
         for file in all:
             log = load_json_if_valid(file)
-            if len(log['commands']):
+            if log and len(log['commands']):
                 command_data = log['commands'][0]
 
                 if command_data['command'] == command:

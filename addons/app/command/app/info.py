@@ -3,14 +3,14 @@ from addons.app.command.env.get import app__env__get
 from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON
 from addons.app.decorator.app_command import app_command
-from src.core.response.DataSet2dResponse import DataSet2dResponse
+from src.core.response.TableResponse import TableResponse
 from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
 def app__app__info(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
-    output_list = DataSet2dResponse(kernel)
+    output_list = TableResponse(kernel)
 
     output_list.set_body([
         [

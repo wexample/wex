@@ -11,7 +11,7 @@ from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from addons.app.command.db.exec import app__db__exec
 from addons.app.command.app.exec import app__app__exec
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 
 @app_command(help="Change wordpress URL in database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
@@ -110,9 +110,9 @@ def wordpress__url__replace(kernel: Kernel,
 
                 kernel.io.message(f'Replaced {old_url} by {new_url}')
 
-        return ResponseCollectionResponse(kernel, responses)
+        return QueuedCollectionResponse(kernel, responses)
 
-    return ResponseCollectionResponse(kernel, [
+    return QueuedCollectionResponse(kernel, [
         _build_urls,
         _replace
     ])
