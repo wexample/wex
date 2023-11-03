@@ -14,7 +14,7 @@ from addons.app.decorator.app_command import app_command
 
 
 @app_command(help="Stop the given app")
-@as_sudo
+@as_sudo()
 def app__app__stop(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     name = manager.get_config('global.name')

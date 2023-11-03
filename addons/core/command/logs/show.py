@@ -8,7 +8,7 @@ from src.core.response.TableResponse import TableResponse
 
 @command(help="Show a summary of log files")
 @alias('logs')
-@no_log
+@no_log()
 def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()

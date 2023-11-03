@@ -10,7 +10,7 @@ from src.decorator.as_sudo import as_sudo
 
 
 @command(help="Create a new command and test files")
-@as_sudo
+@as_sudo()
 @option('--command', '-c', type=str, required=True,
         help="Full name of the command, i.e. addon::some/thing")
 @option('--force', '-f', type=bool, required=False, is_flag=True, default=False,

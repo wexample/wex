@@ -77,8 +77,8 @@ class Logger:
         else:
             container = self.log_data
 
-        if 'errors' not in self.current_command:
-            self.current_command['errors'] = []
+        if 'errors' not in container:
+            container['errors'] = []
 
         container['errors'].append({
             'code': code,

@@ -10,7 +10,7 @@ from src.decorator.command import command
 
 
 @command(help="Update local /etc/hosts file")
-@as_sudo
+@as_sudo()
 def app__hosts__update(kernel: Kernel):
     new_block_content = []
     ip = kernel.run_function(

@@ -9,7 +9,7 @@ from addons.app.command.webhook.exec import app__webhook__exec
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-@as_sudo
+@as_sudo()
 def app__webhook__info(kernel: Kernel):
     response = kernel.run_function(
         system__process__by_port,

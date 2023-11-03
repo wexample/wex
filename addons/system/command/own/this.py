@@ -7,7 +7,7 @@ from src.decorator.as_sudo import as_sudo
 
 
 @command(help="Make current user owner of this directory and every files or subdirectories")
-@as_sudo
+@as_sudo()
 @option('--path', '-p', type=str, required=False, default=None, help="Argument")
 def system__own__this(kernel, path: str = None):
     if path is None:

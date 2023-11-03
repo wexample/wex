@@ -10,7 +10,7 @@ from src.decorator.command import command
 
 
 @command(help="Stop webhook daemon")
-@as_sudo
+@as_sudo()
 def app__webhook__stop(
         kernel: Kernel,
 ):

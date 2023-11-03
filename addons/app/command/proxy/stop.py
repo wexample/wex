@@ -6,7 +6,7 @@ from src.decorator.command import command
 
 
 @command(help="Stop the running reverse proxy server")
-@as_sudo
+@as_sudo()
 def app__proxy__stop(kernel: Kernel):
     manager: AppAddonManager = kernel.addons['app']
     proxy_path = manager.get_proxy_path()

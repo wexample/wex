@@ -19,7 +19,7 @@ from addons.app.command.webhook.exec import app__webhook__exec
 
 
 @command(help="Serve webhook listener daemon")
-@as_sudo
+@as_sudo()
 @option('--port', '-p', type=int, required=False, default=WEBHOOK_LISTEN_PORT_DEFAULT,
         help="Which port is used by service to listen incoming webhooks")
 @option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,

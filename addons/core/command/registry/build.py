@@ -15,7 +15,7 @@ from src.helper.file import set_user_or_sudo_user_owner
 
 
 @command(help="Rebuild core registry")
-@as_sudo
+@as_sudo()
 @option('--test', '-t', is_flag=True, default=False,
         help="Register also commands marked as only for testing")
 @option('--write', '-w', type=bool, default=True,
