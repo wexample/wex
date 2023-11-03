@@ -22,6 +22,10 @@ def system__process__by_port(kernel: Kernel, port: int):
             'Started': datetime.fromtimestamp(process.create_time()).strftime(DATE_FORMAT_SECOND),
         })
 
-        return output_list
+    else:
+        output_list.set_dictionary({
+            'Port': port,
+            'Running': False
+        })
 
-    return None
+    return output_list
