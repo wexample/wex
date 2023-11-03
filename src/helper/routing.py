@@ -3,8 +3,11 @@ from urllib.parse import urlparse, parse_qs
 
 ALLOWED_ROUTES = {
     'status': r'^/status$',
-    'webhook': r'^/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$',
+    'webhook': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-]+)$',
 }
+
+# Added an explicit whitelist for query parameters
+ALLOWED_QUERY_CHARS = re.compile(r'^[a-zA-Z0-9_\-=&]+$')
 
 
 def get_route_name(url: str):
@@ -33,4 +36,12 @@ def get_route_info(url: str):
 
 
 def is_allowed_route(url: str) -> bool:
-    return True if get_route_info(url) else False
+    route_info = get_route_info(url)
+    if route_info:
+        # Validate the query string to contain only allowed characters
+        for key, values in route_info['query'].items():
+            for value in values:
+                if not ALLOWED_QUERY_CHARS.fullmatch(value):
+                    return False
+        return True
+    return False
