@@ -42,7 +42,6 @@ class Kernel:
         self.io = IOManager(self)
         self.logger = None
         self.post_exec: list = []
-        # Use a clone to keep original command.
         self.previous_response: None | AbstractResponse = None
         self.registry: dict[str, Optional[str]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
