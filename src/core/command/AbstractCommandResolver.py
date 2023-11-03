@@ -87,11 +87,28 @@ class AbstractCommandResolver:
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.kernel
 
+        previous_request = self.kernel.current_request
+        self.kernel.current_request = request
+
+        # Execute request
         response = self.wrap_response(
             request.function.invoke(ctx)
         )
 
+        # Append to log tree
+        log_parent = previous_request.log if previous_request else self.kernel.logger.log_data
+
+        if 'commands' not in log_parent:
+            log_parent['commands'] = []
+
+        log_parent['commands'].append(
+            self.kernel.current_request.log
+        )
+
+        # Render response
         response = response.render(request, render_mode)
+
+        self.kernel.current_request = previous_request
 
         self.kernel.hook_addons('render_request_post', {'response': response})
 

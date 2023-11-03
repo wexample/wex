@@ -41,12 +41,3 @@ def app__webhook__info(kernel: Kernel):
             response,
             table_response
         ])
-
-    # response.new_section('Log')
-    #
-
-
-    # response.set_body(output)
-
-    return response
-

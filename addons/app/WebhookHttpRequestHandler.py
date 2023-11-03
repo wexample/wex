@@ -13,19 +13,22 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-            success = self.kernel.run_function(
+            response = self.kernel.run_function(
                 app__webhook__exec,
                 {
                     'url': self.path,
                 },
                 render_mode=KERNEL_RENDER_MODE_HTTP
-            ).first()
+            )
+            rendered = response.print() or '{"response":null}'
 
-            if success:
-                self.wfile.write(success.encode())
-            else:
-                empty = '{"response":"' + str(success) + '"}'
-                self.wfile.write(empty.encode())
+            self.kernel.logger.append_event(
+                'EVENT_HTTP_SERVER_RESPONSE',
+                {
+                    "value": rendered,
+                })
+
+            self.wfile.write(rendered.encode())
 
         except Exception as e:
             import traceback
