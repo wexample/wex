@@ -3,8 +3,9 @@ from src.helper.routing import is_allowed_route
 from src.helper.array import array_replace_value
 import subprocess
 from logging.handlers import RotatingFileHandler
-
+import traceback
 import logging
+import json
 
 WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
 
@@ -33,7 +34,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(404, "Not Found")
                 return
 
-            # Create command to launch
+            # Create command to execute
             command = array_replace_value(
                 list(self.command_base),
                 WEBHOOK_COMMAND_URL_PLACEHOLDER,
@@ -47,25 +48,42 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     text=True) as process:
                 stdout, stderr = process.communicate()
 
-                if process.returncode != 0:
-                    self.logger.error(f"ERROR: {stderr}")
-                else:
-                    self.logger.info(f"SUCCESS: {stdout}")
+            # Check if the process returned an error
+            if process.returncode != 0:
+                self.logger.error(f'{{"error":"{stderr}"}}')
+                self.send_error(500, "Internal Server Error")
+                return
 
-            self.send_response(200)
+            if stdout:
+                # Attempt to parse the stdout as JSON to verify valid JSON response
+                try:
+                    json.loads(stdout)  # If this fails, an exception will be raised
+                except json.JSONDecodeError:
+                    # Log the error with the invalid JSON content
+                    self.logger.error(f'Invalid JSON response: {stdout}')
+                    self.send_error(500, "Internal Server Error")
+                    return
+                self.send_response(200)
+            else:
+                stdout = '{"error": "WEBHOOK_NOT_FOUND"}'
+                self.send_response(404)
+
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
+            # If stdout is valid JSON, log the info
+            self.logger.info(f"{stdout}")
             self.wfile.write(stdout.encode())
 
         except Exception as e:
-            import traceback
+            traceback_string = traceback.format_exc()  # Get detailed traceback
+            self.logger.error(f'Exception during processing: {traceback_string}')
 
             self.send_response(500)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-            empty = '{"error":"Error during server execution: ' + str(e) + '"}'
-            self.wfile.write(empty.encode())
-
+            error_response = f'{{"error":"Error during server execution: {str(e)}"}}'
+            self.wfile.write(error_response.encode())
+            # Raise the exception for further handling if needed
             raise

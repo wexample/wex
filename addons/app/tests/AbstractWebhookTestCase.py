@@ -1,4 +1,5 @@
 import time
+import json
 
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
@@ -25,7 +26,10 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
         if check_code:
             self.assertEqual(
                 response.status,
-                200
+                check_code
             )
 
         return response
+
+    def parse_response(self, response) -> dict:
+        return json.loads(response.read())

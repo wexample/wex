@@ -115,7 +115,9 @@ def app__webhook__listen(
 
             command += [
                 '--parent-task-id',
-                kernel.task_id
+                kernel.task_id,
+                # No need to interact or create sub process
+                '--fast-mode'
             ]
 
             # Create a handler with minimal external dependencies.
