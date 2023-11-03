@@ -82,7 +82,7 @@ class QueuedCollectionResponse(AbstractResponse):
         # Prepare args
         render_args = {}
         if step_index > 0:
-            has_previous = None
+            has_previous = False
             previous = None
             if self.kernel.fast_mode:
                 if self.kernel.previous_response:
