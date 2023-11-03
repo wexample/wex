@@ -88,6 +88,10 @@ class AbstractCommandResolver:
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.kernel
 
+        previous_verbosity = self.kernel.verbosity
+        if hasattr(request.function.callback, 'verbosity'):
+            self.kernel.verbosity = request.function.callback.verbosity
+
         previous_request = self.kernel.current_request
         self.kernel.current_request = request
 
@@ -109,6 +113,7 @@ class AbstractCommandResolver:
         # Render response
         response = response.render(request, render_mode)
 
+        self.kernel.verbosity = previous_verbosity
         self.kernel.current_request = previous_request
 
         self.kernel.hook_addons('render_request_post', {'response': response})

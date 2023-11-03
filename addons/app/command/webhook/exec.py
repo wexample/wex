@@ -3,9 +3,11 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
+from src.const.globals import VERBOSITY_LEVEL_QUIET
 from src.core.response.DictResponse import DictResponse
 from src.core.Kernel import Kernel
 from src.decorator.command import command
+from src.decorator.verbosity import verbosity
 from src.decorator.option import option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
@@ -14,6 +16,7 @@ from src.core.response.HiddenResponse import HiddenResponse
 
 
 @command(help="Execute a webhook")
+@verbosity(VERBOSITY_LEVEL_QUIET)
 @option('--url', '-u', type=str, required=True, help="Argument")
 @option('--env', '-e', type=str, required=False, help="Env directory")
 def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
