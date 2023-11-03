@@ -1,7 +1,6 @@
 from http.server import BaseHTTPRequestHandler
-from addons.app.helpers.webhook import is_allowed_path
+from src.helper.routing import is_allowed_route
 from src.helper.array import array_replace_value
-from src.const.globals import COMMAND_TYPE_ADDON
 import subprocess
 from logging.handlers import RotatingFileHandler
 
@@ -30,7 +29,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if not is_allowed_path(self.path):
+            if not is_allowed_route(self.path):
                 self.send_error(404, "Not Found")
                 return
 
