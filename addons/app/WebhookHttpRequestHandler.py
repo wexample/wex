@@ -7,10 +7,10 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     kernel = None
 
     def do_GET(self):
-        self.send_header('Content-type', 'application/json')
 
         try:
             self.send_response(200)
+            self.send_header('Content-type', 'application/json')
             self.end_headers()
 
             success = self.kernel.run_function(
@@ -40,6 +40,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 })
 
             self.send_response(500)
+            self.send_header('Content-type', 'application/json')
             self.end_headers()
 
             empty = '{"error":"Error during server execution: ' + str(e) + '"}'

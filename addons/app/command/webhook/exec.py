@@ -3,7 +3,7 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
-from src.core.response.TableResponse import TableResponse
+from src.core.response.DictResponse import DictResponse
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -22,10 +22,10 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     path = parsed_url.path
 
     if path == '/status':
-        response = TableResponse(kernel)
-        response.set_body([
-            ['running', True]
-        ])
+        response = DictResponse(kernel)
+        response.set_dictionary({
+            'running': True
+        })
         return response
 
     pattern = r'^\/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$'
