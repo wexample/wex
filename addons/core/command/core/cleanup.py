@@ -5,6 +5,7 @@ from src.decorator.alias import alias
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.no_log import no_log
+from addons.system.command.own.this import system__own__this
 
 
 @command(help="Uninstall core")
@@ -19,3 +20,11 @@ def core__core__cleanup(kernel: Kernel):
         pass
 
     kernel.rebuild()
+
+    # Reset perms
+    kernel.run_function(
+        system__own__this,
+        {
+            'path': kernel.get_path('root')
+        }
+    )
