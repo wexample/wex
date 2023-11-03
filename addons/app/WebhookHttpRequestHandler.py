@@ -56,6 +56,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
+            self.wfile.write(stdout.encode())
+
         except Exception as e:
             import traceback
 
