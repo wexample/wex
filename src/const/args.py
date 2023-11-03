@@ -6,5 +6,6 @@ ARGS_HELP = [
     'command_request_step',
     'kernel_task_id',
     'log_indent',
-    'log_length'
+    'log_length',
+    'render_mode',
 ]

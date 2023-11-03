@@ -4,6 +4,7 @@ import re
 import sys
 from abc import abstractmethod
 
+from src.helper.command import command_to_string
 from src.const.args import ARGS_HELP
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
@@ -231,20 +232,24 @@ class AbstractCommandResolver:
     def get_function_name_parts(self, parts: list) -> []:
         pass
 
-    def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:
+    def build_full_command_parts_from_function(self, function_or_command, args: dict = None) -> list:
         if args is None:
             args = {}
+        else:
+            args = convert_dict_to_args(function_or_command, args)
 
-        if isinstance(function_or_command, str):
-            return function_or_command
+        return [
+            CORE_COMMAND_NAME,
+            self.build_command_from_function(function_or_command),
+        ] + args
 
-        output = f'{CORE_COMMAND_NAME} '
-        output += self.build_command_from_function(function_or_command)
-
-        if len(args):
-            output += ' ' + (' '.join(convert_dict_to_args(function_or_command, args)))
-
-        return output
+    def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:
+        return command_to_string(
+            self.build_full_command_parts_from_function(
+                function_or_command,
+                args
+            )
+        )
 
     def build_command_parts_from_function(self, function_name):
         """

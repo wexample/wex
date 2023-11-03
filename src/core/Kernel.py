@@ -31,7 +31,11 @@ class Kernel:
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
-    def __init__(self, entrypoint_path: str):
+    def __init__(
+            self,
+            entrypoint_path: str,
+            task_id: str | None = None
+    ):
         self.root_request: None | CommandRequest = None
         self.current_request: None | CommandRequest = None
         self.current_response: None | AbstractResponse = None
@@ -42,7 +46,9 @@ class Kernel:
         self.previous_response: None | AbstractResponse = None
         self.registry: dict[str, Optional[str]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
-        self.task_id: str | None = None
+        self.task_id: str | None = task_id
+        self.children: list = []
+        self.default_render_mode = KERNEL_RENDER_MODE_CLI
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -50,6 +56,7 @@ class Kernel:
 
         self.path: dict = {
             'call': os.getcwd() + os.sep,
+            'entrypoint': entrypoint_path,
             'root': root_path,
             'addons': os.path.join(root_path, 'addons') + os.sep,
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
@@ -182,7 +189,7 @@ class Kernel:
             self,
             command: str,
             command_args: dict | list | None = None,
-            render_mode: str = KERNEL_RENDER_MODE_CLI):
+            render_mode: str | None = None):
         response = self.run_command(
             command,
             command_args or [],
@@ -206,7 +213,7 @@ class Kernel:
                     command: str,
                     args: dict | list = None,
                     quiet: bool = False,
-                    render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
+                    render_mode: str | None = None) -> AbstractResponse:
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
@@ -223,7 +230,7 @@ class Kernel:
                      args: dict | list = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,
-                     render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
+                     render_mode: str | None = None) -> AbstractResponse:
         resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
@@ -235,8 +242,13 @@ class Kernel:
 
         return self.render_request(request, render_mode)
 
-    def render_request(self, request, render_mode: str = KERNEL_RENDER_MODE_CLI) -> AbstractResponse:
-        return request.resolver.render_request(request, render_mode)
+    def render_request(self,
+                       request,
+                       render_mode: str | None = None) -> AbstractResponse:
+        return request.resolver.render_request(
+            request,
+            render_mode or self.default_render_mode
+        )
 
     def task_file_path(self, type: str):
         task_dir = os.path.join(self.get_or_create_path('tmp'), 'task')
@@ -294,6 +306,9 @@ class Kernel:
         return None
 
     def store_task_id(self):
+        if self.task_id:
+            return
+
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.io.error(
@@ -331,6 +346,10 @@ class Kernel:
 
         if value is not None:
             self.io.log_length = int(value)
+
+        value = arg_shift(self.sys_argv, 'render-mode')
+        if value is not None:
+            self.default_render_mode = value
 
         # There is a task id redirection
         value = arg_shift(self.sys_argv, 'kernel-task-id')

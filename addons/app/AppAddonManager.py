@@ -6,7 +6,7 @@ import yaml
 
 from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
-from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND
+from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, COMMAND_TYPE_APP
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -18,7 +18,7 @@ from src.helper.dict import get_dict_item_by_path
 
 
 class AppAddonManager(AddonManager):
-    def __init__(self, kernel, name: str = 'app', app_dir: None | str = None):
+    def __init__(self, kernel, name: str = COMMAND_TYPE_APP, app_dir: None | str = None):
         super().__init__(kernel, name)
         self.app_dir = None
         self.config = {}

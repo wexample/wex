@@ -32,7 +32,7 @@ def command(*args, **kwargs):
             f = click.option('--vvv', '-vvv', is_flag=True, required=False,
                              help="Maximum verbosity")(f)
 
-            # Step position control
+            # Core commands
             f = click.option('--command-request-step', '-command-request-step', type=str, required=False,
                              help="Core option for processes collection execution")(f)
             f = click.option('--kernel-task-id', '-kernel-task-id', type=str, required=False,
@@ -41,6 +41,8 @@ def command(*args, **kwargs):
                              help="Core option for processes collection execution")(f)
             f = click.option('--log-length', '-log-length', type=int, required=False,
                              help="Change logging frame height, set 0 to disable it")(f)
+            f = click.option('--render-mode', '-render-mode', type=int, required=False,
+                             help="Define render mode (cli, http, ...), which produce different output formatting")(f)
         return f
 
     return decorator
