@@ -148,7 +148,23 @@ class QueuedCollectionResponse(AbstractResponse):
 
             return self.render_content_complete()
 
-        self.enqueue_next_step(step_index, response)
+        # Now that every render() has ran,
+        # we can cleanup the temporary storage.
+        remove_file_if_exists(self.kernel.task_file_path('response'))
+
+        self.log('Searching for next collection item')
+        next_index = step_index + 1
+        if next_index < len(self.collection):
+            # Storing response to a file is not needed
+            # when all scripts are ran in one single thread.
+            # The "previous_response" var will be used instead.
+            if not self.kernel.fast_mode:
+                serialized = response.print(interactive_data=False)
+                if serialized is not None:
+                    # Store response in a file to allow next step to access it.
+                    self.kernel.task_file_write('response', serialized)
+
+            self.enqueue_next_step_by_index(next_index)
 
         return self.render_content_complete()
 
@@ -178,24 +194,6 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self
 
-    def enqueue_next_step(self, current_step_index, response):
-        # Now that every render() has ran,
-        # we can cleanup the temporary storage.
-        remove_file_if_exists(self.kernel.task_file_path('response'))
-
-        self.log('Searching for next collection item')
-        next_index = current_step_index + 1
-        if next_index < len(self.collection):
-            # Storing response to a file is not needed
-            # when all scripts are ran in one single thread.
-            # The "previous_response" var will be used instead.
-            if not self.kernel.fast_mode:
-                serialized = response.print(interactive_data=False)
-                if serialized is not None:
-                    # Store response in a file to allow next step to access it.
-                    self.kernel.task_file_write('response', serialized)
-
-            self.enqueue_next_step_by_index(next_index)
 
     def enqueue_next_step_by_index(self, next_step_index):
         self.request.steps[self.step_position] = next_step_index
