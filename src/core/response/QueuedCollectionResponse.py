@@ -6,11 +6,8 @@ from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManage
     FastModeQueuedCollectionResponseQueueManager
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
-from src.helper.args import arg_replace
 from src.core.CommandRequest import CommandRequest
 from src.helper.args import parse_arg
-from src.helper.file import remove_file_if_exists
-from src.helper.process import process_post_exec_function
 from src.const.globals import KERNEL_RENDER_MODE_CLI, VERBOSITY_LEVEL_MAXIMUM
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -27,9 +24,9 @@ class QueuedCollectionResponse(AbstractResponse):
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
 
-        manager_class = DefaultQueuedCollectionResponseQueueManager \
-            if self.kernel.fast_mode is None \
-            else FastModeQueuedCollectionResponseQueueManager
+        manager_class = FastModeQueuedCollectionResponseQueueManager \
+            if self.kernel.fast_mode \
+            else DefaultQueuedCollectionResponseQueueManager
         self.queue_manager = manager_class(self)
 
     def find_parent_response_collection(self) -> 'None|AbstractResponse':
@@ -84,7 +81,7 @@ class QueuedCollectionResponse(AbstractResponse):
         # First time, do not execute, wait next iteration
         if step_index is None:
             self.log(f'Launching first post-execution')
-            self.enqueue_next_step_by_index(0)
+            self.queue_manager.enqueue_next_step_by_index(0)
 
             return self.render_content_complete()
 
@@ -169,7 +166,7 @@ class QueuedCollectionResponse(AbstractResponse):
                     # Store response in a file to allow next step to access it.
                     self.kernel.task_file_write(self.build_step_path() + '.response', serialized)
 
-            self.enqueue_next_step_by_index(next_index)
+            self.queue_manager.enqueue_next_step_by_index(next_index)
 
         return self.render_content_complete()
 
@@ -199,20 +196,3 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self
 
-
-    def enqueue_next_step_by_index(self, next_step_index):
-        self.request.steps[self.step_position] = next_step_index
-        # Remove obsolete parts.
-        del self.request.steps[self.step_position + 1:]
-        self.has_next_step = True
-
-        if not self.kernel.fast_mode:
-            root = self.get_root_parent()
-            args = root.request.args.copy()
-            arg_replace(args, 'command-request-step', self.build_step_path())
-
-            process_post_exec_function(
-                self.kernel,
-                root.request.function,
-                args
-            )
