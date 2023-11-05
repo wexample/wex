@@ -171,28 +171,9 @@ class QueuedCollectionResponse(AbstractResponse):
         return self.render_content_complete()
 
     def render_content_complete(self):
-        self.kernel.previous_response = self
         self.kernel.io.log_indent_down()
 
-        if self.kernel.fast_mode:
-            if self.parent:
-                self.parent.has_next_step = self.has_next_step
-            # This is the root collection
-            else:
-                while self.has_next_step and not isinstance(self.first(), ResponseCollectionStopResponse):
-                    self.has_next_step = False
-                    self.kernel.previous_response = self
-                    self.kernel.current_response = None
-
-                    args = self.request.args.copy()
-
-                    response = self.kernel.run_function(
-                        self.request.function,
-                        args
-                    )
-
-                    # In fast mode we merge all outputs in the root output bag.
-                    self.output_bag += response.output_bag
+        self.queue_manager.render_content_complete()
 
         return self
 
