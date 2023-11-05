@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from src.core.response.queue_manager.DefaultQueuedCollectionResponseQueueManager import \
+    DefaultQueuedCollectionResponseQueueManager
+from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManager import \
+    FastModeQueuedCollectionResponseQueueManager
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.helper.args import arg_replace
@@ -22,6 +26,11 @@ class QueuedCollectionResponse(AbstractResponse):
         # For debug purpose
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
+
+        manager_class = DefaultQueuedCollectionResponseQueueManager \
+            if self.kernel.fast_mode is None \
+            else FastModeQueuedCollectionResponseQueueManager
+        self.queue_manager = manager_class(self)
 
     def find_parent_response_collection(self) -> 'None|AbstractResponse':
         current = self
