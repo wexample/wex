@@ -93,7 +93,7 @@ class QueuedCollectionResponse(AbstractResponse):
                     )
             else:
                 has_previous = True
-                previous = self.kernel.task_file_load('response')
+                previous = self.kernel.task_file_load(self.build_step_path() + '.response')
 
             if has_previous:
                 render_args = {'previous': parse_arg(previous)}
@@ -148,10 +148,6 @@ class QueuedCollectionResponse(AbstractResponse):
 
             return self.render_content_complete()
 
-        # Now that every render() has ran,
-        # we can cleanup the temporary storage.
-        remove_file_if_exists(self.kernel.task_file_path('response'))
-
         self.log('Searching for next collection item')
         next_index = step_index + 1
         if next_index < len(self.collection):
@@ -162,7 +158,7 @@ class QueuedCollectionResponse(AbstractResponse):
                 serialized = response.print(interactive_data=False)
                 if serialized is not None:
                     # Store response in a file to allow next step to access it.
-                    self.kernel.task_file_write('response', serialized)
+                    self.kernel.task_file_write(self.build_step_path() + '.response', serialized)
 
             self.enqueue_next_step_by_index(next_index)
 
