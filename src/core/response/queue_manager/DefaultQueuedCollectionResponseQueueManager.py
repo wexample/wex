@@ -13,26 +13,10 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
         super().__init__(response)
 
     def get_previous_value(self):
-        step_index = self.response.request.steps[self.response.step_position]
+        path = self.get_previous_response_path()
 
-        # The index is 0
-        if step_index == 0:
-            # But it has a parent collection
-            if self.response.step_position > 0:
-                # Get the parent index
-                path = self.response.request.steps[:self.response.step_position]
-                previous_index = path[-1]
-
-                # And parent has a previous item.
-                if previous_index > 0:
-                    path[-1] -= 1
-                    previous_index -= 1
-            else:
-                return None
-        # The response have a previous one, in the same collection
-        else:
-            path = self.response.request.steps[:self.response.step_position + 1]
-            path[-1] -= 1
+        if path is None:
+            return None
 
         path = '-'.join(map(str, path))
         previous_data = self.response.kernel.task_file_load(
