@@ -10,11 +10,8 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
     def __init__(self, response):
         super().__init__(response)
 
-    def has_previous_value(self) -> bool:
-        return True
-
     def get_previous_value(self):
-        return None
+        return self.response.kernel.task_file_load(self.response.build_step_path() + '.response')
 
     def enqueue_next_step_by_index(self, next_step_index):
         super().enqueue_next_step_by_index(next_step_index)
@@ -28,3 +25,12 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
             root.request.function,
             args
         )
+
+    def enqueue_next_step_if_exists(self, step_index, response) -> bool:
+        exists = super().enqueue_next_step_if_exists(step_index, response)
+
+        if exists:
+            serialized = response.print(interactive_data=False)
+            if serialized is not None:
+                # Store response in a file to allow next step to access it.
+                self.response.kernel.task_file_write(self.response.build_step_path() + '.response', serialized)

@@ -7,7 +7,6 @@ from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManage
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
 from src.core.CommandRequest import CommandRequest
-from src.helper.args import parse_arg
 from src.const.globals import KERNEL_RENDER_MODE_CLI, VERBOSITY_LEVEL_MAXIMUM
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -86,23 +85,9 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.render_content_complete()
 
         # Prepare args
-        render_args = {}
-        if step_index > 0:
-            has_previous = False
-            previous = None
-            if self.kernel.fast_mode:
-                if self.kernel.previous_response:
-                    has_previous = True
-                    # Serialize previous data to keep consistency with non-fast mode.
-                    previous = self.kernel.previous_response.print(
-                        interactive_data=False
-                    )
-            else:
-                has_previous = True
-                previous = self.kernel.task_file_load(self.build_step_path() + '.response')
-
-            if has_previous:
-                render_args = {'previous': parse_arg(previous)}
+        render_args = {
+            'previous': self.queue_manager.get_previous_value()
+        } if step_index > 0 else {}
 
         # Transform item in a response object.
         wrap = self.request.resolver.wrap_response(self.collection[step_index])
@@ -155,18 +140,7 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.render_content_complete()
 
         self.log('Searching for next collection item')
-        next_index = step_index + 1
-        if next_index < len(self.collection):
-            # Storing response to a file is not needed
-            # when all scripts are ran in one single thread.
-            # The "previous_response" var will be used instead.
-            if not self.kernel.fast_mode:
-                serialized = response.print(interactive_data=False)
-                if serialized is not None:
-                    # Store response in a file to allow next step to access it.
-                    self.kernel.task_file_write(self.build_step_path() + '.response', serialized)
-
-            self.queue_manager.enqueue_next_step_by_index(next_index)
+        self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
         return self.render_content_complete()
 
@@ -176,4 +150,3 @@ class QueuedCollectionResponse(AbstractResponse):
         self.queue_manager.render_content_complete()
 
         return self
-

@@ -9,6 +9,13 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
     def __init__(self, response):
         super().__init__(response)
 
+    def get_previous_value(self):
+        if self.response.kernel.previous_response:
+            # Serialize previous data to keep consistency with non-fast mode.
+            return self.response.kernel.previous_response.print(
+                interactive_data=False
+            )
+
     def render_content_complete(self):
         if self.response.parent:
             self.response.parent.has_next_step = self.response.has_next_step
