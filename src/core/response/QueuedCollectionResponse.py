@@ -5,7 +5,7 @@ from src.core.response.queue_manager.DefaultQueuedCollectionResponseQueueManager
 from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManager import \
     FastModeQueuedCollectionResponseQueueManager
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI, VERBOSITY_LEVEL_MAXIMUM
 from src.core.response.AbstractResponse import AbstractResponse
@@ -111,7 +111,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         # Support simple abort response, with is an alias of a stop response.
         if isinstance(response, AbortResponse):
-            response = ResponseCollectionStopResponse(self.kernel, response.reason)
+            response = QueuedCollectionStopResponse(self.kernel, response.reason)
 
         self.output_bag.append(response)
 
@@ -127,9 +127,7 @@ class QueuedCollectionResponse(AbstractResponse):
             )
 
         # Response asks to stop all process
-        if isinstance(response, ResponseCollectionStopResponse):
-            self.log('Collection execution aborted', response)
-
+        if isinstance(response, QueuedCollectionStopResponse):
             # Mark having next step to block enqueuing
             self.has_next_step = True
 
