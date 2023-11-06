@@ -20,6 +20,7 @@ class CommandRequest:
         self.args = []
         self.steps = []
         self.resolver.locate_function(self)
+        self.parent = self.resolver.kernel.current_request
 
         if not self.function:
             # Do not return any error if function is missing,
@@ -50,6 +51,11 @@ class CommandRequest:
             log['steps'] = self.steps
 
         self.log = log
+
+    def get_root_parent(self):
+        if self.parent:
+            return self.parent.get_root_parent()
+        return self
 
     def is_click_command(self, click_command) -> bool:
         return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__

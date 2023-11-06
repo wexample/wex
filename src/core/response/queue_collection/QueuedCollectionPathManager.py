@@ -25,6 +25,7 @@ class QueuedCollectionPathManager:
         if self.response.parent:
             self.response.step_position = self.response.find_parent_response_collection().step_position + 1
 
+    def log(self):
         self.response.kernel.io.log(f'Step path : ' + str(self.response.build_step_path()))
         self.response.kernel.io.log(f'Step position : ' + str(self.response.step_position))
         self.response.kernel.io.log(f'Step index : ' + str(self.get_step_index()))
