@@ -56,15 +56,11 @@ class QueuedCollectionResponse(AbstractResponse):
             root_request.storage['queue_collection_path_manager'] = QueuedCollectionPathManager(root_request)
 
         self.path_manager: QueuedCollectionPathManager = root_request.storage['queue_collection_path_manager']
-        self.path_manager.set_current_request(request)
-        self.path_manager.set_current_response(self)
+        self.path_manager.start_rendering(request, self)
 
         # Collection is empty, nothing to do
         if not len(self.collection):
             return self.queue_manager.render_content_complete()
-
-        if self.parent:
-            self.step_position = self.find_parent_response_collection().step_position + 1
 
         # There is a deeper level.
         if self.path_manager.has_child_queue():
