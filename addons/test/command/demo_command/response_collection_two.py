@@ -14,7 +14,10 @@ TEST_DEMO_COMMAND_TWO_RESULT_SHELL = '..TWO:shell-response'
 @option('--abort', '-a', is_flag=True, required=False, help="Ask to abort")
 def test__demo_command__response_collection_two(kernel: Kernel, abort: bool = False):
     def _test__demo_command__response_collection_two__simple_function(previous: None):
-        return f'..TWO:simple-function-previous-value:should-be-none={previous}'
+        return f'..TWO:simple-function-previous-value:should-be-string={previous}'
+
+    def _test__demo_command__response_collection_two__another_simple_function(previous: None):
+        return f'..TWO:another-simple-function-previous-value:should-be-none={previous}'
 
     def _test__demo_command__response_collection_two__run_another_collection(previous: int = None):
         nonlocal abort
@@ -39,7 +42,7 @@ def test__demo_command__response_collection_two(kernel: Kernel, abort: bool = Fa
         f'{TEST_DEMO_COMMAND_TWO_RESULT_FIRST}(2)',
         _test__demo_command__response_collection_two__simple_function,
         InteractiveShellCommandResponse(kernel, ['echo', f'"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"']),
-        _test__demo_command__response_collection_two__simple_function,
+        _test__demo_command__response_collection_two__another_simple_function,
         _test__demo_command__response_collection_two__run_another_collection,
         _test__demo_command__response_collection_three_command,
     ])

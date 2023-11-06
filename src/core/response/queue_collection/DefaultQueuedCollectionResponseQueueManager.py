@@ -41,8 +41,8 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
         exists = super().enqueue_next_step_if_exists(step_index, response)
 
         if exists:
-            serialized = response.print(interactive_data=False)
-            if serialized is not None:
+            store_data = response.store_data()
+            if store_data is not None:
                 path = steps_current[:self.response.step_position + 1]
                 path = '-'.join(map(str, path))
 
@@ -51,7 +51,7 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
                     path + '.response',
                     yaml.dump({
                         # Save raw value to keep type
-                        'body': response.first()
+                        'body': store_data
                     })
                 )
 

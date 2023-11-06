@@ -31,13 +31,10 @@ class QueuedCollectionPathManager:
         self.response.kernel.io.log(f'Step position: {self.response.step_position}')
         self.response.kernel.io.log(f'Step index: {self.get_step_index()}')
 
-        if self.response.step_position not in self.map:
-            self.map[self.response.step_position] = {}
-
-        self.map[self.response.step_position][self.get_step_index()] = self.response
+        self.map[self.build_step_path()] = self.response
 
     def has_child_queue(self) -> bool:
         return self.response.step_position >= len(self.steps)
 
-    def build_step_path(self) -> str:
-        return '.'.join(map(str, self.steps))
+    def build_step_path(self, steps=None) -> str:
+        return '.'.join(map(str, steps if steps is not None else self.steps))

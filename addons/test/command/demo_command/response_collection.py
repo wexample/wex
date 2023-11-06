@@ -5,6 +5,7 @@ from src.decorator.test_command import test_command
 from src.core import Kernel
 from src.decorator.option import option
 from addons.test.command.demo_command.response_collection_two import test__demo_command__response_collection_two
+from addons.test.command.demo_command.counting_collection import test__demo_command__counting_collection
 
 TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION = 'function-response-text'
 
@@ -23,7 +24,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
 
     def _test__demo_command__response_collection__function_three(previous: dict = None):
         return {
-            'type': type(previous),
+            'type': str(type(previous)),
             'length': len(previous)
         }
 
@@ -68,6 +69,31 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
             }
         )
 
+    def _test__demo_command__response_collection__counting_collection(previous=None):
+        kernel.io.log('Previous : ' + str(previous))
+
+        error = None
+        if previous != '__previous__':
+            error: True
+
+        response = kernel.run_function(
+            test__demo_command__counting_collection,
+            {
+                'initial': 1000
+            }
+        )
+
+        rendered = response.print()
+
+        if error:
+            kernel.io.error(
+                'ERR_UNEXPECTED',
+                {
+                    'error': f'Bad previous to response match : previous : {previous}, rendered : {rendered}'
+                }
+            )
+        return response
+
     return QueuedCollectionResponse(kernel, [
         'simple-response-text',
         'simple-response-text-2',
@@ -85,11 +111,14 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
         _test__demo_command__response_collection__callback_hidden_response,
         _test__demo_command__response_collection__previous,
         QueuedCollectionResponse(kernel, [
-            '--sub-collection-direct:simple-text'
+            '--sub-collection-direct:simple-text',
         ]),
         _test__demo_command__response_collection__run_another_collection,
         _test__demo_command__response_collection__run_another_collection,
         _test__demo_command__response_collection__sub_collection,
         _test__demo_command__response_collection__sub_collection,
+        '__previous__',
+        _test__demo_command__response_collection__counting_collection,
+        _test__demo_command__response_collection__counting_collection,
         'last-text'
     ])

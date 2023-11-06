@@ -100,3 +100,11 @@ class AbstractResponse:
                 return response
 
         return response
+
+    def storable_data(self) -> bool:
+        return True
+
+    def store_data(self):
+        if self.storable_data() and self.print(interactive_data=False):
+            return self.first()
+        return None

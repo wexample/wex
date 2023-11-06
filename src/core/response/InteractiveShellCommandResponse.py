@@ -50,3 +50,6 @@ class InteractiveShellCommandResponse(AbstractResponse):
             )
 
         return self
+
+    def storable_data(self) -> bool:
+        return False

@@ -16,9 +16,13 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
         if path is None:
             return None
 
-        previous_response = self.response.path_manager.map[len(path) - 1][path[-1]]
-        if previous_response:
-            # Serialize previous data to keep consistency with non-fast mode.
+        previous_response = self.response.path_manager.map[
+            self.response.path_manager.build_step_path(path)
+        ]
+
+        first = previous_response.output_bag[0]
+        if previous_response and first.storable_data():
+            # Get previous data keeps consistency with non-fast mode.
             return previous_response.first()
 
     def render_content_complete(self):
@@ -28,7 +32,6 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
         else:
             while self.response.has_next_step and not isinstance(self.response.first(), QueuedCollectionStopResponse):
                 self.response.has_next_step = False
-                self.response.kernel.previous_response = self.response
                 self.response.kernel.current_response = None
 
                 args = self.response.request.args.copy()

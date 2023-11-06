@@ -62,7 +62,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         self.assertTrue(
             isinstance(
                 response.output_bag[-1].output_bag[-1].output_bag[-1],
-                ResponseCollectionStopResponse
+                QueuedCollectionStopResponse
             ))
 
         # Execute in standard mode in a subshell.

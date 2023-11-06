@@ -137,7 +137,7 @@ class QueuedCollectionResponse(AbstractResponse):
                              f'function, got : {response.print()}',
                 })
 
-        if not is_basic_yaml_data(response.first()):
+        if not isinstance(response, AbstractResponse) and not is_basic_yaml_data(response):
             self.kernel.io.error(ERR_UNEXPECTED, {
                 'error': f'Returned data and nested values should be simple data : int, string, list or dict',
             })
