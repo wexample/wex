@@ -26,7 +26,6 @@ class AbstractQueuedCollectionResponseQueueManager:
                 # And parent has a previous item.
                 if previous_index > 0:
                     path[-1] -= 1
-                    previous_index -= 1
 
                 return path
             else:

@@ -66,7 +66,7 @@ class QueuedCollectionResponse(AbstractResponse):
             self.path_manager.steps.append(None)
 
         step_index = self.path_manager.get_step_index()
-        self.path_manager.log()
+        self.path_manager.save_to_map()
 
         # First time, do not execute, wait next iteration
         if step_index is None:

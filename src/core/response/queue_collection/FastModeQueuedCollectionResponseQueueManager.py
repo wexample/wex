@@ -10,11 +10,16 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
         super().__init__(response)
 
     def get_previous_value(self):
-        if self.response.kernel.previous_response:
+        self.response.find_parent_response_collection()
+        path = self.get_previous_response_path()
+
+        if path is None:
+            return None
+
+        previous_response = self.response.path_manager.map[len(path) - 1][path[-1]]
+        if previous_response:
             # Serialize previous data to keep consistency with non-fast mode.
-            return self.response.kernel.previous_response.print(
-                interactive_data=False
-            )
+            return previous_response.first()
 
     def render_content_complete(self):
         if self.response.parent:
@@ -36,4 +41,4 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
                 # In fast mode we merge all outputs in the root output bag.
                 self.response.output_bag += response.output_bag
 
-        return self.response
+        return super().render_content_complete()

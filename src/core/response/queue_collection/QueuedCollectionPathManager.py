@@ -8,6 +8,7 @@ class QueuedCollectionPathManager:
         self.response = None
         self.request = None
         self.steps = [None]
+        self.map = {}
 
         args = root_request.args
         steps = arg_shift(args, 'command-request-step')
@@ -25,10 +26,15 @@ class QueuedCollectionPathManager:
         if self.response.parent:
             self.response.step_position = self.response.find_parent_response_collection().step_position + 1
 
-    def log(self):
-        self.response.kernel.io.log(f'Step path : ' + str(self.build_step_path()))
-        self.response.kernel.io.log(f'Step position : ' + str(self.response.step_position))
-        self.response.kernel.io.log(f'Step index : ' + str(self.get_step_index()))
+    def save_to_map(self):
+        self.response.kernel.io.log(f'Step path: {self.build_step_path()}')
+        self.response.kernel.io.log(f'Step position: {self.response.step_position}')
+        self.response.kernel.io.log(f'Step index: {self.get_step_index()}')
+
+        if self.response.step_position not in self.map:
+            self.map[self.response.step_position] = {}
+
+        self.map[self.response.step_position][self.get_step_index()] = self.response
 
     def has_child_queue(self) -> bool:
         return self.response.step_position >= len(self.steps)
