@@ -50,7 +50,6 @@ def app__service__install(
         # Install dependencies
         for dependency in all_services[service]['config'].get('dependencies', []):
             kernel.io.log(f'Expected dependency : {dependency}')
-            kernel.io.log_indent_up()
 
             app__service__install.callback(
                 app_dir,
@@ -60,8 +59,6 @@ def app__service__install(
                 install_git,
                 force
             )
-
-            kernel.io.log_indent_down()
 
     manager: AppAddonManager = kernel.addons['app']
     services = manager.get_config('service') or {}
@@ -137,8 +134,6 @@ def app_service_install_merge_dir(
         install_docker,
         install_git,
 ):
-    kernel.io.log_indent_up()
-
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)
     kernel.io.log(f'Merging {current_item}')
 
@@ -211,5 +206,3 @@ def app_service_install_merge_dir(
                 abs_path,
                 dest_file
             )
-
-    kernel.io.log_indent_down()

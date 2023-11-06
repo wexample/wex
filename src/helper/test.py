@@ -56,11 +56,9 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
 
     kernel.io.log(f'Creating test for command {command}')
 
-    kernel.io.log_indent_up()
     kernel.io.log(f'File : {test_path}')
     kernel.io.log(f'Class : {class_name}')
     kernel.io.log(f'Function : {method_name}')
-    kernel.io.log_indent_down()
 
     create_from_template(
         kernel.get_path('templates') + 'test.py.tpl',

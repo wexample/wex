@@ -19,11 +19,9 @@ def progress_steps(kernel: Kernel, steps: [], title: str = 'Processing'):
     with build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
             kernel.io.log(f'{title} : {step.__name__}')
-            kernel.io.log_indent_up()
 
             response = step()
 
-            kernel.io.log_indent_down()
             click.echo("\n")
 
             # Step failed somewhere

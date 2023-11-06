@@ -29,8 +29,6 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.io.log('Building registry...')
     addons = kernel.addons
 
-    kernel.io.log_indent_up()
-
     # Call function avoiding core command management.
     env = app__env__get.callback.__wrapped__(
         kernel,
@@ -44,7 +42,6 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     }
 
     kernel.io.log('Building complete...')
-    kernel.io.log_indent_down()
 
     if write:
         registry_path = os.path.join(kernel.get_or_create_path('tmp'), FILE_REGISTRY)

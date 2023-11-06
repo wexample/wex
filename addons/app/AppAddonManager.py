@@ -447,14 +447,12 @@ class AppAddonManager(AddonManager):
             os.chdir(fallback_dir)
 
     def exec_in_app_workdir(self, app_dir: str, callback):
-        self.kernel.io.log_indent_up()
         app_dir_previous = os.getcwd() + '/'
         self.set_app_workdir(app_dir)
 
         response = callback()
 
         self.set_app_workdir(app_dir_previous)
-        self.kernel.io.log_indent_down()
 
         return response
 
