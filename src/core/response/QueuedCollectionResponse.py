@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
+from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.const.error import ERR_UNEXPECTED
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
@@ -22,7 +22,7 @@ class QueuedCollectionResponse(AbstractResponse):
         self.step_position: int = 0
         self.has_next_step = False
         self.kernel.tmp['last_created_queued_collection'] = self
-        self.path_manager = QueuedCollectionPathManager(self)
+        self.path_manager: QueuedCollectionPathManager = None
 
         manager_class = FastModeQueuedCollectionResponseQueueManager \
             if self.kernel.fast_mode \
@@ -49,6 +49,16 @@ class QueuedCollectionResponse(AbstractResponse):
                        request: CommandRequest,
                        render_mode: str = KERNEL_RENDER_MODE_CLI,
                        args: dict = {}) -> AbstractResponse:
+
+        # Share path manager across root request and all involved collections
+        root_request = request.get_root_parent()
+        if 'queue_collection_path_manager' not in root_request.storage:
+            root_request.storage['queue_collection_path_manager'] = QueuedCollectionPathManager(root_request)
+
+        self.path_manager: QueuedCollectionPathManager = root_request.storage['queue_collection_path_manager']
+        self.path_manager.set_current_request(request)
+        self.path_manager.set_current_response(self)
+
         # Collection is empty, nothing to do
         if not len(self.collection):
             return self.queue_manager.render_content_complete()
@@ -57,7 +67,7 @@ class QueuedCollectionResponse(AbstractResponse):
             self.step_position = self.find_parent_response_collection().step_position + 1
 
         # There is a deeper level.
-        if self.step_position >= len(request.steps):
+        if self.path_manager.has_child_queue():
             # Append a new step level,
             # set to None to postpone processing
             request.steps.append(None)
