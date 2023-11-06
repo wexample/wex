@@ -8,6 +8,7 @@ from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueMan
     FastModeQueuedCollectionResponseQueueManager
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from src.core.response.FunctionResponse import FunctionResponse
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
@@ -124,14 +125,16 @@ class QueuedCollectionResponse(AbstractResponse):
             if response.has_next_step:
                 self.has_next_step = response.has_next_step
                 return self.queue_manager.render_content_complete()
+
         # If this is not a QueuedCollectionResponse,
-        # no new QueuedCollectionResponse should have been created
+        # No new QueuedCollectionResponse should have been created
         # during the rendering process.
-        elif self.kernel.tmp['last_created_queued_collection'] != self:
-            self.kernel.io.error(ERR_UNEXPECTED, {
-                'error': 'When using a nested "QueuedCollectionResponse" it should be returned by its container '
-                         'function',
-            })
+        if isinstance(response, FunctionResponse):
+            if self.kernel.tmp['last_created_queued_collection'] != self:
+                self.kernel.io.error(ERR_UNEXPECTED, {
+                    'error': 'When using a nested "QueuedCollectionResponse" it should be returned by its container '
+                             f'function, got : {response.print()}',
+                })
 
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
