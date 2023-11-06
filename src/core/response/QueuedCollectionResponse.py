@@ -63,7 +63,7 @@ class QueuedCollectionResponse(AbstractResponse):
         if self.path_manager.has_child_queue():
             # Append a new step level,
             # set to None to postpone processing
-            request.steps.append(None)
+            self.path_manager.steps.append(None)
 
         step_index = self.path_manager.get_step_index()
         self.path_manager.log()

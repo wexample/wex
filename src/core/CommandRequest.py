@@ -1,5 +1,3 @@
-import os
-
 from src.helper.args import arg_shift, convert_dict_to_args
 
 
@@ -32,23 +30,11 @@ class CommandRequest:
         else:
             self.args = args
 
-        # For multiple steps commands like response collections
-        # Share a unique root request steps list.
-        current_request = self.resolver.kernel.current_request
-        self.steps = current_request.steps if current_request else [None]
-
-        steps = arg_shift(self.args, 'command-request-step')
-        if steps:
-            self.steps = list(map(int, str(steps).split('.')))
-
         # Build log
         log = {'command': self.command}
 
         if len(self.args):
             log['args'] = self.args
-
-        if steps:
-            log['steps'] = self.steps
 
         self.log = log
 

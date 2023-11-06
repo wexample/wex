@@ -39,7 +39,7 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
 
     def enqueue_next_step_if_exists(self, step_index, response) -> bool:
         # Array is modified in super call
-        steps_current = list(self.response.request.steps)
+        steps_current = list(self.response.path_manager.steps)
         exists = super().enqueue_next_step_if_exists(step_index, response)
 
         if exists:
