@@ -19,9 +19,7 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
             return None
 
         path = '-'.join(map(str, path))
-        previous_data = self.response.kernel.task_file_load(
-            path + '.response')
-
+        previous_data = self.response.kernel.task_file_load(path + '.response')
         return yaml.safe_load(previous_data)['body'] if previous_data else None
 
     def enqueue_next_step_by_index(self, next_step_index):

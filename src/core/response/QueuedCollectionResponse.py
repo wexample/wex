@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.helper.yaml import is_basic_yaml_data
 from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.const.error import ERR_UNEXPECTED
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
@@ -135,6 +136,11 @@ class QueuedCollectionResponse(AbstractResponse):
                     'error': 'When using a nested "QueuedCollectionResponse" it should be returned by its container '
                              f'function, got : {response.print()}',
                 })
+
+        if not is_basic_yaml_data(response.first()):
+            self.kernel.io.error(ERR_UNEXPECTED, {
+                'error': f'Returned data and nested values should be simple data : int, string, list or dict',
+            })
 
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
