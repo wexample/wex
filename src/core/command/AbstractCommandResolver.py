@@ -11,7 +11,7 @@ from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP
+    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT
 from src.helper.args import convert_dict_to_args
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT, ERR_COMMAND_TYPE_MISMATCH
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
@@ -89,7 +89,7 @@ class AbstractCommandResolver:
         ctx.obj = self.kernel
 
         previous_verbosity = self.kernel.verbosity
-        if hasattr(request.function.callback, 'verbosity'):
+        if hasattr(request.function.callback, 'verbosity') and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = request.function.callback.verbosity
 
         previous_request = self.kernel.current_request
