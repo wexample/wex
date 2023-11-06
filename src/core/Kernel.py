@@ -256,12 +256,21 @@ class Kernel:
         os.makedirs(task_dir, exist_ok=True)
         return os.path.join(task_dir, f"{self.task_id}.{type}")
 
-    def task_file_load(self, type: str):
+    def task_file_load(self, type: str, delete_after_read: bool = True):
+        """
+        Load the content of a file and optionally delete the file after reading.
+        """
         file_path = self.task_file_path(type)
 
         if os.path.exists(file_path):
             with open(file_path, 'r') as f:
-                return f.read()
+                content = f.read()
+
+            if delete_after_read:
+                # Delete the file after reading
+                os.remove(file_path)
+
+            return content
         else:
             return None
 
