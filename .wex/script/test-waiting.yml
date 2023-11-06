@@ -1,0 +1,4 @@
+webhook: true
+scripts:
+  - title: Wait some seconds
+    script: sleep 2

@@ -101,6 +101,12 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str):
                     InteractiveShellCommandResponse(kernel, command)
                 )
 
+    def _complete(previous):
+        return {
+            "status": "complete"
+        }
+
+    commands_collection.append(_complete)
     return QueuedCollectionResponse(kernel, commands_collection)
 
 

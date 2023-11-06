@@ -4,6 +4,7 @@ import re
 import sys
 from abc import abstractmethod
 
+from src.core.response.DictResponse import DictResponse
 from src.helper.command import command_to_string
 from src.const.args import ARGS_HELP
 from src.core.response.FunctionResponse import FunctionResponse
@@ -123,6 +124,8 @@ class AbstractCommandResolver:
     def wrap_response(self, response) -> AbstractResponse:
         if callable(response):
             return FunctionResponse(self.kernel, response)
+        if isinstance(response, dict):
+            return DictResponse(self.kernel, response)
         if not isinstance(response, AbstractResponse):
             return DefaultResponse(self.kernel, response)
 

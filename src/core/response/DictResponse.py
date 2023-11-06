@@ -7,9 +7,13 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_HTTP
 
 
 class DictResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, title: str | None = None):
-        super().__init__(kernel, title)
+    def __init__(self, kernel, dictionary: dict | None = None):
+        super().__init__(kernel, dictionary)
+
         self.dictionary_data = {}
+
+        if dictionary:
+            self.set_dictionary(dictionary)
 
     def set_dictionary(self, dictionary_data):
         self.dictionary_data = dictionary_data

@@ -48,25 +48,30 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     text=True) as process:
                 stdout, stderr = process.communicate()
 
+            stdout = stdout.strip()
+            error = False
+
             # Check if the process returned an error
             if process.returncode != 0:
-                self.logger.error(f'{{"error":"{stderr}"}}')
-                self.send_error(500, "Internal Server Error")
-                return
-
+                error = 'UNEXPECTED_ERROR'
             if stdout:
                 # Attempt to parse the stdout as JSON to verify valid JSON response
                 try:
                     json.loads(stdout)  # If this fails, an exception will be raised
                 except json.JSONDecodeError:
-                    # Log the error with the invalid JSON content
-                    self.logger.error(f'Invalid JSON response: {stdout}')
-                    self.send_error(500, "Internal Server Error")
-                    return
-                self.send_response(200)
+                    error = 'INVALID_RESPONSE'
             else:
-                stdout = '{"error": "WEBHOOK_NOT_FOUND"}'
-                self.send_response(404)
+                error = 'EMPTY_RESPONSE'
+
+            if error:
+                self.send_response(500)
+                stdout = json.dumps({
+                    'error': error,
+                    'stdout': command
+                })
+                self.logger.error(stdout)
+            else:
+                self.send_response(200)
 
             self.send_header('Content-type', 'application/json')
             self.end_headers()

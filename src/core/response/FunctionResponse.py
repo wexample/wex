@@ -17,6 +17,8 @@ class FunctionResponse(AbstractResponse):
             **(args or {})
         )
 
+        response = request.resolver.wrap_response(response)
+
         if response is not None:
             self.output_bag.append(response)
 

@@ -92,6 +92,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
                 'app-dir': manager.app_dir,
             }
         )
+
         return response
 
     def _log(previous):
