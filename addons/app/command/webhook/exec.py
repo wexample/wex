@@ -92,16 +92,17 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
                 'app-dir': manager.app_dir,
             }
         )
+        return response
 
+    def _log(previous):
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
             'url': url,
             'source_data': source_data,
             'success': True
         })
 
-        return response
-
     return QueuedCollectionResponse(kernel, [
         _check,
-        _execute
+        _execute,
+        _log,
     ])
