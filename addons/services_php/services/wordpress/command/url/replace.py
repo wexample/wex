@@ -43,7 +43,7 @@ def wordpress__url__replace(kernel: Kernel,
 
         new_url = wordpress__url__replace__prepare_url(kernel, new_url)
         if not new_url:
-            return ResponseCollectionStopResponse(kernel)
+            return QueuedCollectionStopResponse(kernel)
 
         if not old_url:
             sql = f"SELECT option_value FROM {prefix}options WHERE option_name = 'siteurl'"
@@ -67,14 +67,14 @@ def wordpress__url__replace(kernel: Kernel,
 
         old_url = wordpress__url__replace__prepare_url(kernel, old_url)
         if not old_url:
-            return ResponseCollectionStopResponse(kernel)
+            return QueuedCollectionStopResponse(kernel)
 
         app_name = manager.get_config('global.name')
         message_part = f'old url {old_url} (https, http, and domain only) by new url {new_url} in "{app_name}"'
         if not yes and not click.confirm(
                 f'Are you ready to rewrite {message_part}',
                 default=True):
-            return ResponseCollectionStopResponse(kernel)
+            return QueuedCollectionStopResponse(kernel)
 
         kernel.io.log(f'Rewriting {message_part}...')
 
