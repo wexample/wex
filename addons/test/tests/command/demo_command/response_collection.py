@@ -1,7 +1,7 @@
 import subprocess
 
 from addons.test.command.demo_command.response_collection import test__demo_command__response_collection
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.helper.command import core_call_to_shell_command
 from tests.AbstractTestCase import AbstractTestCase

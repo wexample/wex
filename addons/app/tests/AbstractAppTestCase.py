@@ -1,7 +1,7 @@
 import os.path
 import re
 
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.helper.string import to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helpers.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
@@ -33,7 +33,7 @@ class AbstractAppTestCase(AbstractTestCase):
         )
 
         first = response.first()
-        if isinstance(first, ResponseCollectionStopResponse):
+        if isinstance(first, QueuedCollectionStopResponse):
             if first.reason == 'APP_ALREADY_RUNNING' and not force_restart:
                 return
 

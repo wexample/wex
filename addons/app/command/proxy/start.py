@@ -13,7 +13,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 
 
 @command(help="Create and start the reverse proxy server")
@@ -42,7 +42,7 @@ def app__proxy__start(kernel: Kernel,
             if kernel.run_function(app__app__started, {
                 'app-dir': proxy_path,
             }).first():
-                return ResponseCollectionStopResponse(kernel)
+                return QueuedCollectionStopResponse(kernel)
         else:
             manager.log(f'Creating proxy dir {proxy_path}')
             os.makedirs(

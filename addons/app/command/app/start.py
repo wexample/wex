@@ -17,7 +17,7 @@ from addons.app.command.hosts.update import app__hosts__update
 from src.const.globals import CORE_COMMAND_NAME
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
     APP_DIR_APP_DATA
@@ -67,7 +67,7 @@ def app__app__start(
                 # User said "no" or chose "abort"
                 if not env:
                     manager.log('Abort')
-                    return ResponseCollectionStopResponse(kernel)
+                    return QueuedCollectionStopResponse(kernel)
 
             create_env(env, app_dir)
 
@@ -78,7 +78,7 @@ def app__app__start(
             'mode': APP_STARTED_CHECK_MODE_ANY_CONTAINER
         }).first():
             manager.log('App already running')
-            return ResponseCollectionStopResponse(kernel, reason='APP_ALREADY_RUNNING')
+            return QueuedCollectionStopResponse(kernel, reason='APP_ALREADY_RUNNING')
 
     def _app__app__start__proxy(previous):
         if no_proxy:

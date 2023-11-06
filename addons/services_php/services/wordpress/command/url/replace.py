@@ -2,7 +2,7 @@ import re
 import click
 
 from addons.app.const.app import APP_NO_SSL_ENVS
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.decorator.option import option
 from src.core import Kernel

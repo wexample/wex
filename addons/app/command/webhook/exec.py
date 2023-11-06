@@ -11,7 +11,7 @@ from src.decorator.verbosity import verbosity
 from src.decorator.option import option
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.HiddenResponse import HiddenResponse
 
 
@@ -78,7 +78,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
             'success': False
         })
 
-        return ResponseCollectionStopResponse(kernel)
+        return QueuedCollectionStopResponse(kernel)
 
     def _execute(previous: str):
         manager = AppAddonManager(kernel)
@@ -91,7 +91,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
                 'name': webhook,
                 'app-dir': manager.app_dir,
             }
-        ).first()
+        )
 
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
             'url': url,
