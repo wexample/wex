@@ -69,9 +69,6 @@ class QueuedCollectionResponse(AbstractResponse):
             request.steps.append(None)
 
         step_index = self.path_manager.get_step_index()
-        self.kernel.io.log(f'Step path : ' + str(self.build_step_path()))
-        self.kernel.io.log(f'Step position : ' + str(self.step_position))
-        self.kernel.io.log(f'Step index : ' + str(step_index))
 
         # First time, do not execute, wait next iteration
         if step_index is None:
