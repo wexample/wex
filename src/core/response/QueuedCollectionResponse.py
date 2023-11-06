@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.const.error import ERR_UNEXPECTED
 from src.core.response.queue_manager.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
 from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManager import \
@@ -7,7 +8,7 @@ from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManage
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI, VERBOSITY_LEVEL_MAXIMUM
+from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -42,28 +43,13 @@ class QueuedCollectionResponse(AbstractResponse):
     def build_step_path(self) -> str:
         return '.'.join(map(str, self.request.steps))
 
-    def log(self, message, detail: any = '__EMPTY__'):
-        self.kernel.io.log(
-            f'#{str(self.id)} ' +
-            str(message) + (' : ' + str(detail) if detail != '__EMPTY__' else ''),
-            verbosity=VERBOSITY_LEVEL_MAXIMUM
-        )
-
     def render_content(self,
                        request: CommandRequest,
                        render_mode: str = KERNEL_RENDER_MODE_CLI,
                        args: dict = {}) -> AbstractResponse:
-        self.kernel.io.log(
-            f'Rendering collection #{self.id} : ' + request.command,
-            verbosity=VERBOSITY_LEVEL_MAXIMUM
-        )
-
-        self.kernel.io.log_indent_up()
-
         # Collection is empty, nothing to do
         if not len(self.collection):
-            self.log('is empty')
-            return self.render_content_complete()
+            return self.queue_manager.render_content_complete()
 
         if self.parent:
             self.step_position = self.find_parent_response_collection().step_position + 1
@@ -75,16 +61,15 @@ class QueuedCollectionResponse(AbstractResponse):
             request.steps.append(None)
 
         step_index = request.steps[self.step_position]
-        self.log(f'step path', self.build_step_path())
-        self.log(f'step position', self.step_position)
-        self.log(f'step index', step_index)
+        self.kernel.io.log(f'Step path : ' + str(self.build_step_path()))
+        self.kernel.io.log(f'Step position : ' + str(self.step_position))
+        self.kernel.io.log(f'Step index : ' + str(step_index))
 
         # First time, do not execute, wait next iteration
         if step_index is None:
-            self.log(f'Launching first post-execution')
             self.queue_manager.enqueue_next_step_by_index(0)
 
-            return self.render_content_complete()
+            return self.queue_manager.render_content_complete()
 
         # Prepare args
         render_args = {
@@ -115,8 +100,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         self.output_bag.append(response)
 
-        # If response is a collection, it can have two different states
-        # according the way they have been returned :
+        # Response can have two different states according the way they have been returned :
         # - When a function return a response class, it has not been rendered
         # - When a function runs a sub command request, it has already been rendered
         if isinstance(response, AbstractResponse) and not response.rendered:
@@ -131,7 +115,7 @@ class QueuedCollectionResponse(AbstractResponse):
             # Mark having next step to block enqueuing
             self.has_next_step = True
 
-            return self.render_content_complete()
+            return self.queue_manager.render_content_complete()
 
         if isinstance(response, QueuedCollectionResponse):
             if response.has_next_step:
@@ -146,16 +130,6 @@ class QueuedCollectionResponse(AbstractResponse):
                          'function',
             })
 
-            return self.render_content_complete()
-
-        self.log('Searching for next collection item')
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
-        return self.render_content_complete()
-
-    def render_content_complete(self):
-        self.kernel.io.log_indent_down()
-
-        self.queue_manager.render_content_complete()
-
-        return self
+        return self.queue_manager.render_content_complete()
