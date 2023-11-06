@@ -29,7 +29,7 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
 
         root = self.response.get_root_parent()
         args = root.request.args.copy()
-        arg_replace(args, 'command-request-step', self.response.build_step_path())
+        arg_replace(args, 'command-request-step', self.response.path_manager.build_step_path())
 
         process_post_exec_function(
             self.response.kernel,

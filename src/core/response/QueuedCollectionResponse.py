@@ -42,9 +42,6 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return None
 
-    def build_step_path(self) -> str:
-        return '.'.join(map(str, self.request.steps))
-
     def render_content(self,
                        request: CommandRequest,
                        render_mode: str = KERNEL_RENDER_MODE_CLI,
