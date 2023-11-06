@@ -49,6 +49,7 @@ class Kernel:
         self.children: list = []
         self.default_render_mode = KERNEL_RENDER_MODE_CLI
         self.parent_task_id: None | str = None
+        self.tmp: dict = {}
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep

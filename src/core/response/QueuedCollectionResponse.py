@@ -23,6 +23,8 @@ class QueuedCollectionResponse(AbstractResponse):
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
 
+        self.kernel.tmp['last_created_queued_collection'] = self
+
         manager_class = FastModeQueuedCollectionResponseQueueManager \
             if self.kernel.fast_mode \
             else DefaultQueuedCollectionResponseQueueManager
@@ -133,9 +135,18 @@ class QueuedCollectionResponse(AbstractResponse):
 
             return self.render_content_complete()
 
-        if (isinstance(response, QueuedCollectionResponse)
-                and response.has_next_step):
-            self.has_next_step = response.has_next_step
+        if isinstance(response, QueuedCollectionResponse):
+            if response.has_next_step:
+                self.has_next_step = response.has_next_step
+                return self.queue_manager.render_content_complete()
+        # If this is not a QueuedCollectionResponse,
+        # no new QueuedCollectionResponse should have been created
+        # during the rendering process.
+        elif self.kernel.tmp['last_created_queued_collection'] != self:
+            self.kernel.io.error(ERR_UNEXPECTED, {
+                'error': 'When using a nested "QueuedCollectionResponse" it should be returned by its container '
+                         'function',
+            })
 
             return self.render_content_complete()
 
