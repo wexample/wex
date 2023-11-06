@@ -1,6 +1,6 @@
 import yaml
 
-from src.core.response.queue_manager.AbstractQueuedCollectionResponseQueueManager \
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager \
     import AbstractQueuedCollectionResponseQueueManager
 from abc import ABC
 

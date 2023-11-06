@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.const.error import ERR_UNEXPECTED
-from src.core.response.queue_manager.DefaultQueuedCollectionResponseQueueManager import \
+from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
-from src.core.response.queue_manager.FastModeQueuedCollectionResponseQueueManager import \
+from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import \
     FastModeQueuedCollectionResponseQueueManager
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_CLI
 from src.core.response.AbstractResponse import AbstractResponse
@@ -20,16 +21,17 @@ class QueuedCollectionResponse(AbstractResponse):
         self.collection = collection
         self.step_position: int = 0
         self.has_next_step = False
-        # For debug purpose
-        self.id = QueuedCollectionResponse.ids_counter
-        QueuedCollectionResponse.ids_counter += 1
-
         self.kernel.tmp['last_created_queued_collection'] = self
+        self.path_manager = QueuedCollectionPathManager(self)
 
         manager_class = FastModeQueuedCollectionResponseQueueManager \
             if self.kernel.fast_mode \
             else DefaultQueuedCollectionResponseQueueManager
         self.queue_manager = manager_class(self)
+
+        # For debug purpose
+        self.id = QueuedCollectionResponse.ids_counter
+        QueuedCollectionResponse.ids_counter += 1
 
     def find_parent_response_collection(self) -> 'None|AbstractResponse':
         current = self
