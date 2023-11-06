@@ -9,7 +9,6 @@ class AbstractResponse:
         # Prevent circular imports
         from src.core.Kernel import Kernel
 
-        self.request = kernel.current_request
         self.kernel: Kernel = kernel
         self.parent = None
         self.output_bag: list = []
