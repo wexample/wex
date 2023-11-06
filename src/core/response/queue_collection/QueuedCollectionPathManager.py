@@ -14,6 +14,9 @@ class QueuedCollectionPathManager:
         if steps:
             self.steps = list(map(int, str(steps).split('.')))
 
+    def get_step_index(self) -> int:
+        return self.request.steps[self.response.step_position]
+
     def start_rendering(self, request, response):
         self.request = request
         self.response = response
@@ -22,5 +25,5 @@ class QueuedCollectionPathManager:
         if self.response.parent:
             self.response.step_position = self.response.find_parent_response_collection().step_position + 1
 
-    def has_child_queue(self):
+    def has_child_queue(self) -> bool:
         return self.response.step_position >= len(self.request.steps)
