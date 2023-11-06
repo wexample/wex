@@ -32,7 +32,7 @@ class CommandRequest:
             self.args = args
 
         # For multiple steps commands like response collections
-        # Share unique root request steps list.
+        # Share a unique root request steps list.
         current_request = self.resolver.kernel.current_request
         self.steps = current_request.steps if current_request else [None]
 
@@ -41,7 +41,7 @@ class CommandRequest:
             self.steps = list(map(int, str(steps).split('.')))
 
         # Build log
-        log = {'command': self.command,}
+        log = {'command': self.command}
 
         if len(self.args):
             log['args'] = self.args

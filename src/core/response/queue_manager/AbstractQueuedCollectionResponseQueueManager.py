@@ -6,7 +6,7 @@ class AbstractQueuedCollectionResponseQueueManager:
         self.response = response
 
     def render_content_complete(self):
-        pass
+        return self.response
 
     @abstractmethod
     def get_previous_value(self):

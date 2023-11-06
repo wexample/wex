@@ -2,7 +2,7 @@ from abc import ABC
 
 from src.core.response.queue_manager.AbstractQueuedCollectionResponseQueueManager \
     import AbstractQueuedCollectionResponseQueueManager
-from src.core.response.ResponseCollectionStopResponse import ResponseCollectionStopResponse
+from src.core.response.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 
 
 class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionResponseQueueManager, ABC):
@@ -21,7 +21,7 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
             self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection
         else:
-            while self.response.has_next_step and not isinstance(self.response.first(), ResponseCollectionStopResponse):
+            while self.response.has_next_step and not isinstance(self.response.first(), QueuedCollectionStopResponse):
                 self.response.has_next_step = False
                 self.response.kernel.previous_response = self.response
                 self.response.kernel.current_response = None
@@ -35,3 +35,5 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
 
                 # In fast mode we merge all outputs in the root output bag.
                 self.response.output_bag += response.output_bag
+
+        return self.response
