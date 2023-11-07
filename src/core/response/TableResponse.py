@@ -32,7 +32,7 @@ class TableResponse(AbstractTerminalSectionResponse):
             args: dict = None) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
-            self.render_cli_content(render_mode)
+            self.render_cli_content()
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             # Render the content in HTTP format
             self.render_http_content()
@@ -59,47 +59,45 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         return max_widths
 
-    def render_cli_content(
-            self,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
-
+    def render_cli_content(self):
         if not len(self.header) and not len(self.body):
+            self.output_bag.append('')
+
             return
 
-        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            # Calculate maximum widths for each column
-            max_widths = self.calculate_max_widths(self.header + self.body)
+        # Calculate maximum widths for each column
+        max_widths = self.calculate_max_widths(self.header + self.body)
 
-            # Calculate the total line length (cell widths + padding + borders)
-            num_columns = len(max_widths)
-            total_line_length = sum(max_widths) + (num_columns * 2) + (num_columns - 1)
+        # Calculate the total line length (cell widths + padding + borders)
+        num_columns = len(max_widths)
+        total_line_length = sum(max_widths) + (num_columns * 2) + (num_columns - 1)
 
-            # Generate the horizontal separator line
-            separator_line = "+" + "-" * total_line_length + "+\n"
+        # Generate the horizontal separator line
+        separator_line = "+" + "-" * total_line_length + "+\n"
 
-            bash_array = ""
-            bash_array += self.render_cli_title(self.title, total_line_length + 2)
+        bash_array = ""
+        bash_array += self.render_cli_title(self.title, total_line_length + 2)
+        bash_array += separator_line
+
+        # Add header only if exists
+        if self.header:
+            header_str = "|"
+            for i, cell in enumerate(self.header):
+                header_str += f" {cell:<{max_widths[i]}} |"
+            bash_array += header_str + "\n"
             bash_array += separator_line
 
-            # Add header only if exists
-            if self.header:
-                header_str = "|"
-                for i, cell in enumerate(self.header):
-                    header_str += f" {cell:<{max_widths[i]}} |"
-                bash_array += header_str + "\n"
-                bash_array += separator_line
+        # Add data rows
+        for row in self.body:
+            row_str = "|"
+            for i in range(num_columns):  # Use the maximum number of columns based on header or first row
+                cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
+                row_str += f" {str(cell):<{max_widths[i]}} |"
+            bash_array += row_str + "\n"
 
-            # Add data rows
-            for row in self.body:
-                row_str = "|"
-                for i in range(num_columns):  # Use the maximum number of columns based on header or first row
-                    cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
-                    row_str += f" {str(cell):<{max_widths[i]}} |"
-                bash_array += row_str + "\n"
+        bash_array += separator_line
 
-            bash_array += separator_line
-
-            self.output_bag.append(bash_array)
+        self.output_bag.append(bash_array)
 
     def render_http_content(self):
         # Render the content as JSON for HTTP mode

@@ -29,7 +29,7 @@ def set_user_or_sudo_user_owner(file):
 
 def set_owner(file: str, username: str | None = None, group: str | None = None):
     if not username:
-        from helper.system import get_user_or_sudo_user
+        from src.helper.system import get_user_or_sudo_user
         username = get_user_or_sudo_user()
 
     # Get UID and GID of the sudo_user

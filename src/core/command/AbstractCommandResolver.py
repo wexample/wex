@@ -241,7 +241,7 @@ class AbstractCommandResolver:
 
     def build_full_command_parts_from_function(self, function_or_command, args: dict = None) -> list:
         if args is None:
-            args = {}
+            args = []
         else:
             args = convert_dict_to_args(function_or_command, args)
 
