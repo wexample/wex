@@ -16,3 +16,6 @@ class DefaultResponse(AbstractResponse):
         self.output_bag.append(self.content)
 
         return self
+
+    def print(self, render_mode: str, interactive_data: bool = True):
+        return self.output_bag[0]
