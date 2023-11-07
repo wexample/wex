@@ -3,8 +3,8 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
+from app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 from src.const.globals import VERBOSITY_LEVEL_QUIET
-from src.core.response.DictResponse import DictResponse
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.verbosity import verbosity
@@ -23,26 +23,20 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     source_data = {}
     parsed_url = urlparse(url)
     path = parsed_url.path
-
-    if path == '/status':
-        response = DictResponse(kernel)
-        response.set_dictionary({
-            'running': True,
-            'task_id': kernel.parent_task_id
-        })
-        return response
-
-    pattern = r'^\/webhook/([a-zA-Z_\-]+)/([a-zA-Z_\-]+)$'
-    match = re.match(pattern, path)
-
-    kernel.run_function(core__logs__rotate)
+    match = re.match(
+        WEBHOOK_LISTENER_ROUTES_MAP['webhook']['pattern'],
+        path
+    )
 
     if not match:
         return
 
     app_name, webhook = match.groups()
 
-    def _check():
+    def _cleanup():
+        kernel.run_function(core__logs__rotate)
+
+    def _check(previous):
         query_string = parsed_url.query.replace('+', '%2B')
         query_string_data = parse_qs(query_string)
         has_error = False
@@ -103,6 +97,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
         })
 
     return QueuedCollectionResponse(kernel, [
+        _cleanup,
         _check,
         _execute,
         _log,

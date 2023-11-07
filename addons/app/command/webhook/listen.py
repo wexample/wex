@@ -17,6 +17,24 @@ from src.decorator.command import command
 from src.decorator.option import option
 from addons.app.command.webhook.exec import app__webhook__exec
 
+WEBHOOK_LISTENER_ROUTES_MAP = {
+    'status': {
+        'async': False,
+        'pattern': r'^/status$',
+        'function': app__webhook__exec,
+    },
+    'status_process': {
+        'async': True,
+        'pattern': r'^/status/process/([0-9\-]+)$',
+        'function': app__webhook__exec
+    },
+    'webhook': {
+        'async': True,
+        'pattern': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-]+)$',
+        'function': app__webhook__exec
+    }
+}
+
 
 @command(help="Serve webhook listener daemon")
 @as_sudo()
@@ -120,10 +138,23 @@ def app__webhook__listen(
                 '--fast-mode'
             ]
 
+            # Convert function command to bash command
+            routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
+            for pattern in routes_map:
+                routes_map[pattern]['command'] = kernel.get_command_resolver(
+                    COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
+                    routes_map[pattern]['function'],
+                    {
+                        'render-mode': KERNEL_RENDER_MODE_HTTP,
+                        'url': WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                    },
+                )
+
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
+                task_id = kernel.task_id
                 log_path = kernel.task_file_path('webhook-listener')
-                command_base = command
+                routes = routes_map
 
             if not dry_run:
                 with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:

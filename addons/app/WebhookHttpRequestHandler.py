@@ -1,18 +1,20 @@
 from http.server import BaseHTTPRequestHandler
-from src.helper.routing import is_allowed_route
+from src.helper.routing import is_allowed_route, get_route_info
 from src.helper.array import array_replace_value
 import subprocess
 from logging.handlers import RotatingFileHandler
 import traceback
 import logging
 import json
+from urllib.parse import urlparse
 
 WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
+    task_id: str
     log_path: str
-    command_base: list
+    routes: dict
 
     def __init__(self, *args, **kwargs):
         self.logger = logging.getLogger('wex-webhook')
@@ -29,66 +31,33 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def do_GET(self):
-        try:
-            if not is_allowed_route(self.path):
-                self.send_error(404, "Not Found")
-                return
+        error = False
 
-            # Create command to execute
-            command = array_replace_value(
-                list(self.command_base),
-                WEBHOOK_COMMAND_URL_PLACEHOLDER,
-                self.path
-            )
+        if not is_allowed_route(self.path, self.routes):
+            error = 'NOT_FOUND'
 
-            with subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True) as process:
-                stdout, stderr = process.communicate()
-
-            stdout = stdout.strip()
-            error = False
-
-            # Check if the process returned an error
-            if process.returncode != 0:
-                error = 'UNEXPECTED_ERROR'
-            if stdout:
-                # Attempt to parse the stdout as JSON to verify valid JSON response
-                try:
-                    json.loads(stdout)  # If this fails, an exception will be raised
-                except json.JSONDecodeError:
-                    error = 'INVALID_RESPONSE'
-            else:
-                error = 'EMPTY_RESPONSE'
-
-            if error:
-                self.send_response(500)
-                stdout = json.dumps({
-                    'error': error,
-                    'stdout': command
-                })
-                self.logger.error(stdout)
-            else:
-                self.send_response(200)
-
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-
-            # If stdout is valid JSON, log the info
-            self.logger.info(f"{stdout}")
-            self.wfile.write(stdout.encode())
-
-        except Exception as e:
-            traceback_string = traceback.format_exc()  # Get detailed traceback
-            self.logger.error(f'Exception during processing: {traceback_string}')
-
+        if error:
             self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
+            output = {
+                'error': error,
+            }
+        else:
+            self.send_response(200)
+            output = {
+                'status': 'started'
+            }
 
-            error_response = f'{{"error":"Error during server execution: {str(e)}"}}'
-            self.wfile.write(error_response.encode())
-            # Raise the exception for further handling if needed
-            raise
+        output['task_id'] = self.task_id
+        output['path'] = self.path
+        output['info'] = get_route_info(self.path, self.routes)
+        output = json.dumps(output)
+
+        if error:
+            self.logger.error(output)
+        else:
+            self.logger.info(output)
+
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+        self.wfile.write(output.encode())
