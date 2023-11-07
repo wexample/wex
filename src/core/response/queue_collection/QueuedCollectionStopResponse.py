@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -15,6 +15,6 @@ class QueuedCollectionStopResponse(AbstractResponse, ABC):
     def render(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None):
         return None

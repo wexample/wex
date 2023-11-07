@@ -1,7 +1,7 @@
 import json
 
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_HTTP
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -14,7 +14,7 @@ class ResponseCollectionResponse(AbstractResponse):
     def render_content(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> AbstractResponse:
 
         self.render_content_multiple(
@@ -27,11 +27,11 @@ class ResponseCollectionResponse(AbstractResponse):
         return self
 
     def print(self, render_mode: str, interactive_data: bool = True):
-        if render_mode == KERNEL_RENDER_MODE_CLI:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return "\n".join(
                 super().print(render_mode, interactive_data)
             )
-        if render_mode == KERNEL_RENDER_MODE_HTTP:
+        if render_mode == KERNEL_RENDER_MODE_JSON:
             data = []
 
             for response in self.collection:

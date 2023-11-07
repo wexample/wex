@@ -14,14 +14,14 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
     def set_title(self, title):
         self.title = title
 
-    def render_cli_title(self, line_width: int) -> str:
+    def render_cli_title(self, title: str, line_width: int) -> str:
         terminal_width, _ = shutil.get_terminal_size()
         line_width = terminal_width if line_width > terminal_width else line_width
 
         # Add title if exists, aligned to the left and fill with underscores
-        if self.title:
+        if title:
             # Calculate how much padding is needed on each side of the title
-            title_length = len(self.title)
+            title_length = len(title)
             # remove 2 for title margins
             padding_each_side = (line_width - title_length - 2) // 2
 
@@ -29,6 +29,6 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
             extra_equal = "=" if (line_width - title_length) % 2 == 1 else ""
 
             # Construct the title line
-            return f"{'=' * padding_each_side} {self.title} {'=' * padding_each_side}{extra_equal}\n"
+            return f"{'=' * padding_each_side} {title} {'=' * padding_each_side}{extra_equal}\n"
 
         return ''

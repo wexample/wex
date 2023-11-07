@@ -11,7 +11,7 @@ from src.core.response.AbortResponse import AbortResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -46,7 +46,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
     def render_content(self,
                        request: CommandRequest,
-                       render_mode: str = KERNEL_RENDER_MODE_CLI,
+                       render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
                        args: dict = {}) -> AbstractResponse:
 
         # Share path manager across root request and all involved collections

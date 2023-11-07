@@ -1,7 +1,7 @@
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_HTTP
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
 
 
 class TableResponse(AbstractTerminalSectionResponse):
@@ -28,12 +28,12 @@ class TableResponse(AbstractTerminalSectionResponse):
     def render_content(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> AbstractResponse:
-        if render_mode == KERNEL_RENDER_MODE_CLI:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
             self.render_cli_content(render_mode)
-        elif render_mode == KERNEL_RENDER_MODE_HTTP:
+        elif render_mode == KERNEL_RENDER_MODE_JSON:
             # Render the content in HTTP format
             self.render_http_content()
 
@@ -61,12 +61,12 @@ class TableResponse(AbstractTerminalSectionResponse):
 
     def render_cli_content(
             self,
-            render_mode: str = KERNEL_RENDER_MODE_CLI):
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
 
         if not len(self.header) and not len(self.body):
             return
 
-        if render_mode == KERNEL_RENDER_MODE_CLI:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Calculate maximum widths for each column
             max_widths = self.calculate_max_widths(self.header + self.body)
 
@@ -78,7 +78,7 @@ class TableResponse(AbstractTerminalSectionResponse):
             separator_line = "+" + "-" * total_line_length + "+\n"
 
             bash_array = ""
-            bash_array += self.render_cli_title(total_line_length + 2)
+            bash_array += self.render_cli_title(self.title, total_line_length + 2)
             bash_array += separator_line
 
             # Add header only if exists

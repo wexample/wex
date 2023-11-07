@@ -16,8 +16,9 @@ from src.core.AddonManager import AddonManager
 from src.const.error import \
     ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
 from src.const.globals import \
-    FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_CLI, \
-    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
+    FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
+    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
+    KERNEL_RENDER_MODE_JSON
 from src.core.command.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
 
@@ -47,7 +48,7 @@ class Kernel:
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
         self.children: list = []
-        self.default_render_mode = KERNEL_RENDER_MODE_CLI
+        self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: dict = {}
 
@@ -191,6 +192,9 @@ class Kernel:
             command: str,
             command_args: dict | list | None = None,
             render_mode: str | None = None):
+
+        render_mode = render_mode or self.default_render_mode
+
         response = self.run_command(
             command,
             command_args or [],
@@ -208,9 +212,17 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        return response.print(
+        output = response.print(
             render_mode or self.default_render_mode
         ) if response else None
+
+        if render_mode == KERNEL_RENDER_MODE_JSON:
+            import json
+
+            return json.dumps(output)
+
+        self.io.print(output)
+
 
     def run_command(self,
                     command: str,

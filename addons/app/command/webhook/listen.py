@@ -1,9 +1,11 @@
 import shutil
 
 from addons.system.command.system.is_docker import system__system__is_docker
+from addons.app.command.webhook.status import app__webhook__status
+from addons.app.command.webhook.status_process import app__webhook__status_process
 from src.helper.command import execute_command
 from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON, \
-    WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_HTTP
+    WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_JSON
 from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
@@ -18,21 +20,21 @@ from src.decorator.option import option
 from addons.app.command.webhook.exec import app__webhook__exec
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
+    'exec': {
+        'async': True,
+        'pattern': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-]+)$',
+        'function': app__webhook__exec
+    },
     'status': {
         'async': False,
         'pattern': r'^/status$',
-        'function': app__webhook__exec,
+        'function': app__webhook__status,
     },
     'status_process': {
         'async': False,
         'pattern': r'^/status/process/([0-9\-]+)$',
-        'function': app__webhook__exec
+        'function': app__webhook__status_process
     },
-    'webhook': {
-        'async': True,
-        'pattern': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-]+)$',
-        'function': app__webhook__exec
-    }
 }
 
 
@@ -121,34 +123,37 @@ def app__webhook__listen(
                 "launcher": "sync"
             })
 
-            # prepare base command to launch.
-            command = kernel.get_command_resolver(
-                COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
-                app__webhook__exec,
-                {
-                    'render-mode': KERNEL_RENDER_MODE_HTTP,
-                    'url': WEBHOOK_COMMAND_URL_PLACEHOLDER,
-                },
-            )
-
-            command += [
-                '--parent-task-id',
-                kernel.task_id,
-                # No need to interact or create sub process
-                '--fast-mode'
-            ]
-
-            # Convert function command to bash command
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
-            for pattern in routes_map:
-                routes_map[pattern]['command'] = kernel.get_command_resolver(
+            for route_name in routes_map:
+                function = routes_map[route_name]['function']
+
+                options = {
+                    'render-mode': KERNEL_RENDER_MODE_JSON,
+                }
+
+                if hasattr(function.callback, 'option_webhook_url'):
+                    options['url'] = WEBHOOK_COMMAND_URL_PLACEHOLDER
+
+                command = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
-                    routes_map[pattern]['function'],
-                    {
-                        'render-mode': KERNEL_RENDER_MODE_HTTP,
-                        'url': WEBHOOK_COMMAND_URL_PLACEHOLDER,
-                    },
+                    routes_map[route_name]['function'],
+                    options,
                 )
+
+                command += [
+                    '--parent-task-id',
+                    kernel.task_id,
+                    # No need to interact or create sub process
+                    '--fast-mode'
+                ]
+
+                if hasattr(kernel.root_request.function.callback, 'option_webhook_url'):
+                    command += [
+                        '--url',
+                        WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                    ]
+
+                routes_map[route_name]['command'] = command
 
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
