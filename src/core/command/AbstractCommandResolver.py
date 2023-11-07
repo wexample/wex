@@ -4,6 +4,7 @@ import re
 import sys
 from abc import abstractmethod
 
+from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
 from src.helper.command import command_to_string
 from src.const.args import ARGS_HELP
@@ -96,19 +97,13 @@ class AbstractCommandResolver:
         previous_request = self.kernel.current_request
         self.kernel.current_request = request
 
+        self.kernel.logger.append_request(
+            request
+        )
+
         # Execute request
         response = self.wrap_response(
             request.function.invoke(ctx)
-        )
-
-        # Append to log tree
-        log_parent = previous_request.log if previous_request else self.kernel.logger.log_data
-
-        if 'commands' not in log_parent:
-            log_parent['commands'] = []
-
-        log_parent['commands'].append(
-            self.kernel.current_request.log
         )
 
         # Render response
@@ -122,14 +117,18 @@ class AbstractCommandResolver:
         return response
 
     def wrap_response(self, response) -> AbstractResponse:
-        if callable(response):
+        if isinstance(response, AbstractResponse):
+            return response
+        elif callable(response):
             return FunctionResponse(self.kernel, response)
-        if isinstance(response, dict):
+        elif isinstance(response, dict):
             return DictResponse(self.kernel, response)
-        if not isinstance(response, AbstractResponse):
-            return DefaultResponse(self.kernel, response)
+        elif response is None:
+            return NullResponse(self.kernel)
 
-        return response
+        return DefaultResponse(self.kernel, response)
+
+
 
     def get_function_from_request(self, request: CommandRequest) -> str:
         return self.get_function(
