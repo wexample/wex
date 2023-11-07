@@ -9,10 +9,10 @@ import logging
 import json
 
 WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
-
 WEBHOOK_STATUS_STARTED = 'started'
 WEBHOOK_STATUS_COMPLETE = 'complete'
 WEBHOOK_STATUS_ERROR = 'error'
+
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str

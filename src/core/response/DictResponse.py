@@ -71,4 +71,6 @@ class DictResponse(AbstractTerminalSectionResponse):
                     printed[key] = data[key].print(
                         render_mode
                     )
+                else:
+                    printed[key] = data[key]
             return printed
