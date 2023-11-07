@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_NONE
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE
 
 
 class AbstractResponse:
@@ -28,7 +28,7 @@ class AbstractResponse:
     def render(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> 'AbstractResponse':
 
         # If response passes from a function to another,
@@ -62,7 +62,7 @@ class AbstractResponse:
     def render_content(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> 'AbstractResponse':
         pass
 
@@ -114,7 +114,7 @@ class AbstractResponse:
             self,
             collection,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None):
         for response in collection:
             if isinstance(response, AbstractResponse):

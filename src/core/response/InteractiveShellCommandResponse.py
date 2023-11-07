@@ -1,7 +1,7 @@
 from src.helper.command import command_to_string, execute_command
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
-from src.const.globals import KERNEL_RENDER_MODE_CLI
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -16,7 +16,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
     def render_content(
             self,
             request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> AbstractResponse:
 
         if self.ignore_error:
