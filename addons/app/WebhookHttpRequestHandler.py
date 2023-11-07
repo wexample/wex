@@ -1,3 +1,4 @@
+import subprocess
 from http.server import BaseHTTPRequestHandler
 
 from src.helper.array import array_replace_value
@@ -44,6 +45,14 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 WEBHOOK_COMMAND_URL_PLACEHOLDER,
                 self.path
             )
+
+            # Launch async
+            with subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True) as process:
+                pass
 
             if error:
                 self.send_response(500)
