@@ -1,5 +1,3 @@
-import json
-
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -7,10 +5,13 @@ from src.const.globals import KERNEL_RENDER_MODE_CLI, KERNEL_RENDER_MODE_HTTP
 
 
 class TableResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, title: None = None):
+    def __init__(self, kernel, title: str | None = None, body: None | list = None):
         super().__init__(kernel, title)
         self.header = []
         self.body = []
+
+        if body:
+            self.set_body(body)
 
     def set_header(self, header):
         self.header = header
@@ -99,8 +100,8 @@ class TableResponse(AbstractTerminalSectionResponse):
 
     def render_http_content(self):
         # Render the content as JSON for HTTP mode
-        self.output_bag.append(json.dumps({
+        self.output_bag.append({
             "body": self.body,
             "header": self.header,
             "title": self.title,
-        }))
+        })
