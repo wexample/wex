@@ -1,11 +1,11 @@
-from addons.test.command.return_type.table import test__return_type__table
+from addons.test.command.return_type.table_response import test__return_type__table_response
 from src.const.globals import KERNEL_RENDER_MODE_HTTP
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestTestCommandReturnTypeTable(AbstractTestCase):
-    def test_table(self):
-        response = self.kernel.run_function(test__return_type__table, {
+class TestTestCommandReturnTypeTableResponse(AbstractTestCase):
+    def test_table_response(self):
+        response = self.kernel.run_function(test__return_type__table_response, {
             'arg': 'test'
         })
 
@@ -13,7 +13,7 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
             '+------' in response.first()
         )
 
-        response = self.kernel.run_function(test__return_type__table, {
+        response = self.kernel.run_function(test__return_type__table_response, {
             'arg': 'test'
         }, render_mode=KERNEL_RENDER_MODE_HTTP)
 

@@ -3,7 +3,7 @@ from src.decorator.option import option
 from src.core import Kernel
 
 
-@command(help="Return an array")
+@command(help="Return a string")
 @option('--arg', '-a', type=str, required=True, help="Argument")
-def test__return_type__array(kernel: Kernel, arg):
-    return [arg]
+def test__return_type__str(kernel: Kernel, arg):
+    return str(arg)
