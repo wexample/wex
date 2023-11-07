@@ -36,46 +36,47 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             error = False
+            output = {}
 
             if not is_allowed_route(self.path, self.routes):
                 error = 'NOT_FOUND'
+            else:
+                route_name = get_route_name(self.path, self.routes)
+                route = self.routes[route_name]
+                output['async'] = route['async']
 
-            route_name = get_route_name(self.path, self.routes)
-            route = self.routes[route_name]
+                # Create command to execute
+                command = array_replace_value(
+                    self.routes[route_name]['command'],
+                    WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                    self.path
+                )
+                output['command'] = command
 
-            # Create command to execute
-            command = array_replace_value(
-                self.routes[route_name]['command'],
-                WEBHOOK_COMMAND_URL_PLACEHOLDER,
-                self.path
-            )
+                status = WEBHOOK_STATUS_STARTED
+                # Launch async
+                with subprocess.Popen(
+                        command,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True) as process:
+                    if not route['async']:
+                        stdout, error = process.communicate()
 
-            output = {}
+                        stdout = stdout.strip()
+                        error = error.strip()
 
-            status = WEBHOOK_STATUS_STARTED
-            # Launch async
-            with subprocess.Popen(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True) as process:
-                if not route['async']:
-                    stdout, error = process.communicate()
+                        if stdout:
+                            try:
+                                # If the output is JSON, parse it and merge it with the output
+                                stdout = json.loads(stdout)
+                            except json.JSONDecodeError:
+                                pass
+                        else:
+                            stdout = {}
 
-                    stdout = stdout.strip()
-                    error = error.strip()
-
-                    if stdout:
-                        try:
-                            # If the output is JSON, parse it and merge it with the output
-                            stdout = json.loads(stdout)
-                        except json.JSONDecodeError:
-                            pass
-                    else:
-                        stdout = {}
-
-                    status = WEBHOOK_STATUS_COMPLETE
-                    output['response'] = stdout
+                        status = WEBHOOK_STATUS_COMPLETE
+                        output['response'] = stdout
 
             if error:
                 self.send_response(500)
@@ -86,8 +87,6 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 output['status'] = status
 
             output['task_id'] = self.task_id
-            output['command'] = command
-            output['async'] = route['async']
             output['path'] = self.path
             output['info'] = get_route_info(self.path, self.routes)
 
