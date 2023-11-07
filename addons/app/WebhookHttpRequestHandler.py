@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler
-from src.helper.routing import is_allowed_route, get_route_info
+
+from src.helper.array import array_replace_value
+from src.helper.routing import is_allowed_route, get_route_info, get_route_name
 from logging.handlers import RotatingFileHandler
 import traceback
 import logging
@@ -34,6 +36,15 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             if not is_allowed_route(self.path, self.routes):
                 error = 'NOT_FOUND'
 
+            route_name = get_route_name(self.path, self.routes)
+
+            # Create command to execute
+            command = array_replace_value(
+                self.routes[route_name]['command'],
+                WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                self.path
+            )
+
             if error:
                 self.send_response(500)
                 output = {
@@ -46,6 +57,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 }
 
             output['task_id'] = self.task_id
+            output['command'] = command
             output['path'] = self.path
             output['info'] = get_route_info(self.path, self.routes)
 
