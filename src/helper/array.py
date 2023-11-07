@@ -5,4 +5,4 @@ def array_unique(array):
 
 
 def array_replace_value(array: list, search, replacement) -> list:
-    return [replacement if value == search else value for value in array]
+    return [replacement if value == search else value for value in list(array)]

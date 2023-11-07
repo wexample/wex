@@ -3,7 +3,6 @@ import re
 from addons.app.command.script.exec import app__script__exec
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
-from app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 from src.const.globals import VERBOSITY_LEVEL_QUIET
 from src.core.Kernel import Kernel
 from src.decorator.command import command
@@ -20,6 +19,8 @@ from src.core.response.HiddenResponse import HiddenResponse
 @option('--url', '-u', type=str, required=True, help="Argument")
 @option('--env', '-e', type=str, required=False, help="Env directory")
 def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
+    from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
+
     source_data = {}
     parsed_url = urlparse(url)
     path = parsed_url.path

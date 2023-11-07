@@ -10,6 +10,9 @@ import json
 
 WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
 
+WEBHOOK_STATUS_STARTED = 'started'
+WEBHOOK_STATUS_COMPLETE = 'complete'
+WEBHOOK_STATUS_ERROR = 'error'
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
@@ -49,6 +52,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
             output = {}
 
+            status = WEBHOOK_STATUS_STARTED
             # Launch async
             with subprocess.Popen(
                     command,
@@ -70,18 +74,20 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     else:
                         stdout = {}
 
+                    status = WEBHOOK_STATUS_COMPLETE
                     output['response'] = stdout
 
             if error:
                 self.send_response(500)
-                output['status'] = 'error'
+                output['status'] = WEBHOOK_STATUS_ERROR
                 output['error'] = error
             else:
                 self.send_response(200)
-                output['status'] = 'started'
+                output['status'] = status
 
             output['task_id'] = self.task_id
             output['command'] = command
+            output['async'] = route['async']
             output['path'] = self.path
             output['info'] = get_route_info(self.path, self.routes)
 

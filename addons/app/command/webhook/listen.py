@@ -24,7 +24,7 @@ WEBHOOK_LISTENER_ROUTES_MAP = {
         'function': app__webhook__exec,
     },
     'status_process': {
-        'async': True,
+        'async': False,
         'pattern': r'^/status/process/([0-9\-]+)$',
         'function': app__webhook__exec
     },
