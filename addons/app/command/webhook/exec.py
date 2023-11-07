@@ -26,7 +26,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     parsed_url = urlparse(url)
     path = parsed_url.path
     match = re.match(
-        WEBHOOK_LISTENER_ROUTES_MAP['webhook']['pattern'],
+        WEBHOOK_LISTENER_ROUTES_MAP['exec']['pattern'],
         path
     )
 

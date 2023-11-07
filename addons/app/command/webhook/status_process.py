@@ -16,16 +16,25 @@ def app__webhook__status_process(kernel: Kernel, url: str):
     if not is_allowed_route(url, WEBHOOK_LISTENER_ROUTES_MAP):
         return None
 
+    output = {}
     route_info = get_route_info(url, WEBHOOK_LISTENER_ROUTES_MAP)
     task_id = route_info['match'][0]
 
-    log_content = kernel.task_file_load(
-        'json',
-        task_id=task_id,
-        delete_after_read=False,
-        create_if_missing=False)
+    log_content = kernel.logger.load_logs(task_id)
+
+    if log_content:
+        log_content = json.loads(log_content)
+        output['task'] = log_content
+        output['children'] = {}
+
+        for date in log_content['children']:
+            child_task_id = log_content['children'][date]
+
+            output[child_task_id] = kernel.logger.load_logs(
+                child_task_id
+            )
 
     return DictResponse(
         kernel,
-        json.loads(log_content) if log_content else {},
+        output,
         cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)

@@ -10,4 +10,5 @@ class HiddenResponse(DefaultResponse):
 
         return super().print(
             interactive_data=interactive_data,
+            render_mode=render_mode
         )

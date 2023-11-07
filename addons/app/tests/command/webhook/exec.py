@@ -1,7 +1,9 @@
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.WebhookHttpRequestHandler import WEBHOOK_STATUS_COMPLETE, WEBHOOK_STATUS_STARTED
+from src.core.Logger import LOG_STATUS_COMPLETE
 from src.const.globals import CORE_COMMAND_NAME
 from addons.app.AppAddonManager import AppAddonManager
+import time
 
 
 class TestAppCommandWebhookExec(AbstractWebhookTestCase):
@@ -49,3 +51,46 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         )
 
         json = self.parse_response(response)
+
+        self.assertEqual(
+            json['status'],
+            WEBHOOK_STATUS_COMPLETE
+        )
+
+        # Async hook
+        response = self.request_listener(
+            '/webhook/wex/test-waiting',
+            check_code=None
+        )
+
+        json = self.parse_response(response)
+
+        self.assertEqual(
+            json['status'],
+            'started'
+        )
+
+        self.assertIsNotNone(
+            json['task_id'],
+        )
+
+        task_id = json['task_id']
+
+        self.log('Waiting task to terminate : ' + task_id)
+        time.sleep(2)
+
+        response = self.request_listener(
+            f'/status/process/{task_id}',
+        )
+
+        json = self.parse_response(response)
+
+        self.assertEqual(
+            json['task_id'],
+            task_id
+        )
+
+        self.assertEqual(
+            json['status'],
+            LOG_STATUS_COMPLETE
+        )

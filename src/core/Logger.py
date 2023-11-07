@@ -20,12 +20,7 @@ class Logger:
         self.time_start = time.time()
         date_now = self.get_time_string()
 
-        self.log_data = parse_json_if_valid(
-            self.kernel.task_file_load(
-                'json',
-                delete_after_read=False
-            )
-        )
+        self.log_data = self.load_logs(self.kernel.task_id)
 
         # Check if the output file already exists
         if not self.log_data:
@@ -36,8 +31,29 @@ class Logger:
                 'dateStart': date_now,
                 'dateLast': date_now,
                 'errors': [],
-                'status': LOG_STATUS_STARTED
+                'children': {},
+                'status': LOG_STATUS_STARTED,
+                'parent_task_id': self.kernel.parent_task_id
             }
+
+        if self.kernel.parent_task_id:
+            parent_logs = self.load_logs(self.kernel.parent_task_id)
+
+            if parent_logs:
+                parent_logs['children'][date_now] = self.kernel.task_id
+                self.write(
+                    task_id=self.kernel.parent_task_id,
+                    log_data=parent_logs
+                )
+
+    def load_logs(self, task_id: str):
+        return parse_json_if_valid(
+            self.kernel.task_file_load(
+                'json',
+                task_id=task_id,
+                delete_after_read=False
+            )
+        )
 
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
@@ -83,6 +99,7 @@ class Logger:
     def append_request(self, request):
         self.current_command = {
             'command': request.command,
+            'args': request.args,
             'date': self.get_time_string(),
         }
 
@@ -95,15 +112,18 @@ class Logger:
 
         self.write()
 
-    def write(self):
-        if (self.kernel.root_request
+    def write(self, task_id: None | str = None, log_data: dict | None = None):
+        # When writing current log, check if disabled.
+        if not task_id and (
+                self.kernel.root_request
                 and self.kernel.root_request.function
                 and hasattr(self.kernel.root_request.function.callback, 'no_log')):
             return
 
         log_path = self.kernel.task_file_write(
             'json',
-            json.dumps(self.log_data, indent=4),
+            json.dumps(log_data or self.log_data, indent=4),
+            task_id=task_id,
             replace=True
         )
 
@@ -151,3 +171,13 @@ class Logger:
             data['commands'][0]['command'] if len(data['commands']) else '-',
             data['status']
         ]
+
+    def set_status_complete(self, task_id: str | None = None):
+        if task_id:
+            log_data = self.load_logs(task_id)
+        else:
+            task_id = self.kernel.task_id
+            log_data = self.log_data
+
+        log_data['status'] = LOG_STATUS_COMPLETE
+        self.write(task_id, log_data)

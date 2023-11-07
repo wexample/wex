@@ -21,12 +21,14 @@ def get_route_info(url: str, routes: dict):
         parsed_url = urlparse(url)
         path = parsed_url.path
         query = parse_qs(parsed_url.query)
-        pattern = routes[route_name]['pattern']
+        route = routes[route_name]
+        pattern = route['pattern']
         match = re.match(pattern, path)
         return {
+            'async': route['async'],
             'name': route_name,
             'match': match.groups(),
-            'query': query
+            'query': query,
         }
 
 

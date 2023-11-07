@@ -10,6 +10,7 @@ import json
 
 WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
 WEBHOOK_STATUS_STARTED = 'started'
+WEBHOOK_STATUS_STARTING = 'starting'
 WEBHOOK_STATUS_COMPLETE = 'complete'
 WEBHOOK_STATUS_ERROR = 'error'
 
@@ -18,6 +19,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
     log_path: str
     routes: dict
+    log_stderr: str
+    log_stdout: str
 
     def __init__(self, *args, **kwargs):
         self.logger = logging.getLogger('wex-webhook')
@@ -38,12 +41,12 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             error = False
             output = {}
 
+            status = WEBHOOK_STATUS_STARTING
             if not is_allowed_route(self.path, self.routes):
                 error = 'NOT_FOUND'
             else:
                 route_name = get_route_name(self.path, self.routes)
                 route = self.routes[route_name]
-                output['async'] = route['async']
 
                 # Create command to execute
                 command = array_replace_value(
@@ -51,32 +54,36 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     WEBHOOK_COMMAND_URL_PLACEHOLDER,
                     self.path
                 )
+
                 output['command'] = command
+                stdout_file = open(self.log_stdout, 'w')
+                stderr_file = open(self.log_stderr, 'w')
 
-                status = WEBHOOK_STATUS_STARTED
-                # Launch async
-                with subprocess.Popen(
-                        command,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True) as process:
-                    if not route['async']:
-                        stdout, error = process.communicate()
+                process = subprocess.Popen(
+                    command,
+                    stdout=stdout_file,
+                    stderr=stderr_file,
+                    text=True)
 
-                        stdout = stdout.strip()
-                        error = error.strip()
+                if not route['async']:
+                    stdout, stderr = process.communicate()
+                    stdout = stdout.strip() if isinstance(stdout, str) else stdout
+                    stderr = stderr.strip() if isinstance(stderr, str) else stderr
 
-                        if stdout:
-                            try:
-                                # If the output is JSON, parse it and merge it with the output
-                                stdout = json.loads(stdout)
-                            except json.JSONDecodeError:
-                                pass
-                        else:
-                            stdout = {}
+                    try:
+                        stdout = json.loads(stdout) if stdout else {}
+                    except json.JSONDecodeError:
+                        stdout = stdout if stdout else {}
 
-                        status = WEBHOOK_STATUS_COMPLETE
-                        output['response'] = stdout
+                    if stderr:
+                        error = 'RESPONSE_ERROR'
+
+                    status = WEBHOOK_STATUS_COMPLETE
+                    output['response'] = stdout
+                else:
+                    status = WEBHOOK_STATUS_STARTED
+
+                output['pid'] = process.pid
 
             if error:
                 self.send_response(500)
@@ -101,8 +108,12 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 'traceback': traceback.format_exc()
             }
 
-        # Serialize the output and send the response
-        output = json.dumps(output)
+        try:
+            # Serialize the output and send the response
+            output = json.dumps(output)
+        except Exception as e:
+            self.logger.error(output)
+
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(output.encode())

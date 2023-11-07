@@ -10,7 +10,7 @@ from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.IOManager import IOManager
-from src.core.Logger import Logger, LOG_STATUS_COMPLETE
+from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
@@ -65,7 +65,7 @@ class Kernel:
             'tmp': tmp_path,
             'log': os.path.join(tmp_path, 'log') + os.sep,
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep,
-            'task_file': os.path.join(tmp_path, 'task') + os.sep
+            'task': os.path.join(tmp_path, 'task') + os.sep
         }
 
         # Check that script is called from a valid dir.
@@ -112,6 +112,9 @@ class Kernel:
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
+
+                from src.helper.file import set_user_or_sudo_user_owner
+                set_user_or_sudo_user_owner(path)
             except PermissionError:
                 self.io.error(
                     ERR_UNEXPECTED,
@@ -173,8 +176,7 @@ class Kernel:
             self.io.log_hide()
         # This is the real end as fast mode can't have post exec.
         else:
-            self.logger.log_data['status'] = LOG_STATUS_COMPLETE
-            self.logger.write()
+            self.logger.set_status_complete()
 
         if result is not None:
             self.io.print(result)
@@ -266,7 +268,7 @@ class Kernel:
         )
 
     def task_file_path(self, type: str, task_id: str | None = None):
-        return os.path.join(self.get_or_create_path('task_file'), f"{task_id or self.task_id}.{type}")
+        return os.path.join(self.get_or_create_path('task'), f"{task_id or self.task_id}.{type}")
 
     def task_file_load(
             self,
@@ -305,9 +307,14 @@ class Kernel:
                 # If not creating a file, just return the default
                 return default
 
-    def task_file_write(self, type: str, body: str, replace: bool = False):
+    def task_file_write(
+            self,
+            type: str,
+            body: str,
+            task_id: str | None = None,
+            replace: bool = False):
         from src.helper.file import set_user_or_sudo_user_owner
-        path = self.task_file_path(type)
+        path = self.task_file_path(type, task_id=task_id)
 
         with open(path, 'w' if replace else 'a') as f:
             f.write(body)
@@ -403,7 +410,7 @@ class Kernel:
             self.task_file_write(
                 'task-redirect',
                 value,
-                True
+                replace=True
             )
 
             self.task_id = value

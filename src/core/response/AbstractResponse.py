@@ -106,7 +106,10 @@ class AbstractResponse:
         return True
 
     def store_data(self):
-        if self.storable_data() and self.print(interactive_data=False):
+        if self.storable_data() and self.print(
+                render_mode=KERNEL_RENDER_MODE_TERMINAL,
+                interactive_data=False
+        ):
             return self.first()
         return None
 

@@ -160,6 +160,8 @@ def app__webhook__listen(
                 task_id = kernel.task_id
                 log_path = kernel.task_file_path('webhook-listener')
                 routes = routes_map
+                log_stderr: str = kernel.task_file_path('webhook-stderr')
+                log_stdout: str = kernel.task_file_path('webhook-stdout')
 
             if not dry_run:
                 with HTTPServer(('', port), CustomWebhookHttpRequestHandler) as server:

@@ -30,3 +30,6 @@ def core__core__cleanup(kernel: Kernel):
             'path': kernel.get_path('root')
         }
     )
+
+    # Recreate empty folder as some running services may need it.
+    kernel.get_or_create_path('task')
