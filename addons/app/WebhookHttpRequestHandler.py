@@ -38,6 +38,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 error = 'NOT_FOUND'
 
             route_name = get_route_name(self.path, self.routes)
+            route = self.routes[route_name]
 
             # Create command to execute
             command = array_replace_value(
@@ -46,24 +47,38 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 self.path
             )
 
+            output = {}
+
             # Launch async
             with subprocess.Popen(
                     command,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True) as process:
-                pass
+                if not route['async']:
+                    stdout, error = process.communicate()
+
+                    stdout = stdout.strip()
+                    error = error.strip()
+
+                    if stdout:
+                        try:
+                            # If the output is JSON, parse it and merge it with the output
+                            stdout = json.loads(stdout)
+                        except json.JSONDecodeError:
+                            pass
+                    else:
+                        stdout = {}
+
+                    output['response'] = stdout
 
             if error:
                 self.send_response(500)
-                output = {
-                    'error': error,
-                }
+                output['status'] = 'error'
+                output['error'] = error
             else:
                 self.send_response(200)
-                output = {
-                    'status': 'started'
-                }
+                output['status'] = 'started'
 
             output['task_id'] = self.task_id
             output['command'] = command
