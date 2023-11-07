@@ -1,5 +1,3 @@
-import json
-
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -46,6 +44,6 @@ class DictResponse(AbstractTerminalSectionResponse):
 
         elif render_mode == KERNEL_RENDER_MODE_HTTP:
             # For HTTP mode, we simply convert the dictionary to JSON
-            self.output_bag.append(json.dumps(self.dictionary_data))
+            self.output_bag.append(self.dictionary_data)
 
         return self
