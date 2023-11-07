@@ -64,7 +64,8 @@ class Kernel:
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
             'tmp': tmp_path,
             'log': os.path.join(tmp_path, 'log') + os.sep,
-            'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep
+            'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep,
+            'task_file': os.path.join(tmp_path, 'task') + os.sep
         }
 
         # Check that script is called from a valid dir.
@@ -212,17 +213,16 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        output = response.print(
+        printed = response.print(
             render_mode or self.default_render_mode
         ) if response else None
 
         if render_mode == KERNEL_RENDER_MODE_JSON:
             import json
 
-            return json.dumps(output)
+            return json.dumps(printed)
 
-        self.io.print(output)
-
+        return printed
 
     def run_command(self,
                     command: str,
@@ -265,28 +265,45 @@ class Kernel:
             render_mode or self.default_render_mode
         )
 
-    def task_file_path(self, type: str):
-        task_dir = os.path.join(self.get_or_create_path('tmp'), 'task')
-        os.makedirs(task_dir, exist_ok=True)
-        return os.path.join(task_dir, f"{self.task_id}.{type}")
+    def task_file_path(self, type: str, task_id: str | None = None):
+        return os.path.join(self.get_or_create_path('task_file'), f"{task_id or self.task_id}.{type}")
 
-    def task_file_load(self, type: str, delete_after_read: bool = True):
+    def task_file_load(
+            self,
+            type: str,
+            task_id: str | None = None,
+            delete_after_read: bool = True,
+            create_if_missing: bool = True,
+            default=''):
         """
-        Load the content of a file and optionally delete the file after reading.
+        Load the content of a file and optionally delete the file after reading. If the file does not exist
+        and `create_if_missing` is True, a new file will be created with the `default` content.
         """
-        file_path = self.task_file_path(type)
+        file_path = self.task_file_path(type, task_id)
 
+        # Check if the file exists
         if os.path.exists(file_path):
             with open(file_path, 'r') as f:
                 content = f.read()
 
+            # Delete the file after reading, if requested
             if delete_after_read:
-                # Delete the file after reading
                 os.remove(file_path)
 
             return content
         else:
-            return None
+            # If the file doesn't exist and 'create_if_missing' is True, create the file
+            if create_if_missing:
+                self.task_file_write(
+                    type,
+                    body=default
+                )
+
+                # Return the default content as the file content
+                return default
+            else:
+                # If not creating a file, just return the default
+                return default
 
     def task_file_write(self, type: str, body: str, replace: bool = False):
         from src.helper.file import set_user_or_sudo_user_owner
@@ -296,6 +313,8 @@ class Kernel:
             f.write(body)
 
             set_user_or_sudo_user_owner(path)
+
+            return path
 
     def guess_command_type(self, command: str) -> str | None:
         for type in self.resolvers:
