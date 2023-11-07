@@ -4,7 +4,7 @@ import os
 import time
 
 from src.helper.file import set_user_or_sudo_user_owner
-from src.helper.json import load_json_if_valid
+from src.helper.json import load_json_if_valid, parse_json_if_valid
 from src.const.globals import COMMAND_TYPE_ADDON
 
 LOG_STATUS_COMPLETE = 'complete'
@@ -17,25 +17,21 @@ class Logger:
     def __init__(self, kernel):
         self.kernel = kernel
 
-        log_dir = self.kernel.get_or_create_path('log')
-
-        self.path_log = os.path.join(
-            log_dir,
-            kernel.task_id + '.json'
-        )
-        self.path_output = os.path.join(
-            log_dir,
-            f'{kernel.task_id}.out'
-        )
-
         self.time_start = time.time()
         date_now = self.get_time_string()
 
-        self.log_data = load_json_if_valid(self.path_log)
+        self.log_data = parse_json_if_valid(
+            self.kernel.task_file_load(
+                'json',
+                delete_after_read=False
+            )
+        )
+
         # Check if the output file already exists
         if not self.log_data:
             # If it doesn't exist, create a new log_data
             self.log_data = {
+                'task_id': kernel.task_id,
                 'commands': [],
                 'dateStart': date_now,
                 'dateLast': date_now,
@@ -46,11 +42,12 @@ class Logger:
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
 
-    def append_event(self, name, data: dict | None = None):
-        log = self.kernel.current_request.log if self.kernel.current_request else self.log_data
+    def get_time_string(self) -> str:
+        return str(datetime.datetime.now())
 
-        if 'events' not in log:
-            log['events'] = []
+    def append_event(self, name, data: dict | None = None):
+        if 'events' not in self.log_data:
+            self.log_data['events'] = []
 
         event = {
             'name': name
@@ -59,7 +56,7 @@ class Logger:
         if data:
             event['data'] = data
 
-        log['events'].append(event)
+        self.log_data['events'].append(event)
 
         self.write()
 
@@ -71,16 +68,10 @@ class Logger:
         if parameters is None:
             parameters = {}
 
-        # An error may occur before any command starts.
-        if self.current_command:
-            container = self.current_command
-        else:
-            container = self.log_data
+        if 'errors' not in self.log_data:
+            self.log_data['errors'] = []
 
-        if 'errors' not in container:
-            container['errors'] = []
-
-        container['errors'].append({
+        self.log_data['errors'].append({
             'code': code,
             'date': self.get_time_string(),
             'parameters': parameters,
@@ -110,14 +101,19 @@ class Logger:
                 and hasattr(self.kernel.root_request.function.callback, 'no_log')):
             return
 
-        with open(self.path_log, 'w') as f:
-            json.dump(self.log_data, f, indent=4)
-            set_user_or_sudo_user_owner(self.path_log)
+        log_path = self.kernel.task_file_write(
+            'json',
+            json.dumps(self.log_data, indent=4),
+            replace=True
+        )
+
+        set_user_or_sudo_user_owner(log_path)
 
     def write_output(self, output: str):
-        # Log stdout (which now also includes stderr)
-        with open(self.path_output, 'a') as out_file:
-            out_file.write(output)
+        self.kernel.task_file_write(
+            'out',
+            output
+        )
 
     def get_all_logs_files(self) -> list:
         directory = self.kernel.get_or_create_path('log')
