@@ -25,8 +25,11 @@ class TableResponse(AbstractTerminalSectionResponse):
     def get_body(self):
         return self.body
 
-    def render_content(self, request: CommandRequest, render_mode: str = KERNEL_RENDER_MODE_CLI,
-                       args: dict = None) -> AbstractResponse:
+    def render_content(
+            self,
+            request: CommandRequest,
+            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            args: dict = None) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_CLI:
             # Render the content based on the header and body attributes
             self.render_cli_content(render_mode)
@@ -105,3 +108,6 @@ class TableResponse(AbstractTerminalSectionResponse):
             "header": self.header,
             "title": self.title,
         })
+
+    def print(self, render_mode: str, interactive_data: bool = True):
+        return self.output_bag[0]

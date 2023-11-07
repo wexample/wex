@@ -208,7 +208,9 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        return response.print() if response else None
+        return response.print(
+            render_mode or self.default_render_mode
+        ) if response else None
 
     def run_command(self,
                     command: str,

@@ -66,24 +66,25 @@ class AbstractResponse:
             args: dict = None) -> 'AbstractResponse':
         pass
 
-    def print(self, interactive_data: bool = True) -> str | None:
+    def print(self, render_mode: str, interactive_data: bool = True) -> str | None:
         if len(self.output_bag):
             serialised = []
             for output in self.output_bag:
                 if isinstance(output, AbstractResponse):
                     if output.interactive_data or interactive_data:
                         output_serialized = output.print(
+                            render_mode=render_mode,
                             interactive_data=interactive_data,
                         )
                         if output_serialized is not None:
                             serialised.append(output_serialized)
                 elif output is not None:
-                    serialised.append(str(output))
+                    serialised.append(output)
 
             if not len(serialised):
                 return None
 
-            return '\n'.join(serialised)
+            return serialised
 
         return None
 
@@ -108,3 +109,19 @@ class AbstractResponse:
         if self.storable_data() and self.print(interactive_data=False):
             return self.first()
         return None
+
+    def render_content_multiple(
+            self,
+            collection,
+            request: CommandRequest,
+            render_mode: str = KERNEL_RENDER_MODE_CLI,
+            args: dict = None):
+        for response in collection:
+            if isinstance(response, AbstractResponse):
+                self.output_bag.append(
+                    response.render_content(
+                        request,
+                        render_mode,
+                        args,
+                    )
+                )

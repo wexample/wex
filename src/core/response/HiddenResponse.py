@@ -4,7 +4,7 @@ from src.core.response.DefaultResponse import DefaultResponse
 
 
 class HiddenResponse(DefaultResponse):
-    def print(self, interactive_data: bool = True) -> str | None:
+    def print(self, render_mode: str, interactive_data: bool = True) -> str | None:
         if interactive_data:
             return None
 

@@ -18,7 +18,6 @@ from src.core.response.HiddenResponse import HiddenResponse
 @command(help="Execute a webhook")
 @verbosity(VERBOSITY_LEVEL_QUIET)
 @option_webhook_url()
-@option('--url', '-u', type=str, required=True, help="Argument")
 @option('--env', '-e', type=str, required=False, help="Env directory")
 def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP

@@ -1,3 +1,5 @@
+import json
+
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -21,29 +23,26 @@ class DictResponse(AbstractTerminalSectionResponse):
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_CLI,
             args: dict = None) -> AbstractResponse:
+        # For HTTP mode, we simply use the dictionary to be converted as JSON
+        self.output_bag.append(self.dictionary_data)
 
-        if render_mode == KERNEL_RENDER_MODE_CLI:
-            # Calculate maximum key width for formatting
-            max_key_width = max(len(str(key)) for key in self.dictionary_data.keys())
-
-            # Pre-render the lines to calculate the section width
-            # We create the entire line here for width calculation
-            lines = [f"{str(key):<{max_key_width}} : {value}" for key, value in self.dictionary_data.items()]
-
-            # Find the largest width
-            section_width = max(len(line) for line in lines)
-
-            # Generate the CLI title with the section width
-            output = self.render_cli_title(section_width)
-
-            # Add pre-rendered key/value pairs to the output
-            for line in lines:
-                output += line + '\n'
-
-            self.output_bag.append(output)
-
-        elif render_mode == KERNEL_RENDER_MODE_HTTP:
-            # For HTTP mode, we simply convert the dictionary to JSON
-            self.output_bag.append(self.dictionary_data)
+        self.render_content_multiple(
+            self.dictionary_data.values(),
+            request,
+            render_mode,
+            args
+        )
 
         return self
+
+    def print(self, render_mode: str, interactive_data: bool = True):
+        if render_mode == KERNEL_RENDER_MODE_CLI:
+            return super().print(render_mode, interactive_data)[0]
+        if render_mode == KERNEL_RENDER_MODE_HTTP:
+            data = self.first()
+            printed = {}
+            for key in data:
+                if isinstance(data[key], AbstractResponse):
+                    printed[key] = data[key].print(render_mode)
+
+            return json.dumps(printed)
