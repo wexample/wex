@@ -73,10 +73,6 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         }
     ).first()
 
-    kernel.run_function(
-        core__core__cleanup,
-    )
-
     kernel.io.log('Giving files permission...')
     request.resolver.set_command_file_permission(command_path)
     request.resolver.set_command_file_permission(test_file)
