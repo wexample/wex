@@ -5,7 +5,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 class TestAppCommandDbExec(AbstractAppTestCase):
     def test_exec(self):
         def callback(db_service):
-            self.log(f'Testing database exec {db_service}')
+            self.log(f'Testing database exec : {db_service}')
             test_config = self.kernel.registry['service'][db_service]['config']['test']
 
             self.assertTrue(

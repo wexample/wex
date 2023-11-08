@@ -5,7 +5,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 class TestAppCommandDbDump(AbstractAppTestCase):
     def test_dump(self):
         def callback(db_service):
-            self.log(f'Testing database {db_service}')
+            self.log(f'Testing database restore : {db_service}')
 
             app_dir = self.create_and_start_test_app(services=[
                 db_service

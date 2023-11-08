@@ -1,3 +1,4 @@
+from addons.core.command.core.cleanup import core__core__cleanup
 from src.decorator.command import command
 from src.decorator.option import option
 from src.decorator.alias import alias
@@ -14,6 +15,12 @@ from src.decorator.as_sudo import as_sudo
 @as_sudo()
 @option('--command', '-c', type=str, required=False, help="Single command to test")
 def core__test__run(kernel: Kernel, command: str = None):
+    # Remove all temp files.
+    kernel.run_function(
+        core__core__cleanup,
+    )
+
+    # Recreate registry
     kernel.rebuild(test=True)
 
     kernel.io.log('Starting test suite..')
