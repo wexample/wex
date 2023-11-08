@@ -23,22 +23,22 @@ class TestTestCommandDemoCommandResponses(AbstractTestCase):
             {
                 'type': 'function'
             }
-        ).first()
+        )
 
         self.assertEqual(
-            response,
+            response.print(),
             'one'
         )
-        #
-        # # Shell script
-        # response = self.kernel.run_function(
-        #     test__demo_command__responses,
-        #     {
-        #         'type': 'shell'
-        #     }
-        # ).first()
-        #
-        # self.assertEqual(
-        #     response,
-        #     'one'
-        # )
+
+        # Shell script
+        response = self.kernel.run_function(
+            test__demo_command__responses,
+            {
+                'type': 'shell'
+            }
+        )
+
+        self.assertTrue(
+            # Word exists in "ls -la" result
+            'total ' in response.print(),
+        )
