@@ -57,6 +57,8 @@ test:
     - sudo su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
+    # Reset permissions
+    - chown -R root:root .
 
 build:
   stage: build
