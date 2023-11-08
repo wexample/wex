@@ -7,6 +7,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 from src.core.Kernel import Kernel
 from src.decorator.as_sudo import as_sudo
+from addons.core.command.core.cleanup import core__core__cleanup
 
 
 @command(help="Create a new command and test files")
@@ -72,7 +73,9 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         }
     ).first()
 
-    kernel.rebuild()
+    kernel.run_function(
+        core__core__cleanup,
+    )
 
     kernel.io.log('Giving files permission...')
     request.resolver.set_command_file_permission(command_path)
