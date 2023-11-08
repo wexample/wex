@@ -11,6 +11,7 @@ permissions:
   script:
     - chown -R root:root .
   variables:
+    GIT_STRATEGY: none
     GIT_CHECKOUT: "false"
 
 test:
