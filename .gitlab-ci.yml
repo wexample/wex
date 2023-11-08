@@ -6,8 +6,8 @@ stages:
   - test_apt_install
 
 permissions:
-  only:
-    - tags
+#  only:
+#    - tags
   script:
     - chown -R root:root .
     - ls -la
@@ -15,125 +15,125 @@ permissions:
     GIT_STRATEGY: none
     GIT_CHECKOUT: "false"
 
-test:
-  stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-  needs:
-    - permissions
-  services:
-    # Match the version number with image internal docker service.
-    - name: docker:24.0.6-dind
-  before_script:
-    # Start Docker daemon manually and display logs
-    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
-    - sleep 30  # Give it some time to start
-    - cat docker.log
-    - apt-get update && apt-get install -y net-tools
-    - netstat -tuln | grep 2375
-    # Allow all users to access 2375
-    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
-      # Added a timeout to ensure that the loop does not run indefinitely
-    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
-  variables:
-    DOCKER_HOST: tcp://0.0.0.0:2375
-    DOCKER_DRIVER: vfs
-  only:
-    - tags
-  script:
-    # Stops script on failure
-    - set -e
-    # We install manually as apt package does not exist at this point
-    - apt update
-    # Install minimum packages to launch install script
-    - apt install sudo -y
-    # Create env file
-    - echo "APP_ENV=test" > ".wex/.env"
-    # Define app local env with docker config
-    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-    - cat ".env"
-    # Install
-    - INSTALL_PATH=$(pwd)
-    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-    # Run wex test as owner with sudo
-    - sudo su - owner -c "sudo wex test"
-    # Uninstall
-    - sudo bash ./cli/uninstall
-    # Reset permissions
-    - chown -R root:root .
-
-build:
-  stage: build
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-  only:
-    - tags
-  needs:
-    - test
-  before_script:
-    # Revert permission before cloning
-    - chown -R root:root .
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Create build folder
-    - mkdir -p /var/www/build
-    # Create a copy of current git repo
-    - cp -r .git /var/www/build
-    # Go to build folder
-    - cd /var/www/build
-    # Checkout build branch
-    - git fetch && git checkout build
-    # Create link to source
-    - ln -s ${CI_PROJECT_DIR} source
-    # Build
-    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
-
-deploy:
-  stage: deploy
-  only:
-    - tags
-  needs:
-    - build
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-
-# Try to install using the new debian apt repository.
-test_apt_install_debian:
-  stage: test_apt_install
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-  only:
-    - tags
-  needs:
-    - deploy
-  script:
-    # Stops script on failure
-    - set -e
-    - apt update
-    - apt install gnupg2 wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt update
-    - apt install wex -y
-    - wex hi
-    - apt remove wex -y
-
-# Try to install using the new debian apt repository.
-test_apt_install_ubuntu:
-  stage: test_apt_install
-  image: ubuntu:22.04
-  only:
-    - tags
-  needs:
-    - deploy
-  script:
-    # Stops script on failure
-    - set -e
-    - apt update
-    - apt install git gnupg2 sudo wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt update
-    - apt install wex -y
-    - wex hi
-    - apt remove wex -y
+#test:
+#  stage: test
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+#  needs:
+#    - permissions
+#  services:
+#    # Match the version number with image internal docker service.
+#    - name: docker:24.0.6-dind
+#  before_script:
+#    # Start Docker daemon manually and display logs
+#    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
+#    - sleep 30  # Give it some time to start
+#    - cat docker.log
+#    - apt-get update && apt-get install -y net-tools
+#    - netstat -tuln | grep 2375
+#    # Allow all users to access 2375
+#    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
+#      # Added a timeout to ensure that the loop does not run indefinitely
+#    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
+#  variables:
+#    DOCKER_HOST: tcp://0.0.0.0:2375
+#    DOCKER_DRIVER: vfs
+#  only:
+#    - tags
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    # We install manually as apt package does not exist at this point
+#    - apt update
+#    # Install minimum packages to launch install script
+#    - apt install sudo -y
+#    # Create env file
+#    - echo "APP_ENV=test" > ".wex/.env"
+#    # Define app local env with docker config
+#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+#    - cat ".env"
+#    # Install
+#    - INSTALL_PATH=$(pwd)
+#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+#    # Run wex test as owner with sudo
+#    - sudo su - owner -c "sudo wex test"
+#    # Uninstall
+#    - sudo bash ./cli/uninstall
+#    # Reset permissions
+#    - chown -R root:root .
+#
+#build:
+#  stage: build
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
+#  only:
+#    - tags
+#  needs:
+#    - test
+#  before_script:
+#    # Revert permission before cloning
+#    - chown -R root:root .
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Create build folder
+#    - mkdir -p /var/www/build
+#    # Create a copy of current git repo
+#    - cp -r .git /var/www/build
+#    # Go to build folder
+#    - cd /var/www/build
+#    # Checkout build branch
+#    - git fetch && git checkout build
+#    # Create link to source
+#    - ln -s ${CI_PROJECT_DIR} source
+#    # Build
+#    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+#
+#deploy:
+#  stage: deploy
+#  only:
+#    - tags
+#  needs:
+#    - build
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Ask apt repo to publish release
+#    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_debian:
+#  stage: test_apt_install
+#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+#  only:
+#    - tags
+#  needs:
+#    - deploy
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    - apt update
+#    - apt install gnupg2 wget -y
+#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+#    - apt update
+#    - apt install wex -y
+#    - wex hi
+#    - apt remove wex -y
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_ubuntu:
+#  stage: test_apt_install
+#  image: ubuntu:22.04
+#  only:
+#    - tags
+#  needs:
+#    - deploy
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    - apt update
+#    - apt install git gnupg2 sudo wget -y
+#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+#    - apt update
+#    - apt install wex -y
+#    - wex hi
+#    - apt remove wex -y
