@@ -136,7 +136,7 @@ class Logger:
         )
 
     def get_all_logs_files(self) -> list:
-        directory = self.kernel.get_or_create_path('log')
+        directory = self.kernel.get_or_create_path('task')
 
         all_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
         json_files = [directory + f for f in all_files if f.endswith('.json')]

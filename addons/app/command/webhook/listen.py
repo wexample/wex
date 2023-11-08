@@ -129,10 +129,7 @@ def app__webhook__listen(
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
                 function = routes_map[route_name]['function']
-
-                options = {
-                    'render-mode': KERNEL_RENDER_MODE_JSON,
-                }
+                options = {}
 
                 if hasattr(function.callback, 'option_webhook_listener_path'):
                     options['path'] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
@@ -149,8 +146,13 @@ def app__webhook__listen(
                 command += [
                     '--parent-task-id',
                     kernel.task_id,
+                    # Allow parsing
+                    '--render-mode',
+                    KERNEL_RENDER_MODE_JSON,
                     # No need to interact or create sub process
-                    '--fast-mode'
+                    '--fast-mode',
+                    # Avoid logging to be able to parse output
+                    '--quiet'
                 ]
 
                 if hasattr(kernel.root_request.function.callback, 'option_webhook_listener_path'):

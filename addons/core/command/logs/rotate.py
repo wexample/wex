@@ -14,7 +14,7 @@ def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int
     """
     Rotate and clean up log files older than a specified age limit.
 
-    This function iterates through the log files in the 'log' directory, checks their modification
+    This function iterates through the log files in the 'task' directory, checks their modification
     time, and removes any log files that are older than the age limit defined by LOG_MAX_DAYS.
     """
     # Define the age limit

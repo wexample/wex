@@ -1,6 +1,8 @@
 import os
 
-from addons.app.const.app import ERR_APP_SHOULD_RUN
+from dotenv import dotenv_values
+
+from addons.app.const.app import ERR_APP_SHOULD_RUN, APP_FILEPATH_REL_DOCKER_ENV
 from src.decorator.option import option
 from src.core import Kernel
 from addons.app.decorator.app_command import app_command
@@ -18,15 +20,25 @@ COMMAND_TYPE_PYTHON_FILE = 'python-file'
 
 @app_command(help="Description")
 @option('--name', '-n', type=str, required=True, help="Script name")
-def app__script__exec(kernel: Kernel, app_dir: str, name: str):
+@option('--webhook', '-w', is_flag=True, help="Webhook only")
+def app__script__exec(kernel: Kernel, app_dir: str, name: str, webhook: bool = False):
     manager: AppAddonManager = kernel.addons['app']
     script_config = manager.load_script(name)
 
-    if not script_config:
+    if (not script_config
+            or (webhook and ('webhook' not in script_config or not script_config['webhook']))):
         return None
 
     commands_collection = []
     counter = 0
+
+    config = dotenv_values(
+        os.path.join(
+            manager.app_dir,
+            APP_FILEPATH_REL_DOCKER_ENV
+        )
+    )
+
     # Iterate through each command in the configuration
     for script in script_config.get('scripts', []):
         if isinstance(script, str):
@@ -35,6 +47,11 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str):
                 'title': script,
                 'type': COMMAND_TYPE_BASH
             }
+
+        kernel.io.log(script['title'])
+
+        for key in config:
+            script['script'] = script['script'].replace('$' + key, config[key])
 
         script_part_type = script.get('type', COMMAND_TYPE_BASH)
         command = None
@@ -101,12 +118,6 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str):
                     InteractiveShellCommandResponse(kernel, command)
                 )
 
-    def _complete(previous):
-        return {
-            "status": "complete"
-        }
-
-    commands_collection.append(_complete)
     return QueuedCollectionResponse(kernel, commands_collection)
 
 

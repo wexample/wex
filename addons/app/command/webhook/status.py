@@ -1,4 +1,7 @@
+import re
+
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
+from src.helper.args import arg_shift
 from src.core.response.DictResponse import DictResponse
 from src.core.response.TableResponse import TableResponse
 from src.core import Kernel
@@ -14,6 +17,8 @@ from addons.app.command.webhook.exec import app__webhook__exec
 @option_webhook_listener(port=True)
 @as_sudo()
 def app__webhook__status(kernel: Kernel, port: None | int = None):
+    from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
+
     port = port or WEBHOOK_LISTEN_PORT_DEFAULT
 
     response = kernel.run_function(
@@ -34,11 +39,23 @@ def app__webhook__status(kernel: Kernel, port: None | int = None):
 
     table = []
     for log in logs:
-        table.append(
-            kernel.logger.build_summary(
-                log
+        if len(log['commands']):
+            command_data_first = log['commands'][0]
+            path = arg_shift(command_data_first['args'], 'path')
+
+            match = re.match(
+                WEBHOOK_LISTENER_ROUTES_MAP['exec']['pattern'],
+                path
             )
-        )
+
+            table.append(
+                [
+                    log['dateStart'],
+                    match[1],
+                    match[2],
+                    log['status']
+                ]
+            )
 
     table_response = TableResponse(kernel)
     table_response.set_title('Log')

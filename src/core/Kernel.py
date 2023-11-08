@@ -63,7 +63,6 @@ class Kernel:
             'addons': os.path.join(root_path, 'addons') + os.sep,
             'core.cli': os.path.join(root_path, 'cli', 'wex'),
             'tmp': tmp_path,
-            'log': os.path.join(tmp_path, 'log') + os.sep,
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep,
             'task': os.path.join(tmp_path, 'task') + os.sep
         }
