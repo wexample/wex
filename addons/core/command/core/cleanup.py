@@ -7,13 +7,16 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.as_sudo import as_sudo
 from addons.system.command.own.this import system__own__this
+from src.decorator.option import option
 
 
 @command(help="Uninstall core")
 @no_log()
 @as_sudo()
 @alias('cleanup')
-def core__core__cleanup(kernel: Kernel):
+@option('--test', '-t', is_flag=True, default=False,
+        help="Register also commands marked as only for testing")
+def core__core__cleanup(kernel: Kernel, test: bool = False):
     tmp_dir = kernel.get_or_create_path('tmp')
     shutil.rmtree(tmp_dir)
 
@@ -21,7 +24,7 @@ def core__core__cleanup(kernel: Kernel):
     with open(os.path.join(tmp_dir, '.gitkeep'), 'a'):
         pass
 
-    kernel.rebuild()
+    kernel.rebuild(test=test)
 
     # Reset perms
     kernel.run_function(

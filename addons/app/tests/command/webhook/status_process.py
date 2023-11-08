@@ -6,15 +6,21 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestAppCommandWebhookStatusProcess(AbstractTestCase):
     def test_status_process(self):
         response = self.kernel.run_function(app__webhook__status_process, {
-            'url': 'domain.com:123/status/process/1234'
+            'path': '/status/process/1234'
         })
 
-        self.assertIsNone(
+        self.assertEqual(
             response.first(),
+            {}
+        )
+
+        self.assertEqual(
+            response.print(),
+            ''
         )
 
         response = self.kernel.run_function(app__webhook__status_process, {
-            'url': 'domain.com:123/status/process/1234'
+            'path': '/status/process/1234'
         }, render_mode=KERNEL_RENDER_MODE_JSON)
 
         self.assertEqual(

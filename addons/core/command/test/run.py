@@ -17,11 +17,11 @@ from src.decorator.as_sudo import as_sudo
 def core__test__run(kernel: Kernel, command: str = None):
     # Remove all temp files.
     kernel.run_function(
-        core__core__cleanup,
+        function=core__core__cleanup,
+        args={
+            'test': True
+        }
     )
-
-    # Recreate registry
-    kernel.rebuild(test=True)
 
     kernel.io.log('Starting test suite..')
 

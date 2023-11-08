@@ -5,5 +5,5 @@ from src.core.Kernel import Kernel
 
 if __name__ == '__main__':
     Kernel(
-        __file__,
+        entrypoint_path=__file__,
     ).call()

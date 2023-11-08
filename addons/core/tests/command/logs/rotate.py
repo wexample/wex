@@ -14,14 +14,14 @@ class TestCoreCommandLogsRotate(AbstractTestCase):
     def test_rotate(self):
         # First remove all logs.
         self.kernel.run_function(
-            core__logs__rotate,
-            {
+            function=core__logs__rotate,
+            args={
                 'max-days': False,
                 'max-count': False
             }
         )
 
-        test_log_path = os.path.join(self.kernel.get_or_create_path('log'), 'test.json')
+        test_log_path = os.path.join(self.kernel.get_or_create_path('task'), 'test.json')
 
         with open(test_log_path, 'w') as test_log:
             test_log.write('TEST_CONTENT')
