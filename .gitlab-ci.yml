@@ -14,6 +14,8 @@ permissions:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  needs:
+    - permissions
   services:
     # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
