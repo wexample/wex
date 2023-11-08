@@ -133,8 +133,8 @@ class QueuedCollectionResponse(AbstractResponse):
         if isinstance(response, FunctionResponse):
             if self.kernel.tmp['last_created_queued_collection'] != self:
                 self.kernel.io.error(ERR_UNEXPECTED, {
-                    'error': 'When using a nested "QueuedCollectionResponse" it should be returned by its container '
-                             f'function, got : {response.print()}',
+                    'error': 'A nested "QueuedCollectionResponse" have been created but not passed to its parent'
+                             f', got : {response.print()}, in command {request.command} at step {step_index}',
                 })
 
         if not isinstance(response, AbstractResponse) and not is_basic_yaml_data(response):
