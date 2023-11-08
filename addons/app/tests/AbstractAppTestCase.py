@@ -42,6 +42,7 @@ class AbstractAppTestCase(AbstractTestCase):
 
         patterns = [
             f"Container {app_name_snake}_test_.*  Creating",
+            f"Container {app_name_snake}_test_.*  Created",
             f"Container {app_name_snake}_test_.*  Running",
             f"Container {app_name_snake}_test_.*  Started",
         ]
