@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from src.core.response.DefaultResponse import DefaultResponse
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 
 
 class HiddenResponse(DefaultResponse):
-    def print(self, render_mode: str, interactive_data: bool = True) -> str | None:
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
         if interactive_data:
             return None
 

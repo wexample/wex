@@ -66,7 +66,7 @@ class AbstractResponse:
             args: dict = None) -> 'AbstractResponse':
         pass
 
-    def print(self, render_mode: str, interactive_data: bool = True) -> str | None:
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
         if len(self.output_bag):
             serialised = []
             for output in self.output_bag:

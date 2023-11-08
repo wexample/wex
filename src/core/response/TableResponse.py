@@ -107,5 +107,5 @@ class TableResponse(AbstractTerminalSectionResponse):
             "title": self.title,
         })
 
-    def print(self, render_mode: str, interactive_data: bool = True):
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         return self.output_bag[0]

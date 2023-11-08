@@ -45,7 +45,7 @@ class DictResponse(AbstractTerminalSectionResponse):
 
         return self
 
-    def print(self, render_mode: str, interactive_data: bool = True):
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         data = self.output_bag[0]
 
         render_mode = self.get_render_mode(render_mode)

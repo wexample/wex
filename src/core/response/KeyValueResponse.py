@@ -1,5 +1,3 @@
-import json
-
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -50,7 +48,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
 
         return self
 
-    def print(self, render_mode: str, interactive_data: bool = True):
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return '\n'.join(self.output_bag)
         elif render_mode == KERNEL_RENDER_MODE_JSON:

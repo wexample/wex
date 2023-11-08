@@ -15,7 +15,7 @@ class NullResponse(AbstractResponse, ABC):
 
         return self
 
-    def print(self, render_mode: str, interactive_data: bool = True):
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return super().print(
                 render_mode,
