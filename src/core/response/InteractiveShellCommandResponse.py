@@ -53,3 +53,6 @@ class InteractiveShellCommandResponse(AbstractResponse):
 
     def storable_data(self) -> bool:
         return False
+
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
+        return self.output_bag[0] if len(self.output_bag) else ''

@@ -145,3 +145,14 @@ class QueuedCollectionResponse(AbstractResponse):
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
         return self.queue_manager.render_content_complete()
+
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
+        output = super().print(
+            render_mode,
+            interactive_data
+        )
+
+        if isinstance(output, list):
+            return "\n".join(output)
+
+        return output

@@ -1,3 +1,4 @@
+from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.core.response.DictResponse import DictResponse
 from src.core.response.TableResponse import TableResponse
 from src.core import Kernel
@@ -10,15 +11,22 @@ from addons.app.command.webhook.exec import app__webhook__exec
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
+@option_webhook_listener(port=True)
 @as_sudo()
-def app__webhook__status(kernel: Kernel):
+def app__webhook__status(kernel: Kernel, port: None | int = None):
+    port = port or WEBHOOK_LISTEN_PORT_DEFAULT
+
     response = kernel.run_function(
         system__process__by_port,
         {
-            'port': WEBHOOK_LISTEN_PORT_DEFAULT
+            'port': port
         },
         render_mode=KERNEL_RENDER_MODE_NONE
     )
+
+    # Hide sensitive info
+    if 'command' in response.dictionary_data:
+        del response.dictionary_data['command']
 
     logs = kernel.logger.find_by_function(
         app__webhook__exec

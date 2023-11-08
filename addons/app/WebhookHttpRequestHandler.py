@@ -8,7 +8,8 @@ import traceback
 import logging
 import json
 
-WEBHOOK_COMMAND_URL_PLACEHOLDER = '__URL__'
+WEBHOOK_COMMAND_PATH_PLACEHOLDER = '__URL__'
+WEBHOOK_COMMAND_PORT_PLACEHOLDER = '__PORT__'
 WEBHOOK_STATUS_STARTED = 'started'
 WEBHOOK_STATUS_STARTING = 'starting'
 WEBHOOK_STATUS_COMPLETE = 'complete'
@@ -48,11 +49,19 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 route_name = get_route_name(self.path, self.routes)
                 route = self.routes[route_name]
 
+                command = self.routes[route_name]['command']
+
                 # Create command to execute
                 command = array_replace_value(
-                    self.routes[route_name]['command'],
-                    WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                    command,
+                    WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     self.path
+                )
+
+                command = array_replace_value(
+                    command,
+                    WEBHOOK_COMMAND_PORT_PLACEHOLDER,
+                    str(self.server.server_port)
                 )
 
                 output['command'] = command
@@ -66,9 +75,18 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     text=True)
 
                 if not route['async']:
-                    stdout, stderr = process.communicate()
-                    stdout = stdout.strip() if isinstance(stdout, str) else stdout
-                    stderr = stderr.strip() if isinstance(stderr, str) else stderr
+                    process.communicate()
+
+                    # After the process is complete, you must close the files
+                    # before you can read from them.
+                    stdout_file.close()
+                    stderr_file.close()
+
+                    # Read the output from the files
+                    with open(self.log_stdout, 'r') as f:
+                        stdout = f.read().strip()
+                    with open(self.log_stderr, 'r') as f:
+                        stderr = f.read().strip()
 
                     try:
                         stdout = json.loads(stdout) if stdout else {}

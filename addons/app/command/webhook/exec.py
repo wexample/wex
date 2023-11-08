@@ -1,7 +1,7 @@
 import re
 
 from addons.app.command.script.exec import app__script__exec
-from addons.app.decorator.option_webhook_url import option_webhook_url
+from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from addons.app.AppAddonManager import AppAddonManager
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
@@ -17,13 +17,13 @@ from src.core.response.HiddenResponse import HiddenResponse
 
 @command(help="Execute a webhook")
 @verbosity(VERBOSITY_LEVEL_QUIET)
-@option_webhook_url()
+@option_webhook_listener(path=True)
 @option('--env', '-e', type=str, required=False, help="Env directory")
-def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
+def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data = {}
-    parsed_url = urlparse(url)
+    parsed_url = urlparse(path)
     path = parsed_url.path
     match = re.match(
         WEBHOOK_LISTENER_ROUTES_MAP['exec']['pattern'],
@@ -69,7 +69,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
                 return HiddenResponse(kernel, apps[app_name])
 
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
-            'url': url,
+            'path': path,
             'source_data': source_data,
             'success': False
         })
@@ -93,7 +93,7 @@ def app__webhook__exec(kernel: Kernel, url: str, env: None | str = None):
 
     def _log(previous):
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
-            'url': url,
+            'path': path,
             'source_data': source_data,
             'success': True
         })

@@ -11,22 +11,23 @@ from datetime import datetime
 @option('--port', '-p', type=int, required=True, help="Port number")
 def system__process__by_port(kernel: Kernel, port: int):
     process = get_processes_by_port(port)
-    output_list = KeyValueResponse(kernel, 'Process')
+    output_list = KeyValueResponse(kernel, title='process')
 
     if process:
         output_list.set_dictionary({
-            'Name': process.name(),
-            'Port': port,
-            'Pid': process.pid,
-            'Status': process.status(),
-            'Started': datetime.fromtimestamp(process.create_time()).strftime(DATE_FORMAT_SECOND),
-            'Command': process.cmdline(),
+            'name': process.name(),
+            'port': port,
+            'pid': process.pid,
+            'status': process.status(),
+            'started': datetime.fromtimestamp(process.create_time()).strftime(DATE_FORMAT_SECOND),
+            'command': process.cmdline(),
+            'running': True
         })
 
     else:
         output_list.set_dictionary({
-            'Port': port,
-            'Running': False
+            'port': port,
+            'running': False
         })
 
     return output_list

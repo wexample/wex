@@ -22,7 +22,8 @@ def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int
     # Get the current time
     now: datetime.datetime = datetime.datetime.now()
     # Get the list of log files
-    log_files: List[str] = os.listdir(kernel.get_or_create_path('log'))
+    log_dir = kernel.get_or_create_path('task')
+    log_files: List[str] = os.listdir(log_dir)
 
     kernel.io.log(f'Starting cleanup of files older than {max_days} days, max count at {max_count}')
 
@@ -32,7 +33,7 @@ def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int
     for log_file in log_files:
         deleted_count += 1
 
-        log_file_path: str = os.path.join(kernel.get_or_create_path('log'), log_file)
+        log_file_path: str = os.path.join(log_dir, log_file)
         # Get the modification time of the log file
         mod_time: datetime.datetime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file_path))
 

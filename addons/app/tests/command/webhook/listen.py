@@ -1,5 +1,4 @@
 import json
-import time
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
@@ -16,9 +15,8 @@ class TestAppCommandWebhookListen(AbstractWebhookTestCase):
         # No easy way to define if server ran.
         self.assertTrue(True)
 
-        self.start_webhook_listener()
-        response = self.request_listener('/status')
-
+        port = self.start_webhook_listener()
+        response = self.request_listener('/status', port=port)
         data = json.loads(response.read())
 
         self.assertTrue(
@@ -26,9 +24,5 @@ class TestAppCommandWebhookListen(AbstractWebhookTestCase):
         )
 
         self.assertTrue(
-            data['running']
-        )
-
-        self.assertIsNotNone(
-            data['task_id']
+            data['response']['process']['running']
         )

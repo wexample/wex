@@ -5,8 +5,8 @@ from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JS
 
 
 class KeyValueResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, dictionary: dict | None = None):
-        super().__init__(kernel, dictionary)
+    def __init__(self, kernel, dictionary: dict | None = None, title: str | None = None):
+        super().__init__(kernel, title)
 
         self.dictionary_data = {}
 

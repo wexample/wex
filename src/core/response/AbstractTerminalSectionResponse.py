@@ -7,7 +7,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):
-    def __init__(self, kernel, title: None = None):
+    def __init__(self, kernel, title: str | None = None):
         super().__init__(kernel)
         self.title = title
 

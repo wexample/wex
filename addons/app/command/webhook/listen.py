@@ -11,7 +11,8 @@ from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
 from src.const.error import ERR_UNEXPECTED
-from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_URL_PLACEHOLDER
+from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_PATH_PLACEHOLDER, \
+    WEBHOOK_COMMAND_PORT_PLACEHOLDER
 from src.decorator.as_sudo import as_sudo
 from http.server import HTTPServer
 from src.core.Kernel import Kernel
@@ -59,6 +60,8 @@ def app__webhook__listen(
         if force:
             kernel.io.log(f'Port already in use {port}, killing process...')
             kill_process_by_port(port)
+            import time
+            time.sleep(1)
         else:
             kernel.io.error(ERR_UNEXPECTED, {
                 'error': f'Port already in use {port}',
@@ -131,8 +134,11 @@ def app__webhook__listen(
                     'render-mode': KERNEL_RENDER_MODE_JSON,
                 }
 
-                if hasattr(function.callback, 'option_webhook_url'):
-                    options['url'] = WEBHOOK_COMMAND_URL_PLACEHOLDER
+                if hasattr(function.callback, 'option_webhook_listener_path'):
+                    options['path'] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
+
+                if hasattr(function.callback, 'option_webhook_listener_port'):
+                    options['port'] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
 
                 command = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON).build_full_command_parts_from_function(
@@ -147,10 +153,16 @@ def app__webhook__listen(
                     '--fast-mode'
                 ]
 
-                if hasattr(kernel.root_request.function.callback, 'option_webhook_url'):
+                if hasattr(kernel.root_request.function.callback, 'option_webhook_listener_path'):
                     command += [
-                        '--url',
-                        WEBHOOK_COMMAND_URL_PLACEHOLDER,
+                        '--path',
+                        WEBHOOK_COMMAND_PATH_PLACEHOLDER,
+                    ]
+
+                if hasattr(kernel.root_request.function.callback, 'option_webhook_listener_port'):
+                    command += [
+                        '--port',
+                        WEBHOOK_COMMAND_PORT_PLACEHOLDER,
                     ]
 
                 routes_map[route_name]['command'] = command

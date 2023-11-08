@@ -13,7 +13,7 @@ class IOManager:
     messages = None
 
     def __init__(self, kernel):
-        self.log_indent: int = 1
+        self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: list = []
         self.indent_string = '  '
