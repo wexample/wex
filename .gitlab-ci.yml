@@ -10,6 +10,8 @@ permissions:
     - tags
   script:
     - chown -R root:root .
+  variables:
+    GIT_CHECKOUT: "false"
 
 test:
   stage: test
