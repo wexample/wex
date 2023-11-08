@@ -27,3 +27,6 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
             self.output_bag.append(content)
 
         return self
+
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+        return "\n".join(self.output_bag[0])

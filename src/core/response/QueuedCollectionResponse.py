@@ -82,9 +82,9 @@ class QueuedCollectionResponse(AbstractResponse):
         } if step_index > 0 else {}
 
         # Transform item in a response object.
-        wrap = self.request.resolver.wrap_response(self.collection[step_index])
+        wrap = request.resolver.wrap_response(self.collection[step_index])
         response = wrap.render(
-            request=self.request,
+            request=request,
             args=render_args,
             render_mode=render_mode
         )
@@ -105,16 +105,6 @@ class QueuedCollectionResponse(AbstractResponse):
 
         self.output_bag.append(response)
 
-        # Response can have two different states according the way they have been returned :
-        # - When a function return a response class, it has not been rendered
-        # - When a function runs a sub command request, it has already been rendered
-        if isinstance(response, AbstractResponse) and not response.rendered:
-            response.render(
-                request,
-                render_mode,
-                render_args
-            )
-
         # Response asks to stop all process
         if isinstance(response, QueuedCollectionStopResponse):
             # Mark having next step to block enqueuing
@@ -127,9 +117,8 @@ class QueuedCollectionResponse(AbstractResponse):
                 self.has_next_step = response.has_next_step
                 return self.queue_manager.render_content_complete()
 
-        # If this is not a QueuedCollectionResponse,
-        # No new QueuedCollectionResponse should have been created
-        # during the rendering process.
+        # If this is a function, no new QueuedCollectionResponse
+        # should have been created during the rendering process.
         if isinstance(response, FunctionResponse):
             if self.kernel.tmp['last_created_queued_collection'] != self:
                 self.kernel.io.error(ERR_UNEXPECTED, {

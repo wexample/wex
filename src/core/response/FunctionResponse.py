@@ -19,7 +19,16 @@ class FunctionResponse(AbstractResponse):
 
         response = request.resolver.wrap_response(response)
 
-        if response is not None:
-            self.output_bag.append(response)
+        # Propagate rendering
+        response.render(
+            request=request,
+            render_mode=render_mode,
+            args=args,
+        )
+
+        self.output_bag.append(response)
 
         return self
+
+    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+        return self.output_bag[0].print()
