@@ -1,6 +1,6 @@
 stages:
   - permissions
-  - test
+#  - test
 #  - build
 #  - deploy
 #  - test_apt_install
@@ -10,20 +10,20 @@ permissions:
 #  only:
 #    - tags
   script:
-    - chown -R root:root .
+#    - chown -R root:root .
     - ls -la
-#  variables:
-#    GIT_STRATEGY: none
-#    GIT_CHECKOUT: "false"
+  variables:
+    GIT_STRATEGY: none
+    GIT_CHECKOUT: "false"
 
-test:
-  stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-  needs:
-    - permissions
-  services:
-    # Match the version number with image internal docker service.
-    - name: docker:24.0.6-dind
+#test:
+#  stage: test
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+#  needs:
+#    - permissions
+#  services:
+#    # Match the version number with image internal docker service.
+#    - name: docker:24.0.6-dind
 #  before_script:
 #    # Start Docker daemon manually and display logs
 #    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
@@ -40,9 +40,9 @@ test:
 #    DOCKER_DRIVER: vfs
 #  only:
 #    - tags
-  script:
-    # Stops script on failure
-    - set -e
+#  script:
+#    # Stops script on failure
+#    - set -e
 #    # We install manually as apt package does not exist at this point
 #    - apt update
 #    # Install minimum packages to launch install script
