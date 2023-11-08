@@ -152,7 +152,7 @@ class QueuedCollectionResponse(AbstractResponse):
             interactive_data
         )
 
-        if isinstance(output, list):
-            return "\n".join(output)
+        if isinstance(output, list) and len(output):
+            return "\n".join(map(str, output))
 
         return output
