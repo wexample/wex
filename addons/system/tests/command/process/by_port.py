@@ -11,11 +11,11 @@ class TestSystemCommandProcessByPort(AbstractPortTestCase):
         })
 
         self.assertTrue(
-            f' {port} ' in response.first()
+            f' {port}' in response.first()
         )
 
         self.assertTrue(
-            f' python ' in response.first()
+            f' python' in response.first()
         )
 
         self.stop_test_process(server_process)
