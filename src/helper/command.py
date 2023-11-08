@@ -50,6 +50,26 @@ def command_exists(command) -> bool:
     return out_content.decode() != ''
 
 
+def execute_command_tree(kernel, command_tree, working_directory=None, async_mode=False, **kwargs):
+    if isinstance(command_tree, list) and any(isinstance(i, list) for i in command_tree):
+        # If the command_tree is a list and contains sub lists (nested commands)
+        # We execute the innermost command first
+        for i, sub_command in enumerate(command_tree):
+            if isinstance(sub_command, list):
+                # Recursive call to execute the nested command
+                success, output = execute_command_tree(kernel, sub_command, working_directory, async_mode, **kwargs)
+
+                if not success:
+                    return success, output
+
+                # Replace the nested command with the output of its execution
+                command_tree[i:i + 1] = output
+
+                # Now command_tree is a flat list with the results of the inner command included
+    # Execute the modified (flattened) command_tree with the results of inner commands
+    return execute_command(kernel, command_tree, working_directory, async_mode, **kwargs)
+
+
 def execute_command(kernel, command: list | str, working_directory=None, async_mode=False, **kwargs):
     import subprocess
     import os
