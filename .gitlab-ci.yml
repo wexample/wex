@@ -1,8 +1,15 @@
 stages:
+  - permissions
   - test
   - build
   - deploy
   - test_apt_install
+
+permissions:
+  only:
+    - tags
+  script:
+    - chown -R root:root .
 
 test:
   stage: test
@@ -11,8 +18,6 @@ test:
     # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
   before_script:
-    # TODO Test
-    - chown -R root:root .
     # Start Docker daemon manually and display logs
     - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
     - sleep 30  # Give it some time to start
