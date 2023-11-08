@@ -12,9 +12,9 @@ permissions:
   script:
 #    - chown -R root:root .
     - ls -la
-  variables:
-    GIT_STRATEGY: none
-    GIT_CHECKOUT: "false"
+#  variables:
+#    GIT_STRATEGY: none
+#    GIT_CHECKOUT: "false"
 
 #test:
 #  stage: test
