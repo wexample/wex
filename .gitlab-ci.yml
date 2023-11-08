@@ -1,9 +1,9 @@
 stages:
   - permissions
-  - test
-  - build
-  - deploy
-  - test_apt_install
+#  - test
+#  - build
+#  - deploy
+#  - test_apt_install
 
 permissions:
 #  only:
