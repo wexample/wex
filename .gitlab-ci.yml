@@ -6,6 +6,7 @@ stages:
 #  - test_apt_install
 
 permissions:
+  stage: permissions
 #  only:
 #    - tags
   script:
