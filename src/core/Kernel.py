@@ -27,13 +27,13 @@ from src.core.command.resolver.UserCommandResolver import UserCommandResolver
 from src.core.response.AbortResponse import AbortResponse
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
-
 COMMAND_RESOLVERS_CLASSES = [
     AddonCommandResolver,
     ServiceCommandResolver,
     AppCommandResolver,
     UserCommandResolver,
 ]
+
 
 class Kernel:
     # Allow child classes override
@@ -80,7 +80,6 @@ class Kernel:
 
         # Initialize addons config
         self.addons = {}
-        # TODO
         from addons.app.AppAddonManager import AppAddonManager
         definitions = {
             'app': AppAddonManager
@@ -390,8 +389,12 @@ class Kernel:
             addon_manager = self.addons[addon]
             # Dynamically call the hook method if it exists
             hook_method = getattr(addon_manager, hook, None)
+
             if hook_method:
-                hook_method(**args)
+                response = hook_method(**args)
+
+                if response:
+                    return response
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
         return self.resolvers[type] or None

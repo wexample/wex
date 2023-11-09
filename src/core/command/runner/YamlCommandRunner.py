@@ -82,6 +82,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 script_part_type = script.get('type', COMMAND_TYPE_BASH)
                 command = None
+
                 if script_part_type == COMMAND_TYPE_BASH:
                     command = script.get('script', '')
                 elif script_part_type == COMMAND_TYPE_BASH_FILE:
@@ -107,14 +108,26 @@ class YamlCommandRunner(AbstractCommandRunner):
                         ]
 
                 if command:
-                    if 'container_name' in script:
-                        pass
-                    else:
-                        commands_collection.append(
-                            InteractiveShellCommandResponse(self.kernel, command)
-                        )
+                    # Allow addons to configure custom command.
+                    hook_command = self.kernel.hook_addons(
+                        'execute_yaml_script',
+                        {
+                            'request': self.request,
+                            'script': script,
+                            'command': command,
+                        }
+                    )
 
-            return QueuedCollectionResponse(self.kernel, commands_collection)
+                    commands_collection.append(
+                        InteractiveShellCommandResponse(
+                            self.kernel,
+                            hook_command or command
+                        )
+                    )
+
+            return QueuedCollectionResponse(
+                self.kernel,
+                commands_collection)
 
         click_function = command(help=self.content['help'])(_click_function_handler)
 
