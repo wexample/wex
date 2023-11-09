@@ -1,6 +1,9 @@
 from click import Command
+
+from src.helper.yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
+from src.const.error import ERR_UNEXPECTED
 
 
 class YamlCommandRunner(AbstractCommandRunner):
@@ -8,7 +11,14 @@ class YamlCommandRunner(AbstractCommandRunner):
         super().__init__(kernel)
 
     def set_request(self, request: CommandRequest):
-        pass
+        super().set_request(request=request)
+
+        self.content = yaml_load(self.request.path)
+
+        if not self.content:
+            self.kernel.io.error(ERR_UNEXPECTED, {
+                'error': f'Unable to load yaml script file content :  {self.request.path}',
+            })
 
     def convert_args_dict_to_list(self, args: dict) -> list:
         pass
@@ -20,7 +30,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         pass
 
     def get_command_type(self):
-        pass
+        return self.content['type']
 
     def get_attr(self, name: str, default=None) -> bool:
         pass

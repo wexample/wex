@@ -1,3 +1,4 @@
+type: addon
 webhook: true
 scripts:
   - title: Test outside but with running app

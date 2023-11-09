@@ -1,5 +1,12 @@
+type: {command_type}
 webhook: false
 help: Description
+options:
+  - name: --option-name
+    short: -arg
+    help: This is an option
+    required: true
+    type: bool
 scripts:
   - echo "Inline bash script example"
 

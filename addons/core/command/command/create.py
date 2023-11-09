@@ -67,6 +67,7 @@ def core__command__create(
             command_path,
             {
                 'function_name': function_name,
+                'command_type': command_type.upper(),
                 'command_type_constant': f'COMMAND_TYPE_{command_type.upper()}',
             }
         )

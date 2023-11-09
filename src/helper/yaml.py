@@ -1,3 +1,6 @@
+import yaml
+
+
 def is_basic_yaml_data(value):
     """
     Check if the value is compatible with basic YAML types
@@ -16,3 +19,16 @@ def is_basic_yaml_data(value):
 
     else:
         return False
+
+
+def yaml_load(file_path: str) -> dict | None:
+    try:
+        with open(file_path, 'r') as f:
+            content = yaml.safe_load(f)
+
+            if isinstance(content, dict):
+                return content
+            else:
+                return None
+    except Exception:
+        return None

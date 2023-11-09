@@ -1,4 +1,12 @@
+type: addon
 webhook: false
 help: Description
+options:
+  - name: --test-option
+    short: -to
+    help: This is a demo option
+    required: true
+    type: bool
 scripts:
   - echo "Inline bash script example"
+  - echo "Demo option value $TEST_OPTION"

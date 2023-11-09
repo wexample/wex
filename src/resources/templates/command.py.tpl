@@ -5,6 +5,6 @@ from src.const.globals import {command_type_constant}
 
 
 @command(help="Description", command_type={command_type_constant})
-@option('--arg', '-a', type=str, required=True, help="Argument")
-def {function_name}(kernel: Kernel, arg):
+@option('--option', '-o', type=str, required=True, help="Option")
+def {function_name}(kernel: Kernel, option):
     pass
