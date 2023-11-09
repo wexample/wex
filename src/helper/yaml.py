@@ -1,5 +1,5 @@
 import yaml
-
+from yaml import SafeLoader
 
 def is_basic_yaml_data(value):
     """
@@ -32,3 +32,13 @@ def yaml_load(file_path: str) -> dict | None:
                 return None
     except Exception:
         return None
+
+
+def yaml_load_or_default(file, default=None):
+    if default is None:
+        default = {}
+    try:
+        with open(file) as f:
+            return yaml.load(f, SafeLoader)
+    except FileNotFoundError:
+        return default

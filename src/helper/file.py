@@ -1,10 +1,7 @@
-from yaml import SafeLoader
-
 import os
 import shutil
 import pwd
 import grp
-import yaml
 
 
 def list_subdirectories(path: str) -> []:
@@ -176,16 +173,6 @@ def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
         return
 
     data[keys[-1]] = value
-
-
-def yaml_load_or_default(file, default=None):
-    if default is None:
-        default = {}
-    try:
-        with open(file) as f:
-            return yaml.load(f, SafeLoader)
-    except FileNotFoundError:
-        return default
 
 
 def remove_file_if_exists(file: str):
