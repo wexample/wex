@@ -1,4 +1,3 @@
-
 import os
 import re
 
@@ -41,8 +40,13 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
     return test_method
 
 
-def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> str:
+def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> None | str:
     request = kernel.create_command_request(command)
+
+    # Command not found
+    if not request.runner:
+        return None
+
     test_path = request.resolver.build_path_or_fail(
         request=request,
         extension=COMMAND_EXTENSION_PYTHON,

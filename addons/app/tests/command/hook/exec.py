@@ -15,11 +15,11 @@ class TestAppCommandHookExec(AbstractAppTestCase):
         ).first()
 
         self.assertEqual(
-            results['php'],
+            results['php'].print(),
             None
         )
 
         self.assertEqual(
-            results[COMMAND_CHAR_APP],
+            results[COMMAND_CHAR_APP].print(),
             None
         )

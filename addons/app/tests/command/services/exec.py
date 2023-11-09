@@ -1,6 +1,5 @@
 from addons.app.command.services.exec import app__services__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
 
 class TestAppCommandServicesExec(AbstractAppTestCase):
@@ -17,6 +16,6 @@ class TestAppCommandServicesExec(AbstractAppTestCase):
 
         # The command does not exist
         self.assertEqual(
-            response.first()['php'],
+            response.first()['php'].print(),
             None
         )
