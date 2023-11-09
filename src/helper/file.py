@@ -179,30 +179,6 @@ def get_yml_file_item(file_path: str, key: str, default=None):
     return default
 
 
-def set_yml_file_item(file_path: str, key: str, value):
-    if not os.path.exists(file_path):
-        return
-
-    with open(file_path, 'r') as f:
-        data = yaml.load(f, SafeLoader)
-
-    keys = key.split('.')
-    _set_yml_file_item(data, keys, value)
-
-    with open(file_path, 'w') as f:
-        yaml.dump(data, f)
-
-
-def _set_yml_file_item(dic, keys, value):
-    key = keys.pop(0)
-    if keys:
-        if key not in dic:
-            dic[key] = {}
-        _set_yml_file_item(dic[key], keys, value)
-    else:
-        dic[key] = value
-
-
 def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     keys = key.split('.')
     for k in keys[:-1]:
