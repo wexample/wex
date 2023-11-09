@@ -47,5 +47,20 @@ class CommandRequest:
             return self.parent.get_root_parent()
         return self
 
-    def is_click_command(self, click_command) -> bool:
-        return self.function.callback.__wrapped__.__code__ == click_command.callback.__wrapped__.__code__
+    def get_function_truc(self, path: str, parts) -> str:
+        return self.resolver.get_function(
+            path,
+            parts
+        )
+
+    def load_extension(self, extension: str) -> bool:
+        path = self.resolver.build_path(self, extension)
+
+        if path and os.path.isfile(path):
+            self.extension = extension
+
+            if extension == COMMAND_EXTENSION_PYTHON:
+                self.path = path
+                self.function = self.get_function_truc(path, list(self.match.groups()))
+
+            return True

@@ -128,12 +128,6 @@ class AbstractCommandResolver:
 
         return DefaultResponse(self.kernel, response)
 
-    def get_function_from_request(self, request: CommandRequest) -> str:
-        return self.get_function(
-            request.path,
-            list(request.match.groups())
-        )
-
     def get_function(self, command_path: str, parts: list) -> callable:
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(command_path, command_path)
@@ -388,12 +382,11 @@ class AbstractCommandResolver:
 
         if request.match:
             for extension in COMMAND_EXTENSIONS:
-                request.path = self.build_path(request, extension)
+                found = request.load_extension(
+                    extension
+                )
 
-                if request.path and os.path.isfile(request.path):
-                    request.extension = extension
-                    request.function = self.get_function_from_request(request)
-
+                if found:
                     return True
         return False
 

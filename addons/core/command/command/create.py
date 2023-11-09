@@ -15,7 +15,7 @@ from src.decorator.as_sudo import as_sudo
         help="Full name of the command, i.e. addon::some/thing")
 @option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
         help='Force to create file if exists')
-@option('--extension', '-e', type=str, required=False,
+@option('--extension', '-e', type=str, required=False, default=COMMAND_EXTENSION_PYTHON,
         help='Script file extension and resulting format')
 def core__command__create(
         kernel: Kernel,
