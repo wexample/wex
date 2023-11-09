@@ -7,20 +7,19 @@ from abc import abstractmethod
 from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
 from src.helper.command import command_to_string
-from src.const.args import ARGS_HELP
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
-from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import convert_dict_to_args
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT, ERR_COMMAND_TYPE_MISMATCH
+from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_TYPE_MISMATCH
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
 from src.helper.registry import get_all_commands_from_registry_part
 from src.core.CommandRequest import CommandRequest
+from src.core.response.AbortResponse import AbortResponse
 
 
 class AbstractCommandResolver:
@@ -28,8 +27,6 @@ class AbstractCommandResolver:
         self.kernel = kernel
 
     def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse | None:
-        import click
-
         # Save unique root request
         self.kernel.root_request = self.kernel.root_request if self.kernel.root_request else request
 
@@ -67,32 +64,9 @@ class AbstractCommandResolver:
 
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
-        try:
-            ctx = request.function.make_context('', request.args.copy() or [])
-        # Click explicitly asked to exit, for example when using --help.
-        except click.exceptions.Exit:
-            return AbortResponse(self.kernel, reason='INFO_COMMAND')
-        except Exception as e:
-            # Show error message
-            self.kernel.io.error(
-                ERR_COMMAND_CONTEXT,
-                {
-                    'function': request.function.callback.__name__,
-                    'error': str(e)
-                }
-            )
-
-        # Remove click params which have been defined only
-        # to be shown in help section, but are used outside function
-        for arg in ARGS_HELP:
-            if arg in ctx.params:
-                del ctx.params[arg]
-
-        # Defines kernel as mais class to provide with pass_obj option.
-        ctx.obj = self.kernel
-
         previous_verbosity = self.kernel.verbosity
         verbosity = request.runner.get_attr('verbosity')
+
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity
 
@@ -100,16 +74,18 @@ class AbstractCommandResolver:
         self.kernel.current_request = request
 
         self.kernel.logger.append_request(
-            request
+            request=request
         )
 
         # Execute request
         response = self.wrap_response(
-            request.function.invoke(ctx)
+            response=request.runner.run()
         )
 
         # Render response
-        response = response.render(request, render_mode)
+        response = response.render(
+            request=request,
+            render_mode=render_mode)
 
         self.kernel.verbosity = previous_verbosity
         self.kernel.current_request = previous_request
