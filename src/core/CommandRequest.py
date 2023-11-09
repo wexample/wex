@@ -47,12 +47,6 @@ class CommandRequest:
             return self.parent.get_root_parent()
         return self
 
-    def get_function_truc(self, path: str, parts) -> str:
-        return self.resolver.get_function(
-            path,
-            parts
-        )
-
     def load_extension(self, extension: str) -> bool:
         path = self.resolver.build_path(self, extension)
 
@@ -61,7 +55,8 @@ class CommandRequest:
             self.extension = extension
 
             if extension == COMMAND_EXTENSION_PYTHON:
-                self.function = self.get_function_truc(path, list(self.match.groups()))
+                from src.core.command.runner.PythonCommandRunner import PythonCommandRunner
+                self.runner = PythonCommandRunner(self)
             elif extension == COMMAND_EXTENSION_YAML:
                 # TODO
                 pass
