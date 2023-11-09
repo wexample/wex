@@ -86,3 +86,16 @@ def count_lines_needed(message: str) -> int:
     lines_needed = -(-visible_length // terminal_width)
 
     return lines_needed
+
+
+def replace_variables(text: str, variables: dict) -> str:
+    # Pattern to match $VAR and ${VAR}
+    pattern = re.compile(r'\$\{?([A-Z_]+)\}?')
+
+    # Replacement function
+    def repl(match):
+        key = match.group(1).lower()  # Get the key and convert to lower case
+        return variables.get(key, match.group(0))  # Replace if key exists, else keep original
+
+    # Substitute using the replacement function
+    return pattern.sub(repl, text)

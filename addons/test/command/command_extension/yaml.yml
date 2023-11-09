@@ -17,6 +17,12 @@ scripts:
       # This is a multi-line script
       echo "Demo command : line one"
       echo "Demo command : line two"
+      echo "Core path : ${PATH_CORE}"
+      echo "Current path : ${PATH_CURRENT}"
+
+  - title: Running bash file
+    type: bash-file
+    file: ${PATH_CORE}tests/resources/simple-shell-file.sh
 
   - title: Inline python
     type: python
@@ -25,3 +31,7 @@ scripts:
       print('Python script with simple quotes')
       # Double quotes
       print("Python script with double quotes")
+
+  - title: Running python file
+    type: python-file
+    file: ${PATH_CORE}tests/resources/simple-python-file.py
