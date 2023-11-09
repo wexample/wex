@@ -6,7 +6,8 @@ import yaml
 
 from src.helper.args import arg_shift, arg_push
 from src.helper.string import to_snake_case, to_kebab_case
-from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, COMMAND_TYPE_APP
+from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
+    COMMAND_TYPE_APP
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -303,7 +304,9 @@ class AppAddonManager(AddonManager):
 
     def ignore_app_dir(self, request) -> bool:
         # Only specified commands will expect app location.
-        if getattr(request.function.callback, 'app_command', False):
+        if request.runner.get_attr(
+                name='app_command',
+                default=False):
             return False
         return True
 
@@ -323,7 +326,9 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if not getattr(request.function.callback, 'app_dir_required'):
+                if not request.runner.get_attr(
+                        name='app_dir_required',
+                        default=False):
                     self.app_dirs_stack.append(None)
                     self.unset_app_workdir()
                     return
@@ -364,7 +369,9 @@ class AppAddonManager(AddonManager):
             'app-dir',
             app_dir_resolved)
 
-        if getattr(request.function.callback, 'app_should_run', False):
+        if request.runner.get_attr(
+                name='app_should_run',
+                default=False):
             from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
 
             if not self.kernel.run_function(app__app__started, {

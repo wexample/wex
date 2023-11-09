@@ -116,8 +116,8 @@ class Logger:
         # When writing current log, check if disabled.
         if not task_id and (
                 self.kernel.root_request
-                and self.kernel.root_request.function
-                and hasattr(self.kernel.root_request.function.callback, 'no_log')):
+                and self.kernel.root_request.runner
+                and self.kernel.root_request.runner.has_attr(name='no_log')):
             return
 
         log_path = self.kernel.task_file_write(
