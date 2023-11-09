@@ -42,9 +42,8 @@ class CommandRequest:
                 from src.core.command.runner.PythonCommandRunner import PythonCommandRunner
                 runner = PythonCommandRunner(self.resolver.kernel)
             elif extension == COMMAND_EXTENSION_YAML:
-                # TODO
-                print('TODO')
-                exit()
+                from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
+                runner = YamlCommandRunner(self.resolver.kernel)
 
             self.path = path
             self.extension = extension
