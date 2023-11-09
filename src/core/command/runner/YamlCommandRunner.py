@@ -40,11 +40,25 @@ class YamlCommandRunner(AbstractCommandRunner):
     def has_attr(self, name: str) -> bool:
         pass
 
-    def run(self):
-        def test_func():
-            pass
+    @staticmethod
+    def click_function_handler(*args, **kwargs):
+        pass
 
-        click_function = command(help=self.content['help'])(test_func)
+    def run(self):
+
+        click_function = command(help=self.content['help'])(self.click_function_handler)
+
+        if 'options' in self.content:
+            options = self.content['options']
+
+            for option in options:
+                click_function = click.option(
+                    option['name'],
+                    option['short'],
+                    is_flag='is_flag' in option and option['is_flag'],
+                    required=option['required'],
+                    help=option['help']
+                )(click_function)
 
         return self.run_click_function(
             click_function
