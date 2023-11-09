@@ -10,3 +10,10 @@ options:
 scripts:
   - echo "Inline bash script example"
   - echo "Demo option value $TEST_OPTION"
+
+  - title: Bash command expanded
+    type: bash
+    script: |
+      # This is a multi-line script
+      echo "Demo command : line one"
+      echo "Demo command : line two"
