@@ -1,6 +1,6 @@
 import os
 
-from src.const.globals import COMMAND_EXTENSION_PYTHON
+from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import convert_dict_to_args
 
 
@@ -57,10 +57,13 @@ class CommandRequest:
         path = self.resolver.build_path(self, extension)
 
         if path and os.path.isfile(path):
+            self.path = path
             self.extension = extension
 
             if extension == COMMAND_EXTENSION_PYTHON:
-                self.path = path
                 self.function = self.get_function_truc(path, list(self.match.groups()))
+            elif extension == COMMAND_EXTENSION_YAML:
+                # TODO
+                pass
 
             return True
