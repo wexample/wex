@@ -1,0 +1,4 @@
+webhook: false
+help: Description
+scripts:
+  - echo "Inline bash script example"

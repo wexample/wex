@@ -15,11 +15,13 @@ from src.decorator.as_sudo import as_sudo
         help="Full name of the command, i.e. addon::some/thing")
 @option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
         help='Force to create file if exists')
+@option('--extension', '-e', type=str, required=False,
+        help='Script file extension and resulting format')
 def core__command__create(
         kernel: Kernel,
         command: str,
         force: bool = False,
-        format: str = COMMAND_EXTENSION_PYTHON) -> {}:
+        extension: str = COMMAND_EXTENSION_PYTHON) -> {}:
     kernel.io.log('Creating command file...')
     request = kernel.create_command_request(command)
 
@@ -29,7 +31,7 @@ def core__command__create(
 
     command_path: str = request.resolver.build_path_or_fail(
         request=request,
-        extension=format)
+        extension=extension)
 
     # File exists
     if not os.path.exists(command_path) or force:
@@ -61,7 +63,7 @@ def core__command__create(
         )
 
         create_from_template(
-            kernel.get_path('templates') + 'command.py.tpl',
+            f'{kernel.get_path("templates")}command.{extension}.tpl',
             command_path,
             {
                 'function_name': function_name,
