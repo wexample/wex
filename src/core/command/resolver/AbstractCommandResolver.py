@@ -44,15 +44,10 @@ class AbstractCommandResolver:
 
             return NullResponse(self.kernel)
 
-        response = request.runner.run()
-
-        if response:
-            return response
-
         # Ensure command has proper type defined,
         # i.e. check if command file location matches with defined command type
         # and prevent it to be resolved with the wrong resolver.
-        if request.function.callback.command_type != self.get_type():
+        if request.runner.get_command_type() != self.get_type():
             self.kernel.io.error(ERR_COMMAND_TYPE_MISMATCH, {
                 'command': request.command,
                 'command_type': request.function.callback.command_type,

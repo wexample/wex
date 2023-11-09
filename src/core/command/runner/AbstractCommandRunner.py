@@ -7,5 +7,5 @@ class AbstractCommandRunner:
         self.request: CommandRequest = request
 
     @abstractmethod
-    def run(self):
+    def get_command_type(self):
         pass
