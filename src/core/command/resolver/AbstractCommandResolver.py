@@ -33,7 +33,7 @@ class AbstractCommandResolver:
         # Save unique root request
         self.kernel.root_request = self.kernel.root_request if self.kernel.root_request else request
 
-        if not request.function:
+        if not request.runner:
             if not request.quiet:
                 self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
@@ -42,7 +42,12 @@ class AbstractCommandResolver:
 
                 return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
 
-            return None
+            return NullResponse(self.kernel)
+
+        response = request.runner.run()
+
+        if response:
+            return response
 
         # Ensure command has proper type defined,
         # i.e. check if command file location matches with defined command type

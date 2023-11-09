@@ -14,3 +14,9 @@ class PythonCommandRunner(AbstractCommandRunner):
             path,
             parts
         )
+
+    def run(self):
+        request = self.request
+        kernel = self.request.resolver.kernel
+
+
