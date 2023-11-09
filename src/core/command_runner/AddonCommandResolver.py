@@ -5,7 +5,7 @@ from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
-from src.core.command.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command_runner.AbstractCommandResolver import AbstractCommandResolver
 
 
 class AddonCommandResolver(AbstractCommandResolver):

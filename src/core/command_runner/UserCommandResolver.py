@@ -8,7 +8,7 @@ from src.helper.string import to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user_home_data_path
 from src.const.globals import COMMAND_PATTERN_USER, COMMAND_TYPE_USER, \
     COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
-from src.core.command.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command_runner.AbstractCommandResolver import AbstractCommandResolver
 
 
 class UserCommandResolver(AbstractCommandResolver):
