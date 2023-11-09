@@ -3,9 +3,10 @@ import platform
 import datetime
 import getpass
 import yaml
+from dotenv import dotenv_values
 
 from src.helper.args import arg_shift, arg_push
-from src.helper.string import to_snake_case, to_kebab_case
+from src.helper.string import to_snake_case, to_kebab_case, replace_variables
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
     COMMAND_TYPE_APP
 from src.core.AddonManager import AddonManager
@@ -558,3 +559,66 @@ class AppAddonManager(AddonManager):
             function,
             args
         )
+
+    def hook_execute_yaml_script(self, request, script, command):
+        from addons.app.command.app.started import app__app__started
+
+        if not self.app_dir:
+            return
+
+        env_args = dotenv_values(
+            os.path.join(
+                self.app_dir,
+                APP_FILEPATH_REL_DOCKER_ENV
+            )
+        )
+
+        if 'script' in script:
+            script['script'] = replace_variables(
+                script['script'], env_args)
+
+        if 'file' in script:
+            script['file'] = replace_variables(
+                script['file'], env_args)
+
+        if 'container_name' in script:
+            script['app_should_run'] = True
+
+        if 'app_should_run' in script:
+            if not self.kernel.run_function(
+                    app__app__started,
+                    {
+                        'app-dir': self.app_dir,
+                    }
+            ).first():
+                self.kernel.io.error(ERR_APP_SHOULD_RUN, {
+                    'command': script['title'],
+                    'dir': self.app_dir,
+                })
+
+                return
+
+        if 'container_name' in script:
+            return _app__script__exec__create_callback(
+                self.kernel,
+                self.app_dir,
+                command
+            )
+
+
+def _app__script__exec__create_callback(
+        kernel,
+        app_dir,
+        command):
+    def _callback(previous=None):
+        from addons.app.command.app.exec import app__app__exec
+
+        return kernel.run_function(
+            app__app__exec,
+            {
+                'app-dir': app_dir,
+                'command': command
+            }
+        )
+
+    return _callback

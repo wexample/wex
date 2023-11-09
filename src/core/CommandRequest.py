@@ -52,6 +52,8 @@ class CommandRequest:
 
             runner.set_request(self)
 
+            self.function = self.runner.build_request_function()
+
             # Runner can now convert args.
             if isinstance(self.args, dict):
                 self.args = self.runner.convert_args_dict_to_list(

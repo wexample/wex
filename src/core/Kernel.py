@@ -27,13 +27,13 @@ from src.core.command.resolver.UserCommandResolver import UserCommandResolver
 from src.core.response.AbortResponse import AbortResponse
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
-
 COMMAND_RESOLVERS_CLASSES = [
     AddonCommandResolver,
     ServiceCommandResolver,
     AppCommandResolver,
     UserCommandResolver,
 ]
+
 
 class Kernel:
     # Allow child classes override
@@ -80,7 +80,6 @@ class Kernel:
 
         # Initialize addons config
         self.addons = {}
-        # TODO
         from addons.app.AppAddonManager import AppAddonManager
         definitions = {
             'app': AppAddonManager
@@ -289,9 +288,6 @@ class Kernel:
 
             return NullResponse(self)
 
-        # After this point we have decorators then command decorator manager
-        request.function = request.runner.build_request_function()
-
         # Ensure command has proper type defined,
         # i.e. check if command file location matches with defined command type
         # and prevent it to be resolved with the wrong resolver.
@@ -390,8 +386,12 @@ class Kernel:
             addon_manager = self.addons[addon]
             # Dynamically call the hook method if it exists
             hook_method = getattr(addon_manager, hook, None)
+
             if hook_method:
-                hook_method(**args)
+                response = hook_method(**args)
+
+                if response:
+                    return response
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
         return self.resolvers[type] or None
