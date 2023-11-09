@@ -2,6 +2,7 @@
 import os
 import re
 
+from src.const.globals import COMMAND_EXTENSION_PYTHON
 from src.core import Kernel
 from src.helper.string import to_snake_case, to_pascal_case
 from src.helper.file import create_from_template
@@ -44,7 +45,7 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
     request = kernel.create_command_request(command)
     test_path = request.resolver.build_path_or_fail(
         request=request,
-        extension=request.extension,
+        extension=COMMAND_EXTENSION_PYTHON,
         subdir='tests')
 
     # File exists
@@ -64,7 +65,7 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
     kernel.io.log(f'Function : {method_name}')
 
     create_from_template(
-        kernel.get_path('templates') + 'test.py.tpl',
+        f'{kernel.get_path("templates")}test.{request.extension}.tpl',
         test_path,
         {
             'addon_name': request.match[1],
