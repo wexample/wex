@@ -1,7 +1,8 @@
 import yaml
 from yaml import SafeLoader
 
-def is_basic_yaml_data(value):
+
+def yaml_is_basic_data(value):
     """
     Check if the value is compatible with basic YAML types
     """
@@ -12,10 +13,10 @@ def is_basic_yaml_data(value):
         return True
 
     elif isinstance(value, list):
-        return all(is_basic_yaml_data(item) for item in value)
+        return all(yaml_is_basic_data(item) for item in value)
 
     elif isinstance(value, dict):
-        return all(isinstance(key, str) and is_basic_yaml_data(val) for key, val in value.items())
+        return all(isinstance(key, str) and yaml_is_basic_data(val) for key, val in value.items())
 
     else:
         return False

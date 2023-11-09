@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.helper.yaml import is_basic_yaml_data
+from src.helper.yaml import yaml_is_basic_data
 from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.const.error import ERR_UNEXPECTED
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
@@ -126,7 +126,7 @@ class QueuedCollectionResponse(AbstractResponse):
                              f', got : {response.print()}, in command {request.command} at step {step_index}',
                 })
 
-        if not isinstance(response, AbstractResponse) and not is_basic_yaml_data(response):
+        if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(response):
             self.kernel.io.error(ERR_UNEXPECTED, {
                 'error': f'Returned data and nested values should be simple data : int, string, list or dict',
             })
