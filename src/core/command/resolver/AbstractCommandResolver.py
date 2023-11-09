@@ -47,17 +47,18 @@ class AbstractCommandResolver:
         # Ensure command has proper type defined,
         # i.e. check if command file location matches with defined command type
         # and prevent it to be resolved with the wrong resolver.
-        if request.runner.get_command_type() != self.get_type():
+        command_type = request.runner.get_command_type()
+        if command_type != self.get_type():
             self.kernel.io.error(ERR_COMMAND_TYPE_MISMATCH, {
                 'command': request.command,
-                'command_type': request.function.callback.command_type,
+                'command_type': command_type,
                 'resolver_type': self.get_type(),
             })
 
             return AbortResponse(self.kernel, reason=ERR_COMMAND_TYPE_MISMATCH)
 
         # Enforce sudo.
-        if hasattr(request.function.callback, 'as_sudo') and os.geteuid() != 0:
+        if request.runner.has_attr('as_sudo') and os.geteuid() != 0:
             self.kernel.logger.append_event('EVENT_SWITCH_SUDO')
             # Mask printed logs as it may not be relevant.
             self.kernel.io.log_hide()
@@ -91,8 +92,9 @@ class AbstractCommandResolver:
         ctx.obj = self.kernel
 
         previous_verbosity = self.kernel.verbosity
-        if hasattr(request.function.callback, 'verbosity') and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
-            self.kernel.verbosity = request.function.callback.verbosity
+        verbosity = request.runner.get_attr('verbosity')
+        if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
+            self.kernel.verbosity = verbosity
 
         previous_request = self.kernel.current_request
         self.kernel.current_request = request
@@ -303,13 +305,13 @@ class AbstractCommandResolver:
         )
 
         # Command is not recognised
-        if not request.function:
+        if not request.runner:
             return
 
         search_params = [val for val in search_params if val.startswith("-")]
 
         params = []
-        for param in request.function.params:
+        for param in request.runner.get_params():
             if any(opt in search_params for opt in param.opts):
                 continue
 

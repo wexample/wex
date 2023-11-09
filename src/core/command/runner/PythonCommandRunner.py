@@ -20,5 +20,14 @@ class PythonCommandRunner(AbstractCommandRunner):
             parts
         )
 
+    def get_params(self) -> list:
+        return self.request.function.params
+
     def get_command_type(self):
         return self.function.callback.command_type
+
+    def get_attr(self, name: str, default=None) -> bool:
+        return getattr(self.request.function.callback, name, default)
+
+    def has_attr(self, name: str) -> bool:
+        return hasattr(self.request.function.callback, name)
