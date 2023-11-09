@@ -1,3 +1,5 @@
+import sys
+
 import click
 from click import Command
 
@@ -49,22 +51,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def run(self):
         def _click_function_handler(*args, **kwargs):
-            # manager: AppAddonManager = kernel.addons['app']
-            # script_config = manager.load_script(name)
-            #
-            # if (not script_config
-            #         or (webhook and ('webhook' not in script_config or not script_config['webhook']))):
-            #     return None
-
             commands_collection = []
-            # counter = 0
-
-            # options = dotenv_values(
-            #     os.path.join(
-            #         manager.app_dir,
-            #         APP_FILEPATH_REL_DOCKER_ENV
-            #     )
-            # )
 
             # Iterate through each command in the configuration
             for script in self.content.get('scripts', []):
@@ -81,66 +68,19 @@ class YamlCommandRunner(AbstractCommandRunner):
                     script['script'] = script['script'].replace('$' + key.upper(), kwargs[key])
 
                 script_part_type = script.get('type', COMMAND_TYPE_BASH)
-                command = None
-            #     counter += 1
-            #
-            #     if 'container_name' in script:
-            #         script['app_should_run'] = True
-            #
-            #     if 'app_should_run' in script:
-            #         if not kernel.run_function(
-            #                 app__app__started,
-            #                 {
-            #                     'app-dir': app_dir,
-            #                 }
-            #         ).first():
-            #             kernel.io.error(ERR_APP_SHOULD_RUN, {
-            #                 'command': script['title'],
-            #                 'dir': app_dir,
-            #             })
-            #
-            #             return
-            #
+
                 if script_part_type == COMMAND_TYPE_BASH:
                     command = script.get('script', '')
-            #     elif script_part_type == COMMAND_TYPE_BASH_FILE:
-            #         # File is required in this case.
-            #         if 'file' in script_part_type:
-            #             command = [
-            #                 'bash',
-            #                 os.path.join(
-            #                     manager.app_dir,
-            #                     script['file']
-            #                 )
-            #             ]
-            #     elif script_part_type == COMMAND_TYPE_PYTHON:
-            #         if 'script' in script:
-            #             escaped_script = script['script'].replace('"', r'\"')
-            #
-            #             command = [
-            #                 'python3',
-            #                 '-c',
-            #                 f'"{escaped_script}"'
-            #             ]
-            #     elif script_part_type == COMMAND_TYPE_PYTHON_FILE:
-            #         # File is required in this case.
-            #         if 'file' in script_part_type:
-            #             command = [
-            #                 'python3',
-            #                 os.path.join(
-            #                     manager.app_dir,
-            #                     script['file']
-            #                 )
-            #             ]
-            #
+                elif script_part_type == COMMAND_TYPE_PYTHON:
+                    if 'script' in script:
+                        command = [
+                            sys.executable,
+                            '-c',
+                            script['script']
+                        ]
                 if command:
                     if 'container_name' in script:
                         pass
-            #             commands_collection.append(
-            #                 _app__script__exec__create_callback(
-            #                     kernel, app_dir, command
-            #                 )
-            #             )
                     else:
                         commands_collection.append(
                             InteractiveShellCommandResponse(self.kernel, command)
@@ -165,18 +105,3 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.run_click_function(
             click_function
         )
-
-# def _app__script__exec__create_callback(
-#         kernel,
-#         app_dir,
-#         command):
-#     def _callback(previous):
-#         return kernel.run_function(
-#             app__app__exec,
-#             {
-#                 'app-dir': app_dir,
-#                 'command': command
-#             }
-#         )
-#
-#     return _callback

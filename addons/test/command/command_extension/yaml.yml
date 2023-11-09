@@ -17,3 +17,11 @@ scripts:
       # This is a multi-line script
       echo "Demo command : line one"
       echo "Demo command : line two"
+
+  - title: Inline python
+    type: python
+    script: |
+      # Simple quotes
+      print('Python script with simple quotes')
+      # Double quotes
+      print("Python script with double quotes")
