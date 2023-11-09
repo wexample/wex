@@ -108,7 +108,7 @@ def args_convert_dict_to_args(
     argument list as a key-value pair.
     """
     arg_list = []
-    args_long = args_convert_dict_to_long_names_dict(function, args)
+    args_long = args_convert_dict_to_long_names_dict(function=function, args=args)
     args_long = args_convert_dict_to_snake_dict(input_dict=args_long)
 
     for param in function.params:
