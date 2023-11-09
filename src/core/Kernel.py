@@ -5,8 +5,6 @@ from typing import Optional
 
 from yaml import SafeLoader
 
-from addons.app.AppAddonManager import AppAddonManager
-from src.const.resolver import COMMAND_RESOLVERS_CLASSES
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.IOManager import IOManager
@@ -21,11 +19,18 @@ from src.const.globals import \
     KERNEL_RENDER_MODE_JSON
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
+from src.core.command.resolver.AddonCommandResolver import AddonCommandResolver
+from src.core.command.resolver.AppCommandResolver import AppCommandResolver
+from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
+from src.core.command.resolver.UserCommandResolver import UserCommandResolver
 
-ADDONS_DEFINITIONS = {
-    'app': AppAddonManager
-}
 
+COMMAND_RESOLVERS_CLASSES = [
+    AddonCommandResolver,
+    ServiceCommandResolver,
+    AppCommandResolver,
+    UserCommandResolver,
+]
 
 class Kernel:
     # Allow child classes override
@@ -72,8 +77,14 @@ class Kernel:
 
         # Initialize addons config
         self.addons = {}
+        # TODO
+        from addons.app.AppAddonManager import AppAddonManager
+        definitions = {
+            'app': AppAddonManager
+        }
+
         for name in list_subdirectories(self.get_path('addons')):
-            definition = ADDONS_DEFINITIONS.get(name, AddonManager)
+            definition = definitions.get(name, AddonManager)
             self.addons[name]: AddonManager = definition(self, name=name)
 
         self.store_task_id()
