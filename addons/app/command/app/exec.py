@@ -1,4 +1,4 @@
-from src.helper.args import parse_arg
+from src.helper.args import args_parse_one
 from src.helper.command import command_to_string
 from src.decorator.option import option
 from src.core import Kernel
@@ -79,7 +79,7 @@ def app__app__exec(
             sub_command = result[index].first()
 
     # Convert command in list to string
-    command = parse_arg(command)
+    command = args_parse_one(command)
     if isinstance(command, list):
         command = command_to_string(command)
 

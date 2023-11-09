@@ -11,7 +11,7 @@ from src.core.FatalError import FatalError
 from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME, ROOT_USERNAME
 from src.helper.registry import get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
-from src.helper.args import convert_args_to_dict, convert_dict_to_args
+from src.helper.args import args_convert_to_dict, args_convert_dict_to_args
 
 
 def test_index_fake_click_function():
@@ -59,7 +59,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_args_to_dict(self):
-        args = convert_args_to_dict(
+        args = args_convert_to_dict(
             create_fake_click_function(),
             [
                 '--name', 'John',
@@ -78,7 +78,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_dict_to_args(self):
-        args = convert_dict_to_args(
+        args = args_convert_dict_to_args(
             create_fake_click_function(),
             {
                 'name': "John",

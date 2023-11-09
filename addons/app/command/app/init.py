@@ -5,7 +5,7 @@ from typing import Iterable, Union
 
 from src.helper.prompt import progress_steps
 from src.helper.string import to_snake_case
-from src.helper.args import split_arg_array
+from src.helper.args import args_split_arg_array
 from src.decorator.option import option
 
 from addons.app.command.app.start import app__app__start
@@ -71,7 +71,7 @@ def app__app__init(
         nonlocal services
         nonlocal kernel
 
-        services = split_arg_array(services)
+        services = args_split_arg_array(services)
         if len(services) == 0:
             return
 
@@ -136,7 +136,7 @@ def app__app__init(
 
         kernel.io.log(f'Creating config...')
 
-        domains = split_arg_array(domains)
+        domains = args_split_arg_array(domains)
         manager.config = manager.create_config(name, domains)
 
         manager.save_config()

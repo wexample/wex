@@ -1,7 +1,7 @@
 import re
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
-from src.helper.args import arg_shift
+from src.helper.args import args_shift_one
 from src.core.response.DictResponse import DictResponse
 from src.core.response.TableResponse import TableResponse
 from src.core import Kernel
@@ -41,7 +41,7 @@ def app__webhook__status(kernel: Kernel, port: None | int = None):
     for log in logs:
         if len(log['commands']):
             command_data_first = log['commands'][0]
-            path = arg_shift(command_data_first['args'], 'path')
+            path = args_shift_one(command_data_first['args'], 'path')
 
             match = re.match(
                 WEBHOOK_LISTENER_ROUTES_MAP['exec']['pattern'],

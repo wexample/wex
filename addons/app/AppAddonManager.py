@@ -5,7 +5,7 @@ import getpass
 import yaml
 from dotenv import dotenv_values
 
-from src.helper.args import arg_shift, arg_push
+from src.helper.args import args_shift_one, args_push_one
 from src.helper.string import to_snake_case, to_kebab_case, replace_variables
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
     COMMAND_TYPE_APP
@@ -317,7 +317,7 @@ class AppAddonManager(AddonManager):
             return
 
         args = request.args.copy()
-        app_dir_arg = arg_shift(args, 'app-dir')
+        app_dir_arg = args_shift_one(args, 'app-dir')
 
         # User specified the app dir arg.
         if app_dir_arg is not None:
@@ -366,10 +366,11 @@ class AppAddonManager(AddonManager):
 
         # Append to original apps list.
         request.args = args
-        arg_push(
-            args,
-            'app-dir',
-            app_dir_resolved)
+
+        args_push_one(
+            arg_list=args,
+            arg_name='app-dir',
+            value=app_dir_resolved)
 
         if request.runner.get_attr(
                 name='app_should_run',

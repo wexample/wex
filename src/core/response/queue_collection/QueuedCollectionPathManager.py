@@ -1,5 +1,5 @@
 from __future__ import annotations
-from src.helper.args import arg_shift
+from src.helper.args import args_shift_one
 
 
 class QueuedCollectionPathManager:
@@ -11,7 +11,7 @@ class QueuedCollectionPathManager:
         self.map = {}
 
         args = root_request.args
-        steps = arg_shift(args, 'command-request-step')
+        steps = args_shift_one(args, 'command-request-step')
         if steps:
             self.steps = list(map(int, str(steps).split('.')))
 

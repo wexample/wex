@@ -5,7 +5,7 @@ from typing import Optional
 
 from yaml import SafeLoader
 
-from src.helper.args import arg_shift
+from src.helper.args import args_shift_one
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.NullResponse import NullResponse
 from src.core.IOManager import IOManager
@@ -424,40 +424,40 @@ class Kernel:
         self.task_id = self.sys_argv[1]
 
     def handle_core_args(self):
-        if arg_shift(self.sys_argv, 'fast-mode', True) is not None:
+        if args_shift_one(self.sys_argv, 'fast-mode', True) is not None:
             self.fast_mode = True
 
-        if arg_shift(self.sys_argv, 'quiet', True) is not None:
+        if args_shift_one(self.sys_argv, 'quiet', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_QUIET
 
-        if arg_shift(self.sys_argv, 'vv', True) is not None:
+        if args_shift_one(self.sys_argv, 'vv', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MEDIUM
 
-        if arg_shift(self.sys_argv, 'vvv', True) is not None:
+        if args_shift_one(self.sys_argv, 'vvv', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MAXIMUM
 
-        value = arg_shift(self.sys_argv, 'log-indent')
+        value = args_shift_one(self.sys_argv, 'log-indent')
         if value is not None:
             self.io.log_indent = int(value)
 
         # Setting verbosity will disable logging frame.
-        value = arg_shift(self.sys_argv, 'log-length')
+        value = args_shift_one(self.sys_argv, 'log-length')
         if not sys.stdout.isatty() or self.verbosity != VERBOSITY_LEVEL_DEFAULT:
             value = 0
 
         if value is not None:
             self.io.log_length = int(value)
 
-        value = arg_shift(self.sys_argv, 'render-mode')
+        value = args_shift_one(self.sys_argv, 'render-mode')
         if value is not None:
             self.default_render_mode = value
 
-        value = arg_shift(self.sys_argv, 'parent-task-id')
+        value = args_shift_one(self.sys_argv, 'parent-task-id')
         if value is not None:
             self.parent_task_id = value
 
         # There is a task id redirection
-        value = arg_shift(self.sys_argv, 'kernel-task-id')
+        value = args_shift_one(self.sys_argv, 'kernel-task-id')
         if value:
             self.task_file_write(
                 'task-redirect',

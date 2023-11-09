@@ -4,7 +4,7 @@ from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueMan
     import AbstractQueuedCollectionResponseQueueManager
 from abc import ABC
 
-from src.helper.args import arg_replace
+from src.helper.args import args_replace_one
 from src.helper.process import process_post_exec_function
 
 
@@ -38,7 +38,11 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
 
         root = self.response.get_root_parent()
         args = root.request.args.copy()
-        arg_replace(args, 'command-request-step', self.response.path_manager.build_step_path())
+
+        args_replace_one(
+            arg_list=args,
+            arg_name='command-request-step',
+            value=self.response.path_manager.build_step_path())
 
         process_post_exec_function(
             self.response.kernel,

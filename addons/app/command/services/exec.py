@@ -1,5 +1,5 @@
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.helper.args import parse_arg
+from src.helper.args import args_parse_one
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.option import option
@@ -16,7 +16,7 @@ def app__services__exec(kernel: Kernel, app_dir: str, hook: str, arguments: str)
 
     output = {}
 
-    arguments = parse_arg(arguments, {})
+    arguments = args_parse_one(arguments, {})
 
     for service in manager.get_config('service', {}):
         arguments = arguments.copy()

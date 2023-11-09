@@ -1,27 +1,44 @@
 import ast
 import re
 import click
-from typing import Iterable, Union, List
 from click.types import BoolParamType
-
 from src.helper.string import to_kebab_case, to_snake_case
+from typing import Any, Callable, Dict, Iterable, List, Union, Optional
 
 
-def arg_replace(arg_list: list, arg_name: str, value: any = None, is_flag: bool = False):
-    previous = arg_shift(arg_list, arg_name, is_flag)
-    arg_push(arg_list, arg_name, value)
+def args_replace_one(
+        arg_list: List[str],
+        arg_name: str,
+        value: Optional[Any] = None,
+        is_flag: bool = False) -> Optional[str]:
+
+    previous = args_shift_one(
+        arg_list=arg_list,
+        arg_name=arg_name,
+        is_flag=is_flag)
+
+    args_push_one(
+        arg_list=arg_list,
+        arg_name=arg_name,
+        value=value)
 
     return previous
 
 
-def arg_push(arg_list: list, arg_name: str, value: any = None):
+def args_push_one(
+        arg_list: List[str],
+        arg_name: str,
+        value: Optional[Any] = None) -> None:
     arg_list.append(f'--{arg_name}')
 
     if value is not None:
         arg_list.append(str(value))
 
 
-def arg_shift(arg_list: list, arg_name: str, is_flag: bool = False):
+def args_shift_one(
+        arg_list: List[str],
+        arg_name: str,
+        is_flag: bool = False) -> Optional[str]:
     """
     Alter arg list by removing arg names and returning arg value.
     Take arg name without dash, and remove args with any count of prefixed dashes.
@@ -43,7 +60,9 @@ def arg_shift(arg_list: list, arg_name: str, is_flag: bool = False):
     return None
 
 
-def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str]:
+def args_split_arg_array(
+        arg: Union[str, Iterable[str]],
+        separator: str = ',') -> List[str]:
     if not arg:
         return []
 
@@ -54,17 +73,9 @@ def split_arg_array(arg: Union[str, Iterable], separator: str = ',') -> List[str
         return list(arg)
 
 
-def convert_args_to_long_names_dict(function, args: dict):
-    return convert_dict_to_long_names_dict(
-        function,
-        convert_args_to_dict(
-            function,
-            args
-        )
-    )
-
-
-def convert_dict_to_long_names_dict(function, args: dict):
+def args_convert_dict_to_long_names_dict(
+        function: Callable,
+        args: Dict[str, Any]) -> Dict[str, Any]:
     short_names = {}
     for param in function.params:
         for opt in param.opts:
@@ -83,19 +94,22 @@ def convert_dict_to_long_names_dict(function, args: dict):
     return args_long
 
 
-def convert_dict_to_snake_dict(dict: dict):
-    return {to_snake_case(key): value for key, value in dict.items()}
+def args_convert_dict_to_snake_dict(
+        input_dict: Dict[str, Any]) -> Dict[str, Any]:
+    return {to_snake_case(key): value for key, value in input_dict.items()}
 
 
-def convert_dict_to_args(function, args: dict):
+def args_convert_dict_to_args(
+        function: Callable,
+        args: Dict[str, Any]) -> List[str]:
     """
     Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
     Any key in `args` that is not found in `function.params` is added to the
     argument list as a key-value pair.
     """
     arg_list = []
-    args_long = convert_dict_to_long_names_dict(function, args)
-    args_long = convert_dict_to_snake_dict(args_long)
+    args_long = args_convert_dict_to_long_names_dict(function, args)
+    args_long = args_convert_dict_to_snake_dict(input_dict=args_long)
 
     for param in function.params:
         if param.name in args_long:
@@ -123,7 +137,9 @@ def convert_dict_to_args(function, args: dict):
     return arg_list
 
 
-def convert_args_to_dict(function, arg_list):
+def args_convert_to_dict(
+        function: Callable,
+        arg_list: List[str]) -> Dict[str, Any]:
     args_dict = {}
     param_dict = {
         opt.lstrip('-'): param
@@ -166,7 +182,9 @@ def convert_args_to_dict(function, arg_list):
     return args_dict
 
 
-def parse_arg(argument, default=None):
+def args_parse_one(
+        argument: str,
+        default: Optional[Any] = None) -> Any:
     if argument is None or argument == '':
         return default
 
