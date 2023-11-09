@@ -15,7 +15,7 @@ with open('requirements.in') as f:
 setup(
     name='wex',
     version=core_get_version(current_dir),
-    description='A bash command manager',
+    description='A command manager',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     author='Wexample',
