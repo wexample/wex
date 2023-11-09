@@ -33,7 +33,7 @@ class AbstractCommandResolver:
         # Save unique root request
         self.kernel.root_request = self.kernel.root_request if self.kernel.root_request else request
 
-        if not request.function and (not request.path or not os.path.isfile(request.path)):
+        if not request.function:
             if not request.quiet:
                 self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
