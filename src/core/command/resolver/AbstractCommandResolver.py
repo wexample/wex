@@ -1,7 +1,6 @@
 import importlib.util
 import os
 import re
-import sys
 from abc import abstractmethod
 
 from src.core.response.NullResponse import NullResponse
@@ -13,13 +12,12 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import convert_dict_to_args
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_TYPE_MISMATCH
+from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
 from src.helper.registry import get_all_commands_from_registry_part
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbortResponse import AbortResponse
 
 
 class AbstractCommandResolver:
@@ -27,41 +25,6 @@ class AbstractCommandResolver:
         self.kernel = kernel
 
     def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse | None:
-        # Save unique root request
-        self.kernel.root_request = self.kernel.root_request if self.kernel.root_request else request
-
-        if not request.runner:
-            if not request.quiet:
-                self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
-                    'command': request.command,
-                    'path': request.path,
-                })
-
-                return AbortResponse(self.kernel, reason=ERR_COMMAND_FILE_NOT_FOUND)
-
-            return NullResponse(self.kernel)
-
-        # Ensure command has proper type defined,
-        # i.e. check if command file location matches with defined command type
-        # and prevent it to be resolved with the wrong resolver.
-        command_type = request.runner.get_command_type()
-        if command_type != self.get_type():
-            self.kernel.io.error(ERR_COMMAND_TYPE_MISMATCH, {
-                'command': request.command,
-                'command_type': command_type,
-                'resolver_type': self.get_type(),
-            })
-
-            return AbortResponse(self.kernel, reason=ERR_COMMAND_TYPE_MISMATCH)
-
-        # Enforce sudo.
-        if request.runner.has_attr('as_sudo') and os.geteuid() != 0:
-            self.kernel.logger.append_event('EVENT_SWITCH_SUDO')
-            # Mask printed logs as it may not be relevant.
-            self.kernel.io.log_hide()
-            # Uses the original argv argument to ignore any changes on it.
-            os.execvp('sudo', ['sudo', sys.executable] + sys.argv)
-
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
         previous_verbosity = self.kernel.verbosity

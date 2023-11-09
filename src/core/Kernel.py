@@ -7,12 +7,13 @@ from yaml import SafeLoader
 
 from src.helper.args import arg_shift
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.NullResponse import NullResponse
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED
+    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED, ERR_COMMAND_TYPE_MISMATCH
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
@@ -23,6 +24,8 @@ from src.core.command.resolver.AddonCommandResolver import AddonCommandResolver
 from src.core.command.resolver.AppCommandResolver import AppCommandResolver
 from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.core.command.resolver.UserCommandResolver import UserCommandResolver
+from src.core.response.AbortResponse import AbortResponse
+from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
 
 COMMAND_RESOLVERS_CLASSES = [
@@ -272,6 +275,45 @@ class Kernel:
     def render_request(self,
                        request,
                        render_mode: str | None = None) -> AbstractResponse:
+        # Save unique root request
+        self.root_request = self.root_request if self.root_request else request
+
+        if not request.runner:
+            if not request.quiet:
+                self.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                    'command': request.command,
+                    'path': request.path,
+                })
+
+                return AbortResponse(self, reason=ERR_COMMAND_FILE_NOT_FOUND)
+
+            return NullResponse(self)
+
+        # After this point we have decorators then command decorator manager
+        request.function = request.runner.build_request_function()
+
+        # Ensure command has proper type defined,
+        # i.e. check if command file location matches with defined command type
+        # and prevent it to be resolved with the wrong resolver.
+        command_type = request.runner.get_command_type()
+        resolver_type = request.resolver.get_type()
+        if command_type != resolver_type:
+            self.io.error(ERR_COMMAND_TYPE_MISMATCH, {
+                'command': request.command,
+                'command_type': command_type,
+                'resolver_type': resolver_type,
+            })
+
+            return AbortResponse(self, reason=ERR_COMMAND_TYPE_MISMATCH)
+
+        # Enforce sudo.
+        if request.runner.has_attr('as_sudo') and os.geteuid() != 0:
+            self.logger.append_event('EVENT_SWITCH_SUDO')
+            # Mask printed logs as it may not be relevant.
+            self.io.log_hide()
+            # Uses the original argv argument to ignore any changes on it.
+            os.execvp('sudo', ['sudo', sys.executable] + sys.argv)
+
         return request.resolver.render_request(
             request,
             render_mode or self.default_render_mode

@@ -51,7 +51,7 @@ class YamlCommandRunner(AbstractCommandRunner):
     def has_attr(self, name: str) -> bool:
         pass
 
-    def run(self):
+    def build_request_function(self) -> Command:
         def _click_function_handler(*args, **kwargs):
             commands_collection = []
             env_args = kwargs.copy()
@@ -130,6 +130,9 @@ class YamlCommandRunner(AbstractCommandRunner):
                     help=option['help']
                 )(click_function)
 
+        return click_function
+
+    def run(self):
         return self.run_click_function(
-            click_function
+            self.request.function
         )

@@ -1,5 +1,6 @@
 import os
 
+from click import Command
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 
 
@@ -19,6 +20,7 @@ class CommandRequest:
         self.args = args or []
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
+        self.function: None | Command = None
 
         self.resolver.locate_function(self)
 
