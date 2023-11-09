@@ -36,8 +36,8 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
 
                 args = self.response.request.args.copy()
 
-                response = self.response.kernel.run_function(
-                    self.response.request.function,
+                response = self.response.kernel.run_command(
+                    self.response.request.command,
                     args
                 )
 

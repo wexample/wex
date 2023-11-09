@@ -1,4 +1,4 @@
-from src.helper.command import command_to_string, core_call_to_shell_command
+from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
 
@@ -12,11 +12,11 @@ def process_post_exec(
     kernel.post_exec.append(command)
 
 
-def process_post_exec_function(kernel, function: callable, args: list | dict = {}, is_async=False):
-    command = core_call_to_shell_command(
-        kernel,
-        function,
-        args
+def process_post_exec_function(kernel, internal_command: str, args: None | list = None, is_async=False):
+    command = internal_command_to_shell(
+        kernel=kernel,
+        internal_command=internal_command,
+        args=args
     )
 
     if is_async:

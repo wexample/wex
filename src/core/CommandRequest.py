@@ -1,7 +1,6 @@
 import os
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
-from src.helper.args import convert_dict_to_args
 
 
 class CommandRequest:
@@ -10,8 +9,6 @@ class CommandRequest:
     match = None
 
     def __init__(self, resolver, command: str, args: dict | list = None):
-        args = args or []
-
         self.extension: None | str = None
         self.quiet = False
         self.resolver = resolver
@@ -19,7 +16,7 @@ class CommandRequest:
         self.command = resolver.resolve_alias(command)
         self.type = resolver.get_type()
         self.storage = {}  # Useful to store data about the current command execution
-        self.args = []
+        self.args = args or []
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
 
@@ -30,19 +27,6 @@ class CommandRequest:
             # as it is managed outside.
             return
 
-        if isinstance(args, dict):
-            self.args = convert_dict_to_args(self.function, args)
-        else:
-            self.args = args
-
-        # Build log
-        log = {'command': self.command}
-
-        if len(self.args):
-            log['args'] = self.args
-
-        self.log = log
-
     def get_root_parent(self):
         if self.parent:
             return self.parent.get_root_parent()
@@ -52,14 +36,25 @@ class CommandRequest:
         path = self.resolver.build_path(self, extension)
 
         if path and os.path.isfile(path):
-            self.path = path
-            self.extension = extension
+            runner = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
                 from src.core.command.runner.PythonCommandRunner import PythonCommandRunner
-                self.runner = PythonCommandRunner(self)
+                runner = PythonCommandRunner(self.resolver.kernel)
             elif extension == COMMAND_EXTENSION_YAML:
                 # TODO
-                pass
+                print('TODO')
+                exit()
+
+            self.path = path
+            self.extension = extension
+
+            runner.set_request(self)
+
+            # Runner can now convert args.
+            if isinstance(self.args, dict):
+                self.args = self.runner.convert_args_dict_to_list(
+                    self.args
+                )
 
             return True

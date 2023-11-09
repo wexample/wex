@@ -3,7 +3,7 @@ import subprocess
 from addons.test.command.demo_command.response_collection import test__demo_command__response_collection
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.helper.command import core_call_to_shell_command
+from src.helper.command import internal_command_to_shell
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -71,11 +71,16 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         current_verbosity = self.kernel.verbosity
         self.kernel.verbosity = 0
 
+        internal_command = self.kernel.get_command_resolver(
+            test__demo_command__response_collection.callback.command_type).build_command_from_function(
+            test__demo_command__response_collection
+        )
+
         standard_mode_response = (
             (subprocess
-             .run(core_call_to_shell_command(
-                self.kernel,
-                test__demo_command__response_collection
+             .run(internal_command_to_shell(
+                kernel=self.kernel,
+                internal_command=internal_command
             ),
                 capture_output=True)
              .stdout

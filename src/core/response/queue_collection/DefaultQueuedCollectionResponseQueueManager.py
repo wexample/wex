@@ -42,7 +42,7 @@ class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespon
 
         process_post_exec_function(
             self.response.kernel,
-            root.request.function,
+            root.request.command,
             args
         )
 

@@ -2,20 +2,16 @@ import subprocess
 
 from src.helper.file import create_file_path
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
-from src.helper.args import convert_dict_to_args
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 
 
-def core_call_to_shell_command(kernel, function: callable, args: list | dict = {}) -> list:
-    if isinstance(args, dict):
-        args = convert_dict_to_args(function, args)
-
+def internal_command_to_shell(kernel, internal_command: str, args: None | list = None) -> list:
     command = ([
                    'bash',
                    kernel.get_path('core.cli'),
-                   kernel.get_command_resolver(function.callback.command_type).build_command_from_function(function),
+                   internal_command
                ]
-               + args
+               + (args or [])
                + [
                    '--kernel-task-id',
                    kernel.task_id
