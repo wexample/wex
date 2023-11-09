@@ -116,15 +116,15 @@ class TestCore(AbstractTestCase):
         self.kernel.run_function(
             core__command__create,
             {
-                'command': '~test/command_call'
+                'command': '~test/command-call'
             }
         )
 
         self.assertEqual(
             self.kernel.call_command(
-                '~test/command_call',
+                '~test/command-call',
                 {
-                    'arg': 'test'
+                    'option': 'test'
                 }),
             # No return from newly created command
             None
