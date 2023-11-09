@@ -29,7 +29,7 @@ class UserCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_USER
 
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None):
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         return self.build_command_path(
             base_path=self.get_base_path(),
             extension=extension,

@@ -41,7 +41,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def build_command_from_parts(self, parts: list) -> str:
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None):
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         return self.build_command_path(
             base_path=f"{self.kernel.registry['service'][to_snake_case(request.match[1])]['dir']}",
             extension=extension,

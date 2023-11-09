@@ -212,7 +212,7 @@ class AbstractCommandResolver:
         return False
 
     @abstractmethod
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None):
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         pass
 
     def build_path_or_fail(self, request: CommandRequest, extension: str, subdir: str = None):
