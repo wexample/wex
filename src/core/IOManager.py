@@ -46,7 +46,7 @@ class IOManager:
 
         self.print(message)
 
-        if trace or os.isatty(0):
+        if trace or not os.isatty(0):
             from src.core.FatalError import FatalError
             raise FatalError(message)
             # Do not exit, allowing unit testing to catch error.
