@@ -49,8 +49,9 @@ class IOManager:
         if trace or os.isatty(0):
             from src.core.FatalError import FatalError
             raise FatalError(message)
-
-        exit(0)
+            # Do not exit, allowing unit testing to catch error.
+        else:
+            exit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1

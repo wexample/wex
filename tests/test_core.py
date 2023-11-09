@@ -98,13 +98,13 @@ class TestCore(AbstractTestCase):
         )
 
     def test_call_invalid(self):
-        with self.assertRaises(FatalError, msg=None):
+        with self.assertRaises(FatalError):
             self.kernel.call_command('something/unexpected')
 
-        with self.assertRaises(FatalError, msg=None):
+        with self.assertRaises(FatalError):
             self.kernel.call_command('nvfjkdvnfdkjvndfkjvnfd')
 
-        with self.assertRaises(FatalError, msg=None):
+        with self.assertRaises(FatalError):
             self.kernel.call_command('*ù:-//;!,@"#^~§')
 
     def test_call_command_addon(self):
