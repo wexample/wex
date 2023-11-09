@@ -1,9 +1,11 @@
+import click
 from click import Command
 
 from src.helper.yaml import yaml_load
+from src.const.error import ERR_UNEXPECTED
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
-from src.const.error import ERR_UNEXPECTED
+from src.decorator.command import command
 
 
 class YamlCommandRunner(AbstractCommandRunner):
@@ -39,4 +41,11 @@ class YamlCommandRunner(AbstractCommandRunner):
         pass
 
     def run(self):
-        pass
+        def test_func():
+            pass
+
+        click_function = command(help=self.content['help'])(test_func)
+
+        return self.run_click_function(
+            click_function
+        )

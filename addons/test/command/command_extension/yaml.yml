@@ -1,6 +1,6 @@
 type: addon
 webhook: false
-help: Description
+help: This is a command for tests
 options:
   - name: --test-option
     short: -to

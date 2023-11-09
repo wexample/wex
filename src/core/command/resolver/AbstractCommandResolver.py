@@ -90,7 +90,10 @@ class AbstractCommandResolver:
         self.kernel.verbosity = previous_verbosity
         self.kernel.current_request = previous_request
 
-        self.kernel.hook_addons('render_request_post', {'response': response})
+        if response:
+            self.kernel.hook_addons(
+                'render_request_post',
+                {'response': response})
 
         return response
 

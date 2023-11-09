@@ -47,6 +47,17 @@ class TestCore(AbstractTestCase):
             ])
         )
 
+    def test_help(self):
+        response = self.kernel.run_function(
+            core__logo__show, {
+                'help': True
+            }
+        )
+
+        self.assertIsNone(
+            response
+        )
+
     def test_convert_args_to_dict(self):
         args = convert_args_to_dict(
             create_fake_click_function(),
