@@ -36,11 +36,12 @@ class AppCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_APP
 
-    def build_path(self, request: CommandRequest, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         return self.build_command_path(
-            self.get_base_path(),
-            subdir,
-            os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
+            base_path=self.get_base_path(),
+            extension=extension,
+            subdir=subdir,
+            command_path=os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
         )
 
     def build_command_from_parts(self, parts: list) -> str:

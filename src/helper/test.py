@@ -42,7 +42,10 @@ def file_path_to_test_method(kernel, file_path: str) -> str:
 
 def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> str:
     request = kernel.create_command_request(command)
-    test_path = request.resolver.build_path_or_fail(request, 'tests')
+    test_path = request.resolver.build_path_or_fail(
+        request=request,
+        extension=request.extension,
+        subdir='tests')
 
     # File exists
     if os.path.exists(test_path) and not force:

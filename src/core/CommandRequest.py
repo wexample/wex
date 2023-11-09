@@ -10,6 +10,7 @@ class CommandRequest:
     def __init__(self, resolver, command: str, args: dict | list = None):
         args = args or []
 
+        self.extension: str
         self.quiet = False
         self.resolver = resolver
         self.command = resolver.resolve_alias(command)

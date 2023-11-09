@@ -1,13 +1,12 @@
 import os
 
 from addons.core.command.test.create import core__test__create
-from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER
+from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER, COMMAND_EXTENSION_PYTHON
 from src.helper.file import create_from_template
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.Kernel import Kernel
 from src.decorator.as_sudo import as_sudo
-from addons.core.command.core.cleanup import core__core__cleanup
 
 
 @command(help="Create a new command and test files")
@@ -16,7 +15,11 @@ from addons.core.command.core.cleanup import core__core__cleanup
         help="Full name of the command, i.e. addon::some/thing")
 @option('--force', '-f', type=bool, required=False, is_flag=True, default=False,
         help='Force to create file if exists')
-def core__command__create(kernel: Kernel, command: str, force: bool = False) -> {}:
+def core__command__create(
+        kernel: Kernel,
+        command: str,
+        force: bool = False,
+        format: str = COMMAND_EXTENSION_PYTHON) -> {}:
     kernel.io.log('Creating command file...')
     request = kernel.create_command_request(command)
 
@@ -24,7 +27,9 @@ def core__command__create(kernel: Kernel, command: str, force: bool = False) -> 
         kernel.io.message(f'Unable to process command : {command}')
         return
 
-    command_path: str = request.resolver.build_path_or_fail(request)
+    command_path: str = request.resolver.build_path_or_fail(
+        request=request,
+        extension=format)
 
     # File exists
     if not os.path.exists(command_path) or force:

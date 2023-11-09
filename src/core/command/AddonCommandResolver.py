@@ -18,15 +18,16 @@ class AddonCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_ADDON
 
-    def build_path(self, request: CommandRequest, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         # Unable to find command path if no addon name found.
         if request.match.group(1) is None:
             return None
 
         return self.build_command_path(
-            f"{self.kernel.get_path('addons')}{to_snake_case(request.match.group(1))}/",
-            subdir,
-            os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
+            base_path=f"{self.kernel.get_path('addons')}{to_snake_case(request.match.group(1))}/",
+            extension=extension,
+            subdir=subdir,
+            command_path=os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
         )
 
     def get_function_name_parts(self, parts: list) -> []:

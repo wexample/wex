@@ -13,7 +13,7 @@ from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT
+    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import convert_dict_to_args
 from src.const.error import ERR_COMMAND_FILE_NOT_FOUND, ERR_COMMAND_CONTEXT, ERR_COMMAND_TYPE_MISMATCH
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
@@ -128,8 +128,6 @@ class AbstractCommandResolver:
 
         return DefaultResponse(self.kernel, response)
 
-
-
     def get_function_from_request(self, request: CommandRequest) -> str:
         return self.get_function(
             request.path,
@@ -214,11 +212,14 @@ class AbstractCommandResolver:
         return False
 
     @abstractmethod
-    def build_path(self, request: CommandRequest, subdir: str = None):
+    def build_path(self, request: CommandRequest, extension: str, subdir: str = None):
         pass
 
-    def build_path_or_fail(self, request: CommandRequest, subdir: str = None):
-        path = self.build_path(request, subdir)
+    def build_path_or_fail(self, request: CommandRequest, extension: str, subdir: str = None):
+        path = self.build_path(
+            request=request,
+            extension=extension,
+            subdir=subdir)
 
         if path is None:
             self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
@@ -293,11 +294,11 @@ class AbstractCommandResolver:
 
         return self.build_command_from_parts(parts)
 
-    def build_command_path(self, base_path, subdir: str | None, command_path):
+    def build_command_path(self, base_path, extension: str, subdir: str | None, command_path):
         if subdir:
             base_path += f"{subdir}/"
 
-        return os.path.join(base_path, 'command', command_path + '.py')
+        return os.path.join(base_path, 'command', command_path + '.' + extension)
 
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         return None
@@ -386,12 +387,14 @@ class AbstractCommandResolver:
         request.match = self.build_match(request.command)
 
         if request.match:
-            request.path = self.build_path(request)
+            for extension in COMMAND_EXTENSIONS:
+                request.path = self.build_path(request, extension)
 
-            if request.path and os.path.isfile(request.path):
-                request.function = self.get_function_from_request(request)
+                if request.path and os.path.isfile(request.path):
+                    request.extension = extension
+                    request.function = self.get_function_from_request(request)
 
-                return True
+                    return True
         return False
 
     @classmethod
