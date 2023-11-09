@@ -6,6 +6,13 @@ from src.const.error import ERR_UNEXPECTED
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
 from src.decorator.command import command
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
+COMMAND_TYPE_BASH = 'bash'
+COMMAND_TYPE_BASH_FILE = 'bash-file'
+COMMAND_TYPE_PYTHON = 'python'
+COMMAND_TYPE_PYTHON_FILE = 'python-file'
 
 
 class YamlCommandRunner(AbstractCommandRunner):
@@ -40,13 +47,39 @@ class YamlCommandRunner(AbstractCommandRunner):
     def has_attr(self, name: str) -> bool:
         pass
 
-    @staticmethod
-    def click_function_handler(*args, **kwargs):
-        pass
-
     def run(self):
+        def _click_function_handler(*args, **kwargs):
+            commands_collection = []
 
-        click_function = command(help=self.content['help'])(self.click_function_handler)
+            # Iterate through each command in the configuration
+            for script in self.content.get('scripts', []):
+                if isinstance(script, str):
+                    script = {
+                        'script': script,
+                        'title': script,
+                        'type': COMMAND_TYPE_BASH
+                    }
+
+                self.kernel.io.log(script['title'])
+
+                for key in kwargs:
+                    script['script'] = script['script'].replace('$' + key.upper(), kwargs[key])
+
+                script_part_type = script.get('type', COMMAND_TYPE_BASH)
+                command = None
+                if script_part_type == COMMAND_TYPE_BASH:
+                    command = script.get('script', '')
+                if command:
+                    if 'container_name' in script:
+                        pass
+                    else:
+                        commands_collection.append(
+                            InteractiveShellCommandResponse(self.kernel, command)
+                        )
+
+            return QueuedCollectionResponse(self.kernel, commands_collection)
+
+        click_function = command(help=self.content['help'])(_click_function_handler)
 
         if 'options' in self.content:
             options = self.content['options']
