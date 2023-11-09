@@ -167,18 +167,6 @@ def write_dict_to_config(dict: dict, dest: str):
         f.write(output)
 
 
-def get_yml_file_item(file_path: str, key: str, default=None):
-    if os.path.exists(file_path):
-        from src.helper.dict import get_dict_item_by_path
-
-        # Load the JSON file
-        with open(file_path, 'r') as f:
-            data = yaml.load(f, Loader=SafeLoader)
-
-        return get_dict_item_by_path(data, key, default)
-    return default
-
-
 def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     keys = key.split('.')
     for k in keys[:-1]:
@@ -263,3 +251,8 @@ def env_to_dict(env_path: str) -> dict:
             env_dict[key] = value
 
     return env_dict
+
+
+def file_read(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return file.read()
