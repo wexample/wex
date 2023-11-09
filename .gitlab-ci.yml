@@ -46,15 +46,9 @@ test:
     - sudo su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
+  after_script:
     # Reset permissions
     - chown -R root:root .
-
-on_test_failure:
-  stage: test
-  script:
-    # Reset permissions
-    - chown -R root:root .
-  when: on_failure
 
 build:
   stage: build
