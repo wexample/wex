@@ -19,7 +19,7 @@ from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
     KERNEL_RENDER_MODE_JSON
-from src.core.command_runner.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command_resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
 
 ADDONS_DEFINITIONS = {

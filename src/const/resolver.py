@@ -1,7 +1,7 @@
-from src.core.command_runner.AddonCommandResolver import AddonCommandResolver
-from src.core.command_runner.AppCommandResolver import AppCommandResolver
-from src.core.command_runner.ServiceCommandResolver import ServiceCommandResolver
-from src.core.command_runner.UserCommandResolver import UserCommandResolver
+from src.core.command_resolver.AddonCommandResolver import AddonCommandResolver
+from src.core.command_resolver.AppCommandResolver import AppCommandResolver
+from src.core.command_resolver.ServiceCommandResolver import ServiceCommandResolver
+from src.core.command_resolver.UserCommandResolver import UserCommandResolver
 
 COMMAND_RESOLVERS_CLASSES = [
     AddonCommandResolver,

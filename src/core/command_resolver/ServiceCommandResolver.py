@@ -7,7 +7,7 @@ from src.core.response.AbortResponse import AbortResponse
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.core.command_runner.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command_resolver.AbstractCommandResolver import AbstractCommandResolver
 
 
 class ServiceCommandResolver(AbstractCommandResolver):

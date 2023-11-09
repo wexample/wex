@@ -6,7 +6,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
-from src.core.command_runner.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command_resolver.AbstractCommandResolver import AbstractCommandResolver
 
 
 class AppCommandResolver(AbstractCommandResolver):
