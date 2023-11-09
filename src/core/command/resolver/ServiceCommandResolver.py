@@ -22,7 +22,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)
 
         # Guess service name from command prefix if not passed.
-        if '--service' not in request.args:
+        if request.runner and '--service' not in request.args:
             request.args.extend([
                 '--service',
                 request.match[1]
