@@ -2,7 +2,6 @@ from src.core.CommandRequest import CommandRequest
 from abc import abstractmethod
 import click
 from src.core.response.AbortResponse import AbortResponse
-from src.const.error import ERR_COMMAND_CONTEXT
 from src.const.args import ARGS_HELP
 
 
@@ -48,11 +47,11 @@ class AbstractCommandRunner:
         except Exception as e:
             # Show error message
             self.kernel.io.error(
-                ERR_COMMAND_CONTEXT,
+                "Error when creating context for command function {function} : {error}",
                 {
                     'function': click_function.callback.__name__,
                     'error': str(e)
-                }
+                }, trace=False
             )
 
         # Remove extra params which have been defined only

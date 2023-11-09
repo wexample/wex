@@ -2,7 +2,6 @@ from typing import Optional
 
 import git
 from addons.default.command.version.increment import default__version__increment
-from src.const.error import ERR_UNEXPECTED
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.option import option
@@ -46,18 +45,14 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
             origin.fetch(tags=True)
             origin.pull()
         except Exception as e:
-            kernel.io.error(ERR_UNEXPECTED, {
-                'error': 'Git pull : ' + str(e),
-            })
+            kernel.io.error('Git pull : ' + str(e), trace=False)
 
         # Get the last tag.
         tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
         latest_tag = tags[-1]
 
         if str(latest_tag) == new_version:
-            kernel.io.error(ERR_UNEXPECTED, {
-                'error': f'The version {new_version} has been already tagged, you should create a new version.',
-            })
+            kernel.io.error(f'The version {new_version} has been already tagged, you should create a new version.', trace=False)
 
         kernel.io.log('Committing new version...')
         try:
@@ -67,9 +62,7 @@ def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_
 
             # origin.push()
         except Exception as e:
-            kernel.io.error(ERR_UNEXPECTED, {
-                'error': 'Git commit : ' + str(e),
-            })
+            kernel.io.error('Git commit : ' + str(e), trace=False)
 
         kernel.io.message(f'New version : {new_version}')
 

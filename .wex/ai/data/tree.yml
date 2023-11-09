@@ -425,11 +425,6 @@ children:
               test.py:
                 type: file
             type: dir
-          locale:
-            children:
-              messages.json:
-                type: file
-            type: dir
           middleware:
             children:
               run_post.py:
@@ -1631,11 +1626,6 @@ children:
       wex:
         type: file
       wex-wrapper:
-        type: file
-    type: dir
-  locale:
-    children:
-      messages.json:
         type: file
     type: dir
   requirements.in:

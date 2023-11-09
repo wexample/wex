@@ -54,11 +54,7 @@ class AppAddonManager(AddonManager):
 
     def get_env_dir(self, dir: str, create: bool = False) -> str:
         if not self.app_dir:
-            from src.const.error import ERR_UNEXPECTED
-
-            self.kernel.io.error(ERR_UNEXPECTED, {
-                'error': 'Trying to get env directory before setting working directory',
-            })
+            self.kernel.io.error('Trying to get env directory before setting working directory')
 
         env_dir = os.path.join(
             self.app_dir,

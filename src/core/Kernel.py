@@ -12,12 +12,10 @@ from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
-from src.const.error import \
-    ERR_ARGUMENT_COMMAND_MALFORMED, ERR_UNEXPECTED, ERR_COMMAND_TYPE_MISMATCH
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
-    KERNEL_RENDER_MODE_JSON
+    KERNEL_RENDER_MODE_JSON, ERR_COMMAND_FILE_NOT_FOUND
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
 from src.core.command.resolver.AddonCommandResolver import AddonCommandResolver
@@ -25,7 +23,6 @@ from src.core.command.resolver.AppCommandResolver import AppCommandResolver
 from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.core.command.resolver.UserCommandResolver import UserCommandResolver
 from src.core.response.AbortResponse import AbortResponse
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 
 COMMAND_RESOLVERS_CLASSES = [
     AddonCommandResolver,
@@ -109,10 +106,7 @@ class Kernel:
             return self.path[name]
         else:
             self.io.error(
-                ERR_UNEXPECTED,
-                {
-                    'error': f'Kernel path not found {name}.'
-                }
+                f'Core path not found {name}.'
             )
 
             sys.exit(1)
@@ -129,12 +123,9 @@ class Kernel:
                 set_user_or_sudo_user_owner(path)
             except PermissionError:
                 self.io.error(
-                    ERR_UNEXPECTED,
-                    {
-                        'error': f'Permission denied: Could not create {path}.'
-                    }
+                    f'Permission denied: Could not create {path}.'
                 )
-                self.io['error'](f"Permission denied: Could not create {path}.")
+
                 sys.exit(1)
 
         return path
@@ -246,9 +237,12 @@ class Kernel:
         request = self.create_command_request(command, args)
 
         if not request and not quiet:
-            self.io.error(ERR_ARGUMENT_COMMAND_MALFORMED, {
-                'command': command
-            })
+            self.io.error(
+                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
+                {
+                    'command': command
+                }, trace=False
+            )
 
         request.quiet = quiet
 
@@ -294,13 +288,16 @@ class Kernel:
         command_type = request.runner.get_command_type()
         resolver_type = request.resolver.get_type()
         if command_type != resolver_type:
-            self.io.error(ERR_COMMAND_TYPE_MISMATCH, {
+            message = ("Command type \"{command_type}\" does not match with resolver type \"{resolver_type}\" for "
+                       "command {command}")
+
+            self.io.error(message, {
                 'command': request.command,
                 'command_type': command_type,
                 'resolver_type': resolver_type,
             })
 
-            return AbortResponse(self, reason=ERR_COMMAND_TYPE_MISMATCH)
+            return AbortResponse(self, reason=message)
 
         # Enforce sudo.
         if request.runner.has_attr('as_sudo') and os.geteuid() != 0:
@@ -414,10 +411,8 @@ class Kernel:
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.io.error(
-                ERR_UNEXPECTED,
-                {
-                    'error': 'Please use the "bash ./cli/wex" file to run wex script.'
-                }
+                'Please use the "bash ./cli/wex" file to run wex script.',
+                trace=False
             )
             sys.exit(1)
 

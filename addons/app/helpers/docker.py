@@ -10,7 +10,6 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.helper.command import execute_command
 from src.helper.system import get_user_or_sudo_user
 from src.helper.process import process_post_exec
-from src.const.error import ERR_UNEXPECTED, ERR_USER_HAS_NO_DOCKER_PERMISSION
 
 
 def get_app_docker_compose_files(kernel, app_dir):
@@ -51,9 +50,11 @@ def exec_app_docker_compose_command(
 ):
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
-        kernel.io.error(ERR_USER_HAS_NO_DOCKER_PERMISSION, {
+        kernel.io.error(
+            "User should have permission to run Docker. To give permission, add user to docker group : \n sudo "
+            "usermod -aG docker {username}", {
             'username': username
-        })
+        }, trace=False)
 
     manager: AppAddonManager = kernel.addons['app']
     env = manager.get_runtime_config('env')
@@ -105,12 +106,10 @@ def exec_app_docker_compose(
 
         if not success:
             kernel.io.error(
-                ERR_UNEXPECTED,
-                {
-                    'error': f'Error during running docker compose "{docker_command}" : \n\n'
-                             + ' '.join(command)
-                             + '\n'.join(output)
-                }
+                f'Error during running docker compose "{docker_command}" : \n\n'
+                + ' '.join(command)
+                + '\n'.join(output),
+                trace=False
             )
 
         return '\n'.join(output)

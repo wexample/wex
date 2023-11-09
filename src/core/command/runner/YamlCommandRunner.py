@@ -6,7 +6,6 @@ from click import Command
 
 from src.helper.string import replace_variables
 from src.helper.yaml import yaml_load
-from src.const.error import ERR_UNEXPECTED
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
 from src.decorator.command import command
@@ -29,9 +28,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         self.content = yaml_load(self.request.path)
 
         if not self.content:
-            self.kernel.io.error(ERR_UNEXPECTED, {
-                'error': f'Unable to load yaml script file content :  {self.request.path}',
-            })
+            self.kernel.io.error(f'Unable to load yaml script file content :  {self.request.path}', trace=False)
 
     def convert_args_dict_to_list(self, args: dict) -> list:
         pass

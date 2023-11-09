@@ -10,9 +10,8 @@ from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
+    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS, ERR_COMMAND_FILE_NOT_FOUND
 from src.helper.args import args_convert_dict_to_args
-from src.const.error import ERR_COMMAND_FILE_NOT_FOUND
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user

@@ -5,7 +5,6 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.env.get import app__env__get
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.start import app__app__start
-from src.const.error import ERR_UNEXPECTED
 from src.helper.system import get_processes_by_port
 from src.decorator.as_sudo import as_sudo
 from addons.app.AppAddonManager import AppAddonManager
@@ -69,24 +68,14 @@ def app__proxy__start(kernel: Kernel,
 
         def check_port(port_to_check: int):
             if not port_to_check:
-                kernel.io.error(
-                    ERR_UNEXPECTED,
-                    {
-                        'error': f"Invalid port {port_to_check}"
-                    }
-                )
+                kernel.io.error(f"Invalid port {port_to_check}", trace=False)
 
             manager.log(f'Checking that port {port_to_check} is free')
 
             # Check port availability.
             process = get_processes_by_port(port_to_check)
             if process:
-                kernel.io.error(
-                    ERR_UNEXPECTED,
-                    {
-                        'error': f"Process {process.pid} ({process.name()}) is using port {port_to_check}"
-                    }
-                )
+                kernel.io.error(f"Process {process.pid} ({process.name()}) is using port {port_to_check}", trace=False)
 
             kernel.io.success(f'Port {port_to_check} free')
 

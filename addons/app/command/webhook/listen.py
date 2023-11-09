@@ -10,7 +10,6 @@ from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
-from src.const.error import ERR_UNEXPECTED
 from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_PATH_PLACEHOLDER, \
     WEBHOOK_COMMAND_PORT_PLACEHOLDER
 from src.decorator.as_sudo import as_sudo
@@ -63,9 +62,7 @@ def app__webhook__listen(
             import time
             time.sleep(1)
         else:
-            kernel.io.error(ERR_UNEXPECTED, {
-                'error': f'Port already in use {port}',
-            })
+            kernel.io.error(f'Port already in use {port}', trace=False)
             return False
 
     # Remove old service file

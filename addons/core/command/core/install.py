@@ -6,7 +6,6 @@ from addons.app.helpers.app import create_env
 from addons.core.command.logo.show import core__logo__show
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.default.command.file.append_once import default__file__append_once
-from src.const.error import ERR_PYTHON_MINIMAL_VERSION
 from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data_path
 from src.helper.file import remove_file_if_exists, create_from_template
 from src.const.globals import CORE_BIN_FILE_ROOT, PYTHON_MIN_VERSION, CORE_BIN_FILE_LOCAL
@@ -33,10 +32,10 @@ def __core__core__check_requirements(kernel):
     kernel.io.log(f'Checking python version ...')
 
     if sys.version_info < PYTHON_MIN_VERSION:
-        kernel.io.error(ERR_PYTHON_MINIMAL_VERSION, {
+        kernel.io.error("Python {expected} or later is required, actually running on {current}", {
             'current': '.'.join(str(n) for n in sys.version_info),
             'expected': '.'.join(str(n) for n in PYTHON_MIN_VERSION)
-        })
+        }, trace=False)
 
 
 def __core__core__install_env(kernel):

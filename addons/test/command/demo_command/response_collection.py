@@ -87,10 +87,7 @@ def test__demo_command__response_collection(kernel: Kernel, abort: bool = False)
 
         if error:
             kernel.io.error(
-                'ERR_UNEXPECTED',
-                {
-                    'error': f'Bad previous to response match : previous : {previous}, rendered : {rendered}'
-                }
+                f'Bad previous to response match : previous : {previous}, rendered : {rendered}'
             )
         return response
 

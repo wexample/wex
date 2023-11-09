@@ -1,10 +1,15 @@
-import json
 import os
 import sys
 
-from src.helper.string import count_lines_needed
+from src.helper.string import count_lines_needed, format_ignore_missing
 from src.const.globals import \
-    COLOR_RESET, COLOR_GRAY, COLOR_CYAN, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT, COLOR_GREEN, COLOR_RED
+    (COLOR_RESET,
+     COLOR_CYAN,
+     COMMAND_TYPE_ADDON,
+     VERBOSITY_LEVEL_DEFAULT,
+     COLOR_GREEN,
+     COLOR_GRAY,
+     COLOR_RED)
 
 IO_DEFAULT_LOG_LENGTH = 10
 
@@ -19,52 +24,33 @@ class IOManager:
         self.indent_string = '  '
         self.kernel = kernel
 
-    def trans(self, key: str, parameters: object = {}, default=None) -> str:
-        # Performance optimisation
-        from src.helper.string import format_ignore_missing
-
-        # Load the messages from the JSON file
-        if self.messages is None:
-            with open(self.kernel.get_path('root') + 'locale/messages.json') as f:
-                self.messages = json.load(f)
-
-                for addon in self.kernel.addons:
-                    messages_path = self.kernel.get_path('addons') + f'{addon}/locale/messages.json'
-
-                    if os.path.exists(messages_path):
-                        with open(messages_path) as file:
-                            self.messages.update(json.load(file))
-
-        return format_ignore_missing(
-            self.messages.get(key, default or key),
-            parameters
-        )
-
-    def error(self, code: str, parameters: None | dict = None, log_level: int | None = None) -> None:
+    def error(
+            self,
+            message: str,
+            parameters: None | dict = None,
+            fatal: bool = True,
+            trace: bool = True) -> None:
         # Performance optimisation
         import logging
-        from src.const.error import COLORS
 
-        if log_level is None:
-            log_level = logging.FATAL
-
-        message = f'[{code}] {self.trans(code, parameters, "Unexpected error")}'
-        message = f'{COLORS[log_level]}{message}{COLOR_RESET}'
+        message = f'[ERROR] {format_ignore_missing(message, parameters)}'
+        message = f'{COLOR_RED}{message}{COLOR_RESET}'
 
         # Support errors before logger loading
         if self.kernel.logger:
             self.kernel.logger.append_error(
-                code,
+                'ERROR',
                 parameters or {},
-                log_level
+                logging.FATAL if fatal else logging.ERROR
             )
 
-        if log_level == logging.FATAL:
-            from src.core.FatalError import FatalError
+        self.print(message)
 
+        if trace or os.isatty(0):
+            from src.core.FatalError import FatalError
             raise FatalError(message)
-        else:
-            self.print(message)
+
+        exit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1

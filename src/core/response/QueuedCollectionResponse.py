@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from src.helper.yaml import yaml_is_basic_data
 from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
-from src.const.error import ERR_UNEXPECTED
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
 from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import \
@@ -121,15 +120,15 @@ class QueuedCollectionResponse(AbstractResponse):
         # should have been created during the rendering process.
         if isinstance(response, FunctionResponse):
             if self.kernel.tmp['last_created_queued_collection'] != self:
-                self.kernel.io.error(ERR_UNEXPECTED, {
-                    'error': 'A nested "QueuedCollectionResponse" have been created but not passed to its parent'
-                             f', got : {response.print()}, in command {request.command} at step {step_index}',
-                })
+                self.kernel.io.error(
+                    'A nested "QueuedCollectionResponse" have been created but not passed to its parent'
+                    f', got : {response.print()}, in command {request.command} at step {step_index}'
+                )
 
         if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(response):
-            self.kernel.io.error(ERR_UNEXPECTED, {
-                'error': f'Returned data and nested values should be simple data : int, string, list or dict',
-            })
+            self.kernel.io.error(
+                f'Returned data and nested values should be simple data : int, string, list or dict'
+            )
 
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 

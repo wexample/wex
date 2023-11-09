@@ -40,6 +40,7 @@ CORE_BIN_FILE_ROOT = '/usr/bin/wex'
 CORE_BIN_FILE_LOCAL = '/usr/local/bin/wex'
 CORE_COMMAND_NAME = 'wex'
 DATE_FORMAT_SECOND = '%Y-%m-%d %H:%M:%S'
+ERR_COMMAND_FILE_NOT_FOUND = "Command file not found for command {command}, in path \"{path}\""
 FILE_README = 'README.md'
 FILE_REGISTRY = 'registry.yml'
 FILE_VERSION = 'version.txt'

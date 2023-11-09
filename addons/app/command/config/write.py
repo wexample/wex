@@ -3,7 +3,6 @@ import yaml
 
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.helpers.docker import exec_app_docker_compose, get_app_docker_compose_files
-from src.const.error import ERR_UNEXPECTED
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
@@ -58,9 +57,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
         except yaml.YAMLError:
             kernel.io.print(yml_content)
 
-            kernel.io.error(ERR_UNEXPECTED, {
-                'error': 'Wrong yaml from docker compose',
-            })
+            kernel.io.error('Wrong yaml from docker compose')
 
         with open(os.path.join(
                 app_dir,
