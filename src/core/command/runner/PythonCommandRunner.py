@@ -1,6 +1,5 @@
 from click import Command
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
-from src.helper.args import args_convert_dict_to_args
 from src.core.CommandRequest import CommandRequest
 import importlib.util
 
@@ -8,9 +7,6 @@ import importlib.util
 class PythonCommandRunner(AbstractCommandRunner):
     def set_request(self, request: CommandRequest):
         super().set_request(request=request)
-
-    def convert_args_dict_to_list(self, args: dict) -> list:
-        return args_convert_dict_to_args(self.request.function, args)
 
     def build_request_function(self) -> Command:
         # Import module and load function.

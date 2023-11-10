@@ -31,9 +31,6 @@ class YamlCommandRunner(AbstractCommandRunner):
         if not self.content:
             self.kernel.io.error(f'Unable to load yaml script file content :  {self.request.path}', trace=False)
 
-    def convert_args_dict_to_list(self, args: dict) -> list:
-        pass
-
     def get_request_function(self, path: str, parts) -> Command:
         pass
 

@@ -15,10 +15,6 @@ class AbstractCommandRunner:
         self.request.runner = self
 
     @abstractmethod
-    def convert_args_dict_to_list(self, args: dict) -> list:
-        pass
-
-    @abstractmethod
     def get_command_type(self):
         pass
 

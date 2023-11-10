@@ -2,6 +2,7 @@ import os
 
 from click import Command
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
+from src.helper.args import args_convert_dict_to_args
 
 
 class CommandRequest:
@@ -56,8 +57,8 @@ class CommandRequest:
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
-                self.args = self.runner.convert_args_dict_to_list(
-                    self.args
-                )
+                self.args = args_convert_dict_to_args(
+                    self.function,
+                    self.args)
 
             return True

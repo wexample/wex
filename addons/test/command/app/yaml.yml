@@ -1,0 +1,12 @@
+type: addon
+webhook: false
+help: Description
+command_decorator: app_command
+options:
+  - name: --option
+    short: -o
+    help: This is an option
+    required: true
+    type: bool
+scripts:
+  - echo "Inline bash script example"
