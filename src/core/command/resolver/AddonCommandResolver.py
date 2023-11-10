@@ -24,7 +24,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             return None
 
         return self.build_command_path(
-            base_path=f"{self.kernel.get_path('addons')}{to_snake_case(request.match.group(1))}/",
+            base_path=self.kernel.get_path('addons', [to_snake_case(request.match.group(1))]),
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))

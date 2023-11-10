@@ -36,6 +36,7 @@ class Kernel:
     # Allow child classes override
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
+    tty: bool = os.isatty(0)
 
     def __init__(
             self,
@@ -100,10 +101,18 @@ class Kernel:
 
         self.load_registry()
 
-    def get_path(self, name: str) -> str:
+    def get_path(self, name: str, sub_dirs: list = None) -> str:
         """Get the path associated with the given name."""
         if name in self.path:
-            return self.path[name]
+            base_path = self.path[name]
+
+            if sub_dirs:
+                return os.path.join(
+                    base_path,
+                    *sub_dirs
+                ) + os.sep
+
+            return base_path
         else:
             self.io.error(
                 f'Core path not found {name}.'

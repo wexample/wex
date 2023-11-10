@@ -7,3 +7,4 @@ class TestKernel(Kernel):
     # dedicated subprocesses during tests
     fast_mode = True
     verbosity: int = VERBOSITY_LEVEL_MAXIMUM
+    tty = False

@@ -27,7 +27,6 @@ def core__registry__build(kernel, test: bool = False, write: bool = True):
 
 def _core__registry__build(kernel, test: bool = False, write: bool = True):
     kernel.io.log('Building registry...')
-    addons = kernel.addons
 
     # Call function avoiding core command management.
     env = app__env__get.callback.__wrapped__(
@@ -36,8 +35,8 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     )
 
     registry = {
-        COMMAND_TYPE_ADDON: _core__registry__build__addons(addons, kernel, test),
-        COMMAND_TYPE_SERVICE: _core__registry__build__services(addons, kernel, test),
+        COMMAND_TYPE_ADDON: _core__registry__build__addons(kernel, test),
+        COMMAND_TYPE_SERVICE: _core__registry__build__services(kernel, test),
         'env': env,
     }
 
@@ -54,12 +53,12 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
         return registry
 
 
-def _core__registry__build__addons(addons, kernel, test_commands: bool = False):
+def _core__registry__build__addons(kernel, test_commands: bool = False):
     addons_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
 
-    for addon in addons:
-        addon_command_path = os.path.join(kernel.get_path('addons'), addon, 'command')
+    for addon in kernel.addons:
+        addon_command_path = kernel.get_path('addons', [addon, 'command'])
 
         if os.path.exists(addon_command_path):
             addons_dict[addon] = {
@@ -73,12 +72,12 @@ def _core__registry__build__addons(addons, kernel, test_commands: bool = False):
     return addons_dict
 
 
-def _core__registry__build__services(addons, kernel, test_commands: bool = False):
+def _core__registry__build__services(kernel, test_commands: bool = False):
     services_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 
-    for addon in addons:
-        services_dir = os.path.join(kernel.get_path('addons'), addon, 'services')
+    for addon in kernel.addons:
+        services_dir = kernel.get_path('addons', [addon, 'services'])
         if os.path.exists(services_dir):
             for service in os.listdir(services_dir):
                 kernel.io.log(f'Found service {service}')
