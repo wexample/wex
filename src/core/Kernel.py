@@ -5,8 +5,6 @@ from typing import Optional
 
 from yaml import SafeLoader
 
-from src.decorator.test_command import test_command
-from src.decorator.command import command
 from src.helper.args import args_shift_one
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.NullResponse import NullResponse
@@ -48,9 +46,25 @@ class Kernel:
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: dict = {}
-        self.command_decorators = {
-            'command': command,
-            'test_command': test_command,
+
+        from src.decorator.alias import alias
+        from src.decorator.as_sudo import as_sudo
+        from src.decorator.test_command import test_command
+        from src.decorator.command import command
+        from src.decorator.no_log import no_log
+        from src.decorator.verbosity import verbosity
+
+        self.decorators = {
+            'command': {
+                'command': command,
+                'test_command': test_command,
+            },
+            'extra': {
+                'alias': alias,
+                'as_sudo': as_sudo,
+                'no_log': no_log,
+                'verbosity': verbosity,
+            }
         }
 
         # Initialize global variables.

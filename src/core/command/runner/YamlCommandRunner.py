@@ -92,7 +92,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         decorator_name = get_dict_item_by_path(self.content, 'command.decorator')
         if decorator_name:
-            decorator = self.kernel.command_decorators[decorator_name]
+            decorator = self.kernel.decorators['command'][decorator_name]
         else:
             decorator = command
 

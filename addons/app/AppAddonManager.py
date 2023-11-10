@@ -3,11 +3,9 @@ import platform
 import datetime
 import getpass
 import yaml
-from dotenv import dotenv_values
 
-from addons.app.decorator.app_command import app_command
 from src.helper.args import args_shift_one, args_push_one
-from src.helper.string import to_snake_case, to_kebab_case, replace_variables
+from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
     COMMAND_TYPE_APP
 from src.core.AddonManager import AddonManager
@@ -37,7 +35,21 @@ class AppAddonManager(AddonManager):
         if app_dir:
             self.set_app_workdir(app_dir)
 
-        self.kernel.command_decorators['app_command'] = app_command
+        # Register extra decorators to allow using it in yaml scripts
+        from addons.app.decorator.app_command import app_command
+        from addons.app.decorator.app_dir_option import app_dir_option
+        from addons.app.decorator.option_webhook_listener import option_webhook_listener
+        from addons.app.decorator.service_option import service_option
+
+        self.kernel.decorators['command'].update({
+            'app_command': app_command
+        })
+
+        self.kernel.decorators['command'].update({
+            'app_dir_option': app_dir_option,
+            'option_webhook_listener': option_webhook_listener,
+            'service_option': service_option,
+        })
 
     def get_applications_path(self) -> str:
         return os.sep + os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
