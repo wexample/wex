@@ -30,7 +30,9 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
 
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
-    service = manager.get_config('docker.main_db_container')
+    service = manager.get_config(
+        'docker.main_db_container',
+        required=True)
 
     output_path = dump_path = kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dump',

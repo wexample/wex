@@ -284,8 +284,15 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_config(self, key: str, default: any = None) -> any:
-        return get_dict_item_by_path(self.config, key, default)
+    def get_config(self, key: str, default: any = None, required: bool = False) -> any:
+        value = get_dict_item_by_path(self.config, key, default)
+
+        if required and value is None:
+            self.kernel.io.error(
+                f'Missing expected config key : {key}, got None',
+                trace=False)
+
+        return value
 
     def log(self, message: str, color=COLOR_GRAY, indent: int = 0) -> None:
         if self.first_log_indent is None:

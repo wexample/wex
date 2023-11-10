@@ -19,7 +19,9 @@ def app__db__exec(
         database: str = None,
         sync: bool = False):
     manager: AppAddonManager = kernel.addons['app']
-    service = service or manager.get_config('docker.main_db_container')
+    service = service or manager.get_config(
+        'docker.main_db_container',
+        required=True)
 
     exec_command = kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/exec',

@@ -43,8 +43,16 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
+        name = to_snake_case(request.match[1])
+        path = get_service_dir(self.kernel, name)
+
+        if not path:
+            self.kernel.io.error(
+                f'Service not found : {name}'
+            )
+
         return self.build_command_path(
-            base_path=get_service_dir(self.kernel, to_snake_case(request.match[1])),
+            base_path=path,
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(to_snake_case(request.match.group(2)), to_snake_case(request.match.group(3)))
