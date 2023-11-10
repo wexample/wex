@@ -283,10 +283,10 @@ class AbstractCommandResolver:
     def scan_commands(self, directory: str, group: str, test_commands: bool = False):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
-        for command in os.listdir(directory):
-            extension = command.rsplit('.', 1)[-1]
+        for command_file_name in os.listdir(directory):
+            extension = command_file_name.rsplit('.', 1)[-1]
             if extension in COMMAND_EXTENSIONS:
-                command_file = os.path.join(directory, command)
+                command_file = os.path.join(directory, command_file_name)
                 parts = self.build_command_parts_from_file_path(command_file)
                 internal_command = self.build_command_from_parts(parts)
 
@@ -298,11 +298,19 @@ class AbstractCommandResolver:
 
                 test_file = None
                 if test_commands or not hasattr(function.callback, 'test_command'):
-                    test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
+                    # All test are in python
+                    test_file = os.path.realpath(
+                        os.path.join(
+                            directory, '../../tests/command',
+                            group,
+                            command_file_name.rsplit('.', 1)[0] + '.py'
+                        ))
+
+                    test_file = test_file if (test_file and os.path.exists(test_file)) else None
 
                 commands[internal_command] = {
                     'file': command_file,
-                    'test': test_file if (test_file and os.path.exists(test_file)) else None,
+                    'test': test_file,
                     'alias': self.get_function_aliases(function)
                 }
         return commands
