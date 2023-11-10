@@ -1,7 +1,0 @@
-{
-  "ERR_APP_NOT_FOUND": "No application directory found when running \"{command}\", searching from {dir}",
-  "ERR_APP_SHOULD_RUN": "Application should be running to execute \"{command}\", in {dir}",
-  "ERR_CORE_ACTION_NOT_FOUND": "No core action found : \"{command}\"",
-  "ERR_SERVICE_NOT_FOUND": "Service not found : {service}",
-  "ERR_SERVICE_EXISTS": "Service already exists : {service}"
-}
