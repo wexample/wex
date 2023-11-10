@@ -51,4 +51,8 @@ class AbstractCommandRunner:
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.kernel
 
-        return click_function.invoke(ctx)
+        return click_function.run_handler(
+            self,
+            click_function,
+            ctx
+        )

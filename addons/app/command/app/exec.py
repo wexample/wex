@@ -1,3 +1,4 @@
+from addons.app.helpers.docker import build_long_container_name
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string
 from src.decorator.option import option
@@ -55,7 +56,7 @@ def app__app__exec(
     )
 
     docker_command += [
-        f'{manager.get_runtime_config("name")}_{container_name}',
+        build_long_container_name(kernel, container_name),
         shell_command
     ]
 

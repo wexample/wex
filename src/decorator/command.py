@@ -1,6 +1,7 @@
 import click
 
 from src.const.globals import COMMAND_TYPE_ADDON
+from typing import List, Optional, Dict, Any
 
 
 # Define your custom decorator
@@ -46,6 +47,30 @@ def command(*args, **kwargs):
                              help="Change logging frame height, set 0 to disable it")(f)
             f = click.option('--render-mode', '-render-mode', type=int, required=False,
                              help="Define render mode (cli, http, ...), which produce different output formatting")(f)
+
+            f.run_handler = _command_run
+            f.script_run_handler = _script_run
         return f
 
     return decorator
+
+
+def _command_run(runner, function, ctx):
+    return function.invoke(ctx)
+
+
+def _script_run(function, runner, script: Dict[str, Any], env_args: Dict[str, str]) -> Optional[List[str]]:
+    from src.helper.string import replace_variables
+
+    if "script" in script:
+        script_command = replace_variables(script["script"], env_args)
+    elif "file" in script:
+        script_command = replace_variables(script["file"], env_args)
+        script["interpreter"] = script.get("interpreter", ["/bin/bash"])
+    else:
+        script_command = None
+
+    if "interpreter" in script:
+        script_command = repr(script_command)
+
+    return script["interpreter"] + [script_command] if "interpreter" in script and script_command else script_command

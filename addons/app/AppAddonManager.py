@@ -561,51 +561,6 @@ class AppAddonManager(AddonManager):
             args
         )
 
-    def hook_execute_yaml_script(self, request, script, command):
-        from addons.app.command.app.started import app__app__started
-
-        if not self.app_dir:
-            return
-
-        env_args = dotenv_values(
-            os.path.join(
-                self.app_dir,
-                APP_FILEPATH_REL_DOCKER_ENV
-            )
-        )
-
-        if 'script' in script:
-            script['script'] = replace_variables(
-                script['script'], env_args)
-
-        if 'file' in script:
-            script['file'] = replace_variables(
-                script['file'], env_args)
-
-        if 'container_name' in script:
-            script['app_should_run'] = True
-
-        if 'app_should_run' in script:
-            if not self.kernel.run_function(
-                    app__app__started,
-                    {
-                        'app-dir': self.app_dir,
-                    }
-            ).first():
-                self.kernel.io.error(ERR_APP_SHOULD_RUN, {
-                    'command': script['title'],
-                    'dir': self.app_dir,
-                })
-
-                return
-
-        if 'container_name' in script:
-            return _app__script__exec__create_callback(
-                self.kernel,
-                self.app_dir,
-                command
-            )
-
 
 def _app__script__exec__create_callback(
         kernel,

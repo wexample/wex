@@ -1,18 +1,16 @@
 import os
-import sys
 import types
 
 import click
 from click import Command
 
 from src.helper.dict import get_dict_item_by_path
-from src.helper.string import replace_variables
 from src.helper.yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
 from src.decorator.command import command
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 
 COMMAND_TYPE_BASH = 'bash'
 COMMAND_TYPE_BASH_FILE = 'bash-file'
@@ -62,58 +60,19 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script['title'])
 
-                if 'script' in script:
-                    script['script'] = replace_variables(
-                        script['script'], env_args)
+                command = click_function.script_run_handler(
+                    click_function,
+                    self,
+                    script,
+                    env_args
+                )
 
-                if 'file' in script:
-                    script['file'] = replace_variables(
-                        script['file'], env_args)
-
-                script_part_type = script.get('type', COMMAND_TYPE_BASH)
-                command = None
-
-                if script_part_type == COMMAND_TYPE_BASH:
-                    command = script.get('script', '')
-                elif script_part_type == COMMAND_TYPE_BASH_FILE:
-                    # File is required in this case.
-                    if 'file' in script_part_type:
-                        command = [
-                            'bash',
-                            script['file']
-                        ]
-                elif script_part_type == COMMAND_TYPE_PYTHON:
-                    if 'script' in script:
-                        command = [
-                            sys.executable,
-                            '-c',
-                            script['script']
-                        ]
-                elif script_part_type == COMMAND_TYPE_PYTHON_FILE:
-                    # File is required in this case.
-                    if 'file' in script_part_type:
-                        command = [
-                            'python3',
-                            script['file']
-                        ]
-
-                if command:
-                    # Allow addons to configure custom command.
-                    hook_command = self.kernel.hook_addons(
-                        'execute_yaml_script',
-                        {
-                            'request': self.request,
-                            'script': script,
-                            'command': command,
-                        }
+                commands_collection.append(
+                    InteractiveShellCommandResponse(
+                        self.kernel,
+                        command
                     )
-
-                    commands_collection.append(
-                        InteractiveShellCommandResponse(
-                            self.kernel,
-                            hook_command or command
-                        )
-                    )
+                )
 
             return QueuedCollectionResponse(
                 self.kernel,
@@ -121,7 +80,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Function must have the appropriate name,
         # allowing to guess internal command name from it
-        new_function = types.FunctionType(
+        click_function_callback = types.FunctionType(
             _click_function_handler.__code__,
             _click_function_handler.__globals__,
             self.request.resolver.get_function_name(
@@ -139,7 +98,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         decorator_options = get_dict_item_by_path(self.content, 'command.options', {})
 
-        click_function = decorator(help=self.content['help'], **decorator_options)(new_function)
+        click_function = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
 
         if 'options' in self.content:
             options = self.content['options']

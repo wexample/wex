@@ -12,7 +12,6 @@ scripts:
   - echo "Demo option value $TEST_OPTION"
 
   - title: Bash command expanded
-    type: bash
     script: |
       # This is a multi-line script
       echo "Demo command : line one"
@@ -21,11 +20,10 @@ scripts:
       echo "Current path : ${PATH_CURRENT}"
 
   - title: Running bash file
-    type: bash-file
     file: ${PATH_CORE}tests/resources/simple-shell-file.sh
 
   - title: Inline python
-    type: python
+    interpreter: ['python', '-c']
     script: |
       # Simple quotes
       print('Python script with simple quotes')
@@ -33,5 +31,5 @@ scripts:
       print("Python script with double quotes")
 
   - title: Running python file
-    type: python-file
+    interpreter: ['python']
     file: ${PATH_CORE}tests/resources/simple-python-file.py

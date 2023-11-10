@@ -14,8 +14,30 @@ options:
     required: true
     type: bool
 scripts:
-  - echo "Inline bash script example"
+    - echo "Inline bash script example"
 
-  - title: Bash outside container but with running app
-    app_should_run: true
-    script: echo "Inline bash script outside running app in ${APP_DIR}"
+    - title: Bash outside container but with running app
+      app_should_run: true
+      script: echo "Inline bash script outside running app in ${APP_DIR}"
+
+    - title: Bash inside container, test a previously created file
+      context: container
+      container_name: php
+      script: cat /test-file
+
+    - title: Running bash file
+      context: container
+      container_name: php
+      file: /test-file.sh
+
+    - title: Inline python
+      context: containers
+      container_name: php
+      interpreter: ['python3', '-c']
+      script: print("IN_CONTAINER_PYTHON_SCRIPT")
+
+    - title: File in python
+      context: container
+      container_name: php
+      interpreter: ['python3']
+      file: /test-python.py

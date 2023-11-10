@@ -3,16 +3,17 @@ import os
 import subprocess
 
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
-from addons.app.command.service.used import app__service__used
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.docker.helpers.docker import user_has_docker_permission
-from addons.app.AppAddonManager import AppAddonManager
 from src.helper.command import execute_command
 from src.helper.system import get_user_or_sudo_user
 from src.helper.process import process_post_exec
 
 
 def get_app_docker_compose_files(kernel, app_dir):
+    from addons.app.AppAddonManager import AppAddonManager
+    from addons.app.command.service.used import app__service__used
+
     app_compose_file = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.yml'
     compose_files = []
 
@@ -53,10 +54,10 @@ def exec_app_docker_compose_command(
         kernel.io.error(
             "User should have permission to run Docker. To give permission, add user to docker group : \n sudo "
             "usermod -aG docker {username}", {
-            'username': username
-        }, trace=False)
+                'username': username
+            }, trace=False)
 
-    manager: AppAddonManager = kernel.addons['app']
+    manager = kernel.addons['app']
     env = manager.get_runtime_config('env')
 
     command = [
@@ -122,3 +123,8 @@ def get_container_pid(container_name):
     result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
     data = json.loads(result.stdout.decode('utf-8'))
     return data[0]['State']['Pid']
+
+
+def build_long_container_name(kernel, name: str) -> str:
+    manager = kernel.addons['app']
+    return f'{manager.get_runtime_config("name")}_{name}'
