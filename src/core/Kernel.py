@@ -281,9 +281,7 @@ class Kernel:
                 self.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                     'command': request.command,
                     'path': request.path,
-                })
-
-                return AbortResponse(self, reason=ERR_COMMAND_FILE_NOT_FOUND)
+                }, trace=False)
 
             return NullResponse(self)
 
