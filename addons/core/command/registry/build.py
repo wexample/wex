@@ -36,8 +36,8 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
     )
 
     registry = {
-        COMMAND_TYPE_ADDON: build_registry_addons(addons, kernel, test),
-        COMMAND_TYPE_SERVICE: build_registry_services(addons, kernel, test),
+        COMMAND_TYPE_ADDON: _core__registry__build__addons(addons, kernel, test),
+        COMMAND_TYPE_SERVICE: _core__registry__build__services(addons, kernel, test),
         'env': env,
     }
 
@@ -54,7 +54,7 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
         return registry
 
 
-def build_registry_addons(addons, kernel, test_commands: bool = False):
+def _core__registry__build__addons(addons, kernel, test_commands: bool = False):
     addons_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
 
@@ -73,7 +73,7 @@ def build_registry_addons(addons, kernel, test_commands: bool = False):
     return addons_dict
 
 
-def build_registry_services(addons, kernel, test_commands: bool = False):
+def _core__registry__build__services(addons, kernel, test_commands: bool = False):
     services_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 
