@@ -14,7 +14,7 @@ from src.decorator.command import command
 def app__webhook__stop(
         kernel: Kernel,
 ):
-    use_daemon = not kernel.run_function(system__system__is_docker)
+    use_daemon = not kernel.run_function(system__system__is_docker).first()
 
     if use_daemon:
         service_exec(kernel, SERVICE_DAEMON_NAME, 'stop')
@@ -22,6 +22,8 @@ def app__webhook__stop(
         remove_file_if_exists(SERVICE_DAEMON_PATH)
         service_daemon_reload(kernel)
         service_daemon_reload(kernel, 'reset-failed')
+
+        kernel.io.message(f'Webhook server daemon stopped')
     else:
         kill_process_by_command(
             kernel,
@@ -30,4 +32,4 @@ def app__webhook__stop(
             )
         )
 
-    kernel.io.message(f'Webhook server stopped')
+        kernel.io.message(f'Webhook server process killed')
