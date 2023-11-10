@@ -23,7 +23,7 @@ scripts:
     file: ${PATH_CORE}tests/resources/simple-shell-file.sh
 
   - title: Inline python
-    interpreter: ['python', '-c']
+    interpreter: ['python3', '-c']
     script: |
       # Simple quotes
       print('Python script with simple quotes')
@@ -31,5 +31,5 @@ scripts:
       print("Python script with double quotes")
 
   - title: Running python file
-    interpreter: ['python']
+    interpreter: ['python3']
     file: ${PATH_CORE}tests/resources/simple-python-file.py

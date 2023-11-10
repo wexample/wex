@@ -57,6 +57,9 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
         if 'container_name' in script:
             from src.helper.command import command_to_string
 
+            if "interpreter" in script:
+                command[-1] = repr(command[-1])
+
             wrap_command = [
                 'docker',
                 'exec',
