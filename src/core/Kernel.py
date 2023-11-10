@@ -18,18 +18,7 @@ from src.const.globals import \
     KERNEL_RENDER_MODE_JSON, ERR_COMMAND_FILE_NOT_FOUND
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
-from src.core.command.resolver.AddonCommandResolver import AddonCommandResolver
-from src.core.command.resolver.AppCommandResolver import AppCommandResolver
-from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
-from src.core.command.resolver.UserCommandResolver import UserCommandResolver
 from src.core.response.AbortResponse import AbortResponse
-
-COMMAND_RESOLVERS_CLASSES = [
-    AddonCommandResolver,
-    ServiceCommandResolver,
-    AppCommandResolver,
-    UserCommandResolver,
-]
 
 
 class Kernel:
@@ -94,6 +83,7 @@ class Kernel:
         self.logger: Logger = Logger(self)
 
         # Create resolvers
+        from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
         self.resolvers: dict = {
             class_definition.get_type(): class_definition(self)
             for class_definition in COMMAND_RESOLVERS_CLASSES

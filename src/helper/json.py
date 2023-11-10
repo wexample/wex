@@ -2,11 +2,12 @@ import json
 import os
 
 
-def parse_json_if_valid(json_data) -> dict | bool:
+def parse_json_if_valid(json_data: str) -> dict | bool:
     try:
         return json.loads(json_data)
     except json.JSONDecodeError:
-        return {}
+        return False
+
 
 def load_json_if_valid(path) -> dict | bool:
     if os.path.exists(path):

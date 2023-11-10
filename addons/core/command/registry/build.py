@@ -81,7 +81,7 @@ def _core__registry__build__services(kernel, test_commands: bool = False):
         if os.path.exists(services_dir):
             for service in os.listdir(services_dir):
                 kernel.io.log(f'Found service {service}')
-                service_path = os.path.join(services_dir, service)
+                service_path = os.path.join(services_dir, service) + os.sep
                 config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
                 commands_path = os.path.join(service_path, 'command')
 
@@ -92,7 +92,7 @@ def _core__registry__build__services(kernel, test_commands: bool = False):
                         test_commands
                     ),
                     'addon': addon,
-                    'dir': service_path + '/',
+                    'dir': service_path,
                     "config": (yaml.load(
                         open(config_file_path),
                         SafeLoader

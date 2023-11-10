@@ -53,7 +53,7 @@ class Logger:
                 task_id=task_id,
                 delete_after_read=False
             )
-        )
+        ) or {}
 
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
