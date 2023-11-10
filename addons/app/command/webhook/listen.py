@@ -18,6 +18,7 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from addons.app.command.webhook.exec import app__webhook__exec
+import time
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
     'exec': {
@@ -59,7 +60,6 @@ def app__webhook__listen(
         if force:
             kernel.io.log(f'Port already in use {port}, killing process...')
             kill_process_by_port(port)
-            import time
             time.sleep(1)
         else:
             kernel.io.error(f'Port already in use {port}', trace=False)
@@ -113,10 +113,7 @@ def app__webhook__listen(
                 "command": command,
             })
 
-            kernel.io.message(f'Started webhook listener on port {port}')
-
-            return process
-
+            kernel.io.message(f'Started webhook listener on port {port} in process {process.pid}')
     else:
         try:
             kernel.logger.append_event('EVENT_WEBHOOK_LISTEN', {
@@ -180,7 +177,7 @@ def app__webhook__listen(
                     kernel.logger.append_event('EVENT_WEBHOOK_SERVER_STARTING')
                     server.serve_forever()
 
-            kernel.io.message(f'Webhook server started on port {port}')
+            return
 
         except Exception as e:
             import traceback
@@ -191,3 +188,6 @@ def app__webhook__listen(
             })
 
             raise
+
+    time.sleep(2)
+    return kernel.run_function(app__webhook__status)
