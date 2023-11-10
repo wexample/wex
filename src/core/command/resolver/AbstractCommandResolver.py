@@ -149,7 +149,7 @@ class AbstractCommandResolver:
             self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
                 'command': request.command,
                 'path': path,
-            })
+            }, trace=False)
 
         return path
 

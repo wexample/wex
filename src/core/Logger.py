@@ -116,6 +116,7 @@ class Logger:
         # When writing current log, check if disabled.
         if not task_id and (
                 self.kernel.root_request
+                and self.kernel.root_request.function
                 and self.kernel.root_request.function_has_attr(name='no_log')):
             return
 

@@ -2,7 +2,7 @@ import os
 import shutil
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.json import load_json_if_valid
+from src.helper.yaml import yaml_load_or_default
 
 
 def get_service_dir(kernel, service: str) -> str | bool:
@@ -19,10 +19,13 @@ def get_service_dir(kernel, service: str) -> str | bool:
 def service_load_config(kernel, service) -> dict | bool:
     dirs = service_get_all_dirs(kernel)
 
+    if service not in dirs:
+        return False
+
     # Allow service to not define a config file
-    return load_json_if_valid(
+    return yaml_load_or_default(
         os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG)
-    ) or {}
+    )
 
 
 def service_get_inheritance_tree(kernel, service):
@@ -31,6 +34,9 @@ def service_get_inheritance_tree(kernel, service):
 
     # Get the configuration of the given service
     service_config = service_load_config(kernel, service)
+
+    if not service_config:
+        return [service]
 
     # Check if the service has an 'extends' property
     parent_service = service_config.get('extends')
