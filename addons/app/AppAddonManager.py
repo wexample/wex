@@ -385,9 +385,7 @@ class AppAddonManager(AddonManager):
                 self.kernel.io.error(ERR_APP_SHOULD_RUN, {
                     'command': request.command,
                     'dir': app_dir_resolved,
-                }, logging.ERROR)
-
-                exit(0)
+                }, trace=False)
 
     def hook_render_request_post(self, response):
         if self.ignore_app_dir(response.request):

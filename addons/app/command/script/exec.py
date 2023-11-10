@@ -70,9 +70,7 @@ def app__script__exec(kernel: Kernel, app_dir: str, name: str, webhook: bool = F
                 kernel.io.error(ERR_APP_SHOULD_RUN, {
                     'command': script['title'],
                     'dir': app_dir,
-                })
-
-                return
+                }, trace=False)
 
         if script_part_type == COMMAND_TYPE_BASH:
             command = script.get('script', '')
