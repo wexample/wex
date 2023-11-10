@@ -488,3 +488,19 @@ class Kernel:
         from dotenv import load_dotenv
         # Load .env file to get API token
         load_dotenv(dotenv_path=self.get_path('root') + '.env')
+
+    def apply_command_decorator(
+            self,
+            function,
+            group: str,
+            name: str,
+            options: dict | None = None):
+        if group in self.decorators and name in self.decorators[group]:
+            decorator = self.decorators[group][name]
+            options = options or {}
+
+            return decorator(
+                **options
+            )(function)
+        else:
+            self.io.error(f'Missing decorator {group}.{name}')

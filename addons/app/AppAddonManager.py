@@ -37,6 +37,7 @@ class AppAddonManager(AddonManager):
 
         # Register extra decorators to allow using it in yaml scripts
         from addons.app.decorator.app_command import app_command
+        from addons.app.decorator.app_webhook import app_webhook
         from addons.app.decorator.app_dir_option import app_dir_option
         from addons.app.decorator.option_webhook_listener import option_webhook_listener
         from addons.app.decorator.service_option import service_option
@@ -45,7 +46,8 @@ class AppAddonManager(AddonManager):
             'app_command': app_command
         })
 
-        self.kernel.decorators['command'].update({
+        self.kernel.decorators['extra'].update({
+            'app_webhook': app_webhook,
             'app_dir_option': app_dir_option,
             'option_webhook_listener': option_webhook_listener,
             'service_option': service_option,
