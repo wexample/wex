@@ -152,13 +152,13 @@ def app__webhook__listen(
                     '--quiet'
                 ]
 
-                if kernel.root_request.runner.has_attr(name='option_webhook_listener_path'):
+                if kernel.root_request.function_has_attr(name='option_webhook_listener_path'):
                     command += [
                         '--path',
                         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     ]
 
-                if kernel.root_request.runner.has_attr(name='option_webhook_listener_port'):
+                if kernel.root_request.function_has_attr(name='option_webhook_listener_port'):
                     command += [
                         '--port',
                         WEBHOOK_COMMAND_PORT_PLACEHOLDER,

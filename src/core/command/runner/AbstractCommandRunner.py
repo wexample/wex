@@ -23,14 +23,6 @@ class AbstractCommandRunner:
         pass
 
     @abstractmethod
-    def get_attr(self, name: str, default=None) -> bool:
-        pass
-
-    @abstractmethod
-    def has_attr(self, name: str) -> bool:
-        pass
-
-    @abstractmethod
     def run(self):
         pass
 

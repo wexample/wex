@@ -5,6 +5,8 @@ from typing import Optional
 
 from yaml import SafeLoader
 
+from src.decorator.test_command import test_command
+from src.decorator.command import command
 from src.helper.args import args_shift_one
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.NullResponse import NullResponse
@@ -46,6 +48,10 @@ class Kernel:
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: dict = {}
+        self.command_decorators = {
+            'command': command,
+            'test_command': test_command,
+        }
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
@@ -299,7 +305,7 @@ class Kernel:
             return AbortResponse(self, reason=message)
 
         # Enforce sudo.
-        if request.runner.has_attr('as_sudo') and os.geteuid() != 0:
+        if request.function_has_attr('as_sudo') and os.geteuid() != 0:
             self.logger.append_event('EVENT_SWITCH_SUDO')
             # Mask printed logs as it may not be relevant.
             self.io.log_hide()

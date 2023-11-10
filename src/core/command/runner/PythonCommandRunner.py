@@ -29,12 +29,6 @@ class PythonCommandRunner(AbstractCommandRunner):
     def get_command_type(self):
         return self.request.function.callback.command_type
 
-    def get_attr(self, name: str, default=None) -> bool:
-        return getattr(self.request.function.callback, name, default)
-
-    def has_attr(self, name: str) -> bool:
-        return hasattr(self.request.function.callback, name)
-
     def run(self):
         return self.run_click_function(
             self.request.function

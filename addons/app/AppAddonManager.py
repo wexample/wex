@@ -5,6 +5,7 @@ import getpass
 import yaml
 from dotenv import dotenv_values
 
+from addons.app.decorator.app_command import app_command
 from src.helper.args import args_shift_one, args_push_one
 from src.helper.string import to_snake_case, to_kebab_case, replace_variables
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
@@ -35,6 +36,8 @@ class AppAddonManager(AddonManager):
 
         if app_dir:
             self.set_app_workdir(app_dir)
+
+        self.kernel.command_decorators['app_command'] = app_command
 
     def get_applications_path(self) -> str:
         return os.sep + os.path.join('var', 'www', self.kernel.registry["env"]) + os.sep
@@ -302,7 +305,7 @@ class AppAddonManager(AddonManager):
 
     def ignore_app_dir(self, request) -> bool:
         # Only specified commands will expect app location.
-        if request.runner.get_attr(
+        if request.function_get_attr(
                 name='app_command',
                 default=False):
             return False
@@ -324,7 +327,7 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if not request.runner.get_attr(
+                if not request.function_get_attr(
                         name='app_dir_required',
                         default=False):
                     self.app_dirs_stack.append(None)
@@ -368,7 +371,7 @@ class AppAddonManager(AddonManager):
             arg_name='app-dir',
             value=app_dir_resolved)
 
-        if request.runner.get_attr(
+        if request.function_get_attr(
                 name='app_should_run',
                 default=False):
             from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL

@@ -26,7 +26,7 @@ class AbstractCommandResolver:
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = request.runner.get_attr('verbosity')
+        verbosity = request.function_get_attr('verbosity')
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity

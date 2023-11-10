@@ -62,3 +62,9 @@ class CommandRequest:
                     self.args)
 
             return True
+
+    def function_get_attr(self, name: str, default=None) -> bool:
+        return getattr(self.function.callback, name, default)
+
+    def function_has_attr(self, name: str) -> bool:
+        return hasattr(self.function.callback, name)

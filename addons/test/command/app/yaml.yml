@@ -1,7 +1,12 @@
 type: addon
 webhook: false
 help: Description
-command_decorator: app_command
+command:
+  decorator: app_command
+  options:
+    # Do not change default but test definition
+    should_run: true
+decorators:
 options:
   - name: --option
     short: -o
@@ -10,3 +15,7 @@ options:
     type: bool
 scripts:
   - echo "Inline bash script example"
+
+  - title: Bash outside container but with running app
+    app_should_run: true
+    script: echo "Inline bash script outside running app in ${APP_DIR}"

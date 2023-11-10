@@ -5,6 +5,7 @@ import types
 import click
 from click import Command
 
+from src.helper.dict import get_dict_item_by_path
 from src.helper.string import replace_variables
 from src.helper.yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
@@ -39,12 +40,6 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def get_command_type(self):
         return self.content['type']
-
-    def get_attr(self, name: str, default=None) -> bool:
-        pass
-
-    def has_attr(self, name: str) -> bool:
-        pass
 
     def build_request_function(self) -> Command:
         def _click_function_handler(*args, **kwargs):
@@ -136,7 +131,15 @@ class YamlCommandRunner(AbstractCommandRunner):
             _click_function_handler.__closure__
         )
 
-        click_function = command(help=self.content['help'])(new_function)
+        decorator_name = get_dict_item_by_path(self.content, 'command.decorator')
+        if decorator_name:
+            decorator = self.kernel.command_decorators[decorator_name]
+        else:
+            decorator = command
+
+        decorator_options = get_dict_item_by_path(self.content, 'command.options', {})
+
+        click_function = decorator(help=self.content['help'], **decorator_options)(new_function)
 
         if 'options' in self.content:
             options = self.content['options']
