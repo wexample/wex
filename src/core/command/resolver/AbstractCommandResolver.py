@@ -1,4 +1,3 @@
-import importlib.util
 import os
 import re
 from abc import abstractmethod
@@ -71,17 +70,6 @@ class AbstractCommandResolver:
 
         return DefaultResponse(self.kernel, response)
 
-    def get_function(self, command_path: str, parts: list) -> callable:
-        # Import module and load function.
-        spec = importlib.util.spec_from_file_location(command_path, command_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        return getattr(
-            module,
-            self.get_function_name(parts)
-        )
-
     @classmethod
     @abstractmethod
     def get_pattern(cls) -> str:
@@ -122,16 +110,15 @@ class AbstractCommandResolver:
                 get_user_or_sudo_user(),
             )
 
-    def create_command_request(self, command: str, args: None | list = None):
-        args = args or []
-
-        request = CommandRequest(
+    def create_command_request(
+            self,
+            command: str,
+            args: None | list = None):
+        return CommandRequest(
             self,
             command,
-            args
+            args or []
         )
-
-        return request
 
     def resolve_alias(self, command: str) -> str:
         registry = self.get_commands_registry()
@@ -297,23 +284,27 @@ class AbstractCommandResolver:
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
         for command in os.listdir(directory):
-            if command.endswith('.py'):
+            extension = command.rsplit('.', 1)[-1]
+            if extension in COMMAND_EXTENSIONS:
                 command_file = os.path.join(directory, command)
                 parts = self.build_command_parts_from_file_path(command_file)
+                internal_command = self.build_command_from_parts(parts)
 
-                function = self.get_function(
-                    command_file,
-                    parts
+                request = self.create_command_request(
+                    internal_command
                 )
 
+                function = request.runner.build_request_function()
+
+                test_file = None
                 if test_commands or not hasattr(function.callback, 'test_command'):
                     test_file = os.path.realpath(os.path.join(directory, '../../tests/command', group, command))
 
-                    commands[self.build_command_from_parts(parts)] = {
-                        'file': command_file,
-                        'test': test_file if os.path.exists(test_file) else None,
-                        'alias': self.get_function_aliases(function)
-                    }
+                commands[internal_command] = {
+                    'file': command_file,
+                    'test': test_file if (test_file and os.path.exists(test_file)) else None,
+                    'alias': self.get_function_aliases(function)
+                }
         return commands
 
     def get_function_aliases(self, function) -> list:

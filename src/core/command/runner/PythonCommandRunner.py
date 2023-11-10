@@ -2,6 +2,7 @@ from click import Command
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.helper.args import args_convert_dict_to_args
 from src.core.CommandRequest import CommandRequest
+import importlib.util
 
 
 class PythonCommandRunner(AbstractCommandRunner):
@@ -12,9 +13,18 @@ class PythonCommandRunner(AbstractCommandRunner):
         return args_convert_dict_to_args(self.request.function, args)
 
     def build_request_function(self) -> Command:
-        return self.request.resolver.get_function(
+        # Import module and load function.
+        spec = importlib.util.spec_from_file_location(
             self.request.path,
-            list(self.request.match.groups())
+            self.request.path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        return getattr(
+            module,
+            self.request.resolver.get_function_name(
+                list(self.request.match.groups())
+            )
         )
 
     def get_params(self) -> list:

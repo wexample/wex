@@ -1,5 +1,6 @@
 import os
 import sys
+import types
 
 import click
 from click import Command
@@ -126,7 +127,19 @@ class YamlCommandRunner(AbstractCommandRunner):
                 self.kernel,
                 commands_collection)
 
-        click_function = command(help=self.content['help'])(_click_function_handler)
+        # Function must have the appropriate name,
+        # allowing to guess internal command name from it
+        new_function = types.FunctionType(
+            _click_function_handler.__code__,
+            _click_function_handler.__globals__,
+            self.request.resolver.get_function_name(
+                self.request.resolver.build_command_parts_from_file_path(self.request.path)
+            ),
+            _click_function_handler.__defaults__,
+            _click_function_handler.__closure__
+        )
+
+        click_function = command(help=self.content['help'])(new_function)
 
         if 'options' in self.content:
             options = self.content['options']
