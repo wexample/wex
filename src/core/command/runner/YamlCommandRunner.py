@@ -106,10 +106,13 @@ class YamlCommandRunner(AbstractCommandRunner):
             default=[]) or []
 
         for decorator in decorators:
+            name = list(decorator.keys())[0]
+
             click_function = self.kernel.apply_command_decorator(
-                click_function,
-                'extra',
-                decorator
+                function=click_function,
+                group='extra',
+                name=name,
+                options=decorator[name]
             )
 
         if 'options' in self.content:
