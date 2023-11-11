@@ -1,5 +1,4 @@
 type: addon
-webhook: false
 help: This is a command for tests
 options:
   - name: --test-option

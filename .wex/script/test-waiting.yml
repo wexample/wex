@@ -1,5 +1,7 @@
 type: addon
-webhook: true
+decorators:
+  - app_webhook:
+      name: test-waiting
 scripts:
   - title: Wait some seconds
     script: sleep 2

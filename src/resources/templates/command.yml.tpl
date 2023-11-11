@@ -1,5 +1,4 @@
 type: {command_type}
-webhook: false
 help: Description
 options:
   - name: --option-name

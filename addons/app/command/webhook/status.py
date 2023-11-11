@@ -1,7 +1,6 @@
 import re
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
-from addons.app.decorator.app_webhook import app_webhook
 from src.helper.args import args_shift_one
 from src.core.response.DictResponse import DictResponse
 from src.core.response.TableResponse import TableResponse
@@ -17,7 +16,6 @@ from addons.app.command.webhook.exec import app__webhook__exec
 @command(help="Give information about webhook listener status", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(port=True)
 @as_sudo()
-@app_webhook()
 def app__webhook__status(kernel: Kernel, port: None | int = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 

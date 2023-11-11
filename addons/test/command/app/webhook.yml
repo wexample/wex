@@ -1,0 +1,19 @@
+type: addon
+help: Test webhook
+command:
+  decorator: app_command
+decorators:
+  - app_webhook:
+      name: test-webhook
+options:
+  - name: --option
+    short: -o
+    help: This is an option
+    required: true
+    type: bool
+scripts:
+  - echo "This command can be run from the web"
+  - echo "This command should be ran in an app, which should run"
+  - echo "This is the app path ${RUNTIME_PATH_APP}"
+  - echo "This is the app name ${RUNTIME_NAME}"
+  - echo "This is the given option value ${OPTION}"
