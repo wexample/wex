@@ -14,12 +14,4 @@ def php__config__runtime(kernel: Kernel, app_dir: str, service: str):
         }
     )
 
-    #   TODO : legacy, should be removed.
-    kernel.run_function(
-        app__config__bind_files,
-        {
-            'app-dir': app_dir,
-            'dir': 'apache'
-        }
-    )
 
