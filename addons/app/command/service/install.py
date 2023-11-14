@@ -94,7 +94,7 @@ def app__service__install(
     # Allow service to set global settings.
     service_config = all_services[service]['config']
 
-    if get_dict_item_by_path(service_config, 'container.main', False):
+    if get_dict_item_by_path(service_config, 'main', False):
         main_service = manager.get_config('global.main_service')
         if not main_service:
             manager.set_config(

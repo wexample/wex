@@ -50,11 +50,7 @@ def app__app__exec(
         ]
 
     # Allow to use /bin/bash or /bin/sh, or something else.
-    shell_command = get_dict_item_by_path(
-        kernel.registry,
-        f'services.{container_name}.config.container.shell',
-        SHELL_DEFAULT
-    )
+    shell_command = manager.get_service_shell()
 
     docker_command += [
         build_long_container_name(kernel, container_name),

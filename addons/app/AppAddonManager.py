@@ -4,6 +4,7 @@ import datetime
 import getpass
 import yaml
 
+from src.helper.service import service_load_config
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one, args_push_one
 from src.helper.string import to_snake_case, to_kebab_case
@@ -596,6 +597,33 @@ class AppAddonManager(AddonManager):
             args
         )
 
+    def get_service_config(self, key, service: str | None = None, default: any = None):
+        service = service or self.get_main_service()
+
+        # Search into local config.
+        return (self.get_config(f'service.{service}.{key}')
+                # Search into the service config
+                or get_dict_item_by_path(service_load_config(self.kernel, service), key, default))
+
+    def get_main_service(self) -> str:
+        return self.get_config(
+            key='global.main_service',
+            required=True
+        )
+
+    def get_main_container_name(self) -> str:
+        main_service = self.get_main_service()
+
+        return self.get_service_config(
+            key='container.default',
+            service=main_service) or main_service
+
+    def get_service_shell(self, service: str | None = None):
+        service = service or self.get_main_service()
+
+        return self.get_service_config(
+                key='shell',
+                service=service)
 
 def _app__script__exec__create_callback(
         kernel,
