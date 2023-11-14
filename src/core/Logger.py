@@ -3,7 +3,6 @@ import json
 import os
 import time
 
-from src.core.FunctionProperty import FunctionProperty
 from src.helper.file import set_user_or_sudo_user_owner
 from src.helper.json import load_json_if_valid, parse_json_if_valid
 from src.const.globals import COMMAND_TYPE_ADDON
@@ -118,7 +117,7 @@ class Logger:
         if not task_id and (
                 self.kernel.root_request
                 and self.kernel.root_request.function
-                and FunctionProperty.has_property(self.kernel.root_request.function, 'no_log')):
+                and self.kernel.root_request.function_has_attr(name='no_log')):
             return
 
         log_path = self.kernel.task_file_write(

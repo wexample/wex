@@ -28,8 +28,8 @@ from src.decorator.as_sudo import as_sudo
 from addons.app.decorator.app_command import app_command
 
 
-@app_command(help="Start an app")
 @as_sudo()
+@app_command(help="Start an app")
 @option(
     '--clear-cache', '-cc', is_flag=True, default=False,
     help="Forces a rebuild of images")

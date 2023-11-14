@@ -9,8 +9,8 @@ from addons.app.decorator.app_command import app_command
 from addons.app.command.env.get import app__env__get
 
 
-@app_command(help="Set app files permissions")
 @as_sudo()
+@app_command(help="Set app files permissions")
 def app__app__perms(kernel: Kernel, app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     user = manager.get_config('permissions.user', None)

@@ -11,8 +11,8 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command(help="Uninstall core")
 @as_sudo()
+@command(help="Uninstall core")
 def core__core__uninstall(kernel: Kernel):
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)

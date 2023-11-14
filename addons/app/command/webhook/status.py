@@ -13,9 +13,9 @@ from src.decorator.as_sudo import as_sudo
 from addons.app.command.webhook.exec import app__webhook__exec
 
 
+@as_sudo()
 @command(help="Give information about webhook listener status", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(port=True)
-@as_sudo()
 def app__webhook__status(kernel: Kernel, port: None | int = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 

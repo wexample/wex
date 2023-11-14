@@ -39,8 +39,8 @@ WEBHOOK_LISTENER_ROUTES_MAP = {
 }
 
 
-@command(help="Serve webhook listener daemon")
 @as_sudo()
+@command(help="Serve webhook listener daemon")
 @option('--port', '-p', type=int, required=False, default=WEBHOOK_LISTEN_PORT_DEFAULT,
         help="Which port is used by service to listen incoming webhooks")
 @option('--dry-run', '-dr', type=bool, required=False, default=False, is_flag=True,

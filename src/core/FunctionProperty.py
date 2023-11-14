@@ -10,7 +10,3 @@ class FunctionProperty:
 
     def get_property_value(self):
         return self.property_value
-
-    @staticmethod
-    def has_property(function, name: str):
-        return name in function.properties

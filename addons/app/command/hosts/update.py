@@ -9,8 +9,8 @@ from src.core.Kernel import Kernel
 from src.decorator.command import command
 
 
-@command(help="Update local /etc/hosts file")
 @as_sudo()
+@command(help="Update local /etc/hosts file")
 def app__hosts__update(kernel: Kernel):
     new_block_content = []
     ip = kernel.run_function(

@@ -15,8 +15,8 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 
 
-@command(help="Create and start the reverse proxy server")
 @as_sudo()
+@command(help="Create and start the reverse proxy server")
 @option('--user', '-u', type=str, required=False, help="Owner of application files")
 @option('--env', '-e', type=str, required=False, help="Env for accessing apps")
 @option('--group', '-g', type=str, required=False, help="Group of application files")
