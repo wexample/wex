@@ -1,8 +1,8 @@
 import re
 
-from addons.app.command.script.exec import app__script__exec
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.helpers.webhook import find_command_by_webhook
 from urllib.parse import urlparse, parse_qs
 from addons.core.command.logs.rotate import core__logs__rotate
 from src.core.Kernel import Kernel
@@ -31,6 +31,12 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
         return
 
     app_name, webhook = match.groups()
+    command_info = find_command_by_webhook(
+        kernel,
+        webhook)
+
+    if not command_info:
+        return
 
     def _cleanup():
         kernel.run_function(core__logs__rotate)
@@ -39,7 +45,6 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
         query_string = parsed_url.query.replace('+', '%2B')
         query_string_data = parse_qs(query_string)
         has_error = False
-
         # Get all query parameters
         args = []
 
@@ -78,16 +83,10 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
         manager.set_app_workdir(previous)
         source_data['app_dir'] = manager.app_dir
 
-        response = kernel.run_function(
-            app__script__exec,
-            {
-                'name': webhook,
-                'app-dir': manager.app_dir,
-                'webhook': True
-            }
+        return kernel.run_command(
+            command=command_info['command'],
+            args={}
         )
-
-        return response
 
     def _log(previous):
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {

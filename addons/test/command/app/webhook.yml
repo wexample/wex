@@ -9,7 +9,7 @@ options:
   - name: --option
     short: -o
     help: This is an option
-    required: true
+    default: DEFAULT_VALUE
     type: bool
 scripts:
   - echo "This command can be run from the web"

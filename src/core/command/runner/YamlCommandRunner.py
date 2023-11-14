@@ -122,9 +122,10 @@ class YamlCommandRunner(AbstractCommandRunner):
                 click_function = click.option(
                     option['name'],
                     option['short'],
+                    default=option['default'] if 'default' in option else False,
+                    help=option['help'],
                     is_flag='is_flag' in option and option['is_flag'],
-                    required=option['required'],
-                    help=option['help']
+                    required=option['required'] if 'required' in option else False,
                 )(click_function)
 
         return click_function

@@ -2,7 +2,7 @@ from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
 from src.helper.dict import merge_dicts
 
 
-def get_all_commands(kernel):
+def get_all_commands(kernel) -> dict:
     registry = {}
 
     for resolver in kernel.resolvers:
@@ -54,3 +54,14 @@ def resolve_service_inheritance(service, services_dict):
             resolve_service_inheritance(parent_service, services_dict)
             service['config'] = merge_dicts(parent_service['config'], service['config'])
     return service
+
+
+def find_commands_by_function_property(kernel, name: str) -> dict:
+    commands = get_all_commands(kernel)
+    filtered = {}
+
+    for command in commands:
+        if name in commands[command]['properties']:
+            filtered[command] = commands[command]
+
+    return filtered

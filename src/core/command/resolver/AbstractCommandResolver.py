@@ -299,7 +299,7 @@ class AbstractCommandResolver:
 
                 properties = {}
                 for name in function.properties:
-                    properties[name] = True
+                    properties[name] = function.properties[name].property_value
 
                 test_file = None
                 if test_commands or not hasattr(function.callback, 'test_command'):
@@ -314,6 +314,7 @@ class AbstractCommandResolver:
                     test_file = test_file if (test_file and os.path.exists(test_file)) else None
 
                 commands[internal_command] = {
+                    'command': internal_command,
                     'file': command_file,
                     'test': test_file,
                     'alias': self.get_function_aliases(function),
