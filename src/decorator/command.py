@@ -50,6 +50,7 @@ def command(*args, **kwargs):
 
             f.run_handler = _command_run
             f.script_run_handler = _script_run
+            f.properties = {}
         return f
 
     return decorator
