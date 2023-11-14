@@ -9,7 +9,7 @@ from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one, args_push_one
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
-    COMMAND_TYPE_APP
+    COMMAND_TYPE_APP, SHELL_DEFAULT
 from src.core.AddonManager import AddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
@@ -623,7 +623,8 @@ class AppAddonManager(AddonManager):
 
         return self.get_service_config(
                 key='shell',
-                service=service)
+                service=service) or SHELL_DEFAULT
+
 
 def _app__script__exec__create_callback(
         kernel,
