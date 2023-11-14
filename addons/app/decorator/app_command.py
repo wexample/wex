@@ -1,4 +1,5 @@
 from addons.app.helpers.docker import build_long_container_name
+from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
 from addons.app.decorator.app_dir_option import app_dir_option
 from src.core.FunctionProperty import FunctionProperty
@@ -75,7 +76,7 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
                 'docker',
                 'exec',
                 build_long_container_name(kernel, script['container_name']),
-                '/bin/bash',
+                SHELL_DEFAULT,
                 '-c',
                 command_to_string(command)
             ]

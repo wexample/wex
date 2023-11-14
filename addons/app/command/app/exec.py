@@ -1,4 +1,5 @@
 from addons.app.helpers.docker import build_long_container_name
+from src.const.globals import SHELL_DEFAULT
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string
 from src.decorator.option import option
@@ -52,7 +53,7 @@ def app__app__exec(
     shell_command = get_dict_item_by_path(
         kernel.registry,
         f'services.{container_name}.config.container.shell',
-        '/bin/bash'
+        SHELL_DEFAULT
     )
 
     docker_command += [
