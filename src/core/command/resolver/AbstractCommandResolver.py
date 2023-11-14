@@ -2,6 +2,7 @@ import os
 import re
 from abc import abstractmethod
 
+from src.core.FunctionProperty import FunctionProperty
 from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
 from src.helper.command import command_to_string
@@ -26,7 +27,7 @@ class AbstractCommandResolver:
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = request.function_get_attr('verbosity')
+        verbosity = FunctionProperty.get_property(request.function, name='verbosity')
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity
@@ -321,7 +322,7 @@ class AbstractCommandResolver:
         return commands
 
     def get_function_aliases(self, function) -> list:
-        return function.callback.aliases if hasattr(function.callback, 'aliases') else []
+        return FunctionProperty.get_property(function, 'aliases', [])
 
     def locate_function(self, request) -> bool:
         # Build dynamic variables

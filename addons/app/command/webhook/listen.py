@@ -1,24 +1,24 @@
 import shutil
+import time
+from http.server import HTTPServer
 
-from addons.system.command.system.is_docker import system__system__is_docker
+from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_PATH_PLACEHOLDER, \
+    WEBHOOK_COMMAND_PORT_PLACEHOLDER
+from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.command.webhook.status import app__webhook__status
 from addons.app.command.webhook.status_process import app__webhook__status_process
-from src.helper.command import execute_command
+from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON, \
     WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_JSON
+from src.core.Kernel import Kernel
+from src.decorator.as_sudo import as_sudo
+from src.decorator.command import command
+from src.decorator.option import option
+from src.helper.command import execute_command
 from src.helper.core import get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
-from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_PATH_PLACEHOLDER, \
-    WEBHOOK_COMMAND_PORT_PLACEHOLDER
-from src.decorator.as_sudo import as_sudo
-from http.server import HTTPServer
-from src.core.Kernel import Kernel
-from src.decorator.command import command
-from src.decorator.option import option
-from addons.app.command.webhook.exec import app__webhook__exec
-import time
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
     'exec': {
@@ -149,13 +149,15 @@ def app__webhook__listen(
                     '--quiet'
                 ]
 
-                if kernel.root_request.function_has_attr(name='option_webhook_listener_path'):
+                if hasattr(kernel.root_request.function.callback,
+                           'option_webhook_listener_path'):
                     command += [
                         '--path',
                         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     ]
 
-                if kernel.root_request.function_has_attr(name='option_webhook_listener_port'):
+                if hasattr(kernel.root_request.function.callback,
+                           'option_webhook_listener_port'):
                     command += [
                         '--port',
                         WEBHOOK_COMMAND_PORT_PLACEHOLDER,

@@ -3,7 +3,6 @@ import os
 from click import Command
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import args_convert_dict_to_args
-from src.core.FunctionProperty import FunctionProperty
 
 
 class CommandRequest:
@@ -63,9 +62,3 @@ class CommandRequest:
                     self.args)
 
             return True
-
-    def function_get_attr(self, name: str, default=None) -> FunctionProperty:
-        return self.function.properties[name] if self.function_has_attr(name) else default
-
-    def function_has_attr(self, name: str) -> bool:
-        return name in self.function.properties

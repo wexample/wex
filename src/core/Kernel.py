@@ -5,6 +5,7 @@ from typing import Optional
 
 from yaml import SafeLoader
 
+from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.NullResponse import NullResponse
@@ -59,7 +60,7 @@ class Kernel:
                 'command': command,
                 'test_command': test_command,
             },
-            'extra': {
+            'properties': {
                 'alias': alias,
                 'as_sudo': as_sudo,
                 'no_log': no_log,
@@ -317,7 +318,7 @@ class Kernel:
             return AbortResponse(self, reason=message)
 
         # Enforce sudo.
-        if request.function_has_attr('as_sudo') and os.geteuid() != 0:
+        if FunctionProperty.has_property(request.function, 'as_sudo') and os.geteuid() != 0:
             self.logger.append_event('EVENT_SWITCH_SUDO')
             # Mask printed logs as it may not be relevant.
             self.io.log_hide()

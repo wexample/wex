@@ -6,8 +6,8 @@ from src.decorator.command import command
 from src.decorator.alias import alias
 
 
-@command(help="Show maintainers logo")
 @alias('logo')
+@command(help="Show maintainers logo")
 def core__logo__show(kernel: Kernel) -> str:
     width = 54
     padding = 2

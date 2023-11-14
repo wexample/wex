@@ -1,9 +1,17 @@
+from src.core.FunctionProperty import FunctionProperty
+
+
 def alias(name: bool | str = True):
     def decorator(func):
-        if hasattr(func, 'aliases'):
-            func.aliases.append(name)
+        aliases = FunctionProperty.get_property(func, 'aliases')
+        if aliases:
+            aliases.property_value.append(name)
         else:
-            func.aliases = [name]
+            FunctionProperty(
+                func,
+                'aliases',
+                [name])
+
         return func
 
     return decorator

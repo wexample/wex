@@ -4,6 +4,7 @@ import datetime
 import getpass
 import yaml
 
+from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one, args_push_one
 from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
@@ -46,7 +47,7 @@ class AppAddonManager(AddonManager):
             'app_command': app_command
         })
 
-        self.kernel.decorators['extra'].update({
+        self.kernel.decorators['properties'].update({
             'app_webhook': app_webhook,
             'app_dir_option': app_dir_option,
             'option_webhook_listener': option_webhook_listener,
@@ -326,11 +327,8 @@ class AppAddonManager(AddonManager):
 
     def ignore_app_dir(self, request) -> bool:
         # Only specified commands will expect app location.
-        if request.function_get_attr(
-                name='app_command',
-                default=False):
-            return False
-        return True
+        # This is not a function property class.
+        return getattr(request.function, 'app_command', False) == False
 
     def hook_render_request_pre(self, request):
         if self.ignore_app_dir(request):
@@ -348,7 +346,8 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if not request.function_get_attr(
+                if not FunctionProperty.get_property(
+                        request.function,
                         name='app_dir_required',
                         default=False):
                     self.app_dirs_stack.append(None)
@@ -392,7 +391,8 @@ class AppAddonManager(AddonManager):
             arg_name='app-dir',
             value=app_dir_resolved)
 
-        if request.function_get_attr(
+        if FunctionProperty.get_property(
+                request.function,
                 name='app_should_run',
                 default=False):
             from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL

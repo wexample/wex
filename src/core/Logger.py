@@ -6,6 +6,7 @@ import time
 from src.helper.file import set_user_or_sudo_user_owner
 from src.helper.json import load_json_if_valid, parse_json_if_valid
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.core.FunctionProperty import FunctionProperty
 
 LOG_STATUS_COMPLETE = 'complete'
 LOG_STATUS_STARTED = 'started'
@@ -117,7 +118,7 @@ class Logger:
         if not task_id and (
                 self.kernel.root_request
                 and self.kernel.root_request.function
-                and self.kernel.root_request.function_has_attr(name='no_log')):
+                and FunctionProperty.has_property(self.kernel.root_request.function, name='no_log')):
             return
 
         log_path = self.kernel.task_file_write(

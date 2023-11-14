@@ -6,9 +6,9 @@ from src.core import Kernel
 from src.core.response.TableResponse import TableResponse
 
 
+@alias('logs')
 @no_log()
 @command(help="Show a summary of log files")
-@alias('logs')
 def core__logs__show(kernel: Kernel, max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()

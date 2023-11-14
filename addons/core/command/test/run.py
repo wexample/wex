@@ -12,9 +12,9 @@ from addons.app.const.app import APP_ENV_LOCAL
 from src.helper.command import execute_command_tree
 
 
+@alias('test')
 @as_sudo()
 @command(help="Run all tests or given command test")
-@alias('test')
 @option('--command', '-c', type=str, required=False, help="Single command to test")
 def core__test__run(kernel: Kernel, command: str = None):
     # In local env, script are started manually,

@@ -14,13 +14,13 @@ from src.const.globals import FILE_REGISTRY, COMMAND_TYPE_ADDON, \
 from src.helper.file import set_user_or_sudo_user_owner
 
 
+@alias('rebuild')
 @as_sudo()
 @command(help="Rebuild core registry")
 @option('--test', '-t', is_flag=True, default=False,
         help="Register also commands marked as only for testing")
 @option('--write', '-w', type=bool, default=True,
         help="Write registry file")
-@alias('rebuild')
 def core__registry__build(kernel, test: bool = False, write: bool = True):
     return _core__registry__build(kernel, test, write)
 

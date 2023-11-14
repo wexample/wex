@@ -100,19 +100,19 @@ class YamlCommandRunner(AbstractCommandRunner):
         click_function = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
 
         # Apply extra decorators
-        decorators = get_dict_item_by_path(
+        properties = get_dict_item_by_path(
             data=self.content,
-            key='decorators',
+            key='properties',
             default=[]) or []
 
-        for decorator in decorators:
-            name = list(decorator.keys())[0]
+        for property in properties:
+            name = list(property.keys())[0]
 
             click_function = self.kernel.apply_command_decorator(
                 function=click_function,
-                group='extra',
+                group='properties',
                 name=name,
-                options=decorator[name]
+                options=property[name]
             )
 
         if 'options' in self.content:

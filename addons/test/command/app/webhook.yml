@@ -2,7 +2,7 @@ type: addon
 help: Test webhook
 command:
   decorator: app_command
-decorators:
+properties:
   - app_webhook:
       name: test-webhook
 options:

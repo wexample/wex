@@ -10,10 +10,10 @@ from addons.system.command.own.this import system__own__this
 from src.decorator.option import option
 
 
+@alias('cleanup')
 @as_sudo()
 @no_log()
 @command(help="Uninstall core")
-@alias('cleanup')
 @option('--test', '-t', is_flag=True, default=False,
         help="Register also commands marked as only for testing")
 def core__core__cleanup(kernel: Kernel, test: bool = False):

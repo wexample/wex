@@ -7,7 +7,7 @@ command:
     # Test definition, but app_command set default to true
     should_run: true
 # Allow empty var
-decorators:
+properties:
 options:
   - name: --option
     short: -o

@@ -1,5 +1,5 @@
 type: addon
-decorators:
+properties:
   - app_webhook:
       name: test-waiting
 scripts:

@@ -1,23 +1,34 @@
 from addons.app.helpers.docker import build_long_container_name
 from src.decorator.command import command
 from addons.app.decorator.app_dir_option import app_dir_option
+from src.core.FunctionProperty import FunctionProperty
 
 
 def app_command(**decorator_args):
     def decorator(function):
-        # Say that the command is available ony in app context
-        function.app_command = True
+        # Get and pop interesting args
+        dir_required = decorator_args.pop('dir_required', True)
+        should_run = decorator_args.pop('should_run', False)
+
+        # Convert function to command
+        function = command(**decorator_args)(function)
 
         # Do not provide app_dir to function
-        function.app_dir_required = decorator_args.pop('dir_required', True)
-        function = app_dir_option(
-            required=function.app_dir_required
-        )(function)
+        FunctionProperty(
+            function=function,
+            property_name='app_dir_required',
+            property_value=dir_required)
+
+        function = app_dir_option(required=dir_required)(function)
 
         # Do not check if app is running
-        function.app_should_run = decorator_args.pop('should_run', False)
+        FunctionProperty(
+            function=function,
+            property_name='app_should_run',
+            property_value=should_run)
 
-        function = command(**decorator_args)(function)
+        # Say that the command is available ony in app context
+        function.app_command = True
 
         # Override base handler
         function.base_run_handler = function.run_handler
