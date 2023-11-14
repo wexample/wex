@@ -296,6 +296,10 @@ class AbstractCommandResolver:
 
                 function = request.runner.build_request_function()
 
+                properties = {}
+                for name in function.properties:
+                    properties[name] = True
+
                 test_file = None
                 if test_commands or not hasattr(function.callback, 'test_command'):
                     # All test are in python
@@ -311,7 +315,8 @@ class AbstractCommandResolver:
                 commands[internal_command] = {
                     'file': command_file,
                     'test': test_file,
-                    'alias': self.get_function_aliases(function)
+                    'alias': self.get_function_aliases(function),
+                    'properties': properties
                 }
         return commands
 
