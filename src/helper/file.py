@@ -175,6 +175,16 @@ def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     data[keys[-1]] = value
 
 
+def remove_dict_item_by_path(data: dict, key: str):
+    keys = key.split('.')
+    for k in keys[:-1]:
+        if k not in data or not isinstance(data[k], dict):
+            return
+        data = data[k]
+
+    data.pop(keys[-1], None)
+
+
 def remove_file_if_exists(file: str):
     if os.path.isfile(file) or os.path.islink(file):
         os.remove(file)

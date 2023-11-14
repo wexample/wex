@@ -95,10 +95,10 @@ def app__service__install(
     service_config = all_services[service]['config']
 
     if get_dict_item_by_path(service_config, 'container.main', False):
-        main_container = manager.get_config('docker.main_container')
-        if not main_container:
+        main_service = manager.get_config('global.main_service')
+        if not main_service:
             manager.set_config(
-                'docker.main_container',
+                'global.main_service',
                 service)
 
     if 'tags' in service_config and 'db' in service_config['tags']:

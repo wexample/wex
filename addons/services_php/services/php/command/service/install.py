@@ -10,9 +10,9 @@ def php__service__install(kernel: Kernel, app_dir: str, service: str):
 
     # Define itself as main container.
     manager.set_config(
-        'docker.main_container',
+        'global.main_service',
         manager.get_config(
-            'docker.main_container',
+            'global.main_service',
             service
         )
     )

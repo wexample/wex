@@ -31,18 +31,15 @@ def proxy__service__install(kernel: Kernel, app_dir: str, service: str):
         copy_function=shutil.copy2
     )
 
-    # TODO : Ensure this service hook is run from app work dir.
-    #        We can create a decorator for that : @in_app_location
-    #        Which is mandatory for all app commands
     manager.exec_in_app_workdir(
         app_dir,
         callback
     )
 
     manager.set_config(
-        'docker.main_container',
+        'global.main_service',
         manager.get_config(
-            'docker.main_container',
+            'global.main_service',
             service
         )
     )

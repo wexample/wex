@@ -2,7 +2,6 @@ docker:
   compose:
     stdin_open: true
     tty: true
-  main_container: dev
 env:
   dev:
     domain_main: wex.wex
