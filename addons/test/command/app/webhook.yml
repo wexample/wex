@@ -10,7 +10,7 @@ options:
     short: -o
     help: This is an option
     default: DEFAULT_VALUE
-    type: bool
+    type: str
 scripts:
   - echo "This command can be run from the web"
   - echo "This command should be ran in an app, which should run"

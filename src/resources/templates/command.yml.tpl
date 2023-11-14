@@ -5,7 +5,7 @@ options:
     short: -arg
     help: This is an option
     required: true
-    type: bool
+    type: str
 scripts:
   - echo "Inline bash script example"
 

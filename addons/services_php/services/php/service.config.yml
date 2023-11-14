@@ -1,3 +1,2 @@
-container:
-  shell: /bin/bash
+shell: /bin/bash
 main: true

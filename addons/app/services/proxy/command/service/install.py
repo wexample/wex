@@ -35,11 +35,3 @@ def proxy__service__install(kernel: Kernel, app_dir: str, service: str):
         app_dir,
         callback
     )
-
-    manager.set_config(
-        'global.main_service',
-        manager.get_config(
-            'global.main_service',
-            service
-        )
-    )

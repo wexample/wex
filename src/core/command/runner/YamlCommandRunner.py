@@ -1,9 +1,9 @@
 import os
 import types
-
 import click
-from click import Command
+import builtins
 
+from click import Command
 from src.helper.dict import get_dict_item_by_path
 from src.helper.yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
@@ -126,6 +126,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                     help=option['help'],
                     is_flag='is_flag' in option and option['is_flag'],
                     required=option['required'] if 'required' in option else False,
+                    type=getattr(builtins, option['type'] if 'type' in option else 'any'),
                 )(click_function)
 
         return click_function

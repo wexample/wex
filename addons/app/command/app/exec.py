@@ -1,5 +1,4 @@
 from addons.app.helpers.docker import build_long_container_name
-from src.const.globals import SHELL_DEFAULT
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string
 from src.decorator.option import option
@@ -8,7 +7,6 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from src.helper.dict import get_dict_item_by_path
 from addons.app.decorator.app_command import app_command
 
 
@@ -27,11 +25,7 @@ def app__app__exec(
         sync: bool = False,
         interactive: bool = False):
     manager: AppAddonManager = kernel.addons['app']
-    container_name = container_name or manager.get_config(f'docker.main_container', None)
-
-    if not container_name:
-        manager.log('No main container configured')
-        return
+    container_name = container_name or manager.get_main_container_name()
 
     docker_command = [
         'docker',
