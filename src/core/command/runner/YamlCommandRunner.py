@@ -78,14 +78,15 @@ class YamlCommandRunner(AbstractCommandRunner):
                 self.kernel,
                 commands_collection)
 
+        internal_command = self.request.resolver.get_function_name(
+            self.request.resolver.build_command_parts_from_file_path(self.request.path)
+        )
         # Function must have the appropriate name,
         # allowing to guess internal command name from it
         click_function_callback = types.FunctionType(
             _click_function_handler.__code__,
             _click_function_handler.__globals__,
-            self.request.resolver.get_function_name(
-                self.request.resolver.build_command_parts_from_file_path(self.request.path)
-            ),
+            internal_command,
             _click_function_handler.__defaults__,
             _click_function_handler.__closure__
         )
@@ -95,6 +96,11 @@ class YamlCommandRunner(AbstractCommandRunner):
             decorator = self.kernel.decorators['command'][decorator_name]
         else:
             decorator = command
+
+        if 'help' not in self.content:
+            self.kernel.io.error(
+                f'Missing help section in command {internal_command}',
+                trace=False)
 
         decorator_options = get_dict_item_by_path(self.content, 'command.options', {})
         click_function = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
@@ -123,7 +129,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                     option['name'],
                     option['short'],
                     default=option['default'] if 'default' in option else False,
-                    help=option['help'],
+                    help=option['help'] if 'help' in option else None,
                     is_flag='is_flag' in option and option['is_flag'],
                     required=option['required'] if 'required' in option else False,
                     type=getattr(builtins, option['type'] if 'type' in option else 'any'),
