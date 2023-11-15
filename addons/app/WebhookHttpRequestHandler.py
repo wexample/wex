@@ -38,6 +38,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def do_GET(self):
+        error_code = 500
+
         try:
             error = False
             output = {}
@@ -45,6 +47,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             status = WEBHOOK_STATUS_STARTING
             if not is_allowed_route(self.path, self.routes):
                 error = 'NOT_FOUND'
+                error_code = 404
             else:
                 route_name = get_route_name(self.path, self.routes)
                 route = self.routes[route_name]
@@ -104,7 +107,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 output['pid'] = process.pid
 
             if error:
-                self.send_response(500)
+                self.send_response(error_code)
                 output['status'] = WEBHOOK_STATUS_ERROR
                 output['error'] = error
             else:
