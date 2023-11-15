@@ -127,3 +127,10 @@ class AddonCommandResolver(AbstractCommandResolver):
             return all_commands[0] + ' '
 
         return search_string
+
+    def build_command_parts_from_url_path_parts(self, path_parts: list):
+        return [
+            path_parts[0],
+            path_parts[1],
+            path_parts[2],
+        ]

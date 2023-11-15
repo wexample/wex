@@ -429,6 +429,11 @@ class AppAddonManager(AddonManager):
         if self.ignore_app_dir(response.request):
             return
 
+        from src.helper.command import is_same_command
+        # Ignore internally used command.
+        if is_same_command(response.request.function, app__location__find):
+            return
+
         self.app_dirs_stack.pop()
         app_dir = self.app_dirs_stack[-1] if len(self.app_dirs_stack) else self.kernel.get_path('call')
         # Previous app dir was an app.

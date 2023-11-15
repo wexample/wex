@@ -135,3 +135,10 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def decorate_command(cls, function, kwargs):
         from addons.app.decorator.service_option import service_option
         return service_option(**kwargs)(function)
+
+    def build_command_parts_from_url_path_parts(self, path_parts: list):
+        return [
+            path_parts[0],
+            path_parts[1],
+            path_parts[2],
+        ]

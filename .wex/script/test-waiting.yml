@@ -1,7 +1,6 @@
 type: addon
 properties:
-  - app_webhook:
-      name: test-waiting
+  - app_webhook
 scripts:
   - title: Wait some seconds
     script: sleep 2

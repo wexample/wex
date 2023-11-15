@@ -1,12 +1,12 @@
 from src.core.FunctionProperty import FunctionProperty
 
 
-def app_webhook(name: str, *args, **kwargs):
+def app_webhook(*args, **kwargs):
     def decorator(function):
         FunctionProperty(
             function,
             'app_webhook',
-            name)
+            True)
 
         return function
 

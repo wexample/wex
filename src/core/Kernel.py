@@ -16,7 +16,7 @@ from src.core.AddonManager import AddonManager
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
-    KERNEL_RENDER_MODE_JSON, ERR_COMMAND_FILE_NOT_FOUND
+    KERNEL_RENDER_MODE_JSON
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
 from src.core.response.AbortResponse import AbortResponse
@@ -293,10 +293,10 @@ class Kernel:
 
         if not request.runner:
             if not request.quiet:
-                self.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
+                self.io.error("Command file not found when rendering, command {command}, in path \"{path}\"", {
                     'command': request.command,
                     'path': request.path,
-                }, trace=False)
+                })
 
             return NullResponse(self)
 
@@ -409,7 +409,7 @@ class Kernel:
                     return response
 
     def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
-        return self.resolvers[type] or None
+        return self.resolvers[type] if type in self.resolvers else None
 
     def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
         type = self.guess_command_type(command)

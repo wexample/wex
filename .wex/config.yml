@@ -18,6 +18,7 @@ env:
 global:
   author: root
   created: '2023-03-23 17:13:28'
+  main_service: test
   name: wex
   services: []
   type: app
@@ -25,5 +26,7 @@ global:
 permissions:
   group: null
   user: null
+service:
+  test: {}
 wex:
   version: 5.0.39+build.20231115135341

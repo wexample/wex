@@ -7,6 +7,7 @@ from src.helper.string import to_snake_case, to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -65,7 +66,7 @@ class AppCommandResolver(AbstractCommandResolver):
             app_dir = self.kernel.run_function(
                 app__location__find,
                 {
-                    'app-dir': self.kernel.get_path('call')
+                    'app-dir': os.getcwd() + os.sep
                 }
             ).first()
 
@@ -104,3 +105,35 @@ class AppCommandResolver(AbstractCommandResolver):
                 )
 
         return None
+
+    def build_command_parts_from_url_path_parts(self, path_parts: list):
+        return [
+            COMMAND_CHAR_APP,
+            path_parts[1],
+            path_parts[2],
+        ]
+
+    def run_command_request_from_url_path_parts(
+            self,
+            parts: list,
+            command_args: dict | None = None) -> AbstractResponse:
+        from addons.app.AppAddonManager import AppAddonManager
+
+        app_name = parts[0]
+        manager = AppAddonManager(self.kernel)
+        apps = manager.get_proxy_apps()
+
+        if app_name not in apps:
+            return QueuedCollectionStopResponse(self.kernel)
+
+        command_args = command_args or {}
+        command_args['app_dir'] = apps[app_name]
+
+        self_super = super()
+        def _callback():
+            return self_super.run_command_request_from_url_path_parts(parts)
+
+        return manager.exec_in_app_workdir(
+            apps[app_name],
+            _callback
+        )

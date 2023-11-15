@@ -77,3 +77,10 @@ class UserCommandResolver(AbstractCommandResolver):
                     search_split[1:],
                 )
         return None
+
+    def build_command_parts_from_url_path_parts(self, path_parts: list):
+        return [
+            COMMAND_CHAR_USER,
+            path_parts[1],
+            path_parts[2],
+        ]

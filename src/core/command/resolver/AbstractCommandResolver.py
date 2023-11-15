@@ -10,7 +10,7 @@ from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS, ERR_COMMAND_FILE_NOT_FOUND
+    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import args_convert_dict_to_args
 from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
@@ -147,7 +147,7 @@ class AbstractCommandResolver:
             subdir=subdir)
 
         if path is None:
-            self.kernel.io.error(ERR_COMMAND_FILE_NOT_FOUND, {
+            self.kernel.io.error("Command file not found for command {command}, in path \"{path}\"", {
                 'command': request.command,
                 'path': path,
             }, trace=False)
@@ -342,3 +342,30 @@ class AbstractCommandResolver:
     @classmethod
     def decorate_command(cls, function, kwargs):
         return function
+
+    def run_command_request_from_url_path(self, path: str):
+        return self.kernel.run_command(
+            command=self.create_command_from_path(path),
+            args={}
+        )
+
+    def create_command_from_path(self, path):
+        parts = path.split('/')
+
+        if not parts:
+            return
+
+        command_parts = self.build_command_parts_from_url_path_parts(
+            parts
+        )
+
+        if not command_parts:
+            return
+
+        return self.build_command_from_parts(
+            command_parts
+        )
+
+    @abstractmethod
+    def build_command_parts_from_url_path_parts(self, path_parts: list):
+        pass

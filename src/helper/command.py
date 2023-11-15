@@ -132,3 +132,7 @@ def command_to_string(command: list | str, add_quotes: bool = True, quote_char: 
                 output.append(item)
 
     return ' '.join(output)
+
+
+def is_same_command(command_a, command_b) -> bool:
+    return command_a.callback.__code__ == command_b.callback.__code__

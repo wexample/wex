@@ -3,8 +3,7 @@ help: Test webhook
 command:
   decorator: app_command
 properties:
-  - app_webhook:
-      name: test-webhook
+  - app_webhook
 options:
   - name: --option
     short: -o

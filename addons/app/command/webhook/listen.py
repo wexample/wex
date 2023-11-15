@@ -23,7 +23,7 @@ from src.helper.system import is_port_open, kill_process_by_port, kill_process_b
 WEBHOOK_LISTENER_ROUTES_MAP = {
     'exec': {
         'async': True,
-        'pattern': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-]+)$',
+        'pattern': r'^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-\/]+)$',
         'function': app__webhook__exec
     },
     'status': {
