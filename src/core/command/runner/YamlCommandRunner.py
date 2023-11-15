@@ -115,13 +115,18 @@ class YamlCommandRunner(AbstractCommandRunner):
             default=[]) or []
 
         for property in properties:
-            name = list(property.keys())[0]
+            if isinstance(property, str):
+                name = property
+                value = None
+            else:
+                name = list(property.keys())[0]
+                value = property[name]
 
             click_function = self.kernel.apply_command_decorator(
                 function=click_function,
                 group='properties',
                 name=name,
-                options=property[name]
+                options=value
             )
 
         if 'options' in self.content:

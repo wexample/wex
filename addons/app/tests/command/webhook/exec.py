@@ -59,7 +59,7 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
 
         # Async hook
         response = self.request_listener(
-            '/webhook/wex/test-waiting',
+            '/webhook/app/wex/webhook/test-waiting',
             check_code=None
         )
 
