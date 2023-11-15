@@ -42,11 +42,14 @@ class YamlCommandRunner(AbstractCommandRunner):
     def build_request_function(self) -> Command:
         def _click_function_handler(*args, **kwargs):
             commands_collection = []
-            env_args = kwargs.copy()
 
-            env_args.update({
-                'path_core': self.kernel.get_path('root'),
-                'path_current': os.getcwd() + os.sep
+            variables = {}
+            for name in kwargs:
+                variables[name.upper()] = kwargs[name]
+
+            variables.update({
+                'PATH_CORE': self.kernel.get_path('root'),
+                'PATH_CURRENT': os.getcwd() + os.sep
             })
 
             # Iterate through each command in the configuration
@@ -64,7 +67,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                     click_function,
                     self,
                     script,
-                    env_args
+                    variables
                 )
 
                 commands_collection.append(

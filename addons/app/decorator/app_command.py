@@ -47,7 +47,7 @@ def _app_run_handler(runner, function, ctx):
     return function.base_run_handler(runner, function, ctx)
 
 
-def _app_script_run_handler(function, runner, script, env_args: dict):
+def _app_script_run_handler(function, runner, script, variables: dict):
     kernel = runner.kernel
     manager = kernel.addons['app']
 
@@ -61,14 +61,13 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
             APP_FILEPATH_REL_DOCKER_ENV
         )
 
-        env_args = dotenv_values(env_path)
-
+        app_variables = dotenv_values(env_path)
         if 'script' in script:
-            script['script'] = replace_variables(script['script'], env_args)
+            script['script'] = replace_variables(script['script'], app_variables)
         elif 'file' in script:
-            script['file'] = replace_variables(script['file'], env_args)
+            script['file'] = replace_variables(script['file'], app_variables)
 
-        command = function.base_script_run_handler(function, runner, script, env_args)
+        command = function.base_script_run_handler(function, runner, script, variables)
 
         if 'container_name' in script:
             from src.helper.command import command_to_string
@@ -87,6 +86,6 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
 
             return wrap_command
     else:
-        command = function.base_script_run_handler(function, runner, script, env_args)
+        command = function.base_script_run_handler(function, runner, script, variables)
 
     return command
