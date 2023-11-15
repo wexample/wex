@@ -60,13 +60,21 @@ def _command_run(runner, function, ctx):
     return function.invoke(ctx)
 
 
-def _script_run(function, runner, script: Dict[str, Any], env_args: Dict[str, str]) -> Optional[List[str]]:
+def _replace_variables_by_command_options(script, options):
     from src.helper.string import replace_variables
 
+    variables = {}
+    for name in options:
+        variables[name.upper()] = options[name]
+
+    return replace_variables(script, variables)
+
+
+def _script_run(function, runner, script: Dict[str, Any], env_args: Dict[str, str]) -> Optional[List[str]]:
     if "script" in script:
-        script_command = replace_variables(script["script"], env_args)
+        script_command = _replace_variables_by_command_options(script["script"], env_args)
     elif "file" in script:
-        script_command = replace_variables(script["file"], env_args)
+        script_command = _replace_variables_by_command_options(script["file"], env_args)
         script["interpreter"] = script.get("interpreter", ["/bin/bash"])
     else:
         script_command = None
