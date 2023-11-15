@@ -71,10 +71,10 @@ def _replace_variables_by_command_options(script, options):
 
 
 def _script_run(function, runner, script: Dict[str, Any], env_args: Dict[str, str]) -> Optional[List[str]]:
-    if "script" in script:
-        script_command = _replace_variables_by_command_options(script["script"], env_args)
-    elif "file" in script:
-        script_command = _replace_variables_by_command_options(script["file"], env_args)
+    if 'script' in script:
+        script_command = _replace_variables_by_command_options(script['script'], env_args)
+    elif 'file' in script:
+        script_command = _replace_variables_by_command_options(script['file'], env_args)
         script["interpreter"] = script.get("interpreter", ["/bin/bash"])
     else:
         script_command = None

@@ -61,10 +61,12 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
             APP_FILEPATH_REL_DOCKER_ENV
         )
 
-        if os.path.exists(env_path):
-            script['script'] = replace_variables(
-                script['script'],
-                dotenv_values(env_path))
+        env_args = dotenv_values(env_path)
+
+        if 'script' in script:
+            script['script'] = replace_variables(script['script'], env_args)
+        elif 'file' in script:
+            script['file'] = replace_variables(script['file'], env_args)
 
         command = function.base_script_run_handler(function, runner, script, env_args)
 

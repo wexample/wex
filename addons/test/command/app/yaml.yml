@@ -19,7 +19,7 @@ scripts:
 
   - title: Bash outside container but with running app
     app_should_run: true
-    script: echo "Inline bash script outside running app in ${APP_DIR}"
+    script: echo "Inline bash script outside running app in ${RUNTIME_PATH_APP}"
 
   - title: Bash inside container, test a previously created file
     context: container
