@@ -1,8 +1,9 @@
 from addons.app.helpers.docker import build_long_container_name
+from src.helper.string import replace_variables
 from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
-from addons.app.decorator.app_dir_option import app_dir_option
 from src.core.FunctionProperty import FunctionProperty
+from addons.app.decorator.app_dir_option import app_dir_option
 
 
 def app_command(**decorator_args):
@@ -49,7 +50,6 @@ def _app_run_handler(runner, function, ctx):
 def _app_script_run_handler(function, runner, script, env_args: dict):
     kernel = runner.kernel
     manager = kernel.addons['app']
-    command = function.base_script_run_handler(function, runner, script, env_args)
 
     if manager.app_dir:
         import os
@@ -62,9 +62,11 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
         )
 
         if os.path.exists(env_path):
-            env_args.update(
-                dotenv_values(env_path)
-            )
+            script['script'] = replace_variables(
+                script['script'],
+                dotenv_values(env_path))
+
+        command = function.base_script_run_handler(function, runner, script, env_args)
 
         if 'container_name' in script:
             from src.helper.command import command_to_string
@@ -82,5 +84,7 @@ def _app_script_run_handler(function, runner, script, env_args: dict):
             ]
 
             return wrap_command
+    else:
+        command = function.base_script_run_handler(function, runner, script, env_args)
 
     return command

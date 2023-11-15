@@ -94,8 +94,9 @@ def replace_variables(text: str, variables: dict) -> str:
 
     # Replacement function
     def repl(match):
-        key = match.group(1).lower()  # Get the key and convert to lower case
-        return variables.get(key, match.group(0))  # Replace if key exists, else keep original
+        return variables.get(
+            match.group(1).upper(),
+            match.group(0))
 
     # Substitute using the replacement function
     return pattern.sub(repl, text)
