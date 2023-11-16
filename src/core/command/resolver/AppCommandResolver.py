@@ -1,5 +1,6 @@
 import os
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
+from src.core.FunctionProperty import FunctionProperty
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -113,25 +114,41 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def run_command_request_from_url_path_parts(
+    def run_command_request_from_url_path(
             self,
-            parts: list,
-            command_args: dict | None = None) -> AbstractResponse:
+            path: str,
+            command_args: dict | None = None) -> None | AbstractResponse:
         from addons.app.AppAddonManager import AppAddonManager
+
+        parts = path.split('/')
+
+        internal_command = self.create_command_from_path(
+            path
+        )
+
+        if not internal_command:
+            return
 
         app_name = parts[0]
         manager = AppAddonManager(self.kernel)
         apps = manager.get_proxy_apps()
 
         if app_name not in apps:
-            return QueuedCollectionStopResponse(self.kernel)
-
-        command_args = command_args or {}
-        command_args['app_dir'] = apps[app_name]
+            return
 
         self_super = super()
         def _callback():
-            return self_super.run_command_request_from_url_path_parts(parts)
+            request = self.kernel.create_command_request(
+                internal_command)
+
+            if not request.function:
+                return
+
+            # Hooking this command is not allowed
+            if not FunctionProperty.has_property(request.function, 'app_webhook'):
+                return QueuedCollectionStopResponse(self.kernel)
+
+            return self_super.run_command_request_from_url_path(path)
 
         return manager.exec_in_app_workdir(
             apps[app_name],
