@@ -349,7 +349,7 @@ class AbstractCommandResolver:
             args={}
         )
 
-    def create_command_from_path(self, path):
+    def create_command_from_path(self, path: str):
         parts = path.split('/')
 
         if not parts:
