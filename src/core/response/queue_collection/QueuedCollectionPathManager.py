@@ -30,13 +30,16 @@ class QueuedCollectionPathManager:
 
     def save_to_map(self):
         self.response.kernel.io.log(
-            f'Step path: {self.build_step_path()}',
+            f'Command: {self.request.command}',
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
         self.response.kernel.io.log(
-            f'Step position: {self.response.step_position}',
+            f'  Step path: {self.build_step_path()}',
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
         self.response.kernel.io.log(
-            f'Step index: {self.get_step_index()}',
+            f'  Step position: {self.response.step_position}',
+            verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        self.response.kernel.io.log(
+            f'  Step index: {self.get_step_index()}',
             verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         self.map[self.build_step_path()] = self.response

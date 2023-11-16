@@ -8,7 +8,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 @app_command(help="Restarts app")
 def app__app__restart(kernel: Kernel, app_dir: str):
     def _app__app__restart__stop(previous=None):
-        kernel.run_function(
+        return kernel.run_function(
             app__app__stop,
             {
                 'app-dir': app_dir
@@ -16,7 +16,7 @@ def app__app__restart(kernel: Kernel, app_dir: str):
         )
 
     def _app__app__restart__start(previous=None):
-        kernel.run_function(
+        return kernel.run_function(
             app__app__start,
             {
                 'app-dir': app_dir
