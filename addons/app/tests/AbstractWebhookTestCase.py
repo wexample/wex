@@ -18,8 +18,16 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
         return port
 
-    def request_listener(self, path: str, port: int = 6543, check_code: None | int = 200):
-        conn = HTTPConnection(f'localhost:{port}')
+    def request_listener(
+            self,
+            path: str,
+            port: int = 6543,
+            check_code: None | int = 200,
+            wait: bool = False):
+        domain = f'localhost:{port}'
+
+        self.log(f'GET to {domain}{path}')
+        conn = HTTPConnection(domain)
         conn.request("GET", path)
         response = conn.getresponse()
 
@@ -28,6 +36,10 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
                 response.status,
                 check_code
             )
+
+        if wait:
+            self.log(f'Wait webhook execution {path}')
+            time.sleep(wait)
 
         return response
 

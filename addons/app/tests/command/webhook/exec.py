@@ -60,7 +60,8 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         # Async hook
         response = self.request_listener(
             '/webhook/app/wex/webhook/test-waiting',
-            check_code=None
+            check_code=None,
+            wait=2
         )
 
         json = self.parse_response(response)
@@ -75,9 +76,6 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         )
 
         task_id = json['task_id']
-
-        self.log('Waiting task to terminate : ' + task_id)
-        time.sleep(2)
 
         response = self.request_listener(
             f'/status/process/{task_id}',
