@@ -1,3 +1,5 @@
+import os
+
 from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
@@ -5,6 +7,13 @@ from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 def process_post_exec(
         kernel,
         command: []):
+
+    # All command should be executed by default in the same current workdir.
+    if isinstance(command, list):
+        command = ['cd', os.getcwd(), '&&'] + command
+    else:
+        command = f'cd {os.getcwd()} && ' + command
+
     kernel.io.log(
         'Queuing shell command : ' + command_to_string(command),
         verbosity=VERBOSITY_LEVEL_MAXIMUM
