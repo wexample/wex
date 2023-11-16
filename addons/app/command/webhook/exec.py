@@ -2,7 +2,6 @@ import re
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from urllib.parse import urlparse, parse_qs
-from src.core.FunctionProperty import FunctionProperty
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -25,12 +24,20 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
     )
 
     if not match:
+        kernel.logger.append_event('WEBHOOK_PATH_DOES_NOT_MATCH', {
+            'path': path,
+        })
+
         return
 
     command_type = match[1]
     resolver = kernel.get_command_resolver(command_type)
 
     if not resolver:
+        kernel.logger.append_event('WEBHOOK_RESOLVER_NOT_FOUND', {
+            'command_type': command_type,
+        })
+
         return
 
     def _check():
@@ -64,19 +71,7 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
             return QueuedCollectionStopResponse(kernel)
 
     def _execute(previous: str):
-        path = match[2]
-
-        request = kernel.create_command_request(
-            resolver.create_command_from_path(
-                path
-            )
-        )
-
-        # Hooking this command is not allowed
-        if not FunctionProperty.has_property(request.function, 'app_webhook'):
-            return QueuedCollectionStopResponse(kernel)
-
-        return resolver.run_command_request_from_url_path(path)
+        return resolver.run_command_request_from_url_path(match[2])
 
     def _log(previous):
         kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
