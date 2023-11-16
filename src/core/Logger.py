@@ -14,6 +14,7 @@ LOG_STATUS_STARTED = 'started'
 
 class Logger:
     current_command = None
+    trace_depth: int = 10
 
     def __init__(self, kernel):
         self.kernel = kernel
@@ -97,17 +98,27 @@ class Logger:
 
         self.write()
 
-    def append_request(self, request):
-        self.current_command = {
+    def create_command_dict(self, request) -> dict:
+        return {
             'command': request.command,
             'args': request.args,
-            'date': self.get_time_string(),
         }
 
-        self.log_data['commands'].append(
-            self.current_command
-        )
+    def log_request(self, request):
+        # Start with the current command
+        command_chain = [self.create_command_dict(request)]
 
+        # Traverse through parent requests
+        current_request = request
+        while current_request.parent and len(command_chain) < self.trace_depth:
+            current_request = current_request.parent
+            command_chain.insert(0, self.create_command_dict(current_request))
+
+        # If chain length exceeds, keep the most recent
+        if len(command_chain) > self.trace_depth:
+            command_chain = command_chain[-self.trace_depth:]
+
+        self.log_data['trace'] = command_chain
         self.log_data['dateLast'] = self.get_time_string()
         self.log_data['duration'] = time.time() - self.time_start
 

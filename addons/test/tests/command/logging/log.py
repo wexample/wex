@@ -14,6 +14,6 @@ class TestTestCommandLoggingLog(AbstractTestCase):
             test__logging__log)
 
         self.assertEqual(
-            data['commands'][-1]['command'],
+            data['trace'][-1]['command'],
             internal_command
         )

@@ -35,7 +35,7 @@ class AbstractCommandResolver:
         previous_request = self.kernel.current_request
         self.kernel.current_request = request
 
-        self.kernel.logger.append_request(
+        self.kernel.logger.log_request(
             request=request
         )
 

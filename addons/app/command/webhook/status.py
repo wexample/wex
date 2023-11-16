@@ -39,8 +39,8 @@ def app__webhook__status(kernel: Kernel, port: None | int = None):
 
     table = []
     for log in logs:
-        if len(log['commands']):
-            command_data_first = log['commands'][0]
+        if len(log['trace']):
+            command_data_first = log['trace'][0]
             path = args_shift_one(command_data_first['args'], 'path')
 
             match = re.match(
