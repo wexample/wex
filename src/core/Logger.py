@@ -29,7 +29,8 @@ class Logger:
             # If it doesn't exist, create a new log_data
             self.log_data = {
                 'task_id': kernel.task_id,
-                'commands': [],
+                'command': None,
+                'trace': [],
                 'dateStart': date_now,
                 'dateLast': date_now,
                 'errors': [],
@@ -105,8 +106,14 @@ class Logger:
         }
 
     def log_request(self, request):
+        current_command_dict = self.create_command_dict(request)
+
+        # Store root command
+        if not self.log_data['command']:
+            self.log_data['command'] = current_command_dict
+
         # Start with the current command
-        command_chain = [self.create_command_dict(request)]
+        command_chain = [current_command_dict]
 
         # Traverse through parent requests
         current_request = request
@@ -166,15 +173,6 @@ class Logger:
                     filtered.append(log)
 
         return filtered
-
-    def find_by_function(self, function):
-        return self.find_by_command(
-            self.kernel.get_command_resolver(
-                COMMAND_TYPE_ADDON
-            ).build_command_from_function(
-                function
-            )
-        )
 
     def build_summary(self, data) -> list:
         return [

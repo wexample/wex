@@ -29,33 +29,29 @@ def app__webhook__status(kernel: Kernel, port: None | int = None):
         render_mode=KERNEL_RENDER_MODE_NONE
     )
 
+    # Args are [python, main.py, task_id, ...]
+    task_id = response.dictionary_data['command'][2]
+
     # Hide sensitive info
     if 'command' in response.dictionary_data:
         del response.dictionary_data['command']
 
-    logs = kernel.logger.find_by_function(
-        app__webhook__exec
-    )
-
     table = []
-    for log in logs:
-        if len(log['trace']):
-            command_data_first = log['trace'][0]
-            path = args_shift_one(command_data_first['args'], 'path')
 
-            match = re.match(
-                WEBHOOK_LISTENER_ROUTES_MAP['exec']['pattern'],
-                path
-            )
+    listener_log = kernel.logger.load_logs(task_id)
+    for children_time in listener_log['children']:
+        children_id = listener_log['children'][children_time]
 
-            table.append(
-                [
-                    log['dateStart'],
-                    match[1],
-                    match[2],
-                    log['status']
-                ]
-            )
+        children_log = kernel.logger.load_logs(children_id)
+
+        table.append(
+            [
+                children_id,
+                children_log['command']['command'],
+                children_time,
+                children_log['status'],
+            ]
+        )
 
     table_response = TableResponse(kernel)
     table_response.set_title('Log')
