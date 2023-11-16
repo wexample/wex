@@ -49,7 +49,20 @@ def app__app__stop(kernel: Kernel, app_dir: str):
                     kernel,
                     app_dir,
                     [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
-                    ['down'],
+                    ['stop'],
+                )
+            )
+        ])
+
+    def _app__app__stop__rm(previous):
+        return QueuedCollectionResponse(kernel, [
+            InteractiveShellCommandResponse(
+                kernel,
+                exec_app_docker_compose_command(
+                    kernel,
+                    app_dir,
+                    [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
+                    ['rm', '-f'],
                 )
             )
         ])
@@ -80,6 +93,7 @@ def app__app__stop(kernel: Kernel, app_dir: str):
     return QueuedCollectionResponse(kernel, [
         _app__app__stop__checkup,
         _app__app__stop__stop,
+        _app__app__stop__rm,
         _app__app__stop__update_hosts,
         _app__app__stop__complete,
     ])
