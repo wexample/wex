@@ -115,8 +115,7 @@ class Logger:
 
     def write(self, task_id: None | str = None, log_data: dict | None = None):
         # When writing current log, check if disabled.
-        if not task_id and (
-                self.kernel.root_request
+        if (self.kernel.root_request
                 and self.kernel.root_request.function
                 and FunctionProperty.has_property(self.kernel.root_request.function, name='no_log')):
             return
