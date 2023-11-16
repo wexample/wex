@@ -23,36 +23,38 @@ def app__webhook__status(kernel: Kernel, port: None | int = None):
         render_mode=KERNEL_RENDER_MODE_NONE
     )
 
-    # Args are [python, main.py, task_id, ...]
-    task_id = response.dictionary_data['command'][2]
+    output = {"process": response}
 
-    # Hide sensitive info
-    if 'command' in response.dictionary_data:
-        del response.dictionary_data['command']
+    if response.dictionary_data['running']:
+        # Args are [python, main.py, task_id, ...]
+        task_id = response.dictionary_data['command'][2]
 
-    table = []
+        # Hide sensitive info
+        if 'command' in response.dictionary_data:
+            del response.dictionary_data['command']
 
-    listener_log = kernel.logger.load_logs(task_id)
-    if listener_log:
-        for children_time in listener_log['children']:
-            children_id = listener_log['children'][children_time]
+        table = []
 
-            children_log = kernel.logger.load_logs(children_id)
+        listener_log = kernel.logger.load_logs(task_id)
+        if listener_log:
+            for children_time in listener_log['children']:
+                children_id = listener_log['children'][children_time]
 
-            table.append(
-                [
-                    children_id,
-                    children_log['command']['command'],
-                    children_time,
-                    children_log['status'],
-                ]
-            )
+                children_log = kernel.logger.load_logs(children_id)
 
-    table_response = TableResponse(kernel)
-    table_response.set_title('Log')
-    table_response.set_body(table)
+                table.append(
+                    [
+                        children_id,
+                        children_log['command']['command'],
+                        children_time,
+                        children_log['status'],
+                    ]
+                )
 
-    return DictResponse(kernel, {
-        "process": response,
-        "log": table_response,
-    }, cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)
+        table_response = TableResponse(kernel)
+        table_response.set_title('Log')
+        table_response.set_body(table)
+
+        output["log"] = table_response
+
+    return DictResponse(kernel, output, cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)
