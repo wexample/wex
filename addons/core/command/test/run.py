@@ -58,7 +58,8 @@ def core__test__run(kernel: Kernel, command: str = None):
     for addon_data in kernel.registry['addon'].values():
         for command_name, command_data in addon_data['commands'].items():
             if 'test' in command_data and command_data['test'] and (
-                    (not command) or command_name == command):
+                    (not command) or command_name == command or (
+                    command.endswith('*') and command_name.startswith(command[:-1]))):
                 kernel.io.log(f'Found test for command: {command_name}')
 
                 spec = importlib.util.spec_from_file_location(f'{command_name}_test', command_data['test'])
