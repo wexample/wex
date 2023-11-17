@@ -7,7 +7,7 @@ from src.const.globals import COMMAND_TYPE_ADDON
 
 @command(help="Return a table response", command_type=COMMAND_TYPE_ADDON)
 @option('--arg', '-a', type=str, required=True, help="Argument")
-def test__return_type__table_response(kernel: Kernel, arg):
+def test__return_type__table(kernel: Kernel, arg):
     return TableResponse(
         kernel,
         'Test table',
