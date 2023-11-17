@@ -58,4 +58,9 @@ class InteractiveShellCommandResponse(AbstractResponse):
         return False
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
-        return self.output_bag[0] if len(self.output_bag) else None
+        # No output bag as script is interactively executed after this process.
+        return None
+
+    def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL) -> str | None:
+        # No output bag as script is interactively executed after this process.
+        return None
