@@ -9,7 +9,6 @@ from src.core.response.InteractiveShellCommandResponse import InteractiveShellCo
 from src.core.response.KeyValueResponse import KeyValueResponse
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.NullResponse import NullResponse
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.TableResponse import TableResponse
 
@@ -25,7 +24,7 @@ def test__return_type__response_collection(kernel: Kernel):
         KeyValueResponse(kernel, {'key': 'value'}),
         NonInteractiveShellCommandResponse(kernel, ['echo', 'NON_INTERACTIVE_SHELL_COMMAND_RESPONSE']),
         NullResponse(kernel),
-        # # QueuedCollectionResponse
+        # Not supported yet QueuedCollectionResponse()
         # Not supported yet ResponseCollectionResponse()
         TableResponse(kernel, 'Test Table', [['lorem', 'ipsum'], ['dolor', 'sit']])
     ])
