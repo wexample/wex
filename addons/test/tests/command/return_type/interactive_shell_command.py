@@ -12,6 +12,4 @@ class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
         })
 
     def _test_interactive_shell_command(self, render_mode):
-        response = self.kernel.run_function(test__return_type__interactive_shell_command, render_mode=render_mode)
-
-        return response.print()
+        return self.kernel.run_function(test__return_type__interactive_shell_command, render_mode=render_mode).print_wrapped(render_mode)
