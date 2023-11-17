@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import shutil
 from abc import ABC
-
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -32,3 +31,7 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
             return f"{'=' * padding_each_side} {title} {'=' * padding_each_side}{extra_equal}\n"
 
         return ''
+
+    def render_mode_json_wrap_data(self, value):
+        # Do not add extra json wrapping
+        return value

@@ -15,8 +15,7 @@ from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
-    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, \
-    KERNEL_RENDER_MODE_JSON
+    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import list_subdirectories, remove_file_if_exists
 from src.core.response.AbortResponse import AbortResponse
@@ -238,14 +237,9 @@ class Kernel:
                 command_to_string(post_command) + '\n',
             )
 
-        printed = response.print(
+        printed = response.print_wrapped(
             render_mode or self.default_render_mode
         ) if response else None
-
-        if render_mode == KERNEL_RENDER_MODE_JSON:
-            import json
-
-            return json.dumps(printed)
 
         return printed
 

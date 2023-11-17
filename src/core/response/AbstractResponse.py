@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON
 
 
 class AbstractResponse:
@@ -128,3 +128,19 @@ class AbstractResponse:
                         args,
                     )
                 )
+
+    def render_mode_json_wrap_data(self, value):
+        return {'value': value}
+
+    def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
+        if render_mode == KERNEL_RENDER_MODE_NONE:
+            return None
+
+        value = self.print(render_mode)
+
+        if render_mode == KERNEL_RENDER_MODE_JSON:
+            import json
+
+            return json.dumps(self.render_mode_json_wrap_data(value))
+
+        return value
