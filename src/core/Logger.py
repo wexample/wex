@@ -5,7 +5,6 @@ import time
 
 from src.helper.file import set_user_or_sudo_user_owner
 from src.helper.json import load_json_if_valid, parse_json_if_valid
-from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.FunctionProperty import FunctionProperty
 
 LOG_STATUS_COMPLETE = 'complete'
@@ -147,11 +146,6 @@ class Logger:
 
         set_user_or_sudo_user_owner(log_path)
 
-    def write_output(self, output: str):
-        self.kernel.task_file_write(
-            'out',
-            output
-        )
 
     def get_all_logs_files(self) -> list:
         directory = self.kernel.get_or_create_path('task')

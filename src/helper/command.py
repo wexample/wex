@@ -66,7 +66,12 @@ def execute_command_tree(kernel, command_tree, working_directory=None, async_mod
     return execute_command(kernel, command_tree, working_directory, async_mode, **kwargs)
 
 
-def execute_command(kernel, command: list | str, working_directory=None, async_mode=False, **kwargs):
+def execute_command(
+        kernel,
+        command: list | str,
+        working_directory=None,
+        async_mode=False,
+        **kwargs):
     import subprocess
     import os
 
@@ -105,8 +110,9 @@ def execute_command(kernel, command: list | str, working_directory=None, async_m
         out_content_decoded: str = out_content.decode()
         success: bool = (process.returncode == 0)
 
-        kernel.logger.write_output(out_content_decoded)
-        kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        kernel.io.log(
+            out_content_decoded,
+            verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         return success, out_content_decoded.splitlines()
 

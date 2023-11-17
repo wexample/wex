@@ -126,3 +126,16 @@ class AbstractTestCase(unittest.TestCase):
                 name,
             ],
         )
+
+    def for_each_render_mode(self, callback, expected: dict):
+        from src.const.globals import KERNEL_RENDER_MODES
+
+        for render_mode in KERNEL_RENDER_MODES:
+            self.log(f'Test in render mode : {render_mode}')
+            value = callback(render_mode)
+
+            if render_mode in expected:
+                self.assertEqual(
+                    value,
+                    expected[render_mode],
+                )
