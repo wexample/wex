@@ -4,13 +4,13 @@ from tests.AbstractTestCase import AbstractTestCase
 import json
 
 
-class TestTestCommandReturnTypeTableResponse(AbstractTestCase):
-    def test_table_response(self):
-        self.for_each_render_mode(self._test_table_response, {
+class TestTestCommandReturnTypeTable(AbstractTestCase):
+    def test_table(self):
+        self.for_each_render_mode(self._test_table, {
             KERNEL_RENDER_MODE_NONE: None,
         })
 
-    def _test_table_response(self, render_mode):
+    def _test_table(self, render_mode):
         response = self.kernel.run_function(test__return_type__table, {
             'arg': 'test'
         }, render_mode=render_mode)
