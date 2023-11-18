@@ -71,7 +71,4 @@ def _script_run(function, runner, script: Dict[str, Any], variables: Dict[str, s
     else:
         script_command = None
 
-    if "interpreter" in script:
-        script_command = repr(script_command)
-
     return script["interpreter"] + [script_command] if "interpreter" in script and script_command else script_command

@@ -17,10 +17,18 @@ class TestTestCommandCommandExtensionYaml(AbstractTestCase):
         )
 
         self.assertTrue(
-            'double quotes' in response.output_bag[4].print(),
+            'simple quotes' in response.output_bag[4].print(),
         )
 
         self.assertTrue(
-            response.output_bag[5].first(),
+            'double quotes' in response.output_bag[5].print(),
+        )
+
+        self.assertTrue(
+            'simple quotes' in response.output_bag[6].print() and 'double quotes' in response.output_bag[6].print(),
+        )
+
+        self.assertTrue(
+            response.output_bag[7].first(),
             'SIMPLE_PYTHON_FILE_RESPONSE'
         )
