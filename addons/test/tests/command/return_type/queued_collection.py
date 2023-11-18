@@ -8,8 +8,8 @@ class TestTestCommandReturnTypeQueuedCollection(AbstractTestCase):
     def test_queued_collection(self):
         self.for_each_render_mode(self._test_queued_collection, {
             KERNEL_RENDER_MODE_NONE: None,
-            KERNEL_RENDER_MODE_JSON: json.dumps({'value': None}),
-            KERNEL_RENDER_MODE_TERMINAL: None,
+            KERNEL_RENDER_MODE_JSON: json.dumps({'value': "lorem\nipsum\n123"}),
+            KERNEL_RENDER_MODE_TERMINAL: "lorem\nipsum\n123",
         })
 
     def _test_queued_collection(self, render_mode):

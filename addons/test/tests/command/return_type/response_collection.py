@@ -8,8 +8,23 @@ class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
     def test_response_collection(self):
         self.for_each_render_mode(self._test_response_collection, {
             KERNEL_RENDER_MODE_NONE: None,
-            KERNEL_RENDER_MODE_JSON: json.dumps({'value': None}),
-            KERNEL_RENDER_MODE_TERMINAL: None,
+            KERNEL_RENDER_MODE_JSON: json.dumps(
+                ["DEFAULT", {"lorem": "ipsum"}, "FUNCTION_OK", None, "INTERACTIVE_SHELL_COMMAND_RESPONSE",
+                 {"key": "value"}, "NON_INTERACTIVE_SHELL_COMMAND_RESPONSE", None,
+                 {"body": [["lorem", "ipsum"], ["dolor", "sit"]], "header": [], "title": "Test Table"}]),
+            KERNEL_RENDER_MODE_TERMINAL: """DEFAULT
+lorem: ipsum
+FUNCTION_OK
+INTERACTIVE_SHELL_COMMAND_RESPONSE
+key : value
+
+NON_INTERACTIVE_SHELL_COMMAND_RESPONSE
+== Test Table ===
++---------------+
+| lorem | ipsum |
+| dolor | sit   |
++---------------+
+""",
         })
 
     def _test_response_collection(self, render_mode):

@@ -138,4 +138,5 @@ class AbstractTestCase(unittest.TestCase):
                 self.assertEqual(
                     value,
                     expected[render_mode],
+                    render_mode
                 )

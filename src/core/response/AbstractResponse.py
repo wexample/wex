@@ -130,7 +130,7 @@ class AbstractResponse:
                 )
 
     def render_mode_json_wrap_data(self, value):
-        return {'value': value, 'type': str(type(self))}
+        return {'value': value}
 
     def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
         if render_mode == KERNEL_RENDER_MODE_NONE:
