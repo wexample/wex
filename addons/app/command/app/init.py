@@ -141,11 +141,6 @@ def app__app__init(
 
         manager.save_config()
 
-    def init_step_set_workdir():
-        nonlocal manager
-
-        manager.set_app_workdir(app_dir)
-
     def init_step_install_service():
         nonlocal services
         nonlocal kernel
@@ -179,9 +174,6 @@ def app__app__init(
             }
         )
 
-    def init_step_unset_workdir():
-        manager.unset_app_workdir(current_dir)
-
     def init_step_complete():
         kernel.io.message_next_command(
             app__app__start,
@@ -193,11 +185,9 @@ def app__app__init(
         init_step_check_services,
         init_step_copy_app,
         init_step_create_env,
-        init_step_set_workdir,
         init_step_create_config,
         init_step_install_service,
         init_step_init_git,
         init_step_hooks,
-        init_step_unset_workdir,
         init_step_complete,
     ])

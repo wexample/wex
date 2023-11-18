@@ -5,7 +5,7 @@ from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON, 
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestTestCommandReturnTypeInteractiveKeyValue(AbstractTestCase):
+class TestTestCommandReturnTypeKeyValue(AbstractTestCase):
     def test_key_value(self):
         self.for_each_render_mode(self._test_key_value, {
             KERNEL_RENDER_MODE_NONE: None,

@@ -62,6 +62,7 @@ def execute_command_tree(kernel, command_tree, working_directory=None, async_mod
                 command_tree[i:i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
+
     # Execute the modified (flattened) command_tree with the results of inner commands
     return execute_command(kernel, command_tree, working_directory, async_mode, **kwargs)
 
