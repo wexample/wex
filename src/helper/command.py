@@ -120,9 +120,9 @@ def execute_command(
 
 def command_escape(string: str, quote_char: str = '"') -> str:
     # Escape existing quotes
-    item = string.replace(quote_char, '\\' + quote_char)
-    # Add quotes around the item
-    return quote_char + item + quote_char
+    escaped_string = string.replace('\\', '\\\\').replace(quote_char, '\\' + quote_char)
+    # Add quotes around the escaped string
+    return quote_char + escaped_string + quote_char
 
 
 def command_to_string(command: list | str):

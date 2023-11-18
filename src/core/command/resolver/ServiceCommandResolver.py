@@ -26,7 +26,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         if request.runner and '--service' not in request.args:
             request.args.extend([
                 '--service',
-                request.match[1]
+                service
             ])
 
         return super().render_request(request, render_mode)
@@ -119,6 +119,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 self.kernel,
                 to_snake_case(request.match[1]))
 
+            match_base = request.match
             for service_tree_item in tree:
                 request.command = self.build_command_from_parts([
                     service_tree_item,
@@ -127,6 +128,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 ])
 
                 if super().locate_function(request):
+                    request.match = match_base
                     return True
 
         return False

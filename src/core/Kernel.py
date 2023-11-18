@@ -82,9 +82,6 @@ class Kernel:
             'task': os.path.join(tmp_path, 'task') + os.sep
         }
 
-        # Check that script is called from a valid dir.
-        self.get_path('call')
-
         # Initialize addons config
         self.addons = {}
         from addons.app.AppAddonManager import AppAddonManager

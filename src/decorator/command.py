@@ -65,7 +65,6 @@ def _script_run(function, runner, script: Dict[str, Any], variables: Dict[str, s
 
     if 'script' in script:
         from src.helper.command import command_escape
-
         script_command = replace_variables(script['script'], variables)
 
         if 'interpreter' in script:

@@ -1,4 +1,5 @@
 from addons.app.helpers.docker import build_long_container_name
+from src.helper.command import command_escape
 from src.helper.string import replace_variables
 from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
@@ -71,9 +72,8 @@ def _app_script_run_handler(function, runner, script, variables: dict):
 
         if 'container_name' in script:
             from src.helper.command import command_to_string
-
-            if "interpreter" in script:
-                command[-1] = repr(command[-1])
+            command = command_to_string(command)
+            command = command_escape(command)
 
             wrap_command = [
                 'docker',
@@ -81,7 +81,7 @@ def _app_script_run_handler(function, runner, script, variables: dict):
                 build_long_container_name(kernel, script['container_name']),
                 SHELL_DEFAULT,
                 '-c',
-                command_to_string(command)
+                command
             ]
 
             return wrap_command
