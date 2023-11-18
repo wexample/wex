@@ -1,5 +1,3 @@
-import json
-
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
 from src.core.response.AbstractResponse import AbstractResponse
@@ -35,6 +33,10 @@ class ResponseCollectionResponse(AbstractResponse):
             data = []
 
             for response in self.collection:
-                data.append(response.first())
+                data.append(response.print(render_mode, interactive_data))
 
-            return json.dumps(data)
+            return data
+
+    def render_mode_json_wrap_data(self, value):
+        # Do not add extra json wrapping
+        return value

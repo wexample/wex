@@ -37,9 +37,16 @@ class AbstractQueuedCollectionResponseQueueManager:
 
             return path
 
-    def enqueue_next_step_if_exists(self, step_index, response) -> bool:
+    def get_next_step_index(self, step_index) -> bool | int:
         next_index = step_index + 1
         if next_index < len(self.response.collection):
+            return next_index
+
+        return False
+
+    def enqueue_next_step_if_exists(self, step_index, response) -> bool:
+        next_index = self.get_next_step_index(step_index)
+        if next_index:
             self.enqueue_next_step_by_index(next_index)
 
             return True

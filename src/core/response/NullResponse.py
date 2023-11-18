@@ -21,5 +21,3 @@ class NullResponse(AbstractResponse, ABC):
                 render_mode,
                 interactive_data
             )
-        if render_mode == KERNEL_RENDER_MODE_JSON:
-            return {}

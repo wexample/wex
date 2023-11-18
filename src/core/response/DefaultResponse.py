@@ -18,4 +18,5 @@ class DefaultResponse(AbstractResponse):
         return self
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
-        return self.output_bag[0]
+        # can be empty in "none" render mode.
+        return self.output_bag[0] if len(self.output_bag) else None
