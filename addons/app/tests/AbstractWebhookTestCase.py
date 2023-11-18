@@ -23,7 +23,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             path: str,
             port: int = 6543,
             check_code: None | int = 200,
-            wait: bool = False):
+            wait: int = 0):
         domain = f'localhost:{port}'
 
         self.log(f'GET to {domain}{path}')

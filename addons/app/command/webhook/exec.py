@@ -62,7 +62,7 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
             args.append(value[0])
 
         if has_error:
-            kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
+            kernel.logger.append_event('WEBHOOK_ERROR', {
                 'path': path,
                 'source_data': source_data,
                 'success': False
@@ -74,7 +74,7 @@ def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
         return resolver.run_command_request_from_url_path(match[2])
 
     def _log(previous):
-        kernel.logger.append_event('EVENT_WEBHOOK_EXEC', {
+        kernel.logger.append_event('WEBHOOK_COMPLETE', {
             'path': path,
             'source_data': source_data,
             'success': True
