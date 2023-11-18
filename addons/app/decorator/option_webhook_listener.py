@@ -1,5 +1,7 @@
 import click
 
+from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
+
 
 def option_webhook_listener(port=False, path=False):
     def decorator(function):
@@ -12,6 +14,8 @@ def option_webhook_listener(port=False, path=False):
                     '-p',
                     type=int,
                     help="Webhook listener port number",
+                    required=True,
+                    default=WEBHOOK_LISTEN_PORT_DEFAULT
                 )(function)
 
             if path:
@@ -22,6 +26,7 @@ def option_webhook_listener(port=False, path=False):
                     '-p',
                     type=str,
                     help="Webhook requested path",
+                    required=True,
                 )(function)
 
         return function

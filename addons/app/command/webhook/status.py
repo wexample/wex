@@ -12,9 +12,7 @@ from src.decorator.as_sudo import as_sudo
 @as_sudo()
 @command(help="Give information about webhook listener status", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(port=True)
-def app__webhook__status(kernel: Kernel, port: None | int = None):
-    port = port or WEBHOOK_LISTEN_PORT_DEFAULT
-
+def app__webhook__status(kernel: Kernel, port: int = WEBHOOK_LISTEN_PORT_DEFAULT):
     response = kernel.run_function(
         system__process__by_port,
         {
