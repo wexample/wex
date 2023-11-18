@@ -1,6 +1,6 @@
 from addons.app.helpers.docker import build_long_container_name
 from src.helper.args import args_parse_one
-from src.helper.command import command_to_string
+from src.helper.command import command_to_string, command_escape
 from src.decorator.option import option
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
@@ -83,10 +83,12 @@ def app__app__exec(
         final_command += ['&&']
 
     # Add the main command
-    final_command += [command]
+    final_command += [
+        command_escape(command)
+    ]
 
     # Append the final command to docker_command
-    docker_command += ['-c', command_to_string(final_command, add_quotes=False)]
+    docker_command += ['-c', command_to_string(final_command)]
 
     if sync:
         return NonInteractiveShellCommandResponse(

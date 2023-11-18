@@ -125,7 +125,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
     return quote_char + item + quote_char
 
 
-def command_to_string(command: list | str, add_quotes: bool = True, quote_char: str = '"'):
+def command_to_string(command: list | str):
     if isinstance(command, str):
         return command
 
@@ -134,7 +134,7 @@ def command_to_string(command: list | str, add_quotes: bool = True, quote_char: 
     for item in command:
         if isinstance(item, list):
             output.append(
-                '$(' + command_to_string(item, add_quotes, quote_char) + ')'
+                '$(' + command_to_string(item) + ')'
             )
         else:
             output.append(item)
