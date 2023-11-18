@@ -129,14 +129,18 @@ class AppCommandResolver(AbstractCommandResolver):
         )
 
         if not internal_command:
-            return
+            return AbortResponse(
+                kernel=self.kernel,
+                reason='WEBHOOK_COMMAND_NOT_FOUND')
 
         app_name = to_snake_case(parts[0])
         manager = AppAddonManager(self.kernel)
         apps = manager.get_proxy_apps()
 
         if app_name not in apps:
-            return
+            return AbortResponse(
+                kernel=self.kernel,
+                reason='WEBHOOK_APP_NOT_FOUND')
 
         self_super = super()
         def _callback():
@@ -144,7 +148,9 @@ class AppCommandResolver(AbstractCommandResolver):
                 internal_command)
 
             if not request.function:
-                return
+                return AbortResponse(
+                    kernel=self.kernel,
+                    reason='WEBHOOK_REQUEST_NOT_FOUND')
 
             # Hooking this command is not allowed
             if not FunctionProperty.has_property(request.function, 'app_webhook'):
