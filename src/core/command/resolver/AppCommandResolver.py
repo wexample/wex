@@ -119,6 +119,8 @@ class AppCommandResolver(AbstractCommandResolver):
             path: str,
             command_args: dict | None = None) -> None | AbstractResponse:
         from addons.app.AppAddonManager import AppAddonManager
+        from src.core.response.AbortResponse import AbortResponse
+        from src.helper.string import to_snake_case
 
         parts = path.split('/')
 
@@ -129,7 +131,7 @@ class AppCommandResolver(AbstractCommandResolver):
         if not internal_command:
             return
 
-        app_name = parts[0]
+        app_name = to_snake_case(parts[0])
         manager = AppAddonManager(self.kernel)
         apps = manager.get_proxy_apps()
 
