@@ -1,9 +1,13 @@
+import os
 import time
 import json
+import shutil
 
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
 from http.client import HTTPConnection
+from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
+from addons.app.const.app import APP_DIR_APP_DATA
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
@@ -45,3 +49,32 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
     def parse_response(self, response) -> dict:
         return json.loads(response.read())
+
+    def copy_command_dir(self, app_dir, sub_dir: str):
+        script_dir = os.path.join(
+            app_dir,
+            APP_DIR_APP_DATA,
+            sub_dir,
+        )
+
+        shutil.rmtree(script_dir)
+
+        shutil.copytree(
+            os.path.join(
+                self.get_app_resources_path(),
+                '5.0.0',
+                APP_DIR_APP_DATA,
+                sub_dir,
+            ),
+            script_dir
+        )
+
+    def create_and_start_test_app_webhook(self):
+        app_dir = self.create_and_start_test_app(
+            DEFAULT_APP_TEST_NAME + '-webhook',
+            services=['php'])
+
+        self.copy_command_dir(app_dir, 'command')
+        self.copy_command_dir(app_dir, 'script')
+
+        return app_dir, os.path.basename(os.path.dirname(app_dir))

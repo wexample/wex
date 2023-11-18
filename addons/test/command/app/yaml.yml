@@ -1,6 +1,6 @@
 type: addon
 webhook: false
-help: Description
+help: These command is stored in addons and can be ran in an application context
 command:
   decorator: app_command
   options:
@@ -32,12 +32,21 @@ scripts:
     file: /test-file.sh
 
   - title: Inline python
+    interpreter: ['python3', '-c']
+    script: print('PYTHON_SUCCESS')
+
+  - title: File in python
+    type: python-file
+    interpreter: [ 'python3' ]
+    file: .wex/script/test.py
+
+  - title: Inline python in container
     context: containers
     container_name: php
     interpreter: [ 'python3', '-c' ]
     script: print("IN_CONTAINER_PYTHON_SCRIPT")
 
-  - title: File in python
+  - title: File in python in container
     context: container
     container_name: php
     interpreter: [ 'python3' ]

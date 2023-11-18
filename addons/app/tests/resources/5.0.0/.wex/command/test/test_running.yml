@@ -1,4 +1,9 @@
-type: addon
+type: app
+help: Scripts to run only when app is running
+command:
+  decorator: app_command
+properties:
+  - app_webhook
 scripts:
   - title: Test outside but with running app
     app_should_run: true

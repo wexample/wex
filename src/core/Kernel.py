@@ -290,7 +290,7 @@ class Kernel:
                 self.io.error("Command file not found when rendering, command {command}, in path \"{path}\"", {
                     'command': request.command,
                     'path': request.path,
-                })
+                }, trace=False)
 
             return NullResponse(self)
 

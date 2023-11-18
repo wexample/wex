@@ -1,9 +1,12 @@
+import json
+
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.WebhookHttpRequestHandler import WEBHOOK_STATUS_COMPLETE, WEBHOOK_STATUS_STARTED
 from src.core.Logger import LOG_STATUS_COMPLETE
 from src.const.globals import CORE_COMMAND_NAME
 from addons.app.AppAddonManager import AppAddonManager
-import time
+from addons.app.command.webhook.exec import app__webhook__exec
+from addons.app.command.app.exec import app__app__exec
 
 
 class TestAppCommandWebhookExec(AbstractWebhookTestCase):
@@ -26,10 +29,10 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
             '/status',
         )
 
-        json = self.parse_response(response)
+        data = self.parse_response(response)
 
         self.assertEqual(
-            json['status'],
+            data['status'],
             WEBHOOK_STATUS_COMPLETE
         )
 
@@ -38,22 +41,22 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
             '/webhook/wex/missing-hook',
         )
 
-        json = self.parse_response(response)
+        data = self.parse_response(response)
 
         # Even missing, returns okay as it is an async response.
         self.assertEqual(
-            json['status'],
+            data['status'],
             WEBHOOK_STATUS_STARTED
         )
 
         response = self.request_listener(
-            f'/status/process/{json["task_id"]}',
+            f'/status/process/{data["task_id"]}',
         )
 
-        json = self.parse_response(response)
+        data = self.parse_response(response)
 
         self.assertEqual(
-            json['status'],
+            data['status'],
             WEBHOOK_STATUS_COMPLETE
         )
 
@@ -64,31 +67,62 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
             wait=2
         )
 
-        json = self.parse_response(response)
+        data = self.parse_response(response)
 
         self.assertEqual(
-            json['status'],
+            data['status'],
             'started'
         )
 
         self.assertIsNotNone(
-            json['task_id'],
+            data['task_id'],
         )
 
-        task_id = json['task_id']
+        task_id = data['task_id']
 
         response = self.request_listener(
             f'/status/process/{task_id}',
         )
 
-        json = self.parse_response(response)
+        data = self.parse_response(response)
 
         self.assertEqual(
-            json['task_id'],
+            data['task_id'],
             task_id
         )
 
         self.assertEqual(
-            json['status'],
+            data['status'],
             LOG_STATUS_COMPLETE
         )
+
+        app_dir, app_name = self.create_and_start_test_app_webhook()
+
+        self.kernel.run_function(app__app__exec, {
+            'app-dir': app_dir,
+            'command': 'touch /var/tmp/test-file'
+        })
+
+        response = self.kernel.run_function(app__webhook__exec, {
+            'path': f'/webhook/app/{app_name}/test/test-running',
+        })
+
+        data = json.loads(response.print_wrapped(render_mode='json'))
+
+        lines = data['value'].split("\n")
+
+        self.assertEqual(
+            lines[0],
+            'BASH_RESPONSE_RUNNING'
+        )
+
+        self.assertTrue(
+            ' test-file' in lines[4]
+        )
+
+        self.assertEqual(
+            lines[5],
+            'TEST_EXECUTION_ORDER'
+        )
+
+        self.stop_test_app(app_dir)

@@ -1,9 +1,9 @@
 type: app
-properties:
-  - app_webhook
 help: Test webhook
 command:
   decorator: app_command
+properties:
+  - app_webhook
 scripts:
   - echo "MINIMAL_BASH_RESPONSE"
 
@@ -16,9 +16,10 @@ scripts:
     file: .wex/script/test.sh
 
   - title: Inline python
-    type: python
+    interpreter: ['python3', '-c']
     script: print('PYTHON_SUCCESS')
 
   - title: File in python
     type: python-file
+    interpreter: [ 'python3' ]
     file: .wex/script/test.py
