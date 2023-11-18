@@ -59,34 +59,32 @@ def app__proxy__start(kernel: Kernel,
             )
 
     def _app__proxy__start__checkup(previous):
-        nonlocal user
-        current_dir = os.getcwd()
+        def _callback():
+            nonlocal user
+            user = user or getpass.getuser()
 
-        manager.set_app_workdir(proxy_path)
+            def check_port(port_to_check: int):
+                if not port_to_check:
+                    kernel.io.error(f"Invalid port {port_to_check}", trace=False)
 
-        user = user or getpass.getuser()
+                manager.log(f'Checking that port {port_to_check} is free')
 
-        def check_port(port_to_check: int):
-            if not port_to_check:
-                kernel.io.error(f"Invalid port {port_to_check}", trace=False)
+                # Check port availability.
+                process = get_processes_by_port(port_to_check)
+                if process:
+                    kernel.io.error(f"Process {process.pid} ({process.name()}) is using port {port_to_check}",
+                                    trace=False)
 
-            manager.log(f'Checking that port {port_to_check} is free')
+                kernel.io.success(f'Port {port_to_check} free')
 
-            # Check port availability.
-            process = get_processes_by_port(port_to_check)
-            if process:
-                kernel.io.error(f"Process {process.pid} ({process.name()}) is using port {port_to_check}", trace=False)
+            check_port(
+                manager.get_config('global.port_public')
+            )
+            check_port(
+                manager.get_config('global.port_public_secure')
+            )
 
-            kernel.io.success(f'Port {port_to_check} free')
-
-        check_port(
-            manager.get_config('global.port_public')
-        )
-        check_port(
-            manager.get_config('global.port_public_secure')
-        )
-
-        manager.unset_app_workdir(current_dir)
+        manager.exec_in_app_workdir(proxy_path, _callback)
 
     def _app__proxy__start__start(previous):
         return kernel.run_function(
