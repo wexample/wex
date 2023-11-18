@@ -118,7 +118,6 @@ class AppCommandResolver(AbstractCommandResolver):
             self,
             path: str,
             command_args: dict | None = None) -> None | AbstractResponse:
-        from addons.app.AppAddonManager import AppAddonManager
         from src.core.response.AbortResponse import AbortResponse
         from src.helper.string import to_snake_case
 
@@ -134,8 +133,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 reason='WEBHOOK_COMMAND_NOT_FOUND')
 
         app_name = to_snake_case(parts[0])
-        manager = AppAddonManager(self.kernel)
-        apps = manager.get_proxy_apps()
+        apps = self.app_addon_manager.get_proxy_apps()
 
         if app_name not in apps:
             return AbortResponse(
@@ -158,7 +156,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
             return self_super.run_command_request_from_url_path(path)
 
-        return manager.exec_in_app_workdir(
+        return self.app_addon_manager.exec_in_app_workdir(
             apps[app_name],
             _callback
         )
