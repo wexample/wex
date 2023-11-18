@@ -1,5 +1,9 @@
-type: addon
-# Default type is "bash"
+type: app
+properties:
+  - app_webhook
+help: Test webhook
+command:
+  decorator: app_command
 scripts:
   - echo "MINIMAL_BASH_RESPONSE"
 
