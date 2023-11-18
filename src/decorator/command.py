@@ -64,7 +64,10 @@ def _script_run(function, runner, script: Dict[str, Any], variables: Dict[str, s
     from src.helper.string import replace_variables
 
     if 'script' in script:
+        from src.helper.command import command_escape
+        
         script_command = replace_variables(script['script'], variables)
+        script_command = command_escape(script_command)
     elif 'file' in script:
         script_command = replace_variables(script['file'], variables)
         script["interpreter"] = script.get("interpreter", ["/bin/bash"])

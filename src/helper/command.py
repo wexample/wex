@@ -118,6 +118,13 @@ def execute_command(
         return success, out_content_decoded.splitlines()
 
 
+def command_escape(string: str, quote_char: str = '"') -> str:
+    # Escape existing quotes
+    item = string.replace(quote_char, '\\' + quote_char)
+    # Add quotes around the item
+    return quote_char + item + quote_char
+
+
 def command_to_string(command: list | str, add_quotes: bool = True, quote_char: str = '"'):
     if isinstance(command, str):
         return command
@@ -130,13 +137,7 @@ def command_to_string(command: list | str, add_quotes: bool = True, quote_char: 
                 '$(' + command_to_string(item, add_quotes, quote_char) + ')'
             )
         else:
-            if add_quotes and ' ' in item:
-                # Escape existing quotes
-                item = item.replace(quote_char, '\\' + quote_char)
-                # Add quotes around the item
-                output.append(quote_char + item + quote_char)
-            else:
-                output.append(item)
+            output.append(item)
 
     return ' '.join(output)
 

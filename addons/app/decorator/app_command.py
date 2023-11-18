@@ -85,5 +85,7 @@ def _app_script_run_handler(function, runner, script, variables: dict):
             ]
 
             return wrap_command
+    else:
+        command = function.base_script_run_handler(function, runner, script, variables)
 
-    return function.base_script_run_handler(function, runner, script, variables)
+    return command
