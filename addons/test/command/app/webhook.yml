@@ -16,3 +16,5 @@ scripts:
   - echo "This is the app path ${RUNTIME_PATH_APP}"
   - echo "This is the app name ${RUNTIME_NAME}"
   - echo "This is the given option value ${OPTION}"
+  - wex app/restart
+  - echo "RESTART_COMPLETE"
