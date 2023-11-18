@@ -171,7 +171,7 @@ class Logger:
     def build_summary(self, data) -> list:
         return [
             data['dateStart'],
-            data['commands'][0]['command'] if len(data['commands']) else '-',
+            data['trace'][0]['command'] if len(data['trace']) else '-',
             data['status']
         ]
 
