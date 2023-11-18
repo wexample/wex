@@ -10,8 +10,7 @@ def args_replace_one(
         arg_list: List[str],
         arg_name: str,
         value: Optional[Any] = None,
-        is_flag: bool = False) -> Optional[str]:
-
+        is_flag: bool = False) -> Optional[str | bool]:
     previous = args_shift_one(
         arg_list=arg_list,
         arg_name=arg_name,
@@ -38,7 +37,7 @@ def args_push_one(
 def args_shift_one(
         arg_list: List[str],
         arg_name: str,
-        is_flag: bool = False) -> Optional[str]:
+        is_flag: bool = False) -> Optional[str | bool]:
     """
     Alter arg list by removing arg names and returning arg value.
     Take arg name without dash, and remove args with any count of prefixed dashes.
