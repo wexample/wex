@@ -1,11 +1,15 @@
+from __future__ import annotations
 import subprocess
-
 from src.helper.file import create_file_path
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
+from typing import Any, List, Union, Tuple
+from src.core import Kernel
+from subprocess import Popen
+from click.core import Command
 
 
-def internal_command_to_shell(kernel, internal_command: str, args: None | list = None) -> list:
+def internal_command_to_shell(kernel: Kernel, internal_command: str, args: None | list[str] = None) -> list[str]:
     command = ([
                    'bash',
                    kernel.get_path('core.cli'),
@@ -33,9 +37,9 @@ def internal_command_to_shell(kernel, internal_command: str, args: None | list =
     return command
 
 
-def command_exists(command) -> bool:
+def command_exists(shell_command: str) -> bool:
     process = subprocess.Popen(
-        'command -v ' + command,
+        'command -v ' + shell_command,
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -46,20 +50,28 @@ def command_exists(command) -> bool:
     return out_content.decode() != ''
 
 
-def execute_command_tree(kernel, command_tree, working_directory=None, async_mode=False, **kwargs):
+def execute_command_tree(
+        kernel: Kernel,
+        command_tree: List[Union[Any, str]],
+        working_directory: str | None = None,
+        async_mode: bool = False,
+        **kwargs: Any) -> Union[Popen[Any], Tuple[bool, List[str]]]:
     if isinstance(command_tree, list) and any(isinstance(i, list) for i in command_tree):
         # If the command_tree is a list and contains sub lists (nested commands)
         # We execute the innermost command first
         for i, sub_command in enumerate(command_tree):
             if isinstance(sub_command, list):
                 # Recursive call to execute the nested command
-                success, output = execute_command_tree(kernel, sub_command, working_directory, async_mode, **kwargs)
+                result = execute_command_tree(kernel, sub_command, working_directory, async_mode, **kwargs)
 
-                if not success:
-                    return success, output
+                if not isinstance(result, Popen):
+                    success, output = result
 
-                # Replace the nested command with the output of its execution
-                command_tree[i:i + 1] = output
+                    if not success:
+                        return success, output
+
+                    # Replace the nested command with the output of its execution
+                    command_tree[i:i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -68,11 +80,11 @@ def execute_command_tree(kernel, command_tree, working_directory=None, async_mod
 
 
 def execute_command(
-        kernel,
-        command: list | str,
-        working_directory=None,
-        async_mode=False,
-        **kwargs):
+        kernel: Kernel,
+        command: List[str] | str,
+        working_directory: None | str = None,
+        async_mode: bool = False,
+        **kwargs: Any) -> Union[Popen[Any], Tuple[bool, List[str]]]:
     import subprocess
     import os
 
@@ -125,7 +137,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
     return quote_char + escaped_string + quote_char
 
 
-def command_to_string(command: list | str):
+def command_to_string(command: List[str] | str) -> str:
     if isinstance(command, str):
         return command
 
@@ -142,5 +154,7 @@ def command_to_string(command: list | str):
     return ' '.join(output)
 
 
-def is_same_command(command_a, command_b) -> bool:
-    return command_a.callback.__name__ == command_b.callback.__name__
+def is_same_command(command_a: Command, command_b: Command) -> bool:
+    if command_a.callback is not None and command_b.callback is not None:
+        return command_a.callback.__name__ == command_b.callback.__name__
+    return False
