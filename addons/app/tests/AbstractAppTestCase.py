@@ -2,7 +2,7 @@ import os.path
 import re
 
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from src.helper.string import to_snake_case
+from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helper.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
@@ -38,7 +38,7 @@ class AbstractAppTestCase(AbstractTestCase):
                 return
 
         name = os.path.basename(app_dir.rstrip(os.sep))
-        app_name_snake = to_snake_case(name)
+        app_name_snake = string_to_snake_case(name)
 
         patterns = [
             f"Container {app_name_snake}_test_.*  Creating",

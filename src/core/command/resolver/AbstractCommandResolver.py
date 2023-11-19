@@ -14,7 +14,7 @@ from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAM
     COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import args_convert_dict_to_args
 from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_subdirectories
-from src.helper.string import trim_leading, to_snake_case, to_kebab_case
+from src.helper.string import string_trim_leading, string_to_snake_case, string_to_kebab_case
 from src.helper.system import get_user_or_sudo_user
 from src.core.CommandRequest import CommandRequest
 
@@ -110,7 +110,7 @@ class AbstractCommandResolver:
         if base_path:
             file_set_owner_for_path_and_ancestors(
                 base_path,
-                trim_leading(command_path, base_path),
+                string_trim_leading(command_path, base_path),
                 get_user_or_sudo_user(),
             )
 
@@ -158,7 +158,7 @@ class AbstractCommandResolver:
         return path
 
     def get_function_name(self, parts: list) -> str | None:
-        return to_snake_case(
+        return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(
                 self.get_function_name_parts(parts)
             )
@@ -207,7 +207,7 @@ class AbstractCommandResolver:
         Returns the "default" format (addons style)
         """
         # Convert each part to kebab-case
-        kebab_parts = [to_kebab_case(part) for part in parts]
+        kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f'{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
 

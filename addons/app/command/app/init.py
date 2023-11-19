@@ -4,7 +4,7 @@ from git import Repo
 from typing import Iterable, Union
 
 from src.helper.prompt import prompt_progress_steps
-from src.helper.string import to_snake_case
+from src.helper.string import string_to_snake_case
 from src.helper.args import args_split_arg_array
 from src.decorator.option import option
 
@@ -60,7 +60,7 @@ def app__app__init(
             )
 
         # Cleanup name.
-        name = to_snake_case(name)
+        name = string_to_snake_case(name)
 
         kernel.io.log(f'Using name "{name}"')
 

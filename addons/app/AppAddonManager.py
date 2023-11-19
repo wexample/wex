@@ -7,7 +7,7 @@ import yaml
 from src.helper.service import service_load_config
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one, args_push_one
-from src.helper.string import to_snake_case, to_kebab_case
+from src.helper.string import string_to_snake_case, string_to_kebab_case
 from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
     COMMAND_TYPE_APP, SHELL_DEFAULT
 from src.core.AddonManager import AddonManager
@@ -145,7 +145,7 @@ class AppAddonManager(AddonManager):
         if domains is None:
             domains = []
 
-        domain_main = domains[0] if domains else f'{to_kebab_case(app_name)}.{CORE_COMMAND_NAME}'
+        domain_main = domains[0] if domains else f'{string_to_kebab_case(app_name)}.{CORE_COMMAND_NAME}'
         email = f'contact@{domain_main}'
 
         return {
@@ -255,7 +255,7 @@ class AppAddonManager(AddonManager):
 
         for k, v in config.items():
             new_key = parent_key + sep + k if parent_key else k
-            new_key = to_snake_case(new_key)
+            new_key = string_to_snake_case(new_key)
             new_key = new_key.upper()
             if isinstance(v, dict):
                 items.extend(self.dict_to_docker_env(

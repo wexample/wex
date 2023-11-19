@@ -1,6 +1,6 @@
 from addons.app.helper.docker import build_long_container_name
 from src.helper.command import command_escape
-from src.helper.string import replace_variables
+from src.helper.string import string_replace_multiple
 from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
 from src.core.FunctionProperty import FunctionProperty
@@ -64,9 +64,9 @@ def _app_script_run_handler(function, runner, script, variables: dict):
 
         app_variables = dotenv_values(env_path)
         if 'script' in script:
-            script['script'] = replace_variables(script['script'], app_variables)
+            script['script'] = string_replace_multiple(script['script'], app_variables)
         elif 'file' in script:
-            script['file'] = replace_variables(script['file'], app_variables)
+            script['file'] = string_replace_multiple(script['file'], app_variables)
 
         command = function.base_script_run_handler(function, runner, script, variables)
 

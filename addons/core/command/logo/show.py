@@ -1,6 +1,6 @@
 import os
 
-from src.helper.string import text_truncate, text_center
+from src.helper.string import string_truncate, string_multiline_center
 from src.helper.core import core_kernel_get_version
 from src.const.globals import COLOR_RED, COLOR_RESET, COLOR_LIGHT_GRAY
 from src.core.Kernel import Kernel
@@ -16,7 +16,7 @@ def core__logo__show(kernel: Kernel) -> str:
 
     version_string = f"v{core_kernel_get_version(kernel)}"
 
-    centered = text_center(
+    centered = string_multiline_center(
         ".o%%%o." + os.linesep
         + ".%%%%%%%%%%%%%%." + os.linesep
         + ".&&&%%%%%%%%%%%%%%%%%%%%%." + os.linesep
@@ -53,6 +53,6 @@ def core__logo__show(kernel: Kernel) -> str:
             + os.linesep
             + centered
             + os.linesep
-            + f"{COLOR_LIGHT_GRAY}" + text_truncate(text, width, padding) + f"{COLOR_RESET}{os.linesep}"
+            + f"{COLOR_LIGHT_GRAY}" + string_truncate(text, width, padding) + f"{COLOR_RESET}{os.linesep}"
             + os.linesep
             + os.linesep)

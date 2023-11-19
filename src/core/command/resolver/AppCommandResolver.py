@@ -4,7 +4,7 @@ from src.core.FunctionProperty import FunctionProperty
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
-from src.helper.string import to_snake_case, to_kebab_case
+from src.helper.string import string_to_snake_case, string_to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
@@ -43,12 +43,12 @@ class AppCommandResolver(AbstractCommandResolver):
             base_path=self.get_base_path(),
             extension=extension,
             subdir=subdir,
-            command_path=os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
+            command_path=os.path.join(string_to_snake_case(request.match[2]), string_to_snake_case(request.match[3]))
         )
 
     def build_command_from_parts(self, parts: list) -> str:
         # Convert each part to kebab-case
-        kebab_parts = [to_kebab_case(part) for part in parts]
+        kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f'{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
 
@@ -119,7 +119,7 @@ class AppCommandResolver(AbstractCommandResolver):
             path: str,
             command_args: dict | None = None) -> None | AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
-        from src.helper.string import to_snake_case
+        from src.helper.string import string_to_snake_case
 
         parts = path.split('/')
 
@@ -132,7 +132,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 kernel=self.kernel,
                 reason='WEBHOOK_COMMAND_NOT_FOUND')
 
-        app_name = to_snake_case(parts[0])
+        app_name = string_to_snake_case(parts[0])
         apps = self.app_addon_manager.get_proxy_apps()
 
         if app_name not in apps:

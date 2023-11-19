@@ -4,7 +4,7 @@ import sys
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.helper.string import to_snake_case, to_kebab_case
+from src.helper.string import string_to_snake_case, string_to_kebab_case
 from src.helper.system import get_user_or_sudo_user_home_data_path
 from src.const.globals import COMMAND_PATTERN_USER, COMMAND_TYPE_USER, \
     COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
@@ -34,7 +34,7 @@ class UserCommandResolver(AbstractCommandResolver):
             base_path=self.get_base_path(),
             extension=extension,
             subdir=subdir,
-            command_path=os.path.join(to_snake_case(request.match[2]), to_snake_case(request.match[3]))
+            command_path=os.path.join(string_to_snake_case(request.match[2]), string_to_snake_case(request.match[3]))
         )
 
     def get_base_path(self):
@@ -49,7 +49,7 @@ class UserCommandResolver(AbstractCommandResolver):
 
     def build_command_from_parts(self, parts: list) -> str:
         # Convert each part to kebab-case
-        kebab_parts = [to_kebab_case(part) for part in parts]
+        kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f'{COMMAND_CHAR_USER}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
 

@@ -3,7 +3,7 @@ import re
 import click
 from click.types import BoolParamType
 from click.core import Command
-from src.helper.string import to_kebab_case, to_snake_case
+from src.helper.string import string_to_kebab_case, string_to_snake_case
 from typing import Any, Dict, Iterable, List, Union, Optional
 
 
@@ -81,7 +81,7 @@ def args_convert_dict_to_long_names_dict(
         for opt in param.opts:
             # This is a short name
             if opt.startswith('-') and opt[1:2] != '-':
-                short_names[opt[1:]] = to_kebab_case(param.name)
+                short_names[opt[1:]] = string_to_kebab_case(param.name)
 
     # Transform short named args to long named args.
     args_long = {}
@@ -96,7 +96,7 @@ def args_convert_dict_to_long_names_dict(
 
 def args_convert_dict_to_snake_dict(
         input_dict: Dict[str, Any]) -> Dict[str, Any]:
-    return {to_snake_case(key): value for key, value in input_dict.items()}
+    return {string_to_snake_case(key): value for key, value in input_dict.items()}
 
 
 def args_convert_dict_to_args(
@@ -114,7 +114,7 @@ def args_convert_dict_to_args(
     for param in function.params:
         if param.name in args_long:
             if isinstance(param, click.Option):
-                param_name_kebab = to_kebab_case(param.name)
+                param_name_kebab = string_to_kebab_case(param.name)
 
                 if param.is_flag:
                     if args_long[param.name]:

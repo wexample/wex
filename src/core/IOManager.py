@@ -1,7 +1,7 @@
 import os
 import sys
 
-from src.helper.string import count_lines_needed, format_ignore_missing
+from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 from src.const.globals import \
     (COLOR_RESET,
      COLOR_CYAN,
@@ -33,7 +33,7 @@ class IOManager:
         # Performance optimisation
         import logging
 
-        message = f'[ERROR] {format_ignore_missing(message, parameters)}'
+        message = f'[ERROR] {string_format_ignore_missing(message, parameters)}'
         message = f'{COLOR_RED}{message}{COLOR_RESET}'
 
         # Support errors before logger loading
@@ -88,7 +88,7 @@ class IOManager:
 
         if self.log_length:
             # Calculate the number of lines needed for the message
-            lines_needed = count_lines_needed(message)
+            lines_needed = string_count_lines_needed(message)
 
             # Save the message along with its line count
             self.log_messages.append({

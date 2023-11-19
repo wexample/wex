@@ -3,7 +3,7 @@ import shutil
 import yaml
 
 from addons.app.const.app import APP_DIR_APP_DATA
-from src.helper.string import to_snake_case
+from src.helper.string import string_to_snake_case
 from src.helper.dict import dict_merge
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
@@ -37,7 +37,7 @@ def app__service__install(
         force: bool = False,
         ignore_dependencies: bool = False
 ):
-    service = to_snake_case(service)
+    service = string_to_snake_case(service)
     kernel.io.log(f'Installing service : {service}')
 
     all_services = kernel.registry['service']

@@ -3,7 +3,7 @@ import re
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON
 from src.core import Kernel
-from src.helper.string import to_snake_case, to_pascal_case
+from src.helper.string import string_to_snake_case, string_to_pascal_case
 from src.helper.file import file_create_from_template
 
 
@@ -19,7 +19,7 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
     # Remove the file extension from the last part
     parts[-1] = os.path.splitext(parts[-1])[0]
 
-    parts = [to_pascal_case(re.sub(r'[-_]', ' ', p)) for p in parts]
+    parts = [string_to_pascal_case(re.sub(r'[-_]', ' ', p)) for p in parts]
 
     del parts[1]
     class_name = ''.join(parts)
@@ -76,8 +76,8 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
             'class_name': class_name,
             'command': command,
             'command_function_name': command_function_name,
-            'dir_group': to_snake_case(request.match[2]),
-            'dir_name': to_snake_case(request.match[3]),
+            'dir_group': string_to_snake_case(request.match[2]),
+            'dir_name': string_to_snake_case(request.match[3]),
             'group_name': request.match[2],
             'method_name': method_name,
             'name': request.match[3],

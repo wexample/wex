@@ -4,7 +4,7 @@ import yaml
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.command.service.install import app__service__install
 from src.helper.prompt import prompt_progress_steps
-from src.helper.string import to_snake_case
+from src.helper.string import string_to_snake_case
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_placeholders, \
@@ -59,7 +59,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
             kernel.run_function(
                 app__service__install,
                 {
-                    'service': to_snake_case(service_name),
+                    'service': string_to_snake_case(service_name),
                     'install-docker': False,
                     'install-git': False,
                     'force': True
