@@ -1,3 +1,5 @@
+import os
+
 from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 from src.decorator.command import command
 from src.decorator.option import option
@@ -17,19 +19,19 @@ def default__config__set(kernel, file, key, value, separator: str = CONFIG_SEPAR
 
     for line in lines:
         if line.startswith(f"{key}{separator}"):
-            updated_lines.append(f"{key}{separator}{value}\n")
+            updated_lines.append(f"{key}{separator}{value}{os.linesep}")
             found_key = True
         else:
             updated_lines.append(line)
 
     if not found_key:
         # Add a new line if the file doesn't end with a newline
-        if lines and not lines[-1].endswith('\n'):
-            updated_lines.append('\n')
+        if lines and not lines[-1].endswith(os.linesep):
+            updated_lines.append(os.linesep)
         # Add a new line if the file doesn't contain any content
         if not lines:
-            updated_lines.append('\n')
-        updated_lines.append(f"{key}{separator}{value}\n")
+            updated_lines.append(os.linesep)
+        updated_lines.append(f"{key}{separator}{value}{os.linesep}")
 
     with open(file, 'w') as f:
         f.writelines(updated_lines)

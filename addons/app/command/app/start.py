@@ -241,7 +241,7 @@ def app__app__start(
             domains_string.append(f'- http{"s" if env != APP_ENV_LOCAL else ""}://{domain}')
 
         kernel.io.message(f'Your app is initialized as "{name}" in {env} environment',
-                          '\n'.join(domains_string))
+                          os.linesep.join(domains_string))
 
         kernel.io.message_all_next_commands(
             [

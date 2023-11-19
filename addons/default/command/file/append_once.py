@@ -1,3 +1,5 @@
+import os
+
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -28,6 +30,6 @@ def default__file__append_once(kernel: Kernel, file: str, line: str) -> None:
     # Open the file in append mode and write the line
     with open(file, 'a') as f:
         # If the last character is not a newline, add one
-        if last_char != '\n':
-            f.write('\n')
-        f.write(line + '\n')
+        if last_char != os.linesep:
+            f.write(os.linesep)
+        f.write(line + os.linesep)

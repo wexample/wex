@@ -109,11 +109,11 @@ def exec_app_docker_compose(
             kernel.io.error(
                 f'Error during running docker compose "{docker_command}" : \n\n'
                 + ' '.join(command)
-                + '\n'.join(output),
+                + os.linesep.join(output),
                 trace=False
             )
 
-        return '\n'.join(output)
+        return os.linesep.join(output)
 
     process_post_exec(kernel, command)
 

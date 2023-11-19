@@ -35,7 +35,7 @@ def app__hosts__update(kernel: Kernel):
                 for domain in domains:
                     new_block_content.append(f'{ip}\t{domain}')
 
-    new_block_content = '\n'.join(new_block_content)
+    new_block_content = os.linesep.join(new_block_content)
 
     kernel.io.log(f'Updating {SYSTEM_HOSTS_PATH}')
 
