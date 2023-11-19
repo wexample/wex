@@ -2,7 +2,7 @@ import os
 import yaml
 
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
-from addons.app.helper.docker import exec_app_docker_compose, get_app_docker_compose_files
+from addons.app.helper.docker import exec_app_docker_compose, docker_get_app_compose_files
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
@@ -35,7 +35,7 @@ def app__config__write(kernel: Kernel, app_dir: str, user: str = None, group: st
             }
         )
 
-        compose_files = get_app_docker_compose_files(
+        compose_files = docker_get_app_compose_files(
             kernel,
             app_dir
         )

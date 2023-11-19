@@ -10,7 +10,7 @@ from addons.app.command.app.started import app__app__started, \
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
 from addons.app.command.service.used import app__service__used
-from addons.app.helper.docker import exec_app_docker_compose_command
+from addons.app.helper.docker import docker_exec_app_compose_command
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.app.go import app__app__go
 from addons.app.command.hosts.update import app__hosts__update
@@ -160,7 +160,7 @@ def app__app__start(
     def _app__app__start__starting(previous):
         return InteractiveShellCommandResponse(
             kernel,
-            exec_app_docker_compose_command(
+            docker_exec_app_compose_command(
                 kernel,
                 app_dir,
                 [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],

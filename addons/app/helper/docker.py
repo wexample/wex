@@ -1,6 +1,5 @@
-import json
 import os
-import subprocess
+from typing import List, Optional
 
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.const.app import APP_DIR_APP_DATA
@@ -8,14 +7,15 @@ from addons.docker.helper.docker import user_has_docker_permission
 from src.helper.command import execute_command
 from src.helper.user import get_user_or_sudo_user
 from src.helper.process import process_post_exec
+from src.core.Kernel import Kernel
 
 
-def get_app_docker_compose_files(kernel, app_dir):
+def docker_get_app_compose_files(kernel: Kernel, app_dir: str) -> List[str]:
     from addons.app.AppAddonManager import AppAddonManager
     from addons.app.command.service.used import app__service__used
 
     app_compose_file = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.yml'
-    compose_files = []
+    compose_files: List[str] = []
 
     if not os.path.isfile(app_compose_file):
         return compose_files
@@ -42,13 +42,13 @@ def get_app_docker_compose_files(kernel, app_dir):
     return compose_files
 
 
-def exec_app_docker_compose_command(
-        kernel,
+def docker_exec_app_compose_command(
+        kernel: Kernel,
         app_dir: str,
-        compose_files,
-        docker_command,
-        profile=None,
-):
+        compose_files: List[str],
+        docker_command: List[str] | str,
+        profile: Optional[str] = None,
+) -> List[str]:
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
         kernel.io.error(
@@ -60,7 +60,7 @@ def exec_app_docker_compose_command(
     manager = kernel.addons['app']
     env = manager.get_runtime_config('env')
 
-    command = [
+    command: List[str] = [
         'docker',
         'compose',
     ]
@@ -80,21 +80,21 @@ def exec_app_docker_compose_command(
         ),
     ]
 
-    if type(docker_command) == str:
+    if isinstance(docker_command, str):
         docker_command = [docker_command]
 
     return command + docker_command
 
 
 def exec_app_docker_compose(
-        kernel,
+        kernel: Kernel,
         app_dir: str,
-        compose_files,
-        docker_command,
-        profile=None,
-        sync=True
-):
-    command = exec_app_docker_compose_command(
+        compose_files: List[str],
+        docker_command: str,
+        profile: Optional[str] = None,
+        sync: bool = True
+) -> Optional[str]:
+    command = docker_exec_app_compose_command(
         kernel,
         app_dir,
         compose_files,
@@ -117,14 +117,9 @@ def exec_app_docker_compose(
 
     process_post_exec(kernel, command)
 
-
-def get_container_pid(container_name):
-    cmd = f"docker inspect {container_name}"
-    result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
-    data = json.loads(result.stdout.decode('utf-8'))
-    return data[0]['State']['Pid']
+    return None
 
 
-def build_long_container_name(kernel, name: str) -> str:
+def build_long_container_name(kernel: Kernel, name: str) -> str:
     manager = kernel.addons['app']
     return f'{manager.get_runtime_config("name")}_{name}'
