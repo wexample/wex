@@ -1,7 +1,7 @@
 import os
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
-from src.helper.service import get_service_dir
+from src.helper.service import service_get_dir
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbortResponse import AbortResponse
@@ -44,7 +44,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
         name = to_snake_case(request.match[1])
-        path = get_service_dir(self.kernel, name)
+        path = service_get_dir(self.kernel, name)
 
         if not path:
             self.kernel.io.error(

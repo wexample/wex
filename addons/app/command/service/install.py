@@ -7,7 +7,7 @@ from src.helper.string import to_snake_case
 from src.helper.dict import dict_merge
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
-from src.helper.service import get_service_dir
+from src.helper.service import service_get_dir
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from src.decorator.option import option
@@ -74,7 +74,7 @@ def app__service__install(
 
         manager.set_config('service', services)
 
-    service_dir = get_service_dir(kernel, service)
+    service_dir = service_get_dir(kernel, service)
     service_sample_dir = os.path.join(service_dir, 'samples') + '/'
     service_sample_dir_env = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
 

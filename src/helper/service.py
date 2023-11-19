@@ -1,11 +1,13 @@
 import os
 import shutil
+from typing import Dict, Any, List
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
 from src.helper.data_yaml import yaml_load_or_default
+from src.core.Kernel import Kernel
 
 
-def get_service_dir(kernel, service: str) -> str | bool:
+def service_get_dir(kernel: Kernel, service: str) -> str | bool:
     dirs = service_get_all_dirs(kernel)
 
     # Service dir is missing,
@@ -16,7 +18,7 @@ def get_service_dir(kernel, service: str) -> str | bool:
     return dirs[service]
 
 
-def service_load_config(kernel, service) -> dict | bool:
+def service_load_config(kernel: Kernel, service: str) -> Any:
     dirs = service_get_all_dirs(kernel)
 
     if service not in dirs:
@@ -28,9 +30,9 @@ def service_load_config(kernel, service) -> dict | bool:
     )
 
 
-def service_get_inheritance_tree(kernel, service):
+def service_get_inheritance_tree(kernel: Kernel, service: str) -> List[str]:
     # Initialize an empty list to store the inheritance tree
-    inheritance_tree = []
+    inheritance_tree: List[str] = []
 
     # Get the configuration of the given service
     service_config = service_load_config(kernel, service)
@@ -54,19 +56,22 @@ def service_get_inheritance_tree(kernel, service):
     return inheritance_tree
 
 
-def copy_service_sample_dir(kernel, service: str, subdir: str):
-    service_dir = get_service_dir(kernel, service)
-    service_sample_dir = os.path.join(service_dir, 'samples') + '/'
-    service_sample_dir_env = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + '/'
+def service_copy_sample_dir(kernel: Kernel, service: str, subdir: str) -> None:
+    service_dir = service_get_dir(kernel, service)
+    if not isinstance(service_dir, str):
+        return
+
+    service_sample_dir = os.path.join(service_dir, 'samples') + os.sep
+    service_sample_dir_env = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + os.sep
 
     from addons.app.AppAddonManager import AppAddonManager
     manager: AppAddonManager = kernel.addons['app']
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
 
-    shutil.copytree(service_sample_dir_env + '/' + subdir, env_dir + '/' + subdir, dirs_exist_ok=True)
+    shutil.copytree(service_sample_dir_env + os.sep + subdir, env_dir + os.sep + subdir, dirs_exist_ok=True)
 
 
-def service_get_all_dirs(kernel) -> dict:
+def service_get_all_dirs(kernel: Kernel) -> Dict[str, str]:
     dirs = {}
 
     for addon in kernel.addons:
