@@ -2,7 +2,7 @@ import os
 import sys
 
 from addons.app.const.app import APP_ENV_LOCAL
-from addons.app.helpers.app import create_env
+from addons.app.helper.app import create_env
 from addons.core.command.logo.show import core__logo__show
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.default.command.file.append_once import default__file__append_once

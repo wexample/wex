@@ -1,7 +1,7 @@
 from addons.app.command.service.install import app__service__install
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.config.write import app__config__write
-from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
+from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from src.helper.registry import get_all_services_names
 
 

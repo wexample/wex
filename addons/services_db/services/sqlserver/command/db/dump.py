@@ -1,6 +1,6 @@
 import os.path
 
-from addons.app.helpers.db import get_db_service_dumps_path
+from addons.app.helper.db import get_db_service_dumps_path
 from src.core.Kernel import Kernel
 from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec

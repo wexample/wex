@@ -2,7 +2,7 @@ import os
 import zipfile
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.helpers.db import get_db_service_dumps_path
+from addons.app.helper.db import get_db_service_dumps_path
 from src.helper.dict import dict_sort_values
 from src.helper.file import file_delete_file_or_dir
 from src.helper.prompt import prompt_choice

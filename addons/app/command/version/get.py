@@ -1,7 +1,7 @@
-from addons.app.helpers.app import create_manager
+from addons.app.helper.app import create_manager
 from src.const.globals import CORE_COMMAND_NAME
 from src.core import Kernel
-from addons.default.helpers.migration import version_guess
+from addons.default.helper.migration import version_guess
 from addons.app.decorator.app_command import app_command
 
 

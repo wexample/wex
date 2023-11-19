@@ -4,7 +4,7 @@ import re
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.helper.string import to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helpers.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
+from addons.app.helper.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 

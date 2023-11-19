@@ -1,5 +1,5 @@
 from addons.default.command.version.parse import default__version__parse
-from addons.default.helpers.version import version_join
+from addons.default.helper.version import version_join
 from src.decorator.command import command
 from src.core import Kernel
 

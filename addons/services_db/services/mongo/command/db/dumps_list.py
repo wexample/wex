@@ -1,7 +1,7 @@
 import os.path
 from glob import glob
 
-from addons.app.helpers.db import get_db_service_dumps_path
+from addons.app.helper.db import get_db_service_dumps_path
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE

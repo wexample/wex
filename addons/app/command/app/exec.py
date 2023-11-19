@@ -1,4 +1,4 @@
-from addons.app.helpers.docker import build_long_container_name
+from addons.app.helper.docker import build_long_container_name
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string, command_escape
 from src.decorator.option import option

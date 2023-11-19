@@ -6,7 +6,7 @@ import shutil
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
 from http.client import HTTPConnection
-from addons.app.helpers.test import DEFAULT_APP_TEST_NAME
+from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.const.app import APP_DIR_APP_DATA
 
 

@@ -1,6 +1,6 @@
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.command.app.started import app__app__started
-from addons.app.helpers.docker import exec_app_docker_compose_command
+from addons.app.helper.docker import exec_app_docker_compose_command
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hosts.update import app__hosts__update

@@ -1,4 +1,4 @@
-from addons.app.helpers.docker import build_long_container_name
+from addons.app.helper.docker import build_long_container_name
 from src.helper.command import command_escape
 from src.helper.string import replace_variables
 from src.const.globals import SHELL_DEFAULT
