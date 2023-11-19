@@ -5,7 +5,7 @@ import builtins
 
 from click import Command
 from src.helper.dict import dict_get_item_by_path
-from src.helper.yaml import yaml_load
+from src.helper.data_yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
 from src.decorator.command import command

@@ -1,8 +1,9 @@
+from typing import Any
+
 import yaml
-from yaml import SafeLoader
 
 
-def yaml_is_basic_data(value):
+def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
     """
     Check if the value is compatible with basic YAML types
     """
@@ -22,7 +23,7 @@ def yaml_is_basic_data(value):
         return False
 
 
-def yaml_load(file_path: str) -> dict | None:
+def yaml_load(file_path: str) -> Any:
     try:
         with open(file_path, 'r') as f:
             content = yaml.safe_load(f)
@@ -35,11 +36,10 @@ def yaml_load(file_path: str) -> dict | None:
         return None
 
 
-def yaml_load_or_default(file, default=None):
-    if default is None:
-        default = {}
-    try:
-        with open(file) as f:
-            return yaml.load(f, SafeLoader)
-    except FileNotFoundError:
-        return default
+def yaml_load_or_default(file: str, default: Any = None) -> Any:
+    data_yaml = yaml_load(file)
+
+    if data_yaml is None:
+        return default or {}
+
+    return data_yaml

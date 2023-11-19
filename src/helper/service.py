@@ -2,7 +2,7 @@ import os
 import shutil
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.yaml import yaml_load_or_default
+from src.helper.data_yaml import yaml_load_or_default
 
 
 def get_service_dir(kernel, service: str) -> str | bool:

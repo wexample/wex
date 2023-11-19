@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from src.helper.yaml import yaml_is_basic_data
+from src.helper.data_yaml import yaml_is_basic_data
 from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
