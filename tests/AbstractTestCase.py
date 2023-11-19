@@ -82,7 +82,7 @@ class AbstractTestCase(unittest.TestCase):
 
     def log(self, message: str):
         message = str(message)
-        message = f'\n{message}' if message.count('\n') > 0 else f' {message}'
+        message = f'{os.linesep}{message}' if message.count(os.linesep) > 0 else f' {message}'
 
         self.kernel.io.log(
             f'test[{inspect.currentframe().f_code.co_name}]:' + str(message),

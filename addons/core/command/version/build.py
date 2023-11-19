@@ -31,7 +31,7 @@ def core__version__build(
 
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
-            kernel.io.error("{diff}\nThere is uncommitted changes in the repository", {
+            kernel.io.error("{diff}" + os.linesep + "There is uncommitted changes in the repository", {
                 'diff': repo.git.diff()
             }, trace=False)
 

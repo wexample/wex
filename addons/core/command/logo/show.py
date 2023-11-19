@@ -17,26 +17,26 @@ def core__logo__show(kernel: Kernel) -> str:
     version_string = f"v{core_kernel_get_version(kernel)}"
 
     centered = text_center(
-        ".o%%%o.\n"
-        + ".%%%%%%%%%%%%%%.\n"
-        + ".&&&%%%%%%%%%%%%%%%%%%%%%.\n"
-        + "&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-        + "&&&&&&/    %%%%%%%%%%%%   \\%%%%%%%\n"
-        + "&&&&&&     %%%%%%%%%%%%     %%%%%%\n"
-        + "&&&&&&     &&&&&%%%%%%%     %%%%%%\n"
-        + "&&&&&&     &&&`    `&&&     %%&&&&\n"
-        + "&&&&&&./&                &\\.&&&&&&\n"
-        + "&&&&&&&&@      .&&.      &&&&&&&&&\n"
-        + " &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n"
-        + "`&&&&&&&&&&&&&&&&&&&&&&&&`\n"
-        + "`&&&&&&&&&&&&&&`\n"
-        + "`°&&&&°`\n"
-        + f"{COLOR_RESET}\n"
-        + ".-..-..--. .--. .-.,-.\n"
-        + ": `; `;  :' '_.'`.  .'\n"
-        + "`.__.__._'`.__.':_,._;\n"
-        + "★ www.wexample.com ★\n"
-        + f"{version_string}\n\n",
+        ".o%%%o." + os.linesep
+        + ".%%%%%%%%%%%%%%." + os.linesep
+        + ".&&&%%%%%%%%%%%%%%%%%%%%%." + os.linesep
+        + "&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%" + os.linesep
+        + "&&&&&&/    %%%%%%%%%%%%   \\%%%%%%%" + os.linesep
+        + "&&&&&&     %%%%%%%%%%%%     %%%%%%" + os.linesep
+        + "&&&&&&     &&&&&%%%%%%%     %%%%%%" + os.linesep
+        + "&&&&&&     &&&`    `&&&     %%&&&&" + os.linesep
+        + "&&&&&&./&                &\\.&&&&&&" + os.linesep
+        + "&&&&&&&&@      .&&.      &&&&&&&&&" + os.linesep
+        + " &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + os.linesep
+        + "`&&&&&&&&&&&&&&&&&&&&&&&&`" + os.linesep
+        + "`&&&&&&&&&&&&&&`" + os.linesep
+        + "`°&&&&°`" + os.linesep
+        + f"{COLOR_RESET}" + os.linesep
+        + ".-..-..--. .--. .-.,-." + os.linesep
+        + ": `; `;  :' '_.'`.  .'" + os.linesep
+        + "`.__.__._'`.__.':_,._;" + os.linesep
+        + "★ www.wexample.com ★" + os.linesep
+        + f"{version_string}" + os.linesep + os.linesep,
         width
     )
 
@@ -53,6 +53,6 @@ def core__logo__show(kernel: Kernel) -> str:
             + os.linesep
             + centered
             + os.linesep
-            + f"{COLOR_LIGHT_GRAY}" + text_truncate(text, width, padding) + f"{COLOR_RESET}\n"
+            + f"{COLOR_LIGHT_GRAY}" + text_truncate(text, width, padding) + f"{COLOR_RESET}{os.linesep}"
             + os.linesep
             + os.linesep)

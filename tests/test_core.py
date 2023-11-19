@@ -1,3 +1,5 @@
+import os
+
 import click
 import importlib
 
@@ -38,7 +40,7 @@ class TestCore(AbstractTestCase):
         self.assertNotEqual(
             user,
             ROOT_USERNAME,
-            '\n'.join([
+            os.linesep.join([
                 message,
                 f'  To create user : sudo adduser {OWNER_USERNAME}',
                 f'  To give it sudo power : sudo usermod -aG sudo {OWNER_USERNAME}',

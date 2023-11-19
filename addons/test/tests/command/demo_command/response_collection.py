@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from addons.test.command.demo_command.response_collection import test__demo_command__response_collection
@@ -29,7 +30,8 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         # Write result in a file
         self.write_test_result(
             'response_collection_a',
-            'FAST_MODE\n'
+            'FAST_MODE'
+            + os.linesep
             + first_response_print
         )
 
@@ -90,7 +92,8 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
         self.write_test_result(
             'response_collection_b',
-            'STANDARD_MODE\n'
+            'STANDARD_MODE'
+            + os.linesep
             + standard_mode_response
         )
 

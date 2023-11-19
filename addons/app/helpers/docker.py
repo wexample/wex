@@ -52,7 +52,7 @@ def exec_app_docker_compose_command(
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
         kernel.io.error(
-            "User should have permission to run Docker. To give permission, add user to docker group : \n sudo "
+            f"User should have permission to run Docker. To give permission, add user to docker group : {os.linesep} sudo "
             "usermod -aG docker {username}", {
                 'username': username
             }, trace=False)
@@ -107,7 +107,7 @@ def exec_app_docker_compose(
 
         if not success:
             kernel.io.error(
-                f'Error during running docker compose "{docker_command}" : \n\n'
+                f'Error during running docker compose "{docker_command}" : {os.linesep}{os.linesep}'
                 + ' '.join(command)
                 + os.linesep.join(output),
                 trace=False

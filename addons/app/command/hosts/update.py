@@ -77,4 +77,4 @@ def add_domains_block(text, block_content):
     """
     Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
-    return text + f'#[ {CORE_COMMAND_NAME} ]#\n' + block_content + f'\n#[ end-{CORE_COMMAND_NAME} ]#\n'
+    return text + f'#[ {CORE_COMMAND_NAME} ]#{os.linesep}{block_content}{os.linesep}#[ end-{CORE_COMMAND_NAME} ]#{os.linesep}'

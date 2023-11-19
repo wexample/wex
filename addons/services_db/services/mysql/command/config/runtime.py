@@ -29,9 +29,9 @@ def mysql__config__runtime(kernel: Kernel, app_dir: str, service: str):
         user = manager.get_config(f'service.{service}.user')
         password = manager.get_config(f'service.{service}.password')
 
-        f.write("[client]\n")
-        f.write(f'user = "{user}"\n')
-        f.write(f'password = "{password}"\n')
+        f.write(f"[client]{os.linesep}")
+        f.write(f'user = "{user}"{os.linesep}')
+        f.write(f'password = "{password}"{os.linesep}')
 
     # Change file permissions to 644
     os.chmod(db_connection_file, 0o644)
