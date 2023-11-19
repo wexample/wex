@@ -1,4 +1,4 @@
-from src.helper.prompt import progress_steps
+from src.helper.prompt import prompt_progress_steps
 from src.core import Kernel
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_CONFIG
 from addons.app.AppAddonManager import AppAddonManager
@@ -33,6 +33,6 @@ def migration_5_0_1(kernel: Kernel, manager: AppAddonManager):
         manager.load_config()
         manager.set_config('global.type', 'app')
 
-    progress_steps(kernel, [
+    prompt_progress_steps(kernel, [
         _migration_5_0_1_update_config,
     ])

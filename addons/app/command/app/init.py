@@ -3,7 +3,7 @@ from pathlib import Path
 from git import Repo
 from typing import Iterable, Union
 
-from src.helper.prompt import progress_steps
+from src.helper.prompt import prompt_progress_steps
 from src.helper.string import to_snake_case
 from src.helper.args import args_split_arg_array
 from src.decorator.option import option
@@ -180,7 +180,7 @@ def app__app__init(
             message=f'Your app has been created in {env} environment'
         )
 
-    progress_steps(kernel, [
+    prompt_progress_steps(kernel, [
         init_step_check_vars,
         init_step_check_services,
         init_step_copy_app,

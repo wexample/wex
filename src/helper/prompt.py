@@ -12,7 +12,7 @@ from click._termui_impl import ProgressBar, V
 from src.core.Kernel import Kernel
 
 
-def build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:
+def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:
     return click.progressbar(
         steps,
         fill_char='▪',
@@ -21,8 +21,8 @@ def build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:
     )
 
 
-def progress_steps(kernel: Kernel, steps: Iterable[V], title: str = 'Processing') -> None:
-    with build_progress_bar(steps, label=title) as progress_bar:
+def prompt_progress_steps(kernel: Kernel, steps: Iterable[V], title: str = 'Processing') -> None:
+    with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
             kernel.io.log(f'{title} : {step.__name__}')
 

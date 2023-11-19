@@ -3,7 +3,7 @@ import yaml
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.command.service.install import app__service__install
-from src.helper.prompt import progress_steps
+from src.helper.prompt import prompt_progress_steps
 from src.helper.string import to_snake_case
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
@@ -135,7 +135,7 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
         if os.path.exists(old_config_path):
             os.remove(old_config_path)
 
-    progress_steps(kernel, [
+    prompt_progress_steps(kernel, [
         _migration_5_0_0_update_config,
         _migration_5_0_0_install_services,
         _migration_5_0_0_config_services,

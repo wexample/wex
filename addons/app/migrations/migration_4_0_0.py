@@ -5,7 +5,7 @@ from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
 from addons.default.helper.git import file_move_or_git_move, get_or_create_repo
 from addons.default.helper.migration import migration_delete_dir_if_empty
 from addons.app.helper.app import create_env
-from src.helper.prompt import progress_steps
+from src.helper.prompt import prompt_progress_steps
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 
@@ -70,7 +70,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
             'dockerfile: ./docker/': 'dockerfile: ${RUNTIME_PATH_APP_ENV}docker/'
         })
 
-    progress_steps(kernel, [
+    prompt_progress_steps(kernel, [
         _migration_4_0_0_env,
         _migration_4_0_0_config,
         _migration_4_0_0_dir,

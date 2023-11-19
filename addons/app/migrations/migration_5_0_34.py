@@ -1,4 +1,4 @@
-from src.helper.prompt import progress_steps
+from src.helper.prompt import prompt_progress_steps
 from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 
@@ -12,6 +12,6 @@ def migration_5_0_34(kernel: Kernel, manager: AppAddonManager):
 
         manager.remove_config('docker.main_container')
 
-    progress_steps(kernel, [
+    prompt_progress_steps(kernel, [
         _migration_5_0_34_update_config,
     ])
