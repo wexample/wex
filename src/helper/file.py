@@ -2,9 +2,11 @@ import os
 import shutil
 import pwd
 import grp
+from typing import List, TextIO, IO
+from typing import List, Optional, Dict, Any
 
 
-def file_list_subdirectories(path: str) -> []:
+def file_list_subdirectories(path: str) -> List[str]:
     subdirectories = []
     for item in os.listdir(path):
         item_path = os.path.join(path, item)
@@ -16,7 +18,7 @@ def file_list_subdirectories(path: str) -> []:
     return subdirectories
 
 
-def file_set_user_or_sudo_user_owner(file):
+def file_set_user_or_sudo_user_owner(file: str) -> None:
     from src.helper.system import get_user_or_sudo_user
 
     sudo_user = get_user_or_sudo_user()
@@ -24,25 +26,24 @@ def file_set_user_or_sudo_user_owner(file):
         file_set_owner(file, sudo_user)
 
 
-def file_set_owner(file: str, username: str | None = None, group: str | None = None):
-    if not username:
-        from src.helper.system import get_user_or_sudo_user
+def file_set_owner(file_path: str, username: Optional[str] = None, group: Optional[str] = None) -> None:
+    from src.helper.system import get_user_or_sudo_user, get_gid_from_group_name
+
+    if username is None:
         username = get_user_or_sudo_user()
 
-    # Get UID and GID of the sudo_user
+    # Get UID and GID of the user
     uid = pwd.getpwnam(username).pw_uid
+    gid = grp.getgrnam(group).gr_gid if group else pwd.getpwnam(username).pw_gid
 
-    if group:
-        from helper.system import get_gid_from_group_name
-        gid = get_gid_from_group_name(username)
-    else:
-        gid = grp.getgrnam(username).gr_gid
-
-    # Change the ownership of the file to username:username
-    os.chown(file, uid, gid)
+    os.chown(file_path, uid, gid)
 
 
-def file_set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: str, group: str = None):
+def file_set_owner_for_path_and_ancestors(
+        base_path: str,
+        sub_path: str,
+        owner: str,
+        group: Optional[str] = None) -> None:
     # Get the UID and GID
     uid = pwd.getpwnam(owner).pw_uid
 
@@ -64,7 +65,7 @@ def file_set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: 
         os.chown(current_path, uid, gid)
 
 
-def file_create_from_template(template_path, dest_path, parameters):
+def file_create_from_template(template_path: str, dest_path: str, parameters: Dict[str, str]) -> None:
     with open(template_path, 'r') as template_file:
         template_content = template_file.read()
 
@@ -117,16 +118,16 @@ def file_create_directories_and_copy(path_from: str, path_to: str) -> None:
     shutil.copy2(path_from, path_to)
 
 
-def file_create_parent_dir(path: str):
+def file_create_parent_dir(path: str) -> str:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     return path
 
 
 def file_create_parent_and_touch(
         path: str,
-        content: str = None,
-        default: str = None,
-        mode: str = 'a'):
+        content: Optional[str] = None,
+        default: Optional[str] = None,
+        mode: str = 'a') -> Optional[IO[Any]]:
     if os.path.exists(path):
         if content is not None:
             with open(path, mode) as file:
@@ -134,7 +135,7 @@ def file_create_parent_and_touch(
 
                 file_set_owner(path)
                 return file
-        return
+        return None
 
     # Create all directories in the path
     file_create_parent_dir(path)
@@ -146,10 +147,10 @@ def file_create_parent_and_touch(
 
             file_set_owner(path)
             return file
-    return
+    return None
 
 
-def file_write_dict_to_config(dict: dict, dest: str):
+def file_write_dict_to_config(dict: Dict[str, str], dest: str) -> None:
     output_lines = []
     for key, value in dict.items():
         # If the key starts with '#', write it as-is without the value
@@ -164,7 +165,7 @@ def file_write_dict_to_config(dict: dict, dest: str):
         f.write(output)
 
 
-def file_set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
+def file_set_dict_item_by_path(data: Dict[str, Any], key: str, value: Any, replace: bool = True) -> None:
     keys = key.split('.')
     for k in keys[:-1]:
         data = data.setdefault(k, {})
@@ -175,7 +176,7 @@ def file_set_dict_item_by_path(data: dict, key: str, value, replace: bool = True
     data[keys[-1]] = value
 
 
-def file_remove_dict_item_by_path(data: dict, key: str):
+def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
     keys = key.split('.')
     for k in keys[:-1]:
         if k not in data or not isinstance(data[k], dict):
@@ -185,12 +186,12 @@ def file_remove_dict_item_by_path(data: dict, key: str):
     data.pop(keys[-1], None)
 
 
-def file_remove_file_if_exists(file: str):
+def file_remove_file_if_exists(file: str) -> None:
     if os.path.isfile(file) or os.path.islink(file):
         os.remove(file)
 
 
-def file_get_human_readable_size(size, decimal_places=2):
+def file_get_human_readable_size(size: float, decimal_places: int = 2) -> str:
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024.0:
             break
@@ -198,7 +199,7 @@ def file_get_human_readable_size(size, decimal_places=2):
     return f"{size:.{decimal_places}f} {unit}"
 
 
-def file_get_owner(file_path) -> str:
+def file_get_owner(file_path: str) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
 
@@ -210,7 +211,7 @@ def file_get_owner(file_path) -> str:
     return owner_info.pw_name
 
 
-def file_get_group(file_path) -> str:
+def file_get_group(file_path: str) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
 
@@ -222,20 +223,20 @@ def file_get_group(file_path) -> str:
     return group_info.gr_name
 
 
-def file_build_date_time_name():
+def file_build_date_time_name() -> str:
     from datetime import datetime
     return datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
 
-def file_delete_file_or_dir(path):
+def file_delete_file_or_dir(path: str) -> None:
     if os.path.isdir(path):
         shutil.rmtree(path)
     else:
         os.remove(path)
 
 
-def file_env_to_dict(env_path: str) -> dict:
-    env_dict: dict = {}
+def file_env_to_dict(env_path: str) -> Dict[str, str]:
+    env_dict: Dict[str, str] = {}
 
     with open(env_path, 'r') as f:
         for line in f.readlines():
