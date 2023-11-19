@@ -12,7 +12,7 @@ from addons.app.command.app.start import app__app__start
 from addons.core.command.service.resolve import core__service__resolve
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA
 from addons.app.const.app import APP_ENV_PROD
-from addons.app.helper.app import create_env
+from addons.app.helper.app import app_create_env
 from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
@@ -125,7 +125,7 @@ def app__app__init(
 
     def init_step_create_env():
         kernel.io.log(f'Creating env file with env "{env}"')
-        create_env(
+        app_create_env(
             env,
             app_dir
         )

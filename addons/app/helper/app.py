@@ -4,9 +4,10 @@ from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
 from src.helper.file import file_create_parent_and_touch
 from addons.app.command.location.find import app__location__find
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.Kernel import Kernel
 
 
-def create_env(env, app_dir, rewrite=True) -> bool:
+def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
     env_file_path = os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV)
 
     # Check if the file already exists
@@ -21,7 +22,7 @@ def create_env(env, app_dir, rewrite=True) -> bool:
     return True
 
 
-def create_manager(kernel, app_dir: str, name: str = 'app'):
+def app_create_manager(kernel: Kernel, app_dir: str) -> AppAddonManager:
     """
     Force manager create even dir is not a valid app.
     Useful to work with apps in an invalid state.

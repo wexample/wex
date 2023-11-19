@@ -2,7 +2,7 @@ import os
 import sys
 
 from addons.app.const.app import APP_ENV_LOCAL
-from addons.app.helper.app import create_env
+from addons.app.helper.app import app_create_env
 from addons.core.command.logo.show import core__logo__show
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.default.command.file.append_once import default__file__append_once
@@ -41,7 +41,7 @@ def __core__core__check_requirements(kernel):
 def __core__core__install_env(kernel):
     kernel.io.log(f'Creating local env ...')
 
-    create_env(
+    app_create_env(
         APP_ENV_LOCAL,
         kernel.get_path('root'),
         False

@@ -5,7 +5,7 @@ from addons.default.helper.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
 from addons.default.helper.migration import version_guess, get_migrations_files, migration_exec, \
     MIGRATION_MINIMAL_VERSION, extract_version_from_file_name
-from addons.app.helper.app import create_manager
+from addons.app.helper.app import app_create_manager
 from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
@@ -17,7 +17,7 @@ from addons.app.decorator.app_command import app_command
 @option('--from-version', '-f', type=str, required=False, help="Force initial version number")
 @option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
 def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_version: str = None, yes: bool = False):
-    manager = create_manager(kernel, app_dir)
+    manager = app_create_manager(kernel, app_dir)
     app_dir = manager.app_dir
 
     if from_version:
