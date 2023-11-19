@@ -1,9 +1,13 @@
+from __future__ import annotations
+from typing import Dict, Any, List
+
 from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
 from src.helper.dict import dict_merge
+from src.core.Kernel import Kernel
 
 
-def get_all_commands(kernel) -> dict:
-    registry = {}
+def get_all_commands(kernel: Kernel) -> Dict[str, Any]:
+    registry: Dict[str, Any] = {}
 
     for resolver in kernel.resolvers:
         registry = {**registry, **kernel.resolvers[resolver].get_commands_registry()}
@@ -11,7 +15,7 @@ def get_all_commands(kernel) -> dict:
     return registry
 
 
-def get_commands_groups_names(kernel, addon):
+def get_commands_groups_names(kernel: Kernel, addon: str) -> List[str]:
     group_names = set()
 
     if addon in kernel.registry[COMMAND_TYPE_ADDON]:
@@ -21,8 +25,9 @@ def get_commands_groups_names(kernel, addon):
     return list(group_names)
 
 
-def get_all_commands_from_registry_part(registry_part: dict) -> dict:
-    output = {}
+def get_all_commands_from_registry_part(
+        registry_part: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    output: Dict[str, Dict[str, Any]] = {}
 
     for addon, addon_data in registry_part.items():
         for command, command_data in addon_data['commands'].items():
@@ -31,8 +36,8 @@ def get_all_commands_from_registry_part(registry_part: dict) -> dict:
     return output
 
 
-def get_all_services_names(kernel):
-    output = []
+def get_all_services_names(kernel: Kernel) -> List[str]:
+    output: List[str] = []
 
     for service in kernel.registry['service']:
         output.append(kernel.registry['service'][service]['name'])
@@ -40,13 +45,13 @@ def get_all_services_names(kernel):
     return output
 
 
-def remove_addons(commands_list: []) -> []:
+def remove_addons(commands_list: List[str]) -> List[str]:
     return [
         command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list
     ]
 
 
-def resolve_service_inheritance(service, services_dict):
+def resolve_service_inheritance(service: Dict[str, Any], services_dict: Dict[str, Any]) -> Dict[str, Any]:
     if 'extends' in service['config']:
         parent_name = service['config']['extends']
         if parent_name in services_dict:
@@ -56,7 +61,7 @@ def resolve_service_inheritance(service, services_dict):
     return service
 
 
-def find_commands_by_function_property(kernel, name: str) -> dict:
+def find_commands_by_function_property(kernel: Kernel, name: str) -> Dict[str, Any]:
     commands = get_all_commands(kernel)
     filtered = {}
 

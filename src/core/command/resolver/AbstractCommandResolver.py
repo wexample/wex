@@ -1,6 +1,7 @@
 import os
 import re
 from abc import abstractmethod
+from typing import Dict, Any
 
 from src.core.FunctionProperty import FunctionProperty
 from src.core.response.NullResponse import NullResponse
@@ -15,7 +16,6 @@ from src.helper.args import args_convert_dict_to_args
 from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
-from src.helper.registry import get_all_commands_from_registry_part
 from src.core.CommandRequest import CommandRequest
 
 
@@ -76,9 +76,12 @@ class AbstractCommandResolver:
     def get_pattern(cls) -> str:
         pass
 
-    def get_commands_registry(self) -> dict:
+    def get_commands_registry(self) -> Dict[str, Dict[str, Any]]:
+        from src.helper.registry import get_all_commands_from_registry_part
+
         if self.get_type() in self.kernel.registry:
-            return get_all_commands_from_registry_part(self.kernel.registry[self.get_type()])
+            return get_all_commands_from_registry_part(
+                self.kernel.registry[self.get_type()])
         return {}
 
     @classmethod

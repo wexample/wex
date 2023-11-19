@@ -32,14 +32,14 @@ def to_pascal_case(text: str) -> str:
     return camel_case[0].upper() + camel_case[1:]
 
 
-def format_ignore_missing(string, substitutions):
+def format_ignore_missing(value, substitutions):
     pattern = r'{(\w+)}'
 
     def replace(match):
         key = match.group(1)
         return substitutions.get(key, match.group(0))
 
-    return re.sub(pattern, replace, string)
+    return re.sub(pattern, replace, value)
 
 
 def text_truncate(text: str, max_width: int, indent: int = 0) -> str:
