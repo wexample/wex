@@ -3,30 +3,14 @@ from __future__ import annotations
 import os
 import grp
 import pwd
-import signal
 import socket
 from contextlib import closing
 from typing import Optional
-import psutil
 import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.core import Kernel
 from src.helper.command import execute_command
-
-
-def get_processes_by_port(port: int) -> Optional[psutil.Process]:
-    port = int(port)
-
-    for process in psutil.process_iter():
-        try:
-            connections = process.connections()
-        except (psutil.AccessDenied, psutil.NoSuchProcess):
-            continue
-        for connection in connections:
-            if connection.laddr.port == port:
-                return process
-    return None
 
 
 def get_sudo_username() -> str | None:
@@ -149,45 +133,6 @@ def is_port_open(port: int, host: str = 'localhost') -> bool:
             return True
         else:
             return False
-
-
-def kill_process(process: psutil.Process) -> bool:
-    try:
-        process.terminate()
-        return True
-    except (psutil.AccessDenied, psutil.NoSuchProcess):
-        return False
-
-
-def kill_process_by_port(port: int) -> bool:
-    process = get_processes_by_port(
-        port
-    )
-
-    if process is None:
-        return False
-
-    kill_process(
-        process
-    )
-
-    return True
-
-
-def kill_process_by_command(kernel: Kernel, command: str) -> None:
-    success, pids = execute_command(
-        kernel,
-        [
-            'pgrep',
-            '-f',
-            command
-        ]
-    )
-
-    if pids:
-        for pid in pids:
-            kernel.io.log(f'Killing process {pid}')
-            os.kill(int(pid), signal.SIGTERM)
 
 
 def service_daemon_reload(kernel: Kernel, command: str = 'daemon-reload') -> None:

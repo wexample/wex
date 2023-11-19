@@ -5,7 +5,7 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.env.get import app__env__get
 from addons.app.command.app.started import app__app__started
 from addons.app.command.app.start import app__app__start
-from src.helper.system import get_processes_by_port
+from src.helper.process import process_get_all_by_port
 from src.decorator.as_sudo import as_sudo
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
@@ -70,7 +70,7 @@ def app__proxy__start(kernel: Kernel,
                 manager.log(f'Checking that port {port_to_check} is free')
 
                 # Check port availability.
-                process = get_processes_by_port(port_to_check)
+                process = process_get_all_by_port(port_to_check)
                 if process:
                     kernel.io.error(f"Process {process.pid} ({process.name()}) is using port {port_to_check}",
                                     trace=False)

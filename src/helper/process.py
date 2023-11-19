@@ -1,5 +1,10 @@
 from __future__ import annotations
 import os
+import signal
+
+import psutil
+
+from src.helper.command import execute_command
 from src.core import Kernel
 from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
@@ -41,3 +46,56 @@ def process_post_exec_function(
         kernel,
         command
     )
+
+
+def process_kill_by_command(kernel: Kernel, command: str) -> None:
+    success, pids = execute_command(
+        kernel,
+        [
+            'pgrep',
+            '-f',
+            command
+        ]
+    )
+
+    if pids:
+        for pid in pids:
+            kernel.io.log(f'Killing process {pid}')
+            os.kill(int(pid), signal.SIGTERM)
+
+
+def process_kill(process: psutil.Process) -> bool:
+    try:
+        process.terminate()
+        return True
+    except (psutil.AccessDenied, psutil.NoSuchProcess):
+        return False
+
+
+def process_kill_by_port(port: int) -> bool:
+    process = process_get_all_by_port(
+        port
+    )
+
+    if process is None:
+        return False
+
+    process_kill(
+        process
+    )
+
+    return True
+
+
+def process_get_all_by_port(port: int) -> Optional[psutil.Process]:
+    port = int(port)
+
+    for process in psutil.process_iter():
+        try:
+            connections = process.connections()
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            continue
+        for connection in connections:
+            if connection.laddr.port == port:
+                return process
+    return None

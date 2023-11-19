@@ -17,8 +17,9 @@ from src.decorator.option import option
 from src.helper.command import execute_command
 from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import file_remove_file_if_exists
-from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
+from src.helper.system import is_port_open, service_exec, \
     service_daemon_reload
+from src.helper.process import process_kill_by_command, process_kill_by_port
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
     'exec': {
@@ -59,7 +60,7 @@ def app__webhook__listen(
     if is_port_open(port):
         if force:
             kernel.io.log(f'Port already in use {port}, killing process...')
-            kill_process_by_port(port)
+            process_kill_by_port(port)
             time.sleep(1)
         else:
             kernel.io.error(f'Port already in use {port}', trace=False)
@@ -99,7 +100,7 @@ def app__webhook__listen(
             )
 
             # Kill old process
-            kill_process_by_command(kernel, command)
+            process_kill_by_command(kernel, command)
 
             # Start a new listener
             process = execute_command(
