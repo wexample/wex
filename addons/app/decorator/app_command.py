@@ -1,4 +1,4 @@
-from addons.app.helper.docker import build_long_container_name
+from addons.app.helper.docker import docker_build_long_container_name
 from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
 from src.const.globals import SHELL_DEFAULT
@@ -78,7 +78,7 @@ def _app_script_run_handler(function, runner, script, variables: dict):
             wrap_command = [
                 'docker',
                 'exec',
-                build_long_container_name(kernel, script['container_name']),
+                docker_build_long_container_name(kernel, script['container_name']),
                 SHELL_DEFAULT,
                 '-c',
                 command

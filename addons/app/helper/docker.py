@@ -86,7 +86,7 @@ def docker_exec_app_compose_command(
     return command + docker_command
 
 
-def exec_app_docker_compose(
+def docker_exec_app_compose(
         kernel: Kernel,
         app_dir: str,
         compose_files: List[str],
@@ -120,6 +120,6 @@ def exec_app_docker_compose(
     return None
 
 
-def build_long_container_name(kernel: Kernel, name: str) -> str:
+def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
     manager = kernel.addons['app']
     return f'{manager.get_runtime_config("name")}_{name}'
