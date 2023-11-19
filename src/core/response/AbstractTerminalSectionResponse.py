@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 from abc import ABC
 from src.core.response.AbstractResponse import AbstractResponse
@@ -28,7 +29,7 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
             extra_equal = "=" if (line_width - title_length) % 2 == 1 else ""
 
             # Construct the title line
-            return f"{'=' * padding_each_side} {title} {'=' * padding_each_side}{extra_equal}\n"
+            return f"{'=' * padding_each_side} {title} {'=' * padding_each_side}{extra_equal}{os.linesep}"
 
         return ''
 

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from src.helper.yaml import yaml_is_basic_data
 from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
@@ -141,6 +143,6 @@ class QueuedCollectionResponse(AbstractResponse):
         )
 
         if isinstance(output, list) and len(output):
-            return "\n".join(map(str, output))
+            return os.linesep.join(map(str, output))
 
         return output

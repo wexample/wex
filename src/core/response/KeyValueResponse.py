@@ -1,3 +1,5 @@
+import os
+
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -38,7 +40,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
 
             # Add pre-rendered key/value pairs to the output
             for line in lines:
-                output += line + '\n'
+                output += line + os.linesep
 
             self.output_bag.append(output)
 
@@ -50,6 +52,6 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return '\n'.join(self.output_bag)
+            return os.linesep.join(self.output_bag)
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             return self.dictionary_data

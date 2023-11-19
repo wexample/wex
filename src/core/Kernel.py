@@ -231,7 +231,7 @@ class Kernel:
 
             self.task_file_write(
                 'post-exec',
-                command_to_string(post_command) + '\n',
+                command_to_string(post_command) + os.linesep,
             )
 
         printed = response.print_wrapped(

@@ -1,3 +1,5 @@
+import os
+
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
 from src.core.response.AbstractResponse import AbstractResponse
@@ -26,7 +28,7 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return "\n".join(
+            return os.linesep.join(
                 super().print(render_mode, interactive_data)
             )
         if render_mode == KERNEL_RENDER_MODE_JSON:

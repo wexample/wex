@@ -1,3 +1,5 @@
+import os
+
 import click
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
@@ -22,7 +24,7 @@ def progress_steps(kernel: Kernel, steps: [], title: str = 'Processing'):
 
             response = step()
 
-            click.echo("\n")
+            click.echo(os.linesep)
 
             # Step failed somewhere
             if response is False:

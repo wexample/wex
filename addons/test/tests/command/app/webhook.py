@@ -1,4 +1,5 @@
 import json
+import os
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from src.helper.file import file_read
@@ -44,7 +45,7 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
             log_stdout
         ))
 
-        lines = data['value'].split("\n")
+        lines = data['value'].split(os.linesep)
 
         self.assertEqual(
             stderr,

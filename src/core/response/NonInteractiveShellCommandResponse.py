@@ -1,3 +1,5 @@
+import os
+
 from src.helper.command import execute_command
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
@@ -29,4 +31,4 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         return self
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
-        return "\n".join(self.output_bag[0])
+        return os.linesep.join(self.output_bag[0])

@@ -131,7 +131,7 @@ class IOManager:
             message = f'{COLOR_CYAN}[wex]{COLOR_RESET} {message}'
 
             if text:
-                message += f'\n{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}\n'
+                message += f'{os.linesep}{COLOR_GRAY}{textwrap.indent(text, (self.log_indent + 1) * self.indent_string)}{os.linesep}'
 
             self.print(message)
 
@@ -180,5 +180,5 @@ class IOManager:
                     f'{COLOR_CYAN}>{COLOR_RESET} {command_string}'
                 )
 
-        commands = '\n'.join(commands)
+        commands = os.linesep.join(commands)
         self.message(message + ':', commands)

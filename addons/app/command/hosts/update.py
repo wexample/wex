@@ -56,7 +56,7 @@ def remove_domains_block(text):
     """
     Removes any text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
-    lines = text.split("\n")
+    lines = text.split(os.linesep)
     new_lines = []
     in_wex_block = False
 
@@ -70,7 +70,7 @@ def remove_domains_block(text):
         if not in_wex_block:
             new_lines.append(line)
 
-    return "\n".join(new_lines)
+    return os.linesep.join(new_lines)
 
 
 def add_domains_block(text, block_content):

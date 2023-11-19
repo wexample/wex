@@ -2,7 +2,7 @@ import os
 import shutil
 import pwd
 import grp
-from typing import List, TextIO, IO
+from typing import IO
 from typing import List, Optional, Dict, Any
 
 
@@ -89,7 +89,7 @@ def file_create_from_template(template_path: str, dest_path: str, parameters: Di
 
 def file_merge(src: str, dest: str) -> None:
     with open(src, 'r') as src_file, open(dest, 'a') as dest_file:
-        dest_file.write('\n')
+        dest_file.write(os.linesep)
         shutil.copyfileobj(src_file, dest_file)
 
 
@@ -159,7 +159,7 @@ def file_write_dict_to_config(dict: Dict[str, str], dest: str) -> None:
         else:
             output_lines.append(f"{key.upper()}={str(value)}")
 
-    output = "\n".join(output_lines)
+    output = os.linesep.join(output_lines)
 
     with open(dest, 'w') as f:
         f.write(output)

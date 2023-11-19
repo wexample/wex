@@ -1,3 +1,5 @@
+import os
+
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -73,7 +75,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         total_line_length = sum(max_widths) + (num_columns * 2) + (num_columns - 1)
 
         # Generate the horizontal separator line
-        separator_line = "+" + "-" * total_line_length + "+\n"
+        separator_line = "+" + "-" * total_line_length + "+" + os.linesep
 
         bash_array = ""
         bash_array += self.render_cli_title(self.title, total_line_length + 2)
@@ -84,7 +86,7 @@ class TableResponse(AbstractTerminalSectionResponse):
             header_str = "|"
             for i, cell in enumerate(self.header):
                 header_str += f" {cell:<{max_widths[i]}} |"
-            bash_array += header_str + "\n"
+            bash_array += header_str + os.linesep
             bash_array += separator_line
 
         # Add data rows
@@ -93,7 +95,7 @@ class TableResponse(AbstractTerminalSectionResponse):
             for i in range(num_columns):  # Use the maximum number of columns based on header or first row
                 cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
                 row_str += f" {str(cell):<{max_widths[i]}} |"
-            bash_array += row_str + "\n"
+            bash_array += row_str + os.linesep
 
         bash_array += separator_line
 

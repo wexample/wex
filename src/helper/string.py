@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 
@@ -45,12 +46,12 @@ def text_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
         lines.append((" " * indent) + text[i:i + max_width])
-    return "\n".join(lines)
+    return os.linesep.join(lines)
 
 
 def text_center(text: str, width: int) -> str:
-    lines = text.split('\n')
-    return '\n'.join(line.center(width) for line in lines)
+    lines = text.split(os.linesep)
+    return os.linesep.join(line.center(width) for line in lines)
 
 
 def trim_leading(text: str, leading_text: str) -> str:

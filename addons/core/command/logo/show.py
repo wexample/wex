@@ -1,3 +1,5 @@
+import os
+
 from src.helper.string import text_truncate, text_center
 from src.helper.core import core_kernel_get_version
 from src.const.globals import COLOR_RED, COLOR_RESET, COLOR_LIGHT_GRAY
@@ -46,9 +48,11 @@ def core__logo__show(kernel: Kernel) -> str:
            "participation and support can significantly enhance our ability to bring about positive change through " \
            "technology. We sincerely hope you will help us shape a better tomorrow."
 
-    return (f"{COLOR_RED}\n\n"
+    return (f"{COLOR_RED}"
+            + os.linesep
+            + os.linesep
             + centered
-            + "\n"
+            + os.linesep
             + f"{COLOR_LIGHT_GRAY}" + text_truncate(text, width, padding) + f"{COLOR_RESET}\n"
-            + "\n"
-            + "\n")
+            + os.linesep
+            + os.linesep)

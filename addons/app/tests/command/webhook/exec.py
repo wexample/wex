@@ -1,4 +1,5 @@
 import json
+import os
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.WebhookHttpRequestHandler import WEBHOOK_STATUS_COMPLETE, WEBHOOK_STATUS_STARTED
@@ -109,7 +110,7 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
 
         data = json.loads(response.print_wrapped(render_mode='json'))
 
-        lines = data['value'].split("\n")
+        lines = data['value'].split(os.linesep)
 
         self.assertEqual(
             lines[0],

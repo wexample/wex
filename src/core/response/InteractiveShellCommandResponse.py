@@ -1,3 +1,5 @@
+import os
+
 from src.helper.command import command_to_string, execute_command
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
@@ -43,7 +45,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             self.success = success
 
             # Output data as it was printed in a shell.
-            self.output_bag.append('\n'.join(content))
+            self.output_bag.append(os.linesep.join(content))
 
         # Do not add to render bag, but append only once.
         elif not self.rendered:

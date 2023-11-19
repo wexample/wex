@@ -1,4 +1,4 @@
-import json
+import os
 
 from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
 from src.core.CommandRequest import CommandRequest
@@ -62,7 +62,7 @@ class DictResponse(AbstractTerminalSectionResponse):
                 else:
                     printed.append(key + ': ' + str(data[key]))
 
-            return '\n'.join(printed)
+            return os.linesep.join(printed)
         if render_mode == KERNEL_RENDER_MODE_JSON:
             printed = {}
             for key in data:
