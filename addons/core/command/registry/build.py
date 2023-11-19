@@ -11,7 +11,7 @@ from src.decorator.option import option
 from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY, COMMAND_TYPE_ADDON, \
     COMMAND_TYPE_SERVICE
-from src.helper.file import set_user_or_sudo_user_owner
+from src.helper.file import file_set_user_or_sudo_user_owner
 
 
 @alias('rebuild')
@@ -47,7 +47,7 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
         with open(registry_path, 'w') as f:
             yaml.dump(registry, f)
 
-        set_user_or_sudo_user_owner(registry_path)
+        file_set_user_or_sudo_user_owner(registry_path)
         kernel.load_registry()
     else:
         return registry

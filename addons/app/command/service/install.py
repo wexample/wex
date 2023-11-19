@@ -6,7 +6,7 @@ from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.string import to_snake_case
 from src.helper.dict import dict_merge
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.helper.file import merge_new_lines, create_directories_and_file
+from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
 from src.helper.service import get_service_dir
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
@@ -168,9 +168,9 @@ def app_service_install_merge_dir(
                     '.gitignore'
                 )
 
-                create_directories_and_file(dest_file)
+                file_create_parent_and_touch(dest_file)
 
-                merge_new_lines(
+                file_merge_new_lines(
                     abs_path,
                     dest_file
                 )
@@ -178,7 +178,7 @@ def app_service_install_merge_dir(
             if install_docker:
                 kernel.io.log('Mixing Docker compose YML')
 
-                create_directories_and_file(dest_file, default='services: {}')
+                file_create_parent_and_touch(dest_file, default='services: {}')
 
                 with open(dest_file, 'r') as f:
                     app_compose = yaml.safe_load(f)
@@ -200,7 +200,7 @@ def app_service_install_merge_dir(
                 with open(dest_file, 'w') as f:
                     yaml.dump(merged_data, f)
         else:
-            create_directories_and_file(dest_file)
+            file_create_parent_and_touch(dest_file)
 
             shutil.copy2(
                 abs_path,

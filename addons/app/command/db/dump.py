@@ -3,7 +3,7 @@ import zipfile
 
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.helper.file import date_time_file_name, delete_file_or_dir
+from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
 from src.decorator.option import option
 from src.core import Kernel
 from addons.app.decorator.app_command import app_command
@@ -22,7 +22,7 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
     if file_name:
         dump_file_name = file_name
     else:
-        dump_file_name = f'{env}-{name}-{date_time_file_name()}'
+        dump_file_name = f'{env}-{name}-{file_build_date_time_name()}'
         if tag:
             dump_file_name += f'-{tag}'
 
@@ -52,7 +52,7 @@ def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zi
                 zipf.write(dump_path, os.path.basename(dump_path))
 
             # Remove original dump file
-            delete_file_or_dir(dump_path)
+            file_delete_file_or_dir(dump_path)
             output_path = zip_path
 
         kernel.io.message('Dump created at ' + output_path)

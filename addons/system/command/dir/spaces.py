@@ -1,6 +1,6 @@
 import os
 
-from src.helper.file import human_readable_size
+from src.helper.file import file_get_human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
@@ -45,7 +45,7 @@ def system__dir__spaces(kernel: Kernel, dir: str = None):
 
         if size is not None:
             # Storing raw size as a third element in the list for sorting later
-            body.append([human_readable_size(size), os.path.basename(entry), size])
+            body.append([file_get_human_readable_size(size), os.path.basename(entry), size])
 
     # Sort the list by raw size (the third element of each sublist)
     # The sort will be in ascending order, meaning smallest files will come first and largest last.

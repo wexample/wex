@@ -12,7 +12,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import args_convert_dict_to_args
-from src.helper.file import set_owner_for_path_and_ancestors, list_subdirectories
+from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_subdirectories
 from src.helper.string import trim_leading, to_snake_case, to_kebab_case
 from src.helper.system import get_user_or_sudo_user
 from src.helper.registry import get_all_commands_from_registry_part
@@ -105,7 +105,7 @@ class AbstractCommandResolver:
         base_path = self.get_base_path()
 
         if base_path:
-            set_owner_for_path_and_ancestors(
+            file_set_owner_for_path_and_ancestors(
                 base_path,
                 trim_leading(command_path, base_path),
                 get_user_or_sudo_user(),
@@ -266,7 +266,7 @@ class AbstractCommandResolver:
         command_dict = {}
 
         if os.path.exists(directory):
-            for group in list_subdirectories(directory):
+            for group in file_list_subdirectories(directory):
                 group_path = os.path.join(directory, group)
                 command_dict.update(self.scan_commands(
                     group_path,

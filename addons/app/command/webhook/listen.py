@@ -16,7 +16,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command
 from src.helper.core import core_get_daemon_service_resource_path
-from src.helper.file import remove_file_if_exists
+from src.helper.file import file_remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
 
@@ -66,7 +66,7 @@ def app__webhook__listen(
             return False
 
     # Remove old service file
-    remove_file_if_exists(SERVICE_DAEMON_PATH)
+    file_remove_file_if_exists(SERVICE_DAEMON_PATH)
 
     if asynchronous:
         use_daemon = not kernel.run_function(system__system__is_docker)

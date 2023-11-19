@@ -4,7 +4,7 @@ import re
 from src.const.globals import COMMAND_EXTENSION_PYTHON
 from src.core import Kernel
 from src.helper.string import to_snake_case, to_pascal_case
-from src.helper.file import create_from_template
+from src.helper.file import file_create_from_template
 
 
 def file_path_to_test_class_name(kernel, file_path: str) -> str:
@@ -68,7 +68,7 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
     kernel.io.log(f'Class : {class_name}')
     kernel.io.log(f'Function : {method_name}')
 
-    create_from_template(
+    file_create_from_template(
         f'{kernel.get_path("templates")}test.{request.extension}.tpl',
         test_path,
         {

@@ -1,7 +1,7 @@
 
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.helper.file import remove_file_if_exists
+from src.helper.file import file_remove_file_if_exists
 from src.const.globals import SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON
 from src.helper.system import kill_process_by_command, service_exec, service_daemon_reload
 from src.decorator.as_sudo import as_sudo
@@ -19,7 +19,7 @@ def app__webhook__stop(
     if use_daemon:
         service_exec(kernel, SERVICE_DAEMON_NAME, 'stop')
         service_exec(kernel, SERVICE_DAEMON_NAME, 'disable')
-        remove_file_if_exists(SERVICE_DAEMON_PATH)
+        file_remove_file_if_exists(SERVICE_DAEMON_PATH)
         service_daemon_reload(kernel)
         service_daemon_reload(kernel, 'reset-failed')
 

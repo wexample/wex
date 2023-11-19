@@ -1,7 +1,7 @@
 import psutil
 
 from src.core.response.TableResponse import TableResponse
-from src.helper.file import human_readable_size
+from src.helper.file import file_get_human_readable_size
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
@@ -23,9 +23,9 @@ def system__disk__spaces(kernel: Kernel):
         usage = psutil.disk_usage(partition.mountpoint)
 
         body.append([
-            human_readable_size(usage.total),
-            human_readable_size(usage.used),
-            human_readable_size(usage.free),
+            file_get_human_readable_size(usage.total),
+            file_get_human_readable_size(usage.used),
+            file_get_human_readable_size(usage.free),
             usage.percent,
             partition.mountpoint,
             partition.device,

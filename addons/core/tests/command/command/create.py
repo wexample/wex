@@ -2,7 +2,7 @@ import os
 import shutil
 
 from addons.core.command.command.create import core__command__create
-from src.helper.file import remove_file_if_exists
+from src.helper.file import file_remove_file_if_exists
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -12,8 +12,8 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
         test_file_path = self.kernel.get_path('addons', ['core']) + test_file_path_command
         test_file_path_test = self.kernel.get_path('addons', ['core', 'tests']) + test_file_path_command
 
-        remove_file_if_exists(test_file_path)
-        remove_file_if_exists(test_file_path_test)
+        file_remove_file_if_exists(test_file_path)
+        file_remove_file_if_exists(test_file_path_test)
 
         self.kernel.run_function(
             core__command__create,

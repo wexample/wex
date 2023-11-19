@@ -1,12 +1,12 @@
 
 from AbstractTestCase import AbstractTestCase
 from src.core.FatalError import FatalError
-from src.helper.file import remove_file_if_exists
+from src.helper.file import file_remove_file_if_exists
 
 
 class TestLogging(AbstractTestCase):
     def test_error(self):
-        remove_file_if_exists(self.kernel.get_or_create_path('task'))
+        file_remove_file_if_exists(self.kernel.get_or_create_path('task'))
 
         with self.assertRaises(FatalError, msg=None):
             self.kernel.io.error(
@@ -18,7 +18,7 @@ class TestLogging(AbstractTestCase):
         )
 
     def test_history(self):
-        remove_file_if_exists(self.kernel.get_or_create_path('task'))
+        file_remove_file_if_exists(self.kernel.get_or_create_path('task'))
 
         self.kernel.run_command('hi')
 

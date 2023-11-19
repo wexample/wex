@@ -15,7 +15,7 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFI
     PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
     APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN, APP_ENV_TEST, APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD, APP_FILEPATH_REL_ENV
 from addons.app.command.location.find import app__location__find
-from src.helper.file import write_dict_to_config, set_dict_item_by_path, env_to_dict, remove_dict_item_by_path
+from src.helper.file import file_write_dict_to_config, file_set_dict_item_by_path, file_env_to_dict, file_remove_dict_item_by_path
 from src.helper.yaml import yaml_load_or_default
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import dict_get_item_by_path
@@ -219,7 +219,7 @@ class AppAddonManager(AddonManager):
         }
 
         env_dict.update(
-            env_to_dict(app_env_path)
+            file_env_to_dict(app_env_path)
         )
 
         config_path = os.path.join(
@@ -236,7 +236,7 @@ class AppAddonManager(AddonManager):
         )
 
         # Write as docker env file
-        write_dict_to_config(
+        file_write_dict_to_config(
             env_dict,
             config_path
         )
@@ -273,7 +273,7 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        set_dict_item_by_path(
+        file_set_dict_item_by_path(
             config,
             key,
             value,
@@ -291,7 +291,7 @@ class AppAddonManager(AddonManager):
         self.save_config()
 
     def remove_config(self, key: str):
-        remove_dict_item_by_path(
+        file_remove_dict_item_by_path(
             self.config,
             key
         )
@@ -299,7 +299,7 @@ class AppAddonManager(AddonManager):
         self.save_config()
 
     def remove_runtime_config(self, key: str):
-        remove_dict_item_by_path(
+        file_remove_dict_item_by_path(
             self.config,
             key
         )

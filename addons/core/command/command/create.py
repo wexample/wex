@@ -2,7 +2,7 @@ import os
 
 from addons.core.command.test.create import core__test__create
 from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER, COMMAND_EXTENSION_PYTHON
-from src.helper.file import create_from_template
+from src.helper.file import file_create_from_template
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.Kernel import Kernel
@@ -62,7 +62,7 @@ def core__command__create(
             list(request.match.groups())
         )
 
-        create_from_template(
+        file_create_from_template(
             f'{kernel.get_path("templates")}command.{extension}.tpl',
             command_path,
             {

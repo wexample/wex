@@ -3,7 +3,7 @@ import json
 import os
 import time
 
-from src.helper.file import set_user_or_sudo_user_owner
+from src.helper.file import file_set_user_or_sudo_user_owner
 from src.helper.json import load_json_if_valid, parse_json_if_valid
 from src.core.FunctionProperty import FunctionProperty
 
@@ -144,7 +144,7 @@ class Logger:
             replace=True
         )
 
-        set_user_or_sudo_user_owner(log_path)
+        file_set_user_or_sudo_user_owner(log_path)
 
 
     def get_all_logs_files(self) -> list:

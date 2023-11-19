@@ -6,7 +6,7 @@ from src.helper.system import get_sudo_username, get_user_or_sudo_user_home_data
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import CORE_BIN_FILE_ROOT, CORE_BIN_FILE_LOCAL
 from src.decorator.as_sudo import as_sudo
-from src.helper.file import remove_file_if_exists
+from src.helper.file import file_remove_file_if_exists
 from src.core.Kernel import Kernel
 from src.decorator.command import command
 
@@ -29,13 +29,13 @@ def __core__core__uninstall_webhook_server(kernel):
 
 
 def __core__core__uninstall_symlink(destination: str):
-    remove_file_if_exists(destination)
+    file_remove_file_if_exists(destination)
 
 
 def __core__core__uninstall_autocomplete(kernel):
     script_path = '/etc/bash_completion.d/wex'
 
-    remove_file_if_exists(script_path)
+    file_remove_file_if_exists(script_path)
 
     __remove_source_file_for_docker(kernel, script_path)
 
@@ -43,7 +43,7 @@ def __core__core__uninstall_autocomplete(kernel):
 def __core__core__uninstall_terminal(kernel):
     script_path = '/etc/profile.d/wex'
 
-    remove_file_if_exists(script_path)
+    file_remove_file_if_exists(script_path)
 
     __remove_source_file_for_docker(kernel, script_path)
 

@@ -17,7 +17,7 @@ from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-from src.helper.file import list_subdirectories, remove_file_if_exists
+from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 from src.core.response.AbortResponse import AbortResponse
 
 
@@ -89,7 +89,7 @@ class Kernel:
             'app': AppAddonManager
         }
 
-        for name in list_subdirectories(self.get_path('addons')):
+        for name in file_list_subdirectories(self.get_path('addons')):
             definition = definitions.get(name, AddonManager)
             self.addons[name]: AddonManager = definition(self, name=name)
 
@@ -135,8 +135,8 @@ class Kernel:
             try:
                 os.makedirs(path)
 
-                from src.helper.file import set_user_or_sudo_user_owner
-                set_user_or_sudo_user_owner(path)
+                from src.helper.file import file_set_user_or_sudo_user_owner
+                file_set_user_or_sudo_user_owner(path)
             except PermissionError:
                 self.io.error(
                     f'Permission denied: Could not create {path}.'
@@ -367,13 +367,13 @@ class Kernel:
             body: str,
             task_id: str | None = None,
             replace: bool = False):
-        from src.helper.file import set_user_or_sudo_user_owner
+        from src.helper.file import file_set_user_or_sudo_user_owner
         path = self.task_file_path(type, task_id=task_id)
 
         with open(path, 'w' if replace else 'a') as f:
             f.write(body)
 
-            set_user_or_sudo_user_owner(path)
+            file_set_user_or_sudo_user_owner(path)
 
             return path
 
@@ -472,7 +472,7 @@ class Kernel:
             self.task_id = value
 
             # Cleanup task files to avoid loops.
-            remove_file_if_exists(
+            file_remove_file_if_exists(
                 self.task_file_path('post-exec')
             )
 

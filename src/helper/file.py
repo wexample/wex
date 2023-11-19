@@ -4,7 +4,7 @@ import pwd
 import grp
 
 
-def list_subdirectories(path: str) -> []:
+def file_list_subdirectories(path: str) -> []:
     subdirectories = []
     for item in os.listdir(path):
         item_path = os.path.join(path, item)
@@ -16,15 +16,15 @@ def list_subdirectories(path: str) -> []:
     return subdirectories
 
 
-def set_user_or_sudo_user_owner(file):
+def file_set_user_or_sudo_user_owner(file):
     from src.helper.system import get_user_or_sudo_user
 
     sudo_user = get_user_or_sudo_user()
     if sudo_user is not None:
-        set_owner(file, sudo_user)
+        file_set_owner(file, sudo_user)
 
 
-def set_owner(file: str, username: str | None = None, group: str | None = None):
+def file_set_owner(file: str, username: str | None = None, group: str | None = None):
     if not username:
         from src.helper.system import get_user_or_sudo_user
         username = get_user_or_sudo_user()
@@ -42,7 +42,7 @@ def set_owner(file: str, username: str | None = None, group: str | None = None):
     os.chown(file, uid, gid)
 
 
-def set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: str, group: str = None):
+def file_set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: str, group: str = None):
     # Get the UID and GID
     uid = pwd.getpwnam(owner).pw_uid
 
@@ -64,7 +64,7 @@ def set_owner_for_path_and_ancestors(base_path: str, sub_path: str, owner: str, 
         os.chown(current_path, uid, gid)
 
 
-def create_from_template(template_path, dest_path, parameters):
+def file_create_from_template(template_path, dest_path, parameters):
     with open(template_path, 'r') as template_file:
         template_content = template_file.read()
 
@@ -83,16 +83,16 @@ def create_from_template(template_path, dest_path, parameters):
     with open(dest_path, 'w') as output_file:
         output_file.write(formatted_content)
 
-    set_user_or_sudo_user_owner(dest_path)
+    file_set_user_or_sudo_user_owner(dest_path)
 
 
-def merge_files(src: str, dest: str) -> None:
+def file_merge(src: str, dest: str) -> None:
     with open(src, 'r') as src_file, open(dest, 'a') as dest_file:
         dest_file.write('\n')
         shutil.copyfileobj(src_file, dest_file)
 
 
-def remove_duplicated_lines(file: str) -> None:
+def file_remove_duplicated_lines(file: str) -> None:
     with open(file, 'r') as f:
         lines = f.readlines()
 
@@ -105,24 +105,24 @@ def remove_duplicated_lines(file: str) -> None:
         f.writelines(filtered)
 
 
-def merge_new_lines(src: str, dest: str) -> None:
-    merge_files(src, dest)
-    remove_duplicated_lines(dest)
+def file_merge_new_lines(src: str, dest: str) -> None:
+    file_merge(src, dest)
+    file_remove_duplicated_lines(dest)
 
 
-def create_directories_and_copy(path_from: str, path_to: str) -> None:
+def file_create_directories_and_copy(path_from: str, path_to: str) -> None:
     # Create directory if it doesn't exist
     os.makedirs(os.path.dirname(path_to), exist_ok=True)
     # Copy the file
     shutil.copy2(path_from, path_to)
 
 
-def create_file_path(path: str):
+def file_create_parent_dir(path: str):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     return path
 
 
-def create_directories_and_file(
+def file_create_parent_and_touch(
         path: str,
         content: str = None,
         default: str = None,
@@ -132,24 +132,24 @@ def create_directories_and_file(
             with open(path, mode) as file:
                 file.write(content)
 
-                set_owner(path)
+                file_set_owner(path)
                 return file
         return
 
     # Create all directories in the path
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    file_create_parent_dir(path)
 
     # Create and close the file
     with open(path, mode) as file:
         if default or content:
             file.write(default or content)
 
-            set_owner(path)
+            file_set_owner(path)
             return file
     return
 
 
-def write_dict_to_config(dict: dict, dest: str):
+def file_write_dict_to_config(dict: dict, dest: str):
     output_lines = []
     for key, value in dict.items():
         # If the key starts with '#', write it as-is without the value
@@ -164,7 +164,7 @@ def write_dict_to_config(dict: dict, dest: str):
         f.write(output)
 
 
-def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
+def file_set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     keys = key.split('.')
     for k in keys[:-1]:
         data = data.setdefault(k, {})
@@ -175,7 +175,7 @@ def set_dict_item_by_path(data: dict, key: str, value, replace: bool = True):
     data[keys[-1]] = value
 
 
-def remove_dict_item_by_path(data: dict, key: str):
+def file_remove_dict_item_by_path(data: dict, key: str):
     keys = key.split('.')
     for k in keys[:-1]:
         if k not in data or not isinstance(data[k], dict):
@@ -185,12 +185,12 @@ def remove_dict_item_by_path(data: dict, key: str):
     data.pop(keys[-1], None)
 
 
-def remove_file_if_exists(file: str):
+def file_remove_file_if_exists(file: str):
     if os.path.isfile(file) or os.path.islink(file):
         os.remove(file)
 
 
-def human_readable_size(size, decimal_places=2):
+def file_get_human_readable_size(size, decimal_places=2):
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024.0:
             break
@@ -198,7 +198,7 @@ def human_readable_size(size, decimal_places=2):
     return f"{size:.{decimal_places}f} {unit}"
 
 
-def get_file_owner(file_path) -> str:
+def file_get_owner(file_path) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
 
@@ -210,7 +210,7 @@ def get_file_owner(file_path) -> str:
     return owner_info.pw_name
 
 
-def get_file_group(file_path) -> str:
+def file_get_group(file_path) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
 
@@ -222,19 +222,19 @@ def get_file_group(file_path) -> str:
     return group_info.gr_name
 
 
-def date_time_file_name():
+def file_build_date_time_name():
     from datetime import datetime
     return datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
 
-def delete_file_or_dir(path):
+def file_delete_file_or_dir(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
     else:
         os.remove(path)
 
 
-def env_to_dict(env_path: str) -> dict:
+def file_env_to_dict(env_path: str) -> dict:
     env_dict: dict = {}
 
     with open(env_path, 'r') as f:

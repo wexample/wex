@@ -5,7 +5,7 @@ import inspect
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
-from src.helper.file import create_directories_and_copy
+from src.helper.file import file_create_directories_and_copy
 from src.helper.command import execute_command
 from src.helper.system import set_owner_recursively
 
@@ -67,7 +67,7 @@ class AbstractTestCase(unittest.TestCase):
         src_file = os.path.join(self.kernel.get_path('root'), 'tests', 'samples', file_name)
         dst_file = os.path.join(self.kernel.get_or_create_path('tmp'), 'tests', file_name)
 
-        create_directories_and_copy(src_file, dst_file)
+        file_create_directories_and_copy(src_file, dst_file)
 
         return dst_file
 

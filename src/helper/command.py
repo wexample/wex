@@ -1,6 +1,6 @@
 from __future__ import annotations
 import subprocess
-from src.helper.file import create_file_path
+from src.helper.file import file_create_parent_dir
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from typing import Any, List, Union, Tuple
@@ -100,8 +100,8 @@ def execute_command(
         popen_args = {
             'cwd': working_directory,
             'start_new_session': True,
-            'stdout': open(create_file_path(tmp_dir + kernel.task_id + '.stdout'), 'a'),
-            'stderr': open(create_file_path(tmp_dir + kernel.task_id + '.stderr'), 'a'),
+            'stdout': open(file_create_parent_dir(tmp_dir + kernel.task_id + '.stdout'), 'a'),
+            'stderr': open(file_create_parent_dir(tmp_dir + kernel.task_id + '.stderr'), 'a'),
             **kwargs
         }
 

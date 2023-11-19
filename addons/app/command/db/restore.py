@@ -4,7 +4,7 @@ import zipfile
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.helpers.db import get_db_service_dumps_path
 from src.helper.dict import dict_sort_values
-from src.helper.file import delete_file_or_dir
+from src.helper.file import file_delete_file_or_dir
 from src.helper.prompt import prompt_choice
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.decorator.option import option
@@ -75,6 +75,6 @@ def app__db__restore(kernel: Kernel, app_dir: str, file_path: str | None = None)
     ).first()
 
     if is_zip:
-        delete_file_or_dir(get_db_service_dumps_path(kernel, service) + '/' + file_path)
+        file_delete_file_or_dir(get_db_service_dumps_path(kernel, service) + '/' + file_path)
 
     kernel.io.message('Restoration complete')

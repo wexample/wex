@@ -1,7 +1,7 @@
 import os
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
-from src.helper.file import create_directories_and_file
+from src.helper.file import file_create_parent_and_touch
 from addons.app.command.location.find import app__location__find
 from addons.app.AppAddonManager import AppAddonManager
 
@@ -13,7 +13,7 @@ def create_env(env, app_dir, rewrite=True) -> bool:
     if os.path.exists(env_file_path) and not rewrite:
         return False
 
-    create_directories_and_file(env_file_path, f'APP_ENV={env}\n')
+    file_create_parent_and_touch(env_file_path, f'APP_ENV={env}\n')
 
     with open(env_file_path, 'w') as f:
         f.write(f'APP_ENV={env}\n')
