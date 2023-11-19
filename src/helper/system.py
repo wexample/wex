@@ -3,12 +3,11 @@ from __future__ import annotations
 import os
 import socket
 from contextlib import closing
-
 from src.core import Kernel
 from src.helper.command import execute_command
 
 
-def is_port_open(port: int, host: str = 'localhost') -> bool:
+def system_is_port_open(port: int, host: str = 'localhost') -> bool:
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         if sock.connect_ex((host, port)) == 0:
             return True
@@ -16,14 +15,14 @@ def is_port_open(port: int, host: str = 'localhost') -> bool:
             return False
 
 
-def service_daemon_reload(kernel: Kernel, command: str = 'daemon-reload') -> None:
+def system_service_daemon_reload(kernel: Kernel, command: str = 'daemon-reload') -> None:
     execute_command(
         kernel,
         ['systemctl', command]
     )
 
 
-def service_exec(kernel: Kernel, service: str, action: str) -> None:
+def system_service_exec(kernel: Kernel, service: str, action: str) -> None:
     execute_command(
         kernel,
         [
