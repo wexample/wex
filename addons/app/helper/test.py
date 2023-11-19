@@ -2,20 +2,22 @@ import hashlib
 import json
 import os
 import shutil
+from typing import Optional, List
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
+from src.core import Kernel
 
 DEFAULT_APP_TEST_NAME: str = 'test-app'
 
 
-def get_test_app_dir(kernel, name: str) -> str:
+def test_get_app_dir(kernel: Kernel, name: str) -> str:
     return f"{kernel.get_or_create_path('tmp')}tests/{name}/"
 
 
-def build_test_app_name(
+def test_build_app_name(
         name: str = DEFAULT_APP_TEST_NAME,
-        services: list = None):
+        services: Optional[List[str]] = None) -> str:
     services = services or []
 
     data = {
@@ -36,12 +38,12 @@ def build_test_app_name(
     return name + '-' + hash_object.hexdigest()[:8]
 
 
-def create_test_app(
-        kernel,
+def test_create_app(
+        kernel: Kernel,
         name: str,
-        services: list | None = None,
+        services: Optional[List[str]] = None,
         force_restart: bool = False) -> str:
-    app_dir = get_test_app_dir(kernel, name)
+    app_dir = test_get_app_dir(kernel, name)
     test_dir = os.getcwd()
 
     # Recreate test app dir.

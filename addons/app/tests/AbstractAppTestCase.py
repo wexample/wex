@@ -4,7 +4,7 @@ import re
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helper.test import create_test_app, build_test_app_name, DEFAULT_APP_TEST_NAME
+from addons.app.helper.test import test_create_app, test_build_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 
@@ -15,7 +15,7 @@ class AbstractAppTestCase(AbstractTestCase):
             name: str = DEFAULT_APP_TEST_NAME,
             services: list | None = None,
             force_restart: bool = False) -> str:
-        return create_test_app(
+        return test_create_app(
             self.kernel,
             name=name,
             services=services or [],
@@ -71,7 +71,7 @@ class AbstractAppTestCase(AbstractTestCase):
             services: list | None = None,
             force_restart: bool = False) -> str:
 
-        name = build_test_app_name(name, services)
+        name = test_build_app_name(name, services)
 
         app_dir = self.create_test_app(
             name=name,
