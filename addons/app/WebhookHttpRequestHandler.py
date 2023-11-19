@@ -1,5 +1,6 @@
 import subprocess
 from http.server import BaseHTTPRequestHandler
+from typing import Dict, Any, List
 
 from src.helper.array import array_replace_value
 from src.helper.routing import is_allowed_route, get_route_info, get_route_name
@@ -19,11 +20,11 @@ WEBHOOK_STATUS_ERROR = 'error'
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
     log_path: str
-    routes: dict
+    routes: Dict[str, Any]
     log_stderr: str
     log_stdout: str
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: List[Any], **kwargs: Dict[str, Any]) -> None:
         self.logger = logging.getLogger('wex-webhook')
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(

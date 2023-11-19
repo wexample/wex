@@ -1,11 +1,12 @@
 import re
+from typing import Dict, Any, Optional
 from urllib.parse import urlparse, parse_qs
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_CHARS = re.compile(r'^[a-zA-Z0-9_\-=&]+$')
 
 
-def get_route_name(url: str, routes: dict):
+def get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
     parsed_url = urlparse(url)
     path = parsed_url.path
 
@@ -15,7 +16,7 @@ def get_route_name(url: str, routes: dict):
     return None
 
 
-def get_route_info(url: str, routes: dict):
+def get_route_info(url: str, routes: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     route_name = get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
@@ -27,12 +28,13 @@ def get_route_info(url: str, routes: dict):
         return {
             'async': route['async'],
             'name': route_name,
-            'match': match.groups(),
+            'match': match.groups() if match else None,
             'query': query,
         }
+    return None
 
 
-def is_allowed_route(url: str, routes: dict) -> bool:
+def is_allowed_route(url: str, routes: Dict[str, Any]) -> bool:
     route_info = get_route_info(url, routes)
     if route_info:
         # Validate the query string to contain only allowed characters
