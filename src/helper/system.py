@@ -29,17 +29,12 @@ def get_processes_by_port(port: int) -> Optional[psutil.Process]:
     return None
 
 
-def get_sudo_username():
+def get_sudo_username() -> str | None:
     return os.getenv('SUDO_USER')
 
 
 def get_user_or_sudo_user() -> str:
-    sudo_username = get_sudo_username()
-
-    if sudo_username is None:
-        return getpass.getuser()
-    else:
-        return get_sudo_username()
+    return get_sudo_username() or getpass.getuser()
 
 
 def get_uid_from_user_name(user: str) -> int:
@@ -50,7 +45,7 @@ def get_gid_from_group_name(group: str) -> int:
     return grp.getgrnam(group).gr_gid
 
 
-def get_user_group_name(user: str):
+def get_user_group_name(user: str) -> str:
     user_info = pwd.getpwnam(user)
     # Get the group's entry using the user's gid
     group = grp.getgrgid(user_info.pw_gid)
@@ -58,17 +53,17 @@ def get_user_group_name(user: str):
     return group.gr_name
 
 
-def get_sudo_gid():
-    return int(os.getenv('SUDO_GID'))
+def get_sudo_gid() -> int | None:
+    gid = os.getenv('SUDO_GID')
+    return int(gid) if gid else None
 
 
-def get_sudo_group():
-    return grp.getgrgid(
-        get_sudo_gid()
-    ).gr_name
+def get_sudo_group() -> str | None:
+    gid = get_sudo_gid()
+    return grp.getgrgid(gid).gr_name if gid else None
 
 
-def get_user_or_sudo_user_home_data_path():
+def get_user_or_sudo_user_home_data_path() -> str:
     sudo_username = get_sudo_username()
     if sudo_username is None:
         return f"{os.path.expanduser('~')}/"
@@ -76,13 +71,7 @@ def get_user_or_sudo_user_home_data_path():
         return f'/home/{get_sudo_username()}/'
 
 
-def set_home_path_permissions():
-    os.chown(
-        f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
-    )
-
-
-def set_owner_recursively(path: str, user: str = None, group: str = None):
+def set_owner_recursively(path: str, user: Optional[str] = None, group: Optional[str] = None) -> None:
     if user is None:
         user = get_user_or_sudo_user()
 
@@ -108,7 +97,7 @@ def set_owner_recursively(path: str, user: str = None, group: str = None):
             set_owner_recursively(item_path, user, group)
 
 
-def set_permissions_recursively(path: str, mode: int):
+def set_permissions_recursively(path: str, mode: int) -> None:
     # Change permissions for the current path
 
     try:
@@ -128,11 +117,11 @@ def is_current_user_sudo() -> bool:
     return os.getuid() == 0
 
 
-def get_user_home_data_path():
+def get_user_home_data_path() -> str:
     return f"{os.path.expanduser('~')}/{APP_DIR_APP_DATA}"
 
 
-def create_user_home_data_path():
+def create_user_home_data_path() -> str:
     path = f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
 
     os.makedirs(
@@ -162,9 +151,7 @@ def is_port_open(port: int, host: str = 'localhost') -> bool:
             return False
 
 
-def kill_process(process: Optional[psutil.Process]):
-    if process is None:
-        return False
+def kill_process(process: psutil.Process) -> bool:
     try:
         process.terminate()
         return True
@@ -172,15 +159,22 @@ def kill_process(process: Optional[psutil.Process]):
         return False
 
 
-def kill_process_by_port(port: int):
-    kill_process(
-        get_processes_by_port(
-            port
-        )
+def kill_process_by_port(port: int) -> bool:
+    process = get_processes_by_port(
+        port
     )
 
+    if process is None:
+        return False
 
-def kill_process_by_command(kernel, command: str):
+    kill_process(
+        process
+    )
+
+    return True
+
+
+def kill_process_by_command(kernel: Kernel, command: str) -> None:
     success, pids = execute_command(
         kernel,
         [
@@ -196,14 +190,14 @@ def kill_process_by_command(kernel, command: str):
             os.kill(int(pid), signal.SIGTERM)
 
 
-def service_daemon_reload(kernel, command: str = 'daemon-reload'):
+def service_daemon_reload(kernel: Kernel, command: str = 'daemon-reload') -> None:
     execute_command(
         kernel,
         ['systemctl', command]
     )
 
 
-def service_exec(kernel, service, action: str):
+def service_exec(kernel: Kernel, service: str, action: str) -> None:
     execute_command(
         kernel,
         [
