@@ -1,7 +1,7 @@
 import os
 
 from addons.system.command.own.this import system__own__this
-from src.helper.system import get_user_or_sudo_user
+from src.helper.user import get_user_or_sudo_user
 from src.const.globals import OWNER_USERNAME
 from src.helper.file import file_get_owner
 from tests.AbstractTestCase import AbstractTestCase

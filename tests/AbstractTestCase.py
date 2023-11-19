@@ -7,7 +7,7 @@ from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.file import file_create_directories_and_copy
 from src.helper.command import execute_command
-from src.helper.system import set_owner_recursively
+from src.helper.user import set_owner_recursively
 
 
 class AbstractTestCase(unittest.TestCase):

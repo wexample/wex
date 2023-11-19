@@ -8,7 +8,7 @@ from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.version.build import core__version__build
 from addons.core.command.test.create import core__test__create
-from src.helper.system import get_user_or_sudo_user
+from src.helper.user import get_user_or_sudo_user
 from src.core.FatalError import FatalError
 from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME, ROOT_USERNAME
 from src.helper.registry import registry_get_all_commands_from_registry_part

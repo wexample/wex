@@ -19,7 +19,7 @@ def file_list_subdirectories(path: str) -> List[str]:
 
 
 def file_set_user_or_sudo_user_owner(file: str) -> None:
-    from src.helper.system import get_user_or_sudo_user
+    from src.helper.user import get_user_or_sudo_user
 
     sudo_user = get_user_or_sudo_user()
     if sudo_user is not None:
@@ -27,7 +27,8 @@ def file_set_user_or_sudo_user_owner(file: str) -> None:
 
 
 def file_set_owner(file_path: str, username: Optional[str] = None, group: Optional[str] = None) -> None:
-    from src.helper.system import get_user_or_sudo_user, get_gid_from_group_name
+    from src.helper.user import get_gid_from_group_name
+    from src.helper.user import get_user_or_sudo_user
 
     if username is None:
         username = get_user_or_sudo_user()

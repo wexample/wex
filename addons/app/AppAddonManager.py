@@ -510,9 +510,10 @@ class AppAddonManager(AddonManager):
         import socket
         from addons.app.command.env.get import app__env__get
         from src.const.globals import PASSWORD_INSECURE
-        from src.helper.system import get_gid_from_group_name, \
-            get_uid_from_user_name
-        from src.helper.system import get_user_or_sudo_user, get_user_group_name
+        from src.helper.user import get_gid_from_group_name
+        from src.helper.user import get_uid_from_user_name
+        from src.helper.user import get_user_group_name
+        from src.helper.user import get_user_or_sudo_user
         from addons.app.command.hook.exec import app__hook__exec
 
         env = self.kernel.run_function(app__env__get, {'app-dir': self.app_dir}).first()

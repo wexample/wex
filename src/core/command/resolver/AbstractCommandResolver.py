@@ -15,7 +15,7 @@ from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAM
 from src.helper.args import args_convert_dict_to_args
 from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_subdirectories
 from src.helper.string import string_trim_leading, string_to_snake_case, string_to_kebab_case
-from src.helper.system import get_user_or_sudo_user
+from src.helper.user import get_user_or_sudo_user
 from src.core.CommandRequest import CommandRequest
 
 

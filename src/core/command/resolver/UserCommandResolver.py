@@ -5,7 +5,7 @@ from addons.app.const.app import APP_DIR_APP_DATA
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import string_to_snake_case, string_to_kebab_case
-from src.helper.system import get_user_or_sudo_user_home_data_path
+from src.helper.user import get_user_or_sudo_user_home_data_path
 from src.const.globals import COMMAND_PATTERN_USER, COMMAND_TYPE_USER, \
     COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver

@@ -1,4 +1,4 @@
-from src.helper.system import set_permissions_recursively
+from src.helper.user import set_permissions_recursively
 from src.core.Kernel import Kernel
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.AppAddonManager import AppAddonManager

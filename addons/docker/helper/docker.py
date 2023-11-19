@@ -2,7 +2,7 @@ import yaml
 import grp
 import pwd
 
-from src.helper.system import is_sudo
+from src.helper.user import is_sudo
 from src.helper.dict import dict_merge
 
 

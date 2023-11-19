@@ -2,7 +2,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_ENV_LOCAL
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
-from src.helper.system import set_owner_recursively, set_permissions_recursively, get_user_or_sudo_user, user_exists
+from src.helper.user import get_user_or_sudo_user, set_owner_recursively, set_permissions_recursively, user_exists
 from addons.app.AppAddonManager import AppAddonManager
 from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
