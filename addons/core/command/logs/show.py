@@ -1,4 +1,4 @@
-from src.helper.json import load_json_if_valid
+from src.helper.data_json import load_json_if_valid
 from src.decorator.alias import alias
 from src.decorator.no_log import no_log
 from src.decorator.command import command

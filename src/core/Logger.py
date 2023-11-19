@@ -4,7 +4,7 @@ import os
 import time
 
 from src.helper.file import file_set_user_or_sudo_user_owner
-from src.helper.json import load_json_if_valid, parse_json_if_valid
+from src.helper.data_json import load_json_if_valid, parse_json_if_valid
 from src.core.FunctionProperty import FunctionProperty
 
 LOG_STATUS_COMPLETE = 'complete'
