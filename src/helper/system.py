@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import grp
 import pwd
@@ -9,6 +11,7 @@ import psutil
 import getpass
 
 from addons.app.const.app import APP_DIR_APP_DATA
+from src.core import Kernel
 from src.helper.command import execute_command
 
 
@@ -231,3 +234,11 @@ def is_sudo(username: str) -> bool:
         return False
     except Exception as e:
         return False
+
+
+def system_get_bashrc_handler_path(kernel: Kernel) -> str:
+    return os.path.join(kernel.get_path('root'), 'cli', "bashrc-handler")
+
+
+def system_get_daemon_service_path(kernel: Kernel) -> str:
+    return f'. {system_get_bashrc_handler_path(kernel)}'

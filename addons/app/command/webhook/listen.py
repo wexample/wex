@@ -15,7 +15,7 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command
-from src.helper.core import get_daemon_service_resource_path
+from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import remove_file_if_exists
 from src.helper.system import is_port_open, kill_process_by_port, kill_process_by_command, service_exec, \
     service_daemon_reload
@@ -77,7 +77,7 @@ def app__webhook__listen(
                 "name": SERVICE_DAEMON_NAME,
             })
 
-            daemon_path = get_daemon_service_resource_path(kernel)
+            daemon_path = core_get_daemon_service_resource_path(kernel)
 
             shutil.copy(
                 daemon_path,

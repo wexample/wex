@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from src.helper.core import core_get_version
+from src.helper.core import core_dir_get_version
 import os
 
 current_dir = os.path.dirname(__file__) + '/'
@@ -14,7 +14,7 @@ with open('requirements.in') as f:
 
 setup(
     name='wex',
-    version=core_get_version(current_dir),
+    version=core_dir_get_version(current_dir),
     description='A command manager',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
