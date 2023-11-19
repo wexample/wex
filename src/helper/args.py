@@ -2,8 +2,9 @@ import ast
 import re
 import click
 from click.types import BoolParamType
+from click.core import Command
 from src.helper.string import to_kebab_case, to_snake_case
-from typing import Any, Callable, Dict, Iterable, List, Union, Optional
+from typing import Any, Dict, Iterable, List, Union, Optional
 
 
 def args_replace_one(
@@ -73,7 +74,7 @@ def args_split_arg_array(
 
 
 def args_convert_dict_to_long_names_dict(
-        function: Callable,
+        function: Command,
         args: Dict[str, Any]) -> Dict[str, Any]:
     short_names = {}
     for param in function.params:
@@ -99,7 +100,7 @@ def args_convert_dict_to_snake_dict(
 
 
 def args_convert_dict_to_args(
-        function: Callable,
+        function: Command,
         args: Dict[str, Any]) -> List[str]:
     """
     Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
@@ -137,9 +138,10 @@ def args_convert_dict_to_args(
 
 
 def args_convert_to_dict(
-        function: Callable,
+        function: Command,
         arg_list: List[str]) -> Dict[str, Any]:
-    args_dict = {}
+    args_dict: Dict[str, str | bool] = {}
+
     param_dict = {
         opt.lstrip('-'): param
         for param in function.params if isinstance(param, click.Option)
