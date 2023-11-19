@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Dict, Any, List
 
 from src.helper.array import array_replace_value
-from src.helper.routing import is_allowed_route, get_route_info, get_route_name
+from src.helper.routing import routing_is_allowed_route, routing_get_route_info, routing_get_route_name
 from logging.handlers import RotatingFileHandler
 import traceback
 import logging
@@ -46,11 +46,11 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
             output = {}
 
             status = WEBHOOK_STATUS_STARTING
-            if not is_allowed_route(self.path, self.routes):
+            if not routing_is_allowed_route(self.path, self.routes):
                 error = 'NOT_FOUND'
                 error_code = 404
             else:
-                route_name = get_route_name(self.path, self.routes)
+                route_name = routing_get_route_name(self.path, self.routes)
                 route = self.routes[route_name]
 
                 command = self.routes[route_name]['command']
@@ -117,7 +117,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
             output['task_id'] = self.task_id
             output['path'] = self.path
-            output['info'] = get_route_info(self.path, self.routes)
+            output['info'] = routing_get_route_info(self.path, self.routes)
 
         except Exception as e:
             # Log the exception with traceback

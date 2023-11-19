@@ -1,6 +1,6 @@
 import os
 
-from src.helper.registry import get_all_commands
+from src.helper.registry import registry_get_all_commands
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import to_snake_case
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
@@ -90,21 +90,21 @@ class AddonCommandResolver(AbstractCommandResolver):
                 # User typed "core:", we add a second ":"
                 return ':'
         elif cursor == 2:
-            from src.helper.registry import get_all_commands, remove_addons
+            from src.helper.registry import registry_get_all_commands, registry_remove_addons
             addon = search_split[0]
 
             # Get all matching commands
-            all_commands = [command for command in get_all_commands(self.kernel) if command.startswith(
+            all_commands = [command for command in registry_get_all_commands(self.kernel) if command.startswith(
                 addon + COMMAND_SEPARATOR_ADDON + search_split[2]
             )]
 
-            suggestion = ' '.join(remove_addons(all_commands))
+            suggestion = ' '.join(registry_remove_addons(all_commands))
 
             return self.suggest_autocomplete_if_single(suggestion)
 
             # Complete arguments.
         elif cursor >= 3:
-            from src.helper.registry import get_all_commands
+            from src.helper.registry import registry_get_all_commands
 
             # Command validity is checked inside
             return self.suggest_arguments(
@@ -115,7 +115,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return None
 
     def suggest_autocomplete_if_single(self, search_string):
-        all_commands = get_all_commands(self.kernel)
+        all_commands = registry_get_all_commands(self.kernel)
 
         all_commands = [
             name for name in all_commands if name.startswith(search_string)

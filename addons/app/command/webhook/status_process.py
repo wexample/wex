@@ -1,7 +1,7 @@
 import json
 
 from src.core.response.DictResponse import DictResponse
-from src.helper.routing import get_route_info, is_allowed_route
+from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 from src.decorator.command import command
 from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
@@ -13,11 +13,11 @@ from addons.app.decorator.option_webhook_listener import option_webhook_listener
 def app__webhook__status_process(kernel: Kernel, path: str):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
-    if not is_allowed_route(path, WEBHOOK_LISTENER_ROUTES_MAP):
+    if not routing_is_allowed_route(path, WEBHOOK_LISTENER_ROUTES_MAP):
         return None
 
     output = {}
-    route_info = get_route_info(path, WEBHOOK_LISTENER_ROUTES_MAP)
+    route_info = routing_get_route_info(path, WEBHOOK_LISTENER_ROUTES_MAP)
     task_id = route_info['match'][0]
     log_content = kernel.logger.load_logs(task_id)
 

@@ -4,7 +4,7 @@ import yaml
 from yaml import SafeLoader
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 from addons.app.command.env.get import app__env__get
-from src.helper.registry import resolve_service_inheritance
+from src.helper.registry import registry_resolve_service_inheritance
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.option import option
@@ -103,6 +103,6 @@ def _core__registry__build__services(kernel, test_commands: bool = False):
 
     # Resolve inheritance
     for service_name, service_data in services_dict.items():
-        resolve_service_inheritance(service_data, services_dict)
+        registry_resolve_service_inheritance(service_data, services_dict)
 
     return services_dict

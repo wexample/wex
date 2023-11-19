@@ -6,7 +6,7 @@ from urllib.parse import urlparse, parse_qs
 ALLOWED_QUERY_CHARS = re.compile(r'^[a-zA-Z0-9_\-=&]+$')
 
 
-def get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
+def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
     parsed_url = urlparse(url)
     path = parsed_url.path
 
@@ -16,8 +16,8 @@ def get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
     return None
 
 
-def get_route_info(url: str, routes: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    route_name = get_route_name(url, routes)
+def routing_get_route_info(url: str, routes: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    route_name = routing_get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
         path = parsed_url.path
@@ -34,8 +34,8 @@ def get_route_info(url: str, routes: Dict[str, Any]) -> Optional[Dict[str, Any]]
     return None
 
 
-def is_allowed_route(url: str, routes: Dict[str, Any]) -> bool:
-    route_info = get_route_info(url, routes)
+def routing_is_allowed_route(url: str, routes: Dict[str, Any]) -> bool:
+    route_info = routing_get_route_info(url, routes)
     if route_info:
         # Validate the query string to contain only allowed characters
         for key, values in route_info['query'].items():

@@ -77,10 +77,10 @@ class AbstractCommandResolver:
         pass
 
     def get_commands_registry(self) -> Dict[str, Dict[str, Any]]:
-        from src.helper.registry import get_all_commands_from_registry_part
+        from src.helper.registry import registry_get_all_commands_from_registry_part
 
         if self.get_type() in self.kernel.registry:
-            return get_all_commands_from_registry_part(
+            return registry_get_all_commands_from_registry_part(
                 self.kernel.registry[self.get_type()])
         return {}
 

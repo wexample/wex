@@ -11,7 +11,7 @@ from addons.core.command.test.create import core__test__create
 from src.helper.system import get_user_or_sudo_user
 from src.core.FatalError import FatalError
 from src.const.globals import COMMAND_TYPE_ADDON, OWNER_USERNAME, CORE_COMMAND_NAME, ROOT_USERNAME
-from src.helper.registry import get_all_commands_from_registry_part
+from src.helper.registry import registry_get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
 from src.helper.args import args_convert_to_dict, args_convert_dict_to_args
 
@@ -147,7 +147,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_tests_coverage(self):
-        for command, command_data in get_all_commands_from_registry_part(self.kernel.registry['addon']).items():
+        for command, command_data in registry_get_all_commands_from_registry_part(self.kernel.registry['addon']).items():
             test_file_path = command_data['test']
 
             # Display nice shortcut to create missing test
