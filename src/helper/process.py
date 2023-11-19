@@ -8,7 +8,7 @@ from typing import List, Optional
 
 def process_post_exec(
         kernel: Kernel,
-        command: List[str]) -> None:
+        command: List[str] | str) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
         command = ['cd', os.getcwd(), '&&'] + command
