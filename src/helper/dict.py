@@ -1,7 +1,8 @@
 import copy
+from typing import Any, Dict
 
 
-def merge_dicts(dict1, dict2):
+def merge_dicts(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     """
     Recursively merge two dictionaries.
     If a key exists in both dictionaries, the values are merged recursively.
@@ -15,7 +16,7 @@ def merge_dicts(dict1, dict2):
     return result
 
 
-def get_dict_item_by_path(data: dict, key: str, default=None):
+def get_dict_item_by_path(data: Dict[str, Any], key: str, default: Any = None) -> Any:
     # Split the key into its individual parts
     keys = key.split('.')
 
@@ -29,5 +30,5 @@ def get_dict_item_by_path(data: dict, key: str, default=None):
     return data
 
 
-def dict_sort_values(dict: dict):
+def dict_sort_values(dict: Dict[str, Any]) -> Dict[str, Any]:
     return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
