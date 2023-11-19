@@ -30,5 +30,5 @@ def dict_get_item_by_path(data: Dict[str, Any], key: str, default: Any = None) -
     return data
 
 
-def dict_sort_values(dict: Dict[str, Any]) -> Dict[str, Any]:
-    return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
+def dict_sort_values(dictionary: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1])}

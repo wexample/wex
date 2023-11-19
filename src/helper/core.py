@@ -6,8 +6,8 @@ from src.const.globals import FILE_VERSION
 from src.core import Kernel
 
 
-def core_dir_get_version(dir: str) -> str:
-    with open(f'{dir}{FILE_VERSION}', 'r') as file:
+def core_dir_get_version(core_dir: str) -> str:
+    with open(f'{core_dir}{FILE_VERSION}', 'r') as file:
         return file.read().strip()
 
 

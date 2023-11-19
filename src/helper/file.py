@@ -35,7 +35,7 @@ def file_set_owner(file_path: str, username: Optional[str] = None, group: Option
 
     # Get UID and GID of the user
     uid = pwd.getpwnam(username).pw_uid
-    gid = grp.getgrnam(group).gr_gid if group else pwd.getpwnam(username).pw_gid
+    gid = get_gid_from_group_name(group) if group else pwd.getpwnam(username).pw_gid
 
     os.chown(file_path, uid, gid)
 
@@ -151,9 +151,9 @@ def file_create_parent_and_touch(
     return None
 
 
-def file_write_dict_to_config(dict: Dict[str, str], dest: str) -> None:
+def file_write_dict_to_config(dictionary: Dict[str, str], target_path: str) -> None:
     output_lines = []
-    for key, value in dict.items():
+    for key, value in dictionary.items():
         # If the key starts with '#', write it as-is without the value
         if key.startswith("#"):
             output_lines.append(key)
@@ -162,7 +162,7 @@ def file_write_dict_to_config(dict: Dict[str, str], dest: str) -> None:
 
     output = os.linesep.join(output_lines)
 
-    with open(dest, 'w') as f:
+    with open(target_path, 'w') as f:
         f.write(output)
 
 

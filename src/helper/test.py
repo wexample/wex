@@ -7,7 +7,7 @@ from src.helper.string import string_to_snake_case, string_to_pascal_case
 from src.helper.file import file_create_from_template
 
 
-def file_path_to_test_class_name(kernel, file_path: str) -> str:
+def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
     """
     Convert a file path to a test class name.
 
@@ -27,7 +27,7 @@ def file_path_to_test_class_name(kernel, file_path: str) -> str:
     return f'Test{class_name}'
 
 
-def file_path_to_test_method(kernel, file_path: str) -> str:
+def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
     """
     Convert a file path to a test method name.
 
@@ -51,6 +51,9 @@ def create_test_from_command(kernel: Kernel, command: str, force: bool = False) 
         request=request,
         extension=COMMAND_EXTENSION_PYTHON,
         subdir='tests')
+
+    if not isinstance(test_path, str):
+        return None
 
     # File exists
     if os.path.exists(test_path) and not force:

@@ -141,5 +141,5 @@ def is_sudo(username: str) -> bool:
                     return True
 
         return False
-    except Exception as e:
+    except Exception:
         return False
