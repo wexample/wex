@@ -4,7 +4,7 @@ import yaml
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.string import to_snake_case
-from src.helper.dict import merge_dicts, get_dict_item_by_path
+from src.helper.dict import dict_merge
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import merge_new_lines, create_directories_and_file
 from src.helper.service import get_service_dir
@@ -109,7 +109,7 @@ def app__service__install(
                 service)
 
     if 'global' in service_config:
-        config_global = merge_dicts(
+        config_global = dict_merge(
             manager.get_config('global'),
             service_config['global']
         )
@@ -195,7 +195,7 @@ def app_service_install_merge_dir(
 
                     extra_compose['services'] = extra_services
 
-                merged_data = merge_dicts(app_compose, extra_compose)
+                merged_data = dict_merge(app_compose, extra_compose)
 
                 with open(dest_file, 'w') as f:
                     yaml.dump(merged_data, f)

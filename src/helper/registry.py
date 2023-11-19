@@ -1,5 +1,5 @@
 from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
-from src.helper.dict import merge_dicts
+from src.helper.dict import dict_merge
 
 
 def get_all_commands(kernel) -> dict:
@@ -52,7 +52,7 @@ def resolve_service_inheritance(service, services_dict):
         if parent_name in services_dict:
             parent_service = services_dict[parent_name]
             resolve_service_inheritance(parent_service, services_dict)
-            service['config'] = merge_dicts(parent_service['config'], service['config'])
+            service['config'] = dict_merge(parent_service['config'], service['config'])
     return service
 
 

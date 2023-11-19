@@ -3,7 +3,7 @@ import grp
 import pwd
 
 from src.helper.system import is_sudo
-from src.helper.dict import merge_dicts
+from src.helper.dict import dict_merge
 
 
 def user_has_docker_permission(username: str) -> bool:
@@ -28,7 +28,7 @@ def merge_docker_compose_files(src, dest):
         data2 = yaml.safe_load(f) or {}
 
     # Recursively merge the two objects
-    merged_data = merge_dicts(data1, data2)
+    merged_data = dict_merge(data1, data2)
 
     # Write the merged data to a new file
     with open(dest, 'w') as f:

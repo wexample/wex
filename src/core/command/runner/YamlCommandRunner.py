@@ -4,7 +4,7 @@ import click
 import builtins
 
 from click import Command
-from src.helper.dict import get_dict_item_by_path
+from src.helper.dict import dict_get_item_by_path
 from src.helper.yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
@@ -94,7 +94,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             _click_function_handler.__closure__
         )
 
-        decorator_name = get_dict_item_by_path(self.content, 'command.decorator')
+        decorator_name = dict_get_item_by_path(self.content, 'command.decorator')
         if decorator_name:
             decorator = self.kernel.decorators['command'][decorator_name]
         else:
@@ -105,11 +105,11 @@ class YamlCommandRunner(AbstractCommandRunner):
                 f'Missing help section in command {internal_command}',
                 trace=False)
 
-        decorator_options = get_dict_item_by_path(self.content, 'command.options', {})
+        decorator_options = dict_get_item_by_path(self.content, 'command.options', {})
         click_function = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
 
         # Apply extra decorators
-        properties = get_dict_item_by_path(
+        properties = dict_get_item_by_path(
             data=self.content,
             key='properties',
             default=[]) or []

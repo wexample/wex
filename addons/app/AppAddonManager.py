@@ -18,7 +18,7 @@ from addons.app.command.location.find import app__location__find
 from src.helper.file import write_dict_to_config, set_dict_item_by_path, env_to_dict, remove_dict_item_by_path
 from src.helper.yaml import yaml_load_or_default
 from src.helper.core import core_kernel_get_version
-from src.helper.dict import get_dict_item_by_path
+from src.helper.dict import dict_get_item_by_path
 
 
 class AppAddonManager(AddonManager):
@@ -317,7 +317,7 @@ class AppAddonManager(AddonManager):
         self.save_runtime_config()
 
     def get_config(self, key: str, default: any = None, required: bool = False) -> any:
-        value = get_dict_item_by_path(self.config, key, default)
+        value = dict_get_item_by_path(self.config, key, default)
 
         if required and value is None:
             self.kernel.io.error(
@@ -340,7 +340,7 @@ class AppAddonManager(AddonManager):
         )
 
     def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
-        return get_dict_item_by_path(self.runtime_config, key, default)
+        return dict_get_item_by_path(self.runtime_config, key, default)
 
     def ignore_app_dir(self, request) -> bool:
         # Only specified commands will expect app location.
@@ -608,7 +608,7 @@ class AppAddonManager(AddonManager):
         # Search into local config.
         return (self.get_config(f'service.{service}.{key}')
                 # Search into the service config
-                or get_dict_item_by_path(service_load_config(self.kernel, service), key, default))
+                or dict_get_item_by_path(service_load_config(self.kernel, service), key, default))
 
     def get_main_service(self) -> str:
         return self.get_config(

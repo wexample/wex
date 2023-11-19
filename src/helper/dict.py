@@ -2,7 +2,7 @@ import copy
 from typing import Any, Dict
 
 
-def merge_dicts(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
+def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     """
     Recursively merge two dictionaries.
     If a key exists in both dictionaries, the values are merged recursively.
@@ -10,13 +10,13 @@ def merge_dicts(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     result = copy.deepcopy(dict1)
     for key, value in dict2.items():
         if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-            result[key] = merge_dicts(result[key], value)
+            result[key] = dict_merge(result[key], value)
         else:
             result[key] = copy.deepcopy(value)
     return result
 
 
-def get_dict_item_by_path(data: Dict[str, Any], key: str, default: Any = None) -> Any:
+def dict_get_item_by_path(data: Dict[str, Any], key: str, default: Any = None) -> Any:
     # Split the key into its individual parts
     keys = key.split('.')
 
