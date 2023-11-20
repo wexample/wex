@@ -71,7 +71,7 @@ class Kernel:
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
         tmp_path = os.path.join(root_path, 'tmp') + os.sep
 
-        self.path: dict = {
+        self.path: Dict[str, str] = {
             'call': os.getcwd() + os.sep,
             'entrypoint': entrypoint_path,
             'root': root_path,
@@ -83,7 +83,7 @@ class Kernel:
         }
 
         # Initialize addons config
-        self.addons = {}
+        self.addons: Dict[str, AddonManager] = {}
         from addons.app.AppAddonManager import AppAddonManager
         definitions = {
             'app': AppAddonManager
@@ -91,7 +91,7 @@ class Kernel:
 
         for name in file_list_subdirectories(self.get_path('addons')):
             definition = definitions.get(name, AddonManager)
-            self.addons[name]: AddonManager = definition(self, name=name)
+            self.addons[name] = definition(self, name=name)
 
         self.store_task_id()
         self.handle_core_args()
