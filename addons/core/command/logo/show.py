@@ -3,14 +3,17 @@ import os
 from src.helper.string import string_truncate, string_multiline_center
 from src.helper.core import core_kernel_get_version
 from src.const.globals import COLOR_RED, COLOR_RESET, COLOR_LIGHT_GRAY
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.alias import alias
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @alias('logo')
 @command(help="Show maintainers logo")
-def core__logo__show(kernel: Kernel) -> str:
+def core__logo__show(kernel: 'Kernel') -> str:
     width = 54
     padding = 2
 

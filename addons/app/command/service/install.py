@@ -9,9 +9,12 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
 from src.helper.service import service_get_dir
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Install given service in app configuration")
@@ -28,7 +31,7 @@ from addons.app.decorator.app_command import app_command
 @option('--ignore-dependencies', '-id', type=bool, required=False, is_flag=True, default=False,
         help='Install dependencies')
 def app__service__install(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         service: str,
         install_config: bool = True,

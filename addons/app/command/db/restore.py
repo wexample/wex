@@ -8,13 +8,16 @@ from src.helper.file import file_delete_file_or_dir
 from src.helper.prompt import prompt_choice
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.decorator.option import option
-from src.core import Kernel
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Restore a database dump", should_run=True)
 @option('--file-path', '-f', type=str, required=False, help="Force file path")
-def app__db__restore(kernel: Kernel, app_dir: str, file_path: str | None = None):
+def app__db__restore(kernel: 'Kernel', app_dir: str, file_path: str | None = None):
     manager: AppAddonManager = kernel.addons['app']
 
     # There is a probable mismatch between container / service names

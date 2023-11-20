@@ -5,8 +5,11 @@ from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHA
 from src.helper.file import file_create_from_template
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core.Kernel import Kernel
 from src.decorator.as_sudo import as_sudo
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
@@ -18,7 +21,7 @@ from src.decorator.as_sudo import as_sudo
 @option('--extension', '-e', type=str, required=False, default=COMMAND_EXTENSION_PYTHON,
         help='Script file extension and resulting format')
 def core__command__create(
-        kernel: Kernel,
+        kernel: 'Kernel',
         command: str,
         force: bool = False,
         extension: str = COMMAND_EXTENSION_PYTHON) -> {}:

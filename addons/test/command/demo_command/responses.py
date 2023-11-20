@@ -1,7 +1,11 @@
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.decorator.test_command import test_command
 from src.decorator.option import option
-from src.core import Kernel
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 RESPONSES_DEFAULT_VALUES = {
     'string': 'STRING',
@@ -9,11 +13,10 @@ RESPONSES_DEFAULT_VALUES = {
     'boolean': 'BOOLEAN',
 }
 
-
 @test_command()
 @option('--type', '-t', required=True,
         help="Response type to test")
-def test__demo_command__responses(kernel: Kernel, type: str):
+def test__demo_command__responses(kernel: 'Kernel', type: str):
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
     elif type == 'function':

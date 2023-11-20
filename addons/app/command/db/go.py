@@ -1,13 +1,16 @@
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.core import Kernel
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Enter into database management CLI")
 def app__db__go(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     # There is a probable mismatch between container / service names

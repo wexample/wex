@@ -16,8 +16,11 @@ from addons.app.helper.app import app_create_env
 from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Create new app and services configuration", dir_required=False)
@@ -34,7 +37,7 @@ from addons.app.decorator.app_command import app_command
 @option('--env', '-e', type=str, required=False,
         help="App environment")
 def app__app__init(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         name: str = None,
         services: Union[str, Iterable] = None,

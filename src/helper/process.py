@@ -5,14 +5,17 @@ import signal
 import psutil
 
 from src.helper.command import execute_command
-from src.core import Kernel
 from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from typing import List, Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 def process_post_exec(
-        kernel: Kernel,
+        kernel: 'Kernel',
         command: List[str] | str) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
@@ -28,7 +31,7 @@ def process_post_exec(
 
 
 def process_post_exec_function(
-        kernel: Kernel,
+        kernel: 'Kernel',
         internal_command: str,
         args: Optional[List[str]] = None,
         is_async: bool = False) -> None:
@@ -48,7 +51,7 @@ def process_post_exec_function(
     )
 
 
-def process_kill_by_command(kernel: Kernel, command: str) -> None:
+def process_kill_by_command(kernel: 'Kernel', command: str) -> None:
     success, pids = execute_command(
         kernel,
         [

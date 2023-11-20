@@ -2,12 +2,15 @@ from addons.app.helper.docker import docker_build_long_container_name
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string, command_escape
 from src.decorator.option import option
-from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Exec a command into app container", should_run=True)
@@ -17,7 +20,7 @@ from addons.app.decorator.app_command import app_command
 @option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
 @option('--interactive', '-tty', type=bool, is_flag=True, required=False, help="Interactive shell")
 def app__app__exec(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         command: str,
         container_name: str | None = None,

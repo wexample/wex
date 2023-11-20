@@ -2,9 +2,13 @@ from addons.core.command.check.hi import core__check__hi
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.test_command import test_command
-from src.core import Kernel
 from src.decorator.option import option
 from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 TEST_DEMO_COMMAND_TWO_RESULT_FIRST = '..TWO:simple-text'
 TEST_DEMO_COMMAND_TWO_RESULT_SHELL = '..TWO:shell-response'
@@ -12,7 +16,7 @@ TEST_DEMO_COMMAND_TWO_RESULT_SHELL = '..TWO:shell-response'
 
 @test_command()
 @option('--abort', '-a', is_flag=True, required=False, help="Ask to abort")
-def test__demo_command__response_collection_two(kernel: Kernel, abort: bool = False):
+def test__demo_command__response_collection_two(kernel: 'Kernel', abort: bool = False):
     def _test__demo_command__response_collection_two__simple_function(previous: None):
         return f'..TWO:simple-function-previous-value:should-be-string={previous}'
 

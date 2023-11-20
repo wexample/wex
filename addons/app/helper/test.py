@@ -6,12 +6,15 @@ from typing import Optional, List
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
-from src.core import Kernel
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 DEFAULT_APP_TEST_NAME: str = 'test-app'
 
 
-def test_get_app_dir(kernel: Kernel, name: str) -> str:
+def test_get_app_dir(kernel: 'Kernel', name: str) -> str:
     return f"{kernel.get_or_create_path('tmp')}tests/{name}/"
 
 
@@ -39,7 +42,7 @@ def test_build_app_name(
 
 
 def test_create_app(
-        kernel: Kernel,
+        kernel: 'Kernel',
         name: str,
         services: Optional[List[str]] = None,
         force_restart: bool = False) -> str:

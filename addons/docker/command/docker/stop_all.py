@@ -1,11 +1,14 @@
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Stop all running docker feature : containers, networks, volumes")
-def docker__docker__stop_all(kernel: Kernel):
+def docker__docker__stop_all(kernel: 'Kernel'):
     return QueuedCollectionResponse(kernel, [
         InteractiveShellCommandResponse(kernel, [
             'docker',

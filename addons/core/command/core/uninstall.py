@@ -7,13 +7,16 @@ from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import CORE_BIN_FILE_ROOT, CORE_BIN_FILE_LOCAL
 from src.decorator.as_sudo import as_sudo
 from src.helper.file import file_remove_file_if_exists
-from src.core.Kernel import Kernel
 from src.decorator.command import command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @command(help="Uninstall core")
-def core__core__uninstall(kernel: Kernel):
+def core__core__uninstall(kernel: 'Kernel'):
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)
     __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)

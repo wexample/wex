@@ -5,13 +5,16 @@ from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.command.service.install import app__service__install
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
-from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_placeholders, \
     _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def migration_5_0_0(kernel: Kernel, manager: AppAddonManager):
+def migration_5_0_0(kernel: 'Kernel', manager: AppAddonManager):
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
     # Convert main config file.
     old_config_path = f'{env_dir}config'
@@ -199,7 +202,7 @@ def migration_5_0_0_replace_docker_services_references(content, services_names_c
                     services_names_changes)
 
 
-def is_version_5_0_0(kernel: Kernel, path: str):
+def is_version_5_0_0(kernel: 'Kernel', path: str):
     # Not implemented yet.
     return None
 

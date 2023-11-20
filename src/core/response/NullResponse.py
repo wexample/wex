@@ -2,7 +2,7 @@ from abc import ABC
 
 from src.core import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 
 
 class NullResponse(AbstractResponse, ABC):

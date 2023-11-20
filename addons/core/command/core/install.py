@@ -10,13 +10,16 @@ from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_p
 from src.helper.file import file_remove_file_if_exists, file_create_from_template
 from src.const.globals import CORE_BIN_FILE_ROOT, PYTHON_MIN_VERSION, CORE_BIN_FILE_LOCAL
 from src.decorator.as_sudo import as_sudo
-from src.core.Kernel import Kernel
 from src.decorator.command import command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @command(help="Install core")
-def core__core__install(kernel: Kernel):
+def core__core__install(kernel: 'Kernel'):
     __core__core__check_requirements(kernel)
     __core__core__install_env(kernel)
     __core__core__install_terminal(kernel)

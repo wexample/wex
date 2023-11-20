@@ -4,14 +4,17 @@ from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
 from src.helper.user import get_user_or_sudo_user, set_owner_recursively, set_permissions_recursively, user_exists
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
 from addons.app.command.env.get import app__env__get
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @app_command(help="Set app files permissions")
-def app__app__perms(kernel: Kernel, app_dir: str):
+def app__app__perms(kernel: 'Kernel', app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     user = manager.get_config('permissions.user', None)
 

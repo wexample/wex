@@ -3,9 +3,12 @@ from typing import Optional
 import git
 from addons.default.command.version.increment import default__version__increment
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Build a new version of current app")
@@ -13,7 +16,7 @@ from addons.app.decorator.app_command import app_command
         help="New version number, auto generated if missing")
 @option('--commit', '-ok', required=False, is_flag=True, default=False,
         help="New version changes has been validated, ask to commit changes")
-def app__version__build(kernel: Kernel, version=None, commit: bool = False, app_dir: Optional[str] = False):
+def app__version__build(kernel: 'Kernel', version=None, commit: bool = False, app_dir: Optional[str] = False):
     manager: AppAddonManager = kernel.addons['app']
 
     if not commit:

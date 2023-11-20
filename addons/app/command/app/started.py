@@ -2,9 +2,12 @@ from addons.app.command.container.list import app__container__list
 from addons.app.AppAddonManager import AppAddonManager
 from src.helper.command import execute_command
 
-from src.core.Kernel import Kernel
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 # Return true if config is set to started
 APP_STARTED_CHECK_MODE_CONFIG = 'config'
@@ -17,7 +20,7 @@ APP_STARTED_CHECK_MODE_ANY_CONTAINER = 'any-container'
 @app_command(help="Return true if app is started")
 @option('--mode', '-m', type=str, required=False, default=APP_STARTED_CHECK_MODE_ANY_CONTAINER,
         help="Define how to define if app is started or not")
-def app__app__started(kernel: Kernel, app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER):
+def app__app__started(kernel: 'Kernel', app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER):
     if not kernel.addons['app'].get_runtime_config('started', False):
         return False
 

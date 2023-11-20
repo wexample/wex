@@ -1,11 +1,14 @@
 
 from addons.app.AppAddonManager import AppAddonManager
-from src.core import Kernel
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Return list of containers for given app")
-def app__container__list(kernel: Kernel, app_dir: str):
+def app__container__list(kernel: 'Kernel', app_dir: str):
     manager: AppAddonManager = kernel.addons['app']
     container_names = []
 

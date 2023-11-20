@@ -1,8 +1,11 @@
 import os
 
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Remove a line from a file")
@@ -10,7 +13,7 @@ from src.decorator.option import option
         help="File to work on")
 @option('--line', '-l', type=str, required=True,
         help="Exact line, ending an trailing spaces will be ignored")
-def default__file__remove_line(kernel: Kernel, file_path: str, line: str) -> None:
+def default__file__remove_line(kernel: 'Kernel', file_path: str, line: str) -> None:
     if not os.path.isfile(file_path):
         kernel.io.log("File does not exist.")
         return

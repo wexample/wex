@@ -1,5 +1,4 @@
 from src.decorator.command import command
-from src.core import Kernel
 from addons.test.command.return_type.function import _test__return_type__function
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.DictResponse import DictResponse
@@ -11,10 +10,14 @@ from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveS
 from src.core.response.NullResponse import NullResponse
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.core.response.TableResponse import TableResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Return a string")
-def test__return_type__response_collection(kernel: Kernel):
+def test__return_type__response_collection(kernel: 'Kernel'):
     return ResponseCollectionResponse(kernel, [
         DefaultResponse(kernel, 'DEFAULT'),
         DictResponse(kernel, {'lorem': 'ipsum'}),

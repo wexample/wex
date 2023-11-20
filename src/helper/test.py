@@ -2,12 +2,15 @@ import os
 import re
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON
-from src.core import Kernel
 from src.helper.string import string_to_snake_case, string_to_pascal_case
 from src.helper.file import file_create_from_template
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
+def file_path_to_test_class_name(kernel: 'Kernel', file_path: str) -> str:
     """
     Convert a file path to a test class name.
 
@@ -27,7 +30,7 @@ def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
     return f'Test{class_name}'
 
 
-def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
+def file_path_to_test_method(kernel: 'Kernel', file_path: str) -> str:
     """
     Convert a file path to a test method name.
 
@@ -40,7 +43,7 @@ def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
     return test_method
 
 
-def create_test_from_command(kernel: Kernel, command: str, force: bool = False) -> None | str:
+def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False) -> None | str:
     request = kernel.create_command_request(command)
 
     # Command not found

@@ -2,14 +2,17 @@ from src.helper.data_json import load_json_if_valid
 from src.decorator.alias import alias
 from src.decorator.no_log import no_log
 from src.decorator.command import command
-from src.core import Kernel
 from src.core.response.TableResponse import TableResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @alias('logs')
 @no_log()
 @command(help="Show a summary of log files")
-def core__logs__show(kernel: Kernel, max: int = 10) -> str:
+def core__logs__show(kernel: 'Kernel', max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()
     last_files = files[-max:]

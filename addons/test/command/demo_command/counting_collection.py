@@ -1,13 +1,16 @@
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Count with a queue to check arguments passing", command_type=COMMAND_TYPE_ADDON)
 @option('--initial', '-i', type=int, required=True, help="Argument")
-def test__demo_command__counting_collection(kernel: Kernel, initial: int):
+def test__demo_command__counting_collection(kernel: 'Kernel', initial: int):
     def callback(previous):
         kernel.io.log('INITIAL ' + str(initial))
         kernel.io.log('PREVIOUS ' + str(previous))

@@ -1,15 +1,18 @@
 from typing import List
 
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Resolve dependencies of a service")
 @option('--service', '-s', required=True,
         help="Find all service dependencies")
-def core__service__resolve(kernel: Kernel, service) -> List[str]:
+def core__service__resolve(kernel: 'Kernel', service) -> List[str]:
     services = args_split_arg_array(service)
     resolved_services = set()
 

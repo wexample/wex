@@ -7,10 +7,13 @@ from addons.docker.helper.docker import user_has_docker_permission
 from src.helper.command import execute_command
 from src.helper.user import get_user_or_sudo_user
 from src.helper.process import process_post_exec
-from src.core.Kernel import Kernel
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def docker_get_app_compose_files(kernel: Kernel, app_dir: str) -> List[str]:
+def docker_get_app_compose_files(kernel: 'Kernel', app_dir: str) -> List[str]:
     from addons.app.AppAddonManager import AppAddonManager
     from addons.app.command.service.used import app__service__used
 
@@ -43,7 +46,7 @@ def docker_get_app_compose_files(kernel: Kernel, app_dir: str) -> List[str]:
 
 
 def docker_exec_app_compose_command(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         compose_files: List[str],
         docker_command: List[str] | str,
@@ -87,7 +90,7 @@ def docker_exec_app_compose_command(
 
 
 def docker_exec_app_compose(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         compose_files: List[str],
         docker_command: str,
@@ -120,6 +123,6 @@ def docker_exec_app_compose(
     return None
 
 
-def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
+def docker_build_long_container_name(kernel: 'Kernel', name: str) -> str:
     manager = kernel.addons['app']
     return f'{manager.get_runtime_config("name")}_{name}'

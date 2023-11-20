@@ -10,7 +10,6 @@ from addons.app.command.webhook.status_process import app__webhook__status_proce
 from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON, \
     WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_JSON
-from src.core.Kernel import Kernel
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
@@ -20,6 +19,10 @@ from src.helper.file import file_remove_file_if_exists
 from src.helper.system import system_is_port_open, system_service_exec, \
     system_service_daemon_reload
 from src.helper.process import process_kill_by_command, process_kill_by_port
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
     'exec': {
@@ -51,7 +54,7 @@ WEBHOOK_LISTENER_ROUTES_MAP = {
 @option('--force', '-f', type=bool, required=False, default=False, is_flag=True,
         help="Kill existing process if already running")
 def app__webhook__listen(
-        kernel: Kernel,
+        kernel: 'Kernel',
         port: int = WEBHOOK_LISTEN_PORT_DEFAULT,
         dry_run: bool = False,
         asynchronous: bool = False,

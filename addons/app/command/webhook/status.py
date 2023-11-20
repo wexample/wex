@@ -1,18 +1,21 @@
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.core.response.DictResponse import DictResponse
 from src.core.response.TableResponse import TableResponse
-from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_NONE, \
     KERNEL_RENDER_MODE_TERMINAL
 from addons.system.command.process.by_port import system__process__by_port
 from src.decorator.command import command
 from src.decorator.as_sudo import as_sudo
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @command(help="Give information about webhook listener status", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(port=True)
-def app__webhook__status(kernel: Kernel, port: int = WEBHOOK_LISTEN_PORT_DEFAULT):
+def app__webhook__status(kernel: 'Kernel', port: int = WEBHOOK_LISTEN_PORT_DEFAULT):
     response = kernel.run_function(
         system__process__by_port,
         {

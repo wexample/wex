@@ -5,13 +5,16 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
 from src.const.globals import SYSTEM_HOSTS_PATH, CORE_COMMAND_NAME
 from src.decorator.as_sudo import as_sudo
-from src.core.Kernel import Kernel
 from src.decorator.command import command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @command(help="Update local /etc/hosts file")
-def app__hosts__update(kernel: Kernel):
+def app__hosts__update(kernel: 'Kernel'):
     new_block_content = []
     ip = kernel.run_function(
         docker__docker__ip

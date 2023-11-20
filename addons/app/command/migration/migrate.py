@@ -9,14 +9,17 @@ from addons.app.helper.app import app_create_manager
 from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
-from src.core import Kernel
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Description", dir_required=False)
 @option('--from-version', '-f', type=str, required=False, help="Force initial version number")
 @option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
-def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_version: str = None, yes: bool = False):
+def app__migration__migrate(kernel: 'Kernel', app_dir: str | None = None, from_version: str = None, yes: bool = False):
     manager = app_create_manager(kernel, app_dir)
     app_dir = manager.app_dir
 

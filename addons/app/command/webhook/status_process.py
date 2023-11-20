@@ -3,14 +3,17 @@ import json
 from src.core.response.DictResponse import DictResponse
 from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 from src.decorator.command import command
-from src.core import Kernel
 from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Return process info based on task id", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(path=True)
-def app__webhook__status_process(kernel: Kernel, path: str):
+def app__webhook__status_process(kernel: 'Kernel', path: str):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     if not routing_is_allowed_route(path, WEBHOOK_LISTENER_ROUTES_MAP):

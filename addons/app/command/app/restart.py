@@ -1,12 +1,15 @@
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
-from src.core.Kernel import Kernel
 from addons.app.decorator.app_command import app_command
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Restarts app")
-def app__app__restart(kernel: Kernel, app_dir: str):
+def app__app__restart(kernel: 'Kernel', app_dir: str):
     def _app__app__restart__stop(previous=None):
         return kernel.run_function(
             app__app__stop,

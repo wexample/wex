@@ -1,16 +1,19 @@
-import os
 import glob
+import os
+from typing import TYPE_CHECKING
 
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
+from addons.app.helper.app import app_create_env
 from addons.default.helper.git_utils import git_move_or_file_move, git_get_or_create_repo
 from addons.default.helper.migration import migration_delete_dir_if_empty
-from addons.app.helper.app import app_create_env
 from src.helper.prompt import prompt_progress_steps
-from src.core import Kernel
-from addons.app.AppAddonManager import AppAddonManager
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
+def migration_4_0_0(kernel: 'Kernel', manager: AppAddonManager):
     repo = git_get_or_create_repo(manager.app_dir)
     projects_dirs = ['project', 'wordpress']
 
@@ -130,7 +133,7 @@ def _migration_4_0_0_replace_docker_mapping(manager: AppAddonManager, replacemen
         )
 
 
-def is_version_4_0_0(kernel: Kernel, path: str):
+def is_version_4_0_0(kernel: 'Kernel', path: str):
     if os.path.isdir(path + '.wex'):
         if os.path.isfile(path + '.wex/config'):
             return True

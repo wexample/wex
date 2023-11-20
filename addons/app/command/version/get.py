@@ -1,12 +1,15 @@
 from addons.app.helper.app import app_create_manager
 from src.const.globals import CORE_COMMAND_NAME
-from src.core import Kernel
 from addons.default.helper.migration import migration_version_guess
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Description", dir_required=False)
-def app__version__get(kernel: Kernel, app_dir: str | None = None):
+def app__version__get(kernel: 'Kernel', app_dir: str | None = None):
     manager = app_create_manager(kernel, app_dir)
     app_dir = manager.app_dir
 

@@ -1,8 +1,11 @@
 import os
 
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Append a line to a file, only if not already exist")
@@ -10,7 +13,7 @@ from src.decorator.option import option
         help="File to work on")
 @option('--line', '-l', type=str, required=True,
         help="Line to add if not already there somewhere in the file")
-def default__file__append_once(kernel: Kernel, file: str, line: str) -> None:
+def default__file__append_once(kernel: 'Kernel', file: str, line: str) -> None:
     """
     Append a line to a file if it doesn't exist already.
     """

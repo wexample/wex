@@ -1,13 +1,15 @@
 from addons.default.command.version.parse import default__version__parse
 from addons.default.helper.version import version_join
 from src.decorator.command import command
-from src.core import Kernel
 
 from addons.default.const.default import UPGRADE_TYPE_MINOR, UPGRADE_TYPE_MAJOR, \
     UPGRADE_TYPE_INTERMEDIATE, UPGRADE_TYPE_ALPHA, UPGRADE_TYPE_BETA, UPGRADE_TYPE_DEV, UPGRADE_TYPE_RC, \
     UPGRADE_TYPE_NIGHTLY, UPGRADE_TYPE_SNAPSHOT
 from src.decorator.option import option
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 @command(help="Increment giver version number string")
 @option('--version', '-v', type=str, required=True,
@@ -19,7 +21,7 @@ from src.decorator.option import option
 @option('--build', '-b', is_flag=True, required=False, default=False,
         help="Include build number")
 def default__version__increment(
-        kernel: Kernel,
+        kernel: 'Kernel',
         version: str,
         type: str = UPGRADE_TYPE_MINOR,
         increment: int = 1,

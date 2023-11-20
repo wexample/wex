@@ -4,13 +4,16 @@ from typing import List
 
 from src.decorator.option import option
 from src.decorator.command import command
-from src.core import Kernel
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Remove old logs files")
 @option('--max-days', '-md', required=False, default=10)
 @option('--max-count', '-mc', required=False, default=100, type=int)
-def core__logs__rotate(kernel: Kernel, max_days: int | bool = 10, max_count: int | bool = 100):
+def core__logs__rotate(kernel: 'Kernel', max_days: int | bool = 10, max_count: int | bool = 100):
     """
     Rotate and clean up log files older than a specified age limit.
 

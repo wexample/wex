@@ -7,9 +7,12 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.const.globals import FILE_VERSION, FILE_README, CORE_COMMAND_NAME
 from src.helper.core import core_kernel_get_version
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Build a new version of current core, or commit new version changes")
@@ -18,7 +21,7 @@ from src.decorator.option import option
 @option('--type', '-t', type=str, required=False,
         help="Type of update")
 def core__version__build(
-        kernel: Kernel,
+        kernel: 'Kernel',
         commit: bool = False,
         type: str = UPGRADE_TYPE_MINOR) -> None:
     version = core_kernel_get_version(kernel)

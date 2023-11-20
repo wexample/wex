@@ -4,12 +4,14 @@ from src.helper.file import file_create_parent_dir
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from typing import Any, List, Union, Tuple
-from src.core import Kernel
 from subprocess import Popen
 from click.core import Command
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
-def internal_command_to_shell(kernel: Kernel, internal_command: str, args: None | list[str] = None) -> list[str]:
+def internal_command_to_shell(kernel: 'Kernel', internal_command: str, args: None | list[str] = None) -> list[str]:
     command = ([
                    'bash',
                    kernel.get_path('core.cli'),
@@ -51,7 +53,7 @@ def command_exists(shell_command: str) -> bool:
 
 
 def execute_command_tree(
-        kernel: Kernel,
+        kernel: 'Kernel',
         command_tree: List[Union[Any, str]],
         working_directory: str | None = None,
         async_mode: bool = False,
@@ -80,7 +82,7 @@ def execute_command_tree(
 
 
 def execute_command(
-        kernel: Kernel,
+        kernel: 'Kernel',
         command: List[str] | str,
         working_directory: None | str = None,
         async_mode: bool = False,

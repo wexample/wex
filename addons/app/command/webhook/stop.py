@@ -6,14 +6,17 @@ from src.const.globals import SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_
 from src.helper.system import system_service_exec, system_service_daemon_reload
 from src.helper.process import process_kill_by_command
 from src.decorator.as_sudo import as_sudo
-from src.core.Kernel import Kernel
 from src.decorator.command import command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
 @command(help="Stop webhook daemon")
 def app__webhook__stop(
-        kernel: Kernel,
+        kernel: 'Kernel',
 ):
     use_daemon = not kernel.run_function(system__system__is_docker).first()
 

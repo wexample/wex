@@ -3,9 +3,12 @@ from addons.app.command.services.exec import app__services__exec
 from src.helper.args import args_parse_one
 from src.const.globals import COMMAND_CHAR_APP
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Exec a command on services and local app")
@@ -13,7 +16,7 @@ from addons.app.decorator.app_command import app_command
               help="Hook name")
 @option('--arguments', '-args', required=False,
               help="Hook name")
-def app__hook__exec(kernel: Kernel, hook, arguments, app_dir: str = None):
+def app__hook__exec(kernel: 'Kernel', hook, arguments, app_dir: str = None):
     arguments = args_parse_one(arguments)
 
     if arguments is None:

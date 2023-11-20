@@ -3,10 +3,13 @@ from typing import Dict, Any, List
 
 from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
 from src.helper.dict import dict_merge
-from src.core.Kernel import Kernel
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def registry_get_all_commands(kernel: Kernel) -> Dict[str, Any]:
+def registry_get_all_commands(kernel: 'Kernel') -> Dict[str, Any]:
     registry: Dict[str, Any] = {}
 
     for resolver in kernel.resolvers:
@@ -15,7 +18,7 @@ def registry_get_all_commands(kernel: Kernel) -> Dict[str, Any]:
     return registry
 
 
-def registry_get_commands_groups_names(kernel: Kernel, addon: str) -> List[str]:
+def registry_get_commands_groups_names(kernel: 'Kernel', addon: str) -> List[str]:
     group_names = set()
 
     if addon in kernel.registry[COMMAND_TYPE_ADDON]:
@@ -36,7 +39,7 @@ def registry_get_all_commands_from_registry_part(
     return output
 
 
-def registry_get_all_services_names(kernel: Kernel) -> List[str]:
+def registry_get_all_services_names(kernel: 'Kernel') -> List[str]:
     output: List[str] = []
 
     for service in kernel.registry['service']:
@@ -61,7 +64,7 @@ def registry_resolve_service_inheritance(service: Dict[str, Any], services_dict:
     return service
 
 
-def registry_find_commands_by_function_property(kernel: Kernel, name: str) -> Dict[str, Any]:
+def registry_find_commands_by_function_property(kernel: 'Kernel', name: str) -> Dict[str, Any]:
     commands = registry_get_all_commands(kernel)
     filtered = {}
 

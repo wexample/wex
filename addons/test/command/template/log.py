@@ -1,12 +1,15 @@
 from src.decorator.command import command
-from src.core import Kernel
 from src.decorator.option import option
 import time
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Description")
 @option('--arg', '-a', type=str, required=False, help="Test argument")
-def test__template__log(kernel: Kernel, arg):
+def test__template__log(kernel: 'Kernel', arg):
     kernel.io.message('Simple first message')
     kernel.io.log('Simple log A')
     kernel.io.log('Simple log B')

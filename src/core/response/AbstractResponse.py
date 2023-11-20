@@ -2,14 +2,15 @@ from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 class AbstractResponse:
-    def __init__(self, kernel):
-        # Prevent circular imports
-        from src.core.Kernel import Kernel
-
-        self.kernel: Kernel = kernel
+    def __init__(self, kernel: 'Kernel'):
+        self.kernel: 'Kernel' = kernel
         self.parent = None
         self.output_bag: list = []
         self.request: CommandRequest | None = None

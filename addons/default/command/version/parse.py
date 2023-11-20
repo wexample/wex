@@ -2,13 +2,16 @@ import re
 
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core import Kernel
 from typing import Dict, Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Parse a version string and return its components")
 @option('--version', '-v', type=str, required=True, help="The version string to parse")
-def default__version__parse(kernel: Kernel, version: str) -> Dict[str, Optional[str]] | None:
+def default__version__parse(kernel: 'Kernel', version: str) -> Dict[str, Optional[str]] | None:
     pre_build_number: Optional[int] = None
     pre_build_type: Optional[str] = None
 

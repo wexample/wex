@@ -5,15 +5,18 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
 from src.decorator.option import option
-from src.core import Kernel
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Create a database dump", should_run=True)
 @option('--file-name', '-f', type=str, required=False, help="Output file name")
 @option('--zip', '-z', type=bool, required=False, default=True, help="Zip output file")
 @option('--tag', '-t', type=str, required=False, help="Add tag as suffix")
-def app__db__dump(kernel: Kernel, app_dir: str, file_name: str | None = None, zip: bool = True, tag: str | None = None):
+def app__db__dump(kernel: 'Kernel', app_dir: str, file_name: str | None = None, zip: bool = True, tag: str | None = None):
     manager: AppAddonManager = kernel.addons['app']
     env = manager.get_runtime_config('env')
     name = manager.get_runtime_config('global.name')

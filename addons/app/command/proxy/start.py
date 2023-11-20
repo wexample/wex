@@ -8,11 +8,14 @@ from addons.app.command.app.start import app__app__start
 from src.helper.process import process_get_all_by_port
 from src.decorator.as_sudo import as_sudo
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @as_sudo()
@@ -22,7 +25,7 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import Queu
 @option('--group', '-g', type=str, required=False, help="Group of application files")
 @option('--port', '-p', type=int, required=False, help="Port for web server")
 @option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
-def app__proxy__start(kernel: Kernel,
+def app__proxy__start(kernel: 'Kernel',
                       env: str = None,
                       user: str = None,
                       group: str = None,

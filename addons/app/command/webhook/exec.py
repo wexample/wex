@@ -2,17 +2,20 @@ import re
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from urllib.parse import urlparse, parse_qs
-from src.core.Kernel import Kernel
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
 @option('--env', '-e', type=str, required=False, help="Env directory")
-def app__webhook__exec(kernel: Kernel, path: str, env: None | str = None):
+def app__webhook__exec(kernel: 'Kernel', path: str, env: None | str = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data = {}

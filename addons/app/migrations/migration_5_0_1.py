@@ -1,12 +1,15 @@
 from src.helper.prompt import prompt_progress_steps
-from src.core import Kernel
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_CONFIG
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_mapping, \
     _migration_4_0_0_replace_placeholders, _migration_4_0_0_replace_docker_placeholders
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
-def migration_5_0_1(kernel: Kernel, manager: AppAddonManager):
+def migration_5_0_1(kernel: 'Kernel', manager: AppAddonManager):
     env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
 
     def _migration_5_0_1_update_config():

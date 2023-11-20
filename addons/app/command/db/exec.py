@@ -1,9 +1,12 @@
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.core import Kernel
 from addons.app.command.app.exec import app__app__exec
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Execute command in database container service")
@@ -12,7 +15,7 @@ from addons.app.decorator.app_command import app_command
 @option('--service', '-s', type=str, required=False, help="Database service name")
 @option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
 def app__db__exec(
-        kernel: Kernel,
+        kernel: 'Kernel',
         app_dir: str,
         command: str,
         service: str = None,

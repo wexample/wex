@@ -8,8 +8,10 @@ from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
 from click._termui_impl import ProgressBar, V
+from typing import TYPE_CHECKING
 
-from src.core.Kernel import Kernel
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:
@@ -21,7 +23,7 @@ def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[
     )
 
 
-def prompt_progress_steps(kernel: Kernel, steps: Iterable[V], title: str = 'Processing') -> None:
+def prompt_progress_steps(kernel: 'Kernel', steps: Iterable[V], title: str = 'Processing') -> None:
     with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
             kernel.io.log(f'{title} : {step.__name__}')

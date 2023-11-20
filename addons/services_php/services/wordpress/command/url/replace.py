@@ -5,13 +5,16 @@ from addons.app.const.app import APP_NO_SSL_ENVS
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.decorator.option import option
-from src.core import Kernel
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from addons.app.command.db.exec import app__db__exec
 from addons.app.command.app.exec import app__app__exec
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Change wordpress URL in database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
@@ -19,7 +22,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 @option('--old-url', '-ou', type=str, required=False, help="Old URL with trailing slash : (ex: http://wexample.com/)")
 @option('--site-id', '-si', type=int, required=False, default=1, help="WordPress Multisite ID. Default is 1.")
 @option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
-def wordpress__url__replace(kernel: Kernel,
+def wordpress__url__replace(kernel: 'Kernel',
                             app_dir: str,
                             service: str,
                             new_url: None | str = None,
