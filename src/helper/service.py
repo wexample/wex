@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 def service_get_dir(kernel: 'Kernel', service: str) -> str | bool:
@@ -64,14 +65,18 @@ def service_copy_sample_dir(kernel: 'Kernel', service: str, subdir: str) -> None
     if not isinstance(service_dir, str):
         return
 
-    service_sample_dir = os.path.join(service_dir, 'samples') + os.sep
-    service_sample_dir_env = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + os.sep
+    service_sample_dir_env = os.path.join(
+        service_dir,
+        'samples',
+        APP_DIR_APP_DATA) + os.sep
 
-    from addons.app.AppAddonManager import AppAddonManager
-    manager: AppAddonManager = kernel.addons['app']
-    env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
+    manager: 'AppAddonManager' = kernel.addons['app']
+    env_dir: str = f'{manager.app_dir}{APP_DIR_APP_DATA}'
 
-    shutil.copytree(service_sample_dir_env + os.sep + subdir, env_dir + os.sep + subdir, dirs_exist_ok=True)
+    shutil.copytree(
+        service_sample_dir_env + os.sep + subdir,
+        env_dir + os.sep + subdir,
+        dirs_exist_ok=True)
 
 
 def service_get_all_dirs(kernel: 'Kernel') -> Dict[str, str]:
