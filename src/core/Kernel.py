@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from typing import Optional
+from typing import Any, Dict
 
 from yaml import SafeLoader
 
@@ -39,7 +39,7 @@ class Kernel:
         self.logger = None
         self.post_exec: list = []
         self.previous_response: None | AbstractResponse = None
-        self.registry: dict[str, Optional[str]] = {}
+        self.registry: Dict[str, str | Dict[str, Any]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
         self.children: list = []

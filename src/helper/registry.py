@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, Any, List
 
+from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
 from src.helper.dict import dict_merge
 from typing import TYPE_CHECKING
@@ -13,7 +14,7 @@ def registry_get_all_commands(kernel: 'Kernel') -> Dict[str, Any]:
     registry: Dict[str, Any] = {}
 
     for resolver in kernel.resolvers:
-        registry = {**registry, **kernel.resolvers[resolver].get_commands_registry()}
+        registry = {**registry, **kernel.resolvers[resolver].get_commands_registry().commands}
 
     return registry
 
@@ -22,19 +23,19 @@ def registry_get_commands_groups_names(kernel: 'Kernel', addon: str) -> List[str
     group_names = set()
 
     if addon in kernel.registry[COMMAND_TYPE_ADDON]:
-        for command in kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().keys():
+        for command in kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().commands.keys():
             group_name = command.split(COMMAND_SEPARATOR_ADDON)[1].split("/")[0]
             group_names.add(group_name)
     return list(group_names)
 
 
 def registry_get_all_commands_from_registry_part(
-        registry_part: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-    output: Dict[str, Dict[str, Any]] = {}
+        registry_part: Dict[str, Dict[str, Any]]) -> RegistryCommandGroup:
+    output: RegistryCommandGroup = RegistryCommandGroup()
 
     for addon, addon_data in registry_part.items():
         for command, command_data in addon_data['commands'].items():
-            output[command] = command_data
+            output.commands[command] = command_data
 
     return output
 

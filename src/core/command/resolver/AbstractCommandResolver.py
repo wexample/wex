@@ -1,8 +1,9 @@
 import os
 import re
 from abc import abstractmethod
-from typing import Dict, Any
+from typing import Optional, Any, TYPE_CHECKING
 
+from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.core.FunctionProperty import FunctionProperty
 from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
@@ -18,9 +19,12 @@ from src.helper.string import string_trim_leading, string_to_snake_case, string_
 from src.helper.user import get_user_or_sudo_user
 from src.core.CommandRequest import CommandRequest
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class AbstractCommandResolver:
-    def __init__(self, kernel):
+    def __init__(self, kernel: 'Kernel') -> None:
         self.kernel = kernel
 
     def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse | None:
@@ -59,7 +63,7 @@ class AbstractCommandResolver:
 
         return response
 
-    def wrap_response(self, response) -> AbstractResponse:
+    def wrap_response(self, response: Any) -> AbstractResponse:
         if isinstance(response, AbstractResponse):
             return response
         elif callable(response):
@@ -76,13 +80,13 @@ class AbstractCommandResolver:
     def get_pattern(cls) -> str:
         pass
 
-    def get_commands_registry(self) -> Dict[str, Dict[str, Any]]:
+    def get_commands_registry(self) -> RegistryCommandGroup:
         from src.helper.registry import registry_get_all_commands_from_registry_part
 
         if self.get_type() in self.kernel.registry:
             return registry_get_all_commands_from_registry_part(
                 self.kernel.registry[self.get_type()])
-        return {}
+        return RegistryCommandGroup()
 
     @classmethod
     @abstractmethod
@@ -126,8 +130,8 @@ class AbstractCommandResolver:
 
     def resolve_alias(self, command: str) -> str:
         registry = self.get_commands_registry()
-        for item in registry:
-            if command in registry[item]['alias']:
+        for item in registry.commands:
+            if command in registry.commands[item]['alias']:
                 return item
         return command
 

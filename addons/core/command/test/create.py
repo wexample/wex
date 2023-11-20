@@ -20,7 +20,7 @@ def core__test__create(kernel: 'Kernel', command: str = None, all: bool = False,
         output = []
 
         # Create all missing tests
-        for command, command_data in kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().items():
+        for command, command_data in kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().commands.items():
             output.append(create_test_from_command(kernel, command, force))
 
         return output

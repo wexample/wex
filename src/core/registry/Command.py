@@ -1,0 +1,2 @@
+class RegistryCommand:
+    name: str

@@ -75,7 +75,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             if cursor <= 1:
                 if search_split[0] == COMMAND_CHAR_SERVICE:
                     commands = [
-                        command for command in self.get_commands_registry().keys()
+                        command for command in self.get_commands_registry().commands.keys()
                         if command.startswith(''.join(search_split))
                     ]
 
@@ -89,7 +89,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     search = ''.join(search_split)
 
                     commands = [
-                        command[len(search_service):] for command in self.get_commands_registry().keys()
+                        command[len(search_service):] for command in self.get_commands_registry().commands.keys()
                         if command.startswith(search)
                     ]
 
