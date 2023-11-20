@@ -1,18 +1,19 @@
 import importlib
 import os
 import re
+from typing import List, Optional, Callable
 
 from src.core.Kernel import Kernel
 
 MIGRATION_MINIMAL_VERSION = '3.0.0'
 
 
-def get_migrations_path(kernel: Kernel) -> str:
+def migration_get_path(kernel: Kernel) -> str:
     return os.path.join(kernel.get_path('addons'), 'app/migrations') + os.sep
 
 
-def get_migrations_files(kernel: Kernel):
-    migrations_path = get_migrations_path(kernel)
+def migration_get_files(kernel: Kernel) -> List[str]:
+    migrations_path = migration_get_path(kernel)
 
     # List .py files in the migrations path
     py_files = [f for f in os.listdir(migrations_path)
@@ -24,20 +25,22 @@ def get_migrations_files(kernel: Kernel):
     return sorted_py_files
 
 
-def migration_get_function(kernel: Kernel, version: str, method_part: str):
+def migration_get_function(kernel: Kernel, version: str, method_part: str) -> Optional[Callable]:
     version_snake = version.replace(".", "_")
-    path_migrations = get_migrations_path(kernel)
+    path_migrations = migration_get_path(kernel)
     method_name = f"{method_part}_{version_snake}"
 
-    spec = importlib.util.spec_from_file_location('migration_' + version_snake, path_migrations + 'migration_' + version_snake + '.py')
-    module = importlib.util.module_from_spec(spec)
+    spec = importlib.util.spec_from_file_location(  # type: ignore
+        'migration_' + version_snake,
+        path_migrations + 'migration_' + version_snake + '.py')
+    module = importlib.util.module_from_spec(spec)  # type: ignore
     spec.loader.exec_module(module)
 
     # Get the method from the module
     return getattr(module, method_name, None)
 
 
-def migration_exec(kernel: Kernel, version: str, method_part: str, arguments: []):
+def migration_exec(kernel: Kernel, version: str, method_part: str, arguments: List[str]):
     function = migration_get_function(
         kernel,
         version,
@@ -50,8 +53,8 @@ def migration_exec(kernel: Kernel, version: str, method_part: str, arguments: []
     return None
 
 
-def version_guess(kernel: Kernel, path: str):
-    for migration_file in get_migrations_files(kernel):
+def migration_version_guess(kernel: Kernel, path: str):
+    for migration_file in migration_get_files(kernel):
         version_string = migration_file.replace(".py", "")
         version_string = version_string.replace("migration_", "")
 
@@ -77,7 +80,7 @@ def migration_delete_dir_if_empty(kernel: Kernel, target_dir: str):
         os.rmdir(target_dir)
 
 
-def extract_version_from_file_name(filename: str) -> None | str:
+def migration_extract_version_from_file_name(filename: str) -> None | str:
     match = re.search(r'migration_(\d+_\d+_\d+)\.py', filename)
     if match:
         version = match.group(1).replace('_', '.')

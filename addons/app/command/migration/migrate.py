@@ -3,8 +3,8 @@ import click
 
 from addons.default.helper.version import is_greater_than
 from addons.default.command.version.parse import default__version__parse
-from addons.default.helper.migration import version_guess, get_migrations_files, migration_exec, \
-    MIGRATION_MINIMAL_VERSION, extract_version_from_file_name
+from addons.default.helper.migration import migration_version_guess, migration_get_files, migration_exec, \
+    MIGRATION_MINIMAL_VERSION, migration_extract_version_from_file_name
 from addons.app.helper.app import app_create_manager
 from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
@@ -30,7 +30,7 @@ def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_ver
         except Exception:
             pass
 
-    app_version_string = app_version_string or version_guess(kernel, app_dir)
+    app_version_string = app_version_string or migration_version_guess(kernel, app_dir)
 
     app_version = kernel.run_function(
         default__version__parse,
@@ -67,8 +67,8 @@ def app__migration__migrate(kernel: Kernel, app_dir: str | None = None, from_ver
 
     kernel.io.log(f'Current version defined as {app_version_string}')
 
-    for migration_file in get_migrations_files(kernel):
-        migration_version_string = extract_version_from_file_name(migration_file)
+    for migration_file in migration_get_files(kernel):
+        migration_version_string = migration_extract_version_from_file_name(migration_file)
 
         migration_version = kernel.run_function(
             default__version__parse,

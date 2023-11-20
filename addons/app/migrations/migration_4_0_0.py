@@ -2,7 +2,7 @@ import os
 import glob
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
-from addons.default.helper.git import file_move_or_git_move, get_or_create_repo
+from addons.default.helper.git import git_move_or_file_move, git_get_or_create_repo
 from addons.default.helper.migration import migration_delete_dir_if_empty
 from addons.app.helper.app import app_create_env
 from src.helper.prompt import prompt_progress_steps
@@ -11,7 +11,7 @@ from addons.app.AppAddonManager import AppAddonManager
 
 
 def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
-    repo = get_or_create_repo(manager.app_dir)
+    repo = git_get_or_create_repo(manager.app_dir)
     projects_dirs = ['project', 'wordpress']
 
     def _migration_4_0_0_env():
@@ -26,7 +26,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
     def _migration_4_0_0_config():
         if os.path.isfile('.wex'):
             # Rename old config file
-            file_move_or_git_move(repo, '.wex', 'config')
+            git_move_or_file_move(repo, '.wex', 'config')
 
     # Create ".wex" dir
     def _migration_4_0_0_dir():
@@ -39,7 +39,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
         for item in os.listdir(manager.app_dir):
             if item in projects_dirs + ['.git', '.wex']:
                 continue
-            file_move_or_git_move(repo, item, f'.wex/{item}')
+            git_move_or_file_move(repo, item, f'.wex/{item}')
 
         if not os.path.exists('.wex/.env'):
             app_create_env(APP_ENV_LOCAL, manager.app_dir)
@@ -54,7 +54,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager):
 
             if os.path.exists(dir_project):
                 for item in os.listdir(dir_project):
-                    file_move_or_git_move(repo, f'{projects_dir}/{item}', item)
+                    git_move_or_file_move(repo, f'{projects_dir}/{item}', item)
 
             migration_delete_dir_if_empty(kernel, dir_project)
 

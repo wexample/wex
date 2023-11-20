@@ -1,7 +1,7 @@
 from addons.app.helper.app import app_create_manager
 from src.const.globals import CORE_COMMAND_NAME
 from src.core import Kernel
-from addons.default.helper.migration import version_guess
+from addons.default.helper.migration import migration_version_guess
 from addons.app.decorator.app_command import app_command
 
 
@@ -17,4 +17,4 @@ def app__version__get(kernel: Kernel, app_dir: str | None = None):
     except Exception:
         pass
 
-    return app_version_string or version_guess(kernel, app_dir)
+    return app_version_string or migration_version_guess(kernel, app_dir)

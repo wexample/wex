@@ -3,19 +3,19 @@ import shutil
 import git
 
 
-def get_or_create_repo(path):
+def git_get_or_create_repo(path: str) -> git.Repo:
     try:
         return git.Repo(path)
     except git.InvalidGitRepositoryError:
         return git.Repo.init(path)
 
 
-def file_move_or_git_move(repo: git.Repo, src: str, dest: str):
+def git_move_or_file_move(repo: git.Repo, src: str, target: str) -> None:
     # Append git base dir.
     src = os.path.join(repo.working_tree_dir, src)
-    dest = os.path.join(repo.working_tree_dir, dest)
+    target = os.path.join(repo.working_tree_dir, target)
 
     try:
-        repo.git.mv(src, dest)
+        repo.git.mv(src, target)
     except git.GitCommandError:
-        shutil.move(src, dest)
+        shutil.move(src, target)
