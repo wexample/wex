@@ -1,0 +1,23 @@
+services:
+  listmonk:
+    container_name: ${RUNTIME_NAME}_listmonk
+    image: listmonk/listmonk:v2.5.1
+    ports:
+      - 9000:9000
+    environment:
+      - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
+      # Listmonk
+      - TZ=Europe/Paris
+      - LISTMONK_app__address=:9000
+      - LISTMONK_db__host=${SERVICE_POSTGRES_HOST}
+      - LISTMONK_db__port=${SERVICE_POSTGRES_PORT}
+      - LISTMONK_db__user=${SERVICE_POSTGRES_USER}
+      - LISTMONK_db__password=${SERVICE_POSTGRES_PASSWORD}
+      - LISTMONK_db__database=${SERVICE_POSTGRES_NAME}
+    volumes:
+      # Minimal env files.
+      - ${RUNTIME_PATH_APP}config.toml:/listmonk/config.toml
+    extends:
+      file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
+      service: default
+    command: [sh, -c, "yes | ./listmonk --install && ./listmonk"]

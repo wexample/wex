@@ -1,0 +1,5 @@
+services:
+  listmonk:
+    extends:
+      file: ${RUNTIME_SERVICE_LISTMONK_YML_ENV}
+      service: listmonk
