@@ -11,7 +11,7 @@ from src.decorator.option import option
 from addons.app.command.app.start import app__app__start
 from addons.core.command.service.resolve import core__service__resolve
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA
-from addons.app.const.app import APP_ENV_PROD
+from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
 from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
@@ -47,7 +47,7 @@ def app__app__init(
 ):
     manager: AppAddonManager = kernel.addons['app']
     current_dir = os.getcwd() + os.sep
-    env = env or APP_ENV_PROD
+    env = env or APP_ENV_LOCAL
 
     if not app_dir:
         app_dir = current_dir
