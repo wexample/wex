@@ -1,7 +1,7 @@
 import os
 import re
 from abc import abstractmethod
-from typing import Optional, Any, TYPE_CHECKING
+from typing import Any, List, TYPE_CHECKING, Optional
 
 from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.core.FunctionProperty import FunctionProperty
@@ -94,7 +94,7 @@ class AbstractCommandResolver:
         pass
 
     @classmethod
-    def build_match(cls, command: str | None):
+    def build_match(cls, command: str) -> Optional[re.Match[str]]:
         return re.match(cls.get_pattern(), command) if command else None
 
     def get_base_path(self) -> str | None:
@@ -106,9 +106,9 @@ class AbstractCommandResolver:
         if not base_path:
             return None
 
-        return os.path.join(base_path, 'command') + '/'
+        return os.path.join(base_path, 'command') + os.path.sep
 
-    def set_command_file_permission(self, command_path: str):
+    def set_command_file_permission(self, command_path: str) -> None:
         base_path = self.get_base_path()
 
         if base_path:
@@ -121,7 +121,7 @@ class AbstractCommandResolver:
     def create_command_request(
             self,
             command: str,
-            args: None | list = None):
+            args: Optional[List[str]] = None) -> CommandRequest:
         return CommandRequest(
             self,
             command,
