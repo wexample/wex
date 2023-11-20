@@ -2,7 +2,7 @@ import os
 import glob
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
-from addons.default.helper.git import git_move_or_file_move, git_get_or_create_repo
+from addons.default.helper.git_utils import git_move_or_file_move, git_get_or_create_repo
 from addons.default.helper.migration import migration_delete_dir_if_empty
 from addons.app.helper.app import app_create_env
 from src.helper.prompt import prompt_progress_steps
