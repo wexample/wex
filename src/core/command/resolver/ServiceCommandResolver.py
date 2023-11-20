@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
 from src.helper.service import service_get_dir
@@ -42,7 +43,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def build_command_from_parts(self, parts: list) -> str:
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: Optional[str] = None) -> Optional[str]:
         name = string_to_snake_case(request.match[1])
         path = service_get_dir(self.kernel, name)
 

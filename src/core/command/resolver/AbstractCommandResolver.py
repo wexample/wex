@@ -144,10 +144,10 @@ class AbstractCommandResolver:
         return False
 
     @abstractmethod
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: Optional[str] = None) -> Optional[str]:
         pass
 
-    def build_path_or_fail(self, request: CommandRequest, extension: str, subdir: str = None):
+    def build_path_or_fail(self, request: CommandRequest, extension: str, subdir: Optional[str] = None) -> str:
         path = self.build_path(
             request=request,
             extension=extension,
@@ -161,7 +161,7 @@ class AbstractCommandResolver:
 
         return path
 
-    def get_function_name(self, parts: list) -> str | None:
+    def get_function_name(self, parts: List[str]) -> str:
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(
                 self.get_function_name_parts(parts)

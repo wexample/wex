@@ -1,4 +1,6 @@
 import os
+from typing import Optional
+
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.core.FunctionProperty import FunctionProperty
 from src.core.CommandRequest import CommandRequest
@@ -38,7 +40,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_APP
 
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: Optional[str] = None) -> Optional[str]:
         return self.build_command_path(
             base_path=self.get_base_path(),
             extension=extension,

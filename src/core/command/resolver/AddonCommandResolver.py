@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from src.helper.registry import registry_get_all_commands
 from src.core.CommandRequest import CommandRequest
@@ -18,7 +19,7 @@ class AddonCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_ADDON
 
-    def build_path(self, request: CommandRequest, extension: str, subdir: str = None) -> str | None:
+    def build_path(self, request: CommandRequest, extension: str, subdir: Optional[str] = None) -> Optional[str]:
         # Unable to find command path if no addon name found.
         if request.match.group(1) is None:
             return None
