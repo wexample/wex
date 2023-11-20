@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 from git import Repo
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional
 
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
@@ -52,7 +52,7 @@ def app__app__init(
     if not app_dir:
         app_dir = current_dir
 
-    def init_step_check_vars():
+    def _init_step_check_vars() -> None:
         nonlocal name
 
         kernel.io.log(f'Creating app in "{app_dir}"')
@@ -70,7 +70,7 @@ def app__app__init(
         if not os.path.exists(app_dir):
             os.makedirs(app_dir, exist_ok=True)
 
-    def init_step_check_services():
+    def _init_step_check_services() -> Optional[bool]:
         nonlocal services
         nonlocal kernel
 
@@ -98,7 +98,7 @@ def app__app__init(
 
                 return False
 
-    def init_step_copy_app():
+    def _init_step_copy_app() -> None:
         import shutil
 
         app_sample_dir = os.path.join(kernel.get_path('addons'), 'app', 'samples', 'app') + '/'
@@ -126,14 +126,14 @@ def app__app__init(
             os.rename(sample_file, new_file_name)
             kernel.io.log(f'Renaming {sample_file}')
 
-    def init_step_create_env():
+    def _init_step_create_env() -> None:
         kernel.io.log(f'Creating env file with env "{env}"')
         app_create_env(
             env,
             app_dir
         )
 
-    def init_step_create_config():
+    def _init_step_create_config() -> None:
         nonlocal domains
         nonlocal manager
 
@@ -144,12 +144,12 @@ def app__app__init(
 
         manager.save_config()
 
-    def init_step_set_workdir():
+    def _init_step_set_workdir() -> None:
         nonlocal manager
 
         manager.set_app_workdir(app_dir)
 
-    def init_step_install_service():
+    def _init_step_install_service() -> None:
         nonlocal services
         nonlocal kernel
 
@@ -165,7 +165,7 @@ def app__app__init(
                 }
             ).first()
 
-    def init_step_init_git():
+    def _init_step_init_git() -> None:
         nonlocal git
 
         if git:
@@ -173,7 +173,7 @@ def app__app__init(
 
             Repo.init(app_dir)
 
-    def init_step_hooks():
+    def _init_step_hooks() -> None:
         kernel.run_function(
             app__hook__exec,
             {
@@ -182,25 +182,25 @@ def app__app__init(
             }
         )
 
-    def init_step_unset_workdir():
+    def _init_step_unset_workdir() -> None:
         manager.unset_app_workdir(current_dir)
 
-    def init_step_complete():
+    def _init_step_complete() -> None:
         kernel.io.message_next_command(
             app__app__start,
             message=f'Your app has been created in {env} environment'
         )
 
     prompt_progress_steps(kernel, [
-        init_step_check_vars,
-        init_step_check_services,
-        init_step_copy_app,
-        init_step_create_env,
-        init_step_set_workdir,
-        init_step_create_config,
-        init_step_install_service,
-        init_step_init_git,
-        init_step_hooks,
-        init_step_unset_workdir,
-        init_step_complete,
+        _init_step_check_vars,
+        _init_step_check_services,
+        _init_step_copy_app,
+        _init_step_create_env,
+        _init_step_set_workdir,
+        _init_step_create_config,
+        _init_step_install_service,
+        _init_step_init_git,
+        _init_step_hooks,
+        _init_step_unset_workdir,
+        _init_step_complete,
     ])
