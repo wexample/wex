@@ -461,11 +461,11 @@ class Kernel:
             self.io.log_length = int(value)
 
         value = args_shift_one(self.sys_argv, 'render-mode')
-        if value is not None:
+        if isinstance(value, str):
             self.default_render_mode = value
 
         value = args_shift_one(self.sys_argv, 'parent-task-id')
-        if value is not None:
+        if isinstance(value, str):
             self.parent_task_id = value
 
         # There is a task id redirection
