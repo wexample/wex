@@ -15,7 +15,7 @@ class Logger:
     current_command = None
     trace_depth: int = 10
 
-    def __init__(self, kernel):
+    def __init__(self, kernel) -> None:
         self.kernel = kernel
 
         self.time_start = time.time()

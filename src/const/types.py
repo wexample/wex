@@ -4,7 +4,8 @@ KeyPairCommandArgs = Dict[str, Union[str, bool]]
 StringsKeyPair = Dict[str, str]
 
 CoreCommandArgsDict = KeyPairCommandArgs
-CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, List[str]]
+CoreCommandArgsList = List[str]
+CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, CoreCommandArgsList]
 CoreCommandString = str
 CoreCommandStringParts = List[str]
 

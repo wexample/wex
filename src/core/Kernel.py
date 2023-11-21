@@ -28,7 +28,8 @@ if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, OptionalKeyPairCommandArgs
+    from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, \
+        CoreCommandArgsList
 
 
 class Kernel:
@@ -53,9 +54,9 @@ class Kernel:
         self.task_id: str | None = task_id
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
-        self.tmp: dict = {}
+        self.tmp: Dict[str, str] = {}
 
-        self.decorators: Dict[str, Dict[str, Callable[[Any], Any]]] = {
+        self.decorators: Dict[str, Dict[str, Callable[..., Any]]] = {
             'command': {
                 'command': command,
                 'test_command': test_command,
@@ -117,7 +118,7 @@ class Kernel:
 
         self.load_registry()
 
-    def get_path(self, name: str, sub_dirs: list = None) -> str:
+    def get_path(self, name: str, sub_dirs: Optional[List[str]] = None) -> str | NoReturn:
         """Get the path associated with the given name."""
         if name in self.path:
             base_path = self.path[name]
@@ -165,12 +166,12 @@ class Kernel:
         with open(path_registry) as f:
             self.registry = yaml.load(f, SafeLoader)
 
-    def rebuild(self, test: bool = False):
+    def rebuild(self, test: bool = False) -> None:
         from addons.core.command.registry.build import _core__registry__build
 
         _core__registry__build(self, test)
 
-    def trace(self, _exit: bool = True):
+    def trace(self, _exit: bool = True) -> Optional[NoReturn]:
         import traceback
 
         for line in traceback.format_stack():
@@ -179,7 +180,9 @@ class Kernel:
         if _exit:
             sys.exit(1)
 
-    def call(self):
+        return None
+
+    def call(self) -> None:
         """
         Main entrypoint from bash call.
         May never be called by an internal script.
@@ -191,7 +194,7 @@ class Kernel:
             return
 
         command: str = self.sys_argv[2]
-        command_args: [] = self.sys_argv[3:]
+        command_args: CoreCommandArgsList = self.sys_argv[3:]
 
         result = self.call_command(
             command,
@@ -220,9 +223,9 @@ class Kernel:
 
     def call_command(
             self,
-            command: str,
-            command_args: dict | list | None = None,
-            render_mode: str | None = None):
+            command: 'CoreCommandString',
+            command_args: 'OptionalCoreCommandArgsListOrDict' = None,
+            render_mode: str | None = None) -> Optional[str]:
 
         render_mode = render_mode or self.default_render_mode
 
@@ -243,15 +246,13 @@ class Kernel:
                 command_to_string(post_command) + os.linesep,
             )
 
-        printed = response.print_wrapped(
+        return response.print_wrapped(
             render_mode or self.default_render_mode
         ) if response else None
 
-        return printed
-
     def run_command(self,
-                    command: str,
-                    args: dict | list = None,
+                    command: 'CoreCommandString',
+                    args: 'OptionalCoreCommandArgsListOrDict' = None,
                     quiet: bool = False,
                     render_mode: str | None = None) -> 'AbstractResponse':
         request = self.create_command_request(
@@ -262,7 +263,7 @@ class Kernel:
         return self.render_request(request, render_mode)
 
     def run_function(self,
-                     function:'ClickCommand',
+                     function: 'ClickCommand',
                      args: 'OptionalCoreCommandArgsListOrDict' = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,
