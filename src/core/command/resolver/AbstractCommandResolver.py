@@ -20,8 +20,10 @@ from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
+    from click.core import Command as ClickCommand
     from src.core.Kernel import Kernel
-    from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict
+    from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict, \
+        Kwargs, AnyCallable
 
 
 class AbstractCommandResolver:
@@ -334,10 +336,10 @@ class AbstractCommandResolver:
                 }
         return commands
 
-    def get_function_aliases(self, function) -> list:
-        return FunctionProperty.get_property(function, 'aliases', [])
+    def get_function_aliases(self, function: 'ClickCommand') -> List[str]:
+        return FunctionProperty.get_property(function, 'aliases', []) or []
 
-    def locate_function(self, request) -> bool:
+    def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables
         request.match = self.build_match(request.command)
 
@@ -352,7 +354,7 @@ class AbstractCommandResolver:
         return False
 
     @classmethod
-    def decorate_command(cls, function, kwargs):
+    def decorate_command(cls, function: 'AnyCallable', kwargs: 'Kwargs') -> 'AnyCallable':
         return function
 
     def run_command_request_from_url_path(self, path: str):

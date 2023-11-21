@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, Optional, Any, Literal
+from typing import Union, Dict, List, Optional, Any, Literal, Callable
 
 AddonNameType = Literal[
     'app',
@@ -12,7 +12,9 @@ AddonNameType = Literal[
     'test'
 ]
 
+AnyCallable = Callable[..., Any]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
+Kwargs = Dict[str, Any]
 StringsKeyPair = Dict[str, str]
 RegistryAddon = Dict[str, Dict[str, Any]]
 RegistryService = Dict[str, Dict[str, Any]]

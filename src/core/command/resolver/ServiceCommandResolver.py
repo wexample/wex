@@ -11,6 +11,7 @@ from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 
 if TYPE_CHECKING:
+    from src.const.types import AnyCallable, Kwargs
     from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -138,7 +139,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return False
 
     @classmethod
-    def decorate_command(cls, function, kwargs):
+    def decorate_command(cls, function: 'AnyCallable', kwargs: 'Kwargs') -> 'AnyCallable':
         from addons.app.decorator.service_option import service_option
         return service_option(**kwargs)(function)
 
