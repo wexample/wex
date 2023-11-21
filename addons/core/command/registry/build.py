@@ -12,6 +12,11 @@ from src.decorator.as_sudo import as_sudo
 from src.const.globals import FILE_REGISTRY, COMMAND_TYPE_ADDON, \
     COMMAND_TYPE_SERVICE
 from src.helper.file import file_set_user_or_sudo_user_owner
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+    from src.const.types import KernelRegistry
 
 
 @alias('rebuild')
@@ -21,11 +26,11 @@ from src.helper.file import file_set_user_or_sudo_user_owner
         help="Register also commands marked as only for testing")
 @option('--write', '-w', type=bool, default=True,
         help="Write registry file")
-def core__registry__build(kernel, test: bool = False, write: bool = True):
+def core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True):
     return _core__registry__build(kernel, test, write)
 
 
-def _core__registry__build(kernel, test: bool = False, write: bool = True):
+def _core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> KernelRegistry:
     kernel.io.log('Building registry...')
 
     # Call function avoiding core command management.
@@ -49,11 +54,11 @@ def _core__registry__build(kernel, test: bool = False, write: bool = True):
 
         file_set_user_or_sudo_user_owner(registry_path)
         kernel.load_registry()
-    else:
-        return registry
+
+    return registry
 
 
-def _core__registry__build__addons(kernel, test_commands: bool = False):
+def _core__registry__build__addons(kernel: 'Kernel', test_commands: bool = False):
     addons_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
 
@@ -72,7 +77,7 @@ def _core__registry__build__addons(kernel, test_commands: bool = False):
     return addons_dict
 
 
-def _core__registry__build__services(kernel, test_commands: bool = False):
+def _core__registry__build__services(kernel: 'Kernel', test_commands: bool = False):
     services_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 

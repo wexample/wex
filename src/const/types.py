@@ -1,5 +1,6 @@
-from typing import Union, Dict, List, Optional
+from typing import Union, Dict, List, Optional, Any
 
+KernelRegistry = Dict[str, Any]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
 StringsKeyPair = Dict[str, str]
 
