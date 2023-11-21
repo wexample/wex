@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from typing import Any, Dict
+from typing import Any, Dict, Callable
 
 from yaml import SafeLoader
 
@@ -31,7 +31,7 @@ class Kernel:
             self,
             entrypoint_path: str,
             task_id: str | None = None
-    ):
+    ) -> None:
         self.root_request: None | CommandRequest = None
         self.current_request: None | CommandRequest = None
         self.current_response: None | AbstractResponse = None
@@ -54,7 +54,7 @@ class Kernel:
         from src.decorator.no_log import no_log
         from src.decorator.verbosity import verbosity
 
-        self.decorators = {
+        self.decorators: Dict[str, Dict[str, Callable]] = {
             'command': {
                 'command': command,
                 'test_command': test_command,
@@ -475,24 +475,3 @@ class Kernel:
             file_remove_file_if_exists(
                 self.task_file_path('post-exec')
             )
-
-    def load_env(self):
-        from dotenv import load_dotenv
-        # Load .env file to get API token
-        load_dotenv(dotenv_path=self.get_path('root') + '.env')
-
-    def apply_command_decorator(
-            self,
-            function,
-            group: str,
-            name: str,
-            options: dict | None = None):
-        if group in self.decorators and name in self.decorators[group]:
-            decorator = self.decorators[group][name]
-            options = options or {}
-
-            return decorator(
-                **options
-            )(function)
-        else:
-            self.io.error(f'Missing decorator {group}.{name}')
