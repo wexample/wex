@@ -23,11 +23,12 @@ from src.decorator.no_log import no_log
 from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
+    from click.core import Command as ClickCommand
     from src.core.response.AbortResponse import AbortResponse
     from src.core.CommandRequest import CommandRequest
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import CoreStringCommand, OptionalCoreCommandArgsListOrDict, OptionalKeyPairCommandArgs
+    from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, OptionalKeyPairCommandArgs
 
 
 class Kernel:
@@ -261,8 +262,8 @@ class Kernel:
         return self.render_request(request, render_mode)
 
     def run_function(self,
-                     function,
-                     args: dict | list = None,
+                     function:'ClickCommand',
+                     args: 'OptionalCoreCommandArgsListOrDict' = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,
                      render_mode: str | None = None) -> 'AbstractResponse':
@@ -283,7 +284,7 @@ class Kernel:
 
     def create_abort_response(self, message: str) -> 'AbstractResponse':
         from src.core.response.AbortResponse import AbortResponse
-        return AbortResponse(self, message)
+        return AbortResponse(self, reason=message)
 
     def render_request(self,
                        request: 'CommandRequest',
@@ -386,7 +387,7 @@ class Kernel:
 
             return path
 
-    def guess_command_type(self, command: 'CoreStringCommand') -> Optional[str]:
+    def guess_command_type(self, command: 'CoreCommandString') -> Optional[str]:
         for type in self.resolvers:
             if self.resolvers[type].supports(command):
                 return type
@@ -412,7 +413,7 @@ class Kernel:
         return self.resolvers[type] if type in self.resolvers else None
 
     def create_command_request(self,
-                               command: 'CoreStringCommand',
+                               command: 'CoreCommandString',
                                args: 'OptionalCoreCommandArgsListOrDict' = None,
                                quiet: bool = False) -> 'CommandRequest' | NoReturn:
         command_type = self.guess_command_type(command)

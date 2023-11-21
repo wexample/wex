@@ -21,7 +21,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-    from src.const.types import OptionalCoreCommandArgsListOrDict
+    from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict
 
 
 class AbstractCommandResolver:
@@ -174,7 +174,10 @@ class AbstractCommandResolver:
     def get_function_name_parts(self, parts: list) -> []:
         pass
 
-    def build_full_command_parts_from_function(self, function_or_command, args: dict = None) -> list:
+    def build_full_command_parts_from_function(
+            self,
+            function_or_command,
+            args: 'OptionalCoreCommandArgsDict' = None) -> 'CoreCommandStringParts':
         if args is None:
             args = []
         else:
@@ -193,7 +196,7 @@ class AbstractCommandResolver:
             )
         )
 
-    def build_command_parts_from_function(self, function_name):
+    def build_command_parts_from_function(self, function_name) -> 'CoreCommandStringParts':
         """
         Returns the "default" format (addons style)
         """
@@ -217,7 +220,7 @@ class AbstractCommandResolver:
 
         return f'{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}'
 
-    def build_command_from_function(self, function_or_command) -> str | None:
+    def build_command_from_function(self, function_or_command) -> str:
         """
         Returns the "default" format (addons style)
         """

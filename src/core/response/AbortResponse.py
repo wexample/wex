@@ -8,7 +8,7 @@ from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandDict
+    from src.const.types import OptionalCoreCommandArgsDict
 
 
 class AbortResponse(AbstractResponse, ABC):
@@ -21,13 +21,13 @@ class AbortResponse(AbstractResponse, ABC):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: OptionalCoreCommandDict = None):
+            args: OptionalCoreCommandArgsDict = None):
         return None
 
     def render_content(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: OptionalCoreCommandDict = None) -> AbstractResponse:
+            args: OptionalCoreCommandArgsDict = None) -> AbstractResponse:
         # Nothing to do
         return self

@@ -5,8 +5,9 @@ StringsKeyPair = Dict[str, str]
 
 CoreCommandArgsDict = KeyPairCommandArgs
 CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, List[str]]
-CoreStringCommand = str
+CoreCommandString = str
+CoreCommandStringParts = List[str]
 
 OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
-OptionalCoreCommandDict = Optional[CoreCommandArgsDict]
+OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
