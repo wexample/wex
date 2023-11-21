@@ -1,0 +1,4 @@
+type: app
+scripts:
+  - title: Run MyPy
+    script: mypy --config-file .wex/python/mypy.ini
