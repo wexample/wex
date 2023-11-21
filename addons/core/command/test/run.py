@@ -33,7 +33,9 @@ def core__test__run(kernel: 'Kernel', command: str = None):
                 '-q',
                 '--filter',
                 'name=test_app_'
-            ]
+            ],
+            '|',
+            'True'
         ])
 
     # Remove all temp files.
