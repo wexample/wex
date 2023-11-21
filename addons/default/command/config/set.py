@@ -3,6 +3,10 @@ import os
 from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 from src.decorator.command import command
 from src.decorator.option import option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Set config value to given file")
@@ -10,7 +14,7 @@ from src.decorator.option import option
 @option('--key', '-k', type=str, required=True)
 @option('--value', '-v', required=True)
 @option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-def default__config__set(kernel, file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
+def default__config__set(kernel: 'Kernel', file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
     with open(file, 'r') as f:
         lines = f.readlines()
 

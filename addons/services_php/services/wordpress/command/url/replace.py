@@ -121,7 +121,7 @@ def wordpress__url__replace(kernel: 'Kernel',
     ])
 
 
-def wordpress__url__replace__prepare_url(kernel, url) -> bool | str:
+def wordpress__url__replace__prepare_url(kernel: 'Kernel', url) -> bool | str:
     url = url.rstrip('/')  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):
