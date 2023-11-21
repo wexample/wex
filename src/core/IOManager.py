@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import NoReturn, Dict, Any, Optional, List, TYPE_CHECKING
 
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 from src.const.globals import \
@@ -11,25 +12,28 @@ from src.const.globals import \
      COLOR_GRAY,
      COLOR_RED)
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 IO_DEFAULT_LOG_LENGTH = 10
 
 
 class IOManager:
     messages = None
 
-    def __init__(self, kernel):
+    def __init__(self, kernel: 'Kernel') -> None:
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
-        self.log_messages: list = []
+        self.log_messages: List[str] = []
         self.indent_string = '  '
         self.kernel = kernel
 
     def error(
             self,
             message: str,
-            parameters: None | dict = None,
+            parameters: Optional[Dict[str, str]] = None,
             fatal: bool = True,
-            trace: bool = True) -> None:
+            trace: bool = True) -> NoReturn:
         # Performance optimisation
         import logging
 
@@ -119,7 +123,7 @@ class IOManager:
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message, **kwargs):
+    def print(self, message: str, **kwargs: Dict[str, Any]) -> None:
         print(message, **kwargs)
 
     def message(self, message: str, text: None | str = None):

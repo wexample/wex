@@ -158,6 +158,7 @@ class AbstractCommandResolver:
                 'command': request.command,
                 'path': path,
             }, trace=False)
+            assert path is not None
 
         return path
 
