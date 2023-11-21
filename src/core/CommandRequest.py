@@ -3,6 +3,10 @@ import os
 from click import Command
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import args_convert_dict_to_args
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.const.types import OptionalCommandArgs
 
 
 class CommandRequest:
@@ -10,7 +14,7 @@ class CommandRequest:
     localized = None
     match = None
 
-    def __init__(self, resolver, command: str, args: dict | list = None):
+    def __init__(self, resolver, command: str, args: OptionalCommandArgs = None):
         self.extension: None | str = None
         self.quiet = False
         self.resolver = resolver

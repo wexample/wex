@@ -28,6 +28,7 @@ from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+    from src.const.types import OptionalCommandArgs
 
 
 class Kernel:
@@ -410,7 +411,8 @@ class Kernel:
     def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
         return self.resolvers[type] if type in self.resolvers else None
 
-    def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
+    def create_command_request(self, command: str,
+                               args: OptionalCommandArgs = None) -> CommandRequest | None:
         type = self.guess_command_type(command)
 
         if type:
@@ -448,6 +450,7 @@ class Kernel:
         if args_shift_one(self.sys_argv, 'vvv', True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MAXIMUM
 
+        value: str | bool | int | None
         value = args_shift_one(self.sys_argv, 'log-indent')
         if value is not None:
             self.io.log_indent = int(value)
