@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from typing import Any, Dict, Callable, Optional, NoReturn
+from typing import Any, Dict, Callable, Optional, NoReturn, List
 
 from yaml import SafeLoader
 
@@ -37,12 +37,11 @@ class Kernel:
         self.current_response: None | AbstractResponse = None
         self.io = IOManager(self)
         self.logger = None
-        self.post_exec: list = []
+        self.post_exec: List[str] = []
         self.previous_response: None | AbstractResponse = None
         self.registry: Dict[str, str | Dict[str, Any]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
-        self.children: list = []
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: dict = {}
