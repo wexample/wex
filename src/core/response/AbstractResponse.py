@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+    from src.const.types import OptionalCoreCommandDict
 
 
 class AbstractResponse:
@@ -30,7 +31,7 @@ class AbstractResponse:
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> 'AbstractResponse':
+            args: OptionalCoreCommandDict = None) -> 'AbstractResponse':
 
         # If response passes from a function to another,
         # it may be already rendered.

@@ -21,7 +21,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-    from src.const.types import OptionalCommandArgs
+    from src.const.types import OptionalCoreCommandArgsListOrDict
 
 
 class AbstractCommandResolver:
@@ -122,7 +122,7 @@ class AbstractCommandResolver:
     def create_command_request(
             self,
             command: str,
-            args: 'OptionalCommandArgs' = None) -> CommandRequest:
+            args: 'OptionalCoreCommandArgsListOrDict' = None) -> CommandRequest:
         return CommandRequest(
             self,
             command,

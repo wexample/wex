@@ -1,10 +1,12 @@
 from typing import Union, Dict, List, Optional
 
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
-CommandArgs = Union[KeyPairCommandArgs, List[str]]
+StringsKeyPair = Dict[str, str]
+
+CoreCommandArgsDict = KeyPairCommandArgs
+CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, List[str]]
+CoreStringCommand = str
 
 OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
-OptionalCommandArgs = Optional[CommandArgs]
-
-CoreStringCommand = str
-StringsKeyPair = Dict[str, str]
+OptionalCoreCommandDict = Optional[CoreCommandArgsDict]
+OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]

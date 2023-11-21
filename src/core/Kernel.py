@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import CoreStringCommand, OptionalCommandArgs, OptionalKeyPairCommandArgs
+    from src.const.types import CoreStringCommand, OptionalCoreCommandArgsListOrDict, OptionalKeyPairCommandArgs
 
 
 class Kernel:
@@ -413,7 +413,7 @@ class Kernel:
 
     def create_command_request(self,
                                command: 'CoreStringCommand',
-                               args: 'OptionalCommandArgs' = None,
+                               args: 'OptionalCoreCommandArgsListOrDict' = None,
                                quiet: bool = False) -> 'CommandRequest' | NoReturn:
         command_type = self.guess_command_type(command)
 

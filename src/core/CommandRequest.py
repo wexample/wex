@@ -7,7 +7,7 @@ from src.helper.args import args_convert_dict_to_args
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCommandArgs
+    from src.const.types import OptionalCoreCommandArgsListOrDict
     from src.core.command.resolver import AbstractCommandResolver
 
 
@@ -16,7 +16,7 @@ class CommandRequest:
     localized = None
     match = None
 
-    def __init__(self, resolver, command: str, args: 'OptionalCommandArgs' = None):
+    def __init__(self, resolver, command: str, args: 'OptionalCoreCommandArgsListOrDict' = None):
         self.extension: None | str = None
         self.quiet = False
         self.resolver: AbstractCommandResolver = resolver

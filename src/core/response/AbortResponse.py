@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
+
+if TYPE_CHECKING:
+    from src.const.types import OptionalCoreCommandDict
 
 
 class AbortResponse(AbstractResponse, ABC):
@@ -17,5 +21,13 @@ class AbortResponse(AbstractResponse, ABC):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None):
+            args: OptionalCoreCommandDict = None):
         return None
+
+    def render_content(
+            self,
+            request: CommandRequest,
+            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+            args: OptionalCoreCommandDict = None) -> AbstractResponse:
+        # Nothing to do
+        return self
