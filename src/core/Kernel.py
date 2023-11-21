@@ -52,7 +52,7 @@ class Kernel:
         from src.decorator.no_log import no_log
         from src.decorator.verbosity import verbosity
 
-        self.decorators: Dict[str, Dict[str, Callable]] = {
+        self.decorators: Dict[str, Dict[str, Callable[[Any], Any]]] = {
             'command': {
                 'command': command,
                 'test_command': test_command,
@@ -69,8 +69,16 @@ class Kernel:
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
         tmp_path = os.path.join(root_path, 'tmp') + os.sep
 
+        # Handle calling from a non-existing dir.
+        call_dir: Optional[str] = None
+        try:
+            call_dir = os.getcwd() + os.sep
+        except FileNotFoundError:
+            self.io.error('Current directory does not exists', trace=False)
+        assert call_dir is not None
+
         self.path: Dict[str, str] = {
-            'call': os.getcwd() + os.sep,
+            'call': call_dir,
             'entrypoint': entrypoint_path,
             'root': root_path,
             'addons': os.path.join(root_path, 'addons') + os.sep,
