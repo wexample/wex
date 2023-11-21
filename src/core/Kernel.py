@@ -470,7 +470,7 @@ class Kernel:
 
         # There is a task id redirection
         value = args_shift_one(self.sys_argv, 'kernel-task-id')
-        if value:
+        if isinstance(value, str):
             self.task_file_write(
                 'task-redirect',
                 value,
