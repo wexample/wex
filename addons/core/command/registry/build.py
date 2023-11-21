@@ -30,7 +30,7 @@ def core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = Tr
     return _core__registry__build(kernel, test, write)
 
 
-def _core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> KernelRegistry:
+def _core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> 'KernelRegistry':
     kernel.io.log('Building registry...')
 
     # Call function avoiding core command management.

@@ -31,7 +31,7 @@ def core__core__install(kernel: 'Kernel'):
     return kernel.run_function(core__logo__show)
 
 
-def __core__core__check_requirements(kernel):
+def __core__core__check_requirements(kernel: 'Kernel') -> None:
     kernel.io.log(f'Checking python version ...')
 
     if sys.version_info < PYTHON_MIN_VERSION:
@@ -41,7 +41,7 @@ def __core__core__check_requirements(kernel):
         }, trace=False)
 
 
-def __core__core__install_env(kernel):
+def __core__core__install_env(kernel: 'Kernel') -> None:
     kernel.io.log(f'Creating local env ...')
 
     app_create_env(
@@ -51,7 +51,7 @@ def __core__core__install_env(kernel):
     )
 
 
-def __core__core__install_terminal(kernel):
+def __core__core__install_terminal(kernel: 'Kernel') -> None:
     handler_path = os.path.join(kernel.get_path('root'), 'cli/terminal-handler')
     script_path = '/etc/profile.d/wex'
     kernel.io.log(f'Adding terminal initialisation script in {script_path} sourcing {handler_path} ...')
@@ -67,7 +67,7 @@ def __core__core__install_terminal(kernel):
     __source_file(kernel, script_path)
 
 
-def __core__core__install_autocomplete(kernel):
+def __core__core__install_autocomplete(kernel: 'Kernel') -> None:
     handler_path = os.path.join(kernel.get_path('root'), 'cli/autocomplete-handler')
     script_path = '/etc/bash_completion.d/wex'
     kernel.io.log(f'Adding autocompletion handler in {script_path} sourcing {handler_path} ...')
@@ -83,7 +83,7 @@ def __core__core__install_autocomplete(kernel):
     __source_file(kernel, script_path)
 
 
-def __core__core__install_symlink(kernel, destination: str):
+def __core__core__install_symlink(kernel: 'Kernel', destination: str) -> None:
     file_remove_file_if_exists(destination)
 
     os.symlink(
@@ -96,7 +96,7 @@ def __core__core__install_symlink(kernel, destination: str):
     kernel.io.log(f'Created symlink in {destination}')
 
 
-def __core__core__install_webhook_server(kernel):
+def __core__core__install_webhook_server(kernel: 'Kernel') -> None:
     kernel.io.log(f'Installing webhooks server ...')
 
     kernel.run_function(
@@ -108,11 +108,11 @@ def __core__core__install_webhook_server(kernel):
     )
 
 
-def __core__core__install_rebuild(kernel):
+def __core__core__install_rebuild(kernel: 'Kernel') -> None:
     kernel.rebuild()
 
 
-def __source_file(kernel, file_path):
+def __source_file(kernel: 'Kernel', file_path) -> None:
     kernel.io.log(f'Sourcing file {file_path} in bashrc ...')
 
     # If sudo has a parent user.
@@ -123,7 +123,7 @@ def __source_file(kernel, file_path):
     __source_file_in_bashrc(kernel, file_path, os.path.expanduser('~/.bashrc'))
 
 
-def __source_file_in_bashrc(kernel, file_path, bashrc_path):
+def __source_file_in_bashrc(kernel: 'Kernel', file_path, bashrc_path) -> None:
     if not os.path.exists(bashrc_path):
         return
 

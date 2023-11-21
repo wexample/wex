@@ -4,6 +4,10 @@ import re
 from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 from src.decorator.command import command
 from src.decorator.option import option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 @command(help="Get config value to given file")
@@ -11,7 +15,7 @@ from src.decorator.option import option
 @option('--key', '-k', type=str, required=True)
 @option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
 @option('--default', '-d', default='')
-def default__config__get(kernel, file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default='') -> str:
+def default__config__get(kernel: 'Kernel', file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default='') -> str:
     if not file or not os.path.isfile(file):
         return ''
 
