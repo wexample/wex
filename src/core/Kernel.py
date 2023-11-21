@@ -36,7 +36,6 @@ class Kernel:
         self.current_request: None | CommandRequest = None
         self.current_response: None | AbstractResponse = None
         self.io = IOManager(self)
-        self.logger = None
         self.post_exec: List[str] = []
         self.previous_response: None | AbstractResponse = None
         self.registry: Dict[str, str | Dict[str, Any]] = {}
@@ -145,7 +144,7 @@ class Kernel:
 
         return path
 
-    def load_registry(self):
+    def load_registry(self) -> None:
         path_registry = f"{self.get_or_create_path('tmp')}{FILE_REGISTRY}"
 
         # Load registry if empty
