@@ -3,13 +3,14 @@ import subprocess
 from src.helper.file import file_create_parent_dir
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
-from typing import Any, List, Union, Tuple
+from typing import Any, List, Union, Tuple, Optional, Dict, NoReturn
 from subprocess import Popen
 from click.core import Command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+
 
 def internal_command_to_shell(kernel: 'Kernel', internal_command: str, args: None | list[str] = None) -> list[str]:
     command = ([
@@ -160,3 +161,20 @@ def is_same_command(command_a: Command, command_b: Command) -> bool:
     if command_a.callback is not None and command_b.callback is not None:
         return command_a.callback.__name__ == command_b.callback.__name__
     return False
+
+
+def apply_command_decorator(
+        kernel: 'Kernel',
+        function: Command,
+        group: str,
+        name: str,
+        options: Optional[Dict[str, str]] = None) -> NoReturn | Any:
+    if group in kernel.decorators and name in kernel.decorators[group]:
+        decorator = kernel.decorators[group][name]
+        options = options or {}
+
+        return decorator(
+            **options
+        )(function)
+    else:
+        kernel.io.error(f'Missing decorator {group}.{name}')

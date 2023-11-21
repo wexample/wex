@@ -4,6 +4,8 @@ import click
 import builtins
 
 from click import Command
+
+from src.helper.command import apply_command_decorator
 from src.helper.dict import dict_get_item_by_path
 from src.helper.data_yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
@@ -122,7 +124,8 @@ class YamlCommandRunner(AbstractCommandRunner):
                 name = list(property.keys())[0]
                 value = property[name]
 
-            click_function = self.kernel.apply_command_decorator(
+            click_function = apply_command_decorator(
+                self.kernel,
                 function=click_function,
                 group='properties',
                 name=name,
