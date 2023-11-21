@@ -3,7 +3,6 @@ import re
 from abc import abstractmethod
 from typing import Any, List, TYPE_CHECKING, Optional
 
-from const.types import OptionalCommandArgs
 from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.core.FunctionProperty import FunctionProperty
 from src.core.response.NullResponse import NullResponse
@@ -123,7 +122,7 @@ class AbstractCommandResolver:
     def create_command_request(
             self,
             command: str,
-            args: OptionalCommandArgs = None) -> CommandRequest:
+            args: 'OptionalCommandArgs' = None) -> CommandRequest:
         return CommandRequest(
             self,
             command,

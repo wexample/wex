@@ -1,4 +1,7 @@
 from typing import Union, Dict, List, Optional
 
-CommandArgs = Union[Dict[str, Union[str, bool]], List[str]]
+KeyPairCommandArgs = Dict[str, Union[str, bool]]
+CommandArgs = Union[KeyPairCommandArgs, List[str]]
+
+OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCommandArgs = Optional[CommandArgs]

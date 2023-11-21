@@ -28,7 +28,7 @@ from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import OptionalCommandArgs
+    from src.const.types import OptionalCommandArgs, OptionalKeyPairCommandArgs
 
 
 class Kernel:
@@ -110,7 +110,7 @@ class Kernel:
 
         # Create resolvers
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
-        self.resolvers: dict = {
+        self.resolvers: Dict[str, AbstractCommandResolver] = {
             class_definition.get_type(): class_definition(self)
             for class_definition in COMMAND_RESOLVERS_CLASSES
         }
@@ -391,7 +391,7 @@ class Kernel:
             if self.resolvers[type].supports(command):
                 return type
 
-    def hook_addons(self, name: str, args=None):
+    def hook_addons(self, name: str, args: 'OptionalKeyPairCommandArgs' = None) -> None:
         if args is None:
             args = {}
 
@@ -406,13 +406,13 @@ class Kernel:
                 response = hook_method(**args)
 
                 if response:
-                    return response
+                    return
 
     def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
         return self.resolvers[type] if type in self.resolvers else None
 
     def create_command_request(self, command: str,
-                               args: OptionalCommandArgs = None) -> CommandRequest | None:
+                               args: 'OptionalCommandArgs' = None) -> CommandRequest | None:
         type = self.guess_command_type(command)
 
         if type:

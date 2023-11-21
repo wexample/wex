@@ -14,7 +14,7 @@ class CommandRequest:
     localized = None
     match = None
 
-    def __init__(self, resolver, command: str, args: OptionalCommandArgs = None):
+    def __init__(self, resolver, command: str, args: 'OptionalCommandArgs' = None):
         self.extension: None | str = None
         self.quiet = False
         self.resolver = resolver
