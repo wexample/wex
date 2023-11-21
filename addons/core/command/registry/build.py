@@ -81,6 +81,9 @@ def _core__registry__build__services(kernel: 'Kernel', test_commands: bool = Fal
     services_dict = {}
     resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
 
+    if resolver is None:
+        return
+
     for addon in kernel.addons:
         services_dir = kernel.get_path('addons', [addon, 'services'])
         if os.path.exists(services_dir):

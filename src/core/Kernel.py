@@ -21,6 +21,7 @@ from src.decorator.test_command import test_command
 from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.verbosity import verbosity
+from addons.app.AppAddonManager import AppAddonManager
 
 if TYPE_CHECKING:
     from click.core import Command as ClickCommand
@@ -94,7 +95,6 @@ class Kernel:
 
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}
-        from addons.app.AppAddonManager import AppAddonManager
         definitions = {
             'app': AppAddonManager
         }

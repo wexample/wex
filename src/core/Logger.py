@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import time
+from typing import Dict, Any
 
 from src.helper.file import file_set_user_or_sudo_user_owner
 from src.helper.data_json import load_json_if_valid, parse_json_if_valid
@@ -48,7 +49,7 @@ class Logger:
                     log_data=parent_logs
                 )
 
-    def load_logs(self, task_id: str):
+    def load_logs(self, task_id: str) -> Dict[str, Any]:
         return parse_json_if_valid(
             self.kernel.task_file_load(
                 'json',
@@ -145,7 +146,6 @@ class Logger:
         )
 
         file_set_user_or_sudo_user_owner(log_path)
-
 
     def get_all_logs_files(self) -> list:
         directory = self.kernel.get_or_create_path('task')
