@@ -1,9 +1,11 @@
 from abc import abstractmethod
 
+from src.core.response.AbstractResponse import AbstractResponse
+
 
 class AbstractQueuedCollectionResponseQueueManager:
-    def __init__(self, response):
-        self.response = response
+    def __init__(self, response: AbstractResponse) -> None:
+        self.response: AbstractResponse = response
 
     def render_content_complete(self):
         return self.response
