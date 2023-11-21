@@ -388,7 +388,7 @@ class AppAddonManager(AddonManager):
                 'dir': app_dir_resolved,
             }, logging.ERROR)
 
-            exit(0)
+            sys.exit(0)
 
         # Ensure it always ends with a /
         if not app_dir_resolved.endswith(os.sep):

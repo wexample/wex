@@ -15,8 +15,6 @@ from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
-from src.core.response.AbortResponse import AbortResponse
-
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.test_command import test_command
@@ -25,6 +23,7 @@ from src.decorator.no_log import no_log
 from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
+    from src.core.response.AbortResponse import AbortResponse
     from src.core.CommandRequest import CommandRequest
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
@@ -177,7 +176,7 @@ class Kernel:
             self.io.print(line.strip())
 
         if _exit:
-            exit(1)
+            sys.exit(1)
 
     def call(self):
         """
@@ -269,6 +268,11 @@ class Kernel:
                      render_mode: str | None = None) -> 'AbstractResponse':
         resolver = self.get_command_resolver(type)
 
+        if resolver is None:
+            return self.create_abort_response(
+                message=f'Resolver not found for type "{type}"'
+            )
+
         request = self.create_command_request(
             command=resolver.build_command_from_function(function),
             args=args,
@@ -276,6 +280,10 @@ class Kernel:
         )
 
         return self.render_request(request, render_mode)
+
+    def create_abort_response(self, message: str) -> 'AbstractResponse':
+        from src.core.response.AbortResponse import AbortResponse
+        return AbortResponse(self, message)
 
     def render_request(self,
                        request: 'CommandRequest',
@@ -403,9 +411,10 @@ class Kernel:
     def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
         return self.resolvers[type] if type in self.resolvers else None
 
-    def create_command_request(self, command: 'CoreStringCommand',
+    def create_command_request(self,
+                               command: 'CoreStringCommand',
                                args: 'OptionalCommandArgs' = None,
-                               quiet: bool = False) -> 'CommandRequest':
+                               quiet: bool = False) -> 'CommandRequest' | NoReturn:
         command_type = self.guess_command_type(command)
 
         if command_type:
@@ -424,6 +433,8 @@ class Kernel:
                     'command': command
                 }, trace=False
             )
+
+        assert False
 
     def store_task_id(self) -> Optional[NoReturn]:
         if self.task_id:

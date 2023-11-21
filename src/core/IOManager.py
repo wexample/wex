@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import NoReturn, Dict, Any, Optional, List, TYPE_CHECKING
+from typing import NoReturn, Dict, Any, Optional, List, TYPE_CHECKING, Callable
 
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 from src.const.globals import \
@@ -25,8 +25,8 @@ class IOManager:
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: List[str] = []
-        self.indent_string = '  '
-        self.kernel = kernel
+        self.indent_string: str = '  '
+        self.kernel: 'Kernel' = kernel
 
     def error(
             self,
@@ -54,7 +54,7 @@ class IOManager:
             # Do not exit, allowing unit testing to catch error.
         else:
             self.print(message)
-            exit(0)
+            sys.exit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
@@ -65,24 +65,28 @@ class IOManager:
     def build_indent(self, increment: int = 0) -> str:
         return self.indent_string * (self.log_indent + increment)
 
-    def calc_log_messages_length(self):
+    def calc_log_messages_length(self) -> int:
         return sum(message['lines'] for message in self.log_messages)
 
-    def log_hide(self):
+    def log_hide(self) -> None:
         if self.log_length:
             total_lines_needed = self.calc_log_messages_length()
             self.clear_last_n_lines(total_lines_needed)
 
-    def clear_last_n_lines(self, n):
+    def clear_last_n_lines(self, n) -> None:
         for _ in range(n):
             sys.stdout.write("\x1b[1A")  # Move cursor up by 1 line
             sys.stdout.write("\x1b[2K")  # Clear current line
 
-    def log_show(self):
+    def log_show(self) -> None:
         for message in self.log_messages:
             self.print(message['message'])
 
-    def log(self, message: str, color=COLOR_GRAY, increment: int = 0, verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
+    def log(self,
+            message: str,
+            color=COLOR_GRAY,
+            increment: int = 0,
+            verbosity: int = VERBOSITY_LEVEL_DEFAULT) -> None:
         if verbosity > self.kernel.verbosity:
             return
 
@@ -108,25 +112,31 @@ class IOManager:
         else:
             self.print(message)
 
-    def success(self, message):
-        def _success():
+    def success(self,
+                message: str):
+        def _success() -> None:
             nonlocal message
             self.log(f'{COLOR_GREEN}✔{COLOR_RESET} {message}')
 
         self.exec_outside_log_frame(_success)
 
-    def fail(self, message):
-        def _fail():
+    def fail(self,
+             message: str) -> None:
+        def _fail() -> None:
             nonlocal message
             self.log(f'{COLOR_RED}×{COLOR_RESET} {message}')
             self.print(message)
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message: str, **kwargs: Dict[str, Any]) -> None:
+    def print(self,
+              message: str,
+              **kwargs: Dict[str, Any]) -> None:
         print(message, **kwargs)
 
-    def message(self, message: str, text: None | str = None):
+    def message(self,
+                message: str,
+                text: None | str = None) -> None:
         import textwrap
 
         def _message():
@@ -141,7 +151,7 @@ class IOManager:
 
         self.exec_outside_log_frame(_message)
 
-    def exec_outside_log_frame(self, callback: callable):
+    def exec_outside_log_frame(self, callback: Callable[..., Any]) -> None:
         self.log_hide()
 
         callback()
@@ -151,7 +161,7 @@ class IOManager:
     def message_next_command(
             self,
             function_or_command,
-            args: dict | None = None,
+            args: Optional[Dict[str, str]] = None,
             command_type: str = COMMAND_TYPE_ADDON,
             message: str = 'You might want now to execute'):
         return self.message_all_next_commands(

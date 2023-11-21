@@ -7,3 +7,4 @@ OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCommandArgs = Optional[CommandArgs]
 
 CoreStringCommand = str
+StringsKeyPair = Dict[str, str]
