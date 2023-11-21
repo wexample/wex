@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from typing import Any, Dict, Callable, Optional, NoReturn, List
+from typing import Any, Dict, Callable, Optional, NoReturn, List, TYPE_CHECKING
 
 from yaml import SafeLoader
 
@@ -16,9 +16,18 @@ from src.core.AddonManager import AddonManager
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 from src.core.response.AbortResponse import AbortResponse
+
+from src.decorator.alias import alias
+from src.decorator.as_sudo import as_sudo
+from src.decorator.test_command import test_command
+from src.decorator.command import command
+from src.decorator.no_log import no_log
+from src.decorator.verbosity import verbosity
+
+if TYPE_CHECKING:
+    from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 
 
 class Kernel:
@@ -44,13 +53,6 @@ class Kernel:
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: dict = {}
-
-        from src.decorator.alias import alias
-        from src.decorator.as_sudo import as_sudo
-        from src.decorator.test_command import test_command
-        from src.decorator.command import command
-        from src.decorator.no_log import no_log
-        from src.decorator.verbosity import verbosity
 
         self.decorators: Dict[str, Dict[str, Callable[[Any], Any]]] = {
             'command': {
@@ -405,7 +407,7 @@ class Kernel:
                 if response:
                     return response
 
-    def get_command_resolver(self, type: str) -> AbstractCommandResolver | None:
+    def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
         return self.resolvers[type] if type in self.resolvers else None
 
     def create_command_request(self, command: str, args: dict | list = None) -> CommandRequest | None:
