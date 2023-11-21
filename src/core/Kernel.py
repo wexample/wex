@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from typing import Any, Dict, Callable
+from typing import Any, Dict, Callable, Optional, NoReturn
 
 from yaml import SafeLoader
 
@@ -413,9 +413,9 @@ class Kernel:
 
         return None
 
-    def store_task_id(self):
+    def store_task_id(self) -> Optional[NoReturn]:
         if self.task_id:
-            return
+            return None
 
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
@@ -423,11 +423,11 @@ class Kernel:
                 'Please use the "bash ./cli/wex" file to run wex script.',
                 trace=False
             )
-            sys.exit(1)
 
         self.task_id = self.sys_argv[1]
+        return None
 
-    def handle_core_args(self):
+    def handle_core_args(self) -> None:
         if args_shift_one(self.sys_argv, 'fast-mode', True) is not None:
             self.fast_mode = True
 
