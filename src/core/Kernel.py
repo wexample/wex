@@ -7,11 +7,9 @@ from yaml import SafeLoader
 
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.NullResponse import NullResponse
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
-from src.core.CommandRequest import CommandRequest
 from src.core.AddonManager import AddonManager
 from src.const.globals import \
     FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
@@ -27,8 +25,10 @@ from src.decorator.no_log import no_log
 from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
+    from src.core.CommandRequest import CommandRequest
+    from src.core.response.AbstractResponse import AbstractResponse
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import OptionalCommandArgs, OptionalKeyPairCommandArgs
+    from src.const.types import CoreStringCommand, OptionalCommandArgs, OptionalKeyPairCommandArgs
 
 
 class Kernel:
@@ -42,12 +42,12 @@ class Kernel:
             entrypoint_path: str,
             task_id: str | None = None
     ) -> None:
-        self.root_request: None | CommandRequest = None
-        self.current_request: None | CommandRequest = None
-        self.current_response: None | AbstractResponse = None
+        self.root_request: Optional['CommandRequest'] = None
+        self.current_request: Optional['CommandRequest'] = None
+        self.current_response: Optional['AbstractResponse'] = None
         self.io = IOManager(self)
         self.post_exec: List[str] = []
-        self.previous_response: None | AbstractResponse = None
+        self.previous_response: Optional['AbstractResponse'] = None
         self.registry: Dict[str, str | Dict[str, Any]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
@@ -253,18 +253,11 @@ class Kernel:
                     command: str,
                     args: dict | list = None,
                     quiet: bool = False,
-                    render_mode: str | None = None) -> AbstractResponse:
-        request = self.create_command_request(command, args)
-
-        if not request and not quiet:
-            self.io.error(
-                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
-                {
-                    'command': command
-                }, trace=False
-            )
-
-        request.quiet = quiet
+                    render_mode: str | None = None) -> 'AbstractResponse':
+        request = self.create_command_request(
+            command=command,
+            args=args,
+            quiet=quiet)
 
         return self.render_request(request, render_mode)
 
@@ -273,21 +266,20 @@ class Kernel:
                      args: dict | list = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,
-                     render_mode: str | None = None) -> AbstractResponse:
+                     render_mode: str | None = None) -> 'AbstractResponse':
         resolver = self.get_command_resolver(type)
 
         request = self.create_command_request(
-            resolver.build_command_from_function(function),
-            args
+            command=resolver.build_command_from_function(function),
+            args=args,
+            quiet=quiet
         )
-
-        request.quiet = quiet
 
         return self.render_request(request, render_mode)
 
     def render_request(self,
-                       request,
-                       render_mode: str | None = None) -> AbstractResponse:
+                       request: 'CommandRequest',
+                       render_mode: str | None = None) -> 'AbstractResponse':
         # Save unique root request
         self.root_request = self.root_request if self.root_request else request
 
@@ -330,7 +322,7 @@ class Kernel:
             render_mode or self.default_render_mode
         )
 
-    def task_file_path(self, type: str, task_id: str | None = None):
+    def task_file_path(self, type: str, task_id: str | None = None) -> str:
         return os.path.join(self.get_or_create_path('task'), f"{task_id or self.task_id}.{type}")
 
     def task_file_load(
@@ -339,7 +331,7 @@ class Kernel:
             task_id: str | None = None,
             delete_after_read: bool = True,
             create_if_missing: bool = True,
-            default=''):
+            default: str = '') -> str:
         """
         Load the content of a file and optionally delete the file after reading. If the file does not exist
         and `create_if_missing` is True, a new file will be created with the `default` content.
@@ -375,7 +367,7 @@ class Kernel:
             type: str,
             body: str,
             task_id: str | None = None,
-            replace: bool = False):
+            replace: bool = False) -> str:
         from src.helper.file import file_set_user_or_sudo_user_owner
         path = self.task_file_path(type, task_id=task_id)
 
@@ -386,14 +378,14 @@ class Kernel:
 
             return path
 
-    def guess_command_type(self, command: str) -> str | None:
+    def guess_command_type(self, command: 'CoreStringCommand') -> Optional[str]:
         for type in self.resolvers:
             if self.resolvers[type].supports(command):
                 return type
+        return None
 
-    def hook_addons(self, name: str, args: 'OptionalKeyPairCommandArgs' = None) -> None:
-        if args is None:
-            args = {}
+    def hook_addons(self, name: str, args: Optional[Dict[str, Any]] = None) -> None:
+        args = args or {}
 
         hook = f'hook_{name}'
         # Init addons
@@ -411,17 +403,27 @@ class Kernel:
     def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
         return self.resolvers[type] if type in self.resolvers else None
 
-    def create_command_request(self, command: str,
-                               args: 'OptionalCommandArgs' = None) -> CommandRequest | None:
-        type = self.guess_command_type(command)
+    def create_command_request(self, command: 'CoreStringCommand',
+                               args: 'OptionalCommandArgs' = None,
+                               quiet: bool = False) -> 'CommandRequest':
+        command_type = self.guess_command_type(command)
 
-        if type:
-            resolver = self.get_command_resolver(type)
+        if command_type:
+            resolver = self.get_command_resolver(command_type)
 
             if resolver:
-                return resolver.create_command_request(command, args)
+                request = resolver.create_command_request(command, args)
+                request.quiet = quiet
 
-        return None
+                return request
+
+        if not quiet:
+            self.io.error(
+                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
+                {
+                    'command': command
+                }, trace=False
+            )
 
     def store_task_id(self) -> Optional[NoReturn]:
         if self.task_id:

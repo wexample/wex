@@ -10,7 +10,6 @@ from src.core.response.DictResponse import DictResponse
 from src.helper.command import command_to_string
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.DefaultResponse import DefaultResponse
-from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
 from src.helper.args import args_convert_dict_to_args
@@ -18,6 +17,7 @@ from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_sub
 from src.helper.string import string_trim_leading, string_to_snake_case, string_to_kebab_case
 from src.helper.user import get_user_or_sudo_user
 from src.core.CommandRequest import CommandRequest
+from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -28,7 +28,7 @@ class AbstractCommandResolver:
     def __init__(self, kernel: 'Kernel') -> None:
         self.kernel = kernel
 
-    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse | None:
+    def render_request(self, request: CommandRequest, render_mode: str) -> 'AbstractResponse':
         self.kernel.hook_addons('render_request_pre', {'request': request})
 
         previous_verbosity = self.kernel.verbosity
@@ -64,7 +64,7 @@ class AbstractCommandResolver:
 
         return response
 
-    def wrap_response(self, response: Any) -> AbstractResponse:
+    def wrap_response(self, response: Any) -> 'AbstractResponse':
         if isinstance(response, AbstractResponse):
             return response
         elif callable(response):

@@ -1,16 +1,18 @@
 import os
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.core.FunctionProperty import FunctionProperty
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.string import string_to_snake_case, string_to_kebab_case
 from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+
+if TYPE_CHECKING:
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -20,7 +22,7 @@ class AppCommandResolver(AbstractCommandResolver):
         # Shortcut.
         self.app_addon_manager = kernel.addons['app']
 
-    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> 'AbstractResponse':
         if not self.get_base_path():
             if not request.quiet:
                 self.kernel.io.error(ERR_APP_NOT_FOUND, {
@@ -119,7 +121,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def run_command_request_from_url_path(
             self,
             path: str,
-            command_args: dict | None = None) -> None | AbstractResponse:
+            command_args: dict | None = None) -> 'AbstractResponse':
         from src.core.response.AbortResponse import AbortResponse
         from src.helper.string import string_to_snake_case
 
@@ -143,6 +145,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 reason='WEBHOOK_APP_NOT_FOUND')
 
         self_super = super()
+
         def _callback():
             request = self.kernel.create_command_request(
                 internal_command)

@@ -1,12 +1,14 @@
 import os
 
 from click import Command
+
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import args_convert_dict_to_args
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.const.types import OptionalCommandArgs
+    from src.core.command.resolver import AbstractCommandResolver
 
 
 class CommandRequest:
@@ -17,7 +19,7 @@ class CommandRequest:
     def __init__(self, resolver, command: str, args: 'OptionalCommandArgs' = None):
         self.extension: None | str = None
         self.quiet = False
-        self.resolver = resolver
+        self.resolver: AbstractCommandResolver = resolver
         self.runner = None
         self.command = resolver.resolve_alias(command)
         self.type = resolver.get_type()

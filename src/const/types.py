@@ -5,3 +5,5 @@ CommandArgs = Union[KeyPairCommandArgs, List[str]]
 
 OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCommandArgs = Optional[CommandArgs]
+
+CoreStringCommand = str

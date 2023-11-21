@@ -1,19 +1,21 @@
 import os
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from addons.app.const.app import ERR_SERVICE_NOT_FOUND
 from src.helper.service import service_get_dir
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbortResponse import AbortResponse
 from src.helper.string import string_to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 
+if TYPE_CHECKING:
+    from src.core.response.AbstractResponse import AbstractResponse
+
 
 class ServiceCommandResolver(AbstractCommandResolver):
-    def render_request(self, request: CommandRequest, render_mode: str) -> AbstractResponse:
+    def render_request(self, request: CommandRequest, render_mode: str) -> 'AbstractResponse':
         service = string_to_snake_case(request.match[1])
         if service not in self.kernel.registry['service']:
             if not request.quiet:
@@ -56,7 +58,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
             base_path=path,
             extension=extension,
             subdir=subdir,
-            command_path=os.path.join(string_to_snake_case(request.match.group(2)), string_to_snake_case(request.match.group(3)))
+            command_path=os.path.join(string_to_snake_case(request.match.group(2)),
+                                      string_to_snake_case(request.match.group(3)))
         )
 
     def get_function_name_parts(self, parts: list) -> []:

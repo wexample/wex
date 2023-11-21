@@ -31,7 +31,7 @@ class IOManager:
     def error(
             self,
             message: str,
-            parameters: Optional[Dict[str, str]] = None,
+            parameters: Optional[Dict[str, Any]] = None,
             fatal: bool = True,
             trace: bool = True) -> NoReturn:
         # Performance optimisation
