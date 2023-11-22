@@ -5,6 +5,7 @@ from typing import Any, Dict, Callable, Optional, NoReturn, List, TYPE_CHECKING
 
 from yaml import SafeLoader
 
+from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_shift_one
 from src.core.response.NullResponse import NullResponse
@@ -92,6 +93,8 @@ class Kernel:
             'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep,
             'task': os.path.join(tmp_path, 'task') + os.sep
         }
+
+        self.directory = KernelDirectoryStructure()
 
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}

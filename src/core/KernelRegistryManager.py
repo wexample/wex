@@ -1,0 +1,2 @@
+class KernelRegistryManager:
+    pass
