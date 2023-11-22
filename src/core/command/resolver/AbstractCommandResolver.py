@@ -290,11 +290,6 @@ class AbstractCommandResolver:
 
         return command_dict
 
-    def build_alias(self, function, alias: bool | str) -> str:
-        if isinstance(alias, bool) and alias:
-            return self.build_command_from_function(function)
-        return alias
-
     def scan_commands(self, directory: str, group: str, test_commands: bool = False):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands = {}
