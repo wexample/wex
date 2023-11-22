@@ -12,8 +12,10 @@ FILE_SYSTEM_ACTION_ON_MISSING_ERROR = 'error'
 FILE_SYSTEM_ACTION_ON_MISSING_CREATE = 'create'
 
 FILE_SYSTEM_ERROR_NOT_FOUND: str = 'FILE_SYSTEM_ERROR_NOT_FOUND'
+FILE_SYSTEM_ERROR_WRONG_EXTENSION: str = 'FILE_SYSTEM_ERROR_WRONG_EXTENSION'
 FILE_SYSTEM_ERROR_MESSAGES: Dict[str, str] = {
-    FILE_SYSTEM_ERROR_NOT_FOUND: 'File or directory not found : {path}'
+    FILE_SYSTEM_ERROR_NOT_FOUND: 'File or directory not found : {path}',
+    FILE_SYSTEM_ERROR_WRONG_EXTENSION: 'Wrong file extension for file {path}, expected {expected}'
 }
 
 FILE_SYSTEM_SCHEMA_ITEM_KEY_CLASS = 'class'
