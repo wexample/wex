@@ -1,7 +1,7 @@
 import os
-from typing import Optional
+from typing import Optional, Any
 
-from src.helper.file import file_create_parent_and_touch
+from src.helper.file import file_create_parent_and_touch, file_read
 from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure, FILE_SYSTEM_TYPE_FILE, \
     FILE_SYSTEM_ERROR_WRONG_EXTENSION
 
@@ -26,6 +26,9 @@ class FileStructure(AbstractFileSystemStructure):
                         'expected': self.file_extension
                     }
                 )
+
+    def load_content(self) -> Any:
+        return file_read(self.path)
 
     def create_missing(self):
         file_create_parent_and_touch(

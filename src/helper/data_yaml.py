@@ -1,6 +1,8 @@
-from typing import Any
+from typing import Any, Optional, Dict, List
 
 import yaml
+
+YamlContent = Optional[Dict[str, Any] | List[Any]]
 
 
 def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
@@ -23,7 +25,7 @@ def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
         return False
 
 
-def yaml_load(file_path: str) -> Any:
+def yaml_load(file_path: str) -> YamlContent:
     try:
         with open(file_path, 'r') as f:
             content = yaml.safe_load(f)
