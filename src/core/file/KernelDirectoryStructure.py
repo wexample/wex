@@ -5,7 +5,6 @@ from src.core.file.DirectoryStructure import DirectoryStructure
 
 class KernelDirectoryStructure(DirectoryStructure):
     should_exist: bool = True
-    checkup: bool = True
     children: Dict[str, Any] = {
         'addons': {
             'should_exists': True,

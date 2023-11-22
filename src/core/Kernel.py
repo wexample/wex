@@ -98,6 +98,10 @@ class Kernel:
             path=root_path,
         )
 
+        self.io.handle_structure_errors(
+            self.directory
+        )
+
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}
         definitions = {
