@@ -25,6 +25,7 @@ from src.decorator.verbosity import verbosity
 from addons.app.AppAddonManager import AppAddonManager
 
 if TYPE_CHECKING:
+    from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
     from click.core import Command as ClickCommand
     from src.core.response.AbortResponse import AbortResponse
     from src.core.CommandRequest import CommandRequest
@@ -115,7 +116,7 @@ class Kernel:
         self.logger: Logger = Logger(self)
 
         # Display directory structure error if exists
-        self.io.handle_structure_errors(
+        self.file_structure_display_errors(
             self.directory
         )
 
@@ -511,3 +512,10 @@ class Kernel:
             file_remove_file_if_exists(
                 self.task_file_path('post-exec')
             )
+
+    def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure'):
+        errors = file_system_structure.get_all_errors()
+        if len(errors):
+            self.error(
+                errors[0]['message'],
+                errors[0]['parameters'])

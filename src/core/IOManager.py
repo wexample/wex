@@ -2,7 +2,6 @@ import os
 import sys
 from typing import NoReturn, Dict, Any, Optional, List, TYPE_CHECKING, Callable
 
-from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 from src.const.globals import \
     (COLOR_RESET,
@@ -198,9 +197,4 @@ class IOManager:
         commands = os.linesep.join(commands)
         self.message(message + ':', commands)
 
-    def handle_structure_errors(self, file_system_structure: AbstractFileSystemStructure):
-        errors = file_system_structure.get_all_errors()
-        if len(errors):
-            self.error(
-                errors[0]['message'],
-                errors[0]['parameters'])
+
