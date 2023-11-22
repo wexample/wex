@@ -21,6 +21,7 @@ FILE_SYSTEM_ERROR_MESSAGES: Dict[str, str] = {
 FILE_SYSTEM_SCHEMA_ITEM_KEY_CLASS = 'class'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING = 'on_missing'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA = 'schema'
+FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT = 'shortcut'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST = 'should_exist'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE = 'type'
 
@@ -28,6 +29,7 @@ FileSystemStructureErrorItem = Dict[str, str | Dict[str, Any]]
 FileSystemStructureSchemaItemKeys = Literal[
     FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING,
     FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA,
+    FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT,
     FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST,
     FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE,
 ]
@@ -41,29 +43,53 @@ FileSystemStructureType = Literal[
 
 class AbstractFileSystemStructure(ABC):
     should_exist: Optional[bool] = True
-    initial_checkup: bool = True
     children: Dict[str, Any]
     path: str
     type: FileSystemStructureType
     errors: List[FileSystemStructureErrorItem]
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     schema: FileSystemStructureSchema = {}
+    parent_structure: Optional['AbstractFileSystemStructure'] = None
+    shortcut: Optional[str] = None
+    shortcuts: Dict[str, 'AbstractFileSystemStructure']
 
     def __init__(self,
                  path: str,
-                 allow_initial_checkup: bool = True) -> None:
+                 initialize: bool = True) -> None:
         self.path = path
         self.errors = []
         self.children = {}
-        self.create_children()
+        self.shortcuts = {}
 
-        if allow_initial_checkup and self.initial_checkup:
-            self.checkup()
+        if initialize:
+            self.initialize()
 
-    def create_children(self):
+    def initialize(self):
+        self.load_schema()
+        self.checkup()
+
+    def set_parent(self, parent_structure: Optional['AbstractFileSystemStructure']):
+        self.parent_structure = parent_structure
+
+        if self.shortcut:
+            self.parent_structure.set_shortcut(
+                self.shortcut,
+                self
+            )
+
+    def set_shortcut(self, name: str, structure: 'AbstractFileSystemStructure') -> None:
+        self.shortcuts[name] = structure
+        if self.parent_structure:
+            self.parent_structure.set_shortcut(
+                name,
+                structure
+            )
+
+    def load_schema(self) -> None:
         for item_name in self.schema:
-            options = self.schema[item_name]
-            type = options[
+            options: FileSystemStructureSchemaItem = self.schema[item_name]
+
+            type: str = options[
                 FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE] if FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE in options else FILE_SYSTEM_TYPE_DIR
             class_definition: Any = options[
                 FILE_SYSTEM_SCHEMA_ITEM_KEY_CLASS] if FILE_SYSTEM_SCHEMA_ITEM_KEY_CLASS in options else None
@@ -83,25 +109,28 @@ class AbstractFileSystemStructure(ABC):
                     self.path,
                     item_name
                 ),
-                allow_initial_checkup=False
+                initialize=False,
             )
 
-            structure.load_options(options)
-
             self.children[item_name] = structure
+            structure.load_options(options)
+            structure.set_parent(self)
 
-            # Run checkup now than options are loaded.
-            if structure.initial_checkup:
-                structure.checkup()
+            # Init after options loaded
+            structure.initialize()
 
     def load_options(self, options: FileSystemStructureSchemaItem):
-        if options[FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING] \
-                if FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING in options else None:
+        if FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING in options:
             self.on_missing = options[FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING]
 
-        if options[FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST] \
-                if FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST in options else None:
+        if FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST in options:
             self.should_exist = bool(options[FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST])
+
+        if FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT in options:
+            self.shortcut = str(options[FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT])
+
+        if FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA in options:
+            self.schema = options[FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA]
 
         if self.on_missing:
             self.should_exist = True
