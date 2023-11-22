@@ -199,5 +199,8 @@ class IOManager:
         self.message(message + ':', commands)
 
     def handle_structure_errors(self, file_system_structure: AbstractFileSystemStructure):
-        if len(file_system_structure.errors):
-            self.error(file_system_structure.errors[0]['message'])
+        errors = file_system_structure.get_all_errors()
+        if len(errors):
+            self.error(
+                errors[0]['message'],
+                errors[0]['parameters'])

@@ -1,28 +1,32 @@
-from typing import Dict, Any
-
+from src.const.globals import CORE_COMMAND_NAME
+from src.core.file.AbstractFileSystemStructure import FileSystemStructureSchema, \
+    FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST, FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA, \
+    FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING, FILE_SYSTEM_TYPE_FILE, FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE, \
+    FILE_SYSTEM_ACTION_ON_MISSING_CREATE
 from src.core.file.DirectoryStructure import DirectoryStructure
 
 
 class KernelDirectoryStructure(DirectoryStructure):
     should_exist: bool = True
-    children: Dict[str, Any] = {
+    schema: FileSystemStructureSchema = {
         'addons': {
-            'should_exists': True,
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST: True,
         },
         'cli': {
-            'should_exist': True,
-            'children': {
-                'wex': {
-                    'type': 'file',
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST: True,
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA: {
+                CORE_COMMAND_NAME: {
+                    FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE: FILE_SYSTEM_TYPE_FILE,
+                    FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST: True,
                 }
             }
         },
         'tmp': {
-            'should_exist': True,
-            'on_missing': 'create',
-            'children': {
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST: True,
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING: FILE_SYSTEM_ACTION_ON_MISSING_CREATE,
+            FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA: {
                 'task': {
-                    'on_missing': 'create',
+                    FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING: FILE_SYSTEM_ACTION_ON_MISSING_CREATE,
                 }
             }
         },

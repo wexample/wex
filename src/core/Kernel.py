@@ -98,10 +98,6 @@ class Kernel:
             path=root_path,
         )
 
-        self.io.handle_structure_errors(
-            self.directory
-        )
-
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}
         definitions = {
@@ -115,8 +111,13 @@ class Kernel:
         self.store_task_id()
         self.handle_core_args()
 
-        # Create the logger after task_id created.
+        # Create the logger after task_id created
         self.logger: Logger = Logger(self)
+
+        # Display directory structure error if exists
+        self.io.handle_structure_errors(
+            self.directory
+        )
 
         # Create resolvers
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
