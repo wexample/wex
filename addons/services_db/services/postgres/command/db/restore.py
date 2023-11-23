@@ -16,7 +16,7 @@ def postgres__db__restore(kernel: 'Kernel', app_dir: str, service: str, file_nam
     manager: AppAddonManager = kernel.addons['app']
 
     command = [
-        'postgres',
+        'psql',
         kernel.run_function(
             postgres__db__connect,
             {
@@ -37,6 +37,7 @@ def postgres__db__restore(kernel: 'Kernel', app_dir: str, service: str, file_nam
             'container-name': service,
             # Ask to execute bash
             'command': command,
+            'user': 'postgres',
             'sync': True
         }
     )
