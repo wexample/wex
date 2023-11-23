@@ -1,3 +1,4 @@
+import os
 
 from dotenv import dotenv_values
 from addons.app.const.app import APP_FILEPATH_REL_ENV
@@ -13,4 +14,10 @@ if TYPE_CHECKING:
 @option('--key', '-k', type=str, required=False, default='APP_ENV',
         help="Key in env file")
 def app__env__get(kernel: 'Kernel', app_dir: str, key: str = 'APP_ENV') -> str:
-    return dotenv_values(app_dir + APP_FILEPATH_REL_ENV).get(key)
+    return _app__env__get(app_dir, key)
+
+
+def _app__env__get(app_dir: str, key: str = 'APP_ENV') -> str:
+    return dotenv_values(
+        os.path.join(app_dir,
+                     APP_FILEPATH_REL_ENV)).get(key)

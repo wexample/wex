@@ -25,7 +25,7 @@ def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
         return False
 
 
-def yaml_load(file_path: str) -> YamlContent:
+def yaml_load(file_path: str, default: Optional[YamlContent] = None) -> YamlContent:
     try:
         with open(file_path, 'r') as f:
             content = yaml.safe_load(f)
@@ -33,15 +33,17 @@ def yaml_load(file_path: str) -> YamlContent:
             if isinstance(content, dict):
                 return content
             else:
-                return None
+                return default
     except Exception:
-        return None
+        return default
 
 
 def yaml_write(file_path: str, content: YamlContent) -> None:
     try:
         with open(file_path, 'w') as f:
-            yaml.safe_dump(content, f)
+            yaml.safe_dump(
+                content,
+                f)
     except Exception as e:
         return None
 

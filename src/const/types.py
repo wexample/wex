@@ -12,22 +12,20 @@ AddonNameType = Literal[
     'test'
 ]
 
+StringKeysDict = Dict[str, Any]
 AnyCallable = Callable[..., Any]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
-Kwargs = Dict[str, Any]
-StringMessageParameters = Dict[str, Any]
-StringsKeyPair = Dict[str, str]
-RegistryAddon = Dict[str, Dict[str, Any]]
-RegistryService = Dict[str, Dict[str, Any]]
+Kwargs = StringKeysDict
+StringMessageParameters = StringKeysDict
+StringsDict = Dict[str, str]
+RegistryAddon = Dict[Union['alias', 'command', 'file', 'properties', 'test'], StringsDict]
+RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], StringsDict]
+RegistryResolver = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 
 KernelRegistry = Dict[
-    Literal[
-        'addon',
-        'env',
-        'service',
-    ],
-    Dict[str, RegistryAddon] | str | Dict[str, RegistryService]
+    Literal['env', 'resolvers'],
+    str | Dict[str, RegistryResolver]
 ]
 
 CoreCommandArgsDict = KeyPairCommandArgs

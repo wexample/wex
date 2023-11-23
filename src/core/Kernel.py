@@ -170,12 +170,22 @@ class Kernel:
         return path
 
     def load_registry(self) -> None:
-        self.registry_structure = self.directory.shortcuts['registry']
+        self.registry_structure = KernelRegistryFileStructure(
+            self,
+            os.path.join(
+                self.directory.shortcuts['tmp'].path,
+                'registry-v2.yml'
+            )
+        )
 
         # Load registry if empty
         if not self.registry_structure.exists():
+            self.registry_structure.build()
             self.rebuild()
 
+        # Check again
+        self.registry_structure.should_exist = True
+        self.registry_structure.checkup()
         with open(path_registry) as f:
             self.registry = yaml.load(f, SafeLoader)
 

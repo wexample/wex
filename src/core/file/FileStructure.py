@@ -12,6 +12,16 @@ class FileStructure(AbstractFileSystemStructure):
     file_extension: Optional[str] = None
     content: Any
 
+    def __init__(self,
+                 path: str,
+                 initialize: bool = True) -> None:
+        self.content = None
+
+        super().__init__(
+            path=path,
+            initialize=initialize
+        )
+
     def checkup(self):
         super().checkup()
 

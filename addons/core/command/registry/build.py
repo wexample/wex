@@ -3,7 +3,7 @@ import yaml
 
 from yaml import SafeLoader
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
-from addons.app.command.env.get import app__env__get
+from addons.app.command.env.get import _app__env__get
 from src.helper.registry import registry_resolve_service_inheritance
 from src.decorator.alias import alias
 from src.decorator.command import command
@@ -31,11 +31,15 @@ def core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = Tr
 
 
 def _core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> 'KernelRegistry':
+    kernel.registry_structure.build()
+    # TODO Return
+
+    # TODO RM
+
     kernel.io.log('Building registry...')
 
     # Call function avoiding core command management.
-    env = app__env__get.callback.__wrapped__(
-        kernel,
+    env = _app__env__get(
         kernel.get_path('root')
     )
 

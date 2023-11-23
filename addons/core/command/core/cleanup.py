@@ -27,7 +27,7 @@ def core__core__cleanup(kernel: 'Kernel', test: bool = False):
     with open(os.path.join(tmp_dir, '.gitkeep'), 'a'):
         pass
 
-    kernel.rebuild(test=test)
+    kernel.registry_structure.build(test=test)
 
     # Reset perms
     kernel.run_function(

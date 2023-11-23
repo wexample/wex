@@ -109,7 +109,7 @@ def __core__core__install_webhook_server(kernel: 'Kernel') -> None:
 
 
 def __core__core__install_rebuild(kernel: 'Kernel') -> None:
-    kernel.rebuild()
+    kernel.registry_structure.build()
 
 
 def __source_file(kernel: 'Kernel', file_path) -> None:

@@ -90,7 +90,7 @@ def create_test_from_command(kernel: 'Kernel', command: str, force: bool = False
         }
     )
 
-    kernel.rebuild()
+    kernel.registry_structure.build()
 
     kernel.io.message(f'Created test file : {test_path}')
 
