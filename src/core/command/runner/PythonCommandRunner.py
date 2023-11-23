@@ -24,7 +24,7 @@ class PythonCommandRunner(AbstractCommandRunner):
         )
 
     def get_params(self) -> list:
-        return self.request.function.params
+        return self.request.function.function.params
 
     def get_command_type(self):
         return self.request.function.function.callback.command_type

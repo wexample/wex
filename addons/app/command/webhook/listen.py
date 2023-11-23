@@ -126,7 +126,7 @@ def app__webhook__listen(
 
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
-                function = routes_map[route_name]['function']
+                function = routes_map[route_name]['function'].function
                 options = {}
 
                 if hasattr(function.callback, 'option_webhook_listener_path'):
@@ -153,14 +153,14 @@ def app__webhook__listen(
                     '--quiet'
                 ]
 
-                if hasattr(kernel.root_request.function.callback,
+                if hasattr(kernel.root_request.function.function.callback,
                            'option_webhook_listener_path'):
                     command += [
                         '--path',
                         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     ]
 
-                if hasattr(kernel.root_request.function.callback,
+                if hasattr(kernel.root_request.function.function.callback,
                            'option_webhook_listener_port'):
                     command += [
                         '--port',

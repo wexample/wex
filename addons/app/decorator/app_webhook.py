@@ -1,13 +1,17 @@
 from src.core.FunctionProperty import FunctionProperty
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 def app_webhook(*args, **kwargs):
-    def decorator(function):
+    def decorator(script_command: 'ScriptCommand'):
         FunctionProperty(
-            function,
+            script_command,
             'app_webhook',
             True)
 
-        return function
+        return script_command
 
     return decorator

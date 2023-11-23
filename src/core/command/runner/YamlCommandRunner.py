@@ -65,8 +65,8 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script['title'])
 
-                command = click_function.function.script_run_handler(
-                    click_function.function,
+                command = script_command.function.script_run_handler(
+                    script_command.function,
                     self,
                     script,
                     variables
@@ -108,7 +108,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 trace=False)
 
         decorator_options = dict_get_item_by_path(self.content, 'command.options', {})
-        click_function = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
+        script_command = decorator(help=self.content['help'], **decorator_options)(click_function_callback)
 
         # Apply extra decorators
         properties = dict_get_item_by_path(
@@ -124,9 +124,9 @@ class YamlCommandRunner(AbstractCommandRunner):
                 name = list(property.keys())[0]
                 value = property[name]
 
-            click_function = apply_command_decorator(
+            script_command = apply_command_decorator(
                 self.kernel,
-                function=click_function,
+                function=script_command,
                 group='properties',
                 name=name,
                 options=value
@@ -136,7 +136,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             options = self.content['options']
 
             for option in options:
-                click_function = click.option(
+                script_command.function = click.option(
                     option['name'],
                     option['short'],
                     default=option['default'] if 'default' in option else False,
@@ -144,9 +144,9 @@ class YamlCommandRunner(AbstractCommandRunner):
                     is_flag='is_flag' in option and option['is_flag'],
                     required=option['required'] if 'required' in option else False,
                     type=getattr(builtins, option['type'] if 'type' in option else 'any'),
-                )(click_function)
+                )(script_command.function)
 
-        return click_function
+        return script_command
 
     def run(self):
         return self.run_click_function(

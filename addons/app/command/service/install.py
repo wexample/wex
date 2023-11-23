@@ -54,7 +54,7 @@ def app__service__install(
         for dependency in services_registry[service]['config'].get('dependencies', []):
             kernel.io.log(f'Expected dependency : {dependency}')
 
-            app__service__install.callback(
+            app__service__install.function.callback(
                 app_dir,
                 dependency,
                 install_config,
