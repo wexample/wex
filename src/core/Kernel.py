@@ -54,7 +54,6 @@ class Kernel:
         self.io = IOManager(self)
         self.post_exec: List[str] = []
         self.previous_response: Optional['AbstractResponse'] = None
-        self.registry: Dict[str, str | Dict[str, Any]] = {}
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
@@ -174,25 +173,17 @@ class Kernel:
             self,
             os.path.join(
                 self.directory.shortcuts['tmp'].path,
-                'registry-v2.yml'
+                'registry'
             )
         )
 
         # Load registry if empty
         if not self.registry_structure.exists():
             self.registry_structure.build()
-            self.rebuild()
 
         # Check again
         self.registry_structure.should_exist = True
         self.registry_structure.checkup()
-        with open(path_registry) as f:
-            self.registry = yaml.load(f, SafeLoader)
-
-    def rebuild(self, test: bool = False) -> None:
-        from addons.core.command.registry.build import _core__registry__build
-
-        _core__registry__build(self, test)
 
     def trace(self, _exit: bool = True) -> Optional[NoReturn]:
         import traceback

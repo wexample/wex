@@ -7,6 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helper.test import test_create_app, test_build_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
 class AbstractAppTestCase(AbstractTestCase):
@@ -105,7 +106,7 @@ class AbstractAppTestCase(AbstractTestCase):
     def for_each_db_service(self, callback: callable):
         db_services = []
 
-        services = self.kernel.registry['service']
+        services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
         for service in services:
             if 'tags' in services[service]['config'] and 'db' in services[service]['config']['tags']:
                 db_services.append(service)

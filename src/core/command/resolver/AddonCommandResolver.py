@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from src.const.types import RegistryResolver
 
+
 class AddonCommandResolver(AbstractCommandResolver):
 
     @classmethod
@@ -61,7 +62,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         if cursor == 0:
             # User typed "wex co"
             if search_split[0] != '':
-                addons = self.kernel.registry['addon']
+                addons = self.get_registry_data()
                 commands_suggestions: list = list(addons.keys())
                 # Add separator
                 commands_suggestions = [addon + COMMAND_SEPARATOR_ADDON for addon in commands_suggestions]
@@ -79,15 +80,17 @@ class AddonCommandResolver(AbstractCommandResolver):
                 return self.suggest_autocomplete_if_single(suggestion)
             # User typed "wex ", we suggest all addons names and special chars.
             else:
-                return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.kernel.registry['addon'].keys())
+                return ' '.join(addon + COMMAND_SEPARATOR_ADDON for addon in self.get_registry_data().keys())
 
         elif cursor == 1:
+            registry_data = self.get_registry_data()
+
             # User typed "wex core::", we suggest all addon groups.
             if search_split[1] == COMMAND_SEPARATOR_ADDON:
-                if search_split[0] in self.kernel.registry['addon']:
+                if search_split[0] in registry_data:
                     return ' '.join([
                         command[len(search_split[0] + COMMAND_SEPARATOR_ADDON):]
-                        for command in self.kernel.registry['addon'][search_split[0]]['commands']
+                        for command in registry_data[search_split[0]]['commands']
                         if command.startswith(search_split[0] + COMMAND_SEPARATOR_ADDON)
                     ])
             elif search_split[1] == ':':
@@ -139,7 +142,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry(self, test: bool = False) -> 'RegistryResolver':
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
         registry: 'RegistryResolver' = {}
 
         for addon in self.kernel.addons:

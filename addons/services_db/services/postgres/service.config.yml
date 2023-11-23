@@ -1,4 +1,4 @@
 tags:
   - db
 test:
-  exec_command: "SELECT * FROM pg_roles LIMIT 0,1"
+  exec_command: "\\l"

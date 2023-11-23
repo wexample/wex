@@ -7,20 +7,25 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class NonInteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel, shell_command: list):
+    def __init__(self, kernel,
+                 shell_command: list,
+                 ignore_error: bool = False):
         super().__init__(kernel)
 
         self.success: bool | None = None
         self.shell_command: list = shell_command
+        self.ignore_error: bool = ignore_error
 
     def render_content(
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> AbstractResponse:
+
         success, content = execute_command(
-            self.kernel,
-            self.shell_command,
+            kernel=self.kernel,
+            command=self.shell_command,
+            ignore_error=self.ignore_error
         )
 
         self.success = success

@@ -25,8 +25,12 @@ def mysql__service__ready(kernel: 'Kernel', app_dir: str, service: str):
                     type=COMMAND_TYPE_SERVICE
                 ).first(),
                 'ping'],
-            'sync': True
+            'sync': True,
+            'ignore-error': True
         }
     )
+
+    if response.success and len(response.output_bag):
+        return str(response.output_bag[0][0]).strip() == 'mysqld is alive'
 
     return response.success

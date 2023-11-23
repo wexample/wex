@@ -86,9 +86,10 @@ class AbstractCommandResolver:
     def get_commands_registry(self) -> RegistryCommandGroup:
         from src.helper.registry import registry_get_all_commands_from_registry_part
 
-        if self.get_type() in self.kernel.registry:
+        if self.get_type() in self.kernel.registry_structure.content['resolvers']:
             return registry_get_all_commands_from_registry_part(
-                self.kernel.registry[self.get_type()])
+                self.get_registry_data()
+            )
         return RegistryCommandGroup()
 
     @classmethod
@@ -379,5 +380,8 @@ class AbstractCommandResolver:
     def build_command_parts_from_url_path_parts(self, path_parts: list):
         pass
 
-    def build_registry(self, test: bool = False) -> 'RegistryResolver':
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
         return {}
+
+    def get_registry_data(self) -> 'RegistryResolver':
+        return self.kernel.registry_structure.get_resolver_data(self.get_type())

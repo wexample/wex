@@ -9,10 +9,10 @@ from src.helper.string import string_to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Dict, Any
 
 if TYPE_CHECKING:
-    from src.const.types import AnyCallable, Kwargs
+    from src.const.types import AnyCallable, Kwargs, StringsList
     from src.core.response.AbstractResponse import AbstractResponse
     from src.const.types import RegistryResolver
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(self, request: CommandRequest, render_mode: str) -> 'AbstractResponse':
         service = string_to_snake_case(request.match[1])
-        if service not in self.kernel.registry['service']:
+        if service not in self.get_registry_data():
             if not request.quiet:
                 self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {
                     'command': request.command,
@@ -152,7 +152,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry(self, test: bool = False) -> 'RegistryResolver':
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
         from src.helper.registry import registry_resolve_service_inheritance
         registry: 'RegistryResolver' = {}
 
@@ -185,3 +185,9 @@ class ServiceCommandResolver(AbstractCommandResolver):
             registry_resolve_service_inheritance(service_data, registry)
 
         return registry
+
+    def get_registered_services(self) -> 'StringsList':
+        return self.get_registry_data().keys()
+
+    def get_registered_service_data(self, name: str) -> Dict[str, Any]:
+        return self.get_registry_data()[name]

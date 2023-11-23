@@ -8,7 +8,10 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class InteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel, shell_command: list | str, ignore_error: bool = False):
+    def __init__(self,
+                 kernel,
+                 shell_command: list | str,
+                 ignore_error: bool = False):
         super().__init__(kernel)
 
         if isinstance(shell_command, list):

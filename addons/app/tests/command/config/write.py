@@ -5,7 +5,9 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandConfigWrite(AbstractAppTestCase):
     def test_write(self):
-        app_dir = self.create_test_app()
+        app_dir = self.create_test_app(
+            services=['php'],
+            force_restart=True)
 
         self.kernel.run_function(
             app__config__write, {

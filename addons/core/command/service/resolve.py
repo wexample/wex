@@ -1,5 +1,6 @@
 from typing import List
 
+from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
@@ -22,8 +23,9 @@ def core__service__resolve(kernel: 'Kernel', service) -> List[str]:
 
         resolved_services.add(service)
 
-        if service in kernel.registry['service']:
-            config = kernel.registry['service'][service]['config']
+        services_registry = kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+        if service in services_registry:
+            config = services_registry[service]['config']
             dependencies = config.get('dependencies', [])
 
             for dependency in dependencies:

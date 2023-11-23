@@ -2,12 +2,12 @@ from addons.app.command.service.install import app__service__install
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.config.write import app__config__write
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
-from src.helper.registry import registry_get_all_services_names
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
     def test_install(self):
-        services = registry_get_all_services_names(self.kernel)
+        services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registered_services()
 
         for service in services:
             if service not in ['default', 'proxy']:

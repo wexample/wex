@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 @option('--user', '-u', type=str, required=False, help="User name or uid")
 @option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
 @option('--interactive', '-tty', type=bool, is_flag=True, required=False, help="Interactive shell")
+@option('--ignore-error', '-ie', type=bool, is_flag=True, required=False, help="Do not fail on error")
 def app__app__exec(
         kernel: 'Kernel',
         app_dir: str,
@@ -26,7 +27,8 @@ def app__app__exec(
         container_name: str | None = None,
         user: str | None = None,
         sync: bool = False,
-        interactive: bool = False):
+        interactive: bool = False,
+        ignore_error: bool = False):
     manager: AppAddonManager = kernel.addons['app']
     container_name = container_name or manager.get_main_container_name()
 
@@ -98,10 +100,12 @@ def app__app__exec(
     if sync:
         return NonInteractiveShellCommandResponse(
             kernel,
-            docker_command
+            docker_command,
+            ignore_error
         )
 
     return InteractiveShellCommandResponse(
         kernel,
-        docker_command
+        docker_command,
+        ignore_error
     )

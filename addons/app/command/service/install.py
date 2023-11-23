@@ -5,7 +5,7 @@ import yaml
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.helper.string import string_to_snake_case
 from src.helper.dict import dict_merge
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_SERVICE
 from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
 from src.helper.service import service_get_dir
 from addons.app.AppAddonManager import AppAddonManager
@@ -43,15 +43,15 @@ def app__service__install(
     service = string_to_snake_case(service)
     kernel.io.log(f'Installing service : {service}')
 
-    all_services = kernel.registry['service']
+    services_registry = kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
 
-    if not service in all_services:
+    if not service in services_registry:
         kernel.io.log('Service does not exists')
         return
 
     if not ignore_dependencies:
         # Install dependencies
-        for dependency in all_services[service]['config'].get('dependencies', []):
+        for dependency in services_registry[service]['config'].get('dependencies', []):
             kernel.io.log(f'Expected dependency : {dependency}')
 
             app__service__install.callback(
@@ -95,7 +95,7 @@ def app__service__install(
             )
 
     # Allow service to set global settings
-    service_config = all_services[service]['config']
+    service_config = services_registry[service]['config']
 
     # First service is set as main service
     main_service = manager.get_config('global.main_service')

@@ -1,4 +1,5 @@
 from addons.core.command.core.cleanup import core__core__cleanup
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 from src.decorator.option import option
 from src.decorator.alias import alias
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 def core__test__run(kernel: 'Kernel', command: str = None):
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
-    if kernel.registry['env'] == APP_ENV_LOCAL:
+    if kernel.registry_structure.content['env'] == APP_ENV_LOCAL:
         execute_command_tree(kernel, [
             'docker',
             'rm',
@@ -60,7 +61,8 @@ def core__test__run(kernel: 'Kernel', command: str = None):
         )
 
     kernel.io.log('Starting addons tests suites..')
-    for addon_data in kernel.registry['addon'].values():
+
+    for addon_data in kernel.get_command_resolver(COMMAND_TYPE_ADDON).get_registry_data().values():
         for command_name, command_data in addon_data['commands'].items():
             if 'test' in command_data and command_data['test'] and (
                     (not command) or command_name == command or (

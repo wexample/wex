@@ -18,6 +18,7 @@ KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = StringKeysDict
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
+StringsList = List[str]
 RegistryAddon = Dict[Union['alias', 'command', 'file', 'properties', 'test'], StringsDict]
 RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], StringsDict]
 RegistryResolver = Dict[str, StringKeysDict | List[StringKeysDict]]

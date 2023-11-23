@@ -30,7 +30,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
             'resolvers': {}
         })
 
-    def build(self, test: bool = False) -> None:
+    def build(self, test: bool = False, write: bool = True) -> None:
         from addons.app.command.env.get import _app__env__get
 
         self.kernel.io.log('Building registry...')
@@ -41,7 +41,10 @@ class KernelRegistryFileStructure(YmlFileStructure):
         )
 
         for command_type in self.kernel.resolvers:
-            self.content['resolvers'][command_type] = self.kernel.resolvers[command_type].build_registry()
+            self.content['resolvers'][command_type] = self.kernel.resolvers[command_type].build_registry_data(test)
 
-        self.write_content()
+        if write:
+            self.write_content()
 
+    def get_resolver_data(self, command_type: str):
+        return self.content['resolvers'][command_type]

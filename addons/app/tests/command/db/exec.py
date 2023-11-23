@@ -1,12 +1,16 @@
 from addons.app.command.db.exec import app__db__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.const.globals import COMMAND_TYPE_SERVICE
+from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
 
 class TestAppCommandDbExec(AbstractAppTestCase):
     def test_exec(self):
         def callback(db_service):
             self.log(f'Testing database exec : {db_service}')
-            test_config = self.kernel.registry['service'][db_service]['config']['test']
+            service_resolver: 'ServiceCommandResolver' = self.kernel.resolvers[COMMAND_TYPE_SERVICE]
+            registry_data = service_resolver.get_registry_data()
+            test_config = registry_data[db_service]['config']['test']
 
             self.assertTrue(
                 'exec_command' in test_config,

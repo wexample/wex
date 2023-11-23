@@ -25,7 +25,8 @@ def postgres__service__ready(kernel: 'Kernel', app_dir: str, service: str):
             'container-name': service,
             # Ask to execute bash
             'command': exec_command,
-            'sync': True
+            'sync': True,
+            'ignore-error': True
         }
     )
 

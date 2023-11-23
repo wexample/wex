@@ -20,16 +20,6 @@ def registry_get_all_commands(kernel: 'Kernel') -> Dict[str, Any]:
     return registry
 
 
-def registry_get_commands_groups_names(kernel: 'Kernel', addon: str) -> List[str]:
-    group_names = set()
-
-    if addon in kernel.registry[COMMAND_TYPE_ADDON]:
-        for command in kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().commands.keys():
-            group_name = command.split(COMMAND_SEPARATOR_ADDON)[1].split("/")[0]
-            group_names.add(group_name)
-    return list(group_names)
-
-
 def registry_get_all_commands_from_registry_part(
         registry_part: Dict[str, Dict[str, Any]]) -> RegistryCommandGroup:
     output: RegistryCommandGroup = RegistryCommandGroup()
@@ -37,15 +27,6 @@ def registry_get_all_commands_from_registry_part(
     for addon, addon_data in registry_part.items():
         for command, command_data in addon_data['commands'].items():
             output.commands[command] = command_data
-
-    return output
-
-
-def registry_get_all_services_names(kernel: 'Kernel') -> List[str]:
-    output: List[str] = []
-
-    for service in kernel.registry['service']:
-        output.append(kernel.registry['service'][service]['name'])
 
     return output
 

@@ -58,7 +58,7 @@ def execute_command_tree(
         command_tree: List[Union[Any, str]],
         working_directory: str | None = None,
         async_mode: bool = False,
-        error_on_failing: bool = True,
+        ignore_error: bool = False,
         **kwargs: Any) -> Union[Popen[Any], Tuple[bool, List[str]]]:
     if isinstance(command_tree, list) and any(isinstance(i, list) for i in command_tree):
         # If the command_tree is a list and contains sub lists (nested commands)
@@ -85,7 +85,7 @@ def execute_command_tree(
         command=command_tree,
         working_directory=working_directory,
         async_mode=async_mode,
-        error_on_failing=error_on_failing,
+        ignore_error=ignore_error,
         **kwargs)
 
 
@@ -94,7 +94,7 @@ def execute_command(
         command: List[str] | str,
         working_directory: None | str = None,
         async_mode: bool = False,
-        error_on_failing: bool = True,
+        ignore_error: bool = False,
         **kwargs: Any) -> Union[Popen[Any], Tuple[bool, List[str]]]:
     import subprocess
     import os
@@ -134,11 +134,12 @@ def execute_command(
         out_content_decoded: str = out_content.decode()
         success: bool = (process.returncode == 0)
 
-        if not success and error_on_failing:
+        if not success and not ignore_error:
             kernel.io.error(
                 f'Error when running command : {command_to_string(command)}'
                 + os.linesep + os.linesep
                 + out_content_decoded)
+
         kernel.io.log(
             out_content_decoded,
             verbosity=VERBOSITY_LEVEL_MAXIMUM)

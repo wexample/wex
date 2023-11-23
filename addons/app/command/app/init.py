@@ -3,6 +3,7 @@ from pathlib import Path
 from git import Repo
 from typing import Iterable, Union, Optional
 
+from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 from src.helper.args import args_split_arg_array
@@ -88,7 +89,7 @@ def app__app__init(
 
         kernel.io.log('Checking services...')
         for service in services:
-            if not service in kernel.registry['service']:
+            if not service in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data():
                 kernel.io.error(
                     ERR_SERVICE_NOT_FOUND,
                     {

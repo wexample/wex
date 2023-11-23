@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 @app_command(help="Set database permissions", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 def maria__app__first_init(kernel: 'Kernel', app_dir: str, service: str):
     kernel.io.log('Prepare Maria users')
-    
+
     kernel.run_function(
         app__db__exec,
         {
