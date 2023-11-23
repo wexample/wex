@@ -19,6 +19,7 @@ StringMessageParameters = Dict[str, Any]
 StringsKeyPair = Dict[str, str]
 RegistryAddon = Dict[str, Dict[str, Any]]
 RegistryService = Dict[str, Dict[str, Any]]
+WritableFileContent = str | int | float | bool | None
 
 KernelRegistry = Dict[
     Literal[

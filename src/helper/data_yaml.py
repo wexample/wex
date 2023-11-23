@@ -38,6 +38,14 @@ def yaml_load(file_path: str) -> YamlContent:
         return None
 
 
+def yaml_write(file_path: str, content: YamlContent) -> None:
+    try:
+        with open(file_path, 'w') as f:
+            yaml.safe_dump(content, f)
+    except Exception as e:
+        return None
+
+
 def yaml_load_or_default(file: str, default: Any = None) -> Any:
     data_yaml = yaml_load(file)
 

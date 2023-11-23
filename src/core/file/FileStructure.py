@@ -1,7 +1,8 @@
 import os
 from typing import Optional, Any
 
-from src.helper.file import file_create_parent_and_touch, file_read
+from src.const.types import WritableFileContent
+from src.helper.file import file_create_parent_and_touch, file_read, file_write
 from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure, FILE_SYSTEM_TYPE_FILE, \
     FILE_SYSTEM_ERROR_WRONG_EXTENSION
 
@@ -10,7 +11,7 @@ class FileStructure(AbstractFileSystemStructure):
     type: str = FILE_SYSTEM_TYPE_FILE
     file_extension: Optional[str] = None
     content: Any
-    
+
     def checkup(self):
         super().checkup()
 
@@ -30,6 +31,14 @@ class FileStructure(AbstractFileSystemStructure):
 
     def load_content(self) -> Any:
         return file_read(self.path)
+
+    def write_content(self) -> Any:
+        return file_write(
+            self.path,
+            self.get_writable_content())
+
+    def get_writable_content(self) -> WritableFileContent:
+        return str(self.content)
 
     def create_missing(self):
         file_create_parent_and_touch(

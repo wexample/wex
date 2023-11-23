@@ -5,6 +5,8 @@ import grp
 from typing import IO
 from typing import List, Optional, Dict, Any
 
+from src.const.types import WritableFileContent
+
 
 def file_list_subdirectories(path: str) -> List[str]:
     subdirectories = []
@@ -255,3 +257,8 @@ def file_env_to_dict(env_path: str) -> Dict[str, str]:
 def file_read(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
+
+
+def file_write(file_path: str, content: WritableFileContent) -> None:
+    with open(file_path, 'w') as f:
+        f.write(content)
