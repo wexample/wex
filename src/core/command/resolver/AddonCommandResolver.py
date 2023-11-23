@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 
 from src.helper.registry import registry_get_all_commands
 from src.core.CommandRequest import CommandRequest
@@ -7,7 +6,10 @@ from src.helper.string import string_to_snake_case
 from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
     COMMAND_SEPARATOR_GROUP
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from typing import TYPE_CHECKING, Optional
 
+if TYPE_CHECKING:
+    from src.const.types import RegistryResolver
 
 class AddonCommandResolver(AbstractCommandResolver):
 
@@ -28,7 +30,8 @@ class AddonCommandResolver(AbstractCommandResolver):
             base_path=self.kernel.get_path('addons', [string_to_snake_case(request.match.group(1))]),
             extension=extension,
             subdir=subdir,
-            command_path=os.path.join(string_to_snake_case(request.match.group(2)), string_to_snake_case(request.match.group(3)))
+            command_path=os.path.join(string_to_snake_case(request.match.group(2)),
+                                      string_to_snake_case(request.match.group(3)))
         )
 
     def get_function_name_parts(self, parts: list) -> []:
@@ -135,3 +138,20 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[1],
             path_parts[2],
         ]
+
+    def build_registry(self, test: bool = False) -> 'RegistryResolver':
+        registry: 'RegistryResolver' = {}
+
+        for addon in self.kernel.addons:
+            addon_command_path = self.kernel.get_path('addons', [addon, 'command'])
+
+            if os.path.exists(addon_command_path):
+                registry[addon] = {
+                    'name': addon,
+                    'commands': self.scan_commands_groups(
+                        addon_command_path,
+                        test
+                    )
+                }
+
+        return registry

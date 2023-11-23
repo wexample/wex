@@ -1,7 +1,7 @@
 import os
-from typing import Optional, TYPE_CHECKING
 
-from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_FILE_APP_SERVICE_CONFIG
+from src.helper.data_yaml import yaml_load
 from src.helper.service import service_get_dir
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -9,10 +9,12 @@ from src.helper.string import string_to_snake_case
 from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
     COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.const.types import AnyCallable, Kwargs
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.const.types import RegistryResolver
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
@@ -149,3 +151,37 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[1],
             path_parts[2],
         ]
+
+    def build_registry(self, test: bool = False) -> 'RegistryResolver':
+        from src.helper.registry import registry_resolve_service_inheritance
+        registry: 'RegistryResolver' = {}
+
+        for addon in self.kernel.addons:
+            services_dir = self.kernel.get_path('addons', [addon, 'services'])
+            if os.path.exists(services_dir):
+                for service in os.listdir(services_dir):
+                    self.kernel.io.log(f'Found service {service}')
+                    service_path = os.path.join(services_dir, service) + os.sep
+                    config_file_path = os.path.join(service_path, APP_FILE_APP_SERVICE_CONFIG)
+                    commands_path = os.path.join(service_path, 'command')
+
+                    registry[service] = {
+                        'name': service,
+                        'commands': self.scan_commands_groups(
+                            commands_path,
+                            test
+                        ),
+                        'addon': addon,
+                        'dir': service_path,
+                        'config': yaml_load(
+                            file_path=config_file_path,
+                            default={
+                                'dependencies': []
+                            })
+                    }
+
+        # Resolve inheritance
+        for service_name, service_data in registry.items():
+            registry_resolve_service_inheritance(service_data, registry)
+
+        return registry
