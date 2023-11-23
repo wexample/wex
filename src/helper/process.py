@@ -58,7 +58,8 @@ def process_kill_by_command(kernel: 'Kernel', command: str) -> None:
             'pgrep',
             '-f',
             command
-        ]
+        ],
+        ignore_error=True
     )
 
     if pids:
