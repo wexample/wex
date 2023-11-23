@@ -27,7 +27,8 @@ class TestAppCommandDbExec(AbstractAppTestCase):
                 app__db__exec,
                 {
                     'app-dir': app_dir,
-                    'command': exec_command
+                    'command': exec_command,
+                    'sync': True
                 }
             )
 
