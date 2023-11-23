@@ -300,6 +300,24 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             callback
         )
 
+        def callback():
+            # Search only ".", should return all app commands
+            suggestions: str = self.kernel.run_function(
+                core__autocomplete__suggest,
+                {
+                    'cursor': 0,
+                    'search': COMMAND_CHAR_APP
+                }
+            ).first()
+
+            print(suggestions)
+
+        # Test suggestions in core
+        manager.exec_in_app_workdir(
+            self.kernel.directory.path,
+            callback
+        )
+
     def tests_suggest_app_args(self):
         suggestions = self.kernel.run_function(
             core__autocomplete__suggest,

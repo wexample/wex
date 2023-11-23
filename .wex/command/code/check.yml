@@ -1,4 +1,5 @@
 type: app
+help: Do some code quality checks
 scripts:
   - title: Run MyPy
-    script: mypy --config-file .wex/python/mypy.ini
+    script: mypy --config-file .wex/python/mypy.ini src/core/Kernel.py
