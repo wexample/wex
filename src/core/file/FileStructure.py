@@ -9,7 +9,8 @@ from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructur
 class FileStructure(AbstractFileSystemStructure):
     type: str = FILE_SYSTEM_TYPE_FILE
     file_extension: Optional[str] = None
-
+    content: Any
+    
     def checkup(self):
         super().checkup()
 

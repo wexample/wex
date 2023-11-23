@@ -29,11 +29,6 @@ class KernelDirectoryStructure(DirectoryStructure):
                 'task': {
                     FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING: FILE_SYSTEM_ACTION_ON_MISSING_CREATE,
                 },
-                'registry.yml': {
-                    FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST: True,
-                    FILE_SYSTEM_SCHEMA_ITEM_KEY_CLASS: KernelRegistryFileStructure,
-                    FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT: 'registry'
-                }
             }
         },
     }

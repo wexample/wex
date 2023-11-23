@@ -23,6 +23,7 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.verbosity import verbosity
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
 
 if TYPE_CHECKING:
     from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
@@ -40,6 +41,7 @@ class Kernel:
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
     tty: bool = os.isatty(0)
+    registry_structure: 'KernelRegistryFileStructure'
 
     def __init__(
             self,
@@ -168,10 +170,10 @@ class Kernel:
         return path
 
     def load_registry(self) -> None:
-        path_registry = f"{self.get_or_create_path('tmp')}{FILE_REGISTRY}"
+        self.registry_structure = self.directory.shortcuts['registry']
 
         # Load registry if empty
-        if not os.path.exists(path_registry):
+        if not self.registry_structure.exists():
             self.rebuild()
 
         with open(path_registry) as f:
@@ -516,6 +518,6 @@ class Kernel:
     def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure'):
         errors = file_system_structure.get_all_errors()
         if len(errors):
-            self.error(
+            self.io.error(
                 errors[0]['message'],
                 errors[0]['parameters'])

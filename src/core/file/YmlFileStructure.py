@@ -6,4 +6,6 @@ class YmlFileStructure(FileStructure):
     file_extension: str = 'yml'
 
     def load_content(self) -> YamlContent:
-        return yaml_load(self.path)
+        self.content = yaml_load(self.path)
+
+        return self.content

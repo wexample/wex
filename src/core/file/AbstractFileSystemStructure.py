@@ -136,7 +136,7 @@ class AbstractFileSystemStructure(ABC):
             self.should_exist = True
 
     def checkup(self):
-        if not os.path.exists(self.path):
+        if not self.exists():
             if self.should_exist is True:
                 if self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_CREATE:
                     self.create_missing()
@@ -145,6 +145,9 @@ class AbstractFileSystemStructure(ABC):
                         FILE_SYSTEM_ERROR_NOT_FOUND,
                         {'path': self.path}
                     )
+
+    def exists(self) -> bool:
+        return os.path.exists(self.path)
 
     @abstractmethod
     def create_missing(self):
