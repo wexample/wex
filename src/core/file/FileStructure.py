@@ -22,7 +22,7 @@ class FileStructure(AbstractFileSystemStructure):
             initialize=initialize
         )
 
-    def checkup(self):
+    def checkup(self) -> None:
         super().checkup()
 
         if self.file_extension:

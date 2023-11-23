@@ -1,18 +1,17 @@
 from typing import Optional
-
+from src.const.types import KernelRegistry, RegistryResolver
 from src.core.file.YmlFileStructure import YmlFileStructure
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-    from const.types import KernelRegistry
 
 
 class KernelRegistryFileStructure(YmlFileStructure):
     # May not exist when cache flushed
     should_exist: Optional[bool] = False
     kernel: 'Kernel'
-    content: 'KernelRegistry'
+    content: KernelRegistry
 
     def __init__(self,
                  kernel: 'Kernel',
@@ -25,13 +24,12 @@ class KernelRegistryFileStructure(YmlFileStructure):
             initialize=initialize
         )
 
-        # Always load at creation
-        self.load_content(default={
-            'env': None,
-            'resolvers': {}
-        })
+        default: KernelRegistry = KernelRegistry(env=None, resolvers={})
 
-    def build(self, test: bool = False, write: bool = True) -> 'KernelRegistry':
+        # Always load at creation
+        self.load_content(default=default)
+
+    def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
         from addons.app.command.env.get import _app__env__get
 
         self.kernel.io.log('Building registry...')
@@ -49,5 +47,5 @@ class KernelRegistryFileStructure(YmlFileStructure):
 
         return self.content
 
-    def get_resolver_data(self, command_type: str):
+    def get_resolver_data(self, command_type: str) -> RegistryResolver:
         return self.content['resolvers'][command_type]

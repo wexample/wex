@@ -1,6 +1,7 @@
 from typing import Optional
 
-from src.helper.data_yaml import yaml_load, YamlContent, yaml_write
+from src.helper.data_yaml import yaml_load, yaml_write
+from src.const.types import YamlContent
 from src.core.file.FileStructure import FileStructure
 
 

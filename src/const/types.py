@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, Optional, Any, Literal, Callable
+from typing import Union, Dict, List, Optional, Any, Literal, Callable, TypedDict
 
 AddonNameType = Literal[
     'app',
@@ -24,11 +24,6 @@ RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], Stri
 RegistryResolver = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 
-KernelRegistry = Dict[
-    Literal['env', 'resolvers'],
-    str | Dict[str, RegistryResolver]
-]
-
 CoreCommandArgsDict = KeyPairCommandArgs
 CoreCommandArgsList = List[str]
 CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, CoreCommandArgsList]
@@ -38,3 +33,17 @@ CoreCommandStringParts = List[str]
 OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
+
+
+class YamlContent(TypedDict):
+    pass
+
+
+class KernelRegistry(YamlContent):
+    env: Optional[str]
+    resolvers: Dict[str, RegistryResolver]
+
+    def __init__(self, resolvers: StringKeysDict, env: Optional[str] = None) -> None:
+        super().__init__()
+        self.env = env
+        self.resolvers = resolvers

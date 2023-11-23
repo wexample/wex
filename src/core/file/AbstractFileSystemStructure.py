@@ -138,7 +138,7 @@ class AbstractFileSystemStructure(ABC):
         if self.on_missing:
             self.should_exist = True
 
-    def checkup(self):
+    def checkup(self) -> None:
         if not self.exists():
             if self.should_exist is True:
                 if self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_CREATE:

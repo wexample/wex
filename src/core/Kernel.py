@@ -514,7 +514,7 @@ class Kernel:
                 self.task_file_path('post-exec')
             )
 
-    def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure'):
+    def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure') -> None:
         errors = file_system_structure.get_all_errors()
         if len(errors):
             error: 'ErrorMessage' = errors[0]
