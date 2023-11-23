@@ -1,9 +1,6 @@
 import os
 import sys
-import yaml
 from typing import Any, Dict, Callable, Optional, NoReturn, List, TYPE_CHECKING
-
-from yaml import SafeLoader
 
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.FunctionProperty import FunctionProperty
@@ -13,7 +10,7 @@ from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.AddonManager import AddonManager
 from src.const.globals import \
-    FILE_REGISTRY, COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
+    COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
     VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 from src.decorator.alias import alias
@@ -34,6 +31,7 @@ if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
     from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, \
         CoreCommandArgsList
+    from src.core.ErrorMessage import ErrorMessage
 
 
 class Kernel:
@@ -519,6 +517,8 @@ class Kernel:
     def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure'):
         errors = file_system_structure.get_all_errors()
         if len(errors):
+            error: 'ErrorMessage' = errors[0]
+
             self.io.error(
-                errors[0]['message'],
-                errors[0]['parameters'])
+                error.message,
+                error.parameters)

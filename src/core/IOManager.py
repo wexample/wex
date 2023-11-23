@@ -196,5 +196,3 @@ class IOManager:
 
         commands = os.linesep.join(commands)
         self.message(message + ':', commands)
-
-

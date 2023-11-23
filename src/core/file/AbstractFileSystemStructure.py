@@ -4,6 +4,10 @@ from typing import Dict, Any, Literal, List, Optional
 from abc import abstractmethod
 
 from src.const.types import StringMessageParameters
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.ErrorMessage import ErrorMessage, ErrorMessageList
 
 FILE_SYSTEM_TYPE_FILE: str = 'file'
 FILE_SYSTEM_TYPE_DIR: str = 'dir'
@@ -25,7 +29,6 @@ FILE_SYSTEM_SCHEMA_ITEM_KEY_SHORTCUT = 'shortcut'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_SHOULD_EXIST = 'should_exist'
 FILE_SYSTEM_SCHEMA_ITEM_KEY_TYPE = 'type'
 
-FileSystemStructureErrorItem = Dict[str, str | Dict[str, Any]]
 FileSystemStructureSchemaItemKeys = Literal[
     FILE_SYSTEM_SCHEMA_ITEM_KEY_ON_MISSING,
     FILE_SYSTEM_SCHEMA_ITEM_KEY_SCHEMA,
@@ -46,7 +49,7 @@ class AbstractFileSystemStructure(ABC):
     children: Dict[str, Any]
     path: str
     type: FileSystemStructureType
-    errors: List[FileSystemStructureErrorItem]
+    errors: 'ErrorMessageList'
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     schema: FileSystemStructureSchema = {}
     parent_structure: Optional['AbstractFileSystemStructure'] = None
@@ -153,14 +156,20 @@ class AbstractFileSystemStructure(ABC):
     def create_missing(self):
         pass
 
-    def add_error(self, code: str, parameters: StringMessageParameters) -> None:
-        self.errors.append({
-            'code': code,
-            'parameters': parameters,
-            'message': FILE_SYSTEM_ERROR_MESSAGES[code]
-        })
+    def add_error(self, code: str, parameters: StringMessageParameters) -> 'ErrorMessage':
+        from src.core.ErrorMessage import ErrorMessage
 
-    def get_all_errors(self) -> List[FileSystemStructureErrorItem]:
+        error = ErrorMessage(
+            code=code,
+            parameters=parameters,
+            message=FILE_SYSTEM_ERROR_MESSAGES[code]
+        )
+
+        self.errors.append(error)
+
+        return error
+
+    def get_all_errors(self) -> 'ErrorMessageList':
         errors = self.errors.copy()
 
         for children in self.children:
