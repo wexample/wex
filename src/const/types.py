@@ -13,7 +13,9 @@ AddonNameType = Literal[
 ]
 
 StringKeysDict = Dict[str, Any]
+
 AnyCallable = Callable[..., Any]
+DecoratedCallable = Callable[..., Callable[..., Any]]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = StringKeysDict
 StringMessageParameters = StringKeysDict
