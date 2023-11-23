@@ -350,7 +350,7 @@ class AppAddonManager(AddonManager):
     def ignore_app_dir(self, request) -> bool:
         # Only specified commands will expect app location.
         # This is not a function property class.
-        return getattr(request.function, 'app_command', False) == False
+        return getattr(request.function.function, 'app_command', False) == False
 
     def hook_render_request_pre(self, request):
         if self.ignore_app_dir(request):

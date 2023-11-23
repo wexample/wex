@@ -1,7 +1,6 @@
 import os
 
-from click import Command
-
+from src.core.command.ScriptCommand import ScriptCommand
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import args_convert_dict_to_args
 from typing import TYPE_CHECKING
@@ -27,7 +26,7 @@ class CommandRequest:
         self.args = args or []
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
-        self.function: None | Command = None
+        self.function: None | ScriptCommand = None
 
         self.resolver.locate_function(self)
 
@@ -59,12 +58,12 @@ class CommandRequest:
 
             runner.set_request(self)
 
-            self.function = self.runner.build_request_function()
+            self.function = self.runner.build_script_command()
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
                 self.args = args_convert_dict_to_args(
-                    self.function,
+                    self.function.function,
                     self.args)
 
             return True

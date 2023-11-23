@@ -5,6 +5,10 @@ from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
 from src.core.FunctionProperty import FunctionProperty
 from addons.app.decorator.app_dir_option import app_dir_option
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 def app_command(**decorator_args):
@@ -14,11 +18,12 @@ def app_command(**decorator_args):
         should_run = decorator_args.pop('should_run', False)
 
         # Convert function to command
-        function = command(**decorator_args)(function)
+        script_command: 'ScriptCommand' = command(**decorator_args)(function)
+        function = script_command.function  # TODO
 
         # Do not provide app_dir to function
         FunctionProperty(
-            function=function,
+            script_command=script_command,
             property_name='app_dir_required',
             property_value=dir_required)
 
@@ -26,7 +31,7 @@ def app_command(**decorator_args):
 
         # Do not check if app is running
         FunctionProperty(
-            function=function,
+            script_command=script_command,
             property_name='app_should_run',
             property_value=should_run)
 
@@ -39,7 +44,7 @@ def app_command(**decorator_args):
         function.run_handler = _app_run_handler
         function.script_run_handler = _app_script_run_handler
 
-        return function
+        return script_command
 
     return decorator
 

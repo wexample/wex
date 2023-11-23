@@ -1,14 +1,18 @@
 from src.core.FunctionProperty import FunctionProperty
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 def as_sudo():
-    def decorator(function):
+    def decorator(script_command: 'ScriptCommand'):
         # Say that the function is not allowed to be executed without sudo permissions.
         FunctionProperty(
-            function,
+            script_command,
             'as_sudo',
             True)
 
-        return function
+        return script_command
 
     return decorator

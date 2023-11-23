@@ -184,7 +184,7 @@ class AbstractCommandResolver:
         if args is None:
             args = []
         else:
-            args = args_convert_dict_to_args(function_or_command, args)
+            args = args_convert_dict_to_args(function_or_command.function, args)
 
         return [
             CORE_COMMAND_NAME,
@@ -230,7 +230,7 @@ class AbstractCommandResolver:
         if isinstance(function_or_command, str):
             return function_or_command
 
-        parts = self.build_command_parts_from_function(function_or_command.callback.__name__)
+        parts = self.build_command_parts_from_function(function_or_command.function.callback.__name__)
 
         return self.build_command_from_parts(parts)
 
@@ -305,14 +305,14 @@ class AbstractCommandResolver:
                     internal_command
                 )
 
-                function = request.runner.build_request_function()
+                function = request.runner.build_script_command()
 
                 properties = {}
-                for name in function.properties:
-                    properties[name] = function.properties[name].property_value
+                for name in function.function.properties:
+                    properties[name] = function.function.properties[name].property_value
 
                 test_file = None
-                if test_commands or not hasattr(function.callback, 'test_command'):
+                if test_commands or not hasattr(function.function.callback, 'test_command'):
                     # All test are in python
                     test_file = os.path.realpath(
                         os.path.join(

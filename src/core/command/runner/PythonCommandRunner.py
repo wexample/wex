@@ -8,7 +8,7 @@ class PythonCommandRunner(AbstractCommandRunner):
     def set_request(self, request: CommandRequest):
         super().set_request(request=request)
 
-    def build_request_function(self) -> Command:
+    def build_script_command(self) -> Command:
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(
             self.request.path,
@@ -27,7 +27,7 @@ class PythonCommandRunner(AbstractCommandRunner):
         return self.request.function.params
 
     def get_command_type(self):
-        return self.request.function.callback.command_type
+        return self.request.function.function.callback.command_type
 
     def run(self):
         return self.run_click_function(

@@ -41,8 +41,8 @@ class YamlCommandRunner(AbstractCommandRunner):
     def get_command_type(self):
         return self.content['type']
 
-    def build_request_function(self) -> Command:
-        def _click_function_handler(*args, **kwargs):
+    def build_script_command(self) -> Command:
+        def _script_command_handler(*args, **kwargs):
             commands_collection = []
 
             variables = {}
@@ -65,8 +65,8 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script['title'])
 
-                command = click_function.script_run_handler(
-                    click_function,
+                command = click_function.function.script_run_handler(
+                    click_function.function,
                     self,
                     script,
                     variables
@@ -89,11 +89,11 @@ class YamlCommandRunner(AbstractCommandRunner):
         # Function must have the appropriate name,
         # allowing to guess internal command name from it
         click_function_callback = types.FunctionType(
-            _click_function_handler.__code__,
-            _click_function_handler.__globals__,
+            _script_command_handler.__code__,
+            _script_command_handler.__globals__,
             internal_command,
-            _click_function_handler.__defaults__,
-            _click_function_handler.__closure__
+            _script_command_handler.__defaults__,
+            _script_command_handler.__closure__
         )
 
         decorator_name = dict_get_item_by_path(self.content, 'command.decorator')

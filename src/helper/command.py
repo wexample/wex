@@ -172,8 +172,8 @@ def command_to_string(command: List[str] | str) -> str:
 
 
 def is_same_command(command_a: Command, command_b: Command) -> bool:
-    if command_a.callback is not None and command_b.callback is not None:
-        return command_a.callback.__name__ == command_b.callback.__name__
+    if command_a.function.callback is not None and command_b.function.callback is not None:
+        return command_a.function.callback.__name__ == command_b.function.callback.__name__
     return False
 
 

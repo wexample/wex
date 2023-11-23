@@ -1,15 +1,12 @@
 import click
 
+from src.core.command.ScriptCommand import ScriptCommand
 from src.const.globals import COMMAND_TYPE_ADDON
 from typing import List, Optional, Dict, Any
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from src.const.types import DecoratedCallable
 
 
 # Define your custom decorator
-def command(*args, **kwargs) -> 'DecoratedCallable':
+def command(*args, **kwargs) -> ScriptCommand:
     if 'help' not in kwargs:
         raise ValueError("The 'help' argument is required for the custom command decorator.")
 
@@ -55,6 +52,11 @@ def command(*args, **kwargs) -> 'DecoratedCallable':
             f.run_handler = _command_run
             f.script_run_handler = _script_run
             f.properties = {}
+
+            script_command = ScriptCommand(f)
+
+            return script_command
+
         return f
 
     return decorator

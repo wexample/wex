@@ -11,7 +11,7 @@ from src.core.Logger import Logger
 from src.core.AddonManager import AddonManager
 from src.const.globals import \
     COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
-    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
+    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, FILE_REGISTRY
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
@@ -171,7 +171,7 @@ class Kernel:
             self,
             os.path.join(
                 self.directory.shortcuts['tmp'].path,
-                'registry'
+                FILE_REGISTRY
             )
         )
 
