@@ -1,8 +1,12 @@
 import click
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.const.types import DecoratedCallable
 
 
 # Define your custom decorator
-def option(*args, **kwargs):
+def option(*args, **kwargs) -> 'DecoratedCallable':
     def decorator(f):
         if callable(f):
             # Apply the original click.option decorator

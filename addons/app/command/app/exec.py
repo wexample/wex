@@ -28,7 +28,7 @@ def app__app__exec(
         user: str | None = None,
         sync: bool = False,
         interactive: bool = False,
-        ignore_error: bool = False):
+        ignore_error: bool = False) -> InteractiveShellCommandResponse | NonInteractiveShellCommandResponse:
     manager: AppAddonManager = kernel.addons['app']
     container_name = container_name or manager.get_main_container_name()
 

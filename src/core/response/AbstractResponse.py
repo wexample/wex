@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -90,7 +90,7 @@ class AbstractResponse:
 
         return None
 
-    def first(self):
+    def first(self) -> Any:
         """
             Return the first valid response.
             Useful to retrieve result of a function without to serialize it.
