@@ -2,14 +2,18 @@ import click
 
 from src.const.globals import COMMAND_TYPE_ADDON
 from typing import List, Optional, Dict, Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.const.types import DecoratedCallable
 
 
 # Define your custom decorator
-def command(*args, **kwargs):
+def command(*args, **kwargs) -> 'DecoratedCallable':
     if 'help' not in kwargs:
         raise ValueError("The 'help' argument is required for the custom command decorator.")
 
-    def decorator(f):
+    def decorator(f) -> click.core.Command:
         if callable(f):
             f.command_type = kwargs.pop('command_type', COMMAND_TYPE_ADDON)
 
