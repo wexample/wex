@@ -1,4 +1,3 @@
-
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.option import option
@@ -17,11 +16,11 @@ if TYPE_CHECKING:
         help="Register also commands marked as only for testing")
 @option('--write', '-w', type=bool, default=True,
         help="Write registry file")
-def core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True):
+def core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> 'KernelRegistry':
     return _core__registry__build(kernel, test, write)
 
 
 def _core__registry__build(kernel: 'Kernel', test: bool = False, write: bool = True) -> 'KernelRegistry':
-    kernel.registry_structure.build(
+    return kernel.registry_structure.build(
         test=test,
         write=write)

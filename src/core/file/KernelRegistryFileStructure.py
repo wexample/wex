@@ -1,17 +1,18 @@
-from typing import Dict, Any, Optional
+from typing import Optional
 
 from src.core.file.YmlFileStructure import YmlFileStructure
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+    from const.types import KernelRegistry
 
 
 class KernelRegistryFileStructure(YmlFileStructure):
     # May not exist when cache flushed
     should_exist: Optional[bool] = False
     kernel: 'Kernel'
-    content: Dict[str, Any]
+    content: 'KernelRegistry'
 
     def __init__(self,
                  kernel: 'Kernel',
@@ -30,7 +31,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
             'resolvers': {}
         })
 
-    def build(self, test: bool = False, write: bool = True) -> None:
+    def build(self, test: bool = False, write: bool = True) -> 'KernelRegistry':
         from addons.app.command.env.get import _app__env__get
 
         self.kernel.io.log('Building registry...')
@@ -45,6 +46,8 @@ class KernelRegistryFileStructure(YmlFileStructure):
 
         if write:
             self.write_content()
+
+        return self.content
 
     def get_resolver_data(self, command_type: str):
         return self.content['resolvers'][command_type]
