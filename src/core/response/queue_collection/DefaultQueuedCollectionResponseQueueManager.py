@@ -9,7 +9,7 @@ from src.helper.process import process_post_exec_function
 
 
 class DefaultQueuedCollectionResponseQueueManager(AbstractQueuedCollectionResponseQueueManager, ABC):
-    def __init__(self, response):
+    def __init__(self, response) -> None:
         super().__init__(response)
 
     def get_previous_storage_path(self) -> str | None:
