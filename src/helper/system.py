@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 import socket
 from contextlib import closing
+
+from src.const.globals import SERVICE_DAEMON_NAME
 from src.helper.command import execute_command
 from typing import TYPE_CHECKING
 
@@ -25,14 +27,24 @@ def system_service_daemon_reload(kernel: 'Kernel', command: str = 'daemon-reload
     )
 
 
-def system_service_exec(kernel: 'Kernel', service: str, action: str) -> None:
+def system_service_daemon_exec(kernel: 'Kernel', action: str) -> None:
+    system_service_exec(
+        kernel,
+        SERVICE_DAEMON_NAME,
+        action,
+        ignore_error=True
+    )
+
+
+def system_service_exec(kernel: 'Kernel', service: str, action: str, **kwargs) -> None:
     execute_command(
         kernel,
         [
             'systemctl',
             action,
             service
-        ]
+        ],
+        **kwargs
     )
 
 
