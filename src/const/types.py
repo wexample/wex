@@ -13,24 +13,25 @@ AddonNameType = Literal[
 ]
 
 StringKeysDict = Dict[str, Any]
+StringsList = List[str]
 
 AnyCallable = Callable[..., Any]
+Args = List[Any]
 DecoratedCallable = Callable[..., Callable[..., Any]]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
-Kwargs = StringKeysDict
+Kwargs = Any
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
-StringsList = List[str]
 RegistryAddon = Dict[Union['alias', 'command', 'file', 'properties', 'test'], StringsDict]
 RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], StringsDict]
 RegistryResolver = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 
 CoreCommandArgsDict = KeyPairCommandArgs
-CoreCommandArgsList = List[str]
+CoreCommandArgsList = StringsList
 CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, CoreCommandArgsList]
 CoreCommandString = str
-CoreCommandStringParts = List[str]
+CoreCommandStringParts = StringsList
 
 OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
