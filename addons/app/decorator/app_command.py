@@ -4,8 +4,6 @@ from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
 from src.const.globals import SHELL_DEFAULT
 from src.decorator.command import command
-from src.core.FunctionProperty import FunctionProperty
-from addons.app.decorator.app_dir_option import app_dir_option
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,22 +12,9 @@ if TYPE_CHECKING:
 
 def app_command(*decorator_args, **decorator_kwargs):
     def decorator(function):
-        # Get and pop interesting args
-        dir_required = decorator_kwargs.pop('dir_required', True)
-        should_run = decorator_kwargs.pop('should_run', False)
-
         # Convert function to command
         script_command: 'ScriptCommand' = command(*decorator_args, **decorator_kwargs)(function, AppCommand)
         function = script_command.function  # TODO
-
-        # Do not check if app is running
-        FunctionProperty(
-            script_command=script_command,
-            property_name='app_should_run',
-            property_value=should_run)
-
-        # Say that the command is available ony in app context
-        function.app_command = True
 
         # Override base handler
         function.base_run_handler = function.run_handler

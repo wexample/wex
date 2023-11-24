@@ -16,6 +16,7 @@ class AppCommand(ScriptCommand):
                  decorator_kwargs: 'Kwargs') -> None:
         # Get and pop interesting args
         dir_required = decorator_kwargs.pop('dir_required', True)
+        should_run = decorator_kwargs.pop('should_run', False)
 
         super().__init__(
             function,
@@ -30,6 +31,15 @@ class AppCommand(ScriptCommand):
             property_name='app_dir_required',
             property_value=dir_required)
 
-        function = app_dir_option(required=dir_required)(self.function)
+        self.function = app_dir_option(required=dir_required)(self.function)
 
-        self.function = function
+        self.function = app_dir_option(required=dir_required)(self.function)
+
+        # Do not check if app is running
+        FunctionProperty(
+            script_command=self,
+            property_name='app_should_run',
+            property_value=should_run)
+
+        # Say that the command is available ony in app context
+        self.function.app_command = True
