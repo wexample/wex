@@ -1,3 +1,4 @@
+from src.core.command.TestCommand import TestCommand
 from src.decorator.command import command
 
 
@@ -6,7 +7,7 @@ def test_command(*args, **kwargs):
         kwargs['help'] = 'A test command'
 
     def decorator(f):
-        f = command(*args, **kwargs)(f)
+        f = command(*args, **kwargs)(f, TestCommand)
 
         f.test_command = True
 
