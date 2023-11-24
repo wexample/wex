@@ -22,14 +22,6 @@ def app_command(*decorator_args, **decorator_kwargs):
         script_command: 'ScriptCommand' = command(*decorator_args, **decorator_kwargs)(function, AppCommand)
         function = script_command.function  # TODO
 
-        # Do not provide app_dir to function
-        FunctionProperty(
-            script_command=script_command,
-            property_name='app_dir_required',
-            property_value=dir_required)
-
-        function = app_dir_option(required=dir_required)(function)
-
         # Do not check if app is running
         FunctionProperty(
             script_command=script_command,
