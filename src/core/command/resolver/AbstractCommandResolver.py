@@ -350,7 +350,7 @@ class AbstractCommandResolver:
         return False
 
     @classmethod
-    def decorate_command(cls, function: 'AnyCallable', kwargs: 'Kwargs') -> 'AnyCallable':
+    def decorate_command(cls, function: 'AnyCallable') -> 'AnyCallable':
         return function
 
     def run_command_request_from_url_path(self, path: str):

@@ -1,7 +1,7 @@
 import click
 
 
-def service_option(*args, **kwargs):
+def service_option():
     def decorator(f):
         if callable(f):
             # Add the --app-dir option

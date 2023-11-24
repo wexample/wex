@@ -12,7 +12,7 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from typing import Optional, TYPE_CHECKING, Dict, Any
 
 if TYPE_CHECKING:
-    from src.const.types import AnyCallable, Kwargs, StringsList
+    from src.const.types import AnyCallable, StringsList
     from src.core.response.AbstractResponse import AbstractResponse
     from src.const.types import RegistryResolver
 
@@ -141,9 +141,9 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return False
 
     @classmethod
-    def decorate_command(cls, function: 'AnyCallable', kwargs: 'Kwargs') -> 'AnyCallable':
+    def decorate_command(cls, function: 'AnyCallable') -> 'AnyCallable':
         from addons.app.decorator.service_option import service_option
-        return service_option(**kwargs)(function)
+        return service_option()(function)
 
     def build_command_parts_from_url_path_parts(self, path_parts: list):
         return [
