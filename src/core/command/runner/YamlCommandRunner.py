@@ -65,7 +65,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script['title'])
 
-                command = script_command.function.script_run_handler(
+                command = script_command.run_script(
                     script_command.function,
                     self,
                     script,

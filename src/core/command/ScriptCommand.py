@@ -1,4 +1,4 @@
-from typing import Callable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING, Dict, Any, Optional, List
 import click
 
 if TYPE_CHECKING:
@@ -56,3 +56,25 @@ class ScriptCommand:
         self.click_command = click_command
         self.function = click_command  # TODO RM
         self.function.properties = {}
+
+    def run_command(self, runner, function, ctx):
+        return self.function.invoke(ctx)
+
+    def run_script(self, function, runner, script: Dict[str, Any], variables: Dict[str, str]) -> Optional[List[str]]:
+        from src.helper.string import string_replace_multiple
+
+        if 'script' in script:
+            from src.helper.command import command_escape
+            script_command = string_replace_multiple(script['script'], variables)
+
+            if 'interpreter' in script:
+                script_command = command_escape(script_command)
+
+        elif 'file' in script:
+            script_command = string_replace_multiple(script['file'], variables)
+            script["interpreter"] = script.get("interpreter", ["/bin/bash"])
+        else:
+            script_command = None
+
+        return script["interpreter"] + [
+            script_command] if "interpreter" in script and script_command else script_command

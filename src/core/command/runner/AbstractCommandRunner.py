@@ -51,7 +51,7 @@ class AbstractCommandRunner:
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.kernel
 
-        return script_command.function.run_handler(
+        return script_command.run_command(
             self,
             script_command.function,
             ctx
