@@ -9,11 +9,11 @@ def command(*args, **kwargs) -> Callable[..., ScriptCommand]:
     if 'help' not in kwargs:
         raise ValueError("The 'help' argument is required for the custom command decorator.")
 
-    def decorator(f: Callable) -> ScriptCommand:
+    def decorator(f: Callable, script_command_class=ScriptCommand) -> ScriptCommand:
         # f.run_handler = _command_run
         # f.script_run_handler = _script_run
 
-        command = ScriptCommand(
+        command = script_command_class(
             f,
             kwargs.pop('command_type', COMMAND_TYPE_ADDON),
             args,

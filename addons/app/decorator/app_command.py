@@ -1,3 +1,4 @@
+from addons.app.src.AppCommand import AppCommand
 from addons.app.helper.docker import docker_build_long_container_name
 from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
@@ -11,14 +12,14 @@ if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
 
 
-def app_command(**decorator_args):
+def app_command(*decorator_args, **decorator_kwargs):
     def decorator(function):
         # Get and pop interesting args
-        dir_required = decorator_args.pop('dir_required', True)
-        should_run = decorator_args.pop('should_run', False)
+        dir_required = decorator_kwargs.pop('dir_required', True)
+        should_run = decorator_kwargs.pop('should_run', False)
 
         # Convert function to command
-        script_command: 'ScriptCommand' = command(**decorator_args)(function)
+        script_command: 'ScriptCommand' = command(*decorator_args, **decorator_kwargs)(function, AppCommand)
         function = script_command.function  # TODO
 
         # Do not provide app_dir to function
