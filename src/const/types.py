@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, Optional, Any, Literal, Callable, TypedDict
+from typing import Union, Dict, List, Optional, Any, Literal, Callable, TypedDict, cast
 
 AddonNameType = Literal[
     'app',
@@ -46,6 +46,7 @@ AppConfigValue = None | int | float | str | bool
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 
+
 class AppConfig(TypedDict):
     domain_main: str
     domain_tld: str
@@ -60,8 +61,10 @@ class AppConfig(TypedDict):
     started: bool
     user: Dict[str, str | int]
 
+
 class DockerCompose(TypedDict):
     pass
+
 
 class AppRuntimeConfig(AppConfig):
     env: str

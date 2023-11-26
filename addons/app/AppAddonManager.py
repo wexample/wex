@@ -21,9 +21,9 @@ from src.helper.file import file_write_dict_to_config, file_set_dict_item_by_pat
 from src.helper.data_yaml import yaml_load_or_default, yaml_write, yaml_load
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import dict_get_item_by_path
-from typing import TYPE_CHECKING, Optional, Any, cast
+from typing import TYPE_CHECKING, Optional, Any, List, cast, get_args
 from src.const.types import YamlContent, AppConfig, AppRuntimeConfig, AnyCallable, AppDockerEnvConfig, \
-    AppConfigValue, DockerCompose, StringsList, AppsPathsList
+    AppConfigValue, DockerCompose, StringsList, AppsPathsList, StringKeysDict
 
 if TYPE_CHECKING:
     from core.response.AbstractResponse import AbstractResponse
@@ -37,7 +37,7 @@ class AppAddonManager(AddonManager):
         self.app_dir: Optional[str] = None
         self.config: Optional[AppConfig] = None
         self.config_path: Optional[str] = None
-        self.app_dirs_stack: StringsList = []
+        self.app_dirs_stack: List[str | None] = []
         self.runtime_config: Optional[AppRuntimeConfig] = None
         self.runtime_config_path: Optional[str] = None
         self.runtime_docker_compose: Optional[DockerCompose] = None

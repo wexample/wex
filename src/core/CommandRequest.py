@@ -3,15 +3,14 @@ import os
 from src.core.command.ScriptCommand import ScriptCommand
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.helper.args import args_convert_dict_to_args
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandArgsListOrDict
+    from src.const.types import OptionalCoreCommandArgsListOrDict, StringsList
     from src.core.command.resolver import AbstractCommandResolver
 
 
 class CommandRequest:
-    function = None
     localized = None
     match = None
 
@@ -26,7 +25,7 @@ class CommandRequest:
         self.args = args or []
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
-        self.function: None | ScriptCommand = None
+        self.function: Optional[ScriptCommand] = None
         self.first_arg = self.resolver.kernel
 
         self.resolver.locate_function(self)
@@ -68,3 +67,9 @@ class CommandRequest:
                     self.args)
 
             return True
+
+    def get_args_list(self) -> 'StringsList':
+        if isinstance(self.args, list):
+            return self.args.copy()
+
+        return []
