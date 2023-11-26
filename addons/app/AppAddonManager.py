@@ -22,11 +22,12 @@ from src.helper.data_yaml import yaml_load_or_default, yaml_write, yaml_load
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import dict_get_item_by_path
 from typing import TYPE_CHECKING, Optional, Any, cast
-from src.core.CommandRequest import CommandRequest
 from src.const.types import YamlContent, AppConfig, AppRuntimeConfig, AnyCallable, AppDockerEnvConfig, \
     AppConfigValue, DockerCompose, StringsList, AppsPathsList
 
 if TYPE_CHECKING:
+    from core.response.AbstractResponse import AbstractResponse
+    from src.core.CommandRequest import CommandRequest
     from src.core.Kernel import Kernel
 
 
@@ -136,19 +137,20 @@ class AppAddonManager(AddonManager):
             return ('global' in config
                     and 'type' in config['global']
                     and config['global']['type'] == 'app')
+        return False
 
     @classmethod
     def _load_config(cls, path: str, default: Optional[AppConfig] = None) -> AppConfig:
         return yaml_load(path, default)
 
-    def create_config(self, app_name: str, domains=None):
+    def create_config(self, app_name: str, domains: Optional[StringsList] = None) -> AppConfig:
         if domains is None:
             domains = []
 
         domain_main = domains[0] if domains else f'{string_to_kebab_case(app_name)}.{CORE_COMMAND_NAME}'
         email = f'contact@{domain_main}'
 
-        return {
+        return cast(AppConfig, {
             'global': {
                 'author': getpass.getuser(),
                 'created': datetime.datetime.utcnow().strftime(DATE_FORMAT_SECOND),
@@ -187,7 +189,7 @@ class AppAddonManager(AddonManager):
             'wex': {
                 'version': core_kernel_get_version(self.kernel)
             }
-        }
+        })
 
     def save_config(self) -> None:
         yaml_write(
@@ -235,7 +237,7 @@ class AppAddonManager(AddonManager):
             config_path
         )
 
-    def config_to_docker_env(self):
+    def config_to_docker_env(self) -> AppDockerEnvConfig:
         config = self.config.copy()
         config['runtime'] = dict(
             sorted(
@@ -323,7 +325,7 @@ class AppAddonManager(AddonManager):
 
         return value
 
-    def log(self, message: str, color=COLOR_GRAY, indent: int = 0) -> None:
+    def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
         if self.first_log_indent is None:
             self.first_log_indent = self.kernel.io.log_indent
 
@@ -347,7 +349,7 @@ class AppAddonManager(AddonManager):
         # This is not a function property class.
         return getattr(request.function.function, 'app_command', False) == False
 
-    def hook_render_request_pre(self, request) -> None:
+    def hook_render_request_pre(self, request: 'CommandRequest') -> None:
         if self.ignore_app_dir(request):
             return
 
@@ -433,7 +435,7 @@ class AppAddonManager(AddonManager):
 
         return self.app_dir
 
-    def hook_render_request_post(self, response) -> None:
+    def hook_render_request_post(self, response: 'AbstractResponse') -> None:
         if self.ignore_app_dir(response.request):
             return
 

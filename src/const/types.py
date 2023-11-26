@@ -44,7 +44,7 @@ class YamlContent(TypedDict):
 
 AppConfigValue = None | int | float | str | bool
 AppDockerEnvConfig = Dict[str, AppConfigValue]
-AppsPathsList = StringsList
+AppsPathsList = StringsDict
 
 class AppConfig(TypedDict):
     domain_main: str
