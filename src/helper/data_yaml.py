@@ -26,7 +26,7 @@ def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
         return False
 
 
-def yaml_load(file_path: str, default: Optional['YamlContent'] = None) -> 'YamlContent':
+def yaml_load(file_path: str, default: Optional['YamlContent'] = None) -> Optional['YamlContent']:
     try:
         with open(file_path, 'r') as f:
             content = yaml.safe_load(f)

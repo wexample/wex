@@ -42,6 +42,31 @@ class YamlContent(TypedDict):
     pass
 
 
+AppConfigValue = None | int | float | str | bool
+AppDockerEnvConfig = Dict[str, AppConfigValue]
+AppsPathsList = StringsList
+
+class AppConfig(TypedDict):
+    domain_main: str
+    domain_tld: str
+    domains: List[str]
+    domains_string: str
+    env: Dict[str, Any]
+    name: str
+    host: Dict[str, str]
+    password: Dict[str, str]
+    path: Dict[str, str]
+    service: Dict[str, Any]
+    started: bool
+    user: Dict[str, str | int]
+
+class DockerCompose(TypedDict):
+    pass
+
+class AppRuntimeConfig(AppConfig):
+    env: str
+
+
 class KernelRegistry(YamlContent):
     env: Optional[str]
     resolvers: Dict[str, RegistryResolver]

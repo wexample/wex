@@ -3,7 +3,6 @@ import platform
 import datetime
 import getpass
 import sys
-
 import yaml
 
 from src.helper.service import service_load_config
@@ -19,27 +18,30 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFI
 from addons.app.command.location.find import app__location__find
 from src.helper.file import file_write_dict_to_config, file_set_dict_item_by_path, file_env_to_dict, \
     file_remove_dict_item_by_path
-from src.helper.data_yaml import yaml_load_or_default
+from src.helper.data_yaml import yaml_load_or_default, yaml_write, yaml_load
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import dict_get_item_by_path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Any, cast
+from src.core.CommandRequest import CommandRequest
+from src.const.types import YamlContent, AppConfig, AppRuntimeConfig, AnyCallable, AppDockerEnvConfig, \
+    AppConfigValue, DockerCompose, StringsList, AppsPathsList
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
 class AppAddonManager(AddonManager):
-    def __init__(self, kernel: 'Kernel', name: str = COMMAND_TYPE_APP, app_dir: None | str = None):
+    def __init__(self, kernel: 'Kernel', name: str = COMMAND_TYPE_APP, app_dir: None | str = None) -> None:
         super().__init__(kernel, name)
-        self.app_dir = None
-        self.config = {}
-        self.config_path = None
-        self.app_dirs_stack = []
-        self.runtime_config = {}
-        self.runtime_config_path = None
-        self.runtime_docker_compose = None
-        self.runtime_docker_compose_path = None
-        self.first_log_indent = None
+        self.app_dir: Optional[str] = None
+        self.config: Optional[AppConfig] = None
+        self.config_path: Optional[str] = None
+        self.app_dirs_stack: StringsList = []
+        self.runtime_config: Optional[AppRuntimeConfig] = None
+        self.runtime_config_path: Optional[str] = None
+        self.runtime_docker_compose: Optional[DockerCompose] = None
+        self.runtime_docker_compose_path: Optional[str] = None
+        self.first_log_indent: Optional[int] = None
 
         if app_dir:
             self.set_app_workdir(app_dir)
@@ -93,19 +95,14 @@ class AppAddonManager(AddonManager):
 
         return env_dir
 
-    def load_script(self, name: str) -> dict | None:
+    def load_script(self, name: str) -> Optional[YamlContent]:
         script_dir = self.get_env_file_path(
             os.path.join(
                 'script',
                 name + '.yml'
             ))
 
-        if not os.path.exists(script_dir):
-            return None
-
-        # Load the configuration file
-        with open(script_dir, 'r') as file:
-            return yaml.safe_load(file)
+        return yaml_load(script_dir)
 
     def get_proxy_path(self) -> str:
         if platform.system() == 'Darwin':
@@ -113,11 +110,11 @@ class AppAddonManager(AddonManager):
         else:
             return f'{self.get_applications_path()}{PROXY_APP_NAME}{os.sep}'
 
-    def get_proxy_apps(self):
-        return yaml_load_or_default(
+    def get_proxy_apps(self) -> AppsPathsList:
+        return cast(AppsPathsList, yaml_load_or_default(
             self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY,
             {}
-        )
+        ))
 
     @classmethod
     def is_env_root(cls, app_dir: str) -> bool:
@@ -141,12 +138,8 @@ class AppAddonManager(AddonManager):
                     and config['global']['type'] == 'app')
 
     @classmethod
-    def _load_config(cls, path, default: dict = {}):
-        try:
-            with open(path, 'r') as file:
-                return yaml.safe_load(file)
-        except Exception:
-            return default
+    def _load_config(cls, path: str, default: Optional[AppConfig] = None) -> AppConfig:
+        return yaml_load(path, default)
 
     def create_config(self, app_name: str, domains=None):
         if domains is None:
@@ -196,20 +189,14 @@ class AppAddonManager(AddonManager):
             }
         }
 
-    def save_config(self):
-        self._save_yml_file(
+    def save_config(self) -> None:
+        yaml_write(
             self.config_path,
             self.config
         )
 
-    def _save_yml_file(self, path, config):
-        self.log('Updating ' + path)
-
-        with open(path, 'w') as file:
-            yaml.safe_dump(config, file)
-
-    def save_runtime_config(self):
-        self._save_yml_file(
+    def save_runtime_config(self) -> None:
+        yaml_write(
             self.runtime_config_path,
             self.runtime_config
         )
@@ -257,7 +244,7 @@ class AppAddonManager(AddonManager):
         )
         return self.dict_to_docker_env(config)
 
-    def dict_to_docker_env(self, config, parent_key='', sep='_'):
+    def dict_to_docker_env(self, config: AppConfig, parent_key: str = '', sep: str = '_') -> AppDockerEnvConfig:
         items = []
 
         for k, v in config.items():
@@ -275,7 +262,7 @@ class AppAddonManager(AddonManager):
         return dict(items)
 
     @staticmethod
-    def _set_config_value(config, key, value, replace: bool = True):
+    def _set_config_value(config: AppConfig, key: str, value: Any, replace: bool = True) -> None:
         # Avoid "#refs" in files
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
@@ -287,7 +274,7 @@ class AppAddonManager(AddonManager):
             replace
         )
 
-    def set_config(self, key, value, replace: bool = True):
+    def set_config(self, key: str, value: AppConfigValue, replace: bool = True) -> None:
         self._set_config_value(
             self.config,
             key,
@@ -297,7 +284,7 @@ class AppAddonManager(AddonManager):
 
         self.save_config()
 
-    def remove_config(self, key: str):
+    def remove_config(self, key: str) -> None:
         file_remove_dict_item_by_path(
             self.config,
             key
@@ -305,7 +292,7 @@ class AppAddonManager(AddonManager):
 
         self.save_config()
 
-    def remove_runtime_config(self, key: str):
+    def remove_runtime_config(self, key: str) -> None:
         file_remove_dict_item_by_path(
             self.config,
             key
@@ -313,7 +300,7 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def set_runtime_config(self, key, value, replace: bool = True):
+    def set_runtime_config(self, key: str, value: AppConfigValue, replace: bool = True) -> None:
         self._set_config_value(
             self.runtime_config,
             key,
@@ -323,7 +310,10 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_config(self, key: str, default: any = None, required: bool = False) -> any:
+    def get_config(self, key: str, default: AppConfigValue = None, required: bool = False) -> AppConfigValue:
+        if not self.config:
+            return default
+
         value = dict_get_item_by_path(self.config, key, default)
 
         if required and value is None:
@@ -346,15 +336,18 @@ class AppAddonManager(AddonManager):
             indent
         )
 
-    def get_runtime_config(self, key: str, default: None | int | str | bool = None) -> None | int | str | bool:
+    def get_runtime_config(self, key: str, default: AppConfigValue = None) -> AppConfigValue:
+        if not self.runtime_config:
+            return default
+
         return dict_get_item_by_path(self.runtime_config, key, default)
 
-    def ignore_app_dir(self, request) -> bool:
+    def ignore_app_dir(self, request: 'CommandRequest') -> bool:
         # Only specified commands will expect app location.
         # This is not a function property class.
         return getattr(request.function.function, 'app_command', False) == False
 
-    def hook_render_request_pre(self, request):
+    def hook_render_request_pre(self, request) -> None:
         if self.ignore_app_dir(request):
             return
 
@@ -433,7 +426,14 @@ class AppAddonManager(AddonManager):
                     'dir': app_dir_resolved,
                 }, trace=False)
 
-    def hook_render_request_post(self, response):
+    def get_app_dir_or_fail(self) -> str:
+        if not self.app_dir:
+            self.kernel.io.error('Trying to load app dir before initialization')
+            assert False
+
+        return self.app_dir
+
+    def hook_render_request_post(self, response) -> None:
         if self.ignore_app_dir(response.request):
             return
 
@@ -450,19 +450,19 @@ class AppAddonManager(AddonManager):
             if app_dir != self.app_dir:
                 self.set_app_workdir(app_dir)
 
-    def add_proxy_app(self, name, app_dir):
+    def add_proxy_app(self, name: str, app_dir: str) -> None:
         proxy_apps = self.get_proxy_apps()
         proxy_apps[name] = app_dir
         self.save_proxy_apps(proxy_apps)
 
-    def save_proxy_apps(self, proxy_apps):
+    def save_proxy_apps(self, proxy_apps: AppsPathsList) -> None:
         with open(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, 'w') as f:
             yaml.dump(
                 proxy_apps, f,
                 indent=True
             )
 
-    def set_app_workdir(self, app_dir: str = None):
+    def set_app_workdir(self, app_dir: str) -> None:
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG_RUNTIME)
@@ -477,16 +477,19 @@ class AppAddonManager(AddonManager):
 
             os.chdir(app_dir)
 
-    def load_config(self):
-        self.config = self._load_config(self.config_path)
+    def load_config(self) -> None:
+        if isinstance(self.config_path, str):
+            self.config = self._load_config(self.config_path)
 
-        self.runtime_config = self._load_config(
-            self.runtime_config_path)
+        if isinstance(self.runtime_config_path, str):
+            self.runtime_config = cast(AppRuntimeConfig, self._load_config(
+                self.runtime_config_path))
 
-        self.runtime_docker_compose = self._load_config(
-            self.runtime_docker_compose_path)
+        if isinstance(self.runtime_docker_compose_path, str):
+            self.runtime_docker_compose = cast(DockerCompose, self._load_config(
+                self.runtime_docker_compose_path))
 
-    def unset_app_workdir(self, fallback_dir: str | None = None):
+    def unset_app_workdir(self, fallback_dir: str | None = None) -> None:
         self.app_dir = None
         self.config_path = None
         self.runtime_config_path = None
@@ -504,8 +507,8 @@ class AppAddonManager(AddonManager):
 
             os.chdir(fallback_dir)
 
-    def exec_in_app_workdir(self, app_dir: str, callback):
-        app_dir_previous = os.getcwd() + '/'
+    def exec_in_app_workdir(self, app_dir: str, callback: AnyCallable) -> Any:
+        app_dir_previous = os.getcwd() + os.sep
         self.set_app_workdir(app_dir)
 
         response = callback()
@@ -514,7 +517,7 @@ class AppAddonManager(AddonManager):
 
         return response
 
-    def build_runtime_config(self, user: str = None, group: str = None):
+    def build_runtime_config(self, user: Optional[str] = None, group: Optional[str] = None) -> None:
         import socket
         from addons.app.command.env.get import app__env__get
         from src.const.globals import PASSWORD_INSECURE
@@ -524,17 +527,24 @@ class AppAddonManager(AddonManager):
         from src.helper.user import get_user_or_sudo_user
         from addons.app.command.hook.exec import app__hook__exec
 
+        app_dir = self.get_app_dir_or_fail()
         env = self.kernel.run_function(app__env__get, {'app-dir': self.app_dir}).first()
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
         name = self.get_config('global.name')
+        config = self.config
+
+        if not config:
+            return
+
+        config = cast(AppConfig, config)
 
         self.log(f'Using user {user}:{group}')
 
         # Get a full config copy
-        runtime_config = self.config.copy()
+        runtime_config = cast(AppRuntimeConfig, config.copy())
         # Add the per-environment config.
-        runtime_config.update(self.config['env'][env])
+        runtime_config.update(config['env'][env])
 
         domains = []
         if 'domains' in runtime_config:
@@ -561,8 +571,8 @@ class AppAddonManager(AddonManager):
                 'insecure': PASSWORD_INSECURE
             },
             'path': {
-                'app': self.app_dir,
-                'app_env': os.path.join(self.app_dir, APP_DIR_APP_DATA) + '/',
+                'app': app_dir,
+                'app_env': os.path.join(app_dir, APP_DIR_APP_DATA) + '/',
                 'proxy': self.get_proxy_path()
             },
             'service': {},
@@ -603,15 +613,11 @@ class AppAddonManager(AddonManager):
             }
         )
 
-    def run_app_function(self, function: callable, args: dict):
-        args['app-dir'] = self.app_dir
-
-        return self.kernel.run_function(
-            function,
-            args
-        )
-
-    def get_service_config(self, key, service: str | None = None, default: any = None):
+    def get_service_config(
+            self,
+            key: str,
+            service: str | None = None,
+            default: Any = None) -> Any:
         service = service or self.get_main_service()
 
         # Search into local config.
@@ -620,10 +626,10 @@ class AppAddonManager(AddonManager):
                 or dict_get_item_by_path(service_load_config(self.kernel, service), key, default))
 
     def get_main_service(self) -> str:
-        return self.get_config(
+        return str(self.get_config(
             key='global.main_service',
             required=True
-        )
+        ))
 
     def get_main_container_name(self) -> str:
         main_service = self.get_main_service()
@@ -632,27 +638,7 @@ class AppAddonManager(AddonManager):
             key='container.default',
             service=main_service) or main_service
 
-    def get_service_shell(self, service: str | None = None):
-        service = service or self.get_main_service()
-
+    def get_service_shell(self, service: str | None = None) -> Optional[str]:
         return self.get_service_config(
             key='shell',
-            service=service) or SHELL_DEFAULT
-
-
-def _app__script__exec__create_callback(
-        kernel,
-        app_dir,
-        command):
-    def _callback(previous=None):
-        from addons.app.command.app.exec import app__app__exec
-
-        return kernel.run_function(
-            app__app__exec,
-            {
-                'app-dir': app_dir,
-                'command': command
-            }
-        )
-
-    return _callback
+            service=(service or self.get_main_service())) or SHELL_DEFAULT
