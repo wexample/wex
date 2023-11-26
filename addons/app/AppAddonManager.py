@@ -263,13 +263,16 @@ class AppAddonManager(AddonManager):
                 items.append((new_key, v))
         return dict(items)
 
-    def _set_config_value(self, config: AppConfig, key: str, value: Any, replace: bool = True) -> None:
+    def _set_config_value(self, config: Optional[AppConfig], key: str, value: Any, replace: bool = True) -> None:
+        if not config:
+            return None
+
         # Avoid "#refs" in files
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
         file_set_dict_item_by_path(
-            config,
+            self.config_to_dict(config),
             key,
             value,
             replace
@@ -287,7 +290,7 @@ class AppAddonManager(AddonManager):
 
     def remove_config(self, key: str) -> None:
         file_remove_dict_item_by_path(
-            self.config,
+            self.config_to_dict(self.config),
             key
         )
 
@@ -295,7 +298,7 @@ class AppAddonManager(AddonManager):
 
     def remove_runtime_config(self, key: str) -> None:
         file_remove_dict_item_by_path(
-            self.config,
+            self.config_to_dict(self.config),
             key
         )
 
@@ -326,7 +329,7 @@ class AppAddonManager(AddonManager):
 
     def _get_config_value(
             self,
-            config: AppConfig|AppRuntimeConfig,
+            config: Optional[AppConfig | AppRuntimeConfig],
             key: str,
             default: AppConfigValue = None,
             required: bool = False) -> AppConfigValue:
