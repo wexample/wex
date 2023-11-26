@@ -24,7 +24,7 @@ StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
 RegistryAddon = Dict[Union['alias', 'command', 'file', 'properties', 'test'], StringsDict]
 RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], StringsDict]
-RegistryResolver = Dict[str, StringKeysDict | List[StringKeysDict]]
+RegistryResolverData = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 
 CoreCommandArgsDict = KeyPairCommandArgs
@@ -83,7 +83,7 @@ class DockerCompose(TypedDict):
 
 class KernelRegistry(YamlContent):
     env: Optional[str]
-    resolvers: Dict[str, RegistryResolver]
+    resolvers: Dict[str, RegistryResolverData]
 
     def __init__(self, resolvers: StringKeysDict, env: Optional[str] = None) -> None:
         super().__init__()

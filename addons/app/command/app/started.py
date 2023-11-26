@@ -19,7 +19,7 @@ APP_STARTED_CHECK_MODE_ANY_CONTAINER = 'any-container'
 @app_command(help="Return true if app is started")
 @option('--mode', '-m', type=str, required=False, default=APP_STARTED_CHECK_MODE_ANY_CONTAINER,
         help="Define how to define if app is started or not")
-def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER):
+def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER) -> bool:
     if not manager.get_runtime_config('started', False):
         return False
 
@@ -48,7 +48,7 @@ def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_
             if mode == APP_STARTED_CHECK_MODE_ANY_CONTAINER:
                 return True
         else:
-            all_runs: bool = False
+            all_runs = False
             if mode == APP_STARTED_CHECK_MODE_FULL:
                 return False
 

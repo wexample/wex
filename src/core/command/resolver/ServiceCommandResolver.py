@@ -14,7 +14,7 @@ from typing import Optional, TYPE_CHECKING, Dict, Any
 if TYPE_CHECKING:
     from src.const.types import AnyCallable, StringsList
     from src.core.response.AbstractResponse import AbstractResponse
-    from src.const.types import RegistryResolver
+    from src.const.types import RegistryResolverData
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
@@ -152,9 +152,9 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolverData':
         from src.helper.registry import registry_resolve_service_inheritance
-        registry: 'RegistryResolver' = {}
+        registry: 'RegistryResolverData' = {}
 
         for addon in self.kernel.addons:
             services_dir = self.kernel.get_path('addons', [addon, 'services'])

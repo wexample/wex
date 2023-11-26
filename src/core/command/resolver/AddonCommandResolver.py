@@ -9,7 +9,7 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from src.const.types import RegistryResolver
+    from src.const.types import RegistryResolverData
 
 
 class AddonCommandResolver(AbstractCommandResolver):
@@ -142,8 +142,8 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
-        registry: 'RegistryResolver' = {}
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolverData':
+        registry: 'RegistryResolverData' = {}
 
         for addon in self.kernel.addons:
             addon_command_path = self.kernel.get_path('addons', [addon, 'command'])

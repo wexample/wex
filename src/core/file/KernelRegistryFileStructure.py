@@ -1,5 +1,5 @@
-from typing import Optional
-from src.const.types import KernelRegistry, RegistryResolver
+from typing import Optional, cast
+from src.const.types import KernelRegistry, RegistryResolverData
 from src.core.file.YmlFileStructure import YmlFileStructure
 from typing import TYPE_CHECKING
 
@@ -47,5 +47,5 @@ class KernelRegistryFileStructure(YmlFileStructure):
 
         return self.content
 
-    def get_resolver_data(self, command_type: str) -> RegistryResolver:
-        return self.content['resolvers'][command_type]
+    def get_resolver_data(self, command_type: str) -> RegistryResolverData:
+        return cast(RegistryResolverData, self.content['resolvers'][command_type])

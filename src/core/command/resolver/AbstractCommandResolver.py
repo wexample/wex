@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from click.core import Command as ClickCommand
     from src.core.Kernel import Kernel
     from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict, \
-        AnyCallable, RegistryResolver
+        AnyCallable, RegistryResolverData
 
 
 class AbstractCommandResolver:
@@ -380,8 +380,8 @@ class AbstractCommandResolver:
     def build_command_parts_from_url_path_parts(self, path_parts: list):
         pass
 
-    def build_registry_data(self, test: bool = False) -> 'RegistryResolver':
+    def build_registry_data(self, test: bool = False) -> 'RegistryResolverData':
         return {}
 
-    def get_registry_data(self) -> 'RegistryResolver':
+    def get_registry_data(self) -> 'RegistryResolverData':
         return self.kernel.registry_structure.get_resolver_data(self.get_type())

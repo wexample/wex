@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-    from src.const.types import RegistryResolver
+    from src.const.types import RegistryResolverData
 
 
 def registry_get_all_commands(kernel: 'Kernel') -> Dict[str, Any]:
@@ -37,7 +37,7 @@ def registry_remove_addons(commands_list: List[str]) -> List[str]:
     ]
 
 
-def registry_resolve_service_inheritance(service: Dict[str, Any], services_dict: 'RegistryResolver') -> Dict[str, Any]:
+def registry_resolve_service_inheritance(service: Dict[str, Any], services_dict: 'RegistryResolverData') -> Dict[str, Any]:
     if 'extends' in service['config']:
         parent_name = service['config']['extends']
         if parent_name in services_dict:
