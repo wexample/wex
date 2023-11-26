@@ -318,10 +318,22 @@ class AppAddonManager(AddonManager):
         self.save_runtime_config()
 
     def get_config(self, key: str, default: AppConfigValue = None, required: bool = False) -> AppConfigValue:
-        if not self.config:
+        return self._get_config_value(
+            self.config,
+            key,
+            default,
+            required)
+
+    def _get_config_value(
+            self,
+            config: AppConfig|AppRuntimeConfig,
+            key: str,
+            default: AppConfigValue = None,
+            required: bool = False) -> AppConfigValue:
+        if not config:
             return default
 
-        value = dict_get_item_by_path(self.config, key, default)
+        value = dict_get_item_by_path(config, key, default)
 
         if required and value is None:
             self.kernel.io.error(
@@ -343,13 +355,17 @@ class AppAddonManager(AddonManager):
             indent
         )
 
-    def get_runtime_config(self, key: str, default: AppConfigValue = None) -> AppConfigValue:
-        if not self.runtime_config:
-            return default
-
-        return dict_get_item_by_path(self.runtime_config, key, default)
+    def get_runtime_config(self, key: str, default: AppConfigValue = None, required: bool = False) -> AppConfigValue:
+        return self._get_config_value(
+            self.runtime_config,
+            key,
+            default,
+            required)
 
     def ignore_app_dir(self, request: 'CommandRequest') -> bool:
+        if request.function is None:
+            return False
+
         # Only specified commands will expect app location.
         # This is not a function property class.
         return getattr(request.function.function, 'app_command', False) == False
@@ -358,9 +374,12 @@ class AppAddonManager(AddonManager):
         if self.ignore_app_dir(request):
             return
 
-        args = request.args.copy()
+        from src.core.command.ScriptCommand import ScriptCommand
+
+        args = request.get_args_list()
         app_dir_arg = args_shift_one(args, 'app-dir')
         request.first_arg = self
+        script_command = cast(ScriptCommand, request.function)
 
         # User specified the app dir arg.
         if app_dir_arg is not None:
@@ -372,7 +391,7 @@ class AppAddonManager(AddonManager):
             else:
                 # Skip if the command allow to be executed without app location.
                 if not FunctionProperty.get_property(
-                        request.function,
+                        script_command,
                         name='app_dir_required',
                         default=False):
                     self.app_dirs_stack.append(None)
@@ -392,11 +411,13 @@ class AppAddonManager(AddonManager):
             import logging
 
             self.kernel.io.error(ERR_APP_NOT_FOUND, {
-                'command': request.command,
+                'command': script_command,
                 'dir': app_dir_resolved,
             }, logging.ERROR)
 
             sys.exit(0)
+
+        app_dir_resolved = str(app_dir_resolved)
 
         # Ensure it always ends with a /
         if not app_dir_resolved.endswith(os.sep):
@@ -417,9 +438,9 @@ class AppAddonManager(AddonManager):
             value=app_dir_resolved)
 
         if FunctionProperty.get_property(
-                request.function,
+                script_command=script_command,
                 name='app_should_run',
-                default=False):
+                default=False) is True:
             from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
 
             if not self.kernel.run_function(app__app__started, {
