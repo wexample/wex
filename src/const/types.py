@@ -37,10 +37,7 @@ OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 
-
-class YamlContent(TypedDict):
-    pass
-
+YamlContent = StringKeysDict
 
 AppConfigValue = None | int | float | str | bool | List[Any] | StringKeysDict
 AppDockerEnvConfig = Dict[str, AppConfigValue]
@@ -62,12 +59,26 @@ class AppConfig(TypedDict):
     user: Dict[str, str | int]
 
 
+class AppRuntimeConfig(TypedDict):
+    domain_main: str
+    domain_tld: str
+    domains: List[str]
+    domains_string: str
+    env: str
+    name: str
+    host: Dict[str, str]
+    password: Dict[str, str]
+    path: Dict[str, str]
+    service: Dict[str, Any]
+    started: bool
+    user: Dict[str, str | int]
+
+
+AnyAppConfig = Union[AppConfig | AppRuntimeConfig]
+
+
 class DockerCompose(TypedDict):
     pass
-
-
-class AppRuntimeConfig(AppConfig):
-    env: str
 
 
 class KernelRegistry(YamlContent):

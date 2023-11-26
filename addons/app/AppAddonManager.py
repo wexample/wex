@@ -21,12 +21,12 @@ from src.helper.file import file_write_dict_to_config, file_set_dict_item_by_pat
 from src.helper.data_yaml import yaml_load_or_default, yaml_write, yaml_load
 from src.helper.core import core_kernel_get_version
 from src.helper.dict import dict_get_item_by_path
-from typing import TYPE_CHECKING, Optional, Any, List, cast, get_args
+from typing import TYPE_CHECKING, Optional, Any, List, cast, Dict, Mapping
 from src.const.types import YamlContent, AppConfig, AppRuntimeConfig, AnyCallable, AppDockerEnvConfig, \
-    AppConfigValue, DockerCompose, StringsList, AppsPathsList, StringKeysDict
+    AppConfigValue, DockerCompose, StringsList, AppsPathsList, StringKeysDict, AnyAppConfig
 
 if TYPE_CHECKING:
-    from core.response.AbstractResponse import AbstractResponse
+    from src.core.response.AbstractResponse import AbstractResponse
     from src.core.CommandRequest import CommandRequest
     from src.core.Kernel import Kernel
 
@@ -82,11 +82,10 @@ class AppAddonManager(AddonManager):
         return env_file_path
 
     def get_env_dir(self, dir: str, create: bool = False) -> str:
-        if not self.app_dir:
-            self.kernel.io.error('Trying to get env directory before setting working directory')
+        app_dir = self.get_app_dir_or_fail()
 
         env_dir = os.path.join(
-            self.app_dir,
+            app_dir,
             APP_DIR_APP_DATA,
             dir
         ) + os.sep
@@ -140,8 +139,8 @@ class AppAddonManager(AddonManager):
         return False
 
     @classmethod
-    def _load_config(cls, path: str, default: Optional[AppConfig] = None) -> AppConfig:
-        return yaml_load(path, default or {})
+    def _load_config(cls, path: str, default: Optional[YamlContent] = None) -> YamlContent:
+        return yaml_load(path, cast(YamlContent, default)) or {}
 
     def create_config(self, app_name: str, domains: Optional[StringsList] = None) -> AppConfig:
         if domains is None:
@@ -191,26 +190,38 @@ class AppAddonManager(AddonManager):
             }
         })
 
-    def save_config(self) -> None:
+    def _save_config(
+            self,
+            path: Optional[str],
+            config: Optional[AnyAppConfig]) -> None:
+        if not path or not config:
+            return
+
         yaml_write(
+            path,
+            cast(YamlContent, config)
+        )
+
+    def save_config(self) -> None:
+        self._save_config(
             self.config_path,
             self.config
         )
 
     def save_runtime_config(self) -> None:
-        yaml_write(
+        self._save_config(
             self.runtime_config_path,
             self.runtime_config
         )
 
-        app_dir: str = self.get_runtime_config('path.app')
+        app_dir: str = str(self.get_runtime_config('path.app'))
 
         app_env_path = os.path.join(
             app_dir,
             APP_FILEPATH_REL_ENV
         )
 
-        env_dict = {
+        env_dict: Dict[str, Any] = {
             '# .env config': True
         }
 
@@ -238,7 +249,10 @@ class AppAddonManager(AddonManager):
         )
 
     def config_to_docker_env(self) -> AppDockerEnvConfig:
-        config = self.config.copy()
+        if not self.runtime_config or not self.config:
+            return {}
+
+        config = cast(StringKeysDict, self.config.copy())
         config['runtime'] = dict(
             sorted(
                 self.runtime_config.items()
@@ -246,24 +260,25 @@ class AppAddonManager(AddonManager):
         )
         return self.dict_to_docker_env(config)
 
-    def dict_to_docker_env(self, config: AppConfig, parent_key: str = '', sep: str = '_') -> AppDockerEnvConfig:
-        items = []
+    def dict_to_docker_env(self, config: Mapping[str, Any], parent_key: str = '', sep: str = '_') -> AppDockerEnvConfig:
+        items: List[Any] = []
 
         for k, v in config.items():
             new_key = parent_key + sep + k if parent_key else k
             new_key = string_to_snake_case(new_key)
             new_key = new_key.upper()
-            if isinstance(v, dict):
+            if isinstance(v, Dict):
                 items.extend(self.dict_to_docker_env(
                     v,
                     new_key,
                     sep=sep
                 ).items())
             else:
-                items.append((new_key, v))
+                items.append((new_key, cast(Any, v)))
+
         return dict(items)
 
-    def _set_config_value(self, config: Optional[AppConfig], key: str, value: Any, replace: bool = True) -> None:
+    def _set_config_value(self, config: Optional[AnyAppConfig], key: str, value: Any, replace: bool = True) -> None:
         if not config:
             return None
 
@@ -304,7 +319,7 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def config_to_dict(self, config: Optional[AppConfig]) -> StringKeysDict:
+    def config_to_dict(self, config: Optional[AnyAppConfig]) -> StringKeysDict:
         if not config:
             return {}
 
@@ -465,12 +480,12 @@ class AppAddonManager(AddonManager):
         return self.app_dir
 
     def hook_render_request_post(self, response: 'AbstractResponse') -> None:
-        if self.ignore_app_dir(response.request):
+        if not response.request or self.ignore_app_dir(response.request):
             return
 
         from src.helper.command import is_same_command
         # Ignore internally used command.
-        if is_same_command(response.request.function, app__location__find):
+        if not response.request or not response.request.function or is_same_command(response.request.function, app__location__find):
             return
 
         self.app_dirs_stack.pop()
@@ -510,15 +525,17 @@ class AppAddonManager(AddonManager):
 
     def load_config(self) -> None:
         if isinstance(self.config_path, str):
-            self.config = self._load_config(self.config_path)
+            self.config = cast(
+                AppConfig,
+                self._load_config(self.config_path))
 
         if isinstance(self.runtime_config_path, str):
-            self.runtime_config = cast(AppRuntimeConfig, self._load_config(
-                self.runtime_config_path))
+            self.runtime_config = cast(
+                AppRuntimeConfig, self._load_config(self.runtime_config_path))
 
         if isinstance(self.runtime_docker_compose_path, str):
-            self.runtime_docker_compose = cast(DockerCompose, self._load_config(
-                self.runtime_docker_compose_path))
+            self.runtime_docker_compose = cast(
+                DockerCompose, self._load_config(self.runtime_docker_compose_path))
 
     def unset_app_workdir(self, fallback_dir: str | None = None) -> None:
         self.app_dir = None

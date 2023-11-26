@@ -1,11 +1,12 @@
 from __future__ import annotations
 import subprocess
+
+from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.file import file_create_parent_dir
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
 from typing import Any, List, Union, Tuple, Optional, Dict, NoReturn
 from subprocess import Popen
-from click.core import Command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -171,7 +172,7 @@ def command_to_string(command: List[str] | str) -> str:
     return ' '.join(output)
 
 
-def is_same_command(command_a: Command, command_b: Command) -> bool:
+def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
     if command_a.function.callback is not None and command_b.function.callback is not None:
         return command_a.function.callback.__name__ == command_b.function.callback.__name__
     return False

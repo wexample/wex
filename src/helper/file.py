@@ -153,7 +153,7 @@ def file_create_parent_and_touch(
     return None
 
 
-def file_write_dict_to_config(dictionary: Dict[str, str], target_path: str) -> None:
+def file_write_dict_to_config(dictionary: Dict[str, bool | str], target_path: str) -> None:
     output_lines = []
     for key, value in dictionary.items():
         # If the key starts with '#', write it as-is without the value
