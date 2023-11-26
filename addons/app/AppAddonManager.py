@@ -141,7 +141,7 @@ class AppAddonManager(AddonManager):
 
     @classmethod
     def _load_config(cls, path: str, default: Optional[AppConfig] = None) -> AppConfig:
-        return yaml_load(path, default)
+        return yaml_load(path, default or {})
 
     def create_config(self, app_name: str, domains: Optional[StringsList] = None) -> AppConfig:
         if domains is None:
