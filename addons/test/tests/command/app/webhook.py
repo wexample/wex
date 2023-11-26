@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from src.helper.file import file_read
@@ -24,7 +25,7 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
         response = self.request_listener(
             f'/webhook/app/{app_name}/test/test',
             check_code=None,
-            wait=2
+            wait=5
         )
 
         data = self.parse_response(response)
