@@ -2,7 +2,6 @@ from addons.app.helper.docker import docker_build_long_container_name
 from src.helper.args import args_parse_one
 from src.helper.command import command_to_string, command_escape
 from src.decorator.option import option
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.hook.exec import app__hook__exec
 from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
@@ -10,7 +9,7 @@ from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Exec a command into app container", should_run=True)
@@ -21,7 +20,7 @@ if TYPE_CHECKING:
 @option('--interactive', '-tty', type=bool, is_flag=True, required=False, help="Interactive shell")
 @option('--ignore-error', '-ie', type=bool, is_flag=True, required=False, help="Do not fail on error")
 def app__app__exec(
-        kernel: 'Kernel',
+        manager: 'AppAddonManager',
         app_dir: str,
         command: str,
         container_name: str | None = None,
@@ -29,7 +28,7 @@ def app__app__exec(
         sync: bool = False,
         interactive: bool = False,
         ignore_error: bool = False) -> InteractiveShellCommandResponse | NonInteractiveShellCommandResponse:
-    manager: AppAddonManager = kernel.addons['app']
+    kernel = manager.kernel
     container_name = container_name or manager.get_main_container_name()
 
     docker_command = [

@@ -4,11 +4,11 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Start the proxy", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def proxy__app__start_post(kernel: 'Kernel', app_dir: str, service: str):
+def proxy__app__start_post(manager: 'AppAddonManager', app_dir: str, service: str):
     commands = [
         [
             'ln',
@@ -30,7 +30,7 @@ def proxy__app__start_post(kernel: 'Kernel', app_dir: str, service: str):
     ]
 
     for command in commands:
-        kernel.run_function(
+        manager.kernel.run_function(
             app__app__exec,
             {
                 'app-dir': app_dir,

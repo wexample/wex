@@ -11,12 +11,13 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-
-
-def docker_get_app_compose_files(kernel: 'Kernel', app_dir: str) -> List[str]:
     from addons.app.AppAddonManager import AppAddonManager
+
+
+def docker_get_app_compose_files(manager: 'AppAddonManager', app_dir: str) -> List[str]:
     from addons.app.command.service.used import app__service__used
 
+    kernel = manager.kernel
     app_compose_file = app_dir + APP_DIR_APP_DATA + 'docker/docker-compose.yml'
     compose_files: List[str] = []
 
@@ -35,9 +36,7 @@ def docker_get_app_compose_files(kernel: 'Kernel', app_dir: str) -> List[str]:
         app_compose_file
     )
 
-    manager: AppAddonManager = kernel.addons['app']
     env = manager.get_runtime_config('env')
-
     env_yml = f'{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{env}.yml'
     if os.path.isfile(env_yml):
         compose_files.append(env_yml)

@@ -49,7 +49,7 @@ class AbstractCommandRunner:
                 del ctx.params[arg]
 
         # Defines kernel as mais class to provide with pass_obj option.
-        ctx.obj = self.kernel
+        ctx.obj = self.request.first_arg
 
         return script_command.run_command(
             self,

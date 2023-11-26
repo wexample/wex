@@ -5,11 +5,15 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Restarts app")
-def app__app__restart(kernel: 'Kernel', app_dir: str):
+def app__app__restart(
+        manager: 'AppAddonManager',
+        app_dir: str):
+    kernel = manager.kernel
+
     def _app__app__restart__stop(previous=None):
         return kernel.run_function(
             app__app__stop,

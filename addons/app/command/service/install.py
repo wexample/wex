@@ -8,13 +8,12 @@ from src.helper.dict import dict_merge
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_SERVICE
 from src.helper.file import file_merge_new_lines, file_create_parent_and_touch
 from src.helper.service import service_get_dir
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Install given service in app configuration")
@@ -31,7 +30,7 @@ if TYPE_CHECKING:
 @option('--ignore-dependencies', '-id', type=bool, required=False, is_flag=True, default=False,
         help='Install dependencies')
 def app__service__install(
-        kernel: 'Kernel',
+        manager: 'AppAddonManager',
         app_dir: str,
         service: str,
         install_config: bool = True,
@@ -40,6 +39,7 @@ def app__service__install(
         force: bool = False,
         ignore_dependencies: bool = False
 ):
+    kernel = manager.kernel
     service = string_to_snake_case(service)
     kernel.io.log(f'Installing service : {service}')
 
@@ -63,7 +63,6 @@ def app__service__install(
                 force
             )
 
-    manager: AppAddonManager = kernel.addons['app']
     services = manager.get_config('service') or {}
 
     if service in services and not force:
@@ -86,7 +85,7 @@ def app__service__install(
 
         for item in items:
             app_service_install_merge_dir(
-                kernel,
+                manager,
                 item,
                 service_sample_dir,
                 app_dir,
@@ -130,13 +129,14 @@ def app__service__install(
 
 
 def app_service_install_merge_dir(
-        kernel,
+        manager,
         current_item,
         service_dir,
         app_dir,
         install_docker,
         install_git,
 ):
+    kernel = manager.kernel
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)
     kernel.io.log(f'Merging {current_item}')
 
@@ -145,7 +145,7 @@ def app_service_install_merge_dir(
 
         for item in items:
             app_service_install_merge_dir(
-                kernel,
+                manager,
                 current_item + '/' + item,
                 service_dir,
                 app_dir,
@@ -188,7 +188,6 @@ def app_service_install_merge_dir(
                 with open(abs_path, 'r') as f:
                     extra_compose = yaml.safe_load(f) or {}
 
-                manager: AppAddonManager = kernel.addons['app']
                 app_name = manager.get_config('global.name')
 
                 if 'services' in extra_compose:

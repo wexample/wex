@@ -1,7 +1,6 @@
 import os
 import zipfile
 
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.helper.db import get_db_service_dumps_path
 from src.helper.dict import dict_sort_values
 from src.helper.file import file_delete_file_or_dir
@@ -12,13 +11,13 @@ from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Restore a database dump", should_run=True)
 @option('--file-path', '-f', type=str, required=False, help="Force file path")
-def app__db__restore(kernel: 'Kernel', app_dir: str, file_path: str | None = None):
-    manager: AppAddonManager = kernel.addons['app']
+def app__db__restore(manager: 'AppAddonManager', app_dir: str, file_path: str | None = None):
+    kernel = manager.kernel
 
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
@@ -61,7 +60,7 @@ def app__db__restore(kernel: 'Kernel', app_dir: str, file_path: str | None = Non
         manager.log("Unpacking...")
         with zipfile.ZipFile(file_path, 'r') as zip_ref:
             zip_ref.extractall(
-                get_db_service_dumps_path(kernel, service)
+                get_db_service_dumps_path(manager, service)
             )
 
         file_path = os.path.basename(file_path).replace('.zip', '')
@@ -78,6 +77,6 @@ def app__db__restore(kernel: 'Kernel', app_dir: str, file_path: str | None = Non
     ).first()
 
     if is_zip:
-        file_delete_file_or_dir(get_db_service_dumps_path(kernel, service) + '/' + file_path)
+        file_delete_file_or_dir(get_db_service_dumps_path(manager, service) + '/' + file_path)
 
     kernel.io.message('Restoration complete')

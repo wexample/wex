@@ -1,7 +1,6 @@
 import os
 import zipfile
 
-from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
 from src.decorator.option import option
@@ -9,15 +8,14 @@ from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Create a database dump", should_run=True)
 @option('--file-name', '-f', type=str, required=False, help="Output file name")
 @option('--zip', '-z', type=bool, required=False, default=True, help="Zip output file")
 @option('--tag', '-t', type=str, required=False, help="Add tag as suffix")
-def app__db__dump(kernel: 'Kernel', app_dir: str, file_name: str | None = None, zip: bool = True, tag: str | None = None):
-    manager: AppAddonManager = kernel.addons['app']
+def app__db__dump(manager: 'AppAddonManager', app_dir: str, file_name: str | None = None, zip: bool = True, tag: str | None = None):
     env = manager.get_runtime_config('env')
     name = manager.get_runtime_config('global.name')
 
@@ -37,7 +35,7 @@ def app__db__dump(kernel: 'Kernel', app_dir: str, file_name: str | None = None, 
         'docker.main_db_container',
         required=True)
 
-    output_path = dump_path = kernel.run_command(
+    output_path = dump_path = manager.kernel.run_command(
         f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dump',
         {
             'app-dir': app_dir,
@@ -58,7 +56,7 @@ def app__db__dump(kernel: 'Kernel', app_dir: str, file_name: str | None = None, 
             file_delete_file_or_dir(dump_path)
             output_path = zip_path
 
-        kernel.io.message('Dump created at ' + output_path)
+        manager.kernel.io.message('Dump created at ' + output_path)
 
         return output_path
 

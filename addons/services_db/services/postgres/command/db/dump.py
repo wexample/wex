@@ -9,17 +9,17 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Dump database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
-def postgres__db__dump(kernel: 'Kernel', app_dir: str, service: str, file_name: str):
+def postgres__db__dump(manager: 'AppAddonManager', app_dir: str, service: str, file_name: str):
     file_name += '.sql'
 
     command = [
         'pg_dump',
-        kernel.run_function(
+        manager.kernel.run_function(
             postgres__db__connect,
             {
                 'app-dir': app_dir,
@@ -31,7 +31,7 @@ def postgres__db__dump(kernel: 'Kernel', app_dir: str, service: str, file_name: 
         '/var/www/dumps/' + file_name
     ]
 
-    kernel.run_function(
+    manager.kernel.run_function(
         app__app__exec,
         {
             'app-dir': app_dir,
@@ -43,7 +43,7 @@ def postgres__db__dump(kernel: 'Kernel', app_dir: str, service: str, file_name: 
     )
 
     return os.path.join(
-        get_db_service_dumps_path(kernel, service),
+        get_db_service_dumps_path(manager, service),
         file_name)
 
 

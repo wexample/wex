@@ -1,15 +1,13 @@
 
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Return list of containers for given app")
-def app__container__list(kernel: 'Kernel', app_dir: str):
-    manager: AppAddonManager = kernel.addons['app']
+def app__container__list(manager: 'AppAddonManager', app_dir: str):
     container_names = []
 
     if 'services' in manager.runtime_docker_compose:

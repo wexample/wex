@@ -4,12 +4,12 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Init database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def mongo__app__first_init(kernel: 'Kernel', app_dir: str, service: str):
-    kernel.run_function(
+def mongo__app__first_init(manager: 'AppAddonManager', app_dir: str, service: str):
+    manager.kernel.run_function(
         app__db__exec,
         {
             'app-dir': app_dir,
@@ -18,4 +18,3 @@ def mongo__app__first_init(kernel: 'Kernel', app_dir: str, service: str):
             'sync': True
         }
     )
-

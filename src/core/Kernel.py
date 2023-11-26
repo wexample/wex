@@ -24,7 +24,6 @@ from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructur
 
 if TYPE_CHECKING:
     from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
-    from click.core import Command as ClickCommand
     from src.core.response.AbortResponse import AbortResponse
     from src.core.CommandRequest import CommandRequest
     from src.core.response.AbstractResponse import AbstractResponse
@@ -32,6 +31,7 @@ if TYPE_CHECKING:
     from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, \
         CoreCommandArgsList
     from src.core.ErrorMessage import ErrorMessage
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 class Kernel:
@@ -275,7 +275,7 @@ class Kernel:
         return self.render_request(request, render_mode)
 
     def run_function(self,
-                     function: 'ClickCommand',
+                     function: 'ScriptCommand',
                      args: 'OptionalCoreCommandArgsListOrDict' = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,

@@ -2,13 +2,12 @@ from typing import Optional
 
 import git
 from addons.default.command.version.increment import default__version__increment
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Build a new version of current app")
@@ -16,8 +15,12 @@ if TYPE_CHECKING:
         help="New version number, auto generated if missing")
 @option('--commit', '-ok', required=False, is_flag=True, default=False,
         help="New version changes has been validated, ask to commit changes")
-def app__version__build(kernel: 'Kernel', version=None, commit: bool = False, app_dir: Optional[str] = False):
-    manager: AppAddonManager = kernel.addons['app']
+def app__version__build(
+        manager: 'AppAddonManager',
+        version=None,
+        commit: bool = False,
+        app_dir: Optional[str] = False):
+    kernel = manager.kernel
 
     if not commit:
         if version:
@@ -55,7 +58,9 @@ def app__version__build(kernel: 'Kernel', version=None, commit: bool = False, ap
         latest_tag = tags[-1]
 
         if str(latest_tag) == new_version:
-            kernel.io.error(f'The version {new_version} has been already tagged, you should create a new version.', trace=False)
+            kernel.io.error(
+                f'The version {new_version} has been already tagged, you should create a new version.',
+                trace=False)
 
         kernel.io.log('Committing new version...')
         try:

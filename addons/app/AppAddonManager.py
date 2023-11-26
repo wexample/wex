@@ -2,6 +2,8 @@ import os
 import platform
 import datetime
 import getpass
+import sys
+
 import yaml
 
 from src.helper.service import service_load_config
@@ -358,6 +360,7 @@ class AppAddonManager(AddonManager):
 
         args = request.args.copy()
         app_dir_arg = args_shift_one(args, 'app-dir')
+        request.first_arg = self
 
         # User specified the app dir arg.
         if app_dir_arg is not None:

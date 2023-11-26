@@ -4,12 +4,12 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
-def php__config__runtime(kernel: 'Kernel', app_dir: str, service: str):
-    kernel.run_function(
+def php__config__runtime(manager: 'AppAddonManager', app_dir: str, service: str):
+    manager.kernel.run_function(
         app__config__bind_files,
         {
             'app-dir': app_dir,

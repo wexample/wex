@@ -1,4 +1,3 @@
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec
 from addons.services_db.services.sqlserver.command.db.exec import sqlserver__db__exec
@@ -7,16 +6,15 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Restore db dump", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option('--file-name', '-f', type=str, required=True, help="Dump file name")
-def sqlserver__db__restore(kernel: 'Kernel', app_dir: str, service: str, file_name: str):
-    manager: AppAddonManager = kernel.addons['app']
+def sqlserver__db__restore(manager: 'AppAddonManager', app_dir: str, service: str, file_name: str):
     app_name = manager.get_config('global.name')
 
-    exec_command = kernel.run_function(
+    exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {
             'app-dir': app_dir,
@@ -29,7 +27,7 @@ def sqlserver__db__restore(kernel: 'Kernel', app_dir: str, service: str, file_na
         type=COMMAND_TYPE_SERVICE
     ).first()
 
-    kernel.run_function(
+    manager.kernel.run_function(
         app__app__exec,
         {
             'app-dir': app_dir,

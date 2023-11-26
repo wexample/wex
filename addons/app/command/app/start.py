@@ -1,10 +1,10 @@
 import os.path
 import time
+from typing import TYPE_CHECKING
 
 import click
 
 from addons.app.command.config.write import app__config__write
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started, \
     APP_STARTED_CHECK_MODE_ANY_CONTAINER
 from addons.app.command.app.perms import app__app__perms
@@ -27,6 +27,9 @@ from src.decorator.option import option
 from src.decorator.as_sudo import as_sudo
 from addons.app.decorator.app_command import app_command
 
+if TYPE_CHECKING:
+    from addons.app.AppAddonManager import AppAddonManager
+
 
 @as_sudo()
 @app_command(help="Start an app")
@@ -42,14 +45,14 @@ from addons.app.decorator.app_command import app_command
 @option('--no-proxy', '-nopx', is_flag=True, required=False,
         help="Do not start proxy")
 def app__app__start(
-        kernel,
+        manager: 'AppAddonManager',
         app_dir: str,
         clear_cache: bool = False,
         user: str = None,
         group: str = None,
         env: str = None,
         no_proxy: bool = False):
-    manager: AppAddonManager = kernel.addons['app']
+    kernel = manager.kernel
     name = manager.get_config('global.name')
 
     def _app__app__start__checkup():

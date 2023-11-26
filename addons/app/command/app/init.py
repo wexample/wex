@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 from git import Repo
-from typing import Iterable, Union, Optional
+from typing import Iterable, Union, Optional, cast
 
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.prompt import prompt_progress_steps
@@ -16,12 +16,11 @@ from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
 from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Create new app and services configuration", dir_required=False)
@@ -38,7 +37,7 @@ if TYPE_CHECKING:
 @option('--env', '-e', type=str, required=False,
         help="App environment")
 def app__app__init(
-        kernel: 'Kernel',
+        manager: 'AppAddonManager',
         app_dir: str,
         name: str = None,
         services: Union[str, Iterable] = None,
@@ -46,7 +45,7 @@ def app__app__init(
         git: bool = True,
         env: str | None = None
 ):
-    manager: AppAddonManager = kernel.addons['app']
+    kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
     env = env or APP_ENV_LOCAL
 

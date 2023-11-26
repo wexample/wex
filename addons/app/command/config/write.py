@@ -4,14 +4,13 @@ import yaml
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.helper.docker import docker_exec_app_compose, docker_get_app_compose_files
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Write the configuration file for services to start")
@@ -19,9 +18,8 @@ if TYPE_CHECKING:
         help="Owner of application files")
 @option('--group', '-g', type=str, required=False,
         help="Group of application files")
-def app__config__write(kernel: 'Kernel', app_dir: str, user: str = None, group: str = None):
-    """Build config file used in docker based on services and base config"""
-    manager: AppAddonManager = kernel.addons['app']
+def app__config__write(manager: 'AppAddonManager', app_dir: str, user: str = None, group: str = None):
+    kernel = manager.kernel
 
     def _app__config__write__runtime():
         nonlocal user
@@ -39,7 +37,7 @@ def app__config__write(kernel: 'Kernel', app_dir: str, user: str = None, group: 
         )
 
         compose_files = docker_get_app_compose_files(
-            kernel,
+            manager,
             app_dir
         )
 

@@ -5,7 +5,6 @@ from addons.app.const.app import APP_NO_SSL_ENVS
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.decorator.option import option
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from addons.app.command.db.exec import app__db__exec
@@ -14,7 +13,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Change wordpress URL in database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
@@ -22,14 +21,14 @@ if TYPE_CHECKING:
 @option('--old-url', '-ou', type=str, required=False, help="Old URL with trailing slash : (ex: http://wexample.com/)")
 @option('--site-id', '-si', type=int, required=False, default=1, help="WordPress Multisite ID. Default is 1.")
 @option('--yes', '-y', type=bool, is_flag=True, required=False, help="Do not ask for confirmation")
-def wordpress__url__replace(kernel: 'Kernel',
+def wordpress__url__replace(manager: 'AppAddonManager',
                             app_dir: str,
                             service: str,
                             new_url: None | str = None,
                             old_url: None | str = None,
                             site_id: int = 1,
                             yes: bool = False):
-    manager: AppAddonManager = kernel.addons['app']
+    kernel = manager.kernel
 
     def _build_urls():
         nonlocal new_url
@@ -121,11 +120,11 @@ def wordpress__url__replace(kernel: 'Kernel',
     ])
 
 
-def wordpress__url__replace__prepare_url(kernel: 'Kernel', url) -> bool | str:
+def wordpress__url__replace__prepare_url(manager: 'AppAddonManager', url) -> bool | str:
     url = url.rstrip('/')  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):
-        kernel.io.log(f'Invalid url {url}')
+        manager.kernel.io.log(f'Invalid url {url}')
         return None
 
     return url

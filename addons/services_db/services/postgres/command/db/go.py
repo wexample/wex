@@ -4,12 +4,12 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Enter in db console", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def postgres__db__go(kernel: 'Kernel', app_dir: str, service: str):
-    return 'psql ' + kernel.run_function(
+def postgres__db__go(manager: 'AppAddonManager', app_dir: str, service: str):
+    return 'psql ' + manager.kernel.run_function(
         postgres__db__connect,
         {
             'app-dir': app_dir,

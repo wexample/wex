@@ -12,7 +12,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -32,7 +32,7 @@ def app__proxy__start(kernel: 'Kernel',
                       port: str = None,
                       port_secure: str = None
                       ):
-    manager: AppAddonManager = kernel.addons['app']
+    manager: AppAddonManager = cast(AppAddonManager, kernel.addons['app'])
     proxy_path = manager.get_proxy_path()
 
     def _app__proxy__start__create():

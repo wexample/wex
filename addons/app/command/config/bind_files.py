@@ -1,24 +1,22 @@
 import os
 
-from addons.app.AppAddonManager import AppAddonManager
-
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 @app_command(help="Create env variable pointing to files regarding environment extension")
 @option('--dir', '-d', type=str, required=True, help="Argument")
-def app__config__bind_files(kernel: 'Kernel', app_dir: str, dir: str):
+def app__config__bind_files(manager: 'AppAddonManager', app_dir: str, dir: str):
+    kernel = manager.kernel
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)
     names_processed = []
     output = {}
 
-    manager: AppAddonManager = kernel.addons['app']
     env = manager.get_runtime_config('env')
 
     for file in section_files:

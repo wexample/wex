@@ -29,7 +29,7 @@ WritableFileContent = str | int | float | bool | None
 
 CoreCommandArgsDict = KeyPairCommandArgs
 CoreCommandArgsList = StringsList
-CoreCommandArgsListOrDict = Union[KeyPairCommandArgs, CoreCommandArgsList]
+CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]
 CoreCommandString = str
 CoreCommandStringParts = StringsList
 

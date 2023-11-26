@@ -1,12 +1,11 @@
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.helper.args import args_parse_one
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Execute a command for all installed services")
@@ -14,9 +13,7 @@ if TYPE_CHECKING:
         help="Hook name")
 @option('--arguments', '-args', type=str, required=False,
         help="Arguments")
-def app__services__exec(kernel: 'Kernel', app_dir: str, hook: str, arguments: str):
-    manager: AppAddonManager = kernel.addons['app']
-
+def app__services__exec(manager: 'AppAddonManager', app_dir: str, hook: str, arguments: str):
     output = {}
 
     arguments = args_parse_one(arguments, {})
@@ -29,7 +26,7 @@ def app__services__exec(kernel: 'Kernel', app_dir: str, hook: str, arguments: st
 
         manager.log(command_name)
 
-        output[service] = kernel.run_command(
+        output[service] = manager.kernel.run_command(
             command_name,
             arguments,
             quiet=True

@@ -1,10 +1,9 @@
 from src.decorator.option import option
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Set a configuration setting for given app")
@@ -13,10 +12,8 @@ if TYPE_CHECKING:
 @option('--value', '-v', required=True,
         help="Value to set")
 def app__config__set(
-        kernel: 'Kernel',
+        manager: 'AppAddonManager',
         app_dir: str,
         key: str,
         value):
-    manager: AppAddonManager = kernel.addons['app']
-
     return manager.set_config(key, value)

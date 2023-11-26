@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from click.core import Command as ClickCommand
     from src.core.Kernel import Kernel
     from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict, \
-        Kwargs, AnyCallable, RegistryResolver
+        AnyCallable, RegistryResolver
 
 
 class AbstractCommandResolver:

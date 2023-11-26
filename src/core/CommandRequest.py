@@ -27,6 +27,7 @@ class CommandRequest:
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
         self.function: None | ScriptCommand = None
+        self.first_arg = self.resolver.kernel
 
         self.resolver.locate_function(self)
 
