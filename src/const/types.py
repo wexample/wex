@@ -42,7 +42,7 @@ class YamlContent(TypedDict):
     pass
 
 
-AppConfigValue = None | int | float | str | bool
+AppConfigValue = None | int | float | str | bool | List[Any] | StringKeysDict
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 

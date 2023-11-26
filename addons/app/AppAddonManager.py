@@ -263,8 +263,7 @@ class AppAddonManager(AddonManager):
                 items.append((new_key, v))
         return dict(items)
 
-    @staticmethod
-    def _set_config_value(config: AppConfig, key: str, value: Any, replace: bool = True) -> None:
+    def _set_config_value(self, config: AppConfig, key: str, value: Any, replace: bool = True) -> None:
         # Avoid "#refs" in files
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
@@ -302,6 +301,12 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
+    def config_to_dict(self, config: Optional[AppConfig]) -> StringKeysDict:
+        if not config:
+            return {}
+
+        return cast(StringKeysDict, config)
+
     def set_runtime_config(self, key: str, value: AppConfigValue, replace: bool = True) -> None:
         self._set_config_value(
             self.runtime_config,
@@ -323,7 +328,7 @@ class AppAddonManager(AddonManager):
                 f'Missing expected config key : {key}, got None',
                 trace=False)
 
-        return value
+        return cast(AppConfigValue, value)
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
         if self.first_log_indent is None:
@@ -332,7 +337,7 @@ class AppAddonManager(AddonManager):
         if self.kernel.io.log_indent == self.first_log_indent:
             message = f'[{self.get_config("global.name")}] {message}'
 
-        return self.kernel.io.log(
+        self.kernel.io.log(
             message,
             color,
             indent
