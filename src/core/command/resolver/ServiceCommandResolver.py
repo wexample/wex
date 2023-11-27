@@ -75,7 +75,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def get_function_name_parts(self, parts: list) -> []:
         return [parts[0], parts[1], parts[2]]
 
-    def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
+    def autocomplete_suggest(self, cursor: int, search_split: StringsList) -> str | None:
         # Suggest @
         if cursor == 0 and search_split[0] == "":
             return COMMAND_CHAR_SERVICE

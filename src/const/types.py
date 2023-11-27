@@ -24,9 +24,6 @@ KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = Any
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
-RegistryAddon = Dict[
-    Union["alias", "command", "file", "properties", "test"], StringsDict
-]
 RegistryService = Dict[Union["addon", "commands", "config", "dir", "name"], StringsDict]
 RegistryResolverData = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
@@ -47,6 +44,19 @@ BasicArg = None | int | float | str | bool | AnyList | StringKeysDict
 AppConfigValue = BasicArg
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
+
+
+class RegistryCommand(TypedDict):
+    alias: str
+    command: str
+    file: str
+    properties: StringsDict
+    test: str
+
+
+class RegistryAddon(TypedDict):
+    commands: Dict[str, RegistryCommand]
+    name: str
 
 
 class YamlCommandScript(TypedDict):
