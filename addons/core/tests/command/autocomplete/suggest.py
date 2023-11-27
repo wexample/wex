@@ -104,13 +104,15 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                     [
                         "core",
                         COMMAND_SEPARATOR_ADDON,
-                        "autocomplete" + COMMAND_SEPARATOR_GROUP + "suggest",
+                        "autocomplete" + COMMAND_SEPARATOR_GROUP + "suggest --s",
                     ]
                 ),
             },
         ).first()
 
-        self.assertTrue(len(suggestions.split(" ")) >= 2)
+        self.assertTrue(
+            '--search' in suggestions
+        )
 
     def tests_suggest_service(self):
         # Search only "@", should return all service commands
@@ -163,14 +165,14 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                         "demo-command" + COMMAND_SEPARATOR_GROUP + "first",
                     ]
                 )
-                + " ",
+                          + " ",
             },
         ).first()
 
         self.assertTrue("--option" in suggestions)
 
     def _create_and_test_created_command(
-        self, prefix: str, search: Optional[str] = None
+            self, prefix: str, search: Optional[str] = None
     ):
         command = prefix + "test/autocomplete-command"
         if not search:
@@ -237,9 +239,9 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             {
                 "cursor": 1,
                 "search": COMMAND_CHAR_APP
-                + "local_command"
-                + COMMAND_SEPARATOR_GROUP
-                + "test ",
+                          + "local_command"
+                          + COMMAND_SEPARATOR_GROUP
+                          + "test ",
             },
         ).first()
 
