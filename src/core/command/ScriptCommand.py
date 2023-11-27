@@ -1,4 +1,5 @@
-from typing import Callable, TYPE_CHECKING, Dict, Any, Optional, List
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+
 import click
 
 if TYPE_CHECKING:

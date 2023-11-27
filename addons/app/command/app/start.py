@@ -1,31 +1,34 @@
 import os.path
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import click
 
-from addons.app.command.config.write import app__config__write
-from addons.app.command.app.started import app__app__started, \
-    APP_STARTED_CHECK_MODE_ANY_CONTAINER
+from addons.app.command.app.go import app__app__go
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
-from addons.app.command.service.used import app__service__used
-from addons.app.helper.docker import docker_exec_app_compose_command
+from addons.app.command.app.started import (
+    APP_STARTED_CHECK_MODE_ANY_CONTAINER, app__app__started)
+from addons.app.command.config.write import app__config__write
 from addons.app.command.hook.exec import app__hook__exec
-from addons.app.command.app.go import app__app__go
 from addons.app.command.hosts.update import app__hosts__update
+from addons.app.command.service.used import app__service__used
+from addons.app.const.app import (APP_DIR_APP_DATA, APP_ENV_LOCAL, APP_ENVS,
+                                  APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
+                                  APP_FILEPATH_REL_ENV)
+from addons.app.decorator.app_command import app_command
+from addons.app.helper.app import app_create_env
+from addons.app.helper.docker import docker_exec_app_compose_command
 from src.const.globals import CORE_COMMAND_NAME
 from src.core.response.HiddenResponse import HiddenResponse
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENVS, APP_ENV_LOCAL, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
-    APP_DIR_APP_DATA
-from src.helper.prompt import prompt_choice
-from addons.app.helper.app import app_create_env
-from src.decorator.option import option
 from src.decorator.as_sudo import as_sudo
-from addons.app.decorator.app_command import app_command
+from src.decorator.option import option
+from src.helper.prompt import prompt_choice
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

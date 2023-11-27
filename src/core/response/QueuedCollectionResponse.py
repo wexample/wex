@@ -2,18 +2,20 @@ from __future__ import annotations
 
 import os
 
-from src.helper.data_yaml import yaml_is_basic_data
-from src.core.response.queue_collection.QueuedCollectionPathManager import QueuedCollectionPathManager
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.core.CommandRequest import CommandRequest
+from src.core.response.AbortResponse import AbortResponse
+from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
     DefaultQueuedCollectionResponseQueueManager
 from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import \
     FastModeQueuedCollectionResponseQueueManager
-from src.core.response.AbortResponse import AbortResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from src.core.response.FunctionResponse import FunctionResponse
-from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.queue_collection.QueuedCollectionPathManager import \
+    QueuedCollectionPathManager
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
+from src.helper.data_yaml import yaml_is_basic_data
 
 
 class QueuedCollectionResponse(AbstractResponse):

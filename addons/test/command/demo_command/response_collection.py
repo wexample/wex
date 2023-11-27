@@ -1,11 +1,15 @@
+from typing import TYPE_CHECKING, Optional
+
+from addons.test.command.demo_command.counting_collection import \
+    test__demo_command__counting_collection
+from addons.test.command.demo_command.response_collection_two import \
+    test__demo_command__response_collection_two
 from src.core.response.HiddenResponse import HiddenResponse
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+from src.core.response.NonInteractiveShellCommandResponse import \
+    NonInteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.decorator.test_command import test_command
 from src.decorator.option import option
-from addons.test.command.demo_command.response_collection_two import test__demo_command__response_collection_two
-from addons.test.command.demo_command.counting_collection import test__demo_command__counting_collection
-from typing import Optional, TYPE_CHECKING
+from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

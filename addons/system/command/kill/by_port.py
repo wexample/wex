@@ -1,8 +1,9 @@
+from typing import TYPE_CHECKING
+
+from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.process import process_kill, process_get_all_by_port
-from src.decorator.as_sudo import as_sudo
-from typing import TYPE_CHECKING
+from src.helper.process import process_get_all_by_port, process_kill
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

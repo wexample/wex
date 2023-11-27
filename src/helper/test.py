@@ -1,10 +1,10 @@
 import os
 import re
+from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON
-from src.helper.string import string_to_snake_case, string_to_pascal_case
 from src.helper.file import file_create_from_template
-from typing import TYPE_CHECKING
+from src.helper.string import string_to_pascal_case, string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

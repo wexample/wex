@@ -1,12 +1,15 @@
-from addons.app.helper.docker import docker_build_long_container_name
-from src.helper.args import args_parse_one
-from src.helper.command import command_to_string, command_escape
-from src.decorator.option import option
-from addons.app.command.hook.exec import app__hook__exec
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
+
+from addons.app.command.hook.exec import app__hook__exec
+from addons.app.decorator.app_command import app_command
+from addons.app.helper.docker import docker_build_long_container_name
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
+from src.core.response.NonInteractiveShellCommandResponse import \
+    NonInteractiveShellCommandResponse
+from src.decorator.option import option
+from src.helper.args import args_parse_one
+from src.helper.command import command_escape, command_to_string
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

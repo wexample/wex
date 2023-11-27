@@ -1,8 +1,9 @@
+from typing import TYPE_CHECKING, cast
+
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.stop import app__app__stop
 from src.decorator.as_sudo import as_sudo
-from addons.app.AppAddonManager import AppAddonManager
 from src.decorator.command import command
-from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

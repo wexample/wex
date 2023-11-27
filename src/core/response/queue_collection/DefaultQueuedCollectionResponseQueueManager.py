@@ -1,9 +1,9 @@
-import yaml
-
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager \
-    import AbstractQueuedCollectionResponseQueueManager
 from abc import ABC
 
+import yaml
+
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
 from src.helper.args import args_replace_one
 from src.helper.process import process_post_exec_function
 

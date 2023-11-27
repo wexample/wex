@@ -1,15 +1,18 @@
 import os
+from typing import TYPE_CHECKING, Optional
+
 import click
 
-from addons.default.helper.version import is_greater_than
+from addons.app.decorator.app_command import app_command
 from addons.default.command.version.parse import default__version__parse
-from addons.default.helper.migration import migration_version_guess, migration_get_files, migration_exec, \
-    MIGRATION_MINIMAL_VERSION, migration_extract_version_from_file_name
-from src.helper.core import core_kernel_get_version
+from addons.default.helper.migration import (
+    MIGRATION_MINIMAL_VERSION, migration_exec,
+    migration_extract_version_from_file_name, migration_get_files,
+    migration_version_guess)
+from addons.default.helper.version import is_greater_than
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
-from addons.app.decorator.app_command import app_command
-from typing import Optional, TYPE_CHECKING
+from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

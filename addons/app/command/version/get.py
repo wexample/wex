@@ -1,7 +1,8 @@
-from src.const.globals import CORE_COMMAND_NAME
-from addons.default.helper.migration import migration_version_guess
-from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from addons.default.helper.migration import migration_version_guess
+from src.const.globals import CORE_COMMAND_NAME
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

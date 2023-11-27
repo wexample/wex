@@ -2,11 +2,11 @@ import datetime
 import json
 import os
 import time
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
-from src.helper.file import file_set_user_or_sudo_user_owner
-from src.helper.data_json import load_json_if_valid, parse_json_if_valid
 from src.core.FunctionProperty import FunctionProperty
+from src.helper.data_json import load_json_if_valid, parse_json_if_valid
+from src.helper.file import file_set_user_or_sudo_user_owner
 
 LOG_STATUS_COMPLETE = 'complete'
 LOG_STATUS_STARTED = 'started'

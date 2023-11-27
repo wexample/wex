@@ -1,10 +1,9 @@
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

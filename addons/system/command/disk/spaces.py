@@ -1,9 +1,10 @@
+from typing import TYPE_CHECKING
+
 import psutil
 
 from src.core.response.TableResponse import TableResponse
-from src.helper.file import file_get_human_readable_size
 from src.decorator.command import command
-from typing import TYPE_CHECKING
+from src.helper.file import file_get_human_readable_size
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

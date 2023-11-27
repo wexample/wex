@@ -1,12 +1,13 @@
 import os
+from typing import TYPE_CHECKING
 
 from addons.core.command.test.create import core__test__create
-from src.const.globals import COMMAND_TYPE_CORE, COMMAND_TYPE_ADDON, COMMAND_CHAR_USER, COMMAND_EXTENSION_PYTHON
-from src.helper.file import file_create_from_template
+from src.const.globals import (COMMAND_CHAR_USER, COMMAND_EXTENSION_PYTHON,
+                               COMMAND_TYPE_ADDON, COMMAND_TYPE_CORE)
+from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.decorator.as_sudo import as_sudo
-from typing import TYPE_CHECKING
+from src.helper.file import file_create_from_template
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

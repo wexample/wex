@@ -1,7 +1,8 @@
-from src.helper.command import execute_command_sync
+from typing import TYPE_CHECKING
+
 from src.decorator.command import command
 from src.decorator.option import option
-from typing import TYPE_CHECKING
+from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

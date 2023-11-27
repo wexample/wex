@@ -1,12 +1,12 @@
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
+from addons.app.decorator.app_dir_option import app_dir_option
+from addons.app.helper.docker import docker_build_long_container_name
+from src.const.globals import SHELL_DEFAULT
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.FunctionProperty import FunctionProperty
 from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
-from src.const.globals import SHELL_DEFAULT
-from addons.app.helper.docker import docker_build_long_container_name
-from src.core.FunctionProperty import FunctionProperty
-from addons.app.decorator.app_dir_option import app_dir_option
 
 if TYPE_CHECKING:
     from src.const.types import Args, Kwargs
@@ -52,7 +52,9 @@ class AppCommand(ScriptCommand):
 
         if manager.app_dir:
             import os
+
             from dotenv import dotenv_values
+
             from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 
             env_path = os.path.join(

@@ -1,6 +1,6 @@
 import re
-from typing import Dict, Any, Optional
-from urllib.parse import urlparse, parse_qs
+from typing import Any, Dict, Optional
+from urllib.parse import parse_qs, urlparse
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_CHARS = re.compile(r'^[a-zA-Z0-9_\-=&]+$')

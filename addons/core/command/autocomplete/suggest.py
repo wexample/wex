@@ -1,7 +1,8 @@
-from src.decorator.command import command
-from src.decorator.option import option
-from src.decorator.no_log import no_log
 from typing import TYPE_CHECKING
+
+from src.decorator.command import command
+from src.decorator.no_log import no_log
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

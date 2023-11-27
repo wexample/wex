@@ -1,12 +1,16 @@
 from __future__ import annotations
+
 from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, Optional
+
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL)
 from src.core.CommandRequest import CommandRequest
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON
-from typing import Optional, TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
     from src.const.types import OptionalCoreCommandArgsDict
+    from src.core.Kernel import Kernel
 
 
 class AbstractResponse:

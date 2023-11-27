@@ -1,6 +1,7 @@
-from tests.AbstractTestCase import AbstractTestCase
 import socket
 from multiprocessing import Process
+
+from tests.AbstractTestCase import AbstractTestCase
 
 
 class AbstractPortTestCase(AbstractTestCase):

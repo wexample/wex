@@ -1,6 +1,6 @@
-from src.core.FatalError import FatalError
 from addons.app.command.app.exec import app__app__exec
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
+from src.core.FatalError import FatalError
 
 
 class TestTestCommandAppYaml(AbstractWebhookTestCase):

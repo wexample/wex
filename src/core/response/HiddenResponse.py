@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.core.response.DefaultResponse import DefaultResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.core.response.DefaultResponse import DefaultResponse
 
 
 class HiddenResponse(DefaultResponse):

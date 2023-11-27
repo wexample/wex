@@ -1,5 +1,5 @@
-from addons.app.command.service.used import app__service__used
 from addons.app.command.service.install import app__service__install
+from addons.app.command.service.used import app__service__used
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 

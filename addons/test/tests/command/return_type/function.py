@@ -1,7 +1,11 @@
-from addons.test.command.return_type.function import test__return_type__function
-from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from tests.AbstractTestCase import AbstractTestCase
 import json
+
+from addons.test.command.return_type.function import \
+    test__return_type__function
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL)
+from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeFunction(AbstractTestCase):

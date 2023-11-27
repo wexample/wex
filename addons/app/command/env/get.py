@@ -1,10 +1,11 @@
 import os
+from typing import TYPE_CHECKING
 
 from dotenv import dotenv_values
+
 from addons.app.const.app import APP_FILEPATH_REL_ENV
-from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

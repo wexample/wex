@@ -3,10 +3,10 @@ from __future__ import annotations
 import os
 import socket
 from contextlib import closing
+from typing import TYPE_CHECKING
 
 from src.const.globals import SERVICE_DAEMON_NAME
 from src.helper.command import execute_command_sync
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

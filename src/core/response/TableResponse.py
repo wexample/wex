@@ -1,10 +1,12 @@
 import os
+from typing import Optional
 
-from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSectionResponse
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_TERMINAL)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
-from typing import Optional
+from src.core.response.AbstractTerminalSectionResponse import \
+    AbstractTerminalSectionResponse
 
 
 class TableResponse(AbstractTerminalSectionResponse):

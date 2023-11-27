@@ -1,10 +1,12 @@
 import ast
 import re
+from typing import Any, Dict, Iterable, List, Optional, Union
+
 import click
-from click.types import BoolParamType
 from click.core import Command
+from click.types import BoolParamType
+
 from src.helper.string import string_to_kebab_case, string_to_snake_case
-from typing import Any, Dict, Iterable, List, Union, Optional
 
 
 def args_replace_one(

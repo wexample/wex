@@ -1,7 +1,7 @@
-from typing import Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
+
 from src.const.types import KernelRegistry, RegistryResolverData
 from src.core.file.YmlFileStructure import YmlFileStructure
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

@@ -2,7 +2,9 @@ import json
 
 from addons.test.command.return_type.non_interactive_shell_command import \
     test__return_type__non_interactive_shell_command
-from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL)
 from tests.AbstractTestCase import AbstractTestCase
 
 

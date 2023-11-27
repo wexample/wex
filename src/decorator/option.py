@@ -1,5 +1,6 @@
-import click
 from typing import TYPE_CHECKING
+
+import click
 
 if TYPE_CHECKING:
     from src.const.types import DecoratedCallable

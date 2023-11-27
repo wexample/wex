@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
-from addons.default.helper.git_utils import git_move_or_file_move, git_get_or_create_repo
+from addons.default.helper.git_utils import (git_get_or_create_repo,
+                                             git_move_or_file_move)
 from addons.default.helper.migration import migration_delete_dir_if_empty
 from src.helper.prompt import prompt_progress_steps
 

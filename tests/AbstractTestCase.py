@@ -1,12 +1,12 @@
+import inspect
 import os
 import shutil
 import unittest
-import inspect
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
-from src.helper.file import file_create_directories_and_copy
 from src.helper.command import execute_command_sync
+from src.helper.file import file_create_directories_and_copy
 
 
 class AbstractTestCase(unittest.TestCase):

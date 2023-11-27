@@ -1,6 +1,7 @@
-from src.core.command.ScriptCommand import ScriptCommand
-from src.const.globals import COMMAND_TYPE_ADDON
 from typing import Callable
+
+from src.const.globals import COMMAND_TYPE_ADDON
+from src.core.command.ScriptCommand import ScriptCommand
 
 
 # Define your custom decorator

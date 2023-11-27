@@ -2,11 +2,10 @@ import hashlib
 import json
 import os
 import shutil
-from typing import Optional, List
+from typing import TYPE_CHECKING, List, Optional
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

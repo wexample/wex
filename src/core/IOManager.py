@@ -1,16 +1,12 @@
 import os
 import sys
-from typing import NoReturn, Dict, Any, Optional, List, TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
-from src.helper.string import string_count_lines_needed, string_format_ignore_missing
-from src.const.globals import \
-    (COLOR_RESET,
-     COLOR_CYAN,
-     COMMAND_TYPE_ADDON,
-     VERBOSITY_LEVEL_DEFAULT,
-     COLOR_GREEN,
-     COLOR_GRAY,
-     COLOR_RED)
+from src.const.globals import (COLOR_CYAN, COLOR_GRAY, COLOR_GREEN, COLOR_RED,
+                               COLOR_RESET, COMMAND_TYPE_ADDON,
+                               VERBOSITY_LEVEL_DEFAULT)
+from src.helper.string import (string_count_lines_needed,
+                               string_format_ignore_missing)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

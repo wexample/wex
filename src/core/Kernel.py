@@ -1,37 +1,43 @@
 import os
 import sys
-from typing import Any, Dict, Callable, Optional, NoReturn, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
+from addons.app.AppAddonManager import AppAddonManager
+from src.const.globals import (COMMAND_TYPE_ADDON, FILE_REGISTRY,
+                               KERNEL_RENDER_MODE_TERMINAL,
+                               VERBOSITY_LEVEL_DEFAULT,
+                               VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM,
+                               VERBOSITY_LEVEL_QUIET)
+from src.core.AddonManager import AddonManager
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
+from src.core.file.KernelRegistryFileStructure import \
+    KernelRegistryFileStructure
 from src.core.FunctionProperty import FunctionProperty
-from src.helper.args import args_shift_one
-from src.core.response.NullResponse import NullResponse
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
-from src.core.AddonManager import AddonManager
-from src.const.globals import \
-    COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL, \
-    VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM, FILE_REGISTRY
-from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
+from src.core.response.NullResponse import NullResponse
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
-from src.decorator.test_command import test_command
 from src.decorator.command import command
 from src.decorator.no_log import no_log
+from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
-from addons.app.AppAddonManager import AppAddonManager
-from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
+from src.helper.args import args_shift_one
+from src.helper.file import (file_list_subdirectories,
+                             file_remove_file_if_exists)
 
 if TYPE_CHECKING:
-    from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
-    from src.core.response.AbortResponse import AbortResponse
-    from src.core.CommandRequest import CommandRequest
-    from src.core.response.AbstractResponse import AbstractResponse
-    from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-    from src.const.types import CoreCommandString, OptionalCoreCommandArgsListOrDict, \
-        CoreCommandArgsList
-    from src.core.ErrorMessage import ErrorMessage
+    from src.const.types import (CoreCommandArgsList, CoreCommandString,
+                                 OptionalCoreCommandArgsListOrDict)
+    from src.core.command.resolver.AbstractCommandResolver import \
+        AbstractCommandResolver
     from src.core.command.ScriptCommand import ScriptCommand
+    from src.core.CommandRequest import CommandRequest
+    from src.core.ErrorMessage import ErrorMessage
+    from src.core.file.AbstractFileSystemStructure import \
+        AbstractFileSystemStructure
+    from src.core.response.AbortResponse import AbortResponse
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class Kernel:

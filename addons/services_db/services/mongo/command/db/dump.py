@@ -1,11 +1,11 @@
 import os.path
+from typing import TYPE_CHECKING
 
-from addons.app.const.app import APP_DIR_APP_DATA
-from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec
+from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import TYPE_CHECKING
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

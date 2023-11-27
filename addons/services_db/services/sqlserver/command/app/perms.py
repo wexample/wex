@@ -1,8 +1,9 @@
-from src.helper.user import set_permissions_recursively
+from typing import TYPE_CHECKING
+
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import TYPE_CHECKING
+from src.helper.user import set_permissions_recursively
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -1,13 +1,14 @@
+import json
+import logging
 import subprocess
+import traceback
 from http.server import BaseHTTPRequestHandler
-from typing import Dict, Any, List
+from logging.handlers import RotatingFileHandler
+from typing import Any, Dict, List
 
 from src.helper.array import array_replace_value
-from src.helper.routing import routing_is_allowed_route, routing_get_route_info, routing_get_route_name
-from logging.handlers import RotatingFileHandler
-import traceback
-import logging
-import json
+from src.helper.routing import (routing_get_route_info, routing_get_route_name,
+                                routing_is_allowed_route)
 
 WEBHOOK_COMMAND_PATH_PLACEHOLDER = '__URL__'
 WEBHOOK_COMMAND_PORT_PLACEHOLDER = '__PORT__'

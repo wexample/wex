@@ -1,9 +1,9 @@
 from abc import ABC
+from typing import Optional
 
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from typing import Optional
 
 
 class NullResponse(AbstractResponse, ABC):

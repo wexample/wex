@@ -1,8 +1,9 @@
 from abc import ABC
 
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager \
-    import AbstractQueuedCollectionResponseQueueManager
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 
 
 class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionResponseQueueManager, ABC):

@@ -1,10 +1,13 @@
+from typing import TYPE_CHECKING, Optional
+
 from addons.core.command.check.hi import core__check__hi
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from addons.test.command.demo_command.response_collection_three import \
+    test__demo_command__response_collection_three
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.decorator.test_command import test_command
 from src.decorator.option import option
-from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
-from typing import Optional, TYPE_CHECKING
+from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

@@ -1,9 +1,10 @@
-from src.helper.data_json import load_json_if_valid
-from src.decorator.alias import alias
-from src.decorator.no_log import no_log
-from src.decorator.command import command
-from src.core.response.TableResponse import TableResponse
 from typing import TYPE_CHECKING
+
+from src.core.response.TableResponse import TableResponse
+from src.decorator.alias import alias
+from src.decorator.command import command
+from src.decorator.no_log import no_log
+from src.helper.data_json import load_json_if_valid
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

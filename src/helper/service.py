@@ -1,14 +1,13 @@
 import os
 import shutil
-from typing import Dict, Any, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
 from src.helper.data_yaml import yaml_load_or_default
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.Kernel import Kernel
 
 
 def service_get_dir(kernel: 'Kernel', service: str) -> str | bool:

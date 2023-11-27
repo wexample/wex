@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import os
 import subprocess
-
-from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.file import file_create_parent_dir
-from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
-from src.const.globals import VERBOSITY_LEVEL_QUIET, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_MAXIMUM
-from typing import Any, List, Union, Tuple, Optional, Dict, NoReturn
 from subprocess import Popen
-from typing import TYPE_CHECKING
+from typing import (TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple,
+                    Union)
+
+from src.const.globals import (VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM,
+                               VERBOSITY_LEVEL_QUIET)
+from src.core.command.ScriptCommand import ScriptCommand
+from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
+from src.helper.file import file_create_parent_dir
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

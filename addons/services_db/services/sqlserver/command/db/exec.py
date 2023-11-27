@@ -1,8 +1,10 @@
-from addons.services_db.services.sqlserver.command.db.go import sqlserver__db__go
-from src.decorator.option import option
+from typing import TYPE_CHECKING, Optional
+
 from addons.app.decorator.app_command import app_command
+from addons.services_db.services.sqlserver.command.db.go import \
+    sqlserver__db__go
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import Optional, TYPE_CHECKING
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

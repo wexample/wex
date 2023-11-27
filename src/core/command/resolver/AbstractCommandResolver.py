@@ -1,29 +1,36 @@
 import os
 import re
 from abc import abstractmethod
-from typing import Any, List, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
-from src.core.registry.CommandGroup import RegistryCommandGroup
-from src.core.FunctionProperty import FunctionProperty
-from src.core.response.NullResponse import NullResponse
-from src.core.response.DictResponse import DictResponse
-from src.helper.command import command_to_string
-from src.core.response.FunctionResponse import FunctionResponse
-from src.core.response.DefaultResponse import DefaultResponse
-from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS, CORE_COMMAND_NAME, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP, VERBOSITY_LEVEL_DEFAULT, COMMAND_EXTENSIONS
-from src.helper.args import args_convert_dict_to_args
-from src.helper.file import file_set_owner_for_path_and_ancestors, file_list_subdirectories
-from src.helper.string import string_trim_leading, string_to_snake_case, string_to_kebab_case
-from src.helper.user import get_user_or_sudo_user
+from src.const.globals import (COMMAND_EXTENSIONS, COMMAND_SEPARATOR_ADDON,
+                               COMMAND_SEPARATOR_FUNCTION_PARTS,
+                               COMMAND_SEPARATOR_GROUP, CORE_COMMAND_NAME,
+                               VERBOSITY_LEVEL_DEFAULT)
 from src.core.CommandRequest import CommandRequest
+from src.core.FunctionProperty import FunctionProperty
+from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.DefaultResponse import DefaultResponse
+from src.core.response.DictResponse import DictResponse
+from src.core.response.FunctionResponse import FunctionResponse
+from src.core.response.NullResponse import NullResponse
+from src.helper.args import args_convert_dict_to_args
+from src.helper.command import command_to_string
+from src.helper.file import (file_list_subdirectories,
+                             file_set_owner_for_path_and_ancestors)
+from src.helper.string import (string_to_kebab_case, string_to_snake_case,
+                               string_trim_leading)
+from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from click.core import Command as ClickCommand
+
+    from src.const.types import (AnyCallable, CoreCommandStringParts,
+                                 OptionalCoreCommandArgsDict,
+                                 OptionalCoreCommandArgsListOrDict,
+                                 RegistryResolverData)
     from src.core.Kernel import Kernel
-    from src.const.types import OptionalCoreCommandArgsListOrDict, CoreCommandStringParts, OptionalCoreCommandArgsDict, \
-        AnyCallable, RegistryResolverData
 
 
 class AbstractCommandResolver:
@@ -84,7 +91,8 @@ class AbstractCommandResolver:
         pass
 
     def get_commands_registry(self) -> RegistryCommandGroup:
-        from src.helper.registry import registry_get_all_commands_from_registry_part
+        from src.helper.registry import \
+            registry_get_all_commands_from_registry_part
 
         if self.get_type() in self.kernel.registry_structure.content['resolvers']:
             return registry_get_all_commands_from_registry_part(

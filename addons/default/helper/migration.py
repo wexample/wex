@@ -1,7 +1,7 @@
 import importlib
 import os
 import re
-from typing import List, Optional, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

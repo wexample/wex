@@ -1,6 +1,6 @@
 from addons.app.command.app.info import app__app__info
-from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandAppInfo(AbstractAppTestCase):

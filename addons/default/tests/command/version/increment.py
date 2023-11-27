@@ -1,4 +1,5 @@
-from addons.default.command.version.increment import default__version__increment
+from addons.default.command.version.increment import \
+    default__version__increment
 from tests.AbstractTestCase import AbstractTestCase
 
 

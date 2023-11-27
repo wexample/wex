@@ -1,4 +1,5 @@
-from addons.system.tests.command.process.by_port import TestSystemCommandProcessByPort
+from addons.system.tests.command.process.by_port import \
+    TestSystemCommandProcessByPort
 from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
 from tests.AbstractTestCase import AbstractTestCase
 

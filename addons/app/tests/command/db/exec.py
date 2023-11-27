@@ -1,7 +1,8 @@
 from addons.app.command.db.exec import app__db__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
+from src.core.command.resolver.ServiceCommandResolver import \
+    ServiceCommandResolver
 
 
 class TestAppCommandDbExec(AbstractAppTestCase):

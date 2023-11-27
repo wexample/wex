@@ -1,11 +1,11 @@
 import os
 import zipfile
-
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
-from src.decorator.option import option
-from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.decorator.option import option
+from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -1,8 +1,9 @@
-from addons.services_php.services.php.command.app.exec import php__app__exec
-from src.decorator.option import option
-from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from addons.services_php.services.php.command.app.exec import php__app__exec
+from src.const.globals import COMMAND_TYPE_SERVICE
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

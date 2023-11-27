@@ -1,4 +1,5 @@
-from addons.test.command.demo_command.responses import test__demo_command__responses, RESPONSES_DEFAULT_VALUES
+from addons.test.command.demo_command.responses import (
+    RESPONSES_DEFAULT_VALUES, test__demo_command__responses)
 from tests.AbstractTestCase import AbstractTestCase
 
 

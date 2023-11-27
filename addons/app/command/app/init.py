@@ -1,23 +1,22 @@
 import os.path
 from pathlib import Path
-from git import Repo
-from typing import Iterable, Union, Optional
+from typing import TYPE_CHECKING, Iterable, Optional, Union
 
-from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.prompt import prompt_progress_steps
-from src.helper.string import string_to_snake_case
-from src.helper.args import args_split_arg_array
-from src.decorator.option import option
+from git import Repo
 
 from addons.app.command.app.start import app__app__start
-from addons.core.command.service.resolve import core__service__resolve
-from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_DIR_APP_DATA
-from addons.app.const.app import APP_ENV_LOCAL
-from addons.app.helper.app import app_create_env
-from addons.app.command.service.install import app__service__install
 from addons.app.command.hook.exec import app__hook__exec
+from addons.app.command.service.install import app__service__install
+from addons.app.const.app import (APP_DIR_APP_DATA, APP_ENV_LOCAL,
+                                  ERR_SERVICE_NOT_FOUND)
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from addons.app.helper.app import app_create_env
+from addons.core.command.service.resolve import core__service__resolve
+from src.const.globals import COMMAND_TYPE_SERVICE
+from src.decorator.option import option
+from src.helper.args import args_split_arg_array
+from src.helper.prompt import prompt_progress_steps
+from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

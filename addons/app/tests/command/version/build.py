@@ -1,5 +1,5 @@
-from addons.app.command.version.build import app__version__build
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.version.build import app__version__build
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 

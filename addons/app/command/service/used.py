@@ -1,6 +1,7 @@
-from addons.app.decorator.service_option import service_option
-from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from addons.app.decorator.service_option import service_option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

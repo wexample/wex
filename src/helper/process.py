@@ -1,14 +1,14 @@
 from __future__ import annotations
+
 import os
 import signal
+from typing import TYPE_CHECKING, List, Optional
 
 import psutil
 
-from src.helper.command import execute_command_sync
-from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from typing import List, Optional
-from typing import TYPE_CHECKING
+from src.helper.command import (command_to_string, execute_command_sync,
+                                internal_command_to_shell)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

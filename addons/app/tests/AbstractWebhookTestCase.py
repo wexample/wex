@@ -1,13 +1,13 @@
-import os
-import time
 import json
+import os
 import shutil
-
-from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from addons.app.command.webhook.listen import app__webhook__listen
+import time
 from http.client import HTTPConnection
-from addons.app.helper.test import DEFAULT_APP_TEST_NAME
+
+from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
+from addons.app.helper.test import DEFAULT_APP_TEST_NAME
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):

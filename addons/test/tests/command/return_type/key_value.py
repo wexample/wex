@@ -1,8 +1,11 @@
 import json
 import os
 
-from addons.test.command.return_type.key_value import test__return_type__key_value
-from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from addons.test.command.return_type.key_value import \
+    test__return_type__key_value
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL)
 from tests.AbstractTestCase import AbstractTestCase
 
 

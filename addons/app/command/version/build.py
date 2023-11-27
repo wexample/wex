@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import git
-from addons.default.command.version.increment import default__version__increment
-from src.decorator.option import option
+
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from addons.default.command.version.increment import \
+    default__version__increment
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -1,9 +1,9 @@
 import os
-
-from src.core.command.ScriptCommand import ScriptCommand
-from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
-from src.helper.args import args_convert_dict_to_args
 from typing import TYPE_CHECKING, Optional
+
+from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
+from src.core.command.ScriptCommand import ScriptCommand
+from src.helper.args import args_convert_dict_to_args
 
 if TYPE_CHECKING:
     from src.const.types import OptionalCoreCommandArgsListOrDict, StringsList
@@ -47,10 +47,12 @@ class CommandRequest:
             runner = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
-                from src.core.command.runner.PythonCommandRunner import PythonCommandRunner
+                from src.core.command.runner.PythonCommandRunner import \
+                    PythonCommandRunner
                 runner = PythonCommandRunner(self.resolver.kernel)
             elif extension == COMMAND_EXTENSION_YAML:
-                from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
+                from src.core.command.runner.YamlCommandRunner import \
+                    YamlCommandRunner
                 runner = YamlCommandRunner(self.resolver.kernel)
 
             self.path = path

@@ -1,10 +1,11 @@
 import os
-from typing import Optional, Any
+from typing import Any, Optional
 
 from src.const.types import WritableFileContent
+from src.core.file.AbstractFileSystemStructure import (
+    FILE_SYSTEM_ERROR_WRONG_EXTENSION, FILE_SYSTEM_TYPE_FILE,
+    AbstractFileSystemStructure)
 from src.helper.file import file_create_parent_and_touch, file_read, file_write
-from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure, FILE_SYSTEM_TYPE_FILE, \
-    FILE_SYSTEM_ERROR_WRONG_EXTENSION
 
 
 class FileStructure(AbstractFileSystemStructure):

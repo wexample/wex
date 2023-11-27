@@ -1,8 +1,9 @@
-from addons.system.command.os.name import system__os__name, OS_NAME_MAC
-from addons.system.command.system.ip import system__system__ip
-from src.helper.command import execute_command_sync, command_exists
-from src.decorator.command import command
 from typing import TYPE_CHECKING
+
+from addons.system.command.os.name import OS_NAME_MAC, system__os__name
+from addons.system.command.system.ip import system__system__ip
+from src.decorator.command import command
+from src.helper.command import command_exists, execute_command_sync
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

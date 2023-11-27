@@ -1,6 +1,7 @@
-from src.helper.prompt import prompt_progress_steps
-from addons.app.AppAddonManager import AppAddonManager
 from typing import TYPE_CHECKING
+
+from addons.app.AppAddonManager import AppAddonManager
+from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

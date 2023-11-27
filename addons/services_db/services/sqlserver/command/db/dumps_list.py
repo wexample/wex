@@ -1,10 +1,10 @@
 import os.path
 from glob import glob
-
-from addons.app.helper.db import get_db_service_dumps_path
-from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from addons.app.helper.db import get_db_service_dumps_path
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

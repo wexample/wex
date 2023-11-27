@@ -1,9 +1,8 @@
-import os
-import shutil
-import pwd
 import grp
-from typing import IO
-from typing import List, Optional, Dict, Any
+import os
+import pwd
+import shutil
+from typing import IO, Any, Dict, List, Optional
 
 from src.const.types import WritableFileContent
 
@@ -29,8 +28,7 @@ def file_set_user_or_sudo_user_owner(file: str) -> None:
 
 
 def file_set_owner(file_path: str, username: Optional[str] = None, group: Optional[str] = None) -> None:
-    from src.helper.user import get_gid_from_group_name
-    from src.helper.user import get_user_or_sudo_user
+    from src.helper.user import get_gid_from_group_name, get_user_or_sudo_user
 
     if username is None:
         username = get_user_or_sudo_user()

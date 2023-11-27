@@ -1,5 +1,5 @@
-from tests.AbstractTestCase import AbstractTestCase
 from addons.default.command.config.get import default__config__get
+from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandConfigGet(AbstractTestCase):

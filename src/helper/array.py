@@ -1,4 +1,4 @@
-from typing import Any, Sequence, List
+from typing import Any, List, Sequence
 
 
 def array_unique(

@@ -1,12 +1,12 @@
 import os.path
+from typing import TYPE_CHECKING
 
-from addons.docker.command.docker.ip import docker__docker__ip
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
-from src.const.globals import SYSTEM_HOSTS_PATH, CORE_COMMAND_NAME
+from addons.docker.command.docker.ip import docker__docker__ip
+from src.const.globals import CORE_COMMAND_NAME, SYSTEM_HOSTS_PATH
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

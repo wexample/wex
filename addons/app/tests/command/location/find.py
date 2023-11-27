@@ -1,6 +1,8 @@
+import os
+
 from addons.app.command.location.find import app__location__find
 from tests.AbstractTestCase import AbstractTestCase
-import os
+
 
 class TestAppCommandLocationFind(AbstractTestCase):
     def test_find(self):

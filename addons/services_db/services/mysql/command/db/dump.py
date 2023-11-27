@@ -1,12 +1,13 @@
 import os.path
+from typing import TYPE_CHECKING
 
-from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
-from addons.app.helper.db import get_db_service_dumps_path
-from src.decorator.option import option
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
+from addons.app.helper.db import get_db_service_dumps_path
+from addons.services_db.services.mysql.command.db.connect import \
+    mysql__db__connect
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import TYPE_CHECKING
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

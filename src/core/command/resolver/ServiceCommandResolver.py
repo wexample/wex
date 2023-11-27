@@ -1,20 +1,21 @@
 import os
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from addons.app.const.app import ERR_SERVICE_NOT_FOUND, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.data_yaml import yaml_load
-from src.helper.service import service_get_dir
+from addons.app.const.app import (APP_FILE_APP_SERVICE_CONFIG,
+                                  ERR_SERVICE_NOT_FOUND)
+from src.const.globals import (COMMAND_CHAR_SERVICE, COMMAND_PATTERN_SERVICE,
+                               COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_SERVICE)
+from src.core.command.resolver.AbstractCommandResolver import \
+    AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
+from src.helper.data_yaml import yaml_load
+from src.helper.service import service_get_dir
 from src.helper.string import string_to_snake_case
-from src.const.globals import COMMAND_PATTERN_SERVICE, COMMAND_TYPE_SERVICE, \
-    COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-from typing import Optional, TYPE_CHECKING, Dict, Any
 
 if TYPE_CHECKING:
-    from src.const.types import AnyCallable, StringsList
+    from src.const.types import AnyCallable, RegistryResolverData, StringsList
     from src.core.response.AbstractResponse import AbstractResponse
-    from src.const.types import RegistryResolverData
 
 
 class ServiceCommandResolver(AbstractCommandResolver):

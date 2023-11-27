@@ -1,7 +1,9 @@
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
-from src.decorator.test_command import test_command
-from src.decorator.option import option
 from typing import TYPE_CHECKING
+
+from src.core.response.NonInteractiveShellCommandResponse import \
+    NonInteractiveShellCommandResponse
+from src.decorator.option import option
+from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

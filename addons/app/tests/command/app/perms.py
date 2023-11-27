@@ -1,14 +1,15 @@
 import os
 
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms
+from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
-from src.helper.user import get_sudo_username, get_user_or_sudo_user, get_uid_from_user_name, get_gid_from_group_name, \
-    get_user_group_name
-from src.helper.file import file_get_owner, file_get_group
+from src.helper.file import file_get_group, file_get_owner
+from src.helper.user import (get_gid_from_group_name, get_sudo_username,
+                             get_uid_from_user_name, get_user_group_name,
+                             get_user_or_sudo_user)
 
 
 class TestAppCommandAppPerms(AbstractAppTestCase):

@@ -1,34 +1,46 @@
-import os
-import platform
 import datetime
 import getpass
+import os
+import platform
 import sys
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
+
 import yaml
 
-from src.helper.service import service_load_config
-from src.core.FunctionProperty import FunctionProperty
-from src.helper.args import args_shift_one, args_push_one
-from src.helper.string import string_to_snake_case, string_to_kebab_case
-from src.const.globals import COLOR_GRAY, VERBOSITY_LEVEL_MEDIUM, CORE_COMMAND_NAME, DATE_FORMAT_SECOND, \
-    COMMAND_TYPE_APP, SHELL_DEFAULT, COMMAND_TYPE_SERVICE
-from src.core.AddonManager import AddonManager
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, ERR_APP_NOT_FOUND, \
-    PROXY_APP_NAME, APP_FILEPATH_REL_DOCKER_ENV, PROXY_FILE_APPS_REGISTRY, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, \
-    APP_DIR_APP_DATA, ERR_APP_SHOULD_RUN, APP_ENV_TEST, APP_ENV_LOCAL, APP_ENV_DEV, APP_ENV_PROD, APP_FILEPATH_REL_ENV
 from addons.app.command.location.find import app__location__find
-from src.helper.file import file_write_dict_to_config, file_set_dict_item_by_path, file_env_to_dict, \
-    file_remove_dict_item_by_path
-from src.helper.data_yaml import yaml_load_or_default, yaml_write, yaml_load
+from addons.app.const.app import (APP_DIR_APP_DATA, APP_ENV_DEV, APP_ENV_LOCAL,
+                                  APP_ENV_PROD, APP_ENV_TEST,
+                                  APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
+                                  APP_FILEPATH_REL_CONFIG,
+                                  APP_FILEPATH_REL_CONFIG_RUNTIME,
+                                  APP_FILEPATH_REL_DOCKER_ENV,
+                                  APP_FILEPATH_REL_ENV, ERR_APP_NOT_FOUND,
+                                  ERR_APP_SHOULD_RUN, PROXY_APP_NAME,
+                                  PROXY_FILE_APPS_REGISTRY)
+from src.const.globals import (COLOR_GRAY, COMMAND_TYPE_APP,
+                               COMMAND_TYPE_SERVICE, CORE_COMMAND_NAME,
+                               DATE_FORMAT_SECOND, SHELL_DEFAULT,
+                               VERBOSITY_LEVEL_MEDIUM)
+from src.const.types import (AnyAppConfig, AnyCallable, AppConfig,
+                             AppConfigValue, AppDockerEnvConfig,
+                             AppRuntimeConfig, AppsPathsList, DockerCompose,
+                             StringKeysDict, StringsList, YamlContent)
+from src.core.AddonManager import AddonManager
+from src.core.FunctionProperty import FunctionProperty
+from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
+from src.helper.data_yaml import yaml_load, yaml_load_or_default, yaml_write
 from src.helper.dict import dict_get_item_by_path
-from typing import TYPE_CHECKING, Optional, Any, List, cast, Dict, Mapping
-from src.const.types import YamlContent, AppConfig, AppRuntimeConfig, AnyCallable, AppDockerEnvConfig, \
-    AppConfigValue, DockerCompose, StringsList, AppsPathsList, StringKeysDict, AnyAppConfig
+from src.helper.file import (file_env_to_dict, file_remove_dict_item_by_path,
+                             file_set_dict_item_by_path,
+                             file_write_dict_to_config)
+from src.helper.service import service_load_config
+from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 if TYPE_CHECKING:
-    from src.core.response.AbstractResponse import AbstractResponse
     from src.core.CommandRequest import CommandRequest
     from src.core.Kernel import Kernel
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AppAddonManager(AddonManager):
@@ -49,9 +61,10 @@ class AppAddonManager(AddonManager):
 
         # Register extra decorators to allow using it in yaml scripts
         from addons.app.decorator.app_command import app_command
-        from addons.app.decorator.app_webhook import app_webhook
         from addons.app.decorator.app_dir_option import app_dir_option
-        from addons.app.decorator.option_webhook_listener import option_webhook_listener
+        from addons.app.decorator.app_webhook import app_webhook
+        from addons.app.decorator.option_webhook_listener import \
+            option_webhook_listener
         from addons.app.decorator.service_option import service_option
 
         self.kernel.decorators['command'].update({
@@ -459,7 +472,8 @@ class AppAddonManager(AddonManager):
                 script_command=script_command,
                 name='app_should_run',
                 default=False) is True:
-            from addons.app.command.app.started import app__app__started, APP_STARTED_CHECK_MODE_FULL
+            from addons.app.command.app.started import (
+                APP_STARTED_CHECK_MODE_FULL, app__app__started)
 
             if not self.kernel.run_function(app__app__started, {
                 'app-dir': self.app_dir,
@@ -484,6 +498,7 @@ class AppAddonManager(AddonManager):
             return
 
         from src.helper.command import is_same_command
+
         # Ignore internally used command.
         if not response.request or not response.request.function or is_same_command(response.request.function, app__location__find):
             return
@@ -567,13 +582,14 @@ class AppAddonManager(AddonManager):
 
     def build_runtime_config(self, user: Optional[str] = None, group: Optional[str] = None) -> None:
         import socket
+
         from addons.app.command.env.get import app__env__get
-        from src.const.globals import PASSWORD_INSECURE
-        from src.helper.user import get_gid_from_group_name
-        from src.helper.user import get_uid_from_user_name
-        from src.helper.user import get_user_group_name
-        from src.helper.user import get_user_or_sudo_user
         from addons.app.command.hook.exec import app__hook__exec
+        from src.const.globals import PASSWORD_INSECURE
+        from src.helper.user import (get_gid_from_group_name,
+                                     get_uid_from_user_name,
+                                     get_user_group_name,
+                                     get_user_or_sudo_user)
 
         app_dir = self.get_app_dir_or_fail()
         env = self.kernel.run_function(app__env__get, {'app-dir': self.app_dir}).first()

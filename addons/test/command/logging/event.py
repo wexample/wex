@@ -1,6 +1,7 @@
-from src.decorator.command import command
-from src.const.globals import COMMAND_TYPE_ADDON
 from typing import TYPE_CHECKING
+
+from src.const.globals import COMMAND_TYPE_ADDON
+from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

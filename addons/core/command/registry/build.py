@@ -1,12 +1,13 @@
-from src.decorator.alias import alias
-from src.decorator.command import command
-from src.decorator.option import option
-from src.decorator.as_sudo import as_sudo
 from typing import TYPE_CHECKING
 
+from src.decorator.alias import alias
+from src.decorator.as_sudo import as_sudo
+from src.decorator.command import command
+from src.decorator.option import option
+
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
     from src.const.types import KernelRegistry
+    from src.core.Kernel import Kernel
 
 
 @alias('rebuild')

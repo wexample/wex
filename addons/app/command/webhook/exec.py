@@ -1,12 +1,14 @@
 import re
+from typing import TYPE_CHECKING
+from urllib.parse import parse_qs, urlparse
 
-from addons.app.decorator.option_webhook_listener import option_webhook_listener
-from urllib.parse import urlparse, parse_qs
+from addons.app.decorator.option_webhook_listener import \
+    option_webhook_listener
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

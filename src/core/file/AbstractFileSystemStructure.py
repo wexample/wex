@@ -1,10 +1,8 @@
 import os.path
-from abc import ABC
-from typing import Dict, Any, Literal, Optional
-from abc import abstractmethod
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
 
 from src.const.types import StringMessageParameters
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.ErrorMessage import ErrorMessage, ErrorMessageList
@@ -103,7 +101,8 @@ class AbstractFileSystemStructure(ABC):
                     class_definition = FileStructure
                     assert class_definition is FileStructure
                 else:
-                    from src.core.file.DirectoryStructure import DirectoryStructure
+                    from src.core.file.DirectoryStructure import \
+                        DirectoryStructure
                     class_definition = DirectoryStructure
                     assert class_definition is DirectoryStructure
 

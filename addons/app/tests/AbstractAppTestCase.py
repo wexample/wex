@@ -1,13 +1,15 @@
 import os.path
 import re
 
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from src.helper.string import string_to_snake_case
-from tests.AbstractTestCase import AbstractTestCase
-from addons.app.helper.test import test_create_app, test_build_app_name, DEFAULT_APP_TEST_NAME
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
+from addons.app.helper.test import (DEFAULT_APP_TEST_NAME, test_build_app_name,
+                                    test_create_app)
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
+from src.helper.string import string_to_snake_case
+from tests.AbstractTestCase import AbstractTestCase
 
 
 class AbstractAppTestCase(AbstractTestCase):

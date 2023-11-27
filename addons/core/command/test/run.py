@@ -1,16 +1,17 @@
-from addons.core.command.core.cleanup import core__core__cleanup
-from src.const.globals import COMMAND_TYPE_ADDON
-from src.decorator.command import command
-from src.decorator.option import option
-from src.decorator.alias import alias
+import importlib.util
 import os
 import sys
 import unittest
-import importlib.util
-from src.decorator.as_sudo import as_sudo
+from typing import TYPE_CHECKING, Optional
+
 from addons.app.const.app import APP_ENV_LOCAL
+from addons.core.command.core.cleanup import core__core__cleanup
+from src.const.globals import COMMAND_TYPE_ADDON
+from src.decorator.alias import alias
+from src.decorator.as_sudo import as_sudo
+from src.decorator.command import command
+from src.decorator.option import option
 from src.helper.command import execute_command_tree
-from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

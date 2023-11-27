@@ -1,25 +1,29 @@
 import shutil
 import time
 from http.server import HTTPServer
+from typing import TYPE_CHECKING
 
-from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler, WEBHOOK_COMMAND_PATH_PLACEHOLDER, \
-    WEBHOOK_COMMAND_PORT_PLACEHOLDER
 from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.command.webhook.status import app__webhook__status
-from addons.app.command.webhook.status_process import app__webhook__status_process
+from addons.app.command.webhook.status_process import \
+    app__webhook__status_process
+from addons.app.WebhookHttpRequestHandler import (
+    WEBHOOK_COMMAND_PATH_PLACEHOLDER, WEBHOOK_COMMAND_PORT_PLACEHOLDER,
+    WebhookHttpRequestHandler)
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH, COMMAND_TYPE_ADDON, \
-    WEBHOOK_LISTEN_PORT_DEFAULT, KERNEL_RENDER_MODE_JSON
+from src.const.globals import (COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_JSON,
+                               SERVICE_DAEMON_NAME, SERVICE_DAEMON_PATH,
+                               SYSTEM_SERVICES_PATH,
+                               WEBHOOK_LISTEN_PORT_DEFAULT)
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command_async
 from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import file_remove_file_if_exists
-from src.helper.system import system_is_port_open, \
-    system_service_daemon_reload, system_service_daemon_exec
 from src.helper.process import process_kill_by_command, process_kill_by_port
-from typing import TYPE_CHECKING
+from src.helper.system import (system_is_port_open, system_service_daemon_exec,
+                               system_service_daemon_reload)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

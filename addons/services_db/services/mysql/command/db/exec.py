@@ -1,8 +1,9 @@
-from addons.services_db.services.mysql.command.db.go import mysql__db__go
-from src.decorator.option import option
-from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_TYPE_SERVICE
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.app_command import app_command
+from addons.services_db.services.mysql.command.db.go import mysql__db__go
+from src.const.globals import COMMAND_TYPE_SERVICE
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

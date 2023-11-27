@@ -1,7 +1,9 @@
+import importlib.util
+
 from click import Command
+
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
-import importlib.util
 
 
 class PythonCommandRunner(AbstractCommandRunner):

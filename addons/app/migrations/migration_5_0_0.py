@@ -1,14 +1,16 @@
 import os.path
+from typing import TYPE_CHECKING
+
 import yaml
 
-from addons.app.const.app import APP_DIR_APP_DATA
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.service.install import app__service__install
+from addons.app.const.app import APP_DIR_APP_DATA
+from addons.app.migrations.migration_4_0_0 import (
+    _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping,
+    _migration_4_0_0_replace_docker_placeholders)
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
-from addons.app.AppAddonManager import AppAddonManager
-from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_placeholders, \
-    _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

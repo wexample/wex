@@ -1,6 +1,7 @@
 import os
 
-from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure, FILE_SYSTEM_TYPE_DIR
+from src.core.file.AbstractFileSystemStructure import (
+    FILE_SYSTEM_TYPE_DIR, AbstractFileSystemStructure)
 
 
 class DirectoryStructure(AbstractFileSystemStructure):

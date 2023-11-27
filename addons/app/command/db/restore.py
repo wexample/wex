@@ -1,14 +1,14 @@
 import os
 import zipfile
+from typing import TYPE_CHECKING
 
+from addons.app.decorator.app_command import app_command
 from addons.app.helper.db import get_db_service_dumps_path
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.decorator.option import option
 from src.helper.dict import dict_sort_values
 from src.helper.file import file_delete_file_or_dir
 from src.helper.prompt import prompt_choice
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
-from src.decorator.option import option
-from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

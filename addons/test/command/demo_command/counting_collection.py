@@ -1,8 +1,9 @@
-from src.decorator.command import command
-from src.decorator.option import option
+from typing import TYPE_CHECKING
+
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from typing import TYPE_CHECKING
+from src.decorator.command import command
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

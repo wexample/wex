@@ -1,9 +1,10 @@
-import yaml
 import grp
 import pwd
 
-from src.helper.user import is_sudo
+import yaml
+
 from src.helper.dict import dict_merge
+from src.helper.user import is_sudo
 
 
 def user_has_docker_permission(username: str) -> bool:

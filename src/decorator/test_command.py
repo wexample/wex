@@ -1,8 +1,8 @@
-from typing import Callable, cast, Any
+from typing import Any, Callable, cast
 
+from src.const.types import AnyCallable, Args, Kwargs
 from src.core.command.TestCommand import TestCommand
 from src.decorator.command import command
-from src.const.types import AnyCallable, Args, Kwargs
 
 
 def test_command(*args: Args, **kwargs: Kwargs) -> Callable[..., Any]:

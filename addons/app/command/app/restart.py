@@ -1,8 +1,9 @@
+from typing import TYPE_CHECKING
+
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 from addons.app.decorator.app_command import app_command
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -1,9 +1,12 @@
-from src.helper.prompt import prompt_progress_steps
-from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_CONFIG
-from addons.app.AppAddonManager import AppAddonManager
-from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_mapping, \
-    _migration_4_0_0_replace_placeholders, _migration_4_0_0_replace_docker_placeholders
 from typing import TYPE_CHECKING
+
+from addons.app.AppAddonManager import AppAddonManager
+from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_CONFIG
+from addons.app.migrations.migration_4_0_0 import (
+    _migration_4_0_0_replace_docker_mapping,
+    _migration_4_0_0_replace_docker_placeholders,
+    _migration_4_0_0_replace_placeholders)
+from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

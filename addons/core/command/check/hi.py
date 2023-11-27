@@ -1,6 +1,7 @@
-from src.decorator.command import command
-from src.decorator.alias import alias
 from typing import TYPE_CHECKING
+
+from src.decorator.alias import alias
+from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

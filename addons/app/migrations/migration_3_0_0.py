@@ -1,7 +1,7 @@
 import os.path
+from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

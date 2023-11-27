@@ -1,6 +1,6 @@
-from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.domain.list import app__domain__list
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandDomainList(AbstractAppTestCase):

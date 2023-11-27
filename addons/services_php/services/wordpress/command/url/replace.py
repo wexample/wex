@@ -1,16 +1,18 @@
 import re
+from typing import TYPE_CHECKING
+
 import click
 
+from addons.app.command.app.exec import app__app__exec
+from addons.app.command.db.exec import app__db__exec
 from addons.app.const.app import APP_NO_SSL_ENVS
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from src.core.response.HiddenResponse import HiddenResponse
-from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from addons.app.command.db.exec import app__db__exec
-from addons.app.command.app.exec import app__app__exec
+from src.core.response.HiddenResponse import HiddenResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from typing import TYPE_CHECKING
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -1,17 +1,20 @@
 import os
 import sys
+from typing import TYPE_CHECKING
 
+from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
 from addons.core.command.logo.show import core__logo__show
-from addons.app.command.webhook.listen import app__webhook__listen
 from addons.default.command.file.append_once import default__file__append_once
-from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
-from src.helper.file import file_remove_file_if_exists, file_create_from_template
-from src.const.globals import CORE_BIN_FILE_ROOT, PYTHON_MIN_VERSION, CORE_BIN_FILE_LOCAL
+from src.const.globals import (CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT,
+                               PYTHON_MIN_VERSION)
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from typing import TYPE_CHECKING
+from src.helper.file import (file_create_from_template,
+                             file_remove_file_if_exists)
+from src.helper.user import (get_sudo_username,
+                             get_user_or_sudo_user_home_data_path)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

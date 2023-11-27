@@ -1,10 +1,10 @@
 import os
+from typing import TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_TMP
-from addons.services_db.const.mysql import MYSQL_CONF_FILE
 from addons.app.decorator.app_command import app_command
+from addons.services_db.const.mysql import MYSQL_CONF_FILE
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

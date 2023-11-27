@@ -1,4 +1,5 @@
 import os
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA
 

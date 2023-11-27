@@ -1,11 +1,11 @@
 import os
-
-from src.helper.command import command_to_string, execute_command_sync
-from src.core.CommandRequest import CommandRequest
-from src.helper.process import process_post_exec
-from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.core.response.AbstractResponse import AbstractResponse
 from typing import Optional
+
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.core.CommandRequest import CommandRequest
+from src.core.response.AbstractResponse import AbstractResponse
+from src.helper.command import command_to_string, execute_command_sync
+from src.helper.process import process_post_exec
 
 
 class InteractiveShellCommandResponse(AbstractResponse):

@@ -1,15 +1,18 @@
-import git
 import os
-from addons.default.command.version.increment import default__version__increment
-from addons.app.command.version.build import app__version__build
+from typing import TYPE_CHECKING
+
+import git
+
 from addons.app.command.config.set import app__config__set
+from addons.app.command.version.build import app__version__build
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
+from addons.default.command.version.increment import \
+    default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
-from src.const.globals import FILE_VERSION, FILE_README, CORE_COMMAND_NAME
-from src.helper.core import core_kernel_get_version
+from src.const.globals import CORE_COMMAND_NAME, FILE_README, FILE_VERSION
 from src.decorator.command import command
 from src.decorator.option import option
-from typing import TYPE_CHECKING
+from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

@@ -1,12 +1,17 @@
+from typing import TYPE_CHECKING
+
 from addons.default.command.version.parse import default__version__parse
+from addons.default.const.default import (UPGRADE_TYPE_ALPHA,
+                                          UPGRADE_TYPE_BETA, UPGRADE_TYPE_DEV,
+                                          UPGRADE_TYPE_INTERMEDIATE,
+                                          UPGRADE_TYPE_MAJOR,
+                                          UPGRADE_TYPE_MINOR,
+                                          UPGRADE_TYPE_NIGHTLY,
+                                          UPGRADE_TYPE_RC,
+                                          UPGRADE_TYPE_SNAPSHOT)
 from addons.default.helper.version import version_join
 from src.decorator.command import command
-
-from addons.default.const.default import UPGRADE_TYPE_MINOR, UPGRADE_TYPE_MAJOR, \
-    UPGRADE_TYPE_INTERMEDIATE, UPGRADE_TYPE_ALPHA, UPGRADE_TYPE_BETA, UPGRADE_TYPE_DEV, UPGRADE_TYPE_RC, \
-    UPGRADE_TYPE_NIGHTLY, UPGRADE_TYPE_SNAPSHOT
 from src.decorator.option import option
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

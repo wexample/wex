@@ -1,14 +1,14 @@
 from __future__ import annotations
-from typing import Dict, Any, List
 
-from src.core.registry.CommandGroup import RegistryCommandGroup
+from typing import TYPE_CHECKING, Any, Dict, List
+
 from src.const.globals import COMMAND_SEPARATOR_ADDON
+from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.helper.dict import dict_merge
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
     from src.const.types import RegistryResolverData
+    from src.core.Kernel import Kernel
 
 
 def registry_get_all_commands(kernel: 'Kernel') -> Dict[str, Any]:

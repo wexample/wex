@@ -1,8 +1,9 @@
-from src.core.Kernel import Kernel
-from src.decorator.test_command import test_command
-from src.decorator.option import option
+from typing import TYPE_CHECKING, Optional
+
 from src.const.globals import COMMAND_TYPE_SERVICE
-from typing import Optional, TYPE_CHECKING
+from src.core.Kernel import Kernel
+from src.decorator.option import option
+from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

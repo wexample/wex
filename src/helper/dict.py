@@ -1,5 +1,5 @@
 import copy
-from typing import Optional, Any, Dict, Mapping
+from typing import Any, Dict, Mapping, Optional
 
 
 def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:

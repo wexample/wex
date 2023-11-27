@@ -1,11 +1,13 @@
+from typing import TYPE_CHECKING
+
+from addons.app.command.env.get import app__env__get
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_ENV_LOCAL
+from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
-from src.helper.user import get_user_or_sudo_user, set_owner_recursively, set_permissions_recursively, user_exists
-from addons.app.decorator.app_command import app_command
-from addons.app.command.env.get import app__env__get
-from typing import TYPE_CHECKING
+from src.helper.user import (get_user_or_sudo_user, set_owner_recursively,
+                             set_permissions_recursively, user_exists)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

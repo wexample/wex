@@ -1,10 +1,12 @@
 
-from src.core.response.DictResponse import DictResponse
-from src.helper.routing import routing_get_route_info, routing_is_allowed_route
-from src.decorator.command import command
-from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
-from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from typing import TYPE_CHECKING
+
+from addons.app.decorator.option_webhook_listener import \
+    option_webhook_listener
+from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
+from src.core.response.DictResponse import DictResponse
+from src.decorator.command import command
+from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

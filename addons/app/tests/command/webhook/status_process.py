@@ -1,4 +1,5 @@
-from addons.app.command.webhook.status_process import app__webhook__status_process
+from addons.app.command.webhook.status_process import \
+    app__webhook__status_process
 from src.const.globals import KERNEL_RENDER_MODE_JSON
 from tests.AbstractTestCase import AbstractTestCase
 

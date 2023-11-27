@@ -1,7 +1,7 @@
 import json
 
-from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from addons.app.command.webhook.listen import app__webhook__listen
+from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 
 
 class TestAppCommandWebhookListen(AbstractWebhookTestCase):

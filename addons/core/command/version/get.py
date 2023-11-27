@@ -1,7 +1,8 @@
-from src.helper.core import core_kernel_get_version
-from src.decorator.command import command
-from src.decorator.alias import alias
 from typing import TYPE_CHECKING
+
+from src.decorator.alias import alias
+from src.decorator.command import command
+from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

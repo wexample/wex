@@ -1,13 +1,13 @@
 import os
 import shutil
+from typing import TYPE_CHECKING
 
+from addons.system.command.own.this import system__own__this
 from src.decorator.alias import alias
+from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.no_log import no_log
-from src.decorator.as_sudo import as_sudo
-from addons.system.command.own.this import system__own__this
 from src.decorator.option import option
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

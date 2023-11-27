@@ -1,7 +1,8 @@
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from typing import TYPE_CHECKING
+
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

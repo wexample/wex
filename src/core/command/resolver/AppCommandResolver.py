@@ -1,15 +1,17 @@
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
-from src.core.FunctionProperty import FunctionProperty
+from src.const.globals import (COMMAND_CHAR_APP, COMMAND_PATTERN_APP,
+                               COMMAND_SEPARATOR_GROUP, COMMAND_TYPE_APP)
+from src.core.command.resolver.AbstractCommandResolver import \
+    AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
+from src.core.FunctionProperty import FunctionProperty
 from src.core.response.AbortResponse import AbortResponse
-from src.helper.string import string_to_snake_case, string_to_kebab_case
-from src.const.globals import COMMAND_PATTERN_APP, COMMAND_TYPE_APP, COMMAND_CHAR_APP, \
-    COMMAND_SEPARATOR_GROUP
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
+from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse

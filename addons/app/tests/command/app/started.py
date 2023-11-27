@@ -1,6 +1,7 @@
 from addons.app.command.app.started import app__app__started
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
+
 class TestAppCommandAppStarted(AbstractAppTestCase):
     def test_started(self):
         app_dir = self.create_and_start_test_app(services=['php'])

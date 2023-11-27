@@ -1,18 +1,19 @@
+import builtins
 import os
 import types
-import click
-import builtins
 
+import click
 from click import Command
 
-from src.helper.command import apply_command_decorator
-from src.helper.dict import dict_get_item_by_path
-from src.helper.data_yaml import yaml_load
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
-from src.decorator.command import command
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+from src.decorator.command import command
+from src.helper.command import apply_command_decorator
+from src.helper.data_yaml import yaml_load
+from src.helper.dict import dict_get_item_by_path
 
 COMMAND_TYPE_BASH = 'bash'
 COMMAND_TYPE_BASH_FILE = 'bash-file'

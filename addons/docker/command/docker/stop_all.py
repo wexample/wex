@@ -1,7 +1,9 @@
-from src.decorator.command import command
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from typing import TYPE_CHECKING
+
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

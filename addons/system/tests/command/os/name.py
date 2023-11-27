@@ -1,4 +1,5 @@
 import re
+
 from addons.system.command.os.name import system__os__name
 from tests.AbstractTestCase import AbstractTestCase
 

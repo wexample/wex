@@ -1,18 +1,19 @@
 import getpass
 import os.path
+from typing import TYPE_CHECKING, Optional, cast
 
-from addons.app.command.app.init import app__app__init
-from addons.app.command.env.get import app__env__get
-from addons.app.command.app.started import app__app__started
-from addons.app.command.app.start import app__app__start
-from src.helper.process import process_get_all_by_port
-from src.decorator.as_sudo import as_sudo
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.app.init import app__app__init
+from addons.app.command.app.start import app__app__start
+from addons.app.command.app.started import app__app__started
+from addons.app.command.env.get import app__env__get
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from typing import Optional, TYPE_CHECKING, cast
+from src.helper.process import process_get_all_by_port
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

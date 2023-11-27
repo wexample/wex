@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import os
-from typing import Optional, Any, Iterable, List
+from typing import TYPE_CHECKING, Any, Iterable, List, Optional
 
 import click
+from click._termui_impl import ProgressBar, V
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
-from click._termui_impl import ProgressBar, V
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

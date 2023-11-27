@@ -1,12 +1,13 @@
 import os
-
-from src.helper.registry import registry_get_all_commands
-from src.core.CommandRequest import CommandRequest
-from src.helper.string import string_to_snake_case
-from src.const.globals import COMMAND_PATTERN_ADDON, COMMAND_TYPE_ADDON, COMMAND_SEPARATOR_ADDON, \
-    COMMAND_SEPARATOR_GROUP
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from typing import TYPE_CHECKING, Optional
+
+from src.const.globals import (COMMAND_PATTERN_ADDON, COMMAND_SEPARATOR_ADDON,
+                               COMMAND_SEPARATOR_GROUP, COMMAND_TYPE_ADDON)
+from src.core.command.resolver.AbstractCommandResolver import \
+    AbstractCommandResolver
+from src.core.CommandRequest import CommandRequest
+from src.helper.registry import registry_get_all_commands
+from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from src.const.types import RegistryResolverData
@@ -97,7 +98,8 @@ class AddonCommandResolver(AbstractCommandResolver):
                 # User typed "core:", we add a second ":"
                 return ':'
         elif cursor == 2:
-            from src.helper.registry import registry_get_all_commands, registry_remove_addons
+            from src.helper.registry import (registry_get_all_commands,
+                                             registry_remove_addons)
             addon = search_split[0]
 
             # Get all matching commands

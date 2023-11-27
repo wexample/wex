@@ -1,4 +1,5 @@
-from addons.test.command.demo_command.counting_collection import test__demo_command__counting_collection
+from addons.test.command.demo_command.counting_collection import \
+    test__demo_command__counting_collection
 from tests.AbstractTestCase import AbstractTestCase
 
 
