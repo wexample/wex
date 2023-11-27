@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import os
+from typing import Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import OptionalCoreCommandArgsDict
+from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
     DefaultQueuedCollectionResponseQueueManager,
 )
@@ -29,9 +31,8 @@ class QueuedCollectionResponse(AbstractResponse):
         super().__init__(kernel)
         self.collection = collection
         self.step_position: int = 0
-        self.has_next_step = False
-        self.kernel.tmp["last_created_queued_collection"] = self
-        self.path_manager: QueuedCollectionPathManager = None
+        self.has_next_step: bool = False
+        self.path_manager: Optional[QueuedCollectionPathManager] = None
 
         manager_class = (
             FastModeQueuedCollectionResponseQueueManager
@@ -59,6 +60,13 @@ class QueuedCollectionResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: dict = {},
     ) -> AbstractResponse:
+        if not request.resolver:
+            return AbortResponse(
+                kernel=self.kernel, reason="MISSING_REQUEST_INITIALIZATION"
+            )
+
+        resolver: AbstractCommandResolver = request.resolver
+
         # Share path manager across root request and all involved collections
         root_request = request.get_root_parent()
         if "queue_collection_path_manager" not in root_request.storage:
@@ -91,14 +99,14 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.queue_manager.render_content_complete()
 
         # Prepare args
-        render_args = (
+        render_args: OptionalCoreCommandArgsDict = (
             {"previous": self.queue_manager.get_previous_value()}
             if step_index > 0
             else {}
         )
 
         # Transform item in a response object.
-        wrap = request.resolver.wrap_response(self.collection[step_index])
+        wrap = resolver.wrap_response(self.collection[step_index])
         response = wrap.render(
             request=request, args=render_args, render_mode=render_mode
         )
@@ -130,15 +138,6 @@ class QueuedCollectionResponse(AbstractResponse):
             if response.has_next_step:
                 self.has_next_step = response.has_next_step
                 return self.queue_manager.render_content_complete()
-
-        # If this is a function, no new QueuedCollectionResponse
-        # should have been created during the rendering process.
-        if isinstance(response, FunctionResponse):
-            if self.kernel.tmp["last_created_queued_collection"] != self:
-                self.kernel.io.error(
-                    'A nested "QueuedCollectionResponse" have been created but not passed to its parent'
-                    f", got : {response.print()}, in command {request.command} at step {step_index}"
-                )
 
         if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(
             response

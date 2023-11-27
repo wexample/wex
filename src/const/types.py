@@ -38,8 +38,8 @@ OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 
 YamlContent = StringKeysDict
 
-BasicArg = None | int | float | str | bool | AnyList | StringKeysDict
-AppConfigValue = BasicArg
+BasicValue = None | int | float | str | bool | AnyList | StringKeysDict
+AppConfigValue = BasicValue
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 

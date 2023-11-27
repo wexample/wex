@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from src.const.types import BasicValue
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -11,7 +12,7 @@ class AbstractQueuedCollectionResponseQueueManager:
         return self.response
 
     @abstractmethod
-    def get_previous_value(self):
+    def get_previous_value(self) -> BasicValue:
         pass
 
     def get_previous_response_path(self) -> list | None:
