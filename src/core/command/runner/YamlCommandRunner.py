@@ -1,11 +1,14 @@
 import builtins
 import os
 import types
+from typing import Any, Optional, cast
 
 import click
 from click import Command
 
+from src.const.types import YamlCommand
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
+from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
@@ -29,7 +32,7 @@ class YamlCommandRunner(AbstractCommandRunner):
     def set_request(self, request: CommandRequest):
         super().set_request(request=request)
 
-        self.content = yaml_load(self.request.path)
+        self.content: YamlCommand = yaml_load(self.request.path)
 
         if not self.content:
             self.kernel.io.error(
@@ -43,10 +46,13 @@ class YamlCommandRunner(AbstractCommandRunner):
     def get_params(self) -> list:
         pass
 
-    def get_command_type(self):
+    def get_command_type(self) -> str:
         return self.content["type"]
 
-    def build_script_command(self) -> Command:
+    def build_script_command(self) -> Optional[ScriptCommand]:
+        if not self.request:
+            return
+
         def _script_command_handler(*args, **kwargs):
             commands_collection = []
 
@@ -111,6 +117,9 @@ class YamlCommandRunner(AbstractCommandRunner):
             click_function_callback
         )
 
+        if not script_command.function:
+            return None
+
         # Apply extra decorators
         properties = (
             dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
@@ -148,7 +157,10 @@ class YamlCommandRunner(AbstractCommandRunner):
                     ),
                 )(script_command.function)
 
-        return script_command
+        return cast(ScriptCommand, script_command)
 
-    def run(self):
+    def run(self) -> Any:
+        if not self.request or not self.request.function:
+            return None
+
         return self.run_click_function(self.request.function)

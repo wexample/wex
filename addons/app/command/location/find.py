@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     "--recursive", "-r", type=bool, required=False, default=True, help="App directory"
 )
 def app__location__find(
-    manager: "AppAddonManager", app_dir: Optional[str] = False, recursive: bool = True
+    manager: "AppAddonManager", app_dir: Optional[str] = None, recursive: bool = True
 ) -> Optional[str]:
     """Search for the config file in the given directory path or its parent directories.
     Returns the path of the directory containing the config file, or None if not found.

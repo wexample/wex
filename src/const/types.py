@@ -49,6 +49,30 @@ AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 
 
+class YamlCommandScript(TypedDict):
+    title: str
+    script: str
+    file: str
+
+
+class YamlCommandOption(TypedDict):
+    default: str | bool | int
+    help: str
+    is_flag: bool
+    name: str
+    required: bool
+    short: str
+    type: str
+
+
+class YamlCommand(TypedDict):
+    help: str
+    name: str
+    options: List[YamlCommandOption]
+    scripts: List[YamlCommandScript]
+    type: str
+
+
 class AppConfig(TypedDict):
     domain_main: str
     domain_tld: str

@@ -205,11 +205,11 @@ def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
 
 def apply_command_decorator(
     kernel: "Kernel",
-    function: Command,
+    function: ScriptCommand,
     group: str,
     name: str,
     options: Optional[Dict[str, str]] = None,
-) -> NoReturn | Any:
+) -> NoReturn | ScriptCommand:
     if group in kernel.decorators and name in kernel.decorators[group]:
         decorator = kernel.decorators[group][name]
         options = options or {}

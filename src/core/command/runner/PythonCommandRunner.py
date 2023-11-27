@@ -1,4 +1,5 @@
 import importlib.util
+from typing import Any
 
 from click import Command
 
@@ -26,8 +27,8 @@ class PythonCommandRunner(AbstractCommandRunner):
     def get_params(self) -> list:
         return self.request.function.function.params
 
-    def get_command_type(self):
+    def get_command_type(self) -> str:
         return self.request.function.function.callback.command_type
 
-    def run(self):
+    def run(self) -> Any:
         return self.run_click_function(self.request.function)

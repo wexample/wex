@@ -102,7 +102,7 @@ class ScriptCommand:
         self.function = click_command  # TODO RM
         self.function.properties = {}
 
-    def run_command(self, runner, function, ctx):
+    def run_command(self, runner, function, ctx) -> Any:
         return self.function.invoke(ctx)
 
     def run_script(

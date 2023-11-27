@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Any
 
 import click
 
@@ -28,7 +29,7 @@ class AbstractCommandRunner:
     def run(self):
         pass
 
-    def run_click_function(self, script_command):
+    def run_click_function(self, script_command) -> Any:
         try:
             ctx = script_command.function.make_context(
                 "", self.request.args.copy() or []
