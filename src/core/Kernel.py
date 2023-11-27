@@ -236,7 +236,7 @@ class Kernel:
     def call_command(
             self,
             command: 'CoreCommandString',
-            command_args: 'OptionalCoreCommandArgsListOrDict' = None,
+            command_args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
             render_mode: str | None = None) -> Optional[str]:
 
         render_mode = render_mode or self.default_render_mode
@@ -264,7 +264,7 @@ class Kernel:
 
     def run_command(self,
                     command: 'CoreCommandString',
-                    args: 'OptionalCoreCommandArgsListOrDict' = None,
+                    args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
                     quiet: bool = False,
                     render_mode: str | None = None) -> 'AbstractResponse':
         request = self.create_command_request(
@@ -276,7 +276,7 @@ class Kernel:
 
     def run_function(self,
                      function: 'ScriptCommand',
-                     args: 'OptionalCoreCommandArgsListOrDict' = None,
+                     args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
                      type: str = COMMAND_TYPE_ADDON,
                      quiet: bool = False,
                      render_mode: str | None = None) -> 'AbstractResponse':
@@ -427,7 +427,7 @@ class Kernel:
 
     def create_command_request(self,
                                command: 'CoreCommandString',
-                               args: 'OptionalCoreCommandArgsListOrDict' = None,
+                               args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
                                quiet: bool = False) -> 'CommandRequest' | NoReturn:
         command_type = self.guess_command_type(command)
 

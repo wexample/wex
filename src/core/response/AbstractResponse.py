@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_JSON
-from typing import TYPE_CHECKING, Any
+from typing import Optional, TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -65,7 +65,7 @@ class AbstractResponse:
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> 'AbstractResponse':
+            args: Optional[dict] = None) -> 'AbstractResponse':
         pass
 
     def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
@@ -120,7 +120,7 @@ class AbstractResponse:
             collection,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None):
+            args: Optional[dict] = None):
         for response in collection:
             if isinstance(response, AbstractResponse):
                 self.output_bag.append(

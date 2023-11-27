@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Iterable, List
+from typing import Optional, Any, Iterable, List
 
 import click
 from InquirerPy import inquirer
@@ -40,7 +40,7 @@ def prompt_progress_steps(kernel: 'Kernel', steps: Iterable[V], title: str = 'Pr
 def prompt_choice(
         question: str,
         choices: List[str | Choice],
-        default: InquirerPyDefault = None,
+        default: Optional[InquirerPyDefault] = None,
         **kwargs: Any) -> Any:
     envs = choices.copy()
     envs.append(

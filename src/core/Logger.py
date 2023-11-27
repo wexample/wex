@@ -2,7 +2,7 @@ import datetime
 import json
 import os
 import time
-from typing import Dict, Any
+from typing import Optional, Dict, Any
 
 from src.helper.file import file_set_user_or_sudo_user_owner
 from src.helper.data_json import load_json_if_valid, parse_json_if_valid
@@ -83,7 +83,7 @@ class Logger:
             self,
             code: str,
             parameters=None,
-            log_level: int = None):
+            log_level: Optional[int] = None):
         if parameters is None:
             parameters = {}
 

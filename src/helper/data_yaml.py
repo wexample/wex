@@ -49,7 +49,7 @@ def yaml_write(file_path: str, content: 'YamlContent') -> None:
         return None
 
 
-def yaml_load_or_default(file: str, default: Any = None) -> Any:
+def yaml_load_or_default(file: str, default: Optional[Any] = None) -> Any:
     data_yaml = yaml_load(file)
 
     if data_yaml is None:

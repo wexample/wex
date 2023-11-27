@@ -4,6 +4,7 @@ from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSe
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
+from typing import Optional
 
 
 class TableResponse(AbstractTerminalSectionResponse):
@@ -31,7 +32,7 @@ class TableResponse(AbstractTerminalSectionResponse):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> AbstractResponse:
+            args: Optional[dict] = None) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
             self.render_cli_content()

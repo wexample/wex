@@ -4,6 +4,7 @@ from src.core.response.AbstractTerminalSectionResponse import AbstractTerminalSe
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL, KERNEL_RENDER_MODE_JSON
+from typing import Optional
 
 
 class DictResponse(AbstractTerminalSectionResponse):
@@ -29,7 +30,7 @@ class DictResponse(AbstractTerminalSectionResponse):
             self,
             request: CommandRequest,
             render_mode: str | None = None,
-            args: dict = None) -> AbstractResponse:
+            args: Optional[dict] = None) -> AbstractResponse:
 
         render_mode = self.get_render_mode(render_mode)
 

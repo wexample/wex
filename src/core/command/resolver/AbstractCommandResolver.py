@@ -125,7 +125,7 @@ class AbstractCommandResolver:
     def create_command_request(
             self,
             command: str,
-            args: 'OptionalCoreCommandArgsListOrDict' = None) -> CommandRequest:
+            args: Optional['OptionalCoreCommandArgsListOrDict'] = None) -> CommandRequest:
         return CommandRequest(
             self,
             command,
@@ -180,7 +180,7 @@ class AbstractCommandResolver:
     def build_full_command_parts_from_function(
             self,
             function_or_command,
-            args: 'OptionalCoreCommandArgsDict' = None) -> 'CoreCommandStringParts':
+            args: Optional['OptionalCoreCommandArgsDict'] = None) -> 'CoreCommandStringParts':
         if args is None:
             args = []
         else:
@@ -191,7 +191,7 @@ class AbstractCommandResolver:
             self.build_command_from_function(function_or_command),
         ] + args
 
-    def build_full_command_from_function(self, function_or_command, args: dict = None) -> str | None:
+    def build_full_command_from_function(self, function_or_command, args: Optional[dict] = None) -> str | None:
         return command_to_string(
             self.build_full_command_parts_from_function(
                 function_or_command,

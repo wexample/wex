@@ -3,6 +3,7 @@ from abc import ABC
 from src.core import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from typing import Optional
 
 
 class NullResponse(AbstractResponse, ABC):
@@ -10,7 +11,7 @@ class NullResponse(AbstractResponse, ABC):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> AbstractResponse:
+            args: Optional[dict] = None) -> AbstractResponse:
         self.output_bag.append(None)
 
         return self

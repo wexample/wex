@@ -1,5 +1,5 @@
 import copy
-from typing import Any, Dict, Mapping
+from typing import Optional, Any, Dict, Mapping
 
 
 def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
@@ -16,7 +16,7 @@ def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def dict_get_item_by_path(data: Mapping[str, Any], key: str, default: Any = None) -> Any:
+def dict_get_item_by_path(data: Mapping[str, Any], key: str, default: Optional[Any] = None) -> Any:
     # Split the key into its individual parts
     keys = key.split('.')
 

@@ -5,6 +5,7 @@ from abc import ABC
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
+from typing import Optional
 
 
 class QueuedCollectionStopResponse(AbstractResponse, ABC):
@@ -16,5 +17,5 @@ class QueuedCollectionStopResponse(AbstractResponse, ABC):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None):
+            args: Optional[dict] = None):
         return None

@@ -1,6 +1,7 @@
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
+from typing import Optional
 
 
 class DefaultResponse(AbstractResponse):
@@ -12,7 +13,7 @@ class DefaultResponse(AbstractResponse):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> AbstractResponse:
+            args: Optional[dict] = None) -> AbstractResponse:
         self.output_bag.append(self.content)
 
         return self

@@ -5,6 +5,7 @@ from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
+from typing import Optional
 
 
 class InteractiveShellCommandResponse(AbstractResponse):
@@ -25,7 +26,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             self,
             request: CommandRequest,
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: dict = None) -> AbstractResponse:
+            args: Optional[dict] = None) -> AbstractResponse:
 
         if self.ignore_error:
             self.shell_command += [
