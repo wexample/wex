@@ -1,4 +1,4 @@
-from typing import Union, Dict, List, Optional, Any, Literal, Callable, TypedDict, cast
+from typing import Union, Dict, List, Optional, Any, Literal, Callable, TypedDict
 
 AddonNameType = Literal[
     'app',

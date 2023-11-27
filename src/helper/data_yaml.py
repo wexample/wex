@@ -45,7 +45,7 @@ def yaml_write(file_path: str, content: 'YamlContent') -> None:
             yaml.safe_dump(
                 content,
                 f)
-    except Exception as e:
+    except Exception:
         return None
 
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Any, List
 
 from src.core.registry.CommandGroup import RegistryCommandGroup
-from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_ADDON
+from src.const.globals import COMMAND_SEPARATOR_ADDON
 from src.helper.dict import dict_merge
 from typing import TYPE_CHECKING
 

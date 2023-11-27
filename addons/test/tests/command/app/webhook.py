@@ -1,6 +1,5 @@
 import json
 import os
-import time
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from src.helper.file import file_read

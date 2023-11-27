@@ -1,5 +1,4 @@
 from addons.services_db.services.sqlserver.command.db.go import sqlserver__db__go
-from src.decorator.command import command
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE

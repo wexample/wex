@@ -1,4 +1,3 @@
-from src.decorator.command import command
 from src.decorator.option import option
 from addons.services_db.services.mongo.command.db.go import mongo__db__go
 from addons.app.decorator.app_command import app_command

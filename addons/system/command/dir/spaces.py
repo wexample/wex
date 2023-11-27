@@ -24,7 +24,7 @@ def system__dir__spaces(kernel: 'Kernel', dir: Optional[str] = None):
                 if os.path.isfile(fp):
                     try:
                         total_size += os.path.getsize(fp)
-                    except OSError as e:
+                    except OSError:
                         pass
         return total_size
 

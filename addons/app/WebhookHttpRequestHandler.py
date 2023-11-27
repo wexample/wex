@@ -133,7 +133,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         try:
             # Serialize the output and send the response
             output = json.dumps(output)
-        except Exception as e:
+        except Exception:
             self.logger.error(output)
 
         self.send_header('Content-type', 'application/json')

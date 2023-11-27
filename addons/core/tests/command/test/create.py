@@ -1,5 +1,3 @@
-import os
-import shutil
 
 from addons.core.command.test.create import core__test__create
 from tests.AbstractTestCase import AbstractTestCase
