@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Match, Optional
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.core.command.ScriptCommand import ScriptCommand
@@ -11,9 +11,6 @@ if TYPE_CHECKING:
 
 
 class CommandRequest:
-    localized = None
-    match = None
-
     def __init__(
         self,
         resolver,
@@ -32,6 +29,8 @@ class CommandRequest:
         self.path: None | str = None
         self.function: Optional[ScriptCommand] = None
         self.first_arg = self.resolver.kernel
+        self.match: Optional[Match] = None
+        self.localized: bool = False
 
         self.resolver.locate_function(self)
 

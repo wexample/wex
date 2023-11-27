@@ -24,8 +24,6 @@ KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = Any
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
-RegistryService = Dict[Union["addon", "commands", "config", "dir", "name"], StringsDict]
-RegistryResolverData = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 
 CoreCommandArgsDict = KeyPairCommandArgs
@@ -54,9 +52,24 @@ class RegistryCommand(TypedDict):
     test: str
 
 
-class RegistryAddon(TypedDict):
-    commands: Dict[str, RegistryCommand]
+RegistryCommandsCollection = Dict[str, RegistryCommand]
+
+
+class RegistryService(TypedDict):
+    addon: str
+    commands: RegistryCommandsCollection
+    config: str
+    dir: str
     name: str
+
+
+class RegistryAddon(TypedDict):
+    commands: RegistryCommandsCollection
+    name: str
+
+
+RegistryAllServices = Dict[str, RegistryService]
+RegistryResolverData = StringKeysDict
 
 
 class YamlCommandScript(TypedDict):

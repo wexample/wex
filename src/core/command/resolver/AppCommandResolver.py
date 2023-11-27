@@ -157,8 +157,7 @@ class AppCommandResolver(AbstractCommandResolver):
         if app_name not in apps:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_APP_NOT_FOUND")
 
-        self_super = super()
-        assert isinstance(self_super, AbstractCommandResolver)
+        self_super: super = super()
 
         def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)

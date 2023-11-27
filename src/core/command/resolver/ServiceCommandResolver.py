@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG, ERR_SERVICE_NOT_FOUND
 from src.const.globals import (
@@ -8,7 +8,12 @@ from src.const.globals import (
     COMMAND_SEPARATOR_ADDON,
     COMMAND_TYPE_SERVICE,
 )
-from src.const.types import AnyCallable, RegistryResolverData, StringsList
+from src.const.types import (
+    AnyCallable,
+    RegistryAllServices,
+    RegistryService,
+    StringsList,
+)
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -120,7 +125,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def locate_function(self, request) -> bool:
+    def locate_function(self, request: CommandRequest) -> bool:
         """
         Support services inheritance, if a function is not found in a service,
         search it into parent service.
@@ -165,10 +170,10 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
+    def build_registry_data(self, test: bool = False) -> RegistryAllServices:
         from src.helper.registry import registry_resolve_service_inheritance
 
-        registry: RegistryResolverData = {}
+        registry: RegistryAllServices = {}
 
         for addon in self.kernel.addons:
             services_dir = self.kernel.get_path("addons", [addon, "services"])
@@ -181,15 +186,18 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     )
                     commands_path = os.path.join(service_path, "command")
 
-                    registry[service] = {
-                        "name": service,
-                        "commands": self.scan_commands_groups(commands_path, test),
-                        "addon": addon,
-                        "dir": service_path,
-                        "config": yaml_load(
-                            file_path=config_file_path, default={"dependencies": []}
-                        ),
-                    }
+                    registry[service] = cast(
+                        RegistryService,
+                        {
+                            "name": service,
+                            "commands": self.scan_commands_groups(commands_path, test),
+                            "addon": addon,
+                            "dir": service_path,
+                            "config": yaml_load(
+                                file_path=config_file_path, default={"dependencies": []}
+                            ),
+                        },
+                    )
 
         # Resolve inheritance
         for service_name, service_data in registry.items():
@@ -198,7 +206,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return registry
 
     def get_registered_services(self) -> StringsList:
-        return self.get_registry_data().keys()
+        return cast(StringsList, self.get_registry_data().keys())
 
-    def get_registered_service_data(self, name: str) -> Dict[str, Any]:
-        return self.get_registry_data()[name]
+    def get_registered_service_data(self, name: str) -> RegistryService:
+        return cast(RegistryService, self.get_registry_data()[name])

@@ -7,7 +7,7 @@ from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
-    from src.const.types import RegistryResolverData
+    from src.const.types import RegistryAllServices, RegistryService
     from src.core.Kernel import Kernel
 
 
@@ -40,7 +40,7 @@ def registry_remove_addons(commands_list: List[str]) -> List[str]:
 
 
 def registry_resolve_service_inheritance(
-    service: Dict[str, Any], services_dict: "RegistryResolverData"
+    service: RegistryService, services_dict: RegistryAllServices
 ) -> Dict[str, Any]:
     if "extends" in service["config"]:
         parent_name = service["config"]["extends"]

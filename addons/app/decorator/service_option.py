@@ -1,7 +1,9 @@
+from typing import Callable
+
 import click
 
 
-def service_option():
+def service_option() -> Callable[[Callable], Callable]:
     def decorator(f):
         if callable(f):
             # Add the --app-dir option
