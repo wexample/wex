@@ -1,7 +1,5 @@
 type: app
 help: Do some code quality checks
 scripts:
-  - title: No implicit optional tool
-    script: no_implicit_optional src/* addons/*
   - title: Run MyPy
     script: mypy --config-file .wex/python/mypy.ini src/core/Kernel.py

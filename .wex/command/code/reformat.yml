@@ -1,0 +1,11 @@
+type: app
+help: Auto reformat and fix syntax
+scripts:
+  - title: Remove unused imports
+    script: find src addons tests -name "*.py" | xargs autoflake --remove-all-unused-imports --remove-unused-variables --in-place
+  - title: Sort imports
+    script: isort src/* addons/* src/* tests/*
+  - title: Add Optional types
+    script: no_implicit_optional src/* addons/* src/* tests/*
+  - title: Reformat
+    script: black src/* addons/* src/* tests/*
