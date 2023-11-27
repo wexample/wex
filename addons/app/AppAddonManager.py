@@ -368,7 +368,9 @@ class AppAddonManager(AddonManager):
 
         # Only specified commands will expect app location.
         # This is not a function property class.
-        return getattr(request.script_command.function, "app_command", False) == False
+        return (
+            getattr(request.script_command.click_command, "app_command", False) == False
+        )
 
     def hook_render_request_pre(self, request: "CommandRequest") -> None:
         if self.ignore_app_dir(request):

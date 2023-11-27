@@ -70,7 +70,9 @@ class CommandRequest:
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
-                self.args = args_convert_dict_to_args(self.script_command.function, self.args)
+                self.args = args_convert_dict_to_args(
+                    self.script_command.click_command, self.args
+                )
 
             return True
 

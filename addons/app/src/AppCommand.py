@@ -38,7 +38,7 @@ class AppCommand(ScriptCommand):
             property_value=dir_required,
         )
 
-        self.function = app_dir_option(required=dir_required)(self.function)
+        self.click_command = app_dir_option(required=dir_required)(self.click_command)
 
         # Do not check if app is running
         FunctionProperty(
@@ -48,7 +48,7 @@ class AppCommand(ScriptCommand):
         )
 
         # Say that the command is available ony in app context
-        self.function.app_command = True
+        self.click_command.app_command = True
 
     def run_script(self, function, runner, script, variables: dict):
         kernel = runner.kernel

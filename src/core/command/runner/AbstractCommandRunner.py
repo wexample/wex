@@ -35,7 +35,7 @@ class AbstractCommandRunner:
 
     def run_click_function(self, script_command) -> Any:
         try:
-            ctx = script_command.function.make_context(
+            ctx = script_command.click_command.make_context(
                 "", self.request.args.copy() or []
             )
         # Click explicitly asked to exit, for example when using --help.
@@ -46,7 +46,7 @@ class AbstractCommandRunner:
             self.kernel.io.error(
                 "Error when creating context for command function {function} : {error}",
                 {
-                    "function": script_command.function.callback.__name__,
+                    "function": script_command.click_command.callback.__name__,
                     "error": str(e),
                 },
                 trace=False,
@@ -61,4 +61,4 @@ class AbstractCommandRunner:
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.request.first_arg
 
-        return script_command.run_command(self, script_command.function, ctx)
+        return script_command.run_command(self, script_command.click_command, ctx)

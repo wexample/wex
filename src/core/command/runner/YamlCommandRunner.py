@@ -108,7 +108,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 self.kernel.io.log(script["title"])
 
                 command = script_command.run_script(
-                    script_command.function, self, script, variables
+                    script_command.click_command, self, script, variables
                 )
 
                 commands_collection.append(
@@ -147,7 +147,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             click_function_callback
         )
 
-        if not script_command.function:
+        if not script_command.click_command:
             return None
 
         # Apply extra decorators
@@ -172,7 +172,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             )
 
         for option in options:
-            script_command.function = click.option(
+            script_command.click_command = click.option(
                 option["name"],
                 option["short"],
                 default=option["default"] if "default" in option else False,
@@ -180,7 +180,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 is_flag="is_flag" in option and option["is_flag"],
                 required=option["required"] if "required" in option else False,
                 type=getattr(builtins, option["type"] if "type" in option else "any"),
-            )(script_command.function)
+            )(script_command.click_command)
 
         return cast(ScriptCommand, script_command)
 

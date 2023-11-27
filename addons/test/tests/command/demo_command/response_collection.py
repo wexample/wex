@@ -64,7 +64,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         self.kernel.verbosity = 0
 
         internal_command = self.kernel.get_command_resolver(
-            test__demo_command__response_collection.function.callback.command_type
+            test__demo_command__response_collection.click_command.callback.command_type
         ).build_command_from_function(test__demo_command__response_collection)
 
         standard_mode_response = (

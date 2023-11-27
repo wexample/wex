@@ -194,11 +194,12 @@ def command_to_string(command: List[str] | str) -> str:
 
 def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
     if (
-        command_a.function.callback is not None
-        and command_b.function.callback is not None
+        command_a.click_command.callback is not None
+        and command_b.click_command.callback is not None
     ):
         return (
-            command_a.function.callback.__name__ == command_b.function.callback.__name__
+            command_a.click_command.callback.__name__
+            == command_b.click_command.callback.__name__
         )
     return False
 

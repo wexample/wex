@@ -17,7 +17,6 @@ class ScriptCommand:
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",
     ) -> None:
-        # TODO self.function: Callable = function
         self.command_type: str = command_type
 
         # TODO RM
@@ -99,11 +98,10 @@ class ScriptCommand:
         )(click_command)
 
         self.click_command = click_command
-        self.function = click_command  # TODO RM
-        self.function.properties = {}
+        self.click_command.properties = {}
 
     def run_command(self, runner, function, ctx) -> Any:
-        return self.function.invoke(ctx)
+        return self.click_command.invoke(ctx)
 
     def run_script(
         self, function, runner, script: Dict[str, Any], variables: Dict[str, str]

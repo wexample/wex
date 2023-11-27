@@ -48,7 +48,9 @@ class DefaultQueuedCollectionResponseQueueManager(
             value=self.response.path_manager.build_step_path(),
         )
 
-        process_post_exec_function(self.response.kernel, root.request.string_command, args)
+        process_post_exec_function(
+            self.response.kernel, root.request.string_command, args
+        )
 
     def build_storage_path(self, path: list) -> str:
         return "-".join(map(str, path)) + ".response"

@@ -34,6 +34,8 @@ from src.helper.system import (
 )
 
 if TYPE_CHECKING:
+    from click.core import Command as ClickCommand
+
     from src.core.Kernel import Kernel
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
@@ -164,13 +166,15 @@ def app__webhook__listen(
 
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
-                function = routes_map[route_name]["function"].function
+                click_command: ClickCommand = routes_map[route_name][
+                    "function"
+                ].click_command
                 options = {}
 
-                if hasattr(function.callback, "option_webhook_listener_path"):
+                if hasattr(click_command.callback, "option_webhook_listener_path"):
                     options["path"] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
 
-                if hasattr(function.callback, "option_webhook_listener_port"):
+                if hasattr(click_command.callback, "option_webhook_listener_port"):
                     options["port"] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
 
                 command = kernel.get_command_resolver(
@@ -193,7 +197,7 @@ def app__webhook__listen(
                 ]
 
                 if hasattr(
-                    kernel.root_request.script_command.function.callback,
+                    kernel.root_request.script_command.click_command.callback,
                     "option_webhook_listener_path",
                 ):
                     command += [
@@ -202,7 +206,7 @@ def app__webhook__listen(
                     ]
 
                 if hasattr(
-                    kernel.root_request.script_command.function.callback,
+                    kernel.root_request.script_command.click_command.callback,
                     "option_webhook_listener_port",
                 ):
                     command += [

@@ -58,7 +58,9 @@ class AbstractCommandResolver:
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = FunctionProperty.get_property(request.script_command, name="verbosity")
+        verbosity = FunctionProperty.get_property(
+            request.script_command, name="verbosity"
+        )
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity
@@ -197,7 +199,7 @@ class AbstractCommandResolver:
         if args is None:
             args = []
         else:
-            args = args_convert_dict_to_args(function_or_command.function, args)
+            args = args_convert_dict_to_args(function_or_command.click_command, args)
 
         return [
             CORE_COMMAND_NAME,
@@ -211,20 +213,20 @@ class AbstractCommandResolver:
             self.build_full_command_parts_from_function(function_or_command, args)
         )
 
-    def build_command_parts_from_function(
-        self, function_name
+    def build_command_parts_from_function_name(
+        self, function_name: str
     ) -> "CoreCommandStringParts":
         """
         Returns the "default" format (addons style)
         """
         return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 
-    def build_command_parts_from_file_path(self, command_path: str) -> list:
+    def build_command_parts_from_file_path(self, command_path: str) -> StringsList:
         path_parts = command_path.split(os.sep)
 
         return [path_parts[-4], path_parts[-2], os.path.splitext(path_parts[-1])[0]]
 
-    def build_command_from_parts(self, parts: list) -> str:
+    def build_command_from_parts(self, parts: StringsList) -> str:
         """
         Returns the "default" format (addons style)
         """
@@ -234,13 +236,16 @@ class AbstractCommandResolver:
         return f"{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
     def build_command_from_function(self, script_command: ScriptCommand) -> str:
-        if not script_command.function:
+        if (
+            not script_command.click_command
+            or not script_command.click_command.callback
+        ):
             self.kernel.io.error(
                 "Trying to build command name from non-located command function"
             )
 
-        parts = self.build_command_parts_from_function(
-            script_command.function.callback.__name__
+        parts = self.build_command_parts_from_function_name(
+            script_command.click_command.callback.__name__
         )
 
         return self.build_command_from_parts(parts)
@@ -321,14 +326,14 @@ class AbstractCommandResolver:
                     script_command = request.runner.build_script_command()
 
                     properties = {}
-                    for name in script_command.function.properties:
-                        properties[name] = script_command.function.properties[
+                    for name in script_command.click_command.properties:
+                        properties[name] = script_command.click_command.properties[
                             name
                         ].property_value
 
                     test_file = None
                     if test_commands or not hasattr(
-                        script_command.function.callback, "test_command"
+                        script_command.click_command.callback, "test_command"
                     ):
                         # All test are in python
                         test_file = os.path.realpath(
