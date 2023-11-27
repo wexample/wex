@@ -30,12 +30,12 @@ if TYPE_CHECKING:
     "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
 )
 def app__proxy__start(
-    kernel: "Kernel",
-    env: Optional[str] = None,
-    user: Optional[str] = None,
-    group: Optional[str] = None,
-    port: Optional[str] = None,
-    port_secure: Optional[str] = None,
+        kernel: "Kernel",
+        env: Optional[str] = None,
+        user: Optional[str] = None,
+        group: Optional[str] = None,
+        port: Optional[str] = None,
+        port_secure: Optional[str] = None,
 ):
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     proxy_path = manager.get_proxy_path()
@@ -47,12 +47,12 @@ def app__proxy__start(
         if manager.is_app_root(proxy_path):
             # Started
             if kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                },
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                    },
             ).first():
-                return QueuedCollectionStopResponse(kernel)
+                return QueuedCollectionStopResponse(kernel, 'PROXY_STARTED')
         else:
             manager.log(f"Creating proxy dir {proxy_path}")
             os.makedirs(proxy_path, exist_ok=True)
@@ -95,7 +95,7 @@ def app__proxy__start(
                 "app-dir": proxy_path,
                 # If no env, use the global wex env.
                 "env": env
-                or kernel.run_function(
+                       or kernel.run_function(
                     app__env__get, {"app-dir": kernel.get_path("root")}
                 ).first(),
                 "user": user,
