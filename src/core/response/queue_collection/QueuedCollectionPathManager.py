@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+from src.core.CommandRequest import CommandRequest
+from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.args import args_shift_one
 
 
 class QueuedCollectionPathManager:
-    def __init__(self, root_request):
+    def __init__(self, root_request) -> None:
         self.root_request = root_request
         self.response = None
         self.request = None
@@ -20,7 +22,9 @@ class QueuedCollectionPathManager:
     def get_step_index(self) -> int:
         return self.steps[self.response.step_position]
 
-    def start_rendering(self, request, response):
+    def start_rendering(
+        self, request: CommandRequest, response: AbstractResponse
+    ) -> None:
         self.request = request
         self.response = response
 
@@ -30,7 +34,7 @@ class QueuedCollectionPathManager:
                 self.response.find_parent_response_collection().step_position + 1
             )
 
-    def save_to_map(self):
+    def save_to_map(self) -> None:
         self.response.kernel.io.log(
             f"Command: {self.request.command}", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )

@@ -16,29 +16,27 @@ AnyList = List[Any]
 
 StringKeysDict = Dict[str, Any]
 StringsList = List[str]
+BasicInlineValue = str | int | float | bool | None
+BasicValue = BasicInlineValue | AnyList | StringKeysDict
 
 AnyCallable = Callable[..., Any]
 Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
-KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = Any
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
-WritableFileContent = str | int | float | bool | None
 
-CoreCommandArgsDict = KeyPairCommandArgs
+CoreCommandArgsDict = Dict[str, BasicInlineValue]
 CoreCommandArgsList = StringsList
 CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]
 CoreCommandString = str
 CoreCommandStringParts = StringsList
 
-OptionalKeyPairCommandArgs = Optional[KeyPairCommandArgs]
 OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 
 YamlContent = StringKeysDict
 
-BasicValue = None | int | float | str | bool | AnyList | StringKeysDict
 AppConfigValue = BasicValue
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict

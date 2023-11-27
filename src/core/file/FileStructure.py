@@ -1,7 +1,7 @@
 import os
 from typing import Any, Optional
 
-from src.const.types import WritableFileContent
+from src.const.types import BasicInlineValue
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
     FILE_SYSTEM_TYPE_FILE,
@@ -40,7 +40,7 @@ class FileStructure(AbstractFileSystemStructure):
     def write_content(self) -> Any:
         return file_write(self.path, self.get_writable_content())
 
-    def get_writable_content(self) -> WritableFileContent:
+    def get_writable_content(self) -> BasicInlineValue:
         return str(self.content)
 
     def create_missing(self):

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.const.types import BasicValue
+from src.const.types import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -12,7 +12,7 @@ class AbstractQueuedCollectionResponseQueueManager:
         return self.response
 
     @abstractmethod
-    def get_previous_value(self) -> BasicValue:
+    def get_previous_value(self) -> BasicInlineValue:
         pass
 
     def get_previous_response_path(self) -> list | None:
@@ -55,7 +55,7 @@ class AbstractQueuedCollectionResponseQueueManager:
             return True
         return False
 
-    def enqueue_next_step_by_index(self, next_step_index):
+    def enqueue_next_step_by_index(self, next_step_index) -> None:
         self.response.path_manager.steps[self.response.step_position] = next_step_index
         # Remove obsolete parts.
         del self.response.path_manager.steps[self.response.step_position + 1 :]

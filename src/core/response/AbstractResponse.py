@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,
@@ -157,3 +157,6 @@ class AbstractResponse:
             return json.dumps(self.render_mode_json_wrap_data(value))
 
         return value
+
+
+ResponseCollection = List[AbstractResponse]

@@ -4,7 +4,7 @@ import pwd
 import shutil
 from typing import IO, Any, Dict, List, Optional
 
-from src.const.types import WritableFileContent
+from src.const.types import BasicInlineValue
 
 
 def file_list_subdirectories(path: str) -> List[str]:
@@ -260,6 +260,6 @@ def file_read(file_path: str) -> str:
         return file.read()
 
 
-def file_write(file_path: str, content: WritableFileContent) -> None:
+def file_write(file_path: str, content: BasicInlineValue) -> None:
     with open(file_path, "w") as f:
         f.write(content)

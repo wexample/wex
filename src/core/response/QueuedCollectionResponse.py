@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import os
-from typing import Optional
+from typing import Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
     DefaultQueuedCollectionResponseQueueManager,
 )
@@ -27,7 +27,7 @@ from src.helper.data_yaml import yaml_is_basic_data
 class QueuedCollectionResponse(AbstractResponse):
     ids_counter = 0
 
-    def __init__(self, kernel, collection: list):
+    def __init__(self, kernel, collection: ResponseCollection):
         super().__init__(kernel)
         self.collection = collection
         self.step_position: int = 0
@@ -46,7 +46,7 @@ class QueuedCollectionResponse(AbstractResponse):
         QueuedCollectionResponse.ids_counter += 1
 
     def find_parent_response_collection(self) -> "None|AbstractResponse":
-        current = self
+        current: Optional["QueuedCollectionResponse"] = self
         while current is not None:
             current = current.parent
             if isinstance(current, QueuedCollectionResponse):
@@ -54,19 +54,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return None
 
-    def render_content(
-        self,
-        request: CommandRequest,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: dict = {},
-    ) -> AbstractResponse:
-        if not request.resolver:
-            return AbortResponse(
-                kernel=self.kernel, reason="MISSING_REQUEST_INITIALIZATION"
-            )
-
-        resolver: AbstractCommandResolver = request.resolver
-
+    def init_path_manager(self, request: CommandRequest) -> QueuedCollectionPathManager:
         # Share path manager across root request and all involved collections
         root_request = request.get_root_parent()
         if "queue_collection_path_manager" not in root_request.storage:
@@ -74,23 +62,37 @@ class QueuedCollectionResponse(AbstractResponse):
                 "queue_collection_path_manager"
             ] = QueuedCollectionPathManager(root_request)
 
-        self.path_manager: QueuedCollectionPathManager = root_request.storage[
-            "queue_collection_path_manager"
-        ]
-        self.path_manager.start_rendering(request, self)
+        self.path_manager = root_request.storage["queue_collection_path_manager"]
+
+        return cast(QueuedCollectionPathManager, self.path_manager)
+
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
+        if not request.resolver:
+            return AbortResponse(
+                kernel=self.kernel, reason="MISSING_REQUEST_INITIALIZATION"
+            )
+
+        resolver: AbstractCommandResolver = request.resolver
+        path_manager = self.init_path_manager(request)
+        path_manager.start_rendering(request, self)
 
         # Collection is empty, nothing to do
         if not len(self.collection):
             return self.queue_manager.render_content_complete()
 
         # There is a deeper level.
-        if self.path_manager.has_child_queue():
+        if path_manager.has_child_queue():
             # Append a new step level,
             # set to None to postpone processing
-            self.path_manager.steps.append(None)
+            path_manager.steps.append(None)
 
-        step_index = self.path_manager.get_step_index()
-        self.path_manager.save_to_map()
+        step_index = path_manager.get_step_index()
+        path_manager.save_to_map()
 
         # First time, do not execute, wait next iteration
         if step_index is None:

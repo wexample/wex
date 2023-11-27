@@ -2,7 +2,7 @@ from abc import ABC
 
 import yaml
 
-from src.const.types import BasicValue
+from src.const.types import BasicInlineValue
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
@@ -24,7 +24,7 @@ class DefaultQueuedCollectionResponseQueueManager(
 
         return self.build_storage_path(path)
 
-    def get_previous_value(self) -> BasicValue:
+    def get_previous_value(self) -> BasicInlineValue:
         storage_path = self.get_previous_storage_path()
 
         if not storage_path:

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.const.types import BasicValue
+from src.const.types import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -16,7 +16,7 @@ class FastModeQueuedCollectionResponseQueueManager(
     def __init__(self, response) -> None:
         super().__init__(response)
 
-    def get_previous_value(self) -> BasicValue:
+    def get_previous_value(self) -> BasicInlineValue:
         self.response.find_parent_response_collection()
         path = self.get_previous_response_path()
 

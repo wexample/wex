@@ -39,7 +39,7 @@ class CommandRequest:
             # as it is managed outside.
             return
 
-    def get_root_parent(self):
+    def get_root_parent(self) -> "CommandRequest":
         if self.parent:
             return self.parent.get_root_parent()
         return self
