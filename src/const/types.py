@@ -83,7 +83,7 @@ AnyAppConfig = Union[AppConfig | AppRuntimeConfig]
 
 
 class DockerCompose(TypedDict):
-    pass
+    services: Any
 
 
 class KernelRegistry(YamlContent):

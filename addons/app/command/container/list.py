@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 def app__container__list(manager: "AppAddonManager", app_dir: str):
     container_names = []
 
-    if "services" in manager.runtime_docker_compose:
+    if manager.runtime_docker_compose and "services" in manager.runtime_docker_compose:
         for service, attributes in manager.runtime_docker_compose["services"].items():
             container_name = attributes.get("container_name", service)
             container_names.append(container_name)
