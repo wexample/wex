@@ -115,7 +115,7 @@ class AbstractCommandResolver:
     def build_match(cls, command: str) -> Optional[re.Match[str]]:
         return re.match(cls.get_pattern(), command) if command else None
 
-    def get_base_path(self) -> str | None:
+    def get_base_path(self) -> Optional[str]:
         return None
 
     def get_base_command_path(self) -> str | None:

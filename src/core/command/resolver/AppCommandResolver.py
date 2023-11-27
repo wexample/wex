@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.const.globals import (
@@ -19,13 +19,20 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import (
 )
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class AppCommandResolver(AbstractCommandResolver):
-    def __init__(self, kernel):
+    def __init__(self, kernel: "Kernel") -> None:
+        from addons.app.AppAddonManager import AppAddonManager
+
         super().__init__(kernel)
 
         # Shortcut.
-        self.app_addon_manager = kernel.addons["app"]
+        self.app_addon_manager: "AppAddonManager" = cast(
+            AppAddonManager, kernel.addons["app"]
+        )
 
     def render_request(
         self, request: CommandRequest, render_mode: str
@@ -55,6 +62,9 @@ class AppCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
+        if not request.match:
+            return None
+
         return self.build_command_path(
             base_path=self.get_base_path(),
             extension=extension,
@@ -65,16 +75,16 @@ class AppCommandResolver(AbstractCommandResolver):
             ),
         )
 
-    def build_command_from_parts(self, parts: list) -> str:
+    def build_command_from_parts(self, parts: StringsList) -> str:
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f"{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
-    def get_function_name_parts(self, parts: list) -> StringsList:
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["app", parts[1], parts[2]]
 
-    def get_base_path(self):
+    def get_base_path(self) -> Optional[str]:
         app_dir = self.app_addon_manager.app_dir
         if not self.app_addon_manager.app_dir:
             from addons.app.command.location.find import app__location__find
@@ -130,9 +140,7 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def run_command_request_from_url_path(
-        self, path: str, command_args: dict | None = None
-    ) -> AbstractResponse:
+    def run_command_request_from_url_path(self, path: str) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
         from src.helper.string import string_to_snake_case
 
@@ -149,7 +157,8 @@ class AppCommandResolver(AbstractCommandResolver):
         if app_name not in apps:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_APP_NOT_FOUND")
 
-        self_super: AbstractCommandResolver = super()
+        self_super = super()
+        assert isinstance(self_super, AbstractCommandResolver)
 
         def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)
