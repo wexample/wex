@@ -72,7 +72,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             ),
         )
 
-    def get_function_name_parts(self, parts: list) -> []:
+    def get_function_name_parts(self, parts: list) -> StringsList:
         return [parts[0], parts[1], parts[2]]
 
     def autocomplete_suggest(

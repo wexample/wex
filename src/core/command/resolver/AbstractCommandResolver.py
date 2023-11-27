@@ -186,7 +186,7 @@ class AbstractCommandResolver:
         )
 
     @abstractmethod
-    def get_function_name_parts(self, parts: list) -> []:
+    def get_function_name_parts(self, parts: list) -> StringsList:
         pass
 
     def build_full_command_parts_from_function(

@@ -24,7 +24,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_ADDON
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         # Unable to find command path if no addon name found.
         if request.match.group(1) is None:
@@ -42,24 +42,26 @@ class AddonCommandResolver(AbstractCommandResolver):
             ),
         )
 
-    def get_function_name_parts(self, parts: list) -> []:
+    def get_function_name_parts(self, parts: list) -> StringsList:
         return [
             parts[0],
             parts[1],
             parts[2],
         ]
 
-    def get_function_aliases(self, function) -> list:
+    def get_function_aliases(self, function) -> StringsList:
         aliases = super().get_function_aliases(function)
+        match = self.build_match(self.build_command_from_function(function))
 
-        parts = self.build_match(self.build_command_from_function(function)).groups()
+        if match:
+            parts = match.groups()
 
-        aliases.append(COMMAND_SEPARATOR_GROUP.join([parts[1], parts[2]]))
+            aliases.append(COMMAND_SEPARATOR_GROUP.join([parts[1], parts[2]]))
 
         return aliases
 
     def autocomplete_suggest(
-        self, cursor: int, search_split: StringsList
+            self, cursor: int, search_split: StringsList
     ) -> str | None:
         if cursor == 0:
             # User typed "wex co"
@@ -107,7 +109,7 @@ class AddonCommandResolver(AbstractCommandResolver):
                     commands = commands_dict.get("commands", [])
                     return " ".join(
                         [
-                            command[len(key + COMMAND_SEPARATOR_ADDON) :]
+                            command[len(key + COMMAND_SEPARATOR_ADDON):]
                             for command in commands
                             if command.startswith(key + COMMAND_SEPARATOR_ADDON)
                         ]
@@ -159,7 +161,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return search_string
 
     def build_command_parts_from_url_path_parts(
-        self, path_parts: StringsList
+            self, path_parts: StringsList
     ) -> StringsList:
         return [
             path_parts[0],
