@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional, cast
+from typing import Optional, cast
 
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
@@ -9,12 +9,10 @@ from src.const.globals import (
 )
 from src.const.types import RegistryAddon, RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
 from src.helper.string import string_to_snake_case
-
-if TYPE_CHECKING:
-    from click.core import Command as ClickCommand
 
 
 class AddonCommandResolver(AbstractCommandResolver):
@@ -53,9 +51,9 @@ class AddonCommandResolver(AbstractCommandResolver):
             parts[2],
         ]
 
-    def get_function_aliases(self, function: "ClickCommand") -> StringsList:
-        aliases = super().get_function_aliases(function)
-        match = self.build_match(self.build_command_from_function(function))
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> StringsList:
+        aliases = super().get_script_command_aliases(script_command)
+        match = self.build_match(self.build_command_from_function(script_command))
 
         if match:
             parts = match.groups()
