@@ -57,10 +57,14 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.content["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
-        if not self.request:
-            return
+        if not self.request or not self.request.path or not self.content:
+            return None
 
-        def _script_command_handler(*args, **kwargs):
+        resolver: AbstractCommandResolver = self.request.resolver
+        scripts = self.content['scripts'] if "scripts" in self.content else []
+        options = self.content["options"] if "options" in self.content else []
+
+        def _script_command_handler(*args: Args, **kwargs: Kwargs) -> Optional[QueuedCollectionResponse]:
             commands_collection = []
 
             variables = {}
@@ -75,7 +79,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             )
 
             # Iterate through each command in the configuration
-            for script in self.content.get("scripts", []):
+            for script in scripts:
                 if isinstance(script, str):
                     script = {
                         "script": script,
@@ -95,9 +99,10 @@ class YamlCommandRunner(AbstractCommandRunner):
 
             return QueuedCollectionResponse(self.kernel, commands_collection)
 
-        internal_command = self.request.resolver.get_function_name(
-            self.request.resolver.build_command_parts_from_file_path(self.request.path)
+        internal_command = resolver.get_function_name(
+            resolver.build_command_parts_from_file_path(self.request.path)
         )
+
         # Function must have the appropriate name,
         # allowing to guess internal command name from it
         click_function_callback = types.FunctionType(
@@ -129,7 +134,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Apply extra decorators
         properties = (
-            dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
+                dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
         )
 
         for property in properties:
@@ -148,21 +153,18 @@ class YamlCommandRunner(AbstractCommandRunner):
                 options=value,
             )
 
-        if "options" in self.content:
-            options = self.content["options"]
-
-            for option in options:
-                script_command.function = click.option(
-                    option["name"],
-                    option["short"],
-                    default=option["default"] if "default" in option else False,
-                    help=option["help"] if "help" in option else None,
-                    is_flag="is_flag" in option and option["is_flag"],
-                    required=option["required"] if "required" in option else False,
-                    type=getattr(
-                        builtins, option["type"] if "type" in option else "any"
-                    ),
-                )(script_command.function)
+        for option in options:
+            script_command.function = click.option(
+                option["name"],
+                option["short"],
+                default=option["default"] if "default" in option else False,
+                help=option["help"] if "help" in option else None,
+                is_flag="is_flag" in option and option["is_flag"],
+                required=option["required"] if "required" in option else False,
+                type=getattr(
+                    builtins, option["type"] if "type" in option else "any"
+                ),
+            )(script_command.function)
 
         return cast(ScriptCommand, script_command)
 
