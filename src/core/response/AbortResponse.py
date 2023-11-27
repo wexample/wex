@@ -18,16 +18,18 @@ class AbortResponse(AbstractResponse, ABC):
         self.reason = reason
 
     def render(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: OptionalCoreCommandArgsDict = None):
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ):
         return None
 
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: OptionalCoreCommandArgsDict = None) -> AbstractResponse:
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
         # Nothing to do
         return self

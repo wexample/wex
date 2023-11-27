@@ -6,7 +6,7 @@ from src.helper.data_yaml import yaml_load, yaml_write
 
 
 class YmlFileStructure(FileStructure):
-    file_extension: str = 'yml'
+    file_extension: str = "yml"
     content: YamlContent
 
     def load_content(self, default: Optional[YamlContent] = None) -> YamlContent:
@@ -15,7 +15,4 @@ class YmlFileStructure(FileStructure):
         return self.content
 
     def write_content(self) -> None:
-        yaml_write(
-            self.path,
-            self.content
-        )
+        yaml_write(self.path, self.content)

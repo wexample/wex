@@ -6,11 +6,7 @@ def app_dir_option(*args, **kwargs):
         if callable(function):
             # Add the --app-dir option
             function = click.option(
-                '--app-dir',
-                '-a',
-                type=str,
-                help="App directory",
-                **kwargs
+                "--app-dir", "-a", type=str, help="App directory", **kwargs
             )(function)
         return function
 

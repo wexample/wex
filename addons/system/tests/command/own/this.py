@@ -8,7 +8,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestSystemCommandOwnThis(AbstractTestCase):
     def test_this(self):
-        test_file = self.build_test_file('config_bash')
+        test_file = self.build_test_file("config_bash")
 
         os.chown(
             test_file,
@@ -16,26 +16,14 @@ class TestSystemCommandOwnThis(AbstractTestCase):
             0,
         )
 
-        self.kernel.run_function(system__own__this, {
-            'path': self.kernel.get_or_create_path('tmp')
-        })
+        self.kernel.run_function(
+            system__own__this, {"path": self.kernel.get_or_create_path("tmp")}
+        )
 
         owner = get_user_or_sudo_user()
 
-        self.assertEqual(
-            file_get_owner(
-                test_file
-            ),
-            owner
-        )
+        self.assertEqual(file_get_owner(test_file), owner)
 
-        self.kernel.run_function(system__own__this, {
-            'path': test_file
-        })
+        self.kernel.run_function(system__own__this, {"path": test_file})
 
-        self.assertEqual(
-            file_get_owner(
-                test_file
-            ),
-            owner
-        )
+        self.assertEqual(file_get_owner(test_file), owner)

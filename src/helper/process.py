@@ -7,64 +7,55 @@ from typing import TYPE_CHECKING, List, Optional
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.helper.command import (command_to_string, execute_command_sync,
-                                internal_command_to_shell)
+from src.helper.command import (
+    command_to_string,
+    execute_command_sync,
+    internal_command_to_shell,
+)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def process_post_exec(
-        kernel: 'Kernel',
-        command: List[str] | str) -> None:
+def process_post_exec(kernel: "Kernel", command: List[str] | str) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
-        command = ['cd', os.getcwd(), '&&'] + command
+        command = ["cd", os.getcwd(), "&&"] + command
     else:
-        command = f'cd {os.getcwd()} && ' + command
+        command = f"cd {os.getcwd()} && " + command
 
     kernel.io.log(
-        'Queuing shell command : ' + command_to_string(command),
-        verbosity=VERBOSITY_LEVEL_MAXIMUM
+        "Queuing shell command : " + command_to_string(command),
+        verbosity=VERBOSITY_LEVEL_MAXIMUM,
     )
     kernel.post_exec.append(command)
 
 
 def process_post_exec_function(
-        kernel: 'Kernel',
-        internal_command: str,
-        args: Optional[List[str]] = None,
-        is_async: bool = False) -> None:
+    kernel: "Kernel",
+    internal_command: str,
+    args: Optional[List[str]] = None,
+    is_async: bool = False,
+) -> None:
     command = internal_command_to_shell(
-        kernel=kernel,
-        internal_command=internal_command,
-        args=args
+        kernel=kernel, internal_command=internal_command, args=args
     )
 
     if is_async:
-        command.insert(0, 'nohup')
-        command += ['>', '/dev/null', '2>&1', '&']
+        command.insert(0, "nohup")
+        command += [">", "/dev/null", "2>&1", "&"]
 
-    process_post_exec(
-        kernel,
-        command
-    )
+    process_post_exec(kernel, command)
 
 
-def process_kill_by_command(kernel: 'Kernel', command: str) -> None:
+def process_kill_by_command(kernel: "Kernel", command: str) -> None:
     success, pids = execute_command_sync(
-        kernel,
-        [
-            'pgrep',
-            '-f',
-            command
-        ],
-        ignore_error=True
+        kernel, ["pgrep", "-f", command], ignore_error=True
     )
 
     if pids:
         for pid in pids:
-            kernel.io.log(f'Killing process {pid}')
+            kernel.io.log(f"Killing process {pid}")
             os.kill(int(pid), signal.SIGTERM)
 
 
@@ -77,16 +68,12 @@ def process_kill(process: psutil.Process) -> bool:
 
 
 def process_kill_by_port(port: int) -> bool:
-    process = process_get_all_by_port(
-        port
-    )
+    process = process_get_all_by_port(port)
 
     if process is None:
         return False
 
-    process_kill(
-        process
-    )
+    process_kill(process)
 
     return True
 

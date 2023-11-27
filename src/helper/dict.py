@@ -16,9 +16,11 @@ def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def dict_get_item_by_path(data: Mapping[str, Any], key: str, default: Optional[Any] = None) -> Any:
+def dict_get_item_by_path(
+    data: Mapping[str, Any], key: str, default: Optional[Any] = None
+) -> Any:
     # Split the key into its individual parts
-    keys = key.split('.')
+    keys = key.split(".")
 
     # Traverse the data dictionary using the key parts
     for k in keys:

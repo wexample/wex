@@ -7,11 +7,8 @@ if TYPE_CHECKING:
 
 
 def app_webhook(*args, **kwargs):
-    def decorator(script_command: 'ScriptCommand'):
-        FunctionProperty(
-            script_command,
-            'app_webhook',
-            True)
+    def decorator(script_command: "ScriptCommand"):
+        FunctionProperty(script_command, "app_webhook", True)
 
         return script_command
 

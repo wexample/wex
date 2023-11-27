@@ -1,16 +1,18 @@
 import os
 from typing import Optional
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_TERMINAL)
+from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.AbstractTerminalSectionResponse import \
-    AbstractTerminalSectionResponse
+from src.core.response.AbstractTerminalSectionResponse import (
+    AbstractTerminalSectionResponse,
+)
 
 
 class KeyValueResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, dictionary: dict | None = None, title: str | None = None):
+    def __init__(
+        self, kernel, dictionary: dict | None = None, title: str | None = None
+    ):
         super().__init__(kernel, title)
 
         self.dictionary_data = {}
@@ -22,18 +24,21 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         self.dictionary_data = dictionary_data
 
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None) -> AbstractResponse:
-
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Calculate maximum key width for formatting
             max_key_width = max(len(str(key)) for key in self.dictionary_data.keys())
 
             # Pre-render the lines to calculate the section width
             # We create the entire line here for width calculation
-            lines = [f"{str(key):<{max_key_width}} : {value}" for key, value in self.dictionary_data.items()]
+            lines = [
+                f"{str(key):<{max_key_width}} : {value}"
+                for key, value in self.dictionary_data.items()
+            ]
 
             # Find the largest width
             section_width = max(len(line) for line in lines)
@@ -53,7 +58,11 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
 
         return self
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(self.output_bag)
         elif render_mode == KERNEL_RENDER_MODE_JSON:

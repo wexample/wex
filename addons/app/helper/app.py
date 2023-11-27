@@ -17,15 +17,15 @@ def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
     if os.path.exists(env_file_path) and not rewrite:
         return False
 
-    file_create_parent_and_touch(env_file_path, f'APP_ENV={env}{os.linesep}')
+    file_create_parent_and_touch(env_file_path, f"APP_ENV={env}{os.linesep}")
 
-    with open(env_file_path, 'w') as f:
-        f.write(f'APP_ENV={env}{os.linesep}')
+    with open(env_file_path, "w") as f:
+        f.write(f"APP_ENV={env}{os.linesep}")
 
     return True
 
 
-def app_create_manager(kernel: 'Kernel', app_dir: str) -> AppAddonManager:
+def app_create_manager(kernel: "Kernel", app_dir: str) -> AppAddonManager:
     """
     Force manager create even dir is not a valid app.
     Useful to work with apps in an invalid state.

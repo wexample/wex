@@ -9,34 +9,24 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Start the proxy", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def proxy__app__start_post(manager: 'AppAddonManager', app_dir: str, service: str):
+def proxy__app__start_post(manager: "AppAddonManager", app_dir: str, service: str):
     commands = [
+        ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
+        ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],
         [
-            'ln',
-            '-fs',
-            '/proc/1/fd/1',
-            '/var/log/nginx/access.log'
+            "nginx",
+            "-s",
+            "reload",
         ],
-        [
-            'ln',
-            '-fs',
-            '/proc/1/fd/1',
-            '/var/log/nginx/error.log'
-        ],
-        [
-            'nginx',
-            '-s',
-            'reload',
-        ]
     ]
 
     for command in commands:
         manager.kernel.run_function(
             app__app__exec,
             {
-                'app-dir': app_dir,
+                "app-dir": app_dir,
                 # Ask to execute bash
-                'command': command,
-                'sync': True
-            }
+                "command": command,
+                "sync": True,
+            },
         )

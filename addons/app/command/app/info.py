@@ -11,31 +11,32 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def app__app__info(manager: 'AppAddonManager', app_dir: str):
+def app__app__info(manager: "AppAddonManager", app_dir: str):
     kernel = manager.kernel
     output_list = TableResponse(kernel)
 
-    output_list.set_body([
+    output_list.set_body(
         [
-            'Name',
-            manager.get_config('global.name')
-        ],
-        [
-            'Version',
-            manager.get_config('global.version')
-        ],
-        [
-            'Status',
-            'Started' if kernel.run_function(app__app__started, {
-                'app-dir': app_dir,
-            }).first() else 'Stopped'
-        ],
-        [
-            'Environment',
-            kernel.run_function(app__env__get, {
-                'app-dir': kernel.get_path('root')
-            }).first()
-        ],
-    ])
+            ["Name", manager.get_config("global.name")],
+            ["Version", manager.get_config("global.version")],
+            [
+                "Status",
+                "Started"
+                if kernel.run_function(
+                    app__app__started,
+                    {
+                        "app-dir": app_dir,
+                    },
+                ).first()
+                else "Stopped",
+            ],
+            [
+                "Environment",
+                kernel.run_function(
+                    app__env__get, {"app-dir": kernel.get_path("root")}
+                ).first(),
+            ],
+        ]
+    )
 
     return output_list

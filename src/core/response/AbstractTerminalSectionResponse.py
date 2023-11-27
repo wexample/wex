@@ -32,7 +32,7 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
             # Construct the title line
             return f"{'=' * padding_each_side} {title} {'=' * padding_each_side}{extra_equal}{os.linesep}"
 
-        return ''
+        return ""
 
     def render_mode_json_wrap_data(self, value):
         # Do not add extra json wrapping

@@ -10,27 +10,25 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Execute a command for all installed services")
-@option('--hook', '-h', type=str, required=True,
-        help="Hook name")
-@option('--arguments', '-args', type=str, required=False,
-        help="Arguments")
-def app__services__exec(manager: 'AppAddonManager', app_dir: str, hook: str, arguments: str):
+@option("--hook", "-h", type=str, required=True, help="Hook name")
+@option("--arguments", "-args", type=str, required=False, help="Arguments")
+def app__services__exec(
+    manager: "AppAddonManager", app_dir: str, hook: str, arguments: str
+):
     output = {}
 
     arguments = args_parse_one(arguments, {})
 
-    for service in manager.get_config('service', {}):
+    for service in manager.get_config("service", {}):
         arguments = arguments.copy()
-        arguments['service'] = service
+        arguments["service"] = service
 
-        command_name = f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}'
+        command_name = f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}"
 
         manager.log(command_name)
 
         output[service] = manager.kernel.run_command(
-            command_name,
-            arguments,
-            quiet=True
+            command_name, arguments, quiet=True
         )
 
     return output

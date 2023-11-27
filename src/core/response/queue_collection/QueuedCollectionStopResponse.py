@@ -14,8 +14,9 @@ class QueuedCollectionStopResponse(AbstractResponse, ABC):
         self.reason: str | None = reason
 
     def render(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None):
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ):
         return None

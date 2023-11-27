@@ -22,7 +22,7 @@ class AbstractQueuedCollectionResponseQueueManager:
             # But it has a parent collection
             if self.response.step_position > 0:
                 # Get the parent index
-                path = self.response.path_manager.steps[:self.response.step_position]
+                path = self.response.path_manager.steps[: self.response.step_position]
                 previous_index = path[-1]
 
                 # And parent has a previous item.
@@ -34,7 +34,7 @@ class AbstractQueuedCollectionResponseQueueManager:
                 return None
         # The response have a previous one, in the same collection
         else:
-            path = self.response.path_manager.steps[:self.response.step_position + 1]
+            path = self.response.path_manager.steps[: self.response.step_position + 1]
             path[-1] -= 1
 
             return path
@@ -57,5 +57,5 @@ class AbstractQueuedCollectionResponseQueueManager:
     def enqueue_next_step_by_index(self, next_step_index):
         self.response.path_manager.steps[self.response.step_position] = next_step_index
         # Remove obsolete parts.
-        del self.response.path_manager.steps[self.response.step_position + 1:]
+        del self.response.path_manager.steps[self.response.step_position + 1 :]
         self.response.has_next_step = True

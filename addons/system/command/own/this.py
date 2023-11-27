@@ -11,11 +11,15 @@ if TYPE_CHECKING:
 
 
 @as_sudo()
-@command(help="Make current user owner of this directory and every files or subdirectories")
-@option('--path', '-p', type=str, required=False, default=None, help="Argument")
-def system__own__this(kernel: 'Kernel', path: Optional[str] = None):
+@command(
+    help="Make current user owner of this directory and every files or subdirectories"
+)
+@option("--path", "-p", type=str, required=False, default=None, help="Argument")
+def system__own__this(kernel: "Kernel", path: Optional[str] = None):
     if path is None:
         path = os.getcwd()
 
-    kernel.io.log(f'Setting recursively ownership to "{get_user_or_sudo_user()}" on : {path}')
+    kernel.io.log(
+        f'Setting recursively ownership to "{get_user_or_sudo_user()}" on : {path}'
+    )
     set_owner_recursively(path)

@@ -7,12 +7,9 @@ if TYPE_CHECKING:
 
 
 def as_sudo():
-    def decorator(script_command: 'ScriptCommand'):
+    def decorator(script_command: "ScriptCommand"):
         # Say that the function is not allowed to be executed without sudo permissions.
-        FunctionProperty(
-            script_command,
-            'as_sudo',
-            True)
+        FunctionProperty(script_command, "as_sudo", True)
 
         return script_command
 

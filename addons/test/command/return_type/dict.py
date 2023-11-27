@@ -8,6 +8,6 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a dict")
-@option('--arg', '-a', type=str, required=True, help="Argument")
-def test__return_type__dict(kernel: 'Kernel', arg):
-    return {'arg': arg}
+@option("--arg", "-a", type=str, required=True, help="Argument")
+def test__return_type__dict(kernel: "Kernel", arg):
+    return {"arg": arg}

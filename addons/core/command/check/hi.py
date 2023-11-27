@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-@alias('hi')
+@alias("hi")
 @command(help="Return hi! Used to check if core vitals are working")
-def core__check__hi(kernel: 'Kernel'):
-    return 'hi!'
+def core__check__hi(kernel: "Kernel"):
+    return "hi!"

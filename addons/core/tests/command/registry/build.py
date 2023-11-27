@@ -5,13 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestCoreCommandRegistryBuild(AbstractTestCase):
     def test_build(self):
         registry = self.kernel.run_function(
-            core__registry__build,
-            {
-                'write': False
-            }
+            core__registry__build, {"write": False}
         ).first()
 
-        self.assertIsInstance(
-            registry,
-            dict
-        )
+        self.assertIsInstance(registry, dict)

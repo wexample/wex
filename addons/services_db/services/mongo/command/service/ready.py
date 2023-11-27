@@ -9,30 +9,36 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 
-@app_command(help="Return true if database runs", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def mongo__service__ready(manager: 'AppAddonManager', app_dir: str, service: str):
+@app_command(
+    help="Return true if database runs",
+    command_type=COMMAND_TYPE_SERVICE,
+    should_run=True,
+)
+def mongo__service__ready(manager: "AppAddonManager", app_dir: str, service: str):
     exec_command = manager.kernel.run_function(
-        mongo__db__exec, {
-            'app-dir': app_dir,
-            'service': service,
-            'command': 'db.runCommand({ ping: 1 })'
-        }, COMMAND_TYPE_SERVICE
+        mongo__db__exec,
+        {
+            "app-dir": app_dir,
+            "service": service,
+            "command": "db.runCommand({ ping: 1 })",
+        },
+        COMMAND_TYPE_SERVICE,
     ).print()
 
     response = manager.kernel.run_function(
         app__app__exec,
         {
-            'app-dir': app_dir,
-            'container-name': service,
+            "app-dir": app_dir,
+            "container-name": service,
             # Ask to execute bash
-            'command': exec_command,
-            'sync': True,
-            'ignore-error': True
-        }
+            "command": exec_command,
+            "sync": True,
+            "ignore-error": True,
+        },
     )
 
     first = response.first()
-    if isinstance(first, list) and first[0] == '1':
+    if isinstance(first, list) and first[0] == "1":
         return True
 
     return response.success

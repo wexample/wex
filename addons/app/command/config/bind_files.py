@@ -8,18 +8,21 @@ from src.decorator.option import option
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
-@app_command(help="Create env variable pointing to files regarding environment extension")
-@option('--dir', '-d', type=str, required=True, help="Argument")
-def app__config__bind_files(manager: 'AppAddonManager', app_dir: str, dir: str):
+
+@app_command(
+    help="Create env variable pointing to files regarding environment extension"
+)
+@option("--dir", "-d", type=str, required=True, help="Argument")
+def app__config__bind_files(manager: "AppAddonManager", app_dir: str, dir: str):
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)
     names_processed = []
     output = {}
 
-    env = manager.get_runtime_config('env')
+    env = manager.get_runtime_config("env")
 
     for file in section_files:
-        split = file.split('.')
+        split = file.split(".")
         base_name = split[0]
         conf_var_name_list = split.copy()
         is_env = False
@@ -43,16 +46,15 @@ def app__config__bind_files(manager: 'AppAddonManager', app_dir: str, dir: str):
             # Insert the folder name (dir) into the second position
             conf_var_name_list.insert(1, dir)
             # Convert all elements to upper case and prepend 'CONF_'
-            conf_var_name = '_'.join([element.lower() for element in conf_var_name_list])
+            conf_var_name = "_".join(
+                [element.lower() for element in conf_var_name_list]
+            )
 
             # Full path of the file
             file_path = os.path.realpath(os.path.join(sub_dir_full, file))
 
             # Save config
-            manager.set_runtime_config(
-                'bind.' + conf_var_name,
-                file_path
-            )
+            manager.set_runtime_config("bind." + conf_var_name, file_path)
 
             output[conf_var_name] = file_path
 

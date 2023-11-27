@@ -8,12 +8,15 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install database service", command_type=COMMAND_TYPE_SERVICE)
-def sqlserver__service__install(manager: 'AppAddonManager', app_dir: str, service: str):
-    name = manager.get_config('global.name')
-    manager.set_config(f'service.{service}', {
-        'host': f'{name}_sqlserver',
-        'name': name,
-        'password': PASSWORD_INSECURE,
-        'port': 1433,
-        'user': 'sa',
-    })
+def sqlserver__service__install(manager: "AppAddonManager", app_dir: str, service: str):
+    name = manager.get_config("global.name")
+    manager.set_config(
+        f"service.{service}",
+        {
+            "host": f"{name}_sqlserver",
+            "name": name,
+            "password": PASSWORD_INSECURE,
+            "port": 1433,
+            "user": "sa",
+        },
+    )

@@ -14,10 +14,7 @@ class TestCoreCommandCoreCleanup(AbstractTestCase):
             result,
         )
 
-        log_dir = self.kernel.get_or_create_path('task')
+        log_dir = self.kernel.get_or_create_path("task")
         log_files = os.listdir(log_dir)
 
-        self.assertEqual(
-            len(log_files),
-            0
-        )
+        self.assertEqual(len(log_files), 0)

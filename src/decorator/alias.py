@@ -7,15 +7,12 @@ if TYPE_CHECKING:
 
 
 def alias(name: bool | str = True):
-    def decorator(script_command: 'ScriptCommand'):
-        aliases = FunctionProperty.get_property(script_command, 'aliases')
+    def decorator(script_command: "ScriptCommand"):
+        aliases = FunctionProperty.get_property(script_command, "aliases")
         if aliases:
             aliases.append(name)
         else:
-            FunctionProperty(
-                script_command,
-                'aliases',
-                [name])
+            FunctionProperty(script_command, "aliases", [name])
 
         return script_command
 

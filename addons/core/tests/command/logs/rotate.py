@@ -14,32 +14,24 @@ class TestCoreCommandLogsRotate(AbstractTestCase):
     def test_rotate(self):
         # First remove all logs.
         self.kernel.run_function(
-            function=core__logs__rotate,
-            args={
-                'max-days': False,
-                'max-count': False
-            }
+            function=core__logs__rotate, args={"max-days": False, "max-count": False}
         )
 
-        test_log_path = os.path.join(self.kernel.get_or_create_path('task'), 'test.json')
+        test_log_path = os.path.join(
+            self.kernel.get_or_create_path("task"), "test.json"
+        )
 
-        with open(test_log_path, 'w') as test_log:
-            test_log.write('TEST_CONTENT')
+        with open(test_log_path, "w") as test_log:
+            test_log.write("TEST_CONTENT")
 
         # File has been modified 1 day ago.
-        _change_modification_time(
-            test_log_path,
-            1
-        )
+        _change_modification_time(test_log_path, 1)
 
         self.kernel.run_function(core__logs__rotate)
         self.assertPathExists(test_log_path)
 
         # File has been modified 100 days ago.
-        _change_modification_time(
-            test_log_path,
-            100
-        )
+        _change_modification_time(test_log_path, 100)
 
         self.kernel.run_function(core__logs__rotate)
         self.assertPathExists(test_log_path, False)

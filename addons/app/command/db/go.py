@@ -9,29 +9,22 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Enter into database management CLI")
-def app__db__go(
-        manager: 'AppAddonManager',
-        app_dir: str):
+def app__db__go(manager: "AppAddonManager", app_dir: str):
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
-    service = manager.get_config(
-        'docker.main_db_container',
-        required=True)
+    service = manager.get_config("docker.main_db_container", required=True)
 
     go_command = manager.kernel.run_command(
-        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/go',
-        {
-            'app-dir': app_dir,
-            'service': service
-        }
+        f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/go",
+        {"app-dir": app_dir, "service": service},
     ).first()
 
     manager.kernel.run_function(
         app__app__exec,
         {
-            'app-dir': app_dir,
-            'container-name': service,
-            'command': go_command,
-            'interactive': True
-        }
+            "app-dir": app_dir,
+            "container-name": service,
+            "command": go_command,
+            "interactive": True,
+        },
     )

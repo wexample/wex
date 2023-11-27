@@ -9,14 +9,9 @@ if TYPE_CHECKING:
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-@option('--depth', '-d', type=int, default=0, required=False, help="Depth")
-def test__logging__log(kernel: 'Kernel', depth: int = 0):
+@option("--depth", "-d", type=int, default=0, required=False, help="Depth")
+def test__logging__log(kernel: "Kernel", depth: int = 0):
     if depth < 10:
-        return kernel.run_function(
-            test__logging__log,
-            {
-                'depth': depth + 1
-            }
-        )
+        return kernel.run_function(test__logging__log, {"depth": depth + 1})
 
     return kernel.logger.log_data

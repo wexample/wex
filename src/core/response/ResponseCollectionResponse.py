@@ -1,8 +1,7 @@
 import os
 from typing import Optional
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_TERMINAL)
+from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -14,25 +13,22 @@ class ResponseCollectionResponse(AbstractResponse):
         self.collection = collection
 
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None) -> AbstractResponse:
-
-        self.render_content_multiple(
-            self.collection,
-            request,
-            render_mode,
-            args
-        )
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> AbstractResponse:
+        self.render_content_multiple(self.collection, request, render_mode, args)
 
         return self
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return os.linesep.join(
-                super().print(render_mode, interactive_data)
-            )
+            return os.linesep.join(super().print(render_mode, interactive_data))
         if render_mode == KERNEL_RENDER_MODE_JSON:
             data = []
 

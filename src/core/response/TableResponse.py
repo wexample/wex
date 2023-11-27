@@ -1,12 +1,12 @@
 import os
 from typing import Optional
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_TERMINAL)
+from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.AbstractTerminalSectionResponse import \
-    AbstractTerminalSectionResponse
+from src.core.response.AbstractTerminalSectionResponse import (
+    AbstractTerminalSectionResponse,
+)
 
 
 class TableResponse(AbstractTerminalSectionResponse):
@@ -31,10 +31,11 @@ class TableResponse(AbstractTerminalSectionResponse):
         return self.body
 
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None) -> AbstractResponse:
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
             self.render_cli_content()
@@ -66,7 +67,7 @@ class TableResponse(AbstractTerminalSectionResponse):
 
     def render_cli_content(self):
         if not len(self.header) and not len(self.body):
-            self.output_bag.append('')
+            self.output_bag.append("")
 
             return
 
@@ -95,8 +96,12 @@ class TableResponse(AbstractTerminalSectionResponse):
         # Add data rows
         for row in self.body:
             row_str = "|"
-            for i in range(num_columns):  # Use the maximum number of columns based on header or first row
-                cell = row[i] if i < len(row) else ''  # Handle missing cells by filling them with an empty string
+            for i in range(
+                num_columns
+            ):  # Use the maximum number of columns based on header or first row
+                cell = (
+                    row[i] if i < len(row) else ""
+                )  # Handle missing cells by filling them with an empty string
                 row_str += f" {str(cell):<{max_widths[i]}} |"
             bash_array += row_str + os.linesep
 
@@ -106,11 +111,17 @@ class TableResponse(AbstractTerminalSectionResponse):
 
     def render_http_content(self):
         # Render the content as JSON for HTTP mode
-        self.output_bag.append({
-            "body": self.body,
-            "header": self.header,
-            "title": self.title,
-        })
+        self.output_bag.append(
+            {
+                "body": self.body,
+                "header": self.header,
+                "title": self.title,
+            }
+        )
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ):
         return self.output_bag[0]

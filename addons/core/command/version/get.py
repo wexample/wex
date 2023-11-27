@@ -8,11 +8,11 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-@alias('-v')
-@alias('-version')
-@alias('--v')
-@alias('--version')
-@alias('version')
+@alias("-v")
+@alias("-version")
+@alias("--v")
+@alias("--version")
+@alias("version")
 @command(help="Returns core version")
-def core__version__get(kernel: 'Kernel'):
+def core__version__get(kernel: "Kernel"):
     return core_kernel_get_version(kernel)

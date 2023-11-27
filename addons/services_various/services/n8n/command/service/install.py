@@ -8,10 +8,13 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
-def n8n__service__install(manager: 'AppAddonManager', app_dir: str, service: str):
-    manager.set_config(f'service.{service}', {
-        'basic_auth': {
-            'user': 'admin',
-            'password': PASSWORD_INSECURE,
-        }
-    })
+def n8n__service__install(manager: "AppAddonManager", app_dir: str, service: str):
+    manager.set_config(
+        f"service.{service}",
+        {
+            "basic_auth": {
+                "user": "admin",
+                "password": PASSWORD_INSECURE,
+            }
+        },
+    )

@@ -7,13 +7,6 @@ class TestAppCommandDomainList(AbstractAppTestCase):
     def test_list(self):
         app_dir = self.create_test_app()
 
-        response = self.kernel.run_function(
-            app__domain__list,
-            {
-                'app-dir': app_dir
-            }
-        )
+        response = self.kernel.run_function(app__domain__list, {"app-dir": app_dir})
 
-        self.assertTrue(
-            DEFAULT_APP_TEST_NAME + '.wex' in response.first()
-        )
+        self.assertTrue(DEFAULT_APP_TEST_NAME + ".wex" in response.first())

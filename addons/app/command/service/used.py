@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 
 @app_command(help="Return ture if service is installed on app")
 @service_option()
-def app__service__used(manager: 'AppAddonManager', service: str, app_dir: str) -> bool:
-    return service in (manager.get_config('service') or {}).keys()
+def app__service__used(manager: "AppAddonManager", service: str, app_dir: str) -> bool:
+    return service in (manager.get_config("service") or {}).keys()

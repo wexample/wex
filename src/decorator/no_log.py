@@ -7,13 +7,10 @@ if TYPE_CHECKING:
 
 
 def no_log():
-    def decorator(script_command: 'ScriptCommand'):
+    def decorator(script_command: "ScriptCommand"):
         # Say that the function execution is not stored in log file,
         # Used for log command itself or autocomplete suggestion.
-        FunctionProperty(
-            script_command,
-            'no_log',
-            True)
+        FunctionProperty(script_command, "no_log", True)
 
         return script_command
 

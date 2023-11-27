@@ -8,5 +8,5 @@ if TYPE_CHECKING:
 
 
 @command(help="Return true if current environment is a Docker container")
-def system__system__is_docker(kernel: 'Kernel'):
-    return os.path.exists('/.dockerenv')
+def system__system__is_docker(kernel: "Kernel"):
+    return os.path.exists("/.dockerenv")

@@ -10,30 +10,22 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-@alias('logs')
+@alias("logs")
 @no_log()
 @command(help="Show a summary of log files")
-def core__logs__show(kernel: 'Kernel', max: int = 10) -> str:
+def core__logs__show(kernel: "Kernel", max: int = 10) -> str:
     output = []
     files = kernel.logger.get_all_logs_files()
     last_files = files[-max:]
     response = TableResponse(kernel)
 
-    response.set_header([
-        'Command',
-        'Date',
-        'Status'
-    ])
+    response.set_header(["Command", "Date", "Status"])
 
     for filepath in last_files:
         log = load_json_if_valid(filepath)
 
         if log:
-            output.append(
-                kernel.logger.build_summary(
-                    log
-                )
-            )
+            output.append(kernel.logger.build_summary(log))
 
     response.set_body(output)
 

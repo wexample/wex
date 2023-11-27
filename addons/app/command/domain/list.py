@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description")
-def app__domain__list(manager: 'AppAddonManager', app_dir: str):
+def app__domain__list(manager: "AppAddonManager", app_dir: str):
     manager.build_runtime_config()
 
-    return manager.get_runtime_config('domains')
+    return manager.get_runtime_config("domains")

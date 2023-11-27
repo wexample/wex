@@ -9,13 +9,13 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", dir_required=False)
-def app__version__get(manager: 'AppAddonManager', app_dir: str | None = None):
+def app__version__get(manager: "AppAddonManager", app_dir: str | None = None):
     app_dir = manager.app_dir
 
     app_version_string = None
     try:
         # Trust regular config file
-        app_version_string = manager.config[CORE_COMMAND_NAME]['version']
+        app_version_string = manager.config[CORE_COMMAND_NAME]["version"]
     except Exception:
         pass
 

@@ -7,14 +7,18 @@ from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.FunctionResponse import FunctionResponse
-from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
-    DefaultQueuedCollectionResponseQueueManager
-from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import \
-    FastModeQueuedCollectionResponseQueueManager
-from src.core.response.queue_collection.QueuedCollectionPathManager import \
-    QueuedCollectionPathManager
-from src.core.response.queue_collection.QueuedCollectionStopResponse import \
-    QueuedCollectionStopResponse
+from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
+    DefaultQueuedCollectionResponseQueueManager,
+)
+from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import (
+    FastModeQueuedCollectionResponseQueueManager,
+)
+from src.core.response.queue_collection.QueuedCollectionPathManager import (
+    QueuedCollectionPathManager,
+)
+from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+    QueuedCollectionStopResponse,
+)
 from src.helper.data_yaml import yaml_is_basic_data
 
 
@@ -26,19 +30,21 @@ class QueuedCollectionResponse(AbstractResponse):
         self.collection = collection
         self.step_position: int = 0
         self.has_next_step = False
-        self.kernel.tmp['last_created_queued_collection'] = self
+        self.kernel.tmp["last_created_queued_collection"] = self
         self.path_manager: QueuedCollectionPathManager = None
 
-        manager_class = FastModeQueuedCollectionResponseQueueManager \
-            if self.kernel.fast_mode \
+        manager_class = (
+            FastModeQueuedCollectionResponseQueueManager
+            if self.kernel.fast_mode
             else DefaultQueuedCollectionResponseQueueManager
+        )
         self.queue_manager = manager_class(self)
 
         # For debug purpose
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
 
-    def find_parent_response_collection(self) -> 'None|AbstractResponse':
+    def find_parent_response_collection(self) -> "None|AbstractResponse":
         current = self
         while current is not None:
             current = current.parent
@@ -47,17 +53,22 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return None
 
-    def render_content(self,
-                       request: CommandRequest,
-                       render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-                       args: dict = {}) -> AbstractResponse:
-
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: dict = {},
+    ) -> AbstractResponse:
         # Share path manager across root request and all involved collections
         root_request = request.get_root_parent()
-        if 'queue_collection_path_manager' not in root_request.storage:
-            root_request.storage['queue_collection_path_manager'] = QueuedCollectionPathManager(root_request)
+        if "queue_collection_path_manager" not in root_request.storage:
+            root_request.storage[
+                "queue_collection_path_manager"
+            ] = QueuedCollectionPathManager(root_request)
 
-        self.path_manager: QueuedCollectionPathManager = root_request.storage['queue_collection_path_manager']
+        self.path_manager: QueuedCollectionPathManager = root_request.storage[
+            "queue_collection_path_manager"
+        ]
         self.path_manager.start_rendering(request, self)
 
         # Collection is empty, nothing to do
@@ -80,16 +91,16 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.queue_manager.render_content_complete()
 
         # Prepare args
-        render_args = {
-            'previous': self.queue_manager.get_previous_value()
-        } if step_index > 0 else {}
+        render_args = (
+            {"previous": self.queue_manager.get_previous_value()}
+            if step_index > 0
+            else {}
+        )
 
         # Transform item in a response object.
         wrap = request.resolver.wrap_response(self.collection[step_index])
         response = wrap.render(
-            request=request,
-            args=render_args,
-            render_mode=render_mode
+            request=request, args=render_args, render_mode=render_mode
         )
 
         first_response_item = None
@@ -123,26 +134,29 @@ class QueuedCollectionResponse(AbstractResponse):
         # If this is a function, no new QueuedCollectionResponse
         # should have been created during the rendering process.
         if isinstance(response, FunctionResponse):
-            if self.kernel.tmp['last_created_queued_collection'] != self:
+            if self.kernel.tmp["last_created_queued_collection"] != self:
                 self.kernel.io.error(
                     'A nested "QueuedCollectionResponse" have been created but not passed to its parent'
-                    f', got : {response.print()}, in command {request.command} at step {step_index}'
+                    f", got : {response.print()}, in command {request.command} at step {step_index}"
                 )
 
-        if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(response):
+        if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(
+            response
+        ):
             self.kernel.io.error(
-                f'Returned data and nested values should be simple data : int, string, list or dict'
+                f"Returned data and nested values should be simple data : int, string, list or dict"
             )
 
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
         return self.queue_manager.render_content_complete()
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
-        output = super().print(
-            render_mode,
-            interactive_data
-        )
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> str | None:
+        output = super().print(render_mode, interactive_data)
 
         if isinstance(output, list) and len(output):
             return os.linesep.join(map(str, output))

@@ -12,13 +12,14 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Return the property value set in the .wex/.env file")
-@option('--key', '-k', type=str, required=False, default='APP_ENV',
-        help="Key in env file")
-def app__env__get(manager: 'AppAddonManager', app_dir: str, key: str = 'APP_ENV') -> str:
+@option(
+    "--key", "-k", type=str, required=False, default="APP_ENV", help="Key in env file"
+)
+def app__env__get(
+    manager: "AppAddonManager", app_dir: str, key: str = "APP_ENV"
+) -> str:
     return _app__env__get(app_dir, key)
 
 
-def _app__env__get(app_dir: str, key: str = 'APP_ENV') -> str:
-    return dotenv_values(
-        os.path.join(app_dir,
-                     APP_FILEPATH_REL_ENV)).get(key)
+def _app__env__get(app_dir: str, key: str = "APP_ENV") -> str:
+    return dotenv_values(os.path.join(app_dir, APP_FILEPATH_REL_ENV)).get(key)

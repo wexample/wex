@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 @test_command(command_type=COMMAND_TYPE_SERVICE)
-@option('--option', '-o', type=str, required=False,
-        help="An option as flag")
-def test_inherit_base__base_command__base(kernel: 'Kernel', service: str, option: Optional[str] = None):
-    return f'BASE:{option}:{service}'
+@option("--option", "-o", type=str, required=False, help="An option as flag")
+def test_inherit_base__base_command__base(
+    kernel: "Kernel", service: str, option: Optional[str] = None
+):
+    return f"BASE:{option}:{service}"

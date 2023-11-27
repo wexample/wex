@@ -5,10 +5,6 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandProxyStop(AbstractTestCase):
     def test_stop(self):
-        self.kernel.run_function(
-            app__proxy__start
-        )
+        self.kernel.run_function(app__proxy__start)
 
-        self.kernel.run_function(
-            app__proxy__stop
-        )
+        self.kernel.run_function(app__proxy__stop)

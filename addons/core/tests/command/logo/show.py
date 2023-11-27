@@ -4,10 +4,6 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestCoreCommandLogoShow(AbstractTestCase):
     def test_show(self):
-        logo = self.kernel.run_function(
-            core__logo__show
-        ).first()
+        logo = self.kernel.run_function(core__logo__show).first()
 
-        self.assertTrue(
-            'wexample' in logo
-        )
+        self.assertTrue("wexample" in logo)

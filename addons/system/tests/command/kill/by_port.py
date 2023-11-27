@@ -12,12 +12,7 @@ class TestSystemCommandKillByPort(AbstractPortTestCase):
         process = process_get_all_by_port(port)
         self.assertIsNotNone(process)
 
-        self.kernel.run_function(
-            system__kill__by_port,
-            {
-                'port': port
-            }
-        )
+        self.kernel.run_function(system__kill__by_port, {"port": port})
 
         self.stop_test_process(server_process)
 

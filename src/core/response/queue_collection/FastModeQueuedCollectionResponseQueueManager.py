@@ -1,12 +1,16 @@
 from abc import ABC
 
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
-    AbstractQueuedCollectionResponseQueueManager
-from src.core.response.queue_collection.QueuedCollectionStopResponse import \
-    QueuedCollectionStopResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
+from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+    QueuedCollectionStopResponse,
+)
 
 
-class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionResponseQueueManager, ABC):
+class FastModeQueuedCollectionResponseQueueManager(
+    AbstractQueuedCollectionResponseQueueManager, ABC
+):
     def __init__(self, response):
         super().__init__(response)
 
@@ -31,15 +35,16 @@ class FastModeQueuedCollectionResponseQueueManager(AbstractQueuedCollectionRespo
             self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection
         else:
-            while self.response.has_next_step and not isinstance(self.response.first(), QueuedCollectionStopResponse):
+            while self.response.has_next_step and not isinstance(
+                self.response.first(), QueuedCollectionStopResponse
+            ):
                 self.response.has_next_step = False
                 self.response.kernel.current_response = None
 
                 args = self.response.request.args.copy()
 
                 response = self.response.kernel.run_command(
-                    self.response.request.command,
-                    args
+                    self.response.request.command, args
                 )
 
                 # In fast mode we merge all outputs in the root output bag.

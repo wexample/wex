@@ -8,14 +8,14 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Get a configuration setting for given app")
-@option('--key', '-k', type=str, required=True,
-              help="Key in config file")
-@option('--default', '-d', required=False,
-              help="Default returned value if not found in config file")
+@option("--key", "-k", type=str, required=True, help="Key in config file")
+@option(
+    "--default",
+    "-d",
+    required=False,
+    help="Default returned value if not found in config file",
+)
 def app__config__get(
-        manager: 'AppAddonManager',
-        app_dir: str,
-        key: str,
-        default: Optional[str] = None
+    manager: "AppAddonManager", app_dir: str, key: str, default: Optional[str] = None
 ):
     return manager.get_config(key, default)

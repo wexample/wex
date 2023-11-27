@@ -8,5 +8,5 @@ class TestCoreCommandLogsShow(AbstractTestCase):
 
         self.assertTrue(
             len(output.splitlines()) > 0,
-            "Output is empty or doesn't contain any lines."
+            "Output is empty or doesn't contain any lines.",
         )

@@ -14,7 +14,12 @@ class CommandRequest:
     localized = None
     match = None
 
-    def __init__(self, resolver, command: str, args: Optional['OptionalCoreCommandArgsListOrDict'] = None):
+    def __init__(
+        self,
+        resolver,
+        command: str,
+        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+    ):
         self.extension: None | str = None
         self.quiet = False
         self.resolver: AbstractCommandResolver = resolver
@@ -47,12 +52,14 @@ class CommandRequest:
             runner = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
-                from src.core.command.runner.PythonCommandRunner import \
-                    PythonCommandRunner
+                from src.core.command.runner.PythonCommandRunner import (
+                    PythonCommandRunner,
+                )
+
                 runner = PythonCommandRunner(self.resolver.kernel)
             elif extension == COMMAND_EXTENSION_YAML:
-                from src.core.command.runner.YamlCommandRunner import \
-                    YamlCommandRunner
+                from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
+
                 runner = YamlCommandRunner(self.resolver.kernel)
 
             self.path = path
@@ -64,13 +71,11 @@ class CommandRequest:
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
-                self.args = args_convert_dict_to_args(
-                    self.function.function,
-                    self.args)
+                self.args = args_convert_dict_to_args(self.function.function, self.args)
 
             return True
 
-    def get_args_list(self) -> 'StringsList':
+    def get_args_list(self) -> "StringsList":
         if isinstance(self.args, list):
             return self.args.copy()
 

@@ -9,17 +9,28 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Enter into app container", should_run=True)
-@option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
-@option('--user', '-u', type=str, required=False, help="User name or uid")
-def app__app__go(manager: 'AppAddonManager', app_dir: str, container_name: str | None = None, user: str | None = None):
+@option(
+    "--container-name",
+    "-cn",
+    type=str,
+    required=False,
+    help="Container name if not configured",
+)
+@option("--user", "-u", type=str, required=False, help="User name or uid")
+def app__app__go(
+    manager: "AppAddonManager",
+    app_dir: str,
+    container_name: str | None = None,
+    user: str | None = None,
+):
     return manager.kernel.run_function(
         app__app__exec,
         {
-            'app-dir': app_dir,
-            'container-name': container_name or manager.get_main_container_name(),
+            "app-dir": app_dir,
+            "container-name": container_name or manager.get_main_container_name(),
             # Ask to execute bash
-            'command': manager.get_service_shell(),
-            'user': user,
-            'interactive': True
-        }
+            "command": manager.get_service_shell(),
+            "user": user,
+            "interactive": True,
+        },
     )

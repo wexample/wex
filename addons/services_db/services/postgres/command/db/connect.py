@@ -9,10 +9,14 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Return connexion info", command_type=COMMAND_TYPE_SERVICE)
-@option('--protocol', '-p', type=str, required=False, default="postgresql", help="Protocol")
-def postgres__db__connect(manager: 'AppAddonManager', app_dir: str, service: str, protocol: str = 'postgresql'):
-    user = manager.get_config(f'service.{service}.user')
-    password = manager.get_config(f'service.{service}.password')
-    name = manager.get_config(f'service.{service}.name')
+@option(
+    "--protocol", "-p", type=str, required=False, default="postgresql", help="Protocol"
+)
+def postgres__db__connect(
+    manager: "AppAddonManager", app_dir: str, service: str, protocol: str = "postgresql"
+):
+    user = manager.get_config(f"service.{service}.user")
+    password = manager.get_config(f"service.{service}.password")
+    name = manager.get_config(f"service.{service}.name")
 
     return f'{protocol}://{user}:"{password}"@localhost/{name}'

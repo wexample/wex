@@ -10,28 +10,19 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Restarts app")
-def app__app__restart(
-        manager: 'AppAddonManager',
-        app_dir: str):
+def app__app__restart(manager: "AppAddonManager", app_dir: str):
     kernel = manager.kernel
 
     def _app__app__restart__stop(previous=None):
-        return kernel.run_function(
-            app__app__stop,
-            {
-                'app-dir': app_dir
-            }
-        )
+        return kernel.run_function(app__app__stop, {"app-dir": app_dir})
 
     def _app__app__restart__start(previous=None):
-        return kernel.run_function(
-            app__app__start,
-            {
-                'app-dir': app_dir
-            }
-        )
+        return kernel.run_function(app__app__start, {"app-dir": app_dir})
 
-    return QueuedCollectionResponse(kernel, [
-        _app__app__restart__stop,
-        _app__app__restart__start,
-    ])
+    return QueuedCollectionResponse(
+        kernel,
+        [
+            _app__app__restart__stop,
+            _app__app__restart__start,
+        ],
+    )

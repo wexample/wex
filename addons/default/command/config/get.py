@@ -11,19 +11,21 @@ if TYPE_CHECKING:
 
 
 @command(help="Get config value to given file")
-@option('--file', '-f', type=str, required=True)
-@option('--key', '-k', type=str, required=True)
-@option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-@option('--default', '-d', default='')
-def default__config__get(kernel: 'Kernel', file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default='') -> str:
+@option("--file", "-f", type=str, required=True)
+@option("--key", "-k", type=str, required=True)
+@option("--separator", "-s", required=True, default=CONFIG_SEPARATOR_DEFAULT)
+@option("--default", "-d", default="")
+def default__config__get(
+    kernel: "Kernel", file, key, separator: str = CONFIG_SEPARATOR_DEFAULT, default=""
+) -> str:
     if not file or not os.path.isfile(file):
-        return ''
+        return ""
 
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         lines = f.readlines()
 
     for line in lines:
-        if re.search(r'^\s*' + re.escape(key) + r'\s*' + re.escape(separator), line):
+        if re.search(r"^\s*" + re.escape(key) + r"\s*" + re.escape(separator), line):
             return re.split(separator, line)[-1].strip()
 
     return default

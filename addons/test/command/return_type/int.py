@@ -9,6 +9,6 @@ if TYPE_CHECKING:
 
 
 @command(help="Return an int value", command_type=COMMAND_TYPE_ADDON)
-@option('--arg', '-a', type=int, required=True, help="Int value to add")
-def test__return_type__int(kernel: 'Kernel', arg: int = 0):
+@option("--arg", "-a", type=int, required=True, help="Int value to add")
+def test__return_type__int(kernel: "Kernel", arg: int = 0):
     return 1 + arg

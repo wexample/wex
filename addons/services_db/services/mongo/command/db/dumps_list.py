@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
 
 @app_command(help="List dumps", command_type=COMMAND_TYPE_SERVICE)
-def mongo__db__dumps_list(manager: 'AppAddonManager', app_dir: str, service: str):
+def mongo__db__dumps_list(manager: "AppAddonManager", app_dir: str, service: str):
     dumps_dir = get_db_service_dumps_path(manager, service)
 
     # Search for .zip and .sql files
-    search_patterns = ['*.zip', '*.bson']
+    search_patterns = ["*.zip", "*.bson"]
     dump_files = []
 
     for pattern in search_patterns:

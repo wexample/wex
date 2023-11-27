@@ -9,23 +9,25 @@ if TYPE_CHECKING:
 
 
 @command(help="Return true if docker container runs")
-@option('--name', '-n', type=str, required=True, help="Container name")
-@option('--all', '-a', is_flag=True, required=False, default=False, help="Include stopped ones")
-def docker__container__runs(kernel: 'Kernel', name: str, all: bool = False):
+@option("--name", "-n", type=str, required=True, help="Container name")
+@option(
+    "--all",
+    "-a",
+    is_flag=True,
+    required=False,
+    default=False,
+    help="Include stopped ones",
+)
+def docker__container__runs(kernel: "Kernel", name: str, all: bool = False):
     command = [
-        'docker',
-        'ps',
+        "docker",
+        "ps",
     ]
 
     if all:
-        command.append('-a')
+        command.append("-a")
 
-    command.extend([
-        '--filter',
-        'name=' + name,
-        '--format',
-        '{{.Names}}'
-    ])
+    command.extend(["--filter", "name=" + name, "--format", "{{.Names}}"])
 
     success, content = execute_command_sync(
         kernel,

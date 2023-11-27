@@ -3,15 +3,18 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
-from src.const.globals import (COMMAND_TYPE_ADDON, FILE_REGISTRY,
-                               KERNEL_RENDER_MODE_TERMINAL,
-                               VERBOSITY_LEVEL_DEFAULT,
-                               VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM,
-                               VERBOSITY_LEVEL_QUIET)
+from src.const.globals import (
+    COMMAND_TYPE_ADDON,
+    FILE_REGISTRY,
+    KERNEL_RENDER_MODE_TERMINAL,
+    VERBOSITY_LEVEL_DEFAULT,
+    VERBOSITY_LEVEL_MAXIMUM,
+    VERBOSITY_LEVEL_MEDIUM,
+    VERBOSITY_LEVEL_QUIET,
+)
 from src.core.AddonManager import AddonManager
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
-from src.core.file.KernelRegistryFileStructure import \
-    KernelRegistryFileStructure
+from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
 from src.core.FunctionProperty import FunctionProperty
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
@@ -23,19 +26,21 @@ from src.decorator.no_log import no_log
 from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
 from src.helper.args import args_shift_one
-from src.helper.file import (file_list_subdirectories,
-                             file_remove_file_if_exists)
+from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 
 if TYPE_CHECKING:
-    from src.const.types import (CoreCommandArgsList, CoreCommandString,
-                                 OptionalCoreCommandArgsListOrDict)
-    from src.core.command.resolver.AbstractCommandResolver import \
-        AbstractCommandResolver
+    from src.const.types import (
+        CoreCommandArgsList,
+        CoreCommandString,
+        OptionalCoreCommandArgsListOrDict,
+    )
+    from src.core.command.resolver.AbstractCommandResolver import (
+        AbstractCommandResolver,
+    )
     from src.core.command.ScriptCommand import ScriptCommand
     from src.core.CommandRequest import CommandRequest
     from src.core.ErrorMessage import ErrorMessage
-    from src.core.file.AbstractFileSystemStructure import \
-        AbstractFileSystemStructure
+    from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
     from src.core.response.AbortResponse import AbortResponse
     from src.core.response.AbstractResponse import AbstractResponse
 
@@ -45,19 +50,15 @@ class Kernel:
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
     tty: bool = os.isatty(0)
-    registry_structure: 'KernelRegistryFileStructure'
+    registry_structure: "KernelRegistryFileStructure"
 
-    def __init__(
-            self,
-            entrypoint_path: str,
-            task_id: str | None = None
-    ) -> None:
-        self.root_request: Optional['CommandRequest'] = None
-        self.current_request: Optional['CommandRequest'] = None
-        self.current_response: Optional['AbstractResponse'] = None
+    def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
+        self.root_request: Optional["CommandRequest"] = None
+        self.current_request: Optional["CommandRequest"] = None
+        self.current_response: Optional["AbstractResponse"] = None
         self.io = IOManager(self)
         self.post_exec: List[str] = []
-        self.previous_response: Optional['AbstractResponse'] = None
+        self.previous_response: Optional["AbstractResponse"] = None
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
@@ -65,39 +66,40 @@ class Kernel:
         self.tmp: Dict[str, str] = {}
 
         self.decorators: Dict[str, Dict[str, Callable[..., Any]]] = {
-            'command': {
-                'command': command,
-                'test_command': test_command,
+            "command": {
+                "command": command,
+                "test_command": test_command,
             },
-            'properties': {
-                'alias': alias,
-                'as_sudo': as_sudo,
-                'no_log': no_log,
-                'verbosity': verbosity,
-            }
+            "properties": {
+                "alias": alias,
+                "as_sudo": as_sudo,
+                "no_log": no_log,
+                "verbosity": verbosity,
+            },
         }
 
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
-        tmp_path = os.path.join(root_path, 'tmp') + os.sep
+        tmp_path = os.path.join(root_path, "tmp") + os.sep
 
         # Handle calling from a non-existing dir.
         call_dir: Optional[str] = None
         try:
             call_dir = os.getcwd() + os.sep
         except FileNotFoundError:
-            self.io.error('Current directory does not exists', trace=False)
+            self.io.error("Current directory does not exists", trace=False)
         assert call_dir is not None
 
         self.path: Dict[str, str] = {
-            'call': call_dir,
-            'entrypoint': entrypoint_path,
-            'root': root_path,
-            'addons': os.path.join(root_path, 'addons') + os.sep,
-            'core.cli': os.path.join(root_path, 'cli', 'wex'),
-            'tmp': tmp_path,
-            'templates': os.path.join(root_path, 'src', 'resources', 'templates') + os.sep,
-            'task': os.path.join(tmp_path, 'task') + os.sep
+            "call": call_dir,
+            "entrypoint": entrypoint_path,
+            "root": root_path,
+            "addons": os.path.join(root_path, "addons") + os.sep,
+            "core.cli": os.path.join(root_path, "cli", "wex"),
+            "tmp": tmp_path,
+            "templates": os.path.join(root_path, "src", "resources", "templates")
+            + os.sep,
+            "task": os.path.join(tmp_path, "task") + os.sep,
         }
 
         self.directory = KernelDirectoryStructure(
@@ -106,11 +108,9 @@ class Kernel:
 
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}
-        definitions = {
-            'app': AppAddonManager
-        }
+        definitions = {"app": AppAddonManager}
 
-        for name in file_list_subdirectories(self.get_path('addons')):
+        for name in file_list_subdirectories(self.get_path("addons")):
             definition = definitions.get(name, AddonManager)
             self.addons[name] = definition(self, name=name)
 
@@ -121,12 +121,11 @@ class Kernel:
         self.logger: Logger = Logger(self)
 
         # Display directory structure error if exists
-        self.file_structure_display_errors(
-            self.directory
-        )
+        self.file_structure_display_errors(self.directory)
 
         # Create resolvers
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
+
         self.resolvers: Dict[str, AbstractCommandResolver] = {
             class_definition.get_type(): class_definition(self)
             for class_definition in COMMAND_RESOLVERS_CLASSES
@@ -134,22 +133,19 @@ class Kernel:
 
         self.load_registry()
 
-    def get_path(self, name: str, sub_dirs: Optional[List[str]] = None) -> str | NoReturn:
+    def get_path(
+        self, name: str, sub_dirs: Optional[List[str]] = None
+    ) -> str | NoReturn:
         """Get the path associated with the given name."""
         if name in self.path:
             base_path = self.path[name]
 
             if sub_dirs:
-                return os.path.join(
-                    base_path,
-                    *sub_dirs
-                ) + os.sep
+                return os.path.join(base_path, *sub_dirs) + os.sep
 
             return base_path
         else:
-            self.io.error(
-                f'Core path not found {name}.'
-            )
+            self.io.error(f"Core path not found {name}.")
 
             sys.exit(1)
 
@@ -162,11 +158,10 @@ class Kernel:
                 os.makedirs(path)
 
                 from src.helper.file import file_set_user_or_sudo_user_owner
+
                 file_set_user_or_sudo_user_owner(path)
             except PermissionError:
-                self.io.error(
-                    f'Permission denied: Could not create {path}.'
-                )
+                self.io.error(f"Permission denied: Could not create {path}.")
 
                 sys.exit(1)
 
@@ -174,11 +169,7 @@ class Kernel:
 
     def load_registry(self) -> None:
         self.registry_structure = KernelRegistryFileStructure(
-            self,
-            os.path.join(
-                self.directory.shortcuts['tmp'].path,
-                FILE_REGISTRY
-            )
+            self, os.path.join(self.directory.shortcuts["tmp"].path, FILE_REGISTRY)
         )
 
         # Load registry if empty
@@ -214,10 +205,7 @@ class Kernel:
         command: str = self.sys_argv[2]
         command_args: CoreCommandArgsList = self.sys_argv[3:]
 
-        result = self.call_command(
-            command,
-            command_args
-        )
+        result = self.call_command(command, command_args)
 
         if not self.fast_mode and len(self.post_exec):
             # Empty log message to keep visual stability
@@ -232,25 +220,25 @@ class Kernel:
 
         if self.verbosity >= VERBOSITY_LEVEL_MAXIMUM:
             import shutil
+
             terminal_width, _ = shutil.get_terminal_size()
 
             self.io.log(
-                '_' * terminal_width,
+                "_" * terminal_width,
                 increment=-self.io.log_indent,
-                verbosity=VERBOSITY_LEVEL_MAXIMUM)
+                verbosity=VERBOSITY_LEVEL_MAXIMUM,
+            )
 
     def call_command(
-            self,
-            command: 'CoreCommandString',
-            command_args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
-            render_mode: str | None = None) -> Optional[str]:
-
+        self,
+        command: "CoreCommandString",
+        command_args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        render_mode: str | None = None,
+    ) -> Optional[str]:
         render_mode = render_mode or self.default_render_mode
 
         response = self.run_command(
-            command,
-            command_args or [],
-            render_mode=render_mode
+            command, command_args or [], render_mode=render_mode
         )
 
         # Store command to execute after kernel execution,
@@ -260,32 +248,35 @@ class Kernel:
             from src.helper.command import command_to_string
 
             self.task_file_write(
-                'post-exec',
+                "post-exec",
                 command_to_string(post_command) + os.linesep,
             )
 
-        return response.print_wrapped(
-            render_mode or self.default_render_mode
-        ) if response else None
+        return (
+            response.print_wrapped(render_mode or self.default_render_mode)
+            if response
+            else None
+        )
 
-    def run_command(self,
-                    command: 'CoreCommandString',
-                    args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
-                    quiet: bool = False,
-                    render_mode: str | None = None) -> 'AbstractResponse':
-        request = self.create_command_request(
-            command=command,
-            args=args,
-            quiet=quiet)
+    def run_command(
+        self,
+        command: "CoreCommandString",
+        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        quiet: bool = False,
+        render_mode: str | None = None,
+    ) -> "AbstractResponse":
+        request = self.create_command_request(command=command, args=args, quiet=quiet)
 
         return self.render_request(request, render_mode)
 
-    def run_function(self,
-                     function: 'ScriptCommand',
-                     args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
-                     type: str = COMMAND_TYPE_ADDON,
-                     quiet: bool = False,
-                     render_mode: str | None = None) -> 'AbstractResponse':
+    def run_function(
+        self,
+        function: "ScriptCommand",
+        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        type: str = COMMAND_TYPE_ADDON,
+        quiet: bool = False,
+        render_mode: str | None = None,
+    ) -> "AbstractResponse":
         resolver = self.get_command_resolver(type)
 
         if resolver is None:
@@ -296,27 +287,32 @@ class Kernel:
         request = self.create_command_request(
             command=resolver.build_command_from_function(function),
             args=args,
-            quiet=quiet
+            quiet=quiet,
         )
 
         return self.render_request(request, render_mode)
 
-    def create_abort_response(self, message: str) -> 'AbstractResponse':
+    def create_abort_response(self, message: str) -> "AbstractResponse":
         from src.core.response.AbortResponse import AbortResponse
+
         return AbortResponse(self, reason=message)
 
-    def render_request(self,
-                       request: 'CommandRequest',
-                       render_mode: str | None = None) -> 'AbstractResponse':
+    def render_request(
+        self, request: "CommandRequest", render_mode: str | None = None
+    ) -> "AbstractResponse":
         # Save unique root request
         self.root_request = self.root_request if self.root_request else request
 
         if not request.runner:
             if not request.quiet:
-                self.io.error("Command file not found when rendering, command {command}, in path \"{path}\"", {
-                    'command': request.command,
-                    'path': request.path,
-                }, trace=False)
+                self.io.error(
+                    'Command file not found when rendering, command {command}, in path "{path}"',
+                    {
+                        "command": request.command,
+                        "path": request.path,
+                    },
+                    trace=False,
+                )
 
             return NullResponse(self)
 
@@ -326,40 +322,50 @@ class Kernel:
         command_type = request.runner.get_command_type()
         resolver_type = request.resolver.get_type()
         if command_type != resolver_type:
-            message = ("Command type \"{command_type}\" does not match with resolver type \"{resolver_type}\" for "
-                       "command {command}")
+            message = (
+                'Command type "{command_type}" does not match with resolver type "{resolver_type}" for '
+                "command {command}"
+            )
 
-            self.io.error(message, {
-                'command': request.command,
-                'command_type': command_type,
-                'resolver_type': resolver_type,
-            })
+            self.io.error(
+                message,
+                {
+                    "command": request.command,
+                    "command_type": command_type,
+                    "resolver_type": resolver_type,
+                },
+            )
 
             return AbortResponse(self, reason=message)
 
         # Enforce sudo.
-        if FunctionProperty.has_property(request.function, 'as_sudo') and os.geteuid() != 0:
-            self.logger.append_event('EVENT_SWITCH_SUDO')
+        if (
+            FunctionProperty.has_property(request.function, "as_sudo")
+            and os.geteuid() != 0
+        ):
+            self.logger.append_event("EVENT_SWITCH_SUDO")
             # Mask printed logs as it may not be relevant.
             self.io.log_hide()
             # Uses the original argv argument to ignore any changes on it.
-            os.execvp('sudo', ['sudo', sys.executable] + sys.argv)
+            os.execvp("sudo", ["sudo", sys.executable] + sys.argv)
 
         return request.resolver.render_request(
-            request,
-            render_mode or self.default_render_mode
+            request, render_mode or self.default_render_mode
         )
 
     def task_file_path(self, type: str, task_id: str | None = None) -> str:
-        return os.path.join(self.get_or_create_path('task'), f"{task_id or self.task_id}.{type}")
+        return os.path.join(
+            self.get_or_create_path("task"), f"{task_id or self.task_id}.{type}"
+        )
 
     def task_file_load(
-            self,
-            type: str,
-            task_id: str | None = None,
-            delete_after_read: bool = True,
-            create_if_missing: bool = True,
-            default: str = '') -> str:
+        self,
+        type: str,
+        task_id: str | None = None,
+        delete_after_read: bool = True,
+        create_if_missing: bool = True,
+        default: str = "",
+    ) -> str:
         """
         Load the content of a file and optionally delete the file after reading. If the file does not exist
         and `create_if_missing` is True, a new file will be created with the `default` content.
@@ -368,7 +374,7 @@ class Kernel:
 
         # Check if the file exists
         if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             # Delete the file after reading, if requested
@@ -379,10 +385,7 @@ class Kernel:
         else:
             # If the file doesn't exist and 'create_if_missing' is True, create the file
             if create_if_missing:
-                self.task_file_write(
-                    type,
-                    body=default
-                )
+                self.task_file_write(type, body=default)
 
                 # Return the default content as the file content
                 return default
@@ -391,22 +394,20 @@ class Kernel:
                 return default
 
     def task_file_write(
-            self,
-            type: str,
-            body: str,
-            task_id: str | None = None,
-            replace: bool = False) -> str:
+        self, type: str, body: str, task_id: str | None = None, replace: bool = False
+    ) -> str:
         from src.helper.file import file_set_user_or_sudo_user_owner
+
         path = self.task_file_path(type, task_id=task_id)
 
-        with open(path, 'w' if replace else 'a') as f:
+        with open(path, "w" if replace else "a") as f:
             f.write(body)
 
             file_set_user_or_sudo_user_owner(path)
 
             return path
 
-    def guess_command_type(self, command: 'CoreCommandString') -> Optional[str]:
+    def guess_command_type(self, command: "CoreCommandString") -> Optional[str]:
         for type in self.resolvers:
             if self.resolvers[type].supports(command):
                 return type
@@ -415,7 +416,7 @@ class Kernel:
     def hook_addons(self, name: str, args: Optional[Dict[str, Any]] = None) -> None:
         args = args or {}
 
-        hook = f'hook_{name}'
+        hook = f"hook_{name}"
         # Init addons
         for addon in self.addons:
             addon_manager = self.addons[addon]
@@ -428,13 +429,15 @@ class Kernel:
                 if response:
                     return
 
-    def get_command_resolver(self, type: str) -> Optional['AbstractCommandResolver']:
+    def get_command_resolver(self, type: str) -> Optional["AbstractCommandResolver"]:
         return self.resolvers[type] if type in self.resolvers else None
 
-    def create_command_request(self,
-                               command: 'CoreCommandString',
-                               args: Optional['OptionalCoreCommandArgsListOrDict'] = None,
-                               quiet: bool = False) -> 'CommandRequest' | NoReturn:
+    def create_command_request(
+        self,
+        command: "CoreCommandString",
+        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        quiet: bool = False,
+    ) -> "CommandRequest" | NoReturn:
         command_type = self.guess_command_type(command)
 
         if command_type:
@@ -449,9 +452,8 @@ class Kernel:
         if not quiet:
             self.io.error(
                 "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
-                {
-                    'command': command
-                }, trace=False
+                {"command": command},
+                trace=False,
             )
 
         assert False
@@ -463,68 +465,61 @@ class Kernel:
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.io.error(
-                'Please use the "bash ./cli/wex" file to run wex script.',
-                trace=False
+                'Please use the "bash ./cli/wex" file to run wex script.', trace=False
             )
 
         self.task_id = self.sys_argv[1]
         return None
 
     def handle_core_args(self) -> None:
-        if args_shift_one(self.sys_argv, 'fast-mode', True) is not None:
+        if args_shift_one(self.sys_argv, "fast-mode", True) is not None:
             self.fast_mode = True
 
-        if args_shift_one(self.sys_argv, 'quiet', True) is not None:
+        if args_shift_one(self.sys_argv, "quiet", True) is not None:
             self.verbosity = VERBOSITY_LEVEL_QUIET
 
-        if args_shift_one(self.sys_argv, 'vv', True) is not None:
+        if args_shift_one(self.sys_argv, "vv", True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MEDIUM
 
-        if args_shift_one(self.sys_argv, 'vvv', True) is not None:
+        if args_shift_one(self.sys_argv, "vvv", True) is not None:
             self.verbosity = VERBOSITY_LEVEL_MAXIMUM
 
         value: str | bool | int | None
-        value = args_shift_one(self.sys_argv, 'log-indent')
+        value = args_shift_one(self.sys_argv, "log-indent")
         if value is not None:
             self.io.log_indent = int(value)
 
         # Setting verbosity will disable logging frame.
-        value = args_shift_one(self.sys_argv, 'log-length')
+        value = args_shift_one(self.sys_argv, "log-length")
         if not sys.stdout.isatty() or self.verbosity != VERBOSITY_LEVEL_DEFAULT:
             value = 0
 
         if value is not None:
             self.io.log_length = int(value)
 
-        value = args_shift_one(self.sys_argv, 'render-mode')
+        value = args_shift_one(self.sys_argv, "render-mode")
         if isinstance(value, str):
             self.default_render_mode = value
 
-        value = args_shift_one(self.sys_argv, 'parent-task-id')
+        value = args_shift_one(self.sys_argv, "parent-task-id")
         if isinstance(value, str):
             self.parent_task_id = value
 
         # There is a task id redirection
-        value = args_shift_one(self.sys_argv, 'kernel-task-id')
+        value = args_shift_one(self.sys_argv, "kernel-task-id")
         if isinstance(value, str):
-            self.task_file_write(
-                'task-redirect',
-                value,
-                replace=True
-            )
+            self.task_file_write("task-redirect", value, replace=True)
 
             self.task_id = value
 
             # Cleanup task files to avoid loops.
-            file_remove_file_if_exists(
-                self.task_file_path('post-exec')
-            )
+            file_remove_file_if_exists(self.task_file_path("post-exec"))
 
-    def file_structure_display_errors(self, file_system_structure: 'AbstractFileSystemStructure') -> None:
+    def file_structure_display_errors(
+        self, file_system_structure: "AbstractFileSystemStructure"
+    ) -> None:
         errors = file_system_structure.get_all_errors()
         if len(errors):
-            error: 'ErrorMessage' = errors[0]
+            error: "ErrorMessage" = errors[0]
 
-            self.io.error(
-                error.message,
-                error.parameters)
+            self.io.error(error.message, error.parameters)

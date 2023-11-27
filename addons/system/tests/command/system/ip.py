@@ -4,6 +4,4 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestSystemCommandSystemIp(AbstractTestCase):
     def test_ip(self):
-        self.assertIsNotNone(
-            self.kernel.run_function(system__system__ip)
-        )
+        self.assertIsNotNone(self.kernel.run_function(system__system__ip))

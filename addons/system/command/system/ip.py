@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Return the current system local IP")
-def system__system__ip(kernel: 'Kernel') -> str:
+def system__system__ip(kernel: "Kernel") -> str:
     host_name = socket.gethostname()
     ip_address = socket.gethostbyname(host_name)
     return ip_address

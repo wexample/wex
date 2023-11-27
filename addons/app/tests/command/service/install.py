@@ -10,21 +10,14 @@ class TestAppCommandServiceInstall(AbstractAppTestCase):
         services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registered_services()
 
         for service in services:
-            if service not in ['default', 'proxy']:
-                self.log(f'Testing service install {service}')
+            if service not in ["default", "proxy"]:
+                self.log(f"Testing service install {service}")
                 app_dir = self.create_test_app(
-                    DEFAULT_APP_TEST_NAME + '-install-service',
-                    force_restart=True)
-
-                self.kernel.run_function(
-                    app__service__install, {
-                        'app-dir': app_dir,
-                        'service': service
-                    }
+                    DEFAULT_APP_TEST_NAME + "-install-service", force_restart=True
                 )
 
                 self.kernel.run_function(
-                    app__config__write, {
-                        'app-dir': app_dir
-                    }
+                    app__service__install, {"app-dir": app_dir, "service": service}
                 )
+
+                self.kernel.run_function(app__config__write, {"app-dir": app_dir})

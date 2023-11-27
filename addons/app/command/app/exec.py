@@ -3,10 +3,12 @@ from typing import TYPE_CHECKING
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_build_long_container_name
-from src.core.response.InteractiveShellCommandResponse import \
-    InteractiveShellCommandResponse
-from src.core.response.NonInteractiveShellCommandResponse import \
-    NonInteractiveShellCommandResponse
+from src.core.response.InteractiveShellCommandResponse import (
+    InteractiveShellCommandResponse,
+)
+from src.core.response.NonInteractiveShellCommandResponse import (
+    NonInteractiveShellCommandResponse,
+)
 from src.decorator.option import option
 from src.helper.args import args_parse_one
 from src.helper.command import command_escape, command_to_string
@@ -16,57 +18,80 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Exec a command into app container", should_run=True)
-@option('--container-name', '-cn', type=str, required=False, help="Container name if not configured")
-@option('--command', '-c', type=str, required=True, help="Command to execute")
-@option('--user', '-u', type=str, required=False, help="User name or uid")
-@option('--sync', '-s', type=bool, is_flag=True, required=False, help="Execute command in a sub process")
-@option('--interactive', '-tty', type=bool, is_flag=True, required=False, help="Interactive shell")
-@option('--ignore-error', '-ie', type=bool, is_flag=True, required=False, help="Do not fail on error")
+@option(
+    "--container-name",
+    "-cn",
+    type=str,
+    required=False,
+    help="Container name if not configured",
+)
+@option("--command", "-c", type=str, required=True, help="Command to execute")
+@option("--user", "-u", type=str, required=False, help="User name or uid")
+@option(
+    "--sync",
+    "-s",
+    type=bool,
+    is_flag=True,
+    required=False,
+    help="Execute command in a sub process",
+)
+@option(
+    "--interactive",
+    "-tty",
+    type=bool,
+    is_flag=True,
+    required=False,
+    help="Interactive shell",
+)
+@option(
+    "--ignore-error",
+    "-ie",
+    type=bool,
+    is_flag=True,
+    required=False,
+    help="Do not fail on error",
+)
 def app__app__exec(
-        manager: 'AppAddonManager',
-        app_dir: str,
-        command: str,
-        container_name: str | None = None,
-        user: str | None = None,
-        sync: bool = False,
-        interactive: bool = False,
-        ignore_error: bool = False) -> InteractiveShellCommandResponse | NonInteractiveShellCommandResponse:
+    manager: "AppAddonManager",
+    app_dir: str,
+    command: str,
+    container_name: str | None = None,
+    user: str | None = None,
+    sync: bool = False,
+    interactive: bool = False,
+    ignore_error: bool = False,
+) -> InteractiveShellCommandResponse | NonInteractiveShellCommandResponse:
     kernel = manager.kernel
     container_name = container_name or manager.get_main_container_name()
 
     docker_command = [
-        'docker',
-        'exec',
+        "docker",
+        "exec",
     ]
 
     if interactive:
         docker_command += [
-            '-ti',
+            "-ti",
         ]
 
     if user:
-        docker_command += [
-            '-u',
-            user
-        ]
+        docker_command += ["-u", user]
 
     # Allow to use /bin/bash or /bin/sh, or something else.
     shell_command = manager.get_service_shell()
 
     docker_command += [
         docker_build_long_container_name(kernel, container_name),
-        shell_command
+        shell_command,
     ]
 
     enter_command = kernel.run_function(
         app__hook__exec,
         {
-            'app-dir': app_dir,
-            'arguments': {
-                'container': container_name
-            },
-            'hook': 'app/exec',
-        }
+            "app-dir": app_dir,
+            "arguments": {"container": container_name},
+            "hook": "app/exec",
+        },
     )
 
     result = enter_command.first()
@@ -91,23 +116,15 @@ def app__app__exec(
 
     if sub_command and len(sub_command):
         final_command += sub_command
-        final_command += ['&&']
+        final_command += ["&&"]
 
     # Add the main command
     final_command += [command]
 
     # Append the final command to docker_command
-    docker_command += ['-c', command_to_string(final_command)]
+    docker_command += ["-c", command_to_string(final_command)]
 
     if sync:
-        return NonInteractiveShellCommandResponse(
-            kernel,
-            docker_command,
-            ignore_error
-        )
+        return NonInteractiveShellCommandResponse(kernel, docker_command, ignore_error)
 
-    return InteractiveShellCommandResponse(
-        kernel,
-        docker_command,
-        ignore_error
-    )
+    return InteractiveShellCommandResponse(kernel, docker_command, ignore_error)

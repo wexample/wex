@@ -9,18 +9,28 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 # Return true if config is set to started
-APP_STARTED_CHECK_MODE_CONFIG = 'config'
+APP_STARTED_CHECK_MODE_CONFIG = "config"
 # Return true if config is set to started and every container runs
-APP_STARTED_CHECK_MODE_FULL = 'full'
+APP_STARTED_CHECK_MODE_FULL = "full"
 # Return true if config is set to started and at least one container runs
-APP_STARTED_CHECK_MODE_ANY_CONTAINER = 'any-container'
+APP_STARTED_CHECK_MODE_ANY_CONTAINER = "any-container"
 
 
 @app_command(help="Return true if app is started")
-@option('--mode', '-m', type=str, required=False, default=APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-        help="Define how to define if app is started or not")
-def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER) -> bool:
-    if not manager.get_runtime_config('started', False):
+@option(
+    "--mode",
+    "-m",
+    type=str,
+    required=False,
+    default=APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+    help="Define how to define if app is started or not",
+)
+def app__app__started(
+    manager: "AppAddonManager",
+    app_dir: str,
+    mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+) -> bool:
+    if not manager.get_runtime_config("started", False):
         return False
 
     if manager.runtime_docker_compose == {}:
@@ -30,16 +40,12 @@ def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_
         return True
 
     container_names = manager.kernel.run_function(
-        app__container__list,
-        {
-            'app-dir': app_dir
-        }
+        app__container__list, {"app-dir": app_dir}
     ).first()
 
     # for container_name in list:
     success, running_containers = execute_command_sync(
-        manager.kernel,
-        ['docker', 'ps', '--format', '{{.Names}}']
+        manager.kernel, ["docker", "ps", "--format", "{{.Names}}"]
     )
 
     all_runs: bool = True

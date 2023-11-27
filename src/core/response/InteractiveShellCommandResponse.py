@@ -9,10 +9,7 @@ from src.helper.process import process_post_exec
 
 
 class InteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self,
-                 kernel,
-                 shell_command: list | str,
-                 ignore_error: bool = False):
+    def __init__(self, kernel, shell_command: list | str, ignore_error: bool = False):
         super().__init__(kernel)
 
         if isinstance(shell_command, list):
@@ -23,16 +20,13 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self.ignore_error = ignore_error
 
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None) -> AbstractResponse:
-
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> AbstractResponse:
         if self.ignore_error:
-            self.shell_command += [
-                '||',
-                'true'
-            ]
+            self.shell_command += ["||", "true"]
 
         if self.kernel.fast_mode:
             # When using fast mode, we need to preserve consistency between shell executions.
@@ -41,9 +35,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             # we need to enable shell=True here.
 
             success, content = execute_command_sync(
-                self.kernel,
-                command_to_string(self.shell_command),
-                shell=True
+                self.kernel, command_to_string(self.shell_command), shell=True
             )
 
             self.success = success
@@ -53,15 +45,16 @@ class InteractiveShellCommandResponse(AbstractResponse):
 
         # Do not add to render bag, but append only once.
         elif not self.rendered:
-            process_post_exec(
-                self.kernel,
-                self.shell_command
-            )
+            process_post_exec(self.kernel, self.shell_command)
 
         return self
 
     def storable_data(self) -> bool:
         return False
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> str | None:
         return self.output_bag[0] if len(self.output_bag) else None

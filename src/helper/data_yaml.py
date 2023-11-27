@@ -20,15 +20,20 @@ def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
         return all(yaml_is_basic_data(item) for item in value)
 
     elif isinstance(value, dict):
-        return all(isinstance(key, str) and yaml_is_basic_data(val) for key, val in value.items())
+        return all(
+            isinstance(key, str) and yaml_is_basic_data(val)
+            for key, val in value.items()
+        )
 
     else:
         return False
 
 
-def yaml_load(file_path: str, default: Optional['YamlContent'] = None) -> Optional['YamlContent']:
+def yaml_load(
+    file_path: str, default: Optional["YamlContent"] = None
+) -> Optional["YamlContent"]:
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = yaml.safe_load(f)
 
             if isinstance(content, dict):
@@ -39,12 +44,10 @@ def yaml_load(file_path: str, default: Optional['YamlContent'] = None) -> Option
         return default
 
 
-def yaml_write(file_path: str, content: 'YamlContent') -> None:
+def yaml_write(file_path: str, content: "YamlContent") -> None:
     try:
-        with open(file_path, 'w') as f:
-            yaml.safe_dump(
-                content,
-                f)
+        with open(file_path, "w") as f:
+            yaml.safe_dump(content, f)
     except Exception:
         return None
 

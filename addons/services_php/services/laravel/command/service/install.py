@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
-def laravel__service__install(manager: 'AppAddonManager', app_dir: str, service: str):
-    service_copy_sample_dir(manager.kernel, 'php', 'php')
+def laravel__service__install(manager: "AppAddonManager", app_dir: str, service: str):
+    service_copy_sample_dir(manager.kernel, "php", "php")

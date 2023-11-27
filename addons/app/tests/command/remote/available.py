@@ -6,13 +6,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestAppCommandRemoteAvailable(AbstractTestCase):
     def test_available(self):
         response = self.kernel.run_function(
-            app__remote__available,
-            {
-                'environment': APP_ENV_LOCAL
-            }
+            app__remote__available, {"environment": APP_ENV_LOCAL}
         )
 
-        self.assertEqual(
-            response.first(),
-            False
-        )
+        self.assertEqual(response.first(), False)

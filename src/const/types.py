@@ -1,16 +1,15 @@
-from typing import (Any, Callable, Dict, List, Literal, Optional, TypedDict,
-                    Union)
+from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict, Union
 
 AddonNameType = Literal[
-    'app',
-    'core',
-    'default',
-    'docker',
-    'service_db',
-    'service_php',
-    'service_various',
-    'system',
-    'test'
+    "app",
+    "core",
+    "default",
+    "docker",
+    "service_db",
+    "service_php",
+    "service_various",
+    "system",
+    "test",
 ]
 
 StringKeysDict = Dict[str, Any]
@@ -23,8 +22,10 @@ KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = Any
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
-RegistryAddon = Dict[Union['alias', 'command', 'file', 'properties', 'test'], StringsDict]
-RegistryService = Dict[Union['addon', 'commands', 'config', 'dir', 'name'], StringsDict]
+RegistryAddon = Dict[
+    Union["alias", "command", "file", "properties", "test"], StringsDict
+]
+RegistryService = Dict[Union["addon", "commands", "config", "dir", "name"], StringsDict]
 RegistryResolverData = Dict[str, StringKeysDict | List[StringKeysDict]]
 WritableFileContent = str | int | float | bool | None
 

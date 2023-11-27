@@ -10,20 +10,20 @@ def option_webhook_listener(port=False, path=False):
                 function.option_webhook_listener_port = True
 
                 function = click.option(
-                    '--port',
-                    '-p',
+                    "--port",
+                    "-p",
                     type=int,
                     help="Webhook listener port number",
                     required=True,
-                    default=WEBHOOK_LISTEN_PORT_DEFAULT
+                    default=WEBHOOK_LISTEN_PORT_DEFAULT,
                 )(function)
 
             if path:
                 function.option_webhook_listener_path = True
 
                 function = click.option(
-                    '--path',
-                    '-p',
+                    "--path",
+                    "-p",
                     type=str,
                     help="Webhook requested path",
                     required=True,

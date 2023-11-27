@@ -4,6 +4,4 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestCoreCommandCoreUninstall(AbstractTestCase):
     def test_uninstall(self):
-        self.assertIsNotNone(
-            core__core__uninstall
-        )
+        self.assertIsNotNone(core__core__uninstall)

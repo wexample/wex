@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
 
 @app_command(help="List dumps", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def postgres__db__dumps_list(manager: 'AppAddonManager', app_dir: str, service: str):
+def postgres__db__dumps_list(manager: "AppAddonManager", app_dir: str, service: str):
     dumps_dir = get_db_service_dumps_path(manager, service)
 
     # Search for .zip and .sql files
-    search_patterns = ['*.zip', '*.sql']
+    search_patterns = ["*.zip", "*.sql"]
     dump_files = []
 
     for pattern in search_patterns:

@@ -6,8 +6,10 @@ import yaml
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import (docker_exec_app_compose,
-                                      docker_get_app_compose_files)
+from addons.app.helper.docker import (
+    docker_exec_app_compose,
+    docker_get_app_compose_files,
+)
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 
@@ -16,11 +18,14 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Write the configuration file for services to start")
-@option('--user', '-u', type=str, required=False,
-        help="Owner of application files")
-@option('--group', '-g', type=str, required=False,
-        help="Group of application files")
-def app__config__write(manager: 'AppAddonManager', app_dir: str, user: Optional[str] = None, group: Optional[str] = None):
+@option("--user", "-u", type=str, required=False, help="Owner of application files")
+@option("--group", "-g", type=str, required=False, help="Group of application files")
+def app__config__write(
+    manager: "AppAddonManager",
+    app_dir: str,
+    user: Optional[str] = None,
+    group: Optional[str] = None,
+):
     kernel = manager.kernel
 
     def _app__config__write__runtime():
@@ -31,52 +36,38 @@ def app__config__write(manager: 'AppAddonManager', app_dir: str, user: Optional[
 
     def _app__config__write__docker(previous):
         kernel.run_function(
-            app__hook__exec,
-            {
-                'app-dir': app_dir,
-                'hook': 'config/write-compose-pre'
-            }
+            app__hook__exec, {"app-dir": app_dir, "hook": "config/write-compose-pre"}
         )
 
-        compose_files = docker_get_app_compose_files(
-            manager,
-            app_dir
-        )
+        compose_files = docker_get_app_compose_files(manager, app_dir)
 
         if not len(compose_files) != 0:
-            manager.log('No docker compose file')
+            manager.log("No docker compose file")
             return
 
-        manager.log(f'Compiling docker compose file...')
-        yml_content = docker_exec_app_compose(
-            kernel,
-            app_dir,
-            compose_files,
-            'config'
-        )
+        manager.log(f"Compiling docker compose file...")
+        yml_content = docker_exec_app_compose(kernel, app_dir, compose_files, "config")
 
         try:
             yaml.safe_load(yml_content)
         except yaml.YAMLError:
             kernel.io.print(yml_content)
 
-            kernel.io.error('Wrong yaml from docker compose')
+            kernel.io.error("Wrong yaml from docker compose")
 
-        with open(os.path.join(
-                app_dir,
-                APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
-        ), 'w') as f:
+        with open(
+            os.path.join(app_dir, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML), "w"
+        ) as f:
             f.write(yml_content)
 
         kernel.run_function(
-            app__hook__exec,
-            {
-                'app-dir': app_dir,
-                'hook': 'config/write-post'
-            }
+            app__hook__exec, {"app-dir": app_dir, "hook": "config/write-post"}
         )
 
-    return QueuedCollectionResponse(kernel, [
-        _app__config__write__runtime,
-        _app__config__write__docker,
-    ])
+    return QueuedCollectionResponse(
+        kernel,
+        [
+            _app__config__write__runtime,
+            _app__config__write__docker,
+        ],
+    )

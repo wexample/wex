@@ -11,13 +11,13 @@ class FunctionResponse(AbstractResponse):
 
         self.function = function
 
-    def render_content(self,
-                       request: CommandRequest,
-                       render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-                       args: Optional[dict] = None) -> AbstractResponse:
-        response = self.function(
-            **(args or {})
-        )
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> AbstractResponse:
+        response = self.function(**(args or {}))
 
         response = request.resolver.wrap_response(response)
 
@@ -32,5 +32,9 @@ class FunctionResponse(AbstractResponse):
 
         return self
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True):
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ):
         return self.output_bag[0].print()

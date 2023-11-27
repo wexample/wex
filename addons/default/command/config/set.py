@@ -10,12 +10,14 @@ if TYPE_CHECKING:
 
 
 @command(help="Set config value to given file")
-@option('--file', '-f', type=str, required=True)
-@option('--key', '-k', type=str, required=True)
-@option('--value', '-v', required=True)
-@option('--separator', '-s', required=True, default=CONFIG_SEPARATOR_DEFAULT)
-def default__config__set(kernel: 'Kernel', file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT):
-    with open(file, 'r') as f:
+@option("--file", "-f", type=str, required=True)
+@option("--key", "-k", type=str, required=True)
+@option("--value", "-v", required=True)
+@option("--separator", "-s", required=True, default=CONFIG_SEPARATOR_DEFAULT)
+def default__config__set(
+    kernel: "Kernel", file, key, value, separator: str = CONFIG_SEPARATOR_DEFAULT
+):
+    with open(file, "r") as f:
         lines = f.readlines()
 
     updated_lines = []
@@ -37,5 +39,5 @@ def default__config__set(kernel: 'Kernel', file, key, value, separator: str = CO
             updated_lines.append(os.linesep)
         updated_lines.append(f"{key}{separator}{value}{os.linesep}")
 
-    with open(file, 'w') as f:
+    with open(file, "w") as f:
         f.writelines(updated_lines)

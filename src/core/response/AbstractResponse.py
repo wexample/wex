@@ -3,9 +3,11 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Optional
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_NONE,
-                               KERNEL_RENDER_MODE_TERMINAL)
+from src.const.globals import (
+    KERNEL_RENDER_MODE_JSON,
+    KERNEL_RENDER_MODE_NONE,
+    KERNEL_RENDER_MODE_TERMINAL,
+)
 from src.core.CommandRequest import CommandRequest
 
 if TYPE_CHECKING:
@@ -14,8 +16,8 @@ if TYPE_CHECKING:
 
 
 class AbstractResponse:
-    def __init__(self, kernel: 'Kernel'):
-        self.kernel: 'Kernel' = kernel
+    def __init__(self, kernel: "Kernel"):
+        self.kernel: "Kernel" = kernel
         self.parent = None
         self.output_bag: list = []
         self.request: CommandRequest | None = None
@@ -32,11 +34,11 @@ class AbstractResponse:
         return self
 
     def render(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: OptionalCoreCommandArgsDict = None) -> 'AbstractResponse':
-
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> "AbstractResponse":
         # If response passes from a function to another,
         # it may be already rendered.
         if self.rendered:
@@ -66,13 +68,18 @@ class AbstractResponse:
 
     @abstractmethod
     def render_content(
-            self,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None) -> 'AbstractResponse':
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ) -> "AbstractResponse":
         pass
 
-    def print(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL, interactive_data: bool = True) -> str | None:
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> str | None:
         if len(self.output_bag):
             serialised = []
             for output in self.output_bag:
@@ -96,8 +103,8 @@ class AbstractResponse:
 
     def first(self) -> Any:
         """
-            Return the first valid response.
-            Useful to retrieve result of a function without to serialize it.
+        Return the first valid response.
+        Useful to retrieve result of a function without to serialize it.
         """
         response = self
         while isinstance(response, AbstractResponse):
@@ -113,18 +120,18 @@ class AbstractResponse:
 
     def store_data(self):
         if self.storable_data() and self.print(
-                render_mode=KERNEL_RENDER_MODE_TERMINAL,
-                interactive_data=False
+            render_mode=KERNEL_RENDER_MODE_TERMINAL, interactive_data=False
         ):
             return self.first()
         return None
 
     def render_content_multiple(
-            self,
-            collection,
-            request: CommandRequest,
-            render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-            args: Optional[dict] = None):
+        self,
+        collection,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: Optional[dict] = None,
+    ):
         for response in collection:
             if isinstance(response, AbstractResponse):
                 self.output_bag.append(
@@ -136,7 +143,7 @@ class AbstractResponse:
                 )
 
     def render_mode_json_wrap_data(self, value):
-        return {'value': value}
+        return {"value": value}
 
     def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
         if render_mode == KERNEL_RENDER_MODE_NONE:

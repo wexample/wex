@@ -1,1 +1,1 @@
-MYSQL_CONF_FILE = 'mysql.cnf'
+MYSQL_CONF_FILE = "mysql.cnf"

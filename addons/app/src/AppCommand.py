@@ -13,14 +13,16 @@ if TYPE_CHECKING:
 
 
 class AppCommand(ScriptCommand):
-    def __init__(self,
-                 function: Callable,
-                 command_type: str,
-                 decorator_args: 'Args',
-                 decorator_kwargs: 'Kwargs') -> None:
+    def __init__(
+        self,
+        function: Callable,
+        command_type: str,
+        decorator_args: "Args",
+        decorator_kwargs: "Kwargs",
+    ) -> None:
         # Get and pop interesting args
-        dir_required = decorator_kwargs.pop('dir_required', True)
-        should_run = decorator_kwargs.pop('should_run', False)
+        dir_required = decorator_kwargs.pop("dir_required", True)
+        should_run = decorator_kwargs.pop("should_run", False)
 
         super().__init__(
             function,
@@ -32,23 +34,25 @@ class AppCommand(ScriptCommand):
         # Do not provide app_dir to function
         FunctionProperty(
             script_command=self,
-            property_name='app_dir_required',
-            property_value=dir_required)
+            property_name="app_dir_required",
+            property_value=dir_required,
+        )
 
         self.function = app_dir_option(required=dir_required)(self.function)
 
         # Do not check if app is running
         FunctionProperty(
             script_command=self,
-            property_name='app_should_run',
-            property_value=should_run)
+            property_name="app_should_run",
+            property_value=should_run,
+        )
 
         # Say that the command is available ony in app context
         self.function.app_command = True
 
     def run_script(self, function, runner, script, variables: dict):
         kernel = runner.kernel
-        manager = kernel.addons['app']
+        manager = kernel.addons["app"]
 
         if manager.app_dir:
             import os
@@ -57,31 +61,31 @@ class AppCommand(ScriptCommand):
 
             from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 
-            env_path = os.path.join(
-                manager.app_dir,
-                APP_FILEPATH_REL_DOCKER_ENV
-            )
+            env_path = os.path.join(manager.app_dir, APP_FILEPATH_REL_DOCKER_ENV)
 
             app_variables = dotenv_values(env_path)
-            if 'script' in script:
-                script['script'] = string_replace_multiple(script['script'], app_variables)
-            elif 'file' in script:
-                script['file'] = string_replace_multiple(script['file'], app_variables)
+            if "script" in script:
+                script["script"] = string_replace_multiple(
+                    script["script"], app_variables
+                )
+            elif "file" in script:
+                script["file"] = string_replace_multiple(script["file"], app_variables)
 
             command = super().run_script(function, runner, script, variables)
 
-            if 'container_name' in script:
+            if "container_name" in script:
                 from src.helper.command import command_to_string
+
                 command = command_to_string(command)
                 command = command_escape(command)
 
                 wrap_command = [
-                    'docker',
-                    'exec',
-                    docker_build_long_container_name(kernel, script['container_name']),
+                    "docker",
+                    "exec",
+                    docker_build_long_container_name(kernel, script["container_name"]),
                     SHELL_DEFAULT,
-                    '-c',
-                    command
+                    "-c",
+                    command,
                 ]
 
                 return wrap_command

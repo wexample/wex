@@ -10,18 +10,11 @@ if TYPE_CHECKING:
 
 
 @command(help="Return the current docker local ip")
-def docker__docker__ip(kernel: 'Kernel'):
-    if kernel.run_function(
-            system__os__name
-    ).first() == OS_NAME_MAC:
-        return '127.0.0.1'
+def docker__docker__ip(kernel: "Kernel"):
+    if kernel.run_function(system__os__name).first() == OS_NAME_MAC:
+        return "127.0.0.1"
 
-    if command_exists('docker-machine'):
-        return execute_command_sync(kernel, [
-            'docker-machine',
-            'ip'
-        ])
+    if command_exists("docker-machine"):
+        return execute_command_sync(kernel, ["docker-machine", "ip"])
     else:
-        return kernel.run_function(
-            system__system__ip
-        )
+        return kernel.run_function(system__system__ip)

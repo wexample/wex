@@ -4,11 +4,6 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandTemplateLog(AbstractTestCase):
     def test_log(self):
-        response = self.kernel.run_function(
-            test__template__log
-        )
+        response = self.kernel.run_function(test__template__log)
 
-        self.assertEqual(
-            response.print(),
-            'COMPLETE'
-        )
+        self.assertEqual(response.print(), "COMPLETE")

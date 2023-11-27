@@ -1,8 +1,6 @@
-
 from typing import TYPE_CHECKING
 
-from addons.app.decorator.option_webhook_listener import \
-    option_webhook_listener
+from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.DictResponse import DictResponse
 from src.decorator.command import command
@@ -14,7 +12,7 @@ if TYPE_CHECKING:
 
 @command(help="Return process info based on task id", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(path=True)
-def app__webhook__status_process(kernel: 'Kernel', path: str):
+def app__webhook__status_process(kernel: "Kernel", path: str):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     if not routing_is_allowed_route(path, WEBHOOK_LISTENER_ROUTES_MAP):
@@ -22,21 +20,16 @@ def app__webhook__status_process(kernel: 'Kernel', path: str):
 
     output = {}
     route_info = routing_get_route_info(path, WEBHOOK_LISTENER_ROUTES_MAP)
-    task_id = route_info['match'][0]
+    task_id = route_info["match"][0]
     log_content = kernel.logger.load_logs(task_id)
 
     if log_content:
-        output['task'] = log_content
-        output['children'] = {}
+        output["task"] = log_content
+        output["children"] = {}
 
-        for date in log_content['children']:
-            child_task_id = log_content['children'][date]
+        for date in log_content["children"]:
+            child_task_id = log_content["children"][date]
 
-            output[child_task_id] = kernel.logger.load_logs(
-                child_task_id
-            )
+            output[child_task_id] = kernel.logger.load_logs(child_task_id)
 
-    return DictResponse(
-        kernel,
-        output,
-        cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)
+    return DictResponse(kernel, output, cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)

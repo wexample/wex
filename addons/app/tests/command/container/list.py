@@ -4,14 +4,8 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandContainerList(AbstractAppTestCase):
     def test_list(self):
-        app_dir = self.create_and_start_test_app(services=['php'])
+        app_dir = self.create_and_start_test_app(services=["php"])
 
-        response = self.kernel.run_function(
-            app__container__list, {
-                'app-dir': app_dir
-            })
+        response = self.kernel.run_function(app__container__list, {"app-dir": app_dir})
 
-        self.assertTrue(
-            'test_app_prod_php',
-            response.first()
-        )
+        self.assertTrue("test_app_prod_php", response.first())

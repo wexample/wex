@@ -10,11 +10,11 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Set service permissions", command_type=COMMAND_TYPE_SERVICE)
-def sqlserver__app__perms(manager: 'AppAddonManager', app_dir: str, service: str):
-    env_dir = f'{manager.app_dir}{APP_DIR_APP_DATA}'
+def sqlserver__app__perms(manager: "AppAddonManager", app_dir: str, service: str):
+    env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     # Need full permissions to start
-    set_permissions_recursively(env_dir + 'sqlserver/data', 0o777)
-    set_permissions_recursively(env_dir + 'sqlserver/dumps', 0o777)
-    set_permissions_recursively(env_dir + 'sqlserver/log', 0o777)
-    set_permissions_recursively(env_dir + 'sqlserver/mssql', 0o777)
+    set_permissions_recursively(env_dir + "sqlserver/data", 0o777)
+    set_permissions_recursively(env_dir + "sqlserver/dumps", 0o777)
+    set_permissions_recursively(env_dir + "sqlserver/log", 0o777)
+    set_permissions_recursively(env_dir + "sqlserver/mssql", 0o777)

@@ -9,23 +9,16 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandVersionGet(AbstractTestCase):
     def test_get(self):
-        self.log('Test in ' + SYSTEM_WWW_PATH)
+        self.log("Test in " + SYSTEM_WWW_PATH)
 
         version = self.kernel.run_function(
-            app__version__get, {
-                'app-dir': SYSTEM_WWW_PATH
-            })
-
-        self.assertEquals(
-            version.print(),
-            MIGRATION_MINIMAL_VERSION
+            app__version__get, {"app-dir": SYSTEM_WWW_PATH}
         )
 
-        self.log('Test in ' + os.getcwd())
+        self.assertEquals(version.print(), MIGRATION_MINIMAL_VERSION)
+
+        self.log("Test in " + os.getcwd())
 
         version = self.kernel.run_function(app__version__get)
 
-        self.assertEquals(
-            version.print(),
-            core_kernel_get_version(self.kernel)
-        )
+        self.assertEquals(version.print(), core_kernel_get_version(self.kernel))

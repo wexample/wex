@@ -15,35 +15,33 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Restore a database dump", should_run=True)
-@option('--file-path', '-f', type=str, required=False, help="Force file path")
-def app__db__restore(manager: 'AppAddonManager', app_dir: str, file_path: str | None = None):
+@option("--file-path", "-f", type=str, required=False, help="Force file path")
+def app__db__restore(
+    manager: "AppAddonManager", app_dir: str, file_path: str | None = None
+):
     kernel = manager.kernel
 
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
-    service = manager.get_config(
-        'docker.main_db_container',
-        required=True
-    )
+    service = manager.get_config("docker.main_db_container", required=True)
 
     if not service:
-        kernel.io.error('Missing db container')
+        kernel.io.error("Missing db container")
 
     if not file_path:
         dumps = kernel.run_command(
-            f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dumps-list',
+            f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dumps-list",
             {
-                'app-dir': app_dir,
-                'service': service,
-            }
+                "app-dir": app_dir,
+                "service": service,
+            },
         ).first()
 
         dumps_dict = {os.path.basename(file): file for file in dumps}
         dumps_dict = dict_sort_values(dumps_dict)
 
         dump_file_name = prompt_choice(
-            'Please select a dump to restore',
-            list(dumps_dict)
+            "Please select a dump to restore", list(dumps_dict)
         )
 
         if not dump_file_name:
@@ -55,28 +53,24 @@ def app__db__restore(manager: 'AppAddonManager', app_dir: str, file_path: str | 
         manager.log(f"File not found: {file_path}")
         return
 
-    is_zip = file_path.endswith('.zip')
+    is_zip = file_path.endswith(".zip")
     if is_zip:
         manager.log("Unpacking...")
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            zip_ref.extractall(
-                get_db_service_dumps_path(manager, service)
-            )
+        with zipfile.ZipFile(file_path, "r") as zip_ref:
+            zip_ref.extractall(get_db_service_dumps_path(manager, service))
 
-        file_path = os.path.basename(file_path).replace('.zip', '')
+        file_path = os.path.basename(file_path).replace(".zip", "")
 
     manager.log("Restoring...")
 
     kernel.run_command(
-        f'{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/restore',
-        {
-            'app-dir': app_dir,
-            'service': service,
-            'file-name': file_path
-        }
+        f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/restore",
+        {"app-dir": app_dir, "service": service, "file-name": file_path},
     ).first()
 
     if is_zip:
-        file_delete_file_or_dir(get_db_service_dumps_path(manager, service) + '/' + file_path)
+        file_delete_file_or_dir(
+            get_db_service_dumps_path(manager, service) + "/" + file_path
+        )
 
-    kernel.io.message('Restoration complete')
+    kernel.io.message("Restoration complete")

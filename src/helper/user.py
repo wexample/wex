@@ -10,7 +10,7 @@ from addons.app.const.app import APP_DIR_APP_DATA
 
 
 def get_sudo_username() -> str | None:
-    return os.getenv('SUDO_USER')
+    return os.getenv("SUDO_USER")
 
 
 def get_user_or_sudo_user() -> str:
@@ -34,7 +34,7 @@ def get_user_group_name(user: str) -> str:
 
 
 def get_sudo_gid() -> int | None:
-    gid = os.getenv('SUDO_GID')
+    gid = os.getenv("SUDO_GID")
     return int(gid) if gid else None
 
 
@@ -48,10 +48,12 @@ def get_user_or_sudo_user_home_data_path() -> str:
     if sudo_username is None:
         return f"{os.path.expanduser('~')}/"
     else:
-        return f'/home/{get_sudo_username()}/'
+        return f"/home/{get_sudo_username()}/"
 
 
-def set_owner_recursively(path: str, user: Optional[str] = None, group: Optional[str] = None) -> None:
+def set_owner_recursively(
+    path: str, user: Optional[str] = None, group: Optional[str] = None
+) -> None:
     if user is None:
         user = get_user_or_sudo_user()
 
@@ -102,14 +104,9 @@ def get_user_home_data_path() -> str:
 
 
 def create_user_home_data_path() -> str:
-    path = f'{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}'
+    path = f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
-    os.makedirs(
-        os.path.dirname(
-            path
-        ),
-        exist_ok=True
-    )
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     return path
 
@@ -133,6 +130,7 @@ def is_sudo(username: str) -> bool:
                 return True
 
         import os
+
         for file in os.listdir("/etc/sudoers.d/"):
             with open(os.path.join("/etc/sudoers.d/", file), "r") as f:
                 content = f.readlines()

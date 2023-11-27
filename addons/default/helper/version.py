@@ -1,10 +1,10 @@
 def is_greater_than(first: dict, second: dict, true_if_equal=False) -> bool:
     keys_to_check = [
-        'major',
-        'intermediate',
-        'minor',
-        'pre_build_type',
-        'pre_build_number'
+        "major",
+        "intermediate",
+        "minor",
+        "pre_build_type",
+        "pre_build_number",
     ]
 
     for key in keys_to_check:
@@ -29,12 +29,13 @@ def version_join(version: dict, add_build: bool = False) -> str:
     output = f"{version['major']}.{version['intermediate']}.{version['minor']}"
 
     # Build version string
-    version['pre_build_info'] = ''
-    if version['pre_build_type']:
+    version["pre_build_info"] = ""
+    if version["pre_build_type"]:
         output += f'-{version["pre_build_type"]}.{version["pre_build_number"]}'
 
     if add_build:
         import datetime
-        output += f'+build.' + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+        output += f"+build." + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
     return output

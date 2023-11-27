@@ -9,15 +9,15 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Init database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def sqlserver__app__first_init(manager: 'AppAddonManager', app_dir: str, service: str):
+def sqlserver__app__first_init(manager: "AppAddonManager", app_dir: str, service: str):
     re = manager.kernel.run_function(
         app__db__exec,
         {
-            'app-dir': app_dir,
-            'database': 'master',
+            "app-dir": app_dir,
+            "database": "master",
             # Ask to execute bash
-            'command': f'CREATE DATABASE {manager.get_config("global.name")}',
-        }
+            "command": f'CREATE DATABASE {manager.get_config("global.name")}',
+        },
     )
 
     return re

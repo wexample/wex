@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-@alias('this-is-a-test-alias')
+@alias("this-is-a-test-alias")
 @test_command()
-def test__demo_command__alias(kernel: 'Kernel'):
-    return 'ALIAS'
+def test__demo_command__alias(kernel: "Kernel"):
+    return "ALIAS"

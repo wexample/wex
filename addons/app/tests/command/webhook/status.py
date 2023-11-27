@@ -7,5 +7,5 @@ class TestAppCommandWebhookStatus(AbstractTestCase):
         response = self.kernel.run_function(app__webhook__status)
 
         self.assertTrue(
-            'process' in response.first(),
+            "process" in response.first(),
         )

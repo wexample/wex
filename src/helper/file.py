@@ -11,7 +11,7 @@ def file_list_subdirectories(path: str) -> List[str]:
     subdirectories = []
     for item in os.listdir(path):
         item_path = os.path.join(path, item)
-        if os.path.isdir(item_path) and not item.startswith('.'):
+        if os.path.isdir(item_path) and not item.startswith("."):
             subdirectories.append(os.path.basename(item_path))
 
     subdirectories.sort()
@@ -27,7 +27,9 @@ def file_set_user_or_sudo_user_owner(file: str) -> None:
         file_set_owner(file, sudo_user)
 
 
-def file_set_owner(file_path: str, username: Optional[str] = None, group: Optional[str] = None) -> None:
+def file_set_owner(
+    file_path: str, username: Optional[str] = None, group: Optional[str] = None
+) -> None:
     from src.helper.user import get_gid_from_group_name, get_user_or_sudo_user
 
     if username is None:
@@ -41,10 +43,8 @@ def file_set_owner(file_path: str, username: Optional[str] = None, group: Option
 
 
 def file_set_owner_for_path_and_ancestors(
-        base_path: str,
-        sub_path: str,
-        owner: str,
-        group: Optional[str] = None) -> None:
+    base_path: str, sub_path: str, owner: str, group: Optional[str] = None
+) -> None:
     # Get the UID and GID
     uid = pwd.getpwnam(owner).pw_uid
 
@@ -66,36 +66,33 @@ def file_set_owner_for_path_and_ancestors(
         os.chown(current_path, uid, gid)
 
 
-def file_create_from_template(template_path: str, dest_path: str, parameters: Dict[str, str]) -> None:
-    with open(template_path, 'r') as template_file:
+def file_create_from_template(
+    template_path: str, dest_path: str, parameters: Dict[str, str]
+) -> None:
+    with open(template_path, "r") as template_file:
         template_content = template_file.read()
 
-    formatted_content = template_content.format(
-        **parameters
-    )
+    formatted_content = template_content.format(**parameters)
 
-    os.makedirs(
-        os.path.dirname(dest_path),
-        exist_ok=True
-    )
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
 
     # Replace the TO DOs, to prevent IDE warnings.
     formatted_content = formatted_content.replace("O/DO", "ODO")
 
-    with open(dest_path, 'w') as output_file:
+    with open(dest_path, "w") as output_file:
         output_file.write(formatted_content)
 
     file_set_user_or_sudo_user_owner(dest_path)
 
 
 def file_merge(src: str, dest: str) -> None:
-    with open(src, 'r') as src_file, open(dest, 'a') as dest_file:
+    with open(src, "r") as src_file, open(dest, "a") as dest_file:
         dest_file.write(os.linesep)
         shutil.copyfileobj(src_file, dest_file)
 
 
 def file_remove_duplicated_lines(file: str) -> None:
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         lines = f.readlines()
 
     filtered = []
@@ -103,7 +100,7 @@ def file_remove_duplicated_lines(file: str) -> None:
         if line.strip() == "" or line not in filtered:
             filtered.append(line)
 
-    with open(file, 'w') as f:
+    with open(file, "w") as f:
         f.writelines(filtered)
 
 
@@ -125,10 +122,11 @@ def file_create_parent_dir(path: str) -> str:
 
 
 def file_create_parent_and_touch(
-        path: str,
-        content: Optional[str] = None,
-        default: Optional[str] = None,
-        mode: str = 'a') -> Optional[IO[Any]]:
+    path: str,
+    content: Optional[str] = None,
+    default: Optional[str] = None,
+    mode: str = "a",
+) -> Optional[IO[Any]]:
     if os.path.exists(path):
         if content is not None:
             with open(path, mode) as file:
@@ -151,7 +149,9 @@ def file_create_parent_and_touch(
     return None
 
 
-def file_write_dict_to_config(dictionary: Dict[str, bool | str], target_path: str) -> None:
+def file_write_dict_to_config(
+    dictionary: Dict[str, bool | str], target_path: str
+) -> None:
     output_lines = []
     for key, value in dictionary.items():
         # If the key starts with '#', write it as-is without the value
@@ -162,12 +162,14 @@ def file_write_dict_to_config(dictionary: Dict[str, bool | str], target_path: st
 
     output = os.linesep.join(output_lines)
 
-    with open(target_path, 'w') as f:
+    with open(target_path, "w") as f:
         f.write(output)
 
 
-def file_set_dict_item_by_path(data: Dict[str, Any], key: str, value: Any, replace: bool = True) -> None:
-    keys = key.split('.')
+def file_set_dict_item_by_path(
+    data: Dict[str, Any], key: str, value: Any, replace: bool = True
+) -> None:
+    keys = key.split(".")
     for k in keys[:-1]:
         data = data.setdefault(k, {})
 
@@ -178,7 +180,7 @@ def file_set_dict_item_by_path(data: Dict[str, Any], key: str, value: Any, repla
 
 
 def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
-    keys = key.split('.')
+    keys = key.split(".")
     for k in keys[:-1]:
         if k not in data or not isinstance(data[k], dict):
             return
@@ -193,7 +195,7 @@ def file_remove_file_if_exists(file: str) -> None:
 
 
 def file_get_human_readable_size(size: float, decimal_places: int = 2) -> str:
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size < 1024.0:
             break
         size /= 1024.0
@@ -226,6 +228,7 @@ def file_get_group(file_path: str) -> str:
 
 def file_build_date_time_name() -> str:
     from datetime import datetime
+
     return datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
 
@@ -239,7 +242,7 @@ def file_delete_file_or_dir(path: str) -> None:
 def file_env_to_dict(env_path: str) -> Dict[str, str]:
     env_dict: Dict[str, str] = {}
 
-    with open(env_path, 'r') as f:
+    with open(env_path, "r") as f:
         for line in f.readlines():
             line = line.strip()
 
@@ -253,10 +256,10 @@ def file_env_to_dict(env_path: str) -> Dict[str, str]:
 
 
 def file_read(file_path: str) -> str:
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
 
 def file_write(file_path: str, content: WritableFileContent) -> None:
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         f.write(content)

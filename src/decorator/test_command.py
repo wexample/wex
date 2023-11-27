@@ -6,12 +6,10 @@ from src.decorator.command import command
 
 
 def test_command(*args: Args, **kwargs: Kwargs) -> Callable[..., Any]:
-    if 'help' not in kwargs:
-        kwargs['help'] = 'A test command'
+    if "help" not in kwargs:
+        kwargs["help"] = "A test command"
 
     def decorator(function: AnyCallable) -> TestCommand:
-        return cast(
-            TestCommand,
-            command(*args, **kwargs)(function, TestCommand))
+        return cast(TestCommand, command(*args, **kwargs)(function, TestCommand))
 
     return decorator

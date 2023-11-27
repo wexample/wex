@@ -10,15 +10,16 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a table response", command_type=COMMAND_TYPE_ADDON)
-@option('--arg', '-a', type=str, required=True, help="Argument")
-def test__return_type__table(kernel: 'Kernel', arg):
+@option("--arg", "-a", type=str, required=True, help="Argument")
+def test__return_type__table(kernel: "Kernel", arg):
     return TableResponse(
         kernel,
-        'Test table',
+        "Test table",
         [
-            ['lorem', 'ipsum', 'dolor', 'sit', 'amet'],
+            ["lorem", "ipsum", "dolor", "sit", "amet"],
             [1, 2, 3, 4, 5.6],
-            ['shorten', 'line'],
+            ["shorten", "line"],
             [True, False, None],
-            [arg, arg, arg, arg]
-        ])
+            [arg, arg, arg, arg],
+        ],
+    )

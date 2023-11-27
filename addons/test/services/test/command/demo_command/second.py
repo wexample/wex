@@ -9,9 +9,15 @@ if TYPE_CHECKING:
 
 
 @test_command(command_type=COMMAND_TYPE_SERVICE)
-@option('--option', '-o', is_flag=True, required=False,
-        help="A first option as flag")
-@option('--another-option-second', '-aos', is_flag=True, required=False,
-        help="Another option")
-def test__demo_command__second(kernel: 'Kernel', service:str, option=None, another_option_second=None):
-    return 'SECOND'
+@option("--option", "-o", is_flag=True, required=False, help="A first option as flag")
+@option(
+    "--another-option-second",
+    "-aos",
+    is_flag=True,
+    required=False,
+    help="Another option",
+)
+def test__demo_command__second(
+    kernel: "Kernel", service: str, option=None, another_option_second=None
+):
+    return "SECOND"

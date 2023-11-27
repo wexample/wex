@@ -10,42 +10,35 @@ from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 
 def args_replace_one(
-        arg_list: List[str],
-        arg_name: str,
-        value: Optional[Any] = None,
-        is_flag: bool = False) -> Optional[str | bool]:
-    previous = args_shift_one(
-        arg_list=arg_list,
-        arg_name=arg_name,
-        is_flag=is_flag)
+    arg_list: List[str],
+    arg_name: str,
+    value: Optional[Any] = None,
+    is_flag: bool = False,
+) -> Optional[str | bool]:
+    previous = args_shift_one(arg_list=arg_list, arg_name=arg_name, is_flag=is_flag)
 
-    args_push_one(
-        arg_list=arg_list,
-        arg_name=arg_name,
-        value=value)
+    args_push_one(arg_list=arg_list, arg_name=arg_name, value=value)
 
     return previous
 
 
 def args_push_one(
-        arg_list: List[str],
-        arg_name: str,
-        value: Optional[Any] = None) -> None:
-    arg_list.append(f'--{arg_name}')
+    arg_list: List[str], arg_name: str, value: Optional[Any] = None
+) -> None:
+    arg_list.append(f"--{arg_name}")
 
     if value is not None:
         arg_list.append(str(value))
 
 
 def args_shift_one(
-        arg_list: List[str],
-        arg_name: str,
-        is_flag: bool = False) -> Optional[str | bool]:
+    arg_list: List[str], arg_name: str, is_flag: bool = False
+) -> Optional[str | bool]:
     """
     Alter arg list by removing arg names and returning arg value.
     Take arg name without dash, and remove args with any count of prefixed dashes.
     """
-    arg_pattern = re.compile(r'(-+)' + re.escape(arg_name) + r'$')
+    arg_pattern = re.compile(r"(-+)" + re.escape(arg_name) + r"$")
 
     for i, arg in enumerate(arg_list):
         if isinstance(arg, str) and arg_pattern.match(arg):
@@ -63,26 +56,26 @@ def args_shift_one(
 
 
 def args_split_arg_array(
-        arg: Union[str, Iterable[str]],
-        separator: str = ',') -> List[str]:
+    arg: Union[str, Iterable[str]], separator: str = ","
+) -> List[str]:
     if not arg:
         return []
 
     if isinstance(arg, str):
-        arg = re.sub(r'[\[\]"\']', '', arg)
+        arg = re.sub(r'[\[\]"\']', "", arg)
         return arg.split(separator)
     elif isinstance(arg, Iterable):
         return list(arg)
 
 
 def args_convert_dict_to_long_names_dict(
-        function: Command,
-        args: Dict[str, Any]) -> Dict[str, Any]:
+    function: Command, args: Dict[str, Any]
+) -> Dict[str, Any]:
     short_names = {}
     for param in function.params:
         for opt in param.opts:
             # This is a short name
-            if opt.startswith('-') and opt[1:2] != '-':
+            if opt.startswith("-") and opt[1:2] != "-":
                 short_names[opt[1:]] = string_to_kebab_case(param.name)
 
     # Transform short named args to long named args.
@@ -96,14 +89,11 @@ def args_convert_dict_to_long_names_dict(
     return args_long
 
 
-def args_convert_dict_to_snake_dict(
-        input_dict: Dict[str, Any]) -> Dict[str, Any]:
+def args_convert_dict_to_snake_dict(input_dict: Dict[str, Any]) -> Dict[str, Any]:
     return {string_to_snake_case(key): value for key, value in input_dict.items()}
 
 
-def args_convert_dict_to_args(
-        function: Command,
-        args: Dict[str, Any]) -> List[str]:
+def args_convert_dict_to_args(function: Command, args: Dict[str, Any]) -> List[str]:
     """
     Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
     Any key in `args` that is not found in `function.params` is added to the
@@ -120,10 +110,10 @@ def args_convert_dict_to_args(
 
                 if param.is_flag:
                     if args_long[param.name]:
-                        arg_list.append(f'--{param_name_kebab}')
+                        arg_list.append(f"--{param_name_kebab}")
                     # Flag passed to False is just removed
                 elif args_long[param.name] is not None:
-                    arg_list.append(f'--{param_name_kebab}')
+                    arg_list.append(f"--{param_name_kebab}")
                     value = args_long[param.name]
                     if not isinstance(args_long[param.name], bool):
                         value = str(value)
@@ -131,7 +121,7 @@ def args_convert_dict_to_args(
     # Append any remaining arguments as key-value pairs
     for key, value in args_long.items():
         if key not in [param.name for param in function.params] and value is not None:
-            arg_list.append(f'--{key}')
+            arg_list.append(f"--{key}")
             if not isinstance(value, bool):
                 # Convert to str to allow joining array.
                 arg_list.append(str(value))
@@ -139,14 +129,13 @@ def args_convert_dict_to_args(
     return arg_list
 
 
-def args_convert_to_dict(
-        function: Command,
-        arg_list: List[str]) -> Dict[str, Any]:
+def args_convert_to_dict(function: Command, arg_list: List[str]) -> Dict[str, Any]:
     args_dict: Dict[str, str | bool] = {}
 
     param_dict = {
-        opt.lstrip('-'): param
-        for param in function.params if isinstance(param, click.Option)
+        opt.lstrip("-"): param
+        for param in function.params
+        if isinstance(param, click.Option)
         for opt in param.opts
     }
 
@@ -155,7 +144,7 @@ def args_convert_to_dict(
         arg = arg_list[i]
 
         if isinstance(arg, str):
-            stripped_arg = arg.lstrip('-')
+            stripped_arg = arg.lstrip("-")
 
             # Manage parameters defined in function
             if stripped_arg in param_dict:
@@ -170,9 +159,9 @@ def args_convert_to_dict(
                     i += 1
             # Manage unknown parameters
             else:
-                key = arg.lstrip('-')
+                key = arg.lstrip("-")
 
-                if len(arg_list) > i + 1 and arg_list[i + 1][0:1] != '-':
+                if len(arg_list) > i + 1 and arg_list[i + 1][0:1] != "-":
                     args_dict[key] = arg_list[i + 1]
                     i += 1
                 else:
@@ -185,10 +174,8 @@ def args_convert_to_dict(
     return args_dict
 
 
-def args_parse_one(
-        argument: str,
-        default: Optional[Any] = None) -> Any:
-    if argument is None or argument == '':
+def args_parse_one(argument: str, default: Optional[Any] = None) -> Any:
+    if argument is None or argument == "":
         return default
 
     try:

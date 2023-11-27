@@ -14,18 +14,15 @@ if TYPE_CHECKING:
 
 
 def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:
-    return click.progressbar(
-        steps,
-        fill_char='▪',
-        empty_char='⬝',
-        **kwargs
-    )
+    return click.progressbar(steps, fill_char="▪", empty_char="⬝", **kwargs)
 
 
-def prompt_progress_steps(kernel: 'Kernel', steps: Iterable[V], title: str = 'Processing') -> None:
+def prompt_progress_steps(
+    kernel: "Kernel", steps: Iterable[V], title: str = "Processing"
+) -> None:
     with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
-            kernel.io.log(f'{title} : {step.__name__}')
+            kernel.io.log(f"{title} : {step.__name__}")
 
             response = step()
 
@@ -37,18 +34,14 @@ def prompt_progress_steps(kernel: 'Kernel', steps: Iterable[V], title: str = 'Pr
 
 
 def prompt_choice(
-        question: str,
-        choices: List[str | Choice],
-        default: Optional[InquirerPyDefault] = None,
-        **kwargs: Any) -> Any:
+    question: str,
+    choices: List[str | Choice],
+    default: Optional[InquirerPyDefault] = None,
+    **kwargs: Any,
+) -> Any:
     envs = choices.copy()
-    envs.append(
-        Choice(value=None, name='> Abort')
-    )
+    envs.append(Choice(value=None, name="> Abort"))
 
     return inquirer.select(  # type: ignore
-        message=question,
-        choices=envs,
-        default=default,
-        **kwargs
+        message=question, choices=envs, default=default, **kwargs
     ).execute()

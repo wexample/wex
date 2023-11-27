@@ -10,9 +10,8 @@ if TYPE_CHECKING:
 
 
 @command(help="Resolve dependencies of a service")
-@option('--service', '-s', required=True,
-        help="Find all service dependencies")
-def core__service__resolve(kernel: 'Kernel', service) -> List[str]:
+@option("--service", "-s", required=True, help="Find all service dependencies")
+def core__service__resolve(kernel: "Kernel", service) -> List[str]:
     services = args_split_arg_array(service)
     resolved_services = set()
 
@@ -24,8 +23,8 @@ def core__service__resolve(kernel: 'Kernel', service) -> List[str]:
 
         services_registry = kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
         if service in services_registry:
-            config = services_registry[service]['config']
-            dependencies = config.get('dependencies', [])
+            config = services_registry[service]["config"]
+            dependencies = config.get("dependencies", [])
 
             for dependency in dependencies:
                 resolved_services.update(

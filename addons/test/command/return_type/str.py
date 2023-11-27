@@ -8,6 +8,6 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a string")
-@option('--arg', '-a', type=str, required=True, help="Argument")
-def test__return_type__str(kernel: 'Kernel', arg):
+@option("--arg", "-a", type=str, required=True, help="Argument")
+def test__return_type__str(kernel: "Kernel", arg):
     return str(arg)

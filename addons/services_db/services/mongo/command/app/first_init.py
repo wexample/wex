@@ -9,13 +9,13 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Init database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def mongo__app__first_init(manager: 'AppAddonManager', app_dir: str, service: str):
+def mongo__app__first_init(manager: "AppAddonManager", app_dir: str, service: str):
     manager.kernel.run_function(
         app__db__exec,
         {
-            'app-dir': app_dir,
+            "app-dir": app_dir,
             # Ask to execute bash
-            'command': 'rs.initiate()',
-            'sync': True
-        }
+            "command": "rs.initiate()",
+            "sync": True,
+        },
     )

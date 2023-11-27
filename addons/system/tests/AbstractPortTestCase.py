@@ -7,7 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class AbstractPortTestCase(AbstractTestCase):
     def start_temp_server(self, port: int = 45678):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.bind(('localhost', port))
+        server_socket.bind(("localhost", port))
         server_socket.listen(1)
         self.log(f"Listening on port {port}")
 

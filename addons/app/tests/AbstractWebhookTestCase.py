@@ -12,37 +12,29 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
     def start_webhook_listener(self, port: int = 6543):
-        self.kernel.run_function(app__webhook__listen, {
-            'port': port,
-            'asynchronous': True,
-            'force': True
-        })
+        self.kernel.run_function(
+            app__webhook__listen, {"port": port, "asynchronous": True, "force": True}
+        )
 
         time.sleep(2)
 
         return port
 
     def request_listener(
-            self,
-            path: str,
-            port: int = 6543,
-            check_code: None | int = 200,
-            wait: int = 0):
-        domain = f'localhost:{port}'
+        self, path: str, port: int = 6543, check_code: None | int = 200, wait: int = 0
+    ):
+        domain = f"localhost:{port}"
 
-        self.log(f'GET to {domain}{path}')
+        self.log(f"GET to {domain}{path}")
         conn = HTTPConnection(domain)
         conn.request("GET", path)
         response = conn.getresponse()
 
         if check_code:
-            self.assertEqual(
-                response.status,
-                check_code
-            )
+            self.assertEqual(response.status, check_code)
 
         if wait:
-            self.log(f'Wait webhook execution {path}')
+            self.log(f"Wait webhook execution {path}")
             time.sleep(wait)
 
         return response
@@ -62,19 +54,19 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
         shutil.copytree(
             os.path.join(
                 self.get_app_resources_path(),
-                '5.0.0',
+                "5.0.0",
                 APP_DIR_APP_DATA,
                 sub_dir,
             ),
-            script_dir
+            script_dir,
         )
 
     def create_and_start_test_app_webhook(self):
         app_dir = self.create_and_start_test_app(
-            DEFAULT_APP_TEST_NAME + '-webhook',
-            services=['php'])
+            DEFAULT_APP_TEST_NAME + "-webhook", services=["php"]
+        )
 
-        self.copy_command_dir(app_dir, 'command')
-        self.copy_command_dir(app_dir, 'script')
+        self.copy_command_dir(app_dir, "command")
+        self.copy_command_dir(app_dir, "script")
 
         return app_dir, os.path.basename(os.path.dirname(app_dir))

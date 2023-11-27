@@ -10,19 +10,13 @@ if TYPE_CHECKING:
 class KernelRegistryFileStructure(YmlFileStructure):
     # May not exist when cache flushed
     should_exist: Optional[bool] = False
-    kernel: 'Kernel'
+    kernel: "Kernel"
     content: KernelRegistry
 
-    def __init__(self,
-                 kernel: 'Kernel',
-                 path: str,
-                 initialize: bool = True) -> None:
+    def __init__(self, kernel: "Kernel", path: str, initialize: bool = True) -> None:
         self.kernel = kernel
 
-        super().__init__(
-            path=path,
-            initialize=initialize
-        )
+        super().__init__(path=path, initialize=initialize)
 
         default: KernelRegistry = KernelRegistry(env=None, resolvers={})
 
@@ -32,15 +26,15 @@ class KernelRegistryFileStructure(YmlFileStructure):
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
         from addons.app.command.env.get import _app__env__get
 
-        self.kernel.io.log('Building registry...')
+        self.kernel.io.log("Building registry...")
 
         # Call function avoiding core command management.
-        self.content['env'] = _app__env__get(
-            self.kernel.directory.path
-        )
+        self.content["env"] = _app__env__get(self.kernel.directory.path)
 
         for command_type in self.kernel.resolvers:
-            self.content['resolvers'][command_type] = self.kernel.resolvers[command_type].build_registry_data(test)
+            self.content["resolvers"][command_type] = self.kernel.resolvers[
+                command_type
+            ].build_registry_data(test)
 
         if write:
             self.write_content()
@@ -48,4 +42,4 @@ class KernelRegistryFileStructure(YmlFileStructure):
         return self.content
 
     def get_resolver_data(self, command_type: str) -> RegistryResolverData:
-        return cast(RegistryResolverData, self.content['resolvers'][command_type])
+        return cast(RegistryResolverData, self.content["resolvers"][command_type])
