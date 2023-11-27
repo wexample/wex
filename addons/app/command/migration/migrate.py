@@ -9,7 +9,7 @@ from src.helper.core import core_kernel_get_version
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 def app__migration__migrate(
         manager: 'AppAddonManager',
         app_dir: str | None = None,
-        from_version: str = None,
+        from_version: Optional[str] = None,
         yes: bool = False):
     kernel = manager.kernel
     app_dir = manager.app_dir

@@ -7,7 +7,7 @@ from addons.app.command.hook.exec import app__hook__exec
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
         help="Owner of application files")
 @option('--group', '-g', type=str, required=False,
         help="Group of application files")
-def app__config__write(manager: 'AppAddonManager', app_dir: str, user: str = None, group: str = None):
+def app__config__write(manager: 'AppAddonManager', app_dir: str, user: Optional[str] = None, group: Optional[str] = None):
     kernel = manager.kernel
 
     def _app__config__write__runtime():

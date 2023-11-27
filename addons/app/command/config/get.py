@@ -1,6 +1,6 @@
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -15,6 +15,6 @@ def app__config__get(
         manager: 'AppAddonManager',
         app_dir: str,
         key: str,
-        default: str = None
+        default: Optional[str] = None
 ):
     return manager.get_config(key, default)

@@ -5,7 +5,7 @@ from src.decorator.test_command import test_command
 from src.decorator.option import option
 from addons.test.command.demo_command.response_collection_two import test__demo_command__response_collection_two
 from addons.test.command.demo_command.counting_collection import test__demo_command__counting_collection
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -26,7 +26,7 @@ def test__demo_command__response_collection(kernel: 'Kernel', abort: bool = Fals
             'new': 'two'
         }
 
-    def _test__demo_command__response_collection__function_three(previous: dict = None):
+    def _test__demo_command__response_collection__function_three(previous: Optional[dict] = None):
         return {
             'type': str(type(previous)),
             'length': len(previous)
@@ -63,7 +63,7 @@ def test__demo_command__response_collection(kernel: 'Kernel', abort: bool = Fals
             callback
         ])
 
-    def _test__demo_command__response_collection__run_another_collection(previous: dict = None):
+    def _test__demo_command__response_collection__run_another_collection(previous: Optional[dict] = None):
         nonlocal abort
 
         return kernel.run_function(

@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 from git import Repo
-from typing import Iterable, Union, Optional, cast
+from typing import Iterable, Union, Optional
 
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.prompt import prompt_progress_steps
@@ -39,8 +39,8 @@ if TYPE_CHECKING:
 def app__app__init(
         manager: 'AppAddonManager',
         app_dir: str,
-        name: str = None,
-        services: Union[str, Iterable] = None,
+        name: Optional[str] = None,
+        services: Optional[Union[str, Iterable]] = None,
         domains: str = '',
         git: bool = True,
         env: str | None = None

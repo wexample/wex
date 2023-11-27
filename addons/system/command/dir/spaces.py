@@ -4,7 +4,7 @@ from src.helper.file import file_get_human_readable_size
 from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.TableResponse import TableResponse
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @command(help="Return sizes of current directory subdirectories")
 @option('--dir', '-d', type=str, required=False, help="Directory to inspect")
-def system__dir__spaces(kernel: 'Kernel', dir: str = None):
+def system__dir__spaces(kernel: 'Kernel', dir: Optional[str] = None):
     dir = dir or os.getcwd()
 
     # Function to calculate directory size

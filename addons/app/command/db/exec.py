@@ -2,7 +2,7 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from addons.app.command.app.exec import app__app__exec
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -17,8 +17,8 @@ def app__db__exec(
         manager: 'AppAddonManager',
         app_dir: str,
         command: str,
-        service: str = None,
-        database: str = None,
+        service: Optional[str] = None,
+        database: Optional[str] = None,
         sync: bool = False):
     service = service or manager.get_config(
         'docker.main_db_container',

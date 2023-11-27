@@ -335,7 +335,7 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_config(self, key: str, default: AppConfigValue = None, required: bool = False) -> AppConfigValue:
+    def get_config(self, key: str, default: Optional[AppConfigValue] = None, required: bool = False) -> AppConfigValue:
         return self._get_config_value(
             self.config,
             key,
@@ -346,7 +346,7 @@ class AppAddonManager(AddonManager):
             self,
             config: Optional[AppConfig | AppRuntimeConfig],
             key: str,
-            default: AppConfigValue = None,
+            default: Optional[AppConfigValue] = None,
             required: bool = False) -> AppConfigValue:
         if not config:
             return default
@@ -373,7 +373,7 @@ class AppAddonManager(AddonManager):
             indent
         )
 
-    def get_runtime_config(self, key: str, default: AppConfigValue = None, required: bool = False) -> AppConfigValue:
+    def get_runtime_config(self, key: str, default: Optional[AppConfigValue] = None, required: bool = False) -> AppConfigValue:
         return self._get_config_value(
             self.runtime_config,
             key,
@@ -665,7 +665,7 @@ class AppAddonManager(AddonManager):
             self,
             key: str,
             service: str | None = None,
-            default: Any = None) -> Any:
+            default: Optional[Any] = None) -> Any:
         service = service or self.get_main_service()
 
         # Search into local config.

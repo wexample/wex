@@ -10,7 +10,7 @@ import importlib.util
 from src.decorator.as_sudo import as_sudo
 from addons.app.const.app import APP_ENV_LOCAL
 from src.helper.command import execute_command_tree
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option('--command', '-c', type=str, required=False, help="Single command to test")
-def core__test__run(kernel: 'Kernel', command: str = None):
+def core__test__run(kernel: 'Kernel', command: Optional[str] = None):
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
     if kernel.registry_structure.content['env'] == APP_ENV_LOCAL:

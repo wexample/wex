@@ -1,6 +1,6 @@
 import os.path
 import time
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import click
 
@@ -48,9 +48,9 @@ def app__app__start(
         manager: 'AppAddonManager',
         app_dir: str,
         clear_cache: bool = False,
-        user: str = None,
-        group: str = None,
-        env: str = None,
+        user: Optional[str] = None,
+        group: Optional[str] = None,
+        env: Optional[str] = None,
         no_proxy: bool = False):
     kernel = manager.kernel
     name = manager.get_config('global.name')

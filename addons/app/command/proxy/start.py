@@ -12,7 +12,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
-from typing import TYPE_CHECKING, cast
+from typing import Optional, TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -26,11 +26,11 @@ if TYPE_CHECKING:
 @option('--port', '-p', type=int, required=False, help="Port for web server")
 @option('--port-secure', '-ps', type=int, required=False, help="Secure port for web server")
 def app__proxy__start(kernel: 'Kernel',
-                      env: str = None,
-                      user: str = None,
-                      group: str = None,
-                      port: str = None,
-                      port_secure: str = None
+                      env: Optional[str] = None,
+                      user: Optional[str] = None,
+                      group: Optional[str] = None,
+                      port: Optional[str] = None,
+                      port_secure: Optional[str] = None
                       ):
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons['app'])
     proxy_path = manager.get_proxy_path()

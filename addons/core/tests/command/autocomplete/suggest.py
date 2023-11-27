@@ -7,6 +7,7 @@ from src.const.globals import COMMAND_CHAR_USER, COMMAND_CHAR_SERVICE, COMMAND_C
     COMMAND_SEPARATOR_GROUP
 from tests.AbstractTestCase import AbstractTestCase
 from addons.app.helper.test import test_create_app, DEFAULT_APP_TEST_NAME
+from typing import Optional
 
 
 class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
@@ -231,7 +232,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             '--option' in suggestions
         )
 
-    def _create_and_test_created_command(self, prefix: str, search: str = None):
+    def _create_and_test_created_command(self, prefix: str, search: Optional[str] = None):
         command = prefix + 'test/autocomplete-command'
         if not search:
             search = prefix + 'te'

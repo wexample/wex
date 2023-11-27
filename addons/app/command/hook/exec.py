@@ -4,7 +4,7 @@ from src.helper.args import args_parse_one
 from src.const.globals import COMMAND_CHAR_APP
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
               help="Hook name")
 @option('--arguments', '-args', required=False,
               help="Hook name")
-def app__hook__exec(manager: 'AppAddonManager', hook, arguments, app_dir: str = None):
+def app__hook__exec(manager: 'AppAddonManager', hook, arguments, app_dir: Optional[str] = None):
     arguments = args_parse_one(arguments)
 
     if arguments is None:

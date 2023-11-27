@@ -4,7 +4,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.test_command import test_command
 from src.decorator.option import option
 from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -23,7 +23,7 @@ def test__demo_command__response_collection_two(kernel: 'Kernel', abort: bool = 
     def _test__demo_command__response_collection_two__another_simple_function(previous: None):
         return f'..TWO:another-simple-function-previous-value:should-be-none={previous}'
 
-    def _test__demo_command__response_collection_two__run_another_collection(previous: int = None):
+    def _test__demo_command__response_collection_two__run_another_collection(previous: Optional[int] = None):
         nonlocal abort
 
         # This run will return unused response.
