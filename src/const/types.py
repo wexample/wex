@@ -12,11 +12,13 @@ AddonNameType = Literal[
     "test",
 ]
 
+AnyList = List[Any]
+
 StringKeysDict = Dict[str, Any]
 StringsList = List[str]
 
 AnyCallable = Callable[..., Any]
-Args = List[Any]
+Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
 KeyPairCommandArgs = Dict[str, Union[str, bool]]
 Kwargs = Any
@@ -41,7 +43,8 @@ OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 
 YamlContent = StringKeysDict
 
-AppConfigValue = None | int | float | str | bool | List[Any] | StringKeysDict
+BasicArg = None | int | float | str | bool | AnyList | StringKeysDict
+AppConfigValue = BasicArg
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 

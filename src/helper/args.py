@@ -5,6 +5,7 @@ from typing import Any, Dict, Iterable, List, Optional, Union
 import click
 from click.core import Command
 from click.types import BoolParamType
+from src.const.types import BasicArg
 
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
@@ -174,7 +175,7 @@ def args_convert_to_dict(function: Command, arg_list: List[str]) -> Dict[str, An
     return args_dict
 
 
-def args_parse_one(argument: str, default: Optional[Any] = None) -> Any:
+def args_parse_one(argument: str, default: Optional[Any] = None) -> BasicArg:
     if argument is None or argument == "":
         return default
 
