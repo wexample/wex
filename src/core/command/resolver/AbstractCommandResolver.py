@@ -262,7 +262,9 @@ class AbstractCommandResolver:
             return
 
         function_params = request.runner.get_options_names()
-        search_params = [param for param in function_params if param.startswith(search_params)]
+        search_params = [
+            param for param in function_params if param.startswith(search_params)
+        ]
 
         return " ".join(search_params)
 

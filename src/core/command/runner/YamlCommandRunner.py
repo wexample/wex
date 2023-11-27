@@ -5,8 +5,8 @@ from typing import Any, Optional, cast
 
 import click
 
+from src.const.types import Args, Kwargs, StringsList, YamlCommand
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
-from src.const.types import YamlCommand, Args, Kwargs, StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
@@ -48,8 +48,8 @@ class YamlCommandRunner(AbstractCommandRunner):
             options = self.content["options"]
 
             for option in options:
-                names.append(option['name'])
-                names.append(option['short'])
+                names.append(option["name"])
+                names.append(option["short"])
 
         return names
 
@@ -61,10 +61,12 @@ class YamlCommandRunner(AbstractCommandRunner):
             return None
 
         resolver: AbstractCommandResolver = self.request.resolver
-        scripts = self.content['scripts'] if "scripts" in self.content else []
+        scripts = self.content["scripts"] if "scripts" in self.content else []
         options = self.content["options"] if "options" in self.content else []
 
-        def _script_command_handler(*args: Args, **kwargs: Kwargs) -> Optional[QueuedCollectionResponse]:
+        def _script_command_handler(
+            *args: Args, **kwargs: Kwargs
+        ) -> Optional[QueuedCollectionResponse]:
             commands_collection = []
 
             variables = {}
@@ -134,7 +136,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Apply extra decorators
         properties = (
-                dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
+            dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
         )
 
         for property in properties:
@@ -161,9 +163,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 help=option["help"] if "help" in option else None,
                 is_flag="is_flag" in option and option["is_flag"],
                 required=option["required"] if "required" in option else False,
-                type=getattr(
-                    builtins, option["type"] if "type" in option else "any"
-                ),
+                type=getattr(builtins, option["type"] if "type" in option else "any"),
             )(script_command.function)
 
         return cast(ScriptCommand, script_command)

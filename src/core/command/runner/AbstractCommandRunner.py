@@ -3,8 +3,8 @@ from typing import Any
 
 import click
 
-from src.const.types import StringsList
 from src.const.args import ARGS_HELP
+from src.const.types import StringsList
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 
