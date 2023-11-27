@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import click
 
@@ -8,9 +8,12 @@ from src.const.types import StringsList
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class AbstractCommandRunner:
-    def __init__(self, kernel):
+    def __init__(self, kernel: 'Kernel') -> None:
         self.kernel = kernel
         self.request: None | CommandRequest = None
 

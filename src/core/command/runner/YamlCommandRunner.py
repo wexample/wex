@@ -1,7 +1,7 @@
 import builtins
 import os
 import types
-from typing import Any, Optional, cast
+from typing import Any, Optional, cast, TYPE_CHECKING
 
 import click
 
@@ -19,6 +19,9 @@ from src.helper.command import apply_command_decorator
 from src.helper.data_yaml import yaml_load
 from src.helper.dict import dict_get_item_by_path
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 COMMAND_TYPE_BASH = "bash"
 COMMAND_TYPE_BASH_FILE = "bash-file"
 COMMAND_TYPE_PYTHON = "python"
@@ -26,26 +29,28 @@ COMMAND_TYPE_PYTHON_FILE = "python-file"
 
 
 class YamlCommandRunner(AbstractCommandRunner):
-    def __init__(self, kernel):
+    def __init__(self, kernel: 'Kernel') -> None:
         super().__init__(kernel)
         self.content: Optional[YamlCommand] = None
 
-    def set_request(self, request: CommandRequest):
+    def set_request(self, request: CommandRequest) -> None:
         super().set_request(request=request)
 
-        self.content = cast(YamlCommand, yaml_load(self.request.path, {}))
+        if request.path:
+            self.content = cast(YamlCommand, yaml_load(request.path, {}))
 
-        if not self.content:
-            self.kernel.io.error(
-                f"Unable to load yaml script file content :  {self.request.path}",
-                trace=False,
-            )
+            if not self.content:
+                self.kernel.io.error(
+                    f"Unable to load yaml script file content :  {request.path}",
+                    trace=False,
+                )
 
     def get_options_names(self) -> StringsList:
         names = []
+        content = self.get_content_or_fail()
 
-        if "options" in self.content:
-            options = self.content["options"]
+        if "options" in content:
+            options = content["options"]
 
             for option in options:
                 names.append(option["name"])
@@ -53,19 +58,27 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         return names
 
+    def get_content_or_fail(self) -> YamlCommand:
+        if not self.content:
+            self.kernel.io.error('Trying to access request content before initialization')
+            assert False
+
+        return self.content
+
     def get_command_type(self) -> str:
-        return self.content["type"]
+        return self.get_content_or_fail()["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
-        if not self.request or not self.request.path or not self.content:
+        if not self.request or not self.request.path:
             return None
 
+        content = self.get_content_or_fail()
+        scripts = content["scripts"] if "scripts" in content else []
+        options = content["options"] if "options" in content else []
         resolver: AbstractCommandResolver = self.request.resolver
-        scripts = self.content["scripts"] if "scripts" in self.content else []
-        options = self.content["options"] if "options" in self.content else []
 
         def _script_command_handler(
-            *args: Args, **kwargs: Kwargs
+                *args: Args, **kwargs: Kwargs
         ) -> Optional[QueuedCollectionResponse]:
             commands_collection = []
 
@@ -115,19 +128,19 @@ class YamlCommandRunner(AbstractCommandRunner):
             _script_command_handler.__closure__,
         )
 
-        decorator_name = dict_get_item_by_path(self.content, "command.decorator")
+        decorator_name = dict_get_item_by_path(content, "command.decorator")
         if decorator_name:
             decorator = self.kernel.decorators["command"][decorator_name]
         else:
             decorator = command
 
-        if "help" not in self.content:
+        if "help" not in content:
             self.kernel.io.error(
                 f"Missing help section in command {internal_command}", trace=False
             )
 
-        decorator_options = dict_get_item_by_path(self.content, "command.options", {})
-        script_command = decorator(help=self.content["help"], **decorator_options)(
+        decorator_options = dict_get_item_by_path(content, "command.options", {})
+        script_command = decorator(help=content["help"], **decorator_options)(
             click_function_callback
         )
 
@@ -136,7 +149,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Apply extra decorators
         properties = (
-            dict_get_item_by_path(data=self.content, key="properties", default=[]) or []
+                dict_get_item_by_path(data=content, key="properties", default=[]) or []
         )
 
         for property in properties:
