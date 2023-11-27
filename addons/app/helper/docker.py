@@ -4,7 +4,7 @@ from typing import List, Optional
 from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.docker.helper.docker import user_has_docker_permission
-from src.helper.command import execute_command
+from src.helper.command import execute_command_sync
 from src.helper.user import get_user_or_sudo_user
 from src.helper.process import process_post_exec
 from typing import TYPE_CHECKING
@@ -105,7 +105,7 @@ def docker_exec_app_compose(
     )
 
     if sync:
-        success, output = execute_command(kernel, command)
+        success, output = execute_command_sync(kernel, command)
 
         if not success:
             kernel.io.error(

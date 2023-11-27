@@ -6,8 +6,7 @@ import inspect
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.file import file_create_directories_and_copy
-from src.helper.command import execute_command
-from src.helper.user import set_owner_recursively
+from src.helper.command import execute_command_sync
 
 
 class AbstractTestCase(unittest.TestCase):
@@ -90,7 +89,7 @@ class AbstractTestCase(unittest.TestCase):
         )
 
     def start_docker_container(self, name: str = 'test_container'):
-        return execute_command(
+        return execute_command_sync(
             self.kernel,
             [
                 'docker',
@@ -106,7 +105,7 @@ class AbstractTestCase(unittest.TestCase):
         )
 
     def remove_docker_container(self, name: str = 'test_container'):
-        success, content = execute_command(
+        success, content = execute_command_sync(
             self.kernel,
             [
                 'docker',
@@ -118,7 +117,7 @@ class AbstractTestCase(unittest.TestCase):
         if not success:
             return success, content
 
-        return execute_command(
+        return execute_command_sync(
             self.kernel,
             [
                 'docker',

@@ -1,6 +1,6 @@
 import os
 
-from src.helper.command import execute_command
+from src.helper.command import execute_command_sync
 from src.core.CommandRequest import CommandRequest
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.response.AbstractResponse import AbstractResponse
@@ -22,7 +22,7 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
             render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
             args: dict = None) -> AbstractResponse:
 
-        success, content = execute_command(
+        success, content = execute_command_sync(
             kernel=self.kernel,
             command=self.shell_command,
             ignore_error=self.ignore_error

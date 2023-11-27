@@ -4,7 +4,7 @@ import signal
 
 import psutil
 
-from src.helper.command import execute_command
+from src.helper.command import execute_command_sync
 from src.helper.command import command_to_string, internal_command_to_shell
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from typing import List, Optional
@@ -52,7 +52,7 @@ def process_post_exec_function(
 
 
 def process_kill_by_command(kernel: 'Kernel', command: str) -> None:
-    success, pids = execute_command(
+    success, pids = execute_command_sync(
         kernel,
         [
             'pgrep',

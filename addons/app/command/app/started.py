@@ -1,6 +1,5 @@
 from addons.app.command.container.list import app__container__list
-from src.helper.command import execute_command
-
+from src.helper.command import execute_command_sync
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command
 from typing import TYPE_CHECKING
@@ -37,7 +36,7 @@ def app__app__started(manager: 'AppAddonManager', app_dir: str, mode: str = APP_
     ).first()
 
     # for container_name in list:
-    success, running_containers = execute_command(
+    success, running_containers = execute_command_sync(
         manager.kernel,
         ['docker', 'ps', '--format', '{{.Names}}']
     )

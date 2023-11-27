@@ -1,6 +1,6 @@
 from addons.system.command.os.name import system__os__name, OS_NAME_MAC
 from addons.system.command.system.ip import system__system__ip
-from src.helper.command import execute_command, command_exists
+from src.helper.command import execute_command_sync, command_exists
 from src.decorator.command import command
 from typing import TYPE_CHECKING
 
@@ -16,7 +16,7 @@ def docker__docker__ip(kernel: 'Kernel'):
         return '127.0.0.1'
 
     if command_exists('docker-machine'):
-        return execute_command(kernel, [
+        return execute_command_sync(kernel, [
             'docker-machine',
             'ip'
         ])

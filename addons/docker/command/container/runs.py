@@ -1,4 +1,4 @@
-from src.helper.command import execute_command
+from src.helper.command import execute_command_sync
 from src.decorator.command import command
 from src.decorator.option import option
 from typing import TYPE_CHECKING
@@ -26,7 +26,7 @@ def docker__container__runs(kernel: 'Kernel', name: str, all: bool = False):
         '{{.Names}}'
     ])
 
-    success, content = execute_command(
+    success, content = execute_command_sync(
         kernel,
         command,
     )

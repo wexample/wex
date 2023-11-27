@@ -13,7 +13,7 @@ from src.const.globals import SYSTEM_SERVICES_PATH, SERVICE_DAEMON_NAME, SERVICE
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command
+from src.helper.command import execute_command_async
 from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import file_remove_file_if_exists
 from src.helper.system import system_is_port_open, \
@@ -106,10 +106,9 @@ def app__webhook__listen(
             process_kill_by_command(kernel, command)
 
             # Start a new listener
-            process = execute_command(
+            process = execute_command_async(
                 kernel,
                 command.split(),
-                async_mode=True
             )
 
             kernel.logger.append_event('EVENT_WEBHOOK_LISTEN', {

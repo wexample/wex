@@ -1,6 +1,6 @@
 import os
 
-from src.helper.command import command_to_string, execute_command
+from src.helper.command import command_to_string, execute_command_sync
 from src.core.CommandRequest import CommandRequest
 from src.helper.process import process_post_exec
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
@@ -39,7 +39,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             # As we don't use shlex to wrap arguments,
             # we need to enable shell=True here.
 
-            success, content = execute_command(
+            success, content = execute_command_sync(
                 self.kernel,
                 command_to_string(self.shell_command),
                 shell=True
