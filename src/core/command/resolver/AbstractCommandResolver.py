@@ -51,7 +51,7 @@ class AbstractCommandResolver:
         self.kernel = kernel
 
     def render_request(
-        self, request: CommandRequest, render_mode: str
+            self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
@@ -137,7 +137,7 @@ class AbstractCommandResolver:
             )
 
     def create_command_request(
-        self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
+            self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
     ) -> CommandRequest:
         return CommandRequest(self, command, args or [])
 
@@ -158,12 +158,12 @@ class AbstractCommandResolver:
 
     @abstractmethod
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         pass
 
     def build_path_or_fail(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> str:
         path = self.build_path(request=request, extension=extension, subdir=subdir)
 
@@ -190,7 +190,7 @@ class AbstractCommandResolver:
         pass
 
     def build_full_command_parts_from_function(
-        self, function_or_command, args: Optional["OptionalCoreCommandArgsDict"] = None
+            self, function_or_command, args: Optional["OptionalCoreCommandArgsDict"] = None
     ) -> "CoreCommandStringParts":
         if args is None:
             args = []
@@ -203,14 +203,14 @@ class AbstractCommandResolver:
         ] + args
 
     def build_full_command_from_function(
-        self, function_or_command, args: Optional[dict] = None
+            self, function_or_command, args: Optional[dict] = None
     ) -> str | None:
         return command_to_string(
             self.build_full_command_parts_from_function(function_or_command, args)
         )
 
     def build_command_parts_from_function(
-        self, function_name
+            self, function_name
     ) -> "CoreCommandStringParts":
         """
         Returns the "default" format (addons style)
@@ -245,7 +245,7 @@ class AbstractCommandResolver:
         return self.build_command_from_parts(parts)
 
     def build_command_path(
-        self, base_path: str, extension: str, subdir: Optional[str], command_path
+            self, base_path: str, extension: str, subdir: Optional[str], command_path
     ) -> str:
         if subdir:
             base_path += f"{subdir}/"
@@ -253,7 +253,7 @@ class AbstractCommandResolver:
         return os.path.join(base_path, "command", command_path + "." + extension)
 
     def autocomplete_suggest(
-        self, cursor: int, search_split: StringsList
+            self, cursor: int, search_split: StringsList
     ) -> str | None:
         return None
 
@@ -272,7 +272,7 @@ class AbstractCommandResolver:
         return " ".join(search_params)
 
     def suggest_from_path(
-        self, commands_path: str, search_string: str, test_commands: bool = False
+            self, commands_path: str, search_string: str, test_commands: bool = False
     ) -> []:
         commands = self.scan_commands_groups(commands_path, test_commands)
         commands_names = []
@@ -319,7 +319,7 @@ class AbstractCommandResolver:
 
                 test_file = None
                 if test_commands or not hasattr(
-                    function.function.callback, "test_command"
+                        function.function.callback, "test_command"
                 ):
                     # All test are in python
                     test_file = os.path.realpath(
@@ -383,7 +383,7 @@ class AbstractCommandResolver:
 
     @abstractmethod
     def build_command_parts_from_url_path_parts(
-        self, path_parts: StringsList
+            self, path_parts: StringsList
     ) -> StringsList:
         pass
 

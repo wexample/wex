@@ -65,8 +65,12 @@ class AppCommandResolver(AbstractCommandResolver):
         if not request.match:
             return None
 
+        base_path = self.get_base_path()
+        if not base_path:
+            return None
+
         return self.build_command_path(
-            base_path=self.get_base_path(),
+            base_path=base_path,
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(

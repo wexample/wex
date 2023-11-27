@@ -52,7 +52,7 @@ class UserCommandResolver(AbstractCommandResolver):
             ),
         )
 
-    def get_base_path(self):
+    def get_base_path(self) -> Optional[str]:
         return f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
     def get_function_name_parts(self, parts: list) -> StringsList:
