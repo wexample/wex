@@ -178,7 +178,7 @@ def args_convert_to_dict(function: Command, arg_list: List[str]) -> Dict[str, An
 def args_parse_dict(arg: str) -> StringKeysDict:
     arg_dict = args_parse_one(arg, {})
 
-    if not isinstance(arg_dict, StringKeysDict):
+    if not isinstance(arg_dict, dict):
         return {}
 
     return arg_dict
