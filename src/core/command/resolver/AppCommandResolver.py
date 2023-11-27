@@ -35,7 +35,7 @@ class AppCommandResolver(AbstractCommandResolver):
         )
 
     def render_request(
-        self, request: CommandRequest, render_mode: str
+            self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
         if not self.get_base_path():
             if not request.quiet:
@@ -60,7 +60,7 @@ class AppCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_APP
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         if not request.match:
             return None
@@ -99,7 +99,7 @@ class AppCommandResolver(AbstractCommandResolver):
         return None
 
     def autocomplete_suggest(
-        self, cursor: int, search_split: StringsList
+            self, cursor: int, search_split: StringsList
     ) -> str | None:
         if cursor == 0:
             # User typed "."
@@ -132,7 +132,7 @@ class AppCommandResolver(AbstractCommandResolver):
         return None
 
     def build_command_parts_from_url_path_parts(
-        self, path_parts: StringsList
+            self, path_parts: StringsList
     ) -> StringsList:
         return [
             COMMAND_CHAR_APP,
@@ -157,7 +157,7 @@ class AppCommandResolver(AbstractCommandResolver):
         if app_name not in apps:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_APP_NOT_FOUND")
 
-        self_super: super = super()
+        self_super: AbstractCommandResolver = cast(AbstractCommandResolver, super())
 
         def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)

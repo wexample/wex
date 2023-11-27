@@ -31,7 +31,7 @@ class AddonCommandResolver(AbstractCommandResolver):
     ) -> Optional[str]:
         match = request.match
         # Unable to find command path if no addon name found.
-        if not match or request.match.group(1) is None:
+        if not match or match.group(1) is None:
             return None
 
         return self.build_command_path(
