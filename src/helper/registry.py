@@ -20,7 +20,7 @@ def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
     for resolver in kernel.resolvers:
         registry = {
             **registry,
-            **kernel.resolvers[resolver].get_commands_registry().commands,
+            **kernel.resolvers[resolver].get_commands_registry(),
         }
 
     return registry
