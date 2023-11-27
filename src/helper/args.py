@@ -5,8 +5,8 @@ from typing import Any, Dict, Iterable, List, Optional, Union
 import click
 from click.core import Command
 from click.types import BoolParamType
-from src.const.types import BasicArg
 
+from src.const.types import BasicArg
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 
