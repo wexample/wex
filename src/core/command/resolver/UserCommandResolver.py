@@ -9,6 +9,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_USER,
 )
+from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import string_to_kebab_case, string_to_snake_case
@@ -90,7 +91,9 @@ class UserCommandResolver(AbstractCommandResolver):
                 )
         return None
 
-    def build_command_parts_from_url_path_parts(self, path_parts: list):
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
         return [
             COMMAND_CHAR_USER,
             path_parts[1],

@@ -8,6 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_ADDON,
     COMMAND_TYPE_SERVICE,
 )
+from src.const.types import AnyCallable, RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -16,7 +17,6 @@ from src.helper.service import service_get_dir
 from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
-    from src.const.types import AnyCallable, RegistryResolverData, StringsList
     from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -149,22 +149,24 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return False
 
     @classmethod
-    def decorate_command(cls, function: "AnyCallable") -> "AnyCallable":
+    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
         from addons.app.decorator.service_option import service_option
 
         return service_option()(function)
 
-    def build_command_parts_from_url_path_parts(self, path_parts: list):
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
         return [
             path_parts[0],
             path_parts[1],
             path_parts[2],
         ]
 
-    def build_registry_data(self, test: bool = False) -> "RegistryResolverData":
+    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
         from src.helper.registry import registry_resolve_service_inheritance
 
-        registry: "RegistryResolverData" = {}
+        registry: RegistryResolverData = {}
 
         for addon in self.kernel.addons:
             services_dir = self.kernel.get_path("addons", [addon, "services"])
@@ -193,7 +195,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return registry
 
-    def get_registered_services(self) -> "StringsList":
+    def get_registered_services(self) -> StringsList:
         return self.get_registry_data().keys()
 
     def get_registered_service_data(self, name: str) -> Dict[str, Any]:

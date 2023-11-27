@@ -11,6 +11,14 @@ from src.const.globals import (
     CORE_COMMAND_NAME,
     VERBOSITY_LEVEL_DEFAULT,
 )
+from src.const.types import (
+    AnyCallable,
+    CoreCommandStringParts,
+    OptionalCoreCommandArgsDict,
+    OptionalCoreCommandArgsListOrDict,
+    RegistryResolverData,
+    StringsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
 from src.core.registry.CommandGroup import RegistryCommandGroup
@@ -35,13 +43,6 @@ from src.helper.user import get_user_or_sudo_user
 if TYPE_CHECKING:
     from click.core import Command as ClickCommand
 
-    from src.const.types import (
-        AnyCallable,
-        CoreCommandStringParts,
-        OptionalCoreCommandArgsDict,
-        OptionalCoreCommandArgsListOrDict,
-        RegistryResolverData,
-    )
     from src.core.Kernel import Kernel
 
 
@@ -254,12 +255,12 @@ class AbstractCommandResolver:
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         return None
 
-    def suggest_arguments(self, command: str, search_params: str):
+    def suggest_arguments(self, command: str, search_params: str) -> str:
         request = self.create_command_request(command)
 
         # Command is not recognised
         if not request.runner:
-            return
+            return ""
 
         function_params = request.runner.get_options_names()
         search_params = [
@@ -379,7 +380,9 @@ class AbstractCommandResolver:
         return self.build_command_from_parts(command_parts)
 
     @abstractmethod
-    def build_command_parts_from_url_path_parts(self, path_parts: list):
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
         pass
 
     def build_registry_data(self, test: bool = False) -> "RegistryResolverData":

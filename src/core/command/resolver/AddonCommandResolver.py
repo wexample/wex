@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
@@ -7,13 +7,11 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_ADDON,
 )
+from src.const.types import RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
 from src.helper.string import string_to_snake_case
-
-if TYPE_CHECKING:
-    from src.const.types import RegistryResolverData
 
 
 class AddonCommandResolver(AbstractCommandResolver):
@@ -100,16 +98,19 @@ class AddonCommandResolver(AbstractCommandResolver):
 
             # User typed "wex core::", we suggest all addon groups.
             if search_split[1] == COMMAND_SEPARATOR_ADDON:
-                if search_split[0] in registry_data:
+                key = search_split[0]
+                if key in registry_data and isinstance(registry_data[key], dict):
+                    commands_dict = registry_data[key]
+                    assert isinstance(commands_dict, dict)
+                    commands = commands_dict.get("commands", [])
                     return " ".join(
                         [
-                            command[len(search_split[0] + COMMAND_SEPARATOR_ADDON) :]
-                            for command in registry_data[search_split[0]]["commands"]
-                            if command.startswith(
-                                search_split[0] + COMMAND_SEPARATOR_ADDON
-                            )
+                            command[len(key + COMMAND_SEPARATOR_ADDON) :]
+                            for command in commands
+                            if command.startswith(key + COMMAND_SEPARATOR_ADDON)
                         ]
                     )
+                return ""
             elif search_split[1] == ":":
                 # User typed "core:", we add a second ":"
                 return ":"
@@ -144,19 +145,20 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def suggest_autocomplete_if_single(self, search_string):
+    def suggest_autocomplete_if_single(self, search_string: str) -> str:
         all_commands = registry_get_all_commands(self.kernel)
+        all_names = [name for name in all_commands if name.startswith(search_string)]
 
-        all_commands = [name for name in all_commands if name.startswith(search_string)]
-
-        if len(all_commands) == 1:
+        if len(all_names) == 1:
             # Adding a trailing space indicates
             # that command is found
-            return all_commands[0] + " "
+            return all_names[0] + " "
 
         return search_string
 
-    def build_command_parts_from_url_path_parts(self, path_parts: list):
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
         return [
             path_parts[0],
             path_parts[1],

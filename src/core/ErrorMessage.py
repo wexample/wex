@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
-    from const.types import StringMessageParameters
+    from src.const.types import StringMessageParameters
 
 
 class ErrorMessage(Exception):

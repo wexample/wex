@@ -8,6 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_APP,
 )
+from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
@@ -120,7 +121,9 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def build_command_parts_from_url_path_parts(self, path_parts: list):
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
         return [
             COMMAND_CHAR_APP,
             path_parts[1],
