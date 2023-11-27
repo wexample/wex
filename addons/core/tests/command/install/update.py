@@ -12,7 +12,7 @@ class TestCoreCommandInstallUpdate(AbstractTestCase):
         )
 
         self.assertIsNotNone(
-            request.command,
+            request.string_command,
         )
 
         self.assertIsNotNone(

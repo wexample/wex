@@ -173,7 +173,7 @@ class AbstractCommandResolver:
             self.kernel.io.error(
                 'Command file not found for command {command}, in path "{path}"',
                 {
-                    "command": request.command,
+                    "command": request.string_command,
                     "path": path,
                 },
                 trace=False,
@@ -363,7 +363,7 @@ class AbstractCommandResolver:
 
     def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables
-        request.match = self.build_match(request.command)
+        request.match = self.build_match(request.string_command)
 
         if request.match:
             for extension in COMMAND_EXTENSIONS:

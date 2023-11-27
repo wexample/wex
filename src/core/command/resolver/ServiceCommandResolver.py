@@ -35,7 +35,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                 self.kernel.io.error(
                     ERR_SERVICE_NOT_FOUND,
                     {
-                        "command": request.command,
+                        "command": request.string_command,
                         "service": service,
                     },
                 )
@@ -137,7 +137,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         """
         from src.helper.service import service_get_inheritance_tree
 
-        request.match = self.build_match(request.command)
+        request.match = self.build_match(request.string_command)
 
         if request.match:
             tree = service_get_inheritance_tree(
@@ -146,7 +146,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
             match_base = request.match
             for service_tree_item in tree:
-                request.command = self.build_command_from_parts(
+                request.string_command = self.build_command_from_parts(
                     [
                         service_tree_item,
                         request.match[2],

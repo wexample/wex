@@ -42,7 +42,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 self.kernel.io.error(
                     ERR_APP_NOT_FOUND,
                     {
-                        "command": request.command,
+                        "command": request.string_command,
                         "dir": os.getcwd(),
                     },
                 )

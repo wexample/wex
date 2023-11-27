@@ -454,7 +454,7 @@ class AppAddonManager(AddonManager):
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
-                        "command": request.command,
+                        "command": request.string_command,
                         "dir": app_dir_resolved,
                     },
                     trace=False,

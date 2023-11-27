@@ -46,7 +46,7 @@ class FastModeQueuedCollectionResponseQueueManager(
                 args = self.response.request.args.copy()
 
                 response = self.response.kernel.run_command(
-                    self.response.request.command, args
+                    self.response.request.string_command, args
                 )
 
                 # In fast mode we merge all outputs in the root output bag.

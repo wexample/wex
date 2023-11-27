@@ -308,7 +308,7 @@ class Kernel:
                 self.io.error(
                     'Command file not found when rendering, command {command}, in path "{path}"',
                     {
-                        "command": request.command,
+                        "command": request.string_command,
                         "path": request.path,
                     },
                     trace=False,
@@ -330,7 +330,7 @@ class Kernel:
             self.io.error(
                 message,
                 {
-                    "command": request.command,
+                    "command": request.string_command,
                     "command_type": command_type,
                     "resolver_type": resolver_type,
                 },

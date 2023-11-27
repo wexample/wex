@@ -36,7 +36,7 @@ class QueuedCollectionPathManager:
 
     def save_to_map(self) -> None:
         self.response.kernel.io.log(
-            f"Command: {self.request.command}", verbosity=VERBOSITY_LEVEL_MAXIMUM
+            f"Command: {self.request.string_command}", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         self.response.kernel.io.log(
             f"  Step path: {self.build_step_path()}", verbosity=VERBOSITY_LEVEL_MAXIMUM
