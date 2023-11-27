@@ -6,7 +6,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class DefaultResponse(AbstractResponse):
-    def __init__(self, kernel, content):
+    def __init__(self, kernel, content) -> None:
         super().__init__(kernel)
         self.content: str = content
 

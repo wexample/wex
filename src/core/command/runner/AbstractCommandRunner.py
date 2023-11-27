@@ -30,7 +30,7 @@ class AbstractCommandRunner:
         pass
 
     @abstractmethod
-    def run(self):
+    def run(self) -> Any:
         pass
 
     def run_click_function(self, script_command) -> Any:

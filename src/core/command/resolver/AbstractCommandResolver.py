@@ -3,6 +3,7 @@ import re
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, cast
 
+from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.const.globals import (
     COMMAND_EXTENSIONS,
     COMMAND_SEPARATOR_ADDON,
@@ -52,13 +53,16 @@ class AbstractCommandResolver:
         self.kernel = kernel
 
     def render_request(
-        self, request: CommandRequest, render_mode: str
+            self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
+        runner = cast(AbstractCommandRunner, request.runner)
+        script_command = cast(ScriptCommand, request.script_command)
+
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
         previous_verbosity = self.kernel.verbosity
         verbosity = FunctionProperty.get_property(
-            request.script_command, name="verbosity"
+            script_command, name="verbosity"
         )
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
@@ -70,7 +74,7 @@ class AbstractCommandResolver:
         self.kernel.logger.log_request(request=request)
 
         # Execute request
-        response = self.wrap_response(response=request.runner.run())
+        response = self.wrap_response(response=runner.run())
 
         # Render response
         response = response.render(request=request, render_mode=render_mode)
@@ -141,7 +145,7 @@ class AbstractCommandResolver:
             )
 
     def create_command_request(
-        self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
+            self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
     ) -> CommandRequest:
         return CommandRequest(self, command, args or [])
 
@@ -162,12 +166,12 @@ class AbstractCommandResolver:
 
     @abstractmethod
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         pass
 
     def build_path_or_fail(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> str:
         path = self.build_path(request=request, extension=extension, subdir=subdir)
 
@@ -194,9 +198,9 @@ class AbstractCommandResolver:
         pass
 
     def build_full_command_parts_from_script_command(
-        self,
-        script_command: ScriptCommand,
-        args: Optional["OptionalCoreCommandArgsDict"] = None,
+            self,
+            script_command: ScriptCommand,
+            args: Optional["OptionalCoreCommandArgsDict"] = None,
     ) -> "CoreCommandStringParts":
         return (
             [
@@ -209,14 +213,14 @@ class AbstractCommandResolver:
         )
 
     def build_full_command_from_function(
-        self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
+            self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
     ) -> str | None:
         return command_to_string(
             self.build_full_command_parts_from_script_command(script_command, args)
         )
 
     def build_command_parts_from_function_name(
-        self, function_name: str
+            self, function_name: str
     ) -> "CoreCommandStringParts":
         """
         Returns the "default" format (addons style)
@@ -239,8 +243,8 @@ class AbstractCommandResolver:
 
     def build_command_from_function(self, script_command: ScriptCommand) -> str:
         if (
-            not script_command.click_command
-            or not script_command.click_command.callback
+                not script_command.click_command
+                or not script_command.click_command.callback
         ):
             self.kernel.io.error(
                 "Trying to build command name from non-located command function"
@@ -253,7 +257,7 @@ class AbstractCommandResolver:
         return self.build_command_from_parts(parts)
 
     def build_command_path(
-        self, base_path: str, extension: str, subdir: Optional[str], command_path: str
+            self, base_path: str, extension: str, subdir: Optional[str], command_path: str
     ) -> str:
         if subdir:
             base_path += f"{subdir}/"
@@ -261,7 +265,7 @@ class AbstractCommandResolver:
         return os.path.join(base_path, "command", command_path + "." + extension)
 
     def autocomplete_suggest(
-        self, cursor: int, search_split: StringsList
+            self, cursor: int, search_split: StringsList
     ) -> str | None:
         return None
 
@@ -280,7 +284,7 @@ class AbstractCommandResolver:
         return " ".join(search_params)
 
     def suggest_from_path(
-        self, commands_path: str, search_string: str, test_commands: bool = False
+            self, commands_path: str, search_string: str, test_commands: bool = False
     ) -> StringsList:
         commands = self.scan_commands_groups(commands_path, test_commands)
         commands_names: StringsList = []
@@ -296,7 +300,7 @@ class AbstractCommandResolver:
         return commands_names
 
     def scan_commands_groups(
-        self, directory: str, test_commands: bool = False
+            self, directory: str, test_commands: bool = False
     ) -> RegistryCommandsCollection:
         command_dict: RegistryCommandsCollection = {}
 
@@ -310,7 +314,7 @@ class AbstractCommandResolver:
         return command_dict
 
     def scan_commands(
-        self, directory: str, group: str, test_commands: bool = False
+            self, directory: str, group: str, test_commands: bool = False
     ) -> RegistryCommandsCollection:
         """Scans the given directory for command files and returns a dictionary of found commands."""
         commands: RegistryCommandsCollection = {}
@@ -335,7 +339,7 @@ class AbstractCommandResolver:
 
                     test_file = None
                     if test_commands or not hasattr(
-                        script_command.click_command.callback, "test_command"
+                            script_command.click_command.callback, "test_command"
                     ):
                         # All test are in python
                         test_file = os.path.realpath(
@@ -407,7 +411,7 @@ class AbstractCommandResolver:
 
     @abstractmethod
     def build_command_parts_from_url_path_parts(
-        self, path_parts: StringsList
+            self, path_parts: StringsList
     ) -> StringsList:
         pass
 

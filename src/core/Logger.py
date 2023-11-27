@@ -99,7 +99,7 @@ class Logger:
             "args": request.args,
         }
 
-    def log_request(self, request):
+    def log_request(self, request) -> None:
         current_command_dict = self.create_command_dict(request)
 
         # Store root command
