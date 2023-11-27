@@ -1,5 +1,6 @@
 import os
 from typing import Optional, cast
+from typing import TYPE_CHECKING
 
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
@@ -12,6 +13,9 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
 from src.helper.string import string_to_snake_case
+
+if TYPE_CHECKING:
+    from click.core import Command as ClickCommand
 
 
 class AddonCommandResolver(AbstractCommandResolver):
@@ -26,30 +30,31 @@ class AddonCommandResolver(AbstractCommandResolver):
     def build_path(
             self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
+        match = request.match
         # Unable to find command path if no addon name found.
-        if request.match.group(1) is None:
+        if not match or request.match.group(1) is None:
             return None
 
         return self.build_command_path(
             base_path=self.kernel.get_path(
-                "addons", [string_to_snake_case(request.match.group(1))]
+                "addons", [string_to_snake_case(match.group(1))]
             ),
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(
-                string_to_snake_case(request.match.group(2)),
-                string_to_snake_case(request.match.group(3)),
+                string_to_snake_case(match.group(2)),
+                string_to_snake_case(match.group(3)),
             ),
         )
 
-    def get_function_name_parts(self, parts: list) -> StringsList:
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return [
             parts[0],
             parts[1],
             parts[2],
         ]
 
-    def get_function_aliases(self, function) -> StringsList:
+    def get_function_aliases(self, function: "ClickCommand") -> StringsList:
         aliases = super().get_function_aliases(function)
         match = self.build_match(self.build_command_from_function(function))
 

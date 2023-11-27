@@ -42,7 +42,6 @@ from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from click.core import Command as ClickCommand
-
     from src.core.Kernel import Kernel
 
 
