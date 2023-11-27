@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+from src.const.types import StringKeysDict
 from src.decorator.option import option
 from src.helper.args import args_parse_dict
 
@@ -14,12 +15,13 @@ if TYPE_CHECKING:
 @option("--arguments", "-args", type=str, required=False, help="Arguments")
 def app__services__exec(
     manager: "AppAddonManager", app_dir: str, hook: str, arguments: str
-):
+) -> StringKeysDict:
     output = {}
 
     arguments_dict = args_parse_dict(arguments)
+    services = cast(StringKeysDict, manager.get_config("service", {}))
 
-    for service in manager.get_config("service", {}):
+    for service in services:
         arguments_dict_copy = arguments_dict.copy()
         arguments_dict_copy["service"] = service
 
