@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import click
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class AbstractCommandRunner:
-    def __init__(self, kernel: 'Kernel') -> None:
+    def __init__(self, kernel: "Kernel") -> None:
         self.kernel = kernel
         self.request: None | CommandRequest = None
 

@@ -1,7 +1,7 @@
 import builtins
 import os
 import types
-from typing import Any, Optional, cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
 
@@ -29,7 +29,7 @@ COMMAND_TYPE_PYTHON_FILE = "python-file"
 
 
 class YamlCommandRunner(AbstractCommandRunner):
-    def __init__(self, kernel: 'Kernel') -> None:
+    def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
         self.content: Optional[YamlCommand] = None
 
@@ -60,7 +60,9 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def get_content_or_fail(self) -> YamlCommand:
         if not self.content:
-            self.kernel.io.error('Trying to access request content before initialization')
+            self.kernel.io.error(
+                "Trying to access request content before initialization"
+            )
             assert False
 
         return self.content
@@ -78,7 +80,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         resolver: AbstractCommandResolver = self.request.resolver
 
         def _script_command_handler(
-                *args: Args, **kwargs: Kwargs
+            *args: Args, **kwargs: Kwargs
         ) -> Optional[QueuedCollectionResponse]:
             commands_collection = []
 
@@ -149,7 +151,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Apply extra decorators
         properties = (
-                dict_get_item_by_path(data=content, key="properties", default=[]) or []
+            dict_get_item_by_path(data=content, key="properties", default=[]) or []
         )
 
         for property in properties:
