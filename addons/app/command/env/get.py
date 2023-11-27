@@ -9,6 +9,7 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.Kernel import Kernel
 
 
 @app_command(help="Return the property value set in the .wex/.env file")
@@ -18,8 +19,14 @@ if TYPE_CHECKING:
 def app__env__get(
     manager: "AppAddonManager", app_dir: str, key: str = "APP_ENV"
 ) -> str:
-    return _app__env__get(app_dir, key)
+    return _app__env__get(manager.kernel, app_dir, key)
 
 
-def _app__env__get(app_dir: str, key: str = "APP_ENV") -> str:
-    return dotenv_values(os.path.join(app_dir, APP_FILEPATH_REL_ENV)).get(key)
+def _app__env__get(kernel: "Kernel", app_dir: str, key: str = "APP_ENV") -> str:
+    env = dotenv_values(os.path.join(app_dir, APP_FILEPATH_REL_ENV)).get(key)
+
+    if not env:
+        kernel.io.error(f"Env not found from APP_ENV in {app_dir}")
+        assert False
+
+    return str(env)

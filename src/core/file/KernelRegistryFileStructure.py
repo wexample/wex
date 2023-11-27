@@ -29,7 +29,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
         self.kernel.io.log("Building registry...")
 
         # Call function avoiding core command management.
-        self.content["env"] = _app__env__get(self.kernel.directory.path)
+        self.content["env"] = _app__env__get(self.kernel, self.kernel.directory.path)
 
         for command_type in self.kernel.resolvers:
             self.content["resolvers"][command_type] = self.kernel.resolvers[
