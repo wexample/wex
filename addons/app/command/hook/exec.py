@@ -5,7 +5,7 @@ from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_APP
 from src.const.types import StringKeysDict
 from src.decorator.option import option
-from src.helper.args import args_parse_one
+from src.helper.args import args_parse_dict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def app__hook__exec(
     manager: "AppAddonManager", hook: str, arguments: str, app_dir: Optional[str] = None
 ) -> StringKeysDict:
-    arguments_dict = cast(StringKeysDict, args_parse_one(arguments) or {})
+    arguments_dict = args_parse_dict(arguments)
 
     manager.log(f"Hooking : {hook}")
 

@@ -6,7 +6,7 @@ import click
 from click.core import Command
 from click.types import BoolParamType
 
-from src.const.types import BasicArg
+from src.const.types import BasicArg, StringKeysDict
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 
@@ -173,6 +173,15 @@ def args_convert_to_dict(function: Command, arg_list: List[str]) -> Dict[str, An
             i += 1
 
     return args_dict
+
+
+def args_parse_dict(arg: str) -> StringKeysDict:
+    arg_dict = args_parse_one(arg, {})
+
+    if not isinstance(arg_dict, StringKeysDict):
+        return {}
+
+    return arg_dict
 
 
 def args_parse_one(argument: str, default: Optional[Any] = None) -> BasicArg:

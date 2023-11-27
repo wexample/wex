@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.decorator.option import option
-from src.helper.args import args_parse_one
+from src.helper.args import args_parse_dict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -17,18 +17,18 @@ def app__services__exec(
 ):
     output = {}
 
-    arguments = args_parse_one(arguments, {})
+    arguments_dict = args_parse_dict(arguments)
 
     for service in manager.get_config("service", {}):
-        arguments = arguments.copy()
-        arguments["service"] = service
+        arguments_dict_copy = arguments_dict.copy()
+        arguments_dict_copy["service"] = service
 
         command_name = f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}"
 
         manager.log(command_name)
 
         output[service] = manager.kernel.run_command(
-            command_name, arguments, quiet=True
+            command_name, arguments_dict_copy, quiet=True
         )
 
     return output

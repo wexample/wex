@@ -33,7 +33,7 @@ def app__app__started(
     if not manager.get_runtime_config("started", False):
         return False
 
-    if manager.runtime_docker_compose == {}:
+    if not manager.runtime_docker_compose:
         return False
 
     if mode == APP_STARTED_CHECK_MODE_CONFIG:
