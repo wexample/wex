@@ -1,5 +1,5 @@
 import os
-from typing import Optional, cast
+from typing import Optional, cast, Match
 
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
@@ -27,9 +27,9 @@ class AddonCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
-        match = request.match
+        match = request.get_match()
         # Unable to find command path if no addon name found.
-        if not match or match.group(1) is None:
+        if match.group(1) is None:
             return None
 
         return self.build_command_path(

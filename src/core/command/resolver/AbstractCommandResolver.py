@@ -1,9 +1,8 @@
 import os
 import re
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, cast
+from typing import TYPE_CHECKING, Any, List, Optional, cast, Match
 
-from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.const.globals import (
     COMMAND_EXTENSIONS,
     COMMAND_SEPARATOR_ADDON,
@@ -22,6 +21,7 @@ from src.const.types import (
     RegistryResolverData,
     StringsList,
 )
+from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
@@ -61,9 +61,7 @@ class AbstractCommandResolver:
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = FunctionProperty.get_property(
-            script_command, name="verbosity"
-        )
+        verbosity = FunctionProperty.get_property(script_command, name="verbosity")
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity
@@ -203,13 +201,11 @@ class AbstractCommandResolver:
             args: Optional["OptionalCoreCommandArgsDict"] = None,
     ) -> "CoreCommandStringParts":
         return (
-            [
-                CORE_COMMAND_NAME,
-                self.build_command_from_function(script_command),
-            ]
-            + args_convert_dict_to_args(script_command.click_command, args)
-            if args
-            else []
+                [
+                    CORE_COMMAND_NAME,
+                    self.build_command_from_function(script_command),
+                ]
+                + (args_convert_dict_to_args(script_command.click_command, args) if args else [])
         )
 
     def build_full_command_from_function(

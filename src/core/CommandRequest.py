@@ -39,6 +39,24 @@ class CommandRequest:
             # as it is managed outside.
             return
 
+    def get_script_command(self) -> ScriptCommand:
+        if not self.script_command:
+            self.resolver.kernel.io.error(
+                "Trying to access script command before initialization"
+            )
+            assert False
+
+        return self.script_command
+
+    def get_match(self) -> Match:
+        if not self.match:
+            self.resolver.kernel.io.error(
+                "Trying to access match before initialization"
+            )
+            assert False
+
+        return self.match
+
     def get_root_parent(self) -> "CommandRequest":
         if self.parent:
             return self.parent.get_root_parent()

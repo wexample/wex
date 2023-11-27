@@ -21,6 +21,13 @@ class AbstractCommandRunner:
         self.request = request
         self.request.runner = self
 
+    def get_request(self) -> CommandRequest:
+        if not self.request:
+            self.kernel.io.error("Trying to access request before initialization")
+            assert False
+
+        return self.request
+
     @abstractmethod
     def get_command_type(self):
         pass

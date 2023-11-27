@@ -19,9 +19,6 @@ class ScriptCommand:
     ) -> None:
         self.command_type: str = command_type
 
-        # TODO RM
-        function.command_type = command_type
-
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
 
         for resolver in COMMAND_RESOLVERS_CLASSES:

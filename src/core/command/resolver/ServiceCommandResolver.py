@@ -29,7 +29,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
-        service = string_to_snake_case(request.match[1]) if request.match else None
+        match = request.get_match()
+        service = string_to_snake_case(match[1]) if match else None
         if not service or service not in self.get_registry_data():
             if not request.quiet:
                 self.kernel.io.error(
@@ -61,11 +62,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
-        match = request.match
-
-        if not match:
-            return None
-
+        match = request.get_match()
         name = string_to_snake_case(match[1])
         path = service_get_dir(self.kernel, name)
 

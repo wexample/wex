@@ -62,9 +62,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
-        if not request.match:
-            return None
-
+        match = request.get_match()
         base_path = self.get_base_path()
         if not base_path:
             return None
@@ -74,8 +72,8 @@ class AppCommandResolver(AbstractCommandResolver):
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(
-                string_to_snake_case(request.match[2]),
-                string_to_snake_case(request.match[3]),
+                string_to_snake_case(match[2]),
+                string_to_snake_case(match[3]),
             ),
         )
 
