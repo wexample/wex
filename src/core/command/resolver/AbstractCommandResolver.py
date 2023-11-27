@@ -58,7 +58,7 @@ class AbstractCommandResolver:
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = FunctionProperty.get_property(request.function, name="verbosity")
+        verbosity = FunctionProperty.get_property(request.script_command, name="verbosity")
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity

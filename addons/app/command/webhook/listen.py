@@ -193,7 +193,7 @@ def app__webhook__listen(
                 ]
 
                 if hasattr(
-                    kernel.root_request.function.function.callback,
+                    kernel.root_request.script_command.function.callback,
                     "option_webhook_listener_path",
                 ):
                     command += [
@@ -202,7 +202,7 @@ def app__webhook__listen(
                     ]
 
                 if hasattr(
-                    kernel.root_request.function.function.callback,
+                    kernel.root_request.script_command.function.callback,
                     "option_webhook_listener_port",
                 ):
                     command += [

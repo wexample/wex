@@ -27,13 +27,13 @@ class PythonCommandRunner(AbstractCommandRunner):
 
     def get_options_names(self) -> StringsList:
         params: StringsList = []
-        for param in self.request.function.function.params:
+        for param in self.request.script_command.function.params:
             params += param.opts
 
         return params
 
     def get_command_type(self) -> str:
-        return self.request.function.function.callback.command_type
+        return self.request.script_command.function.callback.command_type
 
     def run(self) -> Any:
-        return self.run_click_function(self.request.function)
+        return self.run_click_function(self.request.script_command)

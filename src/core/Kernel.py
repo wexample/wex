@@ -340,7 +340,7 @@ class Kernel:
 
         # Enforce sudo.
         if (
-            FunctionProperty.has_property(request.function, "as_sudo")
+            FunctionProperty.has_property(request.script_command, "as_sudo")
             and os.geteuid() != 0
         ):
             self.logger.append_event("EVENT_SWITCH_SUDO")

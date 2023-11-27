@@ -129,9 +129,9 @@ class Logger:
         # When writing current log, check if disabled.
         if (
             self.kernel.root_request
-            and self.kernel.root_request.function
+            and self.kernel.root_request.script_command
             and FunctionProperty.has_property(
-                self.kernel.root_request.function, name="no_log"
+                self.kernel.root_request.script_command, name="no_log"
             )
         ):
             return

@@ -27,7 +27,7 @@ class CommandRequest:
         self.args = args or []
         self.parent = self.resolver.kernel.current_request
         self.path: None | str = None
-        self.function: Optional[ScriptCommand] = None
+        self.script_command: Optional[ScriptCommand] = None
         self.first_arg = self.resolver.kernel
         self.match: Optional[Match] = None
         self.localized: bool = False
@@ -66,11 +66,11 @@ class CommandRequest:
 
             runner.set_request(self)
 
-            self.function = self.runner.build_script_command()
+            self.script_command = self.runner.build_script_command()
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
-                self.args = args_convert_dict_to_args(self.function.function, self.args)
+                self.args = args_convert_dict_to_args(self.script_command.function, self.args)
 
             return True
 

@@ -166,13 +166,13 @@ class AppCommandResolver(AbstractCommandResolver):
         def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)
 
-            if not request.function:
+            if not request.script_command:
                 return AbortResponse(
                     kernel=self.kernel, reason="WEBHOOK_REQUEST_NOT_FOUND"
                 )
 
             # Hooking this command is not allowed
-            if not FunctionProperty.has_property(request.function, "app_webhook"):
+            if not FunctionProperty.has_property(request.script_command, "app_webhook"):
                 return QueuedCollectionStopResponse(
                     self.kernel, "Function is not a webhook"
                 )

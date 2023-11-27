@@ -16,5 +16,5 @@ class TestCoreCommandInstallUpdate(AbstractTestCase):
         )
 
         self.assertIsNotNone(
-            request.function,
+            request.script_command,
         )
