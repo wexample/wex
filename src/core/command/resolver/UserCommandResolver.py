@@ -86,7 +86,7 @@ class UserCommandResolver(AbstractCommandResolver):
             if search_split[0].startswith(COMMAND_CHAR_USER):
                 return self.suggest_arguments(
                     search_split[0],
-                    search_split[1:],
+                    search_split[cursor],
                 )
         return None
 

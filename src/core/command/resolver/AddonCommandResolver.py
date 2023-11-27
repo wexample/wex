@@ -139,7 +139,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             # Command validity is checked inside
             return self.suggest_arguments(
                 "".join(search_split[0:3]),
-                search_split[3:],
+                search_split[cursor],
             )
 
         return None

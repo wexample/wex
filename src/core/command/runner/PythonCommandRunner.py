@@ -3,6 +3,7 @@ from typing import Any
 
 from click import Command
 
+from src.const.types import StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
 
@@ -24,8 +25,12 @@ class PythonCommandRunner(AbstractCommandRunner):
             self.request.resolver.get_function_name(list(self.request.match.groups())),
         )
 
-    def get_params(self) -> list:
-        return self.request.function.function.params
+    def get_options_names(self) -> StringsList:
+        params: StringsList = []
+        for param in self.request.function.function.params:
+            params += param.opts
+
+        return params
 
     def get_command_type(self) -> str:
         return self.request.function.function.callback.command_type

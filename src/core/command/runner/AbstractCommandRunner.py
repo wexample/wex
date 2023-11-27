@@ -3,6 +3,7 @@ from typing import Any
 
 import click
 
+from src.const.types import StringsList
 from src.const.args import ARGS_HELP
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -22,7 +23,7 @@ class AbstractCommandRunner:
         pass
 
     @abstractmethod
-    def get_params(self) -> list:
+    def get_options_names(self) -> StringsList:
         pass
 
     @abstractmethod

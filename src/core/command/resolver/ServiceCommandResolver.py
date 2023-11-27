@@ -113,7 +113,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             elif cursor >= 4:
                 return self.suggest_arguments(
                     "".join(search_split[0:4]),
-                    search_split[4:],
+                    search_split[cursor],
                 )
 
         return None

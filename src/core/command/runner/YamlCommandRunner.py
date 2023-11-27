@@ -40,11 +40,17 @@ class YamlCommandRunner(AbstractCommandRunner):
                 trace=False,
             )
 
-    def get_request_function(self, path: str, parts) -> Command:
-        pass
+    def get_options_names(self) -> StringsList:
+        names = []
 
-    def get_params(self) -> list:
-        pass
+        if "options" in self.content:
+            options = self.content["options"]
+
+            for option in options:
+                names.append(option['name'])
+                names.append(option['short'])
+
+        return names
 
     def get_command_type(self) -> str:
         return self.content["type"]

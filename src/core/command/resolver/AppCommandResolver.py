@@ -115,7 +115,7 @@ class AppCommandResolver(AbstractCommandResolver):
             if search_split[0].startswith(COMMAND_CHAR_APP):
                 return self.suggest_arguments(
                     search_split[0],
-                    search_split[1:],
+                    search_split[cursor],
                 )
 
         return None

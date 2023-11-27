@@ -254,23 +254,17 @@ class AbstractCommandResolver:
     def autocomplete_suggest(self, cursor: int, search_split: []) -> str | None:
         return None
 
-    def suggest_arguments(self, command: str, search_params: []):
+    def suggest_arguments(self, command: str, search_params: str):
         request = self.create_command_request(command)
 
         # Command is not recognised
         if not request.runner:
             return
 
-        search_params = [val for val in search_params if val.startswith("-")]
+        function_params = request.runner.get_options_names()
+        search_params = [param for param in function_params if param.startswith(search_params)]
 
-        params = []
-        for param in request.runner.get_params():
-            if any(opt in search_params for opt in param.opts):
-                continue
-
-            params += param.opts
-
-        return " ".join(params)
+        return " ".join(search_params)
 
     def suggest_from_path(
         self, commands_path: str, search_string: str, test_commands: bool = False
