@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from addons.app.decorator.service_option import service_option
+from src.const.types import RegistryAllServices
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -10,4 +11,5 @@ if TYPE_CHECKING:
 @app_command(help="Return ture if service is installed on app")
 @service_option()
 def app__service__used(manager: "AppAddonManager", service: str, app_dir: str) -> bool:
-    return service in (manager.get_config("service") or {}).keys()
+    services = cast(RegistryAllServices, manager.get_config("service") or {})
+    return service in services.keys()

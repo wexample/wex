@@ -10,6 +10,7 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
+from src.core.response.AbstractResponse import ResponseCollection
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
@@ -22,10 +23,10 @@ from src.helper.dict import dict_get_item_by_path
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-COMMAND_TYPE_BASH = "bash"
-COMMAND_TYPE_BASH_FILE = "bash-file"
-COMMAND_TYPE_PYTHON = "python"
-COMMAND_TYPE_PYTHON_FILE = "python-file"
+COMMAND_TYPE_BASH: str = "bash"
+COMMAND_TYPE_BASH_FILE: str = "bash-file"
+COMMAND_TYPE_PYTHON: str = "python"
+COMMAND_TYPE_PYTHON_FILE: str = "python-file"
 
 
 class YamlCommandRunner(AbstractCommandRunner):
@@ -82,7 +83,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
         ) -> Optional[QueuedCollectionResponse]:
-            commands_collection = []
+            commands_collection: ResponseCollection = []
 
             variables = {}
             for name in kwargs:

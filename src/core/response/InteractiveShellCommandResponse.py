@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest
@@ -7,9 +7,14 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import command_to_string, execute_command_sync
 from src.helper.process import process_post_exec
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class InteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel, shell_command: list | str, ignore_error: bool = False):
+    def __init__(
+        self, kernel: "Kernel", shell_command: list | str, ignore_error: bool = False
+    ):
         super().__init__(kernel)
 
         if isinstance(shell_command, list):

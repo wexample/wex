@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict
@@ -23,11 +23,14 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import (
 )
 from src.helper.data_yaml import yaml_is_basic_data
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class QueuedCollectionResponse(AbstractResponse):
     ids_counter = 0
 
-    def __init__(self, kernel, collection: ResponseCollection):
+    def __init__(self, kernel: "Kernel", collection: ResponseCollection) -> None:
         super().__init__(kernel)
         self.collection = collection
         self.step_position: int = 0
