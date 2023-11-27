@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.const.globals import (
@@ -13,13 +13,11 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
 from src.core.response.AbortResponse import AbortResponse
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
 from src.helper.string import string_to_kebab_case, string_to_snake_case
-
-if TYPE_CHECKING:
-    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -31,7 +29,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
     def render_request(
         self, request: CommandRequest, render_mode: str
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         if not self.get_base_path():
             if not request.quiet:
                 self.kernel.io.error(
@@ -134,7 +132,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
     def run_command_request_from_url_path(
         self, path: str, command_args: dict | None = None
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
         from src.helper.string import string_to_snake_case
 
@@ -151,9 +149,9 @@ class AppCommandResolver(AbstractCommandResolver):
         if app_name not in apps:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_APP_NOT_FOUND")
 
-        self_super = super()
+        self_super: AbstractCommandResolver = super()
 
-        def _callback():
+        def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)
 
             if not request.function:
@@ -163,8 +161,13 @@ class AppCommandResolver(AbstractCommandResolver):
 
             # Hooking this command is not allowed
             if not FunctionProperty.has_property(request.function, "app_webhook"):
-                return QueuedCollectionStopResponse(self.kernel)
+                return QueuedCollectionStopResponse(
+                    self.kernel, "Function is not a webhook"
+                )
 
             return self_super.run_command_request_from_url_path(path)
 
-        return self.app_addon_manager.exec_in_app_workdir(apps[app_name], _callback)
+        response = self.app_addon_manager.exec_in_app_workdir(apps[app_name], _callback)
+        assert isinstance(response, AbstractResponse)
+
+        return response

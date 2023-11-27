@@ -42,6 +42,7 @@ from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from click.core import Command as ClickCommand
+
     from src.core.Kernel import Kernel
 
 
@@ -362,7 +363,7 @@ class AbstractCommandResolver:
     def decorate_command(cls, function: "AnyCallable") -> "AnyCallable":
         return function
 
-    def run_command_request_from_url_path(self, path: str):
+    def run_command_request_from_url_path(self, path: str) -> "AbstractResponse":
         return self.kernel.run_command(
             command=self.create_command_from_path(path), args={}
         )
