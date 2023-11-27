@@ -24,7 +24,6 @@ from src.const.types import (
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
-from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.DefaultResponse import DefaultResponse
@@ -101,14 +100,15 @@ class AbstractCommandResolver:
     def get_pattern(cls) -> str:
         pass
 
-    def get_commands_registry(self) -> RegistryCommandGroup:
+    def get_commands_registry(self) -> RegistryCommandsCollection:
         from src.helper.registry import registry_get_all_commands_from_registry_part
 
         if self.get_type() in self.kernel.registry_structure.content["resolvers"]:
             return registry_get_all_commands_from_registry_part(
                 self.get_registry_data()
             )
-        return RegistryCommandGroup()
+
+        return {}
 
     @classmethod
     @abstractmethod
@@ -147,8 +147,8 @@ class AbstractCommandResolver:
 
     def resolve_alias(self, command: str) -> str:
         registry = self.get_commands_registry()
-        for item in registry.commands:
-            if command in registry.commands[item]["alias"]:
+        for item in registry:
+            if command in registry[item]["alias"]:
                 return item
         return command
 
@@ -190,27 +190,29 @@ class AbstractCommandResolver:
         )
 
     @abstractmethod
-    def get_function_name_parts(self, parts: list) -> StringsList:
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
         pass
 
-    def build_full_command_parts_from_function(
-        self, function_or_command, args: Optional["OptionalCoreCommandArgsDict"] = None
+    def build_full_command_parts_from_script_command(
+        self,
+        script_command: ScriptCommand,
+        args: Optional["OptionalCoreCommandArgsDict"] = None,
     ) -> "CoreCommandStringParts":
-        if args is None:
-            args = []
-        else:
-            args = args_convert_dict_to_args(function_or_command.click_command, args)
-
-        return [
-            CORE_COMMAND_NAME,
-            self.build_command_from_function(function_or_command),
-        ] + args
+        return (
+            [
+                CORE_COMMAND_NAME,
+                self.build_command_from_function(script_command),
+            ]
+            + args_convert_dict_to_args(script_command.click_command, args)
+            if args
+            else []
+        )
 
     def build_full_command_from_function(
-        self, function_or_command, args: Optional[dict] = None
+        self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
     ) -> str | None:
         return command_to_string(
-            self.build_full_command_parts_from_function(function_or_command, args)
+            self.build_full_command_parts_from_script_command(script_command, args)
         )
 
     def build_command_parts_from_function_name(

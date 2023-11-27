@@ -3,11 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List
 
 from src.const.globals import COMMAND_SEPARATOR_ADDON
-from src.core.registry.CommandGroup import RegistryCommandGroup
 from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
-    from src.const.types import RegistryAllServices, RegistryService
+    from src.const.types import (
+        RegistryAllServices,
+        RegistryCommandsCollection,
+        RegistryService,
+    )
     from src.core.Kernel import Kernel
 
 
@@ -25,12 +28,12 @@ def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
 
 def registry_get_all_commands_from_registry_part(
     registry_part: Dict[str, Dict[str, Any]]
-) -> RegistryCommandGroup:
-    output: RegistryCommandGroup = RegistryCommandGroup()
+) -> RegistryCommandsCollection:
+    output: RegistryCommandsCollection = {}
 
     for addon, addon_data in registry_part.items():
         for command, command_data in addon_data["commands"].items():
-            output.commands[command] = command_data
+            output[command] = command_data
 
     return output
 

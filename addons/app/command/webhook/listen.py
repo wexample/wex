@@ -179,7 +179,7 @@ def app__webhook__listen(
 
                 command = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON
-                ).build_full_command_parts_from_function(
+                ).build_full_command_parts_from_script_command(
                     routes_map[route_name]["function"],
                     options,
                 )

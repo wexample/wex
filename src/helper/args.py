@@ -6,7 +6,12 @@ import click
 from click.core import Command
 from click.types import BoolParamType
 
-from src.const.types import BasicValue, StringKeysDict
+from src.const.types import (
+    BasicValue,
+    CoreCommandArgsDict,
+    CoreCommandArgsList,
+    StringKeysDict,
+)
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 
@@ -94,7 +99,9 @@ def args_convert_dict_to_snake_dict(input_dict: Dict[str, Any]) -> Dict[str, Any
     return {string_to_snake_case(key): value for key, value in input_dict.items()}
 
 
-def args_convert_dict_to_args(function: Command, args: Dict[str, Any]) -> List[str]:
+def args_convert_dict_to_args(
+    function: Command, args: CoreCommandArgsDict
+) -> CoreCommandArgsList:
     """
     Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
     Any key in `args` that is not found in `function.params` is added to the
