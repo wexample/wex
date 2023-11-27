@@ -80,7 +80,7 @@ def app__app__start(
                 # User said "no" or chose "abort"
                 if not env:
                     manager.log("Abort")
-                    return QueuedCollectionStopResponse(kernel, 'APP_START_USER_ABORT')
+                    return QueuedCollectionStopResponse(kernel, "APP_START_USER_ABORT")
 
             app_create_env(env, app_dir)
 

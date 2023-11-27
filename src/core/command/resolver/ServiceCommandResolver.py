@@ -29,8 +29,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
-        service = string_to_snake_case(request.match[1])
-        if service not in self.get_registry_data():
+        service = string_to_snake_case(request.match[1]) if request.match else None
+        if not service or service not in self.get_registry_data():
             if not request.quiet:
                 self.kernel.io.error(
                     ERR_SERVICE_NOT_FOUND,
@@ -55,29 +55,34 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_SERVICE
 
-    def build_command_from_parts(self, parts: list) -> str:
+    def build_command_from_parts(self, parts: StringsList) -> str:
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
-        name = string_to_snake_case(request.match[1])
+        match = request.match
+
+        if not match:
+            return None
+
+        name = string_to_snake_case(match[1])
         path = service_get_dir(self.kernel, name)
 
         if not path:
             self.kernel.io.error(f"Service not found : {name}")
 
         return self.build_command_path(
-            base_path=path,
+            base_path=str(path),
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(
-                string_to_snake_case(request.match.group(2)),
-                string_to_snake_case(request.match.group(3)),
+                string_to_snake_case(match.group(2)),
+                string_to_snake_case(match.group(3)),
             ),
         )
 
-    def get_function_name_parts(self, parts: list) -> StringsList:
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return [parts[0], parts[1], parts[2]]
 
     def autocomplete_suggest(

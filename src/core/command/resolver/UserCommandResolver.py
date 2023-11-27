@@ -23,11 +23,14 @@ class UserCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
-        # Add user command dir to path
-        # It allows to use imports in custom user scripts
-        commands_path = os.path.join(self.get_base_path(), "command")
-        if os.path.exists(commands_path) and commands_path not in sys.path:
-            sys.path.append(commands_path)
+        base_path = self.get_base_path()
+
+        if base_path:
+            # Add user command dir to path
+            # It allows to use imports in custom user scripts
+            commands_path = os.path.join(base_path, "command")
+            if os.path.exists(commands_path) and commands_path not in sys.path:
+                sys.path.append(commands_path)
 
         return super().render_request(request, render_mode)
 
@@ -42,8 +45,15 @@ class UserCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
+        if not request.match:
+            return None
+
+        base_path = self.get_base_path()
+        if not base_path:
+            return None
+
         return self.build_command_path(
-            base_path=self.get_base_path(),
+            base_path=base_path,
             extension=extension,
             subdir=subdir,
             command_path=os.path.join(
@@ -55,10 +65,10 @@ class UserCommandResolver(AbstractCommandResolver):
     def get_base_path(self) -> Optional[str]:
         return f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
-    def get_function_name_parts(self, parts: list) -> StringsList:
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["user", parts[1], parts[2]]
 
-    def build_command_from_parts(self, parts: list) -> str:
+    def build_command_from_parts(self, parts: StringsList) -> str:
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
@@ -70,7 +80,7 @@ class UserCommandResolver(AbstractCommandResolver):
         if cursor == 0:
             base_command_path = self.get_base_command_path()
 
-            if os.path.exists(base_command_path):
+            if base_command_path and os.path.exists(base_command_path):
                 # User typed "~"
                 if search_split[0].startswith(COMMAND_CHAR_USER):
                     return " ".join(

@@ -29,7 +29,7 @@ def app__app__stop(manager: "AppAddonManager", app_dir: str):
     def _app__app__stop__checkup():
         if not kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
             manager.log("App already stopped")
-            return QueuedCollectionStopResponse(kernel, 'APP_ALREADY_STOPPED')
+            return QueuedCollectionStopResponse(kernel, "APP_ALREADY_STOPPED")
 
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 

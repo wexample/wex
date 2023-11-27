@@ -1,5 +1,6 @@
 from abc import ABC
 
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
@@ -30,7 +31,7 @@ class FastModeQueuedCollectionResponseQueueManager(
             # Get previous data keeps consistency with non-fast mode.
             return previous_response.first()
 
-    def render_content_complete(self):
+    def render_content_complete(self) -> AbstractResponse:
         if self.response.parent:
             self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection

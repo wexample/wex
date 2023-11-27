@@ -75,7 +75,7 @@ def app__webhook__exec(kernel: "Kernel", path: str, env: None | str = None):
                 {"path": path, "source_data": source_data, "success": False},
             )
 
-            return QueuedCollectionStopResponse(kernel, 'WEBHOOK_ERROR')
+            return QueuedCollectionStopResponse(kernel, "WEBHOOK_ERROR")
 
     def _execute(previous: str):
         return resolver.run_command_request_from_url_path(match[2])
