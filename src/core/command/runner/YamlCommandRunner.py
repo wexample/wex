@@ -4,9 +4,9 @@ import types
 from typing import Any, Optional, cast
 
 import click
-from click import Command
 
-from src.const.types import YamlCommand
+from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.const.types import YamlCommand, Args, Kwargs, StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
@@ -28,11 +28,12 @@ COMMAND_TYPE_PYTHON_FILE = "python-file"
 class YamlCommandRunner(AbstractCommandRunner):
     def __init__(self, kernel):
         super().__init__(kernel)
+        self.content: Optional[YamlCommand] = None
 
     def set_request(self, request: CommandRequest):
         super().set_request(request=request)
 
-        self.content: YamlCommand = yaml_load(self.request.path)
+        self.content = cast(YamlCommand, yaml_load(self.request.path, {}))
 
         if not self.content:
             self.kernel.io.error(
