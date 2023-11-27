@@ -64,7 +64,9 @@ class UserCommandResolver(AbstractCommandResolver):
 
         return f"{COMMAND_CHAR_USER}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
-    def autocomplete_suggest(self, cursor: int, search_split: StringsList) -> str | None:
+    def autocomplete_suggest(
+        self, cursor: int, search_split: StringsList
+    ) -> str | None:
         if cursor == 0:
             base_command_path = self.get_base_command_path()
 

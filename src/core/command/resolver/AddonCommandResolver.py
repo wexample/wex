@@ -7,7 +7,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_ADDON,
 )
-from src.const.types import RegistryResolverData, StringsList, RegistryAddon
+from src.const.types import RegistryAddon, RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
@@ -24,7 +24,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_ADDON
 
     def build_path(
-            self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         # Unable to find command path if no addon name found.
         if request.match.group(1) is None:
@@ -58,7 +58,9 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return aliases
 
-    def autocomplete_suggest(self, cursor: int, search_split: StringsList) -> str | None:
+    def autocomplete_suggest(
+        self, cursor: int, search_split: StringsList
+    ) -> str | None:
         if cursor == 0:
             # User typed "wex co"
             if search_split[0] != "":
@@ -105,7 +107,7 @@ class AddonCommandResolver(AbstractCommandResolver):
                     commands = commands_dict.get("commands", [])
                     return " ".join(
                         [
-                            command[len(key + COMMAND_SEPARATOR_ADDON):]
+                            command[len(key + COMMAND_SEPARATOR_ADDON) :]
                             for command in commands
                             if command.startswith(key + COMMAND_SEPARATOR_ADDON)
                         ]
@@ -157,7 +159,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return search_string
 
     def build_command_parts_from_url_path_parts(
-            self, path_parts: StringsList
+        self, path_parts: StringsList
     ) -> StringsList:
         return [
             path_parts[0],

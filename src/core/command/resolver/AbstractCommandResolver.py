@@ -252,7 +252,9 @@ class AbstractCommandResolver:
 
         return os.path.join(base_path, "command", command_path + "." + extension)
 
-    def autocomplete_suggest(self, cursor: int, search_split: StringsList) -> str | None:
+    def autocomplete_suggest(
+        self, cursor: int, search_split: StringsList
+    ) -> str | None:
         return None
 
     def suggest_arguments(self, command: str, search_params: str) -> str:

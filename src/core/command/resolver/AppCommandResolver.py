@@ -90,7 +90,9 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def autocomplete_suggest(self, cursor: int, search_split: StringsList) -> str | None:
+    def autocomplete_suggest(
+        self, cursor: int, search_split: StringsList
+    ) -> str | None:
         if cursor == 0:
             # User typed "."
             if search_split[0].startswith(COMMAND_CHAR_APP):
