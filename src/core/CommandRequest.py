@@ -1,8 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Match, Optional
 
-from src.core.BaseClass import BaseClass
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
+from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.args import args_convert_dict_to_args
 
@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 class CommandRequest(BaseClass):
     def __init__(
-            self,
-            resolver,
-            command: str,
-            args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        self,
+        resolver,
+        command: str,
+        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
     ):
         self.extension: None | str = None
         self.quiet = False

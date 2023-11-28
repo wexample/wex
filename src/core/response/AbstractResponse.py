@@ -3,13 +3,13 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from src.core.KernelChild import KernelChild
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
 from src.core.CommandRequest import CommandRequest, HasRequest
+from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
     from src.const.types import OptionalCoreCommandArgsDict
