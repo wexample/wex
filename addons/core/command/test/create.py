@@ -42,8 +42,7 @@ def core__test__create(
         # Create all missing tests
         for command, command_data in (
             kernel.resolvers[COMMAND_TYPE_ADDON]
-            .get_commands_registry()
-            .commands.items()
+            .get_commands_registry().items()
         ):
             output.append(create_test_from_command(kernel, command, force))
 
