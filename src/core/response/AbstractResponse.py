@@ -40,24 +40,24 @@ class AbstractResponse(KernelChild, HasRequest):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> "AbstractResponse":
+    ) -> None:
+        self.set_request(request)
+        self.parent = self.kernel.current_response
+
         # If response passes from a function to another,
         # it may be already rendered.
         if self.rendered:
-            return self
-
-        self.set_request(request)
-        self.parent = self.kernel.current_response
+            return None
 
         # When reusing response internally,
         # rendering might be delayed.
         if render_mode == KERNEL_RENDER_MODE_NONE:
-            return self
+            return None
 
         previous_response = self.parent = self.kernel.current_response
         self.kernel.current_response = self
 
-        output = self.render_content(
+        self.render_content(
             request,
             render_mode,
             args,
@@ -66,15 +66,13 @@ class AbstractResponse(KernelChild, HasRequest):
         self.kernel.current_response = previous_response
         self.rendered = True
 
-        return output
-
     @abstractmethod
     def render_content(
         self,
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> "AbstractResponse":
+    ) -> None:
         pass
 
     def print(

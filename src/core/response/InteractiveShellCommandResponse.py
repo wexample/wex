@@ -30,7 +30,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         if self.ignore_error:
             self.shell_command += ["||", "true"]
 
@@ -52,8 +52,6 @@ class InteractiveShellCommandResponse(AbstractResponse):
         # Do not add to render bag, but append only once.
         elif not self.rendered:
             process_post_exec(self.kernel, self.shell_command)
-
-        return self
 
     def storable_data(self) -> bool:
         return False

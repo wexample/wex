@@ -121,10 +121,8 @@ class QueuedCollectionResponse(AbstractResponse):
         )
 
         # Transform item in a response object.
-        wrap = resolver.wrap_response(self.collection[step_index])
-        response = wrap.render(
-            request=request, args=render_args, render_mode=render_mode
-        )
+        response = resolver.wrap_response(self.collection[step_index])
+        response.render(request=request, args=render_args, render_mode=render_mode)
 
         first_response_item = None
         if len(response.output_bag) >= 1:

@@ -5,13 +5,9 @@ from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
-from src.core.CommandRequest import CommandRequest
 
 
 class PythonCommandRunner(AbstractCommandRunner):
-    def set_request(self, request: CommandRequest) -> None:
-        super().set_request(request=request)
-
     def build_script_command(self) -> Optional[ScriptCommand]:
         request = self.get_request()
         path = request.get_path()

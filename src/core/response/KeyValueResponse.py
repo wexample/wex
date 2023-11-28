@@ -3,7 +3,6 @@ import os
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
@@ -28,7 +27,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Calculate maximum key width for formatting
             max_key_width = max(len(str(key)) for key in self.dictionary_data.keys())
@@ -55,8 +54,6 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             # For HTTP mode, we simply use the dictionary to be converted as JSON
             self.output_bag.append(self.dictionary_data)
-
-        return self
 
     def print(
         self,

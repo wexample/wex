@@ -16,9 +16,6 @@ if TYPE_CHECKING:
 
 
 class ScriptCommand:
-    function: Callable
-    click_command: click.core.Command
-
     def __init__(
         self,
         function: Callable,

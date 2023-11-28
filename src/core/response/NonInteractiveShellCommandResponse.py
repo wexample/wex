@@ -20,7 +20,7 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         success, content = execute_command_sync(
             kernel=self.kernel,
             command=self.shell_command,
@@ -31,8 +31,6 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
 
         if success:
             self.output_bag.append(content)
-
-        return self
 
     def print(
         self,

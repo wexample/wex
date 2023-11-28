@@ -40,7 +40,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         request: CommandRequest,
         render_mode: str | None = None,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         render_mode = self.get_render_mode(render_mode)
 
         # For HTTP mode, we simply use the dictionary to be converted as JSON
@@ -49,8 +49,6 @@ class DictResponse(AbstractTerminalSectionResponse):
         self.render_content_multiple(
             self.dictionary_data.values(), request, render_mode, args
         )
-
-        return self
 
     def print(
         self,

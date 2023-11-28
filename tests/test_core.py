@@ -15,6 +15,7 @@ from src.const.globals import (
     ROOT_USERNAME,
 )
 from src.core.FatalError import FatalError
+from src.core.response.AbortResponse import AbortResponse
 from src.helper.args import args_convert_dict_to_args, args_convert_to_dict
 from src.helper.registry import registry_get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
@@ -59,7 +60,7 @@ class TestCore(AbstractTestCase):
     def test_help(self):
         response = self.kernel.run_function(core__logo__show, {"help": True})
 
-        self.assertIsNone(response)
+        self.assertTrue(isinstance(response, AbortResponse))
 
     def test_convert_args_to_dict(self):
         args = args_convert_to_dict(

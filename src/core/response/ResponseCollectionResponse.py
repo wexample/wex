@@ -17,10 +17,8 @@ class ResponseCollectionResponse(AbstractResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         self.render_content_multiple(self.collection, request, render_mode, args)
-
-        return self
 
     def print(
         self,

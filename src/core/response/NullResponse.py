@@ -12,10 +12,8 @@ class NullResponse(AbstractResponse, ABC):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         self.output_bag.append(None)
-
-        return self
 
     def print(
         self,

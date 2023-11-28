@@ -15,7 +15,7 @@ class FunctionResponse(AbstractResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
+    ) -> None:
         response = self.function(**(args or {}))
 
         response = request.resolver.wrap_response(response)
@@ -28,8 +28,6 @@ class FunctionResponse(AbstractResponse):
         )
 
         self.output_bag.append(response)
-
-        return self
 
     def print(
         self,

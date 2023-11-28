@@ -70,7 +70,7 @@ class AbstractCommandResolver(KernelChild):
         response = self.wrap_response(response=runner.run())
 
         # Render response
-        response = response.render(request=request, render_mode=render_mode)
+        response.render(request=request, render_mode=render_mode)
 
         self.kernel.verbosity = previous_verbosity
         self.kernel.current_request = previous_request
