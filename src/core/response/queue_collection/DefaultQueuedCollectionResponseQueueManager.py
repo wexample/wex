@@ -40,7 +40,7 @@ class DefaultQueuedCollectionResponseQueueManager(
         super().enqueue_next_step_by_index(next_step_index)
 
         root = self.response.get_root_parent()
-        args = root.request.args.copy()
+        args = root.get_request().args.copy()
 
         args_replace_one(
             arg_list=args,
@@ -49,7 +49,7 @@ class DefaultQueuedCollectionResponseQueueManager(
         )
 
         process_post_exec_function(
-            self.response.kernel, root.request.string_command, args
+            self.response.kernel, root.get_request().string_command, args
         )
 
     def build_storage_path(self, path: list) -> str:

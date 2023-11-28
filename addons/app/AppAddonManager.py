@@ -470,17 +470,15 @@ class AppAddonManager(AddonManager):
         return self.app_dir
 
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
-        if not response.request or self.ignore_app_dir(response.request):
+        request = response.get_request()
+
+        if self.ignore_app_dir(request):
             return
 
         from src.helper.command import is_same_command
 
         # Ignore internally used command.
-        if (
-            not response.request
-            or not response.request.script_command
-            or is_same_command(response.request.script_command, app__location__find)
-        ):
+        if is_same_command(request.get_script_command(), app__location__find):
             return
 
         self.app_dirs_stack.pop()

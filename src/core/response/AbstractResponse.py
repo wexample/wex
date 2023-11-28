@@ -3,24 +3,26 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional
 
+from src.core.KernelChild import KernelChild
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
-from src.core.CommandRequest import CommandRequest
+from src.core.CommandRequest import CommandRequest, HasRequest
 
 if TYPE_CHECKING:
     from src.const.types import OptionalCoreCommandArgsDict
     from src.core.Kernel import Kernel
 
 
-class AbstractResponse:
+class AbstractResponse(KernelChild, HasRequest):
     def __init__(self, kernel: "Kernel"):
-        self.kernel: "Kernel" = kernel
+        KernelChild.__init__(self, kernel)
+        HasRequest.__init__(self)
+
         self.parent = None
         self.output_bag: list = []
-        self.request: CommandRequest | None = None
         self.parent = None
         self.rendered = False
         # Some data can ba part of the output
@@ -44,7 +46,7 @@ class AbstractResponse:
         if self.rendered:
             return self
 
-        self.request = request
+        self.set_request(request)
         self.parent = self.kernel.current_response
 
         # When reusing response internally,

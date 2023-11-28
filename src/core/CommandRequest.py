@@ -107,3 +107,16 @@ class CommandRequest(BaseClass):
             return self.args.copy()
 
         return []
+
+
+class HasRequest(BaseClass):
+    def __init__(self) -> None:
+        self._request: None | CommandRequest = None
+
+    def set_request(self, request: CommandRequest):
+        self._request = request
+        self._request.runner = self
+
+    def get_request(self) -> CommandRequest:
+        self._validate__should_not_be_none(self._request)
+        return self._request

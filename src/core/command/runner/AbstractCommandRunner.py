@@ -5,7 +5,7 @@ import click
 
 from src.const.args import ARGS_HELP
 from src.const.types import StringsList
-from src.core.CommandRequest import CommandRequest
+from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
 
@@ -13,20 +13,12 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-class AbstractCommandRunner(KernelChild):
+class AbstractCommandRunner(KernelChild, HasRequest):
     def __init__(self, kernel: "Kernel") -> None:
-        super().__init__(kernel)
+        KernelChild.__init__(self, kernel)
+        HasRequest.__init__(self)
 
         self._path: None | CommandRequest
-        self._request: None | CommandRequest = None
-
-    def set_request(self, request: CommandRequest):
-        self._request = request
-        self._request.runner = self
-
-    def get_request(self) -> CommandRequest:
-        self._validate__should_not_be_none(self._request)
-        return self._request
 
     @abstractmethod
     def get_command_type(self):
