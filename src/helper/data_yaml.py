@@ -45,11 +45,8 @@ def yaml_load(
 
 
 def yaml_write(file_path: str, content: "YamlContent") -> None:
-    try:
-        with open(file_path, "w") as f:
-            yaml.safe_dump(content, f)
-    except Exception:
-        return None
+    with open(file_path, "w") as f:
+        yaml.safe_dump(content, f)
 
 
 def yaml_load_or_default(file: str, default: Optional[Any] = None) -> Any:
