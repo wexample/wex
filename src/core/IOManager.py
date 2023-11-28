@@ -2,7 +2,6 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
-from src.core.KernelChild import KernelChild
 from src.const.globals import (
     COLOR_CYAN,
     COLOR_GRAY,
@@ -12,6 +11,7 @@ from src.const.globals import (
     COMMAND_TYPE_ADDON,
     VERBOSITY_LEVEL_DEFAULT,
 )
+from src.core.KernelChild import KernelChild
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
 if TYPE_CHECKING:

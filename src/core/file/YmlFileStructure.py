@@ -1,7 +1,6 @@
 from typing import Optional
 
-from src.const.types import BasicInlineValue
-from src.const.types import YamlContent
+from src.const.types import BasicInlineValue, YamlContent
 from src.core.file.FileStructure import FileStructure
 from src.helper.data_yaml import yaml_load, yaml_write
 

@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING, Any
 
 import click
 
-from src.core.KernelChild import KernelChild
 from src.const.args import ARGS_HELP
 from src.const.types import StringsList
 from src.core.CommandRequest import CommandRequest
+from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class AbstractCommandRunner(KernelChild):
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)
-        return self.request
+        return self._request
 
     @abstractmethod
     def get_command_type(self):

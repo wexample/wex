@@ -1,7 +1,7 @@
 import os
 import re
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, cast
+from typing import Any, List, Optional, cast
 
 from src.const.globals import (
     COMMAND_EXTENSIONS,
@@ -25,6 +25,7 @@ from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.FunctionProperty import FunctionProperty
+from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.DefaultResponse import DefaultResponse
@@ -44,14 +45,8 @@ from src.helper.string import (
 )
 from src.helper.user import get_user_or_sudo_user
 
-if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
 
-
-class AbstractCommandResolver:
-    def __init__(self, kernel: "Kernel") -> None:
-        self.kernel = kernel
-
+class AbstractCommandResolver(KernelChild):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":

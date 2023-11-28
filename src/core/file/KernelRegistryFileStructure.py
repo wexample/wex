@@ -1,6 +1,11 @@
 from typing import TYPE_CHECKING, Optional, cast
 
-from src.const.types import KernelRegistry, RegistryResolverData, BasicInlineValue, YamlContent
+from src.const.types import (
+    BasicInlineValue,
+    KernelRegistry,
+    RegistryResolverData,
+    YamlContent,
+)
 from src.core.file.YmlFileStructure import YmlFileStructure
 
 if TYPE_CHECKING:
@@ -25,8 +30,8 @@ class KernelRegistryFileStructure(YmlFileStructure):
         content = self.load_content_yaml(default)
 
         self.content = KernelRegistry(
-            env=content['env'] if content else None,
-            resolvers=content['resolvers'] if content else {}
+            env=content["env"] if content else None,
+            resolvers=content["resolvers"] if content else {},
         )
 
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
