@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helper.docker import docker_build_long_container_name
 from src.const.globals import SHELL_DEFAULT
 from src.const.types import (
+    AnyCallable,
     Args,
     CoreCommandArgsDict,
     Kwargs,
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 class AppCommand(ScriptCommand):
     def __init__(
         self,
-        function: Callable,
+        function: AnyCallable,
         command_type: str,
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",

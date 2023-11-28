@@ -1,13 +1,13 @@
 import click
 
+from src.const.types import AnyCallable, Args, Kwargs
 
-def app_dir_option(*args, **kwargs):
-    def decorator(function):
-        if callable(function):
-            # Add the --app-dir option
-            function = click.option(
-                "--app-dir", "-a", type=str, help="App directory", **kwargs
-            )(function)
-        return function
+
+def app_dir_option(*args: Args, **kwargs: Kwargs) -> AnyCallable:
+    def decorator(function: click.core.Command) -> click.core.Command:
+        # Add the --app-dir option
+        return click.option(
+            "--app-dir", "-a", type=str, help="App directory", **kwargs
+        )(function)
 
     return decorator
