@@ -1,8 +1,15 @@
-from typing import TYPE_CHECKING, Any, Callable, Dict
+from typing import TYPE_CHECKING, Any, Callable
 
 import click
 
-from src.const.types import AnyCallable, Args, Kwargs, StringsList
+from src.const.types import (
+    AnyCallable,
+    Args,
+    CoreCommandArgsDict,
+    Kwargs,
+    StringsList,
+    YamlCommandScript,
+)
 
 if TYPE_CHECKING:
     from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
@@ -105,8 +112,8 @@ class ScriptCommand:
     def run_script(
         self,
         runner: "AbstractCommandRunner",
-        script: Dict[str, Any],
-        variables: Dict[str, str],
+        script: YamlCommandScript,
+        variables: CoreCommandArgsDict,
     ) -> StringsList:
         from src.helper.string import string_replace_multiple
 

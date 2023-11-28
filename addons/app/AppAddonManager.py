@@ -24,6 +24,7 @@ from addons.app.const.app import (
     PROXY_APP_NAME,
     PROXY_FILE_APPS_REGISTRY,
 )
+from addons.app.src.AppCommand import AppCommand
 from src.const.globals import (
     COLOR_GRAY,
     COMMAND_TYPE_APP,
@@ -368,9 +369,7 @@ class AppAddonManager(AddonManager):
 
         # Only specified commands will expect app location.
         # This is not a function property class.
-        return (
-            getattr(request.script_command.click_command, "app_command", False) == False
-        )
+        return not isinstance(request.script_command, AppCommand)
 
     def hook_render_request_pre(self, request: "CommandRequest") -> None:
         if self.ignore_app_dir(request):

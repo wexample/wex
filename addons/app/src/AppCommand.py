@@ -3,7 +3,13 @@ from typing import TYPE_CHECKING, Callable
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helper.docker import docker_build_long_container_name
 from src.const.globals import SHELL_DEFAULT
-from src.const.types import Args, Kwargs, StringsList
+from src.const.types import (
+    Args,
+    CoreCommandArgsDict,
+    Kwargs,
+    StringsList,
+    YamlCommandScript,
+)
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.command import command_escape
@@ -48,14 +54,17 @@ class AppCommand(ScriptCommand):
             property_value=should_run,
         )
 
-        # Say that the command is available ony in app context
-        self.click_command.app_command = True
-
     def run_script(
-        self, runner: "AbstractCommandRunner", script, variables: dict
+        self,
+        runner: "AbstractCommandRunner",
+        script: YamlCommandScript,
+        variables: CoreCommandArgsDict,
     ) -> StringsList:
+        from addons.app.AppAddonManager import AppAddonManager
+
         kernel = runner.kernel
         manager = kernel.addons["app"]
+        assert isinstance(manager, AppAddonManager)
 
         if manager.app_dir:
             import os
@@ -67,16 +76,16 @@ class AppCommand(ScriptCommand):
             env_path = os.path.join(manager.app_dir, APP_FILEPATH_REL_DOCKER_ENV)
 
             app_variables = dotenv_values(env_path)
-            if "script" in script:
+            if "script" in script and isinstance(script["script"], str):
                 script["script"] = string_replace_multiple(
                     script["script"], app_variables
                 )
-            elif "file" in script:
+            elif "file" in script and isinstance(script["file"], str):
                 script["file"] = string_replace_multiple(script["file"], app_variables)
 
             command = super().run_script(runner, script, variables)
 
-            if "container_name" in script:
+            if "container_name" in script and isinstance(script["container_name"], str):
                 from src.helper.command import command_to_string
 
                 command_string = command_to_string(command)

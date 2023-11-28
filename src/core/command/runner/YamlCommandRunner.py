@@ -5,7 +5,14 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
 
-from src.const.types import Args, Kwargs, StringsList, YamlCommand
+from src.const.types import (
+    Args,
+    CoreCommandArgsDict,
+    Kwargs,
+    StringsList,
+    YamlCommand,
+    YamlCommandScript,
+)
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
@@ -85,7 +92,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         ) -> Optional[QueuedCollectionResponse]:
             commands_collection: ResponseCollection = []
 
-            variables = {}
+            variables: CoreCommandArgsDict = {}
             for name in kwargs:
                 variables[name.upper()] = kwargs[name]
 
@@ -98,16 +105,23 @@ class YamlCommandRunner(AbstractCommandRunner):
 
             # Iterate through each command in the configuration
             for script in scripts:
+                script_config: YamlCommandScript
+
                 if isinstance(script, str):
-                    script = {
-                        "script": script,
-                        "title": script,
-                        "type": COMMAND_TYPE_BASH,
-                    }
+                    script_config = cast(
+                        YamlCommandScript,
+                        {
+                            "script": script,
+                            "title": script,
+                            "type": COMMAND_TYPE_BASH,
+                        },
+                    )
+                else:
+                    script_config = script
 
                 self.kernel.io.log(script["title"])
 
-                command = script_command.run_script(self, script, variables)
+                command = script_command.run_script(self, script_config, variables)
 
                 commands_collection.append(
                     InteractiveShellCommandResponse(self.kernel, command)
