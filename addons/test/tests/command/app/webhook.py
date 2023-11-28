@@ -19,6 +19,8 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
 
         app_dir, app_name = self.create_and_start_test_app_webhook()
 
+        self.start_webhook_listener()
+
         response = self.request_listener(
             f"/webhook/app/{app_name}/test/test", check_code=None, wait=5
         )

@@ -186,7 +186,4 @@ class YamlCommandRunner(AbstractCommandRunner):
         return cast(ScriptCommand, script_command)
 
     def run(self) -> Any:
-        if not self.request or not self.request.script_command:
-            return None
-
-        return self.run_click_function(self.request.script_command)
+        return self.run_click_function(self.get_request().get_script_command())
