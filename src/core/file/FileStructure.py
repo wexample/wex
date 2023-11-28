@@ -34,8 +34,8 @@ class FileStructure(AbstractFileSystemStructure):
                     {"path": self.path, "expected": self.file_extension},
                 )
 
-    def load_content(self) -> Any:
-        return file_read(self.path)
+    def load_content(self) -> None:
+        self.content = file_read(self.path)
 
     def write_content(self) -> Any:
         return file_write(self.path, self.get_writable_content())

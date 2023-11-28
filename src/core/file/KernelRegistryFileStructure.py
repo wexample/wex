@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, cast
 
-from src.const.types import KernelRegistry, RegistryResolverData
+from src.const.types import KernelRegistry, RegistryResolverData, BasicInlineValue, YamlContent
 from src.core.file.YmlFileStructure import YmlFileStructure
 
 if TYPE_CHECKING:
@@ -18,10 +18,16 @@ class KernelRegistryFileStructure(YmlFileStructure):
 
         super().__init__(path=path, initialize=initialize)
 
-        default: KernelRegistry = KernelRegistry(env=None, resolvers={})
-
         # Always load at creation
-        self.load_content(default=default)
+        self.load_content()
+
+    def load_content(self, default: Optional[YamlContent] = None) -> None:
+        content = self.load_content_yaml(default)
+
+        self.content = KernelRegistry(
+            env=content['env'] if content else None,
+            resolvers=content['resolvers'] if content else {}
+        )
 
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
         from addons.app.command.env.get import _app__env__get
@@ -29,10 +35,11 @@ class KernelRegistryFileStructure(YmlFileStructure):
         self.kernel.io.log("Building registry...")
 
         # Call function avoiding core command management.
-        self.content["env"] = _app__env__get(self.kernel, self.kernel.directory.path)
+        self.content.env = _app__env__get(self.kernel, self.kernel.directory.path)
+        self.content.resolvers = {}
 
         for command_type in self.kernel.resolvers:
-            self.content["resolvers"][command_type] = self.kernel.resolvers[
+            self.content.resolvers[command_type] = self.kernel.resolvers[
                 command_type
             ].build_registry_data(test)
 
@@ -42,4 +49,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
         return self.content
 
     def get_resolver_data(self, command_type: str) -> RegistryResolverData:
-        return cast(RegistryResolverData, self.content["resolvers"][command_type])
+        return cast(RegistryResolverData, self.content.resolvers[command_type])
+
+    def get_writable_content(self) -> BasicInlineValue:
+        return self.content.to_dict()

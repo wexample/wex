@@ -135,7 +135,10 @@ class KernelRegistry(YamlContent):
     env: Optional[str]
     resolvers: Dict[str, RegistryResolverData]
 
-    def __init__(self, resolvers: StringKeysDict, env: Optional[str] = None) -> None:
+    def __init__(self, env: Optional[str] = None, resolvers: Optional[StringKeysDict] = None) -> None:
         super().__init__()
         self.env = env
-        self.resolvers = resolvers
+        self.resolvers = resolvers or {}
+
+    def to_dict(self) -> YamlContent:
+        return vars(self)

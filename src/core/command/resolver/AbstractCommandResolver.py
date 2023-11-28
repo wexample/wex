@@ -105,7 +105,7 @@ class AbstractCommandResolver:
     def get_commands_registry(self) -> RegistryCommandsCollection:
         from src.helper.registry import registry_get_all_commands_from_registry_part
 
-        if self.get_type() in self.kernel.registry_structure.content["resolvers"]:
+        if self.get_type() in self.kernel.registry_structure.content.resolvers:
             return registry_get_all_commands_from_registry_part(
                 self.get_registry_data()
             )

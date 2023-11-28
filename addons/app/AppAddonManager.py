@@ -106,7 +106,7 @@ class AppAddonManager(AddonManager):
     def get_applications_path(self) -> str:
         return (
             os.sep
-            + os.path.join("var", "www", self.kernel.registry_structure.content["env"])
+            + os.path.join("var", "www", self.kernel.registry_structure.content.env)
             + os.sep
         )
 
