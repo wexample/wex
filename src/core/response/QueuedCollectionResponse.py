@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -169,7 +169,7 @@ class QueuedCollectionResponse(AbstractResponse):
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
-    ) -> str | None:
+    ) -> ResponsePrintType:
         output = super().print(render_mode, interactive_data)
 
         if isinstance(output, list) and len(output):

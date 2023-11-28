@@ -1,33 +1,35 @@
 import os
-from typing import Optional
+from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import (
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    StringKeysDict,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class DictResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
-        kernel,
-        dictionary: dict | None = None,
+        kernel: "Kernel",
+        dictionary: StringKeysDict,
         cli_render_mode: str = KERNEL_RENDER_MODE_JSON,
-    ):
-        super().__init__(kernel, dictionary)
+    ) -> None:
+        super().__init__(kernel)
 
-        self.dictionary_data = {}
         self.cli_render_mode = cli_render_mode
+        self.dictionary_data: StringKeysDict = dictionary
 
-        if dictionary:
-            self.set_dictionary(dictionary)
-
-    def set_dictionary(self, dictionary_data):
-        self.dictionary_data = dictionary_data
-
-    def get_render_mode(self, render_mode: str | None = None):
+    def get_render_mode(self, render_mode: str | None = None) -> str:
         if render_mode:
             return render_mode
 
@@ -37,7 +39,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         self,
         request: CommandRequest,
         render_mode: str | None = None,
-        args: Optional[dict] = None,
+        args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         render_mode = self.get_render_mode(render_mode)
 
@@ -54,25 +56,27 @@ class DictResponse(AbstractTerminalSectionResponse):
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
-    ):
+    ) -> ResponsePrintType:
         data = self.output_bag[0]
         render_mode = self.get_render_mode(render_mode)
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            printed = []
+            print_string = []
 
             for key in data:
                 if isinstance(data[key], AbstractResponse):
-                    printed.append(data[key].print(render_mode))
+                    print_string.append(data[key].print(render_mode))
                 else:
-                    printed.append(key + ": " + str(data[key]))
+                    print_string.append(key + ": " + str(data[key]))
 
-            return os.linesep.join(printed)
+            return os.linesep.join(print_string)
         if render_mode == KERNEL_RENDER_MODE_JSON:
-            printed = {}
+            print_dict = {}
             for key in data:
                 if isinstance(data[key], AbstractResponse):
-                    printed[key] = data[key].print(render_mode)
+                    print_dict[key] = data[key].print(render_mode)
                 else:
-                    printed[key] = data[key]
-            return printed
+                    print_dict[key] = data[key]
+            return print_dict
+
+        return None

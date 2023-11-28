@@ -1,7 +1,7 @@
 import os
-from typing import Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
@@ -27,7 +27,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         self,
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: Optional[dict] = None,
+        args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Calculate maximum key width for formatting
@@ -62,7 +62,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
-    ):
+    ) -> ResponsePrintType:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(self.output_bag)
         elif render_mode == KERNEL_RENDER_MODE_JSON:

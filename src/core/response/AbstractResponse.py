@@ -12,7 +12,7 @@ from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandArgsDict
+    from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
     from src.core.Kernel import Kernel
 
 
@@ -73,7 +73,7 @@ class AbstractResponse(KernelChild, HasRequest):
         self,
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: Optional[dict] = None,
+        args: OptionalCoreCommandArgsDict = None,
     ) -> "AbstractResponse":
         pass
 
@@ -81,7 +81,7 @@ class AbstractResponse(KernelChild, HasRequest):
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
-    ) -> str | None:
+    ) -> ResponsePrintType:
         if len(self.output_bag):
             serialised = []
             for output in self.output_bag:

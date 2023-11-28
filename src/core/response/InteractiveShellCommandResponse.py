@@ -1,7 +1,8 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import command_to_string, execute_command_sync
@@ -28,7 +29,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self,
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: Optional[dict] = None,
+        args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         if self.ignore_error:
             self.shell_command += ["||", "true"]
@@ -61,5 +62,5 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
-    ) -> str | None:
+    ) -> ResponsePrintType:
         return self.output_bag[0] if len(self.output_bag) else None

@@ -36,8 +36,7 @@ class AbstractCommandRunner(KernelChild, HasRequest):
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:
             ctx = script_command.click_command.make_context(
-                "",
-                self.get_request().get_args_list_copy()
+                "", self.get_request().get_args_list_copy()
             )
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
