@@ -45,6 +45,8 @@ class CommandRequest(BaseClass):
 
     def get_path(self) -> str:
         self._validate__should_not_be_none(self._path)
+        assert self._path is not None
+
         return self._path
 
     def get_script_command(self) -> ScriptCommand:
@@ -119,4 +121,6 @@ class HasRequest(BaseClass):
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)
+        assert self._request is not None
+
         return self._request

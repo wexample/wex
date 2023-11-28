@@ -35,6 +35,8 @@ class FastModeQueuedCollectionResponseQueueManager(
             # Get previous data keeps consistency with non-fast mode.
             return cast(BasicInlineValue, previous_response.first())
 
+        return None
+
     def render_content_complete(self) -> "QueuedCollectionResponse":
         if self.response.parent:
             self.response.parent.has_next_step = self.response.has_next_step

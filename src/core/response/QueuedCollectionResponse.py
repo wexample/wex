@@ -48,10 +48,13 @@ class QueuedCollectionResponse(AbstractResponse):
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
 
-    def set_path_manager(self, path_manager: QueuedCollectionPathManager):
+    def set_path_manager(self, path_manager: QueuedCollectionPathManager) -> None:
         self._path_manager = path_manager
 
     def get_path_manager(self) -> QueuedCollectionPathManager:
+        self._validate__should_not_be_none(self._path_manager)
+        assert self._path_manager is not None
+
         return self._path_manager
 
     def find_parent_response_collection(self) -> "None|AbstractResponse":
