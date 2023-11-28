@@ -36,13 +36,14 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def set_request(self, request: CommandRequest) -> None:
         super().set_request(request=request)
+        path = request.get_path()
 
-        if request.path:
-            self.content = cast(YamlCommand, yaml_load(request.path, {}))
+        if path:
+            self.content = cast(YamlCommand, yaml_load(path, {}))
 
             if not self.content:
                 self.kernel.io.error(
-                    f"Unable to load yaml script file content :  {request.path}",
+                    f"Unable to load yaml script file content :  {path}",
                     trace=False,
                 )
 
@@ -73,10 +74,8 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def build_script_command(self) -> Optional[ScriptCommand]:
         request = self.get_request()
-        if not request or not request.path:
-            return None
-
         content = self.get_content_or_fail()
+
         scripts = content["scripts"] if "scripts" in content else []
         options = content["options"] if "options" in content else []
         resolver: AbstractCommandResolver = request.resolver
@@ -119,7 +118,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             return QueuedCollectionResponse(self.kernel, commands_collection)
 
         internal_command = resolver.get_function_name(
-            resolver.build_command_parts_from_file_path(self.get_request().path)
+            resolver.build_command_parts_from_file_path(self.get_request().get_path())
         )
 
         # Function must have the appropriate name,

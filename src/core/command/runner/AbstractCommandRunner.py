@@ -17,6 +17,7 @@ class AbstractCommandRunner(KernelChild):
     def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
 
+        self._path: None | CommandRequest
         self._request: None | CommandRequest = None
 
     def set_request(self, request: CommandRequest):

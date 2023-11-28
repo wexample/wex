@@ -309,7 +309,7 @@ class Kernel:
                     'Command file not found when rendering, command {command}, in path "{path}"',
                     {
                         "command": request.string_command,
-                        "path": request.path,
+                        "path": request._path,
                     },
                     trace=False,
                 )

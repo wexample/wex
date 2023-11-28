@@ -14,9 +14,10 @@ class PythonCommandRunner(AbstractCommandRunner):
 
     def build_script_command(self) -> Optional[ScriptCommand]:
         request = self.get_request()
+        path = request.get_path()
 
         # Import module and load function.
-        spec = importlib.util.spec_from_file_location(request.path, request.path)
+        spec = importlib.util.spec_from_file_location(path, path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         resolver = cast(AbstractCommandResolver, request.resolver)

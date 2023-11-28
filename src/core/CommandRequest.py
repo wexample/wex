@@ -1,6 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Match, Optional
 
+from src.core.BaseClass import BaseClass
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.args import args_convert_dict_to_args
@@ -10,12 +11,12 @@ if TYPE_CHECKING:
     from src.core.command.resolver import AbstractCommandResolver
 
 
-class CommandRequest:
+class CommandRequest(BaseClass):
     def __init__(
-        self,
-        resolver,
-        command: str,
-        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+            self,
+            resolver,
+            command: str,
+            args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
     ):
         self.extension: None | str = None
         self.quiet = False
@@ -26,7 +27,7 @@ class CommandRequest:
         self.storage = {}  # Useful to store data about the current command execution
         self.args = args or []
         self.parent = self.resolver.kernel.current_request
-        self.path: None | str = None
+        self._path: None | str = None
         self.script_command: Optional[ScriptCommand] = None
         self.first_arg = self.resolver.kernel
         self.match: Optional[Match] = None
@@ -34,10 +35,17 @@ class CommandRequest:
 
         self.resolver.locate_function(self)
 
-        if not self.path:
+        if not self._path:
             # Do not return any error if function is missing,
             # as it is managed outside.
             return
+
+    def set_path(self, path: str):
+        self._path = path
+
+    def get_path(self) -> str:
+        self._validate__should_not_be_none(self._path)
+        return self._path
 
     def get_script_command(self) -> ScriptCommand:
         if not self.script_command:
@@ -79,7 +87,7 @@ class CommandRequest:
 
                 runner = YamlCommandRunner(self.resolver.kernel)
 
-            self.path = path
+            self.set_path(path)
             self.extension = extension
 
             runner.set_request(self)
