@@ -104,7 +104,7 @@ class CommandRequest(BaseClass):
 
             return True
 
-    def get_args_list(self) -> "StringsList":
+    def get_args_list_copy(self) -> "StringsList":
         if isinstance(self.args, list):
             return self.args.copy()
 

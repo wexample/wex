@@ -5,6 +5,7 @@ import click
 
 from src.const.args import ARGS_HELP
 from src.const.types import StringsList
+from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
@@ -21,7 +22,7 @@ class AbstractCommandRunner(KernelChild, HasRequest):
         self._path: None | CommandRequest
 
     @abstractmethod
-    def get_command_type(self):
+    def get_command_type(self) -> str:
         pass
 
     @abstractmethod
@@ -32,10 +33,11 @@ class AbstractCommandRunner(KernelChild, HasRequest):
     def run(self) -> Any:
         pass
 
-    def run_click_function(self, script_command) -> Any:
+    def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:
             ctx = script_command.click_command.make_context(
-                "", self.get_request().args.copy() or []
+                "",
+                self.get_request().get_args_list_copy()
             )
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
@@ -45,7 +47,7 @@ class AbstractCommandRunner(KernelChild, HasRequest):
             self.kernel.io.error(
                 "Error when creating context for command function {function} : {error}",
                 {
-                    "function": script_command.click_command.callback.__name__,
+                    "function": script_command.get_callback_name(),
                     "error": str(e),
                 },
                 trace=False,

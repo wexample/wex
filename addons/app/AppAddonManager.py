@@ -378,7 +378,7 @@ class AppAddonManager(AddonManager):
 
         from src.core.command.ScriptCommand import ScriptCommand
 
-        args = request.get_args_list()
+        args = request.get_args_list_copy()
         app_dir_arg = args_shift_one(args, "app-dir")
         request.first_arg = self
         script_command = cast(ScriptCommand, request.script_command)

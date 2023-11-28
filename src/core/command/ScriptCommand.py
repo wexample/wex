@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import click
 
-if TYPE_CHECKING:
-    from src.const.types import Args, Kwargs
+from src.const.types import AnyCallable, Args, Kwargs
 
 
 class ScriptCommand:
@@ -124,3 +123,9 @@ class ScriptCommand:
             if "interpreter" in script and script_command
             else script_command
         )
+
+    def get_callback(self) -> AnyCallable:
+        return self.click_command.callback
+
+    def get_callback_name(self) -> str:
+        return self.get_callback().__name__

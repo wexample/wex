@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class FastModeQueuedCollectionResponseQueueManager(
     AbstractQueuedCollectionResponseQueueManager, ABC
 ):
-    def __init__(self, response) -> None:
+    def __init__(self, response: "QueuedCollectionResponse") -> None:
         super().__init__(response)
 
     def get_previous_value(self) -> BasicInlineValue:
