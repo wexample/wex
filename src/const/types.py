@@ -18,11 +18,14 @@ StringKeysDict = Dict[str, Any]
 StringsList = List[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
+JsonContent = StringKeysDict
+YamlContent = StringKeysDict
 
 AnyCallable = Callable[..., Any]
 Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
 Kwargs = Any
+ResponsePrintType = Optional[str | JsonContent]
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
 
@@ -34,8 +37,6 @@ CoreCommandStringParts = StringsList
 
 OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
-
-YamlContent = StringKeysDict
 
 AppConfigValue = BasicValue
 AppDockerEnvConfig = Dict[str, AppConfigValue]
