@@ -45,7 +45,7 @@ class DefaultQueuedCollectionResponseQueueManager(
         args_replace_one(
             arg_list=args,
             arg_name="command-request-step",
-            value=self.response.path_manager.build_step_path(),
+            value=self.response.get_path_manager().build_step_path(),
         )
 
         process_post_exec_function(
@@ -57,7 +57,7 @@ class DefaultQueuedCollectionResponseQueueManager(
 
     def enqueue_next_step_if_exists(self, step_index, response) -> bool:
         # Array is modified in super call
-        steps_current = list(self.response.path_manager.steps)
+        steps_current = list(self.response.get_path_manager().steps)
         exists = super().enqueue_next_step_if_exists(step_index, response)
         storage_path = steps_current[: self.response.step_position + 1]
 

@@ -1,14 +1,17 @@
 from abc import abstractmethod
+from typing import TYPE_CHECKING
 
 from src.const.types import BasicInlineValue
-from src.core.response.AbstractResponse import AbstractResponse
+
+if TYPE_CHECKING:
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 
 class AbstractQueuedCollectionResponseQueueManager:
-    def __init__(self, response: AbstractResponse) -> None:
-        self.response: AbstractResponse = response
+    def __init__(self, response: "QueuedCollectionResponse") -> None:
+        self.response: "QueuedCollectionResponse" = response
 
-    def render_content_complete(self) -> AbstractResponse:
+    def render_content_complete(self) -> "QueuedCollectionResponse":
         return self.response
 
     @abstractmethod
@@ -16,14 +19,15 @@ class AbstractQueuedCollectionResponseQueueManager:
         pass
 
     def get_previous_response_path(self) -> list | None:
-        step_index = self.response.path_manager.steps[self.response.step_position]
+        path_manager = self.response.get_path_manager()
+        step_index = path_manager.steps[self.response.step_position]
 
         # The index is 0
         if step_index == 0:
             # But it has a parent collection
             if self.response.step_position > 0:
                 # Get the parent index
-                path = self.response.path_manager.steps[: self.response.step_position]
+                path = path_manager.steps[: self.response.step_position]
                 previous_index = path[-1]
 
                 # And parent has a previous item.
@@ -35,7 +39,7 @@ class AbstractQueuedCollectionResponseQueueManager:
                 return None
         # The response have a previous one, in the same collection
         else:
-            path = self.response.path_manager.steps[: self.response.step_position + 1]
+            path = path_manager.steps[: self.response.step_position + 1]
             path[-1] -= 1
 
             return path
@@ -56,7 +60,8 @@ class AbstractQueuedCollectionResponseQueueManager:
         return False
 
     def enqueue_next_step_by_index(self, next_step_index) -> None:
-        self.response.path_manager.steps[self.response.step_position] = next_step_index
+        path_manager = self.response.get_path_manager()
+        path_manager.steps[self.response.step_position] = next_step_index
         # Remove obsolete parts.
-        del self.response.path_manager.steps[self.response.step_position + 1 :]
+        del path_manager.steps[self.response.step_position + 1 :]
         self.response.has_next_step = True

@@ -31,7 +31,7 @@ class PythonCommandRunner(AbstractCommandRunner):
             getattr(
                 module,
                 resolver.get_function_name(list(request.get_match().groups())),
-            )
+            ),
         )
 
     def get_options_names(self) -> StringsList:

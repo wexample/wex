@@ -35,7 +35,7 @@ class QueuedCollectionResponse(AbstractResponse):
         self.collection = collection
         self.step_position: int = 0
         self.has_next_step: bool = False
-        self.path_manager: Optional[QueuedCollectionPathManager] = None
+        self._path_manager: Optional[QueuedCollectionPathManager] = None
 
         manager_class = (
             FastModeQueuedCollectionResponseQueueManager
@@ -47,6 +47,12 @@ class QueuedCollectionResponse(AbstractResponse):
         # For debug purpose
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
+
+    def set_path_manager(self, path_manager: QueuedCollectionPathManager):
+        self._path_manager = path_manager
+
+    def get_path_manager(self) -> QueuedCollectionPathManager:
+        return self._path_manager
 
     def find_parent_response_collection(self) -> "None|AbstractResponse":
         current: Optional["QueuedCollectionResponse"] = self
@@ -65,9 +71,10 @@ class QueuedCollectionResponse(AbstractResponse):
                 "queue_collection_path_manager"
             ] = QueuedCollectionPathManager(root_request)
 
-        self.path_manager = root_request.storage["queue_collection_path_manager"]
+        path_manager = root_request.storage["queue_collection_path_manager"]
+        self.set_path_manager(path_manager)
 
-        return cast(QueuedCollectionPathManager, self.path_manager)
+        return cast(QueuedCollectionPathManager, path_manager)
 
     def render_content(
         self,
