@@ -72,13 +72,14 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.get_content_or_fail()["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
-        if not self.request or not self.request.path:
+        request = self.get_request()
+        if not request or not request.path:
             return None
 
         content = self.get_content_or_fail()
         scripts = content["scripts"] if "scripts" in content else []
         options = content["options"] if "options" in content else []
-        resolver: AbstractCommandResolver = self.request.resolver
+        resolver: AbstractCommandResolver = request.resolver
 
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
@@ -118,7 +119,7 @@ class YamlCommandRunner(AbstractCommandRunner):
             return QueuedCollectionResponse(self.kernel, commands_collection)
 
         internal_command = resolver.get_function_name(
-            resolver.build_command_parts_from_file_path(self.request.path)
+            resolver.build_command_parts_from_file_path(self.get_request().path)
         )
 
         # Function must have the appropriate name,

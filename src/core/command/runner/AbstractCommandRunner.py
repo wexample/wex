@@ -17,13 +17,11 @@ class AbstractCommandRunner(KernelChild):
     def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
 
-        self.request: None | CommandRequest = None
         self._request: None | CommandRequest = None
 
     def set_request(self, request: CommandRequest):
-        self.request = request
         self._request = request
-        self.request.runner = self
+        self._request.runner = self
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)
@@ -44,7 +42,7 @@ class AbstractCommandRunner(KernelChild):
     def run_click_function(self, script_command) -> Any:
         try:
             ctx = script_command.click_command.make_context(
-                "", self.request.args.copy() or []
+                "", self.get_request().args.copy() or []
             )
         # Click explicitly asked to exit, for example when using --help.
         except click.exceptions.Exit:
@@ -67,6 +65,6 @@ class AbstractCommandRunner(KernelChild):
                 del ctx.params[arg]
 
         # Defines kernel as mais class to provide with pass_obj option.
-        ctx.obj = self.request.first_arg
+        ctx.obj = self.get_request().first_arg
 
         return script_command.run_command(self, script_command.click_command, ctx)
