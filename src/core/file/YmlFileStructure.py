@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.const.types import BasicInlineValue, YamlContent
+from src.const.types import BasicValue, YamlContent
 from src.core.file.FileStructure import FileStructure
 from src.helper.data_yaml import yaml_load, yaml_write
 
@@ -18,5 +18,5 @@ class YmlFileStructure(FileStructure):
     def write_content(self) -> None:
         yaml_write(self.path, self.get_writable_content())
 
-    def get_writable_content(self) -> BasicInlineValue:
+    def get_writable_content(self) -> BasicValue:
         return self.content

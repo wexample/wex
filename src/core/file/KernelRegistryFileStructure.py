@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.types import (
-    BasicInlineValue,
+    BasicValue,
     KernelRegistry,
     RegistryResolverData,
     YamlContent,
@@ -54,7 +54,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
         return self.content
 
     def get_resolver_data(self, command_type: str) -> RegistryResolverData:
-        return cast(RegistryResolverData, self.content.resolvers[command_type])
+        return self.content.resolvers[command_type]
 
-    def get_writable_content(self) -> BasicInlineValue:
+    def get_writable_content(self) -> BasicValue:
         return self.content.to_dict()
