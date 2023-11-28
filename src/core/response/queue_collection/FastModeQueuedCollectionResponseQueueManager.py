@@ -37,7 +37,7 @@ class FastModeQueuedCollectionResponseQueueManager(
 
         return None
 
-    def render_content_complete(self) -> None:
+    def render_content_complete(self) -> "QueuedCollectionResponse":
         if self.response.parent:
             self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection
@@ -63,4 +63,4 @@ class FastModeQueuedCollectionResponseQueueManager(
                 # In fast mode we merge all outputs in the root output bag.
                 self.response.output_bag += response.output_bag
 
-        super().render_content_complete()
+        return super().render_content_complete()

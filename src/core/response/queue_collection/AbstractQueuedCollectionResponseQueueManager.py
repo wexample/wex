@@ -11,8 +11,8 @@ class AbstractQueuedCollectionResponseQueueManager:
     def __init__(self, response: "QueuedCollectionResponse") -> None:
         self.response: "QueuedCollectionResponse" = response
 
-    def render_content_complete(self) -> None:
-        pass
+    def render_content_complete(self) -> "QueuedCollectionResponse":
+        return self.response
 
     @abstractmethod
     def get_previous_value(self) -> BasicInlineValue:
