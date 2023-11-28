@@ -9,7 +9,7 @@ from src.core.CommandRequest import CommandRequest
 
 
 class PythonCommandRunner(AbstractCommandRunner):
-    def set_request(self, request: CommandRequest):
+    def set_request(self, request: CommandRequest) -> None:
         super().set_request(request=request)
 
     def build_script_command(self) -> Optional[ScriptCommand]:
