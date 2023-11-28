@@ -2,5 +2,6 @@ click
 gitpython
 inquirerpy
 psutil
+pydantic
 python-dotenv
 pyyaml
