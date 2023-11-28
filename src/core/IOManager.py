@@ -2,6 +2,7 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
+from src.core.KernelChild import KernelChild
 from src.const.globals import (
     COLOR_CYAN,
     COLOR_GRAY,
@@ -19,15 +20,13 @@ if TYPE_CHECKING:
 IO_DEFAULT_LOG_LENGTH = 10
 
 
-class IOManager:
-    messages = None
-
+class IOManager(KernelChild):
     def __init__(self, kernel: "Kernel") -> None:
+        super().__init__(kernel)
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: List[str] = []
         self.indent_string: str = "  "
-        self.kernel: "Kernel" = kernel
 
     def error(
         self,
