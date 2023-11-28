@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any
 
 import click
 
+from src.core.KernelChild import KernelChild
 from src.const.args import ARGS_HELP
 from src.const.types import StringsList
 from src.core.CommandRequest import CommandRequest
@@ -12,20 +13,20 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-class AbstractCommandRunner:
+class AbstractCommandRunner(KernelChild):
     def __init__(self, kernel: "Kernel") -> None:
-        self.kernel = kernel
+        super().__init__(kernel)
+
         self.request: None | CommandRequest = None
+        self._request: None | CommandRequest = None
 
     def set_request(self, request: CommandRequest):
         self.request = request
+        self._request = request
         self.request.runner = self
 
     def get_request(self) -> CommandRequest:
-        if not self.request:
-            self.kernel.io.error("Trying to access request before initialization")
-            assert False
-
+        self._validate__should_not_be_none(self._request)
         return self.request
 
     @abstractmethod
