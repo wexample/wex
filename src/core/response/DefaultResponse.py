@@ -14,8 +14,10 @@ class DefaultResponse(AbstractResponse):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> None:
+    ) -> AbstractResponse:
         self.output_bag.append(self.content)
+
+        return self
 
     def print(
         self,

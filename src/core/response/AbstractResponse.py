@@ -72,7 +72,7 @@ class AbstractResponse(KernelChild, HasRequest):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> None:
+    ) -> "AbstractResponse":
         pass
 
     def print(

@@ -23,6 +23,6 @@ class AbortResponse(AbstractResponse, ABC):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> None:
+    ) -> AbstractResponse:
         # Nothing to do
-        pass
+        return self

@@ -119,7 +119,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 else:
                     script_config = script
 
-                self.kernel.io.log(script["title"])
+                self.kernel.io.log(script_config["title"])
 
                 command = script_command.run_script(self, script_config, variables)
 
