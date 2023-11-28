@@ -18,13 +18,20 @@ class PythonCommandRunner(AbstractCommandRunner):
 
         # Import module and load function.
         spec = importlib.util.spec_from_file_location(path, path)
+
+        if not spec or not spec.loader:
+            return None
+
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         resolver = cast(AbstractCommandResolver, request.resolver)
 
-        return getattr(
-            module,
-            resolver.get_function_name(list(request.get_match().groups())),
+        return cast(
+            ScriptCommand,
+            getattr(
+                module,
+                resolver.get_function_name(list(request.get_match().groups())),
+            )
         )
 
     def get_options_names(self) -> StringsList:
