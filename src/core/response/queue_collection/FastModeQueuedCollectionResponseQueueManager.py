@@ -44,9 +44,11 @@ class FastModeQueuedCollectionResponseQueueManager(
                 QueuedCollectionResponse,
             )
 
-            while (isinstance(self.response, QueuedCollectionResponse)
-                   and self.response.has_next_step
-                   and not isinstance(self.response.first(), QueuedCollectionStopResponse)):
+            while (
+                isinstance(self.response, QueuedCollectionResponse)
+                and self.response.has_next_step
+                and not isinstance(self.response.first(), QueuedCollectionStopResponse)
+            ):
                 self.response.has_next_step = False
                 self.response.kernel.current_response = None
 
