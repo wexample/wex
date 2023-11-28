@@ -3,13 +3,14 @@ from typing import TYPE_CHECKING, Callable
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helper.docker import docker_build_long_container_name
 from src.const.globals import SHELL_DEFAULT
+from src.const.types import Args, Kwargs, StringsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
 
 if TYPE_CHECKING:
-    from src.const.types import Args, Kwargs
+    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
 class AppCommand(ScriptCommand):
@@ -50,7 +51,9 @@ class AppCommand(ScriptCommand):
         # Say that the command is available ony in app context
         self.click_command.app_command = True
 
-    def run_script(self, function, runner, script, variables: dict):
+    def run_script(
+        self, runner: "AbstractCommandRunner", script, variables: dict
+    ) -> StringsList:
         kernel = runner.kernel
         manager = kernel.addons["app"]
 
@@ -71,13 +74,13 @@ class AppCommand(ScriptCommand):
             elif "file" in script:
                 script["file"] = string_replace_multiple(script["file"], app_variables)
 
-            command = super().run_script(function, runner, script, variables)
+            command = super().run_script(runner, script, variables)
 
             if "container_name" in script:
                 from src.helper.command import command_to_string
 
-                command = command_to_string(command)
-                command = command_escape(command)
+                command_string = command_to_string(command)
+                command_string = command_escape(command_string)
 
                 wrap_command = [
                     "docker",
@@ -85,11 +88,11 @@ class AppCommand(ScriptCommand):
                     docker_build_long_container_name(kernel, script["container_name"]),
                     SHELL_DEFAULT,
                     "-c",
-                    command,
+                    command_string,
                 ]
 
                 return wrap_command
         else:
-            command = super().run_script(function, runner, script, variables)
+            command = super().run_script(runner, script, variables)
 
         return command

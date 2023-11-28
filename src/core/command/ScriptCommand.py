@@ -1,8 +1,11 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 import click
 
-from src.const.types import AnyCallable, Args, Kwargs
+from src.const.types import AnyCallable, Args, Kwargs, StringsList
+
+if TYPE_CHECKING:
+    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
 class ScriptCommand:
@@ -96,32 +99,38 @@ class ScriptCommand:
         self.click_command = click_command
         self.click_command.properties = {}
 
-    def run_command(self, runner, function, ctx) -> Any:
+    def run_command(self, runner: "AbstractCommandRunner", function, ctx) -> Any:
         return self.click_command.invoke(ctx)
 
     def run_script(
-        self, function, runner, script: Dict[str, Any], variables: Dict[str, str]
-    ) -> Optional[List[str]]:
+        self,
+        runner: "AbstractCommandRunner",
+        script: Dict[str, Any],
+        variables: Dict[str, str],
+    ) -> StringsList:
         from src.helper.string import string_replace_multiple
 
         if "script" in script:
             from src.helper.command import command_escape
 
-            script_command = string_replace_multiple(script["script"], variables)
+            script_string = string_replace_multiple(script["script"], variables)
 
             if "interpreter" in script:
-                script_command = command_escape(script_command)
+                script_string = command_escape(script_string)
 
         elif "file" in script:
-            script_command = string_replace_multiple(script["file"], variables)
+            script_string = string_replace_multiple(script["file"], variables)
             script["interpreter"] = script.get("interpreter", ["/bin/bash"])
         else:
-            script_command = None
+            runner.kernel.io.error(
+                'Missing "script" or "file" key in script yaml definition'
+            )
+            assert False
 
         return (
-            script["interpreter"] + [script_command]
-            if "interpreter" in script and script_command
-            else script_command
+            script["interpreter"] + [script_string]
+            if "interpreter" in script and script_string
+            else script_string
         )
 
     def get_callback(self) -> AnyCallable:

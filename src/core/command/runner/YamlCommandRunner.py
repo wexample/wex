@@ -107,9 +107,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script["title"])
 
-                command = script_command.run_script(
-                    script_command.click_command, self, script, variables
-                )
+                command = script_command.run_script(self, script, variables)
 
                 commands_collection.append(
                     InteractiveShellCommandResponse(self.kernel, command)
