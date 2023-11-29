@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 import click
 
@@ -27,6 +27,7 @@ class ScriptCommand:
         self.as_sudo: bool = False
         self.command_type: str = command_type
         self.no_log: bool = False
+        self.verbosity: Optional[int] = None
 
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
 

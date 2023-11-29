@@ -1,11 +1,14 @@
-from src.core.FunctionProperty import FunctionProperty
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 def verbosity(level: int):
-    def decorator(function):
+    def decorator(script_command: "ScriptCommand"):
         # Enforce verbosity level for this function.
-        FunctionProperty(function, "verbosity", level)
+        script_command.verbosity = level
 
-        return function
+        return script_command
 
     return decorator
