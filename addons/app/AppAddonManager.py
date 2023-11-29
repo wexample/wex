@@ -394,7 +394,7 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if script_command.get_extra_value("app_dir_required", False):
+                if not script_command.get_extra_value("app_dir_required", False):
                     self.app_dirs_stack.append(None)
                     self.unset_app_workdir()
                     return
@@ -435,7 +435,7 @@ class AppAddonManager(AddonManager):
 
         request.set_args_list(args)
 
-        if script_command.set_extra_value('app_should_run', False):
+        if script_command.get_extra_value('app_should_run', False):
             from addons.app.command.app.started import (
                 APP_STARTED_CHECK_MODE_FULL,
                 app__app__started,
