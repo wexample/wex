@@ -40,4 +40,4 @@ class FunctionResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return self.get_first_output_inline_value()
+        return self.get_first_output_printable_value()

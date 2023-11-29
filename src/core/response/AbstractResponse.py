@@ -8,16 +8,16 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
+from src.const.types import (
+    BasicInlineValue,
+    JsonContent,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+)
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
-    from src.const.types import (
-        BasicInlineValue,
-        JsonContent,
-        OptionalCoreCommandArgsDict,
-        ResponsePrintType,
-    )
     from src.core.Kernel import Kernel
 
 
@@ -163,15 +163,15 @@ class AbstractResponse(KernelChild, HasRequest):
 
         return value
 
-    def get_first_output_inline_value(self) -> BasicInlineValue:
+    def get_first_output_printable_value(self) -> ResponsePrintType:
         if not len(self.output_bag):
             return None
 
         data = self.output_bag[0]
-        assert isinstance(data, str | int | float | bool | None)
+        assert isinstance(data, str | int | float | bool | None | list | dict)
 
         # can be empty in "none" render mode.
-        return cast(BasicInlineValue, data)
+        return cast(ResponsePrintType, data)
 
 
 ResponseCollection = List[AbstractResponse]

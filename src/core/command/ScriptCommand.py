@@ -134,7 +134,7 @@ class ScriptCommand:
         return (
             script["interpreter"] + [script_string]
             if "interpreter" in script and script_string
-            else script_string
+            else [script_string]
         )
 
     def get_callback(self) -> AnyCallable:

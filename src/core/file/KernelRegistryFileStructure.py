@@ -27,7 +27,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
         self.load_content()
 
     def load_content(self, default: Optional[YamlContent] = None) -> None:
-        content = self.load_content_yaml(default)
+        content = self.load_content_yaml_dict(default)
 
         self.content = KernelRegistry(
             env=content["env"] if content else None,

@@ -18,14 +18,15 @@ StringKeysDict = Dict[str, Any]
 StringsList = List[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
-JsonContent = StringKeysDict
-YamlContent = StringKeysDict
+JsonContent = Optional[BasicInlineValue | StringKeysDict]
+YamlContent = Optional[BasicInlineValue | StringKeysDict]
+YamlContentDict = StringKeysDict
 
 AnyCallable = Callable[..., Any]
 Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
 Kwargs = Any
-ResponsePrintType = Optional[BasicInlineValue | JsonContent]
+ResponsePrintType = Optional[BasicInlineValue | StringKeysDict]
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
 
@@ -134,7 +135,7 @@ class DockerCompose(TypedDict):
     services: Any
 
 
-class KernelRegistry(YamlContent):
+class KernelRegistry(StringKeysDict):
     env: Optional[str]
     resolvers: Dict[str, RegistryResolverData]
 
@@ -145,5 +146,5 @@ class KernelRegistry(YamlContent):
         self.env = env
         self.resolvers = resolvers or {}
 
-    def to_dict(self) -> YamlContent:
+    def to_dict(self) -> StringKeysDict:
         return vars(self)

@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILEPATH_REL_DOCKER_ENV
 from addons.docker.helper.docker import user_has_docker_permission
@@ -63,7 +63,7 @@ def docker_exec_app_compose_command(
             trace=False,
         )
 
-    manager = kernel.addons["app"]
+    manager = cast("AppAddonManager", kernel.addons["app"])
     env = manager.get_runtime_config("env")
 
     command: List[str] = [
@@ -124,5 +124,5 @@ def docker_exec_app_compose(
 
 
 def docker_build_long_container_name(kernel: "Kernel", name: str) -> str:
-    manager = kernel.addons["app"]
+    manager = cast("AppAddonManager", kernel.addons["app"])
     return f'{manager.get_runtime_config("name")}_{name}'

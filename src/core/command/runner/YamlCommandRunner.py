@@ -121,10 +121,10 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 self.kernel.io.log(script_config["title"])
 
-                command = script_command.run_script(self, script_config, variables)
+                command_list = script_command.run_script(self, script_config, variables)
 
                 commands_collection.append(
-                    InteractiveShellCommandResponse(self.kernel, command)
+                    InteractiveShellCommandResponse(self.kernel, command_list)
                 )
 
             return QueuedCollectionResponse(self.kernel, commands_collection)

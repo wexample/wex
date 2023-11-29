@@ -2,7 +2,7 @@ import os
 from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringsList
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import command_to_string, execute_command_sync
@@ -14,14 +14,11 @@ if TYPE_CHECKING:
 
 class InteractiveShellCommandResponse(AbstractResponse):
     def __init__(
-        self, kernel: "Kernel", shell_command: list | str, ignore_error: bool = False
+        self, kernel: "Kernel", shell_command: StringsList, ignore_error: bool = False
     ):
         super().__init__(kernel)
 
-        if isinstance(shell_command, list):
-            shell_command = list(shell_command)
-
-        self.shell_command: list | str = shell_command
+        self.shell_command: StringsList = shell_command.copy()
         self.interactive_data = True
         self.ignore_error = ignore_error
 
@@ -31,9 +28,6 @@ class InteractiveShellCommandResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
-        if self.ignore_error:
-            self.shell_command += ["||", "true"]
-
         if self.kernel.fast_mode:
             # When using fast mode, we need to preserve consistency between shell executions.
             # Ex : ['echo', '"OK"'] should return OK without quotes.
@@ -41,7 +35,10 @@ class InteractiveShellCommandResponse(AbstractResponse):
             # we need to enable shell=True here.
 
             success, content = execute_command_sync(
-                self.kernel, command_to_string(self.shell_command), shell=True
+                self.kernel,
+                command_to_string(self.shell_command),
+                ignore_error=self.ignore_error,
+                shell=True,
             )
 
             self.success = success
@@ -51,6 +48,9 @@ class InteractiveShellCommandResponse(AbstractResponse):
 
         # Do not add to render bag, but append only once.
         elif not self.rendered:
+            if self.ignore_error:
+                self.shell_command += ["||", "true"]
+
             process_post_exec(self.kernel, self.shell_command)
 
         return self
@@ -63,4 +63,4 @@ class InteractiveShellCommandResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return self.output_bag[0] if len(self.output_bag) else None
+        return self.get_first_output_printable_value()

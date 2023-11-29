@@ -56,8 +56,7 @@ def app__webhook__status(kernel: "Kernel", port: int = WEBHOOK_LISTEN_PORT_DEFAU
                     ]
                 )
 
-        table_response = TableResponse(kernel)
-        table_response.set_title("Log")
+        table_response = TableResponse(kernel, title="Log")
         table_response.set_body(table)
 
         output["log"] = table_response

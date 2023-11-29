@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 import yaml
 
-if TYPE_CHECKING:
-    from src.const.types import YamlContent
+from src.const.types import YamlContent, YamlContentDict
 
 
 def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
@@ -30,8 +29,8 @@ def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
 
 
 def yaml_load(
-    file_path: str, default: Optional["YamlContent"] = None
-) -> Optional["YamlContent"]:
+    file_path: str, default: Optional[YamlContent] = None
+) -> Optional[YamlContent]:
     try:
         with open(file_path, "r") as f:
             content = yaml.safe_load(f)
@@ -44,7 +43,20 @@ def yaml_load(
         return default
 
 
-def yaml_write(file_path: str, content: "YamlContent") -> None:
+def yaml_load_dict(
+    file_path: str, default: Optional[YamlContent] = None
+) -> YamlContentDict:
+    content = yaml_load(file_path, default)
+
+    if not content:
+        return default or {}
+
+    assert isinstance(content, dict)
+
+    return content
+
+
+def yaml_write(file_path: str, content: YamlContent) -> None:
     with open(file_path, "w") as f:
         yaml.safe_dump(content, f)
 

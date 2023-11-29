@@ -46,12 +46,18 @@ from src.const.types import (
     StringKeysDict,
     StringsList,
     YamlContent,
+    YamlContentDict,
 )
 from src.core.AddonManager import AddonManager
 from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
-from src.helper.data_yaml import yaml_load, yaml_load_or_default, yaml_write
+from src.helper.data_yaml import (
+    yaml_load,
+    yaml_load_dict,
+    yaml_load_or_default,
+    yaml_write,
+)
 from src.helper.dict import dict_get_item_by_path
 from src.helper.file import (
     file_env_to_dict,
@@ -173,9 +179,9 @@ class AppAddonManager(AddonManager):
 
     @classmethod
     def _load_config(
-        cls, path: str, default: Optional[YamlContent] = None
-    ) -> YamlContent:
-        return yaml_load(path, cast(YamlContent, default)) or {}
+        cls, path: str, default: Optional[YamlContentDict] = None
+    ) -> YamlContentDict:
+        return yaml_load_dict(path, default) or {}
 
     def create_config(
         self, app_name: str, domains: Optional[StringsList] = None
