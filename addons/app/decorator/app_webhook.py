@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 def app_webhook(*args, **kwargs):
     def decorator(script_command: "ScriptCommand"):
-        script_command.set_extra_value('app_webhook')
+        script_command.set_extra_value("app_webhook")
 
         return script_command
 

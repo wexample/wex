@@ -7,9 +7,9 @@ from src.const.types import (
     Args,
     CoreCommandArgsDict,
     Kwargs,
+    StringKeysDict,
     StringsList,
     YamlCommandScript,
-    StringKeysDict,
 )
 
 if TYPE_CHECKING:
@@ -112,7 +112,7 @@ class ScriptCommand:
     def set_extra_value(self, name: str, value: bool = True) -> None:
         self._extra[name] = value
 
-    def get_extra_value(self, name: str, default: Any = None) -> Any:
+    def get_extra_value(self, name: str, default: Optional[Any] = None) -> Any:
         return self._extra[name] if name in self._extra else default
 
     def get_extra_properties(self) -> StringKeysDict:

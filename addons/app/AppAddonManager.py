@@ -435,7 +435,7 @@ class AppAddonManager(AddonManager):
 
         request.set_args_list(args)
 
-        if script_command.get_extra_value('app_should_run', False):
+        if script_command.get_extra_value("app_should_run", False):
             from addons.app.command.app.started import (
                 APP_STARTED_CHECK_MODE_FULL,
                 app__app__started,

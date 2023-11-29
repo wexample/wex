@@ -39,12 +39,12 @@ class AppCommand(ScriptCommand):
         )
 
         # Do not provide app_dir to function
-        self.set_extra_value('app_dir_required', dir_required)
+        self.set_extra_value("app_dir_required", dir_required)
 
         self.click_command = app_dir_option(required=dir_required)(self.click_command)
-        
+
         # Do not check if app is running
-        self.set_extra_value('app_should_run', should_run)
+        self.set_extra_value("app_should_run", should_run)
 
     def run_script(
         self,

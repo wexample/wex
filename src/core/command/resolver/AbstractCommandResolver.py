@@ -351,7 +351,9 @@ class AbstractCommandResolver(KernelChild):
                                 "command": internal_command,
                                 "file": command_file,
                                 "test": test_file,
-                                "alias": self.get_script_command_aliases(script_command),
+                                "alias": self.get_script_command_aliases(
+                                    script_command
+                                ),
                                 "properties": script_command.get_extra_properties(),
                             },
                         )

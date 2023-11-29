@@ -169,7 +169,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 )
 
             # Hooking this command is not allowed
-            if not request.get_script_command().get_extra_value('app_webhook', False):
+            if not request.get_script_command().get_extra_value("app_webhook", False):
                 return QueuedCollectionStopResponse(
                     self.kernel, "Function is not a webhook"
                 )
