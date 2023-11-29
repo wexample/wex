@@ -40,14 +40,13 @@ class FastModeQueuedCollectionResponseQueueManager(
         return None
 
     def render_content_complete(self) -> "QueuedCollectionResponse":
+        from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
         if self.response.parent:
-            self.response.parent.has_next_step = self.response.has_next_step
+            if isinstance(self.response.parent, QueuedCollectionResponse):
+                self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection
         else:
-            from src.core.response.QueuedCollectionResponse import (
-                QueuedCollectionResponse,
-            )
-
             while (
                 isinstance(self.response, QueuedCollectionResponse)
                 and self.response.has_next_step

@@ -27,7 +27,7 @@ class AbstractResponse(KernelChild, HasRequest):
         KernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
-        self.parent = None
+        self.parent:Optional["AbstractResponse"] = None
         self.output_bag: List[ResponsePrintType | AbstractResponse] = []
         self.parent = None
         self.rendered = False

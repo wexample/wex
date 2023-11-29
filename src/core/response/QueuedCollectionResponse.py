@@ -61,7 +61,7 @@ class QueuedCollectionResponse(AbstractResponse):
         return self._path_manager
 
     def find_parent_response_collection(self) -> "None|QueuedCollectionResponse":
-        current: Optional["QueuedCollectionResponse"] = self
+        current: Optional["AbstractResponse"] = self
         while current is not None:
             current = current.parent
             if isinstance(current, QueuedCollectionResponse):

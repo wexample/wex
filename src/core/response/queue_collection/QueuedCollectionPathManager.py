@@ -37,15 +37,16 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         return self.steps[self.get_response().step_position]
 
     def start_rendering(
-        self, request: CommandRequest, response: AbstractResponse
+        self, request: CommandRequest, response: "QueuedCollectionResponse"
     ) -> None:
         self.set_request(request)
         self.set_response(response)
 
+        parent = self.get_response().find_parent_response_collection()
         # Assign position
-        if response.parent:
+        if parent:
             response.step_position = (
-                self.get_response().find_parent_response_collection().step_position + 1
+                parent.step_position + 1
             )
 
     def save_to_map(self) -> None:
