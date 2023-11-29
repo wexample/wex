@@ -370,23 +370,21 @@ class AppAddonManager(AddonManager):
         return self._get_config_value(self.runtime_config, key, default, required)
 
     def ignore_app_dir(self, request: "CommandRequest") -> bool:
-        if request.script_command is None:
+        if request._script_command is None:
             return False
 
         # Only specified commands will expect app location.
         # This is not a function property class.
-        return not isinstance(request.script_command, AppCommand)
+        return not isinstance(request.get_script_command(), AppCommand)
 
     def hook_render_request_pre(self, request: "CommandRequest") -> None:
         if self.ignore_app_dir(request):
             return
 
-        from src.core.command.ScriptCommand import ScriptCommand
-
         args = request.get_args_list_copy()
         app_dir_arg = args_shift_one(args, "app-dir")
         request.first_arg = self
-        script_command = cast(ScriptCommand, request.script_command)
+        script_command = request.get_script_command()
 
         # User specified the app dir arg.
         if app_dir_arg is not None:
@@ -461,7 +459,7 @@ class AppAddonManager(AddonManager):
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
-                        "command": request.string_command,
+                        "command": request.get_string_command(),
                         "dir": app_dir_resolved,
                     },
                     trace=False,

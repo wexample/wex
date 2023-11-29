@@ -25,19 +25,20 @@ class CommandRequest(BaseClass):
         command: str,
         args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
     ) -> None:
+        self._path: None | str = None
+        self._script_command: Optional[ScriptCommand] = None
+        self._string_command: str = resolver.resolve_alias(command)
+
         self.extension: None | str = None
         self.quiet: bool = False
         self.resolver: "AbstractCommandResolver" = resolver
         self.runner = None
-        self.string_command = resolver.resolve_alias(command)
         self.type: str = resolver.get_type()
         self.storage: StringKeysDict = (
             {}
         )  # Useful to store data about the current command execution
         self.args: "CoreCommandArgsListOrDict" = args or []
         self.parent = self.resolver.kernel.current_request
-        self._path: None | str = None
-        self.script_command: Optional[ScriptCommand] = None
         self.first_arg: Any = self.resolver.kernel
         self.match: Optional[Match] = None
         self.localized: bool = False
@@ -58,21 +59,27 @@ class CommandRequest(BaseClass):
 
         return self._path
 
-    def get_script_command(self) -> ScriptCommand:
-        if not self.script_command:
-            self.resolver.kernel.io.error(
-                "Trying to access script command before initialization"
-            )
-            assert False
+    def set_script_command(self, script_command: ScriptCommand) -> None:
+        self._script_command = script_command
 
-        return self.script_command
+    def get_script_command(self) -> ScriptCommand:
+        self._validate__should_not_be_none(self._script_command)
+        assert self._script_command is not None
+
+        return self._script_command
+
+    def set_string_command(self, string_command: str) -> None:
+        self._string_command = string_command
+
+    def get_string_command(self) -> str:
+        self._validate__should_not_be_none(self._string_command)
+        assert self._string_command is not None
+
+        return self._string_command
 
     def get_match(self) -> Match:
-        if not self.match:
-            self.resolver.kernel.io.error(
-                "Trying to access match before initialization"
-            )
-            assert False
+        self._validate__should_not_be_none(self.match)
+        assert self.match is not None
 
         return self.match
 
@@ -103,12 +110,13 @@ class CommandRequest(BaseClass):
 
             runner.set_request(self)
 
-            self.script_command = self.runner.build_script_command()
+            script_command = self.runner.build_script_command()
+            self.set_script_command(script_command)
 
             # Runner can now convert args.
             if isinstance(self.args, dict):
                 self.args = args_convert_dict_to_args(
-                    self.script_command.click_command, self.args
+                    script_command.click_command, self.args
                 )
 
             return True

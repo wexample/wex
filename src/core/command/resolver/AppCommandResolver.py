@@ -42,7 +42,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 self.kernel.io.error(
                     ERR_APP_NOT_FOUND,
                     {
-                        "command": request.string_command,
+                        "command": request.get_string_command(),
                         "dir": os.getcwd(),
                     },
                 )
@@ -164,13 +164,15 @@ class AppCommandResolver(AbstractCommandResolver):
         def _callback() -> AbstractResponse:
             request = self.kernel.create_command_request(internal_command)
 
-            if not request.script_command:
+            if not request._script_command:
                 return AbortResponse(
                     kernel=self.kernel, reason="WEBHOOK_REQUEST_NOT_FOUND"
                 )
 
             # Hooking this command is not allowed
-            if not FunctionProperty.has_property(request.script_command, "app_webhook"):
+            if not FunctionProperty.has_property(
+                request.get_script_command(), "app_webhook"
+            ):
                 return QueuedCollectionStopResponse(
                     self.kernel, "Function is not a webhook"
                 )

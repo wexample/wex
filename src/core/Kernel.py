@@ -308,7 +308,7 @@ class Kernel:
                 self.io.error(
                     'Command file not found when rendering, command {command}, in path "{path}"',
                     {
-                        "command": request.string_command,
+                        "command": request._string_command,
                         "path": request._path,
                     },
                     trace=False,
@@ -330,7 +330,7 @@ class Kernel:
             self.io.error(
                 message,
                 {
-                    "command": request.string_command,
+                    "command": request.get_string_command(),
                     "command_type": command_type,
                     "resolver_type": resolver_type,
                 },
@@ -340,7 +340,7 @@ class Kernel:
 
         # Enforce sudo.
         if (
-            FunctionProperty.has_property(request.script_command, "as_sudo")
+            FunctionProperty.has_property(request.get_script_command(), "as_sudo")
             and os.geteuid() != 0
         ):
             self.logger.append_event("EVENT_SWITCH_SUDO")

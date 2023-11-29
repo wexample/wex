@@ -14,6 +14,7 @@ from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
 )
+from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 
@@ -35,7 +36,7 @@ class AbstractResponse(KernelChild, HasRequest):
         # we call it "interactive".
         self.interactive_data = False
 
-    def get_root_parent(self):
+    def get_root_parent(self) -> "AbstractResponse":
         if self.parent:
             return self.parent.get_root_parent()
         return self
@@ -123,7 +124,7 @@ class AbstractResponse(KernelChild, HasRequest):
     def storable_data(self) -> bool:
         return True
 
-    def store_data(self):
+    def store_data(self) -> Any:
         if self.storable_data() and self.print(
             render_mode=KERNEL_RENDER_MODE_TERMINAL, interactive_data=False
         ):
@@ -136,7 +137,7 @@ class AbstractResponse(KernelChild, HasRequest):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: Optional[dict] = None,
-    ):
+    ) -> None:
         for response in collection:
             if isinstance(response, AbstractResponse):
                 self.output_bag.append(
@@ -172,6 +173,21 @@ class AbstractResponse(KernelChild, HasRequest):
 
         # can be empty in "none" render mode.
         return cast(ResponsePrintType, data)
+
+
+class HasResponse(BaseClass):
+    def __init__(self) -> None:
+        self._response: None | AbstractResponse = None
+
+    def set_response(self, response: AbstractResponse):
+        self._response = response
+        self._response.runner = self
+
+    def get_response(self) -> AbstractResponse:
+        self._validate__should_not_be_none(self._response)
+        assert self._response is not None
+
+        return self._response
 
 
 ResponseCollection = List[AbstractResponse]

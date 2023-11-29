@@ -51,12 +51,13 @@ class AbstractCommandResolver(KernelChild):
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
         runner = cast(AbstractCommandRunner, request.runner)
-        script_command = cast(ScriptCommand, request.script_command)
 
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
         previous_verbosity = self.kernel.verbosity
-        verbosity = FunctionProperty.get_property(script_command, name="verbosity")
+        verbosity = FunctionProperty.get_property(
+            request.get_script_command(), name="verbosity"
+        )
 
         if verbosity and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
             self.kernel.verbosity = verbosity
@@ -172,7 +173,7 @@ class AbstractCommandResolver(KernelChild):
             self.kernel.io.error(
                 'Command file not found for command {command}, in path "{path}"',
                 {
-                    "command": request.string_command,
+                    "command": request.get_string_command(),
                     "path": path,
                 },
                 trace=False,
@@ -366,7 +367,7 @@ class AbstractCommandResolver(KernelChild):
 
     def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables
-        request.match = self.build_match(request.string_command)
+        request.match = self.build_match(request.get_string_command())
 
         if request.match:
             for extension in COMMAND_EXTENSIONS:

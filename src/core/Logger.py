@@ -95,7 +95,7 @@ class Logger:
 
     def create_command_dict(self, request) -> dict:
         return {
-            "command": request.string_command,
+            "command": request.get_string_command(),
             "args": request.args,
         }
 
@@ -127,12 +127,8 @@ class Logger:
 
     def write(self, task_id: None | str = None, log_data: dict | None = None):
         # When writing current log, check if disabled.
-        if (
-            self.kernel.root_request
-            and self.kernel.root_request.script_command
-            and FunctionProperty.has_property(
-                self.kernel.root_request.script_command, name="no_log"
-            )
+        if self.kernel.root_request and FunctionProperty.has_property(
+            self.kernel.root_request.get_script_command(), name="no_log"
         ):
             return
 

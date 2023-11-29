@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, List, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
@@ -25,6 +25,8 @@ from src.helper.data_yaml import yaml_is_basic_data
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+
+QueuedCollectionStepsList = List[int | None]
 
 
 class QueuedCollectionResponse(AbstractResponse):
@@ -57,7 +59,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self._path_manager
 
-    def find_parent_response_collection(self) -> "None|AbstractResponse":
+    def find_parent_response_collection(self) -> "None|QueuedCollectionResponse":
         current: Optional["QueuedCollectionResponse"] = self
         while current is not None:
             current = current.parent

@@ -40,4 +40,9 @@ class FunctionResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return self.get_first_output_printable_value()
+        data = self.output_bag[0]
+
+        if isinstance(data, AbstractResponse):
+            return data.print()
+
+        return None
