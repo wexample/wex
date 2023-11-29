@@ -362,8 +362,8 @@ class AbstractCommandResolver(KernelChild):
                     )
         return commands
 
-    def get_script_command_aliases(self, function: ScriptCommand) -> List[str]:
-        return FunctionProperty.get_property(function, "aliases", []) or []
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:
+        return script_command.aliases
 
     def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables

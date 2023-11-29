@@ -1,18 +1,12 @@
 from typing import TYPE_CHECKING
 
-from src.core.FunctionProperty import FunctionProperty
-
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
 
 
 def alias(name: bool | str = True):
     def decorator(script_command: "ScriptCommand"):
-        aliases = FunctionProperty.get_property(script_command, "aliases")
-        if aliases:
-            aliases.append(name)
-        else:
-            FunctionProperty(script_command, "aliases", [name])
+        script_command.aliases.append(name)
 
         return script_command
 
