@@ -24,6 +24,7 @@ class ScriptCommand:
         decorator_kwargs: "Kwargs",
     ) -> None:
         self.aliases: StringsList = []
+        self.as_sudo: bool = False
         self.command_type: str = command_type
 
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
