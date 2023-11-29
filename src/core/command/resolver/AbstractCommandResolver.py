@@ -324,46 +324,47 @@ class AbstractCommandResolver(KernelChild):
                 if request.runner:
                     script_command = request.runner.build_script_command()
 
-                    properties = {}
-                    for name in script_command.click_command.properties:
-                        properties[name] = script_command.click_command.properties[
-                            name
-                        ].property_value
+                    if script_command:
+                        properties = {}
+                        for name in script_command.click_command.properties:
+                            properties[name] = script_command.click_command.properties[
+                                name
+                            ].property_value
 
-                    test_file = None
-                    if test_commands or not hasattr(
-                        script_command.click_command.callback, "test_command"
-                    ):
-                        # All test are in python
-                        test_file = os.path.realpath(
-                            os.path.join(
-                                directory,
-                                "../../tests/command",
-                                group,
-                                command_file_name.rsplit(".", 1)[0] + ".py",
+                        test_file = None
+                        if test_commands or not hasattr(
+                            script_command.click_command.callback, "test_command"
+                        ):
+                            # All test are in python
+                            test_file = os.path.realpath(
+                                os.path.join(
+                                    directory,
+                                    "../../tests/command",
+                                    group,
+                                    command_file_name.rsplit(".", 1)[0] + ".py",
+                                )
                             )
-                        )
 
-                        test_file = (
-                            test_file
-                            if (test_file and os.path.exists(test_file))
-                            else None
-                        )
+                            test_file = (
+                                test_file
+                                if (test_file and os.path.exists(test_file))
+                                else None
+                            )
 
-                    commands[internal_command] = cast(
-                        RegistryCommand,
-                        {
-                            "command": internal_command,
-                            "file": command_file,
-                            "test": test_file,
-                            "alias": self.get_script_command_aliases(script_command),
-                            "properties": properties,
-                        },
-                    )
+                        commands[internal_command] = cast(
+                            RegistryCommand,
+                            {
+                                "command": internal_command,
+                                "file": command_file,
+                                "test": test_file,
+                                "alias": script_command.aliases,
+                                "properties": properties,
+                            },
+                        )
         return commands
 
-    def get_script_command_aliases(self, function: ScriptCommand) -> List[str]:
-        return FunctionProperty.get_property(function, "aliases", []) or []
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:
+        return script_command.aliases
 
     def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables

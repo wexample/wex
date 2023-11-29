@@ -23,6 +23,7 @@ class ScriptCommand:
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",
     ) -> None:
+        self.aliases: StringsList = []
         self.command_type: str = command_type
 
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES

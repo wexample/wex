@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 import click
 
@@ -31,6 +31,10 @@ class AbstractCommandRunner(KernelChild, HasRequest):
 
     @abstractmethod
     def run(self) -> Any:
+        pass
+
+    @abstractmethod
+    def build_script_command(self) -> Optional[ScriptCommand]:
         pass
 
     def run_click_function(self, script_command: ScriptCommand) -> Any:
