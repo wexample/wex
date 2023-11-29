@@ -30,8 +30,8 @@ class KernelRegistryFileStructure(YmlFileStructure):
         content = self.load_content_yaml_dict(default)
 
         self.content = KernelRegistry(
-            env=content["env"] if content else None,
-            resolvers=content["resolvers"] if content else {},
+            env=content["env"] if content and "env" in content else None,
+            resolvers=content["resolvers"] if content and "resolvers" in content else {},
         )
 
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
