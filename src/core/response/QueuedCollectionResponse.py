@@ -26,7 +26,8 @@ from src.helper.data_yaml import yaml_is_basic_data
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-QueuedCollectionStepsList = List[int | None]
+QueuedCollectionStepValue = int | None
+QueuedCollectionStepsList = List[QueuedCollectionStepValue]
 
 
 class QueuedCollectionResponse(AbstractResponse):

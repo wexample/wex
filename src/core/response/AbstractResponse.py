@@ -8,12 +8,7 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
-from src.const.types import (
-    BasicInlineValue,
-    JsonContent,
-    OptionalCoreCommandArgsDict,
-    ResponsePrintType,
-)
+from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
@@ -148,10 +143,12 @@ class AbstractResponse(KernelChild, HasRequest):
                     )
                 )
 
-    def render_mode_json_wrap_data(self, value: BasicInlineValue) -> JsonContent:
+    def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         return {"value": value}
 
-    def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
+    def print_wrapped(
+        self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
+    ) -> Optional[str]:
         if render_mode == KERNEL_RENDER_MODE_NONE:
             return None
 
@@ -162,7 +159,7 @@ class AbstractResponse(KernelChild, HasRequest):
 
             return json.dumps(self.render_mode_json_wrap_data(value))
 
-        return value
+        return str(value) if value is not None else None
 
     def get_first_output_printable_value(self) -> ResponsePrintType:
         if not len(self.output_bag):
@@ -179,9 +176,8 @@ class HasResponse(BaseClass):
     def __init__(self) -> None:
         self._response: None | AbstractResponse = None
 
-    def set_response(self, response: AbstractResponse):
+    def set_response(self, response: AbstractResponse) -> None:
         self._response = response
-        self._response.runner = self
 
     def get_response(self) -> AbstractResponse:
         self._validate__should_not_be_none(self._response)

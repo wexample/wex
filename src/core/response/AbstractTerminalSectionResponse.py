@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 import shutil
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from src.const.types import BasicInlineValue, JsonContent
+from src.const.types import JsonContent, ResponsePrintType
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
@@ -36,6 +36,6 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
 
         return ""
 
-    def render_mode_json_wrap_data(self, value: BasicInlineValue) -> JsonContent:
+    def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         # Do not add extra json wrapping
-        return value
+        return cast(JsonContent, value)

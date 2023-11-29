@@ -2,6 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, cast
 
 from src.const.types import BasicInlineValue
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
@@ -31,6 +32,7 @@ class FastModeQueuedCollectionResponseQueueManager(
         ]
 
         first = previous_response.output_bag[0]
+        assert isinstance(first, AbstractResponse)
         if previous_response and first.storable_data():
             # Get previous data keeps consistency with non-fast mode.
             return cast(BasicInlineValue, previous_response.first())

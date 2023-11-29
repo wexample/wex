@@ -1,7 +1,8 @@
 import os
+from typing import cast
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -37,6 +38,6 @@ class ResponseCollectionResponse(AbstractResponse):
 
             return data
 
-    def render_mode_json_wrap_data(self, value):
+    def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         # Do not add extra json wrapping
-        return value
+        return cast(JsonContent, value)

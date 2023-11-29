@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Dict, Optional, cast
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.CommandRequest import CommandRequest, HasRequest
@@ -11,30 +11,29 @@ if TYPE_CHECKING:
     from src.core.response.QueuedCollectionResponse import (
         QueuedCollectionResponse,
         QueuedCollectionStepsList,
+        QueuedCollectionStepValue,
     )
 
 
 class QueuedCollectionPathManager(HasResponse, HasRequest):
-    def __init__(self, root_request) -> None:
+    def __init__(self, root_request: CommandRequest) -> None:
         HasResponse.__init__(self)
         HasRequest.__init__(self)
 
         self.root_request = root_request
         self._response: Optional["QueuedCollectionResponse"] = None
         self.steps: "QueuedCollectionStepsList" = [None]
-        self.map = {}
+        self.map: Dict[str, AbstractResponse] = {}
 
-        args = root_request.args
+        args = root_request.get_args_list_copy()
         steps = args_shift_one(args, "command-request-step")
         if steps:
-            self.steps: "QueuedCollectionStepsList" = list(
-                map(int, str(steps).split("."))
-            )
+            self.steps = list(map(int, str(steps).split(".")))
 
     def get_response(self) -> "QueuedCollectionResponse":
         return cast("QueuedCollectionResponse", super().get_response())
 
-    def get_step_index(self) -> int:
+    def get_step_index(self) -> "QueuedCollectionStepValue":
         return self.steps[self.get_response().step_position]
 
     def start_rendering(
