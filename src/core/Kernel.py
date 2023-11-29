@@ -15,7 +15,6 @@ from src.const.globals import (
 from src.core.AddonManager import AddonManager
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
-from src.core.FunctionProperty import FunctionProperty
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
@@ -340,10 +339,7 @@ class Kernel:
             return AbortResponse(self, reason=message)
 
         # Enforce sudo.
-        if (
-            FunctionProperty.has_property(request.get_script_command(), "as_sudo")
-            and os.geteuid() != 0
-        ):
+        if request.get_script_command().as_sudo and os.geteuid() != 0:
             self.logger.append_event("EVENT_SWITCH_SUDO")
             # Mask printed logs as it may not be relevant.
             self.io.log_hide()
