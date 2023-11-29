@@ -33,6 +33,7 @@ if TYPE_CHECKING:
         CoreCommandArgsList,
         CoreCommandString,
         OptionalCoreCommandArgsListOrDict,
+        ShellCommandsList,
     )
     from src.core.command.resolver.AbstractCommandResolver import (
         AbstractCommandResolver,
@@ -57,7 +58,7 @@ class Kernel:
         self.current_request: Optional["CommandRequest"] = None
         self.current_response: Optional["AbstractResponse"] = None
         self.io = IOManager(self)
-        self.post_exec: List[str] = []
+        self.post_exec: List[ShellCommandsList] = []
         self.previous_response: Optional["AbstractResponse"] = None
         self.sys_argv: list[str] = sys.argv.copy()
         self.task_id: str | None = task_id

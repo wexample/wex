@@ -42,6 +42,7 @@ OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 AppConfigValue = BasicValue
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
+ShellCommandsList = StringsList
 
 
 class RegistryCommand(TypedDict):

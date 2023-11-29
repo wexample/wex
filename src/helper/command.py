@@ -10,6 +10,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
+from src.const.types import ShellCommandsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 def internal_command_to_shell(
     kernel: "Kernel", internal_command: str, args: None | list[str] = None
-) -> list[str]:
+) -> ShellCommandsList:
     command = (
         ["bash", kernel.get_path("core.cli"), internal_command]
         + (args or [])
@@ -177,7 +178,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
     return quote_char + escaped_string + quote_char
 
 
-def command_to_string(command: List[str] | str) -> str:
+def command_to_string(command: ShellCommandsList | str) -> str:
     if isinstance(command, str):
         return command
 

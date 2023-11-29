@@ -45,9 +45,7 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         parent = self.get_response().find_parent_response_collection()
         # Assign position
         if parent:
-            response.step_position = (
-                parent.step_position + 1
-            )
+            response.step_position = parent.step_position + 1
 
     def save_to_map(self) -> None:
         response = self.get_response()

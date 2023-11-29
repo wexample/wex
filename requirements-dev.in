@@ -1,4 +1,5 @@
 autoflake
 black
-no_implicit_optional
 isort
+no_implicit_optional
+types-psutil

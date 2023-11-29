@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+from src.const.types import ShellCommandsList
 from src.helper.command import (
     command_to_string,
     execute_command_sync,
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def process_post_exec(kernel: "Kernel", command: List[str] | str) -> None:
+def process_post_exec(kernel: "Kernel", command: ShellCommandsList) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
         command = ["cd", os.getcwd(), "&&"] + command
