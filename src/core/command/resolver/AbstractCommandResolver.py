@@ -325,12 +325,6 @@ class AbstractCommandResolver(KernelChild):
                     script_command = request.runner.build_script_command()
 
                     if script_command:
-                        properties = {}
-                        for name in script_command.click_command.properties:
-                            properties[name] = script_command.click_command.properties[
-                                name
-                            ].property_value
-
                         test_file = None
                         if test_commands or not hasattr(
                             script_command.click_command.callback, "test_command"
@@ -357,8 +351,8 @@ class AbstractCommandResolver(KernelChild):
                                 "command": internal_command,
                                 "file": command_file,
                                 "test": test_file,
-                                "alias": script_command.aliases,
-                                "properties": properties,
+                                "alias": self.get_script_command_aliases(script_command),
+                                "properties": script_command.get_properties(),
                             },
                         )
         return commands

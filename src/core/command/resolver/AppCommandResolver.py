@@ -11,7 +11,6 @@ from src.const.globals import (
 from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
-from src.core.FunctionProperty import FunctionProperty
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
@@ -170,9 +169,7 @@ class AppCommandResolver(AbstractCommandResolver):
                 )
 
             # Hooking this command is not allowed
-            if not FunctionProperty.has_property(
-                request.get_script_command(), "app_webhook"
-            ):
+            if not request.get_script_command().get_extra_value('app_webhook', False):
                 return QueuedCollectionStopResponse(
                     self.kernel, "Function is not a webhook"
                 )

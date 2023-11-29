@@ -49,7 +49,6 @@ from src.const.types import (
     YamlContentDict,
 )
 from src.core.AddonManager import AddonManager
-from src.core.FunctionProperty import FunctionProperty
 from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
 from src.helper.data_yaml import (
@@ -395,9 +394,7 @@ class AppAddonManager(AddonManager):
                 app_dir_resolved = self.app_dir
             else:
                 # Skip if the command allow to be executed without app location.
-                if not FunctionProperty.get_property(
-                    script_command, name="app_dir_required", default=False
-                ):
+                if script_command.get_extra_value("app_dir_required", False):
                     self.app_dirs_stack.append(None)
                     self.unset_app_workdir()
                     return
@@ -438,12 +435,7 @@ class AppAddonManager(AddonManager):
 
         request.set_args_list(args)
 
-        if (
-            FunctionProperty.get_property(
-                script_command=script_command, name="app_should_run", default=False
-            )
-            is True
-        ):
+        if script_command.set_extra_value('app_should_run', False):
             from addons.app.command.app.started import (
                 APP_STARTED_CHECK_MODE_FULL,
                 app__app__started,
