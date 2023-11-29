@@ -96,7 +96,7 @@ class Logger:
     def create_command_dict(self, request) -> dict:
         return {
             "command": request.get_string_command(),
-            "args": request.args,
+            "args": request.get_args_list(),
         }
 
     def log_request(self, request) -> None:

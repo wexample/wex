@@ -25,7 +25,7 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         self.steps: "QueuedCollectionStepsList" = [None]
         self.map: Dict[str, AbstractResponse] = {}
 
-        args = root_request.get_args_list_copy()
+        args = root_request.get_args_list().copy()
         steps = args_shift_one(args, "command-request-step")
         if steps:
             self.steps = list(map(int, str(steps).split(".")))

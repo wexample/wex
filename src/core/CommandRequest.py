@@ -2,20 +2,21 @@ import os
 from typing import TYPE_CHECKING, Any, Match, Optional
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
+from src.const.types import (
+    CoreCommandArgsList,
+    CoreCommandArgsListOrDict,
+    OptionalCoreCommandArgsListOrDict,
+    StringKeysDict,
+)
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.args import args_convert_dict_to_args
 
 if TYPE_CHECKING:
-    from src.const.types import (
-        CoreCommandArgsListOrDict,
-        OptionalCoreCommandArgsListOrDict,
-        StringKeysDict,
-        StringsList,
-    )
     from src.core.command.resolver.AbstractCommandResolver import (
         AbstractCommandResolver,
     )
+    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
 class CommandRequest(BaseClass):
@@ -28,16 +29,18 @@ class CommandRequest(BaseClass):
         self._path: None | str = None
         self._script_command: Optional[ScriptCommand] = None
         self._string_command: str = resolver.resolve_alias(command)
+        self._args_source: "CoreCommandArgsListOrDict" = args or []
+        self._args_list: Optional[CoreCommandArgsList] = []
 
         self.extension: None | str = None
         self.quiet: bool = False
         self.resolver: "AbstractCommandResolver" = resolver
-        self.runner = None
+        self.runner: Optional["AbstractCommandRunner"] = None
         self.type: str = resolver.get_type()
         self.storage: StringKeysDict = (
             {}
         )  # Useful to store data about the current command execution
-        self.args: "CoreCommandArgsListOrDict" = args or []
+
         self.parent = self.resolver.kernel.current_request
         self.first_arg: Any = self.resolver.kernel
         self.match: Optional[Match] = None
@@ -58,6 +61,15 @@ class CommandRequest(BaseClass):
         assert self._path is not None
 
         return self._path
+
+    def set_args_list(self, args_list: CoreCommandArgsList):
+        self._args_list = args_list
+
+    def get_args_list(self) -> CoreCommandArgsList:
+        self._validate__should_not_be_none(self._args_list)
+        assert self._args_list is not None
+
+        return self._args_list
 
     def set_script_command(self, script_command: ScriptCommand) -> None:
         self._script_command = script_command
@@ -114,27 +126,25 @@ class CommandRequest(BaseClass):
             self.set_script_command(script_command)
 
             # Runner can now convert args.
-            if isinstance(self.args, dict):
-                self.args = args_convert_dict_to_args(
-                    script_command.click_command, self.args
+            if isinstance(self._args_source, dict):
+                self.set_args_list(
+                    args_convert_dict_to_args(
+                        script_command.click_command, self._args_source
+                    )
                 )
+            else:
+                self.set_args_list(self._args_source.copy())
 
             return True
-
-    def get_args_list_copy(self) -> "StringsList":
-        if isinstance(self.args, list):
-            return self.args.copy()
-
-        return []
 
 
 class HasRequest(BaseClass):
     def __init__(self) -> None:
         self._request: None | CommandRequest = None
 
-    def set_request(self, request: CommandRequest):
+    def set_request(self, request: CommandRequest) -> None:
         self._request = request
-        self._request.runner = self
+        request.runner = self
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)

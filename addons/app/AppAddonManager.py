@@ -381,7 +381,7 @@ class AppAddonManager(AddonManager):
         if self.ignore_app_dir(request):
             return
 
-        args = request.get_args_list_copy()
+        args = request.get_args_list().copy()
         app_dir_arg = args_shift_one(args, "app-dir")
         request.first_arg = self
         script_command = request.get_script_command()
@@ -434,10 +434,9 @@ class AppAddonManager(AddonManager):
 
         self.app_dirs_stack.append(app_dir_resolved)
 
-        # Append to original apps list.
-        request.args = args
-
         args_push_one(arg_list=args, arg_name="app-dir", value=app_dir_resolved)
+
+        request.set_args_list(args)
 
         if (
             FunctionProperty.get_property(

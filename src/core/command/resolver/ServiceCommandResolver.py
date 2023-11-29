@@ -43,8 +43,9 @@ class ServiceCommandResolver(AbstractCommandResolver):
             return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)
 
         # Guess service name from command prefix if not passed.
-        if request.runner and "--service" not in request.args:
-            request.args.extend(["--service", service])
+        args_list = request.get_args_list()
+        if request.runner and "--service" not in args_list:
+            args_list.extend(["--service", service])
 
         return super().render_request(request, render_mode)
 

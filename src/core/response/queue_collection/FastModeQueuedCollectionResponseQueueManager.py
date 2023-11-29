@@ -55,7 +55,7 @@ class FastModeQueuedCollectionResponseQueueManager(
                 self.response.has_next_step = False
                 self.response.kernel.current_response = None
 
-                args = self.response.get_request().args.copy()
+                args = self.response.get_request().get_args_list().copy()
 
                 response = self.response.kernel.run_command(
                     self.response.get_request().get_string_command(), args

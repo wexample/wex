@@ -48,7 +48,7 @@ class DefaultQueuedCollectionResponseQueueManager(
         super().enqueue_next_step_by_index(next_step_index)
 
         root = self.response.get_root_parent()
-        args = root.get_request().get_args_list_copy()
+        args = root.get_request().get_args_list().copy()
 
         args_replace_one(
             arg_list=args,
