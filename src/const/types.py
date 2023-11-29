@@ -76,6 +76,7 @@ RegistryResolverData = StringKeysDict
 class YamlCommandScript(TypedDict):
     container_name: Optional[str]
     file: Optional[str]
+    interpreter: StringsList
     script: Optional[str]
     title: str
     type: str

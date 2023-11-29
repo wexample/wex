@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 import click
 
@@ -9,6 +9,7 @@ from src.const.types import (
     Kwargs,
     StringsList,
     YamlCommandScript,
+    StringKeysDict,
 )
 
 if TYPE_CHECKING:
@@ -23,7 +24,12 @@ class ScriptCommand:
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",
     ) -> None:
+        self.aliases: StringsList = []
+        self.as_sudo: bool = False
         self.command_type: str = command_type
+        self.no_log: bool = False
+        self.verbosity: Optional[int] = None
+        self._extra: StringKeysDict = {}
 
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
 
@@ -103,6 +109,12 @@ class ScriptCommand:
         self.click_command = click_command
         self.click_command.properties = {}
 
+    def set_extra_value(self, name: str, value: bool = True) -> None:
+        self._extra[name] = value
+
+    def get_extra_value(self, name: str, default: Any = None) -> Any:
+        return self._extra[name] if name in self._extra else default
+
     def run_command(self, runner: "AbstractCommandRunner", function, ctx) -> Any:
         return self.click_command.invoke(ctx)
 
@@ -136,6 +148,18 @@ class ScriptCommand:
             if "interpreter" in script and script_string
             else [script_string]
         )
+
+    def get_properties(self) -> StringKeysDict:
+        properties = {
+            'aliases': self.aliases,
+            'as_sudo': self.as_sudo,
+            'no_log': self.no_log,
+            'verbosity': self.verbosity,
+        }
+
+        properties.update(self._extra or {})
+
+        return properties
 
     def get_callback(self) -> AnyCallable:
         return self.click_command.callback
