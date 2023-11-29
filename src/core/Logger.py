@@ -4,7 +4,6 @@ import os
 import time
 from typing import Any, Dict, Optional
 
-from src.core.FunctionProperty import FunctionProperty
 from src.helper.data_json import load_json_if_valid, parse_json_if_valid
 from src.helper.file import file_set_user_or_sudo_user_owner
 
@@ -127,7 +126,10 @@ class Logger:
 
     def write(self, task_id: None | str = None, log_data: dict | None = None):
         # When writing current log, check if disabled.
-        if self.kernel.root_request and self.kernel.root_request.get_script_command().no_log:
+        if (
+            self.kernel.root_request
+            and self.kernel.root_request.get_script_command().no_log
+        ):
             return
 
         log_path = self.kernel.task_file_write(

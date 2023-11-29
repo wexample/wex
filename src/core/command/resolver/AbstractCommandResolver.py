@@ -24,7 +24,6 @@ from src.const.types import (
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
-from src.core.FunctionProperty import FunctionProperty
 from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -57,7 +56,10 @@ class AbstractCommandResolver(KernelChild):
         previous_verbosity = self.kernel.verbosity
         script_command = request.get_script_command()
 
-        if script_command.verbosity is not None and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT:
+        if (
+            script_command.verbosity is not None
+            and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT
+        ):
             self.kernel.verbosity = script_command.verbosity
 
         previous_request = self.kernel.current_request
