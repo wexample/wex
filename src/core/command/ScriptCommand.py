@@ -115,6 +115,9 @@ class ScriptCommand:
     def get_extra_value(self, name: str, default: Any = None) -> Any:
         return self._extra[name] if name in self._extra else default
 
+    def get_extra_properties(self) -> StringKeysDict:
+        return self._extra
+
     def run_command(self, runner: "AbstractCommandRunner", function, ctx) -> Any:
         return self.click_command.invoke(ctx)
 
@@ -148,18 +151,6 @@ class ScriptCommand:
             if "interpreter" in script and script_string
             else [script_string]
         )
-
-    def get_properties(self) -> StringKeysDict:
-        properties = {
-            'aliases': self.aliases,
-            'as_sudo': self.as_sudo,
-            'no_log': self.no_log,
-            'verbosity': self.verbosity,
-        }
-
-        properties.update(self._extra or {})
-
-        return properties
 
     def get_callback(self) -> AnyCallable:
         return self.click_command.callback

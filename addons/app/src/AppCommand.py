@@ -12,7 +12,6 @@ from src.const.types import (
     YamlCommandScript,
 )
 from src.core.command.ScriptCommand import ScriptCommand
-from src.core.FunctionProperty import FunctionProperty
 from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
 
@@ -40,20 +39,12 @@ class AppCommand(ScriptCommand):
         )
 
         # Do not provide app_dir to function
-        FunctionProperty(
-            script_command=self,
-            property_name="app_dir_required",
-            property_value=dir_required,
-        )
+        self.set_extra_value('app_dir_required', dir_required)
 
         self.click_command = app_dir_option(required=dir_required)(self.click_command)
 
         # Do not check if app is running
-        FunctionProperty(
-            script_command=self,
-            property_name="app_should_run",
-            property_value=should_run,
-        )
+        self.set_extra_value('app_should_run', should_run)
 
     def run_script(
         self,
