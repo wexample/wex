@@ -24,7 +24,6 @@ from src.const.types import (
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
-from src.core.FunctionProperty import FunctionProperty
 from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -325,42 +324,37 @@ class AbstractCommandResolver(KernelChild):
                 if request.runner:
                     script_command = request.runner.build_script_command()
 
-                    properties = {}
-                    for name in script_command.click_command.properties:
-                        properties[name] = script_command.click_command.properties[
-                            name
-                        ].property_value
-
-                    test_file = None
-                    if test_commands or not hasattr(
-                        script_command.click_command.callback, "test_command"
-                    ):
-                        # All test are in python
-                        test_file = os.path.realpath(
-                            os.path.join(
-                                directory,
-                                "../../tests/command",
-                                group,
-                                command_file_name.rsplit(".", 1)[0] + ".py",
+                    if script_command:
+                        test_file = None
+                        if test_commands or not hasattr(
+                            script_command.click_command.callback, "test_command"
+                        ):
+                            # All test are in python
+                            test_file = os.path.realpath(
+                                os.path.join(
+                                    directory,
+                                    "../../tests/command",
+                                    group,
+                                    command_file_name.rsplit(".", 1)[0] + ".py",
+                                )
                             )
-                        )
 
-                        test_file = (
-                            test_file
-                            if (test_file and os.path.exists(test_file))
-                            else None
-                        )
+                            test_file = (
+                                test_file
+                                if (test_file and os.path.exists(test_file))
+                                else None
+                            )
 
-                    commands[internal_command] = cast(
-                        RegistryCommand,
-                        {
-                            "command": internal_command,
-                            "file": command_file,
-                            "test": test_file,
-                            "alias": self.get_script_command_aliases(script_command),
-                            "properties": script_command.get_extra_properties(),
-                        },
-                    )
+                        commands[internal_command] = cast(
+                            RegistryCommand,
+                            {
+                                "command": internal_command,
+                                "file": command_file,
+                                "test": test_file,
+                                "alias": self.get_script_command_aliases(script_command),
+                                "properties": script_command.get_extra_properties(),
+                            },
+                        )
         return commands
 
     def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:
