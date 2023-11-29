@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Match, Optional
+from typing import TYPE_CHECKING, Any, Match, Optional
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.core.BaseClass import BaseClass
@@ -7,29 +7,38 @@ from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.args import args_convert_dict_to_args
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandArgsListOrDict, StringsList
-    from src.core.command.resolver import AbstractCommandResolver
+    from src.const.types import (
+        CoreCommandArgsListOrDict,
+        OptionalCoreCommandArgsListOrDict,
+        StringKeysDict,
+        StringsList,
+    )
+    from src.core.command.resolver.AbstractCommandResolver import (
+        AbstractCommandResolver,
+    )
 
 
 class CommandRequest(BaseClass):
     def __init__(
         self,
-        resolver,
+        resolver: "AbstractCommandResolver",
         command: str,
         args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
-    ):
+    ) -> None:
         self.extension: None | str = None
-        self.quiet = False
-        self.resolver: AbstractCommandResolver = resolver
+        self.quiet: bool = False
+        self.resolver: "AbstractCommandResolver" = resolver
         self.runner = None
         self.string_command = resolver.resolve_alias(command)
-        self.type = resolver.get_type()
-        self.storage = {}  # Useful to store data about the current command execution
-        self.args = args or []
+        self.type: str = resolver.get_type()
+        self.storage: StringKeysDict = (
+            {}
+        )  # Useful to store data about the current command execution
+        self.args: "CoreCommandArgsListOrDict" = args or []
         self.parent = self.resolver.kernel.current_request
         self._path: None | str = None
         self.script_command: Optional[ScriptCommand] = None
-        self.first_arg = self.resolver.kernel
+        self.first_arg: Any = self.resolver.kernel
         self.match: Optional[Match] = None
         self.localized: bool = False
 

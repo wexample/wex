@@ -1,13 +1,18 @@
+from typing import TYPE_CHECKING, Any
+
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class DefaultResponse(AbstractResponse):
-    def __init__(self, kernel, content) -> None:
+    def __init__(self, kernel: "Kernel", content: Any) -> None:
         super().__init__(kernel)
-        self.content: str = content
+        self.content: Any = content
 
     def render_content(
         self,
@@ -24,5 +29,4 @@ class DefaultResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        # can be empty in "none" render mode.
-        return self.output_bag[0] if len(self.output_bag) else None
+        return self.get_first_output_inline_value()

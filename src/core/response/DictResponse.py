@@ -57,7 +57,12 @@ class DictResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
+        if not len(self.output_bag):
+            return None
+
         data = self.output_bag[0]
+        assert isinstance(data, dict)
+
         render_mode = self.get_render_mode(render_mode)
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:

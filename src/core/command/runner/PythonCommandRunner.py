@@ -2,7 +2,6 @@ import importlib.util
 from typing import Any, Optional, cast
 
 from src.const.types import StringsList
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 
@@ -20,13 +19,12 @@ class PythonCommandRunner(AbstractCommandRunner):
 
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        resolver = cast(AbstractCommandResolver, request.resolver)
 
         return cast(
             ScriptCommand,
             getattr(
                 module,
-                resolver.get_function_name(list(request.get_match().groups())),
+                request.resolver.get_function_name(list(request.get_match().groups())),
             ),
         )
 

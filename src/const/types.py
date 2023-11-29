@@ -25,7 +25,7 @@ AnyCallable = Callable[..., Any]
 Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
 Kwargs = Any
-ResponsePrintType = Optional[str | JsonContent]
+ResponsePrintType = Optional[BasicInlineValue | JsonContent]
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
 

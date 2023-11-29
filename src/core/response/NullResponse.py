@@ -2,7 +2,7 @@ from abc import ABC
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
-from src.core import CommandRequest
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -24,3 +24,4 @@ class NullResponse(AbstractResponse, ABC):
     ) -> ResponsePrintType:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return super().print(render_mode, interactive_data)
+        return None

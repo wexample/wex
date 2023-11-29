@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional, cast
 
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,
@@ -12,7 +12,12 @@ from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+    from src.const.types import (
+        BasicInlineValue,
+        JsonContent,
+        OptionalCoreCommandArgsDict,
+        ResponsePrintType,
+    )
     from src.core.Kernel import Kernel
 
 
@@ -22,7 +27,7 @@ class AbstractResponse(KernelChild, HasRequest):
         HasRequest.__init__(self)
 
         self.parent = None
-        self.output_bag: list = []
+        self.output_bag: List[ResponsePrintType | AbstractResponse] = []
         self.parent = None
         self.rendered = False
         # Some data can ba part of the output
@@ -142,7 +147,7 @@ class AbstractResponse(KernelChild, HasRequest):
                     )
                 )
 
-    def render_mode_json_wrap_data(self, value):
+    def render_mode_json_wrap_data(self, value: BasicInlineValue) -> JsonContent:
         return {"value": value}
 
     def print_wrapped(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL):
@@ -157,6 +162,16 @@ class AbstractResponse(KernelChild, HasRequest):
             return json.dumps(self.render_mode_json_wrap_data(value))
 
         return value
+
+    def get_first_output_inline_value(self) -> BasicInlineValue:
+        if not len(self.output_bag):
+            return None
+
+        data = self.output_bag[0]
+        assert isinstance(data, str | int | float | bool | None)
+
+        # can be empty in "none" render mode.
+        return cast(BasicInlineValue, data)
 
 
 ResponseCollection = List[AbstractResponse]
