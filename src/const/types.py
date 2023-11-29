@@ -26,7 +26,7 @@ AnyCallable = Callable[..., Any]
 Args = AnyList
 DecoratedCallable = Callable[..., Callable[..., Any]]
 Kwargs = Any
-ResponsePrintType = Optional[BasicInlineValue | StringKeysDict]
+ResponsePrintType = Optional[BasicInlineValue | StringKeysDict | AnyList]
 StringMessageParameters = StringKeysDict
 StringsDict = Dict[str, str]
 

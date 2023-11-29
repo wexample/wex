@@ -8,7 +8,12 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
-from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import (
+    AnyList,
+    JsonContent,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+)
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
@@ -107,7 +112,7 @@ class AbstractResponse(KernelChild, HasRequest):
         Return the first valid response.
         Useful to retrieve result of a function without to serialize it.
         """
-        response = self
+        response: Any = self
         while isinstance(response, AbstractResponse):
             if len(response.output_bag):
                 response = response.output_bag[0]
@@ -128,10 +133,10 @@ class AbstractResponse(KernelChild, HasRequest):
 
     def render_content_multiple(
         self,
-        collection,
+        collection: AnyList,
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: Optional[dict] = None,
+        args: OptionalCoreCommandArgsDict = None,
     ) -> None:
         for response in collection:
             if isinstance(response, AbstractResponse):

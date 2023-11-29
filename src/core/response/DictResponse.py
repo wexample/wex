@@ -47,7 +47,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         self.output_bag.append(self.dictionary_data)
 
         self.render_content_multiple(
-            self.dictionary_data.values(), request, render_mode, args
+            list(self.dictionary_data.values()), request, render_mode, args
         )
 
         return self

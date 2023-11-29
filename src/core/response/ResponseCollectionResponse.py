@@ -4,14 +4,14 @@ from typing import cast
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
 
 
 class ResponseCollectionResponse(AbstractResponse):
-    def __init__(self, kernel, collection: list):
+    def __init__(self, kernel, collection: ResponseCollection):
         super().__init__(kernel)
 
-        self.collection = collection
+        self.collection: ResponseCollection = collection
 
     def render_content(
         self,
