@@ -149,6 +149,18 @@ class ScriptCommand:
             else [script_string]
         )
 
+    def get_properties(self) -> StringKeysDict:
+        properties = {
+            'aliases': self.aliases,
+            'as_sudo': self.as_sudo,
+            'no_log': self.no_log,
+            'verbosity': self.verbosity,
+        }
+
+        properties.update(self._extra or {})
+
+        return properties
+
     def get_callback(self) -> AnyCallable:
         return self.click_command.callback
 
