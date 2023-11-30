@@ -37,7 +37,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     ERR_SERVICE_NOT_FOUND,
                     {
                         "command": request.get_string_command(),
-                        "service": service,
+                        "service": str(service),
                     },
                 )
             return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)

@@ -5,6 +5,7 @@ from src.const.types import BasicInlineValue
 
 if TYPE_CHECKING:
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AbstractQueuedCollectionResponseQueueManager:
@@ -44,14 +45,14 @@ class AbstractQueuedCollectionResponseQueueManager:
 
             return path
 
-    def get_next_step_index(self, step_index) -> bool | int:
+    def get_next_step_index(self, step_index: int) -> bool | int:
         next_index = step_index + 1
         if next_index < len(self.response.collection):
             return next_index
 
         return False
 
-    def enqueue_next_step_if_exists(self, step_index, response) -> bool:
+    def enqueue_next_step_if_exists(self, step_index: int, response: "AbstractResponse") -> bool:
         next_index = self.get_next_step_index(step_index)
         if next_index:
             self.enqueue_next_step_by_index(next_index)
@@ -59,9 +60,9 @@ class AbstractQueuedCollectionResponseQueueManager:
             return True
         return False
 
-    def enqueue_next_step_by_index(self, next_step_index) -> None:
+    def enqueue_next_step_by_index(self, next_step_index: int) -> None:
         path_manager = self.response.get_path_manager()
         path_manager.steps[self.response.step_position] = next_step_index
         # Remove obsolete parts.
-        del path_manager.steps[self.response.step_position + 1 :]
+        del path_manager.steps[self.response.step_position + 1:]
         self.response.has_next_step = True

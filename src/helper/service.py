@@ -68,7 +68,9 @@ def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None
         os.path.join(service_dir, "samples", APP_DIR_APP_DATA) + os.sep
     )
 
-    manager: "AppAddonManager" = kernel.addons["app"]
+    manager = kernel.addons["app"]
+    assert isinstance(manager, AppAddonManager)
+
     env_dir: str = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     shutil.copytree(

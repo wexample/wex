@@ -60,7 +60,7 @@ RegistryCommandsCollection = Dict[str, RegistryCommand]
 class RegistryService(TypedDict):
     addon: str
     commands: RegistryCommandsCollection
-    config: str
+    config: StringKeysDict
     dir: str
     name: str
 

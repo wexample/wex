@@ -1,9 +1,9 @@
 import os
 import re
 import shutil
-from typing import Dict, Mapping
+from typing import Mapping, Optional
 
-from src.const.types import BasicInlineValue, StringsMatch
+from src.const.types import BasicInlineValue, StringsDict, StringsMatch
 
 
 def string_to_snake_case(text: str) -> str:
@@ -32,8 +32,11 @@ def string_to_pascal_case(text: str) -> str:
     return camel_case[0].upper() + camel_case[1:]
 
 
-def string_format_ignore_missing(value: str, substitutions: Dict[str, str]) -> str:
+def string_format_ignore_missing(
+    value: str, substitutions: Optional[StringsDict] = None
+) -> str:
     pattern = r"{(\w+)}"
+    substitutions = substitutions or {}
 
     def replace(match: StringsMatch) -> str:
         key = match.group(1)

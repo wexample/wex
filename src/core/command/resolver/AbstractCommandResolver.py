@@ -171,14 +171,14 @@ class AbstractCommandResolver(KernelChild):
 
         if path is None:
             self.kernel.io.error(
-                'Command file not found for command {command}, in path "{path}"',
+                "Command file not found for command {command}",
                 {
                     "command": request.get_string_command(),
-                    "path": path,
                 },
                 trace=False,
             )
-            assert path is not None
+
+        assert path is not None
 
         return path
 

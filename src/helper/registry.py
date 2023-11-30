@@ -44,7 +44,7 @@ def registry_remove_addons(commands_list: List[str]) -> List[str]:
 
 def registry_resolve_service_inheritance(
     service: RegistryService, services_dict: RegistryAllServices
-) -> Dict[str, Any]:
+) -> RegistryService:
     if "extends" in service["config"]:
         parent_name = service["config"]["extends"]
         if parent_name in services_dict:
