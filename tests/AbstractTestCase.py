@@ -69,7 +69,7 @@ class AbstractTestCase(unittest.TestCase):
     def assertResponseOutputBagItemEqual(
         self, response: AbstractResponse, index: int, expected: Any
     ) -> None:
-        self.assertEqual(response.output_bag[index].print(), expected)
+        self.assertEqual(response.get(index).print(), expected)
 
     def assertResponseFirstContains(
         self, response: AbstractResponse, expected: Any
@@ -79,7 +79,7 @@ class AbstractTestCase(unittest.TestCase):
     def assertResponseOutputBagItemContains(
         self, response: AbstractResponse, index: int, expected: Any
     ) -> None:
-        self.assertTrue(expected in response.output_bag[index].print())
+        self.assertTrue(expected in response.get(index).print())
 
     def assertStringContains(self, value: Any, expected: str) -> None:
         self.assertTrue(isinstance(value, str))

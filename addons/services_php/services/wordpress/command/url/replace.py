@@ -82,7 +82,7 @@ def wordpress__url__replace(
         if not new_url:
             env = str(manager.get_runtime_config("env"))
             protocol = f'http{"" if env in APP_NO_SSL_ENVS else "s"}'
-            new_url = protocol + "://" + manager.get_runtime_config("domain_main")
+            new_url = protocol + "://" + str(manager.get_runtime_config("domain_main"))
 
         assert isinstance(new_url, str)
 

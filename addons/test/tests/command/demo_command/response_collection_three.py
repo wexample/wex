@@ -14,9 +14,9 @@ class TestTestCommandDemoCommandResponseCollectionThree(AbstractTestCase):
         self.assertEqual(result.first(), TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION)
 
         self.assertEqual(
-            result.output_bag[1].first(), TEST_DEMO_COMMAND_THREE_RESULT_ONE
+            result.get(1).first(), TEST_DEMO_COMMAND_THREE_RESULT_ONE
         )
 
         self.assertEqual(
-            result.output_bag[2].first(), TEST_DEMO_COMMAND_THREE_RESULT_SHELL
+            result.get(2).first(), TEST_DEMO_COMMAND_THREE_RESULT_SHELL
         )

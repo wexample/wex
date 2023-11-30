@@ -26,12 +26,12 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         self.assertEqual(response.first(), "simple-response-text")
 
         self.assertTrue(
-            isinstance(response.output_bag[14], QueuedCollectionResponse),
+            isinstance(response.get(14), QueuedCollectionResponse),
             "This item should be a collection of responses, returned by a function",
         )
 
         self.assertEqual(
-            response.output_bag[15].print(),
+            response.get(15).print(),
             "--sub-collection-direct:simple-text",
             "The item just after the collection is the rendered content as output bags are merged in fast mode",
         )
@@ -42,7 +42,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
         self.assertTrue(
             isinstance(
-                response.output_bag[-1].output_bag[-1].output_bag[-1],
+                response.get(-1, -1, -1),
                 QueuedCollectionStopResponse,
             )
         )
