@@ -15,17 +15,17 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
             },
         )
 
-        self.assertTrue("WEBHOOK_TEST_RESPONSE" in response.output_bag[4].print())
+        self.assertTrue("WEBHOOK_TEST_RESPONSE" in str(response.output_bag[4].print()))
 
         app_dir, app_name = self.create_and_start_test_app_webhook()
 
         self.start_webhook_listener()
 
-        response = self.request_listener(
+        http_response = self.request_listener(
             f"/webhook/app/{app_name}/test/test", check_code=None, wait=5
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
         listener_task_id = data["task_id"]
 
         log_stderr: str = self.kernel.task_file_path(

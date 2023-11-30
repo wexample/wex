@@ -28,7 +28,6 @@ def explore_and_modify_files(manager: AppAddonManager, directory: str) -> None:
                 changed = False
                 for line in contents:
                     test_function_pattern = re.compile(r"(  +)def test_(.*?)\((.*?)\):")
-                    manager.kernel.io.print(line)
 
                     if test_function_pattern.match(line) and "-> None" not in line:
                         line = test_function_pattern.sub(r"\1def test_\2(\3) -> None:", line)

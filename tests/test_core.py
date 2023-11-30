@@ -39,7 +39,7 @@ def create_fake_click_function():
 
 
 class TestCore(AbstractTestCase):
-    def test_init(self):
+    def test_init(self) -> None:
         user = get_user_or_sudo_user()
         message = f"Tests should be ran with sudo from non sudo user"
 
@@ -57,12 +57,12 @@ class TestCore(AbstractTestCase):
             ),
         )
 
-    def test_help(self):
+    def test_help(self) -> None:
         response = self.kernel.run_function(core__logo__show, {"help": True})
 
         self.assertTrue(isinstance(response, AbortResponse))
 
-    def test_convert_args_to_dict(self):
+    def test_convert_args_to_dict(self) -> None:
         args = args_convert_to_dict(
             create_fake_click_function(),
             [
@@ -82,7 +82,7 @@ class TestCore(AbstractTestCase):
             },
         )
 
-    def test_convert_dict_to_args(self):
+    def test_convert_dict_to_args(self) -> None:
         args = args_convert_dict_to_args(
             create_fake_click_function(),
             {
@@ -93,10 +93,10 @@ class TestCore(AbstractTestCase):
 
         self.assertEqual(args, ["--name", "John", "--greetings"])
 
-    def test_call_command_core_action(self):
+    def test_call_command_core_action(self) -> None:
         self.assertEqual(self.kernel.call_command("hi"), "hi!")
 
-    def test_call_invalid(self):
+    def test_call_invalid(self) -> None:
         with self.assertRaises(FatalError):
             self.kernel.call_command("something/unexpected")
 
@@ -106,10 +106,10 @@ class TestCore(AbstractTestCase):
         with self.assertRaises(FatalError):
             self.kernel.call_command('*ù:-//;!,@"#^~§')
 
-    def test_call_command_addon(self):
+    def test_call_command_addon(self) -> None:
         self.assertIsNotNone(self.kernel.call_command("core::logo/show"))
 
-    def test_call_command_user(self):
+    def test_call_command_user(self) -> None:
         self.kernel.run_function(
             core__command__create, {"command": "~test/command-call"}
         )
@@ -120,16 +120,16 @@ class TestCore(AbstractTestCase):
             None,
         )
 
-    def test_call_command_app(self):
+    def test_call_command_app(self) -> None:
         self.assertEqual(
             self.kernel.call_command(".local_command/test", {"local-option": "YES"}),
             "OK:YES",
         )
 
-    def test_call_command_service(self):
+    def test_call_command_service(self) -> None:
         self.assertEqual(self.kernel.call_command("@test::demo-command/first"), "FIRST")
 
-    def test_tests_coverage(self):
+    def test_tests_coverage(self) -> None:
         for command, command_data in registry_get_all_commands_from_registry_part(
             self.kernel.get_command_resolver(COMMAND_TYPE_ADDON).get_registry_data()
         ).items():
@@ -168,7 +168,7 @@ class TestCore(AbstractTestCase):
                     f"Method {test_method_name} not found in {test_class_name} class in {test_file_path}",
                 )
 
-    def test_build_command(self):
+    def test_build_command(self) -> None:
         self.assertEqual(
             self.kernel.get_command_resolver(
                 COMMAND_TYPE_ADDON
@@ -182,5 +182,5 @@ class TestCore(AbstractTestCase):
             "wex core::version/build",
         )
 
-    def test_message_next_command(self):
+    def test_message_next_command(self) -> None:
         self.kernel.io.message_next_command(core__logo__show)
