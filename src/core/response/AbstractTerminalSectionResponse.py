@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):
-    def __init__(self, kernel: "Kernel", title: str | None = None):
+    def __init__(self, kernel: "Kernel", title: str | None = None) -> None:
         super().__init__(kernel)
         self.title: str | None = title
 

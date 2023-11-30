@@ -12,7 +12,7 @@ from src.core.response.AbstractTerminalSectionResponse import (
 class KeyValueResponse(AbstractTerminalSectionResponse):
     def __init__(
         self, kernel, dictionary: dict | None = None, title: str | None = None
-    ):
+    ) -> None:
         super().__init__(kernel, title)
 
         self.dictionary_data = {}
@@ -20,7 +20,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         if dictionary:
             self.set_dictionary(dictionary)
 
-    def set_dictionary(self, dictionary_data):
+    def set_dictionary(self, dictionary_data) -> None:
         self.dictionary_data = dictionary_data
 
     def render_content(

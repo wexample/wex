@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class InteractiveShellCommandResponse(AbstractResponse):
     def __init__(
         self, kernel: "Kernel", shell_command: StringsList, ignore_error: bool = False
-    ):
+    ) -> None:
         super().__init__(kernel)
 
         self.shell_command: StringsList = shell_command.copy()

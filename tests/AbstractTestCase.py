@@ -81,7 +81,7 @@ class AbstractTestCase(unittest.TestCase):
     ) -> None:
         self.assertTrue(expected in response.output_bag[index].print())
 
-    def assertStringContains(self, value: Any, expected: str):
+    def assertStringContains(self, value: Any, expected: str) -> None:
         self.assertTrue(isinstance(value, str))
 
         self.assertTrue(expected in value)
@@ -119,7 +119,7 @@ class AbstractTestCase(unittest.TestCase):
 
         return dst_file
 
-    def write_test_result(self, name: str, data: str):
+    def write_test_result(self, name: str, data: str) -> None:
         result_path = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", "results"
         )

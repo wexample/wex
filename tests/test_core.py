@@ -22,7 +22,7 @@ from src.helper.test import file_path_to_test_class_name, file_path_to_test_meth
 from src.helper.user import get_user_or_sudo_user
 
 
-def test_index_fake_click_function():
+def test_index_fake_click_function() -> None:
     pass
 
 

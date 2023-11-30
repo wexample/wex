@@ -10,7 +10,7 @@ from src.core.response.AbstractTerminalSectionResponse import (
 
 
 class TableResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, title: str | None = None, body: None | list = None):
+    def __init__(self, kernel, title: str | None = None, body: None | list = None) -> None:
         super().__init__(kernel, title)
         self.header = []
         self.body = []
@@ -18,13 +18,13 @@ class TableResponse(AbstractTerminalSectionResponse):
         if body:
             self.set_body(body)
 
-    def set_header(self, header):
+    def set_header(self, header) -> None:
         self.header = header
 
     def get_header(self):
         return self.header
 
-    def set_body(self, body):
+    def set_body(self, body) -> None:
         self.body = body
 
     def get_body(self):
@@ -65,7 +65,7 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         return max_widths
 
-    def render_cli_content(self):
+    def render_cli_content(self) -> None:
         if not len(self.header) and not len(self.body):
             self.output_bag.append("")
 
@@ -109,7 +109,7 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         self.output_bag.append(bash_array)
 
-    def render_http_content(self):
+    def render_http_content(self) -> None:
         # Render the content as JSON for HTTP mode
         self.output_bag.append(
             {

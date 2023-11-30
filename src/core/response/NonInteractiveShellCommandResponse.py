@@ -8,7 +8,7 @@ from src.helper.command import execute_command_sync
 
 
 class NonInteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel, shell_command: list, ignore_error: bool = False):
+    def __init__(self, kernel, shell_command: list, ignore_error: bool = False) -> None:
         super().__init__(kernel)
 
         self.success: bool | None = None

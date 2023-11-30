@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class FunctionResponse(AbstractResponse):
-    def __init__(self, kernel: "Kernel", function: AnyCallable):
+    def __init__(self, kernel: "Kernel", function: AnyCallable) -> None:
         super().__init__(kernel)
 
         self.function: AnyCallable = function
