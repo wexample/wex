@@ -23,7 +23,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         if body:
             self.set_body(body)
 
-    def set_header(self, header) -> None:
+    def set_header(self, header: StringsList) -> None:
         self._header = header
 
     def get_header(self) -> StringsList:

@@ -155,12 +155,12 @@ def app__service__install(
 
 
 def app_service_install_merge_dir(
-    manager,
-    current_item,
-    service_dir,
-    app_dir,
-    install_docker,
-    install_git,
+    manager: "AppAddonManager",
+    current_item: str,
+    service_dir: str,
+    app_dir: str,
+    install_docker: bool,
+    install_git: bool,
 ) -> None:
     kernel = manager.kernel
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)

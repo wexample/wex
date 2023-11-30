@@ -1,13 +1,12 @@
 import importlib
 import os
 import re
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional, Any
 
 from src.const.types import AnyCallable
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
-
 
 MIGRATION_MINIMAL_VERSION = "3.0.0"
 
@@ -54,7 +53,7 @@ def migration_get_function(
 
 def migration_exec(
     kernel: "Kernel", version: str, method_part: str, arguments: List[str]
-):
+) -> Any:
     function = migration_get_function(kernel, version, method_part)
 
     if function:

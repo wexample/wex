@@ -16,7 +16,7 @@ def core__service__resolve(kernel: "Kernel", service: CoreCommandCommaSeparatedL
     services = args_split_arg_array(service)
     resolved_services = set()
     print(services)
-    def resolve_dependencies(service: str, resolved_services: SetList):
+    def resolve_dependencies(service: str, resolved_services: SetList) -> StringsList:
         if service in resolved_services:
             return set()
 

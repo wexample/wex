@@ -1,4 +1,5 @@
 import os
+from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringKeysDict
@@ -8,10 +9,13 @@ from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class KeyValueResponse(AbstractTerminalSectionResponse):
     def __init__(
-        self, kernel, dictionary: StringKeysDict, title: str | None = None
+        self, kernel: "Kernel", dictionary: StringKeysDict, title: str | None = None
     ) -> None:
         super().__init__(kernel, title)
 

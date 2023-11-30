@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 @command(help="Return a table response", command_type=COMMAND_TYPE_ADDON)
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__table(kernel: "Kernel", arg) -> TableResponse:
+def test__return_type__table(kernel: "Kernel", arg:str) -> TableResponse:
     return TableResponse(
         kernel,
         "Test table",

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 @command(help="Return a function response", command_type=COMMAND_TYPE_ADDON)
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__function(kernel: "Kernel", arg) -> AnyCallable:
+def test__return_type__function(kernel: "Kernel", arg: str) -> AnyCallable:
     return _test__return_type__function
 
 

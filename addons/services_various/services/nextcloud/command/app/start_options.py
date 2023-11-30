@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
+from const.types import ShellCommandsList
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
 
@@ -14,7 +15,8 @@ if TYPE_CHECKING:
 @option("--options", "-o", required=True, default="", help="Argument")
 def nextcloud__app__start_options(
     manager: "AppAddonManager", app_dir: str, options: str, service: str
-):
+) -> Optional[ShellCommandsList]:
     # On first start, do not run nextcloud until database is initialized.
     if not manager.get_config("global.initialized"):
         return ["--scale", f'{manager.get_config("global.name")}_nextcloud=0']
+    return None

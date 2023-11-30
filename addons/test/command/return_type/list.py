@@ -10,5 +10,5 @@ if TYPE_CHECKING:
 
 @command(help="Return a list")
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__list(kernel: "Kernel", arg) -> AnyList:
+def test__return_type__list(kernel: "Kernel", arg: str) -> AnyList:
     return [arg]

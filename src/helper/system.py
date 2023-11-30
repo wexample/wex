@@ -5,6 +5,7 @@ import socket
 from contextlib import closing
 from typing import TYPE_CHECKING
 
+from const.types import Kwargs
 from src.const.globals import SERVICE_DAEMON_NAME
 from src.helper.command import execute_command_sync
 
@@ -30,7 +31,7 @@ def system_service_daemon_exec(kernel: "Kernel", action: str) -> None:
     system_service_exec(kernel, SERVICE_DAEMON_NAME, action, ignore_error=True)
 
 
-def system_service_exec(kernel: "Kernel", service: str, action: str, **kwargs) -> None:
+def system_service_exec(kernel: "Kernel", service: str, action: str, **kwargs: Kwargs) -> None:
     execute_command_sync(kernel, ["systemctl", action, service], **kwargs)
 
 

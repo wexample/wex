@@ -22,7 +22,7 @@ TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION = "....THREE:function-response-text"
 def test__demo_command__response_collection_three(
     kernel: "Kernel", abort: bool = False
 ) -> QueuedCollectionResponse:
-    def _test__demo_command__response_collection_three_one():
+    def _test__demo_command__response_collection_three_one() -> str | AbortResponse:
         nonlocal abort
 
         if abort:

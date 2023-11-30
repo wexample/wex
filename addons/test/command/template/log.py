@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 @command(help="Description")
 @option("--arg", "-a", type=str, required=False, help="Test argument")
-def test__template__log(kernel: "Kernel", arg) -> str:
+def test__template__log(kernel: "Kernel", arg: str) -> str:
     kernel.io.message("Simple first message")
     kernel.io.log("Simple log A")
     kernel.io.log("Simple log B")

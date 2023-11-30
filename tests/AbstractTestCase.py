@@ -39,7 +39,7 @@ class AbstractTestCase(unittest.TestCase):
 
             os.chdir(self.test_dir)
 
-    def assertPathExists(self, file_path: str, exists=True) -> None:
+    def assertPathExists(self, file_path: str, exists: bool = True) -> None:
         """
         Assert that the specified file exists.
         """
