@@ -3,6 +3,7 @@ import os
 import re
 
 from addons.app.AppAddonManager import AppAddonManager
+from const.types import AnyCallable
 from src.helper.file import file_search, file_read
 from src.const.globals import COMMAND_TYPE_APP
 from addons.app.decorator.app_command import app_command
@@ -50,10 +51,23 @@ class FunctionMethodVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
         # Add missing "-> None" to functions
-        if not node.returns and self.function_has_only_none_returns(node):
-            self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> None:",
-                                  self._source)
-            self.log_modified(node)
+        if not node.returns:
+            if self.function_has_only_none_returns(node):
+                self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> None:",
+                                      self._source)
+                self.log_modified(node)
+            elif self.function_has_only_bool_returns(node):
+                self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> bool:",
+                                      self._source)
+                self.log_modified(node)
+            elif self.function_has_only_string_returns(node):
+                self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> str:",
+                                      self._source)
+                self.log_modified(node)
+            elif self.function_has_only_int_returns(node):
+                self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> int:",
+                                      self._source)
+                self.log_modified(node)
 
         # When an argument of a function is called "kernel", add "Kernel" as type
         self._source = self.add_kernel_annotation(self._source, node)
@@ -83,14 +97,38 @@ class FunctionMethodVisitor(ast.NodeVisitor):
 
         return source_code
 
+    def function_returns_only_specific_type(self, node: ast.FunctionDef, type_check_function: AnyCallable) -> bool:
+        for return_node in ast.walk(node):
+            if isinstance(return_node, ast.Return):
+                if not type_check_function(return_node):
+                    return False
+        return True
+
     def log_modified(self, node: ast.FunctionDef) -> None:
         print(f"  Function '{node.name}' has been modified")
         print(self._file_path)
 
     def function_has_only_none_returns(self, node: ast.FunctionDef) -> bool:
-        for return_node in ast.walk(node):
-            if isinstance(return_node, ast.Return):
-                if return_node.value is not None and not (
-                    isinstance(return_node.value, ast.NameConstant) and return_node.value.value is None):
-                    return False
-        return True
+        return self.function_returns_only_specific_type(node, self.is_none_return)
+
+    def function_has_only_bool_returns(self, node: ast.FunctionDef) -> bool:
+        return self.function_returns_only_specific_type(node, self.is_bool_return)
+
+    def function_has_only_string_returns(self, node: ast.FunctionDef) -> bool:
+        return self.function_returns_only_specific_type(node, self.is_string_return)
+
+    def function_has_only_int_returns(self, node: ast.FunctionDef) -> bool:
+        return self.function_returns_only_specific_type(node, self.is_int_return)
+
+    def is_none_return(self, return_node: ast.Return) -> bool:
+        return return_node.value is None or \
+            (isinstance(return_node.value, ast.NameConstant) and return_node.value.value is None)
+
+    def is_bool_return(self, return_node: ast.Return) -> bool:
+        return isinstance(return_node.value, ast.NameConstant) and isinstance(return_node.value.value, bool)
+
+    def is_string_return(self, return_node: ast.Return) -> bool:
+        return isinstance(return_node.value, ast.Str)
+
+    def is_int_return(self, return_node: ast.Return) -> bool:
+        return isinstance(return_node.value, ast.Num) and isinstance(return_node.value.n, int)
