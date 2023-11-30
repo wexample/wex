@@ -10,7 +10,7 @@ from src.core.response.AbstractTerminalSectionResponse import (
 
 
 class TableResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel, title: str | None = None, body: None | list = None) -> None:
+    def __init__(self, kernel: "Kernel", title: str | None = None, body: None | list = None) -> None:
         super().__init__(kernel, title)
         self.header = []
         self.body = []

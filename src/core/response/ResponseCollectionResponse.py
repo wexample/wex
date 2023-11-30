@@ -8,7 +8,7 @@ from src.core.response.AbstractResponse import AbstractResponse, ResponseCollect
 
 
 class ResponseCollectionResponse(AbstractResponse):
-    def __init__(self, kernel, collection: ResponseCollection) -> None:
+    def __init__(self, kernel: "Kernel", collection: ResponseCollection) -> None:
         super().__init__(kernel)
 
         self.collection: ResponseCollection = collection

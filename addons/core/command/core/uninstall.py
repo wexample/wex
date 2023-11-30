@@ -25,7 +25,7 @@ def core__core__uninstall(kernel: "Kernel") -> None:
     kernel.io.log("Bye!")
 
 
-def __core__core__uninstall_webhook_server(kernel) -> None:
+def __core__core__uninstall_webhook_server(kernel: "Kernel") -> None:
     kernel.run_function(app__webhook__stop)
 
 
@@ -33,7 +33,7 @@ def __core__core__uninstall_symlink(destination: str) -> None:
     file_remove_file_if_exists(destination)
 
 
-def __core__core__uninstall_autocomplete(kernel) -> None:
+def __core__core__uninstall_autocomplete(kernel: "Kernel") -> None:
     script_path = "/etc/bash_completion.d/wex"
 
     file_remove_file_if_exists(script_path)
@@ -41,7 +41,7 @@ def __core__core__uninstall_autocomplete(kernel) -> None:
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __core__core__uninstall_terminal(kernel) -> None:
+def __core__core__uninstall_terminal(kernel: "Kernel") -> None:
     script_path = "/etc/profile.d/wex"
 
     file_remove_file_if_exists(script_path)
