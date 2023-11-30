@@ -89,6 +89,11 @@ class CommandRequest(BaseClass):
 
         return self._string_command
 
+    def ger_runner(self) -> AbstractCommandRunner:
+        self._validate__should_not_be_none(self._string_command)
+        
+        return self.runner
+
     def get_match(self) -> Match:
         self._validate__should_not_be_none(self.match)
         assert self.match is not None
@@ -123,19 +128,24 @@ class CommandRequest(BaseClass):
             runner.set_request(self)
 
             script_command = self.runner.build_script_command()
-            self.set_script_command(script_command)
 
-            # Runner can now convert args.
-            if isinstance(self._args_source, dict):
-                self.set_args_list(
-                    args_convert_dict_to_args(
-                        script_command.click_command, self._args_source
+            if script_command:
+
+                self.set_script_command(script_command)
+
+                # Runner can now convert args.
+                if isinstance(self._args_source, dict):
+                    self.set_args_list(
+                        args_convert_dict_to_args(
+                            script_command.click_command, self._args_source
+                        )
                     )
-                )
-            else:
-                self.set_args_list(self._args_source.copy())
+                else:
+                    self.set_args_list(self._args_source.copy())
 
-            return True
+                return True
+
+        return False
 
 
 class HasRequest(BaseClass):
@@ -144,7 +154,6 @@ class HasRequest(BaseClass):
 
     def set_request(self, request: CommandRequest) -> None:
         self._request = request
-        request.runner = self
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)

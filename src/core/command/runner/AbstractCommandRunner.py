@@ -37,6 +37,10 @@ class AbstractCommandRunner(KernelChild, HasRequest):
     def build_script_command(self) -> Optional[ScriptCommand]:
         pass
 
+    def set_request(self, request: CommandRequest) -> None:
+        super().set_request(request)
+        request.runner = self
+
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:
             ctx = script_command.click_command.make_context(
