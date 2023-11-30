@@ -125,11 +125,7 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.queue_manager.render_content_complete()
 
         # Prepare args
-        render_args: OptionalCoreCommandArgsDict = (
-            {"previous": self.queue_manager.get_previous_value()}
-            if step_index > 0
-            else {}
-        )
+        render_args = {"manager": self.queue_manager.get_previous_value()}
 
         # Transform item in a response object.
         response = resolver.wrap_response(self.collection[step_index])

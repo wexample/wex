@@ -19,6 +19,10 @@ from src.decorator.as_sudo import as_sudo
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
+
 
 @as_sudo()
 @app_command(help="Stop the given app")
@@ -35,7 +39,9 @@ def app__app__stop(
 
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
-    def _app__app__stop__stop(previous):
+    def _app__app__stop__stop(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> QueuedCollectionResponse:
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-pre"}
         )
@@ -55,7 +61,9 @@ def app__app__stop(
             ],
         )
 
-    def _app__app__stop__rm(previous):
+    def _app__app__stop__rm(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> QueuedCollectionResponse:
         return QueuedCollectionResponse(
             kernel,
             [
@@ -71,7 +79,9 @@ def app__app__stop(
             ],
         )
 
-    def _app__app__stop__update_hosts(previous):
+    def _app__app__stop__update_hosts(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         manager.log("Unregistering app")
         apps = manager.get_proxy_apps()
         if name in apps:
@@ -81,7 +91,9 @@ def app__app__stop(
 
         kernel.run_function(app__hosts__update)
 
-    def _app__app__stop__complete(previous):
+    def _app__app__stop__complete(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         manager.set_runtime_config("started", False)
 
         kernel.run_function(

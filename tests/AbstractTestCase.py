@@ -4,9 +4,9 @@ import shutil
 import unittest
 from typing import TYPE_CHECKING, Any
 
-from core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import AnyCallable, ShellCommandResponseTuple, StringsDict
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy

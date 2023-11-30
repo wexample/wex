@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
@@ -17,7 +20,9 @@ if TYPE_CHECKING:
 def test__demo_command__counting_collection(
     kernel: "Kernel", initial: int
 ) -> QueuedCollectionResponse:
-    def callback(previous: int) -> int:
+    def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> int:
+        previous = queue.get_previous_value()
+        assert isinstance(previous, int)
         kernel.io.log("INITIAL " + str(initial))
         kernel.io.log("PREVIOUS " + str(previous))
         return previous + 1

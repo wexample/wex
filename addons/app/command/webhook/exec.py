@@ -3,6 +3,10 @@ from typing import TYPE_CHECKING, Optional
 from urllib.parse import parse_qs, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
+from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -50,7 +54,7 @@ def app__webhook__exec(
 
         return
 
-    def _check():
+    def _check(queue: AbstractQueuedCollectionResponseQueueManager) -> AbstractResponse:
         query_string = parsed_url.query.replace("+", "%2B")
         query_string_data = parse_qs(query_string)
         has_error = False
@@ -79,10 +83,12 @@ def app__webhook__exec(
 
             return QueuedCollectionStopResponse(kernel, "WEBHOOK_ERROR")
 
-    def _execute(previous: str):
+    def _execute(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> AbstractResponse:
         return resolver.run_command_request_from_url_path(match[2])
 
-    def _log(previous):
+    def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(
             "WEBHOOK_COMPLETE",
             {"path": path, "source_data": source_data, "success": True},

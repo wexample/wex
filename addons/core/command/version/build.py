@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 import git
 
@@ -9,6 +9,10 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.default.command.version.increment import default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.const.globals import CORE_COMMAND_NAME, FILE_README, FILE_VERSION
+from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -41,16 +45,22 @@ def core__version__build(
     if not commit:
         current_version = core_kernel_get_version(kernel)
 
-        def _core__version__build__check_code_quality(previous: Optional[Any] = None):
+        def _core__version__build__check_code_quality(
+            queue: AbstractQueuedCollectionResponseQueueManager,
+        ) -> AbstractResponse:
             kernel.io.log(f"Executing code quality checkup...")
             return kernel.run_command(".code/check", {"app-dir": root_dir})
 
-        def _core__version__build__format(previous: Optional[Any] = None):
+        def _core__version__build__format(
+            queue: AbstractQueuedCollectionResponseQueueManager,
+        ) -> AbstractResponse:
             kernel.io.log(f"Executing auto formatting scripts...")
 
             return kernel.run_command(".code/format", {"app-dir": root_dir})
 
-        def _core__version__build__check_uncommitted(previous: Optional[Any] = None):
+        def _core__version__build__check_uncommitted(
+            queue: AbstractQueuedCollectionResponseQueueManager,
+        ) -> Optional[QueuedCollectionStopResponse]:
             # There is no uncommitted change
             if repo.is_dirty(untracked_files=True):
                 kernel.io.error(
@@ -63,7 +73,9 @@ def core__version__build(
 
                 return QueuedCollectionStopResponse(kernel, "Dirty repository")
 
-        def _core__version__build__increment_version(previous: Optional[Any] = None):
+        def _core__version__build__increment_version(
+            queue: AbstractQueuedCollectionResponseQueueManager,
+        ) -> None:
             kernel.io.log(f"Building new version from {current_version}...")
 
             new_version = kernel.run_function(

@@ -10,6 +10,9 @@ from addons.app.helper.docker import (
     docker_exec_app_compose,
     docker_get_app_compose_files,
 )
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 
@@ -28,13 +31,17 @@ def app__config__write(
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
 
-    def _app__config__write__runtime():
+    def _app__config__write__runtime(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         nonlocal user
         nonlocal group
 
         manager.build_runtime_config(user, group)
 
-    def _app__config__write__docker(previous):
+    def _app__config__write__docker(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "config/write-compose-pre"}
         )

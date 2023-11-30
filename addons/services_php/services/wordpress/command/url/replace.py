@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import click
 
@@ -9,6 +9,9 @@ from addons.app.const.app import APP_NO_SSL_ENVS
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.response.HiddenResponse import HiddenResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -65,7 +68,9 @@ def wordpress__url__replace(
 ):
     kernel = manager.kernel
 
-    def _build_urls():
+    def _build_urls(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> Optional[HiddenResponse | QueuedCollectionStopResponse]:
         nonlocal new_url
         nonlocal old_url
 
@@ -97,7 +102,7 @@ def wordpress__url__replace(
 
             first = response.first()
             if not first:
-                return
+                return None
 
             if len(first):
                 old_url = first[0]
@@ -128,8 +133,12 @@ def wordpress__url__replace(
 
         return HiddenResponse(kernel, url_map)
 
-    def _replace(previous):
+    def _replace(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> QueuedCollectionResponse:
         responses = []
+        previous = queue.get_previous_value()
+        assert isinstance(previous, dict)
 
         if previous:
             for old_url in previous:

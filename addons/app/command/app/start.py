@@ -26,9 +26,13 @@ from addons.app.decorator.app_command import app_command
 from addons.app.helper.app import app_create_env
 from addons.app.helper.docker import docker_exec_app_compose_command
 from src.const.globals import CORE_COMMAND_NAME
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
+)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
 )
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
@@ -67,7 +71,9 @@ def app__app__start(
     kernel = manager.kernel
     name = manager.get_config("global.name")
 
-    def _app__app__start__checkup():
+    def _app__app__start__checkup(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> QueuedCollectionStopResponse:
         nonlocal env
 
         if not os.path.exists(APP_FILEPATH_REL_ENV):
@@ -93,7 +99,9 @@ def app__app__start(
             manager.log("App already running")
             return QueuedCollectionStopResponse(kernel, reason="APP_ALREADY_RUNNING")
 
-    def _app__app__start__proxy(previous):
+    def _app__app__start__proxy(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> Optional[AbstractResponse]:
         if no_proxy:
             return
 
@@ -125,7 +133,9 @@ def app__app__start(
                     },
                 )
 
-    def _app__app__start__config(previous):
+    def _app__app__start__config(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> AbstractResponse:
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
         kernel.run_function(
@@ -145,7 +155,9 @@ def app__app__start(
             },
         )
 
-    def _app__app__start__start_hooks(previous):
+    def _app__app__start__start_hooks(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> HiddenResponse:
         # Run docker compose
         compose_options = ["up", "-d"]
 
@@ -170,7 +182,9 @@ def app__app__start(
 
         return HiddenResponse(kernel, compose_options)
 
-    def _app__app__start__starting(previous):
+    def _app__app__start__starting(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> InteractiveShellCommandResponse:
         return InteractiveShellCommandResponse(
             kernel,
             docker_exec_app_compose_command(
@@ -181,12 +195,16 @@ def app__app__start(
             ),
         )
 
-    def _app__app__start__update_hosts(previous):
+    def _app__app__start__update_hosts(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         manager.set_runtime_config("started", True)
 
         kernel.run_function(app__hosts__update)
 
-    def _app__app__start__pending(previous):
+    def _app__app__start__pending(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         def _check():
             # Postpone execution
             response = kernel.run_function(
@@ -209,7 +227,9 @@ def app__app__start(
             kernel.io.log(f"Waiting services..")
             time.sleep(2)
 
-    def _app__app__start__serve(previous):
+    def _app__app__start__serve(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> AbstractResponse:
         # Postpone execution
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-post"}
@@ -217,7 +237,9 @@ def app__app__start(
 
         kernel.run_function(app__app__serve, {"app-dir": app_dir})
 
-    def _app__app__start__first_init(previous):
+    def _app__app__start__first_init(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
         first_start_lock = os.path.join(
             env_dir, "tmp", f"{CORE_COMMAND_NAME}.first-start"
@@ -232,7 +254,9 @@ def app__app__start(
 
             manager.set_runtime_config("initialized", True)
 
-    def _app__app__start__complete(previous):
+    def _app__app__start__complete(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         env = manager.get_runtime_config("env")
         domains = manager.get_runtime_config("domains")
         domains_string = []

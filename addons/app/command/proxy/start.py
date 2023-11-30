@@ -7,6 +7,9 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.command.env.get import app__env__get
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -40,7 +43,9 @@ def app__proxy__start(
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     proxy_path = manager.get_proxy_path()
 
-    def _app__proxy__start__create():
+    def _app__proxy__start__create(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> Optional[QueuedCollectionStopResponse]:
         manager.log("Starting proxy server")
 
         # Created
@@ -62,8 +67,10 @@ def app__proxy__start(
                 {"app-dir": proxy_path, "services": ["proxy"], "git": False},
             )
 
-    def _app__proxy__start__checkup(previous):
-        def _callback():
+    def _app__proxy__start__checkup(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
+        def _callback() -> None:
             nonlocal user
             user = user or getpass.getuser()
 
@@ -88,7 +95,9 @@ def app__proxy__start(
 
         manager.exec_in_app_workdir(proxy_path, _callback)
 
-    def _app__proxy__start__start(previous):
+    def _app__proxy__start__start(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
         return kernel.run_function(
             app__app__start,
             {
