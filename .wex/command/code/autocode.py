@@ -11,6 +11,7 @@ from addons.app.decorator.app_command import app_command
 @app_command(help="An app test command", command_type=COMMAND_TYPE_APP)
 def app__code__autocode(manager: AppAddonManager, app_dir: str) -> None:
     python_dirs = [
+        '.wex/command',
         'addons',
         'src',
         'tests',
@@ -37,7 +38,7 @@ class FunctionMethodVisitor(ast.NodeVisitor):
         self._source = file_read(file_path)
         self._node = ast.parse(self._source)
 
-        self.visit(self._node)
+        self.visit(ast.parse(self._source))
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self.check_function(node)
@@ -51,16 +52,17 @@ class FunctionMethodVisitor(ast.NodeVisitor):
         # Add missing "-> None" to functions
         if not node.returns and self.function_has_only_none_returns(node):
             self._source = re.sub(rf"def {node.name}\(([^)]*)\):", rf"def {node.name}(\1) -> None:", self._source)
+            self.log_modified(node)
 
         # When an argument of a function is called "kernel", add "Kernel" as type
-        self._source = self.add_kernel_annotation(self._source, node.name)
+        self._source = self.add_kernel_annotation(self._source, node)
 
         # Write the changes back to the file
         with open(self._file_path, "w") as file:
             file.write(self._source)
 
-    def add_kernel_annotation(self, source_code: str, function_name: str) -> str:
-        pattern = rf"def {function_name}\((.*?)\)"
+    def add_kernel_annotation(self, source_code: str, node: ast.FunctionDef) -> str:
+        pattern = rf"def {node.name}\((.*?)\)"
         matches = re.finditer(pattern, source_code, re.DOTALL)
 
         for match in matches:
@@ -74,16 +76,15 @@ class FunctionMethodVisitor(ast.NodeVisitor):
                     kernel_modified = True
                 new_args.append(arg)
             if kernel_modified:
-                self.log_modified()
+                self.log_modified(node)
                 new_args_string = ', '.join(new_args)
-                source_code = re.sub(pattern, rf'def {function_name}({new_args_string})', source_code, count=1)
+                source_code = re.sub(pattern, rf'def {node.name}({new_args_string})', source_code, count=1)
 
         return source_code
 
-    def log_modified(self):
-        print(f"  Function '{self._node.name}' has been modified")
+    def log_modified(self, node: ast.FunctionDef) -> None:
+        print(f"  Function '{node.name}' has been modified")
         print(self._file_path)
-
 
     def function_has_only_none_returns(self, node: ast.FunctionDef) -> bool:
         return all(isinstance(return_node.value, (ast.NameConstant, type(None)))
