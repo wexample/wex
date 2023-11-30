@@ -38,6 +38,10 @@ def core__version__build(
     if not commit:
         current_version = core_kernel_get_version(kernel)
 
+        def _core__version__build__check_code_quality(previous: Optional[Any] = None):
+            kernel.io.log(f"Executing code quality checkup...")
+            kernel.run_command(".code/check", {"app-dir": root_dir})
+
         def _core__version__build__format(previous: Optional[Any] = None):
             kernel.io.log(f"Executing auto formatting scripts...")
 
@@ -53,10 +57,6 @@ def core__version__build(
                     {"diff": repo.git.diff()},
                     trace=False,
                 )
-
-        def _core__version__build__check_code_quality(previous: Optional[Any] = None):
-            kernel.io.log(f"Executing code quality checkup...")
-            kernel.run_command(".code/check", {"app-dir": root_dir})
 
         def _core__version__build__increment_version(previous: Optional[Any] = None):
             kernel.io.log(f"Building new version from {current_version}...")
@@ -108,9 +108,9 @@ def core__version__build(
         return QueuedCollectionResponse(
             kernel,
             [
+                _core__version__build__check_code_quality,
                 _core__version__build__format,
                 _core__version__build__check_uncommitted,
-                _core__version__build__check_code_quality,
                 _core__version__build__increment_version,
             ],
         )

@@ -1,5 +1,7 @@
 type: app
 help: Do some code quality checks
+command:
+  decorator: app_command
 scripts:
   - title: Run MyPy
     script: mypy --config-file .wex/python/mypy.ini src/core/Kernel.py

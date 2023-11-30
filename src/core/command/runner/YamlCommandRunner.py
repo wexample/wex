@@ -17,11 +17,10 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import ResponseCollection
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
 from src.decorator.command import command
 from src.helper.command import apply_command_decorator
 from src.helper.data_yaml import yaml_load
@@ -90,7 +89,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
         ) -> Optional[QueuedCollectionResponse]:
-            commands_collection: ResponseCollection = []
+            commands_collection: QueuedCollectionResponseCollection = []
 
             variables: CoreCommandArgsDict = {}
             for name in kwargs:
