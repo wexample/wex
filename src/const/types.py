@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict, Union, Match
 
 AddonNameType = Literal[
     "app",
@@ -16,6 +16,7 @@ AnyList = List[Any]
 
 StringKeysDict = Dict[str, Any]
 StringsList = List[str]
+StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
 JsonContent = Optional[BasicInlineValue | StringKeysDict]

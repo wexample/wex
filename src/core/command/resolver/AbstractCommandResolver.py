@@ -19,7 +19,7 @@ from src.const.types import (
     RegistryCommand,
     RegistryCommandsCollection,
     RegistryResolverData,
-    StringsList,
+    StringsList, StringsMatch,
 )
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
@@ -113,7 +113,7 @@ class AbstractCommandResolver(KernelChild):
         pass
 
     @classmethod
-    def build_match(cls, command: str) -> Optional[re.Match[str]]:
+    def build_match(cls, command: str) -> Optional[StringsMatch]:
         return re.match(cls.get_pattern(), command) if command else None
 
     def get_base_path(self) -> Optional[str]:

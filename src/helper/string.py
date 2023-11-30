@@ -3,6 +3,8 @@ import re
 import shutil
 from typing import Dict, Optional
 
+from src.const.types import StringsMatch
+
 
 def string_to_snake_case(text: str) -> str:
     s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", text)
@@ -33,7 +35,7 @@ def string_to_pascal_case(text: str) -> str:
 def string_format_ignore_missing(value: str, substitutions: Dict[str, str]) -> str:
     pattern = r"{(\w+)}"
 
-    def replace(match: re.Match[str]) -> str:
+    def replace(match: StringsMatch) -> str:
         key = match.group(1)
         return substitutions.get(key, match.group(0))
 
@@ -92,7 +94,7 @@ def string_replace_multiple(text: str, variables: Dict[str, Optional[str]]) -> s
     pattern = re.compile(r"\$\{?([A-Z_]+)\}?")
 
     # Replacement function
-    def repl(match: re.Match[str]) -> str:
+    def repl(match: StringsMatch) -> str:
         return variables.get(match.group(1).upper(), match.group(0))
 
     # Substitute using the replacement function

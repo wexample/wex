@@ -6,7 +6,7 @@ from src.const.types import (
     CoreCommandArgsList,
     CoreCommandArgsListOrDict,
     OptionalCoreCommandArgsListOrDict,
-    StringKeysDict,
+    StringKeysDict, StringsMatch,
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
@@ -43,7 +43,7 @@ class CommandRequest(BaseClass):
 
         self.parent = self.resolver.kernel.current_request
         self.first_arg: Any = self.resolver.kernel
-        self.match: Optional[Match] = None
+        self.match: Optional[StringsMatch] = None
         self.localized: bool = False
 
         self.resolver.locate_function(self)
@@ -53,7 +53,7 @@ class CommandRequest(BaseClass):
             # as it is managed outside.
             return
 
-    def set_path(self, path: str):
+    def set_path(self, path: str) -> None:
         self._path = path
 
     def get_path(self) -> str:
@@ -62,7 +62,7 @@ class CommandRequest(BaseClass):
 
         return self._path
 
-    def set_args_list(self, args_list: CoreCommandArgsList):
+    def set_args_list(self, args_list: CoreCommandArgsList) -> None:
         self._args_list = args_list
 
     def get_args_list(self) -> CoreCommandArgsList:
@@ -98,7 +98,7 @@ class CommandRequest(BaseClass):
 
         return self._runner
 
-    def get_match(self) -> Match:
+    def get_match(self) -> StringsMatch:
         self._validate__should_not_be_none(self.match)
         assert self.match is not None
 
@@ -113,7 +113,7 @@ class CommandRequest(BaseClass):
         path = self.resolver.build_path(self, extension)
 
         if path and os.path.isfile(path):
-            runner = None
+            runner: Optional["AbstractCommandRunner"] = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
                 from src.core.command.runner.PythonCommandRunner import (
@@ -126,27 +126,28 @@ class CommandRequest(BaseClass):
 
                 runner = YamlCommandRunner(self.resolver.kernel)
 
-            self.set_path(path)
-            self.extension = extension
+            if runner:
+                self.set_path(path)
+                self.extension = extension
 
-            runner.set_request(self)
+                runner.set_request(self)
 
-            script_command = self.get_runner().build_script_command()
+                script_command = self.get_runner().build_script_command()
 
-            if script_command:
-                self.set_script_command(script_command)
+                if script_command:
+                    self.set_script_command(script_command)
 
-                # Runner can now convert args.
-                if isinstance(self._args_source, dict):
-                    self.set_args_list(
-                        args_convert_dict_to_args(
-                            script_command.click_command, self._args_source
+                    # Runner can now convert args.
+                    if isinstance(self._args_source, dict):
+                        self.set_args_list(
+                            args_convert_dict_to_args(
+                                script_command.click_command, self._args_source
+                            )
                         )
-                    )
-                else:
-                    self.set_args_list(self._args_source.copy())
+                    else:
+                        self.set_args_list(self._args_source.copy())
 
-                return True
+                    return True
 
         return False
 
