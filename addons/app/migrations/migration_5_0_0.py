@@ -1,5 +1,5 @@
 import os.path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 import yaml
 
@@ -11,7 +11,9 @@ from addons.app.migrations.migration_4_0_0 import (
     _migration_4_0_0_replace_docker_mapping,
     _migration_4_0_0_replace_docker_placeholders,
 )
-from src.const.types import StringKeysDict, StringsDict
+from addons.docker.types.docker import DockerCompose
+from helper.data_yaml import yaml_load
+from src.const.types import StringKeysDict, StringsDict, StringsList
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 
@@ -19,7 +21,7 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
+def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
     # Convert main config file.
     old_config_path = f"{env_dir}config"
@@ -33,7 +35,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
         "wordpress5": "wordpress",
     }
 
-    def _migration_5_0_0_update_config():
+    def _migration_5_0_0_update_config() -> None:
         if config:
             for domain_env_name in ["LOCAL", "DEV", "PROD"]:
                 env_name = domain_env_name.lower()
@@ -57,7 +59,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
 
             manager.save_config()
 
-    def _migration_5_0_0_install_services():
+    def _migration_5_0_0_install_services() -> None:
         # Services
         services = _get_config_value(config, "SERVICES", [])
 
@@ -84,7 +86,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
         # Reload config as it may change during services install
         manager.load_config()
 
-    def _migration_5_0_0_config_services():
+    def _migration_5_0_0_config_services() -> None:
         # Database (from v3.0.0)
         mysql_db_password = _get_config_value(config, "MYSQL_PASSWORD")
 
@@ -93,15 +95,14 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
         if mysql_db_password:
             manager.config["service"]["mysql"]["password"] = mysql_db_password
 
-    def _migration_5_0_0_update_docker():
+    def _migration_5_0_0_update_docker() -> None:
         docker_files = _migration_4_0_0_et_docker_files(manager)
 
         # Yml file changes
         # Loop through each docker-compose file
         for docker_file in docker_files:
             # Read the YAML file
-            with open(docker_file, "r") as f:
-                content = yaml.safe_load(f)
+            content = cast(DockerCompose, yaml_load(docker_file))
 
             # "version" is no longer required
             if "version" in content:
@@ -160,7 +161,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
             },
         )
 
-    def _migration_5_0_0_delete_old_files():
+    def _migration_5_0_0_delete_old_files() -> None:
         if os.path.exists(old_config_path):
             os.remove(old_config_path)
 
@@ -178,7 +179,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
 
 def migration_5_0_0_replace_docker_services_names(
     content: StringKeysDict, services_names_changes: StringsDict
-):
+) -> None:
     if "services" in content:
         new_services = {}
         for service_name, service_value in content["services"].items():
@@ -193,7 +194,7 @@ def migration_5_0_0_replace_docker_services_names(
     migration_5_0_0_replace_docker_services_references(content, services_names_changes)
 
 
-def replace_service_names_in_field(field, services_names_changes):
+def replace_service_names_in_field(field: StringsDict | StringsList, services_names_changes: StringsDict) -> None:
     if isinstance(field, list):
         new_field = []
         for item in field:
@@ -217,7 +218,8 @@ def replace_service_names_in_field(field, services_names_changes):
         return new_field
 
 
-def migration_5_0_0_replace_docker_services_references(content, services_names_changes):
+def migration_5_0_0_replace_docker_services_references(content: StringKeysDict,
+                                                       services_names_changes: StringsDict) -> None:
     if "services" not in content:
         return
 
@@ -234,7 +236,7 @@ def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     return None
 
 
-def _get_config_value(config: dict, key: str, default: Optional[Any] = None):
+def _get_config_value(config: dict, key: str, default: Optional[Any] = None) -> Any:
     return config[key] if key in config else default
 
 

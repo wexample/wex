@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
@@ -16,11 +16,11 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager):
+def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
     repo = git_get_or_create_repo(manager.app_dir)
     projects_dirs = ["project", "wordpress"]
 
-    def _migration_4_0_0_env():
+    def _migration_4_0_0_env() -> None:
         _migration_4_0_0_replace_placeholders(
             manager.app_dir + ".env",
             {
@@ -29,19 +29,19 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager):
         )
 
     # Rename ".wex" file to "config"
-    def _migration_4_0_0_config():
+    def _migration_4_0_0_config() -> None:
         if os.path.isfile(".wex"):
             # Rename old config file
             git_move_or_file_move(repo, ".wex", "config")
 
     # Create ".wex" dir
-    def _migration_4_0_0_dir():
+    def _migration_4_0_0_dir() -> None:
         new_dir_path = f"{manager.app_dir}/.wex"
         # Make the directory
         os.makedirs(new_dir_path, exist_ok=True)
 
     # Move every file and folder to ".wex", except the "project" dir
-    def _migration_4_0_0_move_root_environment_files():
+    def _migration_4_0_0_move_root_environment_files() -> None:
         for item in os.listdir(manager.app_dir):
             if item in projects_dirs + [".git", ".wex"]:
                 continue
@@ -54,7 +54,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager):
         os.makedirs(f".wex/tmp", exist_ok=True)
 
     # Move every file and folder from project/* to root (app_dir)
-    def _migration_4_0_0_move_project_files():
+    def _migration_4_0_0_move_project_files() -> None:
         for projects_dir in projects_dirs:
             dir_project = os.path.join(manager.app_dir, projects_dir)
 
@@ -64,7 +64,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager):
 
             migration_delete_dir_if_empty(kernel, dir_project)
 
-    def _migration_4_0_0_update_docker():
+    def _migration_4_0_0_update_docker() -> None:
         _migration_4_0_0_replace_docker_placeholders(
             manager,
             {
@@ -95,7 +95,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager):
     )
 
 
-def _migration_4_0_0_et_docker_files(manager: AppAddonManager):
+def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     # Convert docker files.
@@ -104,7 +104,7 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager):
     return glob.glob(f"{docker_dir}docker-compose.*")
 
 
-def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: dict):
+def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: dict) -> None:
     if not os.path.exists(file_path):
         return
 
@@ -123,7 +123,7 @@ def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: d
 
 def _migration_4_0_0_replace_docker_placeholders(
     manager: AppAddonManager, replacement_mapping: dict
-):
+) -> None:
     converted_mapping = {}
 
     for old_str, new_str in replacement_mapping.items():
@@ -134,7 +134,7 @@ def _migration_4_0_0_replace_docker_placeholders(
 
 def _migration_4_0_0_replace_docker_mapping(
     manager: AppAddonManager, replacement_mapping: dict
-):
+) -> None:
     docker_files = _migration_4_0_0_et_docker_files(manager)
 
     # Raw file replacements
@@ -143,7 +143,7 @@ def _migration_4_0_0_replace_docker_mapping(
         _migration_4_0_0_replace_placeholders(docker_file, replacement_mapping)
 
 
-def is_version_4_0_0(kernel: "Kernel", path: str):
+def is_version_4_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     if os.path.isdir(path + ".wex"):
         if os.path.isfile(path + ".wex/config"):
             return True

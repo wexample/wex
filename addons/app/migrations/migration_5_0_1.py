@@ -13,10 +13,10 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def migration_5_0_1(kernel: "Kernel", manager: AppAddonManager):
+def migration_5_0_1(kernel: "Kernel", manager: AppAddonManager) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
-    def _migration_5_0_1_update_config():
+    def _migration_5_0_1_update_config() -> None:
         mapping = {
             # The only cli known was wordpress_cli
             "_mysql_8": "_mysql",

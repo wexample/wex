@@ -7,8 +7,8 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def migration_5_0_34(kernel: "Kernel", manager: AppAddonManager):
-    def _migration_5_0_34_update_config():
+def migration_5_0_34(kernel: "Kernel", manager: AppAddonManager) -> None:
+    def _migration_5_0_34_update_config() -> None:
         main_service = manager.get_config("docker.main_container", None)
         manager.set_config("global.main_service", main_service)
 

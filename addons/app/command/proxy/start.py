@@ -7,6 +7,7 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.command.env.get import app__env__get
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
@@ -74,7 +75,7 @@ def app__proxy__start(
             nonlocal user
             user = user or getpass.getuser()
 
-            def check_port(port_to_check: int):
+            def check_port(port_to_check: int) -> None:
                 if not port_to_check:
                     kernel.io.error(f"Invalid port {port_to_check}", trace=False)
 
@@ -97,14 +98,14 @@ def app__proxy__start(
 
     def _app__proxy__start__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    ) -> AbstractResponse:
         return kernel.run_function(
             app__app__start,
             {
                 "app-dir": proxy_path,
                 # If no env, use the global wex env.
                 "env": env
-                or kernel.run_function(
+                       or kernel.run_function(
                     app__env__get, {"app-dir": kernel.get_path("root")}
                 ).first(),
                 "user": user,

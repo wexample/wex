@@ -205,7 +205,7 @@ def app__app__start(
     def _app__app__start__pending(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        def _check():
+        def _check() -> bool:
             # Postpone execution
             response = kernel.run_function(
                 app__hook__exec, {"app-dir": app_dir, "hook": "service/ready"}

@@ -1,5 +1,8 @@
-def is_greater_than(first: dict, second: dict, true_if_equal=False) -> bool:
-    keys_to_check = [
+from src.const.types import VersionDescriptor, StringsList
+
+
+def is_greater_than(first: VersionDescriptor, second: VersionDescriptor, true_if_equal: bool = False) -> bool:
+    keys_to_check: StringsList = [
         "major",
         "intermediate",
         "minor",

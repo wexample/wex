@@ -162,3 +162,11 @@ class KernelRegistry(StringKeysDict):
 
     def to_dict(self) -> StringKeysDict:
         return vars(self)
+
+
+class VersionDescriptor(TypedDict):
+    major: Optional[int]
+    intermediate: Optional[int]
+    minor: Optional[int]
+    pre_build_type: Optional[str]
+    pre_build_number: Optional[int]

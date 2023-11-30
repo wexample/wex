@@ -1,6 +1,7 @@
 import re
 from typing import TYPE_CHECKING, Dict, Optional
 
+from src.const.types import VersionDescriptor
 from src.decorator.command import command
 from src.decorator.option import option
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 @option("--version", "-v", type=str, required=True, help="The version string to parse")
 def default__version__parse(
     kernel: "Kernel", version: str
-) -> Dict[str, Optional[str]] | None:
+) -> VersionDescriptor | None:
     pre_build_number: Optional[int] = None
     pre_build_type: Optional[str] = None
 
@@ -41,7 +42,7 @@ def default__version__parse(
             major, intermediate, minor, _ = match.groups()
 
         # Create a dictionary to store the elements
-        version_dict = {
+        version_dict: VersionDescriptor = {
             "major": int(major) if major else None,
             "intermediate": int(intermediate) if intermediate else None,
             "minor": int(minor) if minor else None,
