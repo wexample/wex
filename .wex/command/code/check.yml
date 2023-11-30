@@ -4,4 +4,4 @@ command:
   decorator: app_command
 scripts:
   - title: Run MyPy
-    script: mypy --config-file .wex/python/mypy.ini src/core/Kernel.py
+    script: mypy --config-file .wex/python/mypy.ini src addons tests __main__.py setup.py

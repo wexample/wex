@@ -2,14 +2,20 @@ import inspect
 import os
 import shutil
 import unittest
+from typing import TYPE_CHECKING
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy
 
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class AbstractTestCase(unittest.TestCase):
+    kernel: "Kernel"
+
     @classmethod
     def setUpClass(cls):
         cls.kernel = TestKernel(os.getcwd() + "/__main__.py")
