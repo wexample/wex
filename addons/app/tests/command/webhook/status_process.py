@@ -6,7 +6,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestAppCommandWebhookStatusProcess(AbstractTestCase):
     def test_status_process(self):
         response = self.kernel.run_function(
-            app__webhook__status_process, {"path": "/status/process/1234"}
+            app__webhook__status_process, {"webhook_path": "/status/process/1234"}
         )
 
         self.assertEqual(response.first(), {})
@@ -15,7 +15,7 @@ class TestAppCommandWebhookStatusProcess(AbstractTestCase):
 
         response = self.kernel.run_function(
             app__webhook__status_process,
-            {"path": "/status/process/1234"},
+            {"webhook_path": "/status/process/1234"},
             render_mode=KERNEL_RENDER_MODE_JSON,
         )
 

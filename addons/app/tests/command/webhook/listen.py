@@ -18,5 +18,6 @@ class TestAppCommandWebhookListen(AbstractWebhookTestCase):
         data = json.loads(response.read())
 
         self.assertTrue(isinstance(data, dict))
+        self.kernel.io.log(data)
 
         self.assertTrue(data["response"]["process"]["running"])

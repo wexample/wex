@@ -17,11 +17,11 @@ if TYPE_CHECKING:
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
 @option("--env", "-e", type=str, required=False, help="Env directory")
-def app__webhook__exec(kernel: "Kernel", path: str, env: None | str = None):
+def app__webhook__exec(kernel: "Kernel", webhook_path: str, env: None | str = None):
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data = {}
-    parsed_url = urlparse(path)
+    parsed_url = urlparse(webhook_path)
     path = parsed_url.path
     match = re.match(WEBHOOK_LISTENER_ROUTES_MAP["exec"]["pattern"], path)
 

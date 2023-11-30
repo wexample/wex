@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 @command(help="Return process info based on task id", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(path=True)
-def app__webhook__status_process(kernel: "Kernel", path: str):
+def app__webhook__status_process(kernel: "Kernel", webhook_path: str) -> DictResponse:
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
-    if not routing_is_allowed_route(path, WEBHOOK_LISTENER_ROUTES_MAP):
+    if not routing_is_allowed_route(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP):
         return None
 
     output = {}
-    route_info = routing_get_route_info(path, WEBHOOK_LISTENER_ROUTES_MAP)
+    route_info = routing_get_route_info(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP)
     task_id = route_info["match"][0]
     log_content = kernel.logger.load_logs(task_id)
 

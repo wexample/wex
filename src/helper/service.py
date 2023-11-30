@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
 from src.helper.data_yaml import yaml_load_or_default
@@ -68,8 +68,7 @@ def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None
         os.path.join(service_dir, "samples", APP_DIR_APP_DATA) + os.sep
     )
 
-    manager = kernel.addons["app"]
-    assert isinstance(manager, AppAddonManager)
+    manager = cast("AppAddonManager", kernel.addons["app"])
 
     env_dir: str = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 

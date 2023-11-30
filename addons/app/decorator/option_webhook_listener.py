@@ -4,14 +4,12 @@ from src.const.types import AnyCallable
 from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
 
 
-def option_webhook_listener(port=False, path=False) -> AnyCallable:
+def option_webhook_listener(port_number: bool = False, path: bool = False) -> AnyCallable:
     def decorator(function: AnyCallable) -> AnyCallable:
-        if port:
-            function.option_webhook_listener_port = True
-
+        if port_number:
             function = click.option(
-                "--port",
-                "-p",
+                "--webhook-port-number",
+                "-wpn",
                 type=int,
                 help="Webhook listener port number",
                 required=True,
@@ -19,11 +17,9 @@ def option_webhook_listener(port=False, path=False) -> AnyCallable:
             )(function)
 
         if path:
-            function.option_webhook_listener_path = True
-
             function = click.option(
-                "--path",
-                "-p",
+                "--webhook-path",
+                "-wp",
                 type=str,
                 help="Webhook requested path",
                 required=True,

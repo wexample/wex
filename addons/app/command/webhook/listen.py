@@ -23,7 +23,7 @@ from src.const.globals import (
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_async
+from src.helper.command import execute_command_async, command_get_option
 from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
@@ -34,8 +34,7 @@ from src.helper.system import (
 )
 
 if TYPE_CHECKING:
-    from click.core import Command as ClickCommand
-
+    from src.core.command.ScriptCommand import ScriptCommand
     from src.core.Kernel import Kernel
 
 WEBHOOK_LISTENER_ROUTES_MAP = {
@@ -166,16 +165,16 @@ def app__webhook__listen(
 
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
-                click_command: ClickCommand = routes_map[route_name][
-                    "function"
-                ].click_command
+                script_command: ScriptCommand = routes_map[route_name]["function"]
                 options = {}
+                needs_path = command_get_option(script_command, 'webhook_path')
+                needs_port_number = command_get_option(script_command, 'webhook_port_number')
 
-                if hasattr(click_command.callback, "option_webhook_listener_path"):
-                    options["path"] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
+                if needs_path:
+                    options["webhook_path"] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
 
-                if hasattr(click_command.callback, "option_webhook_listener_port"):
-                    options["port"] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
+                if needs_port_number:
+                    options["webhook_port_number"] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
 
                 command = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON
@@ -196,21 +195,15 @@ def app__webhook__listen(
                     "--quiet",
                 ]
 
-                if hasattr(
-                    kernel.root_request.get_script_command().click_command.callback,
-                    "option_webhook_listener_path",
-                ):
+                if needs_path:
                     command += [
-                        "--path",
+                        "--webhook-path",
                         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     ]
 
-                if hasattr(
-                    kernel.root_request.get_script_command().click_command.callback,
-                    "option_webhook_listener_port",
-                ):
+                if needs_port_number:
                     command += [
-                        "--port",
+                        "--webhook-port-number",
                         WEBHOOK_COMMAND_PORT_PLACEHOLDER,
                     ]
 
@@ -246,4 +239,4 @@ def app__webhook__listen(
             raise
 
     time.sleep(2)
-    return kernel.run_function(app__webhook__status, {"port": port})
+    return kernel.run_function(app__webhook__status, {"webhook_port_number": port})
