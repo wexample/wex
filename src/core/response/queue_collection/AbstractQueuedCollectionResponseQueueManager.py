@@ -1,10 +1,10 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from src.const.types import BasicInlineValue
 
 if TYPE_CHECKING:
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionStepsList
     from src.core.response.AbstractResponse import AbstractResponse
 
 
@@ -19,7 +19,7 @@ class AbstractQueuedCollectionResponseQueueManager:
     def get_previous_value(self) -> BasicInlineValue:
         pass
 
-    def get_previous_response_path(self) -> list | None:
+    def get_previous_response_path(self) -> Optional["QueuedCollectionStepsList"]:
         path_manager = self.response.get_path_manager()
         step_index = path_manager.steps[self.response.step_position]
 
@@ -32,18 +32,19 @@ class AbstractQueuedCollectionResponseQueueManager:
                 previous_index = path[-1]
 
                 # And parent has a previous item.
-                if previous_index > 0:
+                if previous_index is not None and previous_index > 0 and path[-1] is not None:
                     path[-1] -= 1
 
-                return path
-            else:
-                return None
+                    return path
         # The response have a previous one, in the same collection
         else:
             path = path_manager.steps[: self.response.step_position + 1]
-            path[-1] -= 1
+            # Ensure the last element is not None before decrementing
+            if path[-1] is not None:
+                path[-1] -= 1
+                return path
 
-            return path
+        return None
 
     def get_next_step_index(self, step_index: int) -> bool | int:
         next_index = step_index + 1
