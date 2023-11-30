@@ -8,7 +8,7 @@ from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -50,7 +50,7 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         return self
 
-    def calculate_max_widths(self, array: list) -> list:
+    def calculate_max_widths(self, array: StringsList) -> List[int]:
         """
         Calculate the maximum widths for each column based on the array.
         """

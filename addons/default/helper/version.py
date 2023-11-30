@@ -28,11 +28,10 @@ def is_greater_than(first: VersionDescriptor, second: VersionDescriptor, true_if
     return true_if_equal
 
 
-def version_join(version: dict, add_build: bool = False) -> str:
+def version_join(version: VersionDescriptor, add_build: bool = False) -> str:
     output = f"{version['major']}.{version['intermediate']}.{version['minor']}"
 
     # Build version string
-    version["pre_build_info"] = ""
     if version["pre_build_type"]:
         output += f'-{version["pre_build_type"]}.{version["pre_build_number"]}'
 

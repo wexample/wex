@@ -3,6 +3,8 @@ import os
 import re
 from typing import TYPE_CHECKING, Callable, List, Optional
 
+from src.const.types import AnyCallable
+
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
@@ -34,7 +36,7 @@ def migration_get_files(kernel: "Kernel") -> List[str]:
 
 def migration_get_function(
     kernel: "Kernel", version: str, method_part: str
-) -> Optional[Callable]:
+) -> Optional[AnyCallable]:
     version_snake = version.replace(".", "_")
     path_migrations = migration_get_path(kernel)
     method_name = f"{method_part}_{version_snake}"
