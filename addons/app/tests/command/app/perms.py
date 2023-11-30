@@ -42,6 +42,8 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
 
         current_user = get_sudo_username()
+        assert current_user is not None
+
         current_group = get_user_group_name(current_user)
 
         manager.set_config("permissions.user", current_user)
