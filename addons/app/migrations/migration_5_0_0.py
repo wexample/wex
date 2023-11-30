@@ -194,7 +194,7 @@ def migration_5_0_0_replace_docker_services_names(
     migration_5_0_0_replace_docker_services_references(content, services_names_changes)
 
 
-def replace_service_names_in_field(field: StringsDict | StringsList, services_names_changes: StringsDict) -> None:
+def replace_service_names_in_field(field: StringsDict | StringsList, services_names_changes: StringsDict) -> StringsDict | StringsList:
     if isinstance(field, list):
         new_field = []
         for item in field:

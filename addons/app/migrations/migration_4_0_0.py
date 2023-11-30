@@ -10,7 +10,7 @@ from addons.default.helper.git_utils import (
     git_move_or_file_move,
 )
 from addons.default.helper.migration import migration_delete_dir_if_empty
-from src.const.types import StringsDict
+from src.const.types import StringsDict, StringsList
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
@@ -96,7 +96,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
     )
 
 
-def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> None:
+def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     # Convert docker files.

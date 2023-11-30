@@ -74,7 +74,7 @@ def app__migration__migrate(
         f'Are you ready to migrate {manager.get_config("global.name")} from version {app_version_string}',
         default=True,
     ):
-        return False
+        return
 
     # Create an empty config
     if manager.config == {}:
