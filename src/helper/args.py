@@ -11,6 +11,7 @@ from src.const.types import (
     CoreCommandArgsDict,
     CoreCommandArgsList,
     StringKeysDict,
+    StringsList,
 )
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
@@ -63,15 +64,15 @@ def args_shift_one(
 
 def args_split_arg_array(
     arg: Union[str, Iterable[str]], separator: str = ","
-) -> List[str]:
+) -> StringsList:
     if not arg:
         return []
 
     if isinstance(arg, str):
         arg = re.sub(r'[\[\]"\']', "", arg)
-        return arg.split(separator)
+        return [item.strip() for item in arg.split(separator)]
     elif isinstance(arg, Iterable):
-        return list(arg)
+        return [item.strip() for item in arg]
 
 
 def args_convert_dict_to_long_names_dict(
