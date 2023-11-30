@@ -19,5 +19,5 @@ if TYPE_CHECKING:
 )
 def test__demo_command_2__third(
     kernel: "Kernel", service: str, option=None, another_option_third=None
-):
+) -> str:
     return "THIRD"

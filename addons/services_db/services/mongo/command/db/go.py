@@ -10,5 +10,5 @@ if TYPE_CHECKING:
 @app_command(
     help="Enter in db console", command_type=COMMAND_TYPE_SERVICE, should_run=True
 )
-def mongo__db__go(manager: "AppAddonManager", app_dir: str, service: str):
+def mongo__db__go(manager: "AppAddonManager", app_dir: str, service: str) -> str:
     return "mongosh"

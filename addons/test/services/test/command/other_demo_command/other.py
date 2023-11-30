@@ -13,5 +13,5 @@ if TYPE_CHECKING:
 @option("--another-option", "-ao", is_flag=True, required=False, help="Another option")
 def test__other_demo_command__other(
     kernel: "Kernel", service: str, option=None, another_option=None
-):
+) -> str:
     return "FIRST"

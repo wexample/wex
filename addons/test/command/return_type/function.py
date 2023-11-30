@@ -15,5 +15,5 @@ def test__return_type__function(kernel: "Kernel", arg) -> AnyCallable:
     return _test__return_type__function
 
 
-def _test__return_type__function():
+def _test__return_type__function() -> str:
     return "FUNCTION_OK"
