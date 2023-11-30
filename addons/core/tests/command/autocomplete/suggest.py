@@ -113,8 +113,10 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         self.assertTrue("--search" in suggestions)
 
     def tests_suggest_service(self) -> None:
+        suggestions:str
+
         # Search only "@", should return all service commands
-        suggestions: str = self.kernel.run_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_SERVICE}
         ).first()
 
@@ -122,14 +124,14 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         self.assertTrue(COMMAND_CHAR_SERVICE + "test::demo-command" in suggestions)
 
-        suggestions: str = self.kernel.run_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {"cursor": 1, "search": COMMAND_CHAR_SERVICE + " t"},
         ).first()
 
         self.assertTrue(COMMAND_CHAR_SERVICE + "test::demo-command" in suggestions)
 
-        suggestions: str = self.kernel.run_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {"cursor": 2, "search": " ".join([COMMAND_CHAR_SERVICE, "test", ":"])},
         ).first()
@@ -137,7 +139,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         # It should be only one suggestion for test-2
         self.assertEqual(suggestions, ":")
 
-        suggestions: str = self.kernel.run_function(
+        suggestions = self.kernel.run_function(
             core__autocomplete__suggest,
             {
                 "cursor": 2,
@@ -222,7 +224,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         def callback() -> None:
             # Search only ".", should return all app commands
-            suggestions: str = self.kernel.run_function(
+            suggestions = self.kernel.run_function(
                 core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
             ).first()
 

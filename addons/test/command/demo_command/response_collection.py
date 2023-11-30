@@ -108,7 +108,7 @@ def test__demo_command__response_collection(
         previous = queue.get_previous_value()
         kernel.io.log("Previous : " + str(previous))
 
-        error = None
+        error = False
         if previous != "__previous__":
             error: True
 
