@@ -164,7 +164,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def decorate_command(cls, function: AnyCallable) -> AnyCallable:
         from addons.app.decorator.service_option import service_option
 
-        return service_option()(function)
+        return cast(AnyCallable, service_option()(function))
 
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList

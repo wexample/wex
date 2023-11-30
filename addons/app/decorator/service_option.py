@@ -1,16 +1,14 @@
-from typing import Callable
-
+from src.const.types import AnyCallable
 import click
 
 
-def service_option() -> Callable[[Callable], Callable]:
-    def decorator(f):
-        if callable(f):
-            # Add the --app-dir option
-            f = click.option(
-                "--service", "-s", type=str, required=True, help="Service name"
-            )(f)
+def service_option() -> AnyCallable:
+    def decorator(function: AnyCallable) -> AnyCallable:
+        # Add the --app-dir option
+        function = click.option(
+            "--service", "-s", type=str, required=True, help="Service name"
+        )(function)
 
-        return f
+        return function
 
     return decorator
