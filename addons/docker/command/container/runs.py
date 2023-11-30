@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     default=False,
     help="Include stopped ones",
 )
-def docker__container__runs(kernel: "Kernel", name: str, all: bool = False):
+def docker__container__runs(kernel: "Kernel", name: str, all: bool = False) -> bool:
     command = [
         "docker",
         "ps",

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
+from src.const.types import StringKeysDict
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     help="Create env variable pointing to files regarding environment extension"
 )
 @option("--dir", "-d", type=str, required=True, help="Argument")
-def app__config__bind_files(manager: "AppAddonManager", app_dir: str, dir: str):
+def app__config__bind_files(manager: "AppAddonManager", app_dir: str, dir: str) -> StringKeysDict:
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)
     names_processed = []

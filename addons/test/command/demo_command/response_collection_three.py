@@ -21,7 +21,7 @@ TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION = "....THREE:function-response-text"
 @option("--abort", "-a", is_flag=True, required=False, help="Ask to abort")
 def test__demo_command__response_collection_three(
     kernel: "Kernel", abort: bool = False
-):
+) -> QueuedCollectionResponse:
     def _test__demo_command__response_collection_three_one():
         nonlocal abort
 

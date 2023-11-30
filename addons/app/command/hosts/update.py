@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Update local /etc/hosts file")
-def app__hosts__update(kernel: "Kernel"):
+def app__hosts__update(kernel: "Kernel") -> None:
     new_block_content = []
     ip = kernel.run_function(docker__docker__ip).first()
 

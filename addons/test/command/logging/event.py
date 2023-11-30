@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def test__logging__event(kernel: "Kernel"):
+def test__logging__event(kernel: "Kernel") -> None:
     kernel.logger.append_event("TEST_EVENT_EMPTY")
 
     kernel.logger.append_event(

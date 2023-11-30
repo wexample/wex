@@ -7,6 +7,7 @@ from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
 from addons.core.command.logo.show import core__logo__show
 from addons.default.command.file.append_once import default__file__append_once
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import (
     CORE_BIN_FILE_LOCAL,
     CORE_BIN_FILE_ROOT,
@@ -23,7 +24,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Install core")
-def core__core__install(kernel: "Kernel"):
+def core__core__install(kernel: "Kernel") -> AbstractResponse:
     __core__core__check_requirements(kernel)
     __core__core__install_env(kernel)
     __core__core__install_terminal(kernel)

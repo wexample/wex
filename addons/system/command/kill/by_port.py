@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+import psutil
 
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Description")
 @option("--port", "-p", type=int, required=True, help="Port number")
-def system__kill__by_port(kernel: "Kernel", port: int):
+def system__kill__by_port(kernel: "Kernel", port: int) -> Optional[psutil.Process]:
     process = process_get_all_by_port(port)
 
     if process:

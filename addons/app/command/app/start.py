@@ -63,7 +63,7 @@ def app__app__start(
     group: Optional[str] = None,
     env: Optional[str] = None,
     no_proxy: bool = False,
-):
+) -> QueuedCollectionResponse:
     kernel = manager.kernel
     name = manager.get_config("global.name")
 

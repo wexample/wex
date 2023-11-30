@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @option("--max-count", "-mc", required=False, default=100, type=int)
 def core__logs__rotate(
     kernel: "Kernel", max_days: int | bool = 10, max_count: int | bool = 100
-):
+) -> None:
     """
     Rotate and clean up log files older than a specified age limit.
 

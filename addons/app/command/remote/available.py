@@ -21,10 +21,10 @@ if TYPE_CHECKING:
 @option("--port", "-p", type=int, required=False, help="Remote webhook listener port")
 def app__remote__available(
     manager: "AppAddonManager", app_dir: str, environment: str, port: None | int = None
-):
+) -> bool:
     domain = manager.get_config(f"env.{environment}.domain_main")
     if not domain:
-        return
+        return False
 
     port = port or WEBHOOK_LISTEN_PORT_DEFAULT
 
@@ -34,6 +34,6 @@ def app__remote__available(
         response = conn.getresponse()
         data = json.loads(response.read())
 
-        return data["response"]["process"]["running"]
+        return bool(data["response"]["process"]["running"])
     except:
         return False

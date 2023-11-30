@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
+from src.const.types import StringsList
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -35,7 +36,7 @@ def core__test__create(
     command: Optional[str] = None,
     all: bool = False,
     force: bool = False,
-) -> str | list:
+) -> str | StringsList:
     if not command and all:
         output = []
 

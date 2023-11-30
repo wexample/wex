@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from urllib.parse import parse_qs, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
@@ -17,7 +17,8 @@ if TYPE_CHECKING:
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
 @option("--env", "-e", type=str, required=False, help="Env directory")
-def app__webhook__exec(kernel: "Kernel", webhook_path: str, env: None | str = None):
+def app__webhook__exec(kernel: "Kernel", webhook_path: str, env: None | str = None) -> Optional[
+    QueuedCollectionResponse]:
     from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data = {}

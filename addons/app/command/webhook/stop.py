@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 @command(help="Stop webhook daemon")
 def app__webhook__stop(
     kernel: "Kernel",
-):
+) -> None:
     use_daemon = not kernel.run_function(system__system__is_docker).first()
 
     if use_daemon:

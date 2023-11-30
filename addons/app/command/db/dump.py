@@ -1,6 +1,6 @@
 import os
 import zipfile
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
@@ -21,7 +21,7 @@ def app__db__dump(
     file_name: str | None = None,
     zip: bool = True,
     tag: str | None = None,
-):
+) -> Optional[str]:
     env = manager.get_runtime_config("env")
     name = manager.get_runtime_config("global.name")
 

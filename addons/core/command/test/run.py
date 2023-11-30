@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
-def core__test__run(kernel: "Kernel", command: Optional[str] = None):
+def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
     if kernel.registry_structure.content.env == APP_ENV_LOCAL:

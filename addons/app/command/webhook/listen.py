@@ -1,7 +1,7 @@
 import shutil
 import time
 from http.server import HTTPServer
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.command.webhook.status import app__webhook__status
@@ -12,6 +12,7 @@ from addons.app.WebhookHttpRequestHandler import (
     WebhookHttpRequestHandler,
 )
 from addons.system.command.system.is_docker import system__system__is_docker
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_JSON,
@@ -99,7 +100,7 @@ def app__webhook__listen(
     dry_run: bool = False,
     asynchronous: bool = False,
     force: bool = False,
-):
+) -> Optional[AbstractResponse]:
     if system_is_port_open(port):
         if force:
             kernel.io.log(f"Port already in use {port}, killing process...")
@@ -107,7 +108,7 @@ def app__webhook__listen(
             time.sleep(1)
         else:
             kernel.io.error(f"Port already in use {port}", trace=False)
-            return False
+            return None
 
     # Remove old service file
     file_remove_file_if_exists(SERVICE_DAEMON_PATH)
@@ -225,7 +226,7 @@ def app__webhook__listen(
                     kernel.logger.append_event("EVENT_WEBHOOK_SERVER_STARTING")
                     server.serve_forever()
 
-            return
+            return None
 
         except Exception as e:
             import traceback

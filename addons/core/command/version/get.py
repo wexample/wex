@@ -14,5 +14,5 @@ if TYPE_CHECKING:
 @alias("--version")
 @alias("version")
 @command(help="Returns core version")
-def core__version__get(kernel: "Kernel"):
+def core__version__get(kernel: "Kernel") -> str:
     return core_kernel_get_version(kernel)

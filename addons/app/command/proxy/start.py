@@ -36,7 +36,7 @@ def app__proxy__start(
     group: Optional[str] = None,
     port: Optional[str] = None,
     port_secure: Optional[str] = None,
-):
+) -> QueuedCollectionResponse:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     proxy_path = manager.get_proxy_path()
 

@@ -1,5 +1,5 @@
 import os.path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 import yaml
 
@@ -11,6 +11,7 @@ from addons.app.migrations.migration_4_0_0 import (
     _migration_4_0_0_replace_docker_mapping,
     _migration_4_0_0_replace_docker_placeholders,
 )
+from src.const.types import StringsDict, StringKeysDict
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 
@@ -24,7 +25,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
     old_config_path = f"{env_dir}config"
     config = _parse_4_0_0_config_file(old_config_path)
 
-    services_names_map = {
+    services_names_map: StringsDict = {
         "php8": "php",
         "php_8": "php",
         "php-8": "php",
@@ -175,7 +176,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
     )
 
 
-def migration_5_0_0_replace_docker_services_names(content, services_names_changes):
+def migration_5_0_0_replace_docker_services_names(content: StringKeysDict, services_names_changes: StringsDict):
     if "services" in content:
         new_services = {}
         for service_name, service_value in content["services"].items():
@@ -226,16 +227,16 @@ def migration_5_0_0_replace_docker_services_references(content, services_names_c
                 )
 
 
-def is_version_5_0_0(kernel: "Kernel", path: str):
+def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     # Not implemented yet.
     return None
 
 
-def _get_config_value(config: dict, key: str, default=None):
+def _get_config_value(config: dict, key: str, default: Any = None):
     return config[key] if key in config else default
 
 
-def _parse_4_0_0_config_file(file_path: str):
+def _parse_4_0_0_config_file(file_path: str) -> dict:
     if not os.path.isfile(file_path):
         return {}
 

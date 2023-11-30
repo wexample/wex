@@ -6,14 +6,14 @@ from src.decorator.command import command
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-OS_NAME_LINUX = "linux"
-OS_NAME_MAC = "mac"
-OS_NAME_UNDEFINED = "undefined"
-OS_NAME_WINDOWS = "windows"
+OS_NAME_LINUX: str = "linux"
+OS_NAME_MAC: str = "mac"
+OS_NAME_UNDEFINED: str = "undefined"
+OS_NAME_WINDOWS: str = "windows"
 
 
 @command(help="Return the local OS name.")
-def system__os__name(kernel: "Kernel"):
+def system__os__name(kernel: "Kernel") -> str:
     os_name = platform.system()
 
     if os_name == "Darwin":

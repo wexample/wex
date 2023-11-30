@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from src.decorator.command import command
 from src.decorator.option import option
+from src.const.types import StringKeysDict
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -9,5 +10,5 @@ if TYPE_CHECKING:
 
 @command(help="Return a dict")
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__dict(kernel: "Kernel", arg):
+def test__return_type__dict(kernel: "Kernel", arg) -> StringKeysDict:
     return {"arg": arg}

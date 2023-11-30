@@ -9,6 +9,6 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a hidden value", command_type=COMMAND_TYPE_ADDON)
-def test__return_type__hidden(kernel: "Kernel"):
+def test__return_type__hidden(kernel: "Kernel") -> HiddenResponse:
     # Internal usage only
     return HiddenResponse(kernel, "SHOULD_NEVER_BEEN_DISPLAYED")

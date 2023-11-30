@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a key / value response", command_type=COMMAND_TYPE_ADDON)
-def test__return_type__key_value(kernel: "Kernel"):
+def test__return_type__key_value(kernel: "Kernel") -> KeyValueResponse:
     return KeyValueResponse(kernel, {"str": "lorem", "int": 123, "bool": True})

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def app__app__info(manager: "AppAddonManager", app_dir: str):
+def app__app__info(manager: "AppAddonManager", app_dir: str) -> TableResponse:
     kernel = manager.kernel
     output_list = TableResponse(kernel)
 

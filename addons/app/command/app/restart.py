@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Restarts app")
-def app__app__restart(manager: "AppAddonManager", app_dir: str):
+def app__app__restart(manager: "AppAddonManager", app_dir: str) -> QueuedCollectionResponse:
     kernel = manager.kernel
 
     def _app__app__restart__stop(previous=None):

@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from addons.system.command.os.name import OS_NAME_MAC, system__os__name
 from addons.system.command.system.ip import system__system__ip
+from src.const.types import ShellCommandResponseTuple
+from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.command import command
 from src.helper.command import command_exists, execute_command_sync
 
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Return the current docker local ip")
-def docker__docker__ip(kernel: "Kernel"):
+def docker__docker__ip(kernel: "Kernel") -> ShellCommandResponseTuple | AbstractResponse:
     if kernel.run_function(system__os__name).first() == OS_NAME_MAC:
         return "127.0.0.1"
 

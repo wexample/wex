@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Uninstall core")
-def core__core__uninstall(kernel: "Kernel"):
+def core__core__uninstall(kernel: "Kernel") -> None:
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)
     __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)

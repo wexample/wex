@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     default=False,
     help="Register also commands marked as only for testing",
 )
-def core__core__cleanup(kernel: "Kernel", test: bool = False):
+def core__core__cleanup(kernel: "Kernel", test: bool = False) -> None:
     tmp_dir = kernel.get_or_create_path("tmp")
     shutil.rmtree(tmp_dir)
 

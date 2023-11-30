@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from src.const.types import AnyCallable
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 from src.decorator.option import option
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 @command(help="Return a function response", command_type=COMMAND_TYPE_ADDON)
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__function(kernel: "Kernel", arg):
+def test__return_type__function(kernel: "Kernel", arg) -> AnyCallable:
     return _test__return_type__function
 
 

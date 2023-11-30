@@ -23,7 +23,7 @@ TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION = "function-response-text"
 
 @test_command()
 @option("--abort", "-a", is_flag=True, required=False, help="Ask to abort")
-def test__demo_command__response_collection(kernel: "Kernel", abort: bool = False):
+def test__demo_command__response_collection(kernel: "Kernel", abort: bool = False) -> QueuedCollectionResponse:
     def _test__demo_command__response_collection__first_function(previous: int):
         return TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION
 

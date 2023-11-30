@@ -42,7 +42,7 @@ def app__migration__migrate(
     app_dir: str | None = None,
     from_version: Optional[str] = None,
     yes: bool = False,
-):
+) -> None:
     kernel = manager.kernel
     app_dir = manager.app_dir
 

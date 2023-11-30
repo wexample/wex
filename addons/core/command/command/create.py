@@ -2,6 +2,7 @@ import os
 from typing import TYPE_CHECKING
 
 from addons.core.command.test.create import core__test__create
+from src.const.types import StringKeysDict
 from src.const.globals import (
     COMMAND_CHAR_USER,
     COMMAND_EXTENSION_PYTHON,
@@ -48,7 +49,7 @@ def core__command__create(
     command: str,
     force: bool = False,
     extension: str = COMMAND_EXTENSION_PYTHON,
-) -> {}:
+) -> StringKeysDict:
     kernel.io.log("Creating command file...")
     request = kernel.create_command_request(command)
 

@@ -51,7 +51,7 @@ def app__app__init(
     domains: str = "",
     git: bool = True,
     env: str | None = None,
-):
+) -> None:
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
     env = env or APP_ENV_LOCAL

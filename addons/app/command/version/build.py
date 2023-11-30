@@ -28,10 +28,10 @@ if TYPE_CHECKING:
 )
 def app__version__build(
     manager: "AppAddonManager",
-    version=None,
+    version: Optional[str] = None,
     commit: bool = False,
     app_dir: Optional[str] = False,
-):
+) -> Optional[str]:
     kernel = manager.kernel
 
     if not commit:
@@ -53,7 +53,7 @@ def app__version__build(
 
         if not repo.is_dirty(untracked_files=True):
             kernel.io.log("No changes to commit")
-            return
+            return None
 
         kernel.io.log("Updating repo...")
         try:

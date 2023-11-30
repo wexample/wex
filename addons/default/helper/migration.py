@@ -61,7 +61,7 @@ def migration_exec(
     return None
 
 
-def migration_version_guess(kernel: "Kernel", path: str):
+def migration_version_guess(kernel: "Kernel", path: str) -> str:
     for migration_file in migration_get_files(kernel):
         version_string = migration_file.replace(".py", "")
         version_string = version_string.replace("migration_", "")

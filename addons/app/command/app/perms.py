@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @app_command(help="Set app files permissions")
-def app__app__perms(manager: "AppAddonManager", app_dir: str):
+def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
     user = manager.get_config("permissions.user", None)
 

@@ -25,7 +25,7 @@ def app__config__write(
     app_dir: str,
     user: Optional[str] = None,
     group: Optional[str] = None,
-):
+) -> QueuedCollectionResponse:
     kernel = manager.kernel
 
     def _app__config__write__runtime():

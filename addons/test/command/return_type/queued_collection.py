@@ -8,5 +8,5 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a queued collection")
-def test__return_type__queued_collection(kernel: "Kernel"):
+def test__return_type__queued_collection(kernel: "Kernel") -> QueuedCollectionResponse:
     return QueuedCollectionResponse(kernel, ["lorem", "ipsum", 123])

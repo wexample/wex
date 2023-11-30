@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @command(help="Return process info", command_type=COMMAND_TYPE_ADDON)
 @option("--port", "-p", type=int, required=True, help="Port number")
-def system__process__by_port(kernel: "Kernel", port: int):
+def system__process__by_port(kernel: "Kernel", port: int) -> KeyValueResponse:
     process = process_get_all_by_port(port)
     output_list = KeyValueResponse(kernel, title="process")
 

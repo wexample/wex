@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a string")
-def test__return_type__response_collection(kernel: "Kernel"):
+def test__return_type__response_collection(kernel: "Kernel") -> ResponseCollectionResponse:
     return ResponseCollectionResponse(
         kernel,
         [

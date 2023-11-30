@@ -7,5 +7,5 @@ if TYPE_CHECKING:
 
 
 @command(help="Return a string")
-def test__return_type__null(kernel: "Kernel"):
-    return
+def test__return_type__null(kernel: "Kernel") -> None:
+    return None

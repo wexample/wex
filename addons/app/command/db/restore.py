@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 @option("--file-path", "-f", type=str, required=False, help="Force file path")
 def app__db__restore(
     manager: "AppAddonManager", app_dir: str, file_path: str | None = None
-):
+) -> None:
     kernel = manager.kernel
 
     # There is a probable mismatch between container / service names

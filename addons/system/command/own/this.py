@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     help="Make current user owner of this directory and every files or subdirectories"
 )
 @option("--path", "-p", type=str, required=False, default=None, help="Argument")
-def system__own__this(kernel: "Kernel", path: Optional[str] = None):
+def system__own__this(kernel: "Kernel", path: Optional[str] = None) -> None:
     if path is None:
         path = os.getcwd()
 

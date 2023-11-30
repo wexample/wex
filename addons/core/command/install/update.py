@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 @alias("update")
 @as_sudo()
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def core__install__update(kernel: "Kernel"):
+def core__install__update(kernel: "Kernel") -> InteractiveShellCommandResponse:
     return InteractiveShellCommandResponse(
         kernel,
         [

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     required=True,
     help="Remote environment (dev, prod)",
 )
-def app__remote__go(manager: "AppAddonManager", app_dir: str, environment: str):
+def app__remote__go(manager: "AppAddonManager", app_dir: str, environment: str) -> InteractiveShellCommandResponse:
     domain = manager.get_config(f"env.{environment}.domain_main")
 
     if not domain:

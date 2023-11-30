@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Stop all running docker feature : containers, networks, volumes")
-def docker__docker__stop_all(kernel: "Kernel"):
+def docker__docker__stop_all(kernel: "Kernel") -> QueuedCollectionResponse:
     return QueuedCollectionResponse(
         kernel,
         [

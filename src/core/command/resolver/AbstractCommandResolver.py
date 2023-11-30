@@ -265,6 +265,10 @@ class AbstractCommandResolver(KernelChild):
     def suggest_arguments(self, command: str, search: str) -> str:
         request = self.create_command_request(command)
 
+        # Command is not recognised
+        if not request._runner:
+            return ""
+
         function_params = request.get_runner().get_options_names()
         search_params = [param for param in function_params if param.startswith(search)]
 

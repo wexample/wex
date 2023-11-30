@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Stop the running reverse proxy server")
-def app__proxy__stop(kernel: "Kernel"):
+def app__proxy__stop(kernel: "Kernel") -> None:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     proxy_path = manager.get_proxy_path()
     manager.set_app_workdir(proxy_path)

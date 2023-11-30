@@ -77,7 +77,7 @@ def app__service__install(
     install_git: bool = True,
     force: bool = False,
     ignore_dependencies: bool = False,
-):
+) -> None:
     kernel = manager.kernel
     service = string_to_snake_case(service)
     kernel.io.log(f"Installing service : {service}")
