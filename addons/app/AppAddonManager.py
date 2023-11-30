@@ -409,7 +409,7 @@ class AppAddonManager(AddonManager):
                 'No application directory found when running "{command}"',
                 {
                     "command": request.get_string_command(),
-                }
+                },
             )
 
             sys.exit(0)
@@ -440,7 +440,7 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir, "mode": APP_STARTED_CHECK_MODE_FULL},
             ).first():
-                import logging
+                pass
 
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,

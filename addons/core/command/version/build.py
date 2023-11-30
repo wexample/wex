@@ -38,12 +38,7 @@ def core__version__build(
         current_version = core_kernel_get_version(kernel)
 
         kernel.io.log(f"Executing auto formatting scripts...")
-        kernel.run_command(
-            '.code/format',
-            {
-                'app_dir': root_dir
-            }
-        )
+        kernel.run_command(".code/format", {"app-dir": root_dir})
 
         kernel.io.log(f"Building new version from {current_version}...")
 
@@ -58,12 +53,7 @@ def core__version__build(
             )
 
         kernel.io.log(f"Executing code quality checkup...")
-        kernel.run_command(
-            '.code/check',
-            {
-                'app_dir': root_dir
-            }
-        )
+        kernel.run_command(".code/check", {"app-dir": root_dir})
 
         new_version = kernel.run_function(
             default__version__increment,
