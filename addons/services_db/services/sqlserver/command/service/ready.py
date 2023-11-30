@@ -14,7 +14,9 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_SERVICE,
     should_run=True,
 )
-def sqlserver__service__ready(manager: "AppAddonManager", app_dir: str, service: str) -> bool:
+def sqlserver__service__ready(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> bool:
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {

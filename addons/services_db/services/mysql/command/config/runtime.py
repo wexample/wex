@@ -11,7 +11,9 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
-def mysql__config__runtime(manager: "AppAddonManager", app_dir: str, service: str) -> None:
+def mysql__config__runtime(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> None:
     # Set db as main database.
     manager.set_runtime_config(
         f"db.main", manager.get_config(f"service.{service}"), False

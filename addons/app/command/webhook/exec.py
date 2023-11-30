@@ -54,7 +54,9 @@ def app__webhook__exec(
 
         return None
 
-    def _check(queue: AbstractQueuedCollectionResponseQueueManager) -> Optional[AbstractResponse]:
+    def _check(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> Optional[AbstractResponse]:
         query_string = parsed_url.query.replace("+", "%2B")
         query_string_data = parse_qs(query_string)
         has_error = False

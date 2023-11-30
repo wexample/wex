@@ -105,7 +105,9 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
     return glob.glob(f"{docker_dir}docker-compose.*")
 
 
-def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: StringsDict) -> None:
+def _migration_4_0_0_replace_placeholders(
+    file_path: str, replacement_mapping: StringsDict
+) -> None:
     if not os.path.exists(file_path):
         return
 

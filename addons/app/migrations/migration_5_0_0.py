@@ -194,7 +194,9 @@ def migration_5_0_0_replace_docker_services_names(
     migration_5_0_0_replace_docker_services_references(content, services_names_changes)
 
 
-def replace_service_names_in_field(field: StringsDict | StringsList, services_names_changes: StringsDict) -> StringsDict | StringsList:
+def replace_service_names_in_field(
+    field: StringsDict | StringsList, services_names_changes: StringsDict
+) -> StringsDict | StringsList:
     if isinstance(field, list):
         new_field = []
         for item in field:
@@ -218,8 +220,9 @@ def replace_service_names_in_field(field: StringsDict | StringsList, services_na
         return new_field
 
 
-def migration_5_0_0_replace_docker_services_references(content: StringKeysDict,
-                                                       services_names_changes: StringsDict) -> None:
+def migration_5_0_0_replace_docker_services_references(
+    content: StringKeysDict, services_names_changes: StringsDict
+) -> None:
     if "services" not in content:
         return
 
@@ -236,7 +239,9 @@ def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     return None
 
 
-def _get_config_value(config: StringKeysDict, key: str, default: Optional[Any] = None) -> Any:
+def _get_config_value(
+    config: StringKeysDict, key: str, default: Optional[Any] = None
+) -> Any:
     return config[key] if key in config else default
 
 

@@ -1,19 +1,27 @@
 import os
+from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, ShellCommandsList
+from src.const.types import (
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    ShellCommandsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import execute_command_sync
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
 class NonInteractiveShellCommandResponse(AbstractResponse):
-    def __init__(self, kernel: "Kernel", shell_command: ShellCommandsList, ignore_error: bool = False) -> None:
+    def __init__(
+        self,
+        kernel: "Kernel",
+        shell_command: ShellCommandsList,
+        ignore_error: bool = False,
+    ) -> None:
         super().__init__(kernel)
 
         self.success: bool | None = None

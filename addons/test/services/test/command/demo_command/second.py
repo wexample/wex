@@ -18,6 +18,9 @@ if TYPE_CHECKING:
     help="Another option",
 )
 def test__demo_command__second(
-    kernel: "Kernel", service: str, option: bool = False, another_option_second: bool = False
+    kernel: "Kernel",
+    service: str,
+    option: bool = False,
+    another_option_second: bool = False,
 ) -> str:
     return "SECOND"

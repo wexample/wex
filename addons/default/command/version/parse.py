@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from src.const.types import VersionDescriptor
 from src.decorator.command import command
@@ -11,9 +11,7 @@ if TYPE_CHECKING:
 
 @command(help="Parse a version string and return its components")
 @option("--version", "-v", type=str, required=True, help="The version string to parse")
-def default__version__parse(
-    kernel: "Kernel", version: str
-) -> VersionDescriptor | None:
+def default__version__parse(kernel: "Kernel", version: str) -> VersionDescriptor | None:
     pre_build_number: Optional[int] = None
     pre_build_type: Optional[str] = None
 

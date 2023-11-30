@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.const.types import StringsList, CoreCommandCommaSeparatedList, SetList
+from src.const.types import CoreCommandCommaSeparatedList, SetList, StringsList
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
@@ -12,10 +12,13 @@ if TYPE_CHECKING:
 
 @command(help="Resolve dependencies of a service")
 @option("--service", "-s", required=True, help="Find all service dependencies")
-def core__service__resolve(kernel: "Kernel", service: CoreCommandCommaSeparatedList) -> StringsList:
+def core__service__resolve(
+    kernel: "Kernel", service: CoreCommandCommaSeparatedList
+) -> StringsList:
     services = args_split_arg_array(service)
     resolved_services = set()
     print(services)
+
     def resolve_dependencies(service: str, resolved_services: SetList) -> StringsList:
         if service in resolved_services:
             return set()

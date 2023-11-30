@@ -14,7 +14,9 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_SERVICE,
     should_run=True,
 )
-def postgres__service__ready(manager: "AppAddonManager", app_dir: str, service: str) -> bool:
+def postgres__service__ready(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> bool:
     exec_command = manager.kernel.run_function(
         postgres__db__exec,
         {"app-dir": app_dir, "service": service, "command": "SELECT 1"},

@@ -166,12 +166,8 @@ class AbstractResponse(KernelChild, HasRequest):
 
         return str(value) if value is not None else None
 
-    def print_wrapped_str(
-        self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
-    ) -> str:
-        return str(self.print_wrapped_str(
-            render_mode
-        ))
+    def print_wrapped_str(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL) -> str:
+        return str(self.print_wrapped_str(render_mode))
 
     def get_first_output_printable_value(self) -> ResponsePrintType:
         if not len(self.output_bag):
@@ -189,7 +185,7 @@ class AbstractResponse(KernelChild, HasRequest):
             try:
                 current_element = current_element.output_bag[index]
             except (IndexError, AttributeError):
-                return self.kernel.io.error('Trying to access a out of range response')
+                return self.kernel.io.error("Trying to access a out of range response")
 
         assert isinstance(current_element, AbstractResponse)
 

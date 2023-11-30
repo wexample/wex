@@ -11,5 +11,7 @@ if TYPE_CHECKING:
 @app_command(help="Set a configuration setting for given app")
 @option("--key", "-k", type=str, required=True, help="Key in config file")
 @option("--value", "-v", required=True, help="Value to set")
-def app__config__set(manager: "AppAddonManager", app_dir: str, key: str, value: BasicInlineValue) -> None:
+def app__config__set(
+    manager: "AppAddonManager", app_dir: str, key: str, value: BasicInlineValue
+) -> None:
     manager.set_config(key, value)

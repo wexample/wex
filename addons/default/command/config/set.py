@@ -16,7 +16,11 @@ if TYPE_CHECKING:
 @option("--value", "-v", required=True)
 @option("--separator", "-s", required=True, default=CONFIG_SEPARATOR_DEFAULT)
 def default__config__set(
-    kernel: "Kernel", file: str, key: str, value: BasicInlineValue, separator: str = CONFIG_SEPARATOR_DEFAULT
+    kernel: "Kernel",
+    file: str,
+    key: str,
+    value: BasicInlineValue,
+    separator: str = CONFIG_SEPARATOR_DEFAULT,
 ) -> None:
     with open(file, "r") as f:
         lines = f.readlines()

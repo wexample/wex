@@ -1,14 +1,18 @@
 import os
+from typing import TYPE_CHECKING, List, Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringsList, BasicInlineValue
+from src.const.types import (
+    BasicInlineValue,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    StringsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
-
-from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -17,7 +21,12 @@ TableBody = List[List[BasicInlineValue]]
 
 
 class TableResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel: "Kernel", title: str | None = None, body: Optional[TableBody] = None) -> None:
+    def __init__(
+        self,
+        kernel: "Kernel",
+        title: str | None = None,
+        body: Optional[TableBody] = None,
+    ) -> None:
         super().__init__(kernel, title)
         self._header: StringsList = []
         self._body: TableBody = []

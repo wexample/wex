@@ -21,7 +21,7 @@ class TestTestCommandReturnTypeHidden(AbstractTestCase):
             },
         )
 
-    def _test_hidden(self, render_mode:str) -> Optional[str]:
+    def _test_hidden(self, render_mode: str) -> Optional[str]:
         response = self.kernel.run_function(
             test__return_type__hidden, render_mode=render_mode
         )

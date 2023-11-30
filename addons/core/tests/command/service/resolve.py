@@ -13,11 +13,9 @@ class TestCoreCommandServiceResolve(AbstractTestCase):
         self.assertGreaterEqual(len(dependencies), 3)
 
         dependencies = self.kernel.run_function(
-
             core__service__resolve, {"service": "  php, matomo "}
         ).first()
 
         self.kernel.io.log(dependencies)
 
         self.assertGreaterEqual(len(dependencies), 4)
-

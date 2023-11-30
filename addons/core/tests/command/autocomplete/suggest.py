@@ -113,7 +113,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         self.assertTrue("--search" in suggestions)
 
     def tests_suggest_service(self) -> None:
-        suggestions:str
+        suggestions: str
 
         # Search only "@", should return all service commands
         suggestions = self.kernel.run_function(

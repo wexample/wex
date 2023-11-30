@@ -31,7 +31,9 @@ def system_service_daemon_exec(kernel: "Kernel", action: str) -> None:
     system_service_exec(kernel, SERVICE_DAEMON_NAME, action, ignore_error=True)
 
 
-def system_service_exec(kernel: "Kernel", service: str, action: str, **kwargs: Kwargs) -> None:
+def system_service_exec(
+    kernel: "Kernel", service: str, action: str, **kwargs: Kwargs
+) -> None:
     execute_command_sync(kernel, ["systemctl", action, service], **kwargs)
 
 

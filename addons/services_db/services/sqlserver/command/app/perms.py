@@ -10,7 +10,9 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Set service permissions", command_type=COMMAND_TYPE_SERVICE)
-def sqlserver__app__perms(manager: "AppAddonManager", app_dir: str, service: str) -> None:
+def sqlserver__app__perms(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     # Need full permissions to start

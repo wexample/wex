@@ -5,7 +5,12 @@ import unittest
 from typing import TYPE_CHECKING, Any
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
-from src.const.types import AnyCallable, ShellCommandResponseTuple, StringsDict, StringKeysDict
+from src.const.types import (
+    AnyCallable,
+    ShellCommandResponseTuple,
+    StringKeysDict,
+    StringsDict,
+)
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
@@ -181,7 +186,9 @@ class AbstractTestCase(unittest.TestCase):
             ],
         )
 
-    def for_each_render_mode(self, callback: AnyCallable, expected: StringKeysDict) -> None:
+    def for_each_render_mode(
+        self, callback: AnyCallable, expected: StringKeysDict
+    ) -> None:
         from src.const.globals import KERNEL_RENDER_MODES
 
         for render_mode in KERNEL_RENDER_MODES:

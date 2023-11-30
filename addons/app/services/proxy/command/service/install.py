@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install the proxy service", command_type=COMMAND_TYPE_SERVICE)
-def proxy__service__install(manager: "AppAddonManager", app_dir: str, service: str) -> None:
+def proxy__service__install(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> None:
     def callback() -> None:
         port = 80
         port_secure = 443

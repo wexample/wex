@@ -9,7 +9,9 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Start the proxy", command_type=COMMAND_TYPE_SERVICE, should_run=True)
-def proxy__app__start_post(manager: "AppAddonManager", app_dir: str, service: str) -> None:
+def proxy__app__start_post(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> None:
     commands = [
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],

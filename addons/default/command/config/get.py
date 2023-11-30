@@ -16,7 +16,11 @@ if TYPE_CHECKING:
 @option("--separator", "-s", required=True, default=CONFIG_SEPARATOR_DEFAULT)
 @option("--default", "-d", default="")
 def default__config__get(
-    kernel: "Kernel", file:str, key:str, separator: str = CONFIG_SEPARATOR_DEFAULT, default:str=""
+    kernel: "Kernel",
+    file: str,
+    key: str,
+    separator: str = CONFIG_SEPARATOR_DEFAULT,
+    default: str = "",
 ) -> str:
     if not file or not os.path.isfile(file):
         return ""

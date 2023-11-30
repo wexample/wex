@@ -7,8 +7,8 @@ from addons.app.command.app.exec import app__app__exec
 from addons.app.command.db.exec import app__db__exec
 from addons.app.const.app import APP_NO_SSL_ENVS
 from addons.app.decorator.app_command import app_command
-from src.core.response.AbstractResponse import ResponseCollection
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.core.response.AbstractResponse import ResponseCollection
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -173,7 +173,9 @@ def wordpress__url__replace(
     return QueuedCollectionResponse(kernel, [_build_urls, _replace])
 
 
-def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url: str) -> Optional[bool | str]:
+def wordpress__url__replace__prepare_url(
+    manager: "AppAddonManager", url: str
+) -> Optional[bool | str]:
     url = url.rstrip("/")  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):

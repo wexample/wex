@@ -262,6 +262,7 @@ def file_write(file_path: str, content: str) -> None:
     with open(file_path, "w") as f:
         f.write(content)
 
+
 def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
     matched_files = []
 

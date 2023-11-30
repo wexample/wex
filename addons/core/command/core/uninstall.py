@@ -63,7 +63,9 @@ def __remove_source_file_for_docker(kernel: "Kernel", file_path: str) -> None:
     __remove_source_file_in_bashrc(kernel, file_path, os.path.expanduser("~/.bashrc"))
 
 
-def __remove_source_file_in_bashrc(kernel: "Kernel", file_path: str, bashrc_path: str) -> None:
+def __remove_source_file_in_bashrc(
+    kernel: "Kernel", file_path: str, bashrc_path: str
+) -> None:
     if not os.path.exists(bashrc_path):
         return
 

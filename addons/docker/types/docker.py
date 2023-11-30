@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional, List, Union, Dict, Any
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 
 class DockerComposeHealthcheck(TypedDict, total=False):

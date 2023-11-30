@@ -11,8 +11,8 @@ from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL, ERR_SERVICE_NO
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.app import app_create_env
 from addons.core.command.service.resolve import core__service__resolve
-from src.const.types import CoreCommandCommaSeparatedList
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
 from src.helper.prompt import prompt_progress_steps
@@ -48,7 +48,7 @@ def app__app__init(
     manager: "AppAddonManager",
     app_dir: str,
     name: Optional[str] = None,
-    services: CoreCommandCommaSeparatedList = None,
+    services: Optional[CoreCommandCommaSeparatedList] = None,
     domains: str = "",
     git: bool = True,
     env: str | None = None,

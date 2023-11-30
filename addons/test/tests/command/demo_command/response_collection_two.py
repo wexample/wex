@@ -19,13 +19,9 @@ class TestTestCommandDemoCommandResponseCollectionTwo(AbstractTestCase):
             result.get(1).first(), TEST_DEMO_COMMAND_TWO_RESULT_FIRST + "(2)"
         )
 
-        self.assertEqual(
-            result.get(3).first(), TEST_DEMO_COMMAND_TWO_RESULT_SHELL
-        )
+        self.assertEqual(result.get(3).first(), TEST_DEMO_COMMAND_TWO_RESULT_SHELL)
 
-        self.assertEqual(
-            result.get(7).first(), TEST_DEMO_COMMAND_THREE_RESULT_ONE
-        )
+        self.assertEqual(result.get(7).first(), TEST_DEMO_COMMAND_THREE_RESULT_ONE)
 
         self.assertEqual(result.get(8).first(), "....THREE:shell-response")
 

@@ -3,8 +3,10 @@ from typing import TYPE_CHECKING
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
 from addons.services_db.services.mongo.command.db.exec import mongo__db__exec
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.core.response.NonInteractiveShellCommandResponse import (
+    NonInteractiveShellCommandResponse,
+)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -15,7 +17,9 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_SERVICE,
     should_run=True,
 )
-def mongo__service__ready(manager: "AppAddonManager", app_dir: str, service: str) -> bool:
+def mongo__service__ready(
+    manager: "AppAddonManager", app_dir: str, service: str
+) -> bool:
     exec_command = manager.kernel.run_function(
         mongo__db__exec,
         {

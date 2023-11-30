@@ -6,9 +6,10 @@ from typing import (
     Literal,
     Match,
     Optional,
+    Set,
     Tuple,
     TypedDict,
-    Union, Set,
+    Union,
 )
 
 AddonNameType = Literal[
