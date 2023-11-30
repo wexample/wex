@@ -15,6 +15,7 @@ AddonNameType = Literal[
 AnyList = List[Any]
 
 StringKeysDict = Dict[str, Any]
+StringsDict = Dict[str, str]
 StringsList = List[str]
 StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
@@ -29,7 +30,6 @@ DecoratedCallable = Callable[..., Callable[..., Any]]
 Kwargs = Any
 ResponsePrintType = Optional[BasicInlineValue | StringKeysDict | AnyList]
 StringMessageParameters = StringKeysDict
-StringsDict = Dict[str, str]
 
 CoreCommandArgsDict = Dict[str, BasicInlineValue]
 CoreCommandArgsList = StringsList

@@ -1,9 +1,7 @@
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
+from typing import Optional, TYPE_CHECKING, List, NoReturn, TypedDict
 
-from src.const.types import StringsList
-from src.core.command.ScriptCommand import ScriptCommand
 from src.const.globals import (
     COLOR_CYAN,
     COLOR_GRAY,
@@ -13,6 +11,13 @@ from src.const.globals import (
     COMMAND_TYPE_ADDON,
     VERBOSITY_LEVEL_DEFAULT,
 )
+from src.const.types import (
+    AnyCallable,
+    OptionalCoreCommandArgsDict,
+    StringsDict,
+    StringsList,
+)
+from src.core.command.ScriptCommand import ScriptCommand
 from src.core.KernelChild import KernelChild
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
@@ -22,18 +27,23 @@ if TYPE_CHECKING:
 IO_DEFAULT_LOG_LENGTH = 10
 
 
+class IOManagerLogMessage(TypedDict):
+    message: str
+    lines: int
+
+
 class IOManager(KernelChild):
     def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
-        self.log_messages: List[str] = []
+        self.log_messages: List[IOManagerLogMessage] = []
         self.indent_string: str = "  "
 
     def error(
         self,
         message: str,
-        parameters: Optional[Dict[str, Any]] = None,
+        parameters: Optional[StringsDict] = None,
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
@@ -75,7 +85,7 @@ class IOManager(KernelChild):
             total_lines_needed = self.calc_log_messages_length()
             self.clear_last_n_lines(total_lines_needed)
 
-    def clear_last_n_lines(self, n) -> None:
+    def clear_last_n_lines(self, n: int) -> None:
         for _ in range(n):
             sys.stdout.write("\x1b[1A")  # Move cursor up by 1 line
             sys.stdout.write("\x1b[2K")  # Clear current line
@@ -87,7 +97,7 @@ class IOManager(KernelChild):
     def log(
         self,
         message: str,
-        color=COLOR_GRAY,
+        color: str = COLOR_GRAY,
         increment: int = 0,
         verbosity: int = VERBOSITY_LEVEL_DEFAULT,
     ) -> None:
@@ -113,7 +123,7 @@ class IOManager(KernelChild):
         else:
             self.print(message)
 
-    def success(self, message: str):
+    def success(self, message: str) -> None:
         def _success() -> None:
             nonlocal message
             self.log(f"{COLOR_GREEN}✔{COLOR_RESET} {message}")
@@ -128,13 +138,13 @@ class IOManager(KernelChild):
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message: str, **kwargs: Dict[str, Any]) -> None:
-        print(message, **kwargs)
+    def print(self, message: str) -> None:
+        print(message)
 
     def message(self, message: str, text: None | str = None) -> None:
         import textwrap
 
-        def _message():
+        def _message() -> None:
             nonlocal message
             nonlocal text
             message = f"{COLOR_CYAN}[wex]{COLOR_RESET} {message}"
@@ -146,7 +156,7 @@ class IOManager(KernelChild):
 
         self.exec_outside_log_frame(_message)
 
-    def exec_outside_log_frame(self, callback: Callable[..., Any]) -> None:
+    def exec_outside_log_frame(self, callback: AnyCallable) -> None:
         self.log_hide()
 
         callback()
@@ -155,23 +165,24 @@ class IOManager(KernelChild):
 
     def message_next_command(
         self,
-        function_or_command,
-        args: Optional[Dict[str, str]] = None,
+        script_command: ScriptCommand,
+        args: OptionalCoreCommandArgsDict = None,
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute",
     ) -> None:
-        return self.message_all_next_commands(
-            [
-                self.kernel.get_command_resolver(
-                    command_type
-                ).build_full_command_from_function(
-                    function_or_command,
-                    args or {},
+        resolver = self.kernel.get_command_resolver(command_type)
+
+        if resolver:
+            command_string = resolver.build_full_command_from_function(
+                script_command,
+                args,
+            )
+            if command_string:
+                self.message_all_next_commands(
+                    [command_string],
+                    command_type,
+                    message,
                 )
-            ],
-            command_type,
-            message,
-        )
 
     def message_all_next_commands(
         self,
@@ -182,15 +193,18 @@ class IOManager(KernelChild):
         commands_strings: StringsList = []
         for command in script_command_or_strings:
             if isinstance(command, ScriptCommand):
-                command_string = self.kernel.get_command_resolver(
-                    command_type
-                ).build_full_command_from_function(
-                    command,
-                    {},
-                )
+                resolver = self.kernel.get_command_resolver(command_type)
 
-                # Only supports commands without args
-                commands_strings.append(f"{COLOR_CYAN}>{COLOR_RESET} {command_string}")
+                if resolver:
+                    command_string = resolver.build_full_command_from_function(
+                        command,
+                        {},
+                    )
+
+                    # Only supports commands without args
+                    commands_strings.append(
+                        f"{COLOR_CYAN}>{COLOR_RESET} {command_string}"
+                    )
             else:
                 commands_strings.append(command)
 

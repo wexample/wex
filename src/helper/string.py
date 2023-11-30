@@ -89,7 +89,9 @@ def string_count_lines_needed(message: str) -> int:
     return lines_needed
 
 
-def string_replace_multiple(text: str, variables: Mapping[str, BasicInlineValue]) -> str:
+def string_replace_multiple(
+    text: str, variables: Mapping[str, BasicInlineValue]
+) -> str:
     # Pattern to match $VAR and ${VAR}
     pattern = re.compile(r"\$\{?([A-Z_]+)\}?")
 

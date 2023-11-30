@@ -310,8 +310,8 @@ class Kernel(BaseClass):
                 self.io.error(
                     'Command file not found when rendering, command {command}, in path "{path}"',
                     {
-                        "command": request._string_command,
-                        "path": request._path,
+                        "command": str(request._string_command),
+                        "path": str(request._path),
                     },
                     trace=False,
                 )
