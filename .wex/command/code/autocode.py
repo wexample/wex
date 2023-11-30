@@ -1,4 +1,5 @@
 import ast
+import os
 import re
 
 from addons.app.AppAddonManager import AppAddonManager
@@ -9,7 +10,16 @@ from addons.app.decorator.app_command import app_command
 
 @app_command(help="An app test command", command_type=COMMAND_TYPE_APP)
 def app__code__autocode(manager: AppAddonManager, app_dir: str) -> None:
-    explore_and_modify_files(manager, manager.kernel.directory.path + 'addons/')
+    python_dirs = [
+        'addons',
+        'src',
+        'tests',
+    ]
+
+    for dir in python_dirs:
+        explore_and_modify_files(
+            manager,
+            os.path.join(manager.kernel.directory.path, dir) + os.sep)
 
 
 def explore_and_modify_files(manager: AppAddonManager, directory: str) -> None:
@@ -22,18 +32,18 @@ def explore_and_modify_files(manager: AppAddonManager, directory: str) -> None:
 
 
 class FunctionMethodVisitor(ast.NodeVisitor):
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str) -> None:
         self.file_path: str = file_path
         self._source = file_read(file_path)
         self.visit(ast.parse(self._source))
 
-    def visit_FunctionDef(self, node):
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self.check_function(node)
 
-    def visit_AsyncFunctionDef(self, node):
+    def visit_AsyncFunctionDef(self, node: ast.FunctionDef) -> None:
         self.check_function(node)
 
-    def check_function(self, node):
+    def check_function(self, node: ast.FunctionDef) -> None:
         self.generic_visit(node)
 
         if not node.returns:
@@ -48,6 +58,6 @@ class FunctionMethodVisitor(ast.NodeVisitor):
                 with open(self.file_path, "w") as file:
                     file.write(self._source)
 
-    def function_has_only_none_returns(self, node) -> bool:
+    def function_has_only_none_returns(self, node: ast.FunctionDef) -> bool:
         return all(isinstance(return_node.value, (ast.NameConstant, type(None)))
                    for return_node in ast.walk(node) if isinstance(return_node, ast.Return))
