@@ -51,7 +51,8 @@ class FunctionMethodVisitor(ast.NodeVisitor):
 
         # Add missing "-> None" to functions
         if not node.returns and self.function_has_only_none_returns(node):
-            self._source = re.sub(rf"def {node.name}\(([^)]*)\):", rf"def {node.name}(\1) -> None:", self._source)
+            self._source = re.sub(rf"def {node.name}\(([^)]*)\)( -> [^:]+)?:", rf"def {node.name}(\1) -> None:",
+                                  self._source)
             self.log_modified(node)
 
         # When an argument of a function is called "kernel", add "Kernel" as type
@@ -87,5 +88,9 @@ class FunctionMethodVisitor(ast.NodeVisitor):
         print(self._file_path)
 
     def function_has_only_none_returns(self, node: ast.FunctionDef) -> bool:
-        return all(isinstance(return_node.value, (ast.NameConstant, type(None)))
-                   for return_node in ast.walk(node) if isinstance(return_node, ast.Return))
+        for return_node in ast.walk(node):
+            if isinstance(return_node, ast.Return):
+                if return_node.value is not None and not (
+                    isinstance(return_node.value, ast.NameConstant) and return_node.value.value is None):
+                    return False
+        return True

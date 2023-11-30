@@ -229,7 +229,7 @@ def app__app__start(
 
     def _app__app__start__serve(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse:
+    ) -> None:
         # Postpone execution
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-post"}
