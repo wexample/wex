@@ -49,7 +49,7 @@ def __core__core__uninstall_terminal(kernel: "Kernel") -> None:
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __remove_source_file_for_docker(kernel: "Kernel", file_path) -> None:
+def __remove_source_file_for_docker(kernel: "Kernel", file_path: str) -> None:
     if not kernel.run_function(system__system__is_docker):
         return
 
@@ -63,7 +63,7 @@ def __remove_source_file_for_docker(kernel: "Kernel", file_path) -> None:
     __remove_source_file_in_bashrc(kernel, file_path, os.path.expanduser("~/.bashrc"))
 
 
-def __remove_source_file_in_bashrc(kernel: "Kernel", file_path, bashrc_path) -> None:
+def __remove_source_file_in_bashrc(kernel: "Kernel", file_path: str, bashrc_path: str) -> None:
     if not os.path.exists(bashrc_path):
         return
 

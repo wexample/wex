@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from addons.test.command.return_type.dict import test__return_type__dict
 from src.const.globals import (
@@ -20,7 +21,7 @@ class TestTestCommandReturnTypeDict(AbstractTestCase):
             },
         )
 
-    def _test_dict(self, render_mode):
+    def _test_dict(self, render_mode:str) -> Optional[str]:
         response = self.kernel.run_function(
             test__return_type__dict,
             {

@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Optional
 
 from addons.test.command.return_type.key_value import test__return_type__key_value
 from src.const.globals import (
@@ -23,7 +24,7 @@ class TestTestCommandReturnTypeKeyValue(AbstractTestCase):
             },
         )
 
-    def _test_key_value(self, render_mode):
+    def _test_key_value(self, render_mode: str) -> Optional[str]:
         response = self.kernel.run_function(
             test__return_type__key_value, render_mode=render_mode
         )

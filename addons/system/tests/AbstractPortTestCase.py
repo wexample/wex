@@ -16,11 +16,11 @@ class AbstractPortTestCase(AbstractTestCase):
             self.log(f"Accepted connection from {address}")
             client_socket.close()
 
-    def stop_test_process(self, server_process) -> None:
+    def stop_test_process(self, server_process: Process) -> None:
         server_process.terminate()
         server_process.join()
 
-    def start_test_process(self, port: int):
+    def start_test_process(self, port: int) -> Process:
         server_process = Process(target=self.start_temp_server, args=(port,))
         server_process.start()
 

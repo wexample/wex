@@ -15,14 +15,11 @@ if TYPE_CHECKING:
 )
 def mysql__db__exec(
     manager: "AppAddonManager", app_dir: str, service: str, command: str
-):
+) -> str:
     app_name = manager.get_config("global.name")
 
-    return (
-        manager.kernel.run_function(
-            mysql__db__go,
-            {"app-dir": app_dir, "service": service},
-            COMMAND_TYPE_SERVICE,
-        ).first()
-        + f' -s -N {app_name} -e "{command}"'
-    )
+    return manager.kernel.run_function(
+        mysql__db__go,
+        {"app-dir": app_dir, "service": service},
+        COMMAND_TYPE_SERVICE,
+    ).first() + f' -s -N {app_name} -e "{command}"'

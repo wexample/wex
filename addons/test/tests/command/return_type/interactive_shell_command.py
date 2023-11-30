@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from addons.test.command.return_type.interactive_shell_command import (
     test__return_type__interactive_shell_command,
@@ -24,7 +25,7 @@ class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
             },
         )
 
-    def _test_interactive_shell_command(self, render_mode):
+    def _test_interactive_shell_command(self, render_mode: str) -> Optional[str]:
         return self.kernel.run_function(
             test__return_type__interactive_shell_command, render_mode=render_mode
         ).print_wrapped(render_mode)

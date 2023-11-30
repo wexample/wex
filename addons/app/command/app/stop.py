@@ -32,7 +32,7 @@ def app__app__stop(
     kernel = manager.kernel
     name = manager.get_config("global.name")
 
-    def _app__app__stop__checkup():
+    def _app__app__stop__checkup(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         if not kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
             manager.log("App already stopped")
             return QueuedCollectionStopResponse(kernel, "APP_ALREADY_STOPPED")

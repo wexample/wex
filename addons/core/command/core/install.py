@@ -112,7 +112,7 @@ def __core__core__install_rebuild(kernel: "Kernel") -> None:
     kernel.registry_structure.build()
 
 
-def __source_file(kernel: "Kernel", file_path) -> None:
+def __source_file(kernel: "Kernel", file_path: str) -> None:
     kernel.io.log(f"Sourcing file {file_path} in bashrc ...")
 
     # If sudo has a parent user.
@@ -125,7 +125,7 @@ def __source_file(kernel: "Kernel", file_path) -> None:
     __source_file_in_bashrc(kernel, file_path, os.path.expanduser("~/.bashrc"))
 
 
-def __source_file_in_bashrc(kernel: "Kernel", file_path, bashrc_path) -> None:
+def __source_file_in_bashrc(kernel: "Kernel", file_path: str, bashrc_path: str) -> None:
     if not os.path.exists(bashrc_path):
         return
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from addons.test.command.return_type.int import test__return_type__int
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,
@@ -18,7 +20,7 @@ class TestTestCommandReturnTypeInt(AbstractTestCase):
             },
         )
 
-    def _test_int(self, render_mode):
+    def _test_int(self, render_mode:str) -> Optional[int]:
         response = self.kernel.run_function(
             test__return_type__int,
             {

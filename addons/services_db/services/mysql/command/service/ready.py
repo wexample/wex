@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
 from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_SERVICE,
     should_run=True,
 )
-def mysql__service__ready(manager: "AppAddonManager", app_dir: str, service: str):
+def mysql__service__ready(manager: "AppAddonManager", app_dir: str, service: str) -> bool:
     response = manager.kernel.run_function(
         app__app__exec,
         {
@@ -36,6 +37,8 @@ def mysql__service__ready(manager: "AppAddonManager", app_dir: str, service: str
             "ignore-error": True,
         },
     )
+
+    assert isinstance(response, NonInteractiveShellCommandResponse)
 
     if response.success and len(response.output_bag):
         return str(response.output_bag[0][0]).strip() == "mysqld is alive"

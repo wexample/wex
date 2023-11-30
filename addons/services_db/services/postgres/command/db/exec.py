@@ -20,16 +20,13 @@ def postgres__db__exec(
     service: str,
     command: str,
     database: Optional[str] = None,
-):
-    return (
-        manager.kernel.run_function(
-            postgres__db__go,
-            {
-                "app-dir": app_dir,
-                "service": service,
-                "database": database,
-            },
-            COMMAND_TYPE_SERVICE,
-        ).first()
-        + f' --pset=pager=off -t -A -c "{command}"'
-    )
+) -> str:
+    return manager.kernel.run_function(
+        postgres__db__go,
+        {
+            "app-dir": app_dir,
+            "service": service,
+            "database": database,
+        },
+        COMMAND_TYPE_SERVICE,
+    ).first() + f' --pset=pager=off -t -A -c "{command}"'

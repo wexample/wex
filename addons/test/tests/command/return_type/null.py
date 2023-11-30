@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from addons.test.command.return_type.null import test__return_type__null
 from src.const.globals import (
@@ -20,7 +21,7 @@ class TestTestCommandReturnTypeNull(AbstractTestCase):
             },
         )
 
-    def _test_null(self, render_mode):
+    def _test_null(self, render_mode: str) -> Optional[str]:
         return self.kernel.run_function(
             function=test__return_type__null, render_mode=render_mode
         ).print_wrapped(render_mode)

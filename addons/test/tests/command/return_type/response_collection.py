@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from addons.test.command.return_type.response_collection import (
     test__return_type__response_collection,
@@ -50,7 +51,7 @@ NON_INTERACTIVE_SHELL_COMMAND_RESPONSE
             },
         )
 
-    def _test_response_collection(self, render_mode):
+    def _test_response_collection(self, render_mode: str) -> Optional[str]:
         return self.kernel.run_function(
             function=test__return_type__response_collection, render_mode=render_mode
         ).print_wrapped(render_mode)

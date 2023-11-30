@@ -18,7 +18,7 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
             },
         )
 
-    def _test_table(self, render_mode) -> str | None:
+    def _test_table(self, render_mode: str) -> str | None:
         response = self.kernel.run_function(
             test__return_type__table, {"arg": "test"}, render_mode=render_mode
         )

@@ -65,7 +65,7 @@ def wordpress__url__replace(
     old_url: None | str = None,
     site_id: int = 1,
     yes: bool = False,
-):
+) -> HiddenResponse:
     kernel = manager.kernel
 
     def _build_urls(
@@ -168,7 +168,7 @@ def wordpress__url__replace(
     return QueuedCollectionResponse(kernel, [_build_urls, _replace])
 
 
-def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url) -> bool | str:
+def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url:str) -> bool | str:
     url = url.rstrip("/")  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):
@@ -178,7 +178,7 @@ def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url) -> boo
     return url
 
 
-def wordpress__url__replace__is_valid_url(url) -> bool:
+def wordpress__url__replace__is_valid_url(url:str) -> bool:
     pattern = re.compile(
         r"^https?://(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+(?::\d+)?/?$"
     )
