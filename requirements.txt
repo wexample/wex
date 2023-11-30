@@ -4,8 +4,6 @@
 #
 #    pip-compile requirements.in
 #
-annotated-types==0.6.0
-    # via pydantic
 click==8.1.3
     # via -r requirements.in
 gitdb==4.0.10
@@ -20,19 +18,11 @@ prompt-toolkit==3.0.38
     # via inquirerpy
 psutil==5.9.5
     # via -r requirements.in
-pydantic==2.5.2
-    # via -r requirements.in
-pydantic-core==2.14.5
-    # via pydantic
 python-dotenv==1.0.0
     # via -r requirements.in
 pyyaml==6.0.1
     # via -r requirements.in
 smmap==5.0.0
     # via gitdb
-typing-extensions==4.8.0
-    # via
-    #   pydantic
-    #   pydantic-core
 wcwidth==0.2.6
     # via prompt-toolkit
