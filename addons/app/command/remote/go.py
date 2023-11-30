@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
@@ -21,10 +21,10 @@ if TYPE_CHECKING:
 )
 def app__remote__go(
     manager: "AppAddonManager", app_dir: str, environment: str
-) -> InteractiveShellCommandResponse:
+) -> Optional[InteractiveShellCommandResponse]:
     domain = manager.get_config(f"env.{environment}.domain_main")
 
     if not domain:
-        return
+        return None
 
     return InteractiveShellCommandResponse(manager.kernel, ["ssh", domain])

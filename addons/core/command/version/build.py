@@ -135,7 +135,7 @@ def core__version__build(
     else:
         if not repo.is_dirty(untracked_files=True):
             kernel.io.log("No changes to commit")
-            return
+            return None
 
         repo.index.add(root_dir + FILE_VERSION)
         repo.index.add(root_dir + FILE_README)

@@ -82,7 +82,7 @@ def app__app__init(
 
         services = args_split_arg_array(services)
         if len(services) == 0:
-            return
+            return None
 
         # Resolve dependencies for all services
         services = kernel.run_function(

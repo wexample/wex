@@ -103,7 +103,7 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
         if no_proxy:
-            return
+            return None
 
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(

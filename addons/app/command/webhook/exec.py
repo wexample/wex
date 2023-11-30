@@ -39,7 +39,7 @@ def app__webhook__exec(
             },
         )
 
-        return
+        return None
 
     command_type = match[1]
     resolver = kernel.get_command_resolver(command_type)
@@ -52,7 +52,7 @@ def app__webhook__exec(
             },
         )
 
-        return
+        return None
 
     def _check(queue: AbstractQueuedCollectionResponseQueueManager) -> AbstractResponse:
         query_string = parsed_url.query.replace("+", "%2B")

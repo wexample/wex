@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.core.command.test.create import core__test__create
 from src.const.globals import (
@@ -49,13 +49,13 @@ def core__command__create(
     command: str,
     force: bool = False,
     extension: str = COMMAND_EXTENSION_PYTHON,
-) -> StringKeysDict:
+) -> Optional[StringKeysDict]:
     kernel.io.log("Creating command file...")
     request = kernel.create_command_request(command)
 
     if not request:
         kernel.io.message(f"Unable to process command : {command}")
-        return
+        return None
 
     command_path: str = request.resolver.build_path_or_fail(
         request=request, extension=extension
@@ -67,7 +67,7 @@ def core__command__create(
 
         if command_type == COMMAND_TYPE_CORE:
             kernel.io.message(f"Unable to create core command : {command}")
-            return
+            return None
         # User wants to create some/command, but with no addons name
         # So we suggest user want to create a local user command.
         elif command_type == COMMAND_TYPE_ADDON:
