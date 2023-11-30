@@ -36,6 +36,15 @@ def core__version__build(
 
     if not commit:
         current_version = core_kernel_get_version(kernel)
+
+        kernel.io.log(f"Executing auto formatting scripts...")
+        kernel.run_command(
+            '.code/format',
+            {
+                'app_dir': root_dir
+            }
+        )
+
         kernel.io.log(f"Building new version from {current_version}...")
 
         # There is no uncommitted change
@@ -47,6 +56,14 @@ def core__version__build(
                 {"diff": repo.git.diff()},
                 trace=False,
             )
+
+        kernel.io.log(f"Executing code quality checkup...")
+        kernel.run_command(
+            '.code/check',
+            {
+                'app_dir': root_dir
+            }
+        )
 
         new_version = kernel.run_function(
             default__version__increment,
