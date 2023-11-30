@@ -4,8 +4,6 @@ import pwd
 import shutil
 from typing import IO, Any, Dict, List, Optional
 
-from src.const.types import BasicValue
-
 
 def file_list_subdirectories(path: str) -> List[str]:
     subdirectories = []

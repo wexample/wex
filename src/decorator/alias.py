@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.command.ScriptCommand import ScriptCommand, DecoratedScriptCommand
+    from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 
 def alias(name: str) -> "DecoratedScriptCommand":

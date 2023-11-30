@@ -139,12 +139,10 @@ class DockerCompose(TypedDict):
 
 
 class KernelRegistry(StringKeysDict):
-    env: Optional[str]
+    env: str
     resolvers: Dict[str, RegistryResolverData]
 
-    def __init__(
-        self, env: Optional[str] = None, resolvers: Optional[StringKeysDict] = None
-    ) -> None:
+    def __init__(self, env: str, resolvers: Optional[StringKeysDict] = None) -> None:
         super().__init__()
         self.env = env
         self.resolvers = resolvers or {}

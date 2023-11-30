@@ -25,7 +25,7 @@ class KernelRegistryFileStructure(YamlFileStructure):
         content = self.load_content_yaml_dict(default)
 
         self.content = KernelRegistry(
-            env=content["env"] if content and "env" in content else None,
+            env=content["env"] if content and "env" in content else "undefined",
             resolvers=content["resolvers"]
             if content and "resolvers" in content
             else {},

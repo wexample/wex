@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 class AddonManager(KernelChild):
     def __init__(self, kernel: "Kernel", name: str) -> None:
         super().__init__(kernel)
-        
+
         self.name: str = name

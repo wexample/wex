@@ -3,7 +3,17 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    NoReturn,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 
 import click.core
 
@@ -85,7 +95,7 @@ def execute_command_tree(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i: i + 1] = output
+                    command_tree[i : i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -223,7 +233,9 @@ def apply_command_decorator(
         kernel.io.error(f"Missing decorator {group}.{name}")
 
 
-def command_get_option(script_command: ScriptCommand, option_name: str) -> Optional[click.core.Option]:
+def command_get_option(
+    script_command: ScriptCommand, option_name: str
+) -> Optional[click.core.Option]:
     for option in script_command.click_command.params:
         if option.name == option_name:
             return cast(click.core.Option, option)

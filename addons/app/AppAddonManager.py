@@ -19,7 +19,6 @@ from addons.app.const.app import (
     APP_FILEPATH_REL_CONFIG_RUNTIME,
     APP_FILEPATH_REL_DOCKER_ENV,
     APP_FILEPATH_REL_ENV,
-    ERR_APP_NOT_FOUND,
     ERR_APP_SHOULD_RUN,
     PROXY_APP_NAME,
     PROXY_FILE_APPS_REGISTRY,
@@ -406,15 +405,11 @@ class AppAddonManager(AddonManager):
                 ).first()
 
         if not app_dir_resolved:
-            import logging
-
             self.kernel.io.error(
-                ERR_APP_NOT_FOUND,
+                'No application directory found when running "{command}"',
                 {
-                    "command": script_command,
-                    "dir": app_dir_resolved,
-                },
-                logging.ERROR,
+                    "command": request.get_string_command(),
+                }
             )
 
             sys.exit(0)

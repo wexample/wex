@@ -23,7 +23,7 @@ from src.const.globals import (
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_async, command_get_option
+from src.helper.command import command_get_option, execute_command_async
 from src.helper.core import core_get_daemon_service_resource_path
 from src.helper.file import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
@@ -167,8 +167,10 @@ def app__webhook__listen(
             for route_name in routes_map:
                 script_command: ScriptCommand = routes_map[route_name]["function"]
                 options = {}
-                needs_path = command_get_option(script_command, 'webhook_path')
-                needs_port_number = command_get_option(script_command, 'webhook_port_number')
+                needs_path = command_get_option(script_command, "webhook_path")
+                needs_port_number = command_get_option(
+                    script_command, "webhook_port_number"
+                )
 
                 if needs_path:
                     options["webhook_path"] = WEBHOOK_COMMAND_PATH_PLACEHOLDER

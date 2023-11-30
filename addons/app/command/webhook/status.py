@@ -23,9 +23,13 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_ADDON,
 )
 @option_webhook_listener(port_number=True)
-def app__webhook__status(kernel: "Kernel", webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT) -> DictResponse:
+def app__webhook__status(
+    kernel: "Kernel", webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT
+) -> DictResponse:
     response = kernel.run_function(
-        system__process__by_port, {"port": webhook_port_number}, render_mode=KERNEL_RENDER_MODE_NONE
+        system__process__by_port,
+        {"port": webhook_port_number},
+        render_mode=KERNEL_RENDER_MODE_NONE,
     )
 
     output = {"process": response}
