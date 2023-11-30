@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from addons.test.command.demo_command.counting_collection import (
     test__demo_command__counting_collection,
@@ -49,7 +49,7 @@ def test__demo_command__response_collection(
         return previous + "-and-returned-by-next"
 
     def _test__demo_command__response_collection__sub_collection(previous):
-        def callback(previous):
+        def callback(Any) -> Dict[str, Any]:
             return {"passed": previous}
 
         return QueuedCollectionResponse(

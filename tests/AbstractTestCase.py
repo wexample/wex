@@ -64,9 +64,7 @@ class AbstractTestCase(unittest.TestCase):
     def assertResponseFirstEqual(
         self, response: AbstractResponse, expected: Any
     ) -> None:
-        self.assertEqual(
-            response.first(),
-            expected)
+        self.assertEqual(response.first(), expected)
 
     def assertResponseOutputBagItemEqual(
         self, response: AbstractResponse, index: int, expected: Any

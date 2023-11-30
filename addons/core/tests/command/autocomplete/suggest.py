@@ -203,7 +203,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
     def tests_suggest_app(self):
         app_dir = test_create_app(self.kernel, DEFAULT_APP_TEST_NAME)
 
-        def callback():
+        def callback() -> None:
             # Search only ".", should return all app commands
             suggestions: str = self.kernel.run_function(
                 core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
@@ -220,7 +220,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         manager: AppAddonManager = self.kernel.addons["app"]
         manager.exec_in_app_workdir(app_dir, callback)
 
-        def callback():
+        def callback() -> None:
             # Search only ".", should return all app commands
             suggestions: str = self.kernel.run_function(
                 core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}

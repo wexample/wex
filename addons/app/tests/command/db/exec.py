@@ -6,11 +6,11 @@ from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResol
 
 class TestAppCommandDbExec(AbstractAppTestCase):
     def test_exec(self) -> None:
-        def callback(db_service):
+        def callback(db_service: str) -> None:
             self.log(f"Testing database exec : {db_service}")
-            service_resolver: "ServiceCommandResolver" = self.kernel.resolvers[
-                COMMAND_TYPE_SERVICE
-            ]
+            service_resolver = self.kernel.resolvers[COMMAND_TYPE_SERVICE]
+            assert isinstance(service_resolver, ServiceCommandResolver)
+
             registry_data = service_resolver.get_registry_data()
             test_config = registry_data[db_service]["config"]["test"]
 

@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def test__demo_command__counting_collection(
     kernel: "Kernel", initial: int
 ) -> QueuedCollectionResponse:
-    def callback(previous):
+    def callback(previous: int) -> int:
         kernel.io.log("INITIAL " + str(initial))
         kernel.io.log("PREVIOUS " + str(previous))
         return previous + 1

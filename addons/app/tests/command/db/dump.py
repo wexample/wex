@@ -18,6 +18,6 @@ class TestAppCommandDbDump(AbstractAppTestCase):
 
             path = response.print()
             assert isinstance(path, str)
-            self.assertPathExists(response.print())
+            self.assertPathExists(path)
 
         self.for_each_db_service(callback)
