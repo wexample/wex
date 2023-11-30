@@ -26,7 +26,7 @@ def test_index_fake_click_function() -> None:
     pass
 
 
-def create_fake_click_function():
+def create_fake_click_function() -> click.Command:
     name_option = click.Option(["-name"])
     greeting_option = click.Option(["--greeting", "-g"], is_flag=True, default=False)
     flag_option = click.Option(["--flag", "-f"], is_flag=True, default=False)

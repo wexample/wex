@@ -48,7 +48,7 @@ def app__hosts__update(kernel: "Kernel") -> None:
         f.write(hosts_content)
 
 
-def remove_domains_block(text):
+def remove_domains_block(text: str) -> str:
     """
     Removes any text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """
@@ -69,7 +69,7 @@ def remove_domains_block(text):
     return os.linesep.join(new_lines)
 
 
-def add_domains_block(text, block_content):
+def add_domains_block(text: str, block_content: str) -> str:
     """
     Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
     """

@@ -5,7 +5,7 @@ import os
 current_dir = os.path.dirname(__file__) + '/'
 
 
-def read(file_name):
+def read(file_name: str) -> str:
     return open(os.path.join(os.path.dirname(current_dir), file_name)).read()
 
 
@@ -29,6 +29,6 @@ setup(
         'Operating System :: OS Independent',
     ],
     scripts=[
-      'cli/wex-wrapper',
+        'cli/wex-wrapper',
     ],
 )

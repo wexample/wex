@@ -16,7 +16,7 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
     dir = dir or os.getcwd()
 
     # Function to calculate directory size
-    def get_dir_size(directory):
+    def get_dir_size(directory: str) -> int:
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(directory):
             for f in filenames:
