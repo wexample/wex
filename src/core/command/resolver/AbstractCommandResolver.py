@@ -21,7 +21,6 @@ from src.const.types import (
     RegistryResolverData,
     StringsList,
 )
-from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.KernelChild import KernelChild
@@ -49,7 +48,7 @@ class AbstractCommandResolver(KernelChild):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
-        runner = cast(AbstractCommandRunner, request.runner)
+        runner = request.get_runner()
 
         self.kernel.hook_addons("render_request_pre", {"request": request})
 
@@ -265,14 +264,8 @@ class AbstractCommandResolver(KernelChild):
     def suggest_arguments(self, command: str, search: str) -> str:
         request = self.create_command_request(command)
 
-        # Command is not recognised
-        if not request.runner:
-            return ""
-
-        function_params = request.runner.get_options_names()
-        search_params = [
-            param for param in function_params if param.startswith(search)
-        ]
+        function_params = request.get_runner().get_options_names()
+        search_params = [param for param in function_params if param.startswith(search)]
 
         return " ".join(search_params)
 
@@ -321,42 +314,39 @@ class AbstractCommandResolver(KernelChild):
 
                 request = self.create_command_request(internal_command)
 
-                if request.runner:
-                    script_command = request.runner.build_script_command()
+                script_command = request.get_runner().build_script_command()
 
-                    if script_command:
-                        test_file = None
-                        if test_commands or not hasattr(
-                            script_command.click_command.callback, "test_command"
-                        ):
-                            # All test are in python
-                            test_file = os.path.realpath(
-                                os.path.join(
-                                    directory,
-                                    "../../tests/command",
-                                    group,
-                                    command_file_name.rsplit(".", 1)[0] + ".py",
-                                )
+                if script_command:
+                    test_file = None
+                    if test_commands or not hasattr(
+                        script_command.click_command.callback, "test_command"
+                    ):
+                        # All test are in python
+                        test_file = os.path.realpath(
+                            os.path.join(
+                                directory,
+                                "../../tests/command",
+                                group,
+                                command_file_name.rsplit(".", 1)[0] + ".py",
                             )
-
-                            test_file = (
-                                test_file
-                                if (test_file and os.path.exists(test_file))
-                                else None
-                            )
-
-                        commands[internal_command] = cast(
-                            RegistryCommand,
-                            {
-                                "command": internal_command,
-                                "file": command_file,
-                                "test": test_file,
-                                "alias": self.get_script_command_aliases(
-                                    script_command
-                                ),
-                                "properties": script_command.get_extra_properties(),
-                            },
                         )
+
+                        test_file = (
+                            test_file
+                            if (test_file and os.path.exists(test_file))
+                            else None
+                        )
+
+                    commands[internal_command] = cast(
+                        RegistryCommand,
+                        {
+                            "command": internal_command,
+                            "file": command_file,
+                            "test": test_file,
+                            "alias": self.get_script_command_aliases(script_command),
+                            "properties": script_command.get_extra_properties(),
+                        },
+                    )
         return commands
 
     def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:

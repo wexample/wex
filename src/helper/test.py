@@ -48,10 +48,6 @@ def create_test_from_command(
 ) -> None | str:
     request = kernel.create_command_request(command)
 
-    # Command not found
-    if not request.runner:
-        return None
-
     test_path = request.resolver.build_path_or_fail(
         request=request, extension=COMMAND_EXTENSION_PYTHON, subdir="tests"
     )

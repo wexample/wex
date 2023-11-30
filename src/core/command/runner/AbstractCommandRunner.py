@@ -39,7 +39,7 @@ class AbstractCommandRunner(KernelChild, HasRequest):
 
     def set_request(self, request: CommandRequest) -> None:
         super().set_request(request)
-        request.runner = self
+        request.set_runner(self)
 
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:

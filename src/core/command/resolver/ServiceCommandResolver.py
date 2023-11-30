@@ -44,7 +44,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         # Guess service name from command prefix if not passed.
         args_list = request.get_args_list()
-        if request.runner and "--service" not in args_list:
+        if "--service" not in args_list:
             args_list.extend(["--service", service])
 
         return super().render_request(request, render_mode)

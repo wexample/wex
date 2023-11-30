@@ -31,11 +31,11 @@ class CommandRequest(BaseClass):
         self._string_command: str = resolver.resolve_alias(command)
         self._args_source: "CoreCommandArgsListOrDict" = args or []
         self._args_list: Optional[CoreCommandArgsList] = []
+        self._runner: Optional["AbstractCommandRunner"] = None
 
         self.extension: None | str = None
         self.quiet: bool = False
         self.resolver: "AbstractCommandResolver" = resolver
-        self.runner: Optional["AbstractCommandRunner"] = None
         self.type: str = resolver.get_type()
         self.storage: StringKeysDict = (
             {}
@@ -89,10 +89,14 @@ class CommandRequest(BaseClass):
 
         return self._string_command
 
-    def ger_runner(self) -> AbstractCommandRunner:
-        self._validate__should_not_be_none(self._string_command)
-        
-        return self.runner
+    def set_runner(self, runner: "AbstractCommandRunner") -> None:
+        self._runner = runner
+
+    def get_runner(self) -> "AbstractCommandRunner":
+        self._validate__should_not_be_none(self._runner)
+        assert self._runner is not None
+
+        return self._runner
 
     def get_match(self) -> Match:
         self._validate__should_not_be_none(self.match)
@@ -127,10 +131,9 @@ class CommandRequest(BaseClass):
 
             runner.set_request(self)
 
-            script_command = self.runner.build_script_command()
+            script_command = self.get_runner().build_script_command()
 
             if script_command:
-
                 self.set_script_command(script_command)
 
                 # Runner can now convert args.

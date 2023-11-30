@@ -303,7 +303,7 @@ class Kernel:
         # Save unique root request
         self.root_request = self.root_request if self.root_request else request
 
-        if not request.runner:
+        if not request._runner:
             if not request.quiet:
                 self.io.error(
                     'Command file not found when rendering, command {command}, in path "{path}"',
@@ -319,7 +319,7 @@ class Kernel:
         # Ensure command has proper type defined,
         # i.e. check if command file location matches with defined command type
         # and prevent it to be resolved with the wrong resolver.
-        command_type = request.runner.get_command_type()
+        command_type = request.get_runner().get_command_type()
         resolver_type = request.resolver.get_type()
         if command_type != resolver_type:
             message = (
