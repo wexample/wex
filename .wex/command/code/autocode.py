@@ -3,7 +3,7 @@ import os
 import re
 
 from addons.app.AppAddonManager import AppAddonManager
-from const.types import AnyCallable
+from src.const.types import AnyCallable
 from src.helper.file import file_search, file_read
 from src.const.globals import COMMAND_TYPE_APP
 from addons.app.decorator.app_command import app_command
