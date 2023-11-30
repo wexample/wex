@@ -1,9 +1,9 @@
-import re
+import ast
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.helper.file import file_search, file_read
 from src.const.globals import COMMAND_TYPE_APP
 from addons.app.decorator.app_command import app_command
-import os
 
 
 @app_command(help="An app test command", command_type=COMMAND_TYPE_APP)
@@ -14,28 +14,34 @@ def app__code__autocode(manager: AppAddonManager, app_dir: str) -> None:
 def explore_and_modify_files(manager: AppAddonManager, directory: str) -> None:
     manager.kernel.io.log('Searching directory ' + directory)
 
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.endswith('.py'):
-                file_path = os.path.join(root, file)
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    contents = f.readlines()
+    files = file_search(directory, '.py')
 
-                # Inside each found file.
-                manager.kernel.io.log('Working on ' + file_path)
+    for file_path in files:
+        visitor = FunctionMethodVisitor()
+        visitor.parse_file(file_path)
 
-                modified_contents = []
-                changed = False
-                for line in contents:
-                    test_function_pattern = re.compile(r"(  +)def test_(.*?)\((.*?)\):")
 
-                    if test_function_pattern.match(line) and "-> None" not in line:
-                        line = test_function_pattern.sub(r"\1def test_\2(\3) -> None:", line)
-                        changed = True
-                    modified_contents.append(line)
+class FunctionMethodVisitor(ast.NodeVisitor):
+    def visit_FunctionDef(self, node):
+        self.check_function(node)
 
-                if changed:
-                    manager.kernel.io.print('Changed : ' + file_path)
+    def visit_AsyncFunctionDef(self, node):
+        self.check_function(node)
 
-                #     with open(file_path, "w") as f:
-                #         f.writelines(modified_contents)
+    def parse_file(self, file_path: str):
+        source = file_read(file_path)
+
+        self.visit(
+            ast.parse(source)
+        )
+
+    def check_function(self, node):
+        print(f"Async function found: {node.name}")
+        self.generic_visit(node)
+
+
+def parse_functions_from_file(file_path):
+    with open(file_path, "r") as source:
+        tree = ast.parse(source.read())
+        visitor = FunctionMethodVisitor()
+        visitor.visit(tree)
