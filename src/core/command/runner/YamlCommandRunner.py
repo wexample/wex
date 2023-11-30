@@ -20,7 +20,10 @@ from src.core.CommandRequest import CommandRequest
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
+from src.core.response.QueuedCollectionResponse import (
+    QueuedCollectionResponse,
+    QueuedCollectionResponseCollection,
+)
 from src.decorator.command import command
 from src.helper.command import apply_command_decorator
 from src.helper.data_yaml import yaml_load

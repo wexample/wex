@@ -9,6 +9,9 @@ from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.default.command.version.increment import default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.const.globals import CORE_COMMAND_NAME, FILE_README, FILE_VERSION
+from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+    QueuedCollectionStopResponse,
+)
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
@@ -57,6 +60,8 @@ def core__version__build(
                     {"diff": repo.git.diff()},
                     trace=False,
                 )
+
+                return QueuedCollectionStopResponse(kernel, "Dirty repository")
 
         def _core__version__build__increment_version(previous: Optional[Any] = None):
             kernel.io.log(f"Building new version from {current_version}...")
