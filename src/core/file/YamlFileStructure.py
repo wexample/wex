@@ -2,7 +2,8 @@ from typing import Optional, cast
 
 from src.const.types import BasicValue, YamlContent, YamlContentDict
 from src.core.file.FileStructure import FileStructure
-from src.helper.data_yaml import yaml_is_basic_data, yaml_load, yaml_write
+from src.helper.args import arg_is_basic_value
+from src.helper.data_yaml import yaml_load, yaml_write
 
 
 class YamlFileStructure(FileStructure):
@@ -32,6 +33,6 @@ class YamlFileStructure(FileStructure):
 
     def get_writable_content(self) -> YamlContent:
         content = self.content
-        yaml_is_basic_data(content)
+        arg_is_basic_value(content)
 
         return cast(BasicValue, content)

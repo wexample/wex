@@ -21,7 +21,7 @@ from src.core.response.queue_collection.QueuedCollectionPathManager import (
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.helper.data_yaml import yaml_is_basic_data
+from src.helper.args import arg_is_basic_value
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -155,7 +155,7 @@ class QueuedCollectionResponse(AbstractResponse):
                 self.has_next_step = response.has_next_step
                 return self.queue_manager.render_content_complete()
 
-        if not isinstance(response, AbstractResponse) and not yaml_is_basic_data(
+        if not isinstance(response, AbstractResponse) and not arg_is_basic_value(
             response
         ):
             self.kernel.io.error(

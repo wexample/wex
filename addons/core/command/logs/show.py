@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from src.core.Logger import LoggerLogData
 from src.core.response.TableResponse import TableResponse
 from src.decorator.alias import alias
 from src.decorator.command import command
@@ -22,7 +23,7 @@ def core__logs__show(kernel: "Kernel", max: int = 10) -> str:
     response.set_header(["Command", "Date", "Status"])
 
     for filepath in last_files:
-        log = load_json_if_valid(filepath)
+        log: LoggerLogData = load_json_if_valid(filepath)
 
         if log:
             output.append(kernel.logger.build_summary(log))

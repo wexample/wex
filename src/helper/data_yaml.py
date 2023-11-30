@@ -5,29 +5,6 @@ import yaml
 from src.const.types import YamlContent, YamlContentDict
 
 
-def yaml_is_basic_data(value: Any) -> bool:
-    """
-    Check if the value is compatible with basic YAML types
-    """
-
-    yaml_basic_types = (str, int, float, bool, type(None))
-
-    if isinstance(value, yaml_basic_types):
-        return True
-
-    elif isinstance(value, list):
-        return all(yaml_is_basic_data(item) for item in value)
-
-    elif isinstance(value, dict):
-        return all(
-            isinstance(key, str) and yaml_is_basic_data(val)
-            for key, val in value.items()
-        )
-
-    else:
-        return False
-
-
 def yaml_load(
     file_path: str, default: Optional[YamlContent] = None
 ) -> Optional[YamlContent]:

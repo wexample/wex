@@ -1,6 +1,6 @@
 import ast
 import re
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union, cast
 
 import click
 from click.core import Command
@@ -82,7 +82,8 @@ def args_convert_dict_to_long_names_dict(
         for opt in param.opts:
             # This is a short name
             if opt.startswith("-") and opt[1:2] != "-":
-                short_names[opt[1:]] = string_to_kebab_case(param.name)
+                if param.name:
+                    short_names[opt[1:]] = string_to_kebab_case(param.name)
 
     # Transform short named args to long named args.
     args_long = {}
@@ -196,6 +197,32 @@ def args_parse_one(argument: str, default: Optional[Any] = None) -> BasicValue:
         return default
 
     try:
-        return ast.literal_eval(argument)
+        parsed = ast.literal_eval(argument)
+        if arg_is_basic_value(parsed):
+            return cast(BasicValue, parsed)
+        return default
     except (ValueError, SyntaxError):
         return argument
+
+
+def arg_is_basic_value(value: Any) -> bool:
+    """
+    Check if the value is compatible with basic YAML types
+    """
+
+    yaml_basic_types = (str, int, float, bool, type(None))
+
+    if isinstance(value, yaml_basic_types):
+        return True
+
+    elif isinstance(value, list):
+        return all(arg_is_basic_value(item) for item in value)
+
+    elif isinstance(value, dict):
+        return all(
+            isinstance(key, str) and arg_is_basic_value(val)
+            for key, val in value.items()
+        )
+
+    else:
+        return False
