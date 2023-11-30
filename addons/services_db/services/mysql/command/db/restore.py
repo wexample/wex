@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
 def mysql__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
-):
+) -> None:
     command = [
         "mysql",
         manager.kernel.run_function(

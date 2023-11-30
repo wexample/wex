@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
-def laravel__config__runtime(manager: "AppAddonManager", app_dir: str, service: str):
+def laravel__config__runtime(manager: "AppAddonManager", app_dir: str, service: str) -> None:
     manager.kernel.run_function(
         php__config__runtime,
         {"app-dir": app_dir, "service": service},

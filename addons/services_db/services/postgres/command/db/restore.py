@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
 def postgres__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
-):
+) -> None:
     command = [
         "psql",
         manager.kernel.run_function(

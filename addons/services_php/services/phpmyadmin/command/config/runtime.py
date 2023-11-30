@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
-def phpmyadmin__config__runtime(manager: "AppAddonManager", app_dir: str, service: str):
+def phpmyadmin__config__runtime(manager: "AppAddonManager", app_dir: str, service: str) -> None:
     # Save config
     domain_pma = manager.get_runtime_config("domain_pma", None)
 

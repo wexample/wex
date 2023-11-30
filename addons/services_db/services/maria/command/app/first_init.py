@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 @app_command(
     help="Set database permissions", command_type=COMMAND_TYPE_SERVICE, should_run=True
 )
-def maria__app__first_init(manager: "AppAddonManager", app_dir: str, service: str):
+def maria__app__first_init(manager: "AppAddonManager", app_dir: str, service: str) -> None:
     manager.kernel.io.log("Prepare Maria users")
 
     manager.kernel.run_function(

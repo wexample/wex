@@ -4,7 +4,7 @@ from addons.core.command.logs.rotate import core__logs__rotate
 from tests.AbstractTestCase import AbstractTestCase
 
 
-def _change_modification_time(test_log_path, days):
+def _change_modification_time(test_log_path, days) -> None:
     current_modification_time = os.path.getmtime(test_log_path)
     new_modification_time = current_modification_time - days * 24 * 60 * 60
     os.utime(test_log_path, (new_modification_time, new_modification_time))

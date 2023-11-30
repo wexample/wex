@@ -38,7 +38,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         # Request handling is done during init
         super().__init__(*args, **kwargs)
 
-    def do_GET(self):
+    def do_GET(self) -> None:
         error_code = 500
 
         try:

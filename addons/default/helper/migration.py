@@ -74,7 +74,7 @@ def migration_version_guess(kernel: "Kernel", path: str) -> str:
     return MIGRATION_MINIMAL_VERSION
 
 
-def migration_delete_dir_if_empty(kernel: "Kernel", target_dir: str):
+def migration_delete_dir_if_empty(kernel: "Kernel", target_dir: str) -> None:
     if not os.path.exists(target_dir):
         kernel.io.log(f"Dir already deleted : {target_dir}")
     elif len(os.listdir(target_dir)):

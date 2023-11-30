@@ -5,7 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class AbstractPortTestCase(AbstractTestCase):
-    def start_temp_server(self, port: int = 45678):
+    def start_temp_server(self, port: int = 45678) -> None:
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind(("localhost", port))
         server_socket.listen(1)
@@ -16,7 +16,7 @@ class AbstractPortTestCase(AbstractTestCase):
             self.log(f"Accepted connection from {address}")
             client_socket.close()
 
-    def stop_test_process(self, server_process):
+    def stop_test_process(self, server_process) -> None:
         server_process.terminate()
         server_process.join()
 

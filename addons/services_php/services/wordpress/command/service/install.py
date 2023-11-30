@@ -8,5 +8,5 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
-def wordpress__service__install(manager: "AppAddonManager", app_dir: str, service: str):
+def wordpress__service__install(manager: "AppAddonManager", app_dir: str, service: str) -> None:
     manager.set_config(f"service.{service}", {"db_prefix": "wp_"})

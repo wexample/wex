@@ -161,7 +161,7 @@ def app_service_install_merge_dir(
     app_dir,
     install_docker,
     install_git,
-):
+) -> None:
     kernel = manager.kernel
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)
     kernel.io.log(f"Merging {current_item}")

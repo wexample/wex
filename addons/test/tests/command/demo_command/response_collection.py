@@ -15,7 +15,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
     def assertCollectionOutputListItemsMatch(
         self, response, all_expected, start_at: int = 0
-    ):
+    ) -> None:
         count = start_at
 
         for expected in all_expected:

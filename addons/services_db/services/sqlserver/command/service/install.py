@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Install database service", command_type=COMMAND_TYPE_SERVICE)
-def sqlserver__service__install(manager: "AppAddonManager", app_dir: str, service: str):
+def sqlserver__service__install(manager: "AppAddonManager", app_dir: str, service: str) -> None:
     name = manager.get_config("global.name")
     manager.set_config(
         f"service.{service}",

@@ -25,15 +25,15 @@ def core__core__uninstall(kernel: "Kernel") -> None:
     kernel.io.log("Bye!")
 
 
-def __core__core__uninstall_webhook_server(kernel):
+def __core__core__uninstall_webhook_server(kernel) -> None:
     kernel.run_function(app__webhook__stop)
 
 
-def __core__core__uninstall_symlink(destination: str):
+def __core__core__uninstall_symlink(destination: str) -> None:
     file_remove_file_if_exists(destination)
 
 
-def __core__core__uninstall_autocomplete(kernel):
+def __core__core__uninstall_autocomplete(kernel) -> None:
     script_path = "/etc/bash_completion.d/wex"
 
     file_remove_file_if_exists(script_path)
@@ -41,7 +41,7 @@ def __core__core__uninstall_autocomplete(kernel):
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __core__core__uninstall_terminal(kernel):
+def __core__core__uninstall_terminal(kernel) -> None:
     script_path = "/etc/profile.d/wex"
 
     file_remove_file_if_exists(script_path)
@@ -49,7 +49,7 @@ def __core__core__uninstall_terminal(kernel):
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __remove_source_file_for_docker(kernel: "Kernel", file_path):
+def __remove_source_file_for_docker(kernel: "Kernel", file_path) -> None:
     if not kernel.run_function(system__system__is_docker):
         return
 
@@ -63,7 +63,7 @@ def __remove_source_file_for_docker(kernel: "Kernel", file_path):
     __remove_source_file_in_bashrc(kernel, file_path, os.path.expanduser("~/.bashrc"))
 
 
-def __remove_source_file_in_bashrc(kernel: "Kernel", file_path, bashrc_path):
+def __remove_source_file_in_bashrc(kernel: "Kernel", file_path, bashrc_path) -> None:
     if not os.path.exists(bashrc_path):
         return
 

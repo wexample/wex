@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
 def sqlserver__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
-):
+) -> None:
     app_name = manager.get_config("global.name")
 
     exec_command = manager.kernel.run_function(
