@@ -186,7 +186,7 @@ def app__webhook__listen(
 
                 command += [
                     "--parent-task-id",
-                    kernel.task_id,
+                    kernel.get_task_id(),
                     # Allow parsing
                     "--render-mode",
                     KERNEL_RENDER_MODE_JSON,
@@ -218,7 +218,7 @@ def app__webhook__listen(
 
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
-                task_id = kernel.task_id
+                task_id = kernel.get_task_id()
                 log_path = kernel.task_file_path("webhook-listener")
                 routes = routes_map
                 log_stderr: str = kernel.task_file_path("webhook-stderr")

@@ -3,6 +3,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
+from src.core.BaseClass import BaseClass
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     FILE_REGISTRY,
@@ -45,7 +46,7 @@ if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse
 
 
-class Kernel:
+class Kernel(BaseClass):
     # Allow child classes override
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
@@ -53,6 +54,8 @@ class Kernel:
     registry_structure: "KernelRegistryFileStructure"
 
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
+        self._task_id: str | None = task_id
+
         self.root_request: Optional["CommandRequest"] = None
         self.current_request: Optional["CommandRequest"] = None
         self.current_response: Optional["AbstractResponse"] = None
@@ -60,7 +63,6 @@ class Kernel:
         self.post_exec: List[ShellCommandsList] = []
         self.previous_response: Optional["AbstractResponse"] = None
         self.sys_argv: list[str] = sys.argv.copy()
-        self.task_id: str | None = task_id
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
         self.tmp: Dict[str, str] = {}
@@ -352,7 +354,7 @@ class Kernel:
 
     def task_file_path(self, type: str, task_id: str | None = None) -> str:
         return os.path.join(
-            self.get_or_create_path("task"), f"{task_id or self.task_id}.{type}"
+            self.get_or_create_path("task"), f"{task_id or self.get_task_id()}.{type}"
         )
 
     def task_file_load(
@@ -455,18 +457,23 @@ class Kernel:
 
         assert False
 
-    def store_task_id(self) -> Optional[NoReturn]:
-        if self.task_id:
-            return None
+    def get_task_id(self) -> str:
+        self._validate__should_not_be_none(self._task_id)
+        assert self._task_id is not None
 
+        return self._task_id
+
+    def set_task_id(self, task_id: str) -> None:
+        self._task_id = task_id
+
+    def store_task_id(self) -> Optional[NoReturn]:
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.io.error(
                 'Please use the "bash ./cli/wex" file to run wex script.', trace=False
             )
 
-        self.task_id = self.sys_argv[1]
-        return None
+        self.set_task_id(self.sys_argv[1])
 
     def handle_core_args(self) -> None:
         if args_shift_one(self.sys_argv, "fast-mode", True) is not None:
@@ -507,7 +514,7 @@ class Kernel:
         if isinstance(value, str):
             self.task_file_write("task-redirect", value, replace=True)
 
-            self.task_id = value
+            self.set_task_id(value)
 
             # Cleanup task files to avoid loops.
             file_remove_file_if_exists(self.task_file_path("post-exec"))

@@ -25,7 +25,7 @@ def internal_command_to_shell(
     command = (
         ["bash", kernel.get_path("core.cli"), internal_command]
         + (args or [])
-        + ["--kernel-task-id", kernel.task_id]
+        + ["--kernel-task-id", kernel.get_task_id()]
     )
 
     if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
@@ -83,7 +83,7 @@ def execute_command_tree(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i : i + 1] = output
+                    command_tree[i: i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -113,14 +113,15 @@ def execute_command_async(
 
     tmp_dir = os.path.join(kernel.get_or_create_path("tmp"), "subprocess") + os.sep
 
+    task_id = kernel.get_task_id()
     popen_args = {
         "cwd": working_directory,
         "start_new_session": True,
         "stdout": open(
-            file_create_parent_dir(tmp_dir + kernel.task_id + ".stdout"), "a"
+            file_create_parent_dir(tmp_dir + task_id + ".stdout"), "a"
         ),
         "stderr": open(
-            file_create_parent_dir(tmp_dir + kernel.task_id + ".stderr"), "a"
+            file_create_parent_dir(tmp_dir + task_id + ".stderr"), "a"
         ),
         **kwargs,
     }
@@ -216,6 +217,9 @@ def apply_command_decorator(
         decorator = kernel.decorators[group][name]
         options = options or {}
 
-        return decorator(**options)(function)
+        script_command = decorator(**options)(function)
+        assert isinstance(script_command, ScriptCommand)
+
+        return script_command
     else:
         kernel.io.error(f"Missing decorator {group}.{name}")

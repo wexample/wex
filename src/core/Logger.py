@@ -20,14 +20,15 @@ class Logger:
 
         self.time_start = time.time()
         date_now = self.get_time_string()
+        task_id = self.kernel.get_task_id()
 
-        self.log_data = self.load_logs(self.kernel.task_id)
+        self.log_data = self.load_logs(task_id)
 
         # Check if the output file already exists
         if not self.log_data:
             # If it doesn't exist, create a new log_data
             self.log_data = {
-                "task_id": kernel.task_id,
+                "task_id": task_id,
                 "command": None,
                 "trace": [],
                 "dateStart": date_now,
@@ -42,7 +43,7 @@ class Logger:
             parent_logs = self.load_logs(self.kernel.parent_task_id)
 
             if parent_logs:
-                parent_logs["children"][date_now] = self.kernel.task_id
+                parent_logs["children"][date_now] = task_id
                 self.write(task_id=self.kernel.parent_task_id, log_data=parent_logs)
 
     def load_logs(self, task_id: str) -> Dict[str, Any]:
@@ -177,7 +178,7 @@ class Logger:
         if task_id:
             log_data = self.load_logs(task_id)
         else:
-            task_id = self.kernel.task_id
+            task_id = self.kernel.get_task_id()
             log_data = self.log_data
 
         log_data["status"] = LOG_STATUS_COMPLETE
