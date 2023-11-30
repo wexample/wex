@@ -10,6 +10,7 @@ from addons.default.helper.git_utils import (
     git_move_or_file_move,
 )
 from addons.default.helper.migration import migration_delete_dir_if_empty
+from src.const.types import StringsDict
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
@@ -104,7 +105,7 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> None:
     return glob.glob(f"{docker_dir}docker-compose.*")
 
 
-def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: dict) -> None:
+def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: StringsDict) -> None:
     if not os.path.exists(file_path):
         return
 
@@ -122,7 +123,7 @@ def _migration_4_0_0_replace_placeholders(file_path: str, replacement_mapping: d
 
 
 def _migration_4_0_0_replace_docker_placeholders(
-    manager: AppAddonManager, replacement_mapping: dict
+    manager: AppAddonManager, replacement_mapping: StringsDict
 ) -> None:
     converted_mapping = {}
 
@@ -133,7 +134,7 @@ def _migration_4_0_0_replace_docker_placeholders(
 
 
 def _migration_4_0_0_replace_docker_mapping(
-    manager: AppAddonManager, replacement_mapping: dict
+    manager: AppAddonManager, replacement_mapping: StringsDict
 ) -> None:
     docker_files = _migration_4_0_0_et_docker_files(manager)
 

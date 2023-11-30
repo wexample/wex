@@ -6,7 +6,7 @@ from addons.test.command.demo_command.counting_collection import (
 from addons.test.command.demo_command.response_collection_two import (
     test__demo_command__response_collection_two,
 )
-from const.types import StringKeysDict
+from src.const.types import StringKeysDict
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.NonInteractiveShellCommandResponse import (

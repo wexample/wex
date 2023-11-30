@@ -15,24 +15,20 @@ if TYPE_CHECKING:
 @option("--port", "-p", type=int, required=True, help="Port number")
 def system__process__by_port(kernel: "Kernel", port: int) -> KeyValueResponse:
     process = process_get_all_by_port(port)
-    output_list = KeyValueResponse(kernel, title="process")
 
     if process:
-        output_list.set_dictionary(
-            {
-                "name": process.name(),
-                "port": port,
-                "pid": process.pid,
-                "status": process.status(),
-                "started": datetime.fromtimestamp(process.create_time()).strftime(
-                    DATE_FORMAT_SECOND
-                ),
-                "command": process.cmdline(),
-                "running": True,
-            }
-        )
-
+        dictionary = {
+            "name": process.name(),
+            "port": port,
+            "pid": process.pid,
+            "status": process.status(),
+            "started": datetime.fromtimestamp(process.create_time()).strftime(
+                DATE_FORMAT_SECOND
+            ),
+            "command": process.cmdline(),
+            "running": True,
+        }
     else:
-        output_list.set_dictionary({"port": port, "running": False})
+        dictionary = {"port": port, "running": False}
 
-    return output_list
+    return KeyValueResponse(kernel, title="process", dictionary=dictionary)

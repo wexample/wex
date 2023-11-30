@@ -236,11 +236,11 @@ def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     return None
 
 
-def _get_config_value(config: dict, key: str, default: Optional[Any] = None) -> Any:
+def _get_config_value(config: StringKeysDict, key: str, default: Optional[Any] = None) -> Any:
     return config[key] if key in config else default
 
 
-def _parse_4_0_0_config_file(file_path: str) -> dict:
+def _parse_4_0_0_config_file(file_path: str) -> StringsDict:
     if not os.path.isfile(file_path):
         return {}
 

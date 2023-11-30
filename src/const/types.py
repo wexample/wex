@@ -8,7 +8,7 @@ from typing import (
     Optional,
     Tuple,
     TypedDict,
-    Union,
+    Union, Set,
 )
 
 AddonNameType = Literal[
@@ -28,6 +28,7 @@ AnyList = List[Any]
 StringKeysDict = Dict[str, Any]
 StringsDict = Dict[str, str]
 StringsList = List[str]
+SetList = Set[str]
 StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
@@ -44,6 +45,7 @@ StringMessageParameters = StringKeysDict
 
 CoreCommandArgsDict = Dict[str, BasicInlineValue]
 CoreCommandArgsList = StringsList
+CoreCommandCommaSeparatedList = Optional[Union[str, StringsList]]
 CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]
 CoreCommandString = str
 CoreCommandStringParts = StringsList

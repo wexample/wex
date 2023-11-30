@@ -1,7 +1,7 @@
 import os
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringKeysDict
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
@@ -11,17 +11,11 @@ from src.core.response.AbstractTerminalSectionResponse import (
 
 class KeyValueResponse(AbstractTerminalSectionResponse):
     def __init__(
-        self, kernel, dictionary: dict | None = None, title: str | None = None
+        self, kernel, dictionary: StringKeysDict, title: str | None = None
     ) -> None:
         super().__init__(kernel, title)
 
-        self.dictionary_data = {}
-
-        if dictionary:
-            self.set_dictionary(dictionary)
-
-    def set_dictionary(self, dictionary_data) -> None:
-        self.dictionary_data = dictionary_data
+        self.dictionary_data = dictionary
 
     def render_content(
         self,

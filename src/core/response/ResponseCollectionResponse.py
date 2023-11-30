@@ -6,6 +6,11 @@ from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePr
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class ResponseCollectionResponse(AbstractResponse):
     def __init__(self, kernel: "Kernel", collection: ResponseCollection) -> None:

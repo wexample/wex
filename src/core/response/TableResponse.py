@@ -1,34 +1,39 @@
 import os
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringsList
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
 
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
+
 
 class TableResponse(AbstractTerminalSectionResponse):
-    def __init__(self, kernel: "Kernel", title: str | None = None, body: None | list = None) -> None:
+    def __init__(self, kernel: "Kernel", title: str | None = None, body: Optional[StringsList] = None) -> None:
         super().__init__(kernel, title)
-        self.header = []
-        self.body = []
+        self._header: StringsList = []
+        self._body: StringsList = []
 
         if body:
             self.set_body(body)
 
     def set_header(self, header) -> None:
-        self.header = header
+        self._header = header
 
-    def get_header(self):
-        return self.header
+    def get_header(self) -> StringsList:
+        return self._header
 
-    def set_body(self, body) -> None:
-        self.body = body
+    def set_body(self, body: StringsList) -> None:
+        self._body = body
 
-    def get_body(self):
-        return self.body
+    def get_body(self) -> StringsList:
+        return self._body
 
     def render_content(
         self,
@@ -66,13 +71,13 @@ class TableResponse(AbstractTerminalSectionResponse):
         return max_widths
 
     def render_cli_content(self) -> None:
-        if not len(self.header) and not len(self.body):
+        if not len(self._header) and not len(self._body):
             self.output_bag.append("")
 
             return
 
         # Calculate maximum widths for each column
-        max_widths = self.calculate_max_widths(self.header + self.body)
+        max_widths = self.calculate_max_widths(self._header + self._body)
 
         # Calculate the total line length (cell widths + padding + borders)
         num_columns = len(max_widths)
@@ -86,15 +91,15 @@ class TableResponse(AbstractTerminalSectionResponse):
         bash_array += separator_line
 
         # Add header only if exists
-        if self.header:
+        if self._header:
             header_str = "|"
-            for i, cell in enumerate(self.header):
+            for i, cell in enumerate(self._header):
                 header_str += f" {cell:<{max_widths[i]}} |"
             bash_array += header_str + os.linesep
             bash_array += separator_line
 
         # Add data rows
-        for row in self.body:
+        for row in self._body:
             row_str = "|"
             for i in range(
                 num_columns
@@ -113,8 +118,8 @@ class TableResponse(AbstractTerminalSectionResponse):
         # Render the content as JSON for HTTP mode
         self.output_bag.append(
             {
-                "body": self.body,
-                "header": self.header,
+                "body": self._body,
+                "header": self._header,
                 "title": self.title,
             }
         )
