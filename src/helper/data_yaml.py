@@ -5,7 +5,7 @@ import yaml
 from src.const.types import YamlContent, YamlContentDict
 
 
-def yaml_is_basic_data(value: str | int | float | bool | None) -> bool:
+def yaml_is_basic_data(value: Any) -> bool:
     """
     Check if the value is compatible with basic YAML types
     """

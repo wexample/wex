@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, cast, List
+from typing import TYPE_CHECKING, Dict, Optional, cast
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.CommandRequest import CommandRequest, HasRequest

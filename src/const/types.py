@@ -20,8 +20,8 @@ StringsList = List[str]
 StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
-JsonContent = Optional[BasicInlineValue | StringKeysDict]
-YamlContent = Optional[BasicInlineValue | StringKeysDict]
+JsonContent = BasicValue
+YamlContent = BasicValue
 YamlContentDict = StringKeysDict
 
 AnyCallable = Callable[..., Any]

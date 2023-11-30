@@ -4,8 +4,11 @@ from typing import TYPE_CHECKING, Optional
 from src.const.types import BasicInlineValue
 
 if TYPE_CHECKING:
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionStepsList
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.core.response.QueuedCollectionResponse import (
+        QueuedCollectionResponse,
+        QueuedCollectionStepsList,
+    )
 
 
 class AbstractQueuedCollectionResponseQueueManager:
@@ -32,7 +35,11 @@ class AbstractQueuedCollectionResponseQueueManager:
                 previous_index = path[-1]
 
                 # And parent has a previous item.
-                if previous_index is not None and previous_index > 0 and path[-1] is not None:
+                if (
+                    previous_index is not None
+                    and previous_index > 0
+                    and path[-1] is not None
+                ):
                     path[-1] -= 1
 
                     return path
@@ -53,7 +60,9 @@ class AbstractQueuedCollectionResponseQueueManager:
 
         return False
 
-    def enqueue_next_step_if_exists(self, step_index: int, response: "AbstractResponse") -> bool:
+    def enqueue_next_step_if_exists(
+        self, step_index: int, response: "AbstractResponse"
+    ) -> bool:
         next_index = self.get_next_step_index(step_index)
         if next_index:
             self.enqueue_next_step_by_index(next_index)
@@ -65,5 +74,5 @@ class AbstractQueuedCollectionResponseQueueManager:
         path_manager = self.response.get_path_manager()
         path_manager.steps[self.response.step_position] = next_step_index
         # Remove obsolete parts.
-        del path_manager.steps[self.response.step_position + 1:]
+        del path_manager.steps[self.response.step_position + 1 :]
         self.response.has_next_step = True

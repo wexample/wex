@@ -1,18 +1,13 @@
 from typing import TYPE_CHECKING, Optional
 
-from src.const.types import (
-    BasicValue,
-    KernelRegistry,
-    RegistryResolverData,
-    YamlContent,
-)
-from src.core.file.YmlFileStructure import YmlFileStructure
+from src.const.types import KernelRegistry, RegistryResolverData, YamlContentDict
+from src.core.file.YamlFileStructure import YamlFileStructure
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-class KernelRegistryFileStructure(YmlFileStructure):
+class KernelRegistryFileStructure(YamlFileStructure):
     # May not exist when cache flushed
     should_exist: Optional[bool] = False
     kernel: "Kernel"
@@ -26,7 +21,7 @@ class KernelRegistryFileStructure(YmlFileStructure):
         # Always load at creation
         self.load_content()
 
-    def load_content(self, default: Optional[YamlContent] = None) -> None:
+    def load_content(self, default: Optional[YamlContentDict] = None) -> None:
         content = self.load_content_yaml_dict(default)
 
         self.content = KernelRegistry(
@@ -58,5 +53,5 @@ class KernelRegistryFileStructure(YmlFileStructure):
     def get_resolver_data(self, command_type: str) -> RegistryResolverData:
         return self.content.resolvers[command_type]
 
-    def get_writable_content(self) -> BasicValue:
+    def get_writable_content(self) -> YamlContentDict:
         return self.content.to_dict()
