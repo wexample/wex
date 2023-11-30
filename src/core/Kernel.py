@@ -3,7 +3,6 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
-from src.core.BaseClass import BaseClass
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     FILE_REGISTRY,
@@ -14,6 +13,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_QUIET,
 )
 from src.core.AddonManager import AddonManager
+from src.core.BaseClass import BaseClass
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
 from src.core.IOManager import IOManager
@@ -474,6 +474,7 @@ class Kernel(BaseClass):
             )
 
         self.set_task_id(self.sys_argv[1])
+        return None
 
     def handle_core_args(self) -> None:
         if args_shift_one(self.sys_argv, "fast-mode", True) is not None:

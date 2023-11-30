@@ -1,9 +1,9 @@
 import os
 import re
 import shutil
-from typing import Dict, Optional
+from typing import Dict
 
-from src.const.types import StringsMatch
+from src.const.types import BasicInlineValue, StringsMatch
 
 
 def string_to_snake_case(text: str) -> str:
@@ -89,7 +89,7 @@ def string_count_lines_needed(message: str) -> int:
     return lines_needed
 
 
-def string_replace_multiple(text: str, variables: Dict[str, Optional[str]]) -> str:
+def string_replace_multiple(text: str, variables: Dict[str, BasicInlineValue]) -> str:
     # Pattern to match $VAR and ${VAR}
     pattern = re.compile(r"\$\{?([A-Z_]+)\}?")
 

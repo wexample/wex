@@ -43,7 +43,7 @@ class AbstractCommandRunner(KernelChild, HasRequest):
 
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:
-            ctx = script_command.click_command.make_context(
+            ctx: click.core.Context = script_command.click_command.make_context(
                 "", self.get_request().get_args_list().copy()
             )
         # Click explicitly asked to exit, for example when using --help.
@@ -69,4 +69,4 @@ class AbstractCommandRunner(KernelChild, HasRequest):
         # Defines kernel as mais class to provide with pass_obj option.
         ctx.obj = self.get_request().first_arg
 
-        return script_command.run_command(self, script_command.click_command, ctx)
+        return script_command.run_command(self, ctx)

@@ -11,12 +11,13 @@ from src.const.types import (
     StringsList,
     YamlCommandScript,
 )
+from src.core.BaseClass import BaseClass
 
 if TYPE_CHECKING:
     from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
-class ScriptCommand:
+class ScriptCommand(BaseClass):
     def __init__(
         self,
         function: Callable,
@@ -106,7 +107,7 @@ class ScriptCommand:
             help="Define render mode (cli, http, ...), which produce different output formatting",
         )(click_command)
 
-        self.click_command = click_command
+        self.click_command: click.core.Command = click_command
         self.click_command.properties = {}
 
     def set_extra_value(self, name: str, value: bool = True) -> None:
@@ -118,7 +119,9 @@ class ScriptCommand:
     def get_extra_properties(self) -> StringKeysDict:
         return self._extra
 
-    def run_command(self, runner: "AbstractCommandRunner", function, ctx) -> Any:
+    def run_command(
+        self, runner: "AbstractCommandRunner", ctx: click.core.Context
+    ) -> Any:
         return self.click_command.invoke(ctx)
 
     def run_script(
@@ -153,6 +156,9 @@ class ScriptCommand:
         )
 
     def get_callback(self) -> AnyCallable:
+        self._validate__should_not_be_none(self.click_command.callback)
+        assert self.click_command.callback is not None
+
         return self.click_command.callback
 
     def get_callback_name(self) -> str:

@@ -83,7 +83,7 @@ def execute_command_tree(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i: i + 1] = output
+                    command_tree[i : i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -117,12 +117,8 @@ def execute_command_async(
     popen_args = {
         "cwd": working_directory,
         "start_new_session": True,
-        "stdout": open(
-            file_create_parent_dir(tmp_dir + task_id + ".stdout"), "a"
-        ),
-        "stderr": open(
-            file_create_parent_dir(tmp_dir + task_id + ".stderr"), "a"
-        ),
+        "stdout": open(file_create_parent_dir(tmp_dir + task_id + ".stdout"), "a"),
+        "stderr": open(file_create_parent_dir(tmp_dir + task_id + ".stderr"), "a"),
         **kwargs,
     }
 

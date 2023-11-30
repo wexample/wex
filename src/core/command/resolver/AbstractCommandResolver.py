@@ -19,7 +19,8 @@ from src.const.types import (
     RegistryCommand,
     RegistryCommandsCollection,
     RegistryResolverData,
-    StringsList, StringsMatch,
+    StringsList,
+    StringsMatch,
 )
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
