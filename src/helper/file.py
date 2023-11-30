@@ -261,3 +261,20 @@ def file_read(file_path: str) -> str:
 def file_write(file_path: str, content: str) -> None:
     with open(file_path, "w") as f:
         f.write(content)
+
+def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
+    matched_files = []
+
+    if recursive:
+        for root, dirs, files in os.walk(dir):
+            for file in files:
+                if file.endswith(pattern):
+                    file_path = os.path.join(root, file)
+                    matched_files.append(file_path)
+    else:
+        for file in os.listdir(dir):
+            if file.endswith(pattern):
+                file_path = os.path.join(dir, file)
+                matched_files.append(file_path)
+
+    return matched_files

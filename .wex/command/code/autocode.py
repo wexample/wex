@@ -1,4 +1,5 @@
 import ast
+import re
 
 from addons.app.AppAddonManager import AppAddonManager
 from src.helper.file import file_search, file_read
@@ -23,10 +24,8 @@ def explore_and_modify_files(manager: AppAddonManager, directory: str) -> None:
 class FunctionMethodVisitor(ast.NodeVisitor):
     def __init__(self, file_path: str):
         self.file_path: str = file_path
-
-        source = file_read(file_path)
-
-        self.visit(ast.parse(source))
+        self._source = file_read(file_path)
+        self.visit(ast.parse(self._source))
 
     def visit_FunctionDef(self, node):
         self.check_function(node)
@@ -39,13 +38,16 @@ class FunctionMethodVisitor(ast.NodeVisitor):
 
         if not node.returns:
             if self.function_has_only_none_returns(node):
+                print(f"  Function '{node.name}' has been modified")
                 print(self.file_path)
 
+                # Append ' -> None' to function definition
+                self._source = re.sub(rf"def {node.name}\(([^)]*)\):", rf"def {node.name}(\1) -> None:", self._source)
+
+                # Write the changes back to the file
+                with open(self.file_path, "w") as file:
+                    file.write(self._source)
+
     def function_has_only_none_returns(self, node) -> bool:
-        if any(not isinstance(return_node.value, (ast.NameConstant, type(None)))
-               for return_node in ast.walk(node) if isinstance(return_node, ast.Return)):
-            print(f"  Function '{node.name}' has non-empty return statements.")
-            return False
-        else:
-            print(f"  Function '{node.name}' only has empty or 'None' return statements.")
-            return True
+        return all(isinstance(return_node.value, (ast.NameConstant, type(None)))
+                   for return_node in ast.walk(node) if isinstance(return_node, ast.Return))
