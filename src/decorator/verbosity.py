@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING
 
-from src.const.types import AnyCallable
-
 if TYPE_CHECKING:
-    from src.core.command.ScriptCommand import ScriptCommand
+    from src.core.command.ScriptCommand import ScriptCommand, DecoratedScriptCommand
 
 
-def verbosity(level: int) -> AnyCallable:
+def verbosity(level: int) -> "DecoratedScriptCommand":
     def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
         # Enforce verbosity level for this function.
         script_command.verbosity = level

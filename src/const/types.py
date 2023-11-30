@@ -25,8 +25,8 @@ YamlContent = BasicValue
 YamlContentDict = StringKeysDict
 
 AnyCallable = Callable[..., Any]
-Args = AnyList
-DecoratedCallable = Callable[..., Callable[..., Any]]
+Args = Any
+DecoratedCallable = Callable[..., AnyCallable]
 Kwargs = Any
 ResponsePrintType = Optional[BasicInlineValue | StringKeysDict | AnyList]
 StringMessageParameters = StringKeysDict

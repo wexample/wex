@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Callable
 
 import click
 
@@ -163,3 +163,6 @@ class ScriptCommand(BaseClass):
 
     def get_callback_name(self) -> str:
         return self.get_callback().__name__
+
+
+DecoratedScriptCommand = Callable[..., ScriptCommand]

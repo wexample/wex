@@ -1,14 +1,12 @@
-from typing import Callable
-
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import AnyCallable, Args, Kwargs
-from src.core.command.ScriptCommand import ScriptCommand
+from src.core.command.ScriptCommand import ScriptCommand, DecoratedScriptCommand
 
 
 # Define your custom decorator
 def command(
     *decorator_args: Args, **decorator_kwargs: Kwargs
-) -> Callable[..., ScriptCommand]:
+) -> "DecoratedScriptCommand":
     if "help" not in decorator_kwargs:
         raise ValueError(
             "The 'help' argument is required for the custom command decorator."
