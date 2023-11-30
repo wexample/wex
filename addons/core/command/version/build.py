@@ -43,7 +43,7 @@ def core__version__build(
 
         def _core__version__build__check_code_quality(previous: Optional[Any] = None):
             kernel.io.log(f"Executing code quality checkup...")
-            kernel.run_command(".code/check", {"app-dir": root_dir})
+            return kernel.run_command(".code/check", {"app-dir": root_dir})
 
         def _core__version__build__format(previous: Optional[Any] = None):
             kernel.io.log(f"Executing auto formatting scripts...")
