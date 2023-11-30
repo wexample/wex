@@ -260,6 +260,6 @@ def file_read(file_path: str) -> str:
         return file.read()
 
 
-def file_write(file_path: str, content: BasicValue) -> None:
+def file_write(file_path: str, content: str) -> None:
     with open(file_path, "w") as f:
         f.write(content)

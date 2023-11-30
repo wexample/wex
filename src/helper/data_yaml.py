@@ -21,7 +21,7 @@ def yaml_load(
 
 
 def yaml_load_dict(
-    file_path: str, default: Optional[YamlContent] = None
+    file_path: str, default: Optional[YamlContentDict] = None
 ) -> YamlContentDict:
     content = yaml_load(file_path, default)
 

@@ -100,7 +100,7 @@ def string_replace_multiple(
 
     # Replacement function
     def repl(match: StringsMatch) -> str:
-        return variables.get(match.group(1).upper(), match.group(0))
+        return str(variables.get(match.group(1).upper(), match.group(0)))
 
     # Substitute using the replacement function
     return pattern.sub(repl, text)

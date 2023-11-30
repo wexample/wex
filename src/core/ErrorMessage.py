@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 class ErrorMessage(Exception):
     def __init__(
-        self, code, parameters: "StringMessageParameters", message: str
+        self, code: str, parameters: "StringMessageParameters", message: str
     ) -> None:
         self.code: str = code
         self.parameters: "StringMessageParameters" = parameters

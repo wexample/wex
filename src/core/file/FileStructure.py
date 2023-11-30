@@ -12,7 +12,7 @@ from src.helper.file import file_create_parent_and_touch, file_read, file_write
 class FileStructure(AbstractFileSystemStructure):
     type = "file"
     file_extension: Optional[str] = None
-    content: Any
+    content: BasicValue
 
     def __init__(self, path: str, initialize: bool = True) -> None:
         self.content = None
@@ -37,10 +37,10 @@ class FileStructure(AbstractFileSystemStructure):
         self.content = file_read(self.path)
 
     def write_content(self) -> None:
-        file_write(self.path, self.get_writable_content())
+        file_write(self.path, str(self.get_writable_content()))
 
     def get_writable_content(self) -> BasicValue:
-        return str(self.content)
+        return self.content
 
     def create_missing(self) -> None:
         file_create_parent_and_touch(self.path)
