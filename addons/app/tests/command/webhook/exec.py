@@ -14,7 +14,7 @@ from src.core.Logger import LOG_STATUS_COMPLETE
 
 
 class TestAppCommandWebhookExec(AbstractWebhookTestCase):
-    def test_exec(self):
+    def test_exec(self) -> None:
         manager = AppAddonManager(self.kernel, app_dir=self.kernel.path["root"])
 
         # Add application as a local app
@@ -23,38 +23,38 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         self.start_webhook_listener()
 
         # Check status
-        response = self.request_listener(
+        http_response = self.request_listener(
             "/status",
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
 
         self.assertEqual(data["status"], WEBHOOK_STATUS_COMPLETE)
 
         # Missing hook
-        response = self.request_listener(
+        http_response = self.request_listener(
             "/webhook/wex/missing-hook",
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
 
         # Even missing, returns okay as it is an async response.
         self.assertEqual(data["status"], WEBHOOK_STATUS_STARTED)
 
-        response = self.request_listener(
+        http_response = self.request_listener(
             f'/status/process/{data["task_id"]}',
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
 
         self.assertEqual(data["status"], WEBHOOK_STATUS_COMPLETE)
 
         # Async hook
-        response = self.request_listener(
+        http_response = self.request_listener(
             "/webhook/app/wex/webhook/test-waiting", check_code=None, wait=2
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
 
         self.assertEqual(data["status"], "started")
 
@@ -64,11 +64,11 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
 
         task_id = data["task_id"]
 
-        response = self.request_listener(
+        http_response = self.request_listener(
             f"/status/process/{task_id}",
         )
 
-        data = self.parse_response(response)
+        data = self.parse_response(http_response)
 
         self.assertEqual(data["task_id"], task_id)
 
@@ -87,7 +87,7 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
             },
         )
 
-        data = json.loads(response.print_wrapped(render_mode="json"))
+        data = json.loads(str(response.print_wrapped(render_mode="json")))
 
         lines = data["value"].split(os.linesep)
 

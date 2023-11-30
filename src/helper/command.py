@@ -22,7 +22,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
-from src.const.types import ShellCommandsList
+from src.const.types import ShellCommandsList, ShellCommandResponseTuple
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
@@ -139,14 +139,13 @@ def execute_command_async(
         **popen_args,
     )
 
-
 def execute_command_sync(
     kernel: "Kernel",
     command: Union[List[str], str],
     working_directory: Optional[str] = None,
     ignore_error: bool = False,
     **kwargs: Any,
-) -> Tuple[bool, List[str]]:
+) -> ShellCommandResponseTuple:
     if working_directory is None:
         working_directory = os.getcwd()
 

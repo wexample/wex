@@ -5,7 +5,7 @@ from src.helper.file import file_remove_file_if_exists
 
 
 class TestLogging(AbstractTestCase):
-    def test_error(self):
+    def test_error(self) -> None:
         file_remove_file_if_exists(self.kernel.get_or_create_path("task"))
 
         with self.assertRaises(FatalError, msg=None):
@@ -13,7 +13,7 @@ class TestLogging(AbstractTestCase):
 
         self.assertPathExists(self.kernel.get_or_create_path("task"))
 
-    def test_history(self):
+    def test_history(self) -> None:
         file_remove_file_if_exists(self.kernel.get_or_create_path("task"))
 
         self.kernel.run_command("hi")

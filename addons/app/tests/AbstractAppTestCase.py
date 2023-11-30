@@ -1,5 +1,6 @@
 import os.path
 import re
+from typing import Optional
 
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
@@ -8,6 +9,7 @@ from addons.app.helper.test import (
     test_build_app_name,
     test_create_app,
 )
+from src.const.types import AnyCallable, StringsList
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
@@ -20,14 +22,14 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,
-        services: list | None = None,
+        services: Optional[StringsList] = None,
         force_restart: bool = False,
     ) -> str:
         return test_create_app(
             self.kernel, name=name, services=services or [], force_restart=force_restart
         )
 
-    def start_test_app(self, app_dir: str, force_restart: bool = False):
+    def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
         response = self.kernel.run_function(app__app__start, {"app-dir": app_dir})
 
         first = response.first()
@@ -45,7 +47,7 @@ class AbstractAppTestCase(AbstractTestCase):
             f"Container {app_name_snake}_test_.*  Started",
         ]
 
-        shell_response = response.print()
+        shell_response = str(response.print())
 
         self.log(shell_response)
 
@@ -69,7 +71,7 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_and_start_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,
-        services: list | None = None,
+        services: Optional[StringsList] = None,
         force_restart: bool = False,
     ) -> str:
         name = test_build_app_name(name, services)
@@ -87,13 +89,13 @@ class AbstractAppTestCase(AbstractTestCase):
 
         return app_dir
 
-    def stop_test_app(self, app_dir: str):
+    def stop_test_app(self, app_dir: str) -> None:
         if not os.path.exists(app_dir):
             return
 
         self.kernel.run_function(app__app__stop, {"app-dir": app_dir})
 
-    def for_each_db_service(self, callback: callable):
+    def for_each_db_service(self, callback: AnyCallable) -> None:
         db_services = []
 
         services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()

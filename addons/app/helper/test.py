@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
+from src.const.types import StringsList
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -18,7 +19,7 @@ def test_get_app_dir(kernel: "Kernel", name: str) -> str:
 
 
 def test_build_app_name(
-    name: str = DEFAULT_APP_TEST_NAME, services: Optional[List[str]] = None
+    name: str = DEFAULT_APP_TEST_NAME, services: Optional[StringsList] = None
 ) -> str:
     services = services or []
 

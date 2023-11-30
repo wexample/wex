@@ -4,6 +4,7 @@ import shutil
 import unittest
 from typing import TYPE_CHECKING
 
+from src.const.types import ShellCommandResponseTuple, AnyCallable, StringsDict
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
@@ -17,16 +18,16 @@ class AbstractTestCase(unittest.TestCase):
     kernel: "Kernel"
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.kernel = TestKernel(os.getcwd() + "/__main__.py")
 
-    def setUp(self):
+    def setUp(self) -> None:
         # Add a new line between each test
         self.kernel.io.print("")
 
         self.test_dir = os.getcwd()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         # Add a new line between each test
         self.kernel.io.print("")
 
@@ -37,7 +38,7 @@ class AbstractTestCase(unittest.TestCase):
 
             os.chdir(self.test_dir)
 
-    def assertPathExists(self, file_path, exists=True):
+    def assertPathExists(self, file_path: str, exists=True) -> None:
         """
         Assert that the specified file exists.
         """
@@ -47,7 +48,7 @@ class AbstractTestCase(unittest.TestCase):
             f"No such file or directory : {file_path}",
         )
 
-    def assertDictKeysEquals(self, result, expected):
+    def assertDictKeysEquals(self, result: StringsDict, expected: StringsDict) -> None:
         for key, value in expected.items():
             self.assertEqual(result.get(key), value, f"Failed for key: {key}")
 
@@ -89,7 +90,7 @@ class AbstractTestCase(unittest.TestCase):
         with open(f"{result_path}/{name}.txt", "w") as file_a:
             file_a.write(data)
 
-    def log(self, message: str):
+    def log(self, message: str) -> None:
         message = str(message)
         message = (
             f"{os.linesep}{message}" if message.count(os.linesep) > 0 else f" {message}"
@@ -100,7 +101,7 @@ class AbstractTestCase(unittest.TestCase):
             color=COLOR_LIGHT_MAGENTA,
         )
 
-    def start_docker_container(self, name: str = "test_container"):
+    def start_docker_container(self, name: str = "test_container") -> ShellCommandResponseTuple:
         return execute_command_sync(
             self.kernel,
             [
@@ -116,7 +117,7 @@ class AbstractTestCase(unittest.TestCase):
             ],
         )
 
-    def remove_docker_container(self, name: str = "test_container"):
+    def remove_docker_container(self, name: str = "test_container") -> ShellCommandResponseTuple:
         success, content = execute_command_sync(
             self.kernel,
             [
@@ -138,7 +139,7 @@ class AbstractTestCase(unittest.TestCase):
             ],
         )
 
-    def for_each_render_mode(self, callback, expected: dict):
+    def for_each_render_mode(self, callback: AnyCallable, expected: dict) -> None:
         from src.const.globals import KERNEL_RENDER_MODES
 
         for render_mode in KERNEL_RENDER_MODES:

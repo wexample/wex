@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Literal, Match, Optional, TypedDict, Union
+from typing import Any, Callable, Dict, List, Literal, Match, Optional, TypedDict, Union, Tuple
 
 AddonNameType = Literal[
     "app",
@@ -43,7 +43,9 @@ OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 AppConfigValue = BasicValue
 AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
+
 ShellCommandsList = StringsList
+ShellCommandResponseTuple = Tuple[bool, List[str]]
 
 
 class RegistryCommand(TypedDict):
