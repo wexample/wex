@@ -61,6 +61,18 @@ class AbstractTestCase(unittest.TestCase):
     def assertIsOfType(self, value: Any, type_: type) -> None:
         self.assertTrue(isinstance(value, type_))
 
+    def assertResponseFirstEqual(
+        self, response: AbstractResponse, expected: Any
+    ) -> None:
+        self.assertEqual(
+            response.first(),
+            expected)
+
+    def assertResponseOutputBagItemEqual(
+        self, response: AbstractResponse, index: int, expected: Any
+    ) -> None:
+        self.assertEqual(response.output_bag[index].print(), expected)
+
     def assertResponseFirstContains(
         self, response: AbstractResponse, expected: Any
     ) -> None:

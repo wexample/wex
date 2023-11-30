@@ -15,7 +15,7 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
             },
         )
 
-        self.assertTrue("WEBHOOK_TEST_RESPONSE" in str(response.output_bag[4].print()))
+        self.assertResponseOutputBagItemContains(response, 4, "WEBHOOK_TEST_RESPONSE")
 
         app_dir, app_name = self.create_and_start_test_app_webhook()
 

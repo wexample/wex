@@ -40,7 +40,7 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
             "test::app/yaml", {"option": "test", "app_dir": app_dir}
         )
 
-        self.assertEqual(response.output_bag[0].print(), "Inline bash script example")
+        self.assertResponseFirstContains(response, "Inline bash script example")
 
         self.assertResponseOutputBagItemContains(response, 1, app_dir)
 

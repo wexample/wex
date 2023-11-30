@@ -19,7 +19,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         count = start_at
 
         for expected in all_expected:
-            self.assertEqual(expected, response.output_bag[count].output_bag[0])
+            self.assertResponseFirstEqual(response.output_bag[count], expected)
 
             count += 1
 

@@ -10,5 +10,6 @@ class TestTestCommandDemoCommandCountingCollection(AbstractTestCase):
             test__demo_command__counting_collection, {"initial": 123}
         )
 
-        self.assertEqual(response.first(), 123)
-        self.assertEqual(response.output_bag[1].first(), 124)
+        self.assertResponseFirstEqual(response, 123)
+
+        self.assertResponseOutputBagItemContains(response, 1, 124)
