@@ -24,14 +24,13 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
         )
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            self.assertTrue("+------" in response.first())
+            self.assertResponseFirstContains(response, "+------")
         elif render_mode == KERNEL_RENDER_MODE_JSON:
-            self.assertTrue("body" in response.first())
+            self.assertResponseFirstContains(response, "body")
 
             data = json.loads(response.print_wrapped(render_mode))
 
-            self.assertTrue(isinstance(data, dict))
-
-            self.assertTrue(isinstance(data["body"], list))
+            self.assertIsDict(data)
+            self.assertIsList(data["body"])
 
         return response.print_wrapped(render_mode)

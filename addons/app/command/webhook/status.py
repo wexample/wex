@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from addons.system.command.process.by_port import system__process__by_port
+from core.response.KeyValueResponse import KeyValueResponse
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_NONE,
@@ -31,6 +32,8 @@ def app__webhook__status(
         {"port": webhook_port_number},
         render_mode=KERNEL_RENDER_MODE_NONE,
     )
+
+    assert isinstance(response, KeyValueResponse)
 
     output = {"process": response}
 

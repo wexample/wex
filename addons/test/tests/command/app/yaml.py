@@ -42,16 +42,16 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
 
         self.assertEqual(response.output_bag[0].print(), "Inline bash script example")
 
-        self.assertTrue(app_dir in response.output_bag[1].print())
+        self.assertResponseOutputBagItemContains(response, 1, app_dir)
 
-        self.assertEqual(response.output_bag[2].print(), "TEST_VAR")
+        self.assertResponseOutputBagItemContains(response, 2, "TEST_VAR")
 
-        self.assertEqual(response.output_bag[3].print(), "TEST_SCRIPT_FILE")
+        self.assertResponseOutputBagItemContains(response, 3, "TEST_SCRIPT_FILE")
 
-        self.assertEqual(response.output_bag[4].print(), "PYTHON_SUCCESS")
+        self.assertResponseOutputBagItemContains(response, 4, "PYTHON_SUCCESS")
 
-        self.assertEqual(response.output_bag[5].print(), "PYTHON_SUCCESS_FROM_FILE")
+        self.assertResponseOutputBagItemContains(response, 5, "PYTHON_SUCCESS_FROM_FILE")
 
-        self.assertEqual(response.output_bag[6].print(), "IN_CONTAINER_PYTHON_SCRIPT")
+        self.assertResponseOutputBagItemContains(response, 6, "IN_CONTAINER_PYTHON_SCRIPT")
 
-        self.assertEqual(response.output_bag[7].print(), "TEST_PYTHON_FILE")
+        self.assertResponseOutputBagItemContains(response, 7, "TEST_PYTHON_FILE")

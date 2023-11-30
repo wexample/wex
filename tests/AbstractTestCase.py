@@ -2,8 +2,9 @@ import inspect
 import os
 import shutil
 import unittest
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from core.response.AbstractResponse import AbstractResponse
 from src.const.types import ShellCommandResponseTuple, AnyCallable, StringsDict
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.core.TestKernel import TestKernel
@@ -46,6 +47,52 @@ class AbstractTestCase(unittest.TestCase):
             os.path.exists(file_path),
             exists,
             f"No such file or directory : {file_path}",
+        )
+
+    def assertIsDict(self, value: Any) -> None:
+        self.assertIsOfType(
+            value,
+            dict
+        )
+
+    def assertIsList(self, value: Any) -> None:
+        self.assertIsOfType(
+            value,
+            list
+        )
+
+    def assertIsStr(self, value: Any) -> None:
+        self.assertIsOfType(
+            value,
+            str
+        )
+
+    def assertIsOfType(self, value: Any, type_: type) -> None:
+        self.assertTrue(
+            isinstance(
+                value,
+                type_
+            )
+        )
+
+    def assertResponseFirstContains(self, response: AbstractResponse, expected: Any) -> None:
+        self.assertTrue(
+            expected in response.first()
+        )
+
+    def assertResponseOutputBagItemContains(
+        self, response: AbstractResponse, index:int, expected: Any) -> None:
+        self.assertTrue(
+            expected in response.output_bag[index].print()
+        )
+
+    def assertStringContains(self, value: Any, expected: str):
+        self.assertTrue(
+            isinstance(value, str)
+        )
+
+        self.assertTrue(
+            expected in value
         )
 
     def assertDictKeysEquals(self, result: StringsDict, expected: StringsDict) -> None:

@@ -10,6 +10,9 @@ class TestAppCommandConfigBindFiles(AbstractAppTestCase):
             app__config__bind_files, {"app-dir": app_dir, "dir": "php"}
         )
 
-        self.assertTrue("web_php_ini" in response.first())
+        self.assertResponseFirstContains(
+            response,
+            "web_php_ini"
+        )
 
-        self.assertTrue(isinstance(response.first()["web_php_ini"], str))
+        self.assertIsStr(response.first())

@@ -8,8 +8,14 @@ class TestSystemCommandProcessByPort(AbstractPortTestCase):
 
         response = self.kernel.run_function(system__process__by_port, {"port": port})
 
-        self.assertTrue(f" {port}" in response.first())
+        self.assertResponseFirstContains(
+            response,
+            f" {port}"
+        )
 
-        self.assertTrue(f" python" in response.first())
+        self.assertResponseFirstContains(
+            response,
+            f" python"
+        )
 
         self.stop_test_process(server_process)

@@ -9,4 +9,6 @@ class TestAppCommandDomainList(AbstractAppTestCase):
 
         response = self.kernel.run_function(app__domain__list, {"app-dir": app_dir})
 
-        self.assertTrue(DEFAULT_APP_TEST_NAME + ".wex" in response.first())
+        self.assertResponseFirstContains(
+            response,
+            DEFAULT_APP_TEST_NAME + ".wex")
