@@ -2,6 +2,8 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
+from src.const.types import StringsList
+from src.core.command.ScriptCommand import ScriptCommand
 from src.const.globals import (
     COLOR_CYAN,
     COLOR_GRAY,
@@ -157,7 +159,7 @@ class IOManager(KernelChild):
         args: Optional[Dict[str, str]] = None,
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute",
-    ):
+    ) -> None:
         return self.message_all_next_commands(
             [
                 self.kernel.get_command_resolver(
@@ -173,13 +175,13 @@ class IOManager(KernelChild):
 
     def message_all_next_commands(
         self,
-        functions_or_command,
+        script_command_or_strings: List[ScriptCommand | str],
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute one of the following command",
-    ):
-        commands = []
-        for command in functions_or_command:
-            if not isinstance(command, str):
+    ) -> None:
+        commands_strings: StringsList = []
+        for command in script_command_or_strings:
+            if isinstance(command, ScriptCommand):
                 command_string = self.kernel.get_command_resolver(
                     command_type
                 ).build_full_command_from_function(
@@ -188,7 +190,8 @@ class IOManager(KernelChild):
                 )
 
                 # Only supports commands without args
-                commands.append(f"{COLOR_CYAN}>{COLOR_RESET} {command_string}")
+                commands_strings.append(f"{COLOR_CYAN}>{COLOR_RESET} {command_string}")
+            else:
+                commands_strings.append(command)
 
-        commands = os.linesep.join(commands)
-        self.message(message + ":", commands)
+        self.message(message + ":", os.linesep.join(commands_strings))

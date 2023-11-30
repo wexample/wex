@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import click
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class ScriptCommand(BaseClass):
     def __init__(
         self,
-        function: Callable,
+        function: AnyCallable,
         command_type: str,
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",
@@ -108,7 +108,6 @@ class ScriptCommand(BaseClass):
         )(click_command)
 
         self.click_command: click.core.Command = click_command
-        self.click_command.properties = {}
 
     def set_extra_value(self, name: str, value: bool = True) -> None:
         self._extra[name] = value
@@ -135,7 +134,8 @@ class ScriptCommand(BaseClass):
         if "script" in script:
             from src.helper.command import command_escape
 
-            script_string = string_replace_multiple(script["script"], variables)
+            script_string: str = str(script["script"])
+            script_string = string_replace_multiple(script_string, variables)
 
             if "interpreter" in script:
                 script_string = command_escape(script_string)
