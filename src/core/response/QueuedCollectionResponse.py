@@ -4,11 +4,16 @@ import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.types import (
+    AnyCallable,
+    BasicValue,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+)
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
     DefaultQueuedCollectionResponseQueueManager,
 )
@@ -28,14 +33,17 @@ if TYPE_CHECKING:
 
 QueuedCollectionStepValue = int | None
 QueuedCollectionStepsList = List[QueuedCollectionStepValue]
+QueuedCollectionResponseCollection = List[BasicValue | AnyCallable | AbstractResponse]
 
 
 class QueuedCollectionResponse(AbstractResponse):
     ids_counter = 0
 
-    def __init__(self, kernel: "Kernel", collection: ResponseCollection) -> None:
+    def __init__(
+        self, kernel: "Kernel", collection: QueuedCollectionResponseCollection
+    ) -> None:
         super().__init__(kernel)
-        self.collection = collection
+        self.collection: QueuedCollectionResponseCollection = collection
         self.step_position: int = 0
         self.has_next_step: bool = False
         self._path_manager: Optional[QueuedCollectionPathManager] = None
