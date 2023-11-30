@@ -30,9 +30,9 @@ def test__demo_command__responses(
         return NonInteractiveShellCommandResponse(kernel, ["ls", "-la"])
 
 
-def _test__demo_command__responses_one():
+def _test__demo_command__responses_one() -> str:
     return "one"
 
 
-def _test__demo_command__responses_two(from_one: str):
+def _test__demo_command__responses_two(from_one: str) -> str:
     return from_one + "+two"

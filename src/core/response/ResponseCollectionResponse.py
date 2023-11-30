@@ -42,6 +42,7 @@ class ResponseCollectionResponse(AbstractResponse):
                 data.append(response.print(render_mode, interactive_data))
 
             return data
+        return None
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         # Do not add extra json wrapping

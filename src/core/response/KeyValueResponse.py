@@ -61,3 +61,4 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
             return os.linesep.join(self.output_bag)
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             return self.dictionary_data
+        return None
