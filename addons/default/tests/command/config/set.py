@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandConfigSet(AbstractTestCase):
-    def test_set(self):
+    def test_set(self) -> None:
         file = self.build_test_file("config_bash")
 
         original_value = self.kernel.run_function(

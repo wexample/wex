@@ -23,7 +23,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
 
             count += 1
 
-    def test_response_collection(self):
+    def test_response_collection(self) -> None:
         response = self.kernel.run_function(test__demo_command__response_collection)
 
         first_response_print = response.print()

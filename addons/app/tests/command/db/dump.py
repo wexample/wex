@@ -3,7 +3,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandDbDump(AbstractAppTestCase):
-    def test_dump(self):
+    def test_dump(self) -> None:
         def callback(db_service):
             self.log(f"Testing database restore : {db_service}")
 

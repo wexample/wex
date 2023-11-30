@@ -3,7 +3,7 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
 
 class TestAppCommandDbGo(AbstractAppTestCase):
-    def test_go(self):
+    def test_go(self) -> None:
         db_service = "mysql"
         app_dir = self.create_and_start_test_app(services=["php"])
 

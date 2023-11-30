@@ -10,7 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeHidden(AbstractTestCase):
-    def test_hidden(self):
+    def test_hidden(self) -> None:
         self.for_each_render_mode(
             self._test_hidden,
             {

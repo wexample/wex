@@ -11,7 +11,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeKeyValue(AbstractTestCase):
-    def test_key_value(self):
+    def test_key_value(self) -> None:
         self.for_each_render_mode(
             self._test_key_value,
             {

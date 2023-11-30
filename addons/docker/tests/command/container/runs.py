@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDockerCommandContainerRuns(AbstractTestCase):
-    def test_runs(self):
+    def test_runs(self) -> None:
         response = self.kernel.run_function(
             docker__container__runs, {"name": "lorem_ipsum"}
         )

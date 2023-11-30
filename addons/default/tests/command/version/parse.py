@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandVersionParse(AbstractTestCase):
-    def test_parse(self):
+    def test_parse(self) -> None:
         test_cases = [
             (
                 "5.0.0-beta.41+build.20230822134237",

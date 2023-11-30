@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandWebhookStatusProcess(AbstractTestCase):
-    def test_status_process(self):
+    def test_status_process(self) -> None:
         response = self.kernel.run_function(
             app__webhook__status_process, {"webhook_path": "/status/process/1234"}
         )

@@ -5,7 +5,7 @@ from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 
 
 class TestAppCommandWebhookListen(AbstractWebhookTestCase):
-    def test_listen(self):
+    def test_listen(self) -> None:
         self.kernel.run_function(
             app__webhook__listen, {"dry-run": True, "port": 1234, "force": True}
         )

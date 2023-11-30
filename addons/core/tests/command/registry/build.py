@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandRegistryBuild(AbstractTestCase):
-    def test_build(self):
+    def test_build(self) -> None:
         registry = self.kernel.run_function(
             core__registry__build, {"write": False}
         ).first()

@@ -4,7 +4,7 @@ from src.helper.process import process_get_all_by_port
 
 
 class TestSystemCommandKillByPort(AbstractPortTestCase):
-    def test_by_port(self):
+    def test_by_port(self) -> None:
         port = 45678
         server_process = self.start_test_process(port)
 

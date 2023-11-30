@@ -6,7 +6,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandDemoCommandResponses(AbstractTestCase):
-    def test_responses(self):
+    def test_responses(self) -> None:
         for type in RESPONSES_DEFAULT_VALUES:
             response = self.kernel.run_function(
                 test__demo_command__responses, {"type": type}

@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandVersionIncrement(AbstractTestCase):
-    def test_increment(self):
+    def test_increment(self) -> None:
         version = self.kernel.run_function(
             default__version__increment,
             {

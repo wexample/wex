@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestSystemCommandDiskSpaces(AbstractTestCase):
-    def test_spaces(self):
+    def test_spaces(self) -> None:
         text = self.kernel.run_function(system__disk__spaces).first()
 
         self.assertIsNotNone(text)

@@ -5,7 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandDemoCommandCountingCollection(AbstractTestCase):
-    def test_counting_collection(self):
+    def test_counting_collection(self) -> None:
         response = self.kernel.run_function(
             test__demo_command__counting_collection, {"initial": 123}
         )

@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandRemoteAvailable(AbstractTestCase):
-    def test_available(self):
+    def test_available(self) -> None:
         response = self.kernel.run_function(
             app__remote__available, {"environment": APP_ENV_LOCAL}
         )

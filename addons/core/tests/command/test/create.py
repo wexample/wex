@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandTestCreate(AbstractTestCase):
-    def test_create(self):
+    def test_create(self) -> None:
         test_file_path_command = f"command/lorem/ipsum.py"
         test_file_path_test = (
             f"{self.kernel.get_path('addons')}core/tests/{test_file_path_command}"

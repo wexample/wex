@@ -17,7 +17,7 @@ from src.helper.user import (
 
 
 class TestAppCommandAppPerms(AbstractAppTestCase):
-    def test_perms(self):
+    def test_perms(self) -> None:
         app_dir = self.create_test_app(DEFAULT_APP_TEST_NAME, force_restart=True)
 
         test_file = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)

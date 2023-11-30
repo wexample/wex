@@ -4,7 +4,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandDbRestore(AbstractAppTestCase):
-    def test_restore(self):
+    def test_restore(self) -> None:
         def callback(db_service):
             self.log(f"Testing database dump : {db_service}")
 

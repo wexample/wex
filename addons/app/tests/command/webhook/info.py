@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandWebhookInfo(AbstractTestCase):
-    def test_info(self):
+    def test_info(self) -> None:
         test = TestSystemCommandProcessByPort()
         test.kernel = self.kernel
 

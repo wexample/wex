@@ -4,7 +4,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandAppInfo(AbstractAppTestCase):
-    def test_info(self):
+    def test_info(self) -> None:
         # No error in non app.
         response = self.kernel.run_function(app__app__info, {"app-dir": "/var/tmp"})
 

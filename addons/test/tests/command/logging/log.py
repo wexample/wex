@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandLoggingLog(AbstractTestCase):
-    def test_log(self):
+    def test_log(self) -> None:
         response = self.kernel.run_function(test__logging__log)
 
         data = response.first()

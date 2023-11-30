@@ -5,7 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandCoreCleanup(AbstractTestCase):
-    def test_cleanup(self):
+    def test_cleanup(self) -> None:
         result = self.kernel.run_function(
             core__core__cleanup,
         ).first()

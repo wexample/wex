@@ -10,7 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeTable(AbstractTestCase):
-    def test_table(self):
+    def test_table(self) -> None:
         self.for_each_render_mode(
             self._test_table,
             {
@@ -18,7 +18,7 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
             },
         )
 
-    def _test_table(self, render_mode):
+    def _test_table(self, render_mode) -> str|None:
         response = self.kernel.run_function(
             test__return_type__table, {"arg": "test"}, render_mode=render_mode
         )

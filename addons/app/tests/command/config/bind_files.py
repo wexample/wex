@@ -3,7 +3,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandConfigBindFiles(AbstractAppTestCase):
-    def test_bind_files(self):
+    def test_bind_files(self) -> None:
         app_dir = self.create_and_start_test_app(services=["php"])
 
         response = self.kernel.run_function(

@@ -7,7 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestSystemCommandOwnThis(AbstractTestCase):
-    def test_this(self):
+    def test_this(self) -> None:
         test_file = self.build_test_file("config_bash")
 
         os.chown(

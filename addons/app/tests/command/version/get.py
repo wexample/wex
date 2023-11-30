@@ -8,7 +8,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandVersionGet(AbstractTestCase):
-    def test_get(self):
+    def test_get(self) -> None:
         self.log("Test in " + SYSTEM_WWW_PATH)
 
         version = self.kernel.run_function(

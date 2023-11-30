@@ -9,7 +9,7 @@ from src.helper.core import core_kernel_get_version
 
 
 class TestAppCommandMigrationMigrate(AbstractAppTestCase):
-    def test_migrate(self):
+    def test_migrate(self) -> None:
         source_apps_dir = self.get_app_resources_path()
 
         test_apps: List[str] = os.listdir(source_apps_dir)

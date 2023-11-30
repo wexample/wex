@@ -4,7 +4,7 @@ from src.const.globals import COMMAND_CHAR_APP
 
 
 class TestAppCommandHookExec(AbstractAppTestCase):
-    def test_exec(self):
+    def test_exec(self) -> None:
         app_dir = self.create_and_start_test_app(services=["php"])
 
         results = self.kernel.run_function(

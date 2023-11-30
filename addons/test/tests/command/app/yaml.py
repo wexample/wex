@@ -4,7 +4,7 @@ from src.core.FatalError import FatalError
 
 
 class TestTestCommandAppYaml(AbstractWebhookTestCase):
-    def test_yaml(self):
+    def test_yaml(self) -> None:
         with self.assertRaises(FatalError):
             self.kernel.run_command(
                 "test::app/yaml",

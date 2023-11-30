@@ -10,7 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeNull(AbstractTestCase):
-    def test_null(self):
+    def test_null(self) -> None:
         self.for_each_render_mode(
             self._test_null,
             {

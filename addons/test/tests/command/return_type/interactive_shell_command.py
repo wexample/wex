@@ -12,7 +12,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
-    def test_interactive_shell_command(self):
+    def test_interactive_shell_command(self) -> None:
         self.for_each_render_mode(
             self._test_interactive_shell_command,
             {

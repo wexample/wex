@@ -3,5 +3,5 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandVersionGet(AbstractTestCase):
-    def test_get(self):
+    def test_get(self) -> None:
         self.assertIsNotNone(self.kernel.run_function(core__version__get))

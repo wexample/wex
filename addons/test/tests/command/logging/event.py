@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandLoggingEvent(AbstractTestCase):
-    def test_event(self):
+    def test_event(self) -> None:
         self.kernel.run_function(test__logging__event)
         has_empty_event = False
         has_event_with_data = False

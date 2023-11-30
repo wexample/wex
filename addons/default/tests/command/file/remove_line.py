@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandFileRemoveLine(AbstractTestCase):
-    def test_remove_line(self):
+    def test_remove_line(self) -> None:
         file = self.build_test_file("config_bash")
 
         with open(file, "r", newline="") as f:

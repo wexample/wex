@@ -6,7 +6,7 @@ from src.helper.file import file_read
 
 
 class TestTestCommandAppWebhook(AbstractWebhookTestCase):
-    def test_webhook(self):
+    def test_webhook(self) -> None:
         response = self.kernel.run_command(
             # This is a yaml command.
             "test::app/webhook",

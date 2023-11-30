@@ -4,7 +4,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandDomainList(AbstractAppTestCase):
-    def test_list(self):
+    def test_list(self) -> None:
         app_dir = self.create_test_app()
 
         response = self.kernel.run_function(app__domain__list, {"app-dir": app_dir})

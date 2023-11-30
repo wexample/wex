@@ -13,7 +13,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeQueuedCollection(AbstractTestCase):
-    def test_queued_collection(self):
+    def test_queued_collection(self) -> None:
         self.for_each_render_mode(
             self._test_queued_collection,
             {
@@ -25,7 +25,7 @@ class TestTestCommandReturnTypeQueuedCollection(AbstractTestCase):
             },
         )
 
-    def _test_queued_collection(self, render_mode):
+    def _test_queued_collection(self, render_mode) -> str|None:
         return self.kernel.run_function(
             function=test__return_type__queued_collection, render_mode=render_mode
         ).print_wrapped(render_mode)

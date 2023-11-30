@@ -7,7 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandCommandCreate(AbstractTestCase):
-    def test_create(self):
+    def test_create(self) -> None:
         test_file_path_command = f"command/lorem/ipsum.py"
         test_file_path = (
             self.kernel.get_path("addons", ["core"]) + test_file_path_command
@@ -32,10 +32,10 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
 
         shutil.rmtree(os.path.dirname(test_file_path_test))
 
-    def test_create_local(self):
+    def test_create_local(self) -> None:
         self.kernel.run_function(core__command__create, {"command": "~test/create"})
 
-    def test_create_dash(self):
+    def test_create_dash(self) -> None:
         result = self.kernel.run_function(
             core__command__create, {"command": "core::test-with-dash/create"}
         ).first()

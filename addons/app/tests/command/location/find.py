@@ -5,7 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandLocationFind(AbstractTestCase):
-    def test_find(self):
+    def test_find(self) -> None:
         # Test without dir argument.
         app_location = self.kernel.run_function(app__location__find).first()
         self.assertEqual(app_location, self.kernel.get_path("root"))

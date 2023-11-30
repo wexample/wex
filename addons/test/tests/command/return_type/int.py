@@ -8,7 +8,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeInt(AbstractTestCase):
-    def test_int(self):
+    def test_int(self) -> None:
         self.for_each_render_mode(
             self._test_int,
             {

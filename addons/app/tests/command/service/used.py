@@ -4,7 +4,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandServiceUsed(AbstractAppTestCase):
-    def test_used(self):
+    def test_used(self) -> None:
         app_dir = self.create_test_app()
 
         self.kernel.run_function(

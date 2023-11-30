@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandConfigGet(AbstractTestCase):
-    def test_get(self):
+    def test_get(self) -> None:
         file = self.build_test_file("config_bash")
 
         value = self.kernel.run_function(

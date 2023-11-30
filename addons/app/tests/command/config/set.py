@@ -4,7 +4,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandConfigSet(AbstractAppTestCase):
-    def test_set(self):
+    def test_set(self) -> None:
         app_dir = self.create_test_app()
 
         # Change value.

@@ -12,7 +12,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
-    def test_response_collection(self):
+    def test_response_collection(self) -> None:
         self.for_each_render_mode(
             self._test_response_collection,
             {

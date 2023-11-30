@@ -5,7 +5,7 @@ from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResol
 
 
 class TestAppCommandDbExec(AbstractAppTestCase):
-    def test_exec(self):
+    def test_exec(self) -> None:
         def callback(db_service):
             self.log(f"Testing database exec : {db_service}")
             service_resolver: "ServiceCommandResolver" = self.kernel.resolvers[

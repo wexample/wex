@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandFileAppendOnce(AbstractTestCase):
-    def test_append_once(self):
+    def test_append_once(self) -> None:
         file = self.build_test_file("config_bash")
 
         with open(file, "r", newline="") as f:

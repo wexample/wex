@@ -10,7 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandDemoCommandResponseCollectionTwo(AbstractTestCase):
-    def test_response_collection_two(self):
+    def test_response_collection_two(self) -> None:
         result = self.kernel.run_function(test__demo_command__response_collection_two)
 
         self.assertEqual(result.first(), TEST_DEMO_COMMAND_TWO_RESULT_FIRST)

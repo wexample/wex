@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandProxyStop(AbstractTestCase):
-    def test_stop(self):
+    def test_stop(self) -> None:
         self.kernel.run_function(app__proxy__start)
 
         self.kernel.run_function(app__proxy__stop)

@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandServiceResolve(AbstractTestCase):
-    def test_resolve(self):
+    def test_resolve(self) -> None:
         dependencies = self.kernel.run_function(
             core__service__resolve, {"service": "php, matomo"}
         ).first()

@@ -10,7 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeStr(AbstractTestCase):
-    def test_str(self):
+    def test_str(self) -> None:
         self.for_each_render_mode(
             self._test_str,
             {
@@ -20,7 +20,7 @@ class TestTestCommandReturnTypeStr(AbstractTestCase):
             },
         )
 
-    def _test_str(self, render_mode):
+    def _test_str(self, render_mode) -> str|None:
         response = self.kernel.run_function(
             test__return_type__str, {"arg": "yes"}, render_mode=render_mode
         )

@@ -3,7 +3,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandServicesExec(AbstractAppTestCase):
-    def test_exec(self):
+    def test_exec(self) -> None:
         app_dir = self.create_and_start_test_app(services=["php"])
 
         response = self.kernel.run_function(

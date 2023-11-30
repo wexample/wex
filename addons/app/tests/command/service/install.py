@@ -6,7 +6,7 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
-    def test_install(self):
+    def test_install(self) -> None:
         services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registered_services()
 
         for service in services:

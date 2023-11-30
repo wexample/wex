@@ -11,7 +11,7 @@ def _change_modification_time(test_log_path, days):
 
 
 class TestCoreCommandLogsRotate(AbstractTestCase):
-    def test_rotate(self):
+    def test_rotate(self) -> None:
         # First remove all logs.
         self.kernel.run_function(
             function=core__logs__rotate, args={"max-days": False, "max-count": False}

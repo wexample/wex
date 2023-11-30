@@ -8,7 +8,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandDemoCommandResponseCollectionThree(AbstractTestCase):
-    def test_response_collection_three(self):
+    def test_response_collection_three(self) -> None:
         result = self.kernel.run_function(test__demo_command__response_collection_three)
 
         self.assertEqual(result.first(), TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION)

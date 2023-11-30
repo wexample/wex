@@ -2,7 +2,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandCommandExtensionYaml(AbstractTestCase):
-    def test_yaml(self):
+    def test_yaml(self) -> None:
         response = self.kernel.run_command(
             "test::command-extension/yaml", {"test-option": "THIS_IS_A_TEST"}
         )

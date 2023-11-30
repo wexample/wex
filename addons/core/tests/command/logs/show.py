@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandLogsShow(AbstractTestCase):
-    def test_show(self):
+    def test_show(self) -> None:
         output = self.kernel.run_function(core__logs__show).first()
 
         self.assertTrue(

@@ -4,7 +4,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestCoreCommandInstallUpdate(AbstractTestCase):
-    def test_update(self):
+    def test_update(self) -> None:
         request = self.kernel.create_command_request(
             self.kernel.get_command_resolver(
                 COMMAND_TYPE_ADDON
