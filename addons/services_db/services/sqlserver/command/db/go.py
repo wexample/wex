@@ -17,7 +17,7 @@ def sqlserver__db__go(
     app_dir: str,
     service: str,
     database: Optional[str] = None,
-):
+)->str:
     user = manager.get_config(f"service.{service}.user")
     password = manager.get_config(f"service.{service}.password")
     name = database or manager.get_config(f"service.{service}.name")

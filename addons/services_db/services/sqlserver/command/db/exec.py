@@ -20,7 +20,7 @@ def sqlserver__db__exec(
     service: str,
     command: str,
     database: Optional[str] = None,
-):
+) -> str:
     return (
         manager.kernel.run_function(
             sqlserver__db__go,

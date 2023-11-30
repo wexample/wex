@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 )
 def mongo__db__exec(
     manager: "AppAddonManager", app_dir: str, service: str, command: str
-):
+) -> str:
     return (
         manager.kernel.run_function(
             mongo__db__go,

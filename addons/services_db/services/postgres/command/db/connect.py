@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 )
 def postgres__db__connect(
     manager: "AppAddonManager", app_dir: str, service: str, protocol: str = "postgresql"
-):
+) -> str:
     user = manager.get_config(f"service.{service}.user")
     password = manager.get_config(f"service.{service}.password")
     name = manager.get_config(f"service.{service}.name")
