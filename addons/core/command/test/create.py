@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
-from src.const.types import StringsList
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.types import StringsList
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option

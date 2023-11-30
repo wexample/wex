@@ -22,7 +22,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
-from src.const.types import ShellCommandsList, ShellCommandResponseTuple
+from src.const.types import ShellCommandResponseTuple, ShellCommandsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
@@ -138,6 +138,7 @@ def execute_command_async(
         command,
         **popen_args,
     )
+
 
 def execute_command_sync(
     kernel: "Kernel",

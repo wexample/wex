@@ -50,8 +50,12 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
 
         self.assertResponseOutputBagItemContains(response, 4, "PYTHON_SUCCESS")
 
-        self.assertResponseOutputBagItemContains(response, 5, "PYTHON_SUCCESS_FROM_FILE")
+        self.assertResponseOutputBagItemContains(
+            response, 5, "PYTHON_SUCCESS_FROM_FILE"
+        )
 
-        self.assertResponseOutputBagItemContains(response, 6, "IN_CONTAINER_PYTHON_SCRIPT")
+        self.assertResponseOutputBagItemContains(
+            response, 6, "IN_CONTAINER_PYTHON_SCRIPT"
+        )
 
         self.assertResponseOutputBagItemContains(response, 7, "TEST_PYTHON_FILE")

@@ -20,7 +20,7 @@ class TestTestCommandReturnTypeStr(AbstractTestCase):
             },
         )
 
-    def _test_str(self, render_mode) -> str|None:
+    def _test_str(self, render_mode) -> str | None:
         response = self.kernel.run_function(
             test__return_type__str, {"arg": "yes"}, render_mode=render_mode
         )

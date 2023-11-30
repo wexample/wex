@@ -22,7 +22,9 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @app_command(help="Stop the given app")
-def app__app__stop(manager: "AppAddonManager", app_dir: str) -> QueuedCollectionResponse:
+def app__app__stop(
+    manager: "AppAddonManager", app_dir: str
+) -> QueuedCollectionResponse:
     kernel = manager.kernel
     name = manager.get_config("global.name")
 

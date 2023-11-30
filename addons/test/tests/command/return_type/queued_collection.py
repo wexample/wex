@@ -25,7 +25,7 @@ class TestTestCommandReturnTypeQueuedCollection(AbstractTestCase):
             },
         )
 
-    def _test_queued_collection(self, render_mode) -> str|None:
+    def _test_queued_collection(self, render_mode) -> str | None:
         return self.kernel.run_function(
             function=test__return_type__queued_collection, render_mode=render_mode
         ).print_wrapped(render_mode)

@@ -14,7 +14,9 @@ if TYPE_CHECKING:
     help="Create env variable pointing to files regarding environment extension"
 )
 @option("--dir", "-d", type=str, required=True, help="Argument")
-def app__config__bind_files(manager: "AppAddonManager", app_dir: str, dir: str) -> StringKeysDict:
+def app__config__bind_files(
+    manager: "AppAddonManager", app_dir: str, dir: str
+) -> StringKeysDict:
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)
     names_processed = []

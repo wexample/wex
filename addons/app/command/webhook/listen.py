@@ -12,7 +12,6 @@ from addons.app.WebhookHttpRequestHandler import (
     WebhookHttpRequestHandler,
 )
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_JSON,
@@ -21,6 +20,7 @@ from src.const.globals import (
     SYSTEM_SERVICES_PATH,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
+from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option

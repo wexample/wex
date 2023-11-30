@@ -9,8 +9,8 @@ from addons.app.helper.test import (
     test_build_app_name,
     test_create_app,
 )
-from src.const.types import AnyCallable, StringsList
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.const.types import AnyCallable, StringsList
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )

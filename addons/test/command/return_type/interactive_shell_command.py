@@ -11,7 +11,9 @@ if TYPE_CHECKING:
 
 
 @command(help="Return an int value", command_type=COMMAND_TYPE_ADDON)
-def test__return_type__interactive_shell_command(kernel: "Kernel") -> InteractiveShellCommandResponse:
+def test__return_type__interactive_shell_command(
+    kernel: "Kernel",
+) -> InteractiveShellCommandResponse:
     return InteractiveShellCommandResponse(
         kernel, ["echo", "INTERACTIVE_SHELL_COMMAND_RESPONSE"]
     )

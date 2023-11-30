@@ -2,13 +2,13 @@ import os
 from typing import TYPE_CHECKING
 
 from addons.core.command.test.create import core__test__create
-from src.const.types import StringKeysDict
 from src.const.globals import (
     COMMAND_CHAR_USER,
     COMMAND_EXTENSION_PYTHON,
     COMMAND_TYPE_ADDON,
     COMMAND_TYPE_CORE,
 )
+from src.const.types import StringKeysDict
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option

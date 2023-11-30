@@ -5,8 +5,8 @@ import unittest
 from typing import TYPE_CHECKING, Any
 
 from core.response.AbstractResponse import AbstractResponse
-from src.const.types import ShellCommandResponseTuple, AnyCallable, StringsDict
 from src.const.globals import COLOR_LIGHT_MAGENTA
+from src.const.types import AnyCallable, ShellCommandResponseTuple, StringsDict
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy
@@ -50,50 +50,31 @@ class AbstractTestCase(unittest.TestCase):
         )
 
     def assertIsDict(self, value: Any) -> None:
-        self.assertIsOfType(
-            value,
-            dict
-        )
+        self.assertIsOfType(value, dict)
 
     def assertIsList(self, value: Any) -> None:
-        self.assertIsOfType(
-            value,
-            list
-        )
+        self.assertIsOfType(value, list)
 
     def assertIsStr(self, value: Any) -> None:
-        self.assertIsOfType(
-            value,
-            str
-        )
+        self.assertIsOfType(value, str)
 
     def assertIsOfType(self, value: Any, type_: type) -> None:
-        self.assertTrue(
-            isinstance(
-                value,
-                type_
-            )
-        )
+        self.assertTrue(isinstance(value, type_))
 
-    def assertResponseFirstContains(self, response: AbstractResponse, expected: Any) -> None:
-        self.assertTrue(
-            expected in response.first()
-        )
+    def assertResponseFirstContains(
+        self, response: AbstractResponse, expected: Any
+    ) -> None:
+        self.assertTrue(expected in response.first())
 
     def assertResponseOutputBagItemContains(
-        self, response: AbstractResponse, index:int, expected: Any) -> None:
-        self.assertTrue(
-            expected in response.output_bag[index].print()
-        )
+        self, response: AbstractResponse, index: int, expected: Any
+    ) -> None:
+        self.assertTrue(expected in response.output_bag[index].print())
 
     def assertStringContains(self, value: Any, expected: str):
-        self.assertTrue(
-            isinstance(value, str)
-        )
+        self.assertTrue(isinstance(value, str))
 
-        self.assertTrue(
-            expected in value
-        )
+        self.assertTrue(expected in value)
 
     def assertDictKeysEquals(self, result: StringsDict, expected: StringsDict) -> None:
         for key, value in expected.items():
@@ -148,7 +129,9 @@ class AbstractTestCase(unittest.TestCase):
             color=COLOR_LIGHT_MAGENTA,
         )
 
-    def start_docker_container(self, name: str = "test_container") -> ShellCommandResponseTuple:
+    def start_docker_container(
+        self, name: str = "test_container"
+    ) -> ShellCommandResponseTuple:
         return execute_command_sync(
             self.kernel,
             [
@@ -164,7 +147,9 @@ class AbstractTestCase(unittest.TestCase):
             ],
         )
 
-    def remove_docker_container(self, name: str = "test_container") -> ShellCommandResponseTuple:
+    def remove_docker_container(
+        self, name: str = "test_container"
+    ) -> ShellCommandResponseTuple:
         success, content = execute_command_sync(
             self.kernel,
             [

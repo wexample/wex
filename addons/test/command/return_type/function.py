@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from src.const.types import AnyCallable
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.types import AnyCallable
 from src.decorator.command import command
 from src.decorator.option import option
 

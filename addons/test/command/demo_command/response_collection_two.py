@@ -21,7 +21,9 @@ TEST_DEMO_COMMAND_TWO_RESULT_SHELL = "..TWO:shell-response"
 
 @test_command()
 @option("--abort", "-a", is_flag=True, required=False, help="Ask to abort")
-def test__demo_command__response_collection_two(kernel: "Kernel", abort: bool = False) -> QueuedCollectionResponse:
+def test__demo_command__response_collection_two(
+    kernel: "Kernel", abort: bool = False
+) -> QueuedCollectionResponse:
     def _test__demo_command__response_collection_two__simple_function(previous: None):
         return f"..TWO:simple-function-previous-value:should-be-string={previous}"
 

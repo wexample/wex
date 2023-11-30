@@ -11,7 +11,7 @@ from addons.app.migrations.migration_4_0_0 import (
     _migration_4_0_0_replace_docker_mapping,
     _migration_4_0_0_replace_docker_placeholders,
 )
-from src.const.types import StringsDict, StringKeysDict
+from src.const.types import StringKeysDict, StringsDict
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 
@@ -176,7 +176,9 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager):
     )
 
 
-def migration_5_0_0_replace_docker_services_names(content: StringKeysDict, services_names_changes: StringsDict):
+def migration_5_0_0_replace_docker_services_names(
+    content: StringKeysDict, services_names_changes: StringsDict
+):
     if "services" in content:
         new_services = {}
         for service_name, service_value in content["services"].items():
@@ -232,7 +234,7 @@ def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
     return None
 
 
-def _get_config_value(config: dict, key: str, default: Any = None):
+def _get_config_value(config: dict, key: str, default: Optional[Any] = None):
     return config[key] if key in config else default
 
 
