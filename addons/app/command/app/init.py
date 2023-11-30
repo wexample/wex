@@ -99,6 +99,8 @@ def app__app__init(
 
                 return False
 
+        return None
+
     def _init_step_copy_app() -> None:
         import shutil
 

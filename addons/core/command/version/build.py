@@ -73,6 +73,8 @@ def core__version__build(
 
                 return QueuedCollectionStopResponse(kernel, "Dirty repository")
 
+            return None
+
         def _core__version__build__increment_version(
             queue: AbstractQueuedCollectionResponseQueueManager,
         ) -> None:
@@ -144,3 +146,5 @@ def core__version__build(
         kernel.run_function(
             app__version__build, {"commit": commit, "app-dir": root_dir}
         )
+
+    return None

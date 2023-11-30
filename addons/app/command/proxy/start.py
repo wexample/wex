@@ -68,6 +68,8 @@ def app__proxy__start(
                 {"app-dir": proxy_path, "services": ["proxy"], "git": False},
             )
 
+        return None
+
     def _app__proxy__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:

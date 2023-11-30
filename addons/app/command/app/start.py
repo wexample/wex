@@ -99,6 +99,8 @@ def app__app__start(
             manager.log("App already running")
             return QueuedCollectionStopResponse(kernel, reason="APP_ALREADY_RUNNING")
 
+        return None
+
     def _app__app__start__proxy(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
@@ -132,6 +134,8 @@ def app__app__start(
                         "env": env,
                     },
                 )
+
+        return None
 
     def _app__app__start__config(
         queue: AbstractQueuedCollectionResponseQueueManager,

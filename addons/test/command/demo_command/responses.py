@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from src.const.types import AnyCallable
 from src.core.response.NonInteractiveShellCommandResponse import (
@@ -21,13 +21,15 @@ RESPONSES_DEFAULT_VALUES = {
 @option("--type", "-t", required=True, help="Response type to test")
 def test__demo_command__responses(
     kernel: "Kernel", type: str
-) -> str | AnyCallable | NonInteractiveShellCommandResponse:
+) -> Optional[str | AnyCallable | NonInteractiveShellCommandResponse]:
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
     elif type == "function":
         return _test__demo_command__responses_one
     elif type == "shell":
         return NonInteractiveShellCommandResponse(kernel, ["ls", "-la"])
+
+    return None
 
 
 def _test__demo_command__responses_one() -> str:
