@@ -7,6 +7,7 @@ from addons.app.command.app.exec import app__app__exec
 from addons.app.command.db.exec import app__db__exec
 from addons.app.const.app import APP_NO_SSL_ENVS
 from addons.app.decorator.app_command import app_command
+from src.core.response.AbstractResponse import ResponseCollection
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
@@ -65,7 +66,7 @@ def wordpress__url__replace(
     old_url: None | str = None,
     site_id: int = 1,
     yes: bool = False,
-) -> HiddenResponse:
+) -> HiddenResponse | QueuedCollectionResponse:
     kernel = manager.kernel
 
     def _build_urls(
@@ -79,11 +80,13 @@ def wordpress__url__replace(
         prefix = f"{base_prefix}{site_id}_" if site_id > 1 else base_prefix
 
         if not new_url:
-            env = manager.get_runtime_config("env")
+            env = str(manager.get_runtime_config("env"))
             protocol = f'http{"" if env in APP_NO_SSL_ENVS else "s"}'
             new_url = protocol + "://" + manager.get_runtime_config("domain_main")
 
-        new_url = wordpress__url__replace__prepare_url(kernel, new_url)
+        assert isinstance(new_url, str)
+
+        new_url = wordpress__url__replace__prepare_url(manager, new_url)
         if not new_url:
             return QueuedCollectionStopResponse(kernel, "WORDPRESS_MISSING_NEW_URL")
 
@@ -107,7 +110,9 @@ def wordpress__url__replace(
             if len(first):
                 old_url = first[0]
 
-        old_url = wordpress__url__replace__prepare_url(kernel, old_url)
+        assert isinstance(old_url, str)
+
+        old_url = wordpress__url__replace__prepare_url(manager, old_url)
         if not old_url:
             return QueuedCollectionStopResponse(kernel, "WORDPRESS_MISSING_OLD_URL")
 
@@ -136,7 +141,7 @@ def wordpress__url__replace(
     def _replace(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> QueuedCollectionResponse:
-        responses = []
+        responses: ResponseCollection = []
         previous = queue.get_previous_value()
         assert isinstance(previous, dict)
 
@@ -168,7 +173,7 @@ def wordpress__url__replace(
     return QueuedCollectionResponse(kernel, [_build_urls, _replace])
 
 
-def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url:str) -> bool | str:
+def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url: str) -> Optional[bool | str]:
     url = url.rstrip("/")  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):
@@ -178,7 +183,7 @@ def wordpress__url__replace__prepare_url(manager: "AppAddonManager", url:str) ->
     return url
 
 
-def wordpress__url__replace__is_valid_url(url:str) -> bool:
+def wordpress__url__replace__is_valid_url(url: str) -> bool:
     pattern = re.compile(
         r"^https?://(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+(?::\d+)?/?$"
     )

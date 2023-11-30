@@ -43,4 +43,3 @@ def sqlserver__service__ready(manager: "AppAddonManager", app_dir: str, service:
         return True
 
     return False
-N

@@ -189,13 +189,16 @@ def app__app__start(
     def _app__app__start__starting(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
+        compose_files = queue.get_previous_value()
+        assert isinstance(compose_files, list)
+
         return InteractiveShellCommandResponse(
             kernel,
             docker_exec_app_compose_command(
                 kernel,
                 app_dir,
                 [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
-                previous,
+                compose_files,
             ),
         )
 

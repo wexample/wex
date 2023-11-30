@@ -24,16 +24,14 @@ def default__version__parse(
 
             if "." in pre_build:
                 pre_build_parts = pre_build.split(".")
-                if len(pre_build_parts) == 2:
-                    pre_build_type, pre_build_number = pre_build_parts
-                else:
-                    pre_build_type, pre_build_number, _ = pre_build_parts
+                pre_build_type = pre_build_parts[0]
+                pre_build_number = int(pre_build_parts[1])
 
                 # pre_build_number can be : 1+build.1234
                 if "+" in pre_build_number:
                     pre_build_number, build_metadata = pre_build_number.split("+")
 
-                pre_build_number = int(pre_build_number) if pre_build_number else None
+                pre_build_number = pre_build_number if pre_build_number else None
 
         match = re.match(r"(\d+)?\.?(\d+)?\.?(\d+)?([-.+].*)?", version)
         major = intermediate = minor = None
