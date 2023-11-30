@@ -47,7 +47,7 @@ class AbstractAppTestCase(AbstractTestCase):
             f"Container {app_name_snake}_test_.*  Started",
         ]
 
-        shell_response = str(response.print())
+        shell_response = response.print_wrapped_str()
 
         self.log(shell_response)
 

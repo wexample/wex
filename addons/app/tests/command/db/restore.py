@@ -17,7 +17,7 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
                 },
             )
 
-            dump_file = response.print()
+            dump_file = response.print_wrapped_str()
 
             self.assertPathExists(dump_file)
 

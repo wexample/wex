@@ -166,6 +166,13 @@ class AbstractResponse(KernelChild, HasRequest):
 
         return str(value) if value is not None else None
 
+    def print_wrapped_str(
+        self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
+    ) -> str:
+        return str(self.print_wrapped_str(
+            render_mode
+        ))
+
     def get_first_output_printable_value(self) -> ResponsePrintType:
         if not len(self.output_bag):
             return None
