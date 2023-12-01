@@ -19,5 +19,7 @@ class TestCoreCommandTestCreate(AbstractTestCase):
         self.assertPathExists(file_path=test_file_path_test, exists=False)
 
         response = self.kernel.run_function(core__test__create, {"all": True})
+        tests = response.print()
+        assert isinstance(tests, list)
 
-        self.assertTrue(len(response.print()))
+        self.assertTrue(len(tests))

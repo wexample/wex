@@ -686,10 +686,7 @@ class AppAddonManager(AddonManager):
             or main_service
         )
 
-    def get_service_shell(self, service: str | None = None) -> Optional[str]:
-        return (
-            self.get_service_config(
+    def get_service_shell(self, service: str | None = None) -> str:
+        return self.get_service_config(
                 key="shell", service=(service or self.get_main_service())
-            )
-            or SHELL_DEFAULT
-        )
+            ) or SHELL_DEFAULT

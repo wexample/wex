@@ -44,6 +44,8 @@ def test__demo_command__response_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> StringKeysDict:
         previous = queue.get_previous_value()
+        assert isinstance(previous, list)
+
         return {"type": str(type(previous)), "length": len(previous)}
 
     def _test__demo_command__response_collection__sub_function_shell(
@@ -108,9 +110,9 @@ def test__demo_command__response_collection(
         previous = queue.get_previous_value()
         kernel.io.log("Previous : " + str(previous))
 
-        error = False
+        error: bool = False
         if previous != "__previous__":
-            error: True
+            error = True
 
         response = kernel.run_function(
             test__demo_command__counting_collection, {"initial": 1000}

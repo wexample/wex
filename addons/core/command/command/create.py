@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from addons.core.command.test.create import core__test__create
 from src.const.globals import (
@@ -53,7 +53,7 @@ def core__command__create(
     kernel.io.log("Creating command file...")
     request = kernel.create_command_request(command)
 
-    if not request:
+    if not request or not request.match:
         kernel.io.message(f"Unable to process command : {command}")
         return None
 
@@ -74,9 +74,11 @@ def core__command__create(
             if not command_path:
                 kernel.io.log("No given addon name, creating a local user command...")
 
-                return kernel.run_function(
+                data = kernel.run_function(
                     core__command__create, {"command": f"{COMMAND_CHAR_USER}{command}"}
                 ).first()
+
+                return cast(StringKeysDict, data)
 
         os.makedirs(os.path.dirname(command_path), exist_ok=True)
 

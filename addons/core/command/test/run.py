@@ -2,7 +2,7 @@ import importlib.util
 import os
 import sys
 import unittest
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any, cast
 
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.core.command.core.cleanup import core__core__cleanup
@@ -71,7 +71,7 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
                     f"{command_name}_test"
                 )
 
-                suite.addTests(loader.loadTestsFromModule(module))
+                suite.addTests(loader.loadTestsFromModule(cast(Any, module)))
 
     result = unittest.TextTestRunner(failfast=True).run(suite)
 

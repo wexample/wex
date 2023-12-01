@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional
 
-import git
+from git import Repo  # type: ignore
 
 from addons.app.command.config.set import app__config__set
 from addons.app.command.version.build import app__version__build
@@ -40,7 +40,7 @@ def core__version__build(
 ) -> Optional[QueuedCollectionResponse]:
     version = core_kernel_get_version(kernel)
     root_dir = kernel.get_path("root")
-    repo = git.Repo(root_dir)
+    repo = Repo(root_dir)
 
     if not commit:
         current_version = core_kernel_get_version(kernel)

@@ -21,6 +21,6 @@ def mongo__db__exec(
             mongo__db__go,
             {"app-dir": app_dir, "service": service},
             COMMAND_TYPE_SERVICE,
-        ).first()
+        ).print_wrapped_str()
         + f' --quiet --eval "{command}"'
     )

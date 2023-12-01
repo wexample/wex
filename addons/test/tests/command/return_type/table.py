@@ -28,7 +28,7 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             self.assertResponseFirstContains(response, "body")
 
-            data = json.loads(response.print_wrapped(render_mode))
+            data = json.loads(response.print_wrapped_str(render_mode))
 
             self.assertIsDict(data)
             self.assertIsList(data["body"])

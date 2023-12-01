@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-import git
+from git import Repo  # type: ignore
 
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment
@@ -28,9 +28,9 @@ if TYPE_CHECKING:
 )
 def app__version__build(
     manager: "AppAddonManager",
+    app_dir: str,
     version: Optional[str] = None,
     commit: bool = False,
-    app_dir: Optional[str] = False,
 ) -> Optional[str]:
     kernel = manager.kernel
 
@@ -41,15 +41,15 @@ def app__version__build(
             new_version = kernel.run_function(
                 default__version__increment,
                 {"version": manager.get_config("global.version")},
-            ).first()
+            ).print_wrapped_str()
 
         # Save new version
         kernel.io.log(f"New app version : {new_version}")
 
         manager.set_config("global.version", new_version)
     else:
-        repo = git.Repo(app_dir)
-        new_version = manager.get_config("global.version")
+        repo = Repo(app_dir)
+        new_version = str(manager.get_config("global.version"))
 
         if not repo.is_dirty(untracked_files=True):
             kernel.io.log("No changes to commit")

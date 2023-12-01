@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Update local /etc/hosts file")
 def app__hosts__update(kernel: "Kernel") -> None:
-    new_block_content = []
+    new_block_content_list = []
     ip = kernel.run_function(docker__docker__ip).first()
 
     manager: AppAddonManager = AppAddonManager(kernel)
@@ -28,10 +28,12 @@ def app__hosts__update(kernel: "Kernel") -> None:
                 kernel.io.log(f"Found app [{app_name}]")
 
                 domains = manager.get_runtime_config("domains")
-                for domain in domains:
-                    new_block_content.append(f"{ip}\t{domain}")
+                assert isinstance(domains, list)
 
-    new_block_content = os.linesep.join(new_block_content)
+                for domain in domains:
+                    new_block_content_list.append(f"{ip}\t{domain}")
+
+    new_block_content = os.linesep.join(new_block_content_list)
 
     kernel.io.log(f"Updating {SYSTEM_HOSTS_PATH}")
 

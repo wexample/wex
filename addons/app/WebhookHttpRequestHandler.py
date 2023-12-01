@@ -6,13 +6,13 @@ from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict, Optional, Dict
 
 from src.helper.array import array_replace_value
 from src.helper.routing import (
     routing_get_route_info,
     routing_get_route_name,
-    routing_is_allowed_route,
+    routing_is_allowed_route, RouteInfo,
 )
 
 WEBHOOK_COMMAND_PATH_PLACEHOLDER = "__URL__"
@@ -21,6 +21,19 @@ WEBHOOK_STATUS_STARTED = "started"
 WEBHOOK_STATUS_STARTING = "starting"
 WEBHOOK_STATUS_COMPLETE = "complete"
 WEBHOOK_STATUS_ERROR = "error"
+
+
+class Output(TypedDict, total=False):
+    command: list
+    response: Dict[str, Any]
+    pid: int
+    status: str
+    error: str
+    task_id: str
+    path: str
+    info: Optional[RouteInfo]
+    details: str
+    traceback: str
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
@@ -45,7 +58,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
         try:
             error = False
-            output = {}
+            output: Output = {}
 
             status = WEBHOOK_STATUS_STARTING
             if not routing_is_allowed_route(self.path, self.routes):

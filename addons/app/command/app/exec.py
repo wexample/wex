@@ -103,13 +103,18 @@ def app__app__exec(
             sub_command = result[index].first()
 
     # Convert command in list to string
-    command = args_parse_one(command)
-    if isinstance(command, list):
-        command = command_to_string(command)
+    command_parsed = args_parse_one(command)
+    if isinstance(command_parsed, list):
+        command_str = command_to_string(command)
     # In sync mode we pass command to Popen,
     # so we don't need to wrap it.
-    elif not sync:
-        command = command_escape(command)
+    else:
+        assert isinstance(command_parsed, str)
+        
+        if not sync:
+            command_str = command_escape(command_parsed)
+        else:
+            command_str = command_parsed
 
     # Prepare the final command to be executed
     final_command = []
@@ -119,7 +124,7 @@ def app__app__exec(
         final_command += ["&&"]
 
     # Add the main command
-    final_command += [command]
+    final_command += [command_str]
 
     # Append the final command to docker_command
     docker_command += ["-c", command_to_string(final_command)]

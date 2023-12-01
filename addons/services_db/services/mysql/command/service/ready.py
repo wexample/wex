@@ -45,6 +45,9 @@ def mysql__service__ready(
     assert isinstance(response, NonInteractiveShellCommandResponse)
 
     if response.success and len(response.output_bag):
-        return str(response.output_bag[0][0]).strip() == "mysqld is alive"
+        output_list = response.get(0)
+        assert isinstance(output_list, list)
 
-    return response.success
+        return str(output_list[0]).strip() == "mysqld is alive"
+
+    return response.success is True
