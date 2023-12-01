@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
-from src.core.response.FunctionResponse import FunctionResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -15,6 +14,7 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
     DefaultQueuedCollectionResponseQueueManager,
 )
@@ -27,7 +27,7 @@ from src.core.response.queue_collection.QueuedCollectionPathManager import (
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.helper.args import args_is_basic_value, args_in_function
+from src.helper.args import args_in_function, args_is_basic_value
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -132,10 +132,11 @@ class QueuedCollectionResponse(AbstractResponse):
         response = resolver.wrap_response(self.collection[step_index])
 
         if isinstance(response, FunctionResponse):
-            if not args_in_function(response.function, 'queue'):
+            if not args_in_function(response.function, "queue"):
                 raise self.kernel.io.error(
                     'Argument "queue: AbstractQueuedCollectionResponseQueueManager" '
-                    'is required by every callback function in queue collection response')
+                    "is required by every callback function in queue collection response"
+                )
 
         response.render(request=request, args=render_args, render_mode=render_mode)
 

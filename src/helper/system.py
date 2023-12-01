@@ -5,8 +5,8 @@ import socket
 from contextlib import closing
 from typing import TYPE_CHECKING
 
-from src.const.types import Kwargs
 from src.const.globals import SERVICE_DAEMON_NAME
+from src.const.types import Kwargs
 from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:

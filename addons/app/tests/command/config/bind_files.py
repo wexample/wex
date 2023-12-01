@@ -12,4 +12,4 @@ class TestAppCommandConfigBindFiles(AbstractAppTestCase):
 
         self.assertResponseFirstContains(response, "web_php_ini")
 
-        self.assertIsStr(response.first())
+        self.assertIsStr(response.first()["web_php_ini"])

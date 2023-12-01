@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
-from src.const.types import ShellCommandsList
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.const.types import ShellCommandsList
 from src.decorator.option import option
 
 if TYPE_CHECKING:
