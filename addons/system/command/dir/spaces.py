@@ -1,7 +1,7 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
-from src.core.response.TableResponse import TableResponse
+from src.core.response.TableResponse import TableResponse, TableBody
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.file import file_get_human_readable_size
@@ -44,7 +44,7 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
     ]
     all_list = dir_list + file_list
 
-    body = []
+    body = TableBody()
     for entry in all_list:
         size = None
         if os.path.isdir(entry):
@@ -60,11 +60,11 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
 
     # Sort the list by raw size (the third element of each sublist)
     # The sort will be in ascending order, meaning smallest files will come first and largest last.
-    body = sorted(body, key=lambda x: x[2])
+    body_sorted = cast(TableBody, sorted(body, key=lambda x: x[2]))
 
     # Remove the raw size from the list
-    body = [[human_readable, name] for human_readable, name, _ in body]
+    body_sorted = [[human_readable, name] for human_readable, name, _ in body_sorted]
 
-    output_list.set_body(body)
+    output_list.set_body(body_sorted)
 
     return output_list

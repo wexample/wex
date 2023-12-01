@@ -52,4 +52,10 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return os.linesep.join(self.output_bag[0])
+        if not len(self.output_bag):
+            return None
+
+        output_string = self.output_bag[0]
+        assert isinstance(output_string, str)
+        
+        return os.linesep.join(output_string)

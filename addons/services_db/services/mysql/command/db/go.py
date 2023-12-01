@@ -13,13 +13,12 @@ if TYPE_CHECKING:
 )
 def mysql__db__go(manager: "AppAddonManager", app_dir: str, service: str) -> str:
     return (
-        "mysql "
-        + manager.kernel.run_function(
+        "mysql " + manager.kernel.run_function(
             mysql__db__connect,
             {
                 "app-dir": app_dir,
                 "service": service,
             },
             type=COMMAND_TYPE_SERVICE,
-        ).first()
+        ).print_wrapped_str()
     )

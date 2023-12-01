@@ -17,7 +17,8 @@ from src.core.response.AbstractTerminalSectionResponse import (
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-TableBody = List[List[BasicInlineValue]]
+TableBodyLine = List[BasicInlineValue]
+TableBody = List[TableBodyLine]
 
 
 class TableResponse(AbstractTerminalSectionResponse):
@@ -98,7 +99,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         separator_line = "+" + "-" * total_line_length + "+" + os.linesep
 
         bash_array = ""
-        bash_array += self.render_cli_title(self.title, total_line_length + 2)
+        bash_array += self.render_cli_title(total_line_length + 2)
         bash_array += separator_line
 
         # Add header only if exists
