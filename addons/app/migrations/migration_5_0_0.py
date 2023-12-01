@@ -13,7 +13,7 @@ from addons.app.migrations.migration_4_0_0 import (
 )
 from addons.docker.types.docker import DockerCompose
 from src.helper.data_yaml import yaml_load
-from src.const.types import StringKeysDict, StringsDict, StringsList
+from src.const.types import StringKeysDict, StringsDict, StringsList, AnyList
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 
@@ -182,11 +182,13 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
 
 
 def migration_5_0_0_replace_docker_services_names(
-    content: StringKeysDict, services_names_changes: StringsDict
+    content: DockerCompose, services_names_changes: StringsDict
 ) -> None:
     if "services" in content:
         new_services = {}
         for service_name, service_value in content["services"].items():
+            assert isinstance(service_value, dict)
+
             new_service_name = service_name
             for search, replacement in services_names_changes.items():
                 if search in new_service_name:
@@ -200,18 +202,18 @@ def migration_5_0_0_replace_docker_services_names(
 
 def replace_service_names_in_field(
     field: StringsDict | StringsList, services_names_changes: StringsDict
-) -> StringsDict | StringsList:
+) -> Optional[StringsDict | StringsList]:
     if isinstance(field, list):
-        new_field = []
+        field_list: AnyList = []
         for item in field:
             new_item = item
             for search, replacement in services_names_changes.items():
                 if search in new_item:
                     new_item = new_item.replace(search, replacement)
-            new_field.append(new_item)
-        return new_field
+            field_list.append(new_item)
+        return field_list
     elif isinstance(field, dict):
-        new_field = {}
+        field_dict: StringKeysDict = {}
         for key, value in field.items():
             new_key = key
             new_value = value
@@ -220,12 +222,13 @@ def replace_service_names_in_field(
                     new_key = new_key.replace(search, replacement)
                 if isinstance(new_value, str) and search in new_value:
                     new_value = new_value.replace(search, replacement)
-            new_field[new_key] = new_value
-        return new_field
+            field_dict[new_key] = new_value
+        return field_dict
+    return None
 
 
 def migration_5_0_0_replace_docker_services_references(
-    content: StringKeysDict, services_names_changes: StringsDict
+    content: DockerCompose, services_names_changes: StringsDict
 ) -> None:
     if "services" not in content:
         return
@@ -233,8 +236,10 @@ def migration_5_0_0_replace_docker_services_references(
     for service_name, service_value in content["services"].items():
         for field_name in ["depends_on", "links", "extends"]:
             if field_name in service_value:
-                service_value[field_name] = replace_service_names_in_field(
-                    service_value[field_name], services_names_changes
+                service_value_dict = cast(StringKeysDict, service_value)
+
+                service_value_dict[field_name] = replace_service_names_in_field(
+                    service_value_dict[field_name], services_names_changes
                 )
 
 
@@ -253,7 +258,7 @@ def _parse_4_0_0_config_file(file_path: str) -> StringsDict:
     if not os.path.isfile(file_path):
         return {}
 
-    config = {}
+    config: StringKeysDict = {}
 
     with open(file_path, "r") as f:
         for line in f.readlines():
@@ -266,8 +271,8 @@ def _parse_4_0_0_config_file(file_path: str) -> StringsDict:
 
             # If the value contains commas, convert it to a list
             if "," in value:
-                value = value.split(",")
-
-            config[key] = value
+                config[key] = value.split(",")
+            else:
+                config[key] = value
 
     return config

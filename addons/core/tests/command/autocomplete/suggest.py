@@ -165,7 +165,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                         "demo-command" + COMMAND_SEPARATOR_GROUP + "first",
                     ]
                 )
-                + " ",
+                          + " ",
             },
         ).first()
 
@@ -205,7 +205,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
     def tests_suggest_app(self) -> None:
         app_dir = test_create_app(self.kernel, DEFAULT_APP_TEST_NAME)
 
-        def callback() -> None:
+        def _callback() -> None:
             # Search only ".", should return all app commands
             suggestions: str = self.kernel.run_function(
                 core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
@@ -219,19 +219,10 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                 COMMAND_CHAR_APP,
             )
 
-        manager: AppAddonManager = self.kernel.addons["app"]
-        manager.exec_in_app_workdir(app_dir, callback)
+        manager = self.kernel.addons["app"]
+        assert isinstance(manager, AppAddonManager)
 
-        def callback() -> None:
-            # Search only ".", should return all app commands
-            suggestions = self.kernel.run_function(
-                core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
-            ).first()
-
-            print(suggestions)
-
-        # Test suggestions in core
-        manager.exec_in_app_workdir(self.kernel.directory.path, callback)
+        manager.exec_in_app_workdir(app_dir, _callback)
 
     def tests_suggest_app_args(self) -> None:
         suggestions = self.kernel.run_function(
@@ -239,9 +230,9 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             {
                 "cursor": 1,
                 "search": COMMAND_CHAR_APP
-                + "local_command"
-                + COMMAND_SEPARATOR_GROUP
-                + "test ",
+                          + "local_command"
+                          + COMMAND_SEPARATOR_GROUP
+                          + "test ",
             },
         ).first()
 

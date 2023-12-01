@@ -45,7 +45,7 @@ from src.const.types import (
     StringKeysDict,
     StringsList,
     YamlContent,
-    YamlContentDict,
+    YamlContentDict, Args, Kwargs,
 )
 from src.core.AddonManager import AddonManager
 from src.helper.args import args_push_one, args_shift_one
@@ -333,6 +333,12 @@ class AppAddonManager(AddonManager):
         self, key: str, default: Optional[AppConfigValue] = None, required: bool = False
     ) -> AppConfigValue:
         return self._get_config_value(self.config, key, default, required)
+
+    def get_config_int(self, *args: Args, **kwargs: Kwargs) -> int:
+        value = self._get_config_value(*args, **kwargs)
+        assert isinstance(value, str | int | float | bool | None)
+
+        return int(value)
 
     def _get_config_value(
         self,
@@ -660,8 +666,8 @@ class AppAddonManager(AddonManager):
             self.get_config(f"service.{service}.{key}")
             # Search into the service config
             or dict_get_item_by_path(
-                service_load_config(self.kernel, service), key, default
-            )
+            service_load_config(self.kernel, service), key, default
+        )
         )
 
     def get_main_service(self) -> str:

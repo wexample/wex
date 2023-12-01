@@ -46,7 +46,7 @@ StringMessageParameters = StringKeysDict
 
 CoreCommandArgsDict = Dict[str, BasicInlineValue]
 CoreCommandArgsList = StringsList
-CoreCommandCommaSeparatedList = Optional[Union[str, StringsList]]
+CoreCommandCommaSeparatedList = Union[str, StringsList]
 CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]
 CoreCommandString = str
 CoreCommandStringParts = StringsList

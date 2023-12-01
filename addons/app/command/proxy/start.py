@@ -93,8 +93,8 @@ def app__proxy__start(
 
                 kernel.io.success(f"Port {port_to_check} free")
 
-            check_port(manager.get_config("global.port_public"))
-            check_port(manager.get_config("global.port_public_secure"))
+            check_port(manager.get_config_int("global.port_public"))
+            check_port(manager.get_config_int("global.port_public_secure"))
 
         manager.exec_in_app_workdir(proxy_path, _callback)
 
@@ -107,7 +107,7 @@ def app__proxy__start(
                 "app-dir": proxy_path,
                 # If no env, use the global wex env.
                 "env": env
-                or kernel.run_function(
+                       or kernel.run_function(
                     app__env__get, {"app-dir": kernel.get_path("root")}
                 ).first(),
                 "user": user,

@@ -2,7 +2,7 @@ import os.path
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from git import Repo
+from git import Repo # type: ignore
 
 from addons.app.command.app.start import app__app__start
 from addons.app.command.hook.exec import app__hook__exec
@@ -48,7 +48,7 @@ def app__app__init(
     manager: "AppAddonManager",
     app_dir: str,
     name: Optional[str] = None,
-    services: Optional[CoreCommandCommaSeparatedList] = None,
+    services: CoreCommandCommaSeparatedList = "",
     domains: str = "",
     git: bool = True,
     env: str | None = None,
@@ -56,44 +56,39 @@ def app__app__init(
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
     env = env or APP_ENV_LOCAL
+    services_list = args_split_arg_array(services)
 
     if not app_dir:
         app_dir = current_dir
 
-    def _init_step_check_vars() -> None:
-        nonlocal name
+    if not name:
+        name = os.path.basename(os.path.dirname(app_dir))
+    # Cleanup name.
+    name_snake = string_to_snake_case(name)
 
+    def _init_step_check_vars() -> None:
         kernel.io.log(f'Creating app in "{app_dir}"')
 
-        if not name:
-            name = os.path.basename(os.path.dirname(app_dir))
-
-        # Cleanup name.
-        name = string_to_snake_case(name)
-
-        kernel.io.log(f'Using name "{name}"')
+        kernel.io.log(f'Using name "{name_snake}"')
 
         if not os.path.exists(app_dir):
             os.makedirs(app_dir, exist_ok=True)
 
     def _init_step_check_services() -> Optional[bool]:
-        nonlocal services
-        nonlocal kernel
-
-        services = args_split_arg_array(services)
-        if len(services) == 0:
+        if len(services_list) == 0:
             return None
 
         # Resolve dependencies for all services
-        services = kernel.run_function(
-            core__service__resolve, {"service": services}
+        services_resolved = kernel.run_function(
+            core__service__resolve, {"service": services_list}
         ).first()
+        assert isinstance(services_resolved, list)
 
         kernel.io.log("Checking services...")
-        for service in services:
+        for service in services_resolved:
             if (
                 not service
-                in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+                    in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
             ):
                 kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": service})
 
@@ -138,8 +133,8 @@ def app__app__init(
 
         kernel.io.log(f"Creating config...")
 
-        domains = args_split_arg_array(domains)
-        manager.config = manager.create_config(name, domains)
+        domains_list = args_split_arg_array(domains)
+        manager.config = manager.create_config(name_snake, domains_list)
 
         manager.save_config()
 
@@ -149,12 +144,10 @@ def app__app__init(
         manager.set_app_workdir(app_dir)
 
     def _init_step_install_service() -> None:
-        nonlocal services
-        nonlocal kernel
-
         kernel.io.log("Installing services...")
-        for service in services:
-            services = kernel.run_function(
+
+        for service in services_list:
+            kernel.run_function(
                 app__service__install,
                 {
                     "app-dir": app_dir,

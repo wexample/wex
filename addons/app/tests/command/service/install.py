@@ -2,12 +2,15 @@ from addons.app.command.config.write import app__config__write
 from addons.app.command.service.install import app__service__install
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
     def test_install(self) -> None:
-        services = self.kernel.resolvers[COMMAND_TYPE_SERVICE].get_registered_services()
+        resolver = self.kernel.resolvers[COMMAND_TYPE_SERVICE]
+        assert isinstance(resolver, ServiceCommandResolver)
+        services = resolver.get_registered_services()
 
         for service in services:
             if service not in ["default", "proxy"]:
@@ -17,7 +20,10 @@ class TestAppCommandServiceInstall(AbstractAppTestCase):
                 )
 
                 self.kernel.run_function(
-                    app__service__install, {"app-dir": app_dir, "service": service}
+                    app__service__install,
+                    {"app-dir": app_dir, "service": service}
                 )
 
-                self.kernel.run_function(app__config__write, {"app-dir": app_dir})
+                self.kernel.run_function(
+                    app__config__write,
+                    {"app-dir": app_dir})
