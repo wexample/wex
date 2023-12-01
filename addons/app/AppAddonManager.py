@@ -334,9 +334,14 @@ class AppAddonManager(AddonManager):
     ) -> AppConfigValue:
         return self._get_config_value(self.config, key, default, required)
 
-    def get_config_int(self, *args: Args, **kwargs: Kwargs) -> int:
-        value = self._get_config_value(*args, **kwargs)
-        assert isinstance(value, str | int | float | bool | None)
+    def get_config_int(
+        self,
+        key: str,
+        default: Optional[AppConfigValue] = None,
+        required: bool = False,
+    ) -> int:
+        value = self._get_config_value(self.config, key, default, required)
+        assert isinstance(value, str | int | float)
 
         return int(value)
 

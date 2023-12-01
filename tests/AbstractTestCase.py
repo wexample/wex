@@ -2,7 +2,7 @@ import inspect
 import os
 import shutil
 import unittest
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Iterable
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (
@@ -84,7 +84,9 @@ class AbstractTestCase(unittest.TestCase):
     def assertResponseOutputBagItemContains(
         self, response: AbstractResponse, index: int, expected: Any
     ) -> None:
-        self.assertTrue(expected in response.get(index).print())
+        output = response.get(index).print()
+        assert isinstance(output, Iterable)
+        self.assertTrue(expected in output)
 
     def assertStringContains(self, value: Any, expected: str) -> None:
         self.assertTrue(isinstance(value, str))
@@ -139,10 +141,12 @@ class AbstractTestCase(unittest.TestCase):
             f"{os.linesep}{message}" if message.count(os.linesep) > 0 else f" {message}"
         )
 
-        self.kernel.io.log(
-            f"test[{inspect.currentframe().f_code.co_name}]:" + str(message),
-            color=COLOR_LIGHT_MAGENTA,
-        )
+        frame_type = inspect.currentframe()
+        if frame_type:
+            self.kernel.io.log(
+                f"test[{frame_type.f_code.co_name}]:" + str(message),
+                color=COLOR_LIGHT_MAGENTA,
+            )
 
     def start_docker_container(
         self, name: str = "test_container"

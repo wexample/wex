@@ -1,6 +1,6 @@
 import os
 import click
-from AbstractTestCase import AbstractTestCase
+from tests.AbstractTestCase import AbstractTestCase
 
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
