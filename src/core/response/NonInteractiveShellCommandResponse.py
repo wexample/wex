@@ -57,5 +57,5 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
 
         output_string = self.output_bag[0]
         assert isinstance(output_string, str)
-        
+
         return os.linesep.join(output_string)

@@ -4,16 +4,16 @@ import subprocess
 import traceback
 from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
+from typing import Any, Dict, Optional, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import Args, Kwargs, StringsList
-from typing import Any, Dict, List, TypedDict, Optional, Dict
-
 from src.helper.array import array_replace_value
 from src.helper.routing import (
+    RouteInfo,
     routing_get_route_info,
     routing_get_route_name,
-    routing_is_allowed_route, RouteInfo,
+    routing_is_allowed_route,
 )
 
 WEBHOOK_COMMAND_PATH_PLACEHOLDER = "__URL__"
@@ -80,7 +80,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 command = array_replace_value(
                     command,
                     WEBHOOK_COMMAND_PORT_PLACEHOLDER,
-                    str(self.server.server_port), # type: ignore
+                    str(self.server.server_port),  # type: ignore
                 )
 
                 output["command"] = command

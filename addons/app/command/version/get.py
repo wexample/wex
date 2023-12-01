@@ -13,8 +13,10 @@ def app__version__get(manager: "AppAddonManager", app_dir: str | None = None) ->
     app_version_string: Optional[str] = None
     try:
         # Trust regular config file
-        app_version_string = str(manager.get_config(f'{CORE_COMMAND_NAME}.version'))
+        app_version_string = str(manager.get_config(f"{CORE_COMMAND_NAME}.version"))
     except Exception:
         pass
 
-    return app_version_string or str(migration_version_guess(manager.kernel, manager.get_app_dir_or_fail()))
+    return app_version_string or str(
+        migration_version_guess(manager.kernel, manager.get_app_dir_or_fail())
+    )

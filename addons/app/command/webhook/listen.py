@@ -4,14 +4,13 @@ from http.server import HTTPServer
 from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.command.webhook.status import app__webhook__status
+from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 from addons.app.WebhookHttpRequestHandler import (
     WEBHOOK_COMMAND_PATH_PLACEHOLDER,
     WEBHOOK_COMMAND_PORT_PLACEHOLDER,
     WebhookHttpRequestHandler,
 )
 from addons.system.command.system.is_docker import system__system__is_docker
-from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
-from src.const.types import AnyCallable
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_JSON,
@@ -20,6 +19,7 @@ from src.const.globals import (
     SYSTEM_SERVICES_PATH,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
+from src.const.types import AnyCallable
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -37,7 +37,6 @@ from src.helper.system import (
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
     from src.core.Kernel import Kernel
-
 
 
 @as_sudo()
@@ -204,7 +203,9 @@ def app__webhook__listen(
                 log_stdout: str = kernel.task_file_path("webhook-stdout")
 
             if not dry_run:
-                with HTTPServer(("", port), cast(AnyCallable, CustomWebhookHttpRequestHandler)) as server:
+                with HTTPServer(
+                    ("", port), cast(AnyCallable, CustomWebhookHttpRequestHandler)
+                ) as server:
                     kernel.io.log(f"Starting HTTP server on port {port}")
                     kernel.logger.append_event("EVENT_WEBHOOK_SERVER_STARTING")
                     server.serve_forever()

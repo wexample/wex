@@ -1,7 +1,6 @@
 import re
-from typing import Any
+from typing import Any, Dict, Optional, TypedDict
 from urllib.parse import parse_qs, urlparse
-from typing import TypedDict, Optional, Dict
 
 from app.typing.webhook import WebhookListenerRoutesMap
 

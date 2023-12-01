@@ -2,8 +2,8 @@ import os
 import re
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from src.helper.module import module_load_from_file
 from src.const.types import AnyCallable
+from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -42,7 +42,7 @@ def migration_get_function(
 
     module = module_load_from_file(
         path_migrations + "migration_" + version_snake + ".py",
-        "migration_" + version_snake
+        "migration_" + version_snake,
     )
 
     # Get the method from the module

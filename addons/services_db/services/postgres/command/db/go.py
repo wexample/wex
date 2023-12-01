@@ -15,7 +15,8 @@ if TYPE_CHECKING:
 )
 def postgres__db__go(manager: "AppAddonManager", app_dir: str, service: str) -> str:
     return (
-        "psql " + manager.kernel.run_function(
+        "psql "
+        + manager.kernel.run_function(
             postgres__db__connect,
             {
                 "app-dir": app_dir,

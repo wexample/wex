@@ -285,7 +285,9 @@ class Kernel(BaseClass):
             )
 
         request = self.create_command_request(
-            command=self.get_command_resolver(type).build_command_from_function(function),
+            command=self.get_command_resolver(type).build_command_from_function(
+                function
+            ),
             args=args,
             quiet=quiet,
         )
@@ -441,7 +443,9 @@ class Kernel(BaseClass):
         command_type = self.guess_command_type(command)
 
         if command_type:
-            request = self.get_command_resolver(command_type).create_command_request(command, args)
+            request = self.get_command_resolver(command_type).create_command_request(
+                command, args
+            )
             request.quiet = quiet
 
             return request

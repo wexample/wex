@@ -1,8 +1,9 @@
 import os.path
 import time
-from typing import TYPE_CHECKING, Optional, List, cast
+from typing import TYPE_CHECKING, List, Optional, cast
 
 import click
+from InquirerPy.base.control import Choice
 
 from addons.app.command.app.go import app__app__go
 from addons.app.command.app.perms import app__app__perms
@@ -41,7 +42,6 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
 from src.helper.prompt import prompt_choice
-from InquirerPy.base.control import Choice
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -83,7 +83,11 @@ def app__app__start(
                 if click.confirm(
                     "No .wex/.env file, would you like to create it ?", default=True
                 ):
-                    env = prompt_choice("Select an env:", cast(List[str | Choice], APP_ENVS), APP_ENV_LOCAL)
+                    env = prompt_choice(
+                        "Select an env:",
+                        cast(List[str | Choice], APP_ENVS),
+                        APP_ENV_LOCAL,
+                    )
 
                 # User said "no" or chose "abort"
                 if not env:
@@ -119,12 +123,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 

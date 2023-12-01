@@ -1,7 +1,6 @@
-from tests.AbstractTestCase import AbstractTestCase
-
 from src.core.FatalError import FatalError
 from src.helper.file import file_remove_file_if_exists
+from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestLogging(AbstractTestCase):

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import psutil
 
-from src.core.response.TableResponse import TableResponse, TableBody
+from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.command import command
 from src.helper.file import file_get_human_readable_size
 

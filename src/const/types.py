@@ -4,12 +4,13 @@ from typing import (
     Dict,
     List,
     Literal,
+    Mapping,
     Match,
     Optional,
     Set,
     Tuple,
     TypedDict,
-    Union, Mapping,
+    Union,
 )
 
 AddonNameType = Literal[

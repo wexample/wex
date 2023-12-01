@@ -45,7 +45,7 @@ from src.const.types import (
     StringKeysDict,
     StringsList,
     YamlContent,
-    YamlContentDict, Args, Kwargs,
+    YamlContentDict,
 )
 from src.core.AddonManager import AddonManager
 from src.helper.args import args_push_one, args_shift_one
@@ -671,8 +671,8 @@ class AppAddonManager(AddonManager):
             self.get_config(f"service.{service}.{key}")
             # Search into the service config
             or dict_get_item_by_path(
-            service_load_config(self.kernel, service), key, default
-        )
+                service_load_config(self.kernel, service), key, default
+            )
         )
 
     def get_main_service(self) -> str:
@@ -687,6 +687,9 @@ class AppAddonManager(AddonManager):
         )
 
     def get_service_shell(self, service: str | None = None) -> str:
-        return self.get_service_config(
+        return (
+            self.get_service_config(
                 key="shell", service=(service or self.get_main_service())
-            ) or SHELL_DEFAULT
+            )
+            or SHELL_DEFAULT
+        )

@@ -2,16 +2,16 @@ from typing import TYPE_CHECKING, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from addons.system.command.process.by_port import system__process__by_port
-from src.const.types import StringKeysDict
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
+from src.const.types import StringKeysDict
 from src.core.response.DictResponse import DictResponse
 from src.core.response.KeyValueResponse import KeyValueResponse
-from src.core.response.TableResponse import TableResponse, TableBody
+from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 class OutputData(TypedDict, total=False):
     process: KeyValueResponse
     log: TableResponse
+
 
 @as_sudo()
 @command(
@@ -73,4 +74,8 @@ def app__webhook__status(
 
         output["log"] = table_response
 
-    return DictResponse(kernel, cast(StringKeysDict, output), cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)
+    return DictResponse(
+        kernel,
+        cast(StringKeysDict, output),
+        cli_render_mode=KERNEL_RENDER_MODE_TERMINAL,
+    )

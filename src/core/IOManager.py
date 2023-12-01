@@ -170,7 +170,9 @@ class IOManager(KernelChild):
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute",
     ) -> None:
-        command_string = self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+        command_string = self.kernel.get_command_resolver(
+            command_type
+        ).build_full_command_from_function(
             script_command,
             args,
         )
@@ -190,15 +192,15 @@ class IOManager(KernelChild):
         commands_strings: StringsList = []
         for command in script_command_or_strings:
             if isinstance(command, ScriptCommand):
-                command_string = self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+                command_string = self.kernel.get_command_resolver(
+                    command_type
+                ).build_full_command_from_function(
                     command,
                     {},
                 )
 
                 # Only supports commands without args
-                commands_strings.append(
-                    f"{COLOR_CYAN}>{COLOR_RESET} {command_string}"
-                )
+                commands_strings.append(f"{COLOR_CYAN}>{COLOR_RESET} {command_string}")
             else:
                 commands_strings.append(command)
 

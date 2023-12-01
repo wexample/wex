@@ -17,7 +17,7 @@ from src.decorator.option import option
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-from typing import TypedDict, Union
+from typing import TypedDict
 
 
 class SourceData(TypedDict, total=False):
@@ -87,7 +87,9 @@ def app__webhook__exec(
     def _execute(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
-        return kernel.get_command_resolver(command_type).run_command_request_from_url_path(command_path)
+        return kernel.get_command_resolver(
+            command_type
+        ).run_command_request_from_url_path(command_path)
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(

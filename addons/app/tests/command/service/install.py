@@ -2,8 +2,8 @@ from addons.app.command.config.write import app__config__write
 from addons.app.command.service.install import app__service__install
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
@@ -20,10 +20,7 @@ class TestAppCommandServiceInstall(AbstractAppTestCase):
                 )
 
                 self.kernel.run_function(
-                    app__service__install,
-                    {"app-dir": app_dir, "service": service}
+                    app__service__install, {"app-dir": app_dir, "service": service}
                 )
 
-                self.kernel.run_function(
-                    app__config__write,
-                    {"app-dir": app_dir})
+                self.kernel.run_function(app__config__write, {"app-dir": app_dir})

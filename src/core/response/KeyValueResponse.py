@@ -5,7 +5,8 @@ from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMIN
 from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
-    StringKeysDict, StringsList,
+    StringKeysDict,
+    StringsList,
 )
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse

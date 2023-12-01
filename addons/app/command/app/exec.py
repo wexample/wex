@@ -110,7 +110,7 @@ def app__app__exec(
     # so we don't need to wrap it.
     else:
         assert isinstance(command_parsed, str)
-        
+
         if not sync:
             command_str = command_escape(command_parsed)
         else:

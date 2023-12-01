@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, cast
 
 from src.core.Logger import LoggerLogData
-from src.core.response.TableResponse import TableResponse, TableBody, TableBodyLine
+from src.core.response.TableResponse import TableBody, TableBodyLine, TableResponse
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.no_log import no_log
@@ -28,8 +28,9 @@ def core__logs__show(kernel: "Kernel", max: int = 10) -> TableResponse:
         if log:
             output.append(
                 cast(
-                    TableBodyLine,
-                    kernel.logger.build_summary(cast(LoggerLogData, log))))
+                    TableBodyLine, kernel.logger.build_summary(cast(LoggerLogData, log))
+                )
+            )
 
     response.set_body(output)
 
