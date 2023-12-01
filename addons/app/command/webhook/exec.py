@@ -17,6 +17,13 @@ from src.decorator.option import option
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
+from typing import TypedDict, Union
+
+
+class SourceData(TypedDict, total=False):
+    invalid_key: str
+    invalid_value: str
+
 
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
@@ -24,14 +31,14 @@ if TYPE_CHECKING:
 def app__webhook__exec(
     kernel: "Kernel", webhook_path: str, env: None | str = None
 ) -> Optional[QueuedCollectionResponse]:
-    from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
+    from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 
-    source_data = {}
+    source_data: SourceData = {}
     parsed_url = urlparse(webhook_path)
     path = parsed_url.path
     match = re.match(WEBHOOK_LISTENER_ROUTES_MAP["exec"]["pattern"], path)
 
-    if not match:
+    if not match or len(match.groups()) < 2:
         kernel.logger.append_event(
             "WEBHOOK_PATH_DOES_NOT_MATCH",
             {
@@ -41,7 +48,8 @@ def app__webhook__exec(
 
         return None
 
-    command_type = match[1]
+    command_type = str(match.group(1))
+    command_path = str(match.group(2))
 
     def _check(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -79,7 +87,7 @@ def app__webhook__exec(
     def _execute(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
-        return kernel.get_command_resolver(command_type).run_command_request_from_url_path(match[2])
+        return kernel.get_command_resolver(command_type).run_command_request_from_url_path(command_path)
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(

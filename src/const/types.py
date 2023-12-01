@@ -9,7 +9,7 @@ from typing import (
     Set,
     Tuple,
     TypedDict,
-    Union,
+    Union, Mapping,
 )
 
 AddonNameType = Literal[
@@ -44,7 +44,7 @@ Kwargs = Any
 ResponsePrintType = Optional[BasicInlineValue | StringKeysDict | AnyList]
 StringMessageParameters = StringKeysDict
 
-CoreCommandArgsDict = Dict[str, BasicInlineValue]
+CoreCommandArgsDict = Mapping[str, BasicInlineValue]
 CoreCommandArgsList = StringsList
 CoreCommandCommaSeparatedList = Union[str, StringsList]
 CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]

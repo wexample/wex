@@ -4,6 +4,8 @@ import subprocess
 import traceback
 from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
+
+from addons.app.typing.webhook import WebhookListenerRoutesMap
 from typing import Any, Dict, List
 
 from src.helper.array import array_replace_value
@@ -24,7 +26,7 @@ WEBHOOK_STATUS_ERROR = "error"
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
     log_path: str
-    routes: Dict[str, Any]
+    routes: WebhookListenerRoutesMap
     log_stderr: str
     log_stdout: str
 
@@ -74,7 +76,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     command, stdout=stdout_file, stderr=stderr_file, text=True
                 )
 
-                if not route["async"]:
+                if not route["is_async"]:
                     process.communicate()
 
                     # After the process is complete, you must close the files

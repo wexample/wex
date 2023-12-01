@@ -207,7 +207,7 @@ class AbstractCommandResolver(KernelChild):
 
     def build_full_command_from_function(
         self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
-    ) -> str | None:
+    ) -> str:
         return command_to_string(
             self.build_full_command_parts_from_script_command(script_command, args)
         )

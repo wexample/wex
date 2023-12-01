@@ -1,17 +1,17 @@
 import shutil
 import time
 from http.server import HTTPServer
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
-from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.command.webhook.status import app__webhook__status
-from addons.app.command.webhook.status_process import app__webhook__status_process
 from addons.app.WebhookHttpRequestHandler import (
     WEBHOOK_COMMAND_PATH_PLACEHOLDER,
     WEBHOOK_COMMAND_PORT_PLACEHOLDER,
     WebhookHttpRequestHandler,
 )
 from addons.system.command.system.is_docker import system__system__is_docker
+from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
+from src.const.types import AnyCallable
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     KERNEL_RENDER_MODE_JSON,
@@ -38,23 +38,6 @@ if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
     from src.core.Kernel import Kernel
 
-WEBHOOK_LISTENER_ROUTES_MAP = {
-    "exec": {
-        "async": True,
-        "pattern": r"^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-\/]+)$",
-        "function": app__webhook__exec,
-    },
-    "status": {
-        "async": False,
-        "pattern": r"^/status$",
-        "function": app__webhook__status,
-    },
-    "status_process": {
-        "async": False,
-        "pattern": r"^/status/process/([0-9\-]+)$",
-        "function": app__webhook__status_process,
-    },
-}
 
 
 @as_sudo()
@@ -136,24 +119,24 @@ def app__webhook__listen(
             kernel.io.log("Running Webhook listener...")
 
             # Build command
-            command = kernel.get_command_resolver(
+            command_string = kernel.get_command_resolver(
                 COMMAND_TYPE_ADDON
             ).build_full_command_from_function(app__webhook__listen, {"port": port})
 
             # Kill old process
-            process_kill_by_command(kernel, command)
+            process_kill_by_command(kernel, command_string)
 
             # Start a new listener
             process = execute_command_async(
                 kernel,
-                command.split(),
+                command_string.split(),
             )
 
             kernel.logger.append_event(
                 "EVENT_WEBHOOK_LISTEN",
                 {
                     "launcher": "async",
-                    "command": command,
+                    "command": command_string,
                 },
             )
 
@@ -166,7 +149,7 @@ def app__webhook__listen(
 
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
-                script_command: ScriptCommand = routes_map[route_name]["function"]
+                script_command: ScriptCommand = routes_map[route_name]["script_command"]
                 options = {}
                 needs_path = command_get_option(script_command, "webhook_path")
                 needs_port_number = command_get_option(
@@ -179,14 +162,14 @@ def app__webhook__listen(
                 if needs_port_number:
                     options["webhook_port_number"] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
 
-                command = kernel.get_command_resolver(
+                command_list = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON
                 ).build_full_command_parts_from_script_command(
-                    routes_map[route_name]["function"],
+                    routes_map[route_name]["script_command"],
                     options,
                 )
 
-                command += [
+                command_list += [
                     "--parent-task-id",
                     kernel.get_task_id(),
                     # Allow parsing
@@ -199,18 +182,18 @@ def app__webhook__listen(
                 ]
 
                 if needs_path:
-                    command += [
+                    command_list += [
                         "--webhook-path",
                         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
                     ]
 
                 if needs_port_number:
-                    command += [
+                    command_list += [
                         "--webhook-port-number",
                         WEBHOOK_COMMAND_PORT_PLACEHOLDER,
                     ]
 
-                routes_map[route_name]["command"] = command
+                routes_map[route_name]["command"] = command_list
 
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
@@ -221,7 +204,7 @@ def app__webhook__listen(
                 log_stdout: str = kernel.task_file_path("webhook-stdout")
 
             if not dry_run:
-                with HTTPServer(("", port), CustomWebhookHttpRequestHandler) as server:
+                with HTTPServer(("", port), cast(AnyCallable, CustomWebhookHttpRequestHandler)) as server:
                     kernel.io.log(f"Starting HTTP server on port {port}")
                     kernel.logger.append_event("EVENT_WEBHOOK_SERVER_STARTING")
                     server.serve_forever()
