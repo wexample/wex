@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
+from src.core.response.FunctionResponse import FunctionResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -26,7 +27,7 @@ from src.core.response.queue_collection.QueuedCollectionPathManager import (
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.helper.args import arg_is_basic_value
+from src.helper.args import args_is_basic_value, args_in_function
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -125,10 +126,17 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.queue_manager.render_content_complete()
 
         # Prepare args
-        render_args = {"manager": self.queue_manager.get_previous_value()}
+        render_args = {"queue": self.queue_manager}
 
         # Transform item in a response object.
         response = resolver.wrap_response(self.collection[step_index])
+
+        if isinstance(response, FunctionResponse):
+            if not args_in_function(response.function, 'queue'):
+                raise self.kernel.io.error(
+                    'Argument "queue: AbstractQueuedCollectionResponseQueueManager" '
+                    'is required by every callback function in queue collection response')
+
         response.render(request=request, args=render_args, render_mode=render_mode)
 
         first_response_item = None
@@ -159,7 +167,7 @@ class QueuedCollectionResponse(AbstractResponse):
                 self.has_next_step = response.has_next_step
                 return self.queue_manager.render_content_complete()
 
-        if not isinstance(response, AbstractResponse) and not arg_is_basic_value(
+        if not isinstance(response, AbstractResponse) and not args_is_basic_value(
             response
         ):
             self.kernel.io.error(

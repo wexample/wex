@@ -1,4 +1,5 @@
 import ast
+import inspect
 import re
 from typing import Any, Dict, Iterable, List, Optional, Union, cast
 
@@ -11,7 +12,7 @@ from src.const.types import (
     CoreCommandArgsDict,
     CoreCommandArgsList,
     StringKeysDict,
-    StringsList,
+    StringsList, AnyCallable,
 )
 from src.helper.string import string_to_kebab_case, string_to_snake_case
 
@@ -199,14 +200,14 @@ def args_parse_one(argument: str, default: Optional[Any] = None) -> BasicValue:
 
     try:
         parsed = ast.literal_eval(argument)
-        if arg_is_basic_value(parsed):
+        if args_is_basic_value(parsed):
             return cast(BasicValue, parsed)
         return default
     except (ValueError, SyntaxError):
         return argument
 
 
-def arg_is_basic_value(value: Any) -> bool:
+def args_is_basic_value(value: Any) -> bool:
     """
     Check if the value is compatible with basic YAML types
     """
@@ -217,13 +218,17 @@ def arg_is_basic_value(value: Any) -> bool:
         return True
 
     elif isinstance(value, list):
-        return all(arg_is_basic_value(item) for item in value)
+        return all(args_is_basic_value(item) for item in value)
 
     elif isinstance(value, dict):
         return all(
-            isinstance(key, str) and arg_is_basic_value(val)
+            isinstance(key, str) and args_is_basic_value(val)
             for key, val in value.items()
         )
 
     else:
         return False
+
+
+def args_in_function(function: AnyCallable, arg_name: str) -> bool:
+    return arg_name in inspect.signature(function).parameters

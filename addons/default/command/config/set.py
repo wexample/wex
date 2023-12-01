@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING
 
-from const.types import BasicInlineValue
+from src.const.types import BasicInlineValue
 from src.const.globals import CONFIG_SEPARATOR_DEFAULT
 from src.decorator.command import command
 from src.decorator.option import option
