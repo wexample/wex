@@ -1,6 +1,4 @@
-import importlib
 import os
-
 import click
 from AbstractTestCase import AbstractTestCase
 
@@ -8,6 +6,7 @@ from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.test.create import core__test__create
 from addons.core.command.version.build import core__version__build
+from src.helper.module import module_load_from_file
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     CORE_COMMAND_NAME,
@@ -145,12 +144,7 @@ class TestCore(AbstractTestCase):
             )
 
             if test_file_path:
-                # Import the test module
-                spec = importlib.util.spec_from_file_location(
-                    "test_module", test_file_path
-                )
-                test_module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(test_module)
+                test_module = module_load_from_file(test_file_path, "test_module")
 
                 # Check that the class and method exist
                 test_class_name = file_path_to_test_class_name(

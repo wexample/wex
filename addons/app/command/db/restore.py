@@ -24,6 +24,7 @@ def app__db__restore(
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
     service = manager.get_config("docker.main_db_container", required=True)
+    assert isinstance(service, str)
 
     if not service:
         kernel.io.error("Missing db container")

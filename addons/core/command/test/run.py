@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.core.command.core.cleanup import core__core__cleanup
+from src.helper.module import module_load_from_file
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
@@ -65,11 +66,11 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
             ):
                 kernel.io.log(f"Found test for command: {command_name}")
 
-                spec = importlib.util.spec_from_file_location(
-                    f"{command_name}_test", command_data["test"]
+                module = module_load_from_file(
+                    command_data["test"],
+                    f"{command_name}_test"
                 )
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
+
                 suite.addTests(loader.loadTestsFromModule(module))
 
     result = unittest.TextTestRunner(failfast=True).run(suite)

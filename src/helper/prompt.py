@@ -39,9 +39,9 @@ def prompt_choice(
     default: Optional[InquirerPyDefault] = None,
     **kwargs: Any,
 ) -> Any:
-    envs = choices.copy()
-    envs.append(Choice(value=None, name="> Abort"))
+    choices_all = choices.copy()
+    choices_all.append(Choice(value=None, name="> Abort"))
 
     return inquirer.select(  # type: ignore
-        message=question, choices=envs, default=default, **kwargs
+        message=question, choices=choices_all, default=default, **kwargs
     ).execute()

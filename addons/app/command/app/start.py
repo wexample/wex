@@ -1,6 +1,6 @@
 import os.path
 import time
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List, cast
 
 import click
 
@@ -41,6 +41,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
 from src.helper.prompt import prompt_choice
+from InquirerPy.base.control import Choice
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -70,10 +71,11 @@ def app__app__start(
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
     name = manager.get_config("global.name")
+    assert isinstance(name, str)
 
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> QueuedCollectionStopResponse:
+    ) -> Optional[QueuedCollectionStopResponse]:
         nonlocal env
 
         if not os.path.exists(APP_FILEPATH_REL_ENV):
@@ -81,7 +83,7 @@ def app__app__start(
                 if click.confirm(
                     "No .wex/.env file, would you like to create it ?", default=True
                 ):
-                    env = prompt_choice("Select an env:", APP_ENVS, APP_ENV_LOCAL)
+                    env = prompt_choice("Select an env:", cast(List[str | Choice], APP_ENVS), APP_ENV_LOCAL)
 
                 # User said "no" or chose "abort"
                 if not env:
@@ -117,12 +119,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                    app__app__started,
-                    {
-                        "app-dir": proxy_path,
-                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                    },
-                ).first()
+                app__app__started,
+                {
+                    "app-dir": proxy_path,
+                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                },
+            ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
@@ -266,6 +268,7 @@ def app__app__start(
     ) -> None:
         env = manager.get_runtime_config("env")
         domains = manager.get_runtime_config("domains")
+        assert isinstance(domains, list)
         domains_string = []
 
         for domain in domains:

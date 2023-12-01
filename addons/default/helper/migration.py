@@ -1,8 +1,8 @@
-import importlib
 import os
 import re
 from typing import TYPE_CHECKING, Any, List, Optional
 
+from src.helper.module import module_load_from_file
 from src.const.types import AnyCallable
 
 if TYPE_CHECKING:
@@ -40,12 +40,10 @@ def migration_get_function(
     path_migrations = migration_get_path(kernel)
     method_name = f"{method_part}_{version_snake}"
 
-    spec = importlib.util.spec_from_file_location(  # type: ignore
-        "migration_" + version_snake,
+    module = module_load_from_file(
         path_migrations + "migration_" + version_snake + ".py",
+        "migration_" + version_snake
     )
-    module = importlib.util.module_from_spec(spec)  # type: ignore
-    spec.loader.exec_module(module)
 
     # Get the method from the module
     return getattr(module, method_name, None)

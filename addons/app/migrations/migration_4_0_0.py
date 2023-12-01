@@ -18,12 +18,13 @@ if TYPE_CHECKING:
 
 
 def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
-    repo = git_get_or_create_repo(manager.app_dir)
+    app_dir = manager.get_app_dir_or_fail()
+    repo = git_get_or_create_repo(app_dir)
     projects_dirs = ["project", "wordpress"]
 
     def _migration_4_0_0_env() -> None:
         _migration_4_0_0_replace_placeholders(
-            manager.app_dir + ".env",
+            app_dir + ".env",
             {
                 "SITE_ENV": "APP_ENV",
             },
@@ -37,19 +38,19 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
 
     # Create ".wex" dir
     def _migration_4_0_0_dir() -> None:
-        new_dir_path = f"{manager.app_dir}/.wex"
+        new_dir_path = f"{app_dir}/.wex"
         # Make the directory
         os.makedirs(new_dir_path, exist_ok=True)
 
     # Move every file and folder to ".wex", except the "project" dir
     def _migration_4_0_0_move_root_environment_files() -> None:
-        for item in os.listdir(manager.app_dir):
+        for item in os.listdir(app_dir):
             if item in projects_dirs + [".git", ".wex"]:
                 continue
             git_move_or_file_move(repo, item, f".wex/{item}")
 
         if not os.path.exists(".wex/.env"):
-            app_create_env(APP_ENV_LOCAL, manager.app_dir)
+            app_create_env(APP_ENV_LOCAL, app_dir)
 
         # May be missing.
         os.makedirs(f".wex/tmp", exist_ok=True)
@@ -57,7 +58,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files() -> None:
         for projects_dir in projects_dirs:
-            dir_project = os.path.join(manager.app_dir, projects_dir)
+            dir_project = os.path.join(app_dir, projects_dir)
 
             if os.path.exists(dir_project):
                 for item in os.listdir(dir_project):
@@ -97,7 +98,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
 
 
 def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
-    env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
+    env_dir = f"{manager.get_app_dir_or_fail()}{APP_DIR_APP_DATA}"
 
     # Convert docker files.
     docker_dir = f"{env_dir}docker/"
