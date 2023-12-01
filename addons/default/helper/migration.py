@@ -50,7 +50,7 @@ def migration_get_function(
 
 
 def migration_exec(
-    kernel: "Kernel", version: str, method_part: str, arguments: List[str]
+    kernel: "Kernel", version: str, method_part: str, arguments: List[Any]
 ) -> Any:
     function = migration_get_function(kernel, version, method_part)
 

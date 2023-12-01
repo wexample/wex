@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
+from src.const.types import Args, Kwargs, StringsList
 from typing import Any, Dict, List, TypedDict, Optional, Dict
 
 from src.helper.array import array_replace_value
@@ -24,11 +25,11 @@ WEBHOOK_STATUS_ERROR = "error"
 
 
 class Output(TypedDict, total=False):
-    command: list
-    response: Dict[str, Any]
+    command: StringsList
+    response: Optional[Dict[Any, Any]]
     pid: int
     status: str
-    error: str
+    error: Optional[str]
     task_id: str
     path: str
     info: Optional[RouteInfo]
@@ -43,7 +44,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     log_stderr: str
     log_stdout: str
 
-    def __init__(self, *args: List[Any], **kwargs: Dict[str, Any]) -> None:
+    def __init__(self, *args: Args, **kwargs: Kwargs) -> None:
         self.logger = logging.getLogger("wex-webhook")
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(
@@ -57,8 +58,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         error_code = 500
 
         try:
-            error = False
-            output: Output = {}
+            error: Optional[str] = None
+            output = Output()
 
             status = WEBHOOK_STATUS_STARTING
             if not routing_is_allowed_route(self.path, self.routes):
@@ -66,6 +67,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 error_code = 404
             else:
                 route_name = routing_get_route_name(self.path, self.routes)
+                assert isinstance(route_name, str)
                 route = self.routes[route_name]
 
                 command = self.routes[route_name]["command"]
@@ -78,7 +80,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 command = array_replace_value(
                     command,
                     WEBHOOK_COMMAND_PORT_PLACEHOLDER,
-                    str(self.server.server_port),
+                    str(self.server.server_port), # type: ignore
                 )
 
                 output["command"] = command
@@ -104,15 +106,15 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                         stderr = f.read().strip()
 
                     try:
-                        stdout = json.loads(stdout) if stdout else {}
+                        stdout_dict = json.loads(stdout) if stdout else {}
                     except json.JSONDecodeError:
-                        stdout = stdout if stdout else {}
+                        stdout_dict = stdout if stdout else {}
 
                     if stderr:
                         error = "RESPONSE_ERROR"
 
                     status = WEBHOOK_STATUS_COMPLETE
-                    output["response"] = stdout
+                    output["response"] = stdout_dict
                 else:
                     status = WEBHOOK_STATUS_STARTED
 
@@ -143,10 +145,10 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
         try:
             # Serialize the output and send the response
-            output = json.dumps(output)
+            output_str = json.dumps(output)
         except Exception:
             self.logger.error(output)
 
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        self.wfile.write(output.encode())
+        self.wfile.write(output_str.encode())
