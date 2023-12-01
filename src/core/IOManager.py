@@ -170,19 +170,16 @@ class IOManager(KernelChild):
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute",
     ) -> None:
-        resolver = self.kernel.get_command_resolver(command_type)
-
-        if resolver:
-            command_string = resolver.build_full_command_from_function(
-                script_command,
-                args,
+        command_string = self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+            script_command,
+            args,
+        )
+        if command_string:
+            self.message_all_next_commands(
+                [command_string],
+                command_type,
+                message,
             )
-            if command_string:
-                self.message_all_next_commands(
-                    [command_string],
-                    command_type,
-                    message,
-                )
 
     def message_all_next_commands(
         self,
@@ -193,18 +190,15 @@ class IOManager(KernelChild):
         commands_strings: StringsList = []
         for command in script_command_or_strings:
             if isinstance(command, ScriptCommand):
-                resolver = self.kernel.get_command_resolver(command_type)
+                command_string = self.kernel.get_command_resolver(command_type).build_full_command_from_function(
+                    command,
+                    {},
+                )
 
-                if resolver:
-                    command_string = resolver.build_full_command_from_function(
-                        command,
-                        {},
-                    )
-
-                    # Only supports commands without args
-                    commands_strings.append(
-                        f"{COLOR_CYAN}>{COLOR_RESET} {command_string}"
-                    )
+                # Only supports commands without args
+                commands_strings.append(
+                    f"{COLOR_CYAN}>{COLOR_RESET} {command_string}"
+                )
             else:
                 commands_strings.append(command)
 

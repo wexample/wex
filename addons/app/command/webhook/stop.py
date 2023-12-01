@@ -29,14 +29,12 @@ def app__webhook__stop(
 
         kernel.io.message(f"Webhook server daemon stopped")
     else:
-        resolver = kernel.get_command_resolver(COMMAND_TYPE_ADDON)
-        if resolver:
-            stop_command = resolver.build_full_command_from_function(app__webhook__listen)
+        stop_command = kernel.get_command_resolver(COMMAND_TYPE_ADDON).build_full_command_from_function(app__webhook__listen)
 
-            if stop_command:
-                process_kill_by_command(
-                    kernel,
-                    stop_command,
-                )
+        if stop_command:
+            process_kill_by_command(
+                kernel,
+                stop_command,
+            )
 
-            kernel.io.message(f"Webhook server process killed")
+        kernel.io.message(f"Webhook server process killed")

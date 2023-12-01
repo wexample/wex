@@ -279,15 +279,13 @@ class Kernel(BaseClass):
         quiet: bool = False,
         render_mode: str | None = None,
     ) -> "AbstractResponse":
-        resolver = self.get_command_resolver(type)
-
-        if resolver is None:
+        if not self.has_command_resolver(type):
             return self.create_abort_response(
                 message=f'Resolver not found for type "{type}"'
             )
 
         request = self.create_command_request(
-            command=resolver.build_command_from_function(function),
+            command=self.get_command_resolver(type).build_command_from_function(function),
             args=args,
             quiet=quiet,
         )
@@ -428,8 +426,11 @@ class Kernel(BaseClass):
                 if response:
                     return
 
-    def get_command_resolver(self, type: str) -> Optional["AbstractCommandResolver"]:
-        return self.resolvers[type] if type in self.resolvers else None
+    def has_command_resolver(self, type: str) -> bool:
+        return type in self.resolvers
+
+    def get_command_resolver(self, type: str) -> "AbstractCommandResolver":
+        return self.resolvers[type]
 
     def create_command_request(
         self,
@@ -440,13 +441,10 @@ class Kernel(BaseClass):
         command_type = self.guess_command_type(command)
 
         if command_type:
-            resolver = self.get_command_resolver(command_type)
+            request = self.get_command_resolver(command_type).create_command_request(command, args)
+            request.quiet = quiet
 
-            if resolver:
-                request = resolver.create_command_request(command, args)
-                request.quiet = quiet
-
-                return request
+            return request
 
         if not quiet:
             self.io.error(
