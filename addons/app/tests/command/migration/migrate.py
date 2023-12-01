@@ -26,6 +26,6 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
             manager = AppAddonManager(self.kernel, app_dir=test_app_dir)
 
             self.assertEqual(
-                manager.config[CORE_COMMAND_NAME]["version"],
+                manager.get_config(f'{CORE_COMMAND_NAME}.version'),
                 core_kernel_get_version(self.kernel),
             )
