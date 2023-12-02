@@ -1,17 +1,17 @@
 import os
 import shutil
 
-import git
+from git import Repo, InvalidGitRepositoryError, GitCommandError  # type: ignore
 
 
-def git_get_or_create_repo(path: str) -> git.Repo:
+def git_get_or_create_repo(path: str) -> Repo:
     try:
-        return git.Repo(path)
-    except git.InvalidGitRepositoryError:
-        return git.Repo.init(path)
+        return Repo(path)
+    except InvalidGitRepositoryError:
+        return Repo.init(path)
 
 
-def git_move_or_file_move(repo: git.Repo, src: str, target: str) -> None:
+def git_move_or_file_move(repo: Repo, src: str, target: str) -> None:
     repo_dir = repo.working_tree_dir
 
     if not isinstance(repo_dir, str):
@@ -23,5 +23,5 @@ def git_move_or_file_move(repo: git.Repo, src: str, target: str) -> None:
 
     try:
         repo.git.mv(src, target)
-    except git.GitCommandError:
+    except GitCommandError:
         shutil.move(src, target)

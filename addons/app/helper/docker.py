@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILEPATH_REL_DOCKER_ENV
 from addons.docker.helper.docker import user_has_docker_permission
-from src.helper.command import execute_command_sync
+from src.const.types import ShellCommandsDeepList, ShellCommandsList
+from src.helper.command import execute_command_sync, command_to_string
 from src.helper.process import process_post_exec
 from src.helper.user import get_user_or_sudo_user
 
@@ -53,7 +54,7 @@ def docker_exec_app_compose_command(
     compose_files: List[str],
     docker_command: List[str] | str,
     profile: Optional[str] = None,
-) -> List[str]:
+) -> ShellCommandsList:
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
         kernel.io.error(
@@ -86,7 +87,7 @@ def docker_exec_app_compose_command(
     if isinstance(docker_command, str):
         docker_command = [docker_command]
 
-    return command + docker_command
+    return cast(ShellCommandsList, command + docker_command)
 
 
 def docker_exec_app_compose(
@@ -111,14 +112,14 @@ def docker_exec_app_compose(
         if not success:
             kernel.io.error(
                 f'Error during running docker compose "{docker_command}" : {os.linesep}{os.linesep}'
-                + " ".join(command)
+                + command_to_string(command)
                 + os.linesep.join(output),
                 trace=False,
             )
 
         return os.linesep.join(output)
 
-    process_post_exec(kernel, command)
+    process_post_exec(kernel, cast(ShellCommandsDeepList, command))
 
     return None
 

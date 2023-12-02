@@ -13,7 +13,7 @@ from src.const.globals import (
 )
 from src.const.types import (
     AnyCallable,
-    CoreCommandStringParts,
+    ShellCommandsList,
     OptionalCoreCommandArgsDict,
     OptionalCoreCommandArgsListOrDict,
     RegistryCommand,
@@ -195,7 +195,7 @@ class AbstractCommandResolver(KernelChild):
         self,
         script_command: ScriptCommand,
         args: Optional["OptionalCoreCommandArgsDict"] = None,
-    ) -> "CoreCommandStringParts":
+    ) -> "ShellCommandsList":
         return [
             CORE_COMMAND_NAME,
             self.build_command_from_function(script_command),
@@ -214,7 +214,7 @@ class AbstractCommandResolver(KernelChild):
 
     def build_command_parts_from_function_name(
         self, function_name: str
-    ) -> "CoreCommandStringParts":
+    ) -> "ShellCommandsList":
         """
         Returns the "default" format (addons style)
         """

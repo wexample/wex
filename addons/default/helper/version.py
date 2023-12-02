@@ -22,6 +22,8 @@ def is_greater_than(
             return True
 
         if first_value is not None and second_value is not None:
+            assert isinstance(first_value, int)
+            assert isinstance(second_value, int)
             if first_value < second_value:
                 return False
             elif first_value > second_value:

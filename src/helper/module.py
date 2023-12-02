@@ -1,6 +1,7 @@
 import importlib
 from importlib.abc import Loader
 from importlib.machinery import ModuleSpec
+from typing import cast
 
 
 def module_load_from_file(file_path: str, module_name: str) -> Loader:
@@ -11,4 +12,4 @@ def module_load_from_file(file_path: str, module_name: str) -> Loader:
     assert isinstance(spec.loader, Loader)
     spec.loader.exec_module(module)
 
-    return module
+    return cast(Loader, module)

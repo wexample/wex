@@ -97,7 +97,8 @@ def app__service__install(
                 app_dir, dependency, install_config, install_docker, install_git, force
             )
 
-    services = manager.get_config("service") or {}
+    services = manager.get_config("service", {})
+    assert isinstance(services, dict)
 
     if service in services and not force:
         kernel.io.log("Service already installed")
@@ -111,6 +112,10 @@ def app__service__install(
         manager.set_config("service", services)
 
     service_dir = service_get_dir(kernel, service)
+    if not service_dir:
+        return
+    assert isinstance(service_dir, str)
+
     service_sample_dir = os.path.join(service_dir, "samples") + "/"
     service_sample_dir_env = os.path.join(service_sample_dir, APP_DIR_APP_DATA) + "/"
 
@@ -141,8 +146,12 @@ def app__service__install(
             manager.set_config("docker.main_db_container", service)
 
     if "global" in service_config:
+        global_config = manager.get_config("global")
+        assert isinstance(global_config, dict)
+
         config_global = dict_merge(
-            manager.get_config("global"), service_config["global"]
+            global_config,
+            service_config["global"]
         )
 
         manager.set_config("global", config_global)

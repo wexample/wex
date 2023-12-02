@@ -47,6 +47,7 @@ def create_test_from_command(
     kernel: "Kernel", command: str, force: bool = False
 ) -> None | str:
     request = kernel.create_command_request(command)
+    match = request.get_match()
 
     test_path = request.resolver.build_path_or_fail(
         request=request, extension=COMMAND_EXTENSION_PYTHON, subdir="tests"
@@ -62,7 +63,7 @@ def create_test_from_command(
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
     command_function_name = request.resolver.get_function_name(
-        list(request.match.groups())
+        list(match.groups())
     )
 
     kernel.io.log(f"Creating test for command {command}")
@@ -75,15 +76,15 @@ def create_test_from_command(
         f'{kernel.get_path("templates")}test.{request.extension}.tpl',
         test_path,
         {
-            "addon_name": request.match[1],
+            "addon_name": match.group(1),
             "class_name": class_name,
             "command": command,
             "command_function_name": command_function_name,
-            "dir_group": string_to_snake_case(request.match[2]),
-            "dir_name": string_to_snake_case(request.match[3]),
-            "group_name": request.match[2],
+            "dir_group": string_to_snake_case(match.group(2)),
+            "dir_name": string_to_snake_case(match.group(3)),
+            "group_name": match.group(2),
             "method_name": method_name,
-            "name": request.match[3],
+            "name": match.group(3),
         },
     )
 

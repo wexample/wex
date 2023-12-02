@@ -10,7 +10,7 @@ from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_tree
+from src.helper.command import execute_command_tree_sync
 from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
     if kernel.registry_structure.content.env == APP_ENV_LOCAL:
-        execute_command_tree(
+        execute_command_tree_sync(
             kernel,
             [
                 "docker",

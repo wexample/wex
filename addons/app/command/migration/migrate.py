@@ -44,7 +44,7 @@ def app__migration__migrate(
     yes: bool = False,
 ) -> None:
     kernel = manager.kernel
-    app_dir = manager.get_app_dir_or_fail()
+    app_dir = manager.get_app_dir()
 
     if from_version:
         app_version_string = from_version

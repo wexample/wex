@@ -60,6 +60,7 @@ AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 
 ShellCommandsList = StringsList
+ShellCommandsDeepList = List[str | ShellCommandsList]
 ShellCommandResponseTuple = Tuple[bool, List[str]]
 
 

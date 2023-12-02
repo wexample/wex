@@ -23,11 +23,14 @@ def default__version__parse(kernel: "Kernel", version: str) -> VersionDescriptor
             if "." in pre_build:
                 pre_build_parts = pre_build.split(".")
                 pre_build_type = pre_build_parts[0]
-                pre_build_number = int(pre_build_parts[1])
+                pre_build_number_and_build = pre_build_parts[1]
 
                 # pre_build_number can be : 1+build.1234
-                if "+" in pre_build_number:
-                    pre_build_number, build_metadata = pre_build_number.split("+")
+                if "+" in pre_build_number_and_build:
+                    split = pre_build_number_and_build.split("+")
+                    pre_build_number = int(split[0])
+                else:
+                    pre_build_number = int(pre_build_number_and_build)
 
                 pre_build_number = pre_build_number if pre_build_number else None
 

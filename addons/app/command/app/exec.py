@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_build_long_container_name
+from src.const.types import ShellCommandsDeepList
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
@@ -64,7 +65,7 @@ def app__app__exec(
     kernel = manager.kernel
     container_name = container_name or manager.get_main_container_name()
 
-    docker_command = [
+    docker_command:ShellCommandsDeepList = [
         "docker",
         "exec",
     ]

@@ -1,7 +1,7 @@
 import os
 import platform
 import shutil
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
@@ -27,9 +27,9 @@ def proxy__service__install(
         manager.set_config("global.port_public", port)
         manager.set_config("global.port_public_secure", port_secure)
 
-    service_resolver: "ServiceCommandResolver" = manager.kernel.resolvers[
-        COMMAND_TYPE_SERVICE
-    ]
+    service_resolver = cast("ServiceCommandResolver",
+                            manager.kernel.resolvers[COMMAND_TYPE_SERVICE])
+    
     shutil.copytree(
         os.path.join(
             service_resolver.get_registered_service_data("proxy")["dir"], "samples"

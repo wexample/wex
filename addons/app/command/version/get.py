@@ -18,5 +18,5 @@ def app__version__get(manager: "AppAddonManager", app_dir: str | None = None) ->
         pass
 
     return app_version_string or str(
-        migration_version_guess(manager.kernel, manager.get_app_dir_or_fail())
+        migration_version_guess(manager.kernel, manager.get_app_dir())
     )

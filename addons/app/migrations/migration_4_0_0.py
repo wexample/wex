@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
-    app_dir = manager.get_app_dir_or_fail()
+    app_dir = manager.get_app_dir()
     repo = git_get_or_create_repo(app_dir)
     projects_dirs = ["project", "wordpress"]
 
@@ -98,7 +98,7 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
 
 
 def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
-    env_dir = f"{manager.get_app_dir_or_fail()}{APP_DIR_APP_DATA}"
+    env_dir = f"{manager.get_app_dir()}{APP_DIR_APP_DATA}"
 
     # Convert docker files.
     docker_dir = f"{env_dir}docker/"

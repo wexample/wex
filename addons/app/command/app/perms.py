@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
     user = manager.get_config("permissions.user", None)
+    user = str(user) if user else None
 
     if not user:
         env = kernel.run_function(
@@ -41,7 +42,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     group = manager.get_config("permissions.group", None)
 
     manager.log(f'Setting owner of all files to "{user}"')
-    set_owner_recursively(app_dir, user, group)
+    set_owner_recursively(app_dir, user, str(group) if group else None)
 
     manager.log(f'Setting file mode of all files to "755"')
     set_permissions_recursively(app_dir, 0o755)
