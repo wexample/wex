@@ -13,12 +13,12 @@ from src.const.globals import (
 )
 from src.const.types import (
     AnyCallable,
-    ShellCommandsList,
     OptionalCoreCommandArgsDict,
     OptionalCoreCommandArgsListOrDict,
     RegistryCommand,
     RegistryCommandsCollection,
     RegistryResolverData,
+    ShellCommandsList,
     StringsList,
     StringsMatch,
 )

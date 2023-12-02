@@ -5,7 +5,8 @@ from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
-    ShellCommandsDeepList, StringsList,
+    ShellCommandsDeepList,
+    StringsList,
 )
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -58,6 +59,4 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         output_string = self.output_bag[0]
         assert isinstance(output_string, list)
 
-        return os.linesep.join(
-            cast(StringsList, output_string)
-        )
+        return os.linesep.join(cast(StringsList, output_string))

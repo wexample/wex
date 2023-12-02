@@ -21,7 +21,9 @@ if TYPE_CHECKING:
 def process_post_exec(kernel: "Kernel", command: ShellCommandsDeepList | str) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
-        kernel.post_exec.append(cast(ShellCommandsDeepList, ["cd", os.getcwd(), "&&"] + command))
+        kernel.post_exec.append(
+            cast(ShellCommandsDeepList, ["cd", os.getcwd(), "&&"] + command)
+        )
     else:
         kernel.post_exec.append(f"cd {os.getcwd()} && " + command)
 
@@ -29,6 +31,7 @@ def process_post_exec(kernel: "Kernel", command: ShellCommandsDeepList | str) ->
         "Queuing shell command : " + command_to_string(command),
         verbosity=VERBOSITY_LEVEL_MAXIMUM,
     )
+
 
 def process_post_exec_function(
     kernel: "Kernel",

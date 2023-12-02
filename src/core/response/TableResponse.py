@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, List, Optional, Any
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
@@ -115,7 +115,9 @@ class TableResponse(AbstractTerminalSectionResponse):
         # Add data rows
         for row in self._body:
             row_str = "|"
-            for i in range(num_columns):  # Use the maximum number of columns based on header or first row
+            for i in range(
+                num_columns
+            ):  # Use the maximum number of columns based on header or first row
                 cell_content = row[i] if i < len(row) else ""
                 # Handle missing cells by filling them with an empty string
                 cell_str: str = str(cell_content)

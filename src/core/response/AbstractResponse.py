@@ -10,9 +10,10 @@ from src.const.globals import (
 )
 from src.const.types import (
     AnyList,
+    Args,
     JsonContent,
     OptionalCoreCommandArgsDict,
-    ResponsePrintType, Args,
+    ResponsePrintType,
 )
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest

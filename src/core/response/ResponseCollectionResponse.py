@@ -34,7 +34,7 @@ class ResponseCollectionResponse(AbstractResponse):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             output_list = super().print(render_mode, interactive_data)
             assert isinstance(output_list, str)
-            
+
             return os.linesep.join(output_list)
         if render_mode == KERNEL_RENDER_MODE_JSON:
             data = []

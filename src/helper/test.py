@@ -62,9 +62,7 @@ def create_test_from_command(
 
     class_name = file_path_to_test_class_name(kernel, test_path)
     method_name = file_path_to_test_method(kernel, test_path)
-    command_function_name = request.resolver.get_function_name(
-        list(match.groups())
-    )
+    command_function_name = request.resolver.get_function_name(list(match.groups()))
 
     kernel.io.log(f"Creating test for command {command}")
 

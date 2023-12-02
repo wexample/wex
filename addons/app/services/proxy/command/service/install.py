@@ -27,9 +27,10 @@ def proxy__service__install(
         manager.set_config("global.port_public", port)
         manager.set_config("global.port_public_secure", port_secure)
 
-    service_resolver = cast("ServiceCommandResolver",
-                            manager.kernel.resolvers[COMMAND_TYPE_SERVICE])
-    
+    service_resolver = cast(
+        "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
+    )
+
     shutil.copytree(
         os.path.join(
             service_resolver.get_registered_service_data("proxy")["dir"], "samples"

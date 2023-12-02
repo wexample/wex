@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILEPATH_REL_DOCKER_ENV
 from addons.docker.helper.docker import user_has_docker_permission
 from src.const.types import ShellCommandsDeepList, ShellCommandsList
-from src.helper.command import execute_command_sync, command_to_string
+from src.helper.command import command_to_string, execute_command_sync
 from src.helper.process import process_post_exec
 from src.helper.user import get_user_or_sudo_user
 

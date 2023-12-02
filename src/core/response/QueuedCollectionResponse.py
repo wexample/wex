@@ -7,8 +7,9 @@ from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
     BasicValue,
+    CoreCommandArgsDict,
     OptionalCoreCommandArgsDict,
-    ResponsePrintType, CoreCommandArgsDict,
+    ResponsePrintType,
 )
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
@@ -126,7 +127,7 @@ class QueuedCollectionResponse(AbstractResponse):
             return self.queue_manager.render_content_complete()
 
         # Prepare args
-        render_args = cast(CoreCommandArgsDict,  {"queue": self.queue_manager})
+        render_args = cast(CoreCommandArgsDict, {"queue": self.queue_manager})
 
         # Transform item in a response object.
         response = resolver.wrap_response(self.collection[step_index])

@@ -3,17 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    NoReturn,
-    Optional,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast
 
 import click.core
 
@@ -22,7 +12,11 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
-from src.const.types import ShellCommandResponseTuple, ShellCommandsDeepList, ShellCommandsList
+from src.const.types import (
+    ShellCommandResponseTuple,
+    ShellCommandsDeepList,
+    ShellCommandsList,
+)
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir

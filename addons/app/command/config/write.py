@@ -53,7 +53,9 @@ def app__config__write(
             return
 
         manager.log(f"Compiling docker compose file...")
-        yml_content = str(docker_exec_app_compose(kernel, app_dir, compose_files, "config"))
+        yml_content = str(
+            docker_exec_app_compose(kernel, app_dir, compose_files, "config")
+        )
 
         try:
             yaml.safe_load(yml_content)

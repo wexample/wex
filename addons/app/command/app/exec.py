@@ -65,7 +65,7 @@ def app__app__exec(
     kernel = manager.kernel
     container_name = container_name or manager.get_main_container_name()
 
-    docker_command:ShellCommandsDeepList = [
+    docker_command: ShellCommandsDeepList = [
         "docker",
         "exec",
     ]

@@ -27,7 +27,7 @@ def app__config__bind_files(
     for file in section_files:
         split = file.split(".")
         base_name = split[0]
-        conf_var_name_list:Optional[StringsList] = split.copy()
+        conf_var_name_list: Optional[StringsList] = split.copy()
         is_env = False
 
         # Check if there are more than two pieces in the file name

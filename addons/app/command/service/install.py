@@ -149,10 +149,7 @@ def app__service__install(
         global_config = manager.get_config("global")
         assert isinstance(global_config, dict)
 
-        config_global = dict_merge(
-            global_config,
-            service_config["global"]
-        )
+        config_global = dict_merge(global_config, service_config["global"])
 
         manager.set_config("global", config_global)
 
