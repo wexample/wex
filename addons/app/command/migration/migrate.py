@@ -45,6 +45,7 @@ def app__migration__migrate(
 ) -> None:
     kernel = manager.kernel
     app_dir = manager.get_app_dir()
+    app_version_string: str | None
 
     if from_version:
         app_version_string = from_version
@@ -52,7 +53,7 @@ def app__migration__migrate(
         app_version_string = None
         try:
             # Trust regular config file
-            app_version_string = str(manager.get_config(f"{CORE_COMMAND_NAME}.version"))
+            app_version_string = manager.get_config(f"{CORE_COMMAND_NAME}.version")
         except Exception:
             pass
 
