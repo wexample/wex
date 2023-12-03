@@ -1,8 +1,13 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType, StringsList
+from src.const.types import (
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    ShellCommandsDeepList,
+    ShellCommandsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import command_to_string, execute_command_sync
@@ -14,11 +19,14 @@ if TYPE_CHECKING:
 
 class InteractiveShellCommandResponse(AbstractResponse):
     def __init__(
-        self, kernel: "Kernel", shell_command: StringsList, ignore_error: bool = False
+        self,
+        kernel: "Kernel",
+        shell_command: ShellCommandsDeepList | ShellCommandsList,
+        ignore_error: bool = False,
     ) -> None:
         super().__init__(kernel)
 
-        self.shell_command: StringsList = shell_command.copy()
+        self.shell_command = cast(ShellCommandsDeepList, shell_command.copy())
         self.interactive_data = True
         self.ignore_error = ignore_error
 

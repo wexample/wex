@@ -1,11 +1,12 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
     StringKeysDict,
+    StringsList,
 )
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -46,7 +47,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
             section_width = max(len(line) for line in lines)
 
             # Generate the CLI title with the section width
-            output = self.render_cli_title(self.title, section_width)
+            output = self.render_cli_title(section_width)
 
             # Add pre-rendered key/value pairs to the output
             for line in lines:
@@ -66,7 +67,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return os.linesep.join(self.output_bag)
+            return os.linesep.join(cast(StringsList, self.output_bag))
         elif render_mode == KERNEL_RENDER_MODE_JSON:
             return self.dictionary_data
         return None

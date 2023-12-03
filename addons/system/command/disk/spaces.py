@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import psutil
 
-from src.core.response.TableResponse import TableResponse
+from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.command import command
 from src.helper.file import file_get_human_readable_size
 
@@ -24,7 +24,7 @@ def system__disk__spaces(kernel: "Kernel") -> TableResponse:
         ]
     )
 
-    body = []
+    body: TableBody = []
     for partition in psutil.disk_partitions():
         usage = psutil.disk_usage(partition.mountpoint)
 

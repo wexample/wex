@@ -10,6 +10,7 @@ from src.const.globals import (
 )
 from src.const.types import (
     AnyList,
+    Args,
     JsonContent,
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
@@ -179,11 +180,13 @@ class AbstractResponse(KernelChild, HasRequest):
         # can be empty in "none" render mode.
         return cast(ResponsePrintType, data)
 
-    def get(self, *args) -> AbstractResponse:
-        current_element = self
+    def get(self, *args: Args) -> AbstractResponse:
+        current_element: AbstractResponse = self
         for index in args:
             try:
-                current_element = current_element.output_bag[index]
+                response = current_element.output_bag[index]
+                assert isinstance(response, AbstractResponse)
+                current_element = response
             except (IndexError, AttributeError):
                 return self.kernel.io.error("Trying to access a out of range response")
 
