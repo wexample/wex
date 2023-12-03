@@ -34,6 +34,7 @@ class CommandRequest(BaseClass):
         self._args_list: Optional[CoreCommandArgsList] = []
         self._runner: Optional["AbstractCommandRunner"] = None
 
+        self.loaded: bool = False
         self.extension: None | str = None
         self.quiet: bool = False
         self.resolver: "AbstractCommandResolver" = resolver
@@ -128,6 +129,7 @@ class CommandRequest(BaseClass):
                 runner = YamlCommandRunner(self.resolver.kernel)
 
             if runner:
+                self.loaded = True
                 self.set_path(path)
                 self.extension = extension
 

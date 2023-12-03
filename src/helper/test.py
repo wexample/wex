@@ -8,6 +8,7 @@ from src.helper.string import string_to_pascal_case, string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+    from src.core.CommandRequest import CommandRequest
 
 
 def file_path_to_test_class_name(kernel: "Kernel", file_path: str) -> str:
@@ -46,7 +47,11 @@ def file_path_to_test_method(kernel: "Kernel", file_path: str) -> str:
 def create_test_from_command(
     kernel: "Kernel", command: str, force: bool = False
 ) -> None | str:
-    request = kernel.create_command_request(command)
+    request: "CommandRequest" = kernel.create_command_request(command)
+
+    if not request.loaded:
+        return
+
     match = request.get_match()
 
     test_path = request.resolver.build_path_or_fail(
