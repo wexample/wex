@@ -42,9 +42,8 @@ def app__webhook__exec(
         return None
 
     command_type = match[1]
-    resolver = kernel.get_command_resolver(command_type)
 
-    if not resolver:
+    if not command_type in kernel.resolvers:
         kernel.logger.append_event(
             "WEBHOOK_RESOLVER_NOT_FOUND",
             {
@@ -90,7 +89,7 @@ def app__webhook__exec(
     def _execute(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
-        return resolver.run_command_request_from_url_path(match[2])
+        return kernel.get_command_resolver(command_type).run_command_request_from_url_path(match[2])
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(
