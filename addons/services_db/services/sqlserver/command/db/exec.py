@@ -30,6 +30,6 @@ def sqlserver__db__exec(
                 "database": database,
             },
             COMMAND_TYPE_SERVICE,
-        ).first()
+        ).print_wrapped_str()
         + f' -h -1 -W -Q "SET NOCOUNT ON; {command}"'
     )

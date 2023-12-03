@@ -48,4 +48,4 @@ def mongo__service__ready(
     if isinstance(first, list) and first[0] == "1":
         return True
 
-    return response.success
+    return response.success is True

@@ -30,6 +30,6 @@ def postgres__db__exec(
                 "database": database,
             },
             COMMAND_TYPE_SERVICE,
-        ).first()
+        ).print_wrapped_str()
         + f' --pset=pager=off -t -A -c "{command}"'
     )

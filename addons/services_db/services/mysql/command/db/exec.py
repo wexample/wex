@@ -23,6 +23,6 @@ def mysql__db__exec(
             mysql__db__go,
             {"app-dir": app_dir, "service": service},
             COMMAND_TYPE_SERVICE,
-        ).first()
+        ).print_wrapped_str()
         + f' -s -N {app_name} -e "{command}"'
     )
