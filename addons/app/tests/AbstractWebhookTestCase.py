@@ -3,7 +3,7 @@ import os
 import shutil
 import time
 from http.client import HTTPConnection, HTTPResponse
-from typing import Optional, Tuple
+from typing import Optional, Tuple, cast
 
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
@@ -65,14 +65,14 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
         return response
 
-    def parse_response(self, response: HTTPResponse) -> StringKeysDict:
+    def parse_response(self, response: HTTPResponse) -> JsonContent:
         content = response.read()
         self.kernel.io.log("PARSING : " + str(content))
 
         data = json.loads(content)
         self.assertTrue(isinstance(data, dict))
 
-        return data
+        return cast(JsonContent, data)
 
     def copy_command_dir(self, app_dir: str, sub_dir: str) -> None:
         script_dir = os.path.join(
