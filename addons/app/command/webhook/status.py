@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from addons.system.command.process.by_port import system__process__by_port
@@ -8,14 +8,20 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_TERMINAL,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
+from src.const.types import StringKeysDict
 from src.core.response.DictResponse import DictResponse
 from src.core.response.KeyValueResponse import KeyValueResponse
-from src.core.response.TableResponse import TableResponse
+from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+
+
+class OutputData(TypedDict, total=False):
+    process: KeyValueResponse
+    log: TableResponse
 
 
 @as_sudo()
@@ -35,7 +41,7 @@ def app__webhook__status(
 
     assert isinstance(response, KeyValueResponse)
 
-    output = {"process": response}
+    output = OutputData(process=response)
 
     if response.dictionary_data["running"]:
         # Args are [python, main.py, task_id, ...]
@@ -45,7 +51,7 @@ def app__webhook__status(
         if "command" in response.dictionary_data:
             del response.dictionary_data["command"]
 
-        table = []
+        table: TableBody = []
 
         listener_log = kernel.logger.load_logs(task_id)
         if listener_log:
@@ -68,4 +74,8 @@ def app__webhook__status(
 
         output["log"] = table_response
 
-    return DictResponse(kernel, output, cli_render_mode=KERNEL_RENDER_MODE_TERMINAL)
+    return DictResponse(
+        kernel,
+        cast(StringKeysDict, output),
+        cli_render_mode=KERNEL_RENDER_MODE_TERMINAL,
+    )

@@ -58,8 +58,8 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         error_code = 500
 
         try:
-            error = False
-            output = {}
+            error: Optional[str] = None
+            output = Output()
 
             status = WEBHOOK_STATUS_STARTING
             if not routing_is_allowed_route(self.path, self.routes):
@@ -67,6 +67,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 error_code = 404
             else:
                 route_name = routing_get_route_name(self.path, self.routes)
+                assert isinstance(route_name, str)
                 route = self.routes[route_name]
 
                 command = self.routes[route_name]["command"]
@@ -79,7 +80,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                 command = array_replace_value(
                     command,
                     WEBHOOK_COMMAND_PORT_PLACEHOLDER,
-                    str(self.server.server_port),
+                    str(self.server.server_port),  # type: ignore
                 )
 
                 output["command"] = command
@@ -105,16 +106,16 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                         stderr = f.read().strip()
 
                     try:
-                        stdout = json.loads(stdout) if stdout else {}
+                        stdout_dict = json.loads(stdout) if stdout else {}
                     except json.JSONDecodeError:
-                        stdout = stdout if stdout else {}
+                        stdout_dict = stdout if stdout else {}
 
                     if stderr:
                         error = "RESPONSE_ERROR"
                         output["stderr"] = stderr
 
                     status = WEBHOOK_STATUS_COMPLETE
-                    output["response"] = stdout
+                    output["response"] = stdout_dict
                 else:
                     status = WEBHOOK_STATUS_STARTED
 
@@ -145,10 +146,10 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
         try:
             # Serialize the output and send the response
-            output = json.dumps(output)
+            output_str = json.dumps(output)
         except Exception:
             self.logger.error(output)
 
         self.send_header("Content-type", "application/json")
         self.end_headers()
-        self.wfile.write(output.encode())
+        self.wfile.write(output_str.encode())

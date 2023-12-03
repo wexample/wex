@@ -38,7 +38,7 @@ def app__webhook__exec(
     path = parsed_url.path
     match = re.match(WEBHOOK_LISTENER_ROUTES_MAP["exec"]["pattern"], path)
 
-    if not match:
+    if not match or len(match.groups()) < 2:
         kernel.logger.append_event(
             "WEBHOOK_PATH_DOES_NOT_MATCH",
             {
@@ -48,7 +48,7 @@ def app__webhook__exec(
 
         return None
 
-    command_type = match[1]
+    command_type = str(match.group(1))
 
     if not command_type in kernel.resolvers:
         kernel.logger.append_event(
@@ -59,6 +59,8 @@ def app__webhook__exec(
         )
 
         return None
+
+    command_path = str(match.group(2))
 
     def _check(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -96,7 +98,9 @@ def app__webhook__exec(
     def _execute(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
-        return kernel.get_command_resolver(command_type).run_command_request_from_url_path(match[2])
+        return kernel.get_command_resolver(
+            command_type
+        ).run_command_request_from_url_path(command_path)
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(
