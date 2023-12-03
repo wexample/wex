@@ -83,7 +83,11 @@ def app__app__start(
                 if click.confirm(
                     "No .wex/.env file, would you like to create it ?", default=True
                 ):
-                    env = prompt_choice("Select an env:", cast(List[str | Choice], APP_ENVS), APP_ENV_LOCAL)
+                    env = prompt_choice(
+                        "Select an env:",
+                        cast(List[str | Choice], APP_ENVS),
+                        APP_ENV_LOCAL,
+                    )
 
                 # User said "no" or chose "abort"
                 if not env:
@@ -119,12 +123,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
