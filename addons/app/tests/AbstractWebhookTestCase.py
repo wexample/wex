@@ -66,8 +66,11 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
         return response
 
     def parse_response(self, response: HTTPResponse) -> StringKeysDict:
-        data = json.loads(response.read())
-        assert isinstance(data, dict)
+        content = response.read()
+        self.kernel.io.log('PARSING : ' + str(content))
+
+        data = json.loads(content)
+        self.assertTrue(isinstance(data, dict))
 
         return data
 
