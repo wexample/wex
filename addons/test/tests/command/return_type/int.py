@@ -29,4 +29,7 @@ class TestTestCommandReturnTypeInt(AbstractTestCase):
             render_mode=render_mode,
         )
 
-        return response.print()
+        output = response.print()
+        assert isinstance(output, int)
+
+        return output

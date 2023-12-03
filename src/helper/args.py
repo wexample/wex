@@ -78,7 +78,7 @@ def args_split_arg_array(
 
 
 def args_convert_dict_to_long_names_dict(
-    function: Command, args: Dict[str, Any]
+    function: Command, args: CoreCommandArgsDict
 ) -> Dict[str, Any]:
     short_names = {}
     for param in function.params:

@@ -175,7 +175,7 @@ def wordpress__url__replace(
 
 def wordpress__url__replace__prepare_url(
     manager: "AppAddonManager", url: str
-) -> Optional[bool | str]:
+) -> Optional[str]:
     url = url.rstrip("/")  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):

@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import os
 import signal
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, cast
 
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.const.types import ShellCommandsList
+from src.const.types import ShellCommandsDeepList
 from src.helper.command import (
     command_to_string,
     execute_command_sync,
@@ -18,18 +18,19 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def process_post_exec(kernel: "Kernel", command: ShellCommandsList) -> None:
+def process_post_exec(kernel: "Kernel", command: ShellCommandsDeepList | str) -> None:
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
-        command = ["cd", os.getcwd(), "&&"] + command
+        kernel.post_exec.append(
+            cast(ShellCommandsDeepList, ["cd", os.getcwd(), "&&"] + command)
+        )
     else:
-        command = f"cd {os.getcwd()} && " + command
+        kernel.post_exec.append(f"cd {os.getcwd()} && " + command)
 
     kernel.io.log(
         "Queuing shell command : " + command_to_string(command),
         verbosity=VERBOSITY_LEVEL_MAXIMUM,
     )
-    kernel.post_exec.append(command)
 
 
 def process_post_exec_function(
@@ -46,7 +47,7 @@ def process_post_exec_function(
         command.insert(0, "nohup")
         command += [">", "/dev/null", "2>&1", "&"]
 
-    process_post_exec(kernel, command)
+    process_post_exec(kernel, cast(ShellCommandsDeepList, command))
 
 
 def process_kill_by_command(kernel: "Kernel", command: str) -> None:

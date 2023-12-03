@@ -16,7 +16,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
     def test_response_collection(self) -> None:
         response = self.kernel.run_function(test__demo_command__response_collection)
 
-        first_response_print = response.print()
+        first_response_print = response.print_wrapped_str()
 
         # Write result in a file
         self.write_test_result(
