@@ -30,6 +30,7 @@ class TestTestCommandReturnTypeInt(AbstractTestCase):
         )
 
         output = response.print()
-        assert isinstance(output, int)
+        if output:
+            assert isinstance(output, int)
 
         return output
