@@ -4,10 +4,13 @@ import subprocess
 import traceback
 from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
-from typing import Any, Dict, List
+from typing import Any, Dict, Optional, TypedDict
 
+from addons.app.typing.webhook import WebhookListenerRoutesMap
+from src.const.types import Args, Kwargs, StringsList
 from src.helper.array import array_replace_value
 from src.helper.routing import (
+    RouteInfo,
     routing_get_route_info,
     routing_get_route_name,
     routing_is_allowed_route,
@@ -21,14 +24,27 @@ WEBHOOK_STATUS_COMPLETE = "complete"
 WEBHOOK_STATUS_ERROR = "error"
 
 
+class Output(TypedDict, total=False):
+    command: StringsList
+    response: Optional[Dict[Any, Any]]
+    pid: int
+    status: str
+    error: Optional[str]
+    task_id: str
+    path: str
+    info: Optional[RouteInfo]
+    details: str
+    traceback: str
+
+
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
     log_path: str
-    routes: Dict[str, Any]
+    routes: WebhookListenerRoutesMap
     log_stderr: str
     log_stdout: str
 
-    def __init__(self, *args: List[Any], **kwargs: Dict[str, Any]) -> None:
+    def __init__(self, *args: Args, **kwargs: Kwargs) -> None:
         self.logger = logging.getLogger("wex-webhook")
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(

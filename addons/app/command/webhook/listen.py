@@ -21,6 +21,7 @@ from src.const.globals import (
     SYSTEM_SERVICES_PATH,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
+from src.const.types import AnyCallable
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -149,7 +150,7 @@ def app__webhook__listen(
 
             routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
             for route_name in routes_map:
-                script_command: ScriptCommand = routes_map[route_name]["function"]
+                script_command: ScriptCommand = routes_map[route_name]["script_command"]
                 options = {}
                 needs_path = command_get_option(script_command, "webhook_path")
                 needs_port_number = command_get_option(
@@ -165,7 +166,7 @@ def app__webhook__listen(
                 command = kernel.get_command_resolver(
                     COMMAND_TYPE_ADDON
                 ).build_full_command_parts_from_script_command(
-                    routes_map[route_name]["function"],
+                    routes_map[route_name]["script_command"],
                     options,
                 )
 
