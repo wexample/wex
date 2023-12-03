@@ -7,6 +7,9 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 from src.decorator.test_command import test_command
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -22,7 +25,7 @@ TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION = "....THREE:function-response-text"
 def test__demo_command__response_collection_three(
     kernel: "Kernel", abort: bool = False
 ) -> QueuedCollectionResponse:
-    def _test__demo_command__response_collection_three_one() -> str | AbortResponse:
+    def _test__demo_command__response_collection_three_one(queue: AbstractQueuedCollectionResponseQueueManager) -> str | AbortResponse:
         nonlocal abort
 
         if abort:

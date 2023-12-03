@@ -44,7 +44,7 @@ def test__demo_command__response_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> StringKeysDict:
         previous = queue.get_previous_value()
-        assert isinstance(previous, list)
+        assert isinstance(queue.get_previous_value(), dict)
 
         return {"type": str(type(previous)), "length": len(previous)}
 
@@ -76,7 +76,7 @@ def test__demo_command__response_collection(
     ) -> QueuedCollectionResponse:
         previous = queue.get_previous_value()
 
-        def callback() -> Dict[str, Any]:
+        def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> Dict[str, Any]:
             return {"passed": previous}
 
         return QueuedCollectionResponse(

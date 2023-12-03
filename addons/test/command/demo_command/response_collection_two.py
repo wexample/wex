@@ -33,9 +33,9 @@ def test__demo_command__response_collection_two(
         return f"..TWO:simple-function-previous-value:should-be-string={queue.get_previous_value()}"
 
     def _test__demo_command__response_collection_two__another_simple_function(
-        previous: None,
+        queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> str:
-        return f"..TWO:another-simple-function-previous-value:should-be-none={previous}"
+        return f"..TWO:another-simple-function-previous-value:should-be-none={queue.get_previous_value()}"
 
     def _test__demo_command__response_collection_two__run_another_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,

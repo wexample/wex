@@ -136,7 +136,8 @@ class QueuedCollectionResponse(AbstractResponse):
             if not args_in_function(response.function, "queue"):
                 raise self.kernel.io.error(
                     'Argument "queue: AbstractQueuedCollectionResponseQueueManager" '
-                    "is required by every callback function in queue collection response"
+                    "is required by every callback function in queue collection response, in : "
+                    + str(response.function)
                 )
 
         response.render(request=request, args=render_args, render_mode=render_mode)
