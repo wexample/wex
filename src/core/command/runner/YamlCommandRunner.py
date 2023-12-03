@@ -95,6 +95,8 @@ class YamlCommandRunner(AbstractCommandRunner):
             commands_collection: QueuedCollectionResponseCollection = []
 
             variables: CoreCommandArgsDict = {}
+            assert isinstance(variables, dict)
+
             for name in kwargs:
                 variables[name.upper()] = kwargs[name]
 
