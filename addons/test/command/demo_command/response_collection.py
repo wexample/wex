@@ -74,7 +74,9 @@ def test__demo_command__response_collection(
     def _test__demo_command__response_collection__sub_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> QueuedCollectionResponse:
-        def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> Dict[str, Any]:
+        def callback(
+            queue: AbstractQueuedCollectionResponseQueueManager,
+        ) -> Dict[str, Any]:
             return {"passed": queue.get_previous_value()}
 
         return QueuedCollectionResponse(

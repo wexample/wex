@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import TYPE_CHECKING, List, NoReturn, Optional, TypedDict, Any
+from typing import TYPE_CHECKING, Any, List, NoReturn, Optional, TypedDict
 
 from src.const.globals import (
     COLOR_CYAN,

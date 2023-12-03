@@ -9,7 +9,7 @@ from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import JsonContent, StringKeysDict, JsonContentDict
+from src.const.types import JsonContentDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
@@ -37,7 +37,9 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             error_response_content = response.read()
 
             try:
-                error_data: Optional[JsonContentDict] = json.loads(error_response_content)
+                error_data: Optional[JsonContentDict] = json.loads(
+                    error_response_content
+                )
                 if error_data and "stderr" in error_data:
                     self.kernel.io.log(error_data["stderr"])
             except:
