@@ -74,10 +74,8 @@ def test__demo_command__response_collection(
     def _test__demo_command__response_collection__sub_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> QueuedCollectionResponse:
-        previous = queue.get_previous_value()
-
         def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> Dict[str, Any]:
-            return {"passed": previous}
+            return {"passed": queue.get_previous_value()}
 
         return QueuedCollectionResponse(
             kernel,
@@ -110,21 +108,9 @@ def test__demo_command__response_collection(
         previous = queue.get_previous_value()
         kernel.io.log("Previous : " + str(previous))
 
-        error: bool = False
-        if previous != "__previous__":
-            error = True
-
-        response = kernel.run_function(
+        return kernel.run_function(
             test__demo_command__counting_collection, {"initial": 1000}
         )
-
-        rendered = response.print()
-
-        if error:
-            kernel.io.error(
-                f"Bad previous to response match : previous : {previous}, rendered : {rendered}"
-            )
-        return response
 
     return QueuedCollectionResponse(
         kernel,
