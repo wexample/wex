@@ -95,6 +95,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
                     if stderr:
                         error = "RESPONSE_ERROR"
+                        output["stderr"] = stderr
 
                     status = WEBHOOK_STATUS_COMPLETE
                     output["response"] = stdout
