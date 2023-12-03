@@ -49,6 +49,17 @@ def app__webhook__exec(
         return None
 
     command_type = str(match.group(1))
+
+    if not command_type in kernel.resolvers:
+        kernel.logger.append_event(
+            "WEBHOOK_RESOLVER_NOT_FOUND",
+            {
+                "command_type": command_type,
+            },
+        )
+
+        return None
+
     command_path = str(match.group(2))
 
     def _check(
