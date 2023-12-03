@@ -22,7 +22,7 @@ def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
 class RouteInfo(TypedDict):
     is_async: bool
     name: str
-    match: re.Match[str]
+    match: Optional[re.Match[str]]
     query: StringKeysDict
 
 
@@ -37,12 +37,13 @@ def routing_get_route_info(
         route = routes[route_name]
         pattern = route["pattern"]
         match = re.match(pattern, path)
-        return {
-            "is_async": route["is_async"],
-            "name": route_name,
-            "match": match.groups() if match else None,
-            "query": query,
-        }
+
+        return RouteInfo(
+            is_async=route["is_async"],
+            name=route_name,
+            match=match.groups() if match else None,
+            query=cast(StringKeysDict, query),
+        )
     return None
 
 
