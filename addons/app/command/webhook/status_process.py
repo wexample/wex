@@ -30,17 +30,24 @@ def app__webhook__status_process(
     output = StatusProcess()
     route_info = routing_get_route_info(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP)
     if route_info:
-        task_id = route_info["match"][0]
-        log_content = kernel.logger.load_logs(task_id)
+        match = route_info["match"]
+        # At this point match is just a list
+        if match:
+            task_id = match[0]
 
-        if log_content:
-            output["task"] = log_content
-            output["children"] = {}
+            if task_id:
+                log_content = kernel.logger.load_logs(task_id)
 
-            for date in log_content["children"]:
-                child_task_id = log_content["children"][date]
+                if log_content:
+                    output["task"] = log_content
+                    output["children"] = {}
 
-                output[child_task_id] = kernel.logger.load_logs(child_task_id)
+                    for date in log_content["children"]:
+                        child_task_id = log_content["children"][date]
+
+                        output["children"][child_task_id] = kernel.logger.load_logs(
+                            child_task_id
+                        )
 
     return DictResponse(
         kernel,
