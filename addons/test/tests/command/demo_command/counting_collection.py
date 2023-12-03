@@ -12,4 +12,4 @@ class TestTestCommandDemoCommandCountingCollection(AbstractTestCase):
 
         self.assertResponseFirstEqual(response, 123)
 
-        self.assertResponseOutputBagItemContains(response, 1, 124)
+        self.assertResponseOutputBagItemEqual(response, 1, 124)
