@@ -14,8 +14,8 @@ def phpmyadmin__config__runtime(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     # Save config
-    domain_pma = manager.get_runtime_config("domain_pma", None, required=True)
-    assert isinstance(domain_pma, str | bool)
+    domain_pma = manager.get_runtime_config("domain_pma", None)
+    assert isinstance(domain_pma, str | bool | None)
 
     # Setting false to domain will disable domain setting,
     # used to disable phpmyadmin in some environment.
