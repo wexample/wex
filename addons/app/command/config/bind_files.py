@@ -1,9 +1,9 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, StringsList
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ def app__config__bind_files(
     for file in section_files:
         split = file.split(".")
         base_name = split[0]
-        conf_var_name_list = split.copy()
+        conf_var_name_list: Optional[StringsList] = split.copy()
         is_env = False
 
         # Check if there are more than two pieces in the file name

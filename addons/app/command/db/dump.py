@@ -39,10 +39,12 @@ def app__db__dump(
     # but for now each service have only one container.
     service = manager.get_config("docker.main_db_container", required=True)
 
-    output_path = dump_path = manager.kernel.run_command(
-        f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dump",
-        {"app-dir": app_dir, "service": service, "file-name": dump_file_name},
-    ).first()
+    output_path = dump_path = str(
+        manager.kernel.run_command(
+            f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dump",
+            {"app-dir": app_dir, "service": service, "file-name": dump_file_name},
+        ).first()
+    )
 
     if dump_path and os.path.exists(dump_path):
         if zip:
@@ -60,4 +62,4 @@ def app__db__dump(
 
         return output_path
 
-    return False
+    return None

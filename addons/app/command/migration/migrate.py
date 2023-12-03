@@ -44,7 +44,8 @@ def app__migration__migrate(
     yes: bool = False,
 ) -> None:
     kernel = manager.kernel
-    app_dir = manager.app_dir
+    app_dir = manager.get_app_dir()
+    app_version_string: str | None
 
     if from_version:
         app_version_string = from_version
@@ -52,7 +53,7 @@ def app__migration__migrate(
         app_version_string = None
         try:
             # Trust regular config file
-            app_version_string = manager.get_config(f'{CORE_COMMAND_NAME}.version')
+            app_version_string = manager.get_config(f"{CORE_COMMAND_NAME}.version")
         except Exception:
             pass
 
@@ -77,7 +78,7 @@ def app__migration__migrate(
         return
 
     # Create an empty config
-    if manager.config == {}:
+    if not manager.config:
         # Only create config but do not save it
         # until migration is completed
         manager.config = manager.create_config(
@@ -91,18 +92,21 @@ def app__migration__migrate(
             migration_file
         )
 
-        migration_version = kernel.run_function(
-            default__version__parse, {"version": migration_version_string}
-        ).first()
+        if migration_version_string:
+            migration_version = kernel.run_function(
+                default__version__parse, {"version": migration_version_string}
+            ).first()
 
-        if is_greater_than(migration_version, app_version):
-            kernel.io.log(f"Migrating to {migration_version_string}")
+            if is_greater_than(migration_version, app_version):
+                kernel.io.log(f"Migrating to {migration_version_string}")
 
-            migration_exec(kernel, migration_version_string, "migration", [manager])
+                migration_exec(kernel, migration_version_string, "migration", [manager])
 
-            manager.set_config(f"{CORE_COMMAND_NAME}.version", migration_version_string)
+                manager.set_config(
+                    f"{CORE_COMMAND_NAME}.version", migration_version_string
+                )
 
-            app_version = migration_version
+                app_version = migration_version
 
     manager.set_config(f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel))
     kernel.io.message(f"Migration complete")

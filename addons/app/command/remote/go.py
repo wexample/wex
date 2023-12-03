@@ -27,4 +27,4 @@ def app__remote__go(
     if not domain:
         return None
 
-    return InteractiveShellCommandResponse(manager.kernel, ["ssh", domain])
+    return InteractiveShellCommandResponse(manager.kernel, ["ssh", str(domain)])
