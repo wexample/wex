@@ -3,13 +3,13 @@ import os
 import shutil
 import time
 from http.client import HTTPConnection, HTTPResponse
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import StringKeysDict, JsonContent
+from src.const.types import JsonContent, StringKeysDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
@@ -33,25 +33,25 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
         response = conn.getresponse()
 
         if response.status != 200:
-            self.kernel.io.log('STATUS: ' + str(response.status))
+            self.kernel.io.log("STATUS: " + str(response.status))
             error_response_content = response.read()
 
             try:
                 error_data: Optional[JsonContent] = json.loads(error_response_content)
-                if 'stderr' in error_data:
-                    self.kernel.io.log(
-                        error_data['stderr']
-                    )
+                if "stderr" in error_data:
+                    self.kernel.io.log(error_data["stderr"])
             except:
                 pass
 
             self.kernel.io.log(error_response_content)
 
-            if path != '/status':
-                self.log('Error : trying to fetch process error info...')
+            if path != "/status":
+                self.log("Error : trying to fetch process error info...")
 
                 try:
-                    error_process_data = self.parse_response(self.request_listener('/status'))
+                    error_process_data = self.parse_response(
+                        self.request_listener("/status")
+                    )
                     self.kernel.io.log(error_process_data)
                 except:
                     pass
@@ -67,7 +67,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
     def parse_response(self, response: HTTPResponse) -> StringKeysDict:
         content = response.read()
-        self.kernel.io.log('PARSING : ' + str(content))
+        self.kernel.io.log("PARSING : " + str(content))
 
         data = json.loads(content)
         self.assertTrue(isinstance(data, dict))

@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 def app__version__get(manager: "AppAddonManager", app_dir: str | None = None) -> str:
     app_version_string = manager.get_config(f"{CORE_COMMAND_NAME}.version", None)
 
-    return app_version_string \
-        if isinstance(app_version_string, str) \
+    return (
+        app_version_string
+        if isinstance(app_version_string, str)
         else str(migration_version_guess(manager.kernel, manager.get_app_dir()))
+    )
