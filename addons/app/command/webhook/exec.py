@@ -17,6 +17,13 @@ from src.decorator.option import option
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
+from typing import TypedDict
+
+
+class SourceData(TypedDict, total=False):
+    invalid_key: str
+    invalid_value: str
+
 
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
@@ -24,9 +31,9 @@ if TYPE_CHECKING:
 def app__webhook__exec(
     kernel: "Kernel", webhook_path: str, env: None | str = None
 ) -> Optional[QueuedCollectionResponse]:
-    from addons.app.command.webhook.listen import WEBHOOK_LISTENER_ROUTES_MAP
+    from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 
-    source_data = {}
+    source_data: SourceData = {}
     parsed_url = urlparse(webhook_path)
     path = parsed_url.path
     match = re.match(WEBHOOK_LISTENER_ROUTES_MAP["exec"]["pattern"], path)
