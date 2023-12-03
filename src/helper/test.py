@@ -50,7 +50,7 @@ def create_test_from_command(
     request: "CommandRequest" = kernel.create_command_request(command)
 
     if not request.loaded:
-        return
+        return None
 
     match = request.get_match()
 
