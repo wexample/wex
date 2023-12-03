@@ -3,13 +3,13 @@ import os
 import shutil
 import time
 from http.client import HTTPConnection, HTTPResponse
-from typing import Tuple
+from typing import Tuple, Optional
 
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, JsonContent
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
