@@ -4,6 +4,7 @@ from typing import (
     Dict,
     List,
     Literal,
+    Mapping,
     Match,
     Optional,
     Set,
@@ -44,7 +45,7 @@ Kwargs = Any
 ResponsePrintType = Optional[BasicInlineValue | StringKeysDict | AnyList]
 StringMessageParameters = StringKeysDict
 
-CoreCommandArgsDict = Dict[str, BasicInlineValue]
+CoreCommandArgsDict = Mapping[str, BasicInlineValue]
 CoreCommandArgsList = StringsList
 CoreCommandCommaSeparatedList = Union[str, StringsList]
 CoreCommandArgsListOrDict = Union[StringKeysDict, CoreCommandArgsList]
@@ -59,6 +60,7 @@ AppDockerEnvConfig = Dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 
 ShellCommandsList = StringsList
+ShellCommandsDeepList = List[str | ShellCommandsList]
 ShellCommandResponseTuple = Tuple[bool, List[str]]
 
 
