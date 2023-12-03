@@ -1,6 +1,9 @@
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict, cast
 from urllib.parse import parse_qs, urlparse
+
+from addons.app.typing.webhook import WebhookListenerRoutesMap
+from src.const.types import StringKeysDict
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_CHARS = re.compile(r"^[a-zA-Z0-9_\-=&]+$")
@@ -16,9 +19,16 @@ def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
     return None
 
 
+class RouteInfo(TypedDict):
+    is_async: bool
+    name: str
+    match: re.Match[str]
+    query: StringKeysDict
+
+
 def routing_get_route_info(
-    url: str, routes: Dict[str, Any]
-) -> Optional[Dict[str, Any]]:
+    url: str, routes: WebhookListenerRoutesMap
+) -> Optional[RouteInfo]:
     route_name = routing_get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
@@ -36,7 +46,7 @@ def routing_get_route_info(
     return None
 
 
-def routing_is_allowed_route(url: str, routes: Dict[str, Any]) -> bool:
+def routing_is_allowed_route(url: str, routes: WebhookListenerRoutesMap) -> bool:
     route_info = routing_get_route_info(url, routes)
     if route_info:
         # Validate the query string to contain only allowed characters
