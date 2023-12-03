@@ -32,6 +32,30 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
         conn.request("GET", path)
         response = conn.getresponse()
 
+        if response.status != 200:
+            self.kernel.io.log('STATUS: ' + str(response.status))
+            error_response_content = response.read()
+
+            try:
+                error_data: Optional[JsonContent] = json.loads(error_response_content)
+                if 'stderr' in error_data:
+                    self.kernel.io.log(
+                        error_data['stderr']
+                    )
+            except:
+                pass
+
+            self.kernel.io.log(error_response_content)
+
+            if path != '/status':
+                self.log('Error : trying to fetch process error info...')
+
+                try:
+                    error_process_data = self.parse_response(self.request_listener('/status'))
+                    self.kernel.io.log(error_process_data)
+                except:
+                    pass
+
         if check_code:
             self.assertEqual(response.status, check_code)
 
