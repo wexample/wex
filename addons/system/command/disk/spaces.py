@@ -24,7 +24,7 @@ def system__disk__spaces(kernel: "Kernel") -> TableResponse:
         ]
     )
 
-    body = TableBody()
+    body: TableBody = []
     for partition in psutil.disk_partitions():
         usage = psutil.disk_usage(partition.mountpoint)
 

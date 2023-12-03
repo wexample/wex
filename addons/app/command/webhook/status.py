@@ -51,7 +51,7 @@ def app__webhook__status(
         if "command" in response.dictionary_data:
             del response.dictionary_data["command"]
 
-        table = TableBody()
+        table: TableBody = []
 
         listener_log = kernel.logger.load_logs(task_id)
         if listener_log:

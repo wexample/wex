@@ -44,7 +44,7 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
     ]
     all_list = dir_list + file_list
 
-    body = TableBody()
+    body: TableBody = []
     for entry in all_list:
         size = None
         if os.path.isdir(entry):
