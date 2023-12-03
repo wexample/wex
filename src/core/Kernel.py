@@ -33,7 +33,7 @@ if TYPE_CHECKING:
         CoreCommandArgsList,
         CoreCommandString,
         OptionalCoreCommandArgsListOrDict,
-        ShellCommandsList,
+        ShellCommandsDeepList,
     )
     from src.core.command.resolver.AbstractCommandResolver import (
         AbstractCommandResolver,
@@ -60,7 +60,7 @@ class Kernel(BaseClass):
         self.current_request: Optional["CommandRequest"] = None
         self.current_response: Optional["AbstractResponse"] = None
         self.io = IOManager(self)
-        self.post_exec: List[ShellCommandsList] = []
+        self.post_exec: List[ShellCommandsDeepList | str] = []
         self.previous_response: Optional["AbstractResponse"] = None
         self.sys_argv: list[str] = sys.argv.copy()
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL

@@ -45,7 +45,7 @@ from src.const.types import (
     StringKeysDict,
     StringsList,
     YamlContent,
-    YamlContentDict, Args, Kwargs,
+    YamlContentDict,
 )
 from src.core.AddonManager import AddonManager
 from src.helper.args import args_push_one, args_shift_one
@@ -129,7 +129,7 @@ class AppAddonManager(AddonManager):
         return env_file_path
 
     def get_env_dir(self, dir: str, create: bool = False) -> str:
-        app_dir = self.get_app_dir_or_fail()
+        app_dir = self.get_app_dir()
 
         env_dir = os.path.join(app_dir, APP_DIR_APP_DATA, dir) + os.sep
 
@@ -462,10 +462,9 @@ class AppAddonManager(AddonManager):
                     trace=False,
                 )
 
-    def get_app_dir_or_fail(self) -> str:
-        if not self.app_dir:
-            self.kernel.io.error("Trying to load app dir before initialization")
-            assert False
+    def get_app_dir(self) -> str:
+        self._validate__should_not_be_none(self.app_dir)
+        assert isinstance(self.app_dir, str)
 
         return self.app_dir
 
@@ -576,7 +575,7 @@ class AppAddonManager(AddonManager):
             get_user_or_sudo_user,
         )
 
-        app_dir = self.get_app_dir_or_fail()
+        app_dir = self.get_app_dir()
         env = self.kernel.run_function(app__env__get, {"app-dir": self.app_dir}).first()
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
@@ -671,8 +670,8 @@ class AppAddonManager(AddonManager):
             self.get_config(f"service.{service}.{key}")
             # Search into the service config
             or dict_get_item_by_path(
-            service_load_config(self.kernel, service), key, default
-        )
+                service_load_config(self.kernel, service), key, default
+            )
         )
 
     def get_main_service(self) -> str:
@@ -686,7 +685,7 @@ class AppAddonManager(AddonManager):
             or main_service
         )
 
-    def get_service_shell(self, service: str | None = None) -> Optional[str]:
+    def get_service_shell(self, service: str | None = None) -> str:
         return (
             self.get_service_config(
                 key="shell", service=(service or self.get_main_service())
