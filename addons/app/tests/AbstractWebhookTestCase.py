@@ -9,7 +9,7 @@ from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import JsonContent, StringKeysDict
+from src.const.types import JsonContent, StringKeysDict, JsonContentDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
@@ -37,8 +37,8 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             error_response_content = response.read()
 
             try:
-                error_data: Optional[JsonContent] = json.loads(error_response_content)
-                if "stderr" in error_data:
+                error_data: Optional[JsonContentDict] = json.loads(error_response_content)
+                if error_data and "stderr" in error_data:
                     self.kernel.io.log(error_data["stderr"])
             except:
                 pass
@@ -65,14 +65,14 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
         return response
 
-    def parse_response(self, response: HTTPResponse) -> JsonContent:
+    def parse_response(self, response: HTTPResponse) -> JsonContentDict:
         content = response.read()
         self.kernel.io.log("PARSING : " + str(content))
 
         data = json.loads(content)
         self.assertTrue(isinstance(data, dict))
 
-        return cast(JsonContent, data)
+        return cast(JsonContentDict, data)
 
     def copy_command_dir(self, app_dir: str, sub_dir: str) -> None:
         script_dir = os.path.join(

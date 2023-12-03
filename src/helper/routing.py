@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, TypedDict, cast
 from urllib.parse import parse_qs, urlparse
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, StringsList
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_CHARS = re.compile(r"^[a-zA-Z0-9_\-=&]+$")
@@ -22,7 +22,7 @@ def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
 class RouteInfo(TypedDict):
     is_async: bool
     name: str
-    match: Optional[re.Match[str]]
+    match: Optional[StringsList]
     query: StringKeysDict
 
 
@@ -41,7 +41,7 @@ def routing_get_route_info(
         return RouteInfo(
             is_async=route["is_async"],
             name=route_name,
-            match=match.groups() if match else None,
+            match=cast(StringsList, match.groups()) if match else None,
             query=cast(StringKeysDict, query),
         )
     return None

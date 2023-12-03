@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import TYPE_CHECKING, List, NoReturn, Optional, TypedDict
+from typing import TYPE_CHECKING, List, NoReturn, Optional, TypedDict, Any
 
 from src.const.globals import (
     COLOR_CYAN,
@@ -96,7 +96,7 @@ class IOManager(KernelChild):
 
     def log(
         self,
-        message: str,
+        message: Any,
         color: str = COLOR_GRAY,
         increment: int = 0,
         verbosity: int = VERBOSITY_LEVEL_DEFAULT,
@@ -138,7 +138,7 @@ class IOManager(KernelChild):
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message: str) -> None:
+    def print(self, message: Any) -> None:
         print(message)
 
     def message(self, message: str, text: None | str = None) -> None:

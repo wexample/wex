@@ -35,6 +35,7 @@ StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
 JsonContent = BasicValue
+JsonContentDict = StringKeysDict
 YamlContent = BasicValue
 YamlContentDict = StringKeysDict
 

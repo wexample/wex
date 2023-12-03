@@ -110,10 +110,11 @@ def app__app__exec(
         command_str = command_to_string(command_parsed)
     # In sync mode we pass command to Popen,
     # so we don't need to wrap it.
-    elif not sync:
-        command_str = command_escape(command_parsed)
     else:
-        command_str = command_parsed
+        command_str = str(command_parsed)
+
+        if not sync:
+            command_str = command_escape(command_str)
 
     # Prepare the final command to be executed
     final_command = []

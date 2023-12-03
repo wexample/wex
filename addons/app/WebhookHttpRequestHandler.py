@@ -26,14 +26,15 @@ WEBHOOK_STATUS_ERROR = "error"
 
 class Output(TypedDict, total=False):
     command: StringsList
-    response: Optional[Dict[Any, Any]]
-    pid: int
-    status: str
-    error: Optional[str]
-    task_id: str
-    path: str
-    info: Optional[RouteInfo]
     details: str
+    error: Optional[str]
+    info: Optional[RouteInfo]
+    path: str
+    pid: int
+    response: Optional[Dict[Any, Any]]
+    status: str
+    stderr: str
+    task_id: str
     traceback: str
 
 
