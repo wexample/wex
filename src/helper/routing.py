@@ -38,7 +38,7 @@ def routing_get_route_info(
         pattern = route["pattern"]
         match = re.match(pattern, path)
         return {
-            "async": route["async"],
+            "is_async": route["is_async"],
             "name": route_name,
             "match": match.groups() if match else None,
             "query": query,

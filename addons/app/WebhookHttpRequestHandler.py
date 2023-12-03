@@ -74,7 +74,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     command, stdout=stdout_file, stderr=stderr_file, text=True
                 )
 
-                if not route["async"]:
+                if not route["is_async"]:
                     process.communicate()
 
                     # After the process is complete, you must close the files

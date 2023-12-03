@@ -9,17 +9,17 @@ WEBHOOK_LISTENER_ROUTES_MAP = cast(
     WebhookListenerRoutesMap,
     {
         "exec": {
-            "async": True,
+            "is_async": True,
             "pattern": r"^/webhook/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9_\-\/]+)$",
             "function": app__webhook__exec,
         },
         "status": {
-            "async": False,
+            "is_async": False,
             "pattern": r"^/status$",
             "function": app__webhook__status,
         },
         "status_process": {
-            "async": False,
+            "is_async": False,
             "pattern": r"^/status/process/([0-9\-]+)$",
             "function": app__webhook__status_process,
         },
