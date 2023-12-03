@@ -1,8 +1,9 @@
 import os.path
 import time
-from typing import TYPE_CHECKING, Optional, List, cast
+from typing import TYPE_CHECKING, List, Optional, cast
 
 import click
+from InquirerPy.base.control import Choice
 
 from addons.app.command.app.go import app__app__go
 from addons.app.command.app.perms import app__app__perms
@@ -41,7 +42,6 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
 from src.helper.prompt import prompt_choice
-from InquirerPy.base.control import Choice
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

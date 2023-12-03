@@ -31,6 +31,7 @@ def app__app__stop(
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
     name = manager.get_config("global.name")
+    assert isinstance(name, str)
 
     def _app__app__stop__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,

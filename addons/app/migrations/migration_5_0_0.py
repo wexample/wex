@@ -12,8 +12,8 @@ from addons.app.migrations.migration_4_0_0 import (
     _migration_4_0_0_replace_docker_placeholders,
 )
 from addons.docker.types.docker import DockerCompose
+from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
 from src.helper.data_yaml import yaml_load
-from src.const.types import StringKeysDict, StringsDict, StringsList, AnyList
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case
 
@@ -44,20 +44,30 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
                 if domains:
                     manager.set_config(
                         f"env.{env_name}.domains",
-                        sorted(domains.split(",") if isinstance(domains, str) else domains))
+                        sorted(
+                            domains.split(",") if isinstance(domains, str) else domains
+                        ),
+                    )
 
                 manager.set_config(
                     f"env.{env_name}.domain_main",
-                    _get_config_value(config, domain_env_name + "_DOMAIN_MAIN"))
+                    _get_config_value(config, domain_env_name + "_DOMAIN_MAIN"),
+                )
 
                 manager.set_config(
                     f"env.{env_name}.email",
-                    _get_config_value(config, domain_env_name + "_EMAIL", "contact@domain.com"))
+                    _get_config_value(
+                        config, domain_env_name + "_EMAIL", "contact@domain.com"
+                    ),
+                )
 
             # Global
             manager.set_config(
                 "global.name",
-                _get_config_value(config, "NAME", manager.get_config("global.config", "undefined")))
+                _get_config_value(
+                    config, "NAME", manager.get_config("global.config", "undefined")
+                ),
+            )
 
             manager.save_config()
 
@@ -95,9 +105,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
         if not mysql_db_password:
             mysql_db_password = _get_config_value(config, "MYSQL_DB_PASSWORD")
         if mysql_db_password:
-            manager.set_config(
-                "service.mysql.password",
-                mysql_db_password)
+            manager.set_config("service.mysql.password", mysql_db_password)
 
     def _migration_5_0_0_update_docker() -> None:
         docker_files = _migration_4_0_0_et_docker_files(manager)
