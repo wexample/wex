@@ -7,8 +7,8 @@ from src.helper.file import file_create_from_template
 from src.helper.string import string_to_pascal_case, string_to_snake_case
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
     from src.core.CommandRequest import CommandRequest
+    from src.core.Kernel import Kernel
 
 
 def file_path_to_test_class_name(kernel: "Kernel", file_path: str) -> str:
