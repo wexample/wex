@@ -3,17 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    NoReturn,
-    Optional,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast
 
 import click.core
 
@@ -22,7 +12,11 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
-from src.const.types import ShellCommandResponseTuple, ShellCommandsList
+from src.const.types import (
+    ShellCommandResponseTuple,
+    ShellCommandsDeepList,
+    ShellCommandsList,
+)
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
@@ -66,13 +60,13 @@ def command_exists(shell_command: str) -> bool:
     return out_content.decode() != ""
 
 
-def execute_command_tree(
+def execute_command_tree_sync(
     kernel: "Kernel",
-    command_tree: List[Union[Any, str]],
+    command_tree: ShellCommandsDeepList,
     working_directory: str | None = None,
     ignore_error: bool = False,
     **kwargs: Any,
-) -> Union[Popen[Any], Tuple[bool, List[str]]]:
+) -> ShellCommandResponseTuple:
     if isinstance(command_tree, list) and any(
         isinstance(i, list) for i in command_tree
     ):
@@ -81,9 +75,9 @@ def execute_command_tree(
         for i, sub_command in enumerate(command_tree):
             if isinstance(sub_command, list):
                 # Recursive call to execute the nested command
-                result = execute_command_tree(
+                result = execute_command_tree_sync(
                     kernel=kernel,
-                    command_tree=sub_command,
+                    command_tree=cast(ShellCommandsDeepList, sub_command),
                     working_directory=working_directory,
                     **kwargs,
                 )
@@ -102,7 +96,7 @@ def execute_command_tree(
     # Execute the modified (flattened) command_tree with the results of inner commands
     return execute_command_sync(
         kernel=kernel,
-        command=command_tree,
+        command=cast(ShellCommandsList, command_tree),
         working_directory=working_directory,
         ignore_error=ignore_error,
         **kwargs,
@@ -111,7 +105,7 @@ def execute_command_tree(
 
 def execute_command_async(
     kernel: "Kernel",
-    command: Union[List[str], str],
+    command: ShellCommandsList,
     working_directory: Optional[str] = None,
     **kwargs: Any,
 ) -> Popen[Any]:
@@ -142,7 +136,7 @@ def execute_command_async(
 
 def execute_command_sync(
     kernel: "Kernel",
-    command: Union[List[str], str],
+    command: ShellCommandsList | str,
     working_directory: Optional[str] = None,
     ignore_error: bool = False,
     **kwargs: Any,
@@ -164,6 +158,7 @@ def execute_command_sync(
 
     process = subprocess.Popen(command, **popen_args)
     out_content, _ = process.communicate()
+    assert isinstance(out_content, bytes)
     out_content_decoded: str = out_content.decode()
     success: bool = process.returncode == 0
 
@@ -187,7 +182,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
     return quote_char + escaped_string + quote_char
 
 
-def command_to_string(command: ShellCommandsList | str) -> str:
+def command_to_string(command: ShellCommandsList | ShellCommandsDeepList | str) -> str:
     if isinstance(command, str):
         return command
 

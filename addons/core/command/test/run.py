@@ -1,18 +1,17 @@
-import importlib.util
 import os
 import sys
 import unittest
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.core.command.core.cleanup import core__core__cleanup
-from src.helper.module import module_load_from_file
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_tree
+from src.helper.command import execute_command_tree_sync
+from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -26,7 +25,7 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
     if kernel.registry_structure.content.env == APP_ENV_LOCAL:
-        execute_command_tree(
+        execute_command_tree_sync(
             kernel,
             [
                 "docker",
@@ -67,11 +66,10 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
                 kernel.io.log(f"Found test for command: {command_name}")
 
                 module = module_load_from_file(
-                    command_data["test"],
-                    f"{command_name}_test"
+                    command_data["test"], f"{command_name}_test"
                 )
 
-                suite.addTests(loader.loadTestsFromModule(module))
+                suite.addTests(loader.loadTestsFromModule(cast(Any, module)))
 
     result = unittest.TextTestRunner(failfast=True).run(suite)
 

@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
@@ -17,7 +17,8 @@ from src.core.response.AbstractTerminalSectionResponse import (
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-TableBody = List[List[BasicInlineValue]]
+TableBodyLine = List[BasicInlineValue]
+TableBody = List[TableBodyLine]
 
 
 class TableResponse(AbstractTerminalSectionResponse):
@@ -82,13 +83,15 @@ class TableResponse(AbstractTerminalSectionResponse):
         return max_widths
 
     def render_cli_content(self) -> None:
-        if not len(self._header) and not len(self._body):
+        combined_list: List[Any] = self._header + self._body
+
+        if not len(combined_list):
             self.output_bag.append("")
 
-            return
+            return None
 
         # Calculate maximum widths for each column
-        max_widths = self.calculate_max_widths(self._header + self._body)
+        max_widths = self.calculate_max_widths(combined_list)
 
         # Calculate the total line length (cell widths + padding + borders)
         num_columns = len(max_widths)
@@ -98,7 +101,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         separator_line = "+" + "-" * total_line_length + "+" + os.linesep
 
         bash_array = ""
-        bash_array += self.render_cli_title(self.title, total_line_length + 2)
+        bash_array += self.render_cli_title(total_line_length + 2)
         bash_array += separator_line
 
         # Add header only if exists
@@ -115,10 +118,10 @@ class TableResponse(AbstractTerminalSectionResponse):
             for i in range(
                 num_columns
             ):  # Use the maximum number of columns based on header or first row
-                cell = (
-                    row[i] if i < len(row) else ""
-                )  # Handle missing cells by filling them with an empty string
-                row_str += f" {str(cell):<{max_widths[i]}} |"
+                cell_content = row[i] if i < len(row) else ""
+                # Handle missing cells by filling them with an empty string
+                cell_str: str = str(cell_content)
+                row_str += f" {cell_str:<{max_widths[i]}} |"
             bash_array += row_str + os.linesep
 
         bash_array += separator_line
@@ -140,4 +143,4 @@ class TableResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return self.output_bag[0]
+        return self.get_first_output_printable_value()

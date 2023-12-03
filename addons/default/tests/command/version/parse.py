@@ -91,4 +91,7 @@ class TestDefaultCommandVersionParse(AbstractTestCase):
             result = self.kernel.run_function(
                 default__version__parse, {"version": version}
             ).first()
-            self.assertDictKeysEquals(expected, result)
+            assert isinstance(result, dict)
+            assert isinstance(expected, dict)
+
+            self.assertDictKeysEquals(result, expected)

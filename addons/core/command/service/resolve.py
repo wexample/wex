@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set
 
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import CoreCommandCommaSeparatedList, SetList, StringsList
@@ -16,12 +16,11 @@ def core__service__resolve(
     kernel: "Kernel", service: CoreCommandCommaSeparatedList
 ) -> StringsList:
     services = args_split_arg_array(service)
-    resolved_services = set()
-    print(services)
+    resolved_services: Set[str] = set()
 
     def resolve_dependencies(service: str, resolved_services: SetList) -> StringsList:
         if service in resolved_services:
-            return set()
+            return []
 
         resolved_services.add(service)
 

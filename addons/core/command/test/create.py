@@ -36,16 +36,19 @@ def core__test__create(
     command: Optional[str] = None,
     all: bool = False,
     force: bool = False,
-) -> str | StringsList:
-    if not command and all:
-        output = []
+) -> Optional[str | StringsList]:
+    if not command:
+        if all:
+            output: StringsList = []
+            # Create all missing tests
+            for command_found, command_data in (
+                kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().items()
+            ):
+                command_built = create_test_from_command(kernel, command_found, force)
+                assert isinstance(command_built, str)
 
-        # Create all missing tests
-        for command, command_data in (
-            kernel.resolvers[COMMAND_TYPE_ADDON].get_commands_registry().items()
-        ):
-            output.append(create_test_from_command(kernel, command, force))
-
-        return output
+                output.append(command_built)
+            return output
+        return None
     else:
         return create_test_from_command(kernel, command, force)

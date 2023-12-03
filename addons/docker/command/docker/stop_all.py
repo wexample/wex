@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
+from src.const.types import ShellCommandsDeepList
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
@@ -17,43 +18,55 @@ def docker__docker__stop_all(kernel: "Kernel") -> QueuedCollectionResponse:
         [
             InteractiveShellCommandResponse(
                 kernel,
-                [
-                    "docker",
-                    "stop",
+                cast(
+                    ShellCommandsDeepList,
                     [
                         "docker",
-                        "ps",
-                        "-qa",
+                        "stop",
+                        [
+                            "docker",
+                            "ps",
+                            "-qa",
+                        ],
                     ],
-                ],
+                ),
                 True,
             ),
             InteractiveShellCommandResponse(
                 kernel,
-                [
-                    "docker",
-                    "rm",
+                cast(
+                    ShellCommandsDeepList,
                     [
                         "docker",
-                        "ps",
-                        "-qa",
+                        "rm",
+                        [
+                            "docker",
+                            "ps",
+                            "-qa",
+                        ],
                     ],
-                ],
+                ),
                 True,
             ),
             InteractiveShellCommandResponse(
                 kernel,
-                [
-                    "docker",
-                    "network",
-                    "rm",
-                    ["docker", "network", "ls", "-q", "--filter", "type=custom"],
-                ],
+                cast(
+                    ShellCommandsDeepList,
+                    [
+                        "docker",
+                        "network",
+                        "rm",
+                        ["docker", "network", "ls", "-q", "--filter", "type=custom"],
+                    ],
+                ),
                 True,
             ),
             InteractiveShellCommandResponse(
                 kernel,
-                ["docker", "volume", "rm", ["docker", "volume", "ls", "-q"]],
+                cast(
+                    ShellCommandsDeepList,
+                    ["docker", "volume", "rm", ["docker", "volume", "ls", "-q"]],
+                ),
                 True,
             ),
         ],

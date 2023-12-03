@@ -165,7 +165,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
                         "demo-command" + COMMAND_SEPARATOR_GROUP + "first",
                     ]
                 )
-                          + " ",
+                + " ",
             },
         ).first()
 
@@ -230,9 +230,9 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
             {
                 "cursor": 1,
                 "search": COMMAND_CHAR_APP
-                          + "local_command"
-                          + COMMAND_SEPARATOR_GROUP
-                          + "test ",
+                + "local_command"
+                + COMMAND_SEPARATOR_GROUP
+                + "test ",
             },
         ).first()
 

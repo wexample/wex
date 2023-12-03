@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @command(help="Return the current docker local ip")
 def docker__docker__ip(
     kernel: "Kernel",
-) -> ShellCommandResponseTuple | AbstractResponse:
+) -> ShellCommandResponseTuple | AbstractResponse | str:
     if kernel.run_function(system__os__name).first() == OS_NAME_MAC:
         return "127.0.0.1"
 
