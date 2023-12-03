@@ -105,17 +105,15 @@ def app__app__exec(
 
     # Convert command in list to string
     command_parsed = args_parse_one(command)
+    command_str: str
     if isinstance(command_parsed, list):
-        command_str = command_to_string(command)
+        command_str = command_to_string(command_parsed)
     # In sync mode we pass command to Popen,
     # so we don't need to wrap it.
+    elif not sync:
+        command_str = command_escape(command_parsed)
     else:
-        assert isinstance(command_parsed, str)
-
-        if not sync:
-            command_str = command_escape(command_parsed)
-        else:
-            command_str = command_parsed
+        command_str = command_parsed
 
     # Prepare the final command to be executed
     final_command = []
