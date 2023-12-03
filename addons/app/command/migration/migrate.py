@@ -53,7 +53,8 @@ def app__migration__migrate(
         app_version_string = None
         try:
             # Trust regular config file
-            app_version_string = str(manager.get_config(f"{CORE_COMMAND_NAME}.version"))
+            value = manager.get_config(f"{CORE_COMMAND_NAME}.version")
+            app_version_string = value if isinstance(value, str) else None
         except Exception:
             pass
 

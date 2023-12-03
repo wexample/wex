@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, cast
 
 from addons.test.command.demo_command.counting_collection import (
     test__demo_command__counting_collection,
@@ -43,9 +43,9 @@ def test__demo_command__response_collection(
     def _test__demo_command__response_collection__function_three(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> StringKeysDict:
-        previous = queue.get_previous_value()
-        assert isinstance(queue.get_previous_value(), dict)
+        previous = cast(StringKeysDict, queue.get_previous_value())
 
+        assert isinstance(queue.get_previous_value(), dict)
         return {"type": str(type(previous)), "length": len(previous)}
 
     def _test__demo_command__response_collection__sub_function_shell(
