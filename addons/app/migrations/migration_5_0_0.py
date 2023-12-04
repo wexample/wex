@@ -33,6 +33,8 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
         "php-8": "php",
         "mysql8": "mysql",
         "wordpress5": "wordpress",
+        "symfony-5": "symfony",
+        "symfony_5": "symfony",
     }
 
     def _migration_5_0_0_update_config() -> None:
@@ -133,6 +135,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
                 "APP_PATH_ROOT": "RUNTIME_PATH_APP",
                 "APP_PATH_WEX": "RUNTIME_PATH_APP_ENV",
                 "APP_NAME": "GLOBAL_NAME",
+                "APP_NAME_INTERNAL": "RUNTIME_NAME",
                 "CONTEXT_ENV": "RUNTIME_ENV",
                 "DB_CONTAINER": "DOCKER_MAIN_DB_CONTAINER",
                 "DOMAINS": "RUNTIME_DOMAINS_STRING",
@@ -158,6 +161,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
                 "SONARQUBE_VERSION": _get_config_value(config, "SONARQUBE_VERSION"),
                 "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
                 "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_YML_ENV",
+                "WEX_COMPOSE_YML_SYMFONY_5": "RUNTIME_SERVICE_SYMFONY_YML_ENV",
                 "WEX_COMPOSE_YML_PHP_8": "RUNTIME_SERVICE_PHP_YML_ENV",
                 "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
                 "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",

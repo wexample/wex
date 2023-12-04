@@ -1,0 +1,6 @@
+services:
+    symfony:
+        container_name: ${RUNTIME_NAME}_symfony
+        extends:
+            file: ${RUNTIME_SERVICE_PHP_YML_ENV}
+            service: php

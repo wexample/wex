@@ -13,6 +13,3 @@ services:
         extends:
             file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
             service: default
-        profiles:
-          - env_dev
-          - env_local

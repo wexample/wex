@@ -471,7 +471,11 @@ class AppAddonManager(AddonManager):
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
 
-        if self.ignore_app_dir(request) or not request.get_script_command().get_extra_value("app_dir_required", False):
+        if self.ignore_app_dir(
+            request
+        ) or not request.get_script_command().get_extra_value(
+            "app_dir_required", False
+        ):
             return
 
         from src.helper.command import is_same_command

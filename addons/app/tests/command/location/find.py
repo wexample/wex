@@ -1,7 +1,5 @@
-import os
-
 from addons.app.command.location.find import app__location__find
-from helper.dir import dir_execute_in_workdir
+from src.helper.dir import dir_execute_in_workdir
 from tests.AbstractTestCase import AbstractTestCase
 
 
