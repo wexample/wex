@@ -13,6 +13,7 @@ from addons.default.helper.migration import (
     migration_version_guess,
 )
 from addons.default.helper.version import is_greater_than
+from addons.app.helper.app import app_create_manager
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
 from src.helper.core import core_kernel_get_version
@@ -44,7 +45,8 @@ def app__migration__migrate(
     yes: bool = False,
 ) -> None:
     kernel = manager.kernel
-    app_dir = manager.get_app_dir()
+    app_dir = app_dir or os.getcwd() + os.sep
+    manager = app_create_manager(kernel, app_dir)
     app_version_string: str | None
 
     if from_version:
