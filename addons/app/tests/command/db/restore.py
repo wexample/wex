@@ -1,6 +1,7 @@
 from addons.app.command.db.dump import app__db__dump
 from addons.app.command.db.restore import app__db__restore
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.helper.file import file_remove_extension
 
 
 class TestAppCommandDbRestore(AbstractAppTestCase):
@@ -23,6 +24,12 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
 
             self.kernel.run_function(
                 app__db__restore, {"app-dir": app_dir, "file-path": dump_file}
+            )
+
+            # Remove the file extension to make it match the format returned by unpacked files
+            self.kernel.run_function(
+                app__db__restore,
+                {"app-dir": app_dir, "file-path": file_remove_extension(dump_file)},
             )
 
         self.for_each_db_service(callback)

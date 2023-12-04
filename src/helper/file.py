@@ -279,3 +279,13 @@ def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
                 matched_files.append(file_path)
 
     return matched_files
+
+
+def file_remove_extension(file_path: str) -> str:
+    return os.path.splitext(file_path)[0]
+
+
+def file_add_extension_if_missing(file_path: str, extension: str) -> str:
+    if not file_path.endswith(extension):
+        return file_path + extension
+    return file_path

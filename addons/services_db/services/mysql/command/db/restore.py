@@ -7,6 +7,7 @@ from addons.app.decorator.app_command import app_command
 from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
+from src.helper.file import file_add_extension_if_missing
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -17,6 +18,8 @@ if TYPE_CHECKING:
 def mysql__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> str:
+    file_name = file_add_extension_if_missing(file_name, "sql")
+
     command = [
         "mysql",
         manager.kernel.run_function(

@@ -5,6 +5,7 @@ from addons.app.decorator.app_command import app_command
 from addons.services_db.services.sqlserver.command.db.exec import sqlserver__db__exec
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
+from src.helper.file import file_add_extension_if_missing
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -16,6 +17,7 @@ def sqlserver__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> None:
     app_name = manager.get_config("global.name")
+    file_name = file_add_extension_if_missing(file_name, "sql")
 
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
