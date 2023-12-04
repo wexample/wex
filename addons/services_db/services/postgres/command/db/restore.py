@@ -7,7 +7,6 @@ from addons.services_db.services.postgres.command.db.connect import (
 )
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
-from src.helper.file import file_add_extension_if_missing
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -18,8 +17,6 @@ if TYPE_CHECKING:
 def postgres__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> None:
-    file_name = file_add_extension_if_missing(file_name, "sql")
-
     command = [
         "psql",
         manager.kernel.run_function(

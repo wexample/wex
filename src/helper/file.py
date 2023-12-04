@@ -289,3 +289,7 @@ def file_add_extension_if_missing(file_path: str, extension: str) -> str:
     if not file_path.endswith(extension):
         return file_path + extension
     return file_path
+
+
+def file_path_has_no_extension(file_path: str) -> bool:
+    return os.path.splitext(file_path)[1] == ""

@@ -1,3 +1,5 @@
+db:
+  dump_extension: sql
 dependencies:
   - phpmyadmin
 tags:

@@ -26,6 +26,13 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
                 app__db__restore, {"app-dir": app_dir, "file-path": dump_file}
             )
 
+            # Test raw dump
+            response = self.kernel.run_function(
+                app__db__dump,
+                {"app-dir": app_dir, "zip": False},
+            )
+
+            dump_file = response.print_wrapped_str()
             # Remove the file extension to make it match the format returned by unpacked files
             self.kernel.run_function(
                 app__db__restore,

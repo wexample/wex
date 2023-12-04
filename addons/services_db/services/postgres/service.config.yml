@@ -1,3 +1,5 @@
+db:
+  dump_extension: sql
 tags:
   - db
 test:

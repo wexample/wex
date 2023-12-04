@@ -8,7 +8,7 @@ class TestAppCommandDbExec(AbstractAppTestCase):
     def test_exec(self) -> None:
         def callback(db_service: str) -> None:
             self.log(f"Testing database exec : {db_service}")
-            service_resolver = self.kernel.resolvers[COMMAND_TYPE_SERVICE]
+            service_resolver = self.kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
             assert isinstance(service_resolver, ServiceCommandResolver)
 
             registry_data = service_resolver.get_registry_data()
