@@ -1,4 +1,5 @@
 import os
+from typing import cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms
@@ -38,19 +39,23 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
             file_get_owner(test_file) in [USER_WWW_DATA, get_user_or_sudo_user()]
         )
 
-        # Use config
+        # Reuse manager to work with
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
 
         current_user = get_sudo_username()
         assert current_user is not None
-
         current_group = get_user_group_name(current_user)
 
         manager.set_config("permissions.user", current_user)
         manager.set_config("permissions.group", current_group)
 
+        # If current manager is in test app, config should be reloaded manually
+        cast(AppAddonManager, self.kernel.addons['app']).load_config()
+
+        self.log('Current user is ' + current_user)
+        self.log('Application path is ' + app_dir)
+
         self.kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
         self.assertEqual(file_get_owner(test_file), current_user)
-
         self.assertEqual(file_get_group(test_file), current_group)
