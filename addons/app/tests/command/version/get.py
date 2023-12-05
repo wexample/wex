@@ -17,7 +17,8 @@ class TestAppCommandVersionGet(AbstractTestCase):
 
         self.assertEquals(version.print(), MIGRATION_MINIMAL_VERSION)
 
-        self.log("Test in " + os.getcwd())
+        self.log("Test in " + self.kernel.directory.path)
+        os.chdir(self.kernel.directory.path)
 
         version = self.kernel.run_function(app__version__get)
 
