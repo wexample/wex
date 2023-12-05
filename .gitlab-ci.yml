@@ -34,7 +34,7 @@ test:
     # Install minimum packages to launch install script
     - apt install sudo -y
     # Create env file
-    - echo "APP_ENV=test" > ".wex/.env"
+    - mv .wex/.env.test .wex/.env
     # Define app local env with docker config
     - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
     - cat ".env"

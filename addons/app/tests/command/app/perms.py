@@ -50,10 +50,10 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
         manager.set_config("permissions.group", current_group)
 
         # If current manager is in test app, config should be reloaded manually
-        cast(AppAddonManager, self.kernel.addons['app']).load_config()
+        cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
-        self.log('Current user is ' + current_user)
-        self.log('Application path is ' + app_dir)
+        self.log("Current user is " + current_user)
+        self.log("Application path is " + app_dir)
 
         self.kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
