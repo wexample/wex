@@ -15,11 +15,16 @@ class TestAppCommandVersionGet(AbstractTestCase):
             app__version__get, {"app-dir": SYSTEM_WWW_PATH}
         )
 
-        self.assertEquals(version.print(), MIGRATION_MINIMAL_VERSION)
+        self.assertEquals(version.print(), None)
 
         self.log("Test in " + self.kernel.directory.path)
         os.chdir(self.kernel.directory.path)
 
-        version = self.kernel.run_function(app__version__get)
+        version = self.kernel.run_function(
+            app__version__get,
+            {
+                "app-dir": self.kernel.directory.path
+            }
+        )
 
         self.assertEquals(version.print(), core_kernel_get_version(self.kernel))
