@@ -9,5 +9,7 @@ scripts:
     script: docker exec -ti wex_standalone bash /opt/wex/cli/install
   - title: Add owner to sudo group
     script: docker exec -ti wex_standalone sudo usermod -aG sudo owner
+  - title: Prepare env
+    script: docker exec -ti wex_standalone cp /opt/wex/.wex/.env.test /opt/wex/.wex/.env
   - title: Run tests as owner
     script: docker exec -ti -u owner wex_standalone wex test
