@@ -9,7 +9,9 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", dir_required=False)
-def app__version__get(manager: "AppAddonManager", app_dir: str | None = None) -> Optional[str]:
+def app__version__get(
+    manager: "AppAddonManager", app_dir: str | None = None
+) -> Optional[str]:
     manager = app_create_manager(manager.kernel, app_dir or os.getcwd())
 
     version = manager.get_config(f"global.version", None)
