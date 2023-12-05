@@ -1,7 +1,6 @@
 import os
 
 from addons.app.command.version.get import app__version__get
-from addons.default.helper.migration import MIGRATION_MINIMAL_VERSION
 from src.const.globals import SYSTEM_WWW_PATH
 from src.helper.core import core_kernel_get_version
 from tests.AbstractTestCase import AbstractTestCase
@@ -21,10 +20,7 @@ class TestAppCommandVersionGet(AbstractTestCase):
         os.chdir(self.kernel.directory.path)
 
         version = self.kernel.run_function(
-            app__version__get,
-            {
-                "app-dir": self.kernel.directory.path
-            }
+            app__version__get, {"app-dir": self.kernel.directory.path}
         )
 
         self.assertEquals(version.print(), core_kernel_get_version(self.kernel))
