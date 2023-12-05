@@ -1,0 +1,13 @@
+type: app
+help: Run tests in a container
+command:
+  decorator: app_command
+scripts:
+  - title: Run container
+    script: docker rm -f wex_standalone && docker compose -f .wex/docker/docker-compose.standalone.yml up -d
+  - title: Install wex
+    script: docker exec -ti wex_standalone bash /opt/wex/cli/install
+  - title: Add owner to sudo group
+    script: docker exec -ti wex_standalone sudo usermod -aG sudo owner
+  - title: Run tests as owner
+    script: docker exec -ti -u owner wex_standalone wex test
