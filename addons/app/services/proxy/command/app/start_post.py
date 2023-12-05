@@ -15,11 +15,7 @@ def proxy__app__start_post(
     commands = [
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],
-        [
-            "nginx",
-            "-s",
-            "reload",
-        ],
+        ["nginx", "-s", "reload"],
     ]
 
     for command in commands:
