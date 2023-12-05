@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_build_long_container_name
-from src.helper.command import execute_command_sync
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -21,15 +21,16 @@ def proxy__service__ready(
 ) -> bool:
     # for container_name in list:
     success, running_containers = execute_command_sync(
-        manager.kernel, [
+        manager.kernel,
+        [
             "docker",
             "inspect",
             "--format",
             "'{{.State.Running}}'",
             docker_build_long_container_name(
-                manager.kernel,
-                manager.get_main_container_name())
-        ]
+                manager.kernel, manager.get_main_container_name()
+            ),
+        ],
     )
 
     return success

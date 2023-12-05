@@ -55,15 +55,17 @@ def app__db__restore(
 
         file_path = dumps_dict[dump_file_name]
 
-    is_zip = file_path.endswith(".zip")
-    if os.path.exists(file_path) and is_zip:
+    file_path_str = str(file_path)
+
+    is_zip = file_path_str.endswith(".zip")
+    if os.path.exists(file_path_str) and is_zip:
         manager.log("Unpacking...")
-        with zipfile.ZipFile(file_path, "r") as zip_ref:
+        with zipfile.ZipFile(file_path_str, "r") as zip_ref:
             zip_ref.extractall(get_db_service_dumps_path(manager, service))
 
-        file_path = file_path.replace(".zip", "")
+        file_path_str = file_path_str.replace(".zip", "")
 
-    if file_path_has_no_extension(file_path):
+    if file_path_has_no_extension(file_path_str):
         service_resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
         assert isinstance(service_resolver, ServiceCommandResolver)
 
@@ -75,21 +77,21 @@ def app__db__restore(
         if not extension:
             return
 
-        file_path += "." + extension
+        file_path_str += "." + extension
 
-    if not os.path.exists(file_path):
-        manager.kernel.io.error(f"Dump file not found: {file_path}")
+    if file_path_str and not os.path.exists(file_path_str):
+        manager.kernel.io.error(f"Dump file not found: {file_path_str}")
         return
 
     manager.log("Restoring...")
 
-    file_name = os.path.basename(file_path)
+    file_name = os.path.basename(file_path_str)
     kernel.run_command(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/restore",
         {"app-dir": app_dir, "service": service, "file-name": file_name},
     ).first()
 
     if is_zip:
-        file_delete_file_or_dir(file_path)
+        file_delete_file_or_dir(file_path_str)
 
     kernel.io.message("Restoration complete")
