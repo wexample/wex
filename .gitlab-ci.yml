@@ -10,7 +10,7 @@ test:
   services:
     - name: docker:24.0.6-dind
   before_script:
-    - sleep 10
+    - sleep 60
   script:
     - ls -l /var/run
     - docker version
