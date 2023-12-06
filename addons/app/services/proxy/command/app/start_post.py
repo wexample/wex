@@ -32,7 +32,9 @@ def proxy__app__start_post(
     print("DEBUG INFO")
     execute_command_sync(manager.kernel, ["docker", "info"])
     print("DEBUG CURL")
-    execute_command_sync(manager.kernel, ["curl", "-v", "http://localhost:2375/version"])
+    execute_command_sync(
+        manager.kernel, ["curl", "-v", "http://localhost:2375/version"]
+    )
     print("DEBUG LOGS")
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
     print("DEBUG INSPECT")
