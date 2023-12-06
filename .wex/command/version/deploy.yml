@@ -8,4 +8,4 @@ scripts:
   - title: Confirm new version
     script: wex core::version/build -ok
   - title: Push
-    script: git push
+    script: git push --tags
