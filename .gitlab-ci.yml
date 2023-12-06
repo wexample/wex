@@ -24,6 +24,7 @@ test:
     - docker ps
     - DIND_CONTAINER_ID=$(docker ps -q --filter "ancestor=docker:24.0.6-dind")
     - echo "DinD Container ID $DIND_CONTAINER_ID"
+    - echo "DOCKER_HOST ${DOCKER_HOST}"
   variables:
     DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_DRIVER: vfs
