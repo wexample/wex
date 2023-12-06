@@ -18,7 +18,8 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
 
-    print("DEBUG")
+    print("DEBUG WAIT 5")
+    time.sleep(5)
     execute_command_sync(
         manager.kernel,
         ["cat", "/var/www/test/wex-proxy/.wex/tmp/docker-compose.runtime.yml"],
@@ -30,6 +31,26 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
     execute_command_sync(manager.kernel, ["docker", "inspect", "wex_proxy_local_proxy"])
+    execute_command_sync(manager.kernel, ["ls", "-l", "/var/run/docker.sock"])
+    execute_command_sync(
+        manager.kernel,
+        ["docker", "inspect", "--format='{{.State.Status}}'", "wex_proxy_local_proxy"],
+    )
+    execute_command_sync(
+        manager.kernel,
+        [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "/var/run/docker.sock:/var/run/docker.sock",
+            "alpine",
+            "ls",
+            "-l",
+            "/var/run/docker.sock",
+        ],
+    )
+
     time.sleep(5)
     execute_command_sync(
         manager.kernel,
