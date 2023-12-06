@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
+from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import QueuedCollectionStopCurrentStepResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -152,16 +153,17 @@ class QueuedCollectionResponse(AbstractResponse):
         if isinstance(first_response_item, AbstractResponse):
             response = first_response_item
 
-        # Support simple abort response, with is an alias of a stop response.
+        # Support simple abort response, which is an alias of a stop response.
         if isinstance(response, AbortResponse):
             response = QueuedCollectionStopResponse(self.kernel, response.reason)
 
         self.output_bag.append(response)
 
         # Response asks to stop all process
-        if isinstance(response, QueuedCollectionStopResponse):
-            # Mark having next step to block enqueuing
-            self.has_next_step = True
+        if isinstance(response, QueuedCollectionStopResponse) or isinstance(response, QueuedCollectionStopCurrentStepResponse):
+            if isinstance(response, QueuedCollectionStopResponse):
+                # Mark having next step to block enqueuing
+                self.has_next_step = True
 
             return self.queue_manager.render_content_complete()
 
