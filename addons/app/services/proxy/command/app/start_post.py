@@ -33,6 +33,17 @@ def proxy__app__start_post(
             "wex_proxy_local_proxy",
             "/bin/bash",
             "-c",
+            "echo DEBUG_TEST",
+        ],
+    )
+    execute_command_sync(
+        manager.kernel,
+        [
+            "docker",
+            "exec",
+            "wex_proxy_local_proxy",
+            "/bin/bash",
+            "-c",
             "ln -fs /proc/1/fd/1 /var/log/nginx/access.log",
         ],
     )
