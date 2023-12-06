@@ -31,6 +31,8 @@ test:
     - tags
   script:
     - ls -l /var/run
+    - docker version
+    - docker ps -a --filter "ancestor=docker:24.0.6-dind"
     - docker run ubuntu /bin/bash -c "echo UBUNTU_WORKS"
     - docker exec $DIND_CONTAINER_ID ls -l /var/run/docker.sock
     - docker exec $DIND_CONTAINER_ID ps aux | grep dockerd
