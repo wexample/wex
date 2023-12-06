@@ -27,6 +27,7 @@ test:
   only:
     - tags
   script:
+    - ls -l /var/run
     - ls -l /var/run/docker.sock
 #    # Stops script on failure
 #    - set -e
