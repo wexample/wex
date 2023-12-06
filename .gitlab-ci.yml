@@ -24,8 +24,8 @@ test:
   variables:
     DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_DRIVER: vfs
-#  only:
-#    - tags
+  only:
+    - tags
   script:
     # Stops script on failure
     - set -e
@@ -45,8 +45,7 @@ test:
     # Create a fake socket
     - touch /var/run/docker.sock
     # Run wex test as owner with sudo
-#    - sudo su - owner -c "sudo wex test"
-    - sudo su - owner -c "sudo wex test -c app::proxy/start"
+    - sudo su - owner -c "sudo wex test"
     # Uninstall
     - sudo bash ./cli/uninstall
   after_script:
