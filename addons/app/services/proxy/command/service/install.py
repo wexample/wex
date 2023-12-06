@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, cast
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
+from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -31,6 +32,8 @@ def proxy__service__install(
         "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
     )
 
+    print(app_dir)
+    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
     shutil.copytree(
         os.path.join(
             service_resolver.get_registered_service_data("proxy")["dir"], "samples", "proxy"
@@ -39,5 +42,6 @@ def proxy__service__install(
         dirs_exist_ok=True,
         copy_function=shutil.copy2,
     )
+    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
 
     manager.exec_in_app_workdir(app_dir, callback)
