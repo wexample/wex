@@ -24,8 +24,8 @@ test:
   variables:
     DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_DRIVER: vfs
-  only:
-    - tags
+#  only:
+#    - tags
   script:
     # Stops script on failure
     - set -e
