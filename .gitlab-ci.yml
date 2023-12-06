@@ -12,7 +12,7 @@ test:
   script:
     - ls -l /var/run
     - docker version
-    - docker run alpine:latest /bin/bash -c "echo UBUNTU_WORKS"
+    - docker run alpine:latest /bin/sh -c "echo WORKS"
     - docker ps -a
 
 #    - ls -l /var/run/docker.sock
