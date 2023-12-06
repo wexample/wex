@@ -29,10 +29,10 @@ test:
   script:
     - ls -l /var/run
     - DIND_CONTAINER_ID=$(docker ps -q --filter "ancestor=docker:24.0.6-dind")
-#    - echo "DinD Container ID $DIND_CONTAINER_ID"
-#    - docker exec $DIND_CONTAINER_ID ls -l /var/run/docker.sock
-#    - docker exec $DIND_CONTAINER_ID ps aux | grep dockerd
-#    - docker logs $DIND_CONTAINER_ID
+    - echo "DinD Container ID $DIND_CONTAINER_ID"
+    - docker exec $DIND_CONTAINER_ID ls -l /var/run/docker.sock
+    - docker exec $DIND_CONTAINER_ID ps aux | grep dockerd
+    - docker logs $DIND_CONTAINER_ID
 #    - ls -l /var/run/docker.sock
 #    # Stops script on failure
 #    - set -e
