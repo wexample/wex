@@ -1,0 +1,11 @@
+type: app
+help: This is a simple webhook
+properties:
+  - app_webhook
+scripts:
+  - title: Build new version
+    script: wex core::version/build
+  - title: Confirm new version
+    script: wex core::version/build -ok
+  - title: Push
+    script: git push
