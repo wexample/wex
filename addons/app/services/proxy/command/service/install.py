@@ -33,7 +33,9 @@ def proxy__service__install(
 
     shutil.copytree(
         os.path.join(
-            service_resolver.get_registered_service_data("proxy")["dir"], "samples", "proxy"
+            service_resolver.get_registered_service_data("proxy")["dir"],
+            "samples",
+            "proxy",
         ),
         app_dir + "proxy/",
         dirs_exist_ok=True,
