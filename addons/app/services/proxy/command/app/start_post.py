@@ -19,6 +19,10 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
 
     print("DEBUG")
+    execute_command_sync(
+        manager.kernel,
+        ["cat", "/var/www/local/wex-proxy/.wex/tmp/docker-compose.runtime.yml"],
+    )
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "ps"])
