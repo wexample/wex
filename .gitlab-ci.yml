@@ -9,6 +9,8 @@ test:
   image: docker:latest
   services:
     - name: docker:24.0.6-dind
+  before_script:
+    - sleep 10
   script:
     - ls -l /var/run
     - docker version
