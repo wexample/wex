@@ -19,9 +19,12 @@ test:
     - netstat -tuln | grep 2375
     # Allow all users to access 2375
     - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
-      # Added a timeout to ensure that the loop does not run indefinitely
+    # Added a timeout to ensure that the loop does not run indefinitely
     - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
   variables:
+    # We don't use classical docker overlay driver as we want a separated docker environment.
+    # Test suite creates docker compose files which are executed and need volumes from
+    # current job container, not host. In this case we need to have a separated docker daemon.
     DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_DRIVER: vfs
   only:
@@ -42,7 +45,7 @@ test:
     - INSTALL_PATH=$(pwd)
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-    # Create a fake socket
+    # Create a fake socket to satisfy reverse proxy container which expects to listen docker
     - touch /var/run/docker.sock
     # Run wex test as owner with sudo
     - sudo su - owner -c "sudo wex test"
