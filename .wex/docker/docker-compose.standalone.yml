@@ -14,7 +14,8 @@ services:
     volumes:
       # Work dir
       - ../../:/opt/wex
-      # Allow container to override venv
+      # Allow container to override env data
       - /opt/wex/.wex/python/venv
+      - /opt/wex/.wex/.env
       # Docker sharing
       - /var/run/docker.sock:/var/run/docker.sock
