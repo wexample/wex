@@ -7,15 +7,17 @@ stages:
 test:
   stage: test
   image: docker:latest
+  # When using dind, it's wise to use the overlayfs driver for
+  # improved performance.
+  variables:
+    DOCKER_DRIVER: overlay
   services:
     - name: docker:24.0.6-dind
   before_script:
-    - sleep 60
+    - docker info
   script:
-    - ls -l /var/run
     - docker version
     - docker run alpine:latest /bin/sh -c "echo WORKS"
-    - docker ps -a
 
 #    - ls -l /var/run/docker.sock
 #    # Stops script on failure
