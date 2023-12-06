@@ -7,8 +7,7 @@ stages:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-  # When using dind, it's wise to use the overlayfs driver for
-  # improved performance.
+  # Using overlay is expected for reverse proxy container to be able to mount socket
   variables:
     DOCKER_DRIVER: overlay
   services:
@@ -29,6 +28,8 @@ test:
     - INSTALL_PATH=$(pwd)
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+    # Ensure old reverse proxy does not stand here
+    - rm -rf /var/www/test/wex-proxy/
     # Run wex test as owner with sudo
 #    - sudo su - owner -c "sudo wex test"
     - sudo su - owner -c "sudo wex test -c app::proxy/start"
