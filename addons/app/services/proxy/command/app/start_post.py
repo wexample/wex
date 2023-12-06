@@ -29,9 +29,15 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "ps"])
+    print("DEBUG INFO")
+    execute_command_sync(manager.kernel, ["docker", "info"])
+    print("DEBUG LOGS")
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
+    print("DEBUG INSPECT")
     execute_command_sync(manager.kernel, ["docker", "inspect", "wex_proxy_local_proxy"])
+    print("DEBUG LS")
     execute_command_sync(manager.kernel, ["ls", "-l", "/var/run/docker.sock"])
+    print("DEBUG INSPECT 2")
     execute_command_sync(
         manager.kernel,
         ["docker", "inspect", "--format='{{.State.Status}}'", "wex_proxy_local_proxy"],
