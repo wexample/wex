@@ -22,11 +22,11 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.55+build.20231206094719
+  version: 5.0.56+build.20231206094949
 permissions:
   group: null
   user: null
 service:
   test: {}
 wex:
-  version: 5.0.55+build.20231206094719
+  version: 5.0.56+build.20231206094949
