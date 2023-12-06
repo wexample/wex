@@ -30,6 +30,7 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
     execute_command_sync(manager.kernel, ["docker", "inspect", "wex_proxy_local_proxy"])
+    time.sleep(5)
     execute_command_sync(
         manager.kernel,
         [
