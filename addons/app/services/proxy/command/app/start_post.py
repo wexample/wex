@@ -31,6 +31,8 @@ def proxy__app__start_post(
     execute_command_sync(manager.kernel, ["docker", "ps"])
     print("DEBUG INFO")
     execute_command_sync(manager.kernel, ["docker", "info"])
+    print("DEBUG NC")
+    execute_command_sync(manager.kernel, ["nc", "-zv", "localhost", "2375"])
     print("DEBUG LOGS")
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
     print("DEBUG INSPECT")
