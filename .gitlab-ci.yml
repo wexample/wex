@@ -28,6 +28,9 @@ test:
     - tags
   script:
     - ls -l /var/run
+    - docker exec $(docker ps -q --filter "ancestor=docker:24.0.6-dind") ls -l /var/run/docker.sock
+    - docker exec $(docker ps -q --filter "ancestor=docker:24.0.6-dind") ps aux | grep dockerd
+    - docker logs $(docker ps -q --filter "ancestor=docker:24.0.6-dind")
     - ls -l /var/run/docker.sock
 #    # Stops script on failure
 #    - set -e
