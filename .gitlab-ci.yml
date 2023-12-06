@@ -21,6 +21,7 @@ test:
     - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
       # Added a timeout to ensure that the loop does not run indefinitely
     - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
+    - docker ps
     - DIND_CONTAINER_ID=$(docker ps -q --filter "ancestor=docker:24.0.6-dind")
     - echo "DinD Container ID $DIND_CONTAINER_ID"
   variables:
