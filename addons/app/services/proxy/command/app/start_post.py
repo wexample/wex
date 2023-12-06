@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
+from src.helper.command import execute_command_sync
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -12,6 +13,10 @@ if TYPE_CHECKING:
 def proxy__app__start_post(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
+    # TODO Pipeline inspect
+    execute_command_sync(manager.kernel, ["docker", "ps"])
+    execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
+
     commands = [
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],
