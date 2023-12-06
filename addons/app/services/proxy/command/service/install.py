@@ -33,7 +33,7 @@ def proxy__service__install(
     )
 
     print(app_dir)
-    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
+    # execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
     shutil.copytree(
         os.path.join(
             service_resolver.get_registered_service_data("proxy")["dir"], "samples", "proxy"
@@ -42,7 +42,7 @@ def proxy__service__install(
         dirs_exist_ok=True,
         copy_function=shutil.copy2,
     )
-    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
-    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy/proxy"])
+    # execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
+    # execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy/proxy"])
 
     manager.exec_in_app_workdir(app_dir, callback)
