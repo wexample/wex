@@ -6,7 +6,7 @@ stages:
 
 test:
   stage: test
-  image: docker:latest
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
   # When using dind, it's wise to use the overlayfs driver for
   # improved performance.
   variables:
