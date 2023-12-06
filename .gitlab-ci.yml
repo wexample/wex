@@ -6,41 +6,49 @@ stages:
 
 test:
   stage: test
-  image: docker
-  # Using overlay is expected for reverse proxy container to be able to mount socket
-  variables:
-    DOCKER_DRIVER: overlay
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
   services:
+    # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
+  before_script:
+    # Start Docker daemon manually and display logs
+    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
+    - sleep 30  # Give it some time to start
+    - cat docker.log
+    - apt-get update && apt-get install -y net-tools
+    - netstat -tuln | grep 2375
+    # Allow all users to access 2375
+    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
+      # Added a timeout to ensure that the loop does not run indefinitely
+    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
+  variables:
+    DOCKER_HOST: tcp://0.0.0.0:2375
+    DOCKER_DRIVER: vfs
+  only:
+    - tags
   script:
-    # Cleanup old containers
-    - docker rm -f wex_pipeline_test
-    # Create a new container for test
-    - docker run -d -ti --name wex_pipeline_test gitlab-docker.wexample.com/wexample-public/docker/wex:test
-    # Copy current folder
-    - docker cp $(pwd) wex_pipeline_test:/opt/wex
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    - cat ".env"
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Ensure old reverse proxy does not stand here
-#    - rm -rf /var/www/test/wex-proxy/
-#    # Run wex test as owner with sudo
-##    - sudo su - owner -c "sudo wex test"
-#    - sudo su - owner -c "sudo wex test -c app::proxy/start"
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    - cat ".env"
+    # Install
+    - INSTALL_PATH=$(pwd)
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+    # Create a fake socket
+    - touch /var/run/docker.sock
+    # Run wex test as owner with sudo
+#    - sudo su - owner -c "sudo wex test"
+    - sudo su - owner -c "sudo wex test -c app::proxy/start"
+    # Uninstall
+    - sudo bash ./cli/uninstall
   after_script:
     # Reset permissions
     - chown -R root:root .
