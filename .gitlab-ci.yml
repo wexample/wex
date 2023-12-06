@@ -31,12 +31,12 @@ test:
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
     # Run wex test as owner with sudo
 #    - sudo su - owner -c "sudo wex test"
-#    - sudo su - owner -c "sudo wex test -c app::proxy/start"
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
-#  after_script:
-#    # Reset permissions
-#    - chown -R root:root .
+    - sudo su - owner -c "sudo wex test -c app::proxy/start"
+    # Uninstall
+    - sudo bash ./cli/uninstall
+  after_script:
+    # Reset permissions
+    - chown -R root:root .
 
 #build:
 #  stage: build
