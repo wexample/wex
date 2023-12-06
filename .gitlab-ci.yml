@@ -31,6 +31,7 @@ test:
     - tags
   script:
     - ls -l /var/run
+    - docker run ubuntu /bin/bash echo "UBUNTU_WORKS"
     - docker exec $DIND_CONTAINER_ID ls -l /var/run/docker.sock
     - docker exec $DIND_CONTAINER_ID ps aux | grep dockerd
     - docker logs $DIND_CONTAINER_ID
