@@ -13,30 +13,24 @@ test:
     DOCKER_DRIVER: overlay
   services:
     - name: docker:24.0.6-dind
-  before_script:
-    - docker info
   script:
-    - docker version
-    - docker run alpine:latest /bin/sh -c "echo WORKS"
-
-#    - ls -l /var/run/docker.sock
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    - cat ".env"
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Run wex test as owner with sudo
-##    - sudo su - owner -c "sudo wex test"
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    - cat ".env"
+    # Install
+    - INSTALL_PATH=$(pwd)
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+    # Run wex test as owner with sudo
+#    - sudo su - owner -c "sudo wex test"
 #    - sudo su - owner -c "sudo wex test -c app::proxy/start"
 #    # Uninstall
 #    - sudo bash ./cli/uninstall
