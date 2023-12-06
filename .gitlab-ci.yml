@@ -13,8 +13,12 @@ test:
   services:
     - name: docker:24.0.6-dind
   script:
-     - docker rm -f wex_pipeline_test
-     - docker run -d -ti --name wex_pipeline_test gitlab-docker.wexample.com/wexample-public/docker/wex:test
+    # Cleanup old containers
+    - docker rm -f wex_pipeline_test
+    # Create a new container for test
+    - docker run -d -ti --name wex_pipeline_test gitlab-docker.wexample.com/wexample-public/docker/wex:test
+    # Copy current folder
+    - docker cp $(pwd) wex_pipeline_test:/opt/wex
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
