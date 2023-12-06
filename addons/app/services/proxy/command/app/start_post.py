@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
+from src.helper.command import execute_command_sync
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.command import execute_command_sync
 
