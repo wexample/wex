@@ -6,36 +6,15 @@ stages:
 
 test:
   stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  image: docker:latest
   services:
-    # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
-#  before_script:
-#    # Start Docker daemon manually and display logs
-#    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
-#    - sleep 30  # Give it some time to start
-#    - cat docker.log
-#    - apt-get update && apt-get install -y net-tools
-#    - netstat -tuln | grep 2375
-#    # Allow all users to access 2375
-#    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
-#      # Added a timeout to ensure that the loop does not run indefinitely
-#    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
-#    - docker ps
-#    - DIND_CONTAINER_ID=$(docker ps -q --filter "ancestor=docker:24.0.6-dind")
-#    - echo "DinD Container ID $DIND_CONTAINER_ID"
-#    - echo "DOCKER_HOST ${DOCKER_HOST}"
-#  variables:
-#    DOCKER_HOST: /var/run/docker.sock
-#    DOCKER_HOST: tcp://0.0.0.0:2375
-#    DOCKER_DRIVER: vfs
-  only:
-    - tags
   script:
     - ls -l /var/run
     - docker version
     - docker run alpine:latest /bin/bash -c "echo UBUNTU_WORKS"
     - docker ps -a
+
 #    - ls -l /var/run/docker.sock
 #    # Stops script on failure
 #    - set -e
