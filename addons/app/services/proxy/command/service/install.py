@@ -43,5 +43,6 @@ def proxy__service__install(
         copy_function=shutil.copy2,
     )
     execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy"])
+    execute_command_sync(manager.kernel, ["ls", "-la", "/var/www/test/wex-proxy/proxy"])
 
     manager.exec_in_app_workdir(app_dir, callback)
