@@ -26,8 +26,9 @@ test:
     - echo "DinD Container ID $DIND_CONTAINER_ID"
     - echo "DOCKER_HOST ${DOCKER_HOST}"
   variables:
-    DOCKER_HOST: tcp://0.0.0.0:2375
-    DOCKER_DRIVER: vfs
+    DOCKER_HOST: /var/run/docker.sock
+#    DOCKER_HOST: tcp://0.0.0.0:2375
+#    DOCKER_DRIVER: vfs
   only:
     - tags
   script:
