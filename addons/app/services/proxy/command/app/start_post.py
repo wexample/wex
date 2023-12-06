@@ -20,26 +20,37 @@ def proxy__app__start_post(
 
     print("DEBUG WAIT 5")
     time.sleep(5)
+    # Result : The file exists
     execute_command_sync(
         manager.kernel,
         ["cat", "/var/www/test/wex-proxy/.wex/tmp/docker-compose.runtime.yml"],
     )
-    execute_command_sync(manager.kernel, ["docker", "ps"])
-    execute_command_sync(manager.kernel, ["docker", "ps"])
-    execute_command_sync(manager.kernel, ["docker", "ps"])
-    execute_command_sync(manager.kernel, ["docker", "ps"])
+    # Logs says that container is restarting (as I wait 5 seconds)
     execute_command_sync(manager.kernel, ["docker", "ps"])
     print("DEBUG INFO")
+    # Docker config seems good
     execute_command_sync(manager.kernel, ["docker", "info"])
     print("DEBUG CURL")
+    # Curl returns some data : {"Platform":{"Name":"Docker Engine - Community"},"... }
     execute_command_sync(
         manager.kernel, ["curl", "-v", "http://localhost:2375/version"]
     )
     print("DEBUG LOGS")
+    # Logs returns an explicit message :
+    # Info: running nginx-proxy version 1.3.1
+    # ERROR: you need to share your Docker host socket with a volume at /tmp/docker.sock
+    # Typically you should run your nginxproxy/nginx-proxy with: `-v /var/run/docker.sock:/tmp/docker.sock:ro`
+    # See the documentation at: https://github.com/nginx-proxy/nginx-proxy/#usage
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
     print("DEBUG INSPECT")
+    # It returns a lot of info including :
+    #         "State": {
+    #             "Status": "restarting",
+    #
     execute_command_sync(manager.kernel, ["docker", "inspect", "wex_proxy_local_proxy"])
     print("DEBUG LS")
+    # The file does not exist !
+    # total 0
     execute_command_sync(manager.kernel, ["ls", "-l", "/var/run/docker.sock"])
     print("DEBUG INSPECT 2")
     execute_command_sync(
