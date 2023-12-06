@@ -1,8 +1,8 @@
+import time
 from typing import TYPE_CHECKING
 
 from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
-from src.helper.command import execute_command_sync
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.command import execute_command_sync
 
@@ -17,6 +17,50 @@ def proxy__app__start_post(
     # TODO Pipeline inspect
     execute_command_sync(manager.kernel, ["docker", "ps"])
     execute_command_sync(manager.kernel, ["docker", "logs", "wex_proxy_local_proxy"])
+
+    print("DEBUG")
+    execute_command_sync(manager.kernel, ["docker", "ps"])
+    execute_command_sync(
+        manager.kernel,
+        [
+            "docker",
+            "exec",
+            "wex_proxy_local_proxy",
+            "/bin/bash",
+            "-c",
+            "ln -fs /proc/1/fd/1 /var/log/nginx/access.log",
+        ],
+    )
+
+    print("DEBUG")
+    time.sleep(1)
+    execute_command_sync(manager.kernel, ["docker", "ps"])
+    execute_command_sync(
+        manager.kernel,
+        [
+            "docker",
+            "exec",
+            "wex_proxy_local_proxy",
+            "/bin/bash",
+            "-c",
+            "ln -fs /proc/1/fd/1 /var/log/nginx/access.log",
+        ],
+    )
+
+    print("DEBUG")
+    time.sleep(5)
+    execute_command_sync(manager.kernel, ["docker", "ps"])
+    execute_command_sync(
+        manager.kernel,
+        [
+            "docker",
+            "exec",
+            "wex_proxy_local_proxy",
+            "/bin/bash",
+            "-c",
+            "ln -fs /proc/1/fd/1 /var/log/nginx/access.log",
+        ],
+    )
 
     commands = [
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
