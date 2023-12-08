@@ -19,5 +19,3 @@ def system__kill__by_port(kernel: "Kernel", port: int) -> Optional[psutil.Proces
 
     if process:
         process_kill(process)
-
-    return process
