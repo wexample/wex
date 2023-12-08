@@ -22,9 +22,21 @@ if TYPE_CHECKING:
 def app__remote__go(
     manager: "AppAddonManager", app_dir: str, environment: str
 ) -> Optional[InteractiveShellCommandResponse]:
-    domain = manager.get_config(f"env.{environment}.domain_main")
+    ip = manager.get_config(f"env.{environment}.server.ip", None)
+    if ip is None:
+        ip = manager.get_config(f"env.{environment}.domain_main", None)
 
-    if not domain:
+    if ip is None:
         return None
 
-    return InteractiveShellCommandResponse(manager.kernel, ["ssh", str(domain)])
+    assert isinstance(ip, str)
+    app_name = str(manager.get_config("global.name"))
+    return InteractiveShellCommandResponse(
+        manager.kernel,
+        [
+            "ssh",
+            "-t",
+            ip,
+            f"\"sudo sh -c 'cd /var/www/{environment}/{app_name}/ && /bin/bash'\"",
+        ],
+    )

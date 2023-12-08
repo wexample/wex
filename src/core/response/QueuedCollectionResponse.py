@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
-from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import QueuedCollectionStopCurrentStepResponse
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -25,6 +24,9 @@ from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueMan
 )
 from src.core.response.queue_collection.QueuedCollectionPathManager import (
     QueuedCollectionPathManager,
+)
+from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
+    QueuedCollectionStopCurrentStepResponse,
 )
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
@@ -160,7 +162,9 @@ class QueuedCollectionResponse(AbstractResponse):
         self.output_bag.append(response)
 
         # Response asks to stop all process
-        if isinstance(response, QueuedCollectionStopResponse) or isinstance(response, QueuedCollectionStopCurrentStepResponse):
+        if isinstance(response, QueuedCollectionStopResponse) or isinstance(
+            response, QueuedCollectionStopCurrentStepResponse
+        ):
             if isinstance(response, QueuedCollectionStopResponse):
                 # Mark having next step to block enqueuing
                 self.has_next_step = True

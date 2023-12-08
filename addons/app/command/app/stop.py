@@ -7,12 +7,11 @@ from addons.app.command.hosts.update import app__hosts__update
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command
-from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import QueuedCollectionStopCurrentStepResponse
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
+from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
+    QueuedCollectionStopCurrentStepResponse,
 )
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
@@ -39,7 +38,9 @@ def app__app__stop(
     ) -> Optional[QueuedCollectionStopCurrentStepResponse]:
         if not kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
             manager.log("App already stopped")
-            return QueuedCollectionStopCurrentStepResponse(kernel, "APP_ALREADY_STOPPED")
+            return QueuedCollectionStopCurrentStepResponse(
+                kernel, "APP_ALREADY_STOPPED"
+            )
 
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
