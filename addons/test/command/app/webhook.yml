@@ -11,10 +11,10 @@ options:
     default: DEFAULT_VALUE
     type: str
 scripts:
-  - echo "This command can be run from the web"
+  - echo "This command can be ran from the web"
   - echo "This command should be ran in an app, which should run"
   - echo "This is the app path ${RUNTIME_PATH_APP}"
   - echo "This is the app name ${RUNTIME_NAME}"
   - echo "This is the given option value ${OPTION}"
-  - wex app/restart
-  - echo "RESTART_COMPLETE"
+  - wex app/started
+  - echo "TEST_COMPLETE"
