@@ -79,6 +79,7 @@ build:
 
 deploy:
   stage: deploy
+  image: curlimages/curl
   only:
     - tags
   needs:
