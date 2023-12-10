@@ -11,4 +11,4 @@ if TYPE_CHECKING:
 def app__domain__list(manager: "AppAddonManager", app_dir: str) -> AppConfigValue:
     manager.build_runtime_config()
 
-    return manager.get_runtime_config("domains")
+    return manager.get_runtime_config("domains").get_list()

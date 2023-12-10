@@ -19,4 +19,4 @@ if TYPE_CHECKING:
 def app__config__get(
     manager: "AppAddonManager", app_dir: str, key: str, default: Optional[str] = None
 ) -> AppConfigValue:
-    return manager.get_config(key, default)
+    return manager.get_config(key, default).get_value()

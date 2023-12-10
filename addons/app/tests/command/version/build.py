@@ -8,7 +8,7 @@ class TestAppCommandVersionBuild(AbstractAppTestCase):
         manager = self.kernel.addons["app"]
         assert isinstance(manager, AppAddonManager)
 
-        current_version = manager.get_config("global.version")
+        current_version = manager.get_config("global.version").get_str()
         app_dir = self.create_test_app()
 
         # Change version.

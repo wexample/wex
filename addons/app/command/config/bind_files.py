@@ -22,7 +22,7 @@ def app__config__bind_files(
     names_processed = []
     output = {}
 
-    env = manager.get_runtime_config("env")
+    env = manager.get_runtime_config("env").get_str()
 
     for file in section_files:
         split = file.split(".")

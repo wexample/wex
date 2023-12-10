@@ -22,15 +22,14 @@ if TYPE_CHECKING:
 def app__remote__go(
     manager: "AppAddonManager", app_dir: str, environment: str
 ) -> Optional[InteractiveShellCommandResponse]:
-    ip = manager.get_config(f"env.{environment}.server.ip", None)
-    if ip is None:
-        ip = manager.get_config(f"env.{environment}.domain_main", None)
-
-    if ip is None:
+    if manager.has_config(f"env.{environment}.server.ip"):
+        ip = manager.get_config(f"env.{environment}.server.ip").get_str()
+    elif manager.has_config(f"env.{environment}.domain_main"):
+        ip = manager.get_config(f"env.{environment}.domain_main").get_str()
+    else:
         return None
 
-    assert isinstance(ip, str)
-    app_name = str(manager.get_config("global.name"))
+    app_name = manager.get_config("global.name").get_str()
     return InteractiveShellCommandResponse(
         manager.kernel,
         [

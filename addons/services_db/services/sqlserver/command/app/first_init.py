@@ -19,6 +19,6 @@ def sqlserver__app__first_init(
             "app-dir": app_dir,
             "database": "master",
             # Ask to execute bash
-            "command": f'CREATE DATABASE {manager.get_config("global.name")}',
+            "command": f'CREATE DATABASE {manager.get_config("global.name").get_str()}',
         },
     )

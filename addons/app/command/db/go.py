@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 def app__db__go(manager: "AppAddonManager", app_dir: str) -> None:
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
-    service = manager.get_config("docker.main_db_container", required=True)
+    service = manager.get_config("docker.main_db_container").get_str()
 
     go_command = manager.kernel.run_command(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/go",

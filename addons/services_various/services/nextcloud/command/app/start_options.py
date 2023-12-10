@@ -17,6 +17,6 @@ def nextcloud__app__start_options(
     manager: "AppAddonManager", app_dir: str, options: str, service: str
 ) -> Optional[ShellCommandsDeepList]:
     # On first start, do not run nextcloud until database is initialized.
-    if not manager.get_config("global.initialized"):
-        return ["--scale", f'{manager.get_config("global.name")}_nextcloud=0']
+    if not manager.has_config("global.initialized") or not manager.get_config("global.initialized").get_bool():
+        return ["--scale", f'{manager.get_config("global.name").get_str()}_nextcloud=0']
     return None

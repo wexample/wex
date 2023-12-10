@@ -30,8 +30,7 @@ def app__app__stop(
     manager: "AppAddonManager", app_dir: str
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name")
-    assert isinstance(name, str)
+    name = manager.get_config("global.name").get_str()
 
     def _app__app__stop__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,

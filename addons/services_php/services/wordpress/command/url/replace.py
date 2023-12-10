@@ -76,13 +76,13 @@ def wordpress__url__replace(
         nonlocal old_url
 
         # Determine table prefix based on site ID
-        base_prefix = manager.get_config(f"service.{service}.db_prefix")
+        base_prefix = manager.get_config(f"service.{service}.db_prefix").get_str()
         prefix = f"{base_prefix}{site_id}_" if site_id > 1 else base_prefix
 
         if not new_url:
-            env = str(manager.get_runtime_config("env"))
+            env = manager.get_runtime_config("env").get_str()
             protocol = f'http{"" if env in APP_NO_SSL_ENVS else "s"}'
-            new_url = protocol + "://" + str(manager.get_runtime_config("domain_main"))
+            new_url = protocol + "://" + manager.get_runtime_config("domain_main").get_str()
 
         assert isinstance(new_url, str)
 
@@ -116,7 +116,7 @@ def wordpress__url__replace(
         if not old_url:
             return QueuedCollectionStopResponse(kernel, "WORDPRESS_MISSING_OLD_URL")
 
-        app_name = manager.get_config("global.name")
+        app_name = manager.get_config("global.name").get_str()
         message_part = f'old url {old_url} (https, http, and domain only) by new url {new_url} in "{app_name}"'
         if not yes and not click.confirm(
             f"Are you ready to rewrite {message_part}", default=True

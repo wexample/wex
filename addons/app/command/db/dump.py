@@ -22,8 +22,8 @@ def app__db__dump(
     zip: bool = True,
     tag: str | None = None,
 ) -> Optional[str]:
-    env = manager.get_runtime_config("env")
-    name = manager.get_runtime_config("global.name")
+    env = manager.get_runtime_config("env").get_str()
+    name = manager.get_runtime_config("global.name").get_str()
 
     # Determine dump file name
     if file_name:
@@ -37,7 +37,7 @@ def app__db__dump(
 
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
-    service = manager.get_config("docker.main_db_container", required=True)
+    service = manager.get_config("docker.main_db_container").get_str()
 
     output_path = dump_path = str(
         manager.kernel.run_command(

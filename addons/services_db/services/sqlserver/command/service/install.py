@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 def sqlserver__service__install(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
-    name = manager.get_config("global.name")
+    name = manager.get_config("global.name").get_str()
     manager.set_config(
         f"service.{service}",
         {

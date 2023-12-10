@@ -18,7 +18,7 @@ def sqlserver__db__dump(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> str:
     file_name += ".bak"
-    app_name = manager.get_config("global.name")
+    app_name = manager.get_config("global.name").get_str()
 
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.command.env.get import app__env__get
 from addons.app.command.hook.exec import app__hook__exec
@@ -21,10 +21,10 @@ if TYPE_CHECKING:
 @app_command(help="Set app files permissions")
 def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
-    user = manager.get_config("permissions.user", None)
-    user = str(user) if user else None
 
-    if not user:
+    if manager.has_config("permissions.user"):
+        user = manager.get_config("permissions.user").get_str()
+    else:
         env = kernel.run_function(
             app__env__get, {"app-dir": kernel.get_path("root")}
         ).first()
@@ -39,10 +39,12 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
             )
 
     # If no group specified, set to None to guess it.
-    group = manager.get_config("permissions.group", None)
+    group: Optional[str] = None
+    if manager.has_config("permissions.group"):
+        group = manager.get_config("permissions.group").get_str()
 
     manager.log(f'Setting owner of all files to "{user}"')
-    set_owner_recursively(app_dir, user, str(group) if group else None)
+    set_owner_recursively(app_dir, user, group)
 
     manager.log(f'Setting file mode of all files to "755"')
     set_permissions_recursively(app_dir, 0o755)

@@ -32,9 +32,7 @@ def app__db__exec(
     database: Optional[str] = None,
     sync: bool = False,
 ) -> AbstractResponse:
-    service = service or str(
-        manager.get_config("docker.main_db_container", required=True)
-    )
+    service = service or manager.get_config("docker.main_db_container").get_str()
 
     exec_command = manager.kernel.run_command(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/exec",

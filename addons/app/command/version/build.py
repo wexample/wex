@@ -40,7 +40,7 @@ def app__version__build(
         else:
             new_version = kernel.run_function(
                 default__version__increment,
-                {"version": manager.get_config("global.version")},
+                {"version": manager.get_config("global.version").get_str()},
             ).print_wrapped_str()
 
         # Save new version
@@ -49,7 +49,7 @@ def app__version__build(
         manager.set_config("global.version", new_version)
     else:
         repo = Repo(app_dir)
-        new_version = str(manager.get_config("global.version"))
+        new_version = manager.get_config("global.version").get_str()
 
         if not repo.is_dirty(untracked_files=True):
             kernel.io.log("No changes to commit")

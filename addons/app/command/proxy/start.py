@@ -93,8 +93,8 @@ def app__proxy__start(
 
                 kernel.io.success(f"Port {port_to_check} free")
 
-            check_port(manager.get_config_int("global.port_public"))
-            check_port(manager.get_config_int("global.port_public_secure"))
+            check_port(manager.get_config("global.port_public").get_int())
+            check_port(manager.get_config("global.port_public_secure").get_int())
 
         manager.exec_in_app_workdir(proxy_path, _callback)
 

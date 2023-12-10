@@ -70,8 +70,7 @@ def app__app__start(
     no_proxy: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name")
-    assert isinstance(name, str)
+    name = manager.get_config("global.name").get_str()
 
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -270,9 +269,8 @@ def app__app__start(
     def _app__app__start__complete(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        env = manager.get_runtime_config("env")
-        domains = manager.get_runtime_config("domains")
-        assert isinstance(domains, list)
+        env = manager.get_runtime_config("env").get_str()
+        domains = manager.get_runtime_config("domains").get_list()
         domains_string = []
 
         for domain in domains:

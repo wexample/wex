@@ -97,8 +97,7 @@ def app__service__install(
                 app_dir, dependency, install_config, install_docker, install_git, force
             )
 
-    services = manager.get_config("service", {})
-    assert isinstance(services, dict)
+    services = manager.get_config("service", {}).get_dict()
 
     if service in services and not force:
         kernel.io.log("Service already installed")
@@ -136,18 +135,15 @@ def app__service__install(
     service_config = services_registry[service]["config"]
 
     # First service is set as main service
-    main_service = manager.get_config("global.main_service")
-    if not main_service:
+    if not manager.has_config("global.main_service"):
         manager.set_config("global.main_service", service)
 
     if "tags" in service_config and "db" in service_config["tags"]:
-        main_db_container = manager.get_config("docker.main_db_container")
-        if not main_db_container:
+        if not manager.has_config("docker.main_db_container"):
             manager.set_config("docker.main_db_container", service)
 
     if "global" in service_config:
-        global_config = manager.get_config("global")
-        assert isinstance(global_config, dict)
+        global_config = manager.get_config("global").get_dict()
 
         config_global = dict_merge(global_config, service_config["global"])
 
@@ -209,7 +205,7 @@ def app_service_install_merge_dir(
                 with open(abs_path, "r") as f:
                     extra_compose = yaml.safe_load(f) or {}
 
-                app_name = manager.get_config("global.name")
+                app_name = manager.get_config("global.name").get_str()
 
                 if "services" in extra_compose:
                     extra_services = {}

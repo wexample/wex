@@ -22,10 +22,10 @@ if TYPE_CHECKING:
 def app__remote__available(
     manager: "AppAddonManager", app_dir: str, environment: str, port: None | int = None
 ) -> bool:
-    domain = manager.get_config(f"env.{environment}.domain_main")
-    if not domain:
+    if not manager.has_config(f"env.{environment}.domain_main"):
         return False
 
+    domain = manager.get_config(f"env.{environment}.domain_main").get_str()
     port = port or WEBHOOK_LISTEN_PORT_DEFAULT
 
     try:

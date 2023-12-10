@@ -14,9 +14,7 @@ def app__version__get(
 ) -> Optional[str]:
     manager = app_create_manager(manager.kernel, app_dir or os.getcwd())
 
-    version = manager.get_config(f"global.version", None)
-
-    if isinstance(version, str):
-        return version
+    if manager.has_config(f"global.version"):
+        return manager.get_config(f"global.version").get_str()
 
     return None

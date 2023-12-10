@@ -40,7 +40,7 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
 
     compose_files.append(app_compose_file)
 
-    env = manager.get_runtime_config("env")
+    env = manager.get_runtime_config("env").get_str()
     env_yml = f"{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{env}.yml"
     if os.path.isfile(env_yml):
         compose_files.append(env_yml)
@@ -65,7 +65,7 @@ def docker_exec_app_compose_command(
         )
 
     manager = cast("AppAddonManager", kernel.addons["app"])
-    env = manager.get_runtime_config("env")
+    env = manager.get_runtime_config("env").get_str()
 
     command: List[str] = [
         "docker",
@@ -126,4 +126,4 @@ def docker_exec_app_compose(
 
 def docker_build_long_container_name(kernel: "Kernel", name: str) -> str:
     manager = cast("AppAddonManager", kernel.addons["app"])
-    return f'{manager.get_runtime_config("name")}_{name}'
+    return f'{manager.get_runtime_config("name").get_str()}_{name}'

@@ -67,7 +67,9 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
             manager.set_config(
                 "global.name",
                 _get_config_value(
-                    config, "NAME", manager.get_config("global.config", "undefined")
+                    config,
+                    "NAME",
+                    manager.get_config("global.config", "undefined").get_str()
                 ),
             )
 

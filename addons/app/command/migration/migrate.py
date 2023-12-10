@@ -51,16 +51,10 @@ def app__migration__migrate(
 
     if from_version:
         app_version_string = from_version
+    elif manager.has_config(f"{CORE_COMMAND_NAME}.version"):
+        app_version_string = manager.get_config(f"{CORE_COMMAND_NAME}.version").get_str()
     else:
-        app_version_string = None
-        try:
-            # Trust regular config file
-            value = manager.get_config(f"{CORE_COMMAND_NAME}.version")
-            app_version_string = value if isinstance(value, str) else None
-        except Exception:
-            pass
-
-    app_version_string = app_version_string or migration_version_guess(kernel, app_dir)
+        app_version_string = migration_version_guess(kernel, app_dir)
 
     app_version = kernel.run_function(
         default__version__parse, {"version": app_version_string}
@@ -75,7 +69,7 @@ def app__migration__migrate(
         ).first()
 
     if not yes and not click.confirm(
-        f'Are you ready to migrate {manager.get_config("global.name")} from version {app_version_string}',
+        f'Are you ready to migrate {manager.get_config("global.name").get_str()} from version {app_version_string}',
         default=True,
     ):
         return

@@ -30,7 +30,11 @@ def app__app__started(
     app_dir: str,
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
-    if not manager.get_runtime_config("started", False):
+    if not manager.has_runtime_config("started"):
+        return False
+
+    started = manager.get_runtime_config("started").get_bool()
+    if not started:
         return False
 
     if not manager.runtime_docker_compose:
