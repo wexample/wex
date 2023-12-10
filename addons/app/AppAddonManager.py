@@ -3,6 +3,8 @@ import getpass
 import os
 import platform
 import sys
+
+from src.core.ConfigValue import ConfigValue
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
 import yaml
@@ -248,7 +250,7 @@ class AppAddonManager(AddonManager):
     def save_runtime_config(self) -> None:
         self._save_config(self.runtime_config_path, self.runtime_config)
 
-        app_dir: str = str(self.get_runtime_config("path.app"))
+        app_dir: str = self.get_runtime_config("path.app").get_str()
 
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
@@ -330,53 +332,33 @@ class AppAddonManager(AddonManager):
         self.save_runtime_config()
 
     def get_config(
-        self, key: str, default: Optional[AppConfigValue] = None, required: bool = False
-    ) -> AppConfigValue:
-        return self._get_config_value(self.config, key, default, required)
-
-    def get_config_int(
-        self,
-        key: str,
-        default: Optional[AppConfigValue] = None,
-        required: bool = False,
-    ) -> int:
-        value = self._get_config_value(self.config, key, default, required)
-        assert isinstance(value, str | int | float)
-
-        return int(value)
+        self, key: str, default: Optional[AppConfigValue] = None
+    ) -> ConfigValue:
+        return self._get_config_value(self.config, key, default)
 
     def _get_config_value(
         self,
-        config: Optional[AppConfig | AppRuntimeConfig],
+        config_dict: Optional[AppConfig | AppRuntimeConfig],
         key: str,
         default: Optional[AppConfigValue] = None,
-        required: bool = False,
     ) -> AppConfigValue:
-        if not config:
-            return default
-
-        value = dict_get_item_by_path(config, key, default)
-
-        if required and value is None:
-            self.kernel.io.error(
-                f"Missing expected config key : {key}, got None", trace=False
-            )
-
-        return cast(AppConfigValue, value)
+        return ConfigValue(
+            value=dict_get_item_by_path(config_dict, key, default)
+        )
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
         if self.first_log_indent is None:
             self.first_log_indent = self.kernel.io.log_indent
 
         if self.kernel.io.log_indent == self.first_log_indent:
-            message = f'[{self.get_config("global.name")}] {message}'
+            message = f'[{self.get_config("global.name").get_str()}] {message}'
 
         self.kernel.io.log(message, color, indent)
 
     def get_runtime_config(
         self, key: str, default: Optional[AppConfigValue] = None, required: bool = False
-    ) -> AppConfigValue:
-        return self._get_config_value(self.runtime_config, key, default, required)
+    ) -> ConfigValue:
+        return self._get_config_value(self.runtime_config, key, default)
 
     def ignore_app_dir(self, request: "CommandRequest") -> bool:
         if request._script_command is None:
@@ -583,7 +565,7 @@ class AppAddonManager(AddonManager):
         env = self.kernel.run_function(app__env__get, {"app-dir": self.app_dir}).first()
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
-        name = self.get_config("global.name")
+        name = self.get_config("global.name").get_str()
         config = self.config
 
         if not config:
@@ -670,16 +652,15 @@ class AppAddonManager(AddonManager):
         service = service or self.get_main_service()
 
         # Search into local config.
-        return (
-            self.get_config(f"service.{service}.{key}")
-            # Search into the service config
-            or dict_get_item_by_path(
+        return self.get_config(
+            f"service.{service}.{key}",
+            dict_get_item_by_path(
                 service_load_config(self.kernel, service), key, default
             )
-        )
+        ).get_str()
 
     def get_main_service(self) -> str:
-        return str(self.get_config(key="global.main_service", required=True))
+        return self.get_config(key="global.main_service").get_str()
 
     def get_main_container_name(self) -> str:
         main_service = self.get_main_service()
