@@ -367,8 +367,17 @@ class AppAddonManager(AddonManager):
 
         self.kernel.io.log(message, color, indent)
 
-    def has_config(self, key: str) -> bool:
-        return dict_has_item_by_path(cast(StringKeysMapping, self._config), key)
+    def has_config(self, key: str, with_type: Optional[type] = None) -> bool:
+        config = cast(StringKeysMapping, self._config)
+        value_exist = dict_has_item_by_path(config, key)
+
+        if value_exist and with_type:
+            return isinstance(
+                dict_get_item_by_path(config, key),
+                with_type
+            )
+
+        return value_exist
 
     def has_runtime_config(self, key: str) -> bool:
         return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)

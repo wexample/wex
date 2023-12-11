@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
 
-    if manager.has_config("permissions.user"):
+    if manager.has_config("permissions.user", str):
         user = manager.get_config("permissions.user").get_str()
     else:
         env = kernel.run_function(
