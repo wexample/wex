@@ -8,6 +8,10 @@ class AppDirectoryStructure(DirectoryStructure):
         APP_DIR_APP_DATA: {
             "should_exist": True,
             "schema": {
+                "tmp": {
+                    "should_exist": True,
+                    "on_missing": "create",
+                },
                 ".env": {
                     "type": "file",
                     "should_exist": True,
