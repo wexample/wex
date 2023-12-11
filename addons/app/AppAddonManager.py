@@ -362,7 +362,7 @@ class AppAddonManager(AddonManager):
             self.first_log_indent = self.kernel.io.log_indent
 
         if self.kernel.io.log_indent == self.first_log_indent:
-            message = f'[{self.get_config("global.name").get_str()}] {message}'
+            message = f'[{self.get_config("global.name", "unknown").get_str()}] {message}'
 
         self.kernel.io.log(message, color, indent)
 
