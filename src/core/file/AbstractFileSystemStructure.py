@@ -26,6 +26,7 @@ FILE_SYSTEM_ERROR_MESSAGES: Dict[str, str] = {
 
 class FileSystemStructureSchemaItem(TypedDict, total=False):
     class_name: Optional[str]
+    default_content: Optional[str]
     on_missing: Optional[str]
     schema: Optional["FileSystemStructureSchema"]
     shortcut: Optional[str]
@@ -72,9 +73,13 @@ class AbstractFileSystemStructure(BaseClass):
         if self.parent_structure:
             self.parent_structure.set_shortcut(name, structure)
 
+    def get_schema(self) -> FileSystemStructureSchema:
+        return self.schema
+
     def load_schema(self) -> None:
-        for item_name in self.schema:
-            options: FileSystemStructureSchemaItem = self.schema[item_name]
+        schema = self.get_schema()
+        for item_name in schema:
+            options: FileSystemStructureSchemaItem = schema[item_name]
 
             type: str = options["type"] if "type" in options else "dir"
             class_definition: Any = (

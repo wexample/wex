@@ -4,7 +4,7 @@ from typing import Optional
 from src.const.types import BasicValue
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
-    AbstractFileSystemStructure,
+    AbstractFileSystemStructure, FileSystemStructureSchemaItem,
 )
 from src.helper.file import file_create_parent_and_touch, file_read, file_write
 
@@ -13,6 +13,7 @@ class FileStructure(AbstractFileSystemStructure):
     type = "file"
     file_extension: Optional[str] = None
     content: BasicValue
+    default_content: str = ""
 
     def __init__(self, path: str, initialize: bool = True) -> None:
         self.content = None
@@ -36,6 +37,12 @@ class FileStructure(AbstractFileSystemStructure):
     def load_content(self) -> None:
         self.content = file_read(self.path)
 
+    def load_options(self, options: FileSystemStructureSchemaItem) -> None:
+        super().load_options(options)
+
+        if "default_content" in options:
+            self.default_content = str(options["default_content"])
+
     def write_content(self) -> None:
         file_write(self.path, str(self.get_writable_content()))
 
@@ -43,4 +50,6 @@ class FileStructure(AbstractFileSystemStructure):
         return self.content
 
     def create_missing(self) -> None:
-        file_create_parent_and_touch(self.path)
+        file_create_parent_and_touch(
+            self.path,
+            self.default_content)
