@@ -665,16 +665,17 @@ class AppAddonManager(AddonManager):
 
     def get_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
-    ) -> Any:
+    ) -> ConfigValue:
         service = service or self.get_main_service()
+        key = f"service.{service}.{key}"
 
-        # Search into local config.
-        return self.get_config(
-            f"service.{service}.{key}",
+        if self.has_config(key):
+            return self.get_config(key)
+
+        return ConfigValue(
             dict_get_item_by_path(
                 service_load_config(self.kernel, service), key, default
-            ),
-        ).get_str()
+            ))
 
     def get_main_service(self) -> str:
         return self.get_config(key="global.main_service").get_str()
@@ -683,14 +684,16 @@ class AppAddonManager(AddonManager):
         main_service = self.get_main_service()
 
         return (
-            self.get_service_config(key="container.default", service=main_service)
-            or main_service
+            self.get_service_config(
+                key="container.default",
+                service=main_service,
+                default=main_service).get_str()
         )
 
     def get_service_shell(self, service: str | None = None) -> str:
         return (
             self.get_service_config(
-                key="shell", service=(service or self.get_main_service())
-            )
-            or SHELL_DEFAULT
+                key="shell", service=(service or self.get_main_service()),
+                default=SHELL_DEFAULT
+            ).get_str()
         )
