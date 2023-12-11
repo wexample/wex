@@ -1,10 +1,10 @@
 import copy
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
-from src.const.types import StringKeysMapping
+from src.const.types import StringKeysDict, StringKeysMapping
 
 
-def dict_merge(dict1: StringKeysMapping, dict2: Dict[str, Any]) -> Dict[str, Any]:
+def dict_merge(dict1: StringKeysDict, dict2: StringKeysDict) -> StringKeysDict:
     """
     Recursively merge two dictionaries.
     If a key exists in both dictionaries, the values are merged recursively.
@@ -48,5 +48,5 @@ def dict_get_item_by_path(
     return data
 
 
-def dict_sort_values(dictionary: StringKeysMapping) -> Dict[str, Any]:
+def dict_sort_values(dictionary: StringKeysMapping) -> StringKeysDict:
     return {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1])}

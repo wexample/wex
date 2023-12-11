@@ -676,7 +676,8 @@ class AppAddonManager(AddonManager):
         return ConfigValue(
             dict_get_item_by_path(
                 service_load_config(self.kernel, service), key, default
-            ))
+            )
+        )
 
     def get_main_service(self) -> str:
         return self.get_config(key="global.main_service").get_str()
@@ -684,17 +685,13 @@ class AppAddonManager(AddonManager):
     def get_main_container_name(self) -> str:
         main_service = self.get_main_service()
 
-        return (
-            self.get_service_config(
-                key="container.default",
-                service=main_service,
-                default=main_service).get_str()
-        )
+        return self.get_service_config(
+            key="container.default", service=main_service, default=main_service
+        ).get_str()
 
     def get_service_shell(self, service: str | None = None) -> str:
-        return (
-            self.get_service_config(
-                key="shell", service=(service or self.get_main_service()),
-                default=SHELL_DEFAULT
-            ).get_str()
-        )
+        return self.get_service_config(
+            key="shell",
+            service=(service or self.get_main_service()),
+            default=SHELL_DEFAULT,
+        ).get_str()

@@ -17,8 +17,8 @@ def app__app__info(manager: "AppAddonManager", app_dir: str) -> TableResponse:
 
     output_list.set_body(
         [
-            ["Name", manager.get_config("global.name", '-').get_str()],
-            ["Version", manager.get_config("global.version", '-').get_str()],
+            ["Name", manager.get_config("global.name", "-").get_str()],
+            ["Version", manager.get_config("global.version", "-").get_str()],
             [
                 "Status",
                 "Started"
