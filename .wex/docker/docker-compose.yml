@@ -18,6 +18,9 @@ services:
       - /var/www/${RUNTIME_ENV}:/var/www/${RUNTIME_ENV}
       # Authorize app to reuse ssh authentications (i.e.: git operations)
       - ${WEX_RUNNER_SSH_AUTH_SOCK:-/dev/null}:/ssh-agent
+      # Allow container to override env data
+      - /opt/wex/.wex/python/venv
+      - /opt/wex/.wex/.env
       # Allow to run docker from inside container
       - /var/run/docker.sock:/var/run/docker.sock
       # For debug purposes

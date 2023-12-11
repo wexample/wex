@@ -23,9 +23,6 @@ global:
   services: []
   type: app
   version: 5.0.88+build.20231211120800
-permissions:
-  group: null
-  user: null
 service:
   test: {}
 wex:
