@@ -16,7 +16,7 @@ def mysql__config__runtime(
 ) -> None:
     # Set db as main database.
     manager.set_runtime_config(
-        f"db.main", manager.get_config(f"service.{service}").get_str(), False
+        f"db.main", manager.get_config(f"service.{service}.name").get_str(), False
     )
 
     db_connection_file = os.path.join(app_dir, APP_DIR_TMP, MYSQL_CONF_FILE)
