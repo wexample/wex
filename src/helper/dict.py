@@ -1,5 +1,6 @@
 import copy
 from typing import Any, Dict, Optional
+
 from src.const.types import StringKeysMapping
 
 
@@ -17,9 +18,7 @@ def dict_merge(dict1: StringKeysMapping, dict2: Dict[str, Any]) -> Dict[str, Any
     return result
 
 
-def dict_has_item_by_path(
-    data: StringKeysMapping, key: str
-) -> bool:
+def dict_has_item_by_path(data: StringKeysMapping, key: str) -> bool:
     # Split the key into its individual parts
     keys = key.split(".")
 

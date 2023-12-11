@@ -12,7 +12,8 @@ def migration_5_0_34(kernel: "Kernel", manager: AppAddonManager) -> None:
         if manager.has_config("docker.main_container"):
             manager.set_config(
                 "global.main_service",
-                manager.get_config("docker.main_container").get_str())
+                manager.get_config("docker.main_container").get_str(),
+            )
 
         manager.remove_config("docker.main_container")
 

@@ -52,7 +52,9 @@ def app__migration__migrate(
     if from_version:
         app_version_string = from_version
     elif manager.has_config(f"{CORE_COMMAND_NAME}.version"):
-        app_version_string = manager.get_config(f"{CORE_COMMAND_NAME}.version").get_str()
+        app_version_string = manager.get_config(
+            f"{CORE_COMMAND_NAME}.version"
+        ).get_str()
     else:
         app_version_string = migration_version_guess(kernel, app_dir)
 

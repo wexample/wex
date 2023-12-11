@@ -3,8 +3,6 @@ import getpass
 import os
 import platform
 import sys
-
-from src.core.ConfigValue import ConfigValue
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
 import yaml
@@ -45,12 +43,13 @@ from src.const.types import (
     AppsPathsList,
     DockerCompose,
     StringKeysDict,
+    StringKeysMapping,
     StringsList,
     YamlContent,
     YamlContentDict,
-    StringKeysMapping,
 )
 from src.core.AddonManager import AddonManager
+from src.core.ConfigValue import ConfigValue
 from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
 from src.helper.data_yaml import (
@@ -333,17 +332,13 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def get_runtime_config_content(
-        self
-    ) -> AppRuntimeConfig:
+    def get_runtime_config_content(self) -> AppRuntimeConfig:
         self._validate__should_not_be_none(self._runtime_config)
         assert isinstance(self._runtime_config, dict)
 
         return self._runtime_config
 
-    def get_config_content(
-        self
-    ) -> AppConfig:
+    def get_config_content(self) -> AppConfig:
         self._validate__should_not_be_none(self._config)
         assert isinstance(self._config, dict)
 
@@ -360,12 +355,7 @@ class AppAddonManager(AddonManager):
         key: str,
         default: Optional[AppConfigValue] = None,
     ) -> ConfigValue:
-        return ConfigValue(
-            value=dict_get_item_by_path(
-                config_dict,
-                key,
-                default)
-        )
+        return ConfigValue(value=dict_get_item_by_path(config_dict, key, default))
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
         if self.first_log_indent is None:
@@ -683,7 +673,7 @@ class AppAddonManager(AddonManager):
             f"service.{service}.{key}",
             dict_get_item_by_path(
                 service_load_config(self.kernel, service), key, default
-            )
+            ),
         ).get_str()
 
     def get_main_service(self) -> str:
