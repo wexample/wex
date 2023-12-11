@@ -15,10 +15,10 @@ from src.core.Logger import LOG_STATUS_COMPLETE
 
 class TestAppCommandWebhookExec(AbstractWebhookTestCase):
     def test_exec(self) -> None:
-        manager = AppAddonManager(self.kernel, app_dir=self.kernel.path["root"])
+        manager = AppAddonManager(self.kernel, app_dir=self.kernel.directory.path)
 
         # Add application as a local app
-        manager.add_proxy_app(CORE_COMMAND_NAME, app_dir=self.kernel.path["root"])
+        manager.add_proxy_app(CORE_COMMAND_NAME, app_dir=self.kernel.directory.path)
 
         self.start_webhook_listener()
 

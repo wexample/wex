@@ -53,11 +53,11 @@ def __core__core__check_requirements(kernel: "Kernel") -> None:
 def __core__core__install_env(kernel: "Kernel") -> None:
     kernel.io.log(f"Creating local env ...")
 
-    app_create_env(APP_ENV_LOCAL, kernel.get_path("root"), False)
+    app_create_env(APP_ENV_LOCAL, kernel.directory.path, False)
 
 
 def __core__core__install_terminal(kernel: "Kernel") -> None:
-    handler_path = os.path.join(kernel.get_path("root"), "cli/terminal-handler")
+    handler_path = os.path.join(kernel.directory.path, "cli/terminal-handler")
     script_path = "/etc/profile.d/wex"
     kernel.io.log(
         f"Adding terminal initialisation script in {script_path} sourcing {handler_path} ..."
@@ -75,7 +75,7 @@ def __core__core__install_terminal(kernel: "Kernel") -> None:
 
 
 def __core__core__install_autocomplete(kernel: "Kernel") -> None:
-    handler_path = os.path.join(kernel.get_path("root"), "cli/autocomplete-handler")
+    handler_path = os.path.join(kernel.directory.path, "cli/autocomplete-handler")
     script_path = "/etc/bash_completion.d/wex"
     kernel.io.log(
         f"Adding autocompletion handler in {script_path} sourcing {handler_path} ..."

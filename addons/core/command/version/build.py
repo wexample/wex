@@ -39,7 +39,7 @@ def core__version__build(
     kernel: "Kernel", commit: bool = False, type: str = UPGRADE_TYPE_MINOR
 ) -> Optional[QueuedCollectionResponse]:
     version = core_kernel_get_version(kernel)
-    root_dir = kernel.get_path("root")
+    root_dir = kernel.directory.path
     repo = Repo(root_dir)
 
     if not commit:

@@ -108,7 +108,7 @@ def app__proxy__start(
                 # If no env, use the global wex env.
                 "env": env
                 or kernel.run_function(
-                    app__env__get, {"app-dir": kernel.get_path("root")}
+                    app__env__get, {"app-dir": kernel.directory.path}
                 ).first(),
                 "user": user,
                 "group": group,

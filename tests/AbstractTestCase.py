@@ -116,7 +116,7 @@ class AbstractTestCase(unittest.TestCase):
 
     def build_test_file(self, file_name: str) -> str:
         src_file = os.path.join(
-            self.kernel.get_path("root"), "tests", "samples", file_name
+            self.kernel.directory.path, "tests", "samples", file_name
         )
         dst_file = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", file_name

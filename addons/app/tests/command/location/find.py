@@ -7,10 +7,10 @@ class TestAppCommandLocationFind(AbstractTestCase):
     def test_find(self) -> None:
         # Test without dir argument.
         app_location = self.kernel.run_function(app__location__find).first()
-        self.assertEqual(app_location, self.kernel.get_path("root"))
+        self.assertEqual(app_location, self.kernel.directory.path)
 
         tmp_dir = self.kernel.get_or_create_path("tmp")
-        root_dir = self.kernel.get_path("root")
+        root_dir = self.kernel.directory.path
 
         def _test_find() -> None:
             app_location = self.kernel.run_function(app__location__find).first()

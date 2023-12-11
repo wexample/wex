@@ -35,7 +35,7 @@ def core__core__cleanup(kernel: "Kernel", test: bool = False) -> None:
     kernel.registry_structure.build(test=test)
 
     # Reset perms
-    kernel.run_function(system__own__this, {"path": kernel.get_path("root")})
+    kernel.run_function(system__own__this, {"path": kernel.directory.path})
 
     # Recreate empty folder as some running services may need it.
     kernel.get_or_create_path("task")

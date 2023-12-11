@@ -43,10 +43,10 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
 
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    os.chdir(kernel.get_path("root"))
+    os.chdir(kernel.directory.path)
 
     if not command:
-        suite.addTests(loader.discover(os.path.join(kernel.get_path("root"), "tests")))
+        suite.addTests(loader.discover(os.path.join(kernel.directory.path, "tests")))
 
     kernel.io.log("Starting addons tests suites..")
 

@@ -26,7 +26,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
         user = manager.get_config("permissions.user").get_str()
     else:
         env = kernel.run_function(
-            app__env__get, {"app-dir": kernel.get_path("root")}
+            app__env__get, {"app-dir": kernel.directory.path}
         ).first()
 
         # In local env get the "current" user, as it is probably

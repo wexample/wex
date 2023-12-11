@@ -38,7 +38,7 @@ def system_service_exec(
 
 
 def system_get_bashrc_handler_path(kernel: "Kernel") -> str:
-    return os.path.join(kernel.get_path("root"), "cli", "bashrc-handler")
+    return os.path.join(kernel.directory.path, "cli", "bashrc-handler")
 
 
 def system_get_daemon_service_path(kernel: "Kernel") -> str:

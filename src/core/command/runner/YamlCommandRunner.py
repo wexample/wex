@@ -102,7 +102,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
             variables.update(
                 {
-                    "PATH_CORE": self.kernel.get_path("root"),
+                    "PATH_CORE": self.kernel.directory.path,
                     "PATH_CURRENT": os.getcwd() + os.sep,
                 }
             )

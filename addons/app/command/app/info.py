@@ -33,7 +33,7 @@ def app__app__info(manager: "AppAddonManager", app_dir: str) -> TableResponse:
             [
                 "Environment",
                 kernel.run_function(
-                    app__env__get, {"app-dir": kernel.get_path("root")}
+                    app__env__get, {"app-dir": kernel.directory.path}
                 ).first(),
             ],
         ]
