@@ -28,6 +28,7 @@ AddonNameType = Literal[
 AnyList = List[Any]
 
 StringKeysDict = Dict[str, Any]
+StringKeysMapping = Mapping[str, Any]
 StringsDict = Dict[str, str]
 StringsList = List[str]
 SetList = Set[str]

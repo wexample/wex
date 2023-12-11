@@ -1,6 +1,6 @@
-from typing import Any, Optional
+from typing import Any
 
-from src.const.types import AppConfigValue
+from src.const.types import AppConfigValue, StringKeysDict, AnyList
 from src.core.BaseClass import BaseClass
 
 
@@ -13,7 +13,7 @@ class ConfigValue(BaseClass):
         self._validate__should_not_be_none(self._value)
         return self._value
 
-    def set_value(self, value) -> None:
+    def set_value(self, value: Any) -> None:
         self._value = value
 
     def is_of_type(self, value_type: type) -> bool:
@@ -37,7 +37,7 @@ class ConfigValue(BaseClass):
     def is_int(self) -> bool:
         return self.is_of_type(int)
 
-    def get_dict(self) -> dict:
+    def get_dict(self) -> StringKeysDict:
         value = self.get_value()
         assert isinstance(value, dict)
 
@@ -46,7 +46,7 @@ class ConfigValue(BaseClass):
     def is_dict(self) -> bool:
         return self.is_of_type(dict)
 
-    def get_list(self) -> list:
+    def get_list(self) -> AnyList:
         value = self.get_value()
         assert isinstance(value, list)
 

@@ -1,8 +1,9 @@
 import copy
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Dict, Optional
+from src.const.types import StringKeysMapping
 
 
-def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
+def dict_merge(dict1: StringKeysMapping, dict2: Dict[str, Any]) -> Dict[str, Any]:
     """
     Recursively merge two dictionaries.
     If a key exists in both dictionaries, the values are merged recursively.
@@ -16,8 +17,24 @@ def dict_merge(dict1: Dict[str, Any], dict2: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
+def dict_has_item_by_path(
+    data: StringKeysMapping, key: str
+) -> bool:
+    # Split the key into its individual parts
+    keys = key.split(".")
+
+    # Traverse the data dictionary using the key parts
+    for k in keys:
+        if k in data:
+            data = data[k]
+        else:
+            return False
+
+    return True
+
+
 def dict_get_item_by_path(
-    data: Mapping[str, Any], key: str, default: Optional[Any] = None
+    data: StringKeysMapping, key: str, default: Optional[Any] = None
 ) -> Any:
     # Split the key into its individual parts
     keys = key.split(".")
@@ -32,5 +49,5 @@ def dict_get_item_by_path(
     return data
 
 
-def dict_sort_values(dictionary: Mapping[str, Any]) -> Dict[str, Any]:
+def dict_sort_values(dictionary: StringKeysMapping) -> Dict[str, Any]:
     return {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1])}

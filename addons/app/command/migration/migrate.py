@@ -75,10 +75,10 @@ def app__migration__migrate(
         return
 
     # Create an empty config
-    if not manager.config:
+    if not manager._config:
         # Only create config but do not save it
         # until migration is completed
-        manager.config = manager.create_config(
+        manager._config = manager.create_config(
             os.path.basename(os.path.normpath(app_dir))
         )
 

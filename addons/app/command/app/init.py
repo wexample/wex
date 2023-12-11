@@ -134,7 +134,7 @@ def app__app__init(
         kernel.io.log(f"Creating config...")
 
         domains_list = args_split_arg_array(domains)
-        manager.config = manager.create_config(name_snake, domains_list)
+        manager._config = manager.create_config(name_snake, domains_list)
 
         manager.save_config()
 

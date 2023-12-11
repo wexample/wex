@@ -48,6 +48,7 @@ from src.const.types import (
     StringsList,
     YamlContent,
     YamlContentDict,
+    StringKeysMapping,
 )
 from src.core.AddonManager import AddonManager
 from src.helper.args import args_push_one, args_shift_one
@@ -58,7 +59,7 @@ from src.helper.data_yaml import (
     yaml_load_or_default,
     yaml_write,
 )
-from src.helper.dict import dict_get_item_by_path
+from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
     file_env_to_dict,
     file_remove_dict_item_by_path,
@@ -79,11 +80,12 @@ class AppAddonManager(AddonManager):
         self, kernel: "Kernel", name: str = COMMAND_TYPE_APP, app_dir: None | str = None
     ) -> None:
         super().__init__(kernel, name)
+        self._config: Optional[AppConfig] = None
+        self._runtime_config: Optional[AppRuntimeConfig] = None
+
         self.app_dir: Optional[str] = None
-        self.config: Optional[AppConfig] = None
         self.config_path: Optional[str] = None
         self.app_dirs_stack: List[str | None] = []
-        self.runtime_config: Optional[AppRuntimeConfig] = None
         self.runtime_config_path: Optional[str] = None
         self.runtime_docker_compose: Optional[DockerCompose] = None
         self.runtime_docker_compose_path: Optional[str] = None
@@ -245,10 +247,10 @@ class AppAddonManager(AddonManager):
         yaml_write(path, cast(YamlContent, config))
 
     def save_config(self) -> None:
-        self._save_config(self.config_path, self.config)
+        self._save_config(self.config_path, self._config)
 
     def save_runtime_config(self) -> None:
-        self._save_config(self.runtime_config_path, self.runtime_config)
+        self._save_config(self.runtime_config_path, self._runtime_config)
 
         app_dir: str = self.get_runtime_config("path.app").get_str()
 
@@ -268,11 +270,11 @@ class AppAddonManager(AddonManager):
         file_write_dict_to_config(env_dict, config_path)
 
     def config_to_docker_env(self) -> AppDockerEnvConfig:
-        if not self.runtime_config or not self.config:
+        if not self._runtime_config or not self._config:
             return {}
 
-        config = cast(StringKeysDict, self.config.copy())
-        config["runtime"] = dict(sorted(self.runtime_config.items()))
+        config = cast(StringKeysDict, self._config.copy())
+        config["runtime"] = dict(sorted(self._runtime_config.items()))
         return self.dict_to_docker_env(config)
 
     def dict_to_docker_env(
@@ -304,17 +306,17 @@ class AppAddonManager(AddonManager):
         file_set_dict_item_by_path(self.config_to_dict(config), key, value, replace)
 
     def set_config(self, key: str, value: AppConfigValue, replace: bool = True) -> None:
-        self._set_config_value(self.config, key, value, replace)
+        self._set_config_value(self._config, key, value, replace)
 
         self.save_config()
 
     def remove_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self.config), key)
+        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_config()
 
     def remove_runtime_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self.config), key)
+        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_runtime_config()
 
@@ -327,23 +329,42 @@ class AppAddonManager(AddonManager):
     def set_runtime_config(
         self, key: str, value: AppConfigValue, replace: bool = True
     ) -> None:
-        self._set_config_value(self.runtime_config, key, value, replace)
+        self._set_config_value(self._runtime_config, key, value, replace)
 
         self.save_runtime_config()
+
+    def get_runtime_config_content(
+        self
+    ) -> AppRuntimeConfig:
+        self._validate__should_not_be_none(self._runtime_config)
+        assert isinstance(self._runtime_config, dict)
+
+        return self._runtime_config
+
+    def get_config_content(
+        self
+    ) -> AppConfig:
+        self._validate__should_not_be_none(self._config)
+        assert isinstance(self._config, dict)
+
+        return self._config
 
     def get_config(
         self, key: str, default: Optional[AppConfigValue] = None
     ) -> ConfigValue:
-        return self._get_config_value(self.config, key, default)
+        return self._get_config_value(self.get_config_content(), key, default)
 
     def _get_config_value(
         self,
-        config_dict: Optional[AppConfig | AppRuntimeConfig],
+        config_dict: AppConfig | AppRuntimeConfig,
         key: str,
         default: Optional[AppConfigValue] = None,
-    ) -> AppConfigValue:
+    ) -> ConfigValue:
         return ConfigValue(
-            value=dict_get_item_by_path(config_dict, key, default)
+            value=dict_get_item_by_path(
+                config_dict,
+                key,
+                default)
         )
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
@@ -355,10 +376,16 @@ class AppAddonManager(AddonManager):
 
         self.kernel.io.log(message, color, indent)
 
+    def has_config(self, key: str) -> bool:
+        return dict_has_item_by_path(cast(StringKeysMapping, self._config), key)
+
+    def has_runtime_config(self, key: str) -> bool:
+        return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)
+
     def get_runtime_config(
-        self, key: str, default: Optional[AppConfigValue] = None, required: bool = False
+        self, key: str, default: Optional[AppConfigValue] = None
     ) -> ConfigValue:
-        return self._get_config_value(self.runtime_config, key, default)
+        return self._get_config_value(self.get_runtime_config_content(), key, default)
 
     def ignore_app_dir(self, request: "CommandRequest") -> bool:
         if request._script_command is None:
@@ -507,10 +534,10 @@ class AppAddonManager(AddonManager):
 
     def load_config(self) -> None:
         if isinstance(self.config_path, str):
-            self.config = cast(AppConfig, self._load_config(self.config_path))
+            self._config = cast(AppConfig, self._load_config(self.config_path))
 
         if isinstance(self.runtime_config_path, str):
-            self.runtime_config = cast(
+            self._runtime_config = cast(
                 AppRuntimeConfig, self._load_config(self.runtime_config_path)
             )
 
@@ -524,8 +551,8 @@ class AppAddonManager(AddonManager):
         self.config_path = None
         self.runtime_config_path = None
         self.runtime_docker_compose_path = None
-        self.config = None
-        self.runtime_config = None
+        self._config = None
+        self._runtime_config = None
         self.runtime_docker_compose = None
 
         if fallback_dir:
@@ -566,7 +593,7 @@ class AppAddonManager(AddonManager):
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
         name = self.get_config("global.name").get_str()
-        config = self.config
+        config = self._config
 
         if not config:
             return
@@ -639,7 +666,7 @@ class AppAddonManager(AddonManager):
 
         self.log(f"Build config file")
 
-        self.runtime_config = runtime_config
+        self._runtime_config = runtime_config
         self.save_runtime_config()
 
         self.kernel.run_function(
