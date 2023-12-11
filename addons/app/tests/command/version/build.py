@@ -5,8 +5,8 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandVersionBuild(AbstractAppTestCase):
     def test_build(self) -> None:
-        manager = self.kernel.addons["app"]
-        assert isinstance(manager, AppAddonManager)
+        manager = AppAddonManager(self.kernel, app_dir=self.kernel.directory.path)
+        manager.load_config()
 
         current_version = manager.get_config("global.version").get_str()
         app_dir = self.create_test_app()
