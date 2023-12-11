@@ -358,11 +358,12 @@ class AppAddonManager(AddonManager):
         return ConfigValue(value=dict_get_item_by_path(config_dict, key, default))
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
-        if self.first_log_indent is None:
-            self.first_log_indent = self.kernel.io.log_indent
+        if self.app_dir:
+            if self.first_log_indent is None:
+                self.first_log_indent = self.kernel.io.log_indent
 
-        if self.kernel.io.log_indent == self.first_log_indent:
-            message = f'[{self.get_config("global.name", "unknown").get_str()}] {message}'
+            if self.kernel.io.log_indent == self.first_log_indent:
+                message = f'[{self.get_config("global.name").get_str()}] {message}'
 
         self.kernel.io.log(message, color, indent)
 
