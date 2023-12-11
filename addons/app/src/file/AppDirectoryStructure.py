@@ -16,7 +16,7 @@ class AppDirectoryStructure(DirectoryStructure):
                     "type": "file",
                     "should_exist": True,
                     "on_missing": "create",
-                    "default_content": f"APP_ENV={APP_ENV_PROD}"
+                    "default_content": f"APP_ENV={APP_ENV_PROD}",
                 },
             },
         }

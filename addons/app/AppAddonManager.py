@@ -372,10 +372,7 @@ class AppAddonManager(AddonManager):
         value_exist = dict_has_item_by_path(config, key)
 
         if value_exist and with_type:
-            return isinstance(
-                dict_get_item_by_path(config, key),
-                with_type
-            )
+            return isinstance(dict_get_item_by_path(config, key), with_type)
 
         return value_exist
 

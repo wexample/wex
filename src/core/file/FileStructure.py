@@ -4,7 +4,8 @@ from typing import Optional
 from src.const.types import BasicValue
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
-    AbstractFileSystemStructure, FileSystemStructureSchemaItem,
+    AbstractFileSystemStructure,
+    FileSystemStructureSchemaItem,
 )
 from src.helper.file import file_create_parent_and_touch, file_read, file_write
 
@@ -50,6 +51,4 @@ class FileStructure(AbstractFileSystemStructure):
         return self.content
 
     def create_missing(self) -> None:
-        file_create_parent_and_touch(
-            self.path,
-            self.default_content)
+        file_create_parent_and_touch(self.path, self.default_content)
