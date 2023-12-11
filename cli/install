@@ -44,12 +44,6 @@ python3 -m venv "$VENV_PATH"
 echo "Installing Python requirements..."
 pip install -r "${WEX_DIR_ROOT}requirements.txt"
 
-# Create env file if not exists
-ENV_FILE_PATH=".wex/.env"
-if [ ! -f "$ENV_FILE_PATH" ]; then
-    echo "APP_ENV=prod" > "$ENV_FILE_PATH"
-fi
-
 echo "Installing core..."
 bash "${WEX_DIR_CLI}wex" core::core/install
 
