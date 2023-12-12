@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_build_long_container_name
+from src.core.response.NullResponse import NullResponse
 from src.const.types import ShellCommandsDeepList
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
@@ -113,9 +114,6 @@ def app__app__exec(
     else:
         command_str = str(command_parsed)
 
-        if not sync:
-            command_str = command_escape(command_str)
-
     # Prepare the final command to be executed
     final_command = []
 
@@ -125,11 +123,16 @@ def app__app__exec(
 
     # Add the main command
     final_command += [command_str]
-
-    # Append the final command to docker_command
-    docker_command += ["-c", command_to_string(final_command)]
+    final_command_str = command_to_string(final_command)
 
     if sync:
+        # Append the final command to docker_command
+        docker_command += ["-c", final_command_str]
+
         return NonInteractiveShellCommandResponse(kernel, docker_command, ignore_error)
+
+    # Append the final command to docker_command
+    docker_command += ["-c", command_escape(final_command_str)]
+
 
     return InteractiveShellCommandResponse(kernel, docker_command, ignore_error)
