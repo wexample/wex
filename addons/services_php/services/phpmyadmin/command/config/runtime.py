@@ -41,6 +41,4 @@ def phpmyadmin__config__runtime(
     db_service = manager.get_config("docker.main_db_container").get_str()
     db_data = manager.get_config(f"service.{db_service}").get_dict()
 
-    manager.set_runtime_config(
-        "service.phpmyadmin.db",
-        db_data)
+    manager.set_runtime_config("service.phpmyadmin.db", db_data)
