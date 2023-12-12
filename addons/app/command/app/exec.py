@@ -99,7 +99,7 @@ def app__app__exec(
     result = enter_command.first()
     sub_command = []
     for index in result:
-        if result[index]:
+        if not isinstance(result[index], NullResponse):
             # Last result overrides previous to avoid
             # merging which can result to an unexpected final command
             sub_command = result[index].first()
