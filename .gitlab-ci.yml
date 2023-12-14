@@ -10,7 +10,8 @@ test:
   services:
     # Match the version number with image internal docker service.
     - name: docker:24.0.6-dind
-#  before_script:
+  before_script:
+    - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
 #    # Start Docker daemon manually and display logs
 #    - dockerd --host=tcp://0.0.0.0:2375 &> docker.log &
 #    - sleep 30  # Give it some time to start
