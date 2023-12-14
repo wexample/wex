@@ -125,12 +125,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 

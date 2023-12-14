@@ -358,7 +358,7 @@ class AppAddonManager(AddonManager):
         value = dict_get_item_by_path(config_dict, key, default)
 
         if value is None and default is None:
-            self.kernel.io.error(f"Trying to access undefined configuration \"{key}\"")
+            self.kernel.io.error(f'Trying to access undefined configuration "{key}"')
 
         return ConfigValue(value=value)
 
@@ -612,15 +612,22 @@ class AppAddonManager(AddonManager):
         if any(k in runtime_config for k in ["domains", "domain_main", "domain_tld"]):
             domains = runtime_config.get("domains", [])
 
-            if runtime_config.get("domain_main") and runtime_config["domain_main"] not in domains:
+            if (
+                runtime_config.get("domain_main")
+                and runtime_config["domain_main"] not in domains
+            ):
                 domains.append(runtime_config["domain_main"])
 
             # Add extra runtime config.
-            runtime_config.update({
-                "domains": domains,
-                "domains_string": ",".join(domains),
-                "domain_tld": runtime_config.get("domain_tld", runtime_config.get("domain_main", ""))
-            })
+            runtime_config.update(
+                {
+                    "domains": domains,
+                    "domains_string": ",".join(domains),
+                    "domain_tld": runtime_config.get(
+                        "domain_tld", runtime_config.get("domain_main", "")
+                    ),
+                }
+            )
 
         # Add extra runtime config.
         runtime_config.update(
@@ -690,7 +697,9 @@ class AppAddonManager(AddonManager):
         return self.get_config(key="global.main_service").get_str()
 
     def get_main_container_name(self) -> str:
-        if not self.has_config(key="docker.main_container") and self.has_config(key="global.main_service"):
+        if not self.has_config(key="docker.main_container") and self.has_config(
+            key="global.main_service"
+        ):
             main_service = self.get_main_service()
 
             return self.get_service_config(
@@ -701,14 +710,18 @@ class AppAddonManager(AddonManager):
         return self.get_config(key="docker.main_container").get_str()
 
     def get_service_shell(self, service: str | None = None) -> str:
-        if not self.has_config(key="docker.main_container_shell") and self.has_config(key="global.main_service"):
+        if not self.has_config(key="docker.main_container_shell") and self.has_config(
+            key="global.main_service"
+        ):
             return self.get_service_config(
                 key="shell",
                 service=(service or self.get_main_service()),
                 default=SHELL_DEFAULT,
             ).get_str()
 
-        return self.get_config(key="docker.main_container_shell", default=SHELL_DEFAULT).get_str()
+        return self.get_config(
+            key="docker.main_container_shell", default=SHELL_DEFAULT
+        ).get_str()
 
     def get_services(self) -> StringKeysDict:
         return cast(StringKeysDict, self.get_config("service", {}).get_dict())
@@ -721,7 +734,9 @@ class AppAddonManager(AddonManager):
 
         # App has at least one service who creates network.
         for service in services:
-            if self.get_service_config(key="docker.create_network", service=service, default=False):
+            if self.get_service_config(
+                key="docker.create_network", service=service, default=False
+            ):
                 return True
 
         # App does not requires proxy.

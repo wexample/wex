@@ -14,8 +14,6 @@ if TYPE_CHECKING:
 
 
 def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> List[str]:
-    from addons.app.command.service.used import app__service__used
-
     kernel = manager.kernel
     app_compose_file = app_dir + APP_DIR_APP_DATA + "docker/docker-compose.yml"
     compose_files: List[str] = []
