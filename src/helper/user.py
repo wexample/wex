@@ -89,7 +89,7 @@ def set_permissions_recursively(path: str, mode: int) -> None:
         pass
 
     # If the path is a directory, loop through its contents and call the function recursively
-    if os.path.isdir(path):
+    if os.path.isdir(path) and not os.path.islink(path):
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
             set_permissions_recursively(item_path, mode)
