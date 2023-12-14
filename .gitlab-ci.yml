@@ -54,7 +54,7 @@ test:
     - docker logs wex_proxy_local_proxy
     - sudo su - owner -c "sudo wex app::proxy/stop"
     - sudo su - owner -c "sudo wex test -c app::proxy/start"
-    - cat /var/www/local/wex-proxy/.wex/tmp/docker-compose.runtime.yml
+    - cat /var/www/test/wex-proxy/.wex/tmp/docker-compose.runtime.yml
     # Uninstall
     - sudo bash ./cli/uninstall
   after_script:
