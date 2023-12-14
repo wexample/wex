@@ -3,3 +3,4 @@ black
 isort
 no_implicit_optional
 types-psutil
+types-requests
