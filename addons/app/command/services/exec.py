@@ -19,7 +19,7 @@ def app__services__exec(
     output = {}
 
     arguments_dict = args_parse_dict(arguments)
-    services = cast(StringKeysDict, manager.get_config("service", {}).get_dict())
+    services = manager.get_services()
 
     for service in services:
         arguments_dict_copy = arguments_dict.copy()

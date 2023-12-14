@@ -702,3 +702,23 @@ class AppAddonManager(AddonManager):
             service=(service or self.get_main_service()),
             default=SHELL_DEFAULT,
         ).get_str()
+
+    def get_services(self) -> StringKeysDict:
+        return cast(StringKeysDict, self.get_config("service", {}).get_dict())
+
+    def need_proxy(self) -> bool:
+        return self.has_runtime_config("domains")
+
+    def creates_network(self) -> bool:
+        services = self.get_services()
+
+        # App has at least one service who creates network.
+        for service in services:
+            if self.get_service_config(key="docker.create_network", service=service, default=False):
+                return True
+
+        # App does not requires proxy.
+        if not self.need_proxy():
+            return True
+
+        return False

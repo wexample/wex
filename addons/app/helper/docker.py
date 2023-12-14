@@ -23,13 +23,7 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
     if not os.path.isfile(app_compose_file):
         return compose_files
 
-    if kernel.run_function(
-        app__service__used,
-        {
-            "app-dir": app_dir,
-            "service": "proxy",
-        },
-    ).first():
+    if manager.creates_network():
         compose_files.append(
             kernel.get_path("addons") + "app/containers/network/docker-compose.yml"
         )
