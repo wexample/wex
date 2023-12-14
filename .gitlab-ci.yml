@@ -6,7 +6,7 @@ stages:
 
 test:
   stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  image: docker:latest
   services:
     - name: docker:24.0.6-dind
   before_script:
