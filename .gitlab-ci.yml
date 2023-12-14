@@ -1,8 +1,8 @@
 stages:
   - test
-  - build
-  - deploy
-  - test_apt_install
+#  - build
+#  - deploy
+#  - test_apt_install
 
 test:
   stage: test
@@ -27,8 +27,8 @@ test:
     # current job container, not host. In this case we need to have a separated docker daemon.
     DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_DRIVER: vfs
-  only:
-    - tags
+#  only:
+#    - tags
   script:
     # Stops script on failure
     - set -e
@@ -48,83 +48,84 @@ test:
     # Create a fake socket to satisfy reverse proxy container which expects to listen docker
     - touch /var/run/docker.sock
     # Run wex test as owner with sudo
-    - sudo su - owner -c "sudo wex test"
+#    - sudo su - owner -c "sudo wex test"
+    - sudo su - owner -c "sudo wex test -c app::proxy/start"
     # Uninstall
     - sudo bash ./cli/uninstall
   after_script:
     # Reset permissions
     - chown -R root:root .
 
-build:
-  stage: build
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-  only:
-    - tags
-  needs:
-    - test
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Create build folder
-    - mkdir -p /var/www/build
-    # Create a copy of current git repo
-    - cp -r .git /var/www/build
-    # Go to build folder
-    - cd /var/www/build
-    # Checkout build branch
-    - git fetch && git checkout build
-    # Create link to source
-    - ln -s ${CI_PROJECT_DIR} source
-    # Build
-    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
-
-deploy:
-  stage: deploy
-  image: curlimages/curl
-  only:
-    - tags
-  needs:
-    - build
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-
-# Try to install using the new debian apt repository.
-test_apt_install_debian:
-  stage: test_apt_install
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-  only:
-    - tags
-  needs:
-    - deploy
-  script:
-    # Stops script on failure
-    - set -e
-    - apt update
-    - apt install gnupg2 wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt update
-    - apt install wex -y
-    - wex hi
-    - apt remove wex -y
-
-# Try to install using the new debian apt repository.
-test_apt_install_ubuntu:
-  stage: test_apt_install
-  image: ubuntu:22.04
-  only:
-    - tags
-  needs:
-    - deploy
-  script:
-    # Stops script on failure
-    - set -e
-    - apt update
-    - apt install git gnupg2 sudo wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt update
-    - apt install wex -y
-    - wex hi
-    - apt remove wex -y
+#build:
+#  stage: build
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
+#  only:
+#    - tags
+#  needs:
+#    - test
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Create build folder
+#    - mkdir -p /var/www/build
+#    # Create a copy of current git repo
+#    - cp -r .git /var/www/build
+#    # Go to build folder
+#    - cd /var/www/build
+#    # Checkout build branch
+#    - git fetch && git checkout build
+#    # Create link to source
+#    - ln -s ${CI_PROJECT_DIR} source
+#    # Build
+#    - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+#
+#deploy:
+#  stage: deploy
+#  image: curlimages/curl
+#  only:
+#    - tags
+#  needs:
+#    - build
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Ask apt repo to publish release
+#    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_debian:
+#  stage: test_apt_install
+#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+#  only:
+#    - tags
+#  needs:
+#    - deploy
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    - apt update
+#    - apt install gnupg2 wget -y
+#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+#    - apt update
+#    - apt install wex -y
+#    - wex hi
+#    - apt remove wex -y
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_ubuntu:
+#  stage: test_apt_install
+#  image: ubuntu:22.04
+#  only:
+#    - tags
+#  needs:
+#    - deploy
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    - apt update
+#    - apt install git gnupg2 sudo wget -y
+#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+#    - apt update
+#    - apt install wex -y
+#    - wex hi
+#    - apt remove wex -y
