@@ -4,15 +4,10 @@ docker:
     tty: true
 env:
   dev:
-    domain_main: wex.wex
-    domains: []
     email: contact@wexample.com
   local:
-    domain_main: wex.wex
     email: contact@wexample.com
   prod:
-    domain_main: wex.wex
-    domains: []
     email: contact@wexample.com
 global:
   author: root
