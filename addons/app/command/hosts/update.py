@@ -27,10 +27,11 @@ def app__hosts__update(kernel: "Kernel") -> None:
             if kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
                 kernel.io.log(f"Found app [{app_name}]")
 
-                domains = manager.get_runtime_config("domains").get_list()
+                if manager.has_runtime_config("domains"):
+                    domains = manager.get_runtime_config("domains").get_list()
 
-                for domain in domains:
-                    new_block_content_list.append(f"{ip}\t{domain}")
+                    for domain in domains:
+                        new_block_content_list.append(f"{ip}\t{domain}")
 
     new_block_content = os.linesep.join(new_block_content_list)
 

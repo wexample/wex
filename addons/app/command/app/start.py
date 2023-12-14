@@ -112,6 +112,9 @@ def app__app__start(
         if no_proxy:
             return None
 
+        if not manager.has_runtime_config("domains"):
+            return None
+
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(
             app__service__used, {"service": "proxy", "app-dir": app_dir}
@@ -122,12 +125,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                    app__app__started,
-                    {
-                        "app-dir": proxy_path,
-                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                    },
-                ).first()
+                app__app__started,
+                {
+                    "app-dir": proxy_path,
+                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                },
+            ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
@@ -270,18 +273,20 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
         env = manager.get_runtime_config("env").get_str()
-        domains = manager.get_runtime_config("domains").get_list()
-        domains_string = []
 
-        for domain in domains:
-            domains_string.append(
-                f'- http{"s" if env != APP_ENV_LOCAL else ""}://{domain}'
+        if manager.has_runtime_config("domains"):
+            domains = manager.get_runtime_config("domains").get_list()
+            domains_string = []
+
+            for domain in domains:
+                domains_string.append(
+                    f'- http{"s" if env != APP_ENV_LOCAL else ""}://{domain}'
+                )
+
+            kernel.io.message(
+                f'Your app is initialized as "{name}" in {env} environment',
+                os.linesep.join(domains_string),
             )
-
-        kernel.io.message(
-            f'Your app is initialized as "{name}" in {env} environment',
-            os.linesep.join(domains_string),
-        )
 
         kernel.io.message_all_next_commands(
             [
