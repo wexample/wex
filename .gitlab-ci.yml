@@ -6,17 +6,11 @@ stages:
 
 test:
   stage: test
-  image: docker:latest
+  image: docker:24.0.6-dind
   services:
     - name: docker:24.0.6-dind
-#  before_script:
-#    - export DOCKER_HOST=tcp://$(getent hosts docker | awk '{ print $1 }'):2375
-#    - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
   variables:
-#    DOCKER_HOST: tcp://0.0.0.0:2375
     DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    GIT_SSL_NO_VERIFY: "1"
   script:
     - echo $DOCKER_HOST
     - docker info
