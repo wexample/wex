@@ -9,12 +9,10 @@ test:
   image: docker:latest
   services:
     - name: docker:24.0.6-dind
-      command: ["--tls=false"]
   before_script:
     - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
   variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://0.0.0.0:2375
   script:
     - docker info
 #    # Stops script on failure
