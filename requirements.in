@@ -4,3 +4,4 @@ inquirerpy
 psutil
 python-dotenv
 pyyaml
+requests
