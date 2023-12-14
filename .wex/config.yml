@@ -2,6 +2,7 @@ docker:
   compose:
     stdin_open: true
     tty: true
+  main_container: dev
 env:
   dev:
     email: contact@wexample.com
