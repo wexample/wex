@@ -139,7 +139,6 @@ class ScriptCommand(BaseClass):
 
             if "interpreter" in script:
                 script_string = command_escape(script_string)
-
         elif "file" in script:
             script_string = string_replace_multiple(script["file"], variables)
             script["interpreter"] = script.get("interpreter", ["/bin/bash"])

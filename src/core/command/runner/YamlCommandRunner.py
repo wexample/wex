@@ -25,7 +25,8 @@ from src.core.response.QueuedCollectionResponse import (
     QueuedCollectionResponseCollection,
 )
 from src.decorator.command import command
-from src.helper.command import apply_command_decorator
+from src.helper.args import args_convert_dict_to_args
+from src.helper.command import apply_command_decorator, internal_command_to_shell
 from src.helper.data_yaml import yaml_load
 from src.helper.dict import dict_get_item_by_path
 
@@ -123,9 +124,37 @@ class YamlCommandRunner(AbstractCommandRunner):
                 else:
                     script_config = script
 
+                if not "title" in script_config:
+                    if "script" in script_config:
+                        script_config["title"] = script_config["script"]
+                    elif "command" in script_config:
+                        script_config["title"] = script_config["command"]
+
                 self.kernel.io.log(script_config["title"])
 
-                command_list = script_command.run_script(self, script_config, variables)
+                if "command" in script_config:
+                    command_str = str(script_config["command"])
+                    command_request: CommandRequest = (
+                        self.kernel.create_command_request(command_str)
+                    )
+
+                    command_list = internal_command_to_shell(
+                        kernel=self.kernel,
+                        internal_command=command_str,
+                        args=args_convert_dict_to_args(
+                            command_request.get_script_command().click_command,
+                            cast(
+                                CoreCommandArgsDict,
+                                script_config["options"]
+                                if "options" in script_config
+                                else {},
+                            ),
+                        ),
+                    )
+                else:
+                    command_list = script_command.run_script(
+                        self, script_config, variables
+                    )
 
                 commands_collection.append(
                     InteractiveShellCommandResponse(self.kernel, command_list)
