@@ -355,7 +355,12 @@ class AppAddonManager(AddonManager):
         key: str,
         default: Optional[AppConfigValue] = None,
     ) -> ConfigValue:
-        return ConfigValue(value=dict_get_item_by_path(config_dict, key, default))
+        value = dict_get_item_by_path(config_dict, key, default)
+
+        if value is None and default is None:
+            self.kernel.io.error(f"Trying to access undefined configuration \"{key}\"")
+
+        return ConfigValue(value=value)
 
     def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
         if self.app_dir:
