@@ -21,11 +21,11 @@ test:
 #    - iptables -A INPUT -p tcp --dport 2375 -j ACCEPT
 #    # Added a timeout to ensure that the loop does not run indefinitely
 #    - timeout=30; while [ $timeout -gt 0 ] && ! docker info; do echo 'Waiting for Docker service to start'; sleep 1; timeout=$((timeout - 1)); done; if [ $timeout -eq 0 ]; then echo "Docker service did not start on time"; exit 1; fi
-#  variables:
+  variables:
     # We don't use classical docker overlay driver as we want a separated docker environment.
     # Test suite creates docker compose files which are executed and need volumes from
     # current job container, not host. In this case we need to have a separated docker daemon.
-#    DOCKER_HOST: tcp://0.0.0.0:2375
+    DOCKER_HOST: tcp://0.0.0.0:2375
 #    DOCKER_DRIVER: vfs
 #  only:
 #    - tags
@@ -50,9 +50,9 @@ test:
 #    # Run wex test as owner with sudo
 ##    - sudo su - owner -c "sudo wex test"
     - sudo su - owner -c "sudo wex app::proxy/start"
-    - docker ps -a
-    - docker logs wex_proxy_local_proxy
-    - sudo su - owner -c "sudo wex app::proxy/stop"
+#    - docker ps -a
+#    - docker logs wex_proxy_local_proxy
+#    - sudo su - owner -c "sudo wex app::proxy/stop"
 #    - sudo su - owner -c "sudo wex test -c app::proxy/start"
 #    - cat /var/www/test/wex-proxy/.wex/tmp/docker-compose.runtime.yml
 #    # Uninstall
