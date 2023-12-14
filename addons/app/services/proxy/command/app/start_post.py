@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 def proxy__app__start_post(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
+    return # TODO
+
     commands = [
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],
