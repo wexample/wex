@@ -609,26 +609,22 @@ class AppAddonManager(AddonManager):
         # Add the per-environment config.
         runtime_config.update(config["env"][env])
 
-        domains = []
-        if "domains" in runtime_config:
-            domains = runtime_config["domains"]
+        if any(k in runtime_config for k in ["domains", "domain_main", "domain_tld"]):
+            domains = runtime_config.get("domains", [])
 
-        if (
-            "domain_main" in runtime_config
-            and runtime_config["domain_main"] not in domains
-        ):
-            domains.append(runtime_config["domain_main"])
+            if runtime_config.get("domain_main") and runtime_config["domain_main"] not in domains:
+                domains.append(runtime_config["domain_main"])
+
+            # Add extra runtime config.
+            runtime_config.update({
+                "domains": domains,
+                "domains_string": ",".join(domains),
+                "domain_tld": runtime_config.get("domain_tld", runtime_config.get("domain_main", ""))
+            })
 
         # Add extra runtime config.
         runtime_config.update(
             {
-                "domains": domains,
-                "domains_string": ",".join(domains),
-                "domain_tld": (
-                    runtime_config["domain_tld"]
-                    if "domain_tld" in runtime_config
-                    else runtime_config["domain_main"]
-                ),
                 "env": env,
                 "name": f"{name}_{env}",
                 "host": {"ip": socket.gethostbyname(socket.gethostname())},
