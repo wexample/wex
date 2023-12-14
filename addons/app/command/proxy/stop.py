@@ -1,3 +1,4 @@
+import os.path
 from typing import TYPE_CHECKING, cast
 
 from addons.app.AppAddonManager import AppAddonManager
@@ -14,7 +15,9 @@ if TYPE_CHECKING:
 def app__proxy__stop(kernel: "Kernel") -> None:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     proxy_path = manager.get_proxy_path()
-    manager.set_app_workdir(proxy_path)
 
-    # Execute command string to trigger middlewares
-    kernel.run_function(app__app__stop, {"app-dir": proxy_path})
+    if os.path.exists(proxy_path):
+        manager.set_app_workdir(proxy_path)
+
+        # Execute command string to trigger middlewares
+        kernel.run_function(app__app__stop, {"app-dir": proxy_path})
