@@ -9,7 +9,6 @@ env:
     email: contact@wexample.com
   local:
     domain_main: wex.wex
-    domains: wex.wex
     email: contact@wexample.com
   prod:
     domain_main: wex.wex
@@ -18,12 +17,9 @@ env:
 global:
   author: root
   created: '2023-03-23 17:13:28'
-  main_service: test
   name: wex
   services: []
   type: app
   version: 5.0.91+build.20231214112620
-service:
-  test: {}
 wex:
   version: 5.0.91+build.20231214112620
