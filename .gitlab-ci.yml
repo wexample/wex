@@ -23,7 +23,7 @@ test:
     # Install
     - docker exec -t wex /bin/bash /opt/wex/cli/install
     # Launch tests
-    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::db/exec"
+    - docker exec -u owner -t wex /bin/bash -c "sudo wex test"
     # Uninstall
     - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
   after_script:
