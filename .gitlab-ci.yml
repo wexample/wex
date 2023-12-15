@@ -10,18 +10,15 @@ test:
 #  only:
 #    - tags
   script:
-    - ls -la
-    - realpath .
-#    - echo $CI_PROJECT_DIR
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
 #    - docker exec -t wex /bin/bash /opt/wex/cli/install
 #    - docker exec -u owner -t wex /bin/bash wex test
 #    # Install

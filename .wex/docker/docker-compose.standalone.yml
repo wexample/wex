@@ -13,7 +13,7 @@ services:
     tty: true
     volumes:
       # Work dir
-      - ../../:/opt/wex
+      - ${APP_PATH_ROOT}:/opt/wex
       # Mount apps
       - /var/www/${APP_ENV}:/var/www/${APP_ENV}
       # Allow container to override env data
