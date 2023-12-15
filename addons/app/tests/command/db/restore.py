@@ -13,7 +13,7 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
 
             self.kernel.io.log("Waiting extra seconds...")
             import time
-            time.sleep(10)
+            time.sleep(30)
 
             response = self.kernel.run_function(
                 app__db__dump,
