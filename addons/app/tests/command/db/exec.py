@@ -30,4 +30,6 @@ class TestAppCommandDbExec(AbstractAppTestCase):
 
             self.assertTrue(response.print() != "")
 
+            self.stop_test_app(app_dir)
+
         self.for_each_db_service(callback)

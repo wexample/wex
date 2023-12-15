@@ -12,14 +12,6 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
 
             app_dir = self.create_and_start_test_app(services=[db_service], force_restart=True)
 
-            # Reset permissions
-            self.kernel.run_function(
-                app__app__perms,
-                {
-                    "app-dir": app_dir,
-                },
-            )
-
             response = self.kernel.run_function(
                 app__db__dump,
                 {
@@ -47,5 +39,7 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
                 app__db__restore,
                 {"app-dir": app_dir, "file-path": file_remove_extension(dump_file)},
             )
+
+            self.stop_test_app(app_dir)
 
         self.for_each_db_service(callback)

@@ -20,4 +20,6 @@ class TestAppCommandDbDump(AbstractAppTestCase):
             assert isinstance(path, str)
             self.assertPathExists(path)
 
+            self.stop_test_app(app_dir)
+
         self.for_each_db_service(callback)

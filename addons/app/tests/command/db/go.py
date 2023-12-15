@@ -13,3 +13,5 @@ class TestAppCommandDbGo(AbstractAppTestCase):
         ).first()
 
         self.assertEqual(go_command, "mysql --defaults-extra-file=/tmp/mysql.cnf")
+
+        self.stop_test_app(app_dir)
