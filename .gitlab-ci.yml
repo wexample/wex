@@ -7,6 +7,8 @@ stages:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  only:
+    - tags
   script:
     # Stops script on failure
     - set -e
