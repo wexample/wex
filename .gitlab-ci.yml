@@ -10,7 +10,8 @@ test:
 #  only:
 #    - tags
   script:
-    - echo $CI_PROJECT_DIR
+    - ls -la
+#    - echo $CI_PROJECT_DIR
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
