@@ -18,17 +18,14 @@ test:
     - apt install sudo -y
     # Create env file
     - mv .wex/.env.test .wex/.env
+    # Launch container for tests
     - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
-#    - docker exec -t wex /bin/bash /opt/wex/cli/install
-#    - docker exec -u owner -t wex /bin/bash wex test
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Run wex test as owner with sudo
-#    - sudo su - owner -c "sudo wex test"
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
+    # Install
+    - docker exec -t wex /bin/bash /opt/wex/cli/install
+    # Launch tests
+    - docker exec -u owner -t wex /bin/bash wex test
+    # Uninstall
+    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
   after_script:
     # Reset permissions
     - chown -R root:root .
