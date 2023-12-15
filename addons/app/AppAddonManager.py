@@ -678,15 +678,17 @@ class AppAddonManager(AddonManager):
             app__hook__exec, {"app-dir": self.app_dir, "hook": "config/runtime"}
         )
 
-    def get_service_config(
+    def has_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
-    ) -> ConfigValue:
+    ) -> bool:
         service = service or self.get_main_service()
         key = f"service.{service}.{key}"
 
-        if self.has_config(key):
-            return self.get_config(key)
+        return self.has_config(key)
 
+    def get_service_config(
+        self, key: str, service: str | None = None, default: Optional[Any] = None
+    ) -> ConfigValue:
         return ConfigValue(
             dict_get_item_by_path(
                 service_load_config(self.kernel, service), key, default
@@ -727,8 +729,8 @@ class AppAddonManager(AddonManager):
         return cast(StringKeysDict, self.get_config("service", {}).get_dict())
 
     def require_proxy(self) -> bool:
-        if self.has_runtime_config("require_proxy"):
-            return self.get_runtime_config("require_proxy").get_bool()
+        if self.has_service_config("require_proxy"):
+            return self.get_service_config("require_proxy").get_bool()
         return False
 
     def creates_network(self) -> bool:
@@ -736,10 +738,10 @@ class AppAddonManager(AddonManager):
 
         # App has at least one service who creates network.
         for service in services:
-            if self.get_service_config(
-                key="docker.create_network", service=service, default=False
-            ):
-                return True
+            if self.has_service_config("docker.create_network"):
+                if self.get_service_config(key="docker.create_network", service=service, default=False).get_bool():
+                    self.kernel.io.log(f"{service} needs a docker network")
+                    return True
 
         # App does not requires proxy.
         if not self.require_proxy():
