@@ -3,6 +3,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.env.get import _app__env__get
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     FILE_REGISTRY,
@@ -16,7 +17,9 @@ from src.core.AddonManager import AddonManager
 from src.core.BaseClass import BaseClass
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
-from src.core.file.KernelSystemRootDirectoryStructure import KernelSystemRootDirectoryStructure
+from src.core.file.KernelSystemRootDirectoryStructure import (
+    KernelSystemRootDirectoryStructure,
+)
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
@@ -28,7 +31,6 @@ from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
 from src.helper.args import args_shift_one
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
-from addons.app.command.env.get import _app__env__get
 
 if TYPE_CHECKING:
     from src.const.types import (
@@ -101,7 +103,8 @@ class Kernel(BaseClass):
             "addons": os.path.join(root_path, "addons") + os.sep,
             "core.cli": os.path.join(root_path, "cli", "wex"),
             "tmp": tmp_path,
-            "templates": os.path.join(root_path, "src", "resources", "templates") + os.sep,
+            "templates": os.path.join(root_path, "src", "resources", "templates")
+            + os.sep,
             "task": os.path.join(tmp_path, "task") + os.sep,
         }
 
