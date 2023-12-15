@@ -11,6 +11,7 @@ test:
 #    - tags
   script:
     - ls -la
+    - realpath .
 #    - echo $CI_PROJECT_DIR
 #    # Stops script on failure
 #    - set -e
