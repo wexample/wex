@@ -19,7 +19,7 @@ test:
     # Create env file
     - mv .wex/.env.test .wex/.env
     # Remove old containers
-    - docker rm -f $(docker ps -q --filter name=test_app_)
+    - docker rm -f $(docker ps -q --filter name=test_app_) || True
     # Launch container for tests
     - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
     # Install
