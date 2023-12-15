@@ -28,6 +28,8 @@ def sqlserver__service__ready(
         COMMAND_TYPE_SERVICE,
     ).print()
 
+    import time
+    time.sleep(5)
     response = manager.kernel.run_function(
         app__app__exec,
         {
