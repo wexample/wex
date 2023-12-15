@@ -1,6 +1,7 @@
 from addons.app.command.db.dump import app__db__dump
 from addons.app.command.db.restore import app__db__restore
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from addons.app.command.app.perms import app__app__perms
 from src.helper.file import file_remove_extension
 
 
@@ -10,6 +11,14 @@ class TestAppCommandDbRestore(AbstractAppTestCase):
             self.log(f"Testing database restore : {db_service}")
 
             app_dir = self.create_and_start_test_app(services=[db_service], force_restart=True)
+
+            # Reset permissions
+            self.kernel.run_function(
+                app__app__perms,
+                {
+                    "app-dir": app_dir,
+                },
+            )
 
             response = self.kernel.run_function(
                 app__db__dump,
