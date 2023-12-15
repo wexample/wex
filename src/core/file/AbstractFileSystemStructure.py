@@ -44,7 +44,6 @@ class AbstractFileSystemStructure(BaseClass):
     type: FileSystemStructureType
     errors: "ErrorMessageList"
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
-    schema: FileSystemStructureSchema = {}
     parent_structure: Optional["AbstractFileSystemStructure"] = None
     shortcut: Optional[str] = None
     shortcuts: Dict[str, "AbstractFileSystemStructure"]
@@ -54,6 +53,7 @@ class AbstractFileSystemStructure(BaseClass):
         self.errors = []
         self.children = {}
         self.shortcuts = {}
+        self.schema: FileSystemStructureSchema = {}
 
         if initialize:
             self.initialize()

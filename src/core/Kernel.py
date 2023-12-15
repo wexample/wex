@@ -16,6 +16,7 @@ from src.core.AddonManager import AddonManager
 from src.core.BaseClass import BaseClass
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
+from src.core.file.KernelSystemRootDirectoryStructure import KernelSystemRootDirectoryStructure
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
@@ -27,6 +28,7 @@ from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
 from src.helper.args import args_shift_one
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
+from addons.app.command.env.get import _app__env__get
 
 if TYPE_CHECKING:
     from src.const.types import (
@@ -103,6 +105,11 @@ class Kernel(BaseClass):
             + os.sep,
             "task": os.path.join(tmp_path, "task") + os.sep,
         }
+
+        self.system_root_directory = KernelSystemRootDirectoryStructure(
+            env=_app__env__get(self, root_path),
+            path=os.sep,
+        )
 
         self.directory = KernelDirectoryStructure(
             path=root_path,
