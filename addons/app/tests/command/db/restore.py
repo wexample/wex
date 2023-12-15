@@ -7,9 +7,13 @@ from src.helper.file import file_remove_extension
 class TestAppCommandDbRestore(AbstractAppTestCase):
     def test_restore(self) -> None:
         def callback(db_service: str) -> None:
-            self.log(f"Testing database dump : {db_service}")
+            self.log(f"Testing database restore : {db_service}")
 
             app_dir = self.create_and_start_test_app(services=[db_service])
+
+            self.kernel.io.log("Waiting extra seconds...")
+            import time
+            time.sleep(10)
 
             response = self.kernel.run_function(
                 app__db__dump,

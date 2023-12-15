@@ -17,10 +17,6 @@ if TYPE_CHECKING:
 def sqlserver__service__ready(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> bool:
-    manager.kernel.io.log("Waiting extra seconds for SQLServer...")
-    import time
-    time.sleep(30)
-
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {
