@@ -24,17 +24,15 @@ if TYPE_CHECKING:
 def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
     # In local env, script are started manually,
     # then we remove every docker container to ensure no
-    if kernel.registry_structure.content.env == APP_ENV_LOCAL:
-        execute_command_tree_sync(
-            kernel,
-            [
-                "docker",
-                "rm",
-                "-f",
-                ["docker", "ps", "-q", "--filter", "name=test_app_"],
-            ],
-            ignore_error=True,
-        )
+    execute_command_tree_sync(
+        kernel,
+        [
+            "docker",
+            "rm",
+            "-f",
+            ["docker", "ps", "-q", "--filter", "name=test_app_"],
+        ],
+        ignore_error=True)
 
     # Remove all temp files.
     kernel.run_function(function=core__core__cleanup, args={"test": True})
