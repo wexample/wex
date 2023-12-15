@@ -1,8 +1,8 @@
 stages:
   - test
-  - build
-  - deploy
-  - test_apt_install
+#  - build
+#  - deploy
+#  - test_apt_install
 
 test:
   stage: test
