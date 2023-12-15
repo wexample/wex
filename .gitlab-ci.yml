@@ -6,43 +6,35 @@ stages:
 
 test:
   stage: test
-  image: docker:24.0.6-dind
-  services:
-    - name: docker:24.0.6-dind
-  before_script:
-#    - export DOCKER_HOST=tcp://$(getent hosts docker | awk '{ print $1 }'):2375
-    - until docker info; do echo 'Waiting for Docker service to start'; sleep 1; done
-  variables:
-    DOCKER_HOST: tcp://docker:2375
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
   script:
-    - echo OK
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    - cat ".env"
-#    # Install
-#    - INSTALL_PATH=$(pwd)
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
-#    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-#    # Create a fake socket to satisfy reverse proxy container which expects to listen docker
-#    - touch /var/run/docker.sock
-#    # Run wex test as owner with sudo
-##    - sudo su - owner -c "sudo wex test"
-#    - sudo su - owner -c "sudo wex app::proxy/start"
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    # Define app local env with docker config
+    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
+    - cat ".env"
+    # Install
+    - INSTALL_PATH=$(pwd)
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
+    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
+    # Create a fake socket to satisfy reverse proxy container which expects to listen docker
+    - touch /var/run/docker.sock
+    # Run wex test as owner with sudo
+#    - sudo su - owner -c "sudo wex test"
+    - sudo su - owner -c "sudo wex app::proxy/start"
 #    - docker ps -a
 #    - docker logs wex_proxy_local_proxy
 #    - sudo su - owner -c "sudo wex app::proxy/stop"
 #    - sudo su - owner -c "sudo wex test -c app::proxy/start"
 #    - cat /var/www/test/wex-proxy/.wex/tmp/docker-compose.runtime.yml
-#    # Uninstall
-#    - sudo bash ./cli/uninstall
+    # Uninstall
+    - sudo bash ./cli/uninstall
   after_script:
     # Reset permissions
     - chown -R root:root .
