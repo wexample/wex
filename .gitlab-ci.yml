@@ -10,6 +10,7 @@ test:
 #  only:
 #    - tags
   script:
+    - touch /var/www/dumps/test-dumps
     # Stops script on failure
     - set -e
     # We install manually as apt package does not exist at this point
