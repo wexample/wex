@@ -23,8 +23,6 @@ test:
     - INSTALL_PATH=$(pwd)
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
     - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/wex"
-    # Create a fake socket to satisfy reverse proxy container which expects to listen docker
-    - touch /var/run/docker.sock
     # Run wex test as owner with sudo
 #    - sudo su - owner -c "sudo wex test"
     - sudo su - owner -c "sudo wex app::proxy/start"

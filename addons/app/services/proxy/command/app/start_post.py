@@ -13,7 +13,9 @@ def proxy__app__start_post(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     commands = [
+        ["touch", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
+        ["touch", "/var/log/nginx/error.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/error.log"],
         ["nginx", "-s", "reload"],
     ]
