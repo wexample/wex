@@ -15,7 +15,7 @@ DEFAULT_APP_TEST_NAME: str = "test-app"
 
 
 def test_get_app_dir(kernel: "Kernel", name: str) -> str:
-    return f"{kernel.get_or_create_path('tmp')}tests/{name}/"
+    return f"{kernel.system_root_directory.shortcuts['apps'].path}{name}{os.sep}"
 
 
 def test_build_app_name(
