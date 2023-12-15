@@ -20,7 +20,7 @@ test:
     - mv .wex/.env.test .wex/.env
     - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
     - docker exec -ti wex /bin/bash /opt/wex/cli/install
-    - docker exec -u owner -ti wex /bin/bash wex test
+    - docker exec -u owner -t wex /bin/bash wex test
 #    # Install
 #    - INSTALL_PATH=$(pwd)
 #    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
