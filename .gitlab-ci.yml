@@ -10,20 +10,17 @@ test:
 #  only:
 #    - tags
   script:
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
     - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
     - docker exec -ti wex /bin/bash /opt/wex/cli/install
     - docker exec -u owner -ti wex /bin/bash wex test
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Define app local env with docker config
-#    - echo "DOCKER_HOST=$DOCKER_HOST" > ".env"
-#    - cat ".env"
 #    # Install
 #    - INSTALL_PATH=$(pwd)
 #    - sudo su - owner -c "sudo bash ${INSTALL_PATH}/cli/install"
