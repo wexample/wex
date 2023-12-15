@@ -12,12 +12,11 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - echo $CI_PROJECT_DIR
-#      # Work dir
-#      - ../../:/opt/wex
-#      # Mount apps
-#      - /var/www/${APP_ENV}:/var/www/${APP_ENV}
-#      # Allow container to override env data
-#      - /opt/wex/.wex/python/venv
-#      # Docker sharing
-#      - /var/run/docker.sock:/var/run/docker.sock
+      # Work dir
+      - ../../:/opt/wex
+      # Mount apps
+      - /var/www/${APP_ENV}:/var/www/${APP_ENV}
+      # Allow container to override env data
+      - /opt/wex/.wex/python/venv
+      # Docker sharing
+      - /var/run/docker.sock:/var/run/docker.sock
