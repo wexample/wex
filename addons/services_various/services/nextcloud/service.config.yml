@@ -1,2 +1,3 @@
 dependencies:
   - maria
+require_proxy: true

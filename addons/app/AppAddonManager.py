@@ -726,8 +726,10 @@ class AppAddonManager(AddonManager):
     def get_services(self) -> StringKeysDict:
         return cast(StringKeysDict, self.get_config("service", {}).get_dict())
 
-    def need_proxy(self) -> bool:
-        return self.has_runtime_config("domains")
+    def require_proxy(self) -> bool:
+        if self.has_runtime_config("require_proxy"):
+            return self.get_runtime_config("require_proxy").get_bool()
+        return False
 
     def creates_network(self) -> bool:
         services = self.get_services()
@@ -740,7 +742,7 @@ class AppAddonManager(AddonManager):
                 return True
 
         # App does not requires proxy.
-        if not self.need_proxy():
+        if not self.require_proxy():
             return True
 
         return False
