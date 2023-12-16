@@ -691,7 +691,9 @@ class AppAddonManager(AddonManager):
     ) -> ConfigValue:
         return ConfigValue(
             dict_get_item_by_path(
-                service_load_config(self.kernel, service or self.get_main_service()), key, default
+                service_load_config(self.kernel, service or self.get_main_service()),
+                key,
+                default,
             )
         )
 
@@ -739,7 +741,9 @@ class AppAddonManager(AddonManager):
         # App has at least one service who creates network.
         for service in services:
             if self.has_service_config("docker.create_network"):
-                if self.get_service_config(key="docker.create_network", service=service, default=False).get_bool():
+                if self.get_service_config(
+                    key="docker.create_network", service=service, default=False
+                ).get_bool():
                     self.kernel.io.log(f"{service} needs a docker network")
                     return True
 
