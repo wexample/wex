@@ -691,7 +691,7 @@ class AppAddonManager(AddonManager):
     ) -> ConfigValue:
         return ConfigValue(
             dict_get_item_by_path(
-                service_load_config(self.kernel, service), key, default
+                service_load_config(self.kernel, service or self.get_main_service()), key, default
             )
         )
 
