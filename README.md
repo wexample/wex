@@ -37,6 +37,8 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
 Upgrading
 
     sudo apt update && sudo apt install --only-upgrade wex
+    # Or
+    wex update
 
 ### Debian from sources
 
