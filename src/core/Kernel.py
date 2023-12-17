@@ -108,13 +108,13 @@ class Kernel(BaseClass):
             "task": os.path.join(tmp_path, "task") + os.sep,
         }
 
+        self.directory = KernelDirectoryStructure(
+            path=root_path,
+        )
+
         self.system_root_directory = KernelSystemRootDirectoryStructure(
             env=_app__env__get(self, root_path),
             path=os.sep,
-        )
-
-        self.directory = KernelDirectoryStructure(
-            path=root_path,
         )
 
         # Initialize addons config
