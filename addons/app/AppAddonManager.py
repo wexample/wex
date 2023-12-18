@@ -686,6 +686,21 @@ class AppAddonManager(AddonManager):
 
         return self.has_config(key)
 
+    def get_config_or_service_config(
+        self,
+        key: str,
+        service: str | None = None,
+        default: Optional[Any] = None
+    ) -> ConfigValue:
+        if self.has_config(key):
+            return self.get_config(key)
+
+        return self.get_service_config(
+            key=key,
+            service=service,
+            default=default
+        )
+
     def get_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
     ) -> ConfigValue:
