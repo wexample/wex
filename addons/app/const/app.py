@@ -1,6 +1,7 @@
 from src.const.types import StringsList
 
-APP_DIR_APP_DATA: str = ".wex/"
+APP_DIR_APP_DATA_NAME: str = ".wex"
+APP_DIR_APP_DATA: str = f"{APP_DIR_APP_DATA_NAME}/"
 APP_DIR_TMP: str = f"{APP_DIR_APP_DATA}tmp/"
 APP_ENV_DEV: str = "dev"
 APP_ENV_LOCAL: str = "local"
