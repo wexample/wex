@@ -59,13 +59,15 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
             group = group_service_config.get_str()
         elif group_service_config.is_int():
             group = group_service_config.get_int()
+        elif isinstance(user, str):
+            group = get_user_group_name(user)
         else:
-            group: str = get_user_group_name(user)
+            group = user
 
     if isinstance(group, str) and not group_exists(group):
         kernel.io.error(f"Group does not exists {group}, you can provide a gid instead", trace=False)
 
-    manager.log(f'Setting owner of all files to "{user}:{group}"')
+    manager.log(f'Setting owner of all files to "{user}:{str(group)}"')
     set_owner_recursively(app_dir, user, group)
 
     if manager.has_config("permissions.mode", int):

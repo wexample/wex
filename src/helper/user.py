@@ -59,13 +59,16 @@ def set_owner_recursively(
 
     if isinstance(user, str):
         uid = get_uid_from_user_name(user)
+
+        if group is None:
+            group = get_user_group_name(user)
     else:
         uid = user
 
-    if group is None:
-        group = get_user_group_name(user)
+        if group is None:
+            group = uid
 
-    if isinstance(user, str):
+    if isinstance(group, str):
         gid = get_gid_from_group_name(group)
     else:
         gid = group
