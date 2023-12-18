@@ -1,8 +1,9 @@
-from src.helper.command import execute_command_tree_sync
+from typing import TYPE_CHECKING
+
+from addons.core.command.core.cleanup import core__core__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
-from typing import TYPE_CHECKING
-from addons.core.command.core.cleanup import core__core__cleanup
+from src.helper.command import execute_command_tree_sync
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

@@ -48,9 +48,7 @@ def app__version__build(
 
         manager.set_config("global.version", new_version)
 
-        kernel.run_command(
-            '.version/build'
-        )
+        kernel.run_command(".version/build")
     else:
         repo = Repo(app_dir)
         new_version = manager.get_config("global.version").get_str()
