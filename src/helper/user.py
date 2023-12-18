@@ -52,16 +52,23 @@ def get_user_or_sudo_user_home_data_path() -> str:
 
 
 def set_owner_recursively(
-    path: str, user: Optional[str] = None, group: Optional[str] = None
+    path: str, user: Optional[str | int] = None, group: Optional[str | int] = None
 ) -> None:
     if user is None:
         user = get_user_or_sudo_user()
 
+    if isinstance(user, str):
+        uid = get_uid_from_user_name(user)
+    else:
+        uid = user
+
     if group is None:
         group = get_user_group_name(user)
 
-    uid = get_uid_from_user_name(user)
-    gid = get_gid_from_group_name(group)
+    if isinstance(user, str):
+        gid = get_gid_from_group_name(group)
+    else:
+        gid = group
 
     # Change owner for the current path
     try:
@@ -115,6 +122,14 @@ def user_exists(username: str) -> bool:
     try:
         # Attempt to get user details
         pwd.getpwnam(username)
+        return True
+    except KeyError:
+        return False
+
+
+def group_exists(group: str) -> bool:
+    try:
+        grp.getgrnam(group)
         return True
     except KeyError:
         return False

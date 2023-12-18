@@ -25,6 +25,9 @@ class ConfigValue(BaseClass):
 
         return value
 
+    def is_none(self) -> bool:
+        return self._value is None
+
     def is_str(self) -> bool:
         return self.is_of_type(str)
 

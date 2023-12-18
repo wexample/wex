@@ -1,1 +1,6 @@
 require_proxy: true
+permissions:
+  # This is the "git" user uid inside gitlab container
+  user: 998
+  group: 998
+  mode: 777

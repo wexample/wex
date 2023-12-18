@@ -70,8 +70,13 @@ def app__migration__migrate(
             default__version__parse, {"version": app_version_string}
         ).first()
 
+    if manager.has_config("global.name"):
+        app_name = manager.get_config("global.,name").get_str()
+    else:
+        app_name = os.path.basename(os.path.normpath(app_dir))
+
     if not yes and not click.confirm(
-        f'Are you ready to migrate {manager.get_config("global.name").get_str()} from version {app_version_string}',
+        f'Are you ready to migrate {app_name} from version {app_version_string}',
         default=True,
     ):
         return
@@ -81,7 +86,7 @@ def app__migration__migrate(
         # Only create config but do not save it
         # until migration is completed
         manager._config = manager.create_config(
-            os.path.basename(os.path.normpath(app_dir))
+            app_name
         )
 
     kernel.io.log(f"Current version defined as {app_version_string}")
