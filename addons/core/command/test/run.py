@@ -3,6 +3,7 @@ import sys
 import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
+from addons.core.command.test.cleanup import core__test__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
@@ -19,6 +20,8 @@ if TYPE_CHECKING:
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
 def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
+    kernel.run_function(core__test__cleanup)
+
     kernel.io.log("Starting test suite..")
 
     loader = unittest.TestLoader()
@@ -55,3 +58,5 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
 
     if not result.wasSuccessful():
         sys.exit(1)
+
+    kernel.run_function(core__test__cleanup)
