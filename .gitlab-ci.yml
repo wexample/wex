@@ -109,7 +109,10 @@ test_apt_install_ubuntu:
 build_docker:
   stage: build_docker
   needs:
-    - test_apt_install
+    - test_apt_install_debian
+    - test_apt_install_ubuntu
+  only:
+    - tags
   trigger:
     project: wexample-public/docker
     branch: main
