@@ -5,8 +5,8 @@ from git import Repo  # type: ignore
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment
 from src.const.globals import CORE_COMMAND_NAME
-from src.helper.core import core_kernel_get_version
 from src.decorator.option import option
+from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -49,7 +49,9 @@ def app__version__build(
         kernel.io.log(f"New app version : {new_version}")
 
         manager.set_config("global.version", new_version)
-        manager.set_config(f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel))
+        manager.set_config(
+            f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel)
+        )
 
         kernel.run_command(".version/build", quiet=True)
     else:
