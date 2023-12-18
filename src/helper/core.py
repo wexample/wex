@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
+from src.helper.file import file_read
 from src.const.globals import FILE_VERSION
 
 if TYPE_CHECKING:
@@ -10,8 +11,7 @@ if TYPE_CHECKING:
 
 
 def core_dir_get_version(core_dir: str) -> str:
-    with open(f"{core_dir}{FILE_VERSION}", "r") as file:
-        return file.read().strip()
+    return file_read(f"{core_dir}{FILE_VERSION}").strip()
 
 
 def core_kernel_get_version(kernel: "Kernel") -> str:
