@@ -1,0 +1,7 @@
+type: app
+help: Create new version
+command:
+  decorator: app_command
+scripts:
+  - title: Save new version to root file
+    script: echo $(wex app::version/get) > version.txt

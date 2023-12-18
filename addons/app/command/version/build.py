@@ -81,7 +81,7 @@ def app__version__build(
 
         kernel.io.log("Committing new version...")
         try:
-            repo.index.add(".wex/config")
+            repo.git.add(A=True)
             repo.index.commit(f"New version v{new_version}")
             repo.create_tag(f"{new_version}")
         except Exception as e:

@@ -8,7 +8,6 @@ from addons.app.command.version.build import app__version__build
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.default.command.version.increment import default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
-from src.helper.file import file_write
 from src.const.globals import CORE_COMMAND_NAME, FILE_README, FILE_VERSION
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
@@ -89,8 +88,6 @@ def core__version__build(
                     "type": type,
                 },
             ).first()
-
-            file_write(f"{root_dir}{FILE_VERSION}", str(new_version))
 
             # Set wex version for itself.
             kernel.run_function(
