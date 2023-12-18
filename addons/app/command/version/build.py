@@ -70,21 +70,20 @@ def app__version__build(
 
         # Get the last tag.
         tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
-        latest_tag = tags[-1]
+        if len(tags):
+            latest_tag = tags[-1]
 
-        if str(latest_tag) == new_version:
-            kernel.io.error(
-                f"The version {new_version} has been already tagged, you should create a new version.",
-                trace=False,
-            )
+            if str(latest_tag) == new_version:
+                kernel.io.error(
+                    f"The version {new_version} has been already tagged, you should create a new version.",
+                    trace=False,
+                )
 
         kernel.io.log("Committing new version...")
         try:
             repo.index.add(".wex/config")
             repo.index.commit(f"New version v{new_version}")
             repo.create_tag(f"{new_version}")
-
-            # origin.push()
         except Exception as e:
             kernel.io.error("Git commit : " + str(e), trace=False)
 
