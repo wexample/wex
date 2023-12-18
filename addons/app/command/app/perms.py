@@ -67,7 +67,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     else:
         mode = manager.get_config_or_service_config("permissions.mode", default=0o755).get_int()
 
-    manager.log(f'Setting file mode of all files to "{mode}"')
+    manager.log(f'Setting file mode of all files to "{format(mode, "o")}"')
     set_permissions_recursively(app_dir, mode)
 
     manager.log("Updating app permissions...")
