@@ -3,13 +3,11 @@ import sys
 import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
-from addons.core.command.core.cleanup import core__core__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_tree_sync
 from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
@@ -21,22 +19,6 @@ if TYPE_CHECKING:
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
 def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
-    # In local env, script are started manually,
-    # then we remove every docker container to ensure no
-    execute_command_tree_sync(
-        kernel,
-        [
-            "docker",
-            "rm",
-            "-f",
-            ["docker", "ps", "-q", "--filter", "name=test_app_"],
-        ],
-        ignore_error=True,
-    )
-
-    # Remove all temp files.
-    kernel.run_function(function=core__core__cleanup, args={"test": True})
-
     kernel.io.log("Starting test suite..")
 
     loader = unittest.TestLoader()
@@ -56,10 +38,10 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> None:
                 "test" in command_data
                 and command_data["test"]
                 and (
-                    (not command)
-                    or command_name == command
-                    or (command.endswith("*") and command_name.startswith(command[:-1]))
-                )
+                (not command)
+                or command_name == command
+                or (command.endswith("*") and command_name.startswith(command[:-1]))
+            )
             ):
                 kernel.io.log(f"Found test for command: {command_name}")
 
