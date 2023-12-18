@@ -20,6 +20,8 @@ if TYPE_CHECKING:
 @app_command(help="Set app files permissions")
 def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
+    user: Optional[str | int] = None
+    group: Optional[str | int] = None
 
     if manager.has_config("permissions.user", str):
         user = manager.get_config("permissions.user").get_str()
@@ -28,6 +30,8 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
 
         if user_service_config.is_str():
             user = user_service_config.get_str()
+        elif user_service_config.is_int():
+            user = user_service_config.get_int()
         else:
             env = kernel.run_function(
                 app__env__get, {"app-dir": kernel.directory.path}
@@ -42,7 +46,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
                     USER_WWW_DATA if user_exists(USER_WWW_DATA) else get_user_or_sudo_user()
                 )
 
-    if not user_exists(user):
+    if isinstance(user, str) and not user_exists(user):
         kernel.io.error(f"User does not exists {user}, you can provide a uid instead", trace=False)
 
     if manager.has_config("permissions.group", str):
@@ -53,10 +57,12 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
 
         if group_service_config.is_str():
             group = group_service_config.get_str()
+        elif group_service_config.is_int():
+            group = group_service_config.get_int()
         else:
             group: str = get_user_group_name(user)
 
-    if not group_exists(group):
+    if isinstance(group, str) and not group_exists(group):
         kernel.io.error(f"Group does not exists {group}, you can provide a gid instead", trace=False)
 
     manager.log(f'Setting owner of all files to "{user}:{group}"')
