@@ -3,7 +3,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class {class_name}(AbstractTestCase):
-    def {method_name}(self):
+    def {method_name}(self) -> None:
         # TO/DO
         response = self.kernel.run_function({command_function_name}, {{
             'option': 'test'
