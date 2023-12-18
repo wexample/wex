@@ -9,7 +9,7 @@ build_docker:
   stage: build_docker
   trigger:
     project: wexample-public/docker
-    branch: master
+    branch: main
 
 #test:
 #  stage: test
