@@ -1,5 +1,5 @@
 type: app
-help: This is a simple webhook
+help: Create a new version and push it
 properties:
   - app_webhook
 scripts:
