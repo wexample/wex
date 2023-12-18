@@ -7,9 +7,12 @@ from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
 from src.helper.user import (
+    get_user_group_name,
     get_user_or_sudo_user,
+    group_exists,
     set_owner_recursively,
-    user_exists, get_user_group_name, group_exists, set_permissions_recursively,
+    set_permissions_recursively,
+    user_exists,
 )
 
 if TYPE_CHECKING:
@@ -26,7 +29,9 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     if manager.has_config("permissions.user", str):
         user = manager.get_config("permissions.user").get_str()
     else:
-        user_service_config = manager.get_config_or_service_config("permissions.user", None)
+        user_service_config = manager.get_config_or_service_config(
+            "permissions.user", None
+        )
 
         if user_service_config.is_str():
             user = user_service_config.get_str()
@@ -43,17 +48,23 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
                 user = get_user_or_sudo_user()
             else:
                 user = (
-                    USER_WWW_DATA if user_exists(USER_WWW_DATA) else get_user_or_sudo_user()
+                    USER_WWW_DATA
+                    if user_exists(USER_WWW_DATA)
+                    else get_user_or_sudo_user()
                 )
 
     if isinstance(user, str) and not user_exists(user):
-        kernel.io.error(f"User does not exists {user}, you can provide a uid instead", trace=False)
+        kernel.io.error(
+            f"User does not exists {user}, you can provide a uid instead", trace=False
+        )
 
     if manager.has_config("permissions.group", str):
         group = manager.get_config("permissions.group").get_str()
     else:
         # If no group specified, set to None to guess it.
-        group_service_config = manager.get_config_or_service_config("permissions.group", None)
+        group_service_config = manager.get_config_or_service_config(
+            "permissions.group", None
+        )
 
         if group_service_config.is_str():
             group = group_service_config.get_str()
@@ -65,7 +76,9 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
             group = user
 
     if isinstance(group, str) and not group_exists(group):
-        kernel.io.error(f"Group does not exists {group}, you can provide a gid instead", trace=False)
+        kernel.io.error(
+            f"Group does not exists {group}, you can provide a gid instead", trace=False
+        )
 
     manager.log(f'Setting owner of all files to "{user}:{str(group)}"')
     set_owner_recursively(app_dir, user, group)
@@ -73,7 +86,9 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     if manager.has_config("permissions.mode", int):
         mode = manager.get_config("permissions.mode").get_int()
     else:
-        mode = manager.get_config_or_service_config("permissions.mode", default=0o755).get_int()
+        mode = manager.get_config_or_service_config(
+            "permissions.mode", default=0o755
+        ).get_int()
 
     manager.log(f'Setting file mode of all files to "{format(mode, "o")}"')
     set_permissions_recursively(app_dir, mode)

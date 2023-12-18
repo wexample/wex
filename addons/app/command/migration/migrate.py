@@ -76,7 +76,7 @@ def app__migration__migrate(
         app_name = os.path.basename(os.path.normpath(app_dir))
 
     if not yes and not click.confirm(
-        f'Are you ready to migrate {app_name} from version {app_version_string}',
+        f"Are you ready to migrate {app_name} from version {app_version_string}",
         default=True,
     ):
         return
@@ -85,9 +85,7 @@ def app__migration__migrate(
     if not manager._config:
         # Only create config but do not save it
         # until migration is completed
-        manager._config = manager.create_config(
-            app_name
-        )
+        manager._config = manager.create_config(app_name)
 
     kernel.io.log(f"Current version defined as {app_version_string}")
 
