@@ -23,12 +23,12 @@ if TYPE_CHECKING:
 @app_command(help="Set app files permissions")
 def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
-    user: Optional[str | int] = None
-    group: Optional[str | int] = None
+    user: Optional[str | int]
+    group: Optional[str | int]
 
     if manager.has_config("permissions.user", str):
         user = manager.get_config("permissions.user").get_str()
-    else:
+    elif manager.has_config("global.main_service"):
         user_service_config = manager.get_config_or_service_config(
             "permissions.user", None
         )
@@ -52,6 +52,8 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
                     if user_exists(USER_WWW_DATA)
                     else get_user_or_sudo_user()
                 )
+    else:
+        return
 
     if isinstance(user, str) and not user_exists(user):
         kernel.io.error(
@@ -60,7 +62,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
 
     if manager.has_config("permissions.group", str):
         group = manager.get_config("permissions.group").get_str()
-    else:
+    elif manager.has_config("global.main_service"):
         # If no group specified, set to None to guess it.
         group_service_config = manager.get_config_or_service_config(
             "permissions.group", None
