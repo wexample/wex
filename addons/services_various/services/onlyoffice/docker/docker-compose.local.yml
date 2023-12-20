@@ -1,0 +1,4 @@
+services:
+  onlyoffice:
+    environment:
+      - HTTPS_METHOD=noredirect

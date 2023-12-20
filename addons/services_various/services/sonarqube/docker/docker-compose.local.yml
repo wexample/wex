@@ -1,0 +1,4 @@
+services:
+  sonarqube:
+    environment:
+      - HTTPS_METHOD=noredirect

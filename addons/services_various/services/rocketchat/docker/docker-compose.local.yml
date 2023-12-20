@@ -1,0 +1,4 @@
+services:
+  rocketchat:
+    environment:
+      - HTTPS_METHOD=noredirect

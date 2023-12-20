@@ -1,0 +1,4 @@
+services:
+    wordpress:
+        environment:
+            - HTTPS_METHOD=noredirect

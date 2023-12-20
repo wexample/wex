@@ -1,0 +1,4 @@
+services:
+    laravel:
+        environment:
+            - HTTPS_METHOD=noredirect

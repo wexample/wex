@@ -1,0 +1,4 @@
+services:
+    symfony:
+        environment:
+            - HTTPS_METHOD=noredirect

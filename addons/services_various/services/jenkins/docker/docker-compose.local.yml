@@ -1,0 +1,4 @@
+services:
+  jenkins:
+    environment:
+      - HTTPS_METHOD=noredirect
