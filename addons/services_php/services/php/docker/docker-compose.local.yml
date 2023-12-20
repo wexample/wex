@@ -1,4 +1,0 @@
-services:
-    php:
-        environment:
-            - HTTPS_METHOD=noredirect

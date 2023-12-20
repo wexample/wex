@@ -1,4 +1,0 @@
-services:
-    phpmyadmin:
-        environment:
-            - HTTPS_METHOD=noredirect

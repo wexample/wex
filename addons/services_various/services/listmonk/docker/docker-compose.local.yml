@@ -1,4 +1,0 @@
-services:
-  listmonk:
-    environment:
-      - HTTPS_METHOD=noredirect

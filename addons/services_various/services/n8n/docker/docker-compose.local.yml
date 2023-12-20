@@ -1,4 +1,0 @@
-services:
-  n8n:
-    environment:
-      - HTTPS_METHOD=noredirect

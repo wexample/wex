@@ -1,4 +1,0 @@
-services:
-  nextcloud:
-    environment:
-      - HTTPS_METHOD=noredirect

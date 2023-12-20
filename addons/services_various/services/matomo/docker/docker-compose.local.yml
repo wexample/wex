@@ -1,4 +1,0 @@
-services:
-  matomo:
-    environment:
-      - HTTPS_METHOD=noredirect

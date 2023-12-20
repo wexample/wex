@@ -1,4 +1,0 @@
-services:
-    gitlab:
-        environment:
-            - HTTPS_METHOD=noredirect
