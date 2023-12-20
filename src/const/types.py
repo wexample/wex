@@ -97,6 +97,7 @@ RegistryResolverData = StringKeysDict
 class YamlCommandScript(TypedDict):
     command: Optional[str]
     container_name: Optional[str]
+    directory: Optional[str]
     file: Optional[str]
     interpreter: StringsList
     options: Optional[StringKeysDict]
