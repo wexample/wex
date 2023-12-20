@@ -80,6 +80,9 @@ class AppCommand(ScriptCommand):
             if "container_name" in script and isinstance(script["container_name"], str):
                 from src.helper.command import command_to_string
 
+                if "directory" in script:
+                    command = ["cd", script['directory'], "&&"] + command
+
                 command_string = command_to_string(command)
                 command_string = command_escape(command_string)
 
