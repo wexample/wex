@@ -1,10 +1,10 @@
+from addons.app.command.version.new_write import app__version__new_write
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.command.version.build import app__version__build
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
-class TestAppCommandVersionBuild(AbstractAppTestCase):
-    def test_build(self) -> None:
+class TestAppCommandVersionNewWrite(AbstractAppTestCase):
+    def test_new_write(self) -> None:
         manager = AppAddonManager(self.kernel, app_dir=self.kernel.directory.path)
         manager.load_config()
 
@@ -13,12 +13,14 @@ class TestAppCommandVersionBuild(AbstractAppTestCase):
 
         # Change version.
         version = self.kernel.run_function(
-            app__version__build, {"version": "1.0.0", "app-dir": app_dir}
+            app__version__new_write,
+            {"version": "1.0.0", "app-dir": app_dir}
         ).first()
 
         self.assertEqual(version, "1.0.0")
 
         # Rollback.
         self.kernel.run_function(
-            app__version__build, {"version": current_version, "app-dir": app_dir}
+            app__version__new_write,
+            {"version": current_version, "app-dir": app_dir}
         )
