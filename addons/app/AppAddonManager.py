@@ -478,7 +478,7 @@ class AppAddonManager(AddonManager):
     ) -> None:
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
-        app_dir = app_resolver.get_base_command_path()
+        app_dir = self.get_app_dir()
 
         if not app_dir:
             return
@@ -532,27 +532,30 @@ class AppAddonManager(AddonManager):
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
 
-        if not (
-            self.ignore_app_dir(request)
-            or not request.get_script_command().get_extra_value(
-                "app_dir_required", False
-            )
+        if self.ignore_app_dir(
+            request
+        ) or not request.get_script_command().get_extra_value(
+            "app_dir_required", False
         ):
-            from src.helper.command import is_same_command
+            return
 
-            # Ignore internally used command.
-            if not is_same_command(request.get_script_command(), app__location__find):
-                self.app_dirs_stack.pop()
-                app_dir = (
-                    self.app_dirs_stack[-1]
-                    if len(self.app_dirs_stack)
-                    else self.kernel.get_path("call")
-                )
-                # Previous app dir was an app.
-                if app_dir:
-                    # Reinit app dir if not the same.
-                    if app_dir != self.app_dir:
-                        self.set_app_workdir(app_dir)
+        from src.helper.command import is_same_command
+
+        # Ignore internally used command.
+        if is_same_command(request.get_script_command(), app__location__find):
+            return
+
+        self.app_dirs_stack.pop()
+        app_dir = (
+            self.app_dirs_stack[-1]
+            if len(self.app_dirs_stack)
+            else self.kernel.get_path("call")
+        )
+        # Previous app dir was an app.
+        if app_dir:
+            # Reinit app dir if not the same.
+            if app_dir != self.app_dir:
+                self.set_app_workdir(app_dir)
 
         # Ensure this is the real end of command, no repetition planned.
         if not response.has_next_step:
