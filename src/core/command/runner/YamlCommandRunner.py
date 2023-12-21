@@ -49,13 +49,16 @@ class YamlCommandRunner(AbstractCommandRunner):
         path = request.get_path()
 
         if path:
-            self.content = cast(YamlCommand, yaml_load(path, {}))
+            self.content = self.load_yaml_command(path)
 
             if not self.content:
                 self.kernel.io.error(
-                    f"Unable to load yaml script file content :  {path}",
+                    f"Unable to load yaml script file content : {path}",
                     trace=False,
                 )
+
+    def load_yaml_command(self, path: str) -> YamlCommand:
+        return cast(YamlCommand, yaml_load(path, {}))
 
     def get_options_names(self) -> StringsList:
         names = []
