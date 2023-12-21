@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Optional
 
-from addons.app.command.env.get import app__env__get
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
+from addons.app.command.env.get import _app__env__get
 from src.helper.user import (
     get_user_group_name,
     get_user_or_sudo_user,
@@ -25,12 +25,22 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
     user: Optional[str | int]
     group: Optional[str | int]
+    env = _app__env__get(kernel, kernel.directory.path)
+    no_auto_local_config = manager.get_config_or_service_config(
+        key="permissions.no_auto_local",
+        service=None,
+        default=False
+    )
+    auto_local = (not no_auto_local_config.is_bool() or not no_auto_local_config.get_bool()) and env == APP_ENV_LOCAL
 
-    if manager.has_config("permissions.user", str):
-        user = manager.get_config("permissions.user").get_str()
-    elif manager.has_config("global.main_service"):
+    # In local env get the "current" user, as it is probably
+    # the code editor. In other envs, it uses www-data
+    if auto_local:
+        user = get_user_or_sudo_user()
+    else:
         user_service_config = manager.get_config_or_service_config(
-            "permissions.user", None
+            key="permissions.user",
+            service=None
         )
 
         if user_service_config.is_str():
@@ -38,31 +48,20 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
         elif user_service_config.is_int():
             user = user_service_config.get_int()
         else:
-            env = kernel.run_function(
-                app__env__get, {"app-dir": kernel.directory.path}
-            ).first()
-
-            # In local env get the "current" user, as it is probably
-            # the code editor. In other envs, it uses www-data
-            if env == APP_ENV_LOCAL:
-                user = get_user_or_sudo_user()
-            else:
-                user = (
-                    USER_WWW_DATA
-                    if user_exists(USER_WWW_DATA)
-                    else get_user_or_sudo_user()
-                )
-    else:
-        return
+            user = (
+                USER_WWW_DATA
+                if user_exists(USER_WWW_DATA)
+                else get_user_or_sudo_user()
+            )
 
     if isinstance(user, str) and not user_exists(user):
         kernel.io.error(
             f"User does not exists {user}, you can provide a uid instead", trace=False
         )
 
-    if manager.has_config("permissions.group", str):
-        group = manager.get_config("permissions.group").get_str()
-    elif manager.has_config("global.main_service"):
+    if auto_local:
+        group = get_user_group_name(get_user_or_sudo_user())
+    else:
         # If no group specified, set to None to guess it.
         group_service_config = manager.get_config_or_service_config(
             "permissions.group", None

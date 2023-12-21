@@ -1,3 +1,8 @@
 dependencies:
   - mysql
 extends: php
+permissions:
+  # This is the "www-data" user uid inside container
+  user: 82
+  group: 82
+shell: /bin/sh
