@@ -472,6 +472,33 @@ class AppAddonManager(AddonManager):
                     trace=False,
                 )
 
+            self.execute_attached(request, "before")
+
+    def execute_attached(self, request, part):
+        # Search for app local commands
+        app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
+        app_commands = app_resolver.scan_commands_groups(
+            app_resolver.get_base_command_path()
+        )
+
+        if app_commands:
+            from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
+            runner = YamlCommandRunner(self.kernel)
+
+            for app_file_path in app_commands:
+                yaml_command = runner.load_yaml_command(app_file_path)
+                if yaml_command.get("attach"):
+                    if "after" in yaml_command["attach"]:
+                        if yaml_command["attach"][part] == request.get_string_command():
+                            parts = app_resolver.build_command_parts_from_file_path(app_file_path)
+                            internal_command = app_resolver.build_command_from_parts(parts)
+
+                            # Attached command should have same args as target
+                            self.kernel.run_command(
+                                internal_command,
+                                request.get_args_list()
+                            )
+
     def get_app_dir(self) -> str:
         self._validate__should_not_be_none(self.app_dir)
         assert isinstance(self.app_dir, str)
@@ -480,6 +507,8 @@ class AppAddonManager(AddonManager):
 
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
+
+        self.execute_attached(request, "after")
 
         if self.ignore_app_dir(
             request
