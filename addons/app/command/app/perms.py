@@ -27,7 +27,9 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     group: Optional[str | int]
     env = _app__env__get(kernel, kernel.directory.path)
     no_auto_local_config = manager.get_config_or_service_config(
-        key="permissions.no_auto_local", service=None, default=False
+        key="permissions.no_auto_local",
+        service=None,
+        default=False
     )
     auto_local = (
         not no_auto_local_config.is_bool() or not no_auto_local_config.get_bool()
@@ -39,7 +41,8 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
         user = get_user_or_sudo_user()
     else:
         user_service_config = manager.get_config_or_service_config(
-            key="permissions.user", service=None
+            key="permissions.user",
+            service=None
         )
 
         if user_service_config.is_str():
