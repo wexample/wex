@@ -535,8 +535,8 @@ class AppAddonManager(AddonManager):
         if not (
             self.ignore_app_dir(request)
             or not request.get_script_command().get_extra_value(
-            "app_dir_required", False
-        )
+                "app_dir_required", False
+            )
         ):
             from src.helper.command import is_same_command
 
@@ -748,22 +748,20 @@ class AppAddonManager(AddonManager):
     def get_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
     ) -> ConfigValue:
-        found_service = (
-            service
-            or (
-                self.get_main_service()
-                if self.has_config(key="global.main_service")
-                else None)
+        found_service = service or (
+            self.get_main_service()
+            if self.has_config(key="global.main_service")
+            else None
         )
 
         return ConfigValue(
             dict_get_item_by_path(
-                service_load_config(
-                    self.kernel,
-                    found_service),
+                service_load_config(self.kernel, found_service),
                 key,
                 default,
-            ) if found_service else default
+            )
+            if found_service
+            else default
         )
 
     def get_main_service(self) -> str:
