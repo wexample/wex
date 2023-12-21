@@ -166,6 +166,7 @@ class Logger:
         # When writing current log, check if disabled.
         if (
             self.kernel.root_request
+            and self.kernel.root_request._script_command
             and self.kernel.root_request.get_script_command().no_log
         ):
             return
