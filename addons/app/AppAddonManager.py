@@ -493,6 +493,7 @@ class AppAddonManager(AddonManager):
                         if yaml_command["attach"][part] == request.get_string_command():
                             parts = app_resolver.build_command_parts_from_file_path(app_file_path)
                             internal_command = app_resolver.build_command_from_parts(parts)
+                            self.kernel.io.log(f"Running attached command {internal_command}")
 
                             if post_exec:
                                 from src.helper.process import process_post_exec_function
@@ -517,30 +518,23 @@ class AppAddonManager(AddonManager):
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
 
-        if self.ignore_app_dir(
-            request
-        ) or not request.get_script_command().get_extra_value(
-            "app_dir_required", False
-        ):
-            return
+        if not (self.ignore_app_dir(request)
+                or not request.get_script_command().get_extra_value("app_dir_required", False)):
+            from src.helper.command import is_same_command
 
-        from src.helper.command import is_same_command
-
-        # Ignore internally used command.
-        if is_same_command(request.get_script_command(), app__location__find):
-            return
-
-        self.app_dirs_stack.pop()
-        app_dir = (
-            self.app_dirs_stack[-1]
-            if len(self.app_dirs_stack)
-            else self.kernel.get_path("call")
-        )
-        # Previous app dir was an app.
-        if app_dir:
-            # Reinit app dir if not the same.
-            if app_dir != self.app_dir:
-                self.set_app_workdir(app_dir)
+            # Ignore internally used command.
+            if not is_same_command(request.get_script_command(), app__location__find):
+                self.app_dirs_stack.pop()
+                app_dir = (
+                    self.app_dirs_stack[-1]
+                    if len(self.app_dirs_stack)
+                    else self.kernel.get_path("call")
+                )
+                # Previous app dir was an app.
+                if app_dir:
+                    # Reinit app dir if not the same.
+                    if app_dir != self.app_dir:
+                        self.set_app_workdir(app_dir)
 
         # Ensure this is the real end of command, no repetition planned.
         if not response.has_next_step:
