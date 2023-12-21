@@ -32,6 +32,10 @@ class AbstractResponse(KernelChild, HasRequest):
         self.output_bag: List[ResponsePrintType | AbstractResponse] = []
         self.parent = None
         self.rendered = False
+        # This may be used only by queued responses,
+        # but we need to check the "real end" of command
+        # in more global context.
+        self.has_next_step: bool = False
         # Some data can ba part of the output
         # but cannot be sent to the next functions call,
         # we call it "interactive".

@@ -474,7 +474,7 @@ class AppAddonManager(AddonManager):
 
             self.execute_attached(request, "before")
 
-    def execute_attached(self, request: "CommandRequest", part: str):
+    def execute_attached(self, request: "CommandRequest", part: str, post_exec: bool = False):
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
         app_commands = app_resolver.scan_commands_groups(
@@ -494,11 +494,19 @@ class AppAddonManager(AddonManager):
                             parts = app_resolver.build_command_parts_from_file_path(app_file_path)
                             internal_command = app_resolver.build_command_from_parts(parts)
 
-                            # Attached command should have same args as target
-                            self.kernel.run_command(
-                                internal_command,
-                                request.get_args_list()
-                            )
+                            if post_exec:
+                                from src.helper.process import process_post_exec_function
+                                process_post_exec_function(
+                                    self.kernel,
+                                    app_resolver.build_command_from_parts(parts),
+                                    request.get_args_list()
+                                )
+                            else:
+                                # Attached command should have same args as target
+                                self.kernel.run_command(
+                                    internal_command,
+                                    request.get_args_list()
+                                )
 
     def get_app_dir(self) -> str:
         self._validate__should_not_be_none(self.app_dir)
@@ -508,8 +516,6 @@ class AppAddonManager(AddonManager):
 
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
-
-        self.execute_attached(request, "after")
 
         if self.ignore_app_dir(
             request
@@ -535,6 +541,10 @@ class AppAddonManager(AddonManager):
             # Reinit app dir if not the same.
             if app_dir != self.app_dir:
                 self.set_app_workdir(app_dir)
+
+        # Ensure this is the real end of command, no repetition planned.
+        if not response.has_next_step:
+            self.execute_attached(request, "after", True)
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
         proxy_apps = self.get_proxy_apps()

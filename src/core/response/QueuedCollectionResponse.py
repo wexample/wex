@@ -50,7 +50,6 @@ class QueuedCollectionResponse(AbstractResponse):
         super().__init__(kernel)
         self.collection: QueuedCollectionResponseCollection = collection
         self.step_position: int = 0
-        self.has_next_step: bool = False
         self._path_manager: Optional[QueuedCollectionPathManager] = None
 
         manager_class = (
