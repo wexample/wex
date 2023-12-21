@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional, cast
 
 import click
 
@@ -14,6 +14,7 @@ from src.const.types import (
 from src.core.BaseClass import BaseClass
 
 if TYPE_CHECKING:
+    from addons.app.AppAddonManager import AppAddonManager
     from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
@@ -141,7 +142,13 @@ class ScriptCommand(BaseClass):
                 script_string = command_escape(script_string)
         elif "file" in script:
             script_string = string_replace_multiple(script["file"], variables)
-            script["interpreter"] = script.get("interpreter", ["/bin/bash"])
+
+            manager: "AppAddonManager" = cast(
+                AppAddonManager,
+                runner.kernel.addons["app"]
+            )
+
+            script["interpreter"] = script.get("interpreter", [manager.get_service_shell()])
         else:
             runner.kernel.io.error(
                 'Missing "script" or "file" key in script yaml definition'

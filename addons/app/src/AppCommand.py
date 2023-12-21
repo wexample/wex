@@ -92,7 +92,7 @@ class AppCommand(ScriptCommand):
                     "docker",
                     "exec",
                     docker_build_long_container_name(kernel, script["container_name"]),
-                    SHELL_DEFAULT,
+                    manager.get_service_shell(),
                     "-c",
                     command_string,
                 ]

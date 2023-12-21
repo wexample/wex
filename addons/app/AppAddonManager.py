@@ -474,7 +474,7 @@ class AppAddonManager(AddonManager):
 
             self.execute_attached(request, "before")
 
-    def execute_attached(self, request, part):
+    def execute_attached(self, request: "CommandRequest", part: str):
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
         app_commands = app_resolver.scan_commands_groups(
@@ -485,10 +485,11 @@ class AppAddonManager(AddonManager):
             from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
             runner = YamlCommandRunner(self.kernel)
 
-            for app_file_path in app_commands:
+            for app_command_name in app_commands:
+                app_file_path = app_commands[app_command_name]["file"]
                 yaml_command = runner.load_yaml_command(app_file_path)
                 if yaml_command.get("attach"):
-                    if "after" in yaml_command["attach"]:
+                    if part in yaml_command["attach"]:
                         if yaml_command["attach"][part] == request.get_string_command():
                             parts = app_resolver.build_command_parts_from_file_path(app_file_path)
                             internal_command = app_resolver.build_command_from_parts(parts)
