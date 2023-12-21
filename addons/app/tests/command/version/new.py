@@ -1,4 +1,3 @@
-from addons.app.command.version.new import app__version__new
 from tests.AbstractTestCase import AbstractTestCase
 
 
