@@ -24,6 +24,4 @@ def core__version__new_commit(kernel: "Kernel") -> None:
     repo.index.add(root_dir + FILE_README)
     repo.index.add(root_dir + APP_FILEPATH_REL_CONFIG)
 
-    kernel.run_function(
-        app__version__new_commit, {"app-dir": root_dir}
-    )
+    kernel.run_function(app__version__new_commit, {"app-dir": root_dir})
