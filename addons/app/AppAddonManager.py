@@ -463,8 +463,6 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir, "mode": APP_STARTED_CHECK_MODE_FULL},
             ).first():
-                pass
-
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
