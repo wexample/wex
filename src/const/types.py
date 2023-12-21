@@ -117,7 +117,7 @@ class YamlCommandOption(TypedDict):
 
 
 class YamlCommand(TypedDict):
-    attach: Optional[Literal["before", "after"]]
+    attach: Optional[StringKeysDict]
     help: str
     name: str
     options: List[YamlCommandOption]

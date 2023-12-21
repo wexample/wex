@@ -144,11 +144,12 @@ class ScriptCommand(BaseClass):
             script_string = string_replace_multiple(script["file"], variables)
 
             manager: "AppAddonManager" = cast(
-                AppAddonManager,
-                runner.kernel.addons["app"]
+                AppAddonManager, runner.kernel.addons["app"]
             )
 
-            script["interpreter"] = script.get("interpreter", [manager.get_service_shell()])
+            script["interpreter"] = script.get(
+                "interpreter", [manager.get_service_shell()]
+            )
         else:
             runner.kernel.io.error(
                 'Missing "script" or "file" key in script yaml definition'

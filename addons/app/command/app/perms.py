@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Optional
 
+from addons.app.command.env.get import _app__env__get
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
-from addons.app.command.env.get import _app__env__get
 from src.helper.user import (
     get_user_group_name,
     get_user_or_sudo_user,
@@ -27,11 +27,11 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     group: Optional[str | int]
     env = _app__env__get(kernel, kernel.directory.path)
     no_auto_local_config = manager.get_config_or_service_config(
-        key="permissions.no_auto_local",
-        service=None,
-        default=False
+        key="permissions.no_auto_local", service=None, default=False
     )
-    auto_local = (not no_auto_local_config.is_bool() or not no_auto_local_config.get_bool()) and env == APP_ENV_LOCAL
+    auto_local = (
+        not no_auto_local_config.is_bool() or not no_auto_local_config.get_bool()
+    ) and env == APP_ENV_LOCAL
 
     # In local env get the "current" user, as it is probably
     # the code editor. In other envs, it uses www-data
@@ -39,8 +39,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
         user = get_user_or_sudo_user()
     else:
         user_service_config = manager.get_config_or_service_config(
-            key="permissions.user",
-            service=None
+            key="permissions.user", service=None
         )
 
         if user_service_config.is_str():
@@ -49,9 +48,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
             user = user_service_config.get_int()
         else:
             user = (
-                USER_WWW_DATA
-                if user_exists(USER_WWW_DATA)
-                else get_user_or_sudo_user()
+                USER_WWW_DATA if user_exists(USER_WWW_DATA) else get_user_or_sudo_user()
             )
 
     if isinstance(user, str) and not user_exists(user):

@@ -3,7 +3,6 @@ import getpass
 import os
 import platform
 import sys
-
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
 import yaml
@@ -474,39 +473,54 @@ class AppAddonManager(AddonManager):
 
             self.execute_attached(request, "before")
 
-    def execute_attached(self, request: "CommandRequest", part: str, post_exec: bool = False):
+    def execute_attached(
+        self, request: "CommandRequest", part: str, post_exec: bool = False
+    ) -> None:
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
-        app_commands = app_resolver.scan_commands_groups(
-            app_resolver.get_base_command_path()
-        )
+        app_dir = app_resolver.get_base_command_path()
+
+        if not app_dir:
+            return
+
+        app_commands = app_resolver.scan_commands_groups(app_dir)
 
         if app_commands:
             from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
+
             runner = YamlCommandRunner(self.kernel)
 
             for app_command_name in app_commands:
                 app_file_path = app_commands[app_command_name]["file"]
                 yaml_command = runner.load_yaml_command(app_file_path)
-                if yaml_command.get("attach"):
-                    if part in yaml_command["attach"]:
-                        if yaml_command["attach"][part] == request.get_string_command():
-                            parts = app_resolver.build_command_parts_from_file_path(app_file_path)
-                            internal_command = app_resolver.build_command_from_parts(parts)
-                            self.kernel.io.log(f"Running attached command {internal_command}")
+                attached = yaml_command.get("attach")
+                if isinstance(attached, dict):
+                    if part in attached:
+                        if attached[part] == request.get_string_command():
+                            parts = app_resolver.build_command_parts_from_file_path(
+                                app_file_path
+                            )
+                            internal_command = app_resolver.build_command_from_parts(
+                                parts
+                            )
+                            self.kernel.io.log(
+                                f"Running attached command {internal_command}"
+                            )
 
                             if post_exec:
-                                from src.helper.process import process_post_exec_function
+                                from src.helper.process import (
+                                    process_post_exec_function,
+                                )
+
                                 process_post_exec_function(
                                     self.kernel,
                                     app_resolver.build_command_from_parts(parts),
-                                    request.get_args_list()
+                                    request.get_args_list(),
                                 )
                             else:
                                 # Attached command should have same args as target
                                 self.kernel.run_command(
-                                    internal_command,
-                                    request.get_args_list()
+                                    internal_command, request.get_args_list()
                                 )
 
     def get_app_dir(self) -> str:
@@ -518,8 +532,12 @@ class AppAddonManager(AddonManager):
     def hook_render_request_post(self, response: "AbstractResponse") -> None:
         request = response.get_request()
 
-        if not (self.ignore_app_dir(request)
-                or not request.get_script_command().get_extra_value("app_dir_required", False)):
+        if not (
+            self.ignore_app_dir(request)
+            or not request.get_script_command().get_extra_value(
+                "app_dir_required", False
+            )
+        ):
             from src.helper.command import is_same_command
 
             # Ignore internally used command.

@@ -5,7 +5,7 @@ import click
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.test.create import core__test__create
-from addons.core.command.version.build import core__version__build
+from addons.core.command.version.new_write import core__version__new_write
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     CORE_COMMAND_NAME,
@@ -173,8 +173,8 @@ class TestCore(AbstractTestCase):
         self.assertEqual(
             self.kernel.get_command_resolver(
                 COMMAND_TYPE_ADDON
-            ).build_full_command_from_function(core__version__build),
-            "wex core::version/build",
+            ).build_full_command_from_function(core__version__new_write),
+            "wex core::version/new-write",
         )
 
     def test_message_next_command(self) -> None:

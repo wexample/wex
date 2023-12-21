@@ -4,12 +4,11 @@ from typing import TYPE_CHECKING, Optional
 from git import Repo  # type: ignore
 
 from addons.app.command.config.set import app__config__set
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG
-from addons.default.command.version.increment import default__version__increment
-from addons.default.const.default import UPGRADE_TYPE_MINOR
 from addons.app.command.version.new_write import app__version__new_write
 from addons.core.command.version.new_commit import core__version__new_commit
-from src.const.globals import CORE_COMMAND_NAME, FILE_README, FILE_VERSION
+from addons.default.command.version.increment import default__version__increment
+from addons.default.const.default import UPGRADE_TYPE_MINOR
+from src.const.globals import CORE_COMMAND_NAME, FILE_README
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -29,8 +28,7 @@ if TYPE_CHECKING:
 @command(help="Build a new version of current core, or commit new version changes")
 @option("--type", "-t", type=str, required=False, help="Type of update")
 def core__version__new_write(
-    kernel: "Kernel",
-    type: str = UPGRADE_TYPE_MINOR
+    kernel: "Kernel", type: str = UPGRADE_TYPE_MINOR
 ) -> Optional[QueuedCollectionResponse]:
     version = core_kernel_get_version(kernel)
     root_dir = kernel.directory.path

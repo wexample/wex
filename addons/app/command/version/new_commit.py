@@ -1,19 +1,16 @@
-from src.const.globals import COMMAND_TYPE_ADDON
-from src.decorator.command import command
-from src.decorator.option import option
 from typing import TYPE_CHECKING
-from addons.app.decorator.app_command import app_command
 
 from git import Repo  # type: ignore
+
+from addons.app.decorator.app_command import app_command
+from src.const.globals import COMMAND_TYPE_ADDON
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def app__version__new_commit(
-    manager: "AppAddonManager",
-    app_dir: str) -> None:
+def app__version__new_commit(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
     repo = Repo(app_dir)
     new_version = manager.get_config("global.version").get_str()
