@@ -71,7 +71,7 @@ def app__migration__migrate(
         ).first()
 
     if manager.has_config("global.name"):
-        app_name = manager.get_config("global.,name").get_str()
+        app_name = manager.get_config("global.name").get_str()
     else:
         app_name = os.path.basename(os.path.normpath(app_dir))
 
