@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
 
+from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
 from src.const.types import (
     Args,
     CoreCommandArgsDict,
@@ -19,10 +21,6 @@ from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
-)
-from src.core.response.QueuedCollectionResponse import (
-    QueuedCollectionResponse,
-    QueuedCollectionResponseCollection,
 )
 from src.decorator.command import command
 from src.helper.args import args_convert_dict_to_args
@@ -95,8 +93,8 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
-        ) -> Optional[QueuedCollectionResponse]:
-            commands_collection: QueuedCollectionResponseCollection = []
+        ) -> Optional[ResponseCollectionResponse]:
+            commands_collection: ResponseCollection = []
 
             variables: CoreCommandArgsDict = {}
             assert isinstance(variables, dict)
@@ -159,11 +157,12 @@ class YamlCommandRunner(AbstractCommandRunner):
                         self, script_config, variables
                     )
 
-                commands_collection.append(
-                    InteractiveShellCommandResponse(self.kernel, command_list)
-                )
+                response: AbstractResponse
+                response = InteractiveShellCommandResponse(self.kernel, command_list)
 
-            return QueuedCollectionResponse(self.kernel, commands_collection)
+                commands_collection.append(response)
+
+            return ResponseCollectionResponse(self.kernel, commands_collection)
 
         internal_command = resolver.get_function_name(
             resolver.build_command_parts_from_file_path(self.get_request().get_path())

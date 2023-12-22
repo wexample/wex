@@ -32,10 +32,11 @@ class ResponseCollectionResponse(AbstractResponse):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            output_list = super().print(render_mode, interactive_data)
-            assert isinstance(output_list, list)
+            output = super().print(render_mode, interactive_data)
+            if isinstance(output, list) and len(output):
+                return os.linesep.join(map(str, output))
 
-            return os.linesep.join(output_list)
+            return output
         if render_mode == KERNEL_RENDER_MODE_JSON:
             data = []
 
