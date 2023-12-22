@@ -372,17 +372,31 @@ class AppAddonManager(AddonManager):
 
         self.kernel.io.log(message, color, indent)
 
-    def has_config(self, key: str, with_type: Optional[type] = None) -> bool:
+    def has_config(
+        self,
+        key: str,
+        with_type: Optional[type] = None,
+        accept_none: bool = False) -> bool:
+
         if not self._config:
             return False
 
-        config = cast(StringKeysMapping, self._config)
+        config = self.get_config_content()
         value_exist = dict_has_item_by_path(config, key)
 
-        if value_exist and with_type:
-            return isinstance(dict_get_item_by_path(config, key), with_type)
+        if value_exist:
+            value = dict_get_item_by_path(config, key)
 
-        return value_exist
+            if with_type:
+                return isinstance(value, with_type)
+
+            if value is None:
+                if accept_none:
+                    return True
+                else:
+                    return False
+
+        return False
 
     def has_runtime_config(self, key: str) -> bool:
         return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)
@@ -732,7 +746,11 @@ class AppAddonManager(AddonManager):
     def has_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
     ) -> bool:
-        service = service or self.get_main_service()
+        service = service or (self.get_main_service() if self.has_main_service() else None)
+
+        if not service:
+            return False
+
         key = f"service.{service}.{key}"
 
         return self.has_config(key)
@@ -750,7 +768,7 @@ class AppAddonManager(AddonManager):
     ) -> ConfigValue:
         found_service = service or (
             self.get_main_service()
-            if self.has_config(key="global.main_service")
+            if self.has_main_service()
             else None
         )
 
@@ -764,13 +782,14 @@ class AppAddonManager(AddonManager):
             else default
         )
 
+    def has_main_service(self) -> bool:
+        return self.has_config(key="global.main_service")
+
     def get_main_service(self) -> str:
         return self.get_config(key="global.main_service").get_str()
 
     def get_main_container_name(self) -> str:
-        if not self.has_config(key="docker.main_container") and self.has_config(
-            key="global.main_service"
-        ):
+        if not self.has_config(key="docker.main_container") and self.has_main_service():
             main_service = self.get_main_service()
 
             return self.get_service_config(
@@ -782,7 +801,7 @@ class AppAddonManager(AddonManager):
 
     def get_service_shell(self, service: str | None = None) -> str:
         if not self.has_config(key="docker.main_container_shell"):
-            if self.has_config(key="global.main_service"):
+            if self.has_main_service():
                 return self.get_service_config(
                     key="shell",
                     service=(service or self.get_main_service()),
