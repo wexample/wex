@@ -35,10 +35,14 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
         )
 
         stderr = file_read(log_stderr)
+        if stderr:
+            self.kernel.io.error(
+                stderr
+            )
 
         data = json.loads(file_read(log_stdout))
 
-        lines = json.loads(data["value"])
+        lines = data["value"][0]
 
         self.assertEqual(stderr, "")
 

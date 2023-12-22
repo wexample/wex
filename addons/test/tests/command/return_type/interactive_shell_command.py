@@ -19,7 +19,7 @@ class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
             {
                 KERNEL_RENDER_MODE_NONE: None,
                 KERNEL_RENDER_MODE_JSON: json.dumps(
-                    {"value": "INTERACTIVE_SHELL_COMMAND_RESPONSE"}
+                    {"value": ["INTERACTIVE_SHELL_COMMAND_RESPONSE"]}
                 ),
                 KERNEL_RENDER_MODE_TERMINAL: "INTERACTIVE_SHELL_COMMAND_RESPONSE",
             },

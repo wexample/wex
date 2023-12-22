@@ -200,4 +200,6 @@ class AbstractTestCase(unittest.TestCase):
             value = callback(render_mode)
 
             if render_mode in expected:
+                self.kernel.io.log(f"Expected : {str(expected[render_mode])}")
+                self.kernel.io.log(f"Got      : {str(value)}")
                 self.assertEqual(value, expected[render_mode], render_mode)

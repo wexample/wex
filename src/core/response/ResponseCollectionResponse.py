@@ -39,12 +39,8 @@ class ResponseCollectionResponse(AbstractResponse):
 
             return output
         if render_mode == KERNEL_RENDER_MODE_JSON:
-            output = super().print(render_mode, interactive_data)
+            return super().print(render_mode, interactive_data)
 
-            if isinstance(output, list):
-                return json.dumps(output)
-
-            return output
         return None
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:

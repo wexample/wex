@@ -193,7 +193,8 @@ class QueuedCollectionResponse(AbstractResponse):
     ) -> ResponsePrintType:
         output = super().print(render_mode, interactive_data)
 
-        if isinstance(output, list) and len(output):
-            return os.linesep.join(map(str, output))
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            if isinstance(output, list) and len(output):
+                return os.linesep.join(map(str, output))
 
         return output

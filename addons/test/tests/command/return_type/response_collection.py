@@ -23,11 +23,9 @@ class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
                         "DEFAULT",
                         {"lorem": "ipsum"},
                         "FUNCTION_OK",
-                        None,
-                        "INTERACTIVE_SHELL_COMMAND_RESPONSE",
+                        ["INTERACTIVE_SHELL_COMMAND_RESPONSE"],
                         {"key": "value"},
                         "NON_INTERACTIVE_SHELL_COMMAND_RESPONSE",
-                        None,
                         {
                             "body": [["lorem", "ipsum"], ["dolor", "sit"]],
                             "header": [],
