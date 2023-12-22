@@ -3,7 +3,7 @@ help: Create new version
 command:
   decorator: app_command
 attach:
-  after: app::version/new-write
+  before: app::version/new-write
 options:
   - name: --version
     short: -v
@@ -12,4 +12,4 @@ options:
     type: str
 scripts:
   - title: Save new version to root file
-    script: echo $(wex app::version/get) > version.txt
+    script: echo ${VERSION} > version.txt

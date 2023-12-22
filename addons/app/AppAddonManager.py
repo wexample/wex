@@ -471,7 +471,7 @@ class AppAddonManager(AddonManager):
                     trace=False,
                 )
 
-            self.execute_attached(request, "before")
+        self.execute_attached(request, "before")
 
     def execute_attached(
         self, request: "CommandRequest", part: str, post_exec: bool = False
@@ -509,21 +509,14 @@ class AppAddonManager(AddonManager):
                                 f"Running attached command {internal_command}"
                             )
 
-                            if post_exec:
-                                from src.helper.process import (
-                                    process_post_exec_function,
-                                )
-
-                                process_post_exec_function(
-                                    self.kernel,
-                                    app_resolver.build_command_from_parts(parts),
-                                    request.get_args_list(),
-                                )
-                            else:
-                                # Attached command should have same args as target
-                                self.kernel.run_command(
-                                    internal_command, request.get_args_list()
-                                )
+                            # Attached command should have same args as target
+                            fast_mode = self.kernel.fast_mode
+                            self.kernel.fast_mode = True
+                            self.kernel.run_command(
+                                internal_command,
+                                request.get_args_list()
+                            )
+                            self.kernel.fast_mode = fast_mode
 
     def get_app_dir(self) -> str:
         self._validate__should_not_be_none(self.app_dir)
