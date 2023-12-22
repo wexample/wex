@@ -5,7 +5,6 @@ import shutil
 from typing import TYPE_CHECKING, List, Optional
 
 from addons.app.command.app.init import app__app__init
-from addons.app.command.config.set import app__config__set
 from addons.app.const.app import APP_ENV_TEST
 from src.const.types import StringsList
 
@@ -66,10 +65,6 @@ def test_create_app(
             "app-dir": app_dir,
             "services": ",".join(services or []),
         },
-    )
-
-    kernel.run_function(
-        app__config__set, {"key": "permissions.no_auto_local", "value": True}
     )
 
     os.chdir(test_dir)
