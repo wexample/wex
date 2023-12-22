@@ -373,11 +373,8 @@ class AppAddonManager(AddonManager):
         self.kernel.io.log(message, color, indent)
 
     def has_config(
-        self,
-        key: str,
-        with_type: Optional[type] = None,
-        accept_none: bool = False) -> bool:
-
+        self, key: str, with_type: Optional[type] = None, accept_none: bool = False
+    ) -> bool:
         if not self._config:
             return False
 
@@ -746,7 +743,9 @@ class AppAddonManager(AddonManager):
     def has_service_config(
         self, key: str, service: str | None = None, default: Optional[Any] = None
     ) -> bool:
-        service = service or (self.get_main_service() if self.has_main_service() else None)
+        service = service or (
+            self.get_main_service() if self.has_main_service() else None
+        )
 
         if not service:
             return False
@@ -767,9 +766,7 @@ class AppAddonManager(AddonManager):
         self, key: str, service: str | None = None, default: Optional[Any] = None
     ) -> ConfigValue:
         found_service = service or (
-            self.get_main_service()
-            if self.has_main_service()
-            else None
+            self.get_main_service() if self.has_main_service() else None
         )
 
         return ConfigValue(
