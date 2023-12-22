@@ -1,3 +1,4 @@
+import json
 import os
 from typing import TYPE_CHECKING, cast
 
@@ -38,12 +39,12 @@ class ResponseCollectionResponse(AbstractResponse):
 
             return output
         if render_mode == KERNEL_RENDER_MODE_JSON:
-            data = []
+            output = super().print(render_mode, interactive_data)
 
-            for response in self.collection:
-                data.append(response.print(render_mode, interactive_data))
+            if isinstance(output, list):
+                return json.dumps(output)
 
-            return data
+            return output
         return None
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:

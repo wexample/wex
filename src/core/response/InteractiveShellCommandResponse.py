@@ -71,4 +71,6 @@ class InteractiveShellCommandResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        return self.get_first_output_printable_value()
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            return self.get_first_output_printable_value()
+        return self.output_bag
