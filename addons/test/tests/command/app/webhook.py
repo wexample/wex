@@ -1,5 +1,4 @@
 import json
-import os
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from src.helper.file import file_read
@@ -39,16 +38,16 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
 
         data = json.loads(file_read(log_stdout))
 
-        lines = data["value"].split(os.linesep)
+        lines = json.loads(data["value"])
 
         self.assertEqual(stderr, "")
 
-        self.assertEqual(lines[0], "MINIMAL_BASH_RESPONSE")
+        self.assertEqual(lines[0][0], "MINIMAL_BASH_RESPONSE")
 
-        self.assertEqual(lines[1], "BASH_RESPONSE")
+        self.assertEqual(lines[1][0], "BASH_RESPONSE")
 
-        self.assertEqual(lines[2], "BASH_RESPONSE_FROM_FILE")
+        self.assertEqual(lines[2][0], "BASH_RESPONSE_FROM_FILE")
 
-        self.assertEqual(lines[3], "PYTHON_SUCCESS")
+        self.assertEqual(lines[3][0], "PYTHON_SUCCESS")
 
-        self.assertEqual(lines[4], "PYTHON_SUCCESS_FROM_FILE")
+        self.assertEqual(lines[4][0], "PYTHON_SUCCESS_FROM_FILE")
