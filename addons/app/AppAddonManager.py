@@ -478,7 +478,11 @@ class AppAddonManager(AddonManager):
     ) -> None:
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
-        app_command_dir = app_resolver.build_base_command_path(self.get_app_dir())
+        app_command_dir = app_resolver.build_base_command_path(
+            os.path.join(
+                self.get_app_dir(),
+                APP_DIR_APP_DATA
+            ))
 
         if not os.path.exists(app_command_dir):
             return
