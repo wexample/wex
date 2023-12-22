@@ -373,6 +373,9 @@ class AppAddonManager(AddonManager):
         self.kernel.io.log(message, color, indent)
 
     def has_config(self, key: str, with_type: Optional[type] = None) -> bool:
+        if not self._config:
+            return False
+
         config = cast(StringKeysMapping, self._config)
         value_exist = dict_has_item_by_path(config, key)
 
@@ -778,18 +781,17 @@ class AppAddonManager(AddonManager):
         return self.get_config(key="docker.main_container").get_str()
 
     def get_service_shell(self, service: str | None = None) -> str:
-        if not self.has_config(key="docker.main_container_shell") and self.has_config(
-            key="global.main_service"
-        ):
-            return self.get_service_config(
-                key="shell",
-                service=(service or self.get_main_service()),
-                default=SHELL_DEFAULT,
-            ).get_str()
+        if not self.has_config(key="docker.main_container_shell"):
+            if self.has_config(key="global.main_service"):
+                return self.get_service_config(
+                    key="shell",
+                    service=(service or self.get_main_service()),
+                    default=SHELL_DEFAULT,
+                ).get_str()
 
-        return self.get_config(
-            key="docker.main_container_shell", default=SHELL_DEFAULT
-        ).get_str()
+            return SHELL_DEFAULT
+
+        return self.get_config(key="docker.main_container_shell").get_str()
 
     def get_services(self) -> StringKeysDict:
         return cast(StringKeysDict, self.get_config("service", {}).get_dict())
