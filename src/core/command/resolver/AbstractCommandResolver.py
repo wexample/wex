@@ -126,6 +126,9 @@ class AbstractCommandResolver(KernelChild):
         if not base_path:
             return None
 
+        return self.build_base_command_path(base_path)
+
+    def build_base_command_path(self, base_path) -> str:
         return os.path.join(base_path, "command") + os.path.sep
 
     def set_command_file_permission(self, command_path: str) -> None:

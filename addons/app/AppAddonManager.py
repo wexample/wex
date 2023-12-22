@@ -478,12 +478,12 @@ class AppAddonManager(AddonManager):
     ) -> None:
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
-        app_dir = self.get_app_dir()
+        app_command_dir = app_resolver.build_base_command_path(self.get_app_dir())
 
-        if not app_dir:
+        if not os.path.exists(app_command_dir):
             return
 
-        app_commands = app_resolver.scan_commands_groups(app_dir)
+        app_commands = app_resolver.scan_commands_groups(app_command_dir)
 
         if app_commands:
             from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
