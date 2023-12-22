@@ -18,4 +18,4 @@ global:
   type: app
   version: 5.0.105+build.20231221172229
 wex:
-  version: 5.0.104+build.20231221155717
+  version: 5.0.105+build.20231221172229
