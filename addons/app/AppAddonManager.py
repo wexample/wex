@@ -393,7 +393,7 @@ class AppAddonManager(AddonManager):
                 else:
                     return False
 
-        return False
+        return value_exist
 
     def has_runtime_config(self, key: str) -> bool:
         return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)
