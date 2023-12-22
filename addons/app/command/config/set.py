@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
+from src.helper.args import args_parse_one
 from src.const.types import BasicInlineValue
 from src.decorator.option import option
 
@@ -14,4 +15,6 @@ if TYPE_CHECKING:
 def app__config__set(
     manager: "AppAddonManager", app_dir: str, key: str, value: BasicInlineValue
 ) -> None:
-    manager.set_config(key, value)
+    manager.set_config(
+        key,
+        args_parse_one(value))

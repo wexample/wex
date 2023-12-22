@@ -34,7 +34,7 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
     ) and env == APP_ENV_LOCAL
 
     # In local env get the "current" user, as it is probably
-    # the code editor. In other envs, it uses www-data
+    # the code editor. In other environments, it uses www-data
     if auto_local:
         user = get_user_or_sudo_user()
     else:
