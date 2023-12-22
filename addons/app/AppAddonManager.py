@@ -479,10 +479,8 @@ class AppAddonManager(AddonManager):
         # Search for app local commands
         app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
         app_command_dir = app_resolver.build_base_command_path(
-            os.path.join(
-                self.get_app_dir(),
-                APP_DIR_APP_DATA
-            ))
+            os.path.join(self.get_app_dir(), APP_DIR_APP_DATA)
+        )
 
         if not os.path.exists(app_command_dir):
             return
@@ -563,7 +561,7 @@ class AppAddonManager(AddonManager):
 
         # Ensure this is the real end of command, no repetition planned.
         if not response.has_next_step:
-            self.execute_attached(request, "after", True)
+            self.execute_attached(request, "after")
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
         proxy_apps = self.get_proxy_apps()
