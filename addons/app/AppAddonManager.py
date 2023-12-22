@@ -513,8 +513,7 @@ class AppAddonManager(AddonManager):
                             fast_mode = self.kernel.fast_mode
                             self.kernel.fast_mode = True
                             self.kernel.run_command(
-                                internal_command,
-                                request.get_args_list()
+                                internal_command, request.get_args_list()
                             )
                             self.kernel.fast_mode = fast_mode
 
