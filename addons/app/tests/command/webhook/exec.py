@@ -1,5 +1,4 @@
 import json
-import os
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.exec import app__app__exec
