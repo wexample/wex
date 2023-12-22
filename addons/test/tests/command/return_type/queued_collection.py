@@ -18,9 +18,7 @@ class TestTestCommandReturnTypeQueuedCollection(AbstractTestCase):
             self._test_queued_collection,
             {
                 KERNEL_RENDER_MODE_NONE: None,
-                KERNEL_RENDER_MODE_JSON: json.dumps(
-                    {"value": ["lorem", "ipsum", 123]}
-                ),
+                KERNEL_RENDER_MODE_JSON: json.dumps({"value": ["lorem", "ipsum", 123]}),
                 KERNEL_RENDER_MODE_TERMINAL: f"lorem{os.linesep}ipsum{os.linesep}123",
             },
         )

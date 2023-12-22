@@ -36,9 +36,7 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
 
         stderr = file_read(log_stderr)
         if stderr:
-            self.kernel.io.error(
-                stderr
-            )
+            self.kernel.io.error(stderr)
 
         data = json.loads(file_read(log_stdout))
 
