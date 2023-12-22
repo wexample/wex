@@ -144,7 +144,7 @@ class ScriptCommand(BaseClass):
             script_string = string_replace_multiple(script["file"], variables)
 
             manager: "AppAddonManager" = cast(
-                AppAddonManager, runner.kernel.addons["app"]
+                "AppAddonManager", runner.kernel.addons["app"]
             )
 
             script["interpreter"] = script.get(
