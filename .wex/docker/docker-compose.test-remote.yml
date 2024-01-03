@@ -1,0 +1,15 @@
+ # Use this file to run and test application
+ # using a standard docker composer command :
+ # docker compose -f .wex/docker/docker-compose.standalone.yml up -d
+services:
+  wex_test-remote:
+    container_name: wex_test_remote
+    build:
+      context: .
+      dockerfile: Dockerfile.test-remote
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      # Docker sharing
+      - /var/run/docker.sock:/var/run/docker.sock
