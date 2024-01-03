@@ -13,7 +13,7 @@ class TestAppCommandMirrorPush(AbstractTestCase):
         self.assertEqual(response.first(), False)
 
         self.log('Starting fake test remote server')
-        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "up", "-d"]
+        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "up", "-d", "--build"]
 
         execute_command_sync(
             self.kernel,
@@ -32,16 +32,16 @@ class TestAppCommandMirrorPush(AbstractTestCase):
 
         ip: str = ip_list[0]
 
-        # TODO use mirror/push
         self.log(f'Send test file to {ip}')
-        command = ["scp", "version.txt", f"root@{ip}:/var/www/version.txt"]
+        command = ["sshpass", "-p", "TEST_PASSWORD", "scp", "-o", "StrictHostKeyChecking=no", f"{self.kernel.directory.path}version.txt", f"root@{ip}:/var/version.txt"]
+
 
         execute_command_sync(
             self.kernel,
             command)
 
         self.log('Stopping fake test remote server')
-        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "down"]
+        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "down", "--rmi", "all"]
 
         execute_command_sync(
             self.kernel,

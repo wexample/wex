@@ -1,7 +1,8 @@
 FROM alpine:latest
+
 RUN apk --no-cache add openssh
 RUN ssh-keygen -A
-RUN echo 'root:YOUR_PASSWORD' | chpasswd
+RUN echo 'root:TEST_PASSWORD' | chpasswd
 
 # Configurer SSHD
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
