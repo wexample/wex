@@ -35,7 +35,7 @@ class AppDirectoryStructure(DirectoryStructure):
         config_file = os.path.join(self.path, APP_DIR_APP_DATA_NAME, APP_FILE_APP_CONFIG)
 
         config = yaml_load(config_file)
-        if "structure" in config:
+        if config and "structure" in config:
             schema.update(config["structure"])
 
         return schema

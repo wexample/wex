@@ -84,17 +84,17 @@ class Kernel(BaseClass):
             },
         }
 
+        self.store_task_id()
+
         # Initialize global variables.
         root_path = os.path.dirname(os.path.realpath(entrypoint_path)) + os.sep
         tmp_path = os.path.join(root_path, "tmp") + os.sep
 
         # Handle calling from a non-existing dir.
-        call_dir: Optional[str] = None
         try:
             call_dir = os.getcwd() + os.sep
         except FileNotFoundError:
-            self.io.error("Current directory does not exists", trace=False)
-        assert call_dir is not None
+            raise Exception("You are in a non existing directory")
 
         self.path: Dict[str, str] = {
             "call": call_dir,
@@ -117,6 +117,9 @@ class Kernel(BaseClass):
             path=os.sep,
         )
 
+        # Create logger after task id and locations set.
+        self.logger: Logger = Logger(self)
+
         # Initialize addons config
         self.addons: Dict[str, AddonManager] = {}
         definitions = {"app": AppAddonManager}
@@ -124,12 +127,6 @@ class Kernel(BaseClass):
         for name in file_list_subdirectories(self.get_path("addons")):
             definition = definitions.get(name, AddonManager)
             self.addons[name] = definition(self, name=name)
-
-        self.store_task_id()
-        self.handle_core_args()
-
-        # Create the logger after task_id created
-        self.logger: Logger = Logger(self)
 
         # Display directory structure error if exists
         self.file_structure_display_errors(self.directory)
@@ -143,6 +140,8 @@ class Kernel(BaseClass):
         }
 
         self.load_registry()
+
+        self.handle_core_args()
 
     def get_path(
         self, name: str, sub_dirs: Optional[List[str]] = None

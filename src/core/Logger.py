@@ -63,7 +63,6 @@ class Logger:
         self.time_start = time.time()
         date_now = self.get_time_string()
         task_id = self.kernel.get_task_id()
-
         log_data = self.load_logs(task_id)
 
         # Check if the output file already exists
