@@ -24,6 +24,7 @@ from addons.app.const.app import (
     PROXY_FILE_APPS_REGISTRY,
 )
 from addons.app.src.AppCommand import AppCommand
+from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
 from src.const.globals import (
     COLOR_GRAY,
     COMMAND_TYPE_APP,
@@ -52,11 +53,7 @@ from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
-from src.helper.data_yaml import (
-    yaml_load,
-    yaml_load_dict,
-    yaml_write,
-)
+from src.helper.data_yaml import yaml_load, yaml_load_dict, yaml_write
 from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
     file_env_to_dict,
@@ -66,7 +63,6 @@ from src.helper.file import (
 )
 from src.helper.service import service_load_config
 from src.helper.string import string_to_kebab_case, string_to_snake_case
-from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
@@ -601,7 +597,7 @@ class AppAddonManager(AddonManager):
         self._directory = AppDirectoryStructure(
             path=self.app_dir,
             # May be in invalid status at this point
-            should_be_valid_app=False
+            should_be_valid_app=False,
         )
 
         self.load_config()

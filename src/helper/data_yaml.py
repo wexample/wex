@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 
 import yaml
 
@@ -36,4 +36,3 @@ def yaml_load_dict(
 def yaml_write(file_path: str, content: YamlContent) -> None:
     with open(file_path, "w") as f:
         yaml.safe_dump(content, f)
-

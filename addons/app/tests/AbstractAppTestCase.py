@@ -2,27 +2,27 @@ import os.path
 import re
 from typing import Optional
 
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
+from addons.app.const.app import APP_FILEPATH_REL_ENV
 from addons.app.helper.test import (
     DEFAULT_APP_TEST_NAME,
-    test_build_app_name,
-    test_create_app, DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME, DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD,
     DEFAULT_ENVIRONMENT_TEST_REMOTE,
+    DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD,
+    DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME,
+    test_build_app_name,
+    test_create_app,
 )
+from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
+from src.helper.command import execute_command_sync
 from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
-from addons.app.const.app import APP_FILEPATH_REL_ENV
-from src.const.types import StringsList
-from addons.app.AppAddonManager import AppAddonManager
-from src.helper.string import string_to_kebab_case, string_to_snake_case
-from addons.default.command.file.append_once import default__file__append_once
-from src.helper.command import execute_command_sync
 
 
 class AbstractAppTestCase(AbstractTestCase):
@@ -116,30 +116,39 @@ class AbstractAppTestCase(AbstractTestCase):
         for db_service in db_services:
             callback(db_service)
 
-    def create_and_start_test_app_with_remote(self, services: StringsList) -> AppAddonManager:
+    def create_and_start_test_app_with_remote(
+        self, services: StringsList
+    ) -> AppAddonManager:
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE
         app_dir = self.create_and_start_test_app(services=services)
         env_screaming_snake = string_to_snake_case(environment).upper()
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
         self.kernel.run_function(
-            default__file__append_once, {
+            default__file__append_once,
+            {
                 "file": app_env_path,
-                "line": f"ENV_{env_screaming_snake}_SERVER_USERNAME={DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME}"}
+                "line": f"ENV_{env_screaming_snake}_SERVER_USERNAME={DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME}",
+            },
         )
 
         self.kernel.run_function(
-            default__file__append_once, {
+            default__file__append_once,
+            {
                 "file": app_env_path,
-                "line": f"ENV_{env_screaming_snake}_SERVER_PASSWORD={DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD}"}
+                "line": f"ENV_{env_screaming_snake}_SERVER_PASSWORD={DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD}",
+            },
         )
 
         # Get IP
-        command = ["docker", "inspect", "-f", "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
-                   "wex_test_remote"]
-        success, ip_list = execute_command_sync(
-            self.kernel,
-            command)
+        command = [
+            "docker",
+            "inspect",
+            "-f",
+            "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
+            "wex_test_remote",
+        ]
+        success, ip_list = execute_command_sync(self.kernel, command)
 
         ip: str = ip_list[0]
 
@@ -149,20 +158,32 @@ class AbstractAppTestCase(AbstractTestCase):
         return manager
 
     def start_remote_server(self) -> None:
-        self.log('Starting fake test remote server')
-        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "up", "-d", "--build"]
+        self.log("Starting fake test remote server")
+        command = [
+            "docker",
+            "compose",
+            "-f",
+            ".wex/docker/docker-compose.test-remote.yml",
+            "up",
+            "-d",
+            "--build",
+        ]
 
-        execute_command_sync(
-            self.kernel,
-            command)
+        execute_command_sync(self.kernel, command)
 
     def stop_remote_server(self) -> None:
         # Rollback to working dir.
         os.chdir(self.kernel.directory.path)
 
-        self.log('Stopping fake test remote server')
-        command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "down", "--rmi", "all"]
+        self.log("Stopping fake test remote server")
+        command = [
+            "docker",
+            "compose",
+            "-f",
+            ".wex/docker/docker-compose.test-remote.yml",
+            "down",
+            "--rmi",
+            "all",
+        ]
 
-        execute_command_sync(
-            self.kernel,
-            command)
+        execute_command_sync(self.kernel, command)

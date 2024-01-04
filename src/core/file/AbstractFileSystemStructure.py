@@ -3,10 +3,11 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from src.const.types import (
-    StringMessageParameters,
-    FileSystemStructureSchemaItem,
     FileSystemStructureSchema,
-    FileSystemStructureType)
+    FileSystemStructureSchemaItem,
+    FileSystemStructureType,
+    StringMessageParameters,
+)
 from src.core.BaseClass import BaseClass
 
 if TYPE_CHECKING:

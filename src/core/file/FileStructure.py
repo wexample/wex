@@ -1,12 +1,11 @@
 import os
 from typing import Optional
 
-from src.const.types import BasicValue
+from src.const.types import BasicValue, FileSystemStructureSchemaItem
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
     AbstractFileSystemStructure,
 )
-from src.const.types import FileSystemStructureSchemaItem
 from src.helper.file import file_create_parent_and_touch, file_read, file_write
 
 

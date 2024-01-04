@@ -29,8 +29,8 @@ def app__remote__go(
             "app-dir": app_dir,
             "environment": environment,
             "terminal": True,
-            "command": f'sh -c "cd /var/www/{environment}/{manager.get_config("global.name").get_str()}/ && {SHELL_DEFAULT}"'
-        }
+            "command": f'sh -c "cd /var/www/{environment}/{manager.get_config("global.name").get_str()}/ && {SHELL_DEFAULT}"',
+        },
     ).first()
 
     if result:

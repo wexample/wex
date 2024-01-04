@@ -28,9 +28,7 @@ def service_load_config(kernel: "Kernel", service: str) -> Any:
         return False
 
     # Allow service to not define a config file
-    return yaml_load(
-        os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG)
-    )
+    return yaml_load(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
 
 
 def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:

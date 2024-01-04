@@ -15,8 +15,8 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": DEFAULT_ENVIRONMENT_TEST_REMOTE,
-                "command": "echo TEST_ONE > /var/test-one.txt"
-            }
+                "command": "echo TEST_ONE > /var/test-one.txt",
+            },
         )
 
         response = self.kernel.run_function(
@@ -24,27 +24,19 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": DEFAULT_ENVIRONMENT_TEST_REMOTE,
-                "command": "cat /var/test-one.txt"
-            }
+                "command": "cat /var/test-one.txt",
+            },
         )
 
-        self.assertEqual(
-            response.print_wrapped_str(),
-        "TEST_ONE"
-        )
+        self.assertEqual(response.print_wrapped_str(), "TEST_ONE")
 
         self.kernel.run_function(
             app__remote__exec,
             {
                 "app-dir": app_dir,
                 "environment": DEFAULT_ENVIRONMENT_TEST_REMOTE,
-                "command": [
-                    "echo",
-                    "TEST_TWO",
-                    ">",
-                    "/var/test-two.txt"
-                ]
-            }
+                "command": ["echo", "TEST_TWO", ">", "/var/test-two.txt"],
+            },
         )
 
         response = self.kernel.run_function(
@@ -52,13 +44,10 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": DEFAULT_ENVIRONMENT_TEST_REMOTE,
-                "command": "cat /var/test-two.txt"
-            }
+                "command": "cat /var/test-two.txt",
+            },
         )
 
-        self.assertEqual(
-            response.print_wrapped_str(),
-        "TEST_TWO"
-        )
+        self.assertEqual(response.print_wrapped_str(), "TEST_TWO")
 
         self.stop_remote_server()

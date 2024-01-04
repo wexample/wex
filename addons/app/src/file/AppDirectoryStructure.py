@@ -1,20 +1,27 @@
 import os
 from typing import cast
 
-from addons.app.const.app import APP_DIR_APP_DATA_NAME, APP_ENV_PROD, APP_FILE_APP_ENV, APP_FILE_APP_CONFIG
+from addons.app.const.app import (
+    APP_DIR_APP_DATA_NAME,
+    APP_ENV_PROD,
+    APP_FILE_APP_CONFIG,
+    APP_FILE_APP_ENV,
+)
 from src.const.types import AppConfig, FileSystemStructureSchema
-from src.helper.data_yaml import yaml_load
 from src.core.file.DirectoryStructure import DirectoryStructure
+from src.helper.data_yaml import yaml_load
 
 
 class AppDirectoryStructure(DirectoryStructure):
-    def __init__(self, path: str, initialize: bool = True, should_be_valid_app: bool = True) -> None:
+    def __init__(
+        self, path: str, initialize: bool = True, should_be_valid_app: bool = True
+    ) -> None:
         self.should_be_valid_app = should_be_valid_app
 
         super().__init__(path, initialize)
 
     def get_schema(self) -> FileSystemStructureSchema:
-        schema:FileSystemStructureSchema = {
+        schema: FileSystemStructureSchema = {
             APP_DIR_APP_DATA_NAME: {
                 "should_exist": self.should_be_valid_app,
                 "schema": {
@@ -38,7 +45,9 @@ class AppDirectoryStructure(DirectoryStructure):
             }
         }
 
-        config_file = os.path.join(self.path, APP_DIR_APP_DATA_NAME, APP_FILE_APP_CONFIG)
+        config_file = os.path.join(
+            self.path, APP_DIR_APP_DATA_NAME, APP_FILE_APP_CONFIG
+        )
 
         yaml_data = yaml_load(config_file)
         if yaml_data:
