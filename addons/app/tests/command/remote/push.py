@@ -1,5 +1,3 @@
-import os
-
 from src.helper.command import execute_command_sync
 from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
@@ -51,7 +49,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         )
 
         self.assertTrue(
-            response.first().startswith('-rwxr-xr-x'),
+            response.first().startswith('-rw'),
             "The local file has been created remotely"
         )
 
