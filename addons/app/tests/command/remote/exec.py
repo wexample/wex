@@ -5,6 +5,8 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandRemoteExec(AbstractAppTestCase):
     def test_exec(self) -> None:
+        self.start_remote_server()
+
         manager = self.create_and_start_test_app_with_remote(services=["php"])
         app_dir = manager.get_app_dir()
 
@@ -58,3 +60,5 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             response.print_wrapped_str(),
         "TEST_TWO"
         )
+
+        self.stop_remote_server()
