@@ -54,3 +54,12 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         )
 
         self.stop_remote_server()
+
+
+        # # TODO On modifie le fonctionnement attach.before / after pour permettre a mysql d'exécuter un fonction before remote/push (pour faire un dump) et after remote/pull (pour monter le dernier dump)
+        # # TODO Lors de l'install (+migration), mysql ajoute le dossier mysql/dumps (ou bien le dernier dump uniquement)
+        # # TODO On crée remote/pull qui est un webhook provoquant un push
+        # # TODO On créee une manière de faire un webhook et d'attendre qu'il se termine avant de continuer, pour le CI/CD
+        # # TODO On ajoute cette synchro a TPA de prod > dev (synchro manuelle)
+        # # TODO On permets au CI/CD de copier le site de dev (ou en partie) pour réaliser les tests
+        # # TODO On passe les tests sur le site de dev
