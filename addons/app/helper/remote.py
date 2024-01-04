@@ -30,22 +30,27 @@ def remote_get_environment_ip(manager: "AppAddonManager", environment: str) -> O
     return None
 
 
+def remote_get_login_command(
+    manager: "AppAddonManager",
+    environment: str
+) -> StringsList:
+    env_screaming_snake = string_to_snake_case(environment).upper()
+    password = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_PASSWORD")
+
+    if password:
+        return [
+            "sshpass", "-p", password
+        ]
+
+    return []
+
+
 def remote_get_connexion_command(
     manager: "AppAddonManager",
     environment: str,
     terminal: bool = False
 ) -> StringsList:
-    command_login = []
-
-    env_screaming_snake = string_to_snake_case(environment).upper()
-    password = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_PASSWORD")
-
-    if password:
-        command_login.extend([
-            "sshpass", "-p", password
-        ])
-
-    command_connect = command_login + [
+    command_connect = remote_get_login_command(manager, environment) + [
         "ssh",
         "-o",
         "StrictHostKeyChecking=no",
