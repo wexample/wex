@@ -15,7 +15,7 @@ class AppDirectoryStructure(DirectoryStructure):
     def get_schema(self) -> FileSystemStructureSchema:
         schema = {
             APP_DIR_APP_DATA_NAME: {
-                "should_exist": True,
+                "should_exist": self.should_be_valid_app,
                 "schema": {
                     "tmp": {
                         "should_exist": self.should_be_valid_app,

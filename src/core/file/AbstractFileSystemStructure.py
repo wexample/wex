@@ -123,9 +123,6 @@ class AbstractFileSystemStructure(BaseClass):
         if "schema" in options:
             self.schema = options["schema"] or {}
 
-        if self.on_missing:
-            self.should_exist = True
-
     def checkup(self) -> None:
         if not self.exists():
             if self.should_exist is True:
