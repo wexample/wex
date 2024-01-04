@@ -184,6 +184,9 @@ class AppAddonManager(AddonManager):
             )
         return False
 
+    def is_valid_app(self) -> bool:
+        return self.is_app_root(self.get_app_dir())
+
     @classmethod
     def _load_config(
         cls, path: str, default: Optional[YamlContentDict] = None
@@ -595,7 +598,9 @@ class AppAddonManager(AddonManager):
         )
 
         self._directory = AppDirectoryStructure(
-            path=self.app_dir
+            path=self.app_dir,
+            # May be in invalid status at this point
+            should_be_valid_app=False
         )
 
         self.load_config()

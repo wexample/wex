@@ -7,25 +7,30 @@ from src.core.file.DirectoryStructure import DirectoryStructure
 
 
 class AppDirectoryStructure(DirectoryStructure):
+    def __init__(self, path: str, initialize: bool = True, should_be_valid_app: bool = True) -> None:
+        self.should_be_valid_app = should_be_valid_app
+
+        super().__init__(path, initialize)
+
     def get_schema(self) -> FileSystemStructureSchema:
         schema = {
             APP_DIR_APP_DATA_NAME: {
                 "should_exist": True,
                 "schema": {
                     "tmp": {
-                        "should_exist": True,
+                        "should_exist": self.should_be_valid_app,
                         "on_missing": "create",
                     },
                     APP_FILE_APP_ENV: {
                         "type": "file",
-                        "should_exist": True,
+                        "should_exist": self.should_be_valid_app,
                         "on_missing": "create",
                         "default_content": f"APP_ENV={APP_ENV_PROD}",
                     },
                     APP_FILE_APP_CONFIG: {
                         "type": "file",
-                        "should_exist": True,
-                        "on_missing": "create",
+                        "should_exist": self.should_be_valid_app,
+                        "on_missing": "error",
                         "default_content": "global:",
                     },
                 },
