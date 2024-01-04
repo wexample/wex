@@ -5,8 +5,8 @@ services:
   wex_test-remote:
     container_name: wex_test_remote
     build:
-      context: .
-      dockerfile: Dockerfile.test-remote
+      context: ../../
+      dockerfile: .wex/docker/Dockerfile.test-remote
     restart: unless-stopped
     stdin_open: true
     tty: true

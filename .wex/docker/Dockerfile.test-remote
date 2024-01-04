@@ -1,10 +1,11 @@
 FROM alpine:latest
 
-RUN apk --no-cache add openssh
+# Use bash as default terminal
+RUN apk --no-cache add bash openssh
 RUN ssh-keygen -A
 RUN echo 'root:TEST_PASSWORD' | chpasswd
 
-# Configurer SSHD
+# Configure SSHD
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 RUN echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config

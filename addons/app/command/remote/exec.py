@@ -29,20 +29,29 @@ if TYPE_CHECKING:
     required=True,
     help="Remote environment (dev, prod)",
 )
+@option(
+    "--terminal",
+    "-t",
+    type=bool,
+    required=False,
+    is_flag=True,
+    help="Open a terminal",
+)
 def app__remote__exec(
     manager: "AppAddonManager",
     app_dir: str,
     environment: str,
-    command: str
+    command: str,
+    terminal: bool
 ) -> InteractiveShellCommandResponse:
-    address = remote_get_connexion_address(manager, environment)
+    address = remote_get_connexion_address(manager=manager, environment=environment)
 
     if not address:
         return
 
     return InteractiveShellCommandResponse(
         manager.kernel,
-        remote_get_connexion_command(manager, environment)
+        remote_get_connexion_command(manager=manager, environment=environment, terminal=terminal)
         + [
             address,
             f"'{command_to_string(args_parse_list_or_strings_list(command))}'"
