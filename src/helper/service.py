@@ -3,7 +3,7 @@ import shutil
 from typing import TYPE_CHECKING, Any, Dict, List, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.data_yaml import yaml_load_or_default
+from src.helper.data_yaml import yaml_load
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -28,7 +28,7 @@ def service_load_config(kernel: "Kernel", service: str) -> Any:
         return False
 
     # Allow service to not define a config file
-    return yaml_load_or_default(
+    return yaml_load(
         os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG)
     )
 

@@ -37,11 +37,3 @@ def yaml_write(file_path: str, content: YamlContent) -> None:
     with open(file_path, "w") as f:
         yaml.safe_dump(content, f)
 
-
-def yaml_load_or_default(file: str, default: Optional[Any] = None) -> Any:
-    data_yaml = yaml_load(file)
-
-    if data_yaml is None:
-        return default or {}
-
-    return data_yaml

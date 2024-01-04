@@ -55,7 +55,6 @@ from src.helper.core import core_kernel_get_version
 from src.helper.data_yaml import (
     yaml_load,
     yaml_load_dict,
-    yaml_load_or_default,
     yaml_write,
 )
 from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
@@ -67,6 +66,7 @@ from src.helper.file import (
 )
 from src.helper.service import service_load_config
 from src.helper.string import string_to_kebab_case, string_to_snake_case
+from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
@@ -89,6 +89,7 @@ class AppAddonManager(AddonManager):
         self.runtime_docker_compose: Optional[DockerCompose] = None
         self.runtime_docker_compose_path: Optional[str] = None
         self.first_log_indent: Optional[int] = None
+        self._directory: Optional[AppDirectoryStructure] = None
 
         if app_dir:
             self.set_app_workdir(app_dir)
@@ -110,6 +111,11 @@ class AppAddonManager(AddonManager):
                 "service_option": service_option,
             }
         )
+
+    def get_directory(self) -> AppDirectoryStructure:
+        self._validate__should_not_be_none(self._directory)
+
+        return self._directory
 
     def get_applications_path(self) -> str:
         return (
@@ -155,7 +161,7 @@ class AppAddonManager(AddonManager):
     def get_proxy_apps(self) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load_or_default(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, {}),
+            yaml_load(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, {}),
         )
 
     @classmethod
@@ -587,6 +593,11 @@ class AppAddonManager(AddonManager):
         self.runtime_docker_compose_path = os.path.join(
             app_dir, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
         )
+
+        self._directory = AppDirectoryStructure(
+            path=self.app_dir
+        )
+
         self.load_config()
 
         if os.getcwd() != app_dir.rstrip(os.sep):
