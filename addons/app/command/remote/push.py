@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     required=True,
     help="Remote environment (dev, prod)",
 )
-def app__mirror__push(manager: "AppAddonManager", environment: str, app_dir: str) -> bool:
+def app__remote__push(manager: "AppAddonManager", environment: str, app_dir: str) -> bool:
     domain_or_ip = remote_get_environment_ip(manager, environment)
 
     if not domain_or_ip:

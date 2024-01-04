@@ -1,12 +1,12 @@
 import os
 
 from src.helper.command import execute_command_sync
-from addons.app.command.mirror.push import app__mirror__push
+from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.command.remote.exec import app__remote__exec
 
 
-class TestAppCommandMirrorPush(AbstractAppTestCase):
+class TestAppCommandRemotePush(AbstractAppTestCase):
     def start_remote_server(self) -> None:
         self.log('Starting fake test remote server')
         command = ["docker", "compose", "-f", ".wex/docker/docker-compose.test-remote.yml", "up", "-d", "--build"]
@@ -52,7 +52,7 @@ class TestAppCommandMirrorPush(AbstractAppTestCase):
             ["touch", f"{app_dir}test.txt"])
 
         self.kernel.run_function(
-            app__mirror__push, {
+            app__remote__push, {
                 "environment": "test-remote",
                 "app-dir": app_dir
             }
