@@ -195,6 +195,24 @@ def args_parse_dict(arg: str) -> StringKeysDict:
     return arg_dict
 
 
+def args_parse_list_or_strings_list(arg: str) -> StringsList:
+    if arg.startswith("[") and arg.endswith("]"):
+        return args_parse_list(arg)
+
+    return arg.split()
+
+
+def args_parse_list(arg: str) -> StringsList:
+    arg_list = args_parse_one(arg, [])
+
+    if not isinstance(arg_list, list):
+        return []
+
+    assert isinstance(arg_list, list)
+
+    return cast(StringsList, arg_list)
+
+
 def args_parse_one(argument: str, default: Optional[Any] = None) -> BasicValue:
     if argument is None or argument == "":
         return default

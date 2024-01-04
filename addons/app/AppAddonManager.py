@@ -834,3 +834,10 @@ class AppAddonManager(AddonManager):
             return True
 
         return False
+
+    def get_env_var(self, key: str) -> str:
+        from dotenv import dotenv_values
+
+        app_env_path = os.path.join(self.get_app_dir(), APP_FILEPATH_REL_ENV)
+
+        return str(dotenv_values(app_env_path).get(key))

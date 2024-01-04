@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 def app__remote__available(
     manager: "AppAddonManager", app_dir: str, environment: str, port: None | int = None
 ) -> bool:
-    domain_or_ip = remote_get_environment_ip(manager.kernel, environment)
+    domain_or_ip = remote_get_environment_ip(manager, environment)
 
     if not domain_or_ip:
         return False

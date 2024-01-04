@@ -12,6 +12,9 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 DEFAULT_APP_TEST_NAME: str = "test-app"
+DEFAULT_ENVIRONMENT_TEST_REMOTE: str = "test-remote"
+DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME: str = "root"
+DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD: str = "TEST_PASSWORD"
 
 
 def test_get_app_dir(kernel: "Kernel", name: str) -> str:
