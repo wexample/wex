@@ -35,3 +35,5 @@ def app__remote__go(
 
     if result:
         return cast(InteractiveShellCommandResponse, result)
+
+    return None

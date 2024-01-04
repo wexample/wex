@@ -4,7 +4,7 @@ from addons.app.helper.remote import remote_get_connexion_command, \
 from src.helper.command import command_to_string
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from src.helper.args import args_parse_list_or_strings_list
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
@@ -43,11 +43,11 @@ def app__remote__exec(
     environment: str,
     command: str,
     terminal: bool
-) -> InteractiveShellCommandResponse:
+) -> Optional[InteractiveShellCommandResponse]:
     address = remote_get_connexion_address(manager=manager, environment=environment)
 
     if not address:
-        return
+        return None
 
     return InteractiveShellCommandResponse(
         manager.kernel,

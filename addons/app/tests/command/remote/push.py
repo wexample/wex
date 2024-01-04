@@ -23,7 +23,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         })
 
         # Reload updated config
-        manager._directory.initialize()
+        manager.get_directory().initialize()
         environment = "test-remote"
 
         execute_command_sync(

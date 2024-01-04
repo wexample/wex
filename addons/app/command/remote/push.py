@@ -1,4 +1,4 @@
-from src.core.file.AbstractFileSystemStructure import FileSystemStructureSchemaItem
+from src.const.types import FileSystemStructureSchemaItem
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 from addons.app.decorator.app_command import app_command

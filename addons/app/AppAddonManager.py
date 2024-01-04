@@ -114,6 +114,7 @@ class AppAddonManager(AddonManager):
 
     def get_directory(self) -> AppDirectoryStructure:
         self._validate__should_not_be_none(self._directory)
+        assert isinstance(self._directory, AppDirectoryStructure)
 
         return self._directory
 

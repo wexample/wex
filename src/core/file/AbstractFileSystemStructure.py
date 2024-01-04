@@ -1,17 +1,16 @@
 import os.path
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from src.const.types import StringMessageParameters
+from src.const.types import (
+    StringMessageParameters,
+    FileSystemStructureSchemaItem,
+    FileSystemStructureSchema,
+    FileSystemStructureType)
 from src.core.BaseClass import BaseClass
 
 if TYPE_CHECKING:
     from src.core.ErrorMessage import ErrorMessage, ErrorMessageList
-
-FileSystemStructureType = Literal[
-    "file",
-    "dir",
-]
 
 FILE_SYSTEM_ACTION_ON_MISSING_ERROR = "error"
 FILE_SYSTEM_ACTION_ON_MISSING_CREATE = "create"
@@ -22,19 +21,6 @@ FILE_SYSTEM_ERROR_MESSAGES: Dict[str, str] = {
     FILE_SYSTEM_ERROR_NOT_FOUND: "File or directory not found : {path}",
     FILE_SYSTEM_ERROR_WRONG_EXTENSION: "Wrong file extension for file {path}, expected {expected}",
 }
-
-
-class FileSystemStructureSchemaItem(TypedDict, total=False):
-    class_name: Optional[str]
-    default_content: Optional[str]
-    on_missing: Optional[str]
-    schema: Optional["FileSystemStructureSchema"]
-    shortcut: Optional[str]
-    should_exist: Optional[bool]
-    type: FileSystemStructureType
-
-
-FileSystemStructureSchema = Dict[str, FileSystemStructureSchemaItem]
 
 
 class AbstractFileSystemStructure(BaseClass):

@@ -65,6 +65,25 @@ ShellCommandsList = StringsList
 ShellCommandsDeepList = List[str | ShellCommandsList]
 ShellCommandResponseTuple = Tuple[bool, List[str]]
 
+FileSystemStructureType = Literal[
+    "file",
+    "dir",
+]
+
+
+class FileSystemStructureSchemaItem(TypedDict, total=False):
+    class_name: Optional[str]
+    default_content: Optional[str]
+    on_missing: Optional[str]
+    schema: Optional["FileSystemStructureSchema"]
+    shortcut: Optional[str]
+    should_exist: Optional[bool]
+    type: FileSystemStructureType
+    remote: Optional[str]
+
+
+FileSystemStructureSchema = Dict[str, FileSystemStructureSchemaItem]
+
 
 class RegistryCommand(TypedDict):
     alias: str
@@ -137,6 +156,7 @@ class AppConfig(TypedDict):
     path: Dict[str, str]
     service: Dict[str, Any]
     started: bool
+    structure: FileSystemStructureSchema
     user: Dict[str, str | int]
 
 

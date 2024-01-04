@@ -5,8 +5,8 @@ from src.const.types import BasicValue
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
     AbstractFileSystemStructure,
-    FileSystemStructureSchemaItem,
 )
+from src.const.types import FileSystemStructureSchemaItem
 from src.helper.file import file_create_parent_and_touch, file_read, file_write
 
 
