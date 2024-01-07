@@ -28,8 +28,7 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             },
         )
 
-        self.assertTrue(
-            response.print_wrapped_str().endswith("TEST_ONE"))
+        self.assertTrue(response.print_wrapped_str().endswith("TEST_ONE"))
 
         self.kernel.run_function(
             app__remote__exec,
@@ -49,7 +48,6 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
             },
         )
 
-        self.assertTrue(
-            response.print_wrapped_str().endswith("TEST_TWO"))
+        self.assertTrue(response.print_wrapped_str().endswith("TEST_TWO"))
 
         self.stop_remote_server()

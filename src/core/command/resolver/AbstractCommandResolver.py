@@ -1,7 +1,7 @@
 import os
 import re
 from abc import abstractmethod
-from typing import Any, List, Optional, cast
+from typing import Any, Dict, List, Optional, cast
 
 from src.const.globals import (
     COMMAND_EXTENSIONS,
@@ -86,11 +86,7 @@ class AbstractCommandResolver(KernelChild):
 
         return response
 
-    def execute_attached(
-        self,
-        request: "CommandRequest",
-        position: str
-    ) -> None:
+    def execute_attached(self, request: "CommandRequest", position: str) -> None:
         request_command_string = request.get_string_command()
         commands = self.get_active_commands()
         for command_string in commands:
@@ -104,19 +100,14 @@ class AbstractCommandResolver(KernelChild):
                         fast_mode = self.kernel.fast_mode
                         self.kernel.fast_mode = True
                         self.kernel.run_command(
-                            command_string,
-                            request.get_args_list().copy()
+                            command_string, request.get_args_list().copy()
                         )
                         self.kernel.fast_mode = fast_mode
 
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()
 
-    def execute_all_attached(
-        self,
-        request: "CommandRequest",
-        position: str
-    ) -> None:
+    def execute_all_attached(self, request: "CommandRequest", position: str) -> None:
         # Ask every other resolver to call each attached command type
         for resolver in self.kernel.resolvers:
             self.kernel.resolvers[resolver].execute_attached(
@@ -389,12 +380,14 @@ class AbstractCommandResolver(KernelChild):
                                 else None
                             )
 
-                        attachments = {}
+                        attachments: Dict[str, List[str]] = {}
                         for position in script_command.attachments:
                             attachments[position] = []
                             for attachment in script_command.attachments[position]:
                                 if isinstance(attachment, ScriptCommand):
-                                    attachment_string = self.build_command_from_function(attachment)
+                                    attachment_string = (
+                                        self.build_command_from_function(attachment)
+                                    )
                                 else:
                                     attachment_string = attachment
                                     assert isinstance(attachment, str)

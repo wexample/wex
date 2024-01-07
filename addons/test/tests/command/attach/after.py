@@ -6,7 +6,4 @@ class TestTestCommandAttachAfter(AbstractTestCase):
     def test_after(self) -> None:
         response = self.kernel.run_function(test__attach__after)
 
-        self.assertEqual(
-            response.first(),
-            'AFTER'
-        )
+        self.assertEqual(response.first(), "AFTER")

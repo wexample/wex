@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable, Optional, cast, List, Dict
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 
 import click
 
@@ -30,7 +30,10 @@ class ScriptCommand(BaseClass):
         self.as_sudo: bool = False
         self.command_type: str = command_type
         self.no_log: bool = False
-        self.attachments: Dict[str, List[ScriptCommand]] = {"after": [], "before": []}
+        self.attachments: Dict[str, List[str | ScriptCommand]] = {
+            "after": [],
+            "before": [],
+        }
         self.verbosity: Optional[int] = None
         self._extra: StringKeysDict = {}
 

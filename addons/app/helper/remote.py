@@ -45,9 +45,13 @@ def remote_get_login_command(
 def remote_get_connexion_command(
     manager: "AppAddonManager", environment: str, terminal: bool = False
 ) -> StringsList:
-    command_connect = remote_get_login_command(manager, environment) + [
-        "ssh",
-    ] + remote_get_connexion_options()
+    command_connect = (
+        remote_get_login_command(manager, environment)
+        + [
+            "ssh",
+        ]
+        + remote_get_connexion_options()
+    )
 
     if terminal:
         command_connect.append("-t")

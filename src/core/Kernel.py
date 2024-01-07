@@ -24,8 +24,8 @@ from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
 from src.decorator.alias import alias
-from src.decorator.attach import attach
 from src.decorator.as_sudo import as_sudo
+from src.decorator.attach import attach
 from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.test_command import test_command

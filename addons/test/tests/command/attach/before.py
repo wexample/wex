@@ -4,10 +4,6 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandAttachBefore(AbstractTestCase):
     def test_before(self) -> None:
-        response = self.kernel.run_function(test__attach__before, {
-        })
+        response = self.kernel.run_function(test__attach__before, {})
 
-        self.assertEqual(
-            response.first(),
-            'BEFORE'
-        )
+        self.assertEqual(response.first(), "BEFORE")

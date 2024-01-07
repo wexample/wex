@@ -1,8 +1,9 @@
-from src.const.globals import COMMAND_TYPE_ADDON
-from src.decorator.command import command
 from typing import TYPE_CHECKING
-from src.decorator.attach import attach
+
 from addons.test.command.command.has_attached import test__command__has_attached
+from src.const.globals import COMMAND_TYPE_ADDON
+from src.decorator.attach import attach
+from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
