@@ -48,8 +48,10 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             },
         )
 
+        lines = response.first().split("\n")
         self.assertTrue(
-            response.first().startswith("-rw"),
+            # The last line is the file info.
+            lines[len(lines) - 1].startswith("-rw"),
             "The local file has been created remotely",
         )
 
