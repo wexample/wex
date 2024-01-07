@@ -1,6 +1,7 @@
 from InquirerPy.base.control import Choice
 from typing import List, cast, Optional, TYPE_CHECKING
 from src.helper.prompt import prompt_choice
+from src.decorator.option import option
 from addons.app.const.app import (
     APP_ENV_LOCAL,
     APP_ENVS
@@ -16,9 +17,11 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Ask user about which environment to use")
-def app__env__choose(manager: "AppAddonManager", app_dir: str) -> Optional[AbortResponse]:
+@option('--question', '-q', type=str, required=True, help="Question to ask to user")
+def app__env__choose(manager: "AppAddonManager", app_dir: str, question: str = "Choose app environment") -> Optional[
+    AbortResponse]:
     env = prompt_choice(
-        "Choose app environment",
+        question,
         cast(List[str | Choice], APP_ENVS),
         APP_ENV_LOCAL,
     )
