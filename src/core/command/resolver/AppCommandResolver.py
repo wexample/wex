@@ -8,7 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_APP,
 )
-from src.const.types import StringsList
+from src.const.types import StringsList, RegistryCommandsCollection
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -180,3 +180,17 @@ class AppCommandResolver(AbstractCommandResolver):
         assert isinstance(response, AbstractResponse)
 
         return response
+
+    def get_active_commands(self) -> RegistryCommandsCollection:
+        # Use ap dir if specified.
+        app_dir = self.app_addon_manager.app_dir
+
+        if not app_dir:
+            # Search commands from current working dir, ignoring if initial command is an app command.
+            app_dir = self.kernel.get_path("call")
+
+        app_command_dir = self.build_base_command_path(
+            os.path.join(app_dir, APP_DIR_APP_DATA)
+        )
+
+        return self.scan_commands_groups(app_command_dir)

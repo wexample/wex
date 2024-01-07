@@ -79,7 +79,49 @@ class AbstractCommandResolver(KernelChild):
         if response:
             self.kernel.hook_addons("render_request_post", {"response": response})
 
+            # Ensure this is the real end of command, no repetition planned.
+            if not response.has_next_step:
+                self.execute_all_attached(request, "after")
+
         return response
+
+    def execute_attached(
+        self,
+        request: "CommandRequest",
+        position: str
+    ) -> None:
+        request_command_string = request.get_string_command()
+        commands = self.get_active_commands()
+        for command_string in commands:
+            if len(commands[command_string]["attachments"][position]):
+                for target_command in commands[command_string]["attachments"][position]:
+                    if target_command == request_command_string:
+                        self.kernel.io.log(
+                            f"Running attached command to {request_command_string} : {command_string}"
+                        )
+                        # Attached command should have same args as target
+                        fast_mode = self.kernel.fast_mode
+                        self.kernel.fast_mode = True
+                        self.kernel.run_command(
+                            command_string,
+                            request.get_args_list().copy()
+                        )
+                        self.kernel.fast_mode = fast_mode
+
+    def get_active_commands(self) -> RegistryCommandsCollection:
+        return self.get_commands_registry()
+
+    def execute_all_attached(
+        self,
+        request: "CommandRequest",
+        position: str
+    ) -> None:
+        # Ask every other resolver to call each attached command type
+        for resolver in self.kernel.resolvers:
+            self.kernel.resolvers[resolver].execute_attached(
+                request,
+                position,
+            )
 
     def wrap_response(self, response: Any) -> "AbstractResponse":
         if isinstance(response, AbstractResponse):
