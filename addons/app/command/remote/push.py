@@ -6,6 +6,7 @@ from addons.app.helper.remote import (
     remote_get_connexion_address,
     remote_get_environment_ip,
     remote_get_login_command,
+    remote_get_connexion_options,
 )
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchemaItem
@@ -49,9 +50,7 @@ def app__remote__push(
     schema = manager.get_directory().get_schema()
     command_base = remote_get_login_command(manager, environment) + [
         "scp",
-        "-o",
-        "StrictHostKeyChecking=no",
-    ]
+    ] + remote_get_connexion_options()
 
     for item_name in schema:
         options: FileSystemStructureSchemaItem = schema[item_name]

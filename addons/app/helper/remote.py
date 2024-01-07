@@ -47,14 +47,21 @@ def remote_get_connexion_command(
 ) -> StringsList:
     command_connect = remote_get_login_command(manager, environment) + [
         "ssh",
-        "-o",
-        "StrictHostKeyChecking=no",
-    ]
+    ] + remote_get_connexion_options()
 
     if terminal:
         command_connect.append("-t")
 
     return command_connect
+
+
+def remote_get_connexion_options() -> StringsList:
+    return [
+        "-o",
+        "StrictHostKeyChecking=no",
+        "-o",
+        "UserKnownHostsFile=/dev/null",
+    ]
 
 
 def remote_get_connexion_address(
