@@ -3,6 +3,7 @@ import time
 from typing import TYPE_CHECKING, Optional
 
 import click
+
 from addons.app.command.app.go import app__app__go
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.serve import app__app__serve
@@ -11,6 +12,8 @@ from addons.app.command.app.started import (
     app__app__started,
 )
 from addons.app.command.config.write import app__config__write
+from addons.app.command.env.choose import app__env__choose
+from addons.app.command.env.set import app__env__set
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.hosts.update import app__hosts__update
 from addons.app.command.service.used import app__service__used
@@ -22,9 +25,8 @@ from addons.app.const.app import (
 )
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command
-from addons.app.command.env.choose import app__env__choose
-from addons.app.command.env.set import app__env__set
 from src.const.globals import CORE_COMMAND_NAME
+from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.HiddenResponse import HiddenResponse
 from src.core.response.InteractiveShellCommandResponse import (
@@ -39,7 +41,6 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import (
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
-from src.core.response.AbortResponse import AbortResponse
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -82,21 +83,16 @@ def app__app__start(
                 ):
                     first = kernel.run_function(
                         app__env__choose,
-                        {
-                            "message": "No .wex/.env file, would you like to create it ?"
-                        }
+                        {"message": "No .wex/.env file, would you like to create it ?"},
                     ).first()
 
                     if isinstance(first, AbortResponse):
-                        return QueuedCollectionStopResponse(kernel, AbortResponse.reason)
+                        return QueuedCollectionStopResponse(
+                            kernel, AbortResponse.reason
+                        )
 
             else:
-                kernel.run_function(
-                    app__env__set,
-                    {
-                        "environment": env
-                    }
-                )
+                kernel.run_function(app__env__set, {"environment": env})
 
             kernel.io.message(f'Created .env file for env "{env}"')
 
@@ -128,12 +124,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
