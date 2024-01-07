@@ -7,9 +7,7 @@ from addons.app.const.app import (
     APP_ENVS
 )
 from addons.app.decorator.app_command import app_command
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    AbortResponse,
-)
+from src.core.response.AbortResponse import AbortResponse
 from addons.app.command.env.set import app__env__set
 
 if TYPE_CHECKING:
@@ -18,8 +16,11 @@ if TYPE_CHECKING:
 
 @app_command(help="Ask user about which environment to use")
 @option('--question', '-q', type=str, required=True, help="Question to ask to user")
-def app__env__choose(manager: "AppAddonManager", app_dir: str, question: str = "Choose app environment") -> Optional[
-    AbortResponse]:
+def app__env__choose(
+    manager: "AppAddonManager",
+    app_dir: str,
+    question: str = "Choose app environment"
+) -> Optional[AbortResponse]:
     env = prompt_choice(
         question,
         cast(List[str | Choice], APP_ENVS),
@@ -36,3 +37,5 @@ def app__env__choose(manager: "AppAddonManager", app_dir: str, question: str = "
             'app_dir': manager.get_app_dir(),
             "environment": env
         })
+
+    return None

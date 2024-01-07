@@ -39,9 +39,7 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import (
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    AbortResponse,
-)
+from src.core.response.AbortResponse import AbortResponse
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
