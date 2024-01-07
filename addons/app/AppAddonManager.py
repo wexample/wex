@@ -491,52 +491,6 @@ class AppAddonManager(AddonManager):
                     trace=False,
                 )
 
-        self.execute_attached(request, "before")
-
-    def execute_attached(
-        self, request: "CommandRequest", part: str, post_exec: bool = False
-    ) -> None:
-        # Search for app local commands
-        app_resolver = self.kernel.resolvers[COMMAND_TYPE_APP]
-        app_command_dir = app_resolver.build_base_command_path(
-            os.path.join(self.get_app_dir(), APP_DIR_APP_DATA)
-        )
-
-        if not os.path.exists(app_command_dir):
-            return
-
-        app_commands = app_resolver.scan_commands_groups(app_command_dir)
-
-        if app_commands:
-            from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
-
-            runner = YamlCommandRunner(self.kernel)
-
-            for app_command_name in app_commands:
-                app_file_path = app_commands[app_command_name]["file"]
-                yaml_command = runner.load_yaml_command(app_file_path)
-                attached = yaml_command.get("attach")
-                if isinstance(attached, dict):
-                    if part in attached:
-                        if attached[part] == request.get_string_command():
-                            parts = app_resolver.build_command_parts_from_file_path(
-                                app_file_path
-                            )
-                            internal_command = app_resolver.build_command_from_parts(
-                                parts
-                            )
-                            self.kernel.io.log(
-                                f"Running attached command {internal_command}"
-                            )
-
-                            # Attached command should have same args as target
-                            fast_mode = self.kernel.fast_mode
-                            self.kernel.fast_mode = True
-                            self.kernel.run_command(
-                                internal_command, request.get_args_list()
-                            )
-                            self.kernel.fast_mode = fast_mode
-
     def get_app_dir(self) -> str:
         self._validate__should_not_be_none(self.app_dir)
         assert isinstance(self.app_dir, str)
@@ -570,10 +524,6 @@ class AppAddonManager(AddonManager):
             # Reinit app dir if not the same.
             if app_dir != self.app_dir:
                 self.set_app_workdir(app_dir)
-
-        # Ensure this is the real end of command, no repetition planned.
-        if not response.has_next_step:
-            self.execute_attached(request, "after")
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
         proxy_apps = self.get_proxy_apps()
