@@ -52,7 +52,7 @@ class AbstractCommandResolver(KernelChild):
         runner = request.get_runner()
 
         self.kernel.hook_addons("render_request_pre", {"request": request})
-        self.execute_attached(request, "before")
+        self.execute_all_attached(request, "before")
 
         previous_verbosity = self.kernel.verbosity
         script_command = request.get_script_command()

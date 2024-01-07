@@ -2,8 +2,11 @@ type: app
 help: Create new version
 command:
   decorator: app_command
-attach:
-  before: app::version/new-write
+properties:
+  - name: attach
+    options:
+      position: before
+      command: app::version/new-write
 options:
   - name: --version
     short: -v
