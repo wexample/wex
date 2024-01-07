@@ -1,5 +1,13 @@
 type: addon
 help: This is a command for tests
+properties:
+  - name: alias
+    options:
+      name: test-yaml-alias
+  - name: attach
+    options:
+      position: before
+      command: test::command/has-attached
 options:
   - name: --test-option
     short: -to

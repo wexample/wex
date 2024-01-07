@@ -24,6 +24,7 @@ from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
 from src.decorator.alias import alias
+from src.decorator.attach import attach
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.no_log import no_log
@@ -78,6 +79,7 @@ class Kernel(BaseClass):
             },
             "properties": {
                 "alias": alias,
+                "attach": attach,
                 "as_sudo": as_sudo,
                 "no_log": no_log,
                 "verbosity": verbosity,

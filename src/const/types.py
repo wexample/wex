@@ -87,6 +87,7 @@ FileSystemStructureSchema = Dict[str, FileSystemStructureSchemaItem]
 
 class RegistryCommand(TypedDict):
     alias: str
+    attachments: StringsDict
     command: str
     file: str
     properties: StringsDict

@@ -350,9 +350,13 @@ class AbstractCommandResolver(KernelChild):
                         for position in script_command.attachments:
                             attachments[position] = []
                             for attachment in script_command.attachments[position]:
-                                attachments[position].append(
-                                    self.build_command_from_function(attachment)
-                                )
+                                if isinstance(attachment, ScriptCommand):
+                                    attachment_string = self.build_command_from_function(attachment)
+                                else:
+                                    attachment_string = attachment
+                                    assert isinstance(attachment, str)
+
+                                attachments[position].append(attachment_string)
 
                         commands[internal_command] = cast(
                             RegistryCommand,

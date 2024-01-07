@@ -205,17 +205,17 @@ class YamlCommandRunner(AbstractCommandRunner):
         for property in properties:
             if isinstance(property, str):
                 name = property
-                value = None
+                property_options = None
             else:
-                name = list(property.keys())[0]
-                value = property[name]
+                name = property["name"]
+                property_options = property["options"]
 
             script_command = apply_command_decorator(
                 self.kernel,
                 function=script_command,
                 group="properties",
                 name=name,
-                options=value,
+                options=property_options,
             )
 
         for option in options:
