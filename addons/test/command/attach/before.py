@@ -12,5 +12,4 @@ if TYPE_CHECKING:
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
 def test__attach__before(kernel: "Kernel") -> str:
     kernel.io.log(f"Running BEFORE")
-
     return "BEFORE"
