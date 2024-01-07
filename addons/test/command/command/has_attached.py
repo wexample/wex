@@ -1,6 +1,5 @@
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
-from src.decorator.option import option
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

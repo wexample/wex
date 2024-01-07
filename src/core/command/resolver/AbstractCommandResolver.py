@@ -346,6 +346,14 @@ class AbstractCommandResolver(KernelChild):
                                 else None
                             )
 
+                        attachments = {}
+                        for position in script_command.attachments:
+                            attachments[position] = []
+                            for attachment in script_command.attachments[position]:
+                                attachments[position].append(
+                                    self.build_command_from_function(attachment)
+                                )
+
                         commands[internal_command] = cast(
                             RegistryCommand,
                             {
@@ -355,6 +363,7 @@ class AbstractCommandResolver(KernelChild):
                                 "alias": self.get_script_command_aliases(
                                     script_command
                                 ),
+                                "attachments": attachments,
                                 "properties": script_command.get_extra_properties(),
                             },
                         )
