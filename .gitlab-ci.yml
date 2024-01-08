@@ -70,27 +70,28 @@ deploy:
 test_apt_install_debian:
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#  only:
-#    - tags
-#  needs:
-#    - deploy
+  #  only:
+  #    - tags
+  #  needs:
+  #    - deploy
   script:
+    # Stops script on failure
+    - set -e
+    - apt update
+    - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt update
+    - apt install wex -y
+    - wex hi
+    - apt remove wex -y
+    # Compare version
     - BUILD_VERSION=$(cat version.txt)
     - echo "Deployed version should be ${BUILD_VERSION}"
     - CURRENT_VERSION=$(wex version)
     - echo "Image version is ${CURRENT_VERSION}"
     - if [ "${BUILD_VERSION}" = "$(wex version)" ];then echo "Versions match" else exit 1
 
-#    # Stops script on failure
-#    - set -e
-#    - apt update
-#    - apt install gnupg2 wget -y
-#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-#    - apt update
-#    - apt install wex -y
-#    - wex hi
-#    - apt remove wex -y
 
 # Try to install using the new debian apt repository.
 test_apt_install_ubuntu:
