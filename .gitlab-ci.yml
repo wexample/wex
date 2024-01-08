@@ -79,7 +79,7 @@ test_apt_install_debian:
     - echo "Deployed version should be ${BUILD_VERSION}"
     - CURRENT_VERSION=$(wex version)
     - echo "Image version is ${CURRENT_VERSION}"
-    - [ "${BUILD_VERSION}" = "$(wex version)" ] || exit 1
+    - [ "${BUILD_VERSION}" = "$(wex version)" ];then echo "Versions match" else exit 1
 
 #    # Stops script on failure
 #    - set -e
