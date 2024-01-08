@@ -37,6 +37,9 @@ class AbstractTestCase(unittest.TestCase):
         # Add a new line between each test
         self.kernel.io.print("")
 
+        self.reset_workdir()
+
+    def reset_workdir(self):
         # If workdir changed.
         current_dir = os.getcwd()
         if current_dir != self.test_dir:

@@ -1,5 +1,6 @@
 import os.path
 import re
+import shutil
 from typing import Optional
 
 from addons.app.AppAddonManager import AppAddonManager
@@ -96,11 +97,23 @@ class AbstractAppTestCase(AbstractTestCase):
 
         return app_dir
 
-    def stop_test_app(self, app_dir: str) -> None:
+    def stop_test_app(self, app_dir: str) -> bool:
         if not os.path.exists(app_dir):
-            return
+            return False
 
         self.kernel.run_function(app__app__stop, {"app-dir": app_dir})
+
+        return True
+
+    def delete_test_app(self, app_dir: str) -> bool:
+        exist = self.stop_test_app(app_dir)
+
+        self.reset_workdir()
+
+        if exist:
+            shutil.rmtree(app_dir)
+
+        return exist
 
     def for_each_db_service(self, callback: AnyCallable) -> None:
         db_services = []
