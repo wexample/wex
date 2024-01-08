@@ -53,6 +53,8 @@ build:
     - ln -s ${CI_PROJECT_DIR} source
     # Build
     - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+    # TODO TMP
+    - ls -la /var/www/build/builds/wex_5.0.121+build.20240108124552/wex/
 
 #deploy:
 #  stage: deploy
