@@ -1,13 +1,12 @@
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import StringsList
 from src.helper.command import execute_command_sync
 
 
 class TestAppCommandRemotePush(AbstractAppTestCase):
-
     def test_push(self) -> None:
         self._test_push_single_service()
         self._test_push_with_db()
@@ -67,9 +66,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         app_dir = manager.get_app_dir()
 
         self.kernel.run_function(
-            app__remote__push, {
-                "environment": "test-remote",
-                "app-dir": app_dir}
+            app__remote__push, {"environment": "test-remote", "app-dir": app_dir}
         )
 
         self._cleanup_sync_env()

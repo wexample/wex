@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from addons.app.command.db.dump import app__db__dump
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (
@@ -12,7 +13,6 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchemaItem
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
-from addons.app.command.db.dump import app__db__dump
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -70,10 +70,7 @@ def app__db__dump(
         if os.path.exists(symlink_path) or os.path.islink(symlink_path):
             os.unlink(symlink_path)
 
-        os.symlink(
-            output_path,
-            symlink_path
-        )
+        os.symlink(output_path, symlink_path)
 
         return output_path
 
