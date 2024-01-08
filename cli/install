@@ -31,7 +31,14 @@ fi
 if ! command_exists ps; then
     echo "Installing procps..."
     sudo apt-get update
-    sudo apt-get -y install procps sshpass
+    sudo apt-get -y install procps
+fi
+
+# Install procps if not installed
+if ! command_exists sshpass; then
+    echo "Installing sshpass..."
+    sudo apt-get update
+    sudo apt-get -y install sshpass
 fi
 
 # Create and activate virtual environment
