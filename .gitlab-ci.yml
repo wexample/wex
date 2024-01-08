@@ -115,7 +115,7 @@ test_apt_install_ubuntu:
     # Compare versions
     - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
     - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
-    - [ "${BUILD_VERSION}" = "${CURRENT_VERSION}" ] || exit 1
+    - test "$(cat version.txt)" = "$(wex version)" || exit 1
     # Uninstall
     - apt remove wex -y
 
