@@ -34,7 +34,7 @@ if ! command_exists ps; then
     sudo apt-get -y install procps
 fi
 
-# Install procps if not installed
+# Install sshpass if not installed
 if ! command_exists sshpass; then
     echo "Installing sshpass..."
     sudo apt-get update
