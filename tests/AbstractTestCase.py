@@ -39,7 +39,7 @@ class AbstractTestCase(unittest.TestCase):
 
         self.reset_workdir()
 
-    def reset_workdir(self):
+    def reset_workdir(self) -> None:
         # If workdir changed.
         current_dir = os.getcwd()
         if current_dir != self.test_dir:
