@@ -1,6 +1,9 @@
 click
 gitpython
 inquirerpy
+langchain
+langchain-community
+openai
 psutil
 python-dotenv
 pyyaml
