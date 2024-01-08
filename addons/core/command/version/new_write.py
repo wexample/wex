@@ -8,6 +8,8 @@ from addons.app.command.version.new_write import app__version__new_write
 from addons.core.command.version.new_commit import core__version__new_commit
 from addons.default.command.version.increment import default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
+from addons.app.command.code.check import app__code__check
+from addons.app.command.code.format import app__code__format
 from src.const.globals import CORE_COMMAND_NAME, FILE_README
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
@@ -40,14 +42,14 @@ def core__version__new_write(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
         kernel.io.log(f"Executing code quality checkup...")
-        return kernel.run_command(".code/check", {"app-dir": root_dir})
+        return kernel.run_function(app__code__check, {"app-dir": root_dir})
 
     def _core__version__build__format(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
         kernel.io.log(f"Executing auto formatting scripts...")
 
-        return kernel.run_command(".code/format", {"app-dir": root_dir})
+        return kernel.run_function(app__code__format, {"app-dir": root_dir})
 
     def _core__version__build__check_uncommitted(
         queue: AbstractQueuedCollectionResponseQueueManager,

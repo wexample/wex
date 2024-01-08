@@ -97,12 +97,9 @@ class AbstractCommandResolver(KernelChild):
                             f"Running attached command to {request_command_string} : {command_string}"
                         )
                         # Attached command should have same args as target
-                        fast_mode = self.kernel.fast_mode
-                        self.kernel.fast_mode = True
                         self.kernel.run_command(
                             command_string, request.get_args_list().copy()
                         )
-                        self.kernel.fast_mode = fast_mode
 
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()

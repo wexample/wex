@@ -39,6 +39,4 @@ def app__version__new_write(
     manager.set_config("global.version", new_version)
     manager.set_config(f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel))
 
-    kernel.run_command(".version/build", quiet=True)
-
     return new_version
