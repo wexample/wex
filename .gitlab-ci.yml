@@ -84,13 +84,14 @@ test_apt_install_debian:
     - apt update
     - apt install wex -y
     - wex hi
-    - apt remove wex -y
-    # Compare version
+    # Compare versions
     - BUILD_VERSION=$(cat version.txt)
     - echo "Deployed version should be ${BUILD_VERSION}"
     - CURRENT_VERSION=$(wex version)
     - echo "Image version is ${CURRENT_VERSION}"
     - if [ "${BUILD_VERSION}" = "$(wex version)" ];then echo "Versions match" else exit 1
+    # Uninstall
+    - apt remove wex -y
 
 
 # Try to install using the new debian apt repository.
