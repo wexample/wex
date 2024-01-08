@@ -1,8 +1,8 @@
 stages:
 #  - test
   - build
-#  - deploy
-#  - test_apt_install
+  - deploy
+  - test_apt_install
 #  - build_docker
 
 #test:
@@ -53,41 +53,39 @@ build:
     - ln -s ${CI_PROJECT_DIR} source
     # Build
     - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
-    # TODO TMP
-    - ls -la /var/www/build/builds/wex_5.0.121+build.20240108124552/wex/.wex/
 
-#deploy:
-#  stage: deploy
-#  image: curlimages/curl
-#  only:
-#    - tags
-#  needs:
-#    - build
-#  script:
-#    - BUILD_VERSION=$(cat version.txt)
-#    # Ask apt repo to publish release
-#    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-#
-## Try to install using the new debian apt repository.
-#test_apt_install_debian:
-#  stage: test_apt_install
-#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#  only:
-#    - tags
-#  needs:
-#    - deploy
-#  script:
-#    # Stops script on failure
-#    - set -e
-#    - apt update
-#    - apt install gnupg2 wget -y
-#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-#    - apt update
-#    - apt install wex -y
-#    - wex hi
-#    - apt remove wex -y
-#
+deploy:
+  stage: deploy
+  image: curlimages/curl
+  only:
+    - tags
+  needs:
+    - build
+  script:
+    - BUILD_VERSION=$(cat version.txt)
+    # Ask apt repo to publish release
+    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+
+# Try to install using the new debian apt repository.
+test_apt_install_debian:
+  stage: test_apt_install
+  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+  only:
+    - tags
+  needs:
+    - deploy
+  script:
+    # Stops script on failure
+    - set -e
+    - apt update
+    - apt install gnupg2 wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt update
+    - apt install wex -y
+    - wex hi
+    - apt remove wex -y
+
 ## Try to install using the new debian apt repository.
 #test_apt_install_ubuntu:
 #  stage: test_apt_install
