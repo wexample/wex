@@ -19,3 +19,4 @@ class TestAppCommandEnvSet(AbstractAppTestCase):
         )
 
         self.assertEqual(response.first(), "test-env")
+        self.delete_test_app(app_dir)
