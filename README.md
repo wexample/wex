@@ -13,7 +13,7 @@
 
 ## Create a new version
 
-- Once new features are ready to deploy :
+- Once new features are ready to deploy:
 
     # Update version number
     wex core::version/build
