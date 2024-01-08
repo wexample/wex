@@ -12,6 +12,7 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchemaItem
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
+from addons.app.command.db.dump import app__db__dump
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -32,6 +33,13 @@ def app__remote__push(
 
     if not domain_or_ip:
         return False
+
+    manager.kernel.run_function(
+        app__db__dump,
+        {
+            "app-dir": app_dir,
+        },
+    )
 
     remote_path = (
         f"/var/www/{environment}/{manager.get_config('global.name').get_str()}/"
