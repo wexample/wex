@@ -77,7 +77,10 @@ test_apt_install_debian:
   script:
     - BUILD_VERSION=$(cat version.txt)
     - echo "Deployed version should be ${BUILD_VERSION}"
-    # TODO TMP
+    - CURRENT_VERSION=$(wex version)
+    - echo "Image version is ${CURRENT_VERSION}"
+    - [ "${BUILD_VERSION}" = "$(wex version)" ] || exit 1
+
 #    # Stops script on failure
 #    - set -e
 #    - apt update
