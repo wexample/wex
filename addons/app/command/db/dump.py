@@ -22,6 +22,9 @@ def app__db__dump(
     zip: bool = True,
     tag: str | None = None,
 ) -> Optional[str]:
+    if not manager.has_config("docker.main_db_container"):
+        return None
+
     env = manager.get_runtime_config("env").get_str()
     name = manager.get_runtime_config("global.name").get_str()
 
