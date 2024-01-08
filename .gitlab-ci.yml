@@ -1,0 +1,9 @@
+stages:
+  - build_docker
+
+# Need to rebuild docker images that wraps builder
+build_docker:
+  stage: build_docker
+  trigger:
+    project: wexample-public/docker
+    branch: main
