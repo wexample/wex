@@ -86,7 +86,6 @@ class BuildManager:
 
     def step_cleanup_source(self):
         self.delete_dir(self.path['build_source'] + '.git')
-        self.delete_dir(self.path['build_source'] + '.wex')
         self.delete_file_recursive('.gitignore', self.path['build_source'])
 
     def step_create_tarball(self):
