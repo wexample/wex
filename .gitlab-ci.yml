@@ -1,44 +1,44 @@
 stages:
-#  - test
+  - test
   - build
   - deploy
   - test_apt_install
-#  - build_docker
+  - build_docker
 
-#test:
-#  stage: test
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-#  only:
-#    - tags
-#  script:
-#    - touch /var/www/dumps/test-dumps
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Launch container for tests
-#    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
-#    # Install
-#    - docker exec -t wex /bin/bash /opt/wex/cli/install
-#    # Launch tests
-#    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -vvv"
-#    # Uninstall
-#    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
-#  after_script:
-#    # Reset permissions
-#    - chown -R root:root .
+test:
+  stage: test
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
+  only:
+    - tags
+  script:
+    - touch /var/www/dumps/test-dumps
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    # Launch container for tests
+    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
+    # Install
+    - docker exec -t wex /bin/bash /opt/wex/cli/install
+    # Launch tests
+    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -vvv"
+    # Uninstall
+    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
+  after_script:
+    # Reset permissions
+    - chown -R root:root .
 
 build:
   stage: build
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-#  only:
-#    - tags
-#  needs:
-#    - test
+  only:
+    - tags
+  needs:
+    - test
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Create build folder
@@ -57,8 +57,8 @@ build:
 deploy:
   stage: deploy
   image: curlimages/curl
-#  only:
-#    - tags
+  only:
+    - tags
   needs:
     - build
   script:
@@ -70,8 +70,8 @@ deploy:
 test_apt_install_debian:
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#  only:
-#    - tags
+  only:
+    - tags
   needs:
     - deploy
   script:
@@ -86,33 +86,33 @@ test_apt_install_debian:
     - wex hi
     - apt remove wex -y
 
-## Try to install using the new debian apt repository.
-#test_apt_install_ubuntu:
-#  stage: test_apt_install
-#  image: ubuntu:22.04
-#  only:
-#    - tags
-#  needs:
-#    - deploy
-#  script:
-#    # Stops script on failure
-#    - set -e
-#    - apt update
-#    - apt install git gnupg2 sudo wget -y
-#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-#    - apt update
-#    - apt install wex -y
-#    - wex hi
-#    - apt remove wex -y
-#
-#build_docker:
-#  stage: build_docker
-#  needs:
-#    - test_apt_install_debian
-#    - test_apt_install_ubuntu
-#  only:
-#    - tags
-#  trigger:
-#    project: wexample-public/docker
-#    branch: main
+# Try to install using the new debian apt repository.
+test_apt_install_ubuntu:
+  stage: test_apt_install
+  image: ubuntu:22.04
+  only:
+    - tags
+  needs:
+    - deploy
+  script:
+    # Stops script on failure
+    - set -e
+    - apt update
+    - apt install git gnupg2 sudo wget -y
+    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+    - apt update
+    - apt install wex -y
+    - wex hi
+    - apt remove wex -y
+
+build_docker:
+  stage: build_docker
+  needs:
+    - test_apt_install_debian
+    - test_apt_install_ubuntu
+  only:
+    - tags
+  trigger:
+    project: wexample-public/docker
+    branch: main
