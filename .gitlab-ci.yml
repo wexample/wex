@@ -51,6 +51,8 @@ build:
     - git fetch && git checkout build
     # Create link to source
     - ln -s ${CI_PROJECT_DIR} source
+    # TODO TEST
+    - sudo cat /var/www/build/script/build.py
     # Build
     - sudo python3 /var/www/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
 
