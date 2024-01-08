@@ -2,6 +2,11 @@ type: app
 help: Auto reformat and fix syntax
 command:
   decorator: app_command
+properties:
+  - name: attach
+    options:
+      position: before
+      command: app::code/format
 scripts:
   - title: Remove unused imports
     script: find src addons tests -name "*.py" | xargs autoflake --remove-all-unused-imports --remove-unused-variables --in-place
