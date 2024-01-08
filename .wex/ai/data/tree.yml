@@ -10,9 +10,14 @@ children:
     type: file
   .gitlab-ci.yml:
     type: file
+  .mypy_cache:
+    status: hidden
+    type: dir
   .wex:
     children:
       .env:
+        type: file
+      .env.test:
         type: file
       .gitignore:
         type: file
@@ -20,6 +25,8 @@ children:
         children:
           data:
             children:
+              introduction.yml:
+                type: file
               tree.yml:
                 description: This current file
                 status: hidden
@@ -33,19 +40,38 @@ children:
         type: dir
       command:
         children:
+          code:
+            children:
+              autocode.py:
+                type: file
+              check.yml:
+                type: file
+              format.yml:
+                type: file
+            type: dir
           local_command:
             children:
               test.py:
                 type: file
             type: dir
+          test:
+            children:
+              run_container.yml:
+                type: file
+            type: dir
           version:
             children:
-              build.py:
+              new.yml:
+                type: file
+              new_write.yml:
+                type: file
+            type: dir
+          webhook:
+            children:
+              test_waiting.yml:
                 type: file
             type: dir
         type: dir
-      config:
-        type: file
       config.yml:
         type: file
       cron:
@@ -61,6 +87,12 @@ children:
         children:
           .gitkeep:
             type: file
+          Dockerfile.test-remote:
+            type: file
+          docker-compose.standalone.yml:
+            type: file
+          docker-compose.test-remote.yml:
+            type: file
           docker-compose.yml:
             type: file
         type: dir
@@ -73,8 +105,13 @@ children:
             children: {}
             type: dir
         type: dir
+      python:
+        status: hidden
+        type: dir
       script:
         children:
+          app-started.yml:
+            type: file
           appGo.sh:
             type: file
           appInstall.sh:
@@ -88,46 +125,24 @@ children:
           gpgExport.sh:
             type: file
         type: dir
-      sonarqube:
-        children:
-          conf:
-            children: {}
-            type: dir
-          data:
-            children: {}
-            type: dir
-          extensions:
-            children: {}
-            type: dir
-        type: dir
       source:
         children:
           .gitkeep:
             type: file
         type: dir
-      tests:
-        children:
-          command:
-            children:
-              test:
-                children: {}
-                type: dir
-            type: dir
-        type: dir
       tmp:
         children:
-          .gitkeep:
-            type: file
-          config.build:
-            type: file
           config.runtime.yml:
             type: file
-          docker-compose.build.yml:
+          docker-compose.runtime.yml:
             type: file
-        type: dir
-      trash:
-        children:
-          .gitkeep:
+          docker.env:
+            type: file
+          id_rsa.test:
+            type: file
+          id_rsa.test.pub:
+            type: file
+          wex.first-start:
             type: file
         type: dir
       webhook:
@@ -140,45 +155,6 @@ children:
     tmp:
       status: hidden
       type: dir
-    type: dir
-  .wex-5-dev:
-    children:
-      .env:
-        type: file
-      command:
-        children:
-          local_command:
-            children:
-              test.py:
-                type: file
-            type: dir
-          test:
-            children: {}
-            type: dir
-        type: dir
-      config.yml:
-        type: file
-      docker:
-        children:
-          docker-compose.standalone.yml:
-            type: file
-        type: dir
-      tests:
-        children:
-          command:
-            children:
-              test:
-                children: {}
-                type: dir
-            type: dir
-        type: dir
-      webhook:
-        children:
-          test-wrapped.sh:
-            type: file
-          test.sh:
-            type: file
-        type: dir
     type: dir
   LICENCE:
     type: file
@@ -313,10 +289,18 @@ children:
         children:
           AppAddonManager.py:
             type: file
+          WebhookHttpRequestHandler.py:
+            type: file
           command:
             children:
               app:
                 children:
+                  exec.py:
+                    type: file
+                  go.py:
+                    type: file
+                  info.py:
+                    type: file
                   init.py:
                     type: file
                   perms.py:
@@ -332,8 +316,17 @@ children:
                   stop.py:
                     type: file
                 type: dir
+              code:
+                children:
+                  check.py:
+                    type: file
+                  format.py:
+                    type: file
+                type: dir
               config:
                 children:
+                  bind_files.py:
+                    type: file
                   get.py:
                     type: file
                   set.py:
@@ -341,9 +334,34 @@ children:
                   write.py:
                     type: file
                 type: dir
+              container:
+                children:
+                  list.py:
+                    type: file
+                type: dir
+              db:
+                children:
+                  dump.py:
+                    type: file
+                  exec.py:
+                    type: file
+                  go.py:
+                    type: file
+                  restore.py:
+                    type: file
+                type: dir
+              domain:
+                children:
+                  list.py:
+                    type: file
+                type: dir
               env:
                 children:
+                  choose.py:
+                    type: file
                   get.py:
+                    type: file
+                  set.py:
                     type: file
                 type: dir
               hook:
@@ -366,11 +384,27 @@ children:
                   migrate.py:
                     type: file
                 type: dir
+              notification:
+                children:
+                  notify.py:
+                    type: file
+                type: dir
               proxy:
                 children:
                   start.py:
                     type: file
                   stop.py:
+                    type: file
+                type: dir
+              remote:
+                children:
+                  available.py:
+                    type: file
+                  exec.py:
+                    type: file
+                  go.py:
+                    type: file
+                  push.py:
                     type: file
                 type: dir
               service:
@@ -387,13 +421,34 @@ children:
                 type: dir
               version:
                 children:
-                  build.py:
+                  get.py:
+                    type: file
+                  new.py:
+                    type: file
+                  new_commit.py:
+                    type: file
+                  new_write.py:
+                    type: file
+                type: dir
+              webhook:
+                children:
+                  exec.py:
+                    type: file
+                  listen.py:
+                    type: file
+                  status.py:
+                    type: file
+                  status_process.py:
+                    type: file
+                  stop.py:
                     type: file
                 type: dir
             type: dir
           const:
             children:
               app.py:
+                type: file
+              webhook.py:
                 type: file
             type: dir
           containers:
@@ -411,36 +466,45 @@ children:
             type: dir
           decorator:
             children:
+              app_command.py:
+                type: file
               app_dir_option.py:
+                type: file
+              app_webhook.py:
+                type: file
+              option_webhook_listener.py:
                 type: file
               service_option.py:
                 type: file
             type: dir
-          helpers:
+          helper:
             children:
               app.py:
                 type: file
+              db.py:
+                type: file
               docker.py:
                 type: file
+              remote.py:
+                type: file
               test.py:
-                type: file
-            type: dir
-          middleware:
-            children:
-              run_post.py:
-                type: file
-              run_pre.py:
                 type: file
             type: dir
           migrations:
             children:
               .gitkeep:
                 type: file
-              3.0.0.py:
+              migration_3_0_0.py:
                 type: file
-              4.0.0.py:
+              migration_4_0_0.py:
                 type: file
-              5.0.0.py:
+              migration_5_0_0.py:
+                type: file
+              migration_5_0_1.py:
+                type: file
+              migration_5_0_10.py:
+                type: file
+              migration_5_0_34.py:
                 type: file
             type: dir
           samples:
@@ -469,8 +533,19 @@ children:
                             type: file
                           prod:
                             type: file
+                          test:
+                            type: file
                         type: dir
                       docker:
+                        children:
+                          .gitkeep:
+                            type: file
+                          Dockerfile.default:
+                            type: file
+                          docker-compose.yml:
+                            type: file
+                        type: dir
+                      script:
                         children:
                           .gitkeep:
                             type: file
@@ -482,7 +557,7 @@ children:
                         type: dir
                       tmp:
                         children:
-                          .gitkeep:
+                          .gitignore:
                             type: file
                         type: dir
                       trash:
@@ -507,14 +582,19 @@ children:
                 children:
                   command:
                     children:
+                      app:
+                        children:
+                          start_post.py:
+                            type: file
+                        type: dir
                       service:
                         children:
                           install.py:
                             type: file
+                          ready.py:
+                            type: file
                         type: dir
                     type: dir
-                  config.yml:
-                    type: file
                   docker:
                     children:
                       docker-compose.yml:
@@ -526,32 +606,82 @@ children:
                         children:
                           docker:
                             children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
                               docker-compose.yml:
+                                type: file
+                            type: dir
+                          tmp:
+                            children:
+                              .gitkeep:
                                 type: file
                             type: dir
                         type: dir
                       proxy:
                         children:
+                          certs:
+                            children:
+                              .gitkeep:
+                                type: file
+                            type: dir
+                          entrypoint:
+                            children: {}
+                            type: dir
                           html:
                             children:
                               .gitkeep:
                                 type: file
                               index.html:
                                 type: file
+                              logo.svg:
+                                type: file
                             type: dir
-                        type: dir
-                      tmp:
-                        children: {}
+                          logs:
+                            children:
+                              .gitkeep:
+                                type: file
+                            type: dir
+                          vhost.d:
+                            children:
+                              .gitkeep:
+                                type: file
+                            type: dir
+                          wex.conf:
+                            type: file
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+            type: dir
+          src:
+            children:
+              AppCommand.py:
+                type: file
+              file:
+                children:
+                  AppDirectoryStructure.py:
+                    type: file
                 type: dir
             type: dir
           tests:
             children:
+              AbstractAppTestCase.py:
+                type: file
+              AbstractWebhookTestCase.py:
+                type: file
               command:
                 children:
                   app:
                     children:
+                      exec.py:
+                        type: file
+                      go.py:
+                        type: file
+                      info.py:
+                        type: file
                       init.py:
                         type: file
                       perms.py:
@@ -567,8 +697,20 @@ children:
                       stop.py:
                         type: file
                     type: dir
+                  code:
+                    children:
+                      check.py:
+                        type: file
+                      format.py:
+                        type: file
+                    type: dir
+                  command:
+                    children: {}
+                    type: dir
                   config:
                     children:
+                      bind_files.py:
+                        type: file
                       get.py:
                         type: file
                       set.py:
@@ -576,9 +718,34 @@ children:
                       write.py:
                         type: file
                     type: dir
+                  container:
+                    children:
+                      list.py:
+                        type: file
+                    type: dir
+                  db:
+                    children:
+                      dump.py:
+                        type: file
+                      exec.py:
+                        type: file
+                      go.py:
+                        type: file
+                      restore.py:
+                        type: file
+                    type: dir
+                  domain:
+                    children:
+                      list.py:
+                        type: file
+                    type: dir
                   env:
                     children:
+                      choose.py:
+                        type: file
                       get.py:
+                        type: file
+                      set.py:
                         type: file
                     type: dir
                   hook:
@@ -601,11 +768,27 @@ children:
                       migrate.py:
                         type: file
                     type: dir
+                  notification:
+                    children:
+                      notify.py:
+                        type: file
+                    type: dir
                   proxy:
                     children:
                       start.py:
                         type: file
                       stop.py:
+                        type: file
+                    type: dir
+                  remote:
+                    children:
+                      available.py:
+                        type: file
+                      exec.py:
+                        type: file
+                      go.py:
+                        type: file
+                      push.py:
                         type: file
                     type: dir
                   service:
@@ -622,10 +805,94 @@ children:
                     type: dir
                   version:
                     children:
-                      build.py:
+                      get.py:
+                        type: file
+                      new.py:
+                        type: file
+                      new_commit.py:
+                        type: file
+                      new_write.py:
+                        type: file
+                    type: dir
+                  webhook:
+                    children:
+                      exec.py:
+                        type: file
+                      info.py:
+                        type: file
+                      listen.py:
+                        type: file
+                      status.py:
+                        type: file
+                      status_process.py:
+                        type: file
+                      stop.py:
                         type: file
                     type: dir
                 type: dir
+              resources:
+                children:
+                  3.0.0:
+                    children:
+                      .wex:
+                        type: file
+                      project:
+                        children:
+                          .gitignore:
+                            type: file
+                        type: dir
+                    type: dir
+                  4.0.0:
+                    children:
+                      .wex:
+                        children:
+                          .env:
+                            type: file
+                          config:
+                            type: file
+                        type: dir
+                    type: dir
+                  5.0.0:
+                    children:
+                      .wex:
+                        children:
+                          .env:
+                            type: file
+                          command:
+                            children:
+                              test:
+                                children:
+                                  test.yml:
+                                    type: file
+                                  test_running.yml:
+                                    type: file
+                                type: dir
+                            type: dir
+                          config.yml:
+                            type: file
+                          script:
+                            children:
+                              test.py:
+                                type: file
+                              test.sh:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  fuzzy:
+                    children:
+                      .wex:
+                        children:
+                          config.yml:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+            type: dir
+          typing:
+            children:
+              webhook.py:
+                type: file
             type: dir
         type: dir
       core:
@@ -647,6 +914,11 @@ children:
                   create.py:
                     type: file
                 type: dir
+              configure:
+                children:
+                  all.py:
+                    type: file
+                type: dir
               core:
                 children:
                   cleanup.py:
@@ -654,6 +926,11 @@ children:
                   install.py:
                     type: file
                   uninstall.py:
+                    type: file
+                type: dir
+              install:
+                children:
+                  update.py:
                     type: file
                 type: dir
               logo:
@@ -668,9 +945,6 @@ children:
                   show.py:
                     type: file
                 type: dir
-              migration:
-                children: {}
-                type: dir
               registry:
                 children:
                   build.py:
@@ -683,6 +957,8 @@ children:
                 type: dir
               test:
                 children:
+                  cleanup.py:
+                    type: file
                   create.py:
                     type: file
                   run.py:
@@ -690,18 +966,13 @@ children:
                 type: dir
               version:
                 children:
-                  build.py:
-                    type: file
                   get.py:
                     type: file
-                type: dir
-              webhook:
-                children:
-                  exec.py:
+                  new.py:
                     type: file
-                  serve.py:
+                  new_commit.py:
                     type: file
-                  stop.py:
+                  new_write.py:
                     type: file
                 type: dir
             type: dir
@@ -724,6 +995,11 @@ children:
                       create.py:
                         type: file
                     type: dir
+                  configure:
+                    children:
+                      all.py:
+                        type: file
+                    type: dir
                   core:
                     children:
                       cleanup.py:
@@ -731,6 +1007,11 @@ children:
                       install.py:
                         type: file
                       uninstall.py:
+                        type: file
+                    type: dir
+                  install:
+                    children:
+                      update.py:
                         type: file
                     type: dir
                   logo:
@@ -744,9 +1025,6 @@ children:
                         type: file
                       show.py:
                         type: file
-                    type: dir
-                  migration:
-                    children: {}
                     type: dir
                   registry:
                     children:
@@ -762,6 +1040,8 @@ children:
                     type: dir
                   test:
                     children:
+                      cleanup.py:
+                        type: file
                       create.py:
                         type: file
                       run.py:
@@ -769,18 +1049,13 @@ children:
                     type: dir
                   version:
                     children:
-                      build.py:
-                        type: file
                       get.py:
                         type: file
-                    type: dir
-                  webhook:
-                    children:
-                      exec.py:
+                      new.py:
                         type: file
-                      serve.py:
+                      new_commit.py:
                         type: file
-                      stop.py:
+                      new_write.py:
                         type: file
                     type: dir
                 type: dir
@@ -790,6 +1065,13 @@ children:
         children:
           command:
             children:
+              config:
+                children:
+                  get.py:
+                    type: file
+                  set.py:
+                    type: file
+                type: dir
               file:
                 children:
                   append_once.py:
@@ -810,9 +1092,9 @@ children:
               default.py:
                 type: file
             type: dir
-          helpers:
+          helper:
             children:
-              git.py:
+              git_utils.py:
                 type: file
               migration.py:
                 type: file
@@ -823,6 +1105,13 @@ children:
             children:
               command:
                 children:
+                  config:
+                    children:
+                      get.py:
+                        type: file
+                      set.py:
+                        type: file
+                    type: dir
                   file:
                     children:
                       append_once.py:
@@ -844,6 +1133,11 @@ children:
         children:
           command:
             children:
+              container:
+                children:
+                  runs.py:
+                    type: file
+                type: dir
               docker:
                 children:
                   ip.py:
@@ -852,7 +1146,7 @@ children:
                     type: file
                 type: dir
             type: dir
-          helpers:
+          helper:
             children:
               docker.py:
                 type: file
@@ -861,6 +1155,11 @@ children:
             children:
               command:
                 children:
+                  container:
+                    children:
+                      runs.py:
+                        type: file
+                    type: dir
                   docker:
                     children:
                       ip.py:
@@ -870,9 +1169,19 @@ children:
                     type: dir
                 type: dir
             type: dir
+          types:
+            children:
+              docker.py:
+                type: file
+            type: dir
         type: dir
       services_db:
         children:
+          const:
+            children:
+              mysql.py:
+                type: file
+            type: dir
           services:
             children:
               maria:
@@ -881,17 +1190,7 @@ children:
                     children:
                       app:
                         children:
-                          perms.py:
-                            type: file
-                        type: dir
-                      config:
-                        children:
-                          write_post.py:
-                            type: file
-                        type: dir
-                      service:
-                        children:
-                          install.py:
+                          first_init.py:
                             type: file
                         type: dir
                     type: dir
@@ -942,6 +1241,32 @@ children:
                 type: dir
               mongo:
                 children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          first_init.py:
+                            type: file
+                        type: dir
+                      db:
+                        children:
+                          dump.py:
+                            type: file
+                          dumps_list.py:
+                            type: file
+                          exec.py:
+                            type: file
+                          go.py:
+                            type: file
+                          restore.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          ready.py:
+                            type: file
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -977,19 +1302,31 @@ children:
                 children:
                   command:
                     children:
-                      app:
-                        children:
-                          perms.py:
-                            type: file
-                        type: dir
                       config:
                         children:
-                          write_post.py:
+                          runtime.py:
+                            type: file
+                        type: dir
+                      db:
+                        children:
+                          connect.py:
+                            type: file
+                          dump.py:
+                            type: file
+                          dumps_list.py:
+                            type: file
+                          exec.py:
+                            type: file
+                          go.py:
+                            type: file
+                          restore.py:
                             type: file
                         type: dir
                       service:
                         children:
                           install.py:
+                            type: file
+                          ready.py:
                             type: file
                         type: dir
                     type: dir
@@ -1026,19 +1363,62 @@ children:
                               my.cnf:
                                 type: file
                             type: dir
-                          sonarqube:
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              postgres:
+                children:
+                  command:
+                    children:
+                      db:
+                        children:
+                          connect.py:
+                            type: file
+                          dump.py:
+                            type: file
+                          dumps_list.py:
+                            type: file
+                          exec.py:
+                            type: file
+                          go.py:
+                            type: file
+                          restore.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                          ready.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            type: file
+                          docker:
                             children:
-                              conf:
-                                children:
-                                  .gitkeep:
-                                    type: file
-                                type: dir
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          postgres:
+                            children:
                               data:
                                 children:
                                   .gitkeep:
                                     type: file
                                 type: dir
-                              extensions:
+                              dumps:
                                 children:
                                   .gitkeep:
                                     type: file
@@ -1049,8 +1429,77 @@ children:
                   service.config.yml:
                     type: file
                 type: dir
-              postgres:
+              sqlserver:
                 children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          first_init.py:
+                            type: file
+                          perms.py:
+                            type: file
+                        type: dir
+                      db:
+                        children:
+                          dump.py:
+                            type: file
+                          dumps_list.py:
+                            type: file
+                          exec.py:
+                            type: file
+                          go.py:
+                            type: file
+                          restore.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                          ready.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          sqlserver:
+                            children:
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              log:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              mssql:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
                   service.config.yml:
                     type: file
                 type: dir
@@ -1062,6 +1511,24 @@ children:
             children:
               laravel:
                 children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          exec.py:
+                            type: file
+                        type: dir
+                      config:
+                        children:
+                          runtime.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -1087,6 +1554,79 @@ children:
                 type: dir
               php:
                 children:
+                  command:
+                    children:
+                      app:
+                        children:
+                          exec.py:
+                            type: file
+                        type: dir
+                      config:
+                        children:
+                          runtime.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      .wex:
+                        children:
+                          apache:
+                            children:
+                              web.conf:
+                                children: {}
+                                type: dir
+                            type: dir
+                        type: dir
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          apache:
+                            children:
+                              web.conf:
+                                type: file
+                              web.prod.conf:
+                                type: file
+                            type: dir
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.local.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          php:
+                            children:
+                              web.ini:
+                                type: file
+                              web.local.ini:
+                                type: file
+                            type: dir
+                        type: dir
+                      index.php:
+                        type: file
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              phpmyadmin:
+                children:
+                  command:
+                    children:
+                      config:
+                        children:
+                          runtime.py:
+                            type: file
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -1100,30 +1640,80 @@ children:
                             children:
                               docker-compose.dev.yml:
                                 type: file
+                              docker-compose.local.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              symfony:
+                children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              wordpress:
+                children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                      url:
+                        children:
+                          replace.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose-cli.yml:
+                                type: file
+                              docker-compose.dev.yml:
+                                type: file
                               docker-compose.prod.yml:
                                 type: file
                               docker-compose.yml:
                                 type: file
                             type: dir
                         type: dir
-                      index.php:
-                        type: file
                     type: dir
                   service.config.yml:
                     type: file
-                type: dir
-              phpmyadmin:
-                children: {}
-                type: dir
-              symfony:
-                children:
-                  service.config.yml:
-                    type: file
-                type: dir
-              wordpress:
-                children:
-                  service.config.yml:
-                    type: file
+                  tests:
+                    children:
+                      command:
+                        children:
+                          url:
+                            children: {}
+                            type: dir
+                        type: dir
+                    type: dir
                 type: dir
             type: dir
         type: dir
@@ -1133,6 +1723,12 @@ children:
             children:
               gitlab:
                 children:
+                  command:
+                    children:
+                      app:
+                        children: {}
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -1161,6 +1757,8 @@ children:
                             type: dir
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
                 type: dir
               grafana:
                 children:
@@ -1192,6 +1790,8 @@ children:
                             type: file
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
                 type: dir
               jenkins:
                 children:
@@ -1225,6 +1825,35 @@ children:
                             type: file
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+              listmonk:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.dev.yml:
+                                type: file
+                              docker-compose.prod.yml:
+                                type: file
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                      config.toml:
+                        type: file
+                    type: dir
+                  service.config.yml:
+                    type: file
                 type: dir
               matomo:
                 children:
@@ -1253,6 +1882,19 @@ children:
                 type: dir
               n8n:
                 children:
+                  command:
+                    children:
+                      notification:
+                        children:
+                          notify.py:
+                            type: file
+                        type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -1278,6 +1920,8 @@ children:
                             type: dir
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
                 type: dir
               nextcloud:
                 children:
@@ -1353,6 +1997,8 @@ children:
                             type: dir
                         type: dir
                     type: dir
+                  service.config.yml:
+                    type: file
                 type: dir
               rocketchat:
                 children:
@@ -1449,6 +2095,11 @@ children:
                   spaces.py:
                     type: file
                 type: dir
+              kill:
+                children:
+                  by_port.py:
+                    type: file
+                type: dir
               os:
                 children:
                   name.py:
@@ -1457,6 +2108,11 @@ children:
               own:
                 children:
                   this.py:
+                    type: file
+                type: dir
+              process:
+                children:
+                  by_port.py:
                     type: file
                 type: dir
               system:
@@ -1469,6 +2125,8 @@ children:
             type: dir
           tests:
             children:
+              AbstractPortTestCase.py:
+                type: file
               command:
                 children:
                   dir:
@@ -1481,6 +2139,11 @@ children:
                       spaces.py:
                         type: file
                     type: dir
+                  kill:
+                    children:
+                      by_port.py:
+                        type: file
+                    type: dir
                   os:
                     children:
                       name.py:
@@ -1489,6 +2152,11 @@ children:
                   own:
                     children:
                       this.py:
+                        type: file
+                    type: dir
+                  process:
+                    children:
+                      by_port.py:
                         type: file
                     type: dir
                   system:
@@ -1505,9 +2173,35 @@ children:
         children:
           command:
             children:
+              app:
+                children:
+                  webhook.yml:
+                    type: file
+                  yaml.yml:
+                    type: file
+                type: dir
+              attach:
+                children:
+                  after.py:
+                    type: file
+                  before.py:
+                    type: file
+                type: dir
+              command:
+                children:
+                  has_attached.py:
+                    type: file
+                type: dir
+              command_extension:
+                children:
+                  yaml.yml:
+                    type: file
+                type: dir
               demo_command:
                 children:
                   alias.py:
+                    type: file
+                  counting_collection.py:
                     type: file
                   response_collection.py:
                     type: file
@@ -1518,11 +2212,45 @@ children:
                   responses.py:
                     type: file
                 type: dir
+              logging:
+                children:
+                  event.py:
+                    type: file
+                  log.py:
+                    type: file
+                type: dir
               return_type:
                 children:
-                  array.py:
+                  dict.py:
                     type: file
-                  string.py:
+                  function.py:
+                    type: file
+                  hidden.py:
+                    type: file
+                  int.py:
+                    type: file
+                  interactive_shell_command.py:
+                    type: file
+                  key_value.py:
+                    type: file
+                  list.py:
+                    type: file
+                  non_interactive_shell_command.py:
+                    type: file
+                  null.py:
+                    type: file
+                  queued_collection.py:
+                    type: file
+                  response_collection.py:
+                    type: file
+                  str.py:
+                    type: file
+                  table.py:
+                    type: file
+                type: dir
+              template:
+                children:
+                  log.py:
                     type: file
                 type: dir
             type: dir
@@ -1549,6 +2277,11 @@ children:
                           other.py:
                             type: file
                         type: dir
+                      webhook:
+                        children:
+                          test_command.py:
+                            type: file
+                        type: dir
                     type: dir
                 type: dir
               test_2:
@@ -1562,14 +2295,61 @@ children:
                         type: dir
                     type: dir
                 type: dir
+              test_inherit:
+                children:
+                  service.config.yml:
+                    type: file
+                type: dir
+              test_inherit_base:
+                children:
+                  command:
+                    children:
+                      base_command:
+                        children:
+                          base.py:
+                            type: file
+                        type: dir
+                    type: dir
+                type: dir
+              test_inherit_parent:
+                children:
+                  service.config.yml:
+                    type: file
+                type: dir
             type: dir
           tests:
             children:
               command:
                 children:
+                  app:
+                    children:
+                      webhook.py:
+                        type: file
+                      yaml.py:
+                        type: file
+                    type: dir
+                  attach:
+                    children:
+                      after.py:
+                        type: file
+                      before.py:
+                        type: file
+                    type: dir
+                  command:
+                    children:
+                      has_attached.py:
+                        type: file
+                    type: dir
+                  command_extension:
+                    children:
+                      yaml.py:
+                        type: file
+                    type: dir
                   demo_command:
                     children:
                       alias.py:
+                        type: file
+                      counting_collection.py:
                         type: file
                       response_collection.py:
                         type: file
@@ -1580,11 +2360,45 @@ children:
                       responses.py:
                         type: file
                     type: dir
+                  logging:
+                    children:
+                      event.py:
+                        type: file
+                      log.py:
+                        type: file
+                    type: dir
                   return_type:
                     children:
-                      array.py:
+                      dict.py:
                         type: file
-                      string.py:
+                      function.py:
+                        type: file
+                      hidden.py:
+                        type: file
+                      int.py:
+                        type: file
+                      interactive_shell_command.py:
+                        type: file
+                      key_value.py:
+                        type: file
+                      list.py:
+                        type: file
+                      non_interactive_shell_command.py:
+                        type: file
+                      null.py:
+                        type: file
+                      queued_collection.py:
+                        type: file
+                      response_collection.py:
+                        type: file
+                      str.py:
+                        type: file
+                      table.py:
+                        type: file
+                    type: dir
+                  template:
+                    children:
+                      log.py:
                         type: file
                     type: dir
                 type: dir
@@ -1628,6 +2442,16 @@ children:
       wex-wrapper:
         type: file
     type: dir
+  python:
+    children:
+      venv:
+        children: {}
+        type: dir
+    type: dir
+  requirements-dev.in:
+    type: file
+  requirements-dev.txt:
+    type: file
   requirements.in:
     type: file
   requirements.txt:
@@ -1638,16 +2462,26 @@ children:
     children:
       const:
         children:
-          error.py:
+          args.py:
             type: file
           globals.py:
+            type: file
+          resolvers.py:
+            type: file
+          types.py:
             type: file
         type: dir
       core:
         children:
           AddonManager.py:
             type: file
+          BaseClass.py:
+            type: file
           CommandRequest.py:
+            type: file
+          ConfigValue.py:
+            type: file
+          ErrorMessage.py:
             type: file
           FatalError.py:
             type: file
@@ -1655,41 +2489,112 @@ children:
             type: file
           Kernel.py:
             type: file
+          KernelChild.py:
+            type: file
           Logger.py:
             type: file
           TestKernel.py:
             type: file
           command:
             children:
-              AbstractCommandResolver.py:
+              ScriptCommand.py:
                 type: file
-              AddonCommandResolver.py:
+              TestCommand.py:
                 type: file
-              AppCommandResolver.py:
+              resolver:
+                children:
+                  AbstractCommandResolver.py:
+                    type: file
+                  AddonCommandResolver.py:
+                    type: file
+                  AppCommandResolver.py:
+                    type: file
+                  ServiceCommandResolver.py:
+                    type: file
+                  UserCommandResolver.py:
+                    type: file
+                type: dir
+              runner:
+                children:
+                  AbstractCommandRunner.py:
+                    type: file
+                  PythonCommandRunner.py:
+                    type: file
+                  YamlCommandRunner.py:
+                    type: file
+                type: dir
+            type: dir
+          file:
+            children:
+              AbstractFileSystemStructure.py:
                 type: file
-              ServiceCommandResolver.py:
+              DirectoryStructure.py:
                 type: file
-              UserCommandResolver.py:
+              FileStructure.py:
+                type: file
+              KernelDirectoryStructure.py:
+                type: file
+              KernelRegistryFileStructure.py:
+                type: file
+              KernelSystemRootDirectoryStructure.py:
+                type: file
+              YamlFileStructure.py:
+                type: file
+            type: dir
+          registry:
+            children:
+              Command.py:
+                type: file
+              CommandGroup.py:
                 type: file
             type: dir
           response:
             children:
               AbortResponse.py:
                 type: file
+              AbstractEmptyResponse.py:
+                type: file
               AbstractResponse.py:
                 type: file
-              TableResponse.py:
+              AbstractTerminalSectionResponse.py:
                 type: file
               DefaultResponse.py:
                 type: file
+              DictResponse.py:
+                type: file
               FunctionResponse.py:
+                type: file
+              HiddenResponse.py:
                 type: file
               InteractiveShellCommandResponse.py:
                 type: file
+              KeyValueResponse.py:
+                type: file
               NonInteractiveShellCommandResponse.py:
+                type: file
+              NullResponse.py:
+                type: file
+              QueuedCollectionResponse.py:
                 type: file
               ResponseCollectionResponse.py:
                 type: file
+              TableResponse.py:
+                type: file
+              queue_collection:
+                children:
+                  AbstractQueuedCollectionResponseQueueManager.py:
+                    type: file
+                  DefaultQueuedCollectionResponseQueueManager.py:
+                    type: file
+                  FastModeQueuedCollectionResponseQueueManager.py:
+                    type: file
+                  QueuedCollectionPathManager.py:
+                    type: file
+                  QueuedCollectionStopCurrentStepResponse.py:
+                    type: file
+                  QueuedCollectionStopResponse.py:
+                    type: file
+                type: dir
             type: dir
         type: dir
       decorator:
@@ -1698,11 +2603,17 @@ children:
             type: file
           as_sudo.py:
             type: file
+          attach.py:
+            type: file
           command.py:
+            type: file
+          no_log.py:
             type: file
           option.py:
             type: file
           test_command.py:
+            type: file
+          verbosity.py:
             type: file
         type: dir
       helper:
@@ -1715,11 +2626,17 @@ children:
             type: file
           core.py:
             type: file
+          data_json.py:
+            type: file
+          data_yaml.py:
+            type: file
           dict.py:
+            type: file
+          dir.py:
             type: file
           file.py:
             type: file
-          json.py:
+          module.py:
             type: file
           process.py:
             type: file
@@ -1727,15 +2644,17 @@ children:
             type: file
           registry.py:
             type: file
+          routing.py:
+            type: file
           service.py:
             type: file
           string.py:
             type: file
-          suggest.py:
-            type: file
           system.py:
             type: file
           test.py:
+            type: file
+          user.py:
             type: file
         type: dir
       resources:
@@ -1744,9 +2663,13 @@ children:
             children:
               command.py.tpl:
                 type: file
+              command.yml.tpl:
+                type: file
               handler.sh.tpl:
                 type: file
               test.py.tpl:
+                type: file
+              test.yml.tpl:
                 type: file
             type: dir
           wexd.service:
@@ -1759,47 +2682,10 @@ children:
         type: file
       resources:
         children:
-          app:
-            children:
-              3.0.0:
-                children:
-                  .wex:
-                    type: file
-                  project:
-                    children:
-                      .gitignore:
-                        type: file
-                    type: dir
-                type: dir
-              4.0.0:
-                children:
-                  .wex:
-                    children:
-                      .env:
-                        type: file
-                      config:
-                        type: file
-                    type: dir
-                type: dir
-              5.0.0:
-                children:
-                  .wex:
-                    children:
-                      .env:
-                        type: file
-                      config.yml:
-                        type: file
-                    type: dir
-                type: dir
-              fuzzy:
-                children:
-                  .wex:
-                    children:
-                      config.yml:
-                        type: file
-                    type: dir
-                type: dir
-            type: dir
+          simple-python-file.py:
+            type: file
+          simple-shell-file.sh:
+            type: file
           test-wrapped.sh:
             type: file
         type: dir
