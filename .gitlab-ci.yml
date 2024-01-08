@@ -84,16 +84,15 @@ deploy:
     # Uninstall
     - apt remove wex -y
 
-
 # Try to install using the new debian apt repository.
 test_apt_install_debian:
   extends: .test_apt_install
   stage: test_apt_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
-  #  only:
-  #    - tags
-  #  needs:
-  #    - deploy
+  only:
+    - tags
+  needs:
+    - deploy
 
 # Try to install using the new debian apt repository.
 test_apt_install_ubuntu:
