@@ -23,10 +23,11 @@ def app__env__get(
 
 
 def _app__env__get(kernel: "Kernel", app_dir: str, key: str = "APP_ENV") -> str:
-    env = dotenv_values(os.path.join(app_dir, APP_FILEPATH_REL_ENV)).get(key)
+    env_file=os.path.join(app_dir, APP_FILEPATH_REL_ENV)
+    env = dotenv_values(env_file).get(key)
 
     if not env:
-        kernel.io.error(f"Env not found from APP_ENV in {app_dir}")
+        kernel.io.error(f"Env property not found {key} in {env_file}")
         assert False
 
     return str(env)
