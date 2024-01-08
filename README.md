@@ -15,10 +15,7 @@
 
 - Once new features are ready to deploy:
 
-    # Update version number
-    wex core::version/build
-    # ... check changes then ...
-    # Commit and tag new version
-    wex core::version/build -ok
+    # Make quality checks and updates version number
+    wex core::version/new
     # Push when ready to deploy
     git push
