@@ -112,6 +112,11 @@ test_apt_install_ubuntu:
     - apt update
     - apt install wex -y
     - wex hi
+    # Compare versions
+    - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
+    - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
+    - if [ "${BUILD_VERSION}" = "${CURRENT_VERSION}" ];then echo "Versions match" else exit 1
+    # Uninstall
     - apt remove wex -y
 
 build_docker:
