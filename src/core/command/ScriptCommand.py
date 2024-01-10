@@ -156,7 +156,8 @@ class ScriptCommand(BaseClass):
             )
         else:
             runner.kernel.io.error(
-                'Missing "script" or "file" key in script yaml definition'
+                'Missing "script" or "file" key in script yaml definition',
+                trace=False
             )
             assert False
 

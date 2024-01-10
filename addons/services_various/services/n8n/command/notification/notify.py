@@ -35,6 +35,6 @@ def n8n__notification__notify(
 
     data = {"app": manager.get_config("global.name").get_str(), "action": action}
 
-    manager.log(f"Sending notification '{action}' to {url}")
+    manager.log(f"Sending POST notification '{action}' to {url}")
 
     requests.post(url, json=data, headers=headers, auth=auth)
