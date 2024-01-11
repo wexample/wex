@@ -1,13 +1,14 @@
 services: {}
-#    service_name:
+#    app_service_name:
+#      container_name: ${RUNTIME_NAME}_service_name
 #      image: ubuntu:latest
-#        extends:
-#            file: ${SERVICE_DEFAULT_YML_ENV}
-#            service: default
-#        # Edit if you want to use a local Dockerfile for your app.
-#        image: wexample/${GLOBAL_NAME}:latest
-#        build:
-#          context: ${CONTEXT_DIR}
-#          dockerfile: ./.wex/docker/Dockerfile.default
-#          args:
-#            DOCKERFILE_BUILD_ARG: ${CONFIG_ARG}
+#      extends:
+#          file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
+#          service: default
+#      # Edit if you want to use a local Dockerfile for your app.
+#      image: wexample/${GLOBAL_NAME}:latest
+#      build:
+#        context: ${RUNTIME_PATH_APP}
+#        dockerfile: ./.wex/docker/Dockerfile.default
+#        args:
+#          DOCKERFILE_BUILD_ARG: ${CONFIG_ARG}
