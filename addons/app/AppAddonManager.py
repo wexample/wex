@@ -631,7 +631,8 @@ class AppAddonManager(AddonManager):
         # Get a full config copy
         runtime_config = cast(AppRuntimeConfig, config.copy())
         # Add the per-environment config.
-        runtime_config.update(config["env"][env])
+        if env in config["env"]:
+            runtime_config.update(config["env"][env])
 
         if any(k in runtime_config for k in ["domains", "domain_main", "domain_tld"]):
             domains = runtime_config.get("domains", [])

@@ -52,5 +52,5 @@ def app__webhook__status_process(
     return DictResponse(
         kernel,
         cast(StringKeysDict, output),
-        cli_render_mode=KERNEL_RENDER_MODE_TERMINAL,
+        default_render_mode=KERNEL_RENDER_MODE_TERMINAL,
     )
