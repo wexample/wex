@@ -17,16 +17,16 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-class DictResponse(AbstractTerminalSectionResponse):
+class ListResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
         kernel: "Kernel",
-        dictionary: StringKeysDict,
+        list_data: StringKeysDict,
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,
     ) -> None:
         super().__init__(kernel, default_render_mode)
 
-        self.dictionary_data: StringKeysDict = dictionary
+        self.list_data: StringKeysDict = list_data
 
     def render_content(
         self,
@@ -34,14 +34,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         render_mode: str | None = None,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
-        render_mode = render_mode or self._default_render_mode
-
-        # For HTTP mode, we simply use the dictionary to be converted as JSON
-        self.output_bag.append(self.dictionary_data)
-
-        self.render_content_multiple(
-            list(self.dictionary_data.values()), request, render_mode, args
-        )
+        self.output_bag.append(self.list_data)
 
         return self
 
@@ -50,31 +43,20 @@ class DictResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        if not len(self.output_bag):
-            return None
-
         data = self.output_bag[0]
-        assert isinstance(data, dict)
+        assert isinstance(data, list)
 
         render_mode = render_mode or self._default_render_mode
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            print_string = []
-
-            for key in data:
-                if isinstance(data[key], AbstractResponse):
-                    print_string.append(data[key].print(render_mode))
-                else:
-                    print_string.append(key + ": " + str(data[key]))
-
-            return os.linesep.join(print_string)
+            return os.linesep.join(data)
         if render_mode == KERNEL_RENDER_MODE_JSON:
-            print_dict = {}
+            print_dict = []
             for key in data:
                 if isinstance(data[key], AbstractResponse):
-                    print_dict[key] = data[key].print(render_mode)
+                    print_dict.append(data[key].print(render_mode))
                 else:
-                    print_dict[key] = data[key]
+                    print_dict.append(data[key])
             return print_dict
 
         return None

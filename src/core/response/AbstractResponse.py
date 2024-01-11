@@ -24,10 +24,11 @@ if TYPE_CHECKING:
 
 
 class AbstractResponse(KernelChild, HasRequest):
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: "Kernel", default_render_mode: Optional[str] = None) -> None:
         KernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
+        self._default_render_mode = default_render_mode
         self.parent: Optional["AbstractResponse"] = None
         self.output_bag: List[ResponsePrintType | AbstractResponse] = []
         self.parent = None
