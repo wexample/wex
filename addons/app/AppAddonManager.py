@@ -474,13 +474,12 @@ class AppAddonManager(AddonManager):
 
         if script_command.get_extra_value("app_should_run", False):
             from addons.app.command.app.started import (
-                APP_STARTED_CHECK_MODE_FULL,
                 app__app__started,
             )
 
             if not self.kernel.run_function(
                 app__app__started,
-                {"app-dir": self.app_dir, "mode": APP_STARTED_CHECK_MODE_FULL},
+                {"app-dir": self.app_dir},
             ).first():
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
