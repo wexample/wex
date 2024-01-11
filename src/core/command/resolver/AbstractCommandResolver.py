@@ -29,6 +29,7 @@ from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.DictResponse import DictResponse
+from src.core.response.ListResponse import ListResponse
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.NullResponse import NullResponse
 from src.helper.args import args_convert_dict_to_args
@@ -125,6 +126,8 @@ class AbstractCommandResolver(KernelChild):
             return FunctionResponse(self.kernel, response)
         elif isinstance(response, dict):
             return DictResponse(self.kernel, response)
+        elif isinstance(response, list):
+            return ListResponse(self.kernel, response)
         elif response is None:
             return NullResponse(self.kernel)
 
