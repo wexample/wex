@@ -109,9 +109,7 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
         if no_proxy:
-            return None
-
-        if not manager.has_runtime_config("domains"):
+            kernel.io.message(f'Proxy explicitly disabled')
             return None
 
         # Current app is not the reverse proxy itself.
