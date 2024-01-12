@@ -104,6 +104,7 @@ test_apt_install_ubuntu:
   needs:
     - deploy
 
+# Rebuild public image
 build_docker:
   stage: build_docker
   needs:
