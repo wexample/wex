@@ -213,7 +213,7 @@ class AppAddonManager(AddonManager):
                     "name": app_name,
                     "services": [],
                     "type": "app",
-                    "version": VERSION_DEFAULT
+                    "version": VERSION_DEFAULT,
                 },
                 "docker": {
                     "compose": {
@@ -475,9 +475,7 @@ class AppAddonManager(AddonManager):
         request.set_args_list(args)
 
         if script_command.get_extra_value("app_should_run", False):
-            from addons.app.command.app.started import (
-                app__app__started,
-            )
+            from addons.app.command.app.started import app__app__started
 
             if not self.kernel.run_function(
                 app__app__started,

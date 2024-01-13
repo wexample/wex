@@ -29,8 +29,8 @@ from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.DefaultResponse import DefaultResponse
 from src.core.response.DictResponse import DictResponse
-from src.core.response.ListResponse import ListResponse
 from src.core.response.FunctionResponse import FunctionResponse
+from src.core.response.ListResponse import ListResponse
 from src.core.response.NullResponse import NullResponse
 from src.helper.args import args_convert_dict_to_args
 from src.helper.command import command_to_string
@@ -104,7 +104,7 @@ class AbstractCommandResolver(KernelChild):
                         self.kernel.run_command(
                             command_string,
                             # Attached command should have same args as target
-                            request.get_args_list().copy()
+                            request.get_args_list().copy(),
                         )
                         self.kernel.fast_mode = fast_mode
 

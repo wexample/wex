@@ -30,7 +30,11 @@ def app__version__new_write(
     else:
         new_version = kernel.run_function(
             default__version__increment,
-            {"version": manager.get_config("global.version", VERSION_DEFAULT).get_str()},
+            {
+                "version": manager.get_config(
+                    "global.version", VERSION_DEFAULT
+                ).get_str()
+            },
         ).print_wrapped_str()
 
     # Save new version

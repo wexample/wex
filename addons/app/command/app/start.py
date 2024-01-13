@@ -109,7 +109,7 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
         if no_proxy:
-            kernel.io.message(f'Proxy explicitly disabled')
+            kernel.io.message(f"Proxy explicitly disabled")
             return None
 
         # Current app is not the reverse proxy itself.

@@ -2,12 +2,7 @@ import os
 from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import (
-    OptionalCoreCommandArgsDict,
-    ResponsePrintType,
-    StringKeysDict,
-    AnyList,
-)
+from src.const.types import AnyList, OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
@@ -47,7 +42,9 @@ class ListResponse(AbstractTerminalSectionResponse):
         data = self.output_bag[0]
         assert isinstance(data, list)
 
-        render_mode = render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
+        render_mode = (
+            render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
+        )
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(data)

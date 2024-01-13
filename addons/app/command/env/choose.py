@@ -14,7 +14,14 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Ask user about which environment to use")
-@option("--question", "-q", type=str, required=True, default="Choose app environment", help="Question to ask to user")
+@option(
+    "--question",
+    "-q",
+    type=str,
+    required=True,
+    default="Choose app environment",
+    help="Question to ask to user",
+)
 def app__env__choose(
     manager: "AppAddonManager", app_dir: str, question: str
 ) -> Optional[AbortResponse]:

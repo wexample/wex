@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from abc import ABC
-from typing import TYPE_CHECKING, cast, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.types import JsonContent, ResponsePrintType
 from src.core.response.AbstractResponse import AbstractResponse
@@ -13,7 +13,12 @@ if TYPE_CHECKING:
 
 
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):
-    def __init__(self, kernel: "Kernel", title: str | None = None, default_render_mode: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        kernel: "Kernel",
+        title: str | None = None,
+        default_render_mode: Optional[str] = None,
+    ) -> None:
         super().__init__(kernel, default_render_mode)
         self.title: str | None = title
 
