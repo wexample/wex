@@ -6,6 +6,7 @@ from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
     StringKeysDict,
+    AnyList,
 )
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -21,12 +22,12 @@ class ListResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
         kernel: "Kernel",
-        list_data: StringKeysDict,
+        list_data: AnyList,
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,
     ) -> None:
         super().__init__(kernel, default_render_mode)
 
-        self.list_data: StringKeysDict = list_data
+        self.list_data: AnyList = list_data
 
     def render_content(
         self,
@@ -46,7 +47,7 @@ class ListResponse(AbstractTerminalSectionResponse):
         data = self.output_bag[0]
         assert isinstance(data, list)
 
-        render_mode = render_mode or self._default_render_mode
+        render_mode = render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(data)

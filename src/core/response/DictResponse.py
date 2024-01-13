@@ -34,7 +34,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         render_mode: str | None = None,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
-        render_mode = render_mode or self._default_render_mode
+        render_mode = render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
 
         # For HTTP mode, we simply use the dictionary to be converted as JSON
         self.output_bag.append(self.dictionary_data)
@@ -56,7 +56,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         data = self.output_bag[0]
         assert isinstance(data, dict)
 
-        render_mode = render_mode or self._default_render_mode
+        render_mode = render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             print_string = []
