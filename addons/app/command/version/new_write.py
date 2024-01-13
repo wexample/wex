@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment
-from src.const.globals import CORE_COMMAND_NAME
+from src.const.globals import CORE_COMMAND_NAME, VERSION_DEFAULT
 from src.decorator.option import option
 from src.helper.core import core_kernel_get_version
 
@@ -30,7 +30,7 @@ def app__version__new_write(
     else:
         new_version = kernel.run_function(
             default__version__increment,
-            {"version": manager.get_config("global.version").get_str()},
+            {"version": manager.get_config("global.version", VERSION_DEFAULT).get_str()},
         ).print_wrapped_str()
 
     # Save new version

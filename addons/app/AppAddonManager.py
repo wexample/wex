@@ -33,6 +33,7 @@ from src.const.globals import (
     DATE_FORMAT_SECOND,
     SHELL_DEFAULT,
     VERBOSITY_LEVEL_MEDIUM,
+    VERSION_DEFAULT,
 )
 from src.const.types import (
     AnyAppConfig,
@@ -212,6 +213,7 @@ class AppAddonManager(AddonManager):
                     "name": app_name,
                     "services": [],
                     "type": "app",
+                    "version": VERSION_DEFAULT
                 },
                 "docker": {
                     "compose": {
