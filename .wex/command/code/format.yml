@@ -8,6 +8,8 @@ properties:
       position: before
       command: app::code/format
 scripts:
+  - title: Regenerate app info
+    script: app::info/update
   - title: Remove unused imports
     script: find src addons tests -name "*.py" | xargs autoflake --remove-all-unused-imports --remove-unused-variables --in-place
   - title: Sort imports
