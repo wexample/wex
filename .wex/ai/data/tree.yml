@@ -108,23 +108,6 @@ children:
       python:
         status: hidden
         type: dir
-      script:
-        children:
-          app-started.yml:
-            type: file
-          appGo.sh:
-            type: file
-          appInstall.sh:
-            type: file
-          appPerms.sh:
-            type: file
-          appStarted.sh:
-            type: file
-          autoCode.sh:
-            type: file
-          gpgExport.sh:
-            type: file
-        type: dir
       source:
         children:
           .gitkeep:
@@ -172,19 +155,10 @@ children:
           command:
             children:
               code:
-                children:
-                  patch.py:
-                    type: file
-                type: dir
-              crawler:
-                children:
-                  update.py:
-                    type: file
+                children: {}
                 type: dir
               talk:
-                children:
-                  ask.py:
-                    type: file
+                children: {}
                 type: dir
             type: dir
           samples:
@@ -194,56 +168,24 @@ children:
                   explain:
                     children:
                       code_comment:
-                        children:
-                          prompt.txt:
-                            type: file
-                          response.patch:
-                            type: file
-                          source.py:
-                            type: file
-                          tree.yml:
-                            type: file
+                        children: {}
                         type: dir
                     type: dir
                   generate:
                     children:
                       program_hello_world:
-                        children:
-                          prompt.txt:
-                            type: file
-                          response.patch:
-                            type: file
-                          tree.yml:
-                            type: file
+                        children: {}
                         type: dir
                     type: dir
                   patch:
                     children:
                       hello_world_capitalized:
-                        children:
-                          prompt.txt:
-                            type: file
-                          response.patch:
-                            type: file
-                          source.py:
-                            type: file
-                          tree.yml:
-                            type: file
+                        children: {}
                         type: dir
                     type: dir
                 type: dir
               prompts:
-                children:
-                  git_patch_generator.txt:
-                    type: file
-                  program_file_structure.txt:
-                    type: file
-                  program_full_code.txt:
-                    type: file
-                  programming_assistant.txt:
-                    type: file
-                  simple_examples.txt:
-                    type: file
+                children: {}
                 type: dir
             type: dir
           src:
@@ -268,19 +210,13 @@ children:
               command:
                 children:
                   code:
-                    children:
-                      patch.py:
-                        type: file
+                    children: {}
                     type: dir
                   crawler:
-                    children:
-                      update.py:
-                        type: file
+                    children: {}
                     type: dir
                   talk:
-                    children:
-                      ask.py:
-                        type: file
+                    children: {}
                     type: dir
                 type: dir
             type: dir
@@ -374,6 +310,11 @@ children:
                   update.py:
                     type: file
                 type: dir
+              info:
+                children:
+                  update.py:
+                    type: file
+                type: dir
               location:
                 children:
                   find.py:
@@ -417,6 +358,11 @@ children:
               services:
                 children:
                   exec.py:
+                    type: file
+                type: dir
+              test:
+                children:
+                  run.py:
                     type: file
                 type: dir
               version:
@@ -801,6 +747,11 @@ children:
                   services:
                     children:
                       exec.py:
+                        type: file
+                    type: dir
+                  test:
+                    children:
+                      run.py:
                         type: file
                     type: dir
                   version:
@@ -2569,6 +2520,8 @@ children:
               InteractiveShellCommandResponse.py:
                 type: file
               KeyValueResponse.py:
+                type: file
+              ListResponse.py:
                 type: file
               NonInteractiveShellCommandResponse.py:
                 type: file
