@@ -25,7 +25,6 @@ def phpmyadmin__config__runtime(
         domain_pma = ".".join(domain_pma_list)
 
         manager.set_runtime_config("domain_pma", domain_pma)
-        return
 
     # Setting false to domain will disable domain setting,
     # used to disable phpmyadmin in some environment.
