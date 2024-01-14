@@ -704,6 +704,11 @@ children:
                       update.py:
                         type: file
                     type: dir
+                  info:
+                    children:
+                      update.py:
+                        type: file
+                    type: dir
                   location:
                     children:
                       find.py:
