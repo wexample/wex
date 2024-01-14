@@ -1,17 +1,18 @@
 import os
 
 from datetime import datetime
-from typing import TypedDict, Optional
-
-from src.const.types import YamlContentDict, StringKeysDict
+from typing import TypedDict, Optional, cast
+from src.helper.dict import dict_merge
+from src.const.types import StringKeysDict
 
 import yaml
 
 
 class CrawlerTreeItem(TypedDict, total=False):
-    description: Optional[str]
-    status: Optional[str]
     children: Optional[StringKeysDict]
+    description: Optional[str]
+    last_updated: Optional[str]
+    status: Optional[str]
 
 
 class AppCrawler:
@@ -19,14 +20,14 @@ class AppCrawler:
         self.root: str = root
         self.yaml_filepath: str = yaml_filepath
 
-    def load_tree(self) -> YamlContentDict:
+    def load_tree(self) -> CrawlerTreeItem:
         try:
             with open(self.yaml_filepath, 'r') as f:
-                return yaml.safe_load(f) or {}
+                return cast(CrawlerTreeItem, yaml.safe_load(f) or {})
         except FileNotFoundError:
-            return {}
+            return cast(CrawlerTreeItem, {})
 
-    def merge_tree(self, old_tree: dict, new_tree: dict) -> CrawlerTreeItem:
+    def merge_tree(self, old_tree: CrawlerTreeItem, new_tree: CrawlerTreeItem) -> CrawlerTreeItem:
         merged_tree: CrawlerTreeItem = new_tree.copy()
 
         if 'description' in old_tree:
@@ -38,71 +39,98 @@ class AppCrawler:
             if "children" in merged_tree:
                 del merged_tree["children"]
         else:
-            if 'children' in new_tree:
-                merged_tree['children'] = {}
+            if 'children' in new_tree and new_tree['children']:
+                children: StringKeysDict = {}
 
-                for name, children in new_tree['children'].items():
-                    if isinstance(children, dict):
-                        children = children.copy()
+                for name, child in new_tree['children'].items():
+                    if isinstance(child, dict):
+                        child = child.copy()
 
-                    if 'children' not in old_tree:
-                        merged_tree['children'][name] = children
+                    if 'children' not in old_tree or not old_tree['children']:
+                        children[name] = child
                     else:
                         if name in old_tree['children']:
-                            old_children = old_tree['children'][name]
+                            old_child = cast(CrawlerTreeItem, old_tree['children'][name])
 
-                            if isinstance(old_children, dict):
-                                old_children = old_children.copy()
-
-                                merged_tree['children'][name] = self.merge_tree(
-                                    old_children,
-                                    children
+                            if isinstance(old_child, dict):
+                                old_child = old_child.copy()
+                                children[name] = self.merge_tree(
+                                    old_child,
+                                    child
                                 )
                             else:
-                                merged_tree['children'][name] = children
+                                children[name] = child
                         else:
-                            merged_tree['children'][name] = children
+                            children[name] = child
+
+                merged_tree['children'] = children
 
         return merged_tree
 
-    def scan(self, root=None, tree=None):
+    def scan(
+        self,
+        root: Optional[str] = None,
+        tree: Optional[CrawlerTreeItem] = None
+    ) -> CrawlerTreeItem:
         if root is None:
             root = self.root
         if tree is None:
             tree = {}
 
-        tree["children"] = {}
+        children: StringKeysDict = {}
 
         for name in os.listdir(root):
             path = os.path.join(root, name)
             if os.path.isdir(path):
-                tree["children"][name] = {
+                children[name] = {
                     'type': 'dir'
                 }
-                self.scan(path, tree=tree["children"][name])
+                self.scan(path, tree=children[name])
             else:
-                tree["children"][name] = {
+                children[name] = {
                     'type': 'file'
                 }
+
+        tree["children"] = children
 
         return tree
 
     def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
-        tree['children']['.wex']['children']['ai']['children']['data']['children']['tree.yml'] = {
-            'type': 'file',
-            'status': 'hidden',
-            'description': 'This current file'
-        }
-
-        tree['children']['.git'] = {
-            'type': 'dir',
-            'status': 'hidden'
-        }
-
-        tree['children']['.wex']['tmp'] = {
-            'type': 'dir',
-            'status': 'hidden'
-        }
+        tree['children'] = dict_merge(
+            cast(
+                CrawlerTreeItem,
+                tree['children'] or {}),
+            cast(
+                CrawlerTreeItem,
+                {
+                    ".git": {
+                        'type': 'dir',
+                        'status': 'hidden'
+                    },
+                    ".wex": {
+                        "children": {
+                            "ai": {
+                                "children": {
+                                    "data": {
+                                        "children": {
+                                            "tree.yml": {
+                                                'type': 'file',
+                                                'status': 'hidden',
+                                                'description': 'This current file'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "tmp": {
+                            'type': 'dir',
+                            'status': 'hidden',
+                        }
+                    }
+                }
+            )
+        )
 
         return tree
 
