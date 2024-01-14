@@ -1,23 +1,33 @@
 import os
+
 from datetime import datetime
+from typing import TypedDict, Optional
+
+from src.const.types import YamlContentDict, StringKeysDict
 
 import yaml
 
 
-class AppCrawler:
-    def __init__(self, root, yaml_filepath):
-        self.root = root
-        self.yaml_filepath = yaml_filepath
+class CrawlerTreeItem(TypedDict, total=False):
+    description: Optional[str]
+    status: Optional[str]
+    children: Optional[StringKeysDict]
 
-    def load_tree(self):
+
+class AppCrawler:
+    def __init__(self, root: str, yaml_filepath: str) -> None:
+        self.root: str = root
+        self.yaml_filepath: str = yaml_filepath
+
+    def load_tree(self) -> YamlContentDict:
         try:
             with open(self.yaml_filepath, 'r') as f:
                 return yaml.safe_load(f) or {}
         except FileNotFoundError:
             return {}
 
-    def merge_tree(self, old_tree: dict, new_tree: dict) -> list:
-        merged_tree = new_tree.copy()
+    def merge_tree(self, old_tree: dict, new_tree: dict) -> CrawlerTreeItem:
+        merged_tree: CrawlerTreeItem = new_tree.copy()
 
         if 'description' in old_tree:
             merged_tree['description'] = old_tree['description']
@@ -77,7 +87,7 @@ class AppCrawler:
 
         return tree
 
-    def cleanup_tree(self, tree):
+    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree['children']['.wex']['children']['ai']['children']['data']['children']['tree.yml'] = {
             'type': 'file',
             'status': 'hidden',
@@ -113,22 +123,7 @@ class AppCrawler:
 
         return new_tree
 
-    def save_to_yaml(self, filepath, tree):
+    def save_to_yaml(self, filepath: str, tree: CrawlerTreeItem) -> None:
         with open(filepath, 'w') as f:
             yaml.dump(tree, f, default_flow_style=False)
 
-    def tree_content(self, data, path='', result=[]):
-        if 'status' in data and data['status'] == 'hidden':
-            return result
-
-        # This is a directory.
-        if 'children' in data:
-            for key, value in data['children'].items():
-                self.tree_content(value, os.path.join(path, key), result)
-        else:
-            result.append('---------------' + path)
-
-            with open(path, 'r') as f:
-                result.append(f.read())
-
-        return result

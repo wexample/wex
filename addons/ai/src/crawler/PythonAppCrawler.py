@@ -2,7 +2,7 @@ from addons.ai.src.crawler.AppCrawler import AppCrawler
 
 
 class PythonAppCrawler(AppCrawler):
-    def tree_remove(self, tree, file_name):
+    def tree_remove(self, tree, file_name) -> None:
         keys_to_remove = []
 
         for key, value in tree.items():

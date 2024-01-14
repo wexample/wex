@@ -1,16 +1,9 @@
 import os
 from typing import TYPE_CHECKING
-
 from langchain.llms import OpenAI
-
-from langchain.prompts.chat import (
-    HumanMessagePromptTemplate,
-)
+from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain.chains import LLMChain
-from langchain.prompts import (
-    ChatPromptTemplate,
-)
-
+from langchain.prompts import ChatPromptTemplate
 from addons.app.command.env.get import app__env__get
 
 if TYPE_CHECKING:
@@ -18,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class AppAssistant:
-    def __init__(self, manager: "AppAddonManager"):
+    def __init__(self, manager: "AppAddonManager") -> None:
         self.manager = manager
         app_dir = self.manager.get_app_dir()
 
@@ -38,7 +31,7 @@ class AppAssistant:
             prompt=prompt_template,
         )
 
-    def assist(self, question: str):
+    def assist(self, question: str) -> None:
         human_message_prompt = HumanMessagePromptTemplate.from_template(
             '{text}'
         )
