@@ -184,7 +184,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
         )
 
     def _migration_5_0_0_delete_old_files() -> None:
-        if os.path.exists(old_config_path):
+        if os.path.isfile(old_config_path):
             os.remove(old_config_path)
 
     prompt_progress_steps(
