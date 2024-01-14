@@ -14,5 +14,5 @@ class PythonAppCrawler(AppCrawler):
 
     def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree = super().cleanup_tree(tree)
-        self.tree_remove(tree, '__pycache__')
+        self.tree_remove(tree, "__pycache__")
         return tree
