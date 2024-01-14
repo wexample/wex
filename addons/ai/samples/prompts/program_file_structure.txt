@@ -1,0 +1,14 @@
+File structure of the program __PROGRAM__ :
+.git
+  type: folder
+.wex
+  type: folder
+  children:
+    command:
+      type:folder
+      children:
+        samples:
+        children:
+          main.py:
+            type: file
+            description: The main entrypoint of the program.
