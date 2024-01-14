@@ -97,39 +97,34 @@ class AppCrawler:
 
     def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree['children'] = dict_merge(
-            cast(
-                CrawlerTreeItem,
-                tree['children'] or {}),
-            cast(
-                CrawlerTreeItem,
-                {
-                    ".git": {
-                        'type': 'dir',
-                        'status': 'hidden'
-                    },
-                    ".wex": {
-                        "children": {
-                            "ai": {
-                                "children": {
-                                    "data": {
-                                        "children": {
-                                            "tree.yml": {
-                                                'type': 'file',
-                                                'status': 'hidden',
-                                                'description': 'This current file'
-                                            }
+            tree['children'] or {},
+            {
+                ".git": {
+                    'type': 'dir',
+                    'status': 'hidden'
+                },
+                ".wex": {
+                    "children": {
+                        "ai": {
+                            "children": {
+                                "data": {
+                                    "children": {
+                                        "tree.yml": {
+                                            'type': 'file',
+                                            'status': 'hidden',
+                                            'description': 'This current file'
                                         }
                                     }
                                 }
                             }
-                        },
-                        "tmp": {
-                            'type': 'dir',
-                            'status': 'hidden',
                         }
+                    },
+                    "tmp": {
+                        'type': 'dir',
+                        'status': 'hidden',
                     }
                 }
-            )
+            }
         )
 
         return tree

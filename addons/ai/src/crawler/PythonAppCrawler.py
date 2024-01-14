@@ -3,7 +3,7 @@ from addons.ai.src.crawler.AppCrawler import AppCrawler, CrawlerTreeItem
 
 class PythonAppCrawler(AppCrawler):
     def tree_remove(self, tree: CrawlerTreeItem, file_name: str) -> None:
-        if "children" not in tree:
+        if "children" not in tree or not tree["children"]:
             return
 
         for key, value in tree["children"].items():
