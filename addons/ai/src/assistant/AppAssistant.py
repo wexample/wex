@@ -1,10 +1,11 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from langchain.llms import OpenAI
 from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from addons.app.command.env.get import app__env__get
+from src.const.types import StringKeysDict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -25,7 +26,7 @@ class AppAssistant:
 
         self.llm = OpenAI(openai_api_key=key)
 
-    def create_chain(self, prompt_template):
+    def create_chain(self, prompt_template: ChatPromptTemplate) -> LLMChain:
         return LLMChain(
             llm=self.llm,
             prompt=prompt_template,
@@ -46,14 +47,14 @@ class AppAssistant:
             chain.run(question)
         )
 
-    def load_file(self, file_path):
+    def load_file(self, file_path: str) -> Optional[str]:
         if not os.path.exists(file_path):
             return None
 
         with open(file_path, 'r') as f:
             return f.read()
 
-    def load_example_patch(self, name):
+    def load_example_patch(self, name: str) -> StringKeysDict:
         base_path = f'{self.manager.get_app_dir()}.wex/command/samples/examples/{name}/'
 
         return {

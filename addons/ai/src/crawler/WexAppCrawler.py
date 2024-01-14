@@ -1,9 +1,13 @@
 from addons.ai.src.crawler.PythonAppCrawler import PythonAppCrawler
+from addons.ai.src.crawler.AppCrawler import CrawlerTreeItem
 
 
 class WexAppCrawler(PythonAppCrawler):
-    def cleanup_tree(self, tree):
+    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree = super().cleanup_tree(tree)
+
+        if not tree["children"]:
+            return tree
 
         # Useless folder
         tree['children']['tmp'] = {

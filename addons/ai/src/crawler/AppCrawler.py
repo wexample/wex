@@ -106,7 +106,7 @@ class AppCrawler:
 
         return tree
 
-    def build(self) -> list:
+    def build(self) -> CrawlerTreeItem:
         tree = self.load_tree()
 
         # Scan new files
@@ -126,4 +126,3 @@ class AppCrawler:
     def save_to_yaml(self, filepath: str, tree: CrawlerTreeItem) -> None:
         with open(filepath, 'w') as f:
             yaml.dump(tree, f, default_flow_style=False)
-

@@ -1,20 +1,18 @@
-from addons.ai.src.crawler.AppCrawler import AppCrawler
+from addons.ai.src.crawler.AppCrawler import AppCrawler, CrawlerTreeItem
 
 
 class PythonAppCrawler(AppCrawler):
-    def tree_remove(self, tree, file_name) -> None:
-        keys_to_remove = []
+    def tree_remove(self, tree: CrawlerTreeItem, file_name: str) -> None:
+        if not tree["children"]:
+            return
 
-        for key, value in tree.items():
-            if key == file_name:
-                keys_to_remove.append(key)
-            elif isinstance(value, dict):
-                self.tree_remove(value, file_name)
+        for key, value in tree["children"].items():
+            self.tree_remove(value, file_name)
 
-        for key in keys_to_remove:
-            del tree[key]
+        if file_name in tree["children"]:
+            del tree["children"][file_name]
 
-    def cleanup_tree(self, tree):
+    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree = super().cleanup_tree(tree)
         self.tree_remove(tree, '__pycache__')
         return tree
