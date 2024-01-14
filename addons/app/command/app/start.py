@@ -83,7 +83,6 @@ def app__app__start(
                 ):
                     first = kernel.run_function(
                         app__env__choose,
-                        {"message": "No .wex/.env file, would you like to create it ?"},
                     ).first()
 
                     if isinstance(first, AbortResponse):
@@ -91,10 +90,11 @@ def app__app__start(
                             kernel, AbortResponse.reason
                         )
 
+                    env = str(first)
             else:
                 kernel.run_function(app__env__set, {"environment": env})
 
-            kernel.io.message(f'Created .env file for env "{env}"')
+            kernel.io.message(f'Created .env file for environment "{env}"')
 
         if kernel.run_function(
             app__app__started,
