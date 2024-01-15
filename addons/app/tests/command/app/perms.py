@@ -1,9 +1,10 @@
 import os
+import shutil
 from typing import cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG
+from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_DIR_TMP
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
@@ -52,6 +53,10 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
         # If current manager is in test app, config should be reloaded manually
         cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
+        tmp_dir = f"{app_dir}{APP_DIR_TMP}"
+        # Will be recreated by perms command
+        shutil.rmtree(tmp_dir)
+
         self.log("Current user is " + current_user)
         self.log("Application path is " + app_dir)
 
@@ -59,3 +64,7 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
 
         self.assertEqual(file_get_owner(test_file), current_user)
         self.assertEqual(file_get_group(test_file), current_group)
+        self.assertTrue(
+            os.path.exists(tmp_dir),
+            "Temp dir has been recreated"
+        )

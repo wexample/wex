@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 
 
 @as_sudo()
-@app_command(help="Start an app")
+@app_command(help="Start an app", should_be_valid=True)
 @option(
     "--clear-cache",
     "-cc",

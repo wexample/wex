@@ -29,6 +29,7 @@ class AppCommand(ScriptCommand):
         # Get and pop interesting args
         dir_required = decorator_kwargs.pop("dir_required", True)
         should_run = decorator_kwargs.pop("should_run", False)
+        should_be_valid = decorator_kwargs.pop("should_be_valid", False)
 
         super().__init__(
             function,
@@ -44,6 +45,9 @@ class AppCommand(ScriptCommand):
 
         # Do not check if app is running
         self.set_extra_value("app_should_run", should_run)
+
+        # Ask for a check scan before command execution
+        self.set_extra_value("app_should_be_valid", should_be_valid)
 
     def run_script(
         self,
