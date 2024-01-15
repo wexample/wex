@@ -6,6 +6,7 @@ from src.const.globals import COMMAND_CHAR_APP
 from src.const.types import StringKeysDict
 from src.decorator.option import option
 from src.helper.args import args_parse_dict
+from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -19,7 +20,7 @@ def app__hook__exec(
 ) -> StringKeysDict:
     arguments_dict = args_parse_dict(arguments)
 
-    manager.log(f"Hooking : {hook}")
+    manager.kernel.io.log(f"Hooking : {hook}", verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
     arguments_dict["app-dir"] = app_dir
 

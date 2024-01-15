@@ -5,6 +5,7 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.const.types import StringKeysDict
 from src.decorator.option import option
 from src.helper.args import args_parse_dict
+from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -27,7 +28,7 @@ def app__services__exec(
 
         command_name = f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}{hook}"
 
-        manager.log(command_name)
+        manager.kernel.io.log(command_name, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         output[service] = manager.kernel.run_command(
             command_name, arguments_dict_copy, quiet=True
