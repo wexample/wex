@@ -2,7 +2,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from langchain.chains import LLMChain
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 
