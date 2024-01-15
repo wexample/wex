@@ -36,8 +36,14 @@ def app__env__choose(
         manager.log("Abort")
         return AbortResponse(manager.kernel, "USER_ABORT_CONFIGURATION")
 
+    env_str = str(env)
+
     manager.kernel.run_function(
-        app__env__set, {"app_dir": manager.get_app_dir(), "environment": env}
+        app__env__set,
+        {
+            "app_dir": manager.get_app_dir(),
+            "environment": env_str
+        }
     )
 
-    return env
+    return env_str

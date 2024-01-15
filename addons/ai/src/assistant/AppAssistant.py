@@ -2,7 +2,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from langchain.chains import LLMChain
-from langchain_community.llms import OpenAI
+from langchain_openai import OpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 
@@ -37,7 +37,7 @@ class AppAssistant:
             ChatPromptTemplate.from_messages([human_message_prompt])
         )
 
-        print(chain.run(question))
+        return chain.invoke(question)
 
     def load_file(self, file_path: str) -> Optional[str]:
         if not os.path.exists(file_path):
