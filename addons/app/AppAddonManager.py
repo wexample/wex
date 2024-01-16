@@ -809,7 +809,10 @@ class AppAddonManager(AddonManager):
 
         return str(dotenv_values(app_env_path).get(key))
 
-    def get_env(self, app_dir: Optional[str] = None) -> Optional[str]:
+    def get_env(self, app_dir: Optional[str] = None) -> str:
         from addons.app.command.env.get import _app__env__get
 
-        return _app__env__get(self.kernel, app_dir or self.get_app_dir())
+        env = _app__env__get(self.kernel, app_dir or self.get_app_dir())
+        assert isinstance(env, str)
+
+        return env
