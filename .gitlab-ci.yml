@@ -31,26 +31,26 @@ test:
   script:
     - ls -la
     - ls -la /var/www
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Launch container for tests
-#    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
-#    # Install
-#    - docker exec -t wex /bin/bash /opt/wex/cli/install
-#    # Launch tests
-#    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -vvv"
-#    # Uninstall
-#    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
-#  after_script:
-#    # Reset permissions
-#    - chown -R root:root .
-#
+    # Stops script on failure
+    - set -e
+    # We install manually as apt package does not exist at this point
+    - apt update
+    # Install minimum packages to launch install script
+    - apt install sudo -y
+    # Create env file
+    - mv .wex/.env.test .wex/.env
+    # Launch container for tests
+    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
+    # Install
+    - docker exec -t wex /bin/bash /opt/wex/cli/install
+    # Launch tests
+    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -vvv"
+    # Uninstall
+    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
+  after_script:
+    # Reset permissions
+    - chown -R root:root .
+
 #build:
 #  stage: build
 #  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
