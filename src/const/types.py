@@ -146,22 +146,25 @@ class YamlCommand(TypedDict):
 
 
 class AppConfig(TypedDict):
+    branch: Optional[str]
     domain_main: str
     domain_tld: str
     domains: List[str]
     domains_string: str
-    env: Dict[str, Any]
+    env: StringKeysDict
     name: str
     host: Dict[str, str]
     password: Dict[str, str]
     path: Dict[str, str]
-    service: Dict[str, Any]
+    server: StringKeysDict
+    service: StringKeysDict
     started: bool
     structure: FileSystemStructureSchema
     user: Dict[str, str | int]
 
 
 class AppRuntimeConfig(TypedDict):
+    branch: Optional[str]
     domain_main: str
     domain_tld: str
     domains: List[str]
@@ -171,8 +174,10 @@ class AppRuntimeConfig(TypedDict):
     host: Dict[str, str]
     password: Dict[str, str]
     path: Dict[str, str]
-    service: Dict[str, Any]
+    server: StringKeysDict
+    service: StringKeysDict
     started: bool
+    structure: FileSystemStructureSchema
     user: Dict[str, str | int]
 
 
