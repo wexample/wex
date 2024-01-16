@@ -22,7 +22,7 @@ checkup_code:
     - bash cli/install
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
-    - wex .code/check
+    - cli/wex .code/check
 
 test:
   stage: test
@@ -31,7 +31,6 @@ test:
   script:
     - ls -la
     - ls -la /var/www
-#    - touch /var/www/dumps/test-dumps
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
