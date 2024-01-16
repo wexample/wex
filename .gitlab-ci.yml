@@ -20,6 +20,7 @@ checkup_code:
   stage: checkup
   script:
     - bash cli/install
+    - source .wex/python/venv/bin/activate
     - pip install requirements-dev.txt
     - wex .code/check
 
