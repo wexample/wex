@@ -1,6 +1,6 @@
 from typing import Callable, cast
 
-from src.const.types import AnyCallable, Args, Kwargs
+from src.const.typing import AnyCallable, Args, Kwargs
 from src.core.command.TestCommand import TestCommand
 from src.decorator.command import command
 

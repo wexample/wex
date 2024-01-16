@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import click
 
 from src.const.args import ARGS_HELP
-from src.const.types import StringsList
+from src.const.typing import StringsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild

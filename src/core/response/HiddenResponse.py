@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import ResponsePrintType
+from src.const.typing import ResponsePrintType
 from src.core.response.DefaultResponse import DefaultResponse
 
 

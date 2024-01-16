@@ -2,7 +2,7 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from src.const.types import (
+from src.const.typing import (
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
     FileSystemStructureType,

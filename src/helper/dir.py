@@ -1,6 +1,6 @@
 import os
 
-from src.const.types import AnyCallable
+from src.const.typing import AnyCallable
 
 
 def dir_execute_in_workdir(target_dir: str, callback: AnyCallable) -> None:

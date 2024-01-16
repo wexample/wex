@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Dict, Optional, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import StringKeysDict
+from src.const.typing import StringKeysDict
 from src.core.Logger import LoggerLogData
 from src.core.response.DictResponse import DictResponse
 from src.decorator.command import command

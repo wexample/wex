@@ -1,7 +1,7 @@
 import re
 from typing import TYPE_CHECKING, Optional
 
-from src.const.types import VersionDescriptor
+from src.const.typing import VersionDescriptor
 from src.decorator.command import command
 from src.decorator.option import option
 

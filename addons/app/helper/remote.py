@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.const.types import StringsList
+from src.const.typing import StringsList
 from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:

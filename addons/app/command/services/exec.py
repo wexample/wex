@@ -6,7 +6,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_ADDON,
     VERBOSITY_LEVEL_MAXIMUM,
 )
-from src.const.types import StringKeysDict
+from src.const.typing import StringKeysDict
 from src.decorator.option import option
 from src.helper.args import args_parse_dict
 

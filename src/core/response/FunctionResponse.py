@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import AnyCallable, OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.typing import AnyCallable, OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 

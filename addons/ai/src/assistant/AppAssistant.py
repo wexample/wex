@@ -7,7 +7,7 @@ from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain_openai import OpenAI  # type: ignore
 
 from addons.app.command.env.get import app__env__get
-from src.const.types import StringKeysDict
+from src.const.typing import StringKeysDict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

@@ -8,7 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_ADDON,
     COMMAND_TYPE_SERVICE,
 )
-from src.const.types import (
+from src.const.typing import (
     AnyCallable,
     RegistryAllServices,
     RegistryService,

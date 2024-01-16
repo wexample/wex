@@ -8,7 +8,7 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_TERMINAL,
     WEBHOOK_LISTEN_PORT_DEFAULT,
 )
-from src.const.types import StringKeysDict
+from src.const.typing import StringKeysDict
 from src.core.response.DictResponse import DictResponse
 from src.core.response.KeyValueResponse import KeyValueResponse
 from src.core.response.TableResponse import TableBody, TableResponse

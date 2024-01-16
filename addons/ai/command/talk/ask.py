@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from addons.ai.src.assistant.AppAssistant import AppAssistant
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.types import StringKeysDict
+from src.const.typing import StringKeysDict
 from src.decorator.alias import alias
 from src.decorator.option import option
 

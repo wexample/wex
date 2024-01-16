@@ -1,6 +1,6 @@
 from typing import Dict, Pattern, TypedDict
 
-from src.const.types import StringsList
+from src.const.typing import StringsList
 from src.core.command.ScriptCommand import ScriptCommand
 
 

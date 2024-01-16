@@ -3,7 +3,7 @@ import re
 import shutil
 from typing import Mapping, Optional
 
-from src.const.types import BasicInlineValue, StringsDict, StringsMatch
+from src.const.typing import BasicInlineValue, StringsDict, StringsMatch
 
 
 def string_to_snake_case(text: str) -> str:

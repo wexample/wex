@@ -1,7 +1,7 @@
 import click
 
 from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
-from src.const.types import AnyCallable
+from src.const.typing import AnyCallable
 
 
 def option_webhook_listener(

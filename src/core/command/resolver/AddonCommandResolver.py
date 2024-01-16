@@ -7,7 +7,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_ADDON,
 )
-from src.const.types import RegistryAddon, RegistryResolverData, StringsList
+from src.const.typing import RegistryAddon, RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest

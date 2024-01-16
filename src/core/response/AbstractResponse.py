@@ -8,7 +8,7 @@ from src.const.globals import (
     KERNEL_RENDER_MODE_NONE,
     KERNEL_RENDER_MODE_TERMINAL,
 )
-from src.const.types import (
+from src.const.typing import (
     AnyList,
     Args,
     JsonContent,
