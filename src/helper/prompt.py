@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, Iterable, List, Optional
+from typing import TYPE_CHECKING, Any, Iterable, List, Optional, Callable, cast
 
 import click
 from click._termui_impl import ProgressBar, V
@@ -22,9 +22,10 @@ def prompt_progress_steps(
 ) -> None:
     with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
-            kernel.io.log(f"{title} : {step.__name__}")
+            step_callable = cast(Callable[..., Any], step)
+            kernel.io.log(f"{title} : {step_callable.__name__}")
 
-            response = step()
+            response = step_callable()
 
             click.echo(os.linesep)
 

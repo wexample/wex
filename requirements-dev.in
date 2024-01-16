@@ -4,4 +4,6 @@ isort
 mypy
 no_implicit_optional
 types-psutil
+types-pyyaml
 types-requests
+type-yaml
