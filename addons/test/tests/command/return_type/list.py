@@ -16,8 +16,8 @@ class TestTestCommandReturnTypeList(AbstractTestCase):
             self._test_list,
             {
                 KERNEL_RENDER_MODE_NONE: None,
-                KERNEL_RENDER_MODE_JSON: json.dumps({"value": ["yes"]}),
-                KERNEL_RENDER_MODE_TERMINAL: "['yes']",
+                KERNEL_RENDER_MODE_JSON: json.dumps(["yes"]),
+                KERNEL_RENDER_MODE_TERMINAL: "yes",
             },
         )
 

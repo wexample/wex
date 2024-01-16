@@ -50,11 +50,11 @@ class ListResponse(AbstractTerminalSectionResponse):
             return os.linesep.join(data)
         if render_mode == KERNEL_RENDER_MODE_JSON:
             print_dict = []
-            for key in data:
-                if isinstance(data[key], AbstractResponse):
-                    print_dict.append(data[key].print(render_mode))
+            for value in data:
+                if isinstance(value, AbstractResponse):
+                    print_dict.append(value.print(render_mode))
                 else:
-                    print_dict.append(data[key])
+                    print_dict.append(value)
             return print_dict
 
         return None
