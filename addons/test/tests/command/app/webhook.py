@@ -24,7 +24,9 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
             # env = test
             # group = test
             # command = test
-            f"/webhook/app/test/{app_name}/test/test", check_code=None, wait=5
+            f"/webhook/app/test/{app_name}/test/test",
+            check_code=None,
+            wait=5,
         )
 
         data = self.parse_response(http_response)

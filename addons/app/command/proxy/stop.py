@@ -1,5 +1,5 @@
 import os.path
-from typing import TYPE_CHECKING, cast, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.stop import app__app__stop

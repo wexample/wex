@@ -117,7 +117,9 @@ class AppAddonManager(AddonManager):
     def get_applications_path(self, environment: Optional[str] = None) -> str:
         return (
             os.sep
-            + os.path.join("var", "www", environment or self.kernel.registry_structure.content.env)
+            + os.path.join(
+                "var", "www", environment or self.kernel.registry_structure.content.env
+            )
             + os.sep
         )
 
@@ -527,6 +529,7 @@ class AppAddonManager(AddonManager):
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
         from addons.app.command.env.get import _app__env__get
+
         environment = _app__env__get(self.kernel, app_dir)
 
         proxy_apps = self.get_proxy_apps(environment)
@@ -534,7 +537,9 @@ class AppAddonManager(AddonManager):
         self.save_proxy_apps(proxy_apps, environment)
 
     def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:
-        with open(self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, "w") as f:
+        with open(
+            self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, "w"
+        ) as f:
             yaml.dump(proxy_apps, f, indent=True)
 
     def set_app_workdir(self, app_dir: str) -> None:

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from addons.core.command.core.cleanup import core__core__cleanup
 from addons.app.helper.docker import docker_remove_filtered_container
+from addons.core.command.core.cleanup import core__core__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 

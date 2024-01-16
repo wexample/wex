@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
     from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
+
 @app_command(help="Install the proxy service", command_type=COMMAND_TYPE_SERVICE)
 def proxy__service__install(
     manager: "AppAddonManager", app_dir: str, service: str
@@ -21,8 +22,7 @@ def proxy__service__install(
         manager.set_config("global.port_public_secure", port_secure)
 
     service_resolver = cast(
-        "ServiceCommandResolver",
-        manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
+        "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
     )
 
     shutil.copytree(
