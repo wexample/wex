@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-from git import Repo  # type: ignore
-
 from addons.core.command.version.new_commit import core__version__new_commit
 from addons.core.command.version.new_write import core__version__new_write
 from addons.default.const.default import UPGRADE_TYPE_MINOR

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from git import Repo  # type: ignore
+from git import Repo
 
 from addons.app.command.version.new_commit import app__version__new_commit
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG

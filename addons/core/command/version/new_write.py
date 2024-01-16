@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional
 
-from git import Repo  # type: ignore
+from git import Repo
 
 from addons.app.command.code.check import app__code__check
 from addons.app.command.code.format import app__code__format

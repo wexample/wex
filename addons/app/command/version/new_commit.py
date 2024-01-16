@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from git import Repo  # type: ignore
+from git import Repo
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON

@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from git import GitCommandError, InvalidGitRepositoryError, Repo  # type: ignore
+from git import GitCommandError, InvalidGitRepositoryError, Repo
 
 
 def git_get_or_create_repo(path: str) -> Repo:

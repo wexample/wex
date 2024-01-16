@@ -2,7 +2,7 @@ import os.path
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from git import Repo  # type: ignore
+from git import Repo
 
 from addons.app.command.app.start import app__app__start
 from addons.app.command.hook.exec import app__hook__exec

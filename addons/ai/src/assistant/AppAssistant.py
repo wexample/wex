@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
-from langchain_openai import OpenAI  # type: ignore
+from langchain_openai import OpenAI
 
 from addons.app.command.env.get import app__env__get
 from src.const.typing import StringKeysDict
@@ -23,7 +23,7 @@ class AppAssistant:
             {"app-dir": manager.kernel.directory.path, "key": "OPENAI_API_KEY"},
         ).first()
 
-        self.llm = OpenAI(openai_api_key=key)
+        self.llm = OpenAI(api_key=key)
 
     def create_chain(self, prompt_template: ChatPromptTemplate) -> LLMChain:
         return LLMChain(
