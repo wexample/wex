@@ -37,7 +37,8 @@ def phpmyadmin__config__runtime(
     domains.append(domain_pma)
     manager.set_runtime_config("domains", domains)
 
-    db_service = manager.get_config("docker.main_db_container").get_str()
-    db_data = manager.get_config(f"service.{db_service}").get_dict()
+    if manager.has_config("docker.main_db_container"):
+        db_service = manager.get_config("docker.main_db_container").get_str()
+        db_data = manager.get_config(f"service.{db_service}").get_dict()
 
-    manager.set_runtime_config("service.phpmyadmin.db", db_data)
+        manager.set_runtime_config("service.phpmyadmin.db", db_data)
