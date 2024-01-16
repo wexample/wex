@@ -1,8 +1,8 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast, Any
 
 from langchain.chains import LLMChain
-from langchain_openai import OpenAI
+from langchain_openai import OpenAI  # type: ignore
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 
@@ -30,14 +30,14 @@ class AppAssistant:
             prompt=prompt_template,
         )
 
-    def assist(self, question: str) -> None:
+    def assist(self, question: str) -> StringKeysDict:
         human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
 
         chain = self.create_chain(
             ChatPromptTemplate.from_messages([human_message_prompt])
         )
 
-        return chain.invoke(question)
+        return chain.invoke(cast(Any, question))
 
     def load_file(self, file_path: str) -> Optional[str]:
         if not os.path.exists(file_path):
