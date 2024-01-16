@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.const.types import ShellCommandsDeepList
+from src.const.typing import ShellCommandsDeepList
 from src.helper.command import (
     command_to_string,
     execute_command_sync,

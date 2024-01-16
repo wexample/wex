@@ -8,7 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_APP,
 )
-from src.const.types import RegistryCommandsCollection, StringsList
+from src.const.typing import RegistryCommandsCollection, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse

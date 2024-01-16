@@ -7,7 +7,7 @@ import click
 from click.core import Command
 from click.types import BoolParamType
 
-from src.const.types import (
+from src.const.typing import (
     AnyCallable,
     BasicValue,
     CoreCommandArgsDict,

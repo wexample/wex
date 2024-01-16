@@ -6,7 +6,7 @@ from src.const.globals import COMMAND_SEPARATOR_ADDON
 from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
-    from src.const.types import (
+    from src.const.typing import (
         RegistryAllServices,
         RegistryCommandsCollection,
         RegistryService,

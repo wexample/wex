@@ -1,6 +1,6 @@
 import click
 
-from src.const.types import AnyCallable
+from src.const.typing import AnyCallable
 
 
 def service_option() -> AnyCallable:

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
-from src.const.types import StringsList
+from src.const.typing import StringsList
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

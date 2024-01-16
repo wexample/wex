@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING, cast
 
-from src.const.types import BasicInlineValue
+from src.const.typing import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,

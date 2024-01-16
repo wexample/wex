@@ -8,7 +8,7 @@ from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
-    from src.const.types import OptionalCoreCommandArgsDict
+    from src.const.typing import OptionalCoreCommandArgsDict
     from src.core.Kernel import Kernel
 
 

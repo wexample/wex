@@ -11,7 +11,7 @@ from src.const.globals import (
     CORE_COMMAND_NAME,
     VERBOSITY_LEVEL_DEFAULT,
 )
-from src.const.types import (
+from src.const.typing import (
     AnyCallable,
     OptionalCoreCommandArgsDict,
     OptionalCoreCommandArgsListOrDict,

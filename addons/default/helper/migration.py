@@ -2,7 +2,7 @@ import os
 import re
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from src.const.types import AnyCallable
+from src.const.typing import AnyCallable
 from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:

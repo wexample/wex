@@ -5,7 +5,7 @@ import shutil
 from abc import ABC
 from typing import TYPE_CHECKING, Optional, cast
 
-from src.const.types import JsonContent, ResponsePrintType
+from src.const.typing import JsonContent, ResponsePrintType
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:

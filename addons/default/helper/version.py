@@ -1,4 +1,4 @@
-from src.const.types import StringsList, VersionDescriptor
+from src.const.typing import StringsList, VersionDescriptor
 
 
 def is_greater_than(

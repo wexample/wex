@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, cast
 
 import yaml
 
-from src.const.types import BasicInlineValue
+from src.const.typing import BasicInlineValue
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )

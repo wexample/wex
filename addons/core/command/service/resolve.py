@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Set
 
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.const.types import CoreCommandCommaSeparatedList, SetList, StringsList
+from src.const.typing import CoreCommandCommaSeparatedList, SetList, StringsList
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array

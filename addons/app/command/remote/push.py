@@ -10,7 +10,7 @@ from addons.app.helper.remote import (
     remote_get_login_command,
 )
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.types import FileSystemStructureSchemaItem
+from src.const.typing import FileSystemStructureSchemaItem
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
 

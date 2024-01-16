@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Optional
 
-from src.const.types import BasicInlineValue
+from src.const.typing import BasicInlineValue
 
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse

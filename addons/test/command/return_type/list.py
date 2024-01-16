@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.const.types import AnyList
+from src.const.typing import AnyList
 from src.decorator.command import command
 from src.decorator.option import option
 

@@ -12,7 +12,7 @@ from addons.app.migrations.migration_4_0_0 import (
     _migration_4_0_0_replace_docker_placeholders,
 )
 from addons.docker.types.docker import DockerCompose
-from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
+from src.const.typing import AnyList, StringKeysDict, StringsDict, StringsList
 from src.helper.data_yaml import yaml_load
 from src.helper.prompt import prompt_progress_steps
 from src.helper.string import string_to_snake_case

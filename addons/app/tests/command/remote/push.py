@@ -2,7 +2,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import StringsList
+from src.const.typing import StringsList
 from src.helper.command import execute_command_sync
 
 
