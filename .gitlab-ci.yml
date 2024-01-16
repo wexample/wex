@@ -21,7 +21,7 @@ checkup_code:
   script:
     - bash cli/install
     - source .wex/python/venv/bin/activate
-    - pip install requirements-dev.txt
+    - pip install -r requirements-dev.txt
     - wex .code/check
 
 test:
