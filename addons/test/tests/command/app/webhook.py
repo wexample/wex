@@ -21,7 +21,10 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
         self.start_webhook_listener()
 
         http_response = self.request_listener(
-            f"/webhook/app/{app_name}/test/test", check_code=None, wait=5
+            # env = test
+            # group = test
+            # command = test
+            f"/webhook/app/test/{app_name}/test/test", check_code=None, wait=5
         )
 
         data = self.parse_response(http_response)

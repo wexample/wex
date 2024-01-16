@@ -138,8 +138,8 @@ class AppCommandResolver(AbstractCommandResolver):
     ) -> StringsList:
         return [
             COMMAND_CHAR_APP,
-            path_parts[1],
             path_parts[2],
+            path_parts[3],
         ]
 
     def run_command_request_from_url_path(self, path: str) -> AbstractResponse:
@@ -153,8 +153,9 @@ class AppCommandResolver(AbstractCommandResolver):
         if not internal_command:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_COMMAND_NOT_FOUND")
 
-        app_name = string_to_snake_case(parts[0])
-        apps = self.app_addon_manager.get_proxy_apps()
+        environment = string_to_snake_case(parts[0])
+        app_name = string_to_snake_case(parts[1])
+        apps = self.app_addon_manager.get_proxy_apps(environment)
 
         if app_name not in apps:
             return AbortResponse(kernel=self.kernel, reason="WEBHOOK_APP_NOT_FOUND")
