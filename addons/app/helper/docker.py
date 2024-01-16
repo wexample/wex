@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILEPATH_REL_DOCKER_ENV
 from addons.docker.helper.docker import user_has_docker_permission
-from src.const.types import ShellCommandsDeepList, ShellCommandsList
+from src.const.types import ShellCommandsDeepList, ShellCommandsList, ShellCommandResponseTuple
 from src.helper.command import command_to_string, execute_command_sync
 from src.helper.process import process_post_exec
 from src.helper.user import get_user_or_sudo_user
@@ -32,8 +32,7 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
 
     compose_files.append(app_compose_file)
 
-    env = manager.get_runtime_config("env").get_str()
-    env_yml = f"{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{env}.yml"
+    env_yml = f"{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{manager.get_env()}.yml"
     if os.path.isfile(env_yml):
         compose_files.append(env_yml)
 
@@ -57,7 +56,6 @@ def docker_exec_app_compose_command(
         )
 
     manager = cast("AppAddonManager", kernel.addons["app"])
-    env = manager.get_runtime_config("env").get_str()
 
     command: List[str] = [
         "docker",
@@ -71,7 +69,9 @@ def docker_exec_app_compose_command(
 
     command += [
         "--profile",
-        (profile or f"env_{env}"),
+        (profile or f"env_{manager.get_env()}"),
+        "--project-name",
+        manager.get_runtime_config("name").get_str(),
         "--env-file",
         os.path.join(app_dir, APP_FILEPATH_REL_DOCKER_ENV),
     ]
@@ -119,3 +119,18 @@ def docker_exec_app_compose(
 def docker_build_long_container_name(kernel: "Kernel", name: str) -> str:
     manager = cast("AppAddonManager", kernel.addons["app"])
     return f'{manager.get_runtime_config("name").get_str()}_{name}'
+
+
+def docker_remove_filtered_container(kernel: "Kernel", filter: str) -> ShellCommandResponseTuple:
+    from src.helper.command import execute_command_tree_sync
+
+    return execute_command_tree_sync(
+        kernel,
+        [
+            "docker",
+            "rm",
+            "-f",
+            ["docker", "ps", "-q", "--filter", f"name={filter}"],
+        ],
+        ignore_error=True,
+    )

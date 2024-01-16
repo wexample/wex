@@ -1,5 +1,5 @@
 import os.path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started
@@ -7,6 +7,7 @@ from addons.docker.command.docker.ip import docker__docker__ip
 from src.const.globals import CORE_COMMAND_NAME, SYSTEM_HOSTS_PATH
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -14,12 +15,13 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Update local /etc/hosts file")
-def app__hosts__update(kernel: "Kernel") -> None:
+@option("--env", "-e", type=str, required=False, help="Env for accessing apps")
+def app__hosts__update(kernel: "Kernel", env: Optional[str] = None) -> None:
     new_block_content_list = []
     ip = kernel.run_function(docker__docker__ip).first()
 
     manager: AppAddonManager = AppAddonManager(kernel)
-    for app_name, app_dir in manager.get_proxy_apps().items():
+    for app_name, app_dir in manager.get_proxy_apps(env).items():
         # Filter out missing folders
         if os.path.exists(app_dir):
             manager.set_app_workdir(app_dir)

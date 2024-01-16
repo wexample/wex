@@ -116,7 +116,7 @@ def app__app__start(
         if not kernel.run_function(
             app__service__used, {"service": "proxy", "app-dir": app_dir}
         ).first():
-            proxy_path = manager.get_proxy_path()
+            proxy_path = manager.get_proxy_path(env)
 
             # The reverse proxy is not running.
             if (
@@ -269,7 +269,7 @@ def app__app__start(
     def _app__app__start__complete(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        env = manager.get_runtime_config("env").get_str()
+        env = manager.get_env()
 
         if manager.has_runtime_config("domains"):
             domains = manager.get_runtime_config("domains").get_list()

@@ -80,8 +80,7 @@ def wordpress__url__replace(
         prefix = f"{base_prefix}{site_id}_" if site_id > 1 else base_prefix
 
         if not new_url:
-            env = manager.get_runtime_config("env").get_str()
-            protocol = f'http{"" if env in APP_NO_SSL_ENVS else "s"}'
+            protocol = f'http{"" if manager.get_env() in APP_NO_SSL_ENVS else "s"}'
             new_url = (
                 protocol + "://" + manager.get_runtime_config("domain_main").get_str()
             )

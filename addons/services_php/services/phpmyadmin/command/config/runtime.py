@@ -14,7 +14,7 @@ def phpmyadmin__config__runtime(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     if not manager.has_runtime_config("domain_pma"):
-        env = manager.get_runtime_config("env").get_str()
+        env = manager.get_env()
 
         domain_pma_list: StringsList = ["pma"]
         if env != APP_ENV_LOCAL and env != APP_ENV_PROD:

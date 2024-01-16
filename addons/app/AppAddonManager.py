@@ -1,7 +1,6 @@
 import datetime
 import getpass
 import os
-import platform
 import sys
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
@@ -115,10 +114,10 @@ class AppAddonManager(AddonManager):
 
         return self._directory
 
-    def get_applications_path(self) -> str:
+    def get_applications_path(self, environment: Optional[str] = None) -> str:
         return (
             os.sep
-            + os.path.join("var", "www", self.kernel.registry_structure.content.env)
+            + os.path.join("var", "www", environment or self.kernel.registry_structure.content.env)
             + os.sep
         )
 
@@ -150,16 +149,13 @@ class AppAddonManager(AddonManager):
 
         return yaml_load(script_dir)
 
-    def get_proxy_path(self) -> str:
-        if platform.system() == "Darwin":
-            return os.sep + os.path.join("Users", ".wex", "proxy") + os.sep
-        else:
-            return f"{self.get_applications_path()}{PROXY_APP_NAME}{os.sep}"
+    def get_proxy_path(self, environment: Optional[str] = None) -> str:
+        return f"{self.get_applications_path(environment)}{PROXY_APP_NAME}{os.sep}"
 
-    def get_proxy_apps(self) -> AppsPathsList:
+    def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, {}),
+            yaml_load(self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, {}),
         )
 
     @classmethod
@@ -530,12 +526,15 @@ class AppAddonManager(AddonManager):
                 self.set_app_workdir(app_dir)
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
-        proxy_apps = self.get_proxy_apps()
-        proxy_apps[name] = app_dir
-        self.save_proxy_apps(proxy_apps)
+        from addons.app.command.env.get import _app__env__get
+        environment = _app__env__get(self.kernel, app_dir)
 
-    def save_proxy_apps(self, proxy_apps: AppsPathsList) -> None:
-        with open(self.get_proxy_path() + PROXY_FILE_APPS_REGISTRY, "w") as f:
+        proxy_apps = self.get_proxy_apps(environment)
+        proxy_apps[name] = app_dir
+        self.save_proxy_apps(proxy_apps, environment)
+
+    def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:
+        with open(self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, "w") as f:
             yaml.dump(proxy_apps, f, indent=True)
 
     def set_app_workdir(self, app_dir: str) -> None:
@@ -669,7 +668,7 @@ class AppAddonManager(AddonManager):
                 "path": {
                     "app": app_dir,
                     "app_env": os.path.join(app_dir, APP_DIR_APP_DATA) + "/",
-                    "proxy": self.get_proxy_path(),
+                    "proxy": self.get_proxy_path(env),
                 },
                 "service": {},
                 "started": False,
@@ -809,3 +808,8 @@ class AppAddonManager(AddonManager):
         app_env_path = os.path.join(self.get_app_dir(), APP_FILEPATH_REL_ENV)
 
         return str(dotenv_values(app_env_path).get(key))
+
+    def get_env(self, app_dir: Optional[str] = None) -> Optional[str]:
+        from addons.app.command.env.get import _app__env__get
+
+        return _app__env__get(self.kernel, app_dir or self.get_app_dir())

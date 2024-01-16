@@ -1,11 +1,9 @@
 import os
-import platform
 import shutil
 from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -18,11 +16,6 @@ def proxy__service__install(
     def callback() -> None:
         port = 80
         port_secure = 443
-
-        # MacOS changes (not tested inherited code)
-        if platform.system() == "Darwin":
-            port = 7780
-            port_secure = 7743
 
         manager.set_config("global.port_public", port)
         manager.set_config("global.port_public_secure", port_secure)

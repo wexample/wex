@@ -25,7 +25,7 @@ def app__db__dump(
     if not manager.has_config("docker.main_db_container"):
         return None
 
-    env = manager.get_runtime_config("env").get_str()
+    env = manager.get_env()
     name = manager.get_runtime_config("global.name").get_str()
 
     # Determine dump file name

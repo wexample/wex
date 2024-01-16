@@ -38,11 +38,11 @@ def app__proxy__start(
     env: Optional[str] = None,
     user: Optional[str] = None,
     group: Optional[str] = None,
-    port: Optional[str] = None,
-    port_secure: Optional[str] = None,
+    port: Optional[int] = None,
+    port_secure: Optional[int] = None,
 ) -> QueuedCollectionResponse:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
-    proxy_path = manager.get_proxy_path()
+    proxy_path = manager.get_proxy_path(env)
 
     def _app__proxy__start__create(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -80,6 +80,9 @@ def app__proxy__start(
     ) -> None:
         def _callback() -> None:
             nonlocal user
+            nonlocal port
+            nonlocal port_secure
+
             user = user or getpass.getuser()
 
             def check_port(port_to_check: int) -> None:
@@ -98,6 +101,13 @@ def app__proxy__start(
 
                 kernel.io.success(f"Port {port_to_check} free")
 
+            # Override default service ports
+            if port:
+                manager.set_config("global.port_public", port)
+
+            if port_secure:
+                manager.set_config("global.port_public_secure", port_secure)
+
             check_port(manager.get_config("global.port_public").get_int())
             check_port(manager.get_config("global.port_public_secure").get_int())
 
@@ -111,10 +121,7 @@ def app__proxy__start(
             {
                 "app-dir": proxy_path,
                 # If no env, use the global wex env.
-                "env": env
-                or kernel.run_function(
-                    app__env__get, {"app-dir": kernel.directory.path}
-                ).first(),
+                "env": env,
                 "user": user,
                 "group": group,
             },
