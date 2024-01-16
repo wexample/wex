@@ -93,7 +93,7 @@ def app__app__stop(
         if name in apps:
             del apps[name]
 
-        manager.save_proxy_apps(apps)
+        manager.save_proxy_apps(apps, manager.get_env())
 
         kernel.run_function(app__hosts__update)
 
