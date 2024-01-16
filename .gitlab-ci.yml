@@ -24,8 +24,7 @@ checkup_code:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:test
-  only:
-    - tags
+  extends: [.new_version]
   script:
     - ls -la
     - ls -la /var/www
