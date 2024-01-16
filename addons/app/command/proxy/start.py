@@ -65,7 +65,12 @@ def app__proxy__start(
 
             kernel.run_function(
                 app__app__init,
-                {"app-dir": proxy_path, "services": ["proxy"], "git": False},
+                {
+                    "app-dir": proxy_path,
+                    "services": ["proxy"],
+                    "git": False,
+                    "env": env
+                },
             )
 
         return None
