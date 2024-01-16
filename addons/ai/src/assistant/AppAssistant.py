@@ -1,10 +1,10 @@
 import os
-from typing import TYPE_CHECKING, Optional, cast, Any
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from langchain.chains import LLMChain
-from langchain_openai import OpenAI  # type: ignore
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
+from langchain_openai import OpenAI  # type: ignore
 
 from addons.app.command.env.get import app__env__get
 from src.const.types import StringKeysDict

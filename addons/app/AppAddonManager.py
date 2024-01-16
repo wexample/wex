@@ -495,7 +495,6 @@ class AppAddonManager(AddonManager):
             structure.should_be_valid_app = True
             structure.initialize()
 
-
     def get_app_dir(self) -> str:
         self._validate__should_not_be_none(self.app_dir)
         assert isinstance(self.app_dir, str)

@@ -158,7 +158,9 @@ children:
                 children: {}
                 type: dir
               talk:
-                children: {}
+                children:
+                  ask.py:
+                    type: file
                 type: dir
             type: dir
           samples:
@@ -168,24 +170,56 @@ children:
                   explain:
                     children:
                       code_comment:
-                        children: {}
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          source.py:
+                            type: file
+                          tree.yml:
+                            type: file
                         type: dir
                     type: dir
                   generate:
                     children:
                       program_hello_world:
-                        children: {}
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          tree.yml:
+                            type: file
                         type: dir
                     type: dir
                   patch:
                     children:
                       hello_world_capitalized:
-                        children: {}
+                        children:
+                          prompt.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          source.py:
+                            type: file
+                          tree.yml:
+                            type: file
                         type: dir
                     type: dir
                 type: dir
               prompts:
-                children: {}
+                children:
+                  git_patch_generator.txt:
+                    type: file
+                  program_file_structure.txt:
+                    type: file
+                  program_full_code.txt:
+                    type: file
+                  programming_assistant.txt:
+                    type: file
+                  simple_examples.txt:
+                    type: file
                 type: dir
             type: dir
           src:
@@ -216,7 +250,9 @@ children:
                     children: {}
                     type: dir
                   talk:
-                    children: {}
+                    children:
+                      ask.py:
+                        type: file
                     type: dir
                 type: dir
             type: dir
@@ -649,9 +685,6 @@ children:
                         type: file
                       format.py:
                         type: file
-                    type: dir
-                  command:
-                    children: {}
                     type: dir
                   config:
                     children:

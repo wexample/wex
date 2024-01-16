@@ -69,7 +69,7 @@ def app__proxy__start(
                     "app-dir": proxy_path,
                     "services": ["proxy"],
                     "git": False,
-                    "env": env
+                    "env": env,
                 },
             )
 

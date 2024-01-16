@@ -39,11 +39,7 @@ def app__env__choose(
     env_str = str(env)
 
     manager.kernel.run_function(
-        app__env__set,
-        {
-            "app_dir": manager.get_app_dir(),
-            "environment": env_str
-        }
+        app__env__set, {"app_dir": manager.get_app_dir(), "environment": env_str}
     )
 
     return env_str

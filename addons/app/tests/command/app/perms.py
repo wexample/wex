@@ -4,7 +4,7 @@ from typing import cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG, APP_DIR_TMP
+from addons.app.const.app import APP_DIR_TMP, APP_FILEPATH_REL_CONFIG
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
@@ -64,7 +64,4 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
 
         self.assertEqual(file_get_owner(test_file), current_user)
         self.assertEqual(file_get_group(test_file), current_group)
-        self.assertTrue(
-            os.path.exists(tmp_dir),
-            "Temp dir has been recreated"
-        )
+        self.assertTrue(os.path.exists(tmp_dir), "Temp dir has been recreated")
