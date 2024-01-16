@@ -19,6 +19,7 @@ checkup_code:
   extends: [.new_version]
   stage: checkup
   script:
+    - pip install requirements-dev.txt
     - wex .code/check
 
 test:
