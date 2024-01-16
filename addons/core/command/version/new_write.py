@@ -111,7 +111,7 @@ def core__version__new_write(
         with open(readme_path, "w") as file:
             file.write(updated_content)
 
-        kernel.io.message_next_command(core__version__new_commit, {"commit": True})
+        kernel.io.message_next_command(core__version__new_commit)
 
     return QueuedCollectionResponse(
         kernel,
