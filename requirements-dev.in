@@ -1,6 +1,7 @@
 autoflake
 black
 isort
+mypy
 no_implicit_optional
 types-psutil
 types-requests
