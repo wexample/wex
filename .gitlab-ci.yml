@@ -1,10 +1,18 @@
 stages:
   - checkup
   - test
-  - build
-  - deploy
-  - test_apt_install
-  - build_docker
+#  - build
+#  - deploy
+#  - test_apt_install
+#  - build_docker
+
+.new_version_rules: &new-version-rules
+  - if: '$CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME == "master"'
+#  - if: '$CI_COMMIT_TAG'
+
+.new_version:
+  rules:
+    - *new-version-rules
 
 checkup_code:
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
@@ -20,7 +28,7 @@ test:
     - tags
   script:
     - ls -la
-    - ls -la /var/wwww
+    - ls -la /var/www
 #    - touch /var/www/dumps/test-dumps
 #    # Stops script on failure
 #    - set -e
