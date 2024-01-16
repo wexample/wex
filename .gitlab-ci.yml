@@ -19,7 +19,7 @@ checkup_code:
   extends: [.new_version]
   stage: checkup
   script:
-    - python3 -m venv .
+    - source .wex/python/venv/bin/activate
     - pip install requirements-dev.txt
     - wex .code/check
 
