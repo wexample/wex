@@ -23,7 +23,6 @@ checkup_code:
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
     - mkdir .mypy_cache # See https://github.com/tk-woven/mypy-install-types-mre
-    - mypy --install-types --non-interactive .
     - wex .code/check
 
 test:
