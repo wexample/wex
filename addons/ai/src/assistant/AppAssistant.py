@@ -19,7 +19,9 @@ class AppAssistant:
         app_dir = self.manager.get_app_dir()
 
         key = manager.kernel.run_function(
-            app__env__get, {"app-dir": app_dir, "key": "OPENAI_API_KEY"}
+            app__env__get, {
+                "app-dir": manager.kernel.directory.path,
+                "key": "OPENAI_API_KEY"}
         ).first()
 
         self.llm = OpenAI(openai_api_key=key)
