@@ -19,6 +19,7 @@ checkup_code:
   extends: [.new_version]
   stage: checkup
   script:
+    - python3 -m venv .
     - pip install requirements-dev.txt
     - wex .code/check
 
