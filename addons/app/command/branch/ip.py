@@ -1,3 +1,4 @@
+from src.const.types import StringKeysDict
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 from typing import TYPE_CHECKING, Optional
@@ -13,7 +14,7 @@ def app__branch__ip(manager: "AppAddonManager", branch: str, app_dir: str) -> Op
     environments_config = manager.get_config(f"env").get_dict()
 
     for env in environments_config:
-        env_config: dict = environments_config[env]
+        env_config: StringKeysDict = environments_config[env]
 
         if "branch" in env_config and env_config["branch"] == branch:
             key = f"env.{env}.server.ip"
