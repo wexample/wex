@@ -4,15 +4,8 @@
 services:
   wex_test_remote:
     container_name: wex_test_remote
-    build:
-      context: ../../
-      dockerfile: .wex/docker/Dockerfile.test-remote
+    image: gitlab-docker.wexample.com/wexample/wex/test-remote
     restart: unless-stopped
-    stdin_open: true
-    tty: true
-    volumes:
-      # Docker sharing
-      - /var/run/docker.sock:/var/run/docker.sock
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
     network_mode: bridge
