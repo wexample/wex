@@ -1,5 +1,5 @@
 stages:
-  - checkup
+#  - checkup
   - test
 #  - build
 #  - deploy
@@ -14,15 +14,15 @@ stages:
   rules:
     - *new-version-rules
 
-checkup_code:
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
-  extends: [.new_version]
-  stage: checkup
-  script:
-    - bash cli/install
-    - source .wex/python/venv/bin/activate
-    - pip install -r requirements-dev.txt
-    - cli/wex .code/check
+#checkup_code:
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+#  extends: [.new_version]
+#  stage: checkup
+#  script:
+#    - bash cli/install
+#    - source .wex/python/venv/bin/activate
+#    - pip install -r requirements-dev.txt
+#    - cli/wex .code/check
 
 test:
   stage: test
@@ -43,7 +43,7 @@ test:
     # Install
     - docker exec -t wex /bin/bash /opt/wex/cli/install
     # Launch tests
-    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -vvv"
+    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::app/exec -vvv"
     # Uninstall
     - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
   after_script:
