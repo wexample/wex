@@ -1,7 +1,7 @@
 stages:
 #  - checkup
   - build_rc
-#  - test
+  - test
 #  - build
 #  - deploy
 #  - test_apt_install
@@ -18,15 +18,6 @@ include:
   rules:
     - *new-version-rules
 
-build_rc:
-  stage: build_rc
-  extends: [.new_version, .globals, .docker_login, .build_image_app]
-  variables:
-    FLAVOR: rc
-  script:
-    - !reference [.docker_login, script]
-    - !reference [.build_image_app, script]
-
 #checkup_code:
 #  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
 #  extends: [.new_version]
@@ -37,11 +28,21 @@ build_rc:
 #    - pip install -r requirements-dev.txt
 #    - cli/wex .code/check
 
-#test:
-#  stage: test
-#  image: gitlab-docker.wexample.com/wexample-public/docker/debian:test
-#  extends: [.new_version]
-#  script:
+build_rc:
+  stage: build_rc
+  extends: [.new_version, .globals, .docker_login, .build_image_app]
+  variables:
+    FLAVOR: rc
+  script:
+    - !reference [.docker_login, script]
+    - !reference [.build_image_app, script]
+
+test:
+  stage: test
+  image: gitlab-docker.wexample.com/wexample/wex/rc
+  extends: [.new_version]
+  script:
+    - wex test
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
