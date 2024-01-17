@@ -55,6 +55,8 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [ .new_version ]
   needs:
+    - build_pipeline_image_rc
+    - build_pipeline_image_test_remote
     - checkup_code
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
