@@ -42,7 +42,7 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   script:
-    - wex test
+    - sudo wex test
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point

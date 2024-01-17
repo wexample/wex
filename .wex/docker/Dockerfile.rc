@@ -21,6 +21,13 @@ RUN echo \
 RUN apt-get update
 RUN apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+RUN useradd --uid 1000 owner --create-home \
+  && adduser owner sudo \
+  && mkdir -p /etc/sudoers.d \
+  && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
+
+USER owner
+
 # Copy the application files to the container
 COPY . .
 
