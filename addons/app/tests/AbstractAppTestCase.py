@@ -21,7 +21,6 @@ from src.const.typing import AnyCallable, StringsList
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.helper.command import execute_command_sync
 from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 

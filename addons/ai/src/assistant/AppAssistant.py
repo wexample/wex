@@ -1,13 +1,12 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional, cast
 
+from dotenv import dotenv_values
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain_openai import OpenAI
-from dotenv import dotenv_values
 
-from addons.app.command.env.get import app__env__get
 from src.const.typing import StringKeysDict
 
 if TYPE_CHECKING:
@@ -22,7 +21,9 @@ class AppAssistant:
         env_path = manager.kernel.directory.path + ".env"
         key = dotenv_values(env_path).get("OPENAI_API_KEY")
         if not key:
-            manager.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
+            manager.kernel.io.error(
+                f"Missing configuration OPENAI_API_KEY in {env_path}"
+            )
 
         self.llm = OpenAI(api_key=key)
 

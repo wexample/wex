@@ -14,20 +14,20 @@ if TYPE_CHECKING:
 @app_command(
     help="Validate the code of current application", command_type=COMMAND_TYPE_ADDON
 )
-def ai__talk__ask(
-    manager: "AppAddonManager", app_dir: str
-) -> None:
+def ai__talk__ask(manager: "AppAddonManager", app_dir: str) -> None:
     assistant = AppAssistant(manager)
     manager.kernel.io.message("Welcome to chat mode, type 'exit' to quit.")
 
     while True:
         try:
             user_input = input("You: ")
-            if user_input.lower() in ['exit']:
+            if user_input.lower() in ["exit"]:
                 manager.kernel.io.log(f"{os.linesep}Ciao")
                 break
             response = assistant.assist(user_input)["text"].strip()
-            manager.kernel.io.print(f"{os.linesep}{CORE_COMMAND_NAME}: {response}{os.linesep}")
+            manager.kernel.io.print(
+                f"{os.linesep}{CORE_COMMAND_NAME}: {response}{os.linesep}"
+            )
         except KeyboardInterrupt:
             manager.kernel.io.log(f"{os.linesep}Ciao")
             break
