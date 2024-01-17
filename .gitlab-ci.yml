@@ -40,7 +40,7 @@ build_pipeline_image_test_remote:
 checkup_code:
   image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
   extends: [.new_version]
-  needs: [build_pipeline_images]
+  needs: [build_pipeline_image_rc]
   stage: checkup
   variables:
     GIT_STRATEGY: none
