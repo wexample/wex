@@ -77,45 +77,10 @@ children:
             type: file
         type: dir
       docker:
-        children:
-          .gitkeep:
-            type: file
-          .wex:
-            children:
-              python:
-                children:
-                  venv:
-                    children: {}
-                    type: dir
-                type: dir
-            type: dir
-          Dockerfile.rc:
-            type: file
-          Dockerfile.test-remote:
-            type: file
-          docker-compose.standalone.yml:
-            type: file
-          docker-compose.test-remote.yml:
-            type: file
-          docker-compose.yml:
-            type: file
-        type: dir
-      mysql:
-        children:
-          data:
-            children: {}
-            type: dir
-          dumps:
-            children: {}
-            type: dir
+        status: hidden
         type: dir
       python:
         status: hidden
-        type: dir
-      source:
-        children:
-          .gitkeep:
-            type: file
         type: dir
       tmp:
         children:
