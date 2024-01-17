@@ -1,6 +1,6 @@
 stages:
+  - build_pipeline_images
 #  - checkup
-#  - build_pipeline_images
   - test
 #  - build
 #  - deploy
@@ -18,26 +18,26 @@ include:
   rules:
     - *new-version-rules
 
+build_pipeline_images:
+  stage: build_pipeline_images
+  extends: [.new_version, .globals, .docker_login, .build_image_app]
+  variables:
+    FLAVOR: $CI_JOB_FLAVOR
+  script:
+    - !reference [.docker_login, script]
+    - !reference [.build_image_app, script]
+  parallel:
+    matrix:
+      - FLAVOR: rc
+      - FLAVOR: test-remote
+
 #checkup_code:
 #  image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
 #  extends: [.new_version]
+#  needs: [build_pipeline_images]
 #  stage: checkup
 #  script:
-#    -
 #    - cli/wex .code/check
-
-#build_pipeline_images:
-#  stage: build_pipeline_images
-#  extends: [.new_version, .globals, .docker_login, .build_image_app]
-#  variables:
-#    FLAVOR: $CI_JOB_FLAVOR
-#  script:
-#    - !reference [.docker_login, script]
-#    - !reference [.build_image_app, script]
-#  parallel:
-#    matrix:
-#      - FLAVOR: rc
-#      - FLAVOR: test-remote
 
 test:
   stage: test
