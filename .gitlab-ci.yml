@@ -107,7 +107,7 @@ deploy:
   image: curlimages/curl
   extends: [.new_version]
   needs:
-    - build
+    - build_apt
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Ask apt repo to publish release
