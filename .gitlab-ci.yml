@@ -1,6 +1,6 @@
 stages:
   - build_pipeline_images
-  #  - checkup
+  - checkup
   - test
 #  - build
 #  - deploy
@@ -37,13 +37,15 @@ build_pipeline_image_test_remote:
   variables:
     FLAVOR: test-remote
 
-#checkup_code:
-#  image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
-#  extends: [.new_version]
-#  needs: [build_pipeline_images]
-#  stage: checkup
-#  script:
-#    - cli/wex .code/check
+checkup_code:
+  image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
+  extends: [.new_version]
+  needs: [build_pipeline_images]
+  stage: checkup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cli/wex .code/check
 
 test:
   stage: test
