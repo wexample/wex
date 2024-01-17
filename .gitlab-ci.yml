@@ -50,7 +50,12 @@ checkup_code:
   variables:
     GIT_STRATEGY: none
   script:
-    - cd /opt/wex && wex .code/check
+    - realpath .
+    - ls -la
+    - cd /opt/wex
+    - source .wex/python/venv/bin/activate
+    - pip install -r requirements-dev.txt
+    - wex .code/check
 
 test:
   stage: test
