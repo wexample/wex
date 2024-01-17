@@ -83,19 +83,7 @@ children:
         status: hidden
         type: dir
       tmp:
-        children:
-          config.runtime.yml:
-            type: file
-          docker-compose.runtime.yml:
-            type: file
-          docker.env:
-            type: file
-          id_rsa.test:
-            type: file
-          id_rsa.test.pub:
-            type: file
-          wex.first-start:
-            type: file
+        status: hidden
         type: dir
       webhook:
         children:
@@ -1652,12 +1640,6 @@ children:
             children:
               gitlab:
                 children:
-                  command:
-                    children:
-                      app:
-                        children: {}
-                        type: dir
-                    type: dir
                   docker:
                     children:
                       docker-compose.yml:

@@ -7,7 +7,7 @@
 .ipynb_checkpoints/
 
 # Project
-.env
+/.env
 /tmp/*
 
 # Pytest
