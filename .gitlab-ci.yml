@@ -49,7 +49,9 @@ test:
   variables:
     GIT_STRATEGY: none
   script:
-    - docker ps
+    - REMOTE_IP=$(docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" wex_test_remote)
+    - sshpass -p TEST_PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${REMOTE_IP} 'echo TEST_ONE > /var/test-one.txt'
+
 #    # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
