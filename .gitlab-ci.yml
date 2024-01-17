@@ -46,7 +46,7 @@ test:
   script:
     - ls -la /var/www/
     - which wex
-    - wex app::env/get
+    - wex app::env/get --app-dir /usr/lib/wex/
 #    - sudo wex app::env/set --app-dir /usr/lib/wex/ -e test
 #    - sudo wex rebuild
 #    - sudo su owner
