@@ -49,9 +49,7 @@ test:
   variables:
     GIT_STRATEGY: none
   script:
-    - apt update
-    - apt install -y ssh
-    - sshpass -p TEST_PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$wex_test_remote 'echo TEST_ONE > /var/test-one.txt'
+    - sshpass -p TEST_PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@wex_test_remote 'echo TEST_ONE > /var/test-one.txt'
 
 #    # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
