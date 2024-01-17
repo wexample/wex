@@ -1,6 +1,6 @@
 stages:
 #  - checkup
-  - build_rc
+#  - build_rc
   - test
 #  - build
 #  - deploy
@@ -28,14 +28,14 @@ include:
 #    - pip install -r requirements-dev.txt
 #    - cli/wex .code/check
 
-build_rc:
-  stage: build_rc
-  extends: [.new_version, .globals, .docker_login, .build_image_app]
-  variables:
-    FLAVOR: rc
-  script:
-    - !reference [.docker_login, script]
-    - !reference [.build_image_app, script]
+#build_rc:
+#  stage: build_rc
+#  extends: [.new_version, .globals, .docker_login, .build_image_app]
+#  variables:
+#    FLAVOR: rc
+#  script:
+#    - !reference [.docker_login, script]
+#    - !reference [.build_image_app, script]
 
 test:
   stage: test
@@ -48,7 +48,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests
-    - sudo wex test -c app::app/exec -vvv
+    - sudo wex test -vvv
 
 #build:
 #  stage: build
