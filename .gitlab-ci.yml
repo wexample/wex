@@ -44,29 +44,11 @@ test:
   variables:
     GIT_STRATEGY: none
   script:
-    - ls -la /var/www/
-    - which wex
+    # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
-    - wex app::env/get --app-dir /opt/wex/
+    # Run tests
     - sudo wex test -c app::app/exec
-#    # Stops script on failure
-#    - set -e
-#    # We install manually as apt package does not exist at this point
-#    - apt update
-#    # Install minimum packages to launch install script
-#    - apt install sudo -y
-#    # Create env file
-#    - mv .wex/.env.test .wex/.env
-#    # Launch container for tests
-#    - docker rm -f wex
-#    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
-#    # Install
-#    - docker exec -t wex /bin/bash /opt/wex/cli/install
-#    # Launch tests
-#    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::app/exec -vvv"
-#    # Uninstall
-#    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
 
 #build:
 #  stage: build
