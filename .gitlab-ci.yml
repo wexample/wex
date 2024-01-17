@@ -47,9 +47,8 @@ test:
     - ls -la /var/www/
     - which wex
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
     - wex app::env/get --app-dir /opt/wex/
-#    - sudo wex rebuild
-#    - sudo su owner
 #    - sudo wex test -c app::app/exec
   after_script:
     - ls -la /var/www/prod/wex-proxy/
