@@ -1,4 +1,4 @@
-FROM gitlab-docker.wexample.com/wexample-public/docker/debian:latest
+FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 
 # Set the working directory
 WORKDIR /opt/wex
@@ -6,29 +6,12 @@ WORKDIR /opt/wex
 # Install all the necessary packages in one step
 RUN apt-get update && \
     apt-get install -y \
-      git \
-      sudo \
       ca-certificates \
-      curl \
       gnupg \
       software-properties-common && \
+      ssh \
+      sudo \
     # Clean up the apt cache to reduce image size
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Add Docker's official GPG key and set up the stable repository in one step
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list
-
-# Install Docker CE and other docker components
-RUN apt-get update && \
-    apt-get install -y \
-      docker-ce \
-      docker-ce-cli \
-      containerd.io \
-      docker-buildx-plugin \
-      docker-compose-plugin && \
-    # Clean up the apt cache again
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
