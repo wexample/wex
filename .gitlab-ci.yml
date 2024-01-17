@@ -59,7 +59,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -c app::remote/exec -vvv
+    - sudo -u owner sudo wex test -vvv
 
 #build:
 #  stage: build
