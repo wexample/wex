@@ -108,6 +108,8 @@ def app__app__start(
     def _app__app__start__proxy(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
+        nonlocal env
+
         if no_proxy:
             kernel.io.message(f"Proxy explicitly disabled")
             return None

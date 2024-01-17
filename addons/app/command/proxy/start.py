@@ -46,6 +46,7 @@ def app__proxy__start(
     def _app__proxy__start__create(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[QueuedCollectionStopResponse]:
+        nonlocal env
         manager.log("Starting proxy server")
 
         # Created
@@ -115,6 +116,8 @@ def app__proxy__start(
     def _app__proxy__start__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
+        nonlocal env
+
         return kernel.run_function(
             app__app__start,
             {
