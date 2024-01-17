@@ -1,5 +1,4 @@
-# Use a specific tag for the base image to ensure reproducibility
-FROM gitlab-docker.wexample.com/wexample-public/docker/debian:stable
+FROM gitlab-docker.wexample.com/wexample-public/docker/debian:latest
 
 # Set the working directory
 WORKDIR /opt/wex
