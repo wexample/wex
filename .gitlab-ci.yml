@@ -56,6 +56,9 @@ checkup_code:
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
     - wex .code/check
+    - wex .code/format
+    # Fail if some code has not been formatted
+    - git diff-index --quiet HEAD -- || exit 1
 
 test:
   stage: test
