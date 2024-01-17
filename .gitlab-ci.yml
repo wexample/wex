@@ -19,13 +19,11 @@ include:
     - *new-version-rules
 
 #checkup_code:
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+#  image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
 #  extends: [.new_version]
 #  stage: checkup
 #  script:
-#    - bash cli/install
-#    - source .wex/python/venv/bin/activate
-#    - pip install -r requirements-dev.txt
+#    -
 #    - cli/wex .code/check
 
 #build_rc:
@@ -48,8 +46,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests
-    - sudo su owner
-    - sudo wex test -vvv
+    - sudo -u owner wex test -vvv
 
 #build:
 #  stage: build
