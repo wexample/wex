@@ -1,34 +1,49 @@
-FROM gitlab-docker.wexample.com/wexample-public/docker/debian
+# Use a specific tag for the base image to ensure reproducibility
+FROM gitlab-docker.wexample.com/wexample-public/docker/debian:stable
 
 # Set the working directory
 WORKDIR /opt/wex
 
-# Install the latest version of Docker
-RUN apt-get update
+# Combine multiple RUN commands to reduce the number of layers
+# Install all the necessary packages in one step
+RUN apt-get update && \
+    apt-get install -y \
+      git \
+      sudo \
+      ca-certificates \
+      curl \
+      gnupg \
+      software-properties-common && \
+    # Clean up the apt cache to reduce image size
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt install -y \
-  git \
-  sudo
+# Add Docker's official GPG key and set up the stable repository in one step
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list
 
-RUN apt-get install -y ca-certificates curl gnupg
-RUN install -m 0755 -d /etc/apt/keyrings
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-RUN chmod a+r /etc/apt/keyrings/docker.gpg
-RUN echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
-RUN apt-get update
-RUN apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Docker CE and other docker components
+RUN apt-get update && \
+    apt-get install -y \
+      docker-ce \
+      docker-ce-cli \
+      containerd.io \
+      docker-buildx-plugin \
+      docker-compose-plugin && \
+    # Clean up the apt cache again
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN useradd --uid 1000 owner --create-home \
-  && adduser owner sudo \
-  && mkdir -p /etc/sudoers.d \
-  && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
+# Create and configure a non-root user
+RUN useradd --uid 1000 owner --create-home && \
+    adduser owner sudo && \
+    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
+# Switch to the non-root user
 USER owner
 
 # Copy the application files to the container
 COPY . .
 
+# Run the installation script as the non-root user
 RUN sudo bash cli/install
