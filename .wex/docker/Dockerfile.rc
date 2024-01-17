@@ -1,8 +1,26 @@
 FROM gitlab-docker.wexample.com/wexample-public/docker/debian
 
+# Set the working directory
 WORKDIR /opt/wex
+
+# Install the latest version of Docker
+RUN apt-get update
+
+RUN apt install -y \
+  git \
+  sudo
+
+RUN apt-get install ca-certificates curl gnupg
+RUN install -m 0755 -d /etc/apt/keyrings
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+RUN chmod a+r /etc/apt/keyrings/docker.gpg
+RUN echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update
 
 # Copy the application files to the container
 COPY . .
 
-RUN apt update && bash cli/install
+RUN bash cli/install
