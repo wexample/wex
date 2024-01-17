@@ -1,1 +1,6 @@
 FROM gitlab-docker.wexample.com/wexample-public/docker/debian
+
+WORKDIR /opt/wex
+
+# Copy the application files to the container
+COPY . .
