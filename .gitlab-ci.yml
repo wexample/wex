@@ -42,7 +42,12 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   script:
-    - sudo wex test
+    - wex app::env/set --app-dir /usr/lib/wex/ -e test
+    - wex rebuild
+    - sudo wex test -c app::app/exec
+  after_script:
+    - ls -la /var/www/prod/wex-proxy/
+    - cat /var/www/prod/wex-proxy/.wex/
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
