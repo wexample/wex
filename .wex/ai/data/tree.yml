@@ -123,9 +123,6 @@ children:
         children:
           command:
             children:
-              code:
-                children: {}
-                type: dir
               talk:
                 children:
                   ask.py:
@@ -212,12 +209,6 @@ children:
             children:
               command:
                 children:
-                  code:
-                    children: {}
-                    type: dir
-                  crawler:
-                    children: {}
-                    type: dir
                   talk:
                     children:
                       ask.py:
@@ -581,9 +572,6 @@ children:
                             children:
                               .gitkeep:
                                 type: file
-                            type: dir
-                          entrypoint:
-                            children: {}
                             type: dir
                           html:
                             children:
@@ -1197,15 +1185,6 @@ children:
                     type: dir
                   service.config.yml:
                     type: file
-                  tests:
-                    children:
-                      command:
-                        children:
-                          config:
-                            children: {}
-                            type: dir
-                        type: dir
-                    type: dir
                 type: dir
               mongo:
                 children:
@@ -1537,15 +1516,6 @@ children:
                     type: dir
                   docker:
                     children:
-                      .wex:
-                        children:
-                          apache:
-                            children:
-                              web.conf:
-                                children: {}
-                                type: dir
-                            type: dir
-                        type: dir
                       docker-compose.yml:
                         type: file
                     type: dir
@@ -1673,15 +1643,6 @@ children:
                     type: dir
                   service.config.yml:
                     type: file
-                  tests:
-                    children:
-                      command:
-                        children:
-                          url:
-                            children: {}
-                            type: dir
-                        type: dir
-                    type: dir
                 type: dir
             type: dir
         type: dir
@@ -1933,15 +1894,6 @@ children:
                     type: dir
                   service.config.yml:
                     type: file
-                  tests:
-                    children:
-                      command:
-                        children:
-                          app:
-                            children: {}
-                            type: dir
-                        type: dir
-                    type: dir
                 type: dir
               onlyoffice:
                 children:
@@ -2371,22 +2323,6 @@ children:
                     type: dir
                 type: dir
             type: dir
-        type: dir
-    type: dir
-  build:
-    children:
-      bdist.linux-x86_64:
-        children: {}
-        type: dir
-      scripts-3.10:
-        children:
-          wex-wrapper:
-            type: file
-        type: dir
-      scripts-3.11:
-        children:
-          wex-wrapper:
-            type: file
         type: dir
     type: dir
   cli:
