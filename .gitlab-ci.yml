@@ -49,10 +49,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     - wex app::env/get --app-dir /opt/wex/
-#    - sudo wex test -c app::app/exec
-  after_script:
-    - ls -la /var/www/prod/wex-proxy/
-    - cat /var/www/prod/wex-proxy/.wex/.env
+    - sudo wex test -c app::app/exec
 #    # Stops script on failure
 #    - set -e
 #    # We install manually as apt package does not exist at this point
@@ -70,9 +67,6 @@ test:
 #    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::app/exec -vvv"
 #    # Uninstall
 #    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
-#  after_script:
-#    # Reset permissions
-    - chown -R root:root .
 
 #build:
 #  stage: build
