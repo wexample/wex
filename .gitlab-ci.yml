@@ -42,8 +42,8 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   script:
-    - wex app::env/set --app-dir /usr/lib/wex/ -e test
-    - wex rebuild
+    - sudo wex app::env/set --app-dir /usr/lib/wex/ -e test
+    - sudo wex rebuild
     - sudo wex test -c app::app/exec
   after_script:
     - ls -la /var/www/prod/wex-proxy/
