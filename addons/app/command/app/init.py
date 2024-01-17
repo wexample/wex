@@ -55,7 +55,7 @@ def app__app__init(
 ) -> None:
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
-    env = env or APP_ENV_LOCAL
+    env = env or kernel.registry_structure.content.env
     services_list = args_split_arg_array(services)
 
     if not app_dir:
