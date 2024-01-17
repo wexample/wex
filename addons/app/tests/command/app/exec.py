@@ -7,12 +7,10 @@ class TestAppCommandAppExec(AbstractAppTestCase):
     def test_exec(self) -> None:
         app_dir = self.create_and_start_test_app(services=["php"])
 
-        print("DEBUG")
+        response = self.kernel.run_function(
+            app__app__exec, {"app-dir": app_dir, "command": "echo TEST"}
+        )
 
-        # response = self.kernel.run_function(
-        #     app__app__exec, {"app-dir": app_dir, "command": "echo TEST"}
-        # )
-        #
-        # self.assertEqual(response.first(), "TEST")
-        #
-        # self.kernel.run_function(app__app__stop, {"app-dir": app_dir})
+        self.assertEqual(response.first(), "TEST")
+
+        self.kernel.run_function(app__app__stop, {"app-dir": app_dir})
