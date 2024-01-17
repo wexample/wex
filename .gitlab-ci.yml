@@ -51,11 +51,11 @@ checkup_code:
   variables:
     GIT_STRATEGY: none
   script:
-    - realpath .
-    - ls -la
+    # Prepare checks
     - cd /opt/wex
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
+    # Checks
     - wex .code/check
     - wex .code/format
     # Fail if some code has not been formatted
