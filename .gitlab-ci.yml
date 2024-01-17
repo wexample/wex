@@ -46,8 +46,8 @@ test:
   script:
     - ls -la /var/www/
     - which wex
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - wex app::env/get --app-dir /opt/wex/
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
 #    - sudo su owner
 #    - sudo wex test -c app::app/exec
