@@ -7,7 +7,7 @@ from git import Repo
 from addons.app.command.app.start import app__app__start
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.service.install import app__service__install
-from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL, ERR_SERVICE_NOT_FOUND
+from addons.app.const.app import APP_DIR_APP_DATA, ERR_SERVICE_NOT_FOUND
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.app import app_create_env
 from addons.core.command.service.resolve import core__service__resolve
