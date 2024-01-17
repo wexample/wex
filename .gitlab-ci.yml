@@ -1,6 +1,6 @@
 stages:
   - build_pipeline_images
-#  - checkup
+  #  - checkup
   - test
 #  - build
 #  - deploy
@@ -18,18 +18,24 @@ include:
   rules:
     - *new-version-rules
 
-build_pipeline_images:
-  stage: build_pipeline_images
-  extends: [.new_version, .globals, .docker_login, .build_image_app]
-  variables:
-    FLAVOR: $CI_JOB_FLAVOR
+.build_pipeline_images:
+  extends: [ .new_version, .globals, .docker_login, .build_image_app ]
   script:
-    - !reference [.docker_login, script]
-    - !reference [.build_image_app, script]
-  parallel:
-    matrix:
-      - FLAVOR: rc
-      - FLAVOR: test-remote
+    - !reference [ .docker_login, script ]
+    - !reference [ .build_image_app, script ]
+
+build_pipeline_image_rc:
+  stage: build_pipeline_images
+  extends: [ .build_pipeline_images ]
+  variables:
+    FLAVOR: rc
+
+build_pipeline_image_test_remote:
+  stage: build_pipeline_images
+  extends: [ .build_pipeline_images ]
+  needs: [ build_pipeline_image_rc ]
+  variables:
+    FLAVOR: test-remote
 
 #checkup_code:
 #  image: gitlab-docker.wexample.com/wexample-public/docker/rc:latest
@@ -42,20 +48,18 @@ build_pipeline_images:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc
-  extends: [.new_version]
+  extends: [ .new_version ]
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
   variables:
     GIT_STRATEGY: none
   script:
-    - sshpass -p TEST_PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@wex_test_remote 'echo TEST_ONE > /var/test-one.txt'
-
-#    # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
-#    # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo wex test -c app::remote/exec -vvv
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
+    # Run tests, as "owner", with sudo.
+    - sudo -u owner sudo wex test -c app::remote/exec -vvv
 
 #build:
 #  stage: build
