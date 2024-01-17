@@ -5,6 +5,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain_openai import OpenAI
+from dotenv import dotenv_values
 
 from addons.app.command.env.get import app__env__get
 from src.const.typing import StringKeysDict
@@ -18,10 +19,10 @@ class AppAssistant:
         self.manager = manager
         self.manager.get_app_dir()
 
-        key = manager.kernel.run_function(
-            app__env__get,
-            {"app-dir": manager.kernel.directory.path, "key": "OPENAI_API_KEY"},
-        ).first()
+        env_path = manager.kernel.directory.path + ".env"
+        key = dotenv_values(env_path).get("OPENAI_API_KEY")
+        if not key:
+            manager.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
         self.llm = OpenAI(api_key=key)
 
