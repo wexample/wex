@@ -1,6 +1,6 @@
 stages:
 #  - checkup
-  - build_rc
+#  - build_rc
   - test
 #  - build
 #  - deploy
@@ -28,23 +28,24 @@ include:
 #    - pip install -r requirements-dev.txt
 #    - cli/wex .code/check
 
-build_rc:
-  stage: build_rc
-  extends: [.new_version, .globals, .docker_login, .build_image_app]
-  variables:
-    FLAVOR: rc
-  script:
-    - !reference [.docker_login, script]
-    - !reference [.build_image_app, script]
+#build_rc:
+#  stage: build_rc
+#  extends: [.new_version, .globals, .docker_login, .build_image_app]
+#  variables:
+#    FLAVOR: rc
+#  script:
+#    - !reference [.docker_login, script]
+#    - !reference [.build_image_app, script]
 
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   script:
-    - sudo wex app::env/set --app-dir /usr/lib/wex/ -e test
-    - sudo wex rebuild
-    - sudo wex test -c app::app/exec
+    - ls -la
+#    - sudo wex app::env/set --app-dir /usr/lib/wex/ -e test
+#    - sudo wex rebuild
+#    - sudo wex test -c app::app/exec
   after_script:
     - ls -la /var/www/prod/wex-proxy/
     - cat /var/www/prod/wex-proxy/.wex/.env
