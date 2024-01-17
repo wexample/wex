@@ -153,19 +153,7 @@ class AbstractAppTestCase(AbstractTestCase):
             },
         )
 
-        # Get IP
-        command = [
-            "docker",
-            "inspect",
-            "-f",
-            "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
-            "wex_test_remote",
-        ]
-        success, ip_list = execute_command_sync(self.kernel, command)
-
-        ip: str = ip_list[0]
-
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
-        manager.set_config("env.test-remote.server.ip", ip)
+        manager.set_config("env.test-remote.server.ip", "wex_test_remote")
 
         return manager
