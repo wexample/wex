@@ -42,7 +42,8 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   script:
-    - cp -r . /opt/wex
+    - sudo rm -rf /opt/wex
+    - sudo cp -r . /opt/wex
     - sudo wex test
 #    # Stops script on failure
 #    - set -e
