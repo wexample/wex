@@ -534,7 +534,7 @@ class AppAddonManager(AddonManager):
 
         proxy_apps = self.get_proxy_apps(environment)
         proxy_apps[name] = app_dir
-        print(f"DEBUG A {environment}")
+
         self.save_proxy_apps(proxy_apps, environment)
 
     def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:

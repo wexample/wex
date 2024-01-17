@@ -112,17 +112,11 @@ def app__app__start(
             kernel.io.message(f"Proxy explicitly disabled")
             return None
 
-        print(f"DEBUG C {app_dir}")
-
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(
             app__service__used, {"service": "proxy", "app-dir": app_dir}
         ).first():
             proxy_path = manager.get_proxy_path(env)
-
-            print(f"DEBUG D {env}")
-            print(f"DEBUG D {proxy_path}")
-            exit()
 
             # The reverse proxy is not running.
             if (
@@ -156,7 +150,6 @@ def app__app__start(
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-pre"}
         )
-        print(f"DEBUG B {app_dir}")
 
         # Save app in proxy apps.
         manager.log("Registering app...")
