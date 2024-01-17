@@ -45,7 +45,8 @@ checkup_code:
   extends: [.new_version]
   needs:
     - build_pipeline_image_rc
-    - build_pipeline_image_test_remote
+    - job: build_pipeline_image_test_remote
+      optional: true
   stage: checkup
   variables:
     GIT_STRATEGY: none
