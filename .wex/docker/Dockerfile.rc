@@ -1,0 +1,1 @@
+FROM gitlab-docker.wexample.com/wexample-public/docker/debian

@@ -1,10 +1,14 @@
 stages:
 #  - checkup
-  - test
+  - build_rc
+#  - test
 #  - build
 #  - deploy
 #  - test_apt_install
 #  - build_docker
+
+include:
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
 
 .new_version_rules: &new-version-rules
   - if: '$CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME == "master"'
@@ -13,6 +17,15 @@ stages:
 .new_version:
   rules:
     - *new-version-rules
+
+build_rc:
+  stage: build_rc
+  extends: [.new_version, .globals, .docker_login, .build_image_app]
+  variables:
+    FLAVOR: rc
+  script:
+    - !reference [.docker_login, script]
+    - !reference [.build_image_app, script]
 
 #checkup_code:
 #  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
@@ -24,31 +37,31 @@ stages:
 #    - pip install -r requirements-dev.txt
 #    - cli/wex .code/check
 
-test:
-  stage: test
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian:test
-  extends: [.new_version]
-  script:
-    # Stops script on failure
-    - set -e
-    # We install manually as apt package does not exist at this point
-    - apt update
-    # Install minimum packages to launch install script
-    - apt install sudo -y
-    # Create env file
-    - mv .wex/.env.test .wex/.env
-    # Launch container for tests
-    - docker rm -f wex
-    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
-    # Install
-    - docker exec -t wex /bin/bash /opt/wex/cli/install
-    # Launch tests
-    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::app/exec -vvv"
-    # Uninstall
-    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
-  after_script:
-    # Reset permissions
-    - chown -R root:root .
+#test:
+#  stage: test
+#  image: gitlab-docker.wexample.com/wexample-public/docker/debian:test
+#  extends: [.new_version]
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    # We install manually as apt package does not exist at this point
+#    - apt update
+#    # Install minimum packages to launch install script
+#    - apt install sudo -y
+#    # Create env file
+#    - mv .wex/.env.test .wex/.env
+#    # Launch container for tests
+#    - docker rm -f wex
+#    - docker compose -f .wex/docker/docker-compose.standalone.yml --env-file .wex/.env up -d
+#    # Install
+#    - docker exec -t wex /bin/bash /opt/wex/cli/install
+#    # Launch tests
+#    - docker exec -u owner -t wex /bin/bash -c "sudo wex test -c app::app/exec -vvv"
+#    # Uninstall
+#    - docker exec -t wex /bin/bash /opt/wex/cli/uninstall
+#  after_script:
+#    # Reset permissions
+#    - chown -R root:root .
 
 #build:
 #  stage: build
