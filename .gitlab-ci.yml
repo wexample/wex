@@ -50,7 +50,7 @@ checkup_code:
   variables:
     GIT_STRATEGY: none
   script:
-    - cli/wex .code/check
+    - cd /opt/wex && wex .code/check
 
 test:
   stage: test
