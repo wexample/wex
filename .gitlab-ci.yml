@@ -45,7 +45,7 @@ test:
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
-    # Run tests
+    # Run tests, as "owner", with sudo.
     - sudo -u owner sudo wex test -vvv
 
 #build:
