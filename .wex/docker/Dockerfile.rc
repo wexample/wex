@@ -4,3 +4,5 @@ WORKDIR /opt/wex
 
 # Copy the application files to the container
 COPY . .
+
+RUN apt update && bash cli/install
