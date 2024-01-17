@@ -63,7 +63,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv
+    - sudo -u owner sudo wex test -c app::webhook/exec -vvv
 
 #build_apt:
 #  stage: build_apt

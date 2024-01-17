@@ -82,7 +82,7 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         response = self.kernel.run_function(
             app__webhook__exec,
             {
-                "webhook_path": f"/webhook/app/{app_name}/test/test-running",
+                "webhook_path": f"/webhook/app/test/{app_name}/test/test-running",
             },
         )
 
