@@ -31,4 +31,4 @@ USER owner
 # Copy the application files to the container
 COPY . .
 
-RUN bash cli/install
+RUN sudo bash cli/install
