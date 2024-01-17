@@ -1,6 +1,6 @@
 stages:
 #  - checkup
-  - build_rc
+  - build_pipeline_images
   - test
 #  - build
 #  - deploy
@@ -26,14 +26,18 @@ include:
 #    -
 #    - cli/wex .code/check
 
-build_rc:
-  stage: build_rc
+build_pipeline_images:
+  stage: build_pipeline_images
   extends: [.new_version, .globals, .docker_login, .build_image_app]
   variables:
-    FLAVOR: rc
+    FLAVOR: $CI_JOB_FLAVOR
   script:
     - !reference [.docker_login, script]
     - !reference [.build_image_app, script]
+  parallel:
+    matrix:
+      - FLAVOR: rc
+      - FLAVOR: test-remote
 
 test:
   stage: test
