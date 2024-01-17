@@ -142,3 +142,7 @@ def docker_remove_filtered_container(
         ],
         ignore_error=True,
     )
+
+
+def docker_is_current() -> bool:
+    return os.path.exists("/.dockerenv")
