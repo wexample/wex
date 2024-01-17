@@ -44,7 +44,7 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [.new_version]
   services:
-    - name: gitlab-docker.wexample.com/wexample-public/docker/test-remote:latest
+    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
   variables:
     GIT_STRATEGY: none
