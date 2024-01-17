@@ -37,9 +37,6 @@ RUN useradd --uid 1000 owner --create-home && \
     adduser owner sudo && \
     echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
-# Switch to the non-root user
-USER owner
-
 # Copy the application files to the container
 COPY . .
 
