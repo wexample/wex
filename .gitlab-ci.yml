@@ -48,6 +48,7 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests
+    - sudo su owner
     - sudo wex test -vvv
 
 #build:
