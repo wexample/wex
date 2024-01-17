@@ -1,5 +1,5 @@
 stages:
-#  - build_pipeline_images
+  - build_pipeline_images
   - checkup
   - test
 #  - build_apt
