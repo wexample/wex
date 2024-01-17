@@ -3,7 +3,6 @@ FROM gitlab-docker.wexample.com/wexample-public/docker/debian:latest
 # Set the working directory
 WORKDIR /opt/wex
 
-# Combine multiple RUN commands to reduce the number of layers
 # Install all the necessary packages in one step
 RUN apt-get update && \
     apt-get install -y \
