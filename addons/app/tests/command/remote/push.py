@@ -69,14 +69,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             app__remote__push, {"environment": "test-remote", "app-dir": app_dir}
         )
 
-        self._cleanup_sync_env()
-
     def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:
-        self.start_remote_server()
-
         manager = self.create_and_start_test_app_with_remote(services)
 
         return manager
-
-    def _cleanup_sync_env(self) -> None:
-        self.stop_remote_server()

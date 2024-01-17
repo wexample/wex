@@ -169,34 +169,3 @@ class AbstractAppTestCase(AbstractTestCase):
         manager.set_config("env.test-remote.server.ip", ip)
 
         return manager
-
-    def start_remote_server(self) -> None:
-        self.log("Starting fake test remote server")
-        command = [
-            "docker",
-            "compose",
-            "-f",
-            ".wex/docker/docker-compose.test-remote.yml",
-            "up",
-            "-d",
-            "--build",
-        ]
-
-        execute_command_sync(self.kernel, command)
-
-    def stop_remote_server(self) -> None:
-        # Rollback to working dir.
-        os.chdir(self.kernel.directory.path)
-
-        self.log("Stopping fake test remote server")
-        command = [
-            "docker",
-            "compose",
-            "-f",
-            ".wex/docker/docker-compose.test-remote.yml",
-            "down",
-            "--rmi",
-            "all",
-        ]
-
-        execute_command_sync(self.kernel, command)
