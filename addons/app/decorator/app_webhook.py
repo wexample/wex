@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.const.typing import AnyCallable
+from src.const.types import AnyCallable
 
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand

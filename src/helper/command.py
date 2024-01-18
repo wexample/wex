@@ -12,7 +12,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
 )
-from src.const.typing import (
+from src.const.types import (
     ShellCommandResponseTuple,
     ShellCommandsDeepList,
     ShellCommandsList,

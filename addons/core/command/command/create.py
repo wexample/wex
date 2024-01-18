@@ -8,7 +8,7 @@ from src.const.globals import (
     COMMAND_TYPE_ADDON,
     COMMAND_TYPE_CORE,
 )
-from src.const.typing import StringKeysDict
+from src.const.types import StringKeysDict
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from addons.app.decorator.service_option import service_option
-from src.const.typing import RegistryAllServices
+from src.const.types import RegistryAllServices
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

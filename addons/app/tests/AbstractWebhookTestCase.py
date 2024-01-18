@@ -9,7 +9,7 @@ from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.typing import JsonContentDict
+from src.const.types import JsonContentDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):

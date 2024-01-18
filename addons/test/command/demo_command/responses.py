@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-from src.const.typing import AnyCallable
+from src.const.types import AnyCallable
 from src.core.response.NonInteractiveShellCommandResponse import (
     NonInteractiveShellCommandResponse,
 )

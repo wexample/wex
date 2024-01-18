@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from src.const.typing import BasicValue, FileSystemStructureSchemaItem
+from src.const.types import BasicValue, FileSystemStructureSchemaItem
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
     AbstractFileSystemStructure,

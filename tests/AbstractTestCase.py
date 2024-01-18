@@ -5,7 +5,7 @@ import unittest
 from typing import TYPE_CHECKING, Any, Iterable
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
-from src.const.typing import (
+from src.const.types import (
     AnyCallable,
     ShellCommandResponseTuple,
     StringKeysDict,

@@ -9,7 +9,7 @@ from src.core.response.AbstractEmptyResponse import AbstractEmptyResponse
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
-    from src.const.typing import OptionalCoreCommandArgsDict
+    from src.const.types import OptionalCoreCommandArgsDict
 
 
 class AbortResponse(AbstractEmptyResponse, ABC):

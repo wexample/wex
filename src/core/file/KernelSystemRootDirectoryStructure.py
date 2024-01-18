@@ -1,4 +1,4 @@
-from src.const.typing import FileSystemStructureSchema
+from src.const.types import FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
 
 

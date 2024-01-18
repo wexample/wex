@@ -1,7 +1,7 @@
 import copy
 from typing import Any, Optional
 
-from src.const.typing import StringKeysDict, StringKeysMapping
+from src.const.types import StringKeysDict, StringKeysMapping
 
 
 def dict_merge(dict1: StringKeysDict, dict2: StringKeysDict) -> StringKeysDict:

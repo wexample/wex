@@ -4,7 +4,7 @@ from typing import Optional, TypedDict, cast
 
 import yaml
 
-from src.const.typing import StringKeysDict
+from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge
 
 

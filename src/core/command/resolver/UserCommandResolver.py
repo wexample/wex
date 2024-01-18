@@ -9,7 +9,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_USER,
 )
-from src.const.typing import StringsList
+from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.helper.string import string_to_kebab_case, string_to_snake_case

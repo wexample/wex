@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.system.command.os.name import OS_NAME_MAC, system__os__name
 from addons.system.command.system.ip import system__system__ip
-from src.const.typing import ShellCommandResponseTuple
+from src.const.types import ShellCommandResponseTuple
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.command import command
 from src.helper.command import command_exists, execute_command_sync

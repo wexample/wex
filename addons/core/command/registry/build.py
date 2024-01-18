@@ -6,7 +6,7 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.const.typing import KernelRegistry
+    from src.const.types import KernelRegistry
     from src.core.Kernel import Kernel
 
 

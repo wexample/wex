@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import remote_get_environment_ip
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.typing import StringKeysDict
+from src.const.types import StringKeysDict
 from src.decorator.option import option
 
 if TYPE_CHECKING:

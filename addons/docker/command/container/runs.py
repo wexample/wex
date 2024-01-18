@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.const.typing import ShellCommandsList
+from src.const.types import ShellCommandsList
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command_sync

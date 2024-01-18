@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, TypedDict, cast
 from urllib.parse import parse_qs, urlparse
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
-from src.const.typing import StringKeysDict, StringsList
+from src.const.types import StringKeysDict, StringsList
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_CHARS = re.compile(r"^[a-zA-Z0-9_\-=&]+$")

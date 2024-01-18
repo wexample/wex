@@ -1,6 +1,6 @@
 import click
 
-from src.const.typing import AnyCallable, Args, Kwargs
+from src.const.types import AnyCallable, Args, Kwargs
 
 
 def app_dir_option(*args: Args, **kwargs: Kwargs) -> AnyCallable:

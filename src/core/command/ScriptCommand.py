@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 
 import click
 
-from src.const.typing import (
+from src.const.types import (
     AnyCallable,
     Args,
     CoreCommandArgsDict,

@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 from typing import Any, Dict, Optional, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
-from src.const.typing import Args, Kwargs, StringsList
+from src.const.types import Args, Kwargs, StringsList
 from src.helper.array import array_replace_value
 from src.helper.routing import (
     RouteInfo,

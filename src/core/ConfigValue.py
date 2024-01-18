@@ -1,6 +1,6 @@
 from typing import Any
 
-from src.const.typing import AnyList, AppConfigValue, StringKeysDict
+from src.const.types import AnyList, AppConfigValue, StringKeysDict
 from src.core.BaseClass import BaseClass
 
 

@@ -7,7 +7,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain_openai import OpenAI
 
-from src.const.typing import StringKeysDict
+from src.const.types import StringKeysDict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

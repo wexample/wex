@@ -2,7 +2,7 @@ from typing import Optional
 
 import yaml
 
-from src.const.typing import YamlContent, YamlContentDict
+from src.const.types import YamlContent, YamlContentDict
 
 
 def yaml_load(

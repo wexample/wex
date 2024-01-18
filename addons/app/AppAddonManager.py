@@ -34,7 +34,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MEDIUM,
     VERSION_DEFAULT,
 )
-from src.const.typing import (
+from src.const.types import (
     AnyAppConfig,
     AnyCallable,
     AppConfig,

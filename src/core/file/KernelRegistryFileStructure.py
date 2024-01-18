@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-from src.const.typing import KernelRegistry, RegistryResolverData, YamlContentDict
+from src.const.types import KernelRegistry, RegistryResolverData, YamlContentDict
 from src.core.file.YamlFileStructure import YamlFileStructure
 
 if TYPE_CHECKING:

@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.typing import (
+from src.const.types import (
     AnyCallable,
     BasicValue,
     CoreCommandArgsDict,

@@ -12,7 +12,7 @@ from addons.app.decorator.app_command import app_command
 from addons.app.helper.app import app_create_env
 from addons.core.command.service.resolve import core__service__resolve
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.const.typing import CoreCommandCommaSeparatedList
+from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
 from src.helper.args import args_split_arg_array
 from src.helper.prompt import prompt_progress_steps

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
-from src.const.typing import StringKeysDict, StringsList
+from src.const.types import StringKeysDict, StringsList
 from src.decorator.option import option
 
 if TYPE_CHECKING:

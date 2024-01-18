@@ -1,4 +1,4 @@
-from src.const.typing import StringsList
+from src.const.types import StringsList
 
 APP_DIR_APP_DATA_NAME: str = ".wex"
 APP_DIR_APP_DATA: str = f"{APP_DIR_APP_DATA_NAME}/"

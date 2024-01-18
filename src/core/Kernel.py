@@ -34,7 +34,7 @@ from src.helper.args import args_shift_one
 from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
 
 if TYPE_CHECKING:
-    from src.const.typing import (
+    from src.const.types import (
         CoreCommandArgsList,
         CoreCommandString,
         OptionalCoreCommandArgsListOrDict,

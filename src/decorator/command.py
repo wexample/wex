@@ -1,5 +1,5 @@
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.typing import AnyCallable, Args, Kwargs
+from src.const.types import AnyCallable, Args, Kwargs
 from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 

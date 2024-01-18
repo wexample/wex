@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from src.const.typing import StringsList
+from src.const.types import StringsList
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

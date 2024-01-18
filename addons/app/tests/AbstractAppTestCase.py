@@ -17,7 +17,7 @@ from addons.app.helper.test import (
 )
 from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.const.typing import AnyCallable, StringsList
+from src.const.types import AnyCallable, StringsList
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )

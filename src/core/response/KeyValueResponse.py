@@ -2,7 +2,7 @@ import os
 from typing import TYPE_CHECKING, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.typing import (
+from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
     StringKeysDict,
