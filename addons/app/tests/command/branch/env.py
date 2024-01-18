@@ -5,7 +5,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 class TestAppCommandBranchEnv(AbstractAppTestCase):
     def test_env(self) -> None:
-        app_dir = self.create_test_app()
+        app_dir = self.create_test_app(force_restart=True)
         fake_branch = "testing"
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
         manager.set_config("env.test_env.branch", fake_branch)
