@@ -8,11 +8,23 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self.assertTrue(True)
 
         message = chat_format_message(
-            "Left align : Lorem ipsum dolor sit amet consecetur"
+            "Left align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah."
         )
-        print(message)
+
+        self.kernel.io.print(message)
+
+        self.assertTrue(
+            "+---" in message,
+        )
 
         message = chat_format_message(
-            "Right align : Lorem ipsum dolor sit amet consecetur", TEXT_ALIGN_RIGHT
+            "Right align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah.",
+            align=TEXT_ALIGN_RIGHT,
+            padding=2
         )
-        print(message)
+
+        self.assertTrue(
+            "+---" in message,
+        )
+
+        self.kernel.io.print(message)
