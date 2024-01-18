@@ -452,7 +452,7 @@ class AppAddonManager(AddonManager):
                 {
                     "command": request.get_string_command(),
                 },
-                trace=False
+                trace=False,
             )
 
             sys.exit(0)

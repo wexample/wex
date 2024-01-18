@@ -2348,7 +2348,7 @@ children:
             type: file
           resolvers.py:
             type: file
-          typing.py:
+          types.py:
             type: file
         type: dir
       core:
