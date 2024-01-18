@@ -20,7 +20,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         message = chat_format_message(
             "Right align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah.",
             align=TEXT_ALIGN_RIGHT,
-            padding=2
+            padding=2,
         )
 
         self.assertTrue(

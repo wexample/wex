@@ -30,8 +30,7 @@ def ai__talk__ask(manager: "AppAddonManager", app_dir: str) -> None:
 
             manager.kernel.io.print(
                 chat_format_message(
-                    assistant.assist(user_input)["text"].strip(),
-                    TEXT_ALIGN_RIGHT
+                    assistant.assist(user_input)["text"].strip(), TEXT_ALIGN_RIGHT
                 )
             )
         except KeyboardInterrupt:

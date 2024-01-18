@@ -787,7 +787,9 @@ class AppAddonManager(AddonManager):
         return cast(StringKeysDict, self.get_config("service", {}).get_dict())
 
     def require_proxy(self) -> bool:
-        return self.get_config_or_service_config("require_proxy", default=False).get_bool()
+        return self.get_config_or_service_config(
+            "require_proxy", default=False
+        ).get_bool()
 
     def creates_network(self) -> bool:
         services = self.get_services()

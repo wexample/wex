@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 from dotenv import dotenv_values
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
-from langchain.prompts.chat import HumanMessagePromptTemplate
 from langchain_openai import OpenAI
 
 from src.const.types import StringKeysDict
