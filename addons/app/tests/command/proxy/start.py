@@ -13,7 +13,7 @@ class TestAppCommandProxyStart(AbstractTestCase):
         self.kernel.run_function(
             app__proxy__start,
             {
-                "env": "start_test_one",
+                "env": "test_env_one",
                 "port": 8070,
                 "port-secure": 44370,
             },
@@ -22,7 +22,7 @@ class TestAppCommandProxyStart(AbstractTestCase):
         self.kernel.run_function(
             app__proxy__start,
             {
-                "env": "start_test_two",
+                "env": "test_env_two",
                 "port": 8071,
                 "port-secure": 44371,
             },
@@ -38,9 +38,9 @@ class TestAppCommandProxyStart(AbstractTestCase):
 
         self.assertEqual(len(prox_containers_list), 2)
 
-        self.kernel.run_function(app__proxy__stop, {"env": "start_test_one"})
+        self.kernel.run_function(app__proxy__stop, {"env": "test_env_one"})
 
-        self.kernel.run_function(app__proxy__stop, {"env": "start_test_two"})
+        self.kernel.run_function(app__proxy__stop, {"env": "test_env_two"})
 
         success, prox_containers_list = execute_command_tree_sync(
             self.kernel,
