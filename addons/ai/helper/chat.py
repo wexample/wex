@@ -2,8 +2,7 @@ import shutil
 
 TEXT_ALIGN_LEFT = "left"
 TEXT_ALIGN_RIGHT = "right"
-MAX_WIDTH = 50
-
+MAX_WIDTH = 250
 
 def chat_format_message(
     text: str,
@@ -11,10 +10,9 @@ def chat_format_message(
     padding: int = 1,
     max_width: int = MAX_WIDTH
 ) -> str:
+    padding_horizontal_char = "    "
     terminal_width = shutil.get_terminal_size().columns
-    max_text_width = min(max_width, terminal_width - 4 - padding * 2)
-
-    print(terminal_width)
+    max_text_width = min(max_width, terminal_width - len(padding_horizontal_char) * 2 * padding - 2)
 
     words = text.split()
     lines = []
@@ -30,15 +28,14 @@ def chat_format_message(
     if current_line:
         lines.append(current_line)
 
-    frame_width = max(len(line) for line in lines) + 2 * (padding + 1)
+    frame_width = max(len(line) for line in lines) + len(padding_horizontal_char) * 2 * padding + 2
     frame_width = min(frame_width, terminal_width)
 
     top_bottom_frame = '+' + '-' * (frame_width - 2) + '+'
     horizontal_padding = '|' + ' ' * (frame_width - 2) + '|'
-    formatted_lines = ['| ' + line.ljust(frame_width - 2 * (padding + 1)) + ' |' for line in lines]
+    formatted_lines = ['|' + padding_horizontal_char * padding + line.ljust(frame_width - len(padding_horizontal_char) * 2 * padding - 2) + padding_horizontal_char * padding + '|' for line in lines]
 
-    frame = [top_bottom_frame] + [horizontal_padding] * padding + \
-            formatted_lines + [horizontal_padding] * padding + [top_bottom_frame]
+    frame = [top_bottom_frame] + [horizontal_padding] * padding + formatted_lines + [horizontal_padding] * padding + [top_bottom_frame]
 
     if align == TEXT_ALIGN_RIGHT:
         frame = [line.rjust(terminal_width) for line in frame]
