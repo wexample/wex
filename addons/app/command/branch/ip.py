@@ -1,13 +1,14 @@
 from typing import TYPE_CHECKING, Optional
 
+from addons.app.command.branch.env import _app__branch__env
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import remote_get_environment_ip
-from addons.app.command.branch.env import _app__branch__env
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+
 
 @app_command(
     help="Return server ip for given branch as set in app config",

@@ -1,10 +1,9 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.decorator.option import option
-from typing import TYPE_CHECKING
 from src.const.types import StringKeysDict
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -15,7 +14,9 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_ADDON,
 )
 @option("--branch", "-b", type=str, required=True, help="Branch name")
-def app__branch__env(manager: "AppAddonManager", branch: str, app_dir: str) -> Optional[str]:
+def app__branch__env(
+    manager: "AppAddonManager", branch: str, app_dir: str
+) -> Optional[str]:
     return _app__branch__env(manager, branch)
 
 

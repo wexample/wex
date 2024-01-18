@@ -1,6 +1,7 @@
+from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.branch.env import app__branch__env
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from addons.app.AppAddonManager import AppAddonManager
+
 
 class TestAppCommandBranchEnv(AbstractAppTestCase):
     def test_env(self) -> None:
