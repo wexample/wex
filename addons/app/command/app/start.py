@@ -110,6 +110,10 @@ def app__app__start(
     ) -> Optional[AbstractResponse]:
         nonlocal env
 
+        if not manager.require_proxy():
+            kernel.io.message(f"Don't need proxy")
+            return None
+
         if no_proxy:
             kernel.io.message(f"Proxy explicitly disabled")
             return None
