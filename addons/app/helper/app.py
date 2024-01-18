@@ -1,10 +1,11 @@
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.location.find import app__location__find
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
 from src.helper.file import file_create_parent_and_touch
+from src.const.types import StringKeysDict
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -38,3 +39,15 @@ def app_create_manager(kernel: "Kernel", app_dir: str) -> AppAddonManager:
 
     # Create a dedicated manager
     return AppAddonManager(kernel, app_dir=app_dir)
+
+
+def app_get_env_for_branch(manager: AppAddonManager, branch: str) -> Optional[str]:
+    environments_config = manager.get_config(f"env").get_dict()
+
+    for env in environments_config:
+        env_config: StringKeysDict = environments_config[env]
+
+        if "branch" in env_config and env_config["branch"] == branch:
+            return env
+
+    return None
