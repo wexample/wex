@@ -34,7 +34,7 @@ class AppAssistant:
         )
 
     def assist(self, question: str) -> StringKeysDict:
-        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+        human_message_prompt = ChatPromptTemplate.from_template("{text}")
 
         chain = self.create_chain(
             ChatPromptTemplate.from_messages([human_message_prompt])
