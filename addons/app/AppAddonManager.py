@@ -743,13 +743,15 @@ class AppAddonManager(AddonManager):
             self.get_main_service() if self.has_main_service() else None
         )
 
+        service_config = service_load_config(self.kernel, found_service)
+
         return ConfigValue(
             dict_get_item_by_path(
-                service_load_config(self.kernel, found_service),
+                service_config,
                 key,
                 default,
             )
-            if found_service
+            if (found_service and service_config)
             else default
         )
 
