@@ -14,5 +14,7 @@ options:
     required: true
     type: str
 scripts:
+  - title: Update README.md
+    script: CURRENT_VERSION=$(cat version.txt) && sed -i "s/wex v$CURRENT_VERSION/wex v$VERSION/g" "README.md"
   - title: Save new version to root file
     script: echo ${VERSION} > version.txt
