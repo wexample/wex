@@ -111,7 +111,7 @@ def app__app__start(
         nonlocal env
 
         if not manager.require_proxy():
-            kernel.io.message(f"Don't need proxy")
+            kernel.io.message(f"Don't require proxy")
             return None
 
         if no_proxy:
