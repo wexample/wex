@@ -7,7 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestAppCommandProxyStart(AbstractTestCase):
     def test_start(self) -> None:
-        filter = "wex_proxy_start_test_"
+        filter = "wex_proxy_test_env_"
         docker_remove_filtered_container(self.kernel, filter)
 
         self.kernel.run_function(
