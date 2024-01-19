@@ -33,10 +33,10 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         manager.get_directory().initialize()
 
         execute_command_sync(manager.kernel, ["touch", f"{app_dir}test.txt"])
-        environment = "test-remote"
+        environment = "test_remote"
 
         self.kernel.run_function(
-            app__remote__push, {"environment": "test-remote", "app-dir": app_dir}
+            app__remote__push, {"environment": "test_remote", "app-dir": app_dir}
         )
 
         remote_path = (
@@ -66,7 +66,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         app_dir = manager.get_app_dir()
 
         self.kernel.run_function(
-            app__remote__push, {"environment": "test-remote", "app-dir": app_dir}
+            app__remote__push, {"environment": "test_remote", "app-dir": app_dir}
         )
 
     def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:

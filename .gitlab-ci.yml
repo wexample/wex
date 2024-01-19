@@ -42,7 +42,7 @@ build_pipeline_image_test_remote:
 
 checkup_code:
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [.new_version]
+  extends: [ .new_version ]
   needs:
     - build_pipeline_image_rc
     - job: build_pipeline_image_test_remote
@@ -63,10 +63,17 @@ checkup_code:
     - git diff
     - git diff-index --quiet HEAD -- || exit 1
 
+.test_cleanup:
+  script:
+    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
+    - rm -rf /var/www/test
+    - rm -rf /var/www/test_*
+
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc
-  extends: [ .new_version ]
+  extends: [ .test_cleanup, .new_version ]
   needs:
     - checkup_code
   services:
@@ -75,16 +82,18 @@ test:
   variables:
     GIT_STRATEGY: none
   script:
+    - !reference [ .test_cleanup, script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
     - sudo -u owner sudo wex test -vvv
+    - !reference [ .test_cleanup, script ]
 
 build_apt:
   stage: build_apt
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-  extends: [.new_version]
+  extends: [ .new_version ]
   needs:
     - test
   script:
@@ -105,7 +114,7 @@ build_apt:
 deploy:
   stage: deploy
   image: curlimages/curl
-  extends: [.new_version]
+  extends: [ .new_version ]
   needs:
     - build_apt
   script:
@@ -114,7 +123,7 @@ deploy:
     - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 .test_apt_install:
-  extends: [.new_version]
+  extends: [ .new_version ]
   script:
     # Stops script on failure
     - set -e
@@ -151,7 +160,7 @@ test_apt_install_ubuntu:
 # Rebuild public image
 build_docker:
   stage: build_docker
-  extends: [.new_version]
+  extends: [ .new_version ]
   needs:
     - test_apt_install_debian
     - test_apt_install_ubuntu
