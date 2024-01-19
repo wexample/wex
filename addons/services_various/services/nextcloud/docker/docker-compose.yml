@@ -1,7 +1,7 @@
 services:
   nextcloud:
     container_name: ${RUNTIME_NAME}_nextcloud
-    image: nextcloud:25.0.12
+    image: nextcloud:28.0.1
     environment:
       - VIRTUAL_HOST=${GLOBAL_NAME}.wex
       - MARIA_HOST=${SERVICE_MARIA_HOST}
