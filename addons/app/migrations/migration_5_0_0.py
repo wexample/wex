@@ -164,6 +164,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
                 ),
                 "ROCKETCHAT_VERSION": _get_config_value(config, "ROCKETCHAT_VERSION"),
                 "SONARQUBE_VERSION": _get_config_value(config, "SONARQUBE_VERSION"),
+                "WEX_COMPOSE_YML_DEFAULT": "RUNTIME_SERVICE_MONGO_YML_ENV",
                 "WEX_COMPOSE_YML_MONGO_6": "RUNTIME_SERVICE_MONGO_YML_ENV",
                 "WEX_COMPOSE_YML_MYSQL_8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
                 "WEX_COMPOSE_YML_LARAVEL_5": "RUNTIME_SERVICE_LARAVEL_YML_ENV",
