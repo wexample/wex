@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Optional
 
 from git import Repo
 
-from addons.app.command.code.check import app__code__check
 from addons.app.command.code.format import app__code__format
 from addons.app.command.config.set import app__config__set
 from addons.app.command.version.new_write import app__version__new_write
@@ -37,12 +36,6 @@ def core__version__new_write(
     repo = Repo(root_dir)
 
     current_version = core_kernel_get_version(kernel)
-
-    def _core__version__build__check_code_quality(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse:
-        kernel.io.log(f"Executing code quality checkup...")
-        return kernel.run_function(app__code__check, {"app-dir": root_dir})
 
     def _core__version__build__format(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -116,7 +109,6 @@ def core__version__new_write(
     return QueuedCollectionResponse(
         kernel,
         [
-            _core__version__build__check_code_quality,
             _core__version__build__format,
             _core__version__build__check_uncommitted,
             _core__version__build__increment_version,
