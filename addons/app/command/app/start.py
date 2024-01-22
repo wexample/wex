@@ -59,6 +59,7 @@ if TYPE_CHECKING:
 @option("--group", "-g", type=str, required=False, help="Group of application files")
 @option("--env", "-e", type=str, required=False, help="App environment")
 @option("--no-proxy", "-nopx", is_flag=True, required=False, help="Do not start proxy")
+@option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")
 def app__app__start(
     manager: "AppAddonManager",
     app_dir: str,
@@ -67,6 +68,7 @@ def app__app__start(
     group: Optional[str] = None,
     env: Optional[str] = None,
     no_proxy: bool = False,
+    fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
     name = manager.get_config("global.name").get_str()
@@ -128,12 +130,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                    app__app__started,
-                    {
-                        "app-dir": proxy_path,
-                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                    },
-                ).first()
+                app__app__started,
+                {
+                    "app-dir": proxy_path,
+                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                },
+            ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
@@ -297,9 +299,13 @@ def app__app__start(
             ]
         )
 
-    return QueuedCollectionResponse(
-        kernel,
-        [
+    if fast:
+        steps = [
+            # Just load docker compose
+            _app__app__start__starting,
+        ]
+    else:
+        steps = [
             _app__app__start__checkup,
             _app__app__start__proxy,
             _app__app__start__config,
@@ -310,5 +316,9 @@ def app__app__start(
             _app__app__start__serve,
             _app__app__start__first_init,
             _app__app__start__complete,
-        ],
+        ]
+
+    return QueuedCollectionResponse(
+        kernel,
+        steps,
     )
