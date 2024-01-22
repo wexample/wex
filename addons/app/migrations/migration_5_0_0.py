@@ -175,6 +175,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
                 "WEX_COMPOSE_YML_PHP_8": "RUNTIME_SERVICE_PHP_YML_ENV",
                 "WEX_COMPOSE_YML_PHPMYADMIN": "RUNTIME_SERVICE_PHPMYADMIN_YML_ENV",
                 "WEX_COMPOSE_YML_WORDPRESS5": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
+                "WEX_COMPOSE_YML_WORDPRESS": "RUNTIME_SERVICE_WORDPRESS_YML_ENV",
                 "WEX_COMPOSE_YML_MYSQL8": "RUNTIME_SERVICE_MYSQL_YML_ENV",
             },
         )

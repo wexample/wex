@@ -6,3 +6,4 @@ permissions:
   user: 82
   group: 82
 shell: /bin/sh
+require_proxy: true
