@@ -11,7 +11,7 @@ include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
 
 .new_version_rules: &new-version-rules
-  - if: '$CI_COMMIT_TAG && ($CI_COMMIT_REF_NAME == "refs/tags/develop" || $CI_COMMIT_REF_NAME == "refs/tags/master")'
+  - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME'
 
 .new_version:
   rules:
