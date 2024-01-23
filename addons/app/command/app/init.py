@@ -58,11 +58,11 @@ def app__app__init(
     env = env or kernel.registry_structure.content.env
 
     # Resolve dependencies for all services
-    services_resolved = list(kernel.run_function(
-        core__service__resolve, {
-            "service": args_split_arg_array(services)
-        }
-    ).first())
+    services_resolved = list(
+        kernel.run_function(
+            core__service__resolve, {"service": args_split_arg_array(services)}
+        ).first()
+    )
 
     if not app_dir:
         app_dir = current_dir
@@ -88,7 +88,7 @@ def app__app__init(
         for service in services_resolved:
             if (
                 not service
-                    in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+                in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
             ):
                 kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": service})
 

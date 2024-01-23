@@ -25,7 +25,10 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import command_get_option, execute_command_async
-from src.helper.core import core_get_daemon_service_resource_path, core_kernel_get_version
+from src.helper.core import (
+    core_get_daemon_service_resource_path,
+    core_kernel_get_version,
+)
 from src.helper.file import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
 from src.helper.system import (

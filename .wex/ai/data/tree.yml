@@ -2006,6 +2006,11 @@ children:
                   spaces.py:
                     type: file
                 type: dir
+              git:
+                children:
+                  rollback_permissions.py:
+                    type: file
+                type: dir
               kill:
                 children:
                   by_port.py:
@@ -2048,6 +2053,11 @@ children:
                   disk:
                     children:
                       spaces.py:
+                        type: file
+                    type: dir
+                  git:
+                    children:
+                      rollback_permissions.py:
                         type: file
                     type: dir
                   kill:
@@ -2550,6 +2560,11 @@ children:
         type: dir
       resources:
         children:
+          images:
+            children:
+              wex.gif:
+                type: file
+            type: dir
           templates:
             children:
               command.py.tpl:

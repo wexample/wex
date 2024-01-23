@@ -100,10 +100,7 @@ def app__webhook__exec(
     ) -> AbstractResponse:
         return kernel.get_command_resolver(
             command_type
-        ).run_command_request_from_url_path(
-            command_path,
-            query_string_data
-        )
+        ).run_command_request_from_url_path(command_path, query_string_data)
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(

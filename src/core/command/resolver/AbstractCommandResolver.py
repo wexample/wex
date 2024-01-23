@@ -434,7 +434,9 @@ class AbstractCommandResolver(KernelChild):
     def decorate_command(cls, function: "AnyCallable") -> "AnyCallable":
         return function
 
-    def run_command_request_from_url_path(self, path: str, args: OptionalCoreCommandArgsDict = None) -> "AbstractResponse":
+    def run_command_request_from_url_path(
+        self, path: str, args: OptionalCoreCommandArgsDict = None
+    ) -> "AbstractResponse":
         command = self.create_command_from_path(path)
 
         if not command:
