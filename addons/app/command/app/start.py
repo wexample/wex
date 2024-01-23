@@ -112,18 +112,18 @@ def app__app__start(
     ) -> Optional[AbstractResponse]:
         nonlocal env
 
-        if not manager.require_proxy():
-            kernel.io.message(f"Don't require proxy")
-            return None
-
-        if no_proxy:
-            kernel.io.message(f"Proxy explicitly disabled")
-            return None
-
         # Current app is not the reverse proxy itself.
         if not kernel.run_function(
             app__service__used, {"service": "proxy", "app-dir": app_dir}
         ).first():
+            if not manager.require_proxy():
+                kernel.io.message(f"Don't require proxy")
+                return None
+
+            if no_proxy:
+                kernel.io.message(f"Proxy explicitly disabled")
+                return None
+
             proxy_path = manager.get_proxy_path(env)
 
             # The reverse proxy is not running.
