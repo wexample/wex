@@ -56,7 +56,13 @@ def app__app__init(
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
     env = env or kernel.registry_structure.content.env
-    services_list = args_split_arg_array(services)
+
+    # Resolve dependencies for all services
+    services_resolved = list(kernel.run_function(
+        core__service__resolve, {
+            "service": args_split_arg_array(services)
+        }
+    ).first())
 
     if not app_dir:
         app_dir = current_dir
@@ -75,20 +81,14 @@ def app__app__init(
             os.makedirs(app_dir, exist_ok=True)
 
     def _init_step_check_services() -> Optional[bool]:
-        if len(services_list) == 0:
+        if len(services_resolved) == 0:
             return None
-
-        # Resolve dependencies for all services
-        services_resolved = kernel.run_function(
-            core__service__resolve, {"service": services_list}
-        ).first()
-        assert isinstance(services_resolved, list)
 
         kernel.io.log("Checking services...")
         for service in services_resolved:
             if (
                 not service
-                in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+                    in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
             ):
                 kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": service})
 
@@ -144,9 +144,9 @@ def app__app__init(
         manager.set_app_workdir(app_dir)
 
     def _init_step_install_service() -> None:
-        kernel.io.log("Installing services...")
+        for service in services_resolved:
+            kernel.io.log(f"Installing service {service}")
 
-        for service in services_list:
             kernel.run_function(
                 app__service__install,
                 {
