@@ -199,7 +199,7 @@ def app__webhook__listen(
 
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
-                kernel_version: int = core_kernel_get_version(kernel)
+                kernel_version: str = core_kernel_get_version(kernel)
                 routes = routes_map
                 task_id = kernel.get_task_id()
                 log_path = kernel.task_file_path("webhook-listener")

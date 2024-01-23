@@ -2,6 +2,7 @@ import os
 import tempfile
 from typing import TYPE_CHECKING
 
+from src.const.types import StringsList
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -26,7 +27,7 @@ def system__git__rollback_permissions(kernel: "Kernel") -> bool:
     if not success:
         return False
 
-    current_diff = []
+    current_diff: StringsList = []
     for line in diff:
         if line.startswith("diff"):
             if current_diff:
@@ -41,7 +42,7 @@ def system__git__rollback_permissions(kernel: "Kernel") -> bool:
     return True
 
 
-def _apply_diff(kernel, diff_lines):
+def _apply_diff(kernel: "Kernel", diff_lines: StringsList) -> None:
     if len(diff_lines) < 3:
         return
 
