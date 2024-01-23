@@ -2,8 +2,8 @@ import os
 import tempfile
 from typing import TYPE_CHECKING
 
-from src.const.types import StringsList
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.types import StringsList
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.helper.command import execute_command_sync

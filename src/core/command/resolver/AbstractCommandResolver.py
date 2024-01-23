@@ -442,7 +442,9 @@ class AbstractCommandResolver(KernelChild):
         if not command:
             return AbortResponse(self.kernel, "COMMAND_NOT_FOUND_FROM_PATH")
 
-        return self.kernel.run_command(command=command, args=cast(OptionalCoreCommandArgsListOrDict, args))
+        return self.kernel.run_command(
+            command=command, args=cast(OptionalCoreCommandArgsListOrDict, args)
+        )
 
     def create_command_from_path(self, path: str) -> Optional[str]:
         parts = path.split(os.sep)

@@ -38,7 +38,10 @@ from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueMan
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
+from src.core.response.QueuedCollectionResponse import (
+    QueuedCollectionResponse,
+    QueuedCollectionResponseCollection,
+)
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
 
@@ -130,12 +133,12 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
             ):
                 from addons.app.command.proxy.start import app__proxy__start
 
