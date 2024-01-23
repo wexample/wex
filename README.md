@@ -1,4 +1,4 @@
-# wex v5.0.149+build.20240123183158
+# wex v5.0.150+build.20240123184537
 
 A CLI tool written in Python.
 
