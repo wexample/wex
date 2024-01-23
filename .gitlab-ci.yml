@@ -7,6 +7,9 @@ stages:
   - test_apt_install
   - build_docker
 
+variables:
+  MAIN_BRANCH_NAME: "master"
+
 include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
 
