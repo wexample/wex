@@ -1,6 +1,6 @@
 import re
 from typing import TYPE_CHECKING, Optional
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qsl, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.core.response.AbstractResponse import AbstractResponse
@@ -37,6 +37,8 @@ def app__webhook__exec(
     parsed_url = urlparse(webhook_path)
     path = parsed_url.path
     match = re.match(WEBHOOK_LISTENER_ROUTES_MAP["exec"]["pattern"], path)
+    query_string = parsed_url.query.replace("+", "%2B")
+    query_string_data = dict(parse_qsl(query_string))
 
     if not match or len(match.groups()) < 2:
         kernel.logger.append_event(
@@ -65,8 +67,6 @@ def app__webhook__exec(
     def _check(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[AbstractResponse]:
-        query_string = parsed_url.query.replace("+", "%2B")
-        query_string_data = parse_qs(query_string)
         has_error = False
         # Get all query parameters
         args = []
@@ -100,7 +100,10 @@ def app__webhook__exec(
     ) -> AbstractResponse:
         return kernel.get_command_resolver(
             command_type
-        ).run_command_request_from_url_path(command_path)
+        ).run_command_request_from_url_path(
+            command_path,
+            query_string_data
+        )
 
     def _log(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.logger.append_event(

@@ -79,15 +79,16 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
             app__app__exec, {"app-dir": app_dir, "command": "touch /var/tmp/test-file"}
         )
 
+        test_arg = "OKAY"
+
         response = self.kernel.run_function(
             app__webhook__exec,
             {
-                "webhook_path": f"/webhook/app/test/{app_name}/test/test-running",
+                "webhook_path": f"/webhook/app/test/{app_name}/test/test-running?test-arg={test_arg}",
             },
         )
 
         data = json.loads(str(response.print_wrapped(render_mode="json")))
-
         lines = data["value"]
 
         self.assertEqual(lines[0][0][0], "BASH_RESPONSE_RUNNING")
@@ -95,5 +96,6 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         self.assertTrue(" test-file" in lines[0][1][0])
 
         self.assertEqual(lines[0][2][0], "TEST_EXECUTION_ORDER")
+        self.assertEqual(lines[0][3][0], test_arg)
 
         self.stop_test_app(app_dir)

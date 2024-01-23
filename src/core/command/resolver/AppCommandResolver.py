@@ -8,7 +8,7 @@ from src.const.globals import (
     COMMAND_SEPARATOR_GROUP,
     COMMAND_TYPE_APP,
 )
-from src.const.types import RegistryCommandsCollection, StringsList
+from src.const.types import RegistryCommandsCollection, StringsList, OptionalCoreCommandArgsDict
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -142,7 +142,7 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[3],
         ]
 
-    def run_command_request_from_url_path(self, path: str) -> AbstractResponse:
+    def run_command_request_from_url_path(self, path: str, args: OptionalCoreCommandArgsDict = None) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
         from src.helper.string import string_to_snake_case
 
@@ -176,7 +176,7 @@ class AppCommandResolver(AbstractCommandResolver):
                     self.kernel, "Function is not a webhook"
                 )
 
-            return self_super.run_command_request_from_url_path(path)
+            return self_super.run_command_request_from_url_path(path, args)
 
         response = self.app_addon_manager.exec_in_app_workdir(apps[app_name], _callback)
         assert isinstance(response, AbstractResponse)

@@ -4,6 +4,12 @@ command:
   decorator: app_command
 properties:
   - app_webhook
+options:
+  - name: --test-arg
+    short: -ta
+    help: This is an test argument user can pass as webhook query string
+    required: true
+    type: str
 scripts:
   - title: Test outside but with running app
     app_should_run: true
@@ -18,3 +24,7 @@ scripts:
     context: container
     container_name: php
     script: cat /var/tmp/test-file-two
+
+  - title: Print test argument
+    app_should_run: true
+    script: echo "$TEST_ARG"

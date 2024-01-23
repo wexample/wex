@@ -25,7 +25,7 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import command_get_option, execute_command_async
-from src.helper.core import core_get_daemon_service_resource_path
+from src.helper.core import core_get_daemon_service_resource_path, core_kernel_get_version
 from src.helper.file import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
 from src.helper.system import (
@@ -196,9 +196,10 @@ def app__webhook__listen(
 
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
+                kernel_version: int = core_kernel_get_version(kernel)
+                routes = routes_map
                 task_id = kernel.get_task_id()
                 log_path = kernel.task_file_path("webhook-listener")
-                routes = routes_map
                 log_stderr: str = kernel.task_file_path("webhook-stderr")
                 log_stdout: str = kernel.task_file_path("webhook-stdout")
 
