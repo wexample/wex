@@ -6,10 +6,9 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.tools import Tool, DuckDuckGoSearchResults
-from langchain import hub
+from langchain_community.tools import Tool
 from langchain.agents import AgentExecutor, create_react_agent
-from langchain.tools import BaseTool, StructuredTool, tool
+from langchain.prompts import PromptTemplate
 
 from src.const.types import StringKeysDict
 
@@ -34,7 +33,6 @@ class AppAssistant:
         )
 
     def assist(self, question: str) -> StringKeysDict:
-        @tool
         def say_age(name: str) -> str:
             """Return the age of given character"""
             return f"{name} is 840 years"
@@ -45,9 +43,8 @@ class AppAssistant:
             description="Returns the age of given character"
         )
 
-        @tool
         def say_gender(name: str) -> str:
-            """Return the age of given character"""
+            """Return the gender of given character"""
             return f"{name} has no gender as it comes from the ZOBIZOBI planet which is in another dimension and space time"
 
         say_gender_tool = Tool.from_function(
@@ -56,13 +53,20 @@ class AppAssistant:
             description="Returns the gender of given character"
         )
 
+        prompt = PromptTemplate.from_file(f"{self.manager.kernel.directory.path}addons/ai/samples/prompts/react.txt")
+
         tools = [say_age_tool, say_gender_tool]
-        prompt = hub.pull("hwchase17/react")
-        agent = create_react_agent(self.llm, tools, prompt)
+
+        agent = create_react_agent(
+            self.llm,
+            tools,
+            prompt=prompt
+        )
+
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
         return agent_executor.invoke(
-            {"input": f"What is the {question} of XAXOXO"}
+            {"input": f"What is the {question} of the character XAXOXO"}
         )["output"]
 
     def load_file(self, file_path: str) -> Optional[str]:
