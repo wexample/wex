@@ -1,10 +1,11 @@
 import os
 from typing import TYPE_CHECKING, Optional
 
-from dotenv import dotenv_values
+from langchain_community.llms import Ollama
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
-from langchain_openai import OpenAI
 from langchain_community.tools import Tool, DuckDuckGoSearchResults
 from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
@@ -21,14 +22,10 @@ class AppAssistant:
         self.manager = manager
         self.manager.get_app_dir()
 
-        env_path = manager.kernel.directory.path + ".env"
-        key = dotenv_values(env_path).get("OPENAI_API_KEY")
-        if not key:
-            manager.kernel.io.error(
-                f"Missing configuration OPENAI_API_KEY in {env_path}"
-            )
-
-        self.llm = OpenAI(api_key=key)
+        self.llm = Ollama(
+            model="mistral",
+            callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
+        )
 
     def create_chain(self, prompt_template: ChatPromptTemplate) -> LLMChain:
         return LLMChain(
