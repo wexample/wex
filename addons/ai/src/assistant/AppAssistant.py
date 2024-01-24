@@ -6,7 +6,9 @@ from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import OpenAI
 from langchain_community.tools import Tool, DuckDuckGoSearchResults
-from langchain.agents import initialize_agent, AgentType
+from langchain import hub
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain.tools import BaseTool, StructuredTool, tool
 
 from src.const.types import StringKeysDict
 
@@ -35,53 +37,36 @@ class AppAssistant:
         )
 
     def assist(self, question: str) -> StringKeysDict:
-        def say_hello(input: str) -> str:
-            return f"HELLO{input}"
+        @tool
+        def say_age(name: str) -> str:
+            """Return the age of given character"""
+            return f"{name} is 840 years"
 
-        def say_bye(input: str) -> str:
-            return f"BYE{input}"
-
-        def say_thanks(input: str) -> str:
-            return f"THANKS{input}"
-
-        def say_patapouf(input: str) -> str:
-            return f"PATAPOUF{input}"
-
-        say_hello_tool = Tool.from_function(
-            func=say_hello,
-            name="SayHelloTool",
-            description="Return the hello string"
+        say_age_tool = Tool.from_function(
+            func=say_age,
+            name="Returns the age of given character",
+            description="Returns the age of given character"
         )
 
-        say_bye_tool = Tool.from_function(
-            func=say_bye,
-            name="SayGoodByeTool",
-            description="Return the good bye string"
+        @tool
+        def say_gender(name: str) -> str:
+            """Return the age of given character"""
+            return f"{name} has no gender as it comes from the ZOBIZOBI planet which is in another dimension and space time"
+
+        say_gender_tool = Tool.from_function(
+            func=say_gender,
+            name="Returns the gender of given character",
+            description="Returns the gender of given character"
         )
 
-        say_thanks_tool = Tool.from_function(
-            func=say_thanks,
-            name="SayThankYou",
-            description="Return the thank you string"
-        )
+        tools = [say_age_tool, say_gender_tool]
+        prompt = hub.pull("hwchase17/react")
+        agent = create_react_agent(self.llm, tools, prompt)
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-        say_patapouf_tool = Tool.from_function(
-            func=say_patapouf,
-            name="SayPatapouf",
-            description="Return the patapouf"
-        )
-
-        tools = [say_hello_tool, say_thanks_tool, say_bye_tool, say_patapouf_tool]
-
-        agent = initialize_agent(
-            tools=tools,
-            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-            llm=self.llm,
-            verbose=True
-        )
-
-        return agent.run(
-            f"Tu as la possibilité d'éxetuer une fonction correspondant à l'expression que je vais te passer, et que tu lui donnera en argument. Choisis une seule fonction et exécute là une seule fois. N'anlyse pas la valeur de retour qui peut te sembler étrange, retourne la sans aucun traitement. Voici l'expression : {question}.")
+        return agent_executor.invoke(
+            {"input": f"What is the {question} of XAXOXO"}
+        )["output"]
 
     def load_file(self, file_path: str) -> Optional[str]:
         if not os.path.exists(file_path):

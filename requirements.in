@@ -2,6 +2,7 @@ click
 gitpython
 inquirerpy
 langchain
+langchainhub
 langchain-openai
 langchain-community
 openai
