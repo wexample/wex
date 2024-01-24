@@ -106,7 +106,7 @@ class Kernel(BaseClass):
             "core.cli": os.path.join(root_path, "cli", "wex"),
             "tmp": tmp_path,
             "templates": os.path.join(root_path, "src", "resources", "templates")
-            + os.sep,
+                         + os.sep,
             "task": os.path.join(tmp_path, "task") + os.sep,
         }
 
@@ -277,9 +277,14 @@ class Kernel(BaseClass):
         quiet: bool = False,
         render_mode: str | None = None,
     ) -> "AbstractResponse":
-        request = self.create_command_request(command=command, args=args, quiet=quiet)
-
-        return self.render_request(request, render_mode)
+        return self.render_request(
+            self.create_command_request(
+                command=command,
+                args=args,
+                quiet=quiet
+            ),
+            render_mode
+        )
 
     def run_function(
         self,

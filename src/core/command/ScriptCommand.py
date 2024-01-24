@@ -26,6 +26,7 @@ class ScriptCommand(BaseClass):
         decorator_args: "Args",
         decorator_kwargs: "Kwargs",
     ) -> None:
+        self.ai_tool: bool = False
         self.aliases: StringsList = []
         self.as_sudo: bool = False
         self.command_type: str = command_type

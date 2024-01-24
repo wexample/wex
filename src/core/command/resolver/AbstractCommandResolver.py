@@ -403,14 +403,13 @@ class AbstractCommandResolver(KernelChild):
                         commands[internal_command] = cast(
                             RegistryCommand,
                             {
-                                "command": internal_command,
-                                "file": command_file,
-                                "test": test_file,
-                                "alias": self.get_script_command_aliases(
-                                    script_command
-                                ),
+                                "alias": self.get_script_command_aliases(script_command),
                                 "attachments": attachments,
+                                "command": internal_command,
+                                "description": script_command.click_command.help,
+                                "file": command_file,
                                 "properties": script_command.get_extra_properties(),
+                                "test": test_file,
                             },
                         )
         return commands
