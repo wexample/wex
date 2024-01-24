@@ -83,7 +83,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         return max_widths
 
     def render_cli_content(self) -> None:
-        combined_list: List[Any] = self._header + self._body
+        combined_list: List[Any] = [self._header] + self._body
 
         if not len(combined_list):
             self.output_bag.append("")
