@@ -1,10 +1,12 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Optional
 
 from dotenv import dotenv_values
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import OpenAI
+from langchain_community.tools import Tool, DuckDuckGoSearchResults
+from langchain.agents import initialize_agent, AgentType
 
 from src.const.types import StringKeysDict
 
@@ -33,13 +35,53 @@ class AppAssistant:
         )
 
     def assist(self, question: str) -> StringKeysDict:
-        human_message_prompt = ChatPromptTemplate.from_template("{text}")
+        def say_hello(input: str) -> str:
+            return f"HELLO{input}"
 
-        chain = self.create_chain(
-            ChatPromptTemplate.from_messages([human_message_prompt])
+        def say_bye(input: str) -> str:
+            return f"BYE{input}"
+
+        def say_thanks(input: str) -> str:
+            return f"THANKS{input}"
+
+        def say_patapouf(input: str) -> str:
+            return f"PATAPOUF{input}"
+
+        say_hello_tool = Tool.from_function(
+            func=say_hello,
+            name="SayHelloTool",
+            description="Return the hello string"
         )
 
-        return chain.invoke(cast(Any, question))
+        say_bye_tool = Tool.from_function(
+            func=say_bye,
+            name="SayGoodByeTool",
+            description="Return the good bye string"
+        )
+
+        say_thanks_tool = Tool.from_function(
+            func=say_thanks,
+            name="SayThankYou",
+            description="Return the thank you string"
+        )
+
+        say_patapouf_tool = Tool.from_function(
+            func=say_patapouf,
+            name="SayPatapouf",
+            description="Return the patapouf"
+        )
+
+        tools = [say_hello_tool, say_thanks_tool, say_bye_tool, say_patapouf_tool]
+
+        agent = initialize_agent(
+            tools=tools,
+            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+            llm=self.llm,
+            verbose=True
+        )
+
+        return agent.run(
+            f"Tu as la possibilité d'éxetuer une fonction correspondant à l'expression que je vais te passer, et que tu lui donnera en argument. Choisis une seule fonction et exécute là une seule fois. N'anlyse pas la valeur de retour qui peut te sembler étrange, retourne la sans aucun traitement. Voici l'expression : {question}.")
 
     def load_file(self, file_path: str) -> Optional[str]:
         if not os.path.exists(file_path):
