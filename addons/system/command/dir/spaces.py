@@ -1,6 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional, cast
 
+from addons.ai.decorator.ai_tool import ai_tool
 from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.command import command
 from src.decorator.option import option
@@ -10,6 +11,7 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
+@ai_tool()
 @command(help="Return sizes of current directory subdirectories")
 @option("--dir", "-d", type=str, required=False, help="Directory to inspect")
 def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableResponse:
