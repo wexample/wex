@@ -10,6 +10,7 @@ from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaMod
 from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_3_5_TURBO, MODEL_NAME_OPEN_AI_GPT_4, OpenAiModel
 from addons.ai.src.tool.CommandTool import CommandTool
 from src.helper.file import file_read
+from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
@@ -60,6 +61,13 @@ class Assistant:
             },
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a git file patch generator for code files."
+                          "\nNow we are talking about this file : {file_full_path}"
+                          "\n_______________________________________File metadata"
+                          "\nCreation Date: {file_creation_date}"
+                          "\nFile Size: {file_size} bytes"
+                          "\n_______________________________________File content"
+                          "\n{file_content}"
+                          "\n_________________________________________End of file info"
             }
         }
 
@@ -129,13 +137,13 @@ class Assistant:
                     self.log(f"File selected {selected_file}")
 
                     user_command = self.user_prompt(
-                        system_prompt=f"Now we are talking about this file : {selected_file}"
-                                      f"\n_______________________________________File metadata"
-                                      f"\nCreation Date: {time.ctime(os.path.getctime(selected_file))}"
-                                      f"\nFile Size: {os.path.getsize(selected_file)} bytes"
-                                      f"\n_______________________________________File content"
-                                      f"\n{file_read(selected_file)}"
-                                      f"_________________________________________End of file info"
+                        identity=AI_IDENTITY_CODE_FILE_PATCHER,
+                        identity_parameters={
+                            "file_full_path": selected_file,
+                            "file_creation_date": time.ctime(os.path.getctime(selected_file)),
+                            "file_size": os.path.getsize(selected_file),
+                            "file_content": file_read(selected_file),
+                        }
                     )
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
@@ -189,7 +197,8 @@ class Assistant:
     def user_prompt(
         self,
         initial_prompt: Optional[str] = None,
-        identity: str = AI_IDENTITY_DEFAULT
+        identity: str = AI_IDENTITY_DEFAULT,
+        identity_parameters: Optional[StringKeysDict] = None,
     ) -> str:
         self.user_prompt_help()
 
@@ -219,7 +228,8 @@ class Assistant:
                     self.kernel.io.print(
                         self.model.request(
                             input,
-                            self.identities[identity]
+                            self.identities[identity],
+                            identity_parameters
                         )
                     )
 

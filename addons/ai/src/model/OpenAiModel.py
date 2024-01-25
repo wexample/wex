@@ -20,11 +20,16 @@ class OpenAiModel(AbstractModel):
     def request(
         self,
         question: str,
-        identity: StringKeysDict):
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict):
+        system_prompt = identity["system"].format_map(
+            identity_parameters
+        )
+
         response = self.llm.chat.completions.create(
             model=self.name,
             messages=[
-                {"role": "system", "content": identity["system"]},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": question}
             ]
         )

@@ -30,5 +30,6 @@ class AbstractModel(KernelChild):
     def request(
         self,
         input: str,
-        identity: StringKeysDict):
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict):
         pass
