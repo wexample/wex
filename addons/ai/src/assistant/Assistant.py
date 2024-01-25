@@ -1,5 +1,7 @@
 import os
 
+from prompt_toolkit.completion import WordCompleter
+
 from addons.ai.src.tool.CommandTool import CommandTool
 from addons.ai.src.model.DefaultModel import DefaultModel, MODEL_NAME_MISTRAL
 from addons.ai.src.model.OpenAiModel import OpenAiModel, MODEL_NAME_OPEN_AI
@@ -43,6 +45,7 @@ class Assistant:
         }
 
         self.set_model(default_model)
+        self.completer = WordCompleter(['/action', '/?', '/exit'])
 
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
@@ -175,7 +178,7 @@ class Assistant:
 
             try:
                 if not initial_prompt:
-                    user_input = prompt_tool(">>> ")
+                    user_input = prompt_tool(">>> ", completer=self.completer)
                     user_input_lower = user_input.lower()
 
                     if user_input_lower == "exit":
