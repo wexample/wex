@@ -44,5 +44,8 @@ def prompt_choice(
     choices_all.append(Choice(value=None, name="> Abort"))
 
     return inquirer.select(  # type: ignore
-        message=question, choices=choices_all, default=default, **kwargs
+        message=question,
+        choices=choices_all,
+        default=default,
+        **kwargs
     ).execute()
