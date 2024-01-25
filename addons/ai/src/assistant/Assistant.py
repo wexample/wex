@@ -106,15 +106,24 @@ class Assistant:
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
         action: Optional[str] = None
+        previous_action: Optional[str] = None
+
+        if initial_prompt:
+            self.log(f"Prompt : {initial_prompt}")
+            action = CHAT_ACTION_FREE_TALK
 
         while action != CHAT_ACTION_ABORT:
-            action = self.chat_choose_action(action)
+            if not action:
+                action = self.chat_choose_action(previous_action)
+                previous_action = action
 
             if action == CHAT_ACTION_FREE_TALK:
                 user_command = self.user_prompt(initial_prompt)
 
                 if user_command == "/exit":
                     action = CHAT_ACTION_ABORT
+                else:
+                    action = None
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
@@ -127,6 +136,7 @@ class Assistant:
                 )
 
                 self.set_model(new_model)
+                action = None
 
         self.log(f"{os.linesep}Ciao")
 
@@ -158,9 +168,7 @@ class Assistant:
         self.log("Type '/exit' to quit.")
 
     def user_prompt(self, initial_prompt: Optional[str]) -> str:
-        self.kernel.io.message("Welcome to chat mode")
         self.user_prompt_help()
-        ai_working = False
 
         while True:
             ai_working = False
