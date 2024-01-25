@@ -26,7 +26,6 @@ class OllamaModel(AbstractModel):
         question: str,
         identity: StringKeysDict,
         identity_parameters: StringKeysDict):
-
         self.kernel.io.log(identity["system"], verbosity=VERBOSITY_LEVEL_MAXIMUM)
         self.kernel.io.log(identity_parameters, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
@@ -40,6 +39,7 @@ class OllamaModel(AbstractModel):
         chain = LLMChain(
             llm=self.llm,
             prompt=prompt,
+            verbose=False
         )
 
         return chain.invoke(
@@ -47,6 +47,6 @@ class OllamaModel(AbstractModel):
                 {
                     "input": question
                 },
-                identity_parameters
+                identity_parameters or {}
             )
         )["text"].strip()

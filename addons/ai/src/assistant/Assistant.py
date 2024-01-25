@@ -14,6 +14,7 @@ from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
+from src.const.globals import COLOR_GRAY, COLOR_RESET
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -60,7 +61,7 @@ class Assistant:
                 "system": "You are a helpful AI bot."
             },
             AI_IDENTITY_CODE_FILE_PATCHER: {
-                "system": "You are a git file patch generator for code files."
+                "system": "You are a helpful AI bot."
                           "\nNow we are talking about this file : {file_full_path}"
                           "\n_______________________________________File metadata"
                           "\nCreation Date: {file_creation_date}"
@@ -223,14 +224,21 @@ class Assistant:
                     self.user_prompt_help()
                 else:
                     self.log("..")
+
+                    self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
 
+                    result = self.model.request(
+                        input,
+                        self.identities[identity],
+                        identity_parameters
+                    )
+
+                    # Let a new line separator
+                    self.kernel.io.print(COLOR_RESET)
+
                     self.kernel.io.print(
-                        self.model.request(
-                            input,
-                            self.identities[identity],
-                            identity_parameters
-                        )
+                        result
                     )
 
             except KeyboardInterrupt:

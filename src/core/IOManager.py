@@ -138,8 +138,8 @@ class IOManager(KernelChild):
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message: Any) -> None:
-        print(message)
+    def print(self, message: Any, **kwargs) -> None:
+        print(message, **kwargs)
 
     def message(self, message: str, text: None | str = None) -> None:
         import textwrap
