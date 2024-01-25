@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 def ai_tool() -> "DecoratedScriptCommand":
     def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
-        script_command.set_extra_value('ai_tool', True)
+        script_command.set_extra_value("ai_tool", True)
 
         return script_command
 

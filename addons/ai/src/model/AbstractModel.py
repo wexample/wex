@@ -1,9 +1,11 @@
 from abc import abstractmethod
-from src.core.KernelChild import KernelChild
 from typing import TYPE_CHECKING, Optional
+
+from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
     from langchain_core.language_models import BaseLLM
+
     from src.core.Kernel import Kernel
 
 

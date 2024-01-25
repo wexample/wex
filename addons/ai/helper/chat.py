@@ -1,6 +1,4 @@
 import shutil
-import os
-
 
 TEXT_ALIGN_LEFT = "left"
 TEXT_ALIGN_RIGHT = "right"

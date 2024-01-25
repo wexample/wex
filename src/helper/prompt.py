@@ -46,7 +46,7 @@ def prompt_choice_dict(
         question,
         list(choices.values()),
         choices[default] if default else None,
-        **kwargs
+        **kwargs,
     )
 
     return next((key for key, value in items if value == choice), default)
@@ -57,7 +57,7 @@ def prompt_choice(
     choices: List[Any | Any],
     default: Optional[InquirerPyDefault] = None,
     abort: Optional = "> Abort",
-    **kwargs: Any
+    **kwargs: Any,
 ) -> Any:
     choices_all = choices.copy()
 
@@ -65,8 +65,5 @@ def prompt_choice(
         choices_all.append(Choice(value=None, name=abort))
 
     return inquirer.select(  # type: ignore
-        message=question,
-        choices=choices_all,
-        default=default,
-        **kwargs
+        message=question, choices=choices_all, default=default, **kwargs
     ).execute()
