@@ -51,7 +51,7 @@ class Assistant:
             properties = all_commands[command_name]["properties"]
 
             if "ai_tool" in properties and properties["ai_tool"]:
-                self.kernel.io.log(f"Loading tool {command_name}")
+                self.log(f"Loading tool {command_name}")
 
                 command_tool = CommandTool(
                     self.kernel,
@@ -61,9 +61,14 @@ class Assistant:
 
                 self.tools.append(command_tool)
 
-        self.kernel.io.log(f"Loaded {len(self.tools)} tools")
+        self.log(f"Loaded {len(self.tools)} tools")
+
+    def log(self, message):
+        self.kernel.io.log(f"  {message}")
 
     def set_model(self, model_name: str):
+        self.log(f"Model set to : {model_name}")
+
         self.model = self.models[model_name]
         self.model.activate()
 
@@ -102,7 +107,7 @@ class Assistant:
         action: Optional[str] = None
 
         while action != CHAT_ACTION_ABORT:
-            action = self.chat_choose_action()
+            action = self.chat_choose_action(action)
 
             if action == CHAT_ACTION_FREE_TALK:
                 user_command = self.user_prompt(initial_prompt)
@@ -122,17 +127,20 @@ class Assistant:
 
                 self.set_model(new_model)
 
-        self.kernel.io.log(f"{os.linesep}Ciao")
+        self.log(f"{os.linesep}Ciao")
 
-    def chat_choose_action(self) -> str:
+    def chat_choose_action(self, last_action: Optional[str]) -> str:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
             # CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
-            # CHAT_ACTION_LAST: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST],
         }
 
         if len(self.models.keys()) > 1:
             choices[CHAT_ACTION_CHANGE_MODEL] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_CHANGE_MODEL]
+
+        if last_action:
+            last_action_label = f"{CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST]} ({CHAT_ACTIONS_TRANSLATIONS[last_action]})"
+            choices[CHAT_ACTION_LAST] = last_action_label
 
         choices[CHAT_ACTION_ABORT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_ABORT]
 
@@ -144,9 +152,9 @@ class Assistant:
         )
 
     def user_prompt_help(self) -> None:
-        self.kernel.io.log("  Type '/action' to pick an action.")
-        self.kernel.io.log("  Type '/?' or '/help' to display this message again.")
-        self.kernel.io.log("  Type '/exit' to quit.")
+        self.log("Type '/action' to pick an action.")
+        self.log("Type '/?' or '/help' to display this message again.")
+        self.log("Type '/exit' to quit.")
 
     def user_prompt(self, initial_prompt: Optional[str]) -> str:
         self.kernel.io.message("Welcome to chat mode")
@@ -170,7 +178,7 @@ class Assistant:
                 if user_input_lower in ["/?", "/help"]:
                     self.user_prompt_help()
                 else:
-                    self.kernel.io.log("..")
+                    self.log("..")
 
                     self.kernel.io.print(
                         chat_format_message(
