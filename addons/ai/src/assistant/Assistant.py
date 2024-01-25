@@ -18,10 +18,11 @@ from src.helper.prompt import prompt_choice
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
+CHAT_ACTION_ABORT = "ABORT"
+CHAT_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
 CHAT_ACTION_FREE_TALK = "FREE_TALK"
 CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
 CHAT_ACTION_LAST = "ACTION_LAST"
-CHAT_ACTION_ABORT = "ABORT"
 
 CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_FREE_TALK: "> Free Talk",
@@ -82,7 +83,7 @@ class Assistant:
             {"input": question}
         )["output"]
 
-    def assist(self, question: str) -> StringKeysDict:
+    def assist(self, question: str) -> str:
         human_message_prompt = ChatPromptTemplate.from_template("{text}")
 
         prompt = ChatPromptTemplate.from_messages([human_message_prompt])
@@ -95,7 +96,7 @@ class Assistant:
         return chain.invoke(
             cast(Any, question))["text"].strip()
 
-    def chat(self, initial_prompt: Optional[str] = None):
+    def chat(self, initial_prompt: Optional[str] = None) -> None:
         action = self.chat_choose_action()
 
         if action == CHAT_ACTION_FREE_TALK:
@@ -119,11 +120,14 @@ class Assistant:
 
         return next((key for key, value in CHAT_ACTIONS_TRANSLATIONS.items() if value == choice), CHAT_ACTION_ABORT)
 
-    def user_prompt(self, initial_prompt: Optional[str]):
-        self.kernel.io.message("Welcome to chat mode")
+    def user_prompt_help(self) -> None:
         self.kernel.io.log("  Type '/action' to pick an action.")
         self.kernel.io.log("  Type '/?' or '/help' to display this message again.")
         self.kernel.io.log("  Type '/exit' to quit.")
+
+    def user_prompt(self, initial_prompt: Optional[str]) -> str:
+        self.kernel.io.message("Welcome to chat mode")
+        self.user_prompt_help()
 
         while True:
             try:
@@ -134,16 +138,19 @@ class Assistant:
                     if user_input_lower in ["exit", "/exit", "/action"]:
                         return user_input_lower
                 else:
-                    user_input = initial_prompt
+                    user_input = user_input_lower = initial_prompt
                     initial_prompt = None
 
-                self.kernel.io.log("..")
+                if user_input_lower in ["/?", "/help"]:
+                    self.user_prompt_help()
+                else:
+                    self.kernel.io.log("..")
 
-                self.kernel.io.print(
-                    chat_format_message(
-                        self.assist(user_input),
-                        TEXT_ALIGN_RIGHT
+                    self.kernel.io.print(
+                        chat_format_message(
+                            self.assist(user_input),
+                            TEXT_ALIGN_RIGHT
+                        )
                     )
-                )
             except KeyboardInterrupt:
                 return "/exit"
