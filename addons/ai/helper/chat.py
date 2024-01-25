@@ -1,7 +1,6 @@
 import shutil
 import os
 
-from src.helper.prompt import prompt_choice
 
 TEXT_ALIGN_LEFT = "left"
 TEXT_ALIGN_RIGHT = "right"
@@ -64,41 +63,3 @@ def chat_format_message(
         frame = [line.rjust(terminal_width) for line in frame]
 
     return "\n".join(frame)
-
-
-def chat_help(kernel: "Kernel") -> None:
-    kernel.io.message("Welcome to chat mode")
-    kernel.io.log("  Type '/action' to pick an action.")
-    kernel.io.log("  Type '/model' change used model.")
-    kernel.io.log("  Type '/?' or '/help' to display this message again.")
-    kernel.io.log("  Type '/exit' to quit.")
-
-
-def chat_quit(kernel: "Kernel") -> None:
-    kernel.io.log(f"{os.linesep}Ciao")
-
-
-CHAT_ACTION_FREE_TALK = "FREE_TALK"
-CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
-CHAT_ACTION_LAST = "ACTION_LAST"
-
-CHAT_ACTIONS_TRANSLATIONS = {
-    CHAT_ACTION_FREE_TALK: "> Free Talk",
-    CHAT_ACTION_FREE_TALK_FILE: "> Talk about a file",
-    CHAT_ACTION_LAST: "> Last action"
-}
-
-
-def chat_choose_action() -> str:
-    choice = prompt_choice(
-        "Choose an action to do with ai assistant :",
-        [
-            CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
-            CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
-            CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST],
-        ],
-    )
-
-    # TODO Now returned choice is the translation like "> Talk about a file", I would like to get the key TALK_FILE
-
-    return choice

@@ -1,3 +1,5 @@
+import os
+
 from addons.ai.src.tool.CommandTool import CommandTool
 from addons.ai.src.model.DefaultModel import DefaultModel, MODEL_NAME_MISTRAL
 from addons.ai.src.model.OpenAiModel import OpenAiModel, MODEL_NAME_OPEN_AI
@@ -6,13 +8,26 @@ from src.helper.registry import registry_get_all_commands
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.prompts import PromptTemplate
 from src.const.types import StringKeysDict
-
-from typing import TYPE_CHECKING, cast, Any, Dict
+from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
+from prompt_toolkit import prompt as prompt_tool
+from typing import TYPE_CHECKING, cast, Any, Dict, Optional
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
+from src.helper.prompt import prompt_choice
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
+
+CHAT_ACTION_FREE_TALK = "FREE_TALK"
+CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
+CHAT_ACTION_LAST = "ACTION_LAST"
+CHAT_ACTION_ABORT = "ABORT"
+
+CHAT_ACTIONS_TRANSLATIONS = {
+    CHAT_ACTION_FREE_TALK: "> Free Talk",
+    CHAT_ACTION_FREE_TALK_FILE: "> Talk about a file",
+    CHAT_ACTION_LAST: "> Last action"
+}
 
 
 class Assistant:
@@ -79,3 +94,56 @@ class Assistant:
 
         return chain.invoke(
             cast(Any, question))["text"].strip()
+
+    def chat(self, initial_prompt: Optional[str] = None):
+        action = self.chat_choose_action()
+
+        if action == CHAT_ACTION_FREE_TALK:
+            user_command = self.user_prompt(initial_prompt)
+
+            if user_command == "/action":
+                self.chat()
+                return
+
+        self.kernel.io.log(f"{os.linesep}Ciao")
+
+    def chat_choose_action(self) -> str:
+        choice = prompt_choice(
+            "Choose an action to do with ai assistant :",
+            [
+                CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
+                # CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
+                # CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST],
+            ],
+        )
+
+        return next((key for key, value in CHAT_ACTIONS_TRANSLATIONS.items() if value == choice), CHAT_ACTION_ABORT)
+
+    def user_prompt(self, initial_prompt: Optional[str]):
+        self.kernel.io.message("Welcome to chat mode")
+        self.kernel.io.log("  Type '/action' to pick an action.")
+        self.kernel.io.log("  Type '/?' or '/help' to display this message again.")
+        self.kernel.io.log("  Type '/exit' to quit.")
+
+        while True:
+            try:
+                if not initial_prompt:
+                    user_input = prompt_tool(">>> ")
+                    user_input_lower = user_input.lower()
+
+                    if user_input_lower in ["exit", "/exit", "/action"]:
+                        return user_input_lower
+                else:
+                    user_input = initial_prompt
+                    initial_prompt = None
+
+                self.kernel.io.log("..")
+
+                self.kernel.io.print(
+                    chat_format_message(
+                        self.assist(user_input),
+                        TEXT_ALIGN_RIGHT
+                    )
+                )
+            except KeyboardInterrupt:
+                return "/exit"

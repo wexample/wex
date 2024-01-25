@@ -40,8 +40,6 @@ distro==1.9.0
     # via openai
 exceptiongroup==1.2.0
     # via anyio
-fireworks-ai==0.11.2
-    # via -r requirements.in
 frozenlist==1.4.1
     # via
     #   aiohttp
@@ -57,11 +55,7 @@ h11==0.14.0
 httpcore==1.0.2
     # via httpx
 httpx==0.26.0
-    # via
-    #   fireworks-ai
-    #   openai
-httpx-sse==0.4.0
-    # via fireworks-ai
+    # via openai
 idna==3.6
     # via
     #   anyio
@@ -119,15 +113,14 @@ packaging==23.2
     #   marshmallow
 pfzy==0.3.4
     # via inquirerpy
-pillow==10.2.0
-    # via fireworks-ai
 prompt-toolkit==3.0.38
-    # via inquirerpy
+    # via
+    #   -r requirements.in
+    #   inquirerpy
 psutil==5.9.5
     # via -r requirements.in
 pydantic==2.5.3
     # via
-    #   fireworks-ai
     #   langchain
     #   langchain-core
     #   langsmith

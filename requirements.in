@@ -9,4 +9,5 @@ openai
 psutil
 python-dotenv
 pyyaml
+prompt_toolkit
 requests

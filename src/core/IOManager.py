@@ -24,7 +24,7 @@ from src.helper.string import string_count_lines_needed, string_format_ignore_mi
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-IO_DEFAULT_LOG_LENGTH = 10
+IO_DEFAULT_LOG_LENGTH = 0
 
 
 class IOManagerLogMessage(TypedDict):
