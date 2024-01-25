@@ -159,8 +159,11 @@ class Assistant:
     def user_prompt(self, initial_prompt: Optional[str]) -> str:
         self.kernel.io.message("Welcome to chat mode")
         self.user_prompt_help()
+        ai_working = False
 
         while True:
+            ai_working = False
+
             try:
                 if not initial_prompt:
                     user_input = prompt_tool(">>> ")
@@ -179,6 +182,7 @@ class Assistant:
                     self.user_prompt_help()
                 else:
                     self.log("..")
+                    ai_working = True
 
                     self.kernel.io.print(
                         chat_format_message(
@@ -186,5 +190,11 @@ class Assistant:
                             TEXT_ALIGN_RIGHT
                         )
                     )
+
             except KeyboardInterrupt:
-                return "/exit"
+                # User asked to quit
+                if not ai_working:
+                    return "/exit"
+                # User asked to interrupt assistant.
+                else:
+                    self.kernel.io.print(os.linesep)
