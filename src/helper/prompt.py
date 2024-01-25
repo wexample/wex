@@ -34,14 +34,35 @@ def prompt_progress_steps(
                 return
 
 
-def prompt_choice(
+def prompt_choice_dict(
     question: str,
-    choices: List[str | Choice],
+    choices: dict,
     default: Optional[InquirerPyDefault] = None,
     **kwargs: Any,
 ) -> Any:
+    items = choices.items()
+
+    choice = prompt_choice(
+        question,
+        list(choices.values()),
+        choices[default] if default else None,
+        **kwargs
+    )
+
+    return next((key for key, value in items if value == choice), default)
+
+
+def prompt_choice(
+    question: str,
+    choices: List[Any | Any],
+    default: Optional[InquirerPyDefault] = None,
+    abort: Optional = "> Abort",
+    **kwargs: Any
+) -> Any:
     choices_all = choices.copy()
-    choices_all.append(Choice(value=None, name="> Abort"))
+
+    if abort:
+        choices_all.append(Choice(value=None, name=abort))
 
     return inquirer.select(  # type: ignore
         message=question,

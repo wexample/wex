@@ -13,7 +13,7 @@ from prompt_toolkit import prompt as prompt_tool
 from typing import TYPE_CHECKING, cast, Any, Dict, Optional
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
-from src.helper.prompt import prompt_choice
+from src.helper.prompt import prompt_choice_dict
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -25,9 +25,11 @@ CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
 CHAT_ACTION_LAST = "ACTION_LAST"
 
 CHAT_ACTIONS_TRANSLATIONS = {
-    CHAT_ACTION_FREE_TALK: "> Free Talk",
-    CHAT_ACTION_FREE_TALK_FILE: "> Talk about a file",
-    CHAT_ACTION_LAST: "> Last action"
+    CHAT_ACTION_ABORT: "Abort",
+    CHAT_ACTION_CHANGE_MODEL: "Change language model",
+    CHAT_ACTION_FREE_TALK: "Free Talk",
+    CHAT_ACTION_FREE_TALK_FILE: "Talk about a file",
+    CHAT_ACTION_LAST: "Last action"
 }
 
 
@@ -97,28 +99,49 @@ class Assistant:
             cast(Any, question))["text"].strip()
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
-        action = self.chat_choose_action()
+        action: Optional[str] = None
 
-        if action == CHAT_ACTION_FREE_TALK:
-            user_command = self.user_prompt(initial_prompt)
+        while action != CHAT_ACTION_ABORT:
+            action = self.chat_choose_action()
 
-            if user_command == "/action":
-                self.chat()
-                return
+            if action == CHAT_ACTION_FREE_TALK:
+                user_command = self.user_prompt(initial_prompt)
+
+                if user_command == "/exit":
+                    action = CHAT_ACTION_ABORT
+            elif action == CHAT_ACTION_CHANGE_MODEL:
+                models = {}
+                for model in self.models:
+                    models[model] = model
+
+                new_model = prompt_choice_dict(
+                    "Choose a new language model :",
+                    models,
+                    default=self.model.name
+                )
+
+                self.set_model(new_model)
 
         self.kernel.io.log(f"{os.linesep}Ciao")
 
     def chat_choose_action(self) -> str:
-        choice = prompt_choice(
-            "Choose an action to do with ai assistant :",
-            [
-                CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
-                # CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
-                # CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST],
-            ],
-        )
+        choices = {
+            CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
+            # CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
+            # CHAT_ACTION_LAST: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST],
+        }
 
-        return next((key for key, value in CHAT_ACTIONS_TRANSLATIONS.items() if value == choice), CHAT_ACTION_ABORT)
+        if len(self.models.keys()) > 1:
+            choices[CHAT_ACTION_CHANGE_MODEL] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_CHANGE_MODEL]
+
+        choices[CHAT_ACTION_ABORT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_ABORT]
+
+        return prompt_choice_dict(
+            "Choose an action to do with ai assistant :",
+            choices,
+            abort=None,
+            default=CHAT_ACTION_FREE_TALK
+        )
 
     def user_prompt_help(self) -> None:
         self.kernel.io.log("  Type '/action' to pick an action.")
@@ -135,7 +158,10 @@ class Assistant:
                     user_input = prompt_tool(">>> ")
                     user_input_lower = user_input.lower()
 
-                    if user_input_lower in ["exit", "/exit", "/action"]:
+                    if user_input_lower == "exit":
+                        user_input_lower = "/exit"
+
+                    if user_input_lower in ["/exit", "/action"]:
                         return user_input_lower
                 else:
                     user_input = user_input_lower = initial_prompt
