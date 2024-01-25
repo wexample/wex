@@ -1,20 +1,14 @@
-from typing import TYPE_CHECKING
-
 from dotenv import dotenv_values
-from langchain_openai import OpenAI
+from openai import OpenAI
 
-from addons.ai.src.model.DefaultModel import DefaultModel
+from addons.ai.src.model.AbstractModel import AbstractModel
+from src.const.types import StringKeysDict
 
-if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
-
-MODEL_NAME_OPEN_AI = "open_ai"
+MODEL_NAME_OPEN_AI_GPT_3_5_TURBO = "open_ai:gpt-3.5-turbo"
+MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 
 
-class OpenAiModel(DefaultModel):
-    def __init__(self, kernel: "Kernel", name: str = MODEL_NAME_OPEN_AI):
-        super().__init__(kernel, name)
-
+class OpenAiModel(AbstractModel):
     def activate(self):
         env_path = self.kernel.directory.path + ".env"
         key = dotenv_values(env_path).get("OPENAI_API_KEY")
@@ -22,3 +16,17 @@ class OpenAiModel(DefaultModel):
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
         self.llm = OpenAI(api_key=key)
+
+    def request(
+        self,
+        question: str,
+        identity: StringKeysDict):
+        response = self.llm.chat.completions.create(
+            model=self.name,
+            messages=[
+                {"role": "system", "content": identity["system"]},
+                {"role": "user", "content": question}
+            ]
+        )
+
+        return response.choices[0].message.content

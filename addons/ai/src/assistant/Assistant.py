@@ -1,18 +1,15 @@
 import os
+import time
 from typing import TYPE_CHECKING, Dict, Optional
 
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.chains import LLMChain
-from langchain.prompts import ChatPromptTemplate, PromptTemplate
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
 
 from addons.ai.src.model.AbstractModel import AbstractModel
-from addons.ai.src.model.DefaultModel import MODEL_NAME_MISTRAL, DefaultModel
-from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI, OpenAiModel
+from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
+from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_3_5_TURBO, MODEL_NAME_OPEN_AI_GPT_4, OpenAiModel
 from addons.ai.src.tool.CommandTool import CommandTool
-from src.const.globals import CORE_COMMAND_NAME
-from src.const.types import StringKeysDict
+from src.helper.file import file_read
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
@@ -34,16 +31,20 @@ CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_LAST: "Last action",
 }
 
+AI_IDENTITY_DEFAULT = "default"
+AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
+
 
 class Assistant:
     def __init__(
-        self, kernel: "Kernel", default_model: str = MODEL_NAME_MISTRAL
+        self, kernel: "Kernel", default_model: str = MODEL_NAME_OLLAMA_MISTRAL
     ) -> None:
         self.kernel = kernel
         self.model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
-            MODEL_NAME_MISTRAL: DefaultModel(self.kernel, MODEL_NAME_MISTRAL),
-            MODEL_NAME_OPEN_AI: OpenAiModel(self.kernel),
+            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self.kernel, MODEL_NAME_OLLAMA_MISTRAL),
+            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO),
+            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(self.kernel, MODEL_NAME_OPEN_AI_GPT_4),
         }
 
         self.set_model(default_model)
@@ -52,6 +53,15 @@ class Assistant:
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
         self.tools = []
+
+        self.identities = {
+            AI_IDENTITY_DEFAULT: {
+                "system": "You are a helpful AI bot."
+            },
+            AI_IDENTITY_CODE_FILE_PATCHER: {
+                "system": "You are a git file patch generator for code files."
+            }
+        }
 
         for command_name in all_commands:
             properties = all_commands[command_name]["properties"]
@@ -70,43 +80,11 @@ class Assistant:
     def log(self, message):
         self.kernel.io.log(f"  {message}")
 
-    def set_model(self, model_name: str):
-        self.log(f"Model set to : {model_name}")
+    def set_model(self, identifier: str):
+        self.log(f"Model set to : {identifier}")
 
-        self.model = self.models[model_name]
+        self.model = self.models[identifier]
         self.model.activate()
-
-    def react(self, question: str) -> StringKeysDict:
-        prompt = PromptTemplate.from_file(
-            f"{self.kernel.directory.path}addons/ai/samples/prompts/react.txt"
-        )
-
-        agent = create_react_agent(self.model.llm, self.tools, prompt=prompt)
-
-        agent_executor = AgentExecutor(agent=agent, tools=self.tools, verbose=True)
-
-        return agent_executor.invoke({"input": question})["output"]
-
-    def assist(self, question: str, system_prompt: Optional[str] = "") -> str:
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    "You are a helpful AI bot. Your name is {name} (allways lowercase)."
-                    + (system_prompt or ""),
-                ),
-                ("human", "{user_input}"),
-            ]
-        )
-
-        chain = LLMChain(
-            llm=self.model.llm,
-            prompt=prompt,
-        )
-
-        return chain.invoke({"name": CORE_COMMAND_NAME, "user_input": question})[
-            "text"
-        ].strip()
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
         action: Optional[str] = None
@@ -147,11 +125,17 @@ class Assistant:
                 )
 
                 if os.path.isfile(file):
-                    selected_file = dir + file
+                    selected_file = os.path.join(dir, file)
                     self.log(f"File selected {selected_file}")
 
                     user_command = self.user_prompt(
                         system_prompt=f"Now we are talking about this file : {selected_file}"
+                                      f"\n_______________________________________File metadata"
+                                      f"\nCreation Date: {time.ctime(os.path.getctime(selected_file))}"
+                                      f"\nFile Size: {os.path.getsize(selected_file)} bytes"
+                                      f"\n_______________________________________File content"
+                                      f"\n{file_read(selected_file)}"
+                                      f"_________________________________________End of file info"
                     )
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
@@ -159,7 +143,7 @@ class Assistant:
                     models[model] = model
 
                 new_model = prompt_choice_dict(
-                    "Choose a new language model:", models, default=self.model.name
+                    "Choose a new language model:", models, default=self.model.identifier
                 )
 
                 self.set_model(new_model)
@@ -203,7 +187,9 @@ class Assistant:
         self.log("Type '/exit' to quit.")
 
     def user_prompt(
-        self, initial_prompt: Optional[str] = None, system_prompt: Optional[str] = None
+        self,
+        initial_prompt: Optional[str] = None,
+        identity: str = AI_IDENTITY_DEFAULT
     ) -> str:
         self.user_prompt_help()
 
@@ -212,8 +198,8 @@ class Assistant:
 
             try:
                 if not initial_prompt:
-                    user_input = prompt_tool(">>> ", completer=self.completer)
-                    user_input_lower = user_input.lower()
+                    input = prompt_tool(">>> ", completer=self.completer)
+                    user_input_lower = input.strip().lower()
 
                     if user_input_lower == "exit":
                         user_input_lower = "/exit"
@@ -221,7 +207,7 @@ class Assistant:
                     if user_input_lower in ["/exit", "/action"]:
                         return user_input_lower
                 else:
-                    user_input = user_input_lower = initial_prompt
+                    input = user_input_lower = initial_prompt
                     initial_prompt = None
 
                 if user_input_lower in ["/?", "/help"]:
@@ -231,7 +217,10 @@ class Assistant:
                     ai_working = True
 
                     self.kernel.io.print(
-                        self.assist(user_input, system_prompt),
+                        self.model.request(
+                            input,
+                            self.identities[identity]
+                        )
                     )
 
             except KeyboardInterrupt:
