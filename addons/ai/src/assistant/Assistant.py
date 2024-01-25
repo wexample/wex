@@ -112,40 +112,7 @@ class Assistant:
             if action == CHAT_ACTION_FREE_TALK:
                 user_command = self.user_prompt(initial_prompt)
             elif action == CHAT_ACTION_FREE_TALK_FILE:
-                dir = os.getcwd()
-                # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
-                choices_dirs = {}
-                choices_files = {}
-
-                for element in os.listdir(dir):
-                    if os.path.isdir(os.path.join(dir, element)):
-                        element_label = f"📁{element}"
-                        choices_dirs[element] = element_label
-                    else:
-                        element_label = element
-                        choices_files[element] = element_label
-
-                choices_dirs = dict_sort_values(choices_dirs)
-                choices_files = dict_sort_values(choices_files)
-
-                file = prompt_choice_dict(
-                    "Select a file to talk about:",
-                    dict_merge(choices_dirs, choices_files),
-                )
-
-                if file and os.path.isfile(file):
-                    selected_file = os.path.join(dir, file)
-                    self.log(f"File selected {selected_file}")
-
-                    user_command = self.user_prompt(
-                        identity=AI_IDENTITY_CODE_FILE_PATCHER,
-                        identity_parameters={
-                            "file_full_path": selected_file,
-                            "file_creation_date": time.ctime(os.path.getctime(selected_file)),
-                            "file_size": os.path.getsize(selected_file),
-                            "file_content": file_read(selected_file),
-                        }
-                    )
+                user_command = self.chat_about_file(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
@@ -163,6 +130,50 @@ class Assistant:
                 action = None
 
         self.log(f"{os.linesep}Ciao")
+
+    def chat_about_file(self, base_dir: str) -> Optional[str]:
+        # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
+        choices_dirs = {
+            "..": ".."
+        }
+
+        choices_files = {}
+
+        for element in os.listdir(base_dir):
+            if os.path.isdir(os.path.join(base_dir, element)):
+                element_label = f"📁{element}"
+                choices_dirs[element] = element_label
+            else:
+                element_label = element
+                choices_files[element] = element_label
+
+        choices_dirs = dict_sort_values(choices_dirs)
+        choices_files = dict_sort_values(choices_files)
+
+        file = prompt_choice_dict(
+            "Select a file to talk about:",
+            dict_merge(choices_dirs, choices_files),
+        )
+
+        if file:
+            full_path = os.path.join(base_dir, file)
+
+            if os.path.isfile(file):
+                self.log(f"File selected {full_path}")
+
+                return self.user_prompt(
+                    identity=AI_IDENTITY_CODE_FILE_PATCHER,
+                    identity_parameters={
+                        "file_full_path": full_path,
+                        "file_creation_date": time.ctime(os.path.getctime(full_path)),
+                        "file_size": os.path.getsize(full_path),
+                        "file_content": file_read(full_path),
+                    }
+                )
+            elif os.path.isdir(file):
+                return self.chat_about_file(full_path)
+
+        return None
 
     def chat_choose_action(self, last_action: Optional[str]) -> str:
         choices = {
