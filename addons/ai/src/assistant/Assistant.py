@@ -36,6 +36,7 @@ CHAT_ACTIONS_TRANSLATIONS = {
 class Assistant:
     def __init__(self, kernel: "Kernel", default_model: str = MODEL_NAME_MISTRAL) -> None:
         self.kernel = kernel
+        self.model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_MISTRAL: DefaultModel(self.kernel, MODEL_NAME_MISTRAL),
             MODEL_NAME_OPEN_AI: OpenAiModel(self.kernel)
