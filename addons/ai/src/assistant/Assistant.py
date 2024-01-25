@@ -133,7 +133,7 @@ class Assistant:
                     dict_merge(choices_dirs, choices_files),
                 )
 
-                if os.path.isfile(file):
+                if file and os.path.isfile(file):
                     selected_file = os.path.join(dir, file)
                     self.log(f"File selected {selected_file}")
 
