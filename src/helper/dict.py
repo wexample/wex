@@ -48,5 +48,5 @@ def dict_get_item_by_path(
     return data
 
 
-def dict_sort_values(dictionary: StringKeysMapping) -> StringKeysDict:
-    return {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1])}
+def dict_sort_values(dictionary: StringKeysMapping, key: Any = None) -> StringKeysDict:
+    return {k: v for k, v in sorted(dictionary.items(), key=key or (lambda item: item[1]))}

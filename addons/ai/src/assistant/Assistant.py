@@ -6,16 +6,17 @@ from addons.ai.src.tool.CommandTool import CommandTool
 from addons.ai.src.model.DefaultModel import DefaultModel, MODEL_NAME_MISTRAL
 from addons.ai.src.model.OpenAiModel import OpenAiModel, MODEL_NAME_OPEN_AI
 from addons.ai.src.model.AbstractModel import AbstractModel
+from src.helper.dict import dict_sort_values, dict_merge
 from src.helper.registry import registry_get_all_commands
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.prompts import PromptTemplate
 from src.const.types import StringKeysDict
-from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
 from prompt_toolkit import prompt as prompt_tool
-from typing import TYPE_CHECKING, cast, Any, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from src.helper.prompt import prompt_choice_dict
+from src.const.globals import CORE_COMMAND_NAME
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -94,18 +95,24 @@ class Assistant:
             {"input": question}
         )["output"]
 
-    def assist(self, question: str) -> str:
-        human_message_prompt = ChatPromptTemplate.from_template("{text}")
-
-        prompt = ChatPromptTemplate.from_messages([human_message_prompt])
+    def assist(self, question: str, system_prompt: Optional[str] = "") -> str:
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                "system", "You are a helpful AI bot. Your name is {name} (allways lowercase)." + (system_prompt or "")),
+                ("human", "{user_input}"),
+            ]
+        )
 
         chain = LLMChain(
             llm=self.model.llm,
             prompt=prompt,
         )
 
-        return chain.invoke(
-            cast(Any, question))["text"].strip()
+        return chain.invoke({
+            "name": CORE_COMMAND_NAME,
+            "user_input": question
+        })["text"].strip()
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
         action: Optional[str] = None
@@ -120,25 +127,54 @@ class Assistant:
                 action = self.chat_choose_action(previous_action)
                 previous_action = action
 
+            user_command = None
             if action == CHAT_ACTION_FREE_TALK:
                 user_command = self.user_prompt(initial_prompt)
+            elif action == CHAT_ACTION_FREE_TALK_FILE:
+                dir = os.getcwd()
+                # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
+                choices_dirs = {}
+                choices_files = {}
 
-                if user_command == "/exit":
-                    action = CHAT_ACTION_ABORT
-                else:
-                    action = None
+                for element in os.listdir(dir):
+                    if os.path.isdir(os.path.join(dir, element)):
+                        element_label = f"📁{element}"
+                        choices_dirs[element] = element_label
+                    else:
+                        element_label = element
+                        choices_files[element] = element_label
+
+                choices_dirs = dict_sort_values(choices_dirs)
+                choices_files = dict_sort_values(choices_files)
+
+                file = prompt_choice_dict(
+                    "Select a file to talk about:",
+                    dict_merge(choices_dirs, choices_files)
+                )
+
+                if os.path.isfile(file):
+                    selected_file = dir + file
+                    self.log(f"File selected {selected_file}")
+
+                    user_command = self.user_prompt(
+                        system_prompt=f"Now we are talking about this file : {selected_file}"
+                    )
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
                     models[model] = model
 
                 new_model = prompt_choice_dict(
-                    "Choose a new language model :",
+                    "Choose a new language model:",
                     models,
                     default=self.model.name
                 )
 
                 self.set_model(new_model)
+
+            if user_command == "/exit":
+                action = CHAT_ACTION_ABORT
+            else:
                 action = None
 
         self.log(f"{os.linesep}Ciao")
@@ -146,7 +182,7 @@ class Assistant:
     def chat_choose_action(self, last_action: Optional[str]) -> str:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
-            # CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
+            CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK_FILE],
         }
 
         if len(self.models.keys()) > 1:
@@ -159,7 +195,7 @@ class Assistant:
         choices[CHAT_ACTION_ABORT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_ABORT]
 
         return prompt_choice_dict(
-            "Choose an action to do with ai assistant :",
+            "Choose an action to do with ai assistant:",
             choices,
             abort=None,
             default=CHAT_ACTION_FREE_TALK
@@ -170,7 +206,7 @@ class Assistant:
         self.log("Type '/?' or '/help' to display this message again.")
         self.log("Type '/exit' to quit.")
 
-    def user_prompt(self, initial_prompt: Optional[str]) -> str:
+    def user_prompt(self, initial_prompt: Optional[str] = None, system_prompt: Optional[str] = None) -> str:
         self.user_prompt_help()
 
         while True:
@@ -197,10 +233,7 @@ class Assistant:
                     ai_working = True
 
                     self.kernel.io.print(
-                        chat_format_message(
-                            self.assist(user_input),
-                            TEXT_ALIGN_RIGHT
-                        )
+                        self.assist(user_input, system_prompt),
                     )
 
             except KeyboardInterrupt:
