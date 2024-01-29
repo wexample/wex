@@ -7,6 +7,7 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APP_SHORT_NAME_PROXY
+from src.helper.system import system_port_check
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -86,22 +87,6 @@ def app__proxy__start(
 
             user = user or getpass.getuser()
 
-            def check_port(port_to_check: int) -> None:
-                if not port_to_check:
-                    kernel.io.error(f"Invalid port {port_to_check}", trace=False)
-
-                manager.log(f"Checking that port {port_to_check} is free")
-
-                # Check port availability.
-                process = process_get_all_by_port(port_to_check)
-                if process:
-                    kernel.io.error(
-                        f"Process {process.pid} ({process.name()}) is using port {port_to_check}",
-                        trace=False,
-                    )
-
-                kernel.io.success(f"Port {port_to_check} free")
-
             # Override default service ports
             if port:
                 manager.set_config("global.port_public", port)
@@ -109,8 +94,8 @@ def app__proxy__start(
             if port_secure:
                 manager.set_config("global.port_public_secure", port_secure)
 
-            check_port(manager.get_config("global.port_public").get_int())
-            check_port(manager.get_config("global.port_public_secure").get_int())
+            system_port_check(kernel, manager.get_config("global.port_public").get_int())
+            system_port_check(kernel, manager.get_config("global.port_public_secure").get_int())
 
         manager.exec_in_app_workdir(proxy_path, _callback)
 
