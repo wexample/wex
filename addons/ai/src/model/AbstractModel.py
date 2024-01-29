@@ -1,14 +1,16 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Optional
 
-from src.helper.dict import dict_merge
-from src.const.types import StringKeysDict
-from src.core.KernelChild import KernelChild
 from langchain.chains import create_tagging_chain
 from langchain.prompts import ChatPromptTemplate
 
+from src.const.types import StringKeysDict
+from src.core.KernelChild import KernelChild
+from src.helper.dict import dict_merge
+
 if TYPE_CHECKING:
     from langchain_core.language_models import BaseLanguageModel
+
     from src.core.Kernel import Kernel
 
 
@@ -19,7 +21,7 @@ class AbstractModel(KernelChild):
         super().__init__(kernel)
 
         self.identifier = identifier
-        service, name = identifier.split(':')
+        service, name = identifier.split(":")
 
         self.service: str = service
         self.name: str = name
@@ -32,13 +34,10 @@ class AbstractModel(KernelChild):
             ]
         )
 
-    def chat_merge_parameters(self, identity_parameters: StringKeysDict) -> StringKeysDict:
-        return dict_merge(
-            {
-                "input": input
-            },
-            identity_parameters or {}
-        )
+    def chat_merge_parameters(
+        self, identity_parameters: StringKeysDict
+    ) -> StringKeysDict:
+        return dict_merge({"input": input}, identity_parameters or {})
 
     def choose_command(self, input: str) -> StringKeysDict:
         schema = {
@@ -46,8 +45,13 @@ class AbstractModel(KernelChild):
             "properties": {
                 "command": {
                     "type": "string",
-                    "enum": ["display_files", "display_logo", "display_a_cucumber", None],
-                    "description": "Return one command name, but only if could help answer user message, None instead"
+                    "enum": [
+                        "display_files",
+                        "display_logo",
+                        "display_a_cucumber",
+                        None,
+                    ],
+                    "description": "Return one command name, but only if could help answer user message, None instead",
                 },
             },
         }
@@ -62,8 +66,6 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def request(
-        self,
-        input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict) -> "BaseLanguageModel":
+        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
+    ) -> "BaseLanguageModel":
         pass

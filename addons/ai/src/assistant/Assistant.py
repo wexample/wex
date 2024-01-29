@@ -4,16 +4,21 @@ from typing import TYPE_CHECKING, Dict, Optional
 
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
+
 from addons.ai.src.model.AbstractModel import AbstractModel
 from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
-from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_3_5_TURBO, MODEL_NAME_OPEN_AI_GPT_4, OpenAiModel
+from addons.ai.src.model.OpenAiModel import (
+    MODEL_NAME_OPEN_AI_GPT_3_5_TURBO,
+    MODEL_NAME_OPEN_AI_GPT_4,
+    OpenAiModel,
+)
 from addons.ai.src.tool.CommandTool import CommandTool
-from src.helper.file import file_read
+from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
+from src.helper.file import file_read
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
-from src.const.globals import COLOR_GRAY, COLOR_RESET
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -43,9 +48,15 @@ class Assistant:
         self.kernel = kernel
         self.model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
-            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self.kernel, MODEL_NAME_OLLAMA_MISTRAL),
-            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO),
-            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(self.kernel, MODEL_NAME_OPEN_AI_GPT_4),
+            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
+                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
+            ),
+            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+            ),
+            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
+            ),
         }
 
         self.set_model(default_model)
@@ -56,19 +67,17 @@ class Assistant:
         self.tools = []
 
         self.identities = {
-            AI_IDENTITY_DEFAULT: {
-                "system": "You are a helpful AI bot."
-            },
+            AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                          "\nNow we are talking about this file : {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_______________________________________File content"
-                          "\n{file_content}"
-                          "\n_________________________________________End of file info"
-            }
+                "\nNow we are talking about this file : {file_full_path}"
+                "\n_______________________________________File metadata"
+                "\nCreation Date: {file_creation_date}"
+                "\nFile Size: {file_size} bytes"
+                "\n_______________________________________File content"
+                "\n{file_content}"
+                "\n_________________________________________End of file info"
+            },
         }
 
         for command_name in all_commands:
@@ -118,7 +127,9 @@ class Assistant:
                     models[model] = model
 
                 new_model = prompt_choice_dict(
-                    "Choose a new language model:", models, default=self.model.identifier
+                    "Choose a new language model:",
+                    models,
+                    default=self.model.identifier,
                 )
 
                 self.set_model(new_model)
@@ -132,9 +143,7 @@ class Assistant:
 
     def chat_about_file(self, base_dir: str) -> Optional[str]:
         # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
-        choices_dirs = {
-            "..": ".."
-        }
+        choices_dirs = {"..": ".."}
 
         choices_files = {}
 
@@ -167,7 +176,7 @@ class Assistant:
                         "file_creation_date": time.ctime(os.path.getctime(full_path)),
                         "file_size": os.path.getsize(full_path),
                         "file_content": file_read(full_path),
-                    }
+                    },
                 )
             elif os.path.isdir(file):
                 return self.chat_about_file(full_path)
@@ -245,17 +254,13 @@ class Assistant:
                         self.kernel.io.print(command_selection["text"]["command"])
                     else:
                         result = self.model.request(
-                            input,
-                            self.identities[identity],
-                            identity_parameters
+                            input, self.identities[identity], identity_parameters
                         )
 
                         # Let a new line separator
                         self.kernel.io.print(COLOR_RESET)
 
-                        self.kernel.io.print(
-                            result
-                        )
+                        self.kernel.io.print(result)
 
             except KeyboardInterrupt:
                 # User asked to quit

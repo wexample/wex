@@ -1,9 +1,10 @@
-from langchain_openai import ChatOpenAI
-from dotenv import dotenv_values
 from typing import TYPE_CHECKING
 
-from src.const.types import StringKeysDict
+from dotenv import dotenv_values
+from langchain_openai import ChatOpenAI
+
 from addons.ai.src.model.AbstractModel import AbstractModel
+from src.const.types import StringKeysDict
 
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_1106 = "open_ai:gpt-3.5-turbo-1106"
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_16K = "open_ai:gpt-3.5-turbo-16k"
@@ -26,13 +27,10 @@ class OpenAiModel(AbstractModel):
         )
 
     def request(
-        self,
-        input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict) -> "BaseLanguageModel":
+        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
+    ) -> "BaseLanguageModel":
         return self.llm(
-            self.chat_create_prompt(identity).format_prompt(
-                **self.chat_merge_parameters(identity_parameters)
-            )
+            self.chat_create_prompt(identity)
+            .format_prompt(**self.chat_merge_parameters(identity_parameters))
             .to_messages()
         )

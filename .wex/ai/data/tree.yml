@@ -210,7 +210,7 @@ children:
                 children:
                   AbstractModel.py:
                     type: file
-                  DefaultModel.py:
+                  OllamaModel.py:
                     type: file
                   OpenAiModel.py:
                     type: file

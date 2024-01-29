@@ -17,7 +17,12 @@ if TYPE_CHECKING:
 )
 @option("--prompt", "-p", type=str, required=False, help="First prompt")
 @option(
-    "--model", "-m", type=str, required=True, default=MODEL_NAME_OLLAMA_MISTRAL, help="Default model"
+    "--model",
+    "-m",
+    type=str,
+    required=True,
+    default=MODEL_NAME_OLLAMA_MISTRAL,
+    help="Default model",
 )
 def ai__talk__ask(kernel: "Kernel", model: str, prompt: Optional[str] = None) -> None:
     assistant = Assistant(kernel, model)
