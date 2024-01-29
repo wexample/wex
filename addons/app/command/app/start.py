@@ -127,7 +127,7 @@ def app__app__start(
                 kernel.io.message(f"Proxy explicitly disabled")
                 return None
 
-            proxy_path = manager.get_proxy_path(env)
+            proxy_path = manager.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, env)
 
             # The reverse proxy is not running.
             if (

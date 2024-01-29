@@ -41,7 +41,7 @@ def app__proxy__start(
     port_secure: Optional[int] = None,
 ) -> QueuedCollectionResponse:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
-    proxy_path = manager.get_proxy_path(env)
+    proxy_path = manager.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, env)
 
     def _app__proxy__start__create(
         queue: AbstractQueuedCollectionResponseQueueManager,

@@ -19,8 +19,8 @@ from addons.app.const.app import (
     APP_FILEPATH_REL_DOCKER_ENV,
     APP_FILEPATH_REL_ENV,
     ERR_APP_SHOULD_RUN,
-    PROXY_APP_NAME,
     PROXY_FILE_APPS_REGISTRY,
+    HELPER_APP_SHORT_NAME_PROXY,
 )
 from addons.app.src.AppCommand import AppCommand
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
@@ -151,13 +151,17 @@ class AppAddonManager(AddonManager):
 
         return yaml_load(script_dir)
 
-    def get_proxy_path(self, environment: Optional[str] = None) -> str:
-        return f"{self.get_applications_path(environment)}{PROXY_APP_NAME}{os.sep}"
+    def get_helper_app_name(self, short_name: str) -> str:
+        return '-'.join([CORE_COMMAND_NAME, short_name])
+
+    def get_helper_app_path(self, short_name: str, environment: Optional[str] = None) -> str:
+        return f"{self.get_applications_path(environment)}{self.get_helper_app_name(short_name)}{os.sep}"
 
     def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load(self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, {}),
+            yaml_load(self.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, environment) + PROXY_FILE_APPS_REGISTRY,
+                      {}),
         )
 
     @classmethod
@@ -540,7 +544,7 @@ class AppAddonManager(AddonManager):
 
     def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:
         with open(
-            self.get_proxy_path(environment) + PROXY_FILE_APPS_REGISTRY, "w"
+            self.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, environment) + PROXY_FILE_APPS_REGISTRY, "w"
         ) as f:
             yaml.dump(proxy_apps, f, indent=True)
 
@@ -675,7 +679,7 @@ class AppAddonManager(AddonManager):
                 "path": {
                     "app": app_dir,
                     "app_env": os.path.join(app_dir, APP_DIR_APP_DATA) + "/",
-                    "proxy": self.get_proxy_path(env),
+                    "proxy": self.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, env),
                 },
                 "service": {},
                 "started": False,

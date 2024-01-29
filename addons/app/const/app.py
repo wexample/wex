@@ -25,5 +25,6 @@ ERR_APP_SHOULD_RUN: str = (
 )
 ERR_CORE_ACTION_NOT_FOUND: str = 'No core action found : "{command}"'
 ERR_SERVICE_NOT_FOUND: str = "Service not found : {service}"
-PROXY_APP_NAME: str = "wex-proxy"
+HELPER_APP_SHORT_NAME_PROXY: str = "proxy"
+HELPER_APP_SHORT_NAME_AI: str = "ai"
 PROXY_FILE_APPS_REGISTRY: str = "apps.yml"
