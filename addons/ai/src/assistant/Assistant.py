@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Dict, Optional
 
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
-
 from addons.ai.src.model.AbstractModel import AbstractModel
 from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
 from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_3_5_TURBO, MODEL_NAME_OPEN_AI_GPT_4, OpenAiModel
@@ -239,18 +238,24 @@ class Assistant:
                     self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
 
-                    result = self.model.request(
-                        input,
-                        self.identities[identity],
-                        identity_parameters
-                    )
+                    command_selection = self.model.choose_command(input)
 
-                    # Let a new line separator
-                    self.kernel.io.print(COLOR_RESET)
+                    if "text" in command_selection and command_selection["text"]:
+                        # TODO Do command
+                        self.kernel.io.print(command_selection["text"]["command"])
+                    else:
+                        result = self.model.request(
+                            input,
+                            self.identities[identity],
+                            identity_parameters
+                        )
 
-                    self.kernel.io.print(
-                        result
-                    )
+                        # Let a new line separator
+                        self.kernel.io.print(COLOR_RESET)
+
+                        self.kernel.io.print(
+                            result
+                        )
 
             except KeyboardInterrupt:
                 # User asked to quit

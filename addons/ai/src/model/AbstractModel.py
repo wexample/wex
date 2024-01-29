@@ -1,17 +1,19 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Optional
 
+from src.helper.dict import dict_merge
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
+from langchain.chains import create_tagging_chain
+from langchain.prompts import ChatPromptTemplate
 
 if TYPE_CHECKING:
-    from langchain_core.language_models import BaseLLM
-
+    from langchain_core.language_models import BaseLanguageModel
     from src.core.Kernel import Kernel
 
 
 class AbstractModel(KernelChild):
-    llm: Optional["BaseLLM"]
+    llm: Optional["BaseLanguageModel"]
 
     def __init__(self, kernel: "Kernel", identifier: str):
         super().__init__(kernel)
@@ -22,8 +24,40 @@ class AbstractModel(KernelChild):
         self.service: str = service
         self.name: str = name
 
+    def chat_create_prompt(self, identity: StringKeysDict) -> ChatPromptTemplate:
+        return ChatPromptTemplate.from_messages(
+            [
+                ("system", identity["system"]),
+                ("human", "{input}"),
+            ]
+        )
+
+    def chat_merge_parameters(self, identity_parameters: StringKeysDict) -> StringKeysDict:
+        return dict_merge(
+            {
+                "input": input
+            },
+            identity_parameters or {}
+        )
+
+    def choose_command(self, input: str) -> StringKeysDict:
+        schema = {
+            # TODO Replace by real commands
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "enum": ["display_files", "display_logo", "display_a_cucumber", None],
+                    "description": "Return one command name, but only if could help answer user message, None instead"
+                },
+            },
+        }
+
+        chain = create_tagging_chain(schema, self.llm)
+
+        return chain.invoke(input)
+
     @abstractmethod
-    def activate(self):
+    def activate(self) -> None:
         pass
 
     @abstractmethod
@@ -31,5 +65,5 @@ class AbstractModel(KernelChild):
         self,
         input: str,
         identity: StringKeysDict,
-        identity_parameters: StringKeysDict):
+        identity_parameters: StringKeysDict) -> "BaseLanguageModel":
         pass
