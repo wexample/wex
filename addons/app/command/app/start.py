@@ -22,6 +22,7 @@ from addons.app.const.app import (
     APP_ENV_LOCAL,
     APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
     APP_FILEPATH_REL_ENV,
+    HELPER_APP_SHORT_NAME_PROXY,
 )
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command

@@ -6,6 +6,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
+from addons.app.const.app import HELPER_APP_SHORT_NAME_PROXY
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
