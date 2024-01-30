@@ -623,7 +623,6 @@ class AppAddonManager(AddonManager):
 
         from addons.app.command.env.get import app__env__get
         from addons.app.command.hook.exec import app__hook__exec
-        from src.const.globals import PASSWORD_INSECURE
         from src.helper.user import (
             get_gid_from_group_name,
             get_uid_from_user_name,
@@ -677,7 +676,6 @@ class AppAddonManager(AddonManager):
                 "env": env,
                 "name": f"{name}_{env}",
                 "host": {"ip": socket.gethostbyname(socket.gethostname())},
-                "password": {"insecure": PASSWORD_INSECURE},
                 "path": {
                     "app": app_dir,
                     "app_env": os.path.join(app_dir, APP_DIR_APP_DATA) + "/",

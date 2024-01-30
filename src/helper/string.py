@@ -1,6 +1,9 @@
 import os
 import re
 import shutil
+from random import random
+
+import string
 from typing import Mapping, Optional
 
 from src.const.types import BasicInlineValue, StringsDict, StringsMatch
@@ -48,7 +51,7 @@ def string_format_ignore_missing(
 def string_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
-        lines.append((" " * indent) + text[i : i + max_width])
+        lines.append((" " * indent) + text[i: i + max_width])
     return os.linesep.join(lines)
 
 
@@ -59,7 +62,7 @@ def string_multiline_center(text: str, width: int) -> str:
 
 def string_trim_leading(text: str, leading_text: str) -> str:
     if text.startswith(leading_text):
-        return text[len(leading_text) :]
+        return text[len(leading_text):]
     else:
         return text
 
@@ -104,3 +107,11 @@ def string_replace_multiple(
 
     # Substitute using the replacement function
     return pattern.sub(repl, text)
+
+
+def string_random_password(length: int = 255) -> str:
+    characters = string.ascii_letters
+
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+
+    return random_string

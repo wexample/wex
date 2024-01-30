@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_TYPE_SERVICE, PASSWORD_INSECURE
+from src.const.globals import COMMAND_TYPE_SERVICE
+from src.helper.string import string_random_password
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -16,7 +17,7 @@ def n8n__service__install(
         {
             "basic_auth": {
                 "user": "admin",
-                "password": PASSWORD_INSECURE,
+                "password": string_random_password(),
             }
         },
     )

@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_TYPE_SERVICE, PASSWORD_INSECURE
+from src.helper.string import string_random_password
+from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -16,8 +17,7 @@ def redis__service__install(
         f"service.{service}",
         {
             "host": f"{name}_redis",
-            "name": f"{name}",
-            "password": PASSWORD_INSECURE,
+            "password": string_random_password(),
             "port": 6379,
             "user": "redis",
         },
