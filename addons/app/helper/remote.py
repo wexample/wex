@@ -79,7 +79,4 @@ def remote_get_connexion_address(
     env_screaming_snake = string_to_snake_case(environment).upper()
     username = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_USERNAME")
 
-    if username:
-        return f"{username}@{domain_or_ip}"
-
-    return domain_or_ip
+    return f"{username}@{domain_or_ip}"

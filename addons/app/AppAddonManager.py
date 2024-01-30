@@ -821,8 +821,9 @@ class AppAddonManager(AddonManager):
         from dotenv import dotenv_values
 
         app_env_path = os.path.join(self.get_app_dir(), APP_FILEPATH_REL_ENV)
+        value = dotenv_values(app_env_path).get(key)
 
-        return str(dotenv_values(app_env_path).get(key))
+        return str(value) if value else None
 
     def get_env(self, app_dir: Optional[str] = None) -> str:
         from addons.app.command.env.get import _app__env__get
