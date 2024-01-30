@@ -1,0 +1,5 @@
+services:
+  ai:
+    extends:
+      file: ${RUNTIME_SERVICE_AI_YML_ENV}
+      service: ai
