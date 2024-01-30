@@ -1,0 +1,5 @@
+services:
+  redis:
+    extends:
+      file: ${RUNTIME_SERVICE_REDIS_YML_ENV}
+      service: redis

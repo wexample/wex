@@ -1,0 +1,13 @@
+services:
+  redis:
+    container_name: ${RUNTIME_NAME}_redis
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+    command: --save 60 1 --loglevel warning
+    volumes:
+      - ${RUNTIME_PATH_APP_ENV}redis/data:/var/lib/redis
+      - ${RUNTIME_PATH_APP_ENV}redis/dumps:/var/www/dumps
+    extends:
+      file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
+      service: default
