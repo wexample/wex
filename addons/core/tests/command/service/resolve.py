@@ -19,3 +19,13 @@ class TestCoreCommandServiceResolve(AbstractTestCase):
         self.kernel.io.log(dependencies)
 
         self.assertGreaterEqual(len(dependencies), 4)
+
+        # Test empty string
+        dependencies = self.kernel.run_function(
+            core__service__resolve, {"service": ""}
+        ).first()
+
+        self.assertEqual(
+            len(dependencies),
+            0
+        )
