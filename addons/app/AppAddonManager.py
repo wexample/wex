@@ -562,6 +562,8 @@ class AppAddonManager(AddonManager):
             path=self.app_dir,
             # May be in invalid status at this point
             should_be_valid_app=False,
+            # Do not apply changes
+            initialize=False,
         )
 
         self.load_config()
