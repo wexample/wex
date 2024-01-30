@@ -19,6 +19,5 @@ def redis__service__install(
             "host": f"{name}_redis",
             "password": string_random_password(),
             "port": 6379,
-            "user": "redis",
         },
     )

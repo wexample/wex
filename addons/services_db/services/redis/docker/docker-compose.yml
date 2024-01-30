@@ -11,3 +11,6 @@ services:
     extends:
       file: ${RUNTIME_SERVICE_DEFAULT_YML_ENV}
       service: default
+    environment:
+      - REDIS_PASSWORD=${SERVICE_REDIS_PASSWORD}
+      - REDIS_PORT=${SERVICE_REDIS_PORT}
