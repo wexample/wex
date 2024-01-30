@@ -72,6 +72,11 @@ def args_split_arg_array(
 
     if isinstance(arg, str):
         arg = re.sub(r'[\[\]"\']', "", arg)
+
+        # The array was empty.
+        if not arg:
+            return []
+
         return [item.strip() for item in arg.split(separator)]
     elif isinstance(arg, Iterable):
         return [item.strip() for item in arg]
