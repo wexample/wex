@@ -2,6 +2,7 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
+from src.helper.user import set_owner_recursively
 from src.const.types import (
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
@@ -30,10 +31,13 @@ class AbstractFileSystemStructure(BaseClass):
     path: str
     type: FileSystemStructureType
     errors: "ErrorMessageList"
+    group: Optional[str] = None
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     parent_structure: Optional["AbstractFileSystemStructure"] = None
+    permission: Optional[int] = None
     shortcut: Optional[str] = None
     shortcuts: Dict[str, "AbstractFileSystemStructure"]
+    user: Optional[str] = None
 
     def __init__(self, path: str, initialize: bool = True) -> None:
         self.path = path
@@ -98,8 +102,14 @@ class AbstractFileSystemStructure(BaseClass):
             structure.initialize()
 
     def load_options(self, options: FileSystemStructureSchemaItem) -> None:
+        if "group" in options:
+            self.group = options["group"]
+
         if "on_missing" in options:
             self.on_missing = str(options["on_missing"])
+
+        if "permission" in options:
+            self.permission = int(options["permission"])
 
         if "should_exist" in options:
             self.should_exist = bool(options["should_exist"])
@@ -110,6 +120,9 @@ class AbstractFileSystemStructure(BaseClass):
         if "schema" in options:
             self.schema = options["schema"] or {}
 
+        if "user" in options:
+            self.user = options["user"]
+
     def checkup(self) -> None:
         if not self.exists():
             if self.should_exist is True:
@@ -117,6 +130,16 @@ class AbstractFileSystemStructure(BaseClass):
                     self.create_missing()
                 elif self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_ERROR:
                     self.add_error(FILE_SYSTEM_ERROR_NOT_FOUND, {"path": self.path})
+
+        if self.permission:
+            os.chmod(self.path, self.permission)
+
+        if self.user:
+            set_owner_recursively(
+                self.path,
+                self.user,
+                self.group,
+            )
 
     def exists(self) -> bool:
         return os.path.exists(self.path)

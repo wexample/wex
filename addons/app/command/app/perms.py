@@ -93,3 +93,6 @@ def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
 
     manager.log("Updating app permissions...")
     kernel.run_function(app__hook__exec, {"app-dir": app_dir, "hook": "app/perms"})
+
+    manager.log("Reinitialize directory schema")
+    manager.get_directory().initialize()
