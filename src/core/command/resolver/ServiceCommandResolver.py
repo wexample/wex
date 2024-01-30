@@ -68,7 +68,9 @@ class ServiceCommandResolver(AbstractCommandResolver):
         path = service_get_dir(self.kernel, name)
 
         if not path:
-            self.kernel.io.error(f"Service not found : {name}")
+            self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {
+                "service": name
+            })
 
         return self.build_command_path(
             base_path=str(path),
