@@ -108,7 +108,51 @@ def string_replace_multiple(
     return pattern.sub(repl, text)
 
 
-def string_random_password(length: int = 255) -> str:
+def string_random_password_secure(length: int = 64) -> str:
+    """
+    Creates a secure password that is at least 8 characters long and contains characters
+    from at least three of the four following sets: Uppercase letters, Lowercase letters,
+    Base 10 digits, and a reduced set of Symbols.
+    """
+
+    # Define character sets
+    upper = string.ascii_uppercase  # Uppercase letters
+    lower = string.ascii_lowercase  # Lowercase letters
+    digits = string.digits  # Base 10 digits
+    safe_symbols = "._-+"  # Reduced set of symbols
+
+    # Combine all character sets into a list
+    all_sets = [
+        upper,
+        upper,
+        upper,
+        lower,
+        lower,
+        lower,
+        lower,
+        lower,
+        lower,
+        lower,
+        digits,
+        digits,
+        safe_symbols
+    ]
+    random.shuffle(all_sets)  # Shuffle to ensure randomness
+
+    count = 0
+    password = ''
+    sets_modulo = len(all_sets) - 1
+    while (count < length):
+        password += random.choice(all_sets[count % sets_modulo])
+        count += 1
+
+    return password
+
+
+def string_random_password(length: int = 64) -> str:
+    """
+    Creates a password using only alphanumerical character as it is easier to copy / paste.
+    """
     characters = string.ascii_letters
 
     random_string = ''.join(random.choice(characters) for _ in range(length))
