@@ -55,7 +55,7 @@ def app__helper__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse | QueuedCollectionStopResponse:
         nonlocal env
-        manager.log("Starting helper app")
+        kernel.io.log("Starting helper app")
 
         # Created
         if manager.is_app_root(helper_app_path):
@@ -72,7 +72,7 @@ def app__helper__start(
                     response=helper_app_path
                 )
 
-        manager.log(f"Creating helper app dir : {helper_app_path}")
+        kernel.io.log(f"Creating helper app dir : {helper_app_path}")
         os.makedirs(helper_app_path, exist_ok=True)
 
         return kernel.run_function(
