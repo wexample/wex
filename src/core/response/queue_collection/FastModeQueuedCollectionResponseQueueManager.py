@@ -42,31 +42,31 @@ class FastModeQueuedCollectionResponseQueueManager(
     def render_content_complete(self, response: Optional[AbstractResponse] = None) -> "QueuedCollectionResponse":
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
-        response = response or self.response
-        if response.parent:
-            if isinstance(response.parent, QueuedCollectionResponse):
-                response.parent.has_next_step = response.has_next_step
+        if self.response.parent:
+            if isinstance(self.response.parent, QueuedCollectionResponse):
+                self.response.parent.has_next_step = self.response.has_next_step
         # This is the root collection
         else:
             while (
-                isinstance(response, QueuedCollectionResponse)
-                and response.has_next_step
-                and not isinstance(response.first(), QueuedCollectionStopResponse)
+                isinstance(self.response, QueuedCollectionResponse)
+                and self.response.has_next_step
+                and not isinstance(self.response.first(), QueuedCollectionStopResponse)
             ):
-                response.has_next_step = False
-                response.kernel.current_response = None
+                self.response.has_next_step = False
+                self.response.kernel.current_response = None
 
-                args = response.get_request().get_args_list().copy()
+                request = self.response.get_request()
+                args = request.get_args_list().copy()
 
-                new_response = response.kernel.run_command(
-                    response.get_request().get_string_command(), args
+                new_response = self.response.kernel.run_command(
+                    request.get_string_command(), args
                 )
 
                 # In fast mode we merge all outputs in the root output bag
-                response.output_bag += new_response.output_bag
+                self.response.output_bag += new_response.output_bag
 
-                # Continue if sub response is not complete
-                if new_response.has_next_step:
-                    response.has_next_step = True
+                # # Continue if sub response is not complete
+                # if new_response.has_next_step:
+                #     self.response.has_next_step = True
 
-        return super().render_content_complete(response)
+        return super().render_content_complete()
