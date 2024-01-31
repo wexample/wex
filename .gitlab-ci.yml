@@ -38,6 +38,7 @@ build_pipeline_image_test_remote:
   needs: [ build_pipeline_image_rc ]
   variables:
     FLAVOR: test-remote
+    GIT_STRATEGY: none
   rules:
     - changes:
         - .wex/docker/Dockerfile.test-remote
