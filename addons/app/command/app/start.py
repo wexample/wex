@@ -280,7 +280,7 @@ def app__app__start(
 
     def _app__app__start__complete(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    ) -> str:
         env = manager.get_env()
 
         if manager.has_runtime_config("domains"):
@@ -302,6 +302,8 @@ def app__app__start(
                 app__app__go,
             ]
         )
+
+        return manager.get_app_dir()
 
     steps: QueuedCollectionResponseCollection
 
