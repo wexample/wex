@@ -1,3 +1,4 @@
+import os
 import shutil
 
 from addons.app.command.helper.start import app__helper__start
@@ -14,16 +15,22 @@ class TestAppCommandHelperStart(AbstractTestCase):
         for name in HELPER_APPS_LIST:
             self._test_helper_app(name)
 
+    def _cleanup(self):
+        os.chdir(self.test_dir)
         # Cleanup
-        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one")
-        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two")
+        shutil.rmtree(
+            f"{SYSTEM_WWW_PATH}test_env_one",
+            ignore_errors=True
+        )
+        shutil.rmtree(
+            f"{SYSTEM_WWW_PATH}test_env_two",
+            ignore_errors=True
+        )
 
     def _test_helper_app(self, name: str) -> None:
         filter = f"wex_{name}_test_env_"
         docker_remove_filtered_container(self.kernel, filter)
-        # Cleanup
-        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one")
-        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two")
+        self._cleanup()
 
         app_dir = self.kernel.run_function(
             app__helper__start,
@@ -66,3 +73,5 @@ class TestAppCommandHelperStart(AbstractTestCase):
         )
 
         self.assertEqual(len(containers_list), 0)
+
+        self._cleanup()

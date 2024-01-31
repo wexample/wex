@@ -88,12 +88,13 @@ def app__app__stop(
     def _app__app__stop__update_hosts(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        manager.log("Unregistering app")
-        apps = manager.get_proxy_apps()
-        if name in apps:
-            del apps[name]
+        if manager.require_proxy():
+            manager.log("Unregistering app")
+            apps = manager.get_proxy_apps()
+            if name in apps:
+                del apps[name]
 
-        manager.save_proxy_apps(apps, manager.get_env())
+            manager.save_proxy_apps(apps, manager.get_env())
 
         kernel.run_function(app__hosts__update)
 

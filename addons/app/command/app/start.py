@@ -164,9 +164,10 @@ def app__app__start(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-pre"}
         )
 
-        # Save app in proxy apps.
-        manager.log("Registering app...")
-        manager.add_proxy_app(name, app_dir)
+        if manager.require_proxy():
+            # Save app in proxy apps.
+            manager.log("Registering app...")
+            manager.add_proxy_app(name, app_dir)
 
         return kernel.run_function(
             app__config__write,
