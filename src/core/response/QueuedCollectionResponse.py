@@ -164,9 +164,6 @@ class QueuedCollectionResponse(AbstractResponse):
         if isinstance(response, QueuedCollectionStopResponse) or isinstance(
             response, QueuedCollectionStopCurrentStepResponse
         ):
-            if isinstance(response, QueuedCollectionStopResponse):
-                # Mark having next step to block enqueuing
-                self.has_next_step = True
             return self.queue_manager.render_content_complete(response)
 
         if isinstance(response, QueuedCollectionResponse):
