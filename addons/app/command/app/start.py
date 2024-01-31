@@ -22,7 +22,7 @@ from addons.app.const.app import (
     APP_ENV_LOCAL,
     APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
     APP_FILEPATH_REL_ENV,
-    HELPER_APP_SHORT_NAME_PROXY,
+    HELPER_APP_PROXY_SHORT_NAME,
 )
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command
@@ -128,7 +128,7 @@ def app__app__start(
                 kernel.io.message(f"Proxy explicitly disabled")
                 return None
 
-            proxy_path = manager.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, env)
+            proxy_path = manager.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, env)
 
             # The reverse proxy is not running.
             if (

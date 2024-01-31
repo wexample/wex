@@ -2,6 +2,8 @@ import datetime
 import getpass
 import os
 import sys
+
+from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
 import yaml
