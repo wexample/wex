@@ -1,7 +1,7 @@
 services:
   ai:
     image: ollama/ollama:0.1.22
-    container_name: ${RUNTIME_NAME}_ollama
+    container_name: ${RUNTIME_NAME}_ai
     volumes:
       # Models storage dir
       - ${RUNTIME_PATH_APP}models/:/root/.ollama/
