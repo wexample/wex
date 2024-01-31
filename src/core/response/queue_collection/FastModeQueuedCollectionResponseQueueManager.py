@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, Optional
 
 from src.const.types import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
@@ -39,29 +39,33 @@ class FastModeQueuedCollectionResponseQueueManager(
 
         return None
 
-    def render_content_complete(self) -> "QueuedCollectionResponse":
+    def render_content_complete(self, response: Optional[AbstractResponse] = None) -> "QueuedCollectionResponse":
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
-        if self.response.parent:
-            if isinstance(self.response.parent, QueuedCollectionResponse):
-                self.response.parent.has_next_step = self.response.has_next_step
+        response = response or self.response
+        if response.parent:
+            if isinstance(response.parent, QueuedCollectionResponse):
+                response.parent.has_next_step = response.has_next_step
         # This is the root collection
         else:
             while (
-                isinstance(self.response, QueuedCollectionResponse)
-                and self.response.has_next_step
-                and not isinstance(self.response.first(), QueuedCollectionStopResponse)
+                isinstance(response, QueuedCollectionResponse)
+                and response.has_next_step
+                and not isinstance(response.first(), QueuedCollectionStopResponse)
             ):
-                self.response.has_next_step = False
-                self.response.kernel.current_response = None
+                response.has_next_step = False
+                response.kernel.current_response = None
 
-                args = self.response.get_request().get_args_list().copy()
+                args = response.get_request().get_args_list().copy()
 
-                response = self.response.kernel.run_command(
-                    self.response.get_request().get_string_command(), args
+                new_response = response.kernel.run_command(
+                    response.get_request().get_string_command(), args
                 )
 
-                # In fast mode we merge all outputs in the root output bag.
-                self.response.output_bag += response.output_bag
+                # In fast mode we merge all outputs in the root output bag
+                response.output_bag += new_response.output_bag
 
-        return super().render_content_complete()
+                # Continue if sub response is not complete
+                response.has_next_step = new_response.has_next_step
+
+        return super().render_content_complete(response)

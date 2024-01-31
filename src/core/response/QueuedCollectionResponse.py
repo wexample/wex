@@ -155,7 +155,7 @@ class QueuedCollectionResponse(AbstractResponse):
             response = first_response_item
 
         # Support simple abort response, which is an alias of a stop response.
-        if isinstance(response, AbortResponse):
+        if type(response) is AbortResponse:
             response = QueuedCollectionStopResponse(self.kernel, response.reason)
 
         self.output_bag.append(response)
@@ -167,13 +167,12 @@ class QueuedCollectionResponse(AbstractResponse):
             if isinstance(response, QueuedCollectionStopResponse):
                 # Mark having next step to block enqueuing
                 self.has_next_step = True
-
-            return self.queue_manager.render_content_complete()
+            return self.queue_manager.render_content_complete(response)
 
         if isinstance(response, QueuedCollectionResponse):
             if response.has_next_step:
                 self.has_next_step = response.has_next_step
-                return self.queue_manager.render_content_complete()
+                return self.queue_manager.render_content_complete(response)
 
         if not isinstance(response, AbstractResponse) and not args_is_basic_value(
             response
@@ -184,7 +183,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         self.queue_manager.enqueue_next_step_if_exists(step_index, response)
 
-        return self.queue_manager.render_content_complete()
+        return self.queue_manager.render_content_complete(response)
 
     def print(
         self,
