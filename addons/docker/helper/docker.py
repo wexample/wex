@@ -1,10 +1,14 @@
 import grp
 import pwd
-
 import yaml
 
+from src.helper.command import execute_command_sync
 from src.helper.dict import dict_merge
 from src.helper.user import is_sudo
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.core.Kernel import Kernel
 
 
 def user_has_docker_permission(username: str) -> bool:
@@ -34,3 +38,18 @@ def merge_docker_compose_files(src: str, target: str) -> None:
     # Write the merged data to a new file
     with open(target, "w") as f:
         yaml.dump(merged_data, f)
+
+
+def docker_container_ip(kernel: "Kernel", container_name: str) -> str:
+    success, diff = execute_command_sync(
+        kernel,
+        [
+            "docker",
+            "inspect",
+            "-f",
+            "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
+            container_name
+        ]
+    )
+
+    return diff[0]

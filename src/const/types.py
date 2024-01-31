@@ -63,7 +63,7 @@ AppsPathsList = StringsDict
 
 ShellCommandsList = StringsList
 ShellCommandsDeepList = List[str | ShellCommandsList]
-ShellCommandResponseTuple = Tuple[bool, List[str]]
+ShellCommandResponseTuple = Tuple[bool, StringsList]
 
 FileSystemStructureType = Literal[
     "file",

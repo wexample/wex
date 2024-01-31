@@ -153,6 +153,6 @@ class AbstractAppTestCase(AbstractTestCase):
         )
 
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
-        manager.set_config("env.test_remote.server.ip", "wex_test_remote")
+        manager.set_config("env.test_remote.server.ip", self.kernel.remote_address)
 
         return manager
