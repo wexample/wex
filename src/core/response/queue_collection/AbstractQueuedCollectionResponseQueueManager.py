@@ -15,7 +15,9 @@ class AbstractQueuedCollectionResponseQueueManager:
     def __init__(self, response: "QueuedCollectionResponse") -> None:
         self.response: "QueuedCollectionResponse" = response
 
-    def render_content_complete(self, response: Optional["AbstractResponse"] = None) -> "QueuedCollectionResponse":
+    def render_content_complete(
+        self, response: Optional["AbstractResponse"] = None
+    ) -> "QueuedCollectionResponse":
         return response or self.response
 
     @abstractmethod

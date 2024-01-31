@@ -4,20 +4,20 @@ import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 from addons.core.command.test.cleanup import core__test__cleanup
-from src.const.types import StringsList
-from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
 from src.const.globals import COMMAND_TYPE_ADDON
+from src.const.types import StringsList
+from src.core.response.InteractiveShellCommandResponse import (
+    InteractiveShellCommandResponse,
+)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.module import module_load_from_file
-from src.core.response.QueuedCollectionResponse import (
-    QueuedCollectionResponse,
-)
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -27,7 +27,9 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
-def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> QueuedCollectionResponse:
+def core__test__run(
+    kernel: "Kernel", command: Optional[str] = None
+) -> QueuedCollectionResponse:
     def _remote_command(command_part: StringsList):
         return InteractiveShellCommandResponse(
             kernel,
@@ -36,18 +38,24 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> QueuedCo
                 "compose",
                 "-f",
                 ".wex/docker/docker-compose.test-remote.yml",
-            ] + command_part)
+            ]
+            + command_part,
+        )
 
     def _start_remote(queue: AbstractQueuedCollectionResponseQueueManager):
-        return _remote_command([
-            "up",
-            "-d",
-        ])
+        return _remote_command(
+            [
+                "up",
+                "-d",
+            ]
+        )
 
     def _stop_remote(queue: AbstractQueuedCollectionResponseQueueManager):
-        return _remote_command([
-            "down",
-        ])
+        return _remote_command(
+            [
+                "down",
+            ]
+        )
 
     def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager):
         kernel.run_function(core__test__cleanup)
@@ -59,7 +67,9 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> QueuedCo
         os.chdir(kernel.directory.path)
 
         if not command:
-            suite.addTests(loader.discover(os.path.join(kernel.directory.path, "tests")))
+            suite.addTests(
+                loader.discover(os.path.join(kernel.directory.path, "tests"))
+            )
 
         kernel.io.log("Starting addons tests suites..")
 
@@ -71,10 +81,13 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> QueuedCo
                     "test" in command_data
                     and command_data["test"]
                     and (
-                    (not command)
-                    or command_name == command
-                    or (command.endswith("*") and command_name.startswith(command[:-1]))
-                )
+                        (not command)
+                        or command_name == command
+                        or (
+                            command.endswith("*")
+                            and command_name.startswith(command[:-1])
+                        )
+                    )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 
@@ -91,7 +104,7 @@ def core__test__run(kernel: "Kernel", command: Optional[str] = None) -> QueuedCo
 
         kernel.run_function(core__test__cleanup)
 
-    remote_address = 'TEST_REMOTE_ADDRESS' in os.environ
+    remote_address = "TEST_REMOTE_ADDRESS" in os.environ
     if not remote_address:
         steps = [
             _run_tests,

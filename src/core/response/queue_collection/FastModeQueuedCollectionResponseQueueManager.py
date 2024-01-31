@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, cast, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.types import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
@@ -39,7 +39,9 @@ class FastModeQueuedCollectionResponseQueueManager(
 
         return None
 
-    def render_content_complete(self, response: Optional[AbstractResponse] = None) -> "QueuedCollectionResponse":
+    def render_content_complete(
+        self, response: Optional[AbstractResponse] = None
+    ) -> "QueuedCollectionResponse":
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
         if self.response.parent:

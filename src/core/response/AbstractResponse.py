@@ -115,7 +115,7 @@ class AbstractResponse(KernelChild, HasRequest):
 
         return None
 
-    def get_one(self, position:int) -> Any:
+    def get_one(self, position: int) -> Any:
         """
         Return recursively the Xth item of the output bag.
         Mainly used to retrieve the bare first or last one.

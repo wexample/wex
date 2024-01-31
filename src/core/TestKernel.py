@@ -18,10 +18,7 @@ class TestKernel(Kernel):
             task_id,
         )
 
-        self.remote_address = 'TEST_REMOTE_ADDRESS' in os.environ
+        self.remote_address = "TEST_REMOTE_ADDRESS" in os.environ
         if not self.remote_address:
             # A test remote container should have been started.
-            self.remote_address = docker_container_ip(
-                self,
-                "wex_test_remote"
-            )
+            self.remote_address = docker_container_ip(self, "wex_test_remote")

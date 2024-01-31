@@ -2,8 +2,6 @@ import datetime
 import getpass
 import os
 import sys
-
-from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
 
 import yaml
@@ -21,9 +19,10 @@ from addons.app.const.app import (
     APP_FILEPATH_REL_DOCKER_ENV,
     APP_FILEPATH_REL_ENV,
     ERR_APP_SHOULD_RUN,
-    PROXY_FILE_APPS_REGISTRY,
     HELPER_APP_PROXY_SHORT_NAME,
+    PROXY_FILE_APPS_REGISTRY,
 )
+from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from addons.app.src.AppCommand import AppCommand
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
 from src.const.globals import (
@@ -154,16 +153,21 @@ class AppAddonManager(AddonManager):
         return yaml_load(script_dir)
 
     def get_helper_app_name(self, short_name: str) -> str:
-        return '-'.join([CORE_COMMAND_NAME, short_name])
+        return "-".join([CORE_COMMAND_NAME, short_name])
 
-    def get_helper_app_path(self, short_name: str, environment: Optional[str] = None) -> str:
+    def get_helper_app_path(
+        self, short_name: str, environment: Optional[str] = None
+    ) -> str:
         return f"{self.get_applications_path(environment)}{self.get_helper_app_name(short_name)}{os.sep}"
 
     def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load(self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment) + PROXY_FILE_APPS_REGISTRY,
-                      {}),
+            yaml_load(
+                self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment)
+                + PROXY_FILE_APPS_REGISTRY,
+                {},
+            ),
         )
 
     @classmethod
@@ -546,7 +550,9 @@ class AppAddonManager(AddonManager):
 
     def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:
         with open(
-            self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment) + PROXY_FILE_APPS_REGISTRY, "w"
+            self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment)
+            + PROXY_FILE_APPS_REGISTRY,
+            "w",
         ) as f:
             yaml.dump(proxy_apps, f, indent=True)
 

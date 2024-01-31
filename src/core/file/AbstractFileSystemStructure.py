@@ -2,7 +2,6 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from src.helper.user import set_owner_recursively
 from src.const.types import (
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
@@ -10,6 +9,7 @@ from src.const.types import (
     StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
+from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:
     from src.core.ErrorMessage import ErrorMessage, ErrorMessageList

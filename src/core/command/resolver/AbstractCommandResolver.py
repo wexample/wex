@@ -102,7 +102,7 @@ class AbstractCommandResolver(KernelChild):
                             command_string,
                             # Attached command should have same args as target
                             request.get_args_list().copy(),
-                            fast_mode=True
+                            fast_mode=True,
                         )
 
     def get_active_commands(self) -> RegistryCommandsCollection:

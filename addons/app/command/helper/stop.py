@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.stop import app__app__stop
+from addons.app.const.app import HELPER_APPS_LIST
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from addons.app.const.app import HELPER_APPS_LIST
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -14,7 +14,13 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Stop the running helper app")
-@option("--name", "-n", type=str, required=True, help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}")
+@option(
+    "--name",
+    "-n",
+    type=str,
+    required=True,
+    help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}",
+)
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 def app__helper__stop(kernel: "Kernel", name: str, env: Optional[str] = None) -> None:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])

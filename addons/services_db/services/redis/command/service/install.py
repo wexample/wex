@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from src.helper.string import string_random_password
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.helper.string import string_random_password
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

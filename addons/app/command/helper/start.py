@@ -9,7 +9,6 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APPS_LIST
-from src.helper.system import system_port_check
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -21,6 +20,7 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
+from src.helper.system import system_port_check
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -28,8 +28,13 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help=f"Create and start a helper app {','.join(HELPER_APPS_LIST)}")
-@option("--name", "-n", type=Choice(HELPER_APPS_LIST), required=True,
-        help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}")
+@option(
+    "--name",
+    "-n",
+    type=Choice(HELPER_APPS_LIST),
+    required=True,
+    help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}",
+)
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 @option("--group", "-g", type=str, required=False, help="Group of application files")
@@ -67,9 +72,7 @@ def app__helper__start(
                 },
             ).first():
                 return QueuedCollectionStopResponse(
-                    kernel,
-                    "HELPER_APP_ALREADY_STARTED",
-                    response=helper_app_path
+                    kernel, "HELPER_APP_ALREADY_STARTED", response=helper_app_path
                 )
 
         kernel.io.log(f"Creating helper app dir : {helper_app_path}")
@@ -102,7 +105,9 @@ def app__helper__start(
 
             if port_secure:
                 system_port_check(kernel, port_secure)
-                manager.set_config(f"service.{helper_service_name}.port_public_secure", port_secure)
+                manager.set_config(
+                    f"service.{helper_service_name}.port_public_secure", port_secure
+                )
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 

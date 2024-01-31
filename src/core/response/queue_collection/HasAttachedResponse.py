@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Optional, TYPE_CHECKING, Any
+
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class HasAttachedResponse(AbstractResponse):
-    def __init__(self, kernel: "Kernel", response: Any = None) -> None:
+    def __init__(self, kernel: "Kernel", response: Optional[Any] = None) -> None:
         super().__init__(kernel)
 
         self.response: Any = response
@@ -31,4 +32,3 @@ class HasAttachedResponse(AbstractResponse):
             )
 
             self.output_bag = response_wrapped.output_bag.copy()
-

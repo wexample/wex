@@ -188,6 +188,30 @@ children:
                     type: file
                 type: dir
             type: dir
+          services:
+            children:
+              ai:
+                children:
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                        type: dir
+                    type: dir
+                  service.config.yml:
+                    type: file
+                type: dir
+            type: dir
           src:
             children:
               assistant:
@@ -322,6 +346,13 @@ children:
                   set.py:
                     type: file
                 type: dir
+              helper:
+                children:
+                  start.py:
+                    type: file
+                  stop.py:
+                    type: file
+                type: dir
               hook:
                 children:
                   exec.py:
@@ -350,13 +381,6 @@ children:
               notification:
                 children:
                   notify.py:
-                    type: file
-                type: dir
-              proxy:
-                children:
-                  start.py:
-                    type: file
-                  stop.py:
                     type: file
                 type: dir
               remote:
@@ -717,6 +741,13 @@ children:
                       set.py:
                         type: file
                     type: dir
+                  helper:
+                    children:
+                      start.py:
+                        type: file
+                      stop.py:
+                        type: file
+                    type: dir
                   hook:
                     children:
                       exec.py:
@@ -745,13 +776,6 @@ children:
                   notification:
                     children:
                       notify.py:
-                        type: file
-                    type: dir
-                  proxy:
-                    children:
-                      start.py:
-                        type: file
-                      stop.py:
                         type: file
                     type: dir
                   remote:
@@ -1398,6 +1422,48 @@ children:
                     type: dir
                   service.config.yml:
                     type: file
+                type: dir
+              redis:
+                children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
+                  docker:
+                    children:
+                      docker-compose.yml:
+                        type: file
+                    type: dir
+                  samples:
+                    children:
+                      .wex:
+                        children:
+                          .gitignore.sample:
+                            type: file
+                          docker:
+                            children:
+                              docker-compose.yml:
+                                type: file
+                            type: dir
+                          redis:
+                            children:
+                              data:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                              dumps:
+                                children:
+                                  .gitkeep:
+                                    type: file
+                                type: dir
+                            type: dir
+                        type: dir
+                    type: dir
                 type: dir
               sqlserver:
                 children:
@@ -2514,6 +2580,8 @@ children:
                   DefaultQueuedCollectionResponseQueueManager.py:
                     type: file
                   FastModeQueuedCollectionResponseQueueManager.py:
+                    type: file
+                  HasAttachedResponse.py:
                     type: file
                   QueuedCollectionPathManager.py:
                     type: file

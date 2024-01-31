@@ -4,10 +4,11 @@ import os
 import socket
 from contextlib import closing
 from typing import TYPE_CHECKING
-from src.helper.process import process_get_all_by_port
+
 from src.const.globals import SERVICE_DAEMON_NAME
 from src.const.types import Kwargs
 from src.helper.command import execute_command_sync
+from src.helper.process import process_get_all_by_port
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

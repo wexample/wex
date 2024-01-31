@@ -25,7 +25,4 @@ class TestCoreCommandServiceResolve(AbstractTestCase):
             core__service__resolve, {"service": ""}
         ).first()
 
-        self.assertEqual(
-            len(dependencies),
-            0
-        )
+        self.assertEqual(len(dependencies), 0)

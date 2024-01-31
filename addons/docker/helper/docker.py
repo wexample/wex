@@ -1,11 +1,12 @@
 import grp
 import pwd
+from typing import TYPE_CHECKING
+
 import yaml
 
 from src.helper.command import execute_command_sync
 from src.helper.dict import dict_merge
 from src.helper.user import is_sudo
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -48,8 +49,8 @@ def docker_container_ip(kernel: "Kernel", container_name: str) -> str:
             "inspect",
             "-f",
             "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
-            container_name
-        ]
+            container_name,
+        ],
     )
 
     return diff[0]

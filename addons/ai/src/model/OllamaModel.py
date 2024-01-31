@@ -4,8 +4,8 @@ from langchain.chains import LLMChain
 from langchain_community.llms import Ollama
 
 from addons.ai.src.model.AbstractModel import AbstractModel
-from addons.app.command.helper.start import app__helper__start
 from addons.app.command.app.exec import app__app__exec
+from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.const.types import StringKeysDict
@@ -22,7 +22,7 @@ class OllamaModel(AbstractModel):
                 "name": HELPER_APP_AI_SHORT_NAME,
             },
             # Disable async execution
-            fast_mode=True
+            fast_mode=True,
         )
 
         app_dir = str(response.last())
@@ -30,12 +30,9 @@ class OllamaModel(AbstractModel):
         # Start Ollama in helper app
         self.kernel.run_function(
             app__app__exec,
-            {
-                "app-dir": app_dir,
-                "command": f"ollama run {self.name}"
-            },
+            {"app-dir": app_dir, "command": f"ollama run {self.name}"},
             # Disable async execution
-            fast_mode=True
+            fast_mode=True,
         )
 
         # Connect Ollama

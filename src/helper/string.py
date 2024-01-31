@@ -1,7 +1,7 @@
 import os
+import random
 import re
 import shutil
-import random
 import string
 from typing import Mapping, Optional
 
@@ -50,7 +50,7 @@ def string_format_ignore_missing(
 def string_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
-        lines.append((" " * indent) + text[i: i + max_width])
+        lines.append((" " * indent) + text[i : i + max_width])
     return os.linesep.join(lines)
 
 
@@ -61,7 +61,7 @@ def string_multiline_center(text: str, width: int) -> str:
 
 def string_trim_leading(text: str, leading_text: str) -> str:
     if text.startswith(leading_text):
-        return text[len(leading_text):]
+        return text[len(leading_text) :]
     else:
         return text
 
@@ -135,14 +135,14 @@ def string_random_password_secure(length: int = 64) -> str:
         lower,
         digits,
         digits,
-        safe_symbols
+        safe_symbols,
     ]
     random.shuffle(all_sets)  # Shuffle to ensure randomness
 
     count = 0
-    password = ''
+    password = ""
     sets_modulo = len(all_sets) - 1
-    while (count < length):
+    while count < length:
         password += random.choice(all_sets[count % sets_modulo])
         count += 1
 
@@ -155,6 +155,6 @@ def string_random_password(length: int = 64) -> str:
     """
     characters = string.ascii_letters
 
-    random_string = ''.join(random.choice(characters) for _ in range(length))
+    random_string = "".join(random.choice(characters) for _ in range(length))
 
     return random_string

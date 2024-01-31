@@ -277,7 +277,7 @@ class Kernel(BaseClass):
         args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
         quiet: bool = False,
         render_mode: str | None = None,
-        fast_mode: Optional[bool] = None
+        fast_mode: Optional[bool] = None,
     ) -> "AbstractResponse":
         self.set_temporary_fast_mode(fast_mode)
 
@@ -291,7 +291,7 @@ class Kernel(BaseClass):
         return result
 
     def revert_temporary_fast_mode(self, value: Optional[bool]):
-        """ Revert fast mode status only if value have been forced"""
+        """Revert fast mode status only if value have been forced"""
         if value is not None:
             self.fast_mode = self.fast_mode_previous
 
@@ -309,7 +309,7 @@ class Kernel(BaseClass):
         type: str = COMMAND_TYPE_ADDON,
         quiet: bool = False,
         render_mode: str | None = None,
-        fast_mode: Optional[bool] = None
+        fast_mode: Optional[bool] = None,
     ) -> "AbstractResponse":
         if not self.has_command_resolver(type):
             return self.create_abort_response(
