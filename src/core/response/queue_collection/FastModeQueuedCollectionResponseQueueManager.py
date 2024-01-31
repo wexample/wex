@@ -66,6 +66,7 @@ class FastModeQueuedCollectionResponseQueueManager(
                 response.output_bag += new_response.output_bag
 
                 # Continue if sub response is not complete
-                response.has_next_step = new_response.has_next_step
+                if new_response.has_next_step:
+                    response.has_next_step = True
 
         return super().render_content_complete(response)

@@ -2,11 +2,13 @@ import getpass
 import os.path
 from typing import TYPE_CHECKING, Optional, cast
 
+from click import Choice
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
-from addons.app.const.app import HELPER_APP_SHORT_NAME_PROXY
+from addons.app.const.app import HELPER_APPS_LIST
 from src.helper.system import system_port_check
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
@@ -19,14 +21,15 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.process import process_get_all_by_port
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
 @as_sudo()
-@command(help="Create and start the reverse proxy server")
+@command(help=f"Create and start a helper app {','.join(HELPER_APPS_LIST)}")
+@option("--name", "-n", type=Choice(HELPER_APPS_LIST), required=True,
+        help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}")
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 @option("--group", "-g", type=str, required=False, help="Group of application files")
@@ -34,8 +37,9 @@ if TYPE_CHECKING:
 @option(
     "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
 )
-def app__proxy__start(
+def app__helper__start(
     kernel: "Kernel",
+    name: str,
     env: Optional[str] = None,
     user: Optional[str] = None,
     group: Optional[str] = None,
@@ -43,41 +47,45 @@ def app__proxy__start(
     port_secure: Optional[int] = None,
 ) -> QueuedCollectionResponse:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
-    proxy_path = manager.get_helper_app_path(HELPER_APP_SHORT_NAME_PROXY, env)
+    # App name is same of main service
+    helper_service_name = name
+    helper_app_path = manager.get_helper_app_path(name, env)
 
-    def _app__proxy__start__create(
+    def _app__helper__start__create(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> Optional[QueuedCollectionStopResponse]:
+    ) -> AbstractResponse | QueuedCollectionStopResponse:
         nonlocal env
-        manager.log("Starting proxy server")
+        manager.log("Starting helper app")
 
         # Created
-        if manager.is_app_root(proxy_path):
+        if manager.is_app_root(helper_app_path):
             # Started
             if kernel.run_function(
                 app__app__started,
                 {
-                    "app-dir": proxy_path,
+                    "app-dir": helper_app_path,
                 },
             ).first():
-                return QueuedCollectionStopResponse(kernel, "PROXY_STARTED")
-        else:
-            manager.log(f"Creating proxy dir {proxy_path}")
-            os.makedirs(proxy_path, exist_ok=True)
+                return QueuedCollectionStopResponse(
+                    kernel,
+                    "HELPER_APP_ALREADY_STARTED",
+                    response=helper_app_path
+                )
 
-            kernel.run_function(
-                app__app__init,
-                {
-                    "app-dir": proxy_path,
-                    "services": ["proxy"],
-                    "git": False,
-                    "env": env,
-                },
-            )
+        manager.log(f"Creating helper app dir : {helper_app_path}")
+        os.makedirs(helper_app_path, exist_ok=True)
 
-        return None
+        return kernel.run_function(
+            app__app__init,
+            {
+                "app-dir": helper_app_path,
+                "services": [helper_service_name],
+                "git": False,
+                "env": env,
+            },
+        )
 
-    def _app__proxy__start__checkup(
+    def _app__helper__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
         def _callback() -> None:
@@ -89,17 +97,16 @@ def app__proxy__start(
 
             # Override default service ports
             if port:
-                manager.set_config("global.port_public", port)
+                system_port_check(kernel, port)
+                manager.set_config(f"service.{helper_service_name}.port_public", port)
 
             if port_secure:
-                manager.set_config("global.port_public_secure", port_secure)
+                system_port_check(kernel, port_secure)
+                manager.set_config(f"service.{helper_service_name}.port_public_secure", port_secure)
 
-            system_port_check(kernel, manager.get_config("global.port_public").get_int())
-            system_port_check(kernel, manager.get_config("global.port_public_secure").get_int())
+        manager.exec_in_app_workdir(helper_app_path, _callback)
 
-        manager.exec_in_app_workdir(proxy_path, _callback)
-
-    def _app__proxy__start__start(
+    def _app__helper__start__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
         nonlocal env
@@ -107,7 +114,7 @@ def app__proxy__start(
         return kernel.run_function(
             app__app__start,
             {
-                "app-dir": proxy_path,
+                "app-dir": helper_app_path,
                 # If no env, use the global wex env.
                 "env": env,
                 "user": user,
@@ -118,8 +125,8 @@ def app__proxy__start(
     return QueuedCollectionResponse(
         kernel,
         [
-            _app__proxy__start__create,
-            _app__proxy__start__checkup,
-            _app__proxy__start__start,
+            _app__helper__start__create,
+            _app__helper__start__checkup,
+            _app__helper__start__start,
         ],
     )

@@ -16,10 +16,12 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
     from src.core.Kernel import Kernel
 
+DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
+
 
 def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> List[str]:
     kernel = manager.kernel
-    app_compose_file = app_dir + APP_DIR_APP_DATA + "docker/docker-compose.yml"
+    app_compose_file = app_dir + APP_DIR_APP_DATA + DOCKER_COMPOSE_REL_PATH_BASE
     compose_files: List[str] = []
 
     if not os.path.isfile(app_compose_file):

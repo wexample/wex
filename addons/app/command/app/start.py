@@ -141,11 +141,12 @@ def app__app__start(
                     },
                 ).first()
             ):
-                from addons.app.command.proxy.start import app__proxy__start
+                from app.command.helper.start import app__helper__start
 
                 return kernel.run_function(
-                    app__proxy__start,
+                    app__helper__start,
                     {
+                        "name": HELPER_APP_PROXY_SHORT_NAME,
                         "user": user,
                         "group": group,
                         "env": env,

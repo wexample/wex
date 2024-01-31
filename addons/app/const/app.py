@@ -25,6 +25,10 @@ ERR_APP_SHOULD_RUN: str = (
 )
 ERR_CORE_ACTION_NOT_FOUND: str = 'No core action found : "{command}"'
 ERR_SERVICE_NOT_FOUND: str = "Service not found : {service}"
-HELPER_APP_SHORT_NAME_PROXY: str = "proxy"
-HELPER_APP_SHORT_NAME_AI: str = "ai"
+HELPER_APP_PROXY_SHORT_NAME: str = "proxy"
+HELPER_APP_AI_SHORT_NAME: str = "ai"
+HELPER_APPS_LIST = [
+    HELPER_APP_PROXY_SHORT_NAME,
+    HELPER_APP_AI_SHORT_NAME,
+]
 PROXY_FILE_APPS_REGISTRY: str = "apps.yml"

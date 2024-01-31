@@ -3,18 +3,32 @@ import shutil
 from addons.app.command.helper.start import app__helper__start
 from addons.app.command.helper.stop import app__helper__stop
 from addons.app.helper.docker import docker_remove_filtered_container
+from src.const.globals import SYSTEM_WWW_PATH
 from src.helper.command import execute_command_tree_sync
 from tests.AbstractTestCase import AbstractTestCase
+from addons.app.const.app import HELPER_APPS_LIST
 
 
 class TestAppCommandHelperStart(AbstractTestCase):
     def test_start(self) -> None:
-        filter = "wex_proxy_test_env_"
-        docker_remove_filtered_container(self.kernel, filter)
+        for name in HELPER_APPS_LIST:
+            self._test_helper_app(name)
 
-        self.kernel.run_function(
-            app__proxy__start,
+        # Cleanup
+        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one")
+        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two")
+
+    def _test_helper_app(self, name: str) -> None:
+        filter = f"wex_{name}_test_env_"
+        docker_remove_filtered_container(self.kernel, filter)
+        # Cleanup
+        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one")
+        shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two")
+
+        app_dir = self.kernel.run_function(
+            app__helper__start,
             {
+                "name": name,
                 "env": "test_env_one",
                 "port": 8070,
                 "port-secure": 44370,
@@ -22,15 +36,16 @@ class TestAppCommandHelperStart(AbstractTestCase):
         )
 
         self.kernel.run_function(
-            app__proxy__start,
+            app__helper__start,
             {
+                "name": name,
                 "env": "test_env_two",
                 "port": 8071,
                 "port-secure": 44371,
             },
         )
 
-        success, prox_containers_list = execute_command_tree_sync(
+        success, containers_list = execute_command_tree_sync(
             self.kernel,
             ["docker", "ps", "-q", "--filter", f"name={filter}"],
             ignore_error=True,
@@ -38,16 +53,16 @@ class TestAppCommandHelperStart(AbstractTestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(len(prox_containers_list), 2)
+        self.assertEqual(len(containers_list), 2)
 
-        self.kernel.run_function(app__proxy__stop, {"env": "test_env_one"})
+        self.kernel.run_function(app__helper__stop, {"name": name, "env": "test_env_one"})
 
-        self.kernel.run_function(app__proxy__stop, {"env": "test_env_two"})
+        self.kernel.run_function(app__helper__stop, {"name": name, "env": "test_env_two"})
 
-        success, prox_containers_list = execute_command_tree_sync(
+        success, containers_list = execute_command_tree_sync(
             self.kernel,
             ["docker", "ps", "-q", "--filter", f"name={filter}"],
             ignore_error=True,
         )
 
-        self.assertEqual(len(prox_containers_list), 0)
+        self.assertEqual(len(containers_list), 0)
