@@ -115,19 +115,25 @@ class AbstractResponse(KernelChild, HasRequest):
 
         return None
 
-    def first(self) -> Any:
+    def get_one(self, position:int) -> Any:
         """
-        Return the first valid response.
-        Useful to retrieve result of a function without to serialize it.
+        Return recursively the Xth item of the output bag.
+        Mainly used to retrieve the bare first or last one.
         """
         response: Any = self
         while isinstance(response, AbstractResponse):
             if len(response.output_bag):
-                response = response.output_bag[0]
+                response = response.output_bag[position]
             else:
                 return response
 
         return response
+
+    def first(self) -> Any:
+        return self.get_one(0)
+
+    def last(self) -> Any:
+        return self.get_one(-1)
 
     def storable_data(self) -> bool:
         return True
