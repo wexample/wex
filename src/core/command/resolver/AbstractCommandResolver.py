@@ -97,16 +97,13 @@ class AbstractCommandResolver(KernelChild):
                         self.kernel.io.log(
                             f"Running attached command to {request_command_string} : {command_string}"
                         )
-                        # Attached commands does not allow async,
-                        # as async mode suggest to reload script multiple times.
-                        fast_mode = self.kernel.fast_mode
-                        self.kernel.fast_mode = True
+
                         self.kernel.run_command(
                             command_string,
                             # Attached command should have same args as target
                             request.get_args_list().copy(),
+                            fast_mode=True
                         )
-                        self.kernel.fast_mode = fast_mode
 
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()

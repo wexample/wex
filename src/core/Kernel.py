@@ -61,6 +61,7 @@ class Kernel(BaseClass):
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
         self._task_id: str | None = task_id
 
+        self.fast_mode_previous: Optional[bool] = None
         self.root_request: Optional["CommandRequest"] = None
         self.current_request: Optional["CommandRequest"] = None
         self.current_response: Optional["AbstractResponse"] = None
@@ -276,11 +277,30 @@ class Kernel(BaseClass):
         args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
         quiet: bool = False,
         render_mode: str | None = None,
+        fast_mode: Optional[bool] = None
     ) -> "AbstractResponse":
-        return self.render_request(
+        self.set_temporary_fast_mode(fast_mode)
+
+        result = self.render_request(
             self.create_command_request(command=command, args=args, quiet=quiet),
             render_mode,
         )
+
+        self.revert_temporary_fast_mode(fast_mode)
+
+        return result
+
+    def revert_temporary_fast_mode(self, value: Optional[bool]):
+        """ Revert fast mode status only if value have been forced"""
+        if value is not None:
+            self.fast_mode = self.fast_mode_previous
+
+    def set_temporary_fast_mode(self, value: Optional[bool]):
+        self.fast_mode_previous = None
+
+        if value is not None:
+            self.fast_mode_previous = self.fast_mode
+            self.fast_mode = value
 
     def run_function(
         self,
@@ -289,11 +309,14 @@ class Kernel(BaseClass):
         type: str = COMMAND_TYPE_ADDON,
         quiet: bool = False,
         render_mode: str | None = None,
+        fast_mode: Optional[bool] = None
     ) -> "AbstractResponse":
         if not self.has_command_resolver(type):
             return self.create_abort_response(
                 message=f'Resolver not found for type "{type}"'
             )
+
+        self.set_temporary_fast_mode(fast_mode)
 
         request = self.create_command_request(
             command=self.get_command_resolver(type).build_command_from_function(
@@ -303,7 +326,11 @@ class Kernel(BaseClass):
             quiet=quiet,
         )
 
-        return self.render_request(request, render_mode)
+        result = self.render_request(request, render_mode)
+
+        self.revert_temporary_fast_mode(fast_mode)
+
+        return result
 
     def create_abort_response(self, message: str) -> "AbstractResponse":
         from src.core.response.AbortResponse import AbortResponse
