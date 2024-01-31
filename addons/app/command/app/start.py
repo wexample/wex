@@ -141,7 +141,7 @@ def app__app__start(
                     },
                 ).first()
             ):
-                from app.command.helper.start import app__helper__start
+                from addons.app.command.helper.start import app__helper__start
 
                 return kernel.run_function(
                     app__helper__start,
