@@ -1,11 +1,13 @@
-from addons.app.command.proxy.start import app__proxy__start
-from addons.app.command.proxy.stop import app__proxy__stop
+import shutil
+
+from addons.app.command.helper.start import app__helper__start
+from addons.app.command.helper.stop import app__helper__stop
 from addons.app.helper.docker import docker_remove_filtered_container
 from src.helper.command import execute_command_tree_sync
 from tests.AbstractTestCase import AbstractTestCase
 
 
-class TestAppCommandProxyStart(AbstractTestCase):
+class TestAppCommandHelperStart(AbstractTestCase):
     def test_start(self) -> None:
         filter = "wex_proxy_test_env_"
         docker_remove_filtered_container(self.kernel, filter)
