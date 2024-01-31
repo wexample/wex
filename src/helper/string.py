@@ -1,8 +1,7 @@
 import os
 import re
 import shutil
-from random import random
-
+import random
 import string
 from typing import Mapping, Optional
 
