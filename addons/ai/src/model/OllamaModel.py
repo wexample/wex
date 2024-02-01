@@ -38,10 +38,12 @@ class OllamaModel(AbstractModel):
         )
 
         # Connect Ollama
-        self.set_llm(Ollama(
-            model=self.name,
-            callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-        ))
+        self.set_llm(
+            Ollama(
+                model=self.name,
+                callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
+            )
+        )
 
     def request(
         self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict

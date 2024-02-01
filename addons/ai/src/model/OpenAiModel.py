@@ -1,4 +1,4 @@
-from typing import cast, Any
+from typing import Any, cast
 
 from dotenv import dotenv_values
 from langchain_openai import ChatOpenAI
@@ -19,9 +19,11 @@ class OpenAiModel(AbstractModel):
         if not key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
-        self.set_llm(ChatOpenAI(
-            api_key=key,
-        ))
+        self.set_llm(
+            ChatOpenAI(
+                api_key=key,
+            )
+        )
 
     def request(
         self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict

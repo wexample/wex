@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from langchain.tools import BaseTool
 
-from src.const.types import Kwargs, Args
+from src.const.types import Args, Kwargs
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -14,7 +14,11 @@ class CommandTool(BaseTool):
     description = "A command to execute"
 
     def __init__(
-        self, kernel: "Kernel", command_name: str, command_description: str, **kwargs: Kwargs
+        self,
+        kernel: "Kernel",
+        command_name: str,
+        command_description: str,
+        **kwargs: Kwargs
     ):
         super().__init__(**kwargs)
         self.kernel = kernel

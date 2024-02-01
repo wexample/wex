@@ -12,7 +12,10 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
+from src.core.response.QueuedCollectionResponse import (
+    QueuedCollectionResponse,
+    QueuedCollectionResponseCollection,
+)
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -42,7 +45,9 @@ def core__test__run(
             + command_part,
         )
 
-    def _start_remote(queue: AbstractQueuedCollectionResponseQueueManager) -> InteractiveShellCommandResponse:
+    def _start_remote(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> InteractiveShellCommandResponse:
         return _remote_command(
             [
                 "up",
@@ -50,7 +55,9 @@ def core__test__run(
             ]
         )
 
-    def _stop_remote(queue: AbstractQueuedCollectionResponseQueueManager) -> InteractiveShellCommandResponse:
+    def _stop_remote(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> InteractiveShellCommandResponse:
         return _remote_command(
             [
                 "down",
@@ -81,13 +88,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                    (not command)
-                    or command_name == command
-                    or (
-                        command.endswith("*")
-                        and command_name.startswith(command[:-1])
+                        (not command)
+                        or command_name == command
+                        or (
+                            command.endswith("*")
+                            and command_name.startswith(command[:-1])
+                        )
                     )
-                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 

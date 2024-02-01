@@ -1,12 +1,13 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from langchain.chains import create_tagging_chain
 from langchain.prompts import ChatPromptTemplate
+from langchain_core.language_models import BaseLanguageModel
+
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
-from langchain_core.language_models import BaseLanguageModel
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -73,8 +74,6 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def request(
-        self, input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
     ) -> Any:
         pass
