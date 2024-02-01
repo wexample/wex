@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}",
 )
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
-@option("--network", "-n", type=bool, required=True, default=False, help="Docker network name")
+@option("--network", "-n", type=bool, required=True, default=True, help="Docker network name")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 @option("--group", "-g", type=str, required=False, help="Group of application files")
 @option("--port", "-p", type=int, required=False, help="Port for web server")
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 def app__helper__start(
     kernel: "Kernel",
     name: str,
-    network: bool = False,
+    network: bool,
     env: Optional[str] = None,
     user: Optional[str] = None,
     group: Optional[str] = None,
@@ -113,8 +113,8 @@ def app__helper__start(
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 
-        print('DO CREATE NETWORK ?')
-        if network:
+        print('DISABLE CREATE NETWORK ?')
+        if not network:
             print('  ?? ')
             manager.set_config("docker.create_network", network)
 
