@@ -582,6 +582,8 @@ class AppAddonManager(AddonManager):
             yaml.dump(proxy_apps, f, indent=True)
 
     def set_app_workdir(self, app_dir: str) -> None:
+        print('SET APP WORKDIR')
+        print(app_dir)
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(
