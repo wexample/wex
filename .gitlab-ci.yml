@@ -170,7 +170,7 @@ deploy:
     - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 .test_apt_install:
-  extends: [ .new_version ]
+  extends: [ .merge_to_master ]
   script:
     # Stops script on failure
     - set -e
