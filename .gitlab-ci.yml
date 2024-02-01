@@ -117,7 +117,10 @@ test:
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - ls -la
-    - ls -la /usr/lib/wex
+    - ls -la /opt/wex
+    - rm -rf /opt/wex
+    - cp -r . /opt/wex
+    - ls -la /opt/wex
     - !reference [ .test_cleanup, script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
