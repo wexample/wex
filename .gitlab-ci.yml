@@ -39,6 +39,7 @@ build_pipeline_image_test_remote:
   variables:
     FLAVOR: test-remote
   rules:
+    - *new-version-rules
     - changes:
         - .wex/docker/Dockerfile.test-remote
 
