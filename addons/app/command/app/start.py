@@ -26,6 +26,7 @@ from addons.app.const.app import (
 )
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command
+from src.helper.command import execute_command_tree_sync
 from src.const.globals import CORE_COMMAND_NAME
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -232,6 +233,17 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
         def _check() -> bool:
+            # Will display containers status in verbose mode.
+            execute_command_tree_sync(
+                kernel,
+                [
+                    "docker",
+                    "ps",
+                    "-a",
+                ],
+                ignore_error=True,
+            )
+
             # Postpone execution
             response = kernel.run_function(
                 app__hook__exec, {"app-dir": app_dir, "hook": "service/ready"}

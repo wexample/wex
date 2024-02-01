@@ -26,7 +26,7 @@ class TestAppCommandHelperStart(AbstractTestCase):
         docker_remove_filtered_container(self.kernel, filter)
         self._cleanup()
 
-        app_dir = self.kernel.run_function(
+        self.kernel.run_function(
             app__helper__start,
             {
                 "name": name,
