@@ -47,6 +47,7 @@ checkup_last_commit:
 #    - checkup_remote
   script:
     - ls -la
+    - git log
     - git log ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} --merges --format=%H | sed -n '2p'
     - exit 1
 #    - |
