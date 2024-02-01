@@ -116,13 +116,13 @@ def core__test__run(
 
     if not remote_address:
         steps = [
-            _run_tests,
-        ]
-    else:
-        steps = [
             _start_remote,
             _run_tests,
             _stop_remote,
+        ]
+    else:
+        steps = [
+            _run_tests,
         ]
 
     return QueuedCollectionResponse(
