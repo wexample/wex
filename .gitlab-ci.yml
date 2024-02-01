@@ -16,7 +16,8 @@ include:
 
 # Rules when branch has been merged.
 .merge_branch_rules: &merge-branch-master-rules
-  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
+  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $MAIN_BRANCH_NAME' # TMP
+#  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
 
 .merge_to_master:
   rules:
