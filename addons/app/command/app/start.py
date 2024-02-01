@@ -196,7 +196,7 @@ def app__app__start(
     ) -> HiddenResponse:
         # print(manager.runtime_docker_compose_path)
         #
-        # print('HOOOOOOOOOOOOOOOOOOOK')
+        print('HOOOOOOOOOOOOOOOOOOOK')
         # if os.path.exists(manager.runtime_docker_compose_path):
         #     print('HOOOOOOOOOOOOOOOOOOOK')
         #     from src.helper.command import command_to_string, execute_command_sync
@@ -206,6 +206,7 @@ def app__app__start(
         #     ])
         # print(manager.runtime_docker_compose)
         # print(manager.load_config())
+        manager.load_config()
         # print(manager.runtime_docker_compose)
         # exit()
 
