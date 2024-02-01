@@ -45,7 +45,6 @@ from src.core.response.QueuedCollectionResponse import (
 )
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
-from src.helper.command import execute_command_tree_sync
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -233,17 +232,6 @@ def app__app__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
         def _check() -> bool:
-            # Will display containers status in verbose mode.
-            execute_command_tree_sync(
-                kernel,
-                [
-                    "docker",
-                    "ps",
-                    "-a",
-                ],
-                ignore_error=True,
-            )
-
             # Postpone execution
             response = kernel.run_function(
                 app__hook__exec, {"app-dir": app_dir, "hook": "service/ready"}

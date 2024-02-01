@@ -490,6 +490,26 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir},
             ).first():
+                from src.helper.command import execute_command_tree_sync
+
+                # TODO TMP
+                # Will display containers status in verbose mode.
+                execute_command_tree_sync(
+                    self.kernel,
+                    ["docker", "ps", "-a",],
+                    ignore_error=True,
+                )
+                execute_command_tree_sync(
+                    self.kernel,
+                    ["docker", "network", "ls",],
+                    ignore_error=True,
+                )
+                execute_command_tree_sync(
+                    self.kernel,
+                    ["docker", "logs", "wex_proxy_test_env_one",],
+                    ignore_error=True,
+                )
+
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
@@ -812,18 +832,20 @@ class AppAddonManager(AddonManager):
 
         # App has at least one service who creates network.
         for service in services:
-            if self.has_service_config("docker.create_network"):
-                if self.get_service_config(
-                    key="docker.create_network", service=service, default=False
-                ).get_bool():
-                    self.kernel.io.log(f"{service} needs a docker network")
-                    return True
+            create_network = self.get_config_or_service_config(
+                "docker.create_network",
+                default=False
+            )
+
+            if create_network.get_bool():
+                self.kernel.io.log(f"{service} needs a docker network")
+                return True
 
         # App does not requires proxy.
-        if not self.require_proxy():
-            return True
+        if self.require_proxy():
+            return False
 
-        return False
+        return True
 
     def get_env_var(self, key: str) -> Optional[str]:
         from dotenv import dotenv_values
