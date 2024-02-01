@@ -56,6 +56,8 @@ checkup_last_commit:
 build_pipeline_image_rc:
   stage: build_pipeline_images
   extends: [ .build_pipeline_images ]
+  needs:
+    - checkup_last_commit
   variables:
     FLAVOR: rc
 
