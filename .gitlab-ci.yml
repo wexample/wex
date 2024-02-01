@@ -43,8 +43,6 @@ include:
 
 tmp_test:
   stage: tmp_test
-  variables:
-    GIT_STRATEGY: none
   script:
     - ls -la
     - echo $CI_COMMIT_TAG
