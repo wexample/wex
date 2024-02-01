@@ -17,7 +17,8 @@ include:
 # Define rules for version branches with tags
 .version_branch_with_tag_rules: &version_branch_with_tag_rules
   # Check if branch is a version branch
-  - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
+#  - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
+  - if: '$CI_COMMIT_TAG != ""'
 
 #    exists:
 #      - |
@@ -40,21 +41,22 @@ include:
 #  - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME'
 
 .new_version:
-  before_script:
-    - ls -la
-    - |
-      # This script block checks for the latest tag and verifies it matches version pattern
-      # Fetch tags to ensure the repository's tags are up to date
-      git fetch --tags
-      # Get the latest tag that points to the HEAD commit
-      LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
-      echo "Latest tag ${LATEST_TAG}"
-      # Check if the latest tag is a version tag
-      if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
-        HAS_NEW_BUILD_TAG=true
-      else
-        HAS_NEW_BUILD_TAG=false
-      fi
+#  before_script:
+#    - ls -la
+#    - |
+#      # This script block checks for the latest tag and verifies it matches version pattern
+#      # Fetch tags to ensure the repository's tags are up to date
+#      git fetch --tags
+#      # Get the latest tag that points to the HEAD commit
+#      LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
+#      echo "Latest tag ${LATEST_TAG}"
+#      # Check if the latest tag is a version tag
+#      if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
+#        echo "This is a new version"
+#        HAS_NEW_BUILD_TAG=true
+#      else
+#        HAS_NEW_BUILD_TAG=false
+#      fi
   rules:
     - *version_branch_with_tag_rules
 
