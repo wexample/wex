@@ -22,7 +22,8 @@ include:
       - |
         # This script block checks for the latest tag and verifies it matches version pattern
         # Fetch tags to ensure the repository's tags are up to date
-        git fetch --tags
+#        git fetch --tags
+        exit 0
 #        # Get the latest tag that points to the HEAD commit
 #        LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
 #        # Check if the latest tag is a version tag
