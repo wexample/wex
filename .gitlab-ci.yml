@@ -23,6 +23,11 @@ include:
   rules:
     - *merge-branch-master-rules
 
+.on_master:
+  resource_group: main_pipeline
+  only:
+    - master
+
 .build_pipeline_images:
   extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
   script:
@@ -132,14 +137,12 @@ checkup_code:
 #    - sudo -u owner sudo wex test -vvv
 #    - !reference [ .test_cleanup, script ]
 
-#build_apt:
-#  stage: build_apt
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-#  extends: [ .merge_to_master ]
-#  needs:
-#    - test
-#  script:
-#    - ls -la
+build_apt:
+  stage: build_apt
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
+  extends: [ .on_master ]
+  script:
+    - ls -la
 #    - BUILD_VERSION=$(cat version.txt)
 #    # Create build folder outside shared volume
 #    - mkdir -p /var/tmp/build
