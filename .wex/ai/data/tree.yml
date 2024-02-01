@@ -249,9 +249,6 @@ children:
             children:
               command:
                 children:
-                  action:
-                    children: {}
-                    type: dir
                   talk:
                     children:
                       ask.py:
