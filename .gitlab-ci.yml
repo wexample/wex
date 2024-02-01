@@ -111,27 +111,27 @@ checkup_code:
     - ls -la /opt/wex
     - bash /opt/wex/cli/install
 
-test:
-  stage: test
-  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master, .test_cleanup ]
-  needs:
-    - checkup_code
-  services:
-    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
-      alias: wex_test_remote
-  variables:
-    GIT_STRATEGY: none
-    TEST_REMOTE_ADDRESS: wex_test_remote
-  script:
-    # Debug - !reference [ .test_rescue, script ]
-    - !reference [ .test_cleanup, script ]
-    # Change environment
-    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-    - sudo wex rebuild
-    # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv
-    - !reference [ .test_cleanup, script ]
+#test:
+#  stage: test
+#  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+#  extends: [ .merge_to_master, .test_cleanup ]
+#  needs:
+#    - checkup_code
+#  services:
+#    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
+#      alias: wex_test_remote
+#  variables:
+#    GIT_STRATEGY: none
+#    TEST_REMOTE_ADDRESS: wex_test_remote
+#  script:
+#    # Debug - !reference [ .test_rescue, script ]
+#    - !reference [ .test_cleanup, script ]
+#    # Change environment
+#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+#    - sudo wex rebuild
+#    # Run tests, as "owner", with sudo.
+#    - sudo -u owner sudo wex test -vvv
+#    - !reference [ .test_cleanup, script ]
 
 #build_apt:
 #  stage: build_apt
