@@ -1,7 +1,7 @@
 stages:
   - checkup_deployment
   - build_pipeline_images
-#  - checkup_source
+  - checkup_source
 #  - test
 #  - build_apt
 #  - deploy
@@ -70,29 +70,29 @@ build_pipeline_image_test_remote:
     - changes:
         - .wex/docker/Dockerfile.test-remote
 
-#checkup_code:
-#  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-#  extends: [ .new_version ]
-#  needs:
-#    - build_pipeline_image_rc
-#    - job: build_pipeline_image_test_remote
-#      optional: true
-#  stage: checkup_source
-#  variables:
-#    GIT_STRATEGY: none
-#  script:
-#    # Prepare checks
-#    - cd /opt/wex
-#    - source .wex/python/venv/bin/activate
-#    - pip install -r requirements-dev.txt
-#    - touch .wex/.env # Need a fake file to not warn if missing
-#    # Checks
-#    - wex .code/check
-#    - wex .code/format
-#    # Fail if some code has not been formatted
-#    - git diff
-#    - git diff-index --quiet HEAD -- || exit 1
-#
+checkup_code:
+  stage: checkup_source
+  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+  extends: [ .merge_to_master ]
+  needs:
+    - build_pipeline_image_rc
+    - job: build_pipeline_image_test_remote
+      optional: true
+  variables:
+    GIT_STRATEGY: none
+  script:
+    # Prepare checks
+    - cd /opt/wex
+    - source .wex/python/venv/bin/activate
+    - pip install -r requirements-dev.txt
+    - touch .wex/.env # Need a fake file to not warn if missing
+    # Checks
+    - wex .code/check
+    - wex .code/format
+    # Fail if some code has not been formatted
+    - git diff
+    - git diff-index --quiet HEAD -- || exit 1
+
 #.test_cleanup:
 #  script:
 #    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
@@ -102,8 +102,8 @@ build_pipeline_image_test_remote:
 #
 #test:
 #  stage: test
-#  image: gitlab-docker.wexample.com/wexample/wex/rc
-#  extends: [ .new_version, .test_cleanup ]
+#  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+#  extends: [ .merge_to_master, .test_cleanup ]
 #  needs:
 #    - checkup_code
 #  services:
