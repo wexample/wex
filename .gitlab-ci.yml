@@ -48,7 +48,7 @@ tmp_test:
   script:
     - ls -la
   rules:
-    - <<: *version_branch_with_tag_rules
+    - *version_branch_with_tag_rules
 
 #build_pipeline_image_test_remote:
 #  stage: build_pipeline_images
