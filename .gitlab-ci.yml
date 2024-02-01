@@ -56,6 +56,7 @@ checkup_last_commit:
         echo "Previous commit should have been tagged with version number."
         exit 1
       fi
+    - echo "Last tag is ${TAG}"
     - exit 1
 
 build_pipeline_image_rc:
