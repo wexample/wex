@@ -12,6 +12,8 @@ env:
   prod:
     branch: master
     email: contact@wexample.com
+    server:
+      ip: 151.80.23.108
   runner:
     server:
       ip: 51.210.107.210
