@@ -19,6 +19,6 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.154+build.20240201093536
+  version: 5.0.155+build.20240201094507
 wex:
-  version: 5.0.154+build.20240201093536
+  version: 5.0.155+build.20240201094507
