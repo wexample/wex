@@ -48,6 +48,7 @@ include:
       git fetch --tags
       # Get the latest tag that points to the HEAD commit
       LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
+      echo "Latest tag ${LATEST_TAG}"
       # Check if the latest tag is a version tag
       if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
         HAS_NEW_BUILD_TAG=true
