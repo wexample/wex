@@ -81,6 +81,11 @@ def app__app__start(
     print(manager.get_app_dir())
     print(manager.runtime_docker_compose_path)
     print(manager.runtime_docker_compose)
+    from src.helper.command import command_to_string, execute_command_sync
+    execute_command_sync(manager.kernel, [
+        "cat",
+        manager.runtime_docker_compose_path
+    ])
 
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
