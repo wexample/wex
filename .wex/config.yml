@@ -6,10 +6,12 @@ docker:
 env:
   dev:
     email: contact@wexample.com
+    branch: develop
   local:
     email: contact@wexample.com
   prod:
     email: contact@wexample.com
+    branch: master
   runner:
     server:
       ip: 51.210.107.210
