@@ -113,7 +113,9 @@ def app__helper__start(
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 
+        print('DO CREATE NETWORK ?')
         if network:
+            print('  ?? ')
             manager.set_config("docker.create_network", network)
 
     def _app__helper__start__start(
