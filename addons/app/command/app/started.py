@@ -1,3 +1,4 @@
+import os.path
 import time
 from typing import TYPE_CHECKING
 
@@ -59,12 +60,15 @@ def app__app__started(
         print(manager.runtime_docker_compose)
         print(manager.runtime_docker_compose_path)
 
-        from src.helper.command import execute_command_sync
+        if os.path.exists(manager.runtime_docker_compose_path):
+            print("EXISTS")
 
-        execute_command_sync(manager.kernel,[
-            "cat",
-            manager.runtime_docker_compose_path
-        ])
+            from src.helper.command import execute_command_sync
+
+            execute_command_sync(manager.kernel,[
+                "cat",
+                manager.runtime_docker_compose_path
+            ])
 
         manager.kernel.io.log(
             f"Runtime docker config is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
