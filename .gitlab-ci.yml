@@ -47,7 +47,7 @@ checkup_last_commit:
 #    - checkup_remote
   script:
     - |
-      PREVIOUS_MERGE_COMMIT=$(git log ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME} --merges --format=%H | sed -n '2p')
+      PREVIOUS_MERGE_COMMIT=$(git log ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} --merges --format=%H | sed -n '2p')
       echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
 
       TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
