@@ -57,7 +57,7 @@ checkup_last_commit:
         exit 1
       fi
     - echo "Last tag is ${TAG}"
-    - exit 1
+    - if [ "${TAG}" != "$(cat version.txt)" ]; then echo "Version tags does not match" && exit 1; fi
 
 build_pipeline_image_rc:
   stage: build_pipeline_images
