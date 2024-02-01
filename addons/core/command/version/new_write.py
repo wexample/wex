@@ -72,6 +72,8 @@ def core__version__new_write(
                 "version": version,
                 "build": True,
                 "type": type,
+                # Just regenerate a build number
+                "increment": 0,
             },
         ).first()
 
