@@ -38,10 +38,23 @@ include:
 
 #.new_version_rules: &new-version-rules
 #  - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME'
-#
-#.new_version:
-#  rules:
-#    - *new-version-rules
+
+.new_version:
+  before_script:
+    - |
+      # This script block checks for the latest tag and verifies it matches version pattern
+      # Fetch tags to ensure the repository's tags are up to date
+      git fetch --tags
+      # Get the latest tag that points to the HEAD commit
+      LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
+      # Check if the latest tag is a version tag
+      if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
+        HAS_NEW_BUILD_TAG=true
+      else
+        HAS_NEW_BUILD_TAG=false
+      fi
+  rules:
+    - *version_branch_with_tag_rules
 
 #.build_pipeline_images:
 #  extends: [ .new_version, .globals, .docker_login, .build_image_app ]
@@ -57,19 +70,7 @@ include:
 
 tmp_test:
   stage: tmp_test
-  before_script:
-    - |
-      # This script block checks for the latest tag and verifies it matches version pattern
-      # Fetch tags to ensure the repository's tags are up to date
-      git fetch --tags
-      # Get the latest tag that points to the HEAD commit
-      LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
-      # Check if the latest tag is a version tag
-      if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
-        HAS_NEW_BUILD_TAG=true
-      else
-        HAS_NEW_BUILD_TAG=false
-      fi
+  extends: [ .new_version ]
   script:
     - ls -la
     - echo $CI_COMMIT_TAG
@@ -86,8 +87,6 @@ tmp_test:
 #        echo "Last tag : $TAG"
 #        # TODO Vérifier si le tag correspond a un numéro de version =~ /^\d+\.\d+\.\d+\+build\.\d+$/'
 #      fi
-  rules:
-    - *version_branch_with_tag_rules
 
 #build_pipeline_image_test_remote:
 #  stage: build_pipeline_images
