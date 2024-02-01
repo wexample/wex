@@ -106,6 +106,7 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
 #  extends: [ .merge_to_master, .test_cleanup ]
+  extends: [ .test_cleanup ]
 #  needs:
 #    - checkup_code
   services:
@@ -124,8 +125,9 @@ test:
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
-#    # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo wex test -vvv -c app::helper/start # TODO TMP
+    # Run tests, as "owner", with sudo.
+    - wex app::app/started
+    - sudo -u owner sudo wex test -vvv -c app::helper/start # TODO TMP
 #    - !reference [ .test_cleanup, script ]
 
 #build_apt:
