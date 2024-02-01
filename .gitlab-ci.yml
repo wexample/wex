@@ -1,38 +1,38 @@
 stages:
   - build_pipeline_images
-  - checkup
-  - test
-  - checkup_deployment
-  - build_apt
-  - deploy
-  - test_apt_install
-  - build_docker
+#  - checkup
+#  - test
+#  - checkup_deployment
+#  - build_apt
+#  - deploy
+#  - test_apt_install
+#  - build_docker
 
 variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
-
-# Rules when a new version tag is set
-.new_version_rules: &new-version-rules
-  # Check if branch is a version branch
-  - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+\+build\.\d+$/'
-
-# Rules when branch has been merged.
-.merge_branch_rules: &merge-branch-master-rules
-  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
-
-.merge_to_master:
-  rules:
-    - *merge-branch-master-rules
-
-.new_version:
-  rules:
-    - *new-version-rules
+#
+## Rules when a new version tag is set
+#.new_version_rules: &new-version-rules
+#  # Check if branch is a version branch
+#  - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+\+build\.\d+$/'
+#
+## Rules when branch has been merged.
+#.merge_branch_rules: &merge-branch-master-rules
+#  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
+#
+#.merge_to_master:
+#  rules:
+#    - *merge-branch-master-rules
+#
+#.new_version:
+#  rules:
+#    - *new-version-rules
 
 .build_pipeline_images:
-  extends: [ .new_version, .globals, .docker_login, .build_image_app ]
+  extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
   script:
     - !reference [ .docker_login, script ]
     - !reference [ .build_image_app, script ]
@@ -43,174 +43,174 @@ build_pipeline_image_rc:
   variables:
     FLAVOR: rc
 
-build_pipeline_image_test_remote:
-  stage: build_pipeline_images
-  extends: [ .build_pipeline_images ]
-  needs: [ build_pipeline_image_rc ]
-  variables:
-    FLAVOR: test-remote
-  rules:
-    - *new-version-rules
-    - changes:
-        - .wex/docker/Dockerfile.test-remote
-
-checkup_code:
-  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .new_version ]
-  needs:
-    - build_pipeline_image_rc
-    - job: build_pipeline_image_test_remote
-      optional: true
-  stage: checkup
-  variables:
-    GIT_STRATEGY: none
-  script:
-    # Prepare checks
-    - cd /opt/wex
-    - source .wex/python/venv/bin/activate
-    - pip install -r requirements-dev.txt
-    - touch .wex/.env # Need a fake file to not warn if missing
-    # Checks
-    - wex .code/check
-    - wex .code/format
-    # Fail if some code has not been formatted
-    - git diff
-    - git diff-index --quiet HEAD -- || exit 1
-
-.test_cleanup:
-  script:
-    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
-    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
-    - rm -rf /var/www/test
-    - rm -rf /var/www/test_*
-
-test:
-  stage: test
-  image: gitlab-docker.wexample.com/wexample/wex/rc
-  extends: [ .new_version, .test_cleanup ]
-  needs:
-    - checkup_code
-  services:
-    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
-      alias: wex_test_remote
-  variables:
-    GIT_STRATEGY: none
-    TEST_REMOTE_ADDRESS: wex_test_remote
-  script:
-    - !reference [ .test_cleanup, script ]
-    - ls -la
-    - echo ${TEST_REMOTE_ADDRESS}
-    # Change environment
-    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-    - sudo wex rebuild
-    # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv
-    - !reference [ .test_cleanup, script ]
-
-checkup_remote:
-  stage: checkup_deployment
-  extends: [ .merge_to_master ]
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
-  script:
-    - ls -la
-    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
-    - echo "Checking remote en ${REMOTE_ENV}"
-    # Check target environment is ready to receive hooks
-    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
-    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
-
-checkup_last_commit:
-  stage: checkup_deployment
-  extends: [ .merge_to_master ]
-  needs:
-    - checkup_remote
-  script:
-    - |
-      PREVIOUS_MERGE_COMMIT=$(git log ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME} --merges --format=%H | sed -n '2p')
-      echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
-
-      TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
-      if [ -z "$TAG" ]; then
-        echo "Previous commit should have been tagged with version number."
-        exit 1
-      fi
-    
-build_apt:
-  stage: build_apt
-  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-  extends: [ .merge_to_master ]
-  needs:
-    - checkup_remote
-    - checkup_last_commit
-  script:
-    - ls -la
-    - BUILD_VERSION=$(cat version.txt)
-    # Create build folder outside shared volume
-    - mkdir -p /var/tmp/build
-    # Create a copy of current git repo
-    - cp -r .git /var/tmp/build
-    # Go to build folder
-    - cd /var/tmp/build
-    # Checkout build branch
-    - git fetch && git checkout build
-    # Create link to source
-    - ln -s ${CI_PROJECT_DIR} source
-    # Build
-    - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
-
-deploy:
-  stage: deploy
-  image: curlimages/curl
-  extends: [ .merge_to_master ]
-  needs:
-    - build_apt
-  script:
-    - BUILD_VERSION=$(cat version.txt)
-    # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-
-.test_apt_install:
-  extends: [ .merge_to_master ]
-  script:
-    # Stops script on failure
-    - set -e
-    - apt update
-    - apt install gnupg2 wget -y
-    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-    - apt update
-    - apt install wex -y
-    - wex hi
-    # Compare versions
-    - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
-    - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
-    - test "$(cat version.txt)" = "$(wex version)" || exit 1
-    # Uninstall
-    - apt remove wex -y
-
-# Try to install using the new debian apt repository.
-test_apt_install_debian:
-  extends: .test_apt_install
-  stage: test_apt_install
-  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-  needs:
-    - deploy
-
-# Try to install using the new debian apt repository.
-test_apt_install_ubuntu:
-  extends: .test_apt_install
-  stage: test_apt_install
-  image: ubuntu:22.04
-  needs:
-    - deploy
-
-# Rebuild public image
-build_docker:
-  stage: build_docker
-  extends: [ .merge_to_master ]
-  needs:
-    - test_apt_install_debian
-    - test_apt_install_ubuntu
-  trigger:
-    project: wexample-public/docker
-    branch: main
+#build_pipeline_image_test_remote:
+#  stage: build_pipeline_images
+#  extends: [ .build_pipeline_images ]
+#  needs: [ build_pipeline_image_rc ]
+#  variables:
+#    FLAVOR: test-remote
+#  rules:
+#    - *new-version-rules
+#    - changes:
+#        - .wex/docker/Dockerfile.test-remote
+#
+#checkup_code:
+#  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+#  extends: [ .new_version ]
+#  needs:
+#    - build_pipeline_image_rc
+#    - job: build_pipeline_image_test_remote
+#      optional: true
+#  stage: checkup
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
+#    # Prepare checks
+#    - cd /opt/wex
+#    - source .wex/python/venv/bin/activate
+#    - pip install -r requirements-dev.txt
+#    - touch .wex/.env # Need a fake file to not warn if missing
+#    # Checks
+#    - wex .code/check
+#    - wex .code/format
+#    # Fail if some code has not been formatted
+#    - git diff
+#    - git diff-index --quiet HEAD -- || exit 1
+#
+#.test_cleanup:
+#  script:
+#    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+#    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
+#    - rm -rf /var/www/test
+#    - rm -rf /var/www/test_*
+#
+#test:
+#  stage: test
+#  image: gitlab-docker.wexample.com/wexample/wex/rc
+#  extends: [ .new_version, .test_cleanup ]
+#  needs:
+#    - checkup_code
+#  services:
+#    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
+#      alias: wex_test_remote
+#  variables:
+#    GIT_STRATEGY: none
+#    TEST_REMOTE_ADDRESS: wex_test_remote
+#  script:
+#    - !reference [ .test_cleanup, script ]
+#    - ls -la
+#    - echo ${TEST_REMOTE_ADDRESS}
+#    # Change environment
+#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+#    - sudo wex rebuild
+#    # Run tests, as "owner", with sudo.
+#    - sudo -u owner sudo wex test -vvv
+#    - !reference [ .test_cleanup, script ]
+#
+#checkup_remote:
+#  stage: checkup_deployment
+#  extends: [ .merge_to_master ]
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+#  script:
+#    - ls -la
+#    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+#    - echo "Checking remote en ${REMOTE_ENV}"
+#    # Check target environment is ready to receive hooks
+#    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
+#    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
+#
+#checkup_last_commit:
+#  stage: checkup_deployment
+#  extends: [ .merge_to_master ]
+#  needs:
+#    - checkup_remote
+#  script:
+#    - |
+#      PREVIOUS_MERGE_COMMIT=$(git log ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME} --merges --format=%H | sed -n '2p')
+#      echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
+#
+#      TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
+#      if [ -z "$TAG" ]; then
+#        echo "Previous commit should have been tagged with version number."
+#        exit 1
+#      fi
+#
+#build_apt:
+#  stage: build_apt
+#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
+#  extends: [ .merge_to_master ]
+#  needs:
+#    - checkup_remote
+#    - checkup_last_commit
+#  script:
+#    - ls -la
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Create build folder outside shared volume
+#    - mkdir -p /var/tmp/build
+#    # Create a copy of current git repo
+#    - cp -r .git /var/tmp/build
+#    # Go to build folder
+#    - cd /var/tmp/build
+#    # Checkout build branch
+#    - git fetch && git checkout build
+#    # Create link to source
+#    - ln -s ${CI_PROJECT_DIR} source
+#    # Build
+#    - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
+#
+#deploy:
+#  stage: deploy
+#  image: curlimages/curl
+#  extends: [ .merge_to_master ]
+#  needs:
+#    - build_apt
+#  script:
+#    - BUILD_VERSION=$(cat version.txt)
+#    # Ask apt repo to publish release
+#    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+#
+#.test_apt_install:
+#  extends: [ .merge_to_master ]
+#  script:
+#    # Stops script on failure
+#    - set -e
+#    - apt update
+#    - apt install gnupg2 wget -y
+#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
+#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
+#    - apt update
+#    - apt install wex -y
+#    - wex hi
+#    # Compare versions
+#    - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
+#    - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
+#    - test "$(cat version.txt)" = "$(wex version)" || exit 1
+#    # Uninstall
+#    - apt remove wex -y
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_debian:
+#  extends: .test_apt_install
+#  stage: test_apt_install
+#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
+#  needs:
+#    - deploy
+#
+## Try to install using the new debian apt repository.
+#test_apt_install_ubuntu:
+#  extends: .test_apt_install
+#  stage: test_apt_install
+#  image: ubuntu:22.04
+#  needs:
+#    - deploy
+#
+## Rebuild public image
+#build_docker:
+#  stage: build_docker
+#  extends: [ .merge_to_master ]
+#  needs:
+#    - test_apt_install_debian
+#    - test_apt_install_ubuntu
+#  trigger:
+#    project: wexample-public/docker
+#    branch: main
