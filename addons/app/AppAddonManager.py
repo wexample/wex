@@ -607,6 +607,14 @@ class AppAddonManager(AddonManager):
         print(self.runtime_docker_compose_path)
         print(self.runtime_docker_compose)
 
+        if os.path.exists(self.runtime_docker_compose_path):
+            print('   >>>>>>>>>>>>>>>>>>>>> ')
+            from src.helper.command import command_to_string, execute_command_sync
+            execute_command_sync(self.kernel, [
+                "cat",
+                self.runtime_docker_compose_path
+            ])
+
         if os.getcwd() != app_dir.rstrip(os.sep):
             self.kernel.io.log(
                 "Switching to app : " + app_dir, verbosity=VERBOSITY_LEVEL_MEDIUM
