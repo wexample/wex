@@ -846,14 +846,18 @@ class AppAddonManager(AddonManager):
             print(create_network)
             print(create_network.get_bool())
 
+
             if create_network.get_bool():
                 self.kernel.io.log(f"{service} needs a docker network")
                 return True
 
+        print('>>> DO NEED PROXY')
+        print(self.require_proxy())
         # App does not requires proxy.
         if self.require_proxy():
             return False
 
+        print('>>> TRUE !!!')
         return True
 
     def get_env_var(self, key: str) -> Optional[str]:
