@@ -46,22 +46,16 @@ checkup_last_commit:
 #  needs:
 #    - checkup_remote
   script:
-    - ls -la
-    - echo ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
     - git fetch origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
-    - git branch -a
-    - git log
-    - git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p'
-#    - git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p'
-#    - |
-#      PREVIOUS_MERGE_COMMIT=$(git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p')
-#      echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
-#
-#      TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
-#      if [ -z "$TAG" ]; then
-#        echo "Previous commit should have been tagged with version number."
-#        exit 1
-#      fi
+    - |
+      PREVIOUS_MERGE_COMMIT=$(git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p')
+      echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
+
+      TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
+      if [ -z "$TAG" ]; then
+        echo "Previous commit should have been tagged with version number."
+        exit 1
+      fi
     - exit 1
 
 build_pipeline_image_rc:
