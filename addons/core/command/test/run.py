@@ -40,7 +40,7 @@ def core__test__run(
                 "docker",
                 "compose",
                 "-f",
-                ".wex/docker/docker-compose.test-remote.yml",
+                f"{kernel.directory.path}.wex/docker/docker-compose.test-remote.yml",
             ]
             + command_part,
         )
