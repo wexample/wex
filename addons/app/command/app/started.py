@@ -1,3 +1,4 @@
+import time
 from typing import TYPE_CHECKING
 
 from addons.app.command.container.list import app__container__list
@@ -49,6 +50,8 @@ def app__app__started(
             f"Runtime config is marked as stopped", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
+
+    time.sleep(10)
 
     if not manager.runtime_docker_compose:
         print(' ZZZ C')
