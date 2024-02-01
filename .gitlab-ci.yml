@@ -89,6 +89,7 @@ test:
   script:
     - !reference [ .test_cleanup, script ]
     - ls -la
+    - echo ${TEST_REMOTE_ADDRESS}
     # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
