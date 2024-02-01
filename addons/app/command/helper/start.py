@@ -120,7 +120,8 @@ def app__helper__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
         nonlocal env
-
+        print("START")
+        print(helper_app_path)
         return kernel.run_function(
             app__app__start,
             {

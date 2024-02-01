@@ -32,6 +32,9 @@ def app__app__started(
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
     print(app_dir)
+    print(manager._config)
+    print(manager._runtime_config)
+
     if not manager.has_runtime_config("started"):
         print(' ZZZ A')
         manager.kernel.io.log(
@@ -49,6 +52,8 @@ def app__app__started(
 
     if not manager.runtime_docker_compose:
         print(' ZZZ C')
+        print(manager.get_app_dir())
+        print(manager.runtime_docker_compose)
         manager.kernel.io.log(
             f"Runtime docker config is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
