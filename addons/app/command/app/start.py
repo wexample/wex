@@ -194,6 +194,21 @@ def app__app__start(
     def _app__app__start__start_hooks(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> HiddenResponse:
+        # print(manager.runtime_docker_compose_path)
+        #
+        # print('HOOOOOOOOOOOOOOOOOOOK')
+        # if os.path.exists(manager.runtime_docker_compose_path):
+        #     print('HOOOOOOOOOOOOOOOOOOOK')
+        #     from src.helper.command import command_to_string, execute_command_sync
+        #     execute_command_sync(manager.kernel, [
+        #         "cat",
+        #         manager.runtime_docker_compose_path
+        #     ])
+        # print(manager.runtime_docker_compose)
+        # print(manager.load_config())
+        # print(manager.runtime_docker_compose)
+        # exit()
+
         # Run docker compose
         compose_options = ["up", "-d"]
 
