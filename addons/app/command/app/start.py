@@ -181,6 +181,9 @@ def app__app__start(
     def _app__app__start__start_hooks(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> HiddenResponse:
+        # Load config after building
+        manager.load_config()
+
         # Run docker compose
         compose_options = ["up", "-d"]
 

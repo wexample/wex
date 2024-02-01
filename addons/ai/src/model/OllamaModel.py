@@ -22,6 +22,7 @@ class OllamaModel(AbstractModel):
             app__helper__start,
             {
                 "name": HELPER_APP_AI_SHORT_NAME,
+                "network": False,
             },
             # Disable async execution
             fast_mode=True,

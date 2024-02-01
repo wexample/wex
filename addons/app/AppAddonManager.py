@@ -810,6 +810,10 @@ class AppAddonManager(AddonManager):
     def creates_network(self) -> bool:
         services = self.get_services()
 
+        # Allow user to override any network expectation
+        if self.has_config("docker.create_network"):
+            return self.get_config("docker.create_network").get_bool()
+
         # App has at least one service who creates network.
         for service in services:
             if self.has_service_config("docker.create_network"):

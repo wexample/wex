@@ -36,6 +36,14 @@ if TYPE_CHECKING:
     help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}",
 )
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
+@option(
+    "--network",
+    "-n",
+    type=bool,
+    required=True,
+    default=True,
+    help="Creates a docker network",
+)
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 @option("--group", "-g", type=str, required=False, help="Group of application files")
 @option("--port", "-p", type=int, required=False, help="Port for web server")
@@ -45,6 +53,7 @@ if TYPE_CHECKING:
 def app__helper__start(
     kernel: "Kernel",
     name: str,
+    network: bool,
     env: Optional[str] = None,
     user: Optional[str] = None,
     group: Optional[str] = None,
@@ -110,6 +119,9 @@ def app__helper__start(
                 )
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
+
+        if not network:
+            manager.set_config("docker.create_network", network)
 
     def _app__helper__start__start(
         queue: AbstractQueuedCollectionResponseQueueManager,
