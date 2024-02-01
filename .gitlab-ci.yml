@@ -18,7 +18,7 @@ include:
 .version_branch_with_tag_rules: &version_branch_with_tag_rules
   # Check if branch is a version branch
   - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
-  - if: '$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1)) =~ ^\d+\.\d+\.\d+\+build\.\d+$'
+  - if: '"$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))" =~ ^\d+\.\d+\.\d+\+build\.\d+$'
 
 #    exists:
 #      - |
