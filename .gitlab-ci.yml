@@ -120,10 +120,10 @@ test:
     - ls /var/www/test_env_one/wex-proxy
     - cd /var/www/test_env_one/wex-proxy
     - wex app::app/started
-#    - !reference [ .test_cleanup, script ]
-#    # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
+    - !reference [ .test_cleanup, script ]
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
 #    # Run tests, as "owner", with sudo.
 #    - sudo -u owner sudo wex test -vvv -c app::helper/start # TODO TMP
 #    - !reference [ .test_cleanup, script ]
