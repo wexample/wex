@@ -506,7 +506,12 @@ class AppAddonManager(AddonManager):
                 )
                 execute_command_tree_sync(
                     self.kernel,
-                    ["docker", "logs", "wex_proxy_test_env_one",],
+                    ["docker", "logs", "wex_proxy_test_env_one_proxy",],
+                    ignore_error=True,
+                )
+                execute_command_tree_sync(
+                    self.kernel,
+                    ["docker", "inspect", "wex_proxy_test_env_one_proxy",],
                     ignore_error=True,
                 )
 

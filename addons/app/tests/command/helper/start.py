@@ -33,6 +33,8 @@ class TestAppCommandHelperStart(AbstractTestCase):
                 "env": "test_env_one",
                 "port": 8070,
                 "port-secure": 44370,
+                # Network should already exist
+                "network": False
             },
         )
 
@@ -43,6 +45,8 @@ class TestAppCommandHelperStart(AbstractTestCase):
                 "env": "test_env_two",
                 "port": 8071,
                 "port-secure": 44371,
+                # Network should already exist
+                "network": False
             },
         )
 
