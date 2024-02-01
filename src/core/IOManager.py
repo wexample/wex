@@ -16,6 +16,7 @@ from src.const.types import (
     OptionalCoreCommandArgsDict,
     StringsDict,
     StringsList,
+    Kwargs,
 )
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.KernelChild import KernelChild
@@ -138,7 +139,7 @@ class IOManager(KernelChild):
 
         self.exec_outside_log_frame(_fail)
 
-    def print(self, message: Any, **kwargs) -> None:
+    def print(self, message: Any, **kwargs:Kwargs) -> None:
         print(message, **kwargs)
 
     def message(self, message: str, text: None | str = None) -> None:

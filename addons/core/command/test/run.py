@@ -12,7 +12,7 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 def core__test__run(
     kernel: "Kernel", command: Optional[str] = None
 ) -> QueuedCollectionResponse:
-    def _remote_command(command_part: StringsList):
+    def _remote_command(command_part: StringsList) -> InteractiveShellCommandResponse:
         return InteractiveShellCommandResponse(
             kernel,
             [
@@ -42,7 +42,7 @@ def core__test__run(
             + command_part,
         )
 
-    def _start_remote(queue: AbstractQueuedCollectionResponseQueueManager):
+    def _start_remote(queue: AbstractQueuedCollectionResponseQueueManager) -> InteractiveShellCommandResponse:
         return _remote_command(
             [
                 "up",
@@ -50,14 +50,14 @@ def core__test__run(
             ]
         )
 
-    def _stop_remote(queue: AbstractQueuedCollectionResponseQueueManager):
+    def _stop_remote(queue: AbstractQueuedCollectionResponseQueueManager) -> InteractiveShellCommandResponse:
         return _remote_command(
             [
                 "down",
             ]
         )
 
-    def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager):
+    def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.run_function(core__test__cleanup)
 
         kernel.io.log("Starting test suite..")
@@ -81,13 +81,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                        (not command)
-                        or command_name == command
-                        or (
-                            command.endswith("*")
-                            and command_name.startswith(command[:-1])
-                        )
+                    (not command)
+                    or command_name == command
+                    or (
+                        command.endswith("*")
+                        and command_name.startswith(command[:-1])
                     )
+                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 
@@ -105,6 +105,8 @@ def core__test__run(
         kernel.run_function(core__test__cleanup)
 
     remote_address = "TEST_REMOTE_ADDRESS" in os.environ
+    steps: QueuedCollectionResponseCollection
+
     if not remote_address:
         steps = [
             _run_tests,

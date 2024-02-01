@@ -9,6 +9,8 @@ from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
 
+from src.const.types import StringsDict
+
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
@@ -36,8 +38,8 @@ def prompt_progress_steps(
 
 def prompt_choice_dict(
     question: str,
-    choices: dict,
-    default: Optional[InquirerPyDefault] = None,
+    choices: StringsDict,
+    default: Optional[str] = None,
     **kwargs: Any,
 ) -> Any:
     items = choices.items()
@@ -56,7 +58,7 @@ def prompt_choice(
     question: str,
     choices: List[Any | Any],
     default: Optional[InquirerPyDefault] = None,
-    abort: Optional = "> Abort",
+    abort: Optional[str] = "> Abort",
     **kwargs: Any,
 ) -> Any:
     choices_all = choices.copy()

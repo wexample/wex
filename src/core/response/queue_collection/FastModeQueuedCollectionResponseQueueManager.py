@@ -41,7 +41,7 @@ class FastModeQueuedCollectionResponseQueueManager(
 
     def render_content_complete(
         self, response: Optional[AbstractResponse] = None
-    ) -> "QueuedCollectionResponse":
+    ) -> "AbstractResponse":
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
         if self.response.parent:

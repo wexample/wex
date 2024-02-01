@@ -15,7 +15,7 @@ class TestAppCommandHelperStart(AbstractTestCase):
         for name in HELPER_APPS_LIST:
             self._test_helper_app(name)
 
-    def _cleanup(self):
+    def _cleanup(self) -> None:
         os.chdir(self.test_dir)
         # Cleanup
         shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one", ignore_errors=True)

@@ -109,7 +109,7 @@ class AbstractFileSystemStructure(BaseClass):
             self.on_missing = str(options["on_missing"])
 
         if "permission" in options:
-            self.permission = int(options["permission"])
+            self.permission = int(options["permission"] or 644)
 
         if "should_exist" in options:
             self.should_exist = bool(options["should_exist"])

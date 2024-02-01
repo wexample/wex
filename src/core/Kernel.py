@@ -290,12 +290,12 @@ class Kernel(BaseClass):
 
         return result
 
-    def revert_temporary_fast_mode(self, value: Optional[bool]):
+    def revert_temporary_fast_mode(self, value: Optional[bool]) -> None:
         """Revert fast mode status only if value have been forced"""
         if value is not None:
-            self.fast_mode = self.fast_mode_previous
+            self.fast_mode = self.fast_mode_previous or self.fast_mode
 
-    def set_temporary_fast_mode(self, value: Optional[bool]):
+    def set_temporary_fast_mode(self, value: Optional[bool]) -> None:
         self.fast_mode_previous = None
 
         if value is not None:
