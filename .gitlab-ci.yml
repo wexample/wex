@@ -86,7 +86,7 @@ checkup_code:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc
-  extends: [ .test_cleanup ]
+  extends: [ .new_version, .test_cleanup ]
   needs:
     - checkup_code
   services:
