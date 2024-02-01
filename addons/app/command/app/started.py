@@ -58,6 +58,14 @@ def app__app__started(
         print(manager.get_app_dir())
         print(manager.runtime_docker_compose)
         print(manager.runtime_docker_compose_path)
+
+        from src.helper.command import execute_command_sync
+
+        execute_command_sync(manager.kernel,[
+            "cat",
+            manager.runtime_docker_compose_path
+        ])
+
         manager.kernel.io.log(
             f"Runtime docker config is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
