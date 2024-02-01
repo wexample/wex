@@ -48,6 +48,16 @@ tmp_test:
   script:
     - ls -la
     - echo $CI_COMMIT_TAG
+    - |
+      LAST_COMMIT=$(git rev-parse HEAD)
+      echo "Last commit $LAST_COMMIT"
+
+      TAG=$(git tag --contains $LAST_COMMIT)
+      if [ -z "$TAG" ]; then
+        echo "No tag."
+      else
+        echo "Last tag : $TAG"
+      fi
   rules:
     - *version_branch_with_tag_rules
 
