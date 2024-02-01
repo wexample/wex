@@ -77,6 +77,11 @@ def app__app__start(
     kernel = manager.kernel
     name = manager.get_config("global.name").get_str()
 
+    print("APP START")
+    print(manager.get_app_dir())
+    print(manager.runtime_docker_compose_path)
+    print(manager.runtime_docker_compose)
+
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> Optional[QueuedCollectionStopResponse]:
