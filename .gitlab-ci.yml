@@ -49,6 +49,7 @@ checkup_last_commit:
     - ls -la
     - echo ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
     - git log
+    - git fetch --depth 50 origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
     - git log ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} --merges --format=%H | sed -n '2p'
     - exit 1
 #    - |
