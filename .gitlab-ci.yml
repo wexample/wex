@@ -2,7 +2,7 @@ stages:
   - build_pipeline_images
   - checkup
   - test
-#  - build_apt
+  - build_apt
 #  - deploy
 #  - test_apt_install
 #  - build_docker
