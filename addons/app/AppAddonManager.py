@@ -603,6 +603,10 @@ class AppAddonManager(AddonManager):
 
         self.load_config()
 
+        print(' >>>  ')
+        print(self.runtime_docker_compose_path)
+        print(self.runtime_docker_compose)
+
         if os.getcwd() != app_dir.rstrip(os.sep):
             self.kernel.io.log(
                 "Switching to app : " + app_dir, verbosity=VERBOSITY_LEVEL_MEDIUM
