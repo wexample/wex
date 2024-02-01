@@ -128,8 +128,7 @@ build_apt:
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
   extends: [ .merge_to_master ]
   needs:
-    - checkup_remote
-    - checkup_last_commit
+    - test
   script:
     - ls -la
     - BUILD_VERSION=$(cat version.txt)
