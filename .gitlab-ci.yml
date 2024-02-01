@@ -28,23 +28,23 @@ include:
     - !reference [ .docker_login, script ]
     - !reference [ .build_image_app, script ]
 
-#checkup_remote:
-#  stage: checkup_deployment
-#  extends: [ .merge_to_master ]
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
-#  script:
-#    - ls -la
-#    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
-#    - echo "Checking remote en ${REMOTE_ENV}"
-#    # Check target environment is ready to receive hooks
-#    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
-#    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
+checkup_remote:
+  stage: checkup_deployment
+  extends: [ .merge_to_master ]
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  script:
+    - ls -la
+    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - echo "Checking remote en ${REMOTE_ENV}"
+    # Check target environment is ready to receive hooks
+    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
+    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
 
 checkup_last_commit:
   stage: checkup_deployment
   extends: [ .merge_to_master ]
-#  needs:
-#    - checkup_remote
+  needs:
+    - checkup_remote
   script:
     - git fetch origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
     - PREVIOUS_MERGE_COMMIT=$(git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p')
