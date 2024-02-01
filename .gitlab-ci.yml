@@ -19,8 +19,9 @@ include:
   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
 
 .merge_to_master:
-  rules:
-    - *merge-branch-master-rules
+  resource_group: main_pipeline
+#  rules:
+#    - *merge-branch-master-rules
 
 .build_pipeline_images:
   extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
@@ -42,8 +43,6 @@ include:
 #checkup_last_commit:
 #  stage: checkup_deployment
 #  extends: [ .merge_to_master ]
-#  needs:
-#    - checkup_remote
 #  script:
 #    - git fetch origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
 #    - PREVIOUS_MERGE_COMMIT=$(git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p')
@@ -57,6 +56,7 @@ include:
 #  stage: build_pipeline_images
 #  extends: [ .build_pipeline_images ]
 #  needs:
+#    - checkup_remote
 #    - checkup_last_commit
 #  variables:
 #    FLAVOR: rc
@@ -114,8 +114,7 @@ include:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-#  extends: [ .merge_to_master, .test_cleanup ]
-  extends: [ .test_cleanup ]
+  extends: [ .merge_to_master, .test_cleanup ]
 #  needs:
 #    - checkup_code
   services:
