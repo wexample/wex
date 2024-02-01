@@ -31,7 +31,9 @@ def app__app__started(
     app_dir: str,
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
+    print(app_dir)
     if not manager.has_runtime_config("started"):
+        print('A')
         manager.kernel.io.log(
             f"Runtime config file is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
@@ -39,21 +41,24 @@ def app__app__started(
 
     started = manager.get_runtime_config("started").get_bool()
     if not started:
+        print('B')
         manager.kernel.io.log(
             f"Runtime config is marked as stopped", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
 
     if not manager.runtime_docker_compose:
+        print('C')
         manager.kernel.io.log(
             f"Runtime docker config is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
 
     if mode == APP_STARTED_CHECK_MODE_CONFIG:
+        print('D')
         manager.kernel.io.log(f"Config files exists", verbosity=VERBOSITY_LEVEL_MAXIMUM)
         return True
-
+    print('E')
     container_names = manager.kernel.run_function(
         app__container__list, {"app-dir": app_dir}
     ).first()
@@ -65,19 +70,24 @@ def app__app__started(
 
     all_runs: bool = True
     for name in container_names:
+        print('F' + name)
         if name in running_containers:
+            print('G')
             manager.kernel.io.log(
                 f"Container {name} runs", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_ANY_CONTAINER:
+                print('GG')
                 return True
         else:
+            print('H')
             all_runs = False
             manager.kernel.io.log(
                 f"Container {name} does not run", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_FULL:
+                print('HH')
                 return False
-
+    print('I')
     # Every file is in place
     return all_runs
