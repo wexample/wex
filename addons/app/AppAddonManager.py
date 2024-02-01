@@ -490,31 +490,6 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir},
             ).first():
-                from src.helper.command import execute_command_tree_sync
-
-                # TODO TMP
-                # Will display containers status in verbose mode.
-                execute_command_tree_sync(
-                    self.kernel,
-                    ["docker", "ps", "-a",],
-                    ignore_error=True,
-                )
-                execute_command_tree_sync(
-                    self.kernel,
-                    ["docker", "network", "ls",],
-                    ignore_error=True,
-                )
-                execute_command_tree_sync(
-                    self.kernel,
-                    ["docker", "logs", "wex_proxy_test_env_one_proxy",],
-                    ignore_error=True,
-                )
-                execute_command_tree_sync(
-                    self.kernel,
-                    ["docker", "inspect", "wex_proxy_test_env_one_proxy",],
-                    ignore_error=True,
-                )
-
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
@@ -582,8 +557,6 @@ class AppAddonManager(AddonManager):
             yaml.dump(proxy_apps, f, indent=True)
 
     def set_app_workdir(self, app_dir: str) -> None:
-        print('SET APP WORKDIR')
-        print(app_dir)
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(
@@ -602,18 +575,6 @@ class AppAddonManager(AddonManager):
         )
 
         self.load_config()
-
-        print(' >>>  ')
-        print(self.runtime_docker_compose_path)
-        print(self.runtime_docker_compose)
-
-        if os.path.exists(self.runtime_docker_compose_path):
-            print('   >>>>>>>>>>>>>>>>>>>>> ')
-            from src.helper.command import command_to_string, execute_command_sync
-            execute_command_sync(self.kernel, [
-                "cat",
-                self.runtime_docker_compose_path
-            ])
 
         if os.getcwd() != app_dir.rstrip(os.sep):
             self.kernel.io.log(

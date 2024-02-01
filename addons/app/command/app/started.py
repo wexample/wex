@@ -1,5 +1,3 @@
-import os.path
-import time
 from typing import TYPE_CHECKING
 
 from addons.app.command.container.list import app__container__list
@@ -33,12 +31,7 @@ def app__app__started(
     app_dir: str,
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
-    print(app_dir)
-    print(manager._config)
-    print(manager._runtime_config)
-
     if not manager.has_runtime_config("started"):
-        print(' ZZZ A')
         manager.kernel.io.log(
             f"Runtime config file is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
@@ -46,7 +39,6 @@ def app__app__started(
 
     started = manager.get_runtime_config("started").get_bool()
     if not started:
-        print(' ZZZ B')
         manager.kernel.io.log(
             f"Runtime config is marked as stopped", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
@@ -59,44 +51,33 @@ def app__app__started(
         return False
 
     if mode == APP_STARTED_CHECK_MODE_CONFIG:
-        print(' ZZZ D')
         manager.kernel.io.log(f"Config files exists", verbosity=VERBOSITY_LEVEL_MAXIMUM)
         return True
-    print(' ZZZ E')
+
     container_names = manager.kernel.run_function(
         app__container__list, {"app-dir": app_dir}
     ).first()
-
-    print(container_names)
 
     # for container_name in list:
     success, running_containers = execute_command_sync(
         manager.kernel, ["docker", "ps", "--format", "{{.Names}}"]
     )
 
-    print(success)
-    print(running_containers)
-
     all_runs: bool = True
     for name in container_names:
-        print(' ZZZ F' + name)
         if name in running_containers:
-            print(' ZZZ G')
             manager.kernel.io.log(
                 f"Container {name} runs", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_ANY_CONTAINER:
-                print(' ZZZ GG')
                 return True
         else:
-            print(' ZZZ H')
             all_runs = False
             manager.kernel.io.log(
                 f"Container {name} does not run", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_FULL:
-                print(' ZZZ HH')
                 return False
-    print(' ZZZ I')
+
     # Every file is in place
     return all_runs
