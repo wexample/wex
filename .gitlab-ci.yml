@@ -1,5 +1,5 @@
 stages:
-#  - build_pipeline_images
+  - build_pipeline_images
 #  - checkup
   - test
 #  - build_apt
@@ -26,12 +26,12 @@ include:
     - !reference [ .docker_login, script ]
     - !reference [ .build_image_app, script ]
 
-#build_pipeline_image_rc:
-#  stage: build_pipeline_images
-#  extends: [ .build_pipeline_images ]
-#  variables:
-#    FLAVOR: rc
-#
+build_pipeline_image_rc:
+  stage: build_pipeline_images
+  extends: [ .build_pipeline_images ]
+  variables:
+    FLAVOR: rc
+
 #build_pipeline_image_test_remote:
 #  stage: build_pipeline_images
 #  extends: [ .build_pipeline_images ]
@@ -78,8 +78,9 @@ test:
   image: gitlab-docker.wexample.com/wexample/wex/rc
   extends: [ .test_cleanup ]
 #  extends: [ .test_cleanup, .new_version ]
-#  needs:
+  needs:
 #    - checkup_code
+    - build_pipeline_image_rc # TMP
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
@@ -91,11 +92,11 @@ test:
     - ls -la
     - echo ${TEST_REMOTE_ADDRESS}
     # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
-#    # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo wex test -vvv
-#    - !reference [ .test_cleanup, script ]
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
+    # Run tests, as "owner", with sudo.
+    - sudo -u owner sudo wex test -vvv
+    - !reference [ .test_cleanup, script ]
 
 #build_apt:
 #  stage: build_apt
