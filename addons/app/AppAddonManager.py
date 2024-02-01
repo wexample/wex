@@ -835,30 +835,24 @@ class AppAddonManager(AddonManager):
     def creates_network(self) -> bool:
         services = self.get_services()
 
+        # Allow user to override any network expectation
+        if self.has_config("docker.create_network"):
+            return self.get_config("docker.create_network").get_bool()
+
         # App has at least one service who creates network.
         for service in services:
-            create_network = self.get_config_or_service_config(
-                "docker.create_network",
-                default=False
-            )
+            if self.has_service_config("docker.create_network"):
+                if self.get_service_config(
+                    key="docker.create_network", service=service, default=False
+                ).get_bool():
+                    self.kernel.io.log(f"{service} needs a docker network")
+                    return True
 
-            print('>>> DO CREATE NETWORK ??')
-            print(create_network)
-            print(create_network.get_bool())
-
-
-            if create_network.get_bool():
-                self.kernel.io.log(f"{service} needs a docker network")
-                return True
-
-        print('>>> DO NEED PROXY')
-        print(self.require_proxy())
         # App does not requires proxy.
-        if self.require_proxy():
-            return False
+        if not self.require_proxy():
+            return True
 
-        print('>>> TRUE !!!')
-        return True
+        return False
 
     def get_env_var(self, key: str) -> Optional[str]:
         from dotenv import dotenv_values
