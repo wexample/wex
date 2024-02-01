@@ -18,21 +18,21 @@ include:
 .version_branch_with_tag_rules: &version_branch_with_tag_rules
   # Check if branch is a version branch
   - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
-    exists:
-      - |
-        # This script block checks for the latest tag and verifies it matches version pattern
-        # Fetch tags to ensure the repository's tags are up to date
-        git fetch --tags
-        # Get the latest tag that points to the HEAD commit
-        LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
-        # Check if the latest tag is a version tag
-        if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
-          echo "Latest tag is a version tag: $LATEST_TAG"
-          exit 0 # Success, the rule passes
-        else
-          echo "Latest tag is not a version tag."
-          exit 1 # Failure, the job will not run
-        fi
+#    exists:
+#      - |
+#        # This script block checks for the latest tag and verifies it matches version pattern
+#        # Fetch tags to ensure the repository's tags are up to date
+#        git fetch --tags
+#        # Get the latest tag that points to the HEAD commit
+#        LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
+#        # Check if the latest tag is a version tag
+#        if [[ "$LATEST_TAG" =~ ^\d+\.\d+\.\d+\+build\.\d+$ ]]; then
+#          echo "Latest tag is a version tag: $LATEST_TAG"
+#          exit 0 # Success, the rule passes
+#        else
+#          echo "Latest tag is not a version tag."
+#          exit 1 # Failure, the job will not run
+#        fi
 
 
 #.new_version_rules: &new-version-rules
