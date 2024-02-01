@@ -111,24 +111,19 @@ def core__test__run(
 
         kernel.run_function(core__test__cleanup)
 
-    remote_address = "TEST_REMOTE_ADDRESS" in os.environ
+    remote_address = os.environ.get("TEST_REMOTE_ADDRESS")
     steps: QueuedCollectionResponseCollection
 
-    print("REMOTE_ADDR")
-    print(remote_address)
-    exit()
-
-    # TODO
-    # if not remote_address:
-    #     steps = [
-    #         _start_remote,
-    #         _run_tests,
-    #         _stop_remote,
-    #     ]
-    # else:
-    #     steps = [
-    #         _run_tests,
-    #     ]
+    if not remote_address:
+        steps = [
+            _start_remote,
+            _run_tests,
+            _stop_remote,
+        ]
+    else:
+        steps = [
+            _run_tests,
+        ]
 
     return QueuedCollectionResponse(
         kernel,
