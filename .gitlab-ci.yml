@@ -185,22 +185,20 @@ test:
 #    - test "$(cat version.txt)" = "$(wex version)" || exit 1
 #    # Uninstall
 #    - apt remove wex -y
-#
+#  needs:
+#    - deploy
+
 ## Try to install using the new debian apt repository.
 #test_apt_install_debian:
 #  extends: .test_apt_install
 #  stage: test_apt_install
 #  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#  needs:
-#    - deploy
 #
 ## Try to install using the new debian apt repository.
 #test_apt_install_ubuntu:
 #  extends: .test_apt_install
 #  stage: test_apt_install
 #  image: ubuntu:22.04
-#  needs:
-#    - deploy
 #
 ## Rebuild public image
 #build_docker:
