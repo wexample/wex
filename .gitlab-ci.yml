@@ -113,20 +113,16 @@ test:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
   variables:
-    GIT_STRATEGY: none
+#    GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - ls -la
-    - ls /var/www/test_env_one/
-    - ls /var/www/test_env_one/wex-proxy
-    - cd /var/www/test_env_one/wex-proxy
-    - wex app::app/started
+    - ls -la /usr/lib/wex
     - !reference [ .test_cleanup, script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - wex app::app/started
     - sudo -u owner sudo wex test -vvv -c app::helper/start # TODO TMP
 #    - !reference [ .test_cleanup, script ]
 
