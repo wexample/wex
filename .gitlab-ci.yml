@@ -121,7 +121,7 @@ test:
     - rm -rf /opt/wex
     - cp -r . /opt/wex
     - ls -la /opt/wex
-    - bash /opw/wex/cli/install
+    - bash /opt/wex/cli/install
     - !reference [ .test_cleanup, script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
