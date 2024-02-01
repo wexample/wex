@@ -1,21 +1,28 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 
 from langchain.chains import create_tagging_chain
 from langchain.prompts import ChatPromptTemplate
-
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
+from langchain_core.language_models import BaseLanguageModel
 
 if TYPE_CHECKING:
-    from langchain_core.language_models import BaseLanguageModel
-
     from src.core.Kernel import Kernel
 
 
 class AbstractModel(KernelChild):
-    llm: Optional["BaseLanguageModel"]
+    _llm: Optional[BaseLanguageModel[Any]]
+
+    def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
+        self._llm = llm
+
+    def get_llm(self) -> BaseLanguageModel[Any]:
+        self._validate__should_not_be_none(self._llm)
+        assert isinstance(self._llm, BaseLanguageModel)
+
+        return self._llm
 
     def __init__(self, kernel: "Kernel", identifier: str):
         super().__init__(kernel)
@@ -56,9 +63,9 @@ class AbstractModel(KernelChild):
             },
         }
 
-        chain = create_tagging_chain(schema, self.llm)
+        chain = create_tagging_chain(schema, self.get_llm())
 
-        return chain.invoke(input)
+        return chain.invoke({"input": input})
 
     @abstractmethod
     def activate(self) -> None:
@@ -66,6 +73,8 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def request(
-        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
-    ) -> "BaseLanguageModel":
+        self, input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
+    ) -> Any:
         pass

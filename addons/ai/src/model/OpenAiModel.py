@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import cast, Any
 
 from dotenv import dotenv_values
 from langchain_openai import ChatOpenAI
@@ -11,9 +11,6 @@ MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_16K = "open_ai:gpt-3.5-turbo-16k"
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO = "open_ai:gpt-3.5-turbo"
 MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 
-if TYPE_CHECKING:
-    from langchain_core.language_models import BaseLanguageModel
-
 
 class OpenAiModel(AbstractModel):
     def activate(self) -> None:
@@ -22,14 +19,16 @@ class OpenAiModel(AbstractModel):
         if not key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
-        self.llm = ChatOpenAI(
+        self.set_llm(ChatOpenAI(
             api_key=key,
-        )
+        ))
 
     def request(
         self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
-    ) -> "BaseLanguageModel":
-        return self.llm(
+    ) -> Any:
+        llm = cast(ChatOpenAI, self.get_llm())
+
+        return llm(
             self.chat_create_prompt(identity)
             .format_prompt(**self.chat_merge_parameters(identity_parameters))
             .to_messages()

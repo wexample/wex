@@ -1,3 +1,5 @@
+from typing import Any
+
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import LLMChain
@@ -14,7 +16,7 @@ MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
 
 
 class OllamaModel(AbstractModel):
-    def activate(self):
+    def activate(self) -> None:
         # Start AI helper app
         response = self.kernel.run_function(
             app__helper__start,
@@ -36,19 +38,19 @@ class OllamaModel(AbstractModel):
         )
 
         # Connect Ollama
-        self.llm = Ollama(
+        self.set_llm(Ollama(
             model=self.name,
             callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-        )
+        ))
 
     def request(
         self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
-    ):
+    ) -> Any:
         self.kernel.io.log(identity["system"], verbosity=VERBOSITY_LEVEL_MAXIMUM)
         self.kernel.io.log(identity_parameters, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
         chain = LLMChain(
-            llm=self.llm, prompt=self.chat_create_prompt(identity), verbose=False
+            llm=self.get_llm(), prompt=self.chat_create_prompt(identity), verbose=False
         )
 
         return chain.invoke(self.chat_merge_parameters(identity_parameters))[

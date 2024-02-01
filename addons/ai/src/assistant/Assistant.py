@@ -15,6 +15,7 @@ from addons.ai.src.model.OpenAiModel import (
 from addons.ai.src.tool.CommandTool import CommandTool
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
+from src.core.BaseClass import BaseClass
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_read
 from src.helper.prompt import prompt_choice_dict
@@ -41,12 +42,12 @@ AI_IDENTITY_DEFAULT = "default"
 AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
 
 
-class Assistant:
+class Assistant(BaseClass):
     def __init__(
         self, kernel: "Kernel", default_model: str = MODEL_NAME_OLLAMA_MISTRAL
     ) -> None:
         self.kernel = kernel
-        self.model: Optional[AbstractModel] = None
+        self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
                 self.kernel, MODEL_NAME_OLLAMA_MISTRAL
@@ -94,14 +95,20 @@ class Assistant:
 
         self.log(f"Loaded {len(self.tools)} tools")
 
-    def log(self, message):
+    def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
 
-    def set_model(self, identifier: str):
+    def set_model(self, identifier: str) -> None:
         self.log(f"Model set to : {identifier}")
 
-        self.model = self.models[identifier]
-        self.model.activate()
+        self._model = self.models[identifier]
+        self._model.activate()
+
+    def get_model(self) -> AbstractModel:
+        self._validate__should_not_be_none(self._model)
+        assert isinstance(self._model, AbstractModel)
+
+        return self._model
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
         action: Optional[str] = None
@@ -111,6 +118,7 @@ class Assistant:
             self.log(f"Prompt : {initial_prompt}")
             action = CHAT_ACTION_FREE_TALK
 
+        current_model = self.get_model()
         while action != CHAT_ACTION_ABORT:
             if not action:
                 action = self.chat_choose_action(previous_action)
@@ -129,7 +137,7 @@ class Assistant:
                 new_model = prompt_choice_dict(
                     "Choose a new language model:",
                     models,
-                    default=self.model.identifier,
+                    default=current_model.identifier,
                 )
 
                 self.set_model(new_model)
@@ -183,7 +191,7 @@ class Assistant:
 
         return None
 
-    def chat_choose_action(self, last_action: Optional[str]) -> str:
+    def chat_choose_action(self, last_action: Optional[str]) -> Optional[str]:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
             CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[
@@ -202,12 +210,14 @@ class Assistant:
 
         choices[CHAT_ACTION_ABORT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_ABORT]
 
-        return prompt_choice_dict(
+        action = prompt_choice_dict(
             "Choose an action to do with ai assistant:",
             choices,
             abort=None,
             default=CHAT_ACTION_FREE_TALK,
         )
+
+        return str(action) if action else None
 
     def user_prompt_help(self) -> None:
         self.log("Type '/action' to pick an action.")
@@ -247,14 +257,14 @@ class Assistant:
                     self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
 
-                    command_selection = self.model.choose_command(input)
+                    command_selection = self.get_model().choose_command(input)
 
                     if "text" in command_selection and command_selection["text"]:
                         # TODO Do command
                         self.kernel.io.print(command_selection["text"]["command"])
                     else:
-                        result = self.model.request(
-                            input, self.identities[identity], identity_parameters
+                        result = self.get_model().request(
+                            input, self.identities[identity], identity_parameters or {}
                         )
 
                         # Let a new line separator
