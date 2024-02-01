@@ -114,16 +114,19 @@ def core__test__run(
     remote_address = "TEST_REMOTE_ADDRESS" in os.environ
     steps: QueuedCollectionResponseCollection
 
-    if not remote_address:
-        steps = [
-            _start_remote,
-            _run_tests,
-            _stop_remote,
-        ]
-    else:
-        steps = [
-            _run_tests,
-        ]
+    print(remote_address)
+
+    # TODO
+    # if not remote_address:
+    #     steps = [
+    #         _start_remote,
+    #         _run_tests,
+    #         _stop_remote,
+    #     ]
+    # else:
+    #     steps = [
+    #         _run_tests,
+    #     ]
 
     return QueuedCollectionResponse(
         kernel,
