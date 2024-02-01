@@ -20,8 +20,8 @@ include:
 
 .merge_to_master:
   resource_group: main_pipeline
-#  rules:
-#    - *merge-branch-master-rules
+  rules:
+    - *merge-branch-master-rules
 
 .build_pipeline_images:
   extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
