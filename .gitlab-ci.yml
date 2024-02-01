@@ -25,7 +25,7 @@ include:
 
 .merge_to_master:
   rules:
-    - *new-version-rules
+    - *merge-branch-master-rules
 
 .new_version:
   rules:
