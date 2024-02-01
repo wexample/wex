@@ -2,11 +2,11 @@ stages:
   - checkup_deployment
   - build_pipeline_images
   - checkup_source
-#  - test
+  - test
   - build_apt
-#  - deploy
-#  - test_apt_install
-#  - build_docker
+  - deploy
+  - test_apt_install
+  - build_docker
 
 variables:
   MAIN_BRANCH_NAME: "master"
