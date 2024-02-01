@@ -5,13 +5,13 @@ docker:
   main_container: dev
 env:
   dev:
-    email: contact@wexample.com
     branch: develop
+    email: contact@wexample.com
   local:
     email: contact@wexample.com
   prod:
-    email: contact@wexample.com
     branch: master
+    email: contact@wexample.com
   runner:
     server:
       ip: 51.210.107.210
@@ -21,6 +21,6 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.156+build.20240201134756
+  version: 5.0.156+build.20240201134945
 wex:
-  version: 5.0.156+build.20240201134756
+  version: 5.0.156+build.20240201134945
