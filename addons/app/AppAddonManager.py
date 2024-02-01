@@ -842,6 +842,10 @@ class AppAddonManager(AddonManager):
                 default=False
             )
 
+            print('>>> DO CREATE NETWORK ??')
+            print(create_network)
+            print(create_network.get_bool())
+
             if create_network.get_bool():
                 self.kernel.io.log(f"{service} needs a docker network")
                 return True
