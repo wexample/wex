@@ -17,13 +17,12 @@ include:
 # Define rules for version branches with tags
 .version_branch_with_tag_rules: &version_branch_with_tag_rules
   # Check if branch is a version branch
-  - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/ && $VERSION_TAG_CHECK == "true"'
+  - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
 #    exists:
 #      - |
 #        # This script block checks for the latest tag and verifies it matches version pattern
 #        # Fetch tags to ensure the repository's tags are up to date
-##        git fetch --tags
-#        exit 0
+#        git fetch --tags
 #        # Get the latest tag that points to the HEAD commit
 #        LATEST_TAG=$(git describe --tags --match "*.*.*+build.*" $(git rev-list --tags --max-count=1))
 #        # Check if the latest tag is a version tag
@@ -60,6 +59,18 @@ tmp_test:
   script:
     - ls -la
     - echo $CI_COMMIT_TAG
+#    # TODO Ceci devrait se trouver dans la "rule"
+#    - |
+#      LAST_COMMIT=$(git rev-parse HEAD)
+#      echo "Last commit $LAST_COMMIT"
+#
+#      TAG=$(git tag --contains $LAST_COMMIT)
+#      if [ -z "$TAG" ]; then
+#        echo "No tag."
+#      else
+#        echo "Last tag : $TAG"
+#        # TODO Vérifier si le tag correspond a un numéro de version =~ /^\d+\.\d+\.\d+\+build\.\d+$/'
+#      fi
   rules:
     - *version_branch_with_tag_rules
 
