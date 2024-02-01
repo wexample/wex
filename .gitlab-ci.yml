@@ -51,7 +51,7 @@ checkup_last_commit:
     - git log
     - git fetch origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
     - git branch -a
-    - git log "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --merges --format=%H | sed -n '2p'
+    - git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --merges --format=%H | sed -n '2p'
     - exit 1
 #    - |
 #      PREVIOUS_MERGE_COMMIT=$(git log ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} --merges --format=%H | sed -n '2p')
