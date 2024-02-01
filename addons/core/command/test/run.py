@@ -114,7 +114,9 @@ def core__test__run(
     remote_address = "TEST_REMOTE_ADDRESS" in os.environ
     steps: QueuedCollectionResponseCollection
 
+    print("REMOTE_ADDR")
     print(remote_address)
+    exit()
 
     # TODO
     # if not remote_address:
