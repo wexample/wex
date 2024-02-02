@@ -40,6 +40,7 @@ class BuildManager:
             self.step_copy_debian,
             self.step_build_changelog,
             self.step_set_permissions,
+            self.step_commit,
             self.step_debuild,
             self.step_post_package,
         ]
@@ -176,6 +177,21 @@ class BuildManager:
             ';'
         ])
 
+    def step_commit(self):
+        os.chdir(self.path['build'])
+
+        self.run(
+            [
+                "dpkg-source",
+                "-q",
+                "--commit",
+                ".",
+                "patchsetname",
+            ],
+            env={"EDITOR": "/bin/true"})
+
+        os.chdir(self.path['current'])
+
     def step_debuild(self):
         os.chdir(self.path['build'])
 
@@ -240,12 +256,13 @@ class BuildManager:
         if os.path.exists(path) and os.path.isdir(path):
             shutil.rmtree(path)
 
-    def run(self, command):
+    def run(self, command, **kwargs):
         result = subprocess.run(
-          command,
-          stdout=subprocess.PIPE,
-          stderr=subprocess.PIPE,
-          universal_newlines=True
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+            **kwargs
         )
 
         print(result.stdout)
