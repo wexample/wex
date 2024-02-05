@@ -28,7 +28,7 @@ include:
   only:
     - master
 
-.build_pipeline_images:
+.build_live_image:
   extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
   script:
     - !reference [ .docker_login, script ]
@@ -59,7 +59,7 @@ checkup_last_commit:
 
 build_pipeline_image_rc:
   stage: build_pipeline_images
-  extends: [ .build_pipeline_images ]
+  extends: [ .build_live_image ]
   needs:
     - checkup_remote
     - checkup_last_commit
@@ -68,7 +68,7 @@ build_pipeline_image_rc:
 
 build_pipeline_image_test_remote:
   stage: build_pipeline_images
-  extends: [ .build_pipeline_images ]
+  extends: [ .build_live_image ]
   variables:
     FLAVOR: test-remote
   rules:
