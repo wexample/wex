@@ -490,6 +490,12 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir},
             ).first():
+                from addons.app.command.app.start import app__app__start
+
+                self.kernel.io.message_next_command(
+                    app__app__start
+                )
+
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
