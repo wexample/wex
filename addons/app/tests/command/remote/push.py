@@ -19,12 +19,14 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         manager.set_config(
             "structure",
             {
-                test_filename: {
-                    "type": "file",
-                    "should_exist": True,
-                    "on_missing": "create",
-                    "default_content": "This is a test file created by structure manager",
-                    "remote": "push",
+                "schema": {
+                    test_filename: {
+                        "type": "file",
+                        "should_exist": True,
+                        "on_missing": "create",
+                        "default_content": "This is a test file created by structure manager",
+                        "remote": "push",
+                    },
                 },
             },
         )
@@ -36,12 +38,10 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         environment = "test_remote"
 
         self.kernel.run_function(
-            app__remote__push, {"environment": "test_remote", "app-dir": app_dir}
+            app__remote__push, {"environment": environment, "app-dir": app_dir}
         )
 
-        remote_path = (
-            f"/var/www/{environment}/{manager.get_config('global.name').get_str()}/"
-        )
+        remote_path = f"/var/www/{environment}/{manager.get_config('global.name').get_str()}/"
 
         response = manager.kernel.run_function(
             app__remote__exec,

@@ -22,26 +22,29 @@ class AppDirectoryStructure(DirectoryStructure):
 
     def get_schema(self) -> FileSystemStructureSchema:
         schema: FileSystemStructureSchema = {
-            APP_DIR_APP_DATA_NAME: {
-                "should_exist": self.should_be_valid_app,
-                "schema": {
-                    "tmp": {
-                        "should_exist": self.should_be_valid_app,
-                        "on_missing": "create",
+            "should_exist": self.should_be_valid_app,
+            "schema": {
+                APP_DIR_APP_DATA_NAME: {
+                    "should_exist": self.should_be_valid_app,
+                    "schema": {
+                        "tmp": {
+                            "should_exist": self.should_be_valid_app,
+                            "on_missing": "create",
+                        },
+                        APP_FILE_APP_ENV: {
+                            "type": "file",
+                            "should_exist": self.should_be_valid_app,
+                            "on_missing": "create",
+                            "default_content": f"APP_ENV={APP_ENV_PROD}",
+                        },
+                        APP_FILE_APP_CONFIG: {
+                            "type": "file",
+                            "should_exist": self.should_be_valid_app,
+                            "on_missing": "error",
+                            "default_content": "global:",
+                        },
                     },
-                    APP_FILE_APP_ENV: {
-                        "type": "file",
-                        "should_exist": self.should_be_valid_app,
-                        "on_missing": "create",
-                        "default_content": f"APP_ENV={APP_ENV_PROD}",
-                    },
-                    APP_FILE_APP_CONFIG: {
-                        "type": "file",
-                        "should_exist": self.should_be_valid_app,
-                        "on_missing": "error",
-                        "default_content": "global:",
-                    },
-                },
+                }
             }
         }
 

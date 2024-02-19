@@ -68,38 +68,42 @@ class AbstractFileSystemStructure(BaseClass):
         return self.schema
 
     def load_schema(self) -> None:
-        schema = self.get_schema()
-        for item_name in schema:
-            options: FileSystemStructureSchemaItem = schema[item_name]
+        root_schema = self.get_schema()
 
-            type: str = options["type"] if "type" in options else "dir"
-            class_definition: Any = (
-                options["class_name"] if "class_name" in options else None
-            )
+        if 'schema' in root_schema:
+            schema = root_schema['schema']
 
-            if class_definition is None:
-                if type == "file":
-                    from src.core.file.FileStructure import FileStructure
+            for item_name in schema:
+                options: FileSystemStructureSchemaItem = schema[item_name]
 
-                    class_definition = FileStructure
-                    assert class_definition is FileStructure
-                else:
-                    from src.core.file.DirectoryStructure import DirectoryStructure
+                type: str = options["type"] if "type" in options else "dir"
+                class_definition: Any = (
+                    options["class_name"] if "class_name" in options else None
+                )
 
-                    class_definition = DirectoryStructure
-                    assert class_definition is DirectoryStructure
+                if class_definition is None:
+                    if type == "file":
+                        from src.core.file.FileStructure import FileStructure
 
-            structure: AbstractFileSystemStructure = class_definition(
-                path=os.path.join(self.path, item_name),
-                initialize=False,
-            )
+                        class_definition = FileStructure
+                        assert class_definition is FileStructure
+                    else:
+                        from src.core.file.DirectoryStructure import DirectoryStructure
 
-            self.children[item_name] = structure
-            structure.load_options(options)
-            structure.set_parent(self)
+                        class_definition = DirectoryStructure
+                        assert class_definition is DirectoryStructure
 
-            # Init after options loaded
-            structure.initialize()
+                structure: AbstractFileSystemStructure = class_definition(
+                    path=os.path.join(self.path, item_name),
+                    initialize=False,
+                )
+
+                self.children[item_name] = structure
+                structure.load_options(options)
+                structure.set_parent(self)
+
+                # Init after options loaded
+                structure.initialize()
 
     def load_options(self, options: FileSystemStructureSchemaItem) -> None:
         if "group" in options:
@@ -118,7 +122,7 @@ class AbstractFileSystemStructure(BaseClass):
             self.shortcut = str(options["shortcut"])
 
         if "schema" in options:
-            self.schema = options["schema"] or {}
+            self.schema = {"schema": options["schema"]} or {}
 
         if "user" in options:
             self.user = options["user"]
