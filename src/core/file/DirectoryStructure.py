@@ -14,3 +14,6 @@ class DirectoryStructure(AbstractFileSystemStructure):
 
     def create_missing(self) -> None:
         os.makedirs(self.path, exist_ok=True)
+
+    def get_parent_dir(self) -> str:
+        return os.path.dirname(os.path.dirname(self.path)) + os.path.sep
