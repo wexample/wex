@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from addons.app.decorator.app_command import app_command
+from src.helper.file import DICT_ITEM_EXISTS_ACTION_MERGE
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.string import string_random_password
 
@@ -26,53 +27,25 @@ def mysql__service__install(
     )
 
     manager.set_config(
-        [
-            "structure",
-            "schema",
-            APP_DIR_APP_DATA_NAME,
-            "type"
-        ],
-        "dir",
-    )
-
-    manager.set_config(
-        [
-            "structure",
-            "schema",
-            APP_DIR_APP_DATA_NAME,
-            "schema",
-            service,
-            "type"
-        ],
-        "dir",
-    )
-
-    manager.set_config(
-        [
-            "structure",
-            "schema",
-            APP_DIR_APP_DATA_NAME,
-            "schema",
-            service,
-            "schema",
-            "dumps",
-            "type"
-        ],
-        "dir",
-    )
-
-    # Inform remote sync commands to push latest database dump if exists.
-    manager.set_config(
-        [
-            "structure",
-            "schema",
-            APP_DIR_APP_DATA_NAME,
-            "schema",
-            service,
-            "schema",
-            "dumps",
-            "schema",
-            "db.latest",
-        ],
-        {"type": "file", "remote": "push"},
+        ["structure", "schema", APP_DIR_APP_DATA_NAME],
+        {
+            "type": "dir",
+            "schema": {
+                service: {
+                    "type": "dir",
+                    "schema": {
+                        "dumps": {
+                            "type": "dir",
+                            "schema": {
+                                "db.latest": {
+                                    "type": "file",
+                                    "remote": "push"
+                                }
+                            }
+                        }
+                    }
+                },
+            },
+        },
+        when_exist=DICT_ITEM_EXISTS_ACTION_MERGE
     )
