@@ -55,9 +55,7 @@ def _push_schema_recursive(
     if "remote" in schema and schema["remote"] == "push":
         item_realpath = os.path.realpath(os.path.join(manager.get_app_dir(), item_name))
         if os.path.islink(item_realpath):
-            item_realpath = os.path.realpath(
-                os.readlink(item_realpath)
-            )
+            item_realpath = os.path.realpath(os.readlink(item_realpath))
 
         remote_path = (
             f"~/pushed/{environment}/{manager.get_config('global.name').get_str()}/"
@@ -65,11 +63,8 @@ def _push_schema_recursive(
 
         # If item should exist it will be checked on regular path.
         if os.path.exists(item_realpath):
-
             remote_item_path = os.path.join(remote_path, item_name)
-            manager.log(
-                f"Sending file {item_realpath} to {address}:{remote_item_path}"
-            )
+            manager.log(f"Sending file {item_realpath} to {address}:{remote_item_path}")
 
             if os.path.isfile(item_realpath):
                 remote_item_dir = os.path.dirname(remote_item_path)

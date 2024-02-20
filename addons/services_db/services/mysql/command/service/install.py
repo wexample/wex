@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from addons.app.decorator.app_command import app_command
-from src.helper.file import DICT_ITEM_EXISTS_ACTION_MERGE
 from src.const.globals import COMMAND_TYPE_SERVICE
+from src.helper.file import DICT_ITEM_EXISTS_ACTION_MERGE
 from src.helper.string import string_random_password
 
 if TYPE_CHECKING:
@@ -36,16 +36,11 @@ def mysql__service__install(
                     "schema": {
                         "dumps": {
                             "type": "dir",
-                            "schema": {
-                                "db.latest": {
-                                    "type": "file",
-                                    "remote": "push"
-                                }
-                            }
+                            "schema": {"db.latest": {"type": "file", "remote": "push"}},
                         }
-                    }
+                    },
                 },
             },
         },
-        when_exist=DICT_ITEM_EXISTS_ACTION_MERGE
+        when_exist=DICT_ITEM_EXISTS_ACTION_MERGE,
     )

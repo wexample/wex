@@ -16,11 +16,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         test_filename = "structure-test.txt"
 
         manager.set_config(
-            key=[
-                "structure",
-                "schema",
-                test_filename
-            ],
+            key=["structure", "schema", test_filename],
             value={
                 "type": "file",
                 "should_exist": True,
@@ -42,7 +38,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                         "should_exist": True,
                         "on_missing": "create",
                         "default_content": "This is a file placed in a subdirectory "
-                                           "which should also be push to remote server.",
+                        "which should also be push to remote server.",
                         "remote": "push",
                     }
                 },

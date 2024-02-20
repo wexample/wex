@@ -57,10 +57,11 @@ from src.helper.core import core_kernel_get_version
 from src.helper.data_yaml import yaml_load, yaml_load_dict, yaml_write
 from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
+    DICT_ITEM_EXISTS_ACTION_REPLACE,
     file_env_to_dict,
     file_remove_dict_item_by_path,
     file_set_dict_item_by_path,
-    file_write_dict_to_config, DICT_ITEM_EXISTS_ACTION_REPLACE, DICT_ITEM_EXISTS_ACTION_ABORT,
+    file_write_dict_to_config,
 )
 from src.helper.service import service_load_config
 from src.helper.string import string_to_kebab_case, string_to_snake_case
@@ -325,12 +326,7 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(
-            self.config_to_dict(config),
-            key,
-            value,
-            when_exist
-        )
+        file_set_dict_item_by_path(self.config_to_dict(config), key, value, when_exist)
 
     def set_config(
         self,
@@ -338,12 +334,7 @@ class AppAddonManager(AddonManager):
         value: AppConfigValue,
         when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
-        self._set_config_value(
-            self._config,
-            key,
-            value,
-            when_exist
-        )
+        self._set_config_value(self._config, key, value, when_exist)
 
         self.save_config()
 
@@ -369,12 +360,7 @@ class AppAddonManager(AddonManager):
         value: AppConfigValue,
         when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
-        self._set_config_value(
-            self._runtime_config,
-            key,
-            value,
-            when_exist
-        )
+        self._set_config_value(self._runtime_config, key, value, when_exist)
 
         self.save_runtime_config()
 

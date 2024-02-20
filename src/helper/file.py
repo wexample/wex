@@ -189,7 +189,11 @@ def file_set_dict_item_by_path(
     if final_key in data and when_exist != DICT_ITEM_EXISTS_ACTION_REPLACE:
         if when_exist == DICT_ITEM_EXISTS_ACTION_ABORT:
             return
-        elif when_exist == DICT_ITEM_EXISTS_ACTION_MERGE and isinstance(data[final_key], dict) and isinstance(value, dict):
+        elif (
+            when_exist == DICT_ITEM_EXISTS_ACTION_MERGE
+            and isinstance(data[final_key], dict)
+            and isinstance(value, dict)
+        ):
             from src.helper.dict import dict_merge
 
             data[final_key] = dict_merge(data[final_key], value)
