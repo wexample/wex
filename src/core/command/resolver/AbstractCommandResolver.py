@@ -3,6 +3,7 @@ import re
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
+from src.decorator.attach import CommandAttachment
 from src.const.globals import (
     COMMAND_EXTENSIONS,
     COMMAND_SEPARATOR_ADDON,
@@ -20,7 +21,7 @@ from src.const.types import (
     RegistryResolverData,
     ShellCommandsList,
     StringsList,
-    StringsMatch,
+    StringsMatch, StringKeysDict,
 )
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
@@ -92,16 +93,30 @@ class AbstractCommandResolver(KernelChild):
         commands = self.get_active_commands()
         for command_string in commands:
             if len(commands[command_string]["attachments"][position]):
-                for target_command in commands[command_string]["attachments"][position]:
-                    if target_command == request_command_string:
+                for attachment in commands[command_string]["attachments"][position]:
+                    if attachment["command"] == request_command_string:
                         self.kernel.io.log(
                             f"Running attached command to {request_command_string} : {command_string}"
                         )
 
+                        args = {}
+                        args_copy: StringKeysDict = cast(StringKeysDict, request.get_args_list().copy())
+                        # Pass all args, attached command should have same args as target
+                        if attachment["pass_args"] is True:
+                            args = args_copy
+                        # Pass some args
+                        elif isinstance(attachment["pass_args"], list):
+                            for arg_name in attachment["pass_args"]:
+                                # Support missing args as arg can have a default value.
+                                if arg_name in args_copy:
+                                    args[arg_name] = args_copy[arg_name]
+
                         self.kernel.run_command(
                             command_string,
-                            # Attached command should have same args as target
-                            request.get_args_list().copy(),
+                            args,
+                            # Attached script runs in fast mode as it can contain async responses:
+                            #   - On "before": it should be executed completely
+                            #   - On "after": it should avoid to run main command with extra unexpected steps.
                             fast_mode=True,
                         )
 
@@ -383,19 +398,22 @@ class AbstractCommandResolver(KernelChild):
                                 else None
                             )
 
-                        attachments: Dict[str, List[str]] = {}
+                        attachments: Dict[str, CommandAttachment] = {}
                         for position in script_command.attachments:
                             attachments[position] = []
                             for attachment in script_command.attachments[position]:
-                                if isinstance(attachment, ScriptCommand):
+                                if isinstance(attachment["command"], ScriptCommand):
                                     attachment_string = (
-                                        self.build_command_from_function(attachment)
+                                        self.build_command_from_function(attachment["command"])
                                     )
                                 else:
-                                    attachment_string = attachment
-                                    assert isinstance(attachment, str)
+                                    assert isinstance(attachment["command"], str)
+                                    attachment_string = attachment["command"]
 
-                                attachments[position].append(attachment_string)
+                                attachments[position].append({
+                                    "command": attachment_string,
+                                    "pass_args": attachment["pass_args"]
+                                })
 
                         commands[internal_command] = cast(
                             RegistryCommand,

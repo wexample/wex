@@ -6,6 +6,7 @@ from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 def remote_get_environment_ip(

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 
 import click
 
+from src.decorator.attach import CommandAttachmentPassArgsOption
 from src.const.types import (
     AnyCallable,
     Args,
@@ -31,7 +32,7 @@ class ScriptCommand(BaseClass):
         self.as_sudo: bool = False
         self.command_type: str = command_type
         self.no_log: bool = False
-        self.attachments: Dict[str, List[str | ScriptCommand]] = {
+        self.attachments: Dict[str, List[CommandAttachmentPassArgsOption]] = {
             "after": [],
             "before": [],
         }
