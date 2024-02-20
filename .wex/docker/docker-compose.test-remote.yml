@@ -6,6 +6,8 @@ services:
     container_name: wex_test_remote
     image: gitlab-docker.wexample.com/wexample/wex/test-remote
     restart: unless-stopped
+    stdin_open: true
+    tty: true
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
     network_mode: bridge

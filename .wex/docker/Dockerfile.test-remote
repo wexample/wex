@@ -1,14 +1,28 @@
-FROM alpine:latest
+# docker build -f .wex/docker/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
+FROM gitlab-docker.wexample.com/wexample-public/docker/wex:latest
 
-# Use bash as default terminal
-RUN apk --no-cache add bash openssh
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    bash \
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/*
+
+# Generate SSH keys
 RUN ssh-keygen -A
+
+# Set the root password
 RUN echo 'root:TEST_PASSWORD' | chpasswd
 
-# Configure SSHD
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
-RUN echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
+# Create the missing privilege separation directory
+RUN mkdir -p /run/sshd
 
+# Configure SSHD
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
+    && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
+    && echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
+
+# Expose the SSH port
 EXPOSE 22
+
+# Command to run the SSH daemon
 CMD ["/usr/sbin/sshd", "-D"]
