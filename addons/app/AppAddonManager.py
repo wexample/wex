@@ -316,7 +316,7 @@ class AppAddonManager(AddonManager):
         config: Optional[AnyAppConfig],
         key: Union[str | StringsList],
         value: Any,
-        replace: bool = True,
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
         if not config:
             return None
@@ -325,12 +325,25 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(self.config_to_dict(config), key, value, replace)
+        file_set_dict_item_by_path(
+            self.config_to_dict(config),
+            key,
+            value,
+            when_exist
+        )
 
     def set_config(
-        self, key: Union[str | StringsList], value: AppConfigValue, replace: bool = True
+        self,
+        key: Union[str | StringsList],
+        value: AppConfigValue,
+        replace: bool = True
     ) -> None:
-        self._set_config_value(self._config, key, value, replace)
+        self._set_config_value(
+            self._config,
+            key,
+            value,
+            DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
+        )
 
         self.save_config()
 
@@ -353,7 +366,12 @@ class AppAddonManager(AddonManager):
     def set_runtime_config(
         self, key: str, value: AppConfigValue, replace: bool = True
     ) -> None:
-        self._set_config_value(self._runtime_config, key, value, replace)
+        self._set_config_value(
+            self._runtime_config,
+            key,
+            value,
+            DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
+        )
 
         self.save_runtime_config()
 

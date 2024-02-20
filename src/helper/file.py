@@ -174,7 +174,7 @@ def file_set_dict_item_by_path(
     data: Dict[str, Any],
     key: Union[str | StringsList],
     value: Any,
-    replace: bool = True,
+    when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
 ) -> None:
     # Allow pre-split to escape non-separator dots, like in file names.
     if isinstance(key, list):
@@ -184,8 +184,6 @@ def file_set_dict_item_by_path(
 
     for k in keys[:-1]:
         data = data.setdefault(k, {})
-
-    when_exist = DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
 
     final_key = keys[-1]
     if final_key in data and when_exist != DICT_ITEM_EXISTS_ACTION_REPLACE:
