@@ -13,7 +13,10 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
     QueuedCollectionStopCurrentStepResponse,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse, QueuedCollectionResponseCollection
+from src.core.response.QueuedCollectionResponse import (
+    QueuedCollectionResponse,
+    QueuedCollectionResponseCollection,
+)
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
 

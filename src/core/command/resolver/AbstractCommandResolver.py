@@ -94,7 +94,9 @@ class AbstractCommandResolver(KernelChild):
         commands = self.get_active_commands()
         for command_string in commands:
             if len(commands[command_string]["attachments"][position]):
-                for attachment_config in commands[command_string]["attachments"][position]:
+                for attachment_config in commands[command_string]["attachments"][
+                    position
+                ]:
                     attachment = cast(CommandAttachment, attachment_config)
 
                     if attachment["command"] == request_command_string:

@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
-from src.core.file.DirectoryStructure import DirectoryStructure
 from src.const.types import StringsList
+from src.core.file.DirectoryStructure import DirectoryStructure
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -19,8 +19,10 @@ DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD: str = "TEST_PASSWORD"
 
 
 def test_get_app_dir(kernel: "Kernel", name: str) -> str:
-    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts['apps'])
-    return f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
+    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
+    return (
+        f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
+    )
 
 
 def test_build_app_name(
