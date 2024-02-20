@@ -164,5 +164,6 @@ class AbstractAppTestCase(AbstractTestCase):
 
         manager = AppAddonManager(self.kernel, app_dir=app_dir)
         manager.set_config("env.test_remote.server.ip", self.kernel.remote_address)
+        self.reload_app_manager()
 
         return manager
