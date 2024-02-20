@@ -26,7 +26,7 @@ def app__db__dump(
         return None
 
     env = manager.get_env()
-    name = manager.get_runtime_config("global.name").get_str()
+    name = manager.get_app_name()
 
     # Determine dump file name
     if file_name:

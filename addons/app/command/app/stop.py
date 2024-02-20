@@ -34,7 +34,7 @@ def app__app__stop(
     fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name").get_str()
+    name = manager.get_app_name()
 
     def _app__app__stop__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def sqlserver__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> None:
-    app_name = manager.get_config("global.name").get_str()
+    app_name = manager.get_app_name()
 
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,

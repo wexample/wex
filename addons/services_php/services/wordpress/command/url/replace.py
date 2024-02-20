@@ -117,7 +117,7 @@ def wordpress__url__replace(
         if not old_url:
             return QueuedCollectionStopResponse(kernel, "WORDPRESS_MISSING_OLD_URL")
 
-        app_name = manager.get_config("global.name").get_str()
+        app_name = manager.get_app_name()
         message_part = f'old url {old_url} (https, http, and domain only) by new url {new_url} in "{app_name}"'
         if not yes and not click.confirm(
             f"Are you ready to rewrite {message_part}", default=True

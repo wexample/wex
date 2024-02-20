@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 def mysql__db__exec(
     manager: "AppAddonManager", app_dir: str, service: str, command: str
 ) -> str:
-    app_name = manager.get_config("global.name").get_str()
+    app_name = manager.get_app_name()
 
     return (
         manager.kernel.run_function(

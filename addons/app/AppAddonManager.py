@@ -115,6 +115,9 @@ class AppAddonManager(AddonManager):
 
         return self._directory
 
+    def get_app_name(self, default: Optional[str] = None) -> str:
+        return self.get_config("global.name", default).get_str()
+
     def get_applications_path(self, environment: Optional[str] = None) -> str:
         return (
             os.sep
@@ -384,7 +387,7 @@ class AppAddonManager(AddonManager):
                 self.first_log_indent = self.kernel.io.log_indent
 
             if self.kernel.io.log_indent == self.first_log_indent:
-                message = f'[{self.get_config("global.name").get_str()}] {message}'
+                message = f'[{self.get_app_name()}] {message}'
 
         self.kernel.io.log(message, color, indent)
 
@@ -648,7 +651,7 @@ class AppAddonManager(AddonManager):
         env = self.kernel.run_function(app__env__get, {"app-dir": self.app_dir}).first()
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
-        name = self.get_config("global.name").get_str()
+        name = self.get_app_name()
         config = self._config
 
         if not config:

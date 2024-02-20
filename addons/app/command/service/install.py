@@ -205,7 +205,7 @@ def app_service_install_merge_dir(
                 with open(abs_path, "r") as f:
                     extra_compose = yaml.safe_load(f) or {}
 
-                app_name = manager.get_config("global.name").get_str()
+                app_name = manager.get_app_name()
 
                 if "services" in extra_compose:
                     extra_services = {}

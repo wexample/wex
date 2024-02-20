@@ -75,7 +75,7 @@ def app__app__start(
     fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name").get_str()
+    name = manager.get_app_name()
 
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
