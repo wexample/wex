@@ -1,6 +1,6 @@
+import os
 from typing import TYPE_CHECKING
 
-from addons.app.command.db.dump import app__db__dump
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (
@@ -10,7 +10,6 @@ from addons.app.helper.remote import (
     remote_get_login_command,
 )
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.types import FileSystemStructureSchemaItem
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
 
@@ -18,7 +17,7 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 
-@app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
+@app_command(help="Description", command_type=COMMAND_TYPE_ADDON, should_be_valid=True)
 @option(
     "--environment",
     "-e",
@@ -38,44 +37,70 @@ def app__remote__push(
     if not domain_or_ip:
         return False
 
-    manager.kernel.run_function(
-        app__db__dump,
-        {
-            "app-dir": app_dir,
-        },
-    )
-
-    remote_path = (
-        f"/var/www/{environment}/{manager.get_config('global.name').get_str()}/"
-    )
-
-    manager.kernel.run_function(
-        app__remote__exec,
-        {
-            "app-dir": app_dir,
-            "environment": environment,
-            "command": f"mkdir -p {remote_path}",
-        },
-    )
-
     address = remote_get_connexion_address(manager, environment)
     schema = manager.get_directory().get_schema()
-    command_base = (
-        remote_get_login_command(manager, environment)
-        + [
-            "scp",
-        ]
-        + remote_get_connexion_options()
+
+    _push_schema_recursive(
+        '.',
+        manager,
+        environment,
+        schema,
+        address
     )
 
-    for item_name in schema:
-        options: FileSystemStructureSchemaItem = schema[item_name]
+    return True
 
-        if "remote" in options and options["remote"] == "push":
-            manager.log(f"Send file to {domain_or_ip} : {remote_path}{item_name}")
-            execute_command_sync(
-                manager.kernel,
-                command_base + [item_name, f"{address}:{remote_path}{item_name}"],
+
+def _push_schema_recursive(
+    item_name,
+    manager,
+    environment,
+    schema,
+    address,
+):
+    if "remote" in schema and schema["remote"] == "push":
+        item_full_path = os.path.join(manager.get_app_dir(), item_name)
+        remote_path = f"~/pushed/{environment}/{manager.get_config('global.name').get_str()}/"
+
+        # If item should exist it will be checked on regular path.
+        if os.path.exists(item_full_path):
+            remote_item_path = os.path.join(remote_path, item_name)
+            manager.log(f"Sending file {item_full_path} to {address}:{remote_item_path}")
+
+            if os.path.isfile(item_full_path):
+                remote_item_dir = os.path.dirname(remote_item_path)
+            else:
+                remote_item_dir = remote_item_path
+
+            manager.kernel.io.log(f"Creating remote dir {remote_item_dir}")
+            manager.kernel.run_function(
+                app__remote__exec,
+                {
+                    "app-dir": manager.get_app_dir(),
+                    "environment": environment,
+                    "command": f"mkdir -p {remote_item_dir}",
+                },
             )
 
-    return True
+            manager.kernel.io.log(f"Copying file {remote_item_dir}")
+            if os.path.isfile(item_full_path):
+                execute_command_sync(
+                    manager.kernel,
+                    (
+                        remote_get_login_command(manager, environment)
+                        + [
+                            "scp",
+                        ]
+                        + remote_get_connexion_options()
+                    ) + [item_name, f"{address}:{remote_path}{item_name}"],
+                )
+
+    if "schema" in schema:
+        for child_item_name in schema["schema"]:
+            _push_schema_recursive(
+                os.path.join(item_name, child_item_name),
+                manager,
+                environment,
+                schema["schema"][child_item_name],
+                address,
+            )

@@ -1,7 +1,7 @@
 import os.path
 import re
 import shutil
-from typing import Optional
+from typing import Optional, cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
@@ -35,6 +35,10 @@ class AbstractAppTestCase(AbstractTestCase):
         return test_create_app(
             self.kernel, name=name, services=services or [], force_restart=force_restart
         )
+
+    def reload_app_manager(self):
+        # If current manager is in test app, config should be reloaded manually
+        cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
     def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
         response = self.kernel.run_function(app__app__start, {
@@ -135,7 +139,7 @@ class AbstractAppTestCase(AbstractTestCase):
         self, services: StringsList
     ) -> AppAddonManager:
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE
-        app_dir = self.create_and_start_test_app(services=services)
+        app_dir = self.create_and_start_test_app(services=services, force_restart=True)
         env_screaming_snake = string_to_snake_case(environment).upper()
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
