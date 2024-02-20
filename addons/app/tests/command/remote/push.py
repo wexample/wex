@@ -16,7 +16,11 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         test_filename = "structure-test.txt"
 
         manager.set_config(
-            key=f"structure.schema.{test_filename}",
+            key=[
+                "structure",
+                "schema",
+                test_filename
+            ],
             value={
                 "type": "file",
                 "should_exist": True,
@@ -38,7 +42,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                         "should_exist": True,
                         "on_missing": "create",
                         "default_content": "This is a file placed in a subdirectory "
-                        "which should also be push to remote server.",
+                                           "which should also be push to remote server.",
                         "remote": "push",
                     }
                 },
@@ -70,6 +74,17 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             lines[len(lines) - 1].startswith("-rw"),
             "The local file has been created remotely",
         )
+
+        response = self.kernel.run_function(
+            app__remote__exec,
+            {
+                "app-dir": app_dir,
+                "environment": environment,
+                "command": f"ls -la ~/pushed/{environment}/{manager.get_app_name()}",
+            },
+        )
+
+        self.log(response.first())
 
     def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:
         manager = self.create_and_start_test_app_with_remote(services)

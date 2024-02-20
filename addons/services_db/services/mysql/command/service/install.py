@@ -25,6 +25,42 @@ def mysql__service__install(
         },
     )
 
+    manager.set_config(
+        [
+            "structure",
+            "schema",
+            APP_DIR_APP_DATA_NAME,
+            "type"
+        ],
+        "dir",
+    )
+
+    manager.set_config(
+        [
+            "structure",
+            "schema",
+            APP_DIR_APP_DATA_NAME,
+            "schema",
+            service,
+            "type"
+        ],
+        "dir",
+    )
+
+    manager.set_config(
+        [
+            "structure",
+            "schema",
+            APP_DIR_APP_DATA_NAME,
+            "schema",
+            service,
+            "schema",
+            "dumps",
+            "type"
+        ],
+        "dir",
+    )
+
     # Inform remote sync commands to push latest database dump if exists.
     manager.set_config(
         [
@@ -33,6 +69,8 @@ def mysql__service__install(
             APP_DIR_APP_DATA_NAME,
             "schema",
             service,
+            "schema",
+            "dumps",
             "schema",
             "db.latest",
         ],
