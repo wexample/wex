@@ -64,7 +64,7 @@ def app__db__dump(
         manager.kernel.io.message("Dump created at " + output_path)
 
         # Create symlink
-        symlink_path = f"{os.path.dirname(dump_path)}/{env}-{name}.latest"
+        symlink_path = f"{os.path.dirname(dump_path)}/db.latest"
 
         print(symlink_path)
         if os.path.exists(symlink_path) or os.path.islink(symlink_path):
