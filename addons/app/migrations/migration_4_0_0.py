@@ -3,7 +3,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL
+from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL, APP_DIR_APP_DATA_NAME
 from addons.app.helper.app import app_create_env
 from addons.default.helper.git_utils import (
     git_get_or_create_repo,
@@ -32,9 +32,9 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
 
     # Rename ".wex" file to "config"
     def _migration_4_0_0_config() -> None:
-        if os.path.isfile(".wex"):
+        if os.path.isfile(APP_DIR_APP_DATA_NAME):
             # Rename old config file
-            git_move_or_file_move(repo, ".wex", "config")
+            git_move_or_file_move(repo, APP_DIR_APP_DATA_NAME, "config")
 
     # Create ".wex" dir
     def _migration_4_0_0_dir() -> None:
@@ -45,15 +45,15 @@ def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
     # Move every file and folder to ".wex", except the "project" dir
     def _migration_4_0_0_move_root_environment_files() -> None:
         for item in os.listdir(app_dir):
-            if item in projects_dirs + [".git", ".wex"]:
+            if item in projects_dirs + [".git", APP_DIR_APP_DATA_NAME]:
                 continue
-            git_move_or_file_move(repo, item, f".wex/{item}")
+            git_move_or_file_move(repo, item, f"{APP_DIR_APP_DATA_NAME}/{item}")
 
-        if not os.path.exists(".wex/.env"):
+        if not os.path.exists(f"{APP_DIR_APP_DATA_NAME}/.env"):
             app_create_env(APP_ENV_LOCAL, app_dir)
 
         # May be missing.
-        os.makedirs(f".wex/tmp", exist_ok=True)
+        os.makedirs(f"{APP_DIR_APP_DATA_NAME}/tmp", exist_ok=True)
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files() -> None:
@@ -148,8 +148,8 @@ def _migration_4_0_0_replace_docker_mapping(
 
 
 def is_version_4_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
-    if os.path.isdir(path + ".wex"):
-        if os.path.isfile(path + ".wex/config"):
+    if os.path.isdir(path + APP_DIR_APP_DATA_NAME):
+        if os.path.isfile(path + f"{APP_DIR_APP_DATA_NAME}/config"):
             return True
 
     return None

@@ -4,6 +4,7 @@ from typing import Optional, TypedDict, cast
 
 import yaml
 
+from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge
 
@@ -95,7 +96,7 @@ class AppCrawler:
             tree["children"] or {},
             {
                 ".git": {"type": "dir", "status": "hidden"},
-                ".wex": {
+                APP_DIR_APP_DATA_NAME: {
                     "children": {
                         "ai": {
                             "children": {
