@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from addons.app.const.app import APP_DIR_TMP
 from addons.app.decorator.app_command import app_command
 from addons.services_db.const.mysql import MYSQL_CONF_FILE
+from src.helper.file import DICT_ITEM_EXISTS_ACTION_ABORT
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -16,7 +17,9 @@ def mysql__config__runtime(
 ) -> None:
     # Set db as main database.
     manager.set_runtime_config(
-        f"db.main", manager.get_config(f"service.{service}.name").get_str(), False
+        f"db.main",
+        manager.get_config(f"service.{service}.name").get_str(),
+        DICT_ITEM_EXISTS_ACTION_ABORT
     )
 
     db_connection_file = os.path.join(app_dir, APP_DIR_TMP, MYSQL_CONF_FILE)

@@ -336,13 +336,13 @@ class AppAddonManager(AddonManager):
         self,
         key: Union[str | StringsList],
         value: AppConfigValue,
-        replace: bool = True
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
         self._set_config_value(
             self._config,
             key,
             value,
-            DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
+            when_exist
         )
 
         self.save_config()
@@ -364,13 +364,16 @@ class AppAddonManager(AddonManager):
         return cast(StringKeysDict, config)
 
     def set_runtime_config(
-        self, key: str, value: AppConfigValue, replace: bool = True
+        self,
+        key: str,
+        value: AppConfigValue,
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
         self._set_config_value(
             self._runtime_config,
             key,
             value,
-            DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
+            when_exist
         )
 
         self.save_runtime_config()
