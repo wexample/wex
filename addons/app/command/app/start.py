@@ -120,6 +120,9 @@ def app__app__start(
         if not kernel.run_function(
             app__service__used, {"service": "proxy", "app-dir": app_dir}
         ).first():
+            # Env should have been defined at this point.
+            env = manager.get_env(app_dir)
+
             if not manager.require_proxy():
                 kernel.io.message(f"Don't require proxy")
                 return None
@@ -269,7 +272,7 @@ def app__app__start(
     def _app__app__start__first_init(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
+        env_dir = f"{manager.get_app_dir()}{APP_DIR_APP_DATA}"
         first_start_lock = os.path.join(
             env_dir, "tmp", f"{CORE_COMMAND_NAME}.first-start"
         )

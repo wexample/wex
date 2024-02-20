@@ -67,8 +67,4 @@ class FastModeQueuedCollectionResponseQueueManager(
                 # In fast mode we merge all outputs in the root output bag
                 self.response.output_bag += new_response.output_bag
 
-                # # Continue if sub response is not complete
-                # if new_response.has_next_step:
-                #     self.response.has_next_step = True
-
         return super().render_content_complete()

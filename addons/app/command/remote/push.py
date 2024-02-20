@@ -47,7 +47,7 @@ def app__remote__push(
 
 def _push_schema_recursive(
     item_name: str,
-    manager: AppAddonManager,
+    manager: "AppAddonManager",
     environment: str,
     schema: StringKeysDict,
     address: str,
