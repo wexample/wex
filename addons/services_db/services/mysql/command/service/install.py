@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
+from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.string import string_random_password
 
@@ -21,5 +22,21 @@ def mysql__service__install(
             "password": string_random_password(),
             "port": 3306,
             "user": "root",
+        },
+    )
+
+    # Inform remote sync commands to push latest database dump if exists.
+    manager.set_config([
+        "structure",
+        "schema",
+        APP_DIR_APP_DATA_NAME,
+        "schema",
+        service,
+        "schema",
+        "db.latest"
+    ],
+        {
+            "type": "file",
+            "remote": "push"
         },
     )
