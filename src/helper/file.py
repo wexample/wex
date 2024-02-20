@@ -6,6 +6,10 @@ from typing import IO, Any, Dict, List, Optional, Union, cast
 
 from src.const.types import StringsList
 
+DICT_ITEM_EXISTS_ACTION_ABORT = "abort"
+DICT_ITEM_EXISTS_ACTION_MERGE = "merge"
+DICT_ITEM_EXISTS_ACTION_REPLACE = "replace"
+
 
 def file_list_subdirectories(path: str) -> List[str]:
     subdirectories = []
@@ -181,10 +185,18 @@ def file_set_dict_item_by_path(
     for k in keys[:-1]:
         data = data.setdefault(k, {})
 
-    if not replace and keys[-1] in data:
-        return
+    when_exist = DICT_ITEM_EXISTS_ACTION_REPLACE if replace else DICT_ITEM_EXISTS_ACTION_ABORT
 
-    data[keys[-1]] = value
+    final_key = keys[-1]
+    if final_key in data and when_exist != DICT_ITEM_EXISTS_ACTION_REPLACE:
+        if when_exist == DICT_ITEM_EXISTS_ACTION_ABORT:
+            return
+        elif when_exist == DICT_ITEM_EXISTS_ACTION_MERGE and isinstance(data[final_key], dict) and isinstance(value, dict):
+            from src.helper.dict import dict_merge
+
+            data[final_key] = dict_merge(data[final_key], value)
+    else:
+        data[final_key] = value
 
 
 def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
