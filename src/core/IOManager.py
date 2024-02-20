@@ -101,11 +101,15 @@ class IOManager(KernelChild):
         color: str = COLOR_GRAY,
         increment: int = 0,
         verbosity: int = VERBOSITY_LEVEL_DEFAULT,
+        command: Optional[ScriptCommand] = None
     ) -> None:
         if verbosity > self.kernel.verbosity:
             return
 
         self.log_hide()
+
+        if command:
+            message = command.get_callback_name() + ': ' + message
 
         message = f"{self.build_indent(increment)}{color}{message}{COLOR_RESET}"
 

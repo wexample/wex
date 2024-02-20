@@ -9,22 +9,32 @@ if TYPE_CHECKING:
 
 
 def remote_get_environment_ip(
-    manager: "AppAddonManager", environment: str
+    manager: "AppAddonManager",
+    environment: str,
+    command: Optional["ScriptCommand"] = None
 ) -> Optional[str]:
     if manager.has_config(f"env.{environment}.server.ip"):
         ip = manager.get_config(f"env.{environment}.server.ip").get_str()
-        manager.kernel.io.log(f"Using ip {ip}", verbosity=VERBOSITY_LEVEL_MAXIMUM)
+
+        manager.kernel.io.log(
+            f"Using ip {ip}",
+            verbosity=VERBOSITY_LEVEL_MAXIMUM,
+            command=command
+        )
         return ip
     elif manager.has_config(f"env.{environment}.domain_main"):
         domain = manager.get_config(f"env.{environment}.domain_main").get_str()
         manager.kernel.io.log(
-            f"Using domain {domain}", verbosity=VERBOSITY_LEVEL_MAXIMUM
+            f"Using domain {domain}",
+            verbosity=VERBOSITY_LEVEL_MAXIMUM,
+            command=command
         )
         return domain
 
     manager.kernel.io.log(
         f"No remote domain or server IP found for env {environment}",
         verbosity=VERBOSITY_LEVEL_MAXIMUM,
+        command=command
     )
 
     return None
@@ -69,9 +79,15 @@ def remote_get_connexion_options() -> StringsList:
 
 
 def remote_get_connexion_address(
-    manager: "AppAddonManager", environment: str
+    manager: "AppAddonManager",
+    environment: str,
+    command: Optional["ScriptCommand"] = None
 ) -> Optional[str]:
-    domain_or_ip = remote_get_environment_ip(manager, environment)
+    domain_or_ip = remote_get_environment_ip(
+        manager,
+        environment,
+        command
+    )
 
     if not domain_or_ip:
         return None

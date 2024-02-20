@@ -47,7 +47,11 @@ def app__remote__exec(
     command: str,
     terminal: bool,
 ) -> Optional[InteractiveShellCommandResponse]:
-    address = remote_get_connexion_address(manager=manager, environment=environment)
+    address = remote_get_connexion_address(
+        manager=manager,
+        environment=environment,
+        command=app__remote__exec
+    )
 
     if not address:
         return None

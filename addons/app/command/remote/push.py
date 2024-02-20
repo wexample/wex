@@ -29,7 +29,11 @@ if TYPE_CHECKING:
 def app__remote__push(
     manager: "AppAddonManager", environment: str, app_dir: str
 ) -> bool:
-    domain_or_ip = remote_get_environment_ip(manager, environment)
+    domain_or_ip = remote_get_environment_ip(
+        manager,
+        environment,
+        command=app__remote__push
+    )
 
     if not domain_or_ip:
         return False
