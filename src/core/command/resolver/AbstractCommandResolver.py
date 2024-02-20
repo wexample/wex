@@ -94,7 +94,9 @@ class AbstractCommandResolver(KernelChild):
         commands = self.get_active_commands()
         for command_string in commands:
             if len(commands[command_string]["attachments"][position]):
-                for attachment in commands[command_string]["attachments"][position]:
+                for attachment_config in commands[command_string]["attachments"][position]:
+                    attachment = cast(CommandAttachment, attachment_config)
+
                     if attachment["command"] == request_command_string:
                         self.kernel.io.log(
                             f"Running attached command to {request_command_string} : {command_string}"
@@ -401,9 +403,9 @@ class AbstractCommandResolver(KernelChild):
                                 else None
                             )
 
-                        attachments: Dict[str, CommandAttachment] = {}
+                        attachments: Dict[str, List[CommandAttachment]] = {}
                         for position in script_command.attachments:
-                            attachments[position] = []
+                            attachments_list: List[CommandAttachment] = []
                             for attachment in script_command.attachments[position]:
                                 if isinstance(attachment["command"], ScriptCommand):
                                     attachment_string = (
@@ -415,12 +417,14 @@ class AbstractCommandResolver(KernelChild):
                                     assert isinstance(attachment["command"], str)
                                     attachment_string = attachment["command"]
 
-                                attachments[position].append(
+                                attachments_list.append(
                                     {
                                         "command": attachment_string,
                                         "pass_args": attachment["pass_args"],
                                     }
                                 )
+
+                            attachments[position] = attachments_list
 
                         commands[internal_command] = cast(
                             RegistryCommand,

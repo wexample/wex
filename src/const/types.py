@@ -85,7 +85,7 @@ class FileSystemStructureSchemaItem(TypedDict, total=False):
     user: Optional[str]
 
 
-FileSystemStructureSchema = Dict[str, FileSystemStructureSchemaItem]
+FileSystemStructureSchema = StringKeysDict
 
 
 class RegistryCommand(TypedDict):

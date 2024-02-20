@@ -36,7 +36,7 @@ class AbstractAppTestCase(AbstractTestCase):
             self.kernel, name=name, services=services or [], force_restart=force_restart
         )
 
-    def reload_app_manager(self):
+    def reload_app_manager(self) -> None:
         # If current manager is in test app, config should be reloaded manually
         cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 

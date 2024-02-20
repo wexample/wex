@@ -124,6 +124,9 @@ def app__app__init(
             kernel.io.log(f"Renaming {sample_file}")
 
     def _init_step_create_env() -> None:
+        assert isinstance(app_dir, str)
+        assert isinstance(env, str)
+
         kernel.io.log(f'Creating env file with env "{env}"')
         app_create_env(env, app_dir)
 

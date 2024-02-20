@@ -9,6 +9,7 @@ from addons.app.helper.remote import (
     remote_get_environment_ip,
     remote_get_login_command,
 )
+from src.const.types import StringKeysDict
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
@@ -32,10 +33,11 @@ def app__remote__push(
         manager, environment, command=app__remote__push
     )
 
-    if not domain_or_ip:
+    address = remote_get_connexion_address(manager, environment)
+
+    if not domain_or_ip or not address:
         return False
 
-    address = remote_get_connexion_address(manager, environment)
     schema = manager.get_directory().get_schema()
 
     _push_schema_recursive(".", manager, environment, schema, address)
@@ -44,12 +46,12 @@ def app__remote__push(
 
 
 def _push_schema_recursive(
-    item_name,
-    manager,
-    environment,
-    schema,
-    address,
-):
+    item_name: str,
+    manager: AppAddonManager,
+    environment: str,
+    schema: StringKeysDict,
+    address: str,
+) -> None:
     if "remote" in schema and schema["remote"] == "push":
         item_full_path = os.path.join(manager.get_app_dir(), item_name)
         remote_path = (
