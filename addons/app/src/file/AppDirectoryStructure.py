@@ -45,7 +45,7 @@ class AppDirectoryStructure(DirectoryStructure):
                         },
                     },
                 }
-            }
+            },
         }
 
         config_file = os.path.join(

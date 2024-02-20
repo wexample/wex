@@ -6,7 +6,7 @@ from typing import Optional, cast
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
-from addons.app.const.app import APP_FILEPATH_REL_ENV, APP_ENV_TEST
+from addons.app.const.app import APP_ENV_TEST, APP_FILEPATH_REL_ENV
 from addons.app.helper.test import (
     DEFAULT_APP_TEST_NAME,
     DEFAULT_ENVIRONMENT_TEST_REMOTE,
@@ -41,10 +41,13 @@ class AbstractAppTestCase(AbstractTestCase):
         cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
     def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
-        response = self.kernel.run_function(app__app__start, {
-            "app-dir": app_dir,
-            "env": APP_ENV_TEST,
-        })
+        response = self.kernel.run_function(
+            app__app__start,
+            {
+                "app-dir": app_dir,
+                "env": APP_ENV_TEST,
+            },
+        )
 
         first = response.first()
         if isinstance(first, QueuedCollectionStopResponse):

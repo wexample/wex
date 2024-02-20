@@ -1,6 +1,5 @@
 import os
 import shutil
-from typing import cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms

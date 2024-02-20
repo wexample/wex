@@ -22,10 +22,7 @@ def app__app__restart(
     fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    options = {
-        "app-dir": app_dir,
-        "fast": fast
-    }
+    options = {"app-dir": app_dir, "fast": fast}
 
     def _app__app__restart__stop(
         queue: AbstractQueuedCollectionResponseQueueManager,

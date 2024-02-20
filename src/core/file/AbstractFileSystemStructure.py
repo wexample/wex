@@ -70,8 +70,8 @@ class AbstractFileSystemStructure(BaseClass):
     def load_schema(self) -> None:
         root_schema = self.get_schema()
 
-        if 'schema' in root_schema:
-            schema = root_schema['schema']
+        if "schema" in root_schema:
+            schema = root_schema["schema"]
 
             for item_name in schema:
                 options: FileSystemStructureSchemaItem = schema[item_name]

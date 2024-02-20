@@ -170,7 +170,7 @@ def file_set_dict_item_by_path(
     data: Dict[str, Any],
     key: Union[str | StringsList],
     value: Any,
-    replace: bool = True
+    replace: bool = True,
 ) -> None:
     # Allow pre-split to escape non-separator dots, like in file names.
     if isinstance(key, list):

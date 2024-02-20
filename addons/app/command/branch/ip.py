@@ -21,10 +21,6 @@ def app__branch__ip(
     env = _app__branch__env(manager, branch)
 
     if env is not None:
-        return remote_get_environment_ip(
-            manager,
-            env,
-            command=app__branch__ip
-        )
+        return remote_get_environment_ip(manager, env, command=app__branch__ip)
 
     return None

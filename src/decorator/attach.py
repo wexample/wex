@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Union, TypedDict
+from typing import TYPE_CHECKING, TypedDict, Union
 
 from src.const.types import StringsList
 
@@ -16,13 +16,12 @@ class CommandAttachment(TypedDict):
 def attach(
     position: str,
     command: Union[str, "ScriptCommand"],
-    pass_args: Union[bool, StringsList] = False
+    pass_args: Union[bool, StringsList] = False,
 ) -> "DecoratedScriptCommand":
     def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
-        script_command.attachments[position].append({
-            "command": command,
-            "pass_args": pass_args
-        })
+        script_command.attachments[position].append(
+            {"command": command, "pass_args": pass_args}
+        )
 
         return script_command
 

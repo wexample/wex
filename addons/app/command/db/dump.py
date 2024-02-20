@@ -2,8 +2,8 @@ import os
 import zipfile
 from typing import TYPE_CHECKING, Optional, cast
 
-from addons.app.decorator.app_command import app_command
 from addons.app.command.remote.push import app__remote__push
+from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.decorator.attach import attach
 from src.decorator.option import option
@@ -13,7 +13,11 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 
-@attach(position="before", command=cast("ScriptCommand", app__remote__push), pass_args=["app_dir"])
+@attach(
+    position="before",
+    command=cast("ScriptCommand", app__remote__push),
+    pass_args=["app_dir"],
+)
 @app_command(help="Create a database dump", should_run=True)
 @option("--file-name", "-f", type=str, required=False, help="Output file name")
 @option("--zip", "-z", type=bool, required=False, default=True, help="Zip output file")

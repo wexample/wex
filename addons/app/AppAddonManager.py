@@ -2,7 +2,7 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
 import yaml
 
@@ -316,7 +316,7 @@ class AppAddonManager(AddonManager):
         config: Optional[AnyAppConfig],
         key: Union[str | StringsList],
         value: Any,
-        replace: bool = True
+        replace: bool = True,
     ) -> None:
         if not config:
             return None
@@ -325,14 +325,11 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(
-            self.config_to_dict(config),
-            key,
-            value,
-            replace
-        )
+        file_set_dict_item_by_path(self.config_to_dict(config), key, value, replace)
 
-    def set_config(self, key: Union[str|StringsList], value: AppConfigValue, replace: bool = True) -> None:
+    def set_config(
+        self, key: Union[str | StringsList], value: AppConfigValue, replace: bool = True
+    ) -> None:
         self._set_config_value(self._config, key, value, replace)
 
         self.save_config()
@@ -396,7 +393,7 @@ class AppAddonManager(AddonManager):
                 self.first_log_indent = self.kernel.io.log_indent
 
             if self.kernel.io.log_indent == self.first_log_indent:
-                message = f'[{self.get_app_name()}] {message}'
+                message = f"[{self.get_app_name()}] {message}"
 
         self.kernel.io.log(message, color, indent)
 
@@ -504,9 +501,7 @@ class AppAddonManager(AddonManager):
             ).first():
                 from addons.app.command.app.start import app__app__start
 
-                self.kernel.io.message_next_command(
-                    app__app__start
-                )
+                self.kernel.io.message_next_command(app__app__start)
 
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,

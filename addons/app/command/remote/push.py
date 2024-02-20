@@ -29,9 +29,7 @@ def app__remote__push(
     manager: "AppAddonManager", environment: str, app_dir: str
 ) -> bool:
     domain_or_ip = remote_get_environment_ip(
-        manager,
-        environment,
-        command=app__remote__push
+        manager, environment, command=app__remote__push
     )
 
     if not domain_or_ip:
@@ -40,13 +38,7 @@ def app__remote__push(
     address = remote_get_connexion_address(manager, environment)
     schema = manager.get_directory().get_schema()
 
-    _push_schema_recursive(
-        '.',
-        manager,
-        environment,
-        schema,
-        address
-    )
+    _push_schema_recursive(".", manager, environment, schema, address)
 
     return True
 
@@ -60,12 +52,16 @@ def _push_schema_recursive(
 ):
     if "remote" in schema and schema["remote"] == "push":
         item_full_path = os.path.join(manager.get_app_dir(), item_name)
-        remote_path = f"~/pushed/{environment}/{manager.get_config('global.name').get_str()}/"
+        remote_path = (
+            f"~/pushed/{environment}/{manager.get_config('global.name').get_str()}/"
+        )
 
         # If item should exist it will be checked on regular path.
         if os.path.exists(item_full_path):
             remote_item_path = os.path.join(remote_path, item_name)
-            manager.log(f"Sending file {item_full_path} to {address}:{remote_item_path}")
+            manager.log(
+                f"Sending file {item_full_path} to {address}:{remote_item_path}"
+            )
 
             if os.path.isfile(item_full_path):
                 remote_item_dir = os.path.dirname(remote_item_path)
@@ -92,7 +88,8 @@ def _push_schema_recursive(
                             "scp",
                         ]
                         + remote_get_connexion_options()
-                    ) + [item_name, f"{address}:{remote_path}{item_name}"],
+                    )
+                    + [item_name, f"{address}:{remote_path}{item_name}"],
                 )
 
     if "schema" in schema:

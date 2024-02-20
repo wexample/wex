@@ -3,7 +3,6 @@ import re
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
-from src.decorator.attach import CommandAttachment
 from src.const.globals import (
     COMMAND_EXTENSIONS,
     COMMAND_SEPARATOR_ADDON,
@@ -20,8 +19,9 @@ from src.const.types import (
     RegistryCommandsCollection,
     RegistryResolverData,
     ShellCommandsList,
+    StringKeysDict,
     StringsList,
-    StringsMatch, StringKeysDict,
+    StringsMatch,
 )
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
@@ -33,6 +33,7 @@ from src.core.response.DictResponse import DictResponse
 from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.ListResponse import ListResponse
 from src.core.response.NullResponse import NullResponse
+from src.decorator.attach import CommandAttachment
 from src.helper.args import args_convert_dict_to_args
 from src.helper.command import command_to_string
 from src.helper.file import (
@@ -100,7 +101,9 @@ class AbstractCommandResolver(KernelChild):
                         )
 
                         args = {}
-                        args_copy: StringKeysDict = cast(StringKeysDict, request.get_args_list().copy())
+                        args_copy: StringKeysDict = cast(
+                            StringKeysDict, request.get_args_list().copy()
+                        )
                         # Pass all args, attached command should have same args as target
                         if attachment["pass_args"] is True:
                             args = args_copy
@@ -404,16 +407,20 @@ class AbstractCommandResolver(KernelChild):
                             for attachment in script_command.attachments[position]:
                                 if isinstance(attachment["command"], ScriptCommand):
                                     attachment_string = (
-                                        self.build_command_from_function(attachment["command"])
+                                        self.build_command_from_function(
+                                            attachment["command"]
+                                        )
                                     )
                                 else:
                                     assert isinstance(attachment["command"], str)
                                     attachment_string = attachment["command"]
 
-                                attachments[position].append({
-                                    "command": attachment_string,
-                                    "pass_args": attachment["pass_args"]
-                                })
+                                attachments[position].append(
+                                    {
+                                        "command": attachment_string,
+                                        "pass_args": attachment["pass_args"],
+                                    }
+                                )
 
                         commands[internal_command] = cast(
                             RegistryCommand,

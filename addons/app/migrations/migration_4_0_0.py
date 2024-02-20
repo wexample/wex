@@ -3,7 +3,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.const.app import APP_DIR_APP_DATA, APP_ENV_LOCAL, APP_DIR_APP_DATA_NAME
+from addons.app.const.app import APP_DIR_APP_DATA, APP_DIR_APP_DATA_NAME, APP_ENV_LOCAL
 from addons.app.helper.app import app_create_env
 from addons.default.helper.git_utils import (
     git_get_or_create_repo,

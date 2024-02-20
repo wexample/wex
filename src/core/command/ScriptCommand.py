@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 
 import click
 
-from src.decorator.attach import CommandAttachmentPassArgsOption
 from src.const.types import (
     AnyCallable,
     Args,
@@ -13,6 +12,7 @@ from src.const.types import (
     YamlCommandScript,
 )
 from src.core.BaseClass import BaseClass
+from src.decorator.attach import CommandAttachmentPassArgsOption
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
