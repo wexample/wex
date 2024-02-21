@@ -145,12 +145,18 @@ def file_create_parent_and_touch(
 
     # Create and close the file
     with open(path, mode) as file:
-        if default or content:
-            file.write(default or content)
+        if content or default:
+            file.write(content or default)
+        else:
+            file_touch(path)
+        file_set_owner(path)
+        
+    return file
 
-            file_set_owner(path)
-            return file
-    return None
+
+def file_touch(path: str, times=None):
+    with open(path, 'a'):
+        os.utime(path, times)
 
 
 def file_write_dict_to_config(

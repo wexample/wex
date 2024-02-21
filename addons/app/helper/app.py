@@ -17,7 +17,7 @@ def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
     if os.path.exists(env_file_path) and not rewrite:
         return False
 
-    file_create_parent_and_touch(env_file_path, f"APP_ENV={env}{os.linesep}")
+    file_create_parent_and_touch(env_file_path, content=f"APP_ENV={env}{os.linesep}")
 
     with open(env_file_path, "w") as f:
         f.write(f"APP_ENV={env}{os.linesep}")
