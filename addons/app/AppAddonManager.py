@@ -2,7 +2,7 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast, Callable
 
 import yaml
 

@@ -11,7 +11,9 @@ from addons.app.helper.remote import (
     remote_get_connexion_options,
     remote_get_environment_ip,
     remote_get_login_command,
+    remote_build_temp_push_dir,
 )
+from src.helper.string import string_to_snake_case
 from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
@@ -42,12 +44,16 @@ def app__remote__push(
     if not domain_or_ip or not connexion_address:
         return NullResponse
 
+    if manager.get_env() == environment:
+        manager.log(f"Unable to push to same environment {environment}")
+        return NullResponse
+
     def _app__remote__push_copy_to_remote(item_name, schema):
         if (not "remote" in schema) or (schema["remote"] != "push"):
             return
 
         item_realpath = os.path.realpath(item_name)
-        remote_path = f"~/pushed/{environment}/{manager.get_config('global.name').get_str()}/"
+        remote_path = remote_build_temp_push_dir(environment, manager.get_app_name())
 
         # If item should be created, it will be checked on regular path.
         if os.path.exists(item_realpath):
@@ -85,7 +91,8 @@ def app__remote__push(
 
     manager.get_directory().process_schema_recursive(_app__remote__push_copy_to_remote)
 
-    url = f"http://{domain_or_ip}:{WEBHOOK_LISTEN_PORT_DEFAULT}/webhook/addon/app/remote/push-receive?app={manager.get_app_name()}&env={environment}"
+    user = manager.get_env_var(f"ENV_{string_to_snake_case(environment).upper()}_SERVER_USERNAME")
+    url = f"http://{domain_or_ip}:{WEBHOOK_LISTEN_PORT_DEFAULT}/webhook/addon/app/remote/push-receive?app={manager.get_app_name()}&env={environment}&user={user}"
     manager.log(f'GET {url}')
     response = requests.get(url)
 
