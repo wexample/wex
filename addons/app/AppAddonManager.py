@@ -864,3 +864,14 @@ class AppAddonManager(AddonManager):
         assert isinstance(env, str)
 
         return env
+
+    def app_is_reverse_proxy(self, app_dir: Optional[str] = None) -> bool:
+        from addons.app.command.service.used import app__service__used
+
+        return bool(self.kernel.run_function(
+            app__service__used,
+            {
+                "service": "proxy",
+                "app-dir": app_dir or self.get_app_dir()
+            }
+        ).first())

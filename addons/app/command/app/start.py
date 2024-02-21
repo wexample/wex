@@ -117,9 +117,7 @@ def app__app__start(
         nonlocal env
 
         # Current app is not the reverse proxy itself.
-        if not kernel.run_function(
-            app__service__used, {"service": "proxy", "app-dir": app_dir}
-        ).first():
+        if not manager.app_is_reverse_proxy(app_dir):
             # Env should have been defined at this point.
             env = manager.get_env(app_dir)
 
