@@ -44,7 +44,7 @@ class TestAppCommandHelperStart(AbstractTestCase):
                 "port": 8071,
                 "port-secure": 44371,
                 # Network should already exist
-                "network": False,
+                "create-network": False,
             },
         )
 
