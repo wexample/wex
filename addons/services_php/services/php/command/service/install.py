@@ -20,7 +20,13 @@ def php__service__install(
 
     # Install one "cron" file per environment
     cron_config_dir = manager.get_env_dir("cron", True)
-    for env_name in APP_ENVS:
+    envs = APP_ENVS.copy()
+    env = manager.get_env()
+
+    if not env in envs:
+        envs.append(env)
+
+    for env_name in envs:
         if env_name != APP_ENV_LOCAL:
             shutil.copy2(
                 f"{cron_config_dir}local",
