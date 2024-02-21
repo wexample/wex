@@ -2,6 +2,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from addons.app.helper.remote import remote_build_temp_push_dir
 from src.const.types import StringsList
 
 
@@ -13,6 +14,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         manager = self._prepare_sync_env(services=["php", "mysql"])
 
         app_dir = manager.get_app_dir()
+        app_name = manager.get_app_name()
         test_filename = "structure-test.txt"
 
         manager.set_config(
@@ -53,12 +55,14 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             app__remote__push, {"environment": environment, "app-dir": app_dir}
         )
 
+        remote_temp_push_dir = remote_build_temp_push_dir(environment, app_name)
+
         response = self.kernel.run_function(
             app__remote__exec,
             {
                 "app-dir": app_dir,
                 "environment": environment,
-                "command": f"ls -la ~/pushed/{environment}/{manager.get_app_name()}/test_subdir/subdir-file.txt",
+                "command": f"ls -la {remote_temp_push_dir}test_subdir/subdir-file.txt",
             },
         )
 
@@ -76,7 +80,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": environment,
-                "command": f"ls -la ~/pushed/{environment}/{manager.get_app_name()}",
+                "command": f"ls -la {remote_temp_push_dir}",
             },
         )
 

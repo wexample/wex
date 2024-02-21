@@ -141,11 +141,15 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_and_start_test_app_with_remote(
         self, services: StringsList
     ) -> AppAddonManager:
+        from addons.app.command.remote.exec import app__remote__exec
+
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE
         app_dir = self.create_and_start_test_app(services=services, force_restart=True)
         env_screaming_snake = string_to_snake_case(environment).upper()
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
+        manager = AppAddonManager(self.kernel, app_dir=app_dir)
 
+        # Create environment data to connect to remote
         self.kernel.run_function(
             default__file__append_once,
             {
@@ -162,8 +166,24 @@ class AbstractAppTestCase(AbstractTestCase):
             },
         )
 
-        manager = AppAddonManager(self.kernel, app_dir=app_dir)
         manager.set_config("env.test_remote.server.ip", self.kernel.remote_address)
         self.reload_app_manager()
+
+        # App name is expected by php / mysql / pma to start.
+        manager.set_config(
+            "domain_tld",
+            f"{manager.get_app_name()}.test"
+        )
+
+        app_dir_name = os.path.basename(os.path.dirname(app_dir))
+        # Configure remote server with a mirror of app
+        response = self.kernel.run_function(
+            app__remote__exec,
+            {
+                "app-dir": app_dir,
+                "environment": environment,
+                "command": f'bash /usr/lib/wex/.wex/docker/test_remote-mirror_app.sh "{app_dir_name}"',
+            },
+        )
 
         return manager

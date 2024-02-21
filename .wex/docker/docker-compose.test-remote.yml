@@ -11,10 +11,11 @@ services:
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
     network_mode: bridge
-    command: bash /usr/lib/wex/cli/install
+    command: bash /usr/lib/wex/.wex/docker/test_remote-entrypoint.sh
     volumes:
       - ../../:/usr/lib/wex
       # Allow container to override env data
+      - ../.env.test_remote:/usr/lib/wex/.wex/.env
       - /usr/lib/wex/.wex/python/venv
       - /usr/lib/wex/tmp
       # Docker sharing

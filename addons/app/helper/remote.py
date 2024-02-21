@@ -89,3 +89,7 @@ def remote_get_connexion_address(
     username = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_USERNAME")
 
     return f"{username}@{domain_or_ip}"
+
+
+def remote_build_temp_push_dir(environment, app_name) -> str:
+    return f"~/pushed/{environment}/{app_name}/"

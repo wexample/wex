@@ -1,5 +1,8 @@
+import json
 import os
 from typing import TYPE_CHECKING
+
+import requests
 
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.decorator.app_command import app_command
@@ -9,7 +12,8 @@ from addons.app.helper.remote import (
     remote_get_environment_ip,
     remote_get_login_command,
 )
-from src.const.globals import COMMAND_TYPE_ADDON
+from src.core.response.DictResponse import DictResponse
+from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
 from src.const.types import StringKeysDict
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
@@ -33,16 +37,24 @@ def app__remote__push(
         manager, environment, command=app__remote__push
     )
 
-    address = remote_get_connexion_address(manager, environment)
+    connexion_address = remote_get_connexion_address(manager, environment)
 
-    if not domain_or_ip or not address:
+    if not domain_or_ip or not connexion_address:
         return False
 
     schema = manager.get_directory().get_schema()
 
-    _push_schema_recursive(".", manager, environment, schema, address)
+    _push_schema_recursive(".", manager, environment, schema, connexion_address)
 
-    return True
+    url = f"http://{domain_or_ip}:{WEBHOOK_LISTEN_PORT_DEFAULT}/webhook/addon/app/remote/push-receive?app={manager.get_app_name()}&env={environment}"
+    manager.log(f'GET {url}')
+    response = requests.get(url)
+
+    return DictResponse(
+        kernel=manager.kernel,
+        dictionary=json.loads(response.content.decode('utf-8')),
+        title="Webhook response"
+    )
 
 
 def _push_schema_recursive(

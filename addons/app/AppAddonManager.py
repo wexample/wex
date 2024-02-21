@@ -559,9 +559,7 @@ class AppAddonManager(AddonManager):
                 self.set_app_workdir(app_dir)
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
-        from addons.app.command.env.get import _app__env__get
-
-        environment = _app__env__get(self.kernel, app_dir)
+        environment = self.get_env(app_dir)
 
         proxy_apps = self.get_proxy_apps(environment)
         proxy_apps[name] = app_dir
@@ -575,6 +573,17 @@ class AppAddonManager(AddonManager):
             "w",
         ) as f:
             yaml.dump(proxy_apps, f, indent=True)
+
+    def has_proxy_app(
+        self,
+        app_name: Optional[str] = None,
+        environment: Optional[str] = None
+    ) -> bool:
+        environment = environment or self.get_env()
+        app_name = app_name or self.get_app_name()
+        proxy_apps = self.get_proxy_apps(environment)
+
+        return app_name in proxy_apps
 
     def set_app_workdir(self, app_dir: str) -> None:
         self.app_dir = app_dir
