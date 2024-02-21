@@ -16,7 +16,6 @@ from addons.app.command.env.choose import app__env__choose
 from addons.app.command.env.set import app__env__set
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.hosts.update import app__hosts__update
-from addons.app.command.service.used import app__service__used
 from addons.app.const.app import (
     APP_DIR_APP_DATA,
     APP_ENV_LOCAL,
