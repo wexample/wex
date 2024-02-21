@@ -16,6 +16,7 @@ from addons.app.helper.test import (
     test_create_app,
 )
 from addons.default.command.file.append_once import default__file__append_once
+from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
@@ -141,8 +142,6 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_and_start_test_app_with_remote(
         self, services: StringsList
     ) -> AppAddonManager:
-        from addons.app.command.remote.exec import app__remote__exec
-
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE
         app_dir = self.create_and_start_test_app(services=services, force_restart=True)
         env_screaming_snake = string_to_snake_case(environment).upper()
@@ -175,9 +174,15 @@ class AbstractAppTestCase(AbstractTestCase):
             f"{manager.get_app_name()}.test"
         )
 
+        return manager
+
+    def create_remote_mirror(self, app_dir, environment) -> AbstractResponse:
+        from addons.app.command.remote.exec import app__remote__exec
+
         app_dir_name = os.path.basename(os.path.dirname(app_dir))
+
         # Configure remote server with a mirror of app
-        response = self.kernel.run_function(
+        return self.kernel.run_function(
             app__remote__exec,
             {
                 "app-dir": app_dir,
@@ -185,5 +190,3 @@ class AbstractAppTestCase(AbstractTestCase):
                 "command": f'bash /usr/lib/wex/.wex/docker/test_remote-mirror_app.sh "{app_dir_name}"',
             },
         )
-
-        return manager

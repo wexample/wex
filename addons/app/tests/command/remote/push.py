@@ -40,7 +40,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                         "should_exist": True,
                         "on_missing": "create",
                         "default_content": "This is a file placed in a subdirectory "
-                        "which should also be push to remote server.",
+                                           "which should also be push to remote server.",
                         "remote": "push",
                     }
                 },
@@ -50,6 +50,10 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self.reload_app_manager()
 
         environment = "test_remote"
+
+        # Now than app has been updated,
+        # we create a mirror in remote environment.
+        self.create_remote_mirror(app_dir=app_dir, environment=environment)
 
         self.kernel.run_function(
             app__remote__push, {"environment": environment, "app-dir": app_dir}

@@ -47,7 +47,7 @@ def app__remote__push_receive(
         destination_path = app_dir + item_name
 
         manager.log(f"Copy {temp_path_resolved} to {destination_path}")
-        print('copy')
+
         file_create_directories_and_copy(
             temp_path_resolved,
             destination_path
