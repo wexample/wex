@@ -123,8 +123,8 @@ class AppAddonManager(AddonManager):
         return (
             os.sep
             + os.path.join(
-                "var", "www", environment or self.kernel.registry_structure.content.env
-            )
+            "var", "www", environment or self.kernel.registry_structure.content.env
+        )
             + os.sep
         )
 
@@ -580,7 +580,13 @@ class AppAddonManager(AddonManager):
         environment: Optional[str] = None
     ) -> bool:
         environment = environment or self.get_env()
-        app_name = app_name or self.get_app_name()
+
+        if not app_name:
+            if self.has_config('global.name'):
+                app_name = self.get_app_name()
+            else:
+                return False
+
         proxy_apps = self.get_proxy_apps(environment)
 
         return app_name in proxy_apps
