@@ -150,7 +150,7 @@ def file_create_parent_and_touch(
         else:
             file_touch(path)
         file_set_owner(path)
-        
+
     return file
 
 
@@ -323,3 +323,10 @@ def file_add_extension_if_missing(file_path: str, extension: str) -> str:
 
 def file_path_has_no_extension(file_path: str) -> bool:
     return os.path.splitext(file_path)[1] == ""
+
+
+def file_create_symlink(target_path: str, symlink_path: str) -> None:
+    if os.path.exists(symlink_path) or os.path.islink(symlink_path):
+        os.unlink(symlink_path)
+
+    os.symlink(target_path, symlink_path)

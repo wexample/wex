@@ -11,7 +11,7 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.args import args_convert_dict_to_args
+from src.helper.args import args_convert_dict_to_args, args_convert_to_dict, args_convert_dict_to_long_names_dict
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import (
@@ -72,6 +72,15 @@ class CommandRequest(BaseClass):
         assert self._args_list is not None
 
         return self._args_list
+
+    def get_args_dict(self) -> StringKeysDict:
+        return args_convert_dict_to_long_names_dict(
+            self._script_command.click_command,
+            args_convert_to_dict(
+                self._script_command.click_command,
+                self.get_args_list()
+            )
+        )
 
     def set_script_command(self, script_command: ScriptCommand) -> None:
         self._script_command = script_command

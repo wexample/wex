@@ -8,7 +8,7 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.ScriptCommand import ScriptCommand
 from src.decorator.attach import attach
 from src.decorator.option import option
-from src.helper.file import file_build_date_time_name, file_delete_file_or_dir
+from src.helper.file import file_build_date_time_name, file_delete_file_or_dir, file_create_symlink
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     pass_args=["app_dir"],
 )
 @app_command(help="Create a database dump", should_run=True)
-@option("--file-name", "-f", type=str, required=False, help="Output file name")
+@option("--file-name", "-fn", type=str, required=False, help="Output file name")
 @option("--zip", "-z", type=bool, required=False, default=True, help="Zip output file")
 @option("--tag", "-t", type=str, required=False, help="Add tag as suffix")
 def app__db__dump(
@@ -69,16 +69,23 @@ def app__db__dump(
             file_delete_file_or_dir(dump_path)
             output_path = zip_path
 
+            # Create symlink to zip
+            zip_symlink_path = f"{os.path.dirname(dump_path)}/db.latest.zip"
+            manager.log(f"Creating zip symlink to {zip_symlink_path}")
+            file_create_symlink(
+                zip_path,
+                zip_symlink_path
+            )
+
         manager.kernel.io.message("Dump created at " + output_path)
 
         # Create symlink
         symlink_path = f"{os.path.dirname(dump_path)}/db.latest"
-
-        print(symlink_path)
-        if os.path.exists(symlink_path) or os.path.islink(symlink_path):
-            os.unlink(symlink_path)
-
-        os.symlink(output_path, symlink_path)
+        manager.log(f"Creating zip symlink to {symlink_path}")
+        file_create_symlink(
+            output_path,
+            symlink_path
+        )
 
         return output_path
 

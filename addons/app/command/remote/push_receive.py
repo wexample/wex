@@ -4,7 +4,7 @@ from src.helper.user import user_resolve_home_path
 from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_MAXIMUM
 from src.decorator.command import command
 from src.decorator.option import option
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, Optional
 from addons.app.decorator.app_webhook import app_webhook
 from addons.app.AppAddonManager import AppAddonManager
 
@@ -25,14 +25,12 @@ def app__remote__push_receive(
     env: str,
     user: str,
 ) -> bool:
-    manager = cast(AppAddonManager, kernel.addons["app"])
-    apps = manager.get_proxy_apps(env)
+    app_dir = _app__remote__push_receive_find_app_dir(kernel, app, env)
 
-    if not app in apps:
-        kernel.io.log('App not found in proxy apps', VERBOSITY_LEVEL_MAXIMUM)
+    if not app_dir:
         return False
 
-    app_dir: str = apps[app]
+    manager = cast(AppAddonManager, kernel.addons["app"])
     manager.set_app_workdir(app_dir)
     user_temp_dir = remote_build_temp_push_dir(env, manager.get_app_name())
 
@@ -61,3 +59,14 @@ def app__remote__push_receive(
         _app__remote__push_receive)
 
     return True
+
+
+def _app__remote__push_receive_find_app_dir(kernel: "Kernel", app_name: str, env: str) -> Optional[str]:
+    manager = cast(AppAddonManager, kernel.addons["app"])
+    apps = manager.get_proxy_apps(env)
+
+    if not app_name in apps:
+        kernel.io.log('App not found in proxy apps', VERBOSITY_LEVEL_MAXIMUM)
+        return
+
+    return apps[app_name]

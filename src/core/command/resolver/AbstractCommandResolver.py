@@ -106,7 +106,7 @@ class AbstractCommandResolver(KernelChild):
 
                         args = {}
                         args_copy: StringKeysDict = cast(
-                            StringKeysDict, request.get_args_list().copy()
+                            StringKeysDict, request.get_args_dict()
                         )
                         # Pass all args, attached command should have same args as target
                         if attachment["pass_args"] is True:
