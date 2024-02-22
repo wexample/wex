@@ -7,10 +7,12 @@ from addons.app.helper.db import get_db_service_dumps_path
 from src.const.globals import (
     COMMAND_CHAR_SERVICE,
     COMMAND_SEPARATOR_ADDON,
+    COMMAND_TYPE_SERVICE,
 )
+from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.decorator.option import option
-from src.helper.dict import dict_sort_values
-from src.helper.file import file_delete_file_or_dir
+from src.helper.dict import dict_get_item_by_path, dict_sort_values
+from src.helper.file import file_delete_file_or_dir, file_path_has_no_extension
 from src.helper.prompt import prompt_choice
 
 if TYPE_CHECKING:
@@ -82,6 +84,19 @@ def app__db__restore(
             else:
                 manager.log("The zip file is empty.")
                 return
+    elif file_path_has_no_extension(file_path_str):
+        service_resolver = kernel.get_command_resolver(COMMAND_TYPE_SERVICE)
+        assert isinstance(service_resolver, ServiceCommandResolver)
+
+        registry_data = service_resolver.get_registry_data()
+        extension = dict_get_item_by_path(
+            registry_data[service], "config.db.dump_extension", None
+        )
+
+        if not extension:
+            return
+
+        file_path_str += "." + extension
 
     if file_path_str and not os.path.exists(file_path_str):
         manager.kernel.io.error(f"Dump file not found: {file_path_str}", trace=False)
