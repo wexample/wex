@@ -1,9 +1,13 @@
+import os.path
+import time
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.helper.remote import remote_build_temp_push_dir
 from src.const.types import StringsList
+from addons.app.command.db.exec import app__db__exec
 
 
 class TestAppCommandRemotePush(AbstractAppTestCase):
@@ -14,6 +18,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         manager = self._prepare_sync_env(services=["php", "mysql"])
 
         app_dir = manager.get_app_dir()
+        app_dir_basename = os.path.basename(os.path.dirname(app_dir))
         app_name = manager.get_app_name()
         test_filename = "structure-test.txt"
 
@@ -55,6 +60,20 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         # we create a mirror in remote environment.
         self.create_remote_mirror(app_dir=app_dir, environment=environment)
 
+        # Now that app has been mirrored, we add a data in database
+        # it will test if database has been migrated as expected.
+        unique_value = f"test_{int(time.time())}"
+
+        self.kernel.run_function(
+            app__db__exec,
+            {
+                "app-dir": app_dir,
+                "command": f"CREATE TABLE IF NOT EXISTS "
+                           f"test_migration (id INT AUTO_INCREMENT PRIMARY KEY, test_value VARCHAR(255) NOT NULL); "
+                           f"INSERT INTO test_migration (test_value) VALUES ('{unique_value}');"
+            }
+        )
+
         self.kernel.run_function(
             app__remote__push, {"environment": environment, "app-dir": app_dir}
         )
@@ -79,7 +98,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             "The local file has been created remotely",
         )
 
-        response = self.kernel.run_function(
+        self.kernel.run_function(
             app__remote__exec,
             {
                 "app-dir": app_dir,
@@ -88,7 +107,20 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             },
         )
 
-        self.log(response.first())
+        response = self.kernel.run_function(
+            app__remote__exec,
+            {
+                "app-dir": app_dir,
+                "environment": environment,
+                "command": f"cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c \"SELECT test_value FROM {app_name}.test_migration\"",
+            },
+        )
+
+        self.assertEqual(
+            response.first().split("\n")[1],
+            unique_value,
+            "The value in the local database hase been transferred and mounted in remote database"
+        )
 
     def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:
         manager = self.create_and_start_test_app_with_remote(services)
