@@ -16,9 +16,13 @@ services:
       - ../../:/usr/lib/wex
       # Allow container to override env data
       - ../.env.test_remote:/usr/lib/wex/.wex/.env
-      - /usr/lib/wex/.wex/python/venv
-      - /usr/lib/wex/tmp
+      - volume_venv:/usr/lib/wex/.wex/python/venv
+      - volume_tmp:/usr/lib/wex/tmp
       # Docker sharing
       - /var/run/docker.sock:/var/run/docker.sock
       # Share whole dir as test will create several environments
       - /var/www:/var/www
+
+volumes:
+  volume_tmp:
+  volume_venv:

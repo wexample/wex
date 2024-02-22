@@ -68,9 +68,8 @@ class DictResponse(AbstractTerminalSectionResponse):
         )
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            print_string = [
-                self.render_cli_title()
-            ]
+            title = self.render_cli_title()
+            print_string = [title] if title else []
 
             for key in data:
                 if isinstance(data[key], AbstractResponse):

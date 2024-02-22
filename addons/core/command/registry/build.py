@@ -24,10 +24,4 @@ if TYPE_CHECKING:
 def core__registry__build(
     kernel: "Kernel", test: bool = False, write: bool = True
 ) -> "KernelRegistry":
-    return _core__registry__build(kernel, test, write)
-
-
-def _core__registry__build(
-    kernel: "Kernel", test: bool = False, write: bool = True
-) -> "KernelRegistry":
     return kernel.registry_structure.build(test=test, write=write)

@@ -17,6 +17,8 @@ children:
     children:
       .env:
         type: file
+      .env.test_remote:
+        type: file
       .gitignore:
         type: file
       ai:
@@ -390,6 +392,8 @@ children:
                     type: file
                   push.py:
                     type: file
+                  push_receive.py:
+                    type: file
                 type: dir
               service:
                 children:
@@ -512,17 +516,6 @@ children:
                       command:
                         children:
                           .gitkeep:
-                            type: file
-                        type: dir
-                      cron:
-                        children:
-                          dev:
-                            type: file
-                          local:
-                            type: file
-                          prod:
-                            type: file
-                          test:
                             type: file
                         type: dir
                       docker:
@@ -784,6 +777,8 @@ children:
                       go.py:
                         type: file
                       push.py:
+                        type: file
+                      push_receive.py:
                         type: file
                     type: dir
                   service:
@@ -1061,6 +1056,28 @@ children:
                 type: dir
             type: dir
         type: dir
+      db:
+        children:
+          command:
+            children:
+              remote:
+                children:
+                  push_restore.py:
+                    type: file
+                type: dir
+            type: dir
+          tests:
+            children:
+              command:
+                children:
+                  remote:
+                    children:
+                      push_restore.py:
+                        type: file
+                    type: dir
+                type: dir
+            type: dir
+        type: dir
       default:
         children:
           command:
@@ -1312,6 +1329,9 @@ children:
                             type: file
                           restore.py:
                             type: file
+                        type: dir
+                      remote:
+                        children: {}
                         type: dir
                       service:
                         children:
@@ -1599,6 +1619,11 @@ children:
                           runtime.py:
                             type: file
                         type: dir
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
                     type: dir
                   docker:
                     children:
@@ -1614,6 +1639,11 @@ children:
                               web.conf:
                                 type: file
                               web.prod.conf:
+                                type: file
+                            type: dir
+                          cron:
+                            children:
+                              local:
                                 type: file
                             type: dir
                           docker:

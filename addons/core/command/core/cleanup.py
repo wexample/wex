@@ -1,8 +1,8 @@
 import os
-import shutil
 from typing import TYPE_CHECKING
 
 from addons.system.command.own.this import system__own__this
+from src.helper.dir import dir_empty_dir
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -26,7 +26,8 @@ if TYPE_CHECKING:
 )
 def core__core__cleanup(kernel: "Kernel", test: bool = False) -> None:
     tmp_dir = kernel.get_or_create_path("tmp")
-    shutil.rmtree(tmp_dir)
+    # Do not hard remove "tmp" as it might be a mounted volume
+    dir_empty_dir(tmp_dir)
 
     os.makedirs(os.path.dirname(tmp_dir), exist_ok=True)
     with open(os.path.join(tmp_dir, ".gitkeep"), "a"):
