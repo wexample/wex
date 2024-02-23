@@ -330,3 +330,4 @@ def file_create_symlink(target_path: str, symlink_path: str) -> None:
         os.unlink(symlink_path)
 
     os.symlink(target_path, symlink_path)
+

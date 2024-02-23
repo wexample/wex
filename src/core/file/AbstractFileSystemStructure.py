@@ -2,11 +2,12 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
+from src.helper.dir import dir_set_permissions_recursively
 from src.const.types import (
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
     FileSystemStructureType,
-    StringMessageParameters,
+    StringMessageParameters, FileSystemStructurePermission,
 )
 from src.core.BaseClass import BaseClass
 from src.helper.user import set_owner_recursively
@@ -34,7 +35,7 @@ class AbstractFileSystemStructure(BaseClass):
     group: Optional[str] = None
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     parent_structure: Optional["AbstractFileSystemStructure"] = None
-    permission: Optional[int] = None
+    permissions: Optional[FileSystemStructurePermission] = None
     shortcut: Optional[str] = None
     shortcuts: Dict[str, "AbstractFileSystemStructure"]
     user: Optional[str] = None
@@ -112,8 +113,17 @@ class AbstractFileSystemStructure(BaseClass):
         if "on_missing" in options:
             self.on_missing = str(options["on_missing"])
 
-        if "permission" in options:
-            self.permission = int(options["permission"] or 644)
+        if "permissions" in options:
+            if isinstance(options["permissions"], dict):
+                permissions = options["permissions"]
+            else:
+                permissions = {
+                    "mode": options["permissions"],
+                    "recursive": False
+                }
+
+            permissions["mode"] = int(permissions["mode"] or 644)
+            self.permissions = permissions
 
         if "should_exist" in options:
             self.should_exist = bool(options["should_exist"])
@@ -135,8 +145,8 @@ class AbstractFileSystemStructure(BaseClass):
                 elif self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_ERROR:
                     self.add_error(FILE_SYSTEM_ERROR_NOT_FOUND, {"path": self.path})
 
-        if self.permission:
-            os.chmod(self.path, self.permission)
+        if self.permissions:
+            dir_set_permissions_recursively(self.path, self.permissions["mode"])
 
         if self.user:
             set_owner_recursively(

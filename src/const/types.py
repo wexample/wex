@@ -76,13 +76,18 @@ class FileSystemStructureSchemaItem(TypedDict, total=False):
     default_content: Optional[str]
     group: Optional[str]
     on_missing: Optional[str]
-    permission: Optional[int]
+    permissions: Optional[int]
     schema: Optional["FileSystemStructureSchema"]
     shortcut: Optional[str]
     should_exist: Optional[bool]
     type: FileSystemStructureType
     remote: Optional[str]
     user: Optional[str]
+
+
+class FileSystemStructurePermission(TypedDict):
+    mode: int
+    recursive: bool
 
 
 FileSystemStructureSchema = StringKeysDict
