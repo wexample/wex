@@ -1,3 +1,4 @@
+import git
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
@@ -36,6 +37,10 @@ def app__version__new_write(
                 ).get_str()
             },
         ).print_wrapped_str()
+
+    repo = git.Repo(search_parent_directories=True)
+    new_branch_name = f"version-{new_version}"
+    repo.git.checkout(b=new_branch_name)
 
     # Save new version
     kernel.io.log(f"New app version : {new_version}")
