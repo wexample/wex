@@ -13,6 +13,7 @@ from addons.app.helper.remote import (
     remote_get_login_command,
     remote_build_temp_push_dir,
 )
+from src.const.types import FileSystemStructureSchema
 from src.helper.string import string_to_snake_case
 from src.core.response.DictResponse import DictResponse
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
@@ -41,15 +42,15 @@ def app__remote__push(
     connexion_address = remote_get_connexion_address(manager, environment)
 
     if not domain_or_ip or not connexion_address:
-        return
+        return None
 
     if manager.get_env() == environment:
         manager.log(f"Unable to push to same environment {environment}")
-        return
+        return None
 
-    def _app__remote__push_copy_to_remote(item_name, schema) -> None:
+    def _app__remote__push_copy_to_remote(item_name: str, schema: FileSystemStructureSchema) -> None:
         if (not "remote" in schema) or (schema["remote"] != "push"):
-            return
+            return None
 
         item_realpath = os.path.realpath(item_name)
         remote_path = remote_build_temp_push_dir(environment, manager.get_app_name())

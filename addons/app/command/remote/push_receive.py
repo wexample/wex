@@ -1,4 +1,5 @@
 from addons.app.helper.remote import remote_build_temp_push_dir
+from src.const.types import FileSystemStructureSchema
 from src.helper.file import file_create_directories_and_copy
 from src.helper.user import user_resolve_home_path
 from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_MAXIMUM
@@ -34,9 +35,9 @@ def app__remote__push_receive(
     manager.set_app_workdir(app_dir)
     user_temp_dir = remote_build_temp_push_dir(env, manager.get_app_name())
 
-    def _app__remote__push_receive_copy_to_destination(item_name, schema) -> None:
-        if (not "remote" in schema) or (schema["remote"] != "push"):
-            return
+    def _app__remote__push_receive_copy_to_destination(item_name: str, schema: FileSystemStructureSchema) -> None:
+        if ("remote" not in schema) or (schema["remote"] != "push"):
+            return None
 
         temp_path_resolved = user_resolve_home_path(
             user_temp_dir + item_name, user
@@ -65,8 +66,8 @@ def _app__remote__push_receive_find_app_dir(kernel: "Kernel", app_name: str, env
     manager = cast(AppAddonManager, kernel.addons["app"])
     apps = manager.get_proxy_apps(env)
 
-    if not app_name in apps:
-        kernel.io.log('App not found in proxy apps', VERBOSITY_LEVEL_MAXIMUM)
-        return
+    if app_name not in apps:
+        kernel.io.log('App not found in proxy apps', verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        return None
 
     return apps[app_name]

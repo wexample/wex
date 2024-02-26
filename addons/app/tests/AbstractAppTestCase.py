@@ -176,7 +176,7 @@ class AbstractAppTestCase(AbstractTestCase):
 
         return manager
 
-    def create_remote_mirror(self, app_dir, environment) -> AbstractResponse:
+    def create_remote_mirror(self, app_dir: str, environment: str) -> AbstractResponse:
         from addons.app.command.remote.exec import app__remote__exec
 
         app_dir_name = os.path.basename(os.path.dirname(app_dir))

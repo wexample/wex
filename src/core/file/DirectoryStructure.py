@@ -34,7 +34,7 @@ class DirectoryStructure(AbstractFileSystemStructure):
         self,
         item_name: str,
         schema: dict,
-        action_function: Callable[[str, dict, str], None],
+        action_function: AnyCallable,
     ) -> None:
         action_function(item_name, schema)
 
