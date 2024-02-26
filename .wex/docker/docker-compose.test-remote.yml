@@ -4,7 +4,7 @@
 services:
   wex_test_remote:
     container_name: wex_test_remote
-    image: gitlab-docker.wexample.com/wexample/wex/test-remote
+    image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
     restart: unless-stopped
     stdin_open: true
     tty: true
