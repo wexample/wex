@@ -154,7 +154,7 @@ def file_create_parent_and_touch(
     return file
 
 
-def file_touch(path: str, times=None):
+def file_touch(path: str, times=None) -> None:
     with open(path, 'a'):
         os.utime(path, times)
 

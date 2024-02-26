@@ -1,6 +1,7 @@
 import os
 from typing import Callable
 
+from src.const.types import AnyCallable
 from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
 
 
@@ -21,7 +22,7 @@ class DirectoryStructure(AbstractFileSystemStructure):
 
     def process_schema_recursive(
         self,
-        action_function: Callable[[str, dict, str], None],
+        action_function: AnyCallable,
     ) -> None:
         self._process_schema_recursive(
             item_name="",

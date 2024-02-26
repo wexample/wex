@@ -1,6 +1,6 @@
 import json
 import os
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional
 
 import requests
 
@@ -14,7 +14,6 @@ from addons.app.helper.remote import (
     remote_build_temp_push_dir,
 )
 from src.helper.string import string_to_snake_case
-from src.core.response.NullResponse import NullResponse
 from src.core.response.DictResponse import DictResponse
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
 from src.decorator.option import option
@@ -34,7 +33,7 @@ if TYPE_CHECKING:
 )
 def app__remote__push(
     manager: "AppAddonManager", environment: str, app_dir: str
-) -> Union[DictResponse, NullResponse]:
+) -> Optional[DictResponse]:
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__push
     )
@@ -42,13 +41,13 @@ def app__remote__push(
     connexion_address = remote_get_connexion_address(manager, environment)
 
     if not domain_or_ip or not connexion_address:
-        return NullResponse
+        return
 
     if manager.get_env() == environment:
         manager.log(f"Unable to push to same environment {environment}")
-        return NullResponse
+        return
 
-    def _app__remote__push_copy_to_remote(item_name, schema):
+    def _app__remote__push_copy_to_remote(item_name, schema) -> None:
         if (not "remote" in schema) or (schema["remote"] != "push"):
             return
 
