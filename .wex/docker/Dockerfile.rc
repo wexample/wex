@@ -24,7 +24,7 @@ RUN useradd --uid 1000 owner --create-home && \
 COPY . .
 
 # Configure
-RUN echo "APP_ENV=prod" > .env
+RUN echo "APP_ENV=prod" > .wex/.env
 
 # Run the installation script as the non-root user
 RUN sudo bash cli/install
