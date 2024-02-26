@@ -33,6 +33,8 @@ def app__remote__available(
     port = port or WEBHOOK_LISTEN_PORT_DEFAULT
 
     try:
+        address = f"{domain_or_ip}:{port}"
+        manager.log(f"Checking {address}")
         conn = HTTPConnection(f"{domain_or_ip}:{port}")
         conn.request("GET", "/status")
         response = conn.getresponse()
