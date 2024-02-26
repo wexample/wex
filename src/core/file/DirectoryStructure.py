@@ -1,5 +1,6 @@
 import os
 
+from src.const.types import AnyCallable, FileSystemStructureSchema
 from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
 
 
@@ -14,3 +15,30 @@ class DirectoryStructure(AbstractFileSystemStructure):
 
     def create_missing(self) -> None:
         os.makedirs(self.path, exist_ok=True)
+
+    def get_parent_dir(self) -> str:
+        return os.path.dirname(os.path.dirname(self.path)) + os.path.sep
+
+    def process_schema_recursive(
+        self,
+        action_function: AnyCallable,
+    ) -> None:
+        self._process_schema_recursive(
+            item_name="", schema=self.get_schema(), action_function=action_function
+        )
+
+    def _process_schema_recursive(
+        self,
+        item_name: str,
+        schema: FileSystemStructureSchema,
+        action_function: AnyCallable,
+    ) -> None:
+        action_function(item_name, schema)
+
+        if "schema" in schema:
+            for child_item_name, child_schema in schema["schema"].items():
+                self._process_schema_recursive(
+                    item_name=os.path.join(item_name, child_item_name),
+                    schema=child_schema,
+                    action_function=action_function,
+                )

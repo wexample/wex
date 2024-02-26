@@ -23,7 +23,7 @@ def app__version__new_commit(manager: "AppAddonManager", app_dir: str) -> None:
     try:
         origin = repo.remote(name="origin")
         origin.fetch(tags=True)
-        origin.pull()
+        origin.pull("master")
     except Exception as e:
         kernel.io.error("Git pull : " + str(e), trace=False)
 

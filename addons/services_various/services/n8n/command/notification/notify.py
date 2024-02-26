@@ -33,7 +33,7 @@ def n8n__notification__notify(
 
     headers = {"Content-Type": "application/json"}
 
-    data = {"app": manager.get_config("global.name").get_str(), "action": action}
+    data = {"app": manager.get_app_name(), "action": action}
 
     manager.log(f"Sending POST notification '{action}' to {url}")
 

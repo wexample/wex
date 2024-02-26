@@ -48,7 +48,7 @@ def get_user_or_sudo_user_home_data_path() -> str:
     if sudo_username is None:
         return f"{os.path.expanduser('~')}/"
     else:
-        return f"/home/{get_sudo_username()}/"
+        return f"/home/{sudo_username}/"
 
 
 def set_owner_recursively(
@@ -128,6 +128,19 @@ def user_exists(username: str) -> bool:
         return True
     except KeyError:
         return False
+
+
+def user_get_home(username: str) -> str:
+    user_info = pwd.getpwnam(username)
+    return user_info.pw_dir
+
+
+def user_resolve_home_path(path: str, username: str) -> str:
+    if path.startswith("~"):
+        home_dir = user_get_home(username)
+        return path.replace("~", home_dir, 1)
+    else:
+        return path
 
 
 def group_exists(group: str) -> bool:

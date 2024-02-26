@@ -22,9 +22,12 @@ class DictResponse(AbstractTerminalSectionResponse):
         self,
         kernel: "Kernel",
         dictionary: StringKeysDict,
+        title: str | None = None,
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,
     ) -> None:
-        super().__init__(kernel, default_render_mode)
+        super().__init__(
+            kernel=kernel, title=title, default_render_mode=default_render_mode
+        )
 
         self.dictionary_data: StringKeysDict = dictionary
 
@@ -63,7 +66,8 @@ class DictResponse(AbstractTerminalSectionResponse):
         )
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            print_string = []
+            title = self.render_cli_title()
+            print_string = [title] if title else []
 
             for key in data:
                 if isinstance(data[key], AbstractResponse):

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.started import app__app__started
@@ -13,8 +13,12 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
     QueuedCollectionStopCurrentStepResponse,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.core.response.QueuedCollectionResponse import (
+    QueuedCollectionResponse,
+    QueuedCollectionResponseCollection,
+)
 from src.decorator.as_sudo import as_sudo
+from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -26,11 +30,14 @@ from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueMan
 
 @as_sudo()
 @app_command(help="Stop the given app")
+@option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")
 def app__app__stop(
-    manager: "AppAddonManager", app_dir: str
+    manager: "AppAddonManager",
+    app_dir: str,
+    fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name").get_str()
+    name = manager.get_app_name()
 
     def _app__app__stop__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -107,13 +114,22 @@ def app__app__stop(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-post"}
         )
 
-    return QueuedCollectionResponse(
-        kernel,
-        [
+    steps = cast(QueuedCollectionResponseCollection, [])
+    if fast:
+        steps += [
+            # Just load docker compose
+            _app__app__stop__rm,
+        ]
+    else:
+        steps += [
             _app__app__stop__checkup,
             _app__app__stop__stop,
             _app__app__stop__rm,
             _app__app__stop__update_hosts,
             _app__app__stop__complete,
-        ],
+        ]
+
+    return QueuedCollectionResponse(
+        kernel,
+        steps,
     )

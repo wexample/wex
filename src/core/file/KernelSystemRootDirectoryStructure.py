@@ -15,14 +15,16 @@ class KernelSystemRootDirectoryStructure(DirectoryStructure):
 
         schema.update(
             {
-                "var": {
-                    "schema": {
-                        "www": {
-                            "schema": {
-                                self.env: {
-                                    "shortcut": "apps",
-                                    "type": "dir",
-                                    "on_missing": "create",
+                "schema": {
+                    "var": {
+                        "schema": {
+                            "www": {
+                                "schema": {
+                                    self.env: {
+                                        "shortcut": "apps",
+                                        "type": "dir",
+                                        "on_missing": "create",
+                                    },
                                 },
                             },
                         },

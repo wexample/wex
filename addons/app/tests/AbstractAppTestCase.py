@@ -1,12 +1,12 @@
 import os.path
 import re
 import shutil
-from typing import Optional
+from typing import Optional, cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
-from addons.app.const.app import APP_FILEPATH_REL_ENV
+from addons.app.const.app import APP_ENV_TEST, APP_FILEPATH_REL_ENV
 from addons.app.helper.test import (
     DEFAULT_APP_TEST_NAME,
     DEFAULT_ENVIRONMENT_TEST_REMOTE,
@@ -18,6 +18,7 @@ from addons.app.helper.test import (
 from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -36,8 +37,18 @@ class AbstractAppTestCase(AbstractTestCase):
             self.kernel, name=name, services=services or [], force_restart=force_restart
         )
 
+    def reload_app_manager(self) -> None:
+        # If current manager is in test app, config should be reloaded manually
+        cast(AppAddonManager, self.kernel.addons["app"]).load_config()
+
     def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
-        response = self.kernel.run_function(app__app__start, {"app-dir": app_dir})
+        response = self.kernel.run_function(
+            app__app__start,
+            {
+                "app-dir": app_dir,
+                "env": APP_ENV_TEST,
+            },
+        )
 
         first = response.first()
         if isinstance(first, QueuedCollectionStopResponse):
@@ -132,10 +143,12 @@ class AbstractAppTestCase(AbstractTestCase):
         self, services: StringsList
     ) -> AppAddonManager:
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE
-        app_dir = self.create_and_start_test_app(services=services)
+        app_dir = self.create_and_start_test_app(services=services, force_restart=True)
         env_screaming_snake = string_to_snake_case(environment).upper()
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
+        manager = AppAddonManager(self.kernel, app_dir=app_dir)
 
+        # Create environment data to connect to remote
         self.kernel.run_function(
             default__file__append_once,
             {
@@ -152,7 +165,25 @@ class AbstractAppTestCase(AbstractTestCase):
             },
         )
 
-        manager = AppAddonManager(self.kernel, app_dir=app_dir)
         manager.set_config("env.test_remote.server.ip", self.kernel.remote_address)
+        self.reload_app_manager()
+
+        # App name is expected by php / mysql / pma to start.
+        manager.set_config("domain_tld", f"{manager.get_app_name()}.test")
 
         return manager
+
+    def create_remote_mirror(self, app_dir: str, environment: str) -> AbstractResponse:
+        from addons.app.command.remote.exec import app__remote__exec
+
+        app_dir_name = os.path.basename(os.path.dirname(app_dir))
+
+        # Configure remote server with a mirror of app
+        return self.kernel.run_function(
+            app__remote__exec,
+            {
+                "app-dir": app_dir,
+                "environment": environment,
+                "command": f'bash /usr/lib/wex/.wex/docker/test_remote-mirror_app.sh "{app_dir_name}"',
+            },
+        )

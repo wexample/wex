@@ -31,6 +31,13 @@ def app__app__started(
     app_dir: str,
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
+    if manager.require_proxy() and not manager.has_proxy_app():
+        manager.kernel.io.log(
+            f"App is not registered in proxy of env [{manager.get_env()}]",
+            verbosity=VERBOSITY_LEVEL_MAXIMUM,
+        )
+        return False
+
     if not manager.has_runtime_config("started"):
         manager.kernel.io.log(
             f"Runtime config file is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM

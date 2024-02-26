@@ -12,6 +12,7 @@ from src.const.types import (
     YamlCommandScript,
 )
 from src.core.BaseClass import BaseClass
+from src.decorator.attach import CommandAttachment
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -31,7 +32,7 @@ class ScriptCommand(BaseClass):
         self.as_sudo: bool = False
         self.command_type: str = command_type
         self.no_log: bool = False
-        self.attachments: Dict[str, List[str | ScriptCommand]] = {
+        self.attachments: Dict[str, List[CommandAttachment]] = {
             "after": [],
             "before": [],
         }

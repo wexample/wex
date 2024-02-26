@@ -4,8 +4,25 @@
 services:
   wex_test_remote:
     container_name: wex_test_remote
-    image: gitlab-docker.wexample.com/wexample/wex/test-remote
+    image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
     restart: unless-stopped
+    stdin_open: true
+    tty: true
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
     network_mode: bridge
+    command: bash /usr/lib/wex/.wex/docker/test_remote-entrypoint.sh
+    volumes:
+      - ../../:/usr/lib/wex
+      # Allow container to override env data
+      - ../.env.test_remote:/usr/lib/wex/.wex/.env
+      - volume_venv:/usr/lib/wex/.wex/python/venv
+      - volume_tmp:/usr/lib/wex/tmp
+      # Docker sharing
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Share whole dir as test will create several environments
+      - /var/www:/var/www
+
+volumes:
+  volume_tmp:
+  volume_venv:

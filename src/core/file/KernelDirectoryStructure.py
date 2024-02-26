@@ -11,28 +11,30 @@ class KernelDirectoryStructure(AppDirectoryStructure):
 
         schema.update(
             {
-                "addons": {
-                    "should_exist": True,
-                },
-                "cli": {
-                    "should_exist": True,
-                    "schema": {
-                        CORE_COMMAND_NAME: {
-                            "type": "file",
-                            "should_exist": True,
-                        }
+                "schema": {
+                    "addons": {
+                        "should_exist": True,
                     },
-                },
-                "tmp": {
-                    "shortcut": "tmp",
-                    "should_exist": True,
-                    "on_missing": "create",
-                    "schema": {
-                        "task": {
-                            "on_missing": "create",
+                    "cli": {
+                        "should_exist": True,
+                        "schema": {
+                            CORE_COMMAND_NAME: {
+                                "type": "file",
+                                "should_exist": True,
+                            }
                         },
                     },
-                },
+                    "tmp": {
+                        "shortcut": "tmp",
+                        "should_exist": True,
+                        "on_missing": "create",
+                        "schema": {
+                            "task": {
+                                "on_missing": "create",
+                            },
+                        },
+                    },
+                }
             }
         )
 

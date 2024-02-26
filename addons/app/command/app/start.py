@@ -16,7 +16,6 @@ from addons.app.command.env.choose import app__env__choose
 from addons.app.command.env.set import app__env__set
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.command.hosts.update import app__hosts__update
-from addons.app.command.service.used import app__service__used
 from addons.app.const.app import (
     APP_DIR_APP_DATA,
     APP_ENV_LOCAL,
@@ -75,7 +74,7 @@ def app__app__start(
     fast: bool = False,
 ) -> QueuedCollectionResponse:
     kernel = manager.kernel
-    name = manager.get_config("global.name").get_str()
+    name = manager.get_app_name()
 
     def _app__app__start__checkup(
         queue: AbstractQueuedCollectionResponseQueueManager,
@@ -117,9 +116,10 @@ def app__app__start(
         nonlocal env
 
         # Current app is not the reverse proxy itself.
-        if not kernel.run_function(
-            app__service__used, {"service": "proxy", "app-dir": app_dir}
-        ).first():
+        if not manager.app_is_reverse_proxy(app_dir):
+            # Env should have been defined at this point.
+            env = manager.get_env(app_dir)
+
             if not manager.require_proxy():
                 kernel.io.message(f"Don't require proxy")
                 return None
@@ -269,7 +269,7 @@ def app__app__start(
     def _app__app__start__first_init(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
-        env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
+        env_dir = f"{manager.get_app_dir()}{APP_DIR_APP_DATA}"
         first_start_lock = os.path.join(
             env_dir, "tmp", f"{CORE_COMMAND_NAME}.first-start"
         )

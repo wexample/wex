@@ -2,7 +2,7 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
 import yaml
 
@@ -57,6 +57,7 @@ from src.helper.core import core_kernel_get_version
 from src.helper.data_yaml import yaml_load, yaml_load_dict, yaml_write
 from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
+    DICT_ITEM_EXISTS_ACTION_REPLACE,
     file_env_to_dict,
     file_remove_dict_item_by_path,
     file_set_dict_item_by_path,
@@ -114,6 +115,9 @@ class AppAddonManager(AddonManager):
         assert isinstance(self._directory, AppDirectoryStructure)
 
         return self._directory
+
+    def get_app_name(self, default: Optional[str] = None) -> str:
+        return self.get_config("global.name", default).get_str()
 
     def get_applications_path(self, environment: Optional[str] = None) -> str:
         return (
@@ -309,7 +313,11 @@ class AppAddonManager(AddonManager):
         return dict(items)
 
     def _set_config_value(
-        self, config: Optional[AnyAppConfig], key: str, value: Any, replace: bool = True
+        self,
+        config: Optional[AnyAppConfig],
+        key: Union[str | StringsList],
+        value: Any,
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
         if not config:
             return None
@@ -318,10 +326,15 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(self.config_to_dict(config), key, value, replace)
+        file_set_dict_item_by_path(self.config_to_dict(config), key, value, when_exist)
 
-    def set_config(self, key: str, value: AppConfigValue, replace: bool = True) -> None:
-        self._set_config_value(self._config, key, value, replace)
+    def set_config(
+        self,
+        key: Union[str | StringsList],
+        value: AppConfigValue,
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
+    ) -> None:
+        self._set_config_value(self._config, key, value, when_exist)
 
         self.save_config()
 
@@ -342,9 +355,12 @@ class AppAddonManager(AddonManager):
         return cast(StringKeysDict, config)
 
     def set_runtime_config(
-        self, key: str, value: AppConfigValue, replace: bool = True
+        self,
+        key: str,
+        value: AppConfigValue,
+        when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
-        self._set_config_value(self._runtime_config, key, value, replace)
+        self._set_config_value(self._runtime_config, key, value, when_exist)
 
         self.save_runtime_config()
 
@@ -384,7 +400,7 @@ class AppAddonManager(AddonManager):
                 self.first_log_indent = self.kernel.io.log_indent
 
             if self.kernel.io.log_indent == self.first_log_indent:
-                message = f'[{self.get_config("global.name").get_str()}] {message}'
+                message = f"[{self.get_app_name()}] {message}"
 
         self.kernel.io.log(message, color, indent)
 
@@ -490,6 +506,10 @@ class AppAddonManager(AddonManager):
                 app__app__started,
                 {"app-dir": self.app_dir},
             ).first():
+                from addons.app.command.app.start import app__app__start
+
+                self.kernel.io.message_next_command(app__app__start)
+
                 self.kernel.io.error(
                     ERR_APP_SHOULD_RUN,
                     {
@@ -539,9 +559,7 @@ class AppAddonManager(AddonManager):
                 self.set_app_workdir(app_dir)
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
-        from addons.app.command.env.get import _app__env__get
-
-        environment = _app__env__get(self.kernel, app_dir)
+        environment = self.get_env(app_dir)
 
         proxy_apps = self.get_proxy_apps(environment)
         proxy_apps[name] = app_dir
@@ -555,6 +573,21 @@ class AppAddonManager(AddonManager):
             "w",
         ) as f:
             yaml.dump(proxy_apps, f, indent=True)
+
+    def has_proxy_app(
+        self, app_name: Optional[str] = None, environment: Optional[str] = None
+    ) -> bool:
+        environment = environment or self.get_env()
+
+        if not app_name:
+            if self.has_config("global.name"):
+                app_name = self.get_app_name()
+            else:
+                return False
+
+        proxy_apps = self.get_proxy_apps(environment)
+
+        return app_name in proxy_apps
 
     def set_app_workdir(self, app_dir: str) -> None:
         self.app_dir = app_dir
@@ -642,7 +675,7 @@ class AppAddonManager(AddonManager):
         env = self.kernel.run_function(app__env__get, {"app-dir": self.app_dir}).first()
         user = user or get_user_or_sudo_user()
         group = group or get_user_group_name(user)
-        name = self.get_config("global.name").get_str()
+        name = self.get_app_name()
         config = self._config
 
         if not config:
@@ -844,3 +877,13 @@ class AppAddonManager(AddonManager):
         assert isinstance(env, str)
 
         return env
+
+    def app_is_reverse_proxy(self, app_dir: Optional[str] = None) -> bool:
+        from addons.app.command.service.used import app__service__used
+
+        return bool(
+            self.kernel.run_function(
+                app__service__used,
+                {"service": "proxy", "app-dir": app_dir or self.get_app_dir()},
+            ).first()
+        )

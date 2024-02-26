@@ -2,7 +2,13 @@ import grp
 import os
 import pwd
 import shutil
-from typing import IO, Any, Dict, List, Optional
+from typing import IO, Any, Dict, List, Optional, Tuple, Union, cast
+
+from src.const.types import StringsList
+
+DICT_ITEM_EXISTS_ACTION_ABORT = "abort"
+DICT_ITEM_EXISTS_ACTION_MERGE = "merge"
+DICT_ITEM_EXISTS_ACTION_REPLACE = "replace"
 
 
 def file_list_subdirectories(path: str) -> List[str]:
@@ -139,12 +145,18 @@ def file_create_parent_and_touch(
 
     # Create and close the file
     with open(path, mode) as file:
-        if default or content:
-            file.write(default or content)
+        if content or default:
+            file.write(content or default)
+        else:
+            file_touch(path)
+        file_set_owner(path)
 
-            file_set_owner(path)
-            return file
-    return None
+    return file
+
+
+def file_touch(path: str, times: Optional[Tuple[int, int]] = None) -> None:
+    with open(path, "a"):
+        os.utime(path, times)
 
 
 def file_write_dict_to_config(
@@ -165,16 +177,34 @@ def file_write_dict_to_config(
 
 
 def file_set_dict_item_by_path(
-    data: Dict[str, Any], key: str, value: Any, replace: bool = True
+    data: Dict[str, Any],
+    key: Union[str | StringsList],
+    value: Any,
+    when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
 ) -> None:
-    keys = key.split(".")
+    # Allow pre-split to escape non-separator dots, like in file names.
+    if isinstance(key, list):
+        keys = cast(StringsList, key)
+    else:
+        keys = key.split(".")
+
     for k in keys[:-1]:
         data = data.setdefault(k, {})
 
-    if not replace and keys[-1] in data:
-        return
+    final_key = keys[-1]
+    if final_key in data and when_exist != DICT_ITEM_EXISTS_ACTION_REPLACE:
+        if when_exist == DICT_ITEM_EXISTS_ACTION_ABORT:
+            return
+        elif (
+            when_exist == DICT_ITEM_EXISTS_ACTION_MERGE
+            and isinstance(data[final_key], dict)
+            and isinstance(value, dict)
+        ):
+            from src.helper.dict import dict_merge
 
-    data[keys[-1]] = value
+            data[final_key] = dict_merge(data[final_key], value)
+    else:
+        data[final_key] = value
 
 
 def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
@@ -293,3 +323,10 @@ def file_add_extension_if_missing(file_path: str, extension: str) -> str:
 
 def file_path_has_no_extension(file_path: str) -> bool:
     return os.path.splitext(file_path)[1] == ""
+
+
+def file_create_symlink(target_path: str, symlink_path: str) -> None:
+    if os.path.exists(symlink_path) or os.path.islink(symlink_path):
+        os.unlink(symlink_path)
+
+    os.symlink(target_path, symlink_path)

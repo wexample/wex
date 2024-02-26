@@ -21,5 +21,5 @@ def nextcloud__app__start_options(
         not manager.has_config("global.initialized")
         or not manager.get_config("global.initialized").get_bool()
     ):
-        return ["--scale", f'{manager.get_config("global.name").get_str()}_nextcloud=0']
+        return ["--scale", f"{manager.get_app_name()}_nextcloud=0"]
     return None

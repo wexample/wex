@@ -29,7 +29,7 @@ def mysql__db__dump(
             },
             type=COMMAND_TYPE_SERVICE,
         ).first(),
-        manager.get_config("global.name").get_str(),
+        manager.get_app_name(),
         ">",
         "/var/www/dumps/" + file_name,
     ]

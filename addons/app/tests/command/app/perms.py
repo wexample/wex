@@ -1,6 +1,5 @@
 import os
 import shutil
-from typing import cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.perms import app__app__perms
@@ -50,8 +49,7 @@ class TestAppCommandAppPerms(AbstractAppTestCase):
         manager.set_config("permissions.user", current_user)
         manager.set_config("permissions.group", current_group)
 
-        # If current manager is in test app, config should be reloaded manually
-        cast(AppAddonManager, self.kernel.addons["app"]).load_config()
+        self.reload_app_manager()
 
         tmp_dir = f"{app_dir}{APP_DIR_TMP}"
         # Will be recreated by perms command

@@ -1,14 +1,16 @@
 import os.path
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
 from src.const.types import (
+    FileSystemStructurePermission,
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
     FileSystemStructureType,
     StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
+from src.helper.dir import dir_set_permissions_recursively
 from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:
@@ -34,7 +36,7 @@ class AbstractFileSystemStructure(BaseClass):
     group: Optional[str] = None
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     parent_structure: Optional["AbstractFileSystemStructure"] = None
-    permission: Optional[int] = None
+    permissions: Optional[FileSystemStructurePermission] = None
     shortcut: Optional[str] = None
     shortcuts: Dict[str, "AbstractFileSystemStructure"]
     user: Optional[str] = None
@@ -68,38 +70,42 @@ class AbstractFileSystemStructure(BaseClass):
         return self.schema
 
     def load_schema(self) -> None:
-        schema = self.get_schema()
-        for item_name in schema:
-            options: FileSystemStructureSchemaItem = schema[item_name]
+        root_schema = self.get_schema()
 
-            type: str = options["type"] if "type" in options else "dir"
-            class_definition: Any = (
-                options["class_name"] if "class_name" in options else None
-            )
+        if "schema" in root_schema:
+            schema = root_schema["schema"]
 
-            if class_definition is None:
-                if type == "file":
-                    from src.core.file.FileStructure import FileStructure
+            for item_name in schema:
+                options: FileSystemStructureSchemaItem = schema[item_name]
 
-                    class_definition = FileStructure
-                    assert class_definition is FileStructure
-                else:
-                    from src.core.file.DirectoryStructure import DirectoryStructure
+                type: str = options["type"] if "type" in options else "dir"
+                class_definition: Any = (
+                    options["class_name"] if "class_name" in options else None
+                )
 
-                    class_definition = DirectoryStructure
-                    assert class_definition is DirectoryStructure
+                if class_definition is None:
+                    if type == "file":
+                        from src.core.file.FileStructure import FileStructure
 
-            structure: AbstractFileSystemStructure = class_definition(
-                path=os.path.join(self.path, item_name),
-                initialize=False,
-            )
+                        class_definition = FileStructure
+                        assert class_definition is FileStructure
+                    else:
+                        from src.core.file.DirectoryStructure import DirectoryStructure
 
-            self.children[item_name] = structure
-            structure.load_options(options)
-            structure.set_parent(self)
+                        class_definition = DirectoryStructure
+                        assert class_definition is DirectoryStructure
 
-            # Init after options loaded
-            structure.initialize()
+                structure: AbstractFileSystemStructure = class_definition(
+                    path=os.path.join(self.path, item_name),
+                    initialize=False,
+                )
+
+                self.children[item_name] = structure
+                structure.load_options(options)
+                structure.set_parent(self)
+
+                # Init after options loaded
+                structure.initialize()
 
     def load_options(self, options: FileSystemStructureSchemaItem) -> None:
         if "group" in options:
@@ -108,8 +114,19 @@ class AbstractFileSystemStructure(BaseClass):
         if "on_missing" in options:
             self.on_missing = str(options["on_missing"])
 
-        if "permission" in options:
-            self.permission = int(options["permission"] or 644)
+        if "permissions" in options:
+            if isinstance(options["permissions"], dict):
+                permissions = cast(
+                    FileSystemStructurePermission, options["permissions"]
+                )
+            else:
+                permissions = cast(
+                    FileSystemStructurePermission,
+                    {"mode": options["permissions"], "recursive": False},
+                )
+
+            permissions["mode"] = int(permissions["mode"] or 644)
+            self.permissions = permissions
 
         if "should_exist" in options:
             self.should_exist = bool(options["should_exist"])
@@ -118,7 +135,7 @@ class AbstractFileSystemStructure(BaseClass):
             self.shortcut = str(options["shortcut"])
 
         if "schema" in options:
-            self.schema = options["schema"] or {}
+            self.schema = {"schema": options["schema"]} or {}
 
         if "user" in options:
             self.user = options["user"]
@@ -131,8 +148,8 @@ class AbstractFileSystemStructure(BaseClass):
                 elif self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_ERROR:
                     self.add_error(FILE_SYSTEM_ERROR_NOT_FOUND, {"path": self.path})
 
-        if self.permission:
-            os.chmod(self.path, self.permission)
+        if self.permissions:
+            dir_set_permissions_recursively(self.path, self.permissions["mode"])
 
         if self.user:
             set_owner_recursively(

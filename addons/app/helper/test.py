@@ -2,11 +2,12 @@ import hashlib
 import json
 import os
 import shutil
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
 from src.const.types import StringsList
+from src.core.file.DirectoryStructure import DirectoryStructure
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -18,7 +19,10 @@ DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD: str = "TEST_PASSWORD"
 
 
 def test_get_app_dir(kernel: "Kernel", name: str) -> str:
-    return f"{kernel.system_root_directory.shortcuts['apps'].path}{name}{os.sep}"
+    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
+    return (
+        f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
+    )
 
 
 def test_build_app_name(
@@ -48,7 +52,7 @@ def test_create_app(
     force_restart: bool = False,
 ) -> str:
     app_dir = test_get_app_dir(kernel, name)
-    test_dir = os.getcwd()
+    current_dir = os.getcwd()
 
     # Recreate test app dir.
     if os.path.exists(app_dir):
@@ -70,6 +74,6 @@ def test_create_app(
         },
     )
 
-    os.chdir(test_dir)
+    os.chdir(current_dir)
 
     return app_dir

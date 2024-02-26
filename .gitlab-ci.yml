@@ -28,7 +28,7 @@ include:
   only:
     - master
 
-.build_pipeline_images:
+.build_live_image:
   extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
   script:
     - !reference [ .docker_login, script ]
@@ -45,30 +45,17 @@ checkup_remote:
     - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
     - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
 
-checkup_last_commit:
-  stage: checkup_deployment
-  extends: [ .merge_to_master ]
-  script:
-    - git fetch origin ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
-    - PREVIOUS_MERGE_COMMIT=$(git log "origin/${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" --format=%H | sed -n '2p')
-    - echo "The previous merge commit is ${PREVIOUS_MERGE_COMMIT}."
-    - TAG=$(git tag --contains $PREVIOUS_MERGE_COMMIT)
-    - if [ -z "$TAG" ]; then echo "Previous commit should have been tagged with version number." && exit 1; fi
-    - echo "Last tag is ${TAG}"
-    - if [ "${TAG}" != "$(cat version.txt)" ]; then echo "Version tags does not match" && exit 1; fi
-
 build_pipeline_image_rc:
   stage: build_pipeline_images
-  extends: [ .build_pipeline_images ]
+  extends: [ .build_live_image ]
   needs:
     - checkup_remote
-    - checkup_last_commit
   variables:
     FLAVOR: rc
 
 build_pipeline_image_test_remote:
   stage: build_pipeline_images
-  extends: [ .build_pipeline_images ]
+  extends: [ .build_live_image ]
   variables:
     FLAVOR: test-remote
   rules:
@@ -112,7 +99,6 @@ checkup_code:
   script:
     - rm -rf /opt/wex
     - cp -r . /opt/wex
-    - ls -la /opt/wex
     - bash /opt/wex/cli/install
 
 test:
@@ -165,7 +151,7 @@ deploy:
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/wex-apt-repo/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+    - curl "http://wexample.com:4242/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 .test_apt_install:
   extends: [ .on_master ]

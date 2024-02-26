@@ -37,8 +37,8 @@ if TYPE_CHECKING:
 )
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
 @option(
-    "--network",
-    "-n",
+    "--create-network",
+    "-cn",
     type=bool,
     required=True,
     default=True,
@@ -53,7 +53,7 @@ if TYPE_CHECKING:
 def app__helper__start(
     kernel: "Kernel",
     name: str,
-    network: bool,
+    create_network: bool,
     env: Optional[str] = None,
     user: Optional[str] = None,
     group: Optional[str] = None,
@@ -120,8 +120,8 @@ def app__helper__start(
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 
-        if not network:
-            manager.set_config("docker.create_network", network)
+        if not create_network:
+            manager.set_config("docker.create_network", create_network)
 
     def _app__helper__start__start(
         queue: AbstractQueuedCollectionResponseQueueManager,

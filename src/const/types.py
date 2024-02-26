@@ -76,7 +76,7 @@ class FileSystemStructureSchemaItem(TypedDict, total=False):
     default_content: Optional[str]
     group: Optional[str]
     on_missing: Optional[str]
-    permission: Optional[int]
+    permissions: Optional[int]
     schema: Optional["FileSystemStructureSchema"]
     shortcut: Optional[str]
     should_exist: Optional[bool]
@@ -85,7 +85,12 @@ class FileSystemStructureSchemaItem(TypedDict, total=False):
     user: Optional[str]
 
 
-FileSystemStructureSchema = Dict[str, FileSystemStructureSchemaItem]
+class FileSystemStructurePermission(TypedDict):
+    mode: int
+    recursive: bool
+
+
+FileSystemStructureSchema = StringKeysDict
 
 
 class RegistryCommand(TypedDict):

@@ -50,4 +50,4 @@ class FileStructure(AbstractFileSystemStructure):
         return self.content
 
     def create_missing(self) -> None:
-        file_create_parent_and_touch(self.path, self.default_content)
+        file_create_parent_and_touch(self.path, default=self.default_content)
