@@ -2,12 +2,12 @@ import os.path
 import time
 
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.db.exec import app__db__exec
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
-from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from addons.app.helper.remote import remote_build_temp_push_dir
+from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.types import StringsList
-from addons.app.command.db.exec import app__db__exec
 
 
 class TestAppCommandRemotePush(AbstractAppTestCase):
@@ -45,7 +45,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                         "should_exist": True,
                         "on_missing": "create",
                         "default_content": "This is a file placed in a subdirectory "
-                                           "which should also be push to remote server.",
+                        "which should also be push to remote server.",
                         "remote": "push",
                     }
                 },
@@ -69,9 +69,9 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "command": f"CREATE TABLE IF NOT EXISTS "
-                           f"test_migration (id INT AUTO_INCREMENT PRIMARY KEY, test_value VARCHAR(255) NOT NULL); "
-                           f"INSERT INTO test_migration (test_value) VALUES ('{unique_value}');"
-            }
+                f"test_migration (id INT AUTO_INCREMENT PRIMARY KEY, test_value VARCHAR(255) NOT NULL); "
+                f"INSERT INTO test_migration (test_value) VALUES ('{unique_value}');",
+            },
         )
 
         self.kernel.run_function(
@@ -112,14 +112,14 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": environment,
-                "command": f"cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c \"SELECT test_value FROM {app_name}.test_migration\"",
+                "command": f'cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c "SELECT test_value FROM {app_name}.test_migration"',
             },
         )
 
         self.assertEqual(
             response.first().split("\n")[1],
             unique_value,
-            "The value in the local database hase been transferred and mounted in remote database"
+            "The value in the local database hase been transferred and mounted in remote database",
         )
 
     def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:

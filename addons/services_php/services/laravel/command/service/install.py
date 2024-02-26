@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.services_php.services.php.command.service.install import php__service__install
+from addons.services_php.services.php.command.service.install import (
+    php__service__install,
+)
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.service import service_copy_sample_dir
 
@@ -19,6 +21,6 @@ def laravel__service__install(
             "app-dir": app_dir,
             "service": "php",
         },
-        type=COMMAND_TYPE_SERVICE
+        type=COMMAND_TYPE_SERVICE,
     )
     service_copy_sample_dir(manager.kernel, "php", "php")

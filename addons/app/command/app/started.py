@@ -33,7 +33,8 @@ def app__app__started(
 ) -> bool:
     if manager.require_proxy() and not manager.has_proxy_app():
         manager.kernel.io.log(
-            f"App is not registered in proxy of env [{manager.get_env()}]", verbosity=VERBOSITY_LEVEL_MAXIMUM
+            f"App is not registered in proxy of env [{manager.get_env()}]",
+            verbosity=VERBOSITY_LEVEL_MAXIMUM,
         )
         return False
 

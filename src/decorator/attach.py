@@ -22,11 +22,7 @@ def attach(
 ) -> "DecoratedScriptCommand":
     def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
         script_command.attachments[position].append(
-            {
-                "command": command,
-                "pass_args": pass_args,
-                "pass_previous": pass_previous
-            }
+            {"command": command, "pass_args": pass_args, "pass_previous": pass_previous}
         )
 
         return script_command

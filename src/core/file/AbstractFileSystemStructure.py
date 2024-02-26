@@ -2,14 +2,15 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
-from src.helper.dir import dir_set_permissions_recursively
 from src.const.types import (
+    FileSystemStructurePermission,
     FileSystemStructureSchema,
     FileSystemStructureSchemaItem,
     FileSystemStructureType,
-    StringMessageParameters, FileSystemStructurePermission,
+    StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
+from src.helper.dir import dir_set_permissions_recursively
 from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:
@@ -115,12 +116,14 @@ class AbstractFileSystemStructure(BaseClass):
 
         if "permissions" in options:
             if isinstance(options["permissions"], dict):
-                permissions = cast(FileSystemStructurePermission, options["permissions"])
+                permissions = cast(
+                    FileSystemStructurePermission, options["permissions"]
+                )
             else:
-                permissions = cast(FileSystemStructurePermission, {
-                    "mode": options["permissions"],
-                    "recursive": False
-                })
+                permissions = cast(
+                    FileSystemStructurePermission,
+                    {"mode": options["permissions"], "recursive": False},
+                )
 
             permissions["mode"] = int(permissions["mode"] or 644)
             self.permissions = permissions

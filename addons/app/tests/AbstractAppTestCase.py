@@ -16,9 +16,9 @@ from addons.app.helper.test import (
     test_create_app,
 )
 from addons.default.command.file.append_once import default__file__append_once
-from src.core.response.AbstractResponse import AbstractResponse
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
+from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
@@ -169,10 +169,7 @@ class AbstractAppTestCase(AbstractTestCase):
         self.reload_app_manager()
 
         # App name is expected by php / mysql / pma to start.
-        manager.set_config(
-            "domain_tld",
-            f"{manager.get_app_name()}.test"
-        )
+        manager.set_config("domain_tld", f"{manager.get_app_name()}.test")
 
         return manager
 

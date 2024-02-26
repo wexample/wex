@@ -24,9 +24,7 @@ class DirectoryStructure(AbstractFileSystemStructure):
         action_function: AnyCallable,
     ) -> None:
         self._process_schema_recursive(
-            item_name="",
-            schema=self.get_schema(),
-            action_function=action_function
+            item_name="", schema=self.get_schema(), action_function=action_function
         )
 
     def _process_schema_recursive(

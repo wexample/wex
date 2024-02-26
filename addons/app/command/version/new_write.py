@@ -1,5 +1,6 @@
-import git
 from typing import TYPE_CHECKING, Optional
+
+import git
 
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment

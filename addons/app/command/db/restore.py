@@ -22,9 +22,7 @@ if TYPE_CHECKING:
 @app_command(help="Restore a database dump", should_run=True)
 @option("--file-path", "-fp", type=str, required=False, help="Force file path")
 def app__db__restore(
-    manager: "AppAddonManager",
-    app_dir: str,
-    file_path: str | None = None
+    manager: "AppAddonManager", app_dir: str, file_path: str | None = None
 ) -> None:
     kernel = manager.kernel
 

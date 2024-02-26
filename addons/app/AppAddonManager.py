@@ -2,7 +2,7 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast, Callable
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
 import yaml
 
@@ -123,8 +123,8 @@ class AppAddonManager(AddonManager):
         return (
             os.sep
             + os.path.join(
-            "var", "www", environment or self.kernel.registry_structure.content.env
-        )
+                "var", "www", environment or self.kernel.registry_structure.content.env
+            )
             + os.sep
         )
 
@@ -575,14 +575,12 @@ class AppAddonManager(AddonManager):
             yaml.dump(proxy_apps, f, indent=True)
 
     def has_proxy_app(
-        self,
-        app_name: Optional[str] = None,
-        environment: Optional[str] = None
+        self, app_name: Optional[str] = None, environment: Optional[str] = None
     ) -> bool:
         environment = environment or self.get_env()
 
         if not app_name:
-            if self.has_config('global.name'):
+            if self.has_config("global.name"):
                 app_name = self.get_app_name()
             else:
                 return False
@@ -883,10 +881,9 @@ class AppAddonManager(AddonManager):
     def app_is_reverse_proxy(self, app_dir: Optional[str] = None) -> bool:
         from addons.app.command.service.used import app__service__used
 
-        return bool(self.kernel.run_function(
-            app__service__used,
-            {
-                "service": "proxy",
-                "app-dir": app_dir or self.get_app_dir()
-            }
-        ).first())
+        return bool(
+            self.kernel.run_function(
+                app__service__used,
+                {"service": "proxy", "app-dir": app_dir or self.get_app_dir()},
+            ).first()
+        )

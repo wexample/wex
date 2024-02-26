@@ -1,6 +1,5 @@
 import os
 import shutil
-from typing import Optional
 
 from src.const.types import AnyCallable
 
@@ -25,9 +24,7 @@ def dir_empty_dir(dir_path: str) -> None:
 
 
 def dir_set_permissions_recursively(
-    path: str,
-    mode: int,
-    follow_symlinks: bool = True
+    path: str, mode: int, follow_symlinks: bool = True
 ) -> None:
     """
     Set permissions recursively for a given directory or file.

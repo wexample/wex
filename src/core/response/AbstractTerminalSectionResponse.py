@@ -24,7 +24,11 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
 
     def render_cli_title(self, line_width: Optional[int] = None) -> str:
         terminal_width, _ = shutil.get_terminal_size()
-        line_width = terminal_width if (not line_width or line_width > terminal_width) else line_width
+        line_width = (
+            terminal_width
+            if (not line_width or line_width > terminal_width)
+            else line_width
+        )
 
         # Add title if exists, aligned to the left and fill with underscores
         if self.title:

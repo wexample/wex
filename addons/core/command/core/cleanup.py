@@ -2,12 +2,12 @@ import os
 from typing import TYPE_CHECKING
 
 from addons.system.command.own.this import system__own__this
-from src.helper.dir import dir_empty_dir
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.option import option
+from src.helper.dir import dir_empty_dir
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

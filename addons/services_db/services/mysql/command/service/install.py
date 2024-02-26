@@ -37,11 +37,7 @@ def mysql__service__install(
                         "dumps": {
                             "type": "dir",
                             "schema": {
-                                "db.latest.zip":
-                                    {
-                                        "type": "file",
-                                        "remote": "push"
-                                    }
+                                "db.latest.zip": {"type": "file", "remote": "push"}
                             },
                         }
                     },

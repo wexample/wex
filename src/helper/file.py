@@ -2,7 +2,7 @@ import grp
 import os
 import pwd
 import shutil
-from typing import IO, Any, Dict, List, Optional, Union, cast, Tuple
+from typing import IO, Any, Dict, List, Optional, Tuple, Union, cast
 
 from src.const.types import StringsList
 
@@ -155,7 +155,7 @@ def file_create_parent_and_touch(
 
 
 def file_touch(path: str, times: Optional[Tuple[int, int]] = None) -> None:
-    with open(path, 'a'):
+    with open(path, "a"):
         os.utime(path, times)
 
 

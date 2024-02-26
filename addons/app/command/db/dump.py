@@ -8,7 +8,11 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.ScriptCommand import ScriptCommand
 from src.decorator.attach import attach
 from src.decorator.option import option
-from src.helper.file import file_build_date_time_name, file_delete_file_or_dir, file_create_symlink
+from src.helper.file import (
+    file_build_date_time_name,
+    file_create_symlink,
+    file_delete_file_or_dir,
+)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -72,20 +76,14 @@ def app__db__dump(
             # Create symlink to zip
             zip_symlink_path = f"{os.path.dirname(dump_path)}/db.latest.zip"
             manager.log(f"Creating zip symlink to {zip_symlink_path}")
-            file_create_symlink(
-                zip_path,
-                zip_symlink_path
-            )
+            file_create_symlink(zip_path, zip_symlink_path)
 
         manager.kernel.io.message("Dump created at " + output_path)
 
         # Create symlink
         symlink_path = f"{os.path.dirname(dump_path)}/db.latest"
         manager.log(f"Creating zip symlink to {symlink_path}")
-        file_create_symlink(
-            output_path,
-            symlink_path
-        )
+        file_create_symlink(output_path, symlink_path)
 
         return output_path
 

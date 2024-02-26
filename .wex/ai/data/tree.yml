@@ -1683,6 +1683,8 @@ children:
                     type: dir
                   docker:
                     children:
+                      docker-compose.local.yml:
+                        type: file
                       docker-compose.yml:
                         type: file
                     type: dir

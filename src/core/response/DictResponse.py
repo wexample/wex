@@ -26,9 +26,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,
     ) -> None:
         super().__init__(
-            kernel=kernel,
-            title=title,
-            default_render_mode=default_render_mode
+            kernel=kernel, title=title, default_render_mode=default_render_mode
         )
 
         self.dictionary_data: StringKeysDict = dictionary
