@@ -91,5 +91,5 @@ def remote_get_connexion_address(
     return f"{username}@{domain_or_ip}"
 
 
-def remote_build_temp_push_dir(environment, app_name) -> str:
+def remote_build_temp_push_dir(environment: str, app_name: str) -> str:
     return f"~/pushed/{environment}/{app_name}/"

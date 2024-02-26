@@ -12,7 +12,7 @@ def dir_execute_in_workdir(target_dir: str, callback: AnyCallable) -> None:
     os.chdir(original_dir)
 
 
-def dir_empty_dir(dir_path) -> None:
+def dir_empty_dir(dir_path: str) -> None:
     # Iterate over each item in the directory
     for item_name in os.listdir(dir_path):
         # Construct the full path to the item
@@ -27,7 +27,7 @@ def dir_empty_dir(dir_path) -> None:
 def dir_set_permissions_recursively(
     path: str,
     mode: int,
-    follow_symlinks: Optional[bool] = True
+    follow_symlinks: bool = True
 ) -> None:
     """
     Set permissions recursively for a given directory or file.

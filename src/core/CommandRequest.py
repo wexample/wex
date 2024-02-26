@@ -74,10 +74,12 @@ class CommandRequest(BaseClass):
         return self._args_list
 
     def get_args_dict(self) -> StringKeysDict:
+        script_command = self.get_script_command()
+        
         return args_convert_dict_to_long_names_dict(
-            self._script_command.click_command,
+            script_command.click_command,
             args_convert_to_dict(
-                self._script_command.click_command,
+                script_command.click_command,
                 self.get_args_list()
             )
         )

@@ -52,7 +52,7 @@ def app__remote__push_receive(
             destination_path
         )
 
-    def _app__remote__push_receive():
+    def _app__remote__push_receive() -> None:
         manager.get_directory().process_schema_recursive(_app__remote__push_receive_copy_to_destination)
 
     manager.exec_in_app_workdir(

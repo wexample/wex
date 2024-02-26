@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 CommandAttachmentPassArgsOption = Union[bool, StringsList]
 
 
-class CommandAttachment(TypedDict):
+class CommandAttachment(TypedDict, total=False):
     command: Union[str, "ScriptCommand"]
     pass_args: CommandAttachmentPassArgsOption
     pass_previous: bool

@@ -2,7 +2,7 @@ import grp
 import os
 import pwd
 import shutil
-from typing import IO, Any, Dict, List, Optional, Union, cast
+from typing import IO, Any, Dict, List, Optional, Union, cast, Tuple
 
 from src.const.types import StringsList
 
@@ -154,7 +154,7 @@ def file_create_parent_and_touch(
     return file
 
 
-def file_touch(path: str, times=None) -> None:
+def file_touch(path: str, times: Optional[Tuple[int, int]] = None) -> None:
     with open(path, 'a'):
         os.utime(path, times)
 
@@ -330,4 +330,3 @@ def file_create_symlink(target_path: str, symlink_path: str) -> None:
         os.unlink(symlink_path)
 
     os.symlink(target_path, symlink_path)
-
