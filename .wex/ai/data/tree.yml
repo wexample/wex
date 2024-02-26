@@ -1330,9 +1330,6 @@ children:
                           restore.py:
                             type: file
                         type: dir
-                      remote:
-                        children: {}
-                        type: dir
                       service:
                         children:
                           install.py:
