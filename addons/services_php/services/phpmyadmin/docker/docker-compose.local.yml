@@ -1,0 +1,5 @@
+services:
+    phpmyadmin:
+        environment:
+          - PMA_USER=${RUNTIME_SERVICE_PHPMYADMIN_DB_USER}
+          - PMA_PASSWORD=${RUNTIME_SERVICE_PHPMYADMIN_DB_PASSWORD}
