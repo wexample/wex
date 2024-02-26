@@ -1,5 +1,5 @@
 # docker build -f .wex/docker/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
-FROM gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+FROM gitlab-docker.wexample.com/wexample-public/docker/wex:rc
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
