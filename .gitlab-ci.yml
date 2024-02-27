@@ -147,31 +147,25 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master, .test_cleanup, .test_rescue ]
-#  needs:
-#    - checkup_code
-#    - checkup_format
+  needs:
+    - checkup_code
+    - checkup_format
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
   variables:
-#    GIT_STRATEGY: none
+    GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
-    - !reference [ .test_rescue, script ] # TODO
-    - docker ps -a
-    - echo ${TEST_REMOTE_ADDRESS}
-    - sudo -u owner echo ${TEST_REMOTE_ADDRESS}
-    - sudo -u owner sudo echo ${TEST_REMOTE_ADDRESS}
-#    # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo echo "${TEST_REMOTE_ADDRESS}?!" && wex test -vvv -c app::remote/exec # TODO
     - echo "TEST_REMOTE_ADDRESS=${TEST_REMOTE_ADDRESS}" >> /opt/wex/.wex/.env
     - cat /opt/wex/.wex/.env
     - sudo -u owner sudo wex test -vvv -c app::remote/exec # TODO
-#    - !reference [ .test_cleanup, script ]
+    - !reference [ .test_cleanup, script ]
 
 #build_apt:
 #  stage: build_apt
