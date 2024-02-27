@@ -163,7 +163,6 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - cat /opt/wex/.wex/.env
     - sudo -u owner sudo wex test -vvv -c app::remote/push
     - !reference [ .test_cleanup, script ]
 
