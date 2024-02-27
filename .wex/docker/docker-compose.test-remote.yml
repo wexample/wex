@@ -10,7 +10,7 @@ services:
     tty: true
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
-#    network_mode: bridge
+    network_mode: bridge
     command: bash /opt/wex/.wex/docker/test_remote-entrypoint.sh
     volumes:
 # TODO Should be used in local env only
