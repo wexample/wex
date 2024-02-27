@@ -10,6 +10,18 @@
 APP_DIR_NAME=$1
 APP_TEST_REMOTE_DIR="/var/www/test_remote/${APP_DIR_NAME}/"
 
+
+echo "____________________"
+echo "APP_DIR_NAME:${APP_DIR_NAME}"
+echo "APP_TEST_REMOTE_DIR:${APP_TEST_REMOTE_DIR}"
+realpath .
+ls -la "/var/www/"
+ls -la "/var/www/test/"
+ls -la "/var/www/test/${APP_DIR_NAME}"
+ls -la "/var/www/test/${APP_DIR_NAME}.wex"
+ls -la "/var/www/test/${APP_DIR_NAME}.wex/cron"
+echo "____________________"
+
 echo "Remove old one ${APP_TEST_REMOTE_DIR}"
 rm -rf "${APP_TEST_REMOTE_DIR}"
 
