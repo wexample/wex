@@ -16,14 +16,14 @@ rm -rf "${APP_TEST_REMOTE_DIR}"
 echo "Copy from local env ${APP_TEST_REMOTE_DIR}"
 cp -r "/var/www/test/${APP_DIR_NAME}" "${APP_TEST_REMOTE_DIR}"
 
-# Go to app dir
-cd "${APP_TEST_REMOTE_DIR}"
-touch "${APP_TEST_REMOTE_DIR}.wex/cron/test_remote"
-
 # Start proxy manually to define test ports
 wex app::helper/start -n proxy -p 3335 -ps 3336 -e test_remote
 
 wex app::webhook/listen -a -p 12123
+
+# Go to app dir
+cd "${APP_TEST_REMOTE_DIR}"
+touch "${APP_TEST_REMOTE_DIR}.wex/cron/test_remote"
 
 echo "APP_DIR_NAME:${APP_DIR_NAME}"
 echo "APP_TEST_REMOTE_DIR:${APP_TEST_REMOTE_DIR}"
