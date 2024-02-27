@@ -154,7 +154,7 @@ test:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
   variables:
-    GIT_STRATEGY: none
+#    GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
