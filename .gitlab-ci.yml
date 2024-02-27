@@ -40,8 +40,8 @@ checkup_docker:
   extends: [ .merge_to_master ]
   script:
     - docker rm -f wex_test_remote
-    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest
-    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
     - docker system prune -a
 
 checkup_remote:
