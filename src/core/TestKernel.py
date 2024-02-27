@@ -28,4 +28,5 @@ class TestKernel(Kernel):
         self.io.log(f"Remote container address: {self.remote_address}")
         print(os.environ.get("TEST_REMOTE_ADDRESS"))
         print(remote_address)
+        print("exit")
         exit()  # TODO

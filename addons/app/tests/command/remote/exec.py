@@ -8,6 +8,10 @@ class TestAppCommandRemoteExec(AbstractAppTestCase):
         manager = self.create_and_start_test_app_with_remote(services=["php"])
         app_dir = manager.get_app_dir()
 
+        self.assertIsNotNone(
+            self.kernel.remote_address
+        )
+
         print('______________TEST')
         exit()
 
