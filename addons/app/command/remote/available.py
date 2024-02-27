@@ -35,7 +35,7 @@ def app__remote__available(
     try:
         address = f"{domain_or_ip}:{port}"
         manager.log(f"Checking {address}")
-        conn = HTTPConnection(f"{domain_or_ip}:{port}")
+        conn = HTTPConnection(address)
         conn.request("GET", "/status")
         response = conn.getresponse()
         data = json.loads(response.read())

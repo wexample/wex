@@ -20,6 +20,9 @@ cp -r "/var/www/test/${APP_DIR_NAME}" "${APP_TEST_REMOTE_DIR}"
 cd "${APP_TEST_REMOTE_DIR}"
 touch "${APP_TEST_REMOTE_DIR}.wex/cron/test_remote"
 
+# Start proxy manually to define test ports
+wex app::helper/start -n proxy -p 3335 -ps 3336 -e test_remote
+
 # Set proper env
 wex app::env/set -e test_remote
 wex app::app/start
