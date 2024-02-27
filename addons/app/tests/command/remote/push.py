@@ -7,6 +7,7 @@ from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.helper.remote import remote_build_temp_push_dir
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.helper.command import execute_command_sync
 from src.const.types import StringsList
 
 
@@ -55,6 +56,32 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self.reload_app_manager()
 
         environment = "test_remote"
+
+        success, result = execute_command_sync(
+            self.kernel,
+            ["docker", "ps", "-a"],
+            ignore_error=True,
+        )
+
+        print(result)
+
+        success, result = execute_command_sync(
+            self.kernel,
+            ["docker", "logs", "wex_test_remote"],
+            ignore_error=True,
+        )
+
+        print(result)
+
+        time.sleep(60)
+
+        success, result = execute_command_sync(
+            self.kernel,
+            ["docker", "logs", "wex_test_remote"],
+            ignore_error=True,
+        )
+
+        print(result)
 
         # Now than app has been updated,
         # we create a mirror in remote environment.
