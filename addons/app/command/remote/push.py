@@ -98,8 +98,8 @@ def app__remote__push(
         f"ENV_{string_to_snake_case(environment).upper()}_SERVER_USERNAME"
     )
     webhook_port = manager.get_config(
-        key="env.test_remote.webhook.port",
-        default=WEBHOOK_LISTEN_PORT_DEFAULT).get_int()
+        key="env.test_remote.webhook.port", default=WEBHOOK_LISTEN_PORT_DEFAULT
+    ).get_int()
 
     url = f"http://{domain_or_ip}:{webhook_port}/webhook/addon/app/remote/push-receive?app={manager.get_app_name()}&env={environment}&user={user}"
     manager.log(f"GET {url}")
