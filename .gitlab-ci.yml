@@ -67,7 +67,7 @@ checkup_pipeline_image_rc:
   stage: checkup
   image: gitlab-docker.wexample.com/wexample/wex/rc
   needs:
-    - checkup_pipeline_image_rc
+    - build_pipeline_image_rc
   script:
     - wex hi
     - wex version
