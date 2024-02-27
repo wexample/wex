@@ -28,14 +28,15 @@ def process_post_exec(
 
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
-        kernel.post_exec.append(
-            cast(ShellCommandsDeepList, ["cd", workdir, "&&"] + command)
-        )
+        prefixed_command = ["cd", workdir, "&&"] + command
     else:
-        kernel.post_exec.append(f"cd {workdir} && " + command)
+        prefixed_command = f"cd {workdir} && {command}"
+
+    kernel.post_exec.append(prefixed_command)
+    command_string = command_to_string(prefixed_command)
 
     kernel.io.log(
-        "Queuing shell command : " + command_to_string(command),
+        "Queuing shell command : " + command_string,
         verbosity=VERBOSITY_LEVEL_MAXIMUM,
     )
 
