@@ -1,6 +1,6 @@
 stages:
-#  - checkup_deployment
-#  - build_pipeline_images
+  - checkup_deployment
+  - build_pipeline_images
 #  - checkup
   - test
 #  - build_apt
@@ -34,46 +34,46 @@ include:
     - !reference [ .docker_login, script ]
     - !reference [ .build_image_app, script ]
 
-#checkup_docker:
-#  stage: checkup_deployment
-#  image: docker
-#  extends: [ .merge_to_master ]
-#  script:
-#    - docker rm -f wex_test_remote
-#    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
-#    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
-#    - docker system prune -a
-#
-#checkup_remote:
-#  stage: checkup_deployment
-#  extends: [ .merge_to_master ]
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
-#  script:
-#    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
-#    - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
-#    # Check target environment is ready to receive hooks
-#    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
-#    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
-#
-#build_pipeline_image_rc:
-#  stage: build_pipeline_images
-#  extends: [ .build_live_image ]
-#  needs:
-#    - checkup_docker
-#    - checkup_remote
-#  variables:
-#    FLAVOR: rc
-#
-#build_pipeline_image_test_remote:
-#  stage: build_pipeline_images
-#  extends: [ .build_live_image ]
-#  variables:
-#    FLAVOR: test-remote
-#  rules:
-#    - *merge-branch-master-rules
-#    - changes:
-#        - .wex/docker/Dockerfile.test-remote
-#
+checkup_docker:
+  stage: checkup_deployment
+  image: docker
+  extends: [ .merge_to_master ]
+  script:
+    - docker rm -f wex_test_remote
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
+    - docker system prune -a
+
+checkup_remote:
+  stage: checkup_deployment
+  extends: [ .merge_to_master ]
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  script:
+    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
+    # Check target environment is ready to receive hooks
+    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
+    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
+
+build_pipeline_image_rc:
+  stage: build_pipeline_images
+  extends: [ .build_live_image ]
+  needs:
+    - checkup_docker
+    - checkup_remote
+  variables:
+    FLAVOR: rc
+
+build_pipeline_image_test_remote:
+  stage: build_pipeline_images
+  extends: [ .build_live_image ]
+  variables:
+    FLAVOR: test-remote
+  rules:
+    - *merge-branch-master-rules
+    - changes:
+        - .wex/docker/Dockerfile.test-remote
+
 #checkup_pipeline_image_rc:
 #  stage: checkup
 #  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
