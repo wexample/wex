@@ -1,6 +1,9 @@
 FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 
-# Set the working directory
+# We use a different directory than /usr/lib/wex.
+# This distinction separates manually installed applications
+# from those installed via apt. It also allows for testing
+# applications installed in a custom directory.
 WORKDIR /opt/wex
 
 # Install all the necessary packages in one step
