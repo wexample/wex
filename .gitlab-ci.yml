@@ -1,5 +1,5 @@
 stages:
-#  - checkup_deployment
+  - checkup_deployment
   - build_pipeline_images
 #  - checkup
   - test
@@ -34,16 +34,16 @@ include:
     - !reference [ .docker_login, script ]
     - !reference [ .build_image_app, script ]
 
-#checkup_docker:
-#  stage: checkup_deployment
-#  image: docker
-#  extends: [ .merge_to_master ]
-#  script:
-#    - docker rm -f wex_test_remote
-#    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
-#    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
-#    - docker system prune -a
-#
+checkup_docker:
+  stage: checkup_deployment
+  image: docker
+  extends: [ .merge_to_master ]
+  script:
+    - docker rm -f wex_test_remote
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
+    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
+    - docker system prune -a
+
 #checkup_remote:
 #  stage: checkup_deployment
 #  extends: [ .merge_to_master ]
@@ -60,7 +60,7 @@ build_pipeline_image_rc:
   extends: [ .build_live_image ]
   needs:
     - checkup_docker
-    - checkup_remote
+#    - checkup_remote
   variables:
     FLAVOR: rc
 
