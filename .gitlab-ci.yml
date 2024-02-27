@@ -149,7 +149,7 @@ test:
     GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
-    - ls -la
+    - docker exec wex_test_remote ls -la
 #    - !reference [ .test_cleanup, script ]
 #    # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
