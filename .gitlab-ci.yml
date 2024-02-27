@@ -147,9 +147,9 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master, .test_cleanup, .test_rescue ]
-  needs:
-    - checkup_code
-    - checkup_format
+#  needs:
+#    - checkup_code
+#    - checkup_format
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
