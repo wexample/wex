@@ -24,3 +24,6 @@ class TestKernel(Kernel):
             self.remote_address = docker_container_ip(self, "wex_test_remote")
         else:
             self.remote_address = str(remote_address)
+
+        self.io.log(f"Remote container address: {self.remote_address}")
+        exit() # TODO
