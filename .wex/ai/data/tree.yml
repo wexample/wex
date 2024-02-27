@@ -87,13 +87,6 @@ children:
       tmp:
         status: hidden
         type: dir
-      webhook:
-        children:
-          test-wrapped.sh:
-            type: file
-          test.sh:
-            type: file
-        type: dir
     tmp:
       status: hidden
       type: dir
