@@ -1,7 +1,7 @@
 import os
 
 from addons.docker.helper.docker import docker_container_ip
-from addons.app.command.env.get import _app__env__get
+from addons.app.command.env.get import _app__env__get, _app__has_env_var
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.Kernel import Kernel
 
@@ -19,17 +19,12 @@ class TestKernel(Kernel):
             task_id,
         )
 
-        remote_address = os.environ.get("TEST_REMOTE_ADDRESS")
-        if not remote_address:
+        if _app__has_env_var(self.directory.path, "TEST_REMOTE_ADDRESS"):
+            self.remote_address = str(_app__env__get(self, self.directory.path, "TEST_REMOTE_ADDRESS"))
+        else:
             # A test remote container should have been started.
             self.remote_address = docker_container_ip(self, "wex_test_remote")
-        else:
-            self.remote_address = str(remote_address)
 
-        self.io.log(f"Remote container address: {self.remote_address}")
-        print(os.environ.get("TEST_REMOTE_ADDRESS"))
-        print(remote_address)
-        print(_app__env__get(self, self.directory.path))
-        print(_app__env__get(self, self.directory.path, "TEST_REMOTE_ADDRESS"))
+        print(self.remote_address)
         print("exit")
         exit()  # TODO
