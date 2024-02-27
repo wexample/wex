@@ -170,6 +170,7 @@ class AbstractAppTestCase(AbstractTestCase):
         self.assertIsNotNone(test_remote_address)
 
         manager.set_config("env.test_remote.server.ip", test_remote_address)
+        manager.set_config("env.test_remote.webhook.port", 12123)
 
         self.reload_app_manager()
 
