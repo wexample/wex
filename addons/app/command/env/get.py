@@ -1,5 +1,5 @@
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from dotenv import dotenv_values
 
@@ -22,7 +22,7 @@ def app__env__get(
     return _app__env__get(manager.kernel, app_dir, key)
 
 
-def _app__has_env_var(app_dir: str, key: str = "APP_ENV") -> str:
+def _app__has_env_var(app_dir: str, key: str = "APP_ENV") -> bool:
     env_file = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
     # Load the environment variables from the file
     env = dotenv_values(env_file).get(key)
@@ -30,7 +30,9 @@ def _app__has_env_var(app_dir: str, key: str = "APP_ENV") -> str:
     return env is not None
 
 
-def _app__env__get(kernel: "Kernel", app_dir: str, key: str = "APP_ENV", default: Optional[str] = None) -> str:
+def _app__env__get(
+    kernel: "Kernel", app_dir: str, key: str = "APP_ENV", default: Optional[str] = None
+) -> str:
     env_file = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
     if _app__has_env_var(app_dir, key):

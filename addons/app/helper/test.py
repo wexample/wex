@@ -5,11 +5,11 @@ import shutil
 from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.command.app.init import app__app__init
+from addons.app.command.env.get import _app__env__get, _app__has_env_var
 from addons.app.const.app import APP_ENV_TEST
+from addons.docker.helper.docker import docker_container_ip
 from src.const.types import StringsList
 from src.core.file.DirectoryStructure import DirectoryStructure
-from addons.docker.helper.docker import docker_container_ip
-from addons.app.command.env.get import _app__env__get, _app__has_env_var
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

@@ -3,8 +3,8 @@ import sys
 import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
-from addons.core.command.test.cleanup import core__test__cleanup
 from addons.app.command.env.get import _app__has_env_var
+from addons.core.command.test.cleanup import core__test__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
 from src.core.response.InteractiveShellCommandResponse import (

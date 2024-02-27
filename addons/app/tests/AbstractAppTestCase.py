@@ -169,9 +169,7 @@ class AbstractAppTestCase(AbstractTestCase):
         test_remote_address = test_get_test_remote_address(self.kernel)
         self.assertIsNotNone(test_remote_address)
 
-        manager.set_config(
-            "env.test_remote.server.ip",
-            test_remote_address)
+        manager.set_config("env.test_remote.server.ip", test_remote_address)
 
         self.reload_app_manager()
 

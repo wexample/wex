@@ -14,4 +14,3 @@ class TestKernel(Kernel):
             entrypoint_path,
             task_id,
         )
-
