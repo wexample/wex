@@ -158,7 +158,7 @@ test:
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
-    - !reference [ .test_rescue, script ] # TODO
+#    - !reference [ .test_rescue, script ] # TODO
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
