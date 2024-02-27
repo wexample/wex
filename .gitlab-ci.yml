@@ -164,7 +164,7 @@ test:
     # Run tests, as "owner", with sudo.
     - echo "TEST_REMOTE_ADDRESS=${TEST_REMOTE_ADDRESS}" >> /opt/wex/.wex/.env
     - cat /opt/wex/.wex/.env
-    - sudo -u owner sudo wex test -vvv -c app::remote/exec # TODO
+    - sudo -u owner sudo wex test -vvv
     - !reference [ .test_cleanup, script ]
 
 #build_apt:
