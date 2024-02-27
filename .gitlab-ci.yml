@@ -146,7 +146,7 @@ include:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master, .test_cleanup ]
+  extends: [ .merge_to_master, .test_cleanup, .test_rescue ]
 #  needs:
 #    - checkup_code
 #    - checkup_format
@@ -159,6 +159,7 @@ test:
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .test_rescue, script ] # TODO
+    - docker ps -a
 #    # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
