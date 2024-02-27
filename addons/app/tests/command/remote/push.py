@@ -57,31 +57,26 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
 
         environment = "test_remote"
 
-        success, result = execute_command_sync(
-            self.kernel,
-            ["docker", "ps", "-a"],
-            ignore_error=True,
+        from addons.app.helper.remote import (
+            remote_get_connexion_address,
+            remote_get_connexion_command,
         )
 
-        print(result)
-
-        success, result = execute_command_sync(
-            self.kernel,
-            ["docker", "logs", "wex_test_remote"],
-            ignore_error=True,
+        address = remote_get_connexion_address(
+            manager=manager, environment=environment, command=app__remote__exec
         )
 
-        print(result)
+        if not address:
+            return None
 
-        time.sleep(60)
+        print(' '.join(
+            remote_get_connexion_command(
+                manager=manager, environment=environment
+            )
+            + [address],
+        ))
 
-        success, result = execute_command_sync(
-            self.kernel,
-            ["docker", "logs", "wex_test_remote"],
-            ignore_error=True,
-        )
-
-        print(result)
+        time.sleep(600)
 
         # Now than app has been updated,
         # we create a mirror in remote environment.
