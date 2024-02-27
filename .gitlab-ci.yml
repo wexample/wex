@@ -66,6 +66,7 @@ build_pipeline_image_test_remote:
 checkup_pipeline_image_rc:
   stage: checkup
   image: gitlab-docker.wexample.com/wexample/wex/rc
+  extends: [ .merge_to_master ]
   needs:
     - build_pipeline_image_rc
   script:
@@ -75,6 +76,7 @@ checkup_pipeline_image_rc:
 checkup_pipeline_image_remote:
   stage: checkup
   image: gitlab-docker.wexample.com/wexample/wex/test-remote
+  extends: [ .merge_to_master ]
   needs:
     - job: build_pipeline_image_test_remote
       optional: true
