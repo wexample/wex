@@ -14,6 +14,7 @@ echo "Remove old one ${APP_TEST_REMOTE_DIR}"
 rm -rf "${APP_TEST_REMOTE_DIR}"
 
 echo "Copy from local env ${APP_TEST_REMOTE_DIR}"
+mkdir -p "${APP_TEST_REMOTE_DIR}"
 cp -r "/var/www/test/${APP_DIR_NAME}" "${APP_TEST_REMOTE_DIR}"
 
 # Start proxy manually to define test ports
