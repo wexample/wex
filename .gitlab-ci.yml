@@ -168,6 +168,8 @@ test:
 #    - sudo wex rebuild
     # Run tests, as "owner", with sudo.
 #    - sudo -u owner sudo echo "${TEST_REMOTE_ADDRESS}?!" && wex test -vvv -c app::remote/exec # TODO
+    - echo "TEST_REMOTE_ADDRESS=${TEST_REMOTE_ADDRESS}" >> /opt/wex/.wex/.env
+    - cat /opt/wex/.wex/.env
     - sudo -u owner sudo wex test -vvv -c app::remote/exec # TODO
 #    - !reference [ .test_cleanup, script ]
 
