@@ -88,6 +88,7 @@ checkup_pipeline_image_remote:
   stage: checkup
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master ]
+  resource_group: main_pipeline
   needs:
     - checkup_pipeline_image_rc
     - job: checkup_pipeline_image_remote
