@@ -25,6 +25,4 @@ wex app::helper/start -n proxy -p 3335 -ps 3336 -e test_remote
 
 wex app::webhook/listen -a -p 12123
 
-# Set proper env
-wex app::env/set -e test_remote
-wex app::app/start
+wex app::app/start -e test_remote
