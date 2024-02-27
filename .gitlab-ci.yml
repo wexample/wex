@@ -1,7 +1,7 @@
 stages:
   - checkup_deployment
   - build_pipeline_images
-  - checkup_source
+  - checkup
   - test
   - build_apt
   - deploy
@@ -63,13 +63,32 @@ build_pipeline_image_test_remote:
     - changes:
         - .wex/docker/Dockerfile.test-remote
 
+checkup_pipeline_image_rc:
+  stage: checkup
+  image: gitlab-docker.wexample.com/wexample/wex/rc
+  needs:
+    - checkup_pipeline_image_rc
+  script:
+    - wex hi
+    - wex version
+
+checkup_pipeline_image_remote:
+  stage: checkup
+  image: gitlab-docker.wexample.com/wexample/wex/test-remote
+  needs:
+    - job: build_pipeline_image_test_remote
+      optional: true
+  script:
+    - wex hi
+    - wex version
+
 checkup_code:
-  stage: checkup_source
+  stage: checkup
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master ]
   needs:
-    - build_pipeline_image_rc
-    - job: build_pipeline_image_test_remote
+    - checkup_pipeline_image_rc
+    - job: checkup_pipeline_image_remote
       optional: true
   variables:
     GIT_STRATEGY: none
