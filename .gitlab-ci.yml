@@ -1,6 +1,6 @@
 stages:
 #  - checkup_deployment
-#  - build_pipeline_images
+  - build_pipeline_images
 #  - checkup
   - test
 #  - build_apt
@@ -55,15 +55,15 @@ include:
 #    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
 #    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
 
-#build_pipeline_image_rc:
-#  stage: build_pipeline_images
-#  extends: [ .build_live_image ]
-#  needs:
-#    - checkup_docker
-#    - checkup_remote
-#  variables:
-#    FLAVOR: rc
-#
+build_pipeline_image_rc:
+  stage: build_pipeline_images
+  extends: [ .build_live_image ]
+  needs:
+    - checkup_docker
+    - checkup_remote
+  variables:
+    FLAVOR: rc
+
 #build_pipeline_image_test_remote:
 #  stage: build_pipeline_images
 #  extends: [ .build_live_image ]
