@@ -191,6 +191,6 @@ class AbstractAppTestCase(AbstractTestCase):
             {
                 "app-dir": app_dir,
                 "environment": environment,
-                "command": f'bash /usr/lib/wex/.wex/docker/test_remote-mirror_app.sh "{app_dir_name}"',
+                "command": f'bash /opt/wex/.wex/docker/test_remote-mirror_app.sh "{app_dir_name}"',
             },
         )
