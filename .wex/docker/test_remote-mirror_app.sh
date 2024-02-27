@@ -25,4 +25,8 @@ wex app::helper/start -n proxy -p 3335 -ps 3336 -e test_remote
 
 wex app::webhook/listen -a -p 12123
 
+echo "APP_DIR_NAME:${APP_DIR_NAME}"
+echo "APP_TEST_REMOTE_DIR:${APP_TEST_REMOTE_DIR}"
+realpath .
+
 wex app::app/start -e test_remote
