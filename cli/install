@@ -63,9 +63,6 @@ fi
 echo "Installing core..."
 bash "${WEX_DIR_CLI}wex" core::core/install
 
-
-echo "!!!-------------------->${TEST_REMOTE_ADDRESS}"
 echo "Reload bashrc changes..."
 # shellcheck disable=SC1090
 . ~/.bashrc
-echo "!!!!!-------------------->${TEST_REMOTE_ADDRESS}"

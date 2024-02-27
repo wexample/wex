@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo "????-------------------->${TEST_REMOTE_ADDRESS}"
-
 # Find current file directory
 # supporting symlinks
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
