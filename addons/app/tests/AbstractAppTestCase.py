@@ -14,6 +14,7 @@ from addons.app.helper.test import (
     DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME,
     test_build_app_name,
     test_create_app,
+    test_get_test_remote_address,
 )
 from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
@@ -165,7 +166,13 @@ class AbstractAppTestCase(AbstractTestCase):
             },
         )
 
-        manager.set_config("env.test_remote.server.ip", self.kernel.remote_address)
+        test_remote_address = test_get_test_remote_address(self.kernel)
+        self.assertIsNotNone(test_remote_address)
+
+        manager.set_config(
+            "env.test_remote.server.ip",
+            test_remote_address)
+
         self.reload_app_manager()
 
         # App name is expected by php / mysql / pma to start.

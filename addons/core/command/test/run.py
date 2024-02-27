@@ -4,6 +4,7 @@ import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 from addons.core.command.test.cleanup import core__test__cleanup
+from addons.app.command.env.get import _app__has_env_var
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
 from src.core.response.InteractiveShellCommandResponse import (
@@ -111,10 +112,9 @@ def core__test__run(
 
         kernel.run_function(core__test__cleanup)
 
-    remote_address = os.environ.get("TEST_REMOTE_ADDRESS")
     steps: QueuedCollectionResponseCollection
 
-    if not remote_address:
+    if not _app__has_env_var(kernel.directory.path, "TEST_REMOTE_ADDRESS"):
         steps = [
             _start_remote,
             _run_tests,
