@@ -44,6 +44,7 @@ def core__test__run(
                 f"{kernel.directory.path}.wex/docker/docker-compose.test-remote.yml",
             ]
             + command_part,
+            workdir=kernel.directory.path
         )
 
     def _start_remote(

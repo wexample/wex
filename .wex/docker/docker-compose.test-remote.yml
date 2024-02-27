@@ -11,7 +11,7 @@ services:
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
 #    network_mode: bridge
-    command: ls -la /opt/wex/ && ls -la /opt/wex/.wex/ && ls -la /opt/wex/.wex/docker/ && bash /opt/wex/.wex/docker/test_remote-entrypoint.sh
+    command: bash /opt/wex/.wex/docker/test_remote-entrypoint.sh
     volumes:
       - ../../:/opt/wex
       # Allow container to override env data
