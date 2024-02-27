@@ -54,7 +54,8 @@ def core__test__run(
             kernel,
             [
                 "pwd",
-            ]
+            ],
+            workdir=kernel.directory.path
         )
 
         return _remote_command(
