@@ -160,6 +160,7 @@ test:
     - !reference [ .test_cleanup, script ]
     - !reference [ .test_rescue, script ] # TODO
     - docker ps -a
+    - echo ${TEST_REMOTE_ADDRESS}
 #    # Change environment
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
