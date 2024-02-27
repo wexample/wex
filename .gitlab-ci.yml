@@ -127,21 +127,21 @@ include:
 #  extends: [ .checkup_install ]
 #  script:
 #    - wex .code/format
-#
-#.test_cleanup:
-#  script:
-#    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
-#    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
-#    - rm -rf /var/www/test
-#    - rm -rf /var/www/test_*
+
+.test_cleanup:
+  script:
+    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
+    - rm -rf /var/www/test
+    - rm -rf /var/www/test_*
 
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master, .test_cleanup ]
-  needs:
-    - checkup_code
-    - checkup_format
+#  needs:
+#    - checkup_code
+#    - checkup_format
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
