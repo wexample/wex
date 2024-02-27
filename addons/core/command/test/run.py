@@ -49,11 +49,11 @@ def core__test__run(
     def _start_remote(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
+        print(kernel.directory.path)
         return InteractiveShellCommandResponse(
             kernel,
             [
-                "realpath",
-                ".",
+                "pwd",
             ]
         )
 
