@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 def process_post_exec(
     kernel: "Kernel",
     command: ShellCommandsDeepList | str,
-    workdir: Optional[str] = None
+    workdir: Optional[str] = None,
 ) -> None:
     if not workdir:
         workdir = os.getcwd()

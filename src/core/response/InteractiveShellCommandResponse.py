@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, cast, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
@@ -23,7 +23,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
         kernel: "Kernel",
         shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
-        workdir: Optional[str] = None
+        workdir: Optional[str] = None,
     ) -> None:
         super().__init__(kernel)
 
@@ -62,11 +62,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             if self.ignore_error:
                 self.shell_command += ["||", "true"]
 
-            process_post_exec(
-                self.kernel,
-                self.shell_command,
-                self.workdir
-            )
+            process_post_exec(self.kernel, self.shell_command, self.workdir)
 
         return self
 
