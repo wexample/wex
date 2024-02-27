@@ -150,12 +150,12 @@ test:
 #  needs:
 #    - checkup_code
 #    - checkup_format
-  services:
-    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
-      alias: wex_test_remote
+#  services:
+#    - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
+#      alias: wex_test_remote
   variables:
     GIT_STRATEGY: none
-    TEST_REMOTE_ADDRESS: wex_test_remote
+#    TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
     # Change environment
@@ -164,7 +164,7 @@ test:
     # Run tests, as "owner", with sudo.
     - echo "TEST_REMOTE_ADDRESS=${TEST_REMOTE_ADDRESS}" >> /opt/wex/.wex/.env
     - cat /opt/wex/.wex/.env
-    - sudo -u owner sudo wex test -vvv
+    - sudo -u owner sudo wex test -vvv -c app::remote/push
     - !reference [ .test_cleanup, script ]
 
 #build_apt:
