@@ -76,7 +76,7 @@ build_pipeline_image_test_remote:
 
 checkup_pipeline_image_rc:
   stage: checkup
-  image: gitlab-docker.wexample.com/wexample/wex/rc
+  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master ]
   needs:
     - build_pipeline_image_rc
@@ -86,7 +86,7 @@ checkup_pipeline_image_rc:
 
 checkup_pipeline_image_remote:
   stage: checkup
-  image: gitlab-docker.wexample.com/wexample/wex/test-remote
+  image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
   extends: [ .merge_to_master ]
   needs:
     - job: build_pipeline_image_test_remote
@@ -94,6 +94,7 @@ checkup_pipeline_image_remote:
   script:
     - wex hi
     - wex version
+    - cat /opt/wex/.wex/docker/test_remote-entrypoint.sh
 
 .checkup_install:
   stage: checkup
@@ -134,14 +135,6 @@ checkup_format:
     - rm -rf /var/www/test
     - rm -rf /var/www/test_*
 
-# Use this into test job to use last repo,
-# instead of rebuilding "rc" image.
-.test_rescue:
-  script:
-    - rm -rf /opt/wex
-    - cp -r . /opt/wex
-    - bash /opt/wex/cli/install
-
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
@@ -156,7 +149,6 @@ test:
     GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
-    # Debug - !reference [ .test_rescue, script ]
     - !reference [ .test_cleanup, script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
