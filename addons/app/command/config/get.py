@@ -10,7 +10,14 @@ if TYPE_CHECKING:
 
 @app_command(help="Get a configuration setting for given app")
 @option("--key", "-k", type=str, required=True, help="Key in config file")
-@option("--runtime", "-r", type=bool, required=False, default=False, help="Search in runtime config")
+@option(
+    "--runtime",
+    "-r",
+    type=bool,
+    required=False,
+    default=False,
+    help="Search in runtime config",
+)
 @option(
     "--default",
     "-d",
@@ -22,7 +29,7 @@ def app__config__get(
     app_dir: str,
     key: str,
     default: Optional[str] = None,
-    runtime: bool = False
+    runtime: bool = False,
 ) -> AppConfigValue:
     if runtime:
         return manager.get_runtime_config(key, default).get_value()
