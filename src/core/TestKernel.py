@@ -1,6 +1,7 @@
 import os
 
 from addons.docker.helper.docker import docker_container_ip
+from addons.app.command.env.get import _app__env__get
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.Kernel import Kernel
 
@@ -28,5 +29,7 @@ class TestKernel(Kernel):
         self.io.log(f"Remote container address: {self.remote_address}")
         print(os.environ.get("TEST_REMOTE_ADDRESS"))
         print(remote_address)
+        print(_app__env__get(self, self.directory.path))
+        print(_app__env__get(self, self.directory.path, "TEST_REMOTE_ADDRESS"))
         print("exit")
         exit()  # TODO
