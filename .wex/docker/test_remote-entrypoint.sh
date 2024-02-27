@@ -2,7 +2,7 @@
 
 cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env
 
-bash /usr/lib/wex/cli/install
+bash /opt/wex/cli/install
 
 # Delete old test proxy
 docker rm -f wex_proxy_test_remote_proxy
