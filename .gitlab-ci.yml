@@ -138,10 +138,10 @@ include:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-#  extends: [ .merge_to_master, .test_cleanup ]
-#  needs:
-#    - checkup_code
-#    - checkup_format
+  extends: [ .merge_to_master, .test_cleanup ]
+  needs:
+    - checkup_code
+    - checkup_format
   services:
     - name: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
       alias: wex_test_remote
@@ -149,14 +149,13 @@ test:
     GIT_STRATEGY: none
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
-    - docker exec wex_test_remote ls -la
-#    - !reference [ .test_cleanup, script ]
-#    # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
-#    # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo wex test -vvv
-#    - !reference [ .test_cleanup, script ]
+    - !reference [ .test_cleanup, script ]
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
+    # Run tests, as "owner", with sudo.
+    - sudo -u owner sudo wex test -vvv
+    - !reference [ .test_cleanup, script ]
 
 #build_apt:
 #  stage: build_apt
