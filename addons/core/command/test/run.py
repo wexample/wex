@@ -49,6 +49,14 @@ def core__test__run(
     def _start_remote(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
+        return InteractiveShellCommandResponse(
+            kernel,
+            [
+                "realpath",
+                ".",
+            ]
+        )
+
         return _remote_command(
             [
                 "up",
@@ -66,6 +74,7 @@ def core__test__run(
         )
 
     def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
+        exit()
         kernel.run_function(core__test__cleanup)
 
         kernel.io.log("Starting test suite..")
