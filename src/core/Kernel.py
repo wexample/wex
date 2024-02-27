@@ -61,6 +61,8 @@ class Kernel(BaseClass):
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
         self._task_id: str | None = task_id
 
+        print("AA > " + os.environ.get("TEST_REMOTE_ADDRESS"))
+
         self.fast_mode_previous: Optional[bool] = None
         self.root_request: Optional["CommandRequest"] = None
         self.current_request: Optional["CommandRequest"] = None
