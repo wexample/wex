@@ -135,6 +135,14 @@ include:
     - rm -rf /var/www/test
     - rm -rf /var/www/test_*
 
+# Use this into test job to use last repo,
+# instead of rebuilding "rc" image.
+.test_rescue:
+  script:
+    - rm -rf /opt/wex
+    - cp -r . /opt/wex
+    - bash /opt/wex/cli/install
+
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
@@ -150,6 +158,7 @@ test:
     TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
+    - !reference [ .test_rescue, script ] # TODO
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
