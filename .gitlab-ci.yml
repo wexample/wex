@@ -167,7 +167,7 @@ test:
 #    - sudo wex app::env/set --app-dir /opt/wex/ -e test
 #    - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv -c app::remote/exec # TODO
+    - sudo -u owner sudo echo "${TEST_REMOTE_ADDRESS}?!" && wex test -vvv -c app::remote/exec # TODO
 #    - !reference [ .test_cleanup, script ]
 
 #build_apt:
