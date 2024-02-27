@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env
+
 bash /usr/lib/wex/cli/install
 
 # Delete old test proxy
