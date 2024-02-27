@@ -18,14 +18,21 @@ if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
 
-def process_post_exec(kernel: "Kernel", command: ShellCommandsDeepList | str) -> None:
+def process_post_exec(
+    kernel: "Kernel",
+    command: ShellCommandsDeepList | str,
+    workdir: Optional[str] = None
+) -> None:
+    if not workdir:
+        workdir = os.getcwd()
+
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
         kernel.post_exec.append(
-            cast(ShellCommandsDeepList, ["cd", os.getcwd(), "&&"] + command)
+            cast(ShellCommandsDeepList, ["cd", workdir, "&&"] + command)
         )
     else:
-        kernel.post_exec.append(f"cd {os.getcwd()} && " + command)
+        kernel.post_exec.append(f"cd {workdir} && " + command)
 
     kernel.io.log(
         "Queuing shell command : " + command_to_string(command),

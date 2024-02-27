@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, Optional
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
@@ -23,12 +23,14 @@ class InteractiveShellCommandResponse(AbstractResponse):
         kernel: "Kernel",
         shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
+        workdir: Optional[str] = None
     ) -> None:
         super().__init__(kernel)
 
         self.shell_command = cast(ShellCommandsDeepList, shell_command.copy())
         self.interactive_data = True
         self.ignore_error = ignore_error
+        self.workdir = workdir
 
     def render_content(
         self,
@@ -45,6 +47,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
             success, content = execute_command_sync(
                 self.kernel,
                 command_to_string(self.shell_command),
+                working_directory=self.workdir,
                 ignore_error=self.ignore_error,
                 shell=True,
             )
@@ -59,7 +62,11 @@ class InteractiveShellCommandResponse(AbstractResponse):
             if self.ignore_error:
                 self.shell_command += ["||", "true"]
 
-            process_post_exec(self.kernel, self.shell_command)
+            process_post_exec(
+                self.kernel,
+                self.shell_command,
+                self.workdir
+            )
 
         return self
 
