@@ -82,8 +82,5 @@ def test_create_app(
 
 
 def test_get_test_remote_address(kernel: "Kernel") -> str:
-    if _app__has_env_var(kernel.directory.path, "TEST_REMOTE_ADDRESS"):
-        return str(_app__env__get(kernel, kernel.directory.path, "TEST_REMOTE_ADDRESS"))
-    else:
-        # A test remote container should have been started.
-        return docker_container_ip(kernel, "wex_test_remote")
+    # A test remote container should have been started.
+    return docker_container_ip(kernel, "wex_test_remote")

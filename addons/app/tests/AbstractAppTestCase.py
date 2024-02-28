@@ -140,7 +140,7 @@ class AbstractAppTestCase(AbstractTestCase):
         for db_service in db_services:
             callback(db_service)
 
-    def create_and_start_test_app_with_remote(
+    def create_and_start_test_app_and_prepare_remote(
         self, services: StringsList
     ) -> AppAddonManager:
         environment = DEFAULT_ENVIRONMENT_TEST_REMOTE

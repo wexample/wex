@@ -155,7 +155,6 @@ test:
 #      alias: wex_test_remote
   variables:
     GIT_STRATEGY: none
-#    TEST_REMOTE_ADDRESS: wex_test_remote
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
