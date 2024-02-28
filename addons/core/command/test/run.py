@@ -1,8 +1,10 @@
 import os
 import sys
+import time
 import unittest
 from typing import TYPE_CHECKING, Any, Optional, cast
 
+from addons.app.command.env.get import _app__env__get
 from addons.core.command.test.cleanup import core__test__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
@@ -20,6 +22,7 @@ from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
+from src.helper.command import execute_command_sync
 from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
@@ -33,32 +36,59 @@ if TYPE_CHECKING:
 def core__test__run(
     kernel: "Kernel", command: Optional[str] = None
 ) -> QueuedCollectionResponse:
-    def _remote_command(command_part: StringsList) -> InteractiveShellCommandResponse:
+    def _remote_compose(command_part: StringsList) -> InteractiveShellCommandResponse:
+        test_env = _app__env__get(
+            kernel, kernel.directory.path, key="TEST_REMOTE_ENV", default="pipeline"
+        )
+
+        suffix = "." + test_env if test_env != "pipeline" else ""
+
         return InteractiveShellCommandResponse(
             kernel,
             [
                 "docker",
                 "compose",
                 "-f",
-                f"{kernel.directory.path}.wex/docker/docker-compose.test-remote.yml",
+                f"{kernel.directory.path}.wex/docker/test_remote/docker-compose.test-remote{suffix}.yml",
             ]
             + command_part,
+            workdir=kernel.directory.path,
         )
 
     def _start_remote(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
-        return _remote_command(
+        return _remote_compose(
             [
                 "up",
                 "-d",
             ]
         )
 
+    def _wait_remote(
+        queue: AbstractQueuedCollectionResponseQueueManager,
+    ) -> None:
+        success = False
+        while not success:
+            success, content = execute_command_sync(
+                kernel,
+                [
+                    "docker",
+                    "exec",
+                    "wex_test_remote",
+                    "test",
+                    "-f",
+                    "/test_remote.ready",
+                ],
+                ignore_error=True,
+            )
+            kernel.io.log("Test remote server starting...")
+            time.sleep(2)
+
     def _stop_remote(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
-        return _remote_command(
+        return _remote_compose(
             [
                 "down",
             ]
@@ -111,19 +141,13 @@ def core__test__run(
 
         kernel.run_function(core__test__cleanup)
 
-    remote_address = os.environ.get("TEST_REMOTE_ADDRESS")
-    steps: QueuedCollectionResponseCollection
-
-    if not remote_address:
-        steps = [
-            _start_remote,
-            _run_tests,
-            _stop_remote,
-        ]
-    else:
-        steps = [
-            _run_tests,
-        ]
+    steps: QueuedCollectionResponseCollection = [
+        _stop_remote,
+        _start_remote,
+        _wait_remote,
+        _run_tests,
+        _stop_remote,
+    ]
 
     return QueuedCollectionResponse(
         kernel,

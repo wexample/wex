@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
+from addons.docker.helper.docker import docker_container_ip
 from src.const.types import StringsList
 from src.core.file.DirectoryStructure import DirectoryStructure
 
@@ -77,3 +78,8 @@ def test_create_app(
     os.chdir(current_dir)
 
     return app_dir
+
+
+def test_get_test_remote_address(kernel: "Kernel") -> str:
+    # A test remote container should have been started.
+    return docker_container_ip(kernel, "wex_test_remote")

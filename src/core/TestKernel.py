@@ -1,6 +1,3 @@
-import os
-
-from addons.docker.helper.docker import docker_container_ip
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.Kernel import Kernel
 
@@ -17,10 +14,3 @@ class TestKernel(Kernel):
             entrypoint_path,
             task_id,
         )
-
-        remote_address = os.environ.get("TEST_REMOTE_ADDRESS")
-        if not remote_address:
-            # A test remote container should have been started.
-            self.remote_address = docker_container_ip(self, "wex_test_remote")
-        else:
-            self.remote_address = str(remote_address)

@@ -1,0 +1,26 @@
+# docker build -f .wex/docker/test_remote/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
+FROM gitlab-docker.wexample.com/wexample/wex/rc
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+        bash \
+        openssh-server \
+    && rm -rf /var/lib/apt/lists/* \
+    # Generate SSH keys.
+    && ssh-keygen -A \
+    # Set the root password.
+    && echo 'root:TEST_PASSWORD' | chpasswd \
+    # Create the missing privilege separation directory.
+    && mkdir -p /run/sshd \
+    # Configure SSHD directly by editing the file once.
+    && echo "PermitRootLogin yes\nPasswordAuthentication yes\nPermitEmptyPasswords no" >> /etc/ssh/sshd_config \
+    # Copy environment file.
+    && cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env \
+    # Running installation script.
+    && bash /opt/wex/cli/install
+
+# Expose the SSH port.
+EXPOSE 22
+
+# Run SSH daemon
+CMD ["/usr/sbin/sshd", "-D"]

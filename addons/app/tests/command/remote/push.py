@@ -1,13 +1,11 @@
 import os.path
 import time
 
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.db.exec import app__db__exec
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.command.remote.push import app__remote__push
 from addons.app.helper.remote import remote_build_temp_push_dir
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.types import StringsList
 
 
 class TestAppCommandRemotePush(AbstractAppTestCase):
@@ -15,7 +13,9 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self._test_push_with_db()
 
     def _test_push_with_db(self) -> None:
-        manager = self._prepare_sync_env(services=["php", "mysql"])
+        manager = self.create_and_start_test_app_and_prepare_remote(
+            services=["php", "mysql"]
+        )
 
         app_dir = manager.get_app_dir()
         app_dir_basename = os.path.basename(os.path.dirname(app_dir))
@@ -121,8 +121,3 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             unique_value,
             "The value in the local database hase been transferred and mounted in remote database",
         )
-
-    def _prepare_sync_env(self, services: StringsList) -> AppAddonManager:
-        manager = self.create_and_start_test_app_with_remote(services)
-
-        return manager

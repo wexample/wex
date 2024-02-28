@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
@@ -22,12 +22,14 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         kernel: "Kernel",
         shell_command: ShellCommandsDeepList,
         ignore_error: bool = False,
+        workdir: Optional[str] = None,
     ) -> None:
         super().__init__(kernel)
 
         self.success: bool | None = None
         self.shell_command: ShellCommandsDeepList = shell_command
         self.ignore_error: bool = ignore_error
+        self.workdir = workdir
 
     def render_content(
         self,
@@ -39,6 +41,7 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
             kernel=self.kernel,
             command_tree=self.shell_command,
             ignore_error=self.ignore_error,
+            working_directory=self.workdir,
         )
 
         self.success = success

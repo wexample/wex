@@ -1,0 +1,18 @@
+# In local environment, we don't rebuild test_remote docker image,
+# instead we mount actual project and reinstall it at container startup.
+services:
+  wex_test_remote:
+    extends:
+      file: docker-compose.test-remote.yml
+      service: wex_test_remote
+    command: bash /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.local.sh
+    volumes:
+      - ../../:/opt/wex
+      # Allow container to override env data
+      - ../.env.test_remote:/opt/wex/.wex/.env
+      - volume_venv:/opt/wex/.wex/python/venv
+      - volume_tmp:/opt/wex/tmp
+
+volumes:
+  volume_tmp:
+  volume_venv:
