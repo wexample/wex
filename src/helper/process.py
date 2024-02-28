@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import os
 import signal
-from typing import TYPE_CHECKING, List, Optional, cast, Union
+from typing import TYPE_CHECKING, List, Optional, cast
 
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.const.types import ShellCommandsDeepList, StringsList
+from src.const.types import ShellCommandsDeepList
 from src.helper.command import (
     command_to_string,
     execute_command_sync,

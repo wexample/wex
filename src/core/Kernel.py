@@ -38,8 +38,8 @@ if TYPE_CHECKING:
         CoreCommandArgsList,
         CoreCommandString,
         OptionalCoreCommandArgsListOrDict,
-        ShellCommandsDeepList, StringsList,
-)
+        StringsList,
+    )
     from src.core.command.resolver.AbstractCommandResolver import (
         AbstractCommandResolver,
     )
