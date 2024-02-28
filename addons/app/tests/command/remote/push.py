@@ -13,7 +13,9 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self._test_push_with_db()
 
     def _test_push_with_db(self) -> None:
-        manager = self.create_and_start_test_app_and_prepare_remote(services=["php", "mysql"])
+        manager = self.create_and_start_test_app_and_prepare_remote(
+            services=["php", "mysql"]
+        )
 
         app_dir = manager.get_app_dir()
         app_dir_basename = os.path.basename(os.path.dirname(app_dir))

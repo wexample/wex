@@ -5,7 +5,6 @@ import shutil
 from typing import TYPE_CHECKING, List, Optional, cast
 
 from addons.app.command.app.init import app__app__init
-from addons.app.command.env.get import _app__env__get, _app__has_env_var
 from addons.app.const.app import APP_ENV_TEST
 from addons.docker.helper.docker import docker_container_ip
 from src.const.types import StringsList
