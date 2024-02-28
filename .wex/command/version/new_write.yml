@@ -5,8 +5,9 @@ command:
 properties:
   - name: attach
     options:
-      position: before
+      position: after
       command: app::version/new-write
+      pass_previous: version
 options:
   - name: --version
     short: -v
