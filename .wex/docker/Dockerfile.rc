@@ -7,21 +7,19 @@ FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 WORKDIR /opt/wex
 
 # Install all the necessary packages in one step
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
       ca-certificates \
       gnupg \
       software-properties-common \
       ssh \
-      sudo && \
+      sudo \
     # Clean up the apt cache to reduce image size
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Create and configure a non-root user
-RUN useradd --uid 1000 owner --create-home && \
-    adduser owner sudo && \
-    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    # Create and configure a non-root user
+    && useradd --uid 1000 owner --create-home \
+    && adduser owner sudo \
+    && echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
 
 # Copy the application files to the container
 COPY . .
