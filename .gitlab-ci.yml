@@ -67,12 +67,10 @@ build_pipeline_image_rc:
 build_pipeline_image_test_remote:
   stage: build_pipeline_images
   extends: [ .build_live_image ]
+  needs:
+    - build_pipeline_image_rc
   variables:
     FLAVOR: test-remote
-  rules:
-    - *merge-branch-master-rules
-    - changes:
-        - .wex/docker/Dockerfile.test-remote
 
 #checkup_pipeline_image_rc:
 #  stage: checkup
