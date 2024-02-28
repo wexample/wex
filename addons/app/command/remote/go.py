@@ -29,7 +29,7 @@ def app__remote__go(
             "app-dir": app_dir,
             "environment": environment,
             "terminal": True,
-            "command": f'sh -c "cd /var/www/{environment}/{manager.get_app_name()}/ && {SHELL_DEFAULT}"',
+            "command": f'sh -c "cd /var/www/{environment}/{manager.get_app_name()} || cd /var/www/; {SHELL_DEFAULT}"',
         },
     ).first()
 

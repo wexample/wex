@@ -42,9 +42,8 @@ if ! command_exists sshpass; then
 fi
 
 # Create and activate virtual environment
-sudo rm -rf .wex/python/venv
 VENV_PATH="${WEX_DIR_ROOT}.wex/python/venv"
-python3 -m venv "$VENV_PATH"
+python3 -m venv "$VENV_PATH" --clear
 # Activate virtual environment
 . "${VENV_PATH}/bin/activate"
 

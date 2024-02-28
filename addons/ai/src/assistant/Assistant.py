@@ -88,7 +88,9 @@ class Assistant(BaseClass):
                 self.log(f"Loading tool {command_name}")
 
                 command_tool = CommandTool(
-                    self.kernel, command_name, all_commands[command_name]["description"]
+                    kernel=self.kernel,
+                    name=command_name,
+                    description=all_commands[command_name]["description"],
                 )
 
                 self.tools.append(command_tool)

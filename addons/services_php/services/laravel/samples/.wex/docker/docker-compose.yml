@@ -3,5 +3,3 @@ services:
     extends:
       file: ${RUNTIME_SERVICE_LARAVEL_YML_ENV}
       service: laravel
-    depends_on:
-      - ${GLOBAL_NAME}_mysql

@@ -2,6 +2,3 @@
         extends:
           file: ${RUNTIME_SERVICE_WORDPRESS_YML_ENV}
           service: cli
-        depends_on:
-          - ${GLOBAL_NAME}_wordpress
-          - ${GLOBAL_NAME}_mysql
