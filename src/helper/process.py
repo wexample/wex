@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import os
 import signal
-from typing import TYPE_CHECKING, List, Optional, cast
+from typing import TYPE_CHECKING, List, Optional, cast, Union
 
 import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.const.types import ShellCommandsDeepList
+from src.const.types import ShellCommandsDeepList, StringsList
 from src.helper.command import (
     command_to_string,
     execute_command_sync,
@@ -28,15 +28,15 @@ def process_post_exec(
 
     # All command should be executed by default in the same current workdir.
     if isinstance(command, list):
-        prefixed_command = ["cd", workdir, "&&"] + command
+        command_string = command_to_string(command)
     else:
-        prefixed_command = f"cd {workdir} && {command}"
+        command_string = command
 
+    prefixed_command = f"cd {workdir} && {command_string}"
     kernel.post_exec.append(prefixed_command)
-    command_string = command_to_string(prefixed_command)
 
     kernel.io.log(
-        "Queuing shell command : " + command_string,
+        "Queuing shell command : " + prefixed_command,
         verbosity=VERBOSITY_LEVEL_MAXIMUM,
     )
 
