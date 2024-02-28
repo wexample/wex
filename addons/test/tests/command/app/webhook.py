@@ -1,30 +1,38 @@
 import json
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
-from src.helper.routing import routing_build_webhook_route_map, routing_is_allowed_route
 from src.helper.file import file_read
+from src.helper.routing import routing_build_webhook_route_map, routing_is_allowed_route
 
 
 class TestTestCommandAppWebhook(AbstractWebhookTestCase):
     def test_webhook(self) -> None:
         routes = routing_build_webhook_route_map(self.kernel)
 
-        self.assertFalse(routing_is_allowed_route('/test', routes))
-        self.assertFalse(routing_is_allowed_route('/webhook', routes))
-        self.assertFalse(routing_is_allowed_route('/webhook/app', routes))
-        self.assertFalse(routing_is_allowed_route('/webhook/app/test?foo=b/ar', routes))
-        self.assertFalse(routing_is_allowed_route('/webhook/app/test?foo=b%ar', routes))
-        self.assertFalse(routing_is_allowed_route('/webhook/app/test?fo~o=bar', routes))
+        self.assertFalse(routing_is_allowed_route("/test", routes))
+        self.assertFalse(routing_is_allowed_route("/webhook", routes))
+        self.assertFalse(routing_is_allowed_route("/webhook/app", routes))
+        self.assertFalse(routing_is_allowed_route("/webhook/app/test?foo=b/ar", routes))
+        self.assertFalse(routing_is_allowed_route("/webhook/app/test?foo=b%ar", routes))
+        self.assertFalse(routing_is_allowed_route("/webhook/app/test?fo~o=bar", routes))
 
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test/app_name', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test/app_name/group', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test/app_name/group/command', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test?foo', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test?foo=bar', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test?foo=5.0.123build.5678', routes))
-        self.assertTrue(routing_is_allowed_route('/webhook/app/test?foo=5.0.123+build.5678', routes))
-        self.assertTrue(routing_is_allowed_route('/status', routes))
+        self.assertTrue(routing_is_allowed_route("/webhook/app/test", routes))
+        self.assertTrue(routing_is_allowed_route("/webhook/app/test/app_name", routes))
+        self.assertTrue(
+            routing_is_allowed_route("/webhook/app/test/app_name/group", routes)
+        )
+        self.assertTrue(
+            routing_is_allowed_route("/webhook/app/test/app_name/group/command", routes)
+        )
+        self.assertTrue(routing_is_allowed_route("/webhook/app/test?foo", routes))
+        self.assertTrue(routing_is_allowed_route("/webhook/app/test?foo=bar", routes))
+        self.assertTrue(
+            routing_is_allowed_route("/webhook/app/test?foo=5.0.123build.5678", routes)
+        )
+        self.assertTrue(
+            routing_is_allowed_route("/webhook/app/test?foo=5.0.123+build.5678", routes)
+        )
+        self.assertTrue(routing_is_allowed_route("/status", routes))
 
         response = self.kernel.run_command(
             # This is a yaml command.

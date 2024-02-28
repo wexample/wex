@@ -33,7 +33,15 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
-@option("--debug", "-d", type=bool, is_flag=True, default=False, required=False, help="Single command to test")
+@option(
+    "--debug",
+    "-d",
+    type=bool,
+    is_flag=True,
+    default=False,
+    required=False,
+    help="Single command to test",
+)
 def core__test__run(
     kernel: "Kernel", command: Optional[str] = None, debug: bool = False
 ) -> QueuedCollectionResponse:
@@ -120,13 +128,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                    (not command)
-                    or command_name == command
-                    or (
-                        command.endswith("*")
-                        and command_name.startswith(command[:-1])
+                        (not command)
+                        or command_name == command
+                        or (
+                            command.endswith("*")
+                            and command_name.startswith(command[:-1])
+                        )
                     )
-                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 
@@ -145,9 +153,7 @@ def core__test__run(
 
     # Debug focus on speed.
     if debug:
-        steps = [
-            _run_tests
-        ]
+        steps = [_run_tests]
     else:
         steps = [
             _stop_remote,

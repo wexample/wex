@@ -4,9 +4,8 @@ import git
 
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment
-from src.const.globals import CORE_COMMAND_NAME, VERSION_DEFAULT
+from src.const.globals import VERSION_DEFAULT
 from src.decorator.option import option
-from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -44,7 +43,7 @@ def app__version__new_write(
     branch_exists = any((heads.name == new_branch_name for heads in repo.heads))
 
     if not branch_exists:
-        repo.git.checkout('HEAD', b=new_branch_name)
+        repo.git.checkout("HEAD", b=new_branch_name)
         kernel.io.success(f"Branch created : {new_branch_name}")
     else:
         repo.git.checkout(new_branch_name)

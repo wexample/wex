@@ -4,11 +4,8 @@ from http.server import HTTPServer
 from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.command.webhook.status import app__webhook__status
-from addons.app.WebhookHttpRequestHandler import (
-    WebhookHttpRequestHandler,
-)
+from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.helper.routing import routing_build_webhook_route_map
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     SERVICE_DAEMON_NAME,
@@ -28,6 +25,7 @@ from src.helper.core import (
 )
 from src.helper.file import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
+from src.helper.routing import routing_build_webhook_route_map
 from src.helper.system import (
     system_is_port_open,
     system_service_daemon_exec,
@@ -179,4 +177,3 @@ def app__webhook__listen(
 
     time.sleep(2)
     return kernel.run_function(app__webhook__status, {"webhook_port_number": port})
-

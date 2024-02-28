@@ -21,8 +21,8 @@ class StatusProcess(TypedDict, total=False):
 def app__webhook__status_process(
     kernel: "Kernel", webhook_path: str
 ) -> Optional[DictResponse]:
-    from src.helper.routing import routing_get_route_info, routing_is_allowed_route
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
+    from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 
     if not routing_is_allowed_route(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP):
         return None
