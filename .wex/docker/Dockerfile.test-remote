@@ -3,30 +3,24 @@ FROM gitlab-docker.wexample.com/wexample/wex/rc
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
-    bash \
-    openssh-server \
-    && rm -rf /var/lib/apt/lists/*
+        bash \
+        openssh-server \
+    && rm -rf /var/lib/apt/lists/* \
+    # Generate SSH keys.
+    && ssh-keygen -A \
+    # Set the root password.
+    && echo 'root:TEST_PASSWORD' | chpasswd \
+    # Create the missing privilege separation directory.
+    && mkdir -p /run/sshd \
+    # Configure SSHD directly by editing the file once.
+    && echo "PermitRootLogin yes\nPasswordAuthentication yes\nPermitEmptyPasswords no" >> /etc/ssh/sshd_config \
+    # Copy environment file.
+    && cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env \
+    # Running installation script.
+    && bash /opt/wex/cli/install
 
-# Generate SSH keys
-RUN ssh-keygen -A
-
-# Set the root password
-RUN echo 'root:TEST_PASSWORD' | chpasswd
-
-# Create the missing privilege separation directory
-RUN mkdir -p /run/sshd
-
-# Configure SSHD
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
-    && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
-    && echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
-
-RUN cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env
-
-RUN bash /opt/wex/cli/install
-
-# Expose the SSH port
+# Expose the SSH port.
 EXPOSE 22
 
-# Command to run the SSH daemon
+# Run SSH daemon
 CMD ["/usr/sbin/sshd", "-D"]
