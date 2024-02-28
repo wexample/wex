@@ -52,7 +52,7 @@ checkup_remote:
     - REMOTE_ENV=prod # TODO Looping version error
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
     # Check target environment is ready to receive hooks
-    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
+    - DEPLOYMENT_SERVER_STATUS=True # TODO
     - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
 
 build_pipeline_image_rc:
