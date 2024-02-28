@@ -1,6 +1,6 @@
  # Use this file to run and test application
  # using a standard docker composer command :
- # docker compose -f .wex/docker/docker-compose.test-remote.yml up -d
+ # docker compose -f .wex/docker/test_remote/docker-compose.test-remote.yml up -d
 services:
   wex_test_remote:
     container_name: wex_test_remote
@@ -11,7 +11,7 @@ services:
     # When tests runs in a container, as in deployment pipeline,
     # we should ensure the remote is in the same network as current one.
     network_mode: bridge
-    command: bash /opt/wex/.wex/docker/test_remote-entrypoint.sh
+    command: bash /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
     # Defining ports here avoid internal proxy to fail later if not available.
     ports:
       - 3337

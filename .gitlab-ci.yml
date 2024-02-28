@@ -71,6 +71,7 @@ build_pipeline_image_test_remote:
     - build_pipeline_image_rc
   variables:
     FLAVOR: test-remote
+    IMAGE_DOCKERFILE: .wex/docker/test_remote/Dockerfile.${FLAVOR}
 
 #checkup_pipeline_image_rc:
 #  stage: checkup
@@ -92,7 +93,7 @@ build_pipeline_image_test_remote:
 #  script:
 #    - wex hi
 #    - wex version
-#    - cat /opt/wex/.wex/docker/test_remote-entrypoint.sh
+#    - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
 #
 #.checkup_install:
 #  stage: checkup

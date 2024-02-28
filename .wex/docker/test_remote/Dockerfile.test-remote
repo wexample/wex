@@ -1,4 +1,4 @@
-# docker build -f .wex/docker/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
+# docker build -f .wex/docker/test_remote/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
 FROM gitlab-docker.wexample.com/wexample/wex/rc
 
 # Install necessary packages
