@@ -6,7 +6,7 @@ from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import StringKeysDict, StringsList
 
 # Added an explicit whitelist for query parameters
-ALLOWED_QUERY_CHARS = re.compile(r"^[a-zA-Z0-9_\-=&]+$")
+ALLOWED_QUERY_CHARS = re.compile(r"^[a-zA-Z0-9_.+\-=&]+$")
 
 
 def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
@@ -49,11 +49,17 @@ def routing_get_route_info(
 
 def routing_is_allowed_route(url: str, routes: WebhookListenerRoutesMap) -> bool:
     route_info = routing_get_route_info(url, routes)
+    print(url)
+    print(route_info)
+
     if route_info:
         # Validate the query string to contain only allowed characters
         for key, values in route_info["query"].items():
             for value in values:
                 if not ALLOWED_QUERY_CHARS.fullmatch(value):
+                    print('BEEEP')
+                    print(value)
+                    print(ALLOWED_QUERY_CHARS)
                     return False
         return True
     return False
