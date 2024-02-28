@@ -41,12 +41,18 @@ def app__version__new_write(
 
     repo = git.Repo(search_parent_directories=True)
     new_branch_name = f"version-{new_version}"
-    repo.git.checkout(b=new_branch_name)
+    branch_exists = any((heads.name == new_branch_name for heads in repo.heads))
+
+    if not branch_exists:
+        repo.git.checkout('HEAD', b=new_branch_name)
+        kernel.io.success(f"Branch created : {new_branch_name}")
+    else:
+        repo.git.checkout(new_branch_name)
+        kernel.io.success(f"Branch exists : {new_branch_name}")
 
     # Save new version
     kernel.io.log(f"New app version : {new_version}")
 
     manager.set_config("global.version", new_version)
-    manager.set_config(f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel))
 
     return new_version
