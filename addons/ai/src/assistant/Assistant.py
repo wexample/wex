@@ -90,7 +90,7 @@ class Assistant(BaseClass):
                 command_tool = CommandTool(
                     kernel=self.kernel,
                     name=command_name,
-                    description=all_commands[command_name]["description"]
+                    description=all_commands[command_name]["description"],
                 )
 
                 self.tools.append(command_tool)
