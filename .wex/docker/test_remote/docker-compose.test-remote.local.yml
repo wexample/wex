@@ -5,8 +5,7 @@ services:
     extends:
       file: docker-compose.test-remote.yml
       service: wex_test_remote
-#    command: bash /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.local.sh
-    command: /bin/bash
+    command: bash /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.local.sh
     volumes:
       - ../../../:/opt/wex
       # Allow container to override env data

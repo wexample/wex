@@ -33,8 +33,9 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
+@option("--debug", "-d", type=bool, is_flag=True, default=False, required=False, help="Single command to test")
 def core__test__run(
-    kernel: "Kernel", command: Optional[str] = None
+    kernel: "Kernel", command: Optional[str] = None, debug: bool = False
 ) -> QueuedCollectionResponse:
     def _remote_compose(command_part: StringsList) -> InteractiveShellCommandResponse:
         test_env = _app__env__get(
@@ -94,9 +95,10 @@ def core__test__run(
             ]
         )
 
-    def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
+    def _cleanup(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.run_function(core__test__cleanup)
 
+    def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
         kernel.io.log("Starting test suite..")
 
         loader = unittest.TestLoader()
@@ -118,13 +120,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                        (not command)
-                        or command_name == command
-                        or (
-                            command.endswith("*")
-                            and command_name.startswith(command[:-1])
-                        )
+                    (not command)
+                    or command_name == command
+                    or (
+                        command.endswith("*")
+                        and command_name.startswith(command[:-1])
                     )
+                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 
@@ -139,15 +141,23 @@ def core__test__run(
         if not result.wasSuccessful():
             sys.exit(1)
 
-        kernel.run_function(core__test__cleanup)
+    steps: QueuedCollectionResponseCollection
 
-    steps: QueuedCollectionResponseCollection = [
-        _stop_remote,
-        _start_remote,
-        _wait_remote,
-        _run_tests,
-        _stop_remote,
-    ]
+    # Debug focus on speed.
+    if debug:
+        steps = [
+            _run_tests
+        ]
+    else:
+        steps = [
+            _stop_remote,
+            _start_remote,
+            _wait_remote,
+            _cleanup,
+            _run_tests,
+            _cleanup,
+            _stop_remote,
+        ]
 
     return QueuedCollectionResponse(
         kernel,
