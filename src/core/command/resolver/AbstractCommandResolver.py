@@ -86,13 +86,15 @@ class AbstractCommandResolver(KernelChild):
             # Ensure this is the real end of command, no repetition planned.
             if not response.has_next_step:
                 self.execute_all_attached(
-                    request, "after", previous=response.print_wrapped()
+                    request,
+                    "after",
+                    previous=response
                 )
 
         return response
 
     def execute_attached(
-        self, request: "CommandRequest", position: str, previous: Optional[str] = None
+        self, request: "CommandRequest", position: str, previous: Optional[AbstractResponse] = None
     ) -> None:
         request_command_string = request.get_string_command()
         commands = self.get_active_commands()
@@ -115,7 +117,7 @@ class AbstractCommandResolver(KernelChild):
 
                         # Pass all args, attached command should have same args as target
                         if attachment["pass_previous"]:
-                            args[attachment["pass_previous"]] = previous
+                            args[attachment["pass_previous"]] = previous.print_wrapped()
 
                         if attachment["pass_args"] is True:
                             args = args_copy
@@ -141,7 +143,7 @@ class AbstractCommandResolver(KernelChild):
         return self.get_commands_registry()
 
     def execute_all_attached(
-        self, request: "CommandRequest", position: str, previous: Optional[str] = None
+        self, request: "CommandRequest", position: str, previous: Optional[AbstractResponse] = None
     ) -> None:
         # Ask every other resolver to call each attached command type
         for resolver in self.kernel.resolvers:
