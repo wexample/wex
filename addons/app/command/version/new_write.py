@@ -4,9 +4,8 @@ import git
 
 from addons.app.decorator.app_command import app_command
 from addons.default.command.version.increment import default__version__increment
-from src.const.globals import CORE_COMMAND_NAME, VERSION_DEFAULT
+from src.const.globals import VERSION_DEFAULT
 from src.decorator.option import option
-from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -20,10 +19,18 @@ if TYPE_CHECKING:
     required=False,
     help="New version number, auto generated if missing",
 )
+@option(
+    "--branch",
+    "-b",
+    type=bool,
+    default=True,
+    help="Create a new branch",
+)
 def app__version__new_write(
     manager: "AppAddonManager",
     app_dir: str,
     version: Optional[str] = None,
+    branch: bool = True,
 ) -> str:
     kernel = manager.kernel
 
@@ -39,14 +46,21 @@ def app__version__new_write(
             },
         ).print_wrapped_str()
 
-    repo = git.Repo(search_parent_directories=True)
-    new_branch_name = f"version-{new_version}"
-    repo.git.checkout(b=new_branch_name)
+    if branch:
+        repo = git.Repo(search_parent_directories=True)
+        new_branch_name = f"version-{new_version}"
+        branch_exists = any((heads.name == new_branch_name for heads in repo.heads))
+
+        if not branch_exists:
+            repo.git.checkout("HEAD", b=new_branch_name)
+            kernel.io.success(f"Branch created : {new_branch_name}")
+        else:
+            repo.git.checkout(new_branch_name)
+            kernel.io.success(f"Branch exists : {new_branch_name}")
 
     # Save new version
     kernel.io.log(f"New app version : {new_version}")
 
     manager.set_config("global.version", new_version)
-    manager.set_config(f"{CORE_COMMAND_NAME}.version", core_kernel_get_version(kernel))
 
     return new_version

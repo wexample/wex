@@ -7,9 +7,9 @@ services:
       service: wex_test_remote
     command: bash /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.local.sh
     volumes:
-      - ../../:/opt/wex
+      - ../../../:/opt/wex
       # Allow container to override env data
-      - ../.env.test_remote:/opt/wex/.wex/.env
+      - ../../.env.test_remote:/opt/wex/.wex/.env
       - volume_venv:/opt/wex/.wex/python/venv
       - volume_tmp:/opt/wex/tmp
 

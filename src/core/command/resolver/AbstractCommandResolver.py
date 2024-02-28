@@ -85,11 +85,16 @@ class AbstractCommandResolver(KernelChild):
 
             # Ensure this is the real end of command, no repetition planned.
             if not response.has_next_step:
-                self.execute_all_attached(request, "after")
+                self.execute_all_attached(request, "after", previous=response)
 
         return response
 
-    def execute_attached(self, request: "CommandRequest", position: str) -> None:
+    def execute_attached(
+        self,
+        request: "CommandRequest",
+        position: str,
+        previous: Optional[AbstractResponse] = None,
+    ) -> None:
         request_command_string = request.get_string_command()
         commands = self.get_active_commands()
         for command_string in commands:
@@ -104,11 +109,15 @@ class AbstractCommandResolver(KernelChild):
                             f"Running attached command to {request_command_string} : {command_string}"
                         )
 
-                        args = {}
+                        args: StringKeysDict = {}
                         args_copy: StringKeysDict = cast(
-                            StringKeysDict, request.get_args_dict()
+                            StringKeysDict, request.get_args_list().copy()
                         )
+
                         # Pass all args, attached command should have same args as target
+                        if attachment["pass_previous"] and previous:
+                            args[attachment["pass_previous"]] = previous.print_wrapped()
+
                         if attachment["pass_args"] is True:
                             args = args_copy
                         # Pass some args
@@ -118,7 +127,7 @@ class AbstractCommandResolver(KernelChild):
                                 if arg_name in args_copy:
                                     args[arg_name] = args_copy[arg_name]
 
-                        self.kernel.run_command(
+                        response = self.kernel.run_command(
                             command_string,
                             args,
                             # Attached script runs in fast mode as it can contain async responses:
@@ -127,15 +136,21 @@ class AbstractCommandResolver(KernelChild):
                             fast_mode=True,
                         )
 
+                        self.kernel.io.log(response.print_wrapped())
+
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()
 
-    def execute_all_attached(self, request: "CommandRequest", position: str) -> None:
+    def execute_all_attached(
+        self,
+        request: "CommandRequest",
+        position: str,
+        previous: Optional[AbstractResponse] = None,
+    ) -> None:
         # Ask every other resolver to call each attached command type
         for resolver in self.kernel.resolvers:
             self.kernel.resolvers[resolver].execute_attached(
-                request,
-                position,
+                request, position, previous=previous
             )
 
     def wrap_response(self, response: Any) -> "AbstractResponse":
@@ -423,6 +438,7 @@ class AbstractCommandResolver(KernelChild):
                                     {
                                         "command": attachment_string,
                                         "pass_args": attachment["pass_args"],
+                                        "pass_previous": attachment["pass_previous"],
                                     }
                                 )
 

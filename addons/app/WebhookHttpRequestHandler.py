@@ -64,7 +64,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
             status = WEBHOOK_STATUS_STARTING
             if not routing_is_allowed_route(self.path, self.routes):
-                error = "NOT_FOUND"
+                error = "WEBHOOK_NOT_FOUND"
                 error_code = 404
             else:
                 route_name = routing_get_route_name(self.path, self.routes)

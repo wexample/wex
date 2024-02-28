@@ -14,12 +14,14 @@ class TestAppCommandVersionNewWrite(AbstractAppTestCase):
 
         # Change version.
         version = self.kernel.run_function(
-            app__version__new_write, {"version": VERSION_DEFAULT, "app-dir": app_dir}
+            app__version__new_write,
+            {"version": VERSION_DEFAULT, "app-dir": app_dir, "branch": False},
         ).first()
 
         self.assertEqual(version, VERSION_DEFAULT)
 
         # Rollback.
         self.kernel.run_function(
-            app__version__new_write, {"version": current_version, "app-dir": app_dir}
+            app__version__new_write,
+            {"version": current_version, "app-dir": app_dir, "branch": False},
         )
