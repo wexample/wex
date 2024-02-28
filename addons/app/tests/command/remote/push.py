@@ -76,7 +76,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             + [address],
         ))
 
-        time.sleep(600)
+        time.sleep(60)
 
         # Now than app has been updated,
         # we create a mirror in remote environment.

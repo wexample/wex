@@ -21,6 +21,10 @@ RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
     && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
 
+RUN cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env
+
+RUN bash /opt/wex/cli/install
+
 # Expose the SSH port
 EXPOSE 22
 
