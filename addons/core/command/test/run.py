@@ -153,7 +153,6 @@ def core__test__run(
             _stop_remote,
             _start_remote,
             _wait_remote,
-            _cleanup,
             _run_tests,
             _cleanup,
             _stop_remote,
