@@ -49,7 +49,7 @@ checkup_remote:
   extends: [ .merge_to_master ]
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
   script:
-    - REMOTE_ENV=$(wex app::branch/env -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - REMOTE_ENV=prod # TODO Looping version error
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
     # Check target environment is ready to receive hooks
     - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available -e ${REMOTE_ENV})
