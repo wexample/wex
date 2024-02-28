@@ -4,16 +4,13 @@ from http.server import HTTPServer
 from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.command.webhook.status import app__webhook__status
-from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 from addons.app.WebhookHttpRequestHandler import (
-    WEBHOOK_COMMAND_PATH_PLACEHOLDER,
-    WEBHOOK_COMMAND_PORT_PLACEHOLDER,
     WebhookHttpRequestHandler,
 )
 from addons.system.command.system.is_docker import system__system__is_docker
+from src.helper.routing import routing_build_webhook_route_map
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
-    KERNEL_RENDER_MODE_JSON,
     SERVICE_DAEMON_NAME,
     SERVICE_DAEMON_PATH,
     SYSTEM_SERVICES_PATH,
@@ -24,7 +21,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import command_get_option, execute_command_async
+from src.helper.command import execute_command_async
 from src.helper.core import (
     core_get_daemon_service_resource_path,
     core_kernel_get_version,
@@ -38,7 +35,6 @@ from src.helper.system import (
 )
 
 if TYPE_CHECKING:
-    from src.core.command.ScriptCommand import ScriptCommand
     from src.core.Kernel import Kernel
 
 
@@ -149,58 +145,10 @@ def app__webhook__listen(
         try:
             kernel.logger.append_event("EVENT_WEBHOOK_LISTEN", {"launcher": "sync"})
 
-            routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
-            for route_name in routes_map:
-                script_command: ScriptCommand = routes_map[route_name]["script_command"]
-                options = {}
-                needs_path = command_get_option(script_command, "webhook_path")
-                needs_port_number = command_get_option(
-                    script_command, "webhook_port_number"
-                )
-
-                if needs_path:
-                    options["webhook_path"] = WEBHOOK_COMMAND_PATH_PLACEHOLDER
-
-                if needs_port_number:
-                    options["webhook_port_number"] = WEBHOOK_COMMAND_PORT_PLACEHOLDER
-
-                command_list = kernel.get_command_resolver(
-                    COMMAND_TYPE_ADDON
-                ).build_full_command_parts_from_script_command(
-                    routes_map[route_name]["script_command"],
-                    options,
-                )
-
-                command_list += [
-                    "--parent-task-id",
-                    kernel.get_task_id(),
-                    # Allow parsing
-                    "--render-mode",
-                    KERNEL_RENDER_MODE_JSON,
-                    # No need to interact or create sub process
-                    "--fast-mode",
-                    # Avoid logging to be able to parse output
-                    "--quiet",
-                ]
-
-                if needs_path:
-                    command_list += [
-                        "--webhook-path",
-                        WEBHOOK_COMMAND_PATH_PLACEHOLDER,
-                    ]
-
-                if needs_port_number:
-                    command_list += [
-                        "--webhook-port-number",
-                        WEBHOOK_COMMAND_PORT_PLACEHOLDER,
-                    ]
-
-                routes_map[route_name]["command"] = command_list
-
             # Create a handler with minimal external dependencies.
             class CustomWebhookHttpRequestHandler(WebhookHttpRequestHandler):
                 kernel_version: str = core_kernel_get_version(kernel)
-                routes = routes_map
+                routes = routing_build_webhook_route_map(kernel)
                 task_id = kernel.get_task_id()
                 log_path = kernel.task_file_path("webhook-listener")
                 log_stderr: str = kernel.task_file_path("webhook-stderr")
@@ -231,3 +179,4 @@ def app__webhook__listen(
 
     time.sleep(2)
     return kernel.run_function(app__webhook__status, {"webhook_port_number": port})
+

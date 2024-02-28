@@ -6,7 +6,6 @@ from src.const.types import StringKeysDict
 from src.core.Logger import LoggerLogData
 from src.core.response.DictResponse import DictResponse
 from src.decorator.command import command
-from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -22,6 +21,7 @@ class StatusProcess(TypedDict, total=False):
 def app__webhook__status_process(
     kernel: "Kernel", webhook_path: str
 ) -> Optional[DictResponse]:
+    from src.helper.routing import routing_get_route_info, routing_is_allowed_route
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 
     if not routing_is_allowed_route(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP):
