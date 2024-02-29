@@ -13,6 +13,7 @@ from addons.app.helper.remote import (
     remote_get_environment_ip,
     remote_get_login_command,
 )
+from src.decorator.as_sudo import as_sudo
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
 from src.const.types import FileSystemStructureSchema
 from src.core.response.DictResponse import DictResponse
@@ -23,7 +24,7 @@ from src.helper.string import string_to_snake_case
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
-
+@as_sudo()
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON, should_be_valid=True)
 @option(
     "--environment",
