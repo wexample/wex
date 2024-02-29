@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 import requests
 
 from addons.app.command.remote.exec import app__remote__exec
+from addons.app.const.app import APP_ENV_PROD
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (
     remote_build_temp_push_dir,
@@ -13,7 +14,6 @@ from addons.app.helper.remote import (
     remote_get_environment_ip,
     remote_get_login_command,
 )
-from addons.app.const.app import APP_ENV_PROD
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
 from src.const.types import FileSystemStructureSchema
 from src.core.response.DictResponse import DictResponse
@@ -23,6 +23,7 @@ from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON, should_be_valid=True)
 @option(
@@ -74,7 +75,7 @@ def app__remote__push(
             elif os.path.isdir(item_realpath):
                 _send_directory(item_realpath, remote_item_path)
 
-    def _create_remote_dir(remote_item_dir: str):
+    def _create_remote_dir(remote_item_dir: str) -> None:
         manager.kernel.io.log(f"Creating remote dir {remote_item_dir}")
         manager.kernel.run_function(
             app__remote__exec,
@@ -84,7 +85,7 @@ def app__remote__push(
                 "command": f"mkdir -p {remote_item_dir}",
             },
             # Do not enqueue execution
-            fast_mode=True
+            fast_mode=True,
         )
 
     def _send_file(local_path: str, remote_path: str) -> None:
@@ -96,7 +97,8 @@ def app__remote__push(
                 + ["scp"]
                 + remote_get_connexion_options()
             )
-            + [local_path, f"{connexion_address}:{remote_path}"])
+            + [local_path, f"{connexion_address}:{remote_path}"],
+        )
 
     def _send_directory(local_dir: str, remote_dir: str) -> None:
         for root, dirs, files in os.walk(local_dir):
