@@ -71,13 +71,13 @@ class Assistant(BaseClass):
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                          "\nNow we are talking about this file : {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_______________________________________File content"
-                          "\n{file_content}"
-                          "\n_________________________________________End of file info"
+                "\nNow we are talking about this file : {file_full_path}"
+                "\n_______________________________________File metadata"
+                "\nCreation Date: {file_creation_date}"
+                "\nFile Size: {file_size} bytes"
+                "\n_______________________________________File content"
+                "\n{file_content}"
+                "\n_________________________________________End of file info"
             },
         }
 
