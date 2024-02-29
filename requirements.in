@@ -1,10 +1,11 @@
 click
 gitpython
 inquirerpy
-langchain
+langchain>=0.1.9
 langchainhub
 langchain-openai
 langchain-community
+langchain-experimental
 openai
 psutil
 python-dotenv
