@@ -56,8 +56,6 @@ children:
             type: dir
           version:
             children:
-              new.yml:
-                type: file
               new_write.yml:
                 type: file
             type: dir

@@ -23,6 +23,6 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.160
+  version: 5.0.161
 wex:
-  version: 5.0.160
+  version: 5.0.161

@@ -10,6 +10,7 @@ from addons.app.const.app import (
 from src.const.types import AppConfig, FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
 from src.helper.data_yaml import yaml_load
+from src.helper.dict import dict_merge
 
 
 class AppDirectoryStructure(DirectoryStructure):
@@ -57,6 +58,8 @@ class AppDirectoryStructure(DirectoryStructure):
             config = cast(AppConfig, yaml_data)
 
             if "structure" in config:
-                schema.update(cast(FileSystemStructureSchema, config["structure"]))
+                schema = cast(
+                    FileSystemStructureSchema, dict_merge(schema, config["structure"])
+                )
 
         return schema

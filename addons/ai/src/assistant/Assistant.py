@@ -24,14 +24,14 @@ from src.helper.registry import registry_get_all_commands
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-CHAT_ACTION_ABORT = "ABORT"
+CHAT_ACTION_EXIT = "EXIT"
 CHAT_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
 CHAT_ACTION_FREE_TALK = "FREE_TALK"
 CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
 CHAT_ACTION_LAST = "ACTION_LAST"
 
 CHAT_ACTIONS_TRANSLATIONS = {
-    CHAT_ACTION_ABORT: "Abort",
+    CHAT_ACTION_EXIT: "Exit",
     CHAT_ACTION_CHANGE_MODEL: "Change language model",
     CHAT_ACTION_FREE_TALK: "Free Talk",
     CHAT_ACTION_FREE_TALK_FILE: "Talk about a file",
@@ -121,7 +121,8 @@ class Assistant(BaseClass):
             action = CHAT_ACTION_FREE_TALK
 
         current_model = self.get_model()
-        while action != CHAT_ACTION_ABORT:
+        asked_exit = False
+        while not asked_exit:
             if not action:
                 action = self.chat_choose_action(previous_action)
                 previous_action = action
@@ -145,9 +146,10 @@ class Assistant(BaseClass):
                 self.set_model(new_model)
 
             if user_command == "/exit":
-                action = CHAT_ACTION_ABORT
-            else:
-                action = None
+                action = CHAT_ACTION_EXIT
+
+            if action == CHAT_ACTION_EXIT:
+                asked_exit = True
 
         self.log(f"{os.linesep}Ciao")
 
@@ -210,7 +212,7 @@ class Assistant(BaseClass):
             last_action_label = f"{CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST]} ({CHAT_ACTIONS_TRANSLATIONS[last_action]})"
             choices[CHAT_ACTION_LAST] = last_action_label
 
-        choices[CHAT_ACTION_ABORT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_ABORT]
+        choices[CHAT_ACTION_EXIT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_EXIT]
 
         action = prompt_choice_dict(
             "Choose an action to do with ai assistant:",

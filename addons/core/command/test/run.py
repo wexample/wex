@@ -92,7 +92,7 @@ def core__test__run(
                 ignore_error=True,
             )
             kernel.io.log("Test remote server starting...")
-            time.sleep(2)
+            time.sleep(10)
 
     def _stop_remote(
         queue: AbstractQueuedCollectionResponseQueueManager,
