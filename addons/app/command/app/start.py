@@ -315,6 +315,7 @@ def app__app__start(
     if fast:
         steps = [
             # Just load docker compose
+            _app__app__start__start_hooks,
             _app__app__start__starting,
         ]
     else:
