@@ -3,6 +3,8 @@ docker:
     stdin_open: true
     tty: true
   main_container: dev
+git:
+  main_branch: master
 env:
   dev:
     branch: develop
