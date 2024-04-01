@@ -4,6 +4,6 @@ services:
     container_name: ${RUNTIME_NAME}_ai
     volumes:
       # Models storage dir
-      - ${RUNTIME_PATH_APP}models/:/root/.ollama/
+      - ${RUNTIME_PATH_APP}models/:/root/.ollama/models/
     ports:
       - ${SERVICE_AI_PORT_PUBLIC:-11434}:11434
