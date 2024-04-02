@@ -89,6 +89,9 @@ def app__remote__push(
         )
 
     def _send_file(local_path: str, remote_path: str) -> None:
+        # Ensure the remote directory is created before sending the file
+        _create_remote_dir(os.path.dirname(remote_path))
+
         manager.kernel.io.log(f"Copying file to {remote_path}")
         execute_command_sync(
             manager.kernel,
