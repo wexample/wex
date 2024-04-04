@@ -2,6 +2,8 @@ import os
 import time
 from typing import TYPE_CHECKING, Dict, Optional, cast
 
+import chromadb
+from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
 
@@ -70,7 +72,7 @@ class Assistant(BaseClass):
         }
 
         self.set_model(default_model)
-        self.completer = WordCompleter(["/action", "/?", "/exit"])
+        self.completer = WordCompleter(["/menu", "/?", "/exit"])
 
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
@@ -105,6 +107,10 @@ class Assistant(BaseClass):
                 self.tools.append(command_tool)
 
         self.log(f"Loaded {len(self.tools)} tools")
+
+        manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
+        self.chroma_path = manager.get_helper_app_path(HELPER_APP_AI_SHORT_NAME) + 'chroma/'
+        self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
     def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
@@ -210,28 +216,35 @@ class Assistant(BaseClass):
     def store_file(self, file_path: str):
         from langchain.text_splitter import CharacterTextSplitter
         from langchain_community.document_loaders import TextLoader
-        from langchain.vectorstores.chroma import Chroma
 
-        text_splitter = CharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=500,
-        )
-
+        text_splitter = CharacterTextSplitter()
         loader = TextLoader(file_path)
-        loader.load()
+        collection = self.chroma.get_or_create_collection("single_files")
 
-        chunks = loader.load_and_split(
-            text_splitter=text_splitter
+        results = collection.get(
+            where={"source": file_path},
+            include=["metadatas"]
         )
 
-        manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
-        chroma_path = manager.get_helper_app_path(HELPER_APP_AI_SHORT_NAME) + 'chroma/'
+        if len(results["ids"]) > 0:
+            self.log("Document already exists. Skipping...")
+            return
 
-        # Create a new DB from the documents.
+        # If the file is not already in Chroma, proceed with indexing
+        self.log("Storing document to vector database...")
+        loader.load()
+        chunks = loader.load_and_split(text_splitter=text_splitter)
+
+        # Add metadata to each chunk to indicate the source file path
+        for chunk in chunks:
+            chunk.metadata = {'source': file_path}
+
+        # Create a new DB from the documents (or add to existing)
         db = Chroma.from_documents(
             chunks,
             self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
-            persist_directory=chroma_path
+            collection_name="single_files",
+            persist_directory=self.chroma_path
         )
         db.persist()
 
