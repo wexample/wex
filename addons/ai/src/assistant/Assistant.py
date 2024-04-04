@@ -152,9 +152,10 @@ class Assistant(BaseClass):
 
                 self.set_model(new_model)
 
-            if user_command == "/exit":
+            if user_command == "/menu":
+                action = None
+            elif user_command == "/exit":
                 action = CHAT_ACTION_EXIT
-
             if action == CHAT_ACTION_EXIT:
                 asked_exit = True
 
@@ -231,9 +232,9 @@ class Assistant(BaseClass):
         return str(action) if action else None
 
     def user_prompt_help(self) -> None:
-        self.log("Type '/action' to pick an action.")
-        self.log("Type '/?' or '/help' to display this message again.")
         self.log("Type '/exit' to quit.")
+        self.log("Type '/menu' to pick an action.")
+        self.log("Type '/?' or '/help' to display this message again.")
 
     def user_prompt(
         self,
@@ -254,7 +255,7 @@ class Assistant(BaseClass):
                     if user_input_lower == "exit":
                         user_input_lower = "/exit"
 
-                    if user_input_lower in ["/exit", "/action"]:
+                    if user_input_lower in ["/exit", "/menu"]:
                         return user_input_lower
                 else:
                     input = user_input_lower = initial_prompt
