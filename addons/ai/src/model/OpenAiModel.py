@@ -1,6 +1,7 @@
-from typing import Any, cast
+from typing import Any, cast, Optional, List
 
 from dotenv import dotenv_values
+from langchain.chains import create_tagging_chain
 from langchain.chains.llm import LLMChain
 from langchain_openai import ChatOpenAI
 
@@ -26,6 +27,32 @@ class OpenAiModel(AbstractModel):
                 model_name=self.name
             )
         )
+
+    def choose_command(
+        self,
+        input: str,
+        commands: List[str | None],
+        instruction: str = "Return one command name, but only if could help answer user message, None instead"
+    ) -> Optional[str]:
+        """
+        The tagging mechanism works well on GPT4 only.
+        """
+        schema = {
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "enum": commands,
+                    "description": instruction,
+                },
+            },
+        }
+
+        chain = create_tagging_chain(schema, self.get_llm())
+        response = chain.invoke({"input": input})
+
+        return response["text"]["command"] \
+            if "text" in response and response["text"]["command"] != "None" \
+            else None
 
     def request(
         self,

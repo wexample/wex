@@ -41,6 +41,11 @@ CHAT_ACTIONS_TRANSLATIONS = {
 AI_IDENTITY_DEFAULT = "default"
 AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
 
+AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
+AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
+AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_logo"
+AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_language"
+
 
 class Assistant(BaseClass):
     def __init__(
@@ -73,13 +78,13 @@ class Assistant(BaseClass):
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                "\nNow we are talking about this file : {file_full_path}"
-                "\n_______________________________________File metadata"
-                "\nCreation Date: {file_creation_date}"
-                "\nFile Size: {file_size} bytes"
-                "\n_______________________________________File content"
-                "\n{file_content}"
-                "\n_________________________________________End of file info"
+                          "\nNow we are talking about this file : {file_full_path}"
+                          "\n_______________________________________File metadata"
+                          "\nCreation Date: {file_creation_date}"
+                          "\nFile Size: {file_size} bytes"
+                          "\n_______________________________________File content"
+                          "\n{file_content}"
+                          "\n_________________________________________End of file info"
             },
         }
 
@@ -106,13 +111,13 @@ class Assistant(BaseClass):
         self.log(f"Model set to : {identifier}")
 
         self._model = self.models[identifier]
-        self._model.activate()
 
-    def get_model(self) -> AbstractModel:
-        self._validate__should_not_be_none(self._model)
-        assert isinstance(self._model, AbstractModel)
+    def get_model(self, name: Optional[str] = None) -> AbstractModel:
+        model = self.models[name] if name else self._model
+        self._validate__should_not_be_none(model)
+        assert isinstance(model, AbstractModel)
 
-        return self._model
+        return model
 
     def chat(self, initial_prompt: Optional[str] = None) -> None:
         action: Optional[str] = None
@@ -262,15 +267,33 @@ class Assistant(BaseClass):
 
                     self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
-
-                    result = self.get_model().request(
-                        input, self.identities[identity], identity_parameters or {}
+                    # Enforce model for this task
+                    selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+                        input,
+                        [
+                            AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
+                            AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
+                            AI_COMMAND_DISPLAY_A_CUCUMBER,
+                            AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
+                            None,
+                        ],
                     )
 
-                    # Let a new line separator
-                    self.kernel.io.print(COLOR_RESET)
+                    if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
+                        result = self.get_model().request(
+                            input,
+                            self.identities[identity],
+                            identity_parameters or {}
+                        )
 
-                    self.kernel.io.print(result)
+                        # Let a new line separator
+                        self.kernel.io.print(COLOR_RESET)
+                        self.kernel.io.print(result)
+                    elif selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
+                        self.kernel.io.print("🥒")
+                    else:
+                        # TODO Run real command
+                        self.kernel.io.print(f"TODO COMMAND : {selected_command}")
 
             except KeyboardInterrupt:
                 # User asked to quit

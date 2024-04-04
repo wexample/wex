@@ -1,10 +1,7 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Optional
-
-from langchain.chains import create_tagging_chain
+from typing import TYPE_CHECKING, Any, Optional, List
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
-
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
@@ -33,6 +30,7 @@ class AbstractModel(KernelChild):
 
         self.service: str = service
         self.name: str = name
+        self.activate()
 
     def chat_create_prompt(self, identity: StringKeysDict) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_messages(
@@ -49,26 +47,14 @@ class AbstractModel(KernelChild):
     ) -> StringKeysDict:
         return dict_merge({"input": input}, identity_parameters or {})
 
-    def choose_command(self, input: str) -> StringKeysDict:
-        schema = {
-            # TODO Replace by real commands
-            "properties": {
-                "command": {
-                    "type": "string",
-                    "enum": [
-                        "display_files",
-                        "display_logo",
-                        "display_a_cucumber",
-                        None,
-                    ],
-                    "description": "Return one command name, but only if could help answer user message, None instead",
-                },
-            },
-        }
-
-        chain = create_tagging_chain(schema, self.get_llm())
-
-        return chain.invoke({"input": input})
+    @abstractmethod
+    def choose_command(
+        self,
+        input: str,
+        commands: List[str | None],
+        instruction: str = "Return one command name, but only if could help answer user message, None instead"
+    ) -> Optional[str]:
+        return None
 
     @abstractmethod
     def activate(self) -> None:
@@ -76,6 +62,9 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def request(
-        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
+        self,
+        input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
     ) -> Any:
         pass
