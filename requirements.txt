@@ -15,7 +15,6 @@ annotated-types==0.6.0
 anyio==4.2.0
     # via
     #   httpx
-    #   langchain-core
     #   openai
 async-timeout==4.0.3
     # via
@@ -70,27 +69,30 @@ jsonpatch==1.33
     #   langchain-core
 jsonpointer==2.4
     # via jsonpatch
-langchain==0.1.9
+langchain==0.1.14
     # via
     #   -r requirements.in
     #   langchain-experimental
-langchain-community==0.0.24
+langchain-community==0.0.31
     # via
     #   -r requirements.in
     #   langchain
-langchain-core==0.1.27
+langchain-core==0.1.40
     # via
     #   langchain
     #   langchain-community
     #   langchain-experimental
     #   langchain-openai
+    #   langchain-text-splitters
 langchain-experimental==0.0.52
     # via -r requirements.in
 langchain-openai==0.0.2.post1
     # via -r requirements.in
+langchain-text-splitters==0.0.1
+    # via langchain
 langchainhub==0.1.14
     # via -r requirements.in
-langsmith==0.1.10
+langsmith==0.1.40
     # via
     #   langchain
     #   langchain-community
@@ -149,7 +151,6 @@ requests==2.31.0
     #   -r requirements.in
     #   langchain
     #   langchain-community
-    #   langchain-core
     #   langchainhub
     #   langsmith
     #   tiktoken

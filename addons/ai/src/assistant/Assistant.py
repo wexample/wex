@@ -44,7 +44,9 @@ AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
 
 class Assistant(BaseClass):
     def __init__(
-        self, kernel: "Kernel", default_model: str = MODEL_NAME_OLLAMA_MISTRAL
+        self,
+        kernel: "Kernel",
+        default_model: str
     ) -> None:
         self.kernel = kernel
         self._model: Optional[AbstractModel] = None
@@ -261,20 +263,14 @@ class Assistant(BaseClass):
                     self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
 
-                    command_selection = self.get_model().choose_command(input)
+                    result = self.get_model().request(
+                        input, self.identities[identity], identity_parameters or {}
+                    )
 
-                    if "text" in command_selection and command_selection["text"]:
-                        # TODO Do command
-                        self.kernel.io.print(command_selection["text"]["command"])
-                    else:
-                        result = self.get_model().request(
-                            input, self.identities[identity], identity_parameters or {}
-                        )
+                    # Let a new line separator
+                    self.kernel.io.print(COLOR_RESET)
 
-                        # Let a new line separator
-                        self.kernel.io.print(COLOR_RESET)
-
-                        self.kernel.io.print(result)
+                    self.kernel.io.print(result)
 
             except KeyboardInterrupt:
                 # User asked to quit

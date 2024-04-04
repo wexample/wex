@@ -43,7 +43,9 @@ class AbstractModel(KernelChild):
         )
 
     def chat_merge_parameters(
-        self, identity_parameters: StringKeysDict
+        self,
+        input: str,
+        identity_parameters: StringKeysDict
     ) -> StringKeysDict:
         return dict_merge({"input": input}, identity_parameters or {})
 

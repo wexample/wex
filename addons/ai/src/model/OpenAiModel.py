@@ -1,6 +1,7 @@
 from typing import Any, cast
 
 from dotenv import dotenv_values
+from langchain.chains.llm import LLMChain
 from langchain_openai import ChatOpenAI
 
 from addons.ai.src.model.AbstractModel import AbstractModel
@@ -22,16 +23,20 @@ class OpenAiModel(AbstractModel):
         self.set_llm(
             ChatOpenAI(
                 api_key=key,
+                model_name=self.name
             )
         )
 
     def request(
-        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
+        self,
+        input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
     ) -> Any:
         llm = cast(ChatOpenAI, self.get_llm())
 
-        return llm(
-            self.chat_create_prompt(identity)
-            .format_prompt(**self.chat_merge_parameters(identity_parameters))
-            .to_messages()
+        chain = LLMChain(
+            llm=llm, prompt=self.chat_create_prompt(identity), verbose=False
         )
+
+        return chain.invoke(self.chat_merge_parameters(input, identity_parameters))["text"]

@@ -47,7 +47,10 @@ class OllamaModel(AbstractModel):
         )
 
     def request(
-        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
+        self,
+        input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
     ) -> Any:
         self.kernel.io.log(identity["system"], verbosity=VERBOSITY_LEVEL_MAXIMUM)
         self.kernel.io.log(identity_parameters, verbosity=VERBOSITY_LEVEL_MAXIMUM)
@@ -56,6 +59,6 @@ class OllamaModel(AbstractModel):
             llm=self.get_llm(), prompt=self.chat_create_prompt(identity), verbose=False
         )
 
-        return chain.invoke(self.chat_merge_parameters(identity_parameters))[
+        return chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
             "text"
         ].strip()

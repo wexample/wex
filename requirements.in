@@ -1,7 +1,7 @@
 click
 gitpython
 inquirerpy
-langchain>=0.1.9
+langchain>=0.1.14
 langchainhub
 langchain-openai
 langchain-community
