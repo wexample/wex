@@ -1,6 +1,6 @@
 import os
 import time
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional, cast
 
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
@@ -13,6 +13,8 @@ from addons.ai.src.model.OpenAiModel import (
     OpenAiModel,
 )
 from addons.ai.src.tool.CommandTool import CommandTool
+from addons.app.AppAddonManager import AppAddonManager
+from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
@@ -189,6 +191,8 @@ class Assistant(BaseClass):
             if os.path.isfile(file):
                 self.log(f"File selected {full_path}")
 
+                self.store_file(full_path)
+
                 return self.user_prompt(
                     identity=AI_IDENTITY_CODE_FILE_PATCHER,
                     identity_parameters={
@@ -202,6 +206,34 @@ class Assistant(BaseClass):
                 return self.chat_about_file(full_path)
 
         return None
+
+    def store_file(self, file_path: str):
+        from langchain.text_splitter import CharacterTextSplitter
+        from langchain_community.document_loaders import TextLoader
+        from langchain.vectorstores.chroma import Chroma
+
+        text_splitter = CharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=500,
+        )
+
+        loader = TextLoader(file_path)
+        loader.load()
+
+        chunks = loader.load_and_split(
+            text_splitter=text_splitter
+        )
+
+        manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
+        chroma_path = manager.get_helper_app_path(HELPER_APP_AI_SHORT_NAME) + 'chroma/'
+
+        # Create a new DB from the documents.
+        db = Chroma.from_documents(
+            chunks,
+            self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
+            persist_directory=chroma_path
+        )
+        db.persist()
 
     def chat_choose_action(self, last_action: Optional[str]) -> Optional[str]:
         choices = {

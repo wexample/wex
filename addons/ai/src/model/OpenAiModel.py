@@ -3,7 +3,7 @@ from typing import Any, cast, Optional, List
 from dotenv import dotenv_values
 from langchain.chains import create_tagging_chain
 from langchain.chains.llm import LLMChain
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from addons.ai.src.model.AbstractModel import AbstractModel
 from src.const.types import StringKeysDict
@@ -17,13 +17,13 @@ MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 class OpenAiModel(AbstractModel):
     def activate(self) -> None:
         env_path = self.kernel.directory.path + ".env"
-        key = dotenv_values(env_path).get("OPENAI_API_KEY")
-        if not key:
+        self.api_key: Optional[str] = dotenv_values(env_path).get("OPENAI_API_KEY")
+        if not self.api_key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
         self.set_llm(
             ChatOpenAI(
-                api_key=key,
+                api_key=self.api_key,
                 model_name=self.name
             )
         )
@@ -67,3 +67,6 @@ class OpenAiModel(AbstractModel):
         )
 
         return chain.invoke(self.chat_merge_parameters(input, identity_parameters))["text"]
+
+    def create_embeddings(self) -> Any:
+        return OpenAIEmbeddings(openai_api_key=self.api_key)

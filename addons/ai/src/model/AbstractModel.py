@@ -47,6 +47,9 @@ class AbstractModel(KernelChild):
     ) -> StringKeysDict:
         return dict_merge({"input": input}, identity_parameters or {})
 
+    def create_embeddings(self) -> Any:
+        return None
+
     @abstractmethod
     def choose_command(
         self,
