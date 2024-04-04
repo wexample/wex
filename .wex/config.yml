@@ -17,12 +17,14 @@ env:
   runner:
     server:
       ip: 51.210.107.210
+git:
+  main_branch: master
 global:
   author: root
   created: '2023-03-23 17:13:28'
   name: wex
   services: []
   type: app
-  version: 5.0.161
+  version: 5.0.163
 wex:
-  version: 5.0.161
+  version: 5.0.163

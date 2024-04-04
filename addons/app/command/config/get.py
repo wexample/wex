@@ -14,8 +14,7 @@ if TYPE_CHECKING:
     "--runtime",
     "-r",
     type=bool,
-    required=False,
-    default=False,
+    is_flag=True,
     help="Search in runtime config",
 )
 @option(

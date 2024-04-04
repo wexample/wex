@@ -1,3 +1,4 @@
+import os.path
 from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.AppAddonManager import AppAddonManager
@@ -55,6 +56,9 @@ def app__remote__push_receive(
             return None
 
         temp_path_resolved = user_resolve_home_path(user_temp_dir + item_name, user)
+        if not os.path.exists(temp_path_resolved):
+            kernel.io.log(f"Source path does not exists: {temp_path_resolved}")
+            return None
 
         destination_path = app_dir + item_name
 

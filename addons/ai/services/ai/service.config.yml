@@ -1,1 +1,9 @@
 main: true
+structure:
+  schema:
+    ollama:
+      permissions:
+        mode: 755
+        recursive: true
+      should_exist: true
+      type: dir
