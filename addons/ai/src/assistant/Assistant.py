@@ -94,9 +94,10 @@ class Assistant(BaseClass):
         self.subject_file: Optional[str] = None
         self.set_model(default_model)
         self.completer = WordCompleter([
-            "/menu",
-            "/?",
             "/exit",
+            "/menu",
+            "/talk_about_file",
+            "/?",
         ], pattern=re.compile(r'/\S*'))
 
         # Create tools
