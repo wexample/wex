@@ -21,7 +21,6 @@ from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
 from src.helper.dict import dict_merge, dict_sort_values
-from src.helper.file import file_read
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
 
@@ -44,6 +43,7 @@ CHAT_ACTIONS_TRANSLATIONS = {
 
 AI_IDENTITY_DEFAULT = "default"
 AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
+AI_IDENTITY_FILE_INSPECTION = "file_inspection"
 
 AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
@@ -71,6 +71,7 @@ class Assistant(BaseClass):
             ),
         }
 
+        self.subject_file: Optional[str] = None
         self.set_model(default_model)
         self.completer = WordCompleter(["/menu", "/?", "/exit"])
 
@@ -86,10 +87,13 @@ class Assistant(BaseClass):
                           "\n_______________________________________File metadata"
                           "\nCreation Date: {file_creation_date}"
                           "\nFile Size: {file_size} bytes"
-                          "\n_______________________________________File content"
-                          "\n{file_content}"
                           "\n_________________________________________End of file info"
             },
+            AI_IDENTITY_FILE_INSPECTION: {
+                "system": "Answer the question based only on the following context:"
+                          "\n"
+                          "\n{context}"
+            }
         }
 
         for command_name in all_commands:
@@ -146,7 +150,7 @@ class Assistant(BaseClass):
             if action == CHAT_ACTION_FREE_TALK:
                 user_command = self.user_prompt(initial_prompt)
             elif action == CHAT_ACTION_FREE_TALK_FILE:
-                user_command = self.chat_about_file(os.getcwd())
+                user_command = self.chat_about_file_from(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
@@ -169,7 +173,7 @@ class Assistant(BaseClass):
 
         self.log(f"{os.linesep}Ciao")
 
-    def chat_about_file(self, base_dir: str) -> Optional[str]:
+    def chat_about_file_from(self, base_dir: str) -> Optional[str]:
         # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
         choices_dirs = {"..": ".."}
 
@@ -195,23 +199,19 @@ class Assistant(BaseClass):
             full_path = os.path.join(base_dir, file)
 
             if os.path.isfile(file):
-                self.log(f"File selected {full_path}")
-
-                self.store_file(full_path)
-
-                return self.user_prompt(
-                    identity=AI_IDENTITY_CODE_FILE_PATCHER,
-                    identity_parameters={
-                        "file_full_path": full_path,
-                        "file_creation_date": time.ctime(os.path.getctime(full_path)),
-                        "file_size": os.path.getsize(full_path),
-                        "file_content": file_read(full_path),
-                    },
+                self.chat_about_file(
+                    os.path.join(base_dir, file)
                 )
             elif os.path.isdir(file):
-                return self.chat_about_file(full_path)
+                return self.chat_about_file_from(full_path)
 
-        return None
+    def chat_about_file(self, full_path: str) -> Optional[str]:
+        self.log(f"Chatting about {full_path}")
+
+        self.store_file(full_path)
+        self.subject_file = full_path
+
+        return self.user_prompt()
 
     def store_file(self, file_path: str):
         from langchain.text_splitter import CharacterTextSplitter
@@ -235,18 +235,51 @@ class Assistant(BaseClass):
         loader.load()
         chunks = loader.load_and_split(text_splitter=text_splitter)
 
-        # Add metadata to each chunk to indicate the source file path
+        # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
             chunk.metadata = {'source': file_path}
 
         # Create a new DB from the documents (or add to existing)
-        db = Chroma.from_documents(
+        chroma = Chroma.from_documents(
             chunks,
             self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
             collection_name="single_files",
             persist_directory=self.chroma_path
         )
-        db.persist()
+        chroma.persist()
+        self.log("Document stored successfully.")
+
+    def search_in_file(self, file_path: str, query_text: str) -> Optional[str]:
+        from langchain.prompts import ChatPromptTemplate
+
+        self.log('Searching...')
+
+        embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
+        chroma = Chroma(
+            persist_directory=self.chroma_path,
+            embedding_function=embedding_function,
+            collection_name="single_files")
+
+        # Search the DB.
+        results = chroma.similarity_search_with_relevance_scores(query_text, k=3, filter={'source': file_path})
+
+        context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+        prompt_template = ChatPromptTemplate.from_template("""
+Answer the question based only on the following context:
+
+{context}
+
+---
+
+Answer the question based on the above context: {question}
+""")
+        prompt = prompt_template.format(context=context_text, question=query_text)
+        llm = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).get_llm()
+        response_text = llm.invoke(prompt)
+
+        sources = [doc.metadata.get("source", None) for doc, _score in results]
+        formatted_response = f"Response: {response_text}\nSources: {sources}"
+        print(formatted_response)
 
     def chat_choose_action(self, last_action: Optional[str]) -> Optional[str]:
         choices = {
@@ -326,11 +359,33 @@ class Assistant(BaseClass):
                     )
 
                     if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
-                        result = self.get_model().request(
-                            input,
-                            self.identities[identity],
-                            identity_parameters or {}
-                        )
+                        # Talk about a file
+                        if self.subject_file:
+                            embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
+                            chroma = Chroma(
+                                persist_directory=self.chroma_path,
+                                embedding_function=embedding_function,
+                                collection_name="single_files")
+
+                            results = chroma.similarity_search_with_relevance_scores(
+                                input,
+                                k=3,
+                                filter={'source': self.subject_file})
+
+                            result = self.get_model().request(
+                                input,
+                                self.identities[AI_IDENTITY_FILE_INSPECTION],
+                                identity_parameters or {
+                                    "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+                                }
+                            )
+                        # Default chatting
+                        else:
+                            result = self.get_model().request(
+                                input,
+                                self.identities[identity],
+                                identity_parameters or {}
+                            )
 
                         # Let a new line separator
                         self.kernel.io.print(COLOR_RESET)

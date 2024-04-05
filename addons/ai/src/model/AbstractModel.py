@@ -1,5 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Optional, List
+
+from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from src.const.types import StringKeysDict
@@ -50,6 +52,22 @@ class AbstractModel(KernelChild):
     def create_embeddings(self) -> Any:
         return None
 
+    def request(
+        self,
+        input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
+    ) -> Any:
+        chain = LLMChain(
+            llm=self.get_llm(),
+            prompt=self.chat_create_prompt(identity),
+            verbose=False
+        )
+
+        return chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
+            "text"
+        ].strip()
+
     @abstractmethod
     def choose_command(
         self,
@@ -61,13 +79,4 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def activate(self) -> None:
-        pass
-
-    @abstractmethod
-    def request(
-        self,
-        input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict
-    ) -> Any:
         pass

@@ -54,19 +54,5 @@ class OpenAiModel(AbstractModel):
             if "text" in response and response["text"]["command"] != "None" \
             else None
 
-    def request(
-        self,
-        input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict
-    ) -> Any:
-        llm = cast(ChatOpenAI, self.get_llm())
-
-        chain = LLMChain(
-            llm=llm, prompt=self.chat_create_prompt(identity), verbose=False
-        )
-
-        return chain.invoke(self.chat_merge_parameters(input, identity_parameters))["text"]
-
     def create_embeddings(self) -> Any:
         return OpenAIEmbeddings(openai_api_key=self.api_key)
