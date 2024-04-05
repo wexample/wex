@@ -1,7 +1,6 @@
 import argparse
 from langchain.vectorstores.chroma import Chroma
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.prompts import ChatPromptTemplate
 from dotenv import dotenv_values
 
