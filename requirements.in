@@ -13,3 +13,5 @@ python-dotenv
 pyyaml
 prompt_toolkit
 requests
+unstructured
+unstructured[md]
