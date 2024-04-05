@@ -4,19 +4,17 @@ import os
 
 current_dir = os.path.dirname(__file__) + '/'
 
-
-def read(file_name: str) -> str:
-    return open(os.path.join(os.path.dirname(current_dir), file_name)).read()
-
-
 with open('requirements.in') as f:
     requirements = f.read().splitlines()
+
+with open(os.path.join(os.path.dirname(current_dir), 'README.md')) as f:
+    long_description = f.read()
 
 setup(
     name='wex',
     version=core_dir_get_version(current_dir),
     description='A command manager',
-    long_description=read('README.md'),
+    long_description=long_description,
     long_description_content_type='text/markdown',
     author='Wexample',
     author_email='contact@wexample.com',
