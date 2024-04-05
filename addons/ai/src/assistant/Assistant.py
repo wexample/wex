@@ -248,38 +248,6 @@ class Assistant(BaseClass):
         chroma.persist()
         self.log("Document stored successfully.")
 
-    def search_in_file(self, file_path: str, query_text: str) -> Optional[str]:
-        from langchain.prompts import ChatPromptTemplate
-
-        self.log('Searching...')
-
-        embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
-        chroma = Chroma(
-            persist_directory=self.chroma_path,
-            embedding_function=embedding_function,
-            collection_name="single_files")
-
-        # Search the DB.
-        results = chroma.similarity_search_with_relevance_scores(query_text, k=3, filter={'source': file_path})
-
-        context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-        prompt_template = ChatPromptTemplate.from_template("""
-Answer the question based only on the following context:
-
-{context}
-
----
-
-Answer the question based on the above context: {question}
-""")
-        prompt = prompt_template.format(context=context_text, question=query_text)
-        llm = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).get_llm()
-        response_text = llm.invoke(prompt)
-
-        sources = [doc.metadata.get("source", None) for doc, _score in results]
-        formatted_response = f"Response: {response_text}\nSources: {sources}"
-        print(formatted_response)
-
     def chat_choose_action(self, last_action: Optional[str]) -> Optional[str]:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
