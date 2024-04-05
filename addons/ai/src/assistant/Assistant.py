@@ -20,8 +20,8 @@ from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
-from src.helper.file import file_build_signature
 from src.helper.dict import dict_merge, dict_sort_values
+from src.helper.file import file_build_signature
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
 
@@ -237,6 +237,20 @@ class Assistant(BaseClass):
 
         return self.user_prompt()
 
+    def delete_file(self, file_path: str):
+        collection = self.chroma.get_or_create_collection("single_files")
+
+        # Check for existing documents by the same source, regardless of the signature
+        # This is to find any versions of the file, not just ones with a matching signature
+        existing_docs = collection.get(
+            where={"source": file_path},
+        )
+
+        # If there are existing documents, delete them before proceeding
+        if len(existing_docs["ids"]) > 0:
+            self.log("Existing document versions found. Deleting...")
+            collection.delete(ids=existing_docs["ids"])
+
     def store_file(self, file_path: str):
         from langchain.text_splitter import CharacterTextSplitter
         from langchain_community.document_loaders import TextLoader
@@ -251,6 +265,9 @@ class Assistant(BaseClass):
             include=["metadatas"]
         )
 
+        # Delete every version
+        self.delete_file(file_path)
+
         if len(results["ids"]) > 0:
             self.log("Document already exists. Skipping...")
             return
@@ -262,7 +279,7 @@ class Assistant(BaseClass):
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
-            chunk.metadata = {'signature': file_signature}
+            chunk.metadata = {'signature': file_signature, "source": file_path}
 
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(
