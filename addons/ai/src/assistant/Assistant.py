@@ -20,6 +20,7 @@ from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
+from src.helper.file import file_build_signature
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
@@ -243,9 +244,10 @@ class Assistant(BaseClass):
         text_splitter = CharacterTextSplitter()
         loader = TextLoader(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
+        file_signature = file_build_signature(file_path)
 
         results = collection.get(
-            where={"source": file_path},
+            where={"signature": file_signature},
             include=["metadatas"]
         )
 
@@ -260,7 +262,7 @@ class Assistant(BaseClass):
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
-            chunk.metadata = {'source': file_path}
+            chunk.metadata = {'signature': file_signature}
 
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(

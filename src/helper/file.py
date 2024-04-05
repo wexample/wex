@@ -330,3 +330,15 @@ def file_create_symlink(target_path: str, symlink_path: str) -> None:
         os.unlink(symlink_path)
 
     os.symlink(target_path, symlink_path)
+
+
+def file_build_signature(file_path: str) -> str:
+    """
+    Generate a signature for a file based on its size and last modified timestamp.
+    This signature can be used to quickly check if a file has been modified.
+    """
+    file_stats = os.stat(file_path)
+    file_size = file_stats.st_size
+    last_modified = file_stats.st_mtime
+
+    return f"{file_path}-{file_size}-{int(last_modified)}"
