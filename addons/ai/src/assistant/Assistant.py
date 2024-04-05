@@ -130,13 +130,8 @@ class Assistant(BaseClass):
 
         return model
 
-    def chat(self, initial_prompt: Optional[str] = None) -> None:
-        action: Optional[str] = None
+    def chat(self, action: Optional[str] = None) -> None:
         previous_action: Optional[str] = None
-
-        if initial_prompt:
-            self.log(f"Prompt : {initial_prompt}")
-            action = CHAT_ACTION_FREE_TALK
 
         current_model = self.get_model()
         asked_exit = False
@@ -147,7 +142,7 @@ class Assistant(BaseClass):
 
             user_command = None
             if action == CHAT_ACTION_FREE_TALK:
-                user_command = self.user_prompt(initial_prompt)
+                user_command = self.user_prompt()
             elif action == CHAT_ACTION_FREE_TALK_FILE:
                 user_command = self.chat_about_file_from(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:

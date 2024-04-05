@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from addons.ai.src.assistant.Assistant import Assistant
+from addons.ai.src.assistant.Assistant import Assistant, CHAT_ACTION_FREE_TALK
 from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_4
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 @command(
     help="Validate the code of current application", command_type=COMMAND_TYPE_ADDON
 )
-@option("--prompt", "-p", type=str, required=False, help="First prompt")
 @option(
     "--model",
     "-m",
@@ -24,7 +23,7 @@ if TYPE_CHECKING:
     default=MODEL_NAME_OPEN_AI_GPT_4,
     help="Default model",
 )
-def ai__talk__ask(kernel: "Kernel", model: str, prompt: Optional[str] = None) -> None:
+def ai__talk__ask(kernel: "Kernel", model: str) -> None:
     assistant = Assistant(kernel, model)
 
-    assistant.chat(prompt)
+    assistant.chat(action=CHAT_ACTION_FREE_TALK)
