@@ -188,6 +188,9 @@ class Assistant(BaseClass):
                 action = None
             elif user_command == "/exit":
                 action = CHAT_ACTION_EXIT
+            elif user_command == "/talk_about_file":
+                action = CHAT_ACTION_FREE_TALK_FILE
+
             if action == CHAT_ACTION_EXIT:
                 asked_exit = True
 
@@ -321,7 +324,7 @@ class Assistant(BaseClass):
                     if user_input_lower == "exit":
                         user_input_lower = "/exit"
 
-                    if user_input_lower in ["/exit", "/menu"]:
+                    if user_input_lower in ["/exit", "/menu", "/talk_about_file"]:
                         return user_input_lower
                 else:
                     input = user_input_lower = initial_prompt
