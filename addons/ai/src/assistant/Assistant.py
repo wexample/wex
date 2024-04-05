@@ -1,5 +1,4 @@
 import os
-import time
 from typing import TYPE_CHECKING, Dict, Optional, cast
 
 import chromadb
@@ -199,7 +198,7 @@ class Assistant(BaseClass):
             full_path = os.path.join(base_dir, file)
 
             if os.path.isfile(file):
-                self.chat_about_file(
+                return self.chat_about_file(
                     os.path.join(base_dir, file)
                 )
             elif os.path.isdir(file):
@@ -346,56 +345,56 @@ Answer the question based on the above context: {question}
 
                     self.kernel.io.print(COLOR_GRAY, end="")
                     ai_working = True
-                    # Enforce model for this task
-                    selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
-                        input,
-                        [
-                            AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
-                            AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
-                            AI_COMMAND_DISPLAY_A_CUCUMBER,
-                            AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
-                            None,
-                        ],
-                    )
 
-                    if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
-                        # Talk about a file
-                        if self.subject_file:
-                            embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
-                            chroma = Chroma(
-                                persist_directory=self.chroma_path,
-                                embedding_function=embedding_function,
-                                collection_name="single_files")
+                    # Talk about a file
+                    if self.subject_file:
+                        embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
+                        chroma = Chroma(
+                            persist_directory=self.chroma_path,
+                            embedding_function=embedding_function,
+                            collection_name="single_files")
 
-                            results = chroma.similarity_search_with_relevance_scores(
-                                input,
-                                k=3,
-                                filter={'source': self.subject_file})
+                        results = chroma.similarity_search_with_relevance_scores(
+                            input,
+                            k=3,
+                            filter={'source': self.subject_file})
 
-                            result = self.get_model().request(
-                                input,
-                                self.identities[AI_IDENTITY_FILE_INSPECTION],
-                                identity_parameters or {
-                                    "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-                                }
-                            )
-                        # Default chatting
-                        else:
+                        result = self.get_model().request(
+                            input,
+                            self.identities[AI_IDENTITY_FILE_INSPECTION],
+                            identity_parameters or {
+                                "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+                            }
+                        )
+                    # Default chatting
+                    else:
+                        # Enforce model for this task
+                        selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+                            input,
+                            [
+                                AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
+                                AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
+                                AI_COMMAND_DISPLAY_A_CUCUMBER,
+                                AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
+                                None,
+                            ],
+                        )
+
+                        if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
                             result = self.get_model().request(
                                 input,
                                 self.identities[identity],
                                 identity_parameters or {}
                             )
 
-                        # Let a new line separator
-                        self.kernel.io.print(COLOR_RESET)
-                        self.kernel.io.print(result)
-                    elif selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
-                        self.kernel.io.print("🥒")
-                    else:
-                        # TODO Run real command
-                        self.kernel.io.print(f"TODO COMMAND : {selected_command}")
+                        elif selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
+                            result = "🥒"
+                        else:
+                            result = f"TODO COMMAND : {selected_command}"
 
+                    # Let a new line separator
+                    self.kernel.io.print(COLOR_RESET)
+                    self.kernel.io.print(result)
             except KeyboardInterrupt:
                 # User asked to quit
                 if not ai_working:
