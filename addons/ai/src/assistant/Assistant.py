@@ -16,7 +16,6 @@ from addons.ai.src.model.OpenAiModel import (
 )
 from addons.ai.src.tool.CommandTool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
@@ -117,9 +116,14 @@ class Assistant(BaseClass):
                 self.tools.append(command_tool)
 
         self.log(f"Loaded {len(self.tools)} tools")
-
         manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
-        self.chroma_path = manager.get_helper_app_path(HELPER_APP_AI_SHORT_NAME) + 'chroma/'
+
+        if manager.is_valid_app():
+            self.chroma_path = manager.get_env_dir("ai/embeddings", create=True)
+        else:
+            self.chroma_path = self.kernel.get_or_create_path("tmp") + "ai/embeddings" + os.sep
+
+        self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
     def log(self, message: str) -> None:
@@ -228,10 +232,10 @@ class Assistant(BaseClass):
             collection.delete(ids=existing_docs["ids"])
 
     def vector_store_file(self, file_path: str):
-        from langchain.text_splitter import CharacterTextSplitter
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
         from langchain_community.document_loaders import TextLoader
 
-        text_splitter = CharacterTextSplitter()
+        text_splitter = RecursiveCharacterTextSplitter()
         loader = TextLoader(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
         file_signature = file_build_signature(file_path)
