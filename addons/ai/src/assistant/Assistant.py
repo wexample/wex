@@ -3,6 +3,7 @@ import re
 from typing import TYPE_CHECKING, Dict, Optional, cast
 
 import chromadb
+from langchain_community.document_loaders.parsers.language.language_parser import Language
 from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
@@ -228,15 +229,19 @@ class Assistant(BaseClass):
         extension = file_get_extension(file_path)
 
         if extension == 'md':
+            self.log(f"Loader : Markdown")
             from langchain_community.document_loaders import UnstructuredMarkdownLoader
             return UnstructuredMarkdownLoader(file_path)
         elif extension == 'csv':
+            self.log(f"Loader : CSV")
             from langchain_community.document_loaders.csv_loader import CSVLoader
             return CSVLoader(file_path)
         elif extension == 'html':
+            self.log(f"Loader : HTML")
             from langchain_community.document_loaders import UnstructuredHTMLLoader
             return UnstructuredHTMLLoader(file_path)
         elif extension == 'json':
+            self.log(f"Loader : JSON")
             from langchain_community.document_loaders import JSONLoader
             return JSONLoader(
                 file_path=file_path,
@@ -244,14 +249,35 @@ class Assistant(BaseClass):
                 text_content=False
             )
         elif extension == 'pdf':
+            self.log(f"Loader : PDF")
             from langchain_community.document_loaders import PyPDFLoader
             return PyPDFLoader(file_path=file_path)
         else:
+            language = self.vector_find_language_by_extension(
+                file_get_extension(file_path)
+            )
+
+            if language:
+                from langchain_community.document_loaders.generic import GenericLoader
+                from langchain_community.document_loaders.parsers.language import LanguageParser
+
+                self.log(f"Loader : {language}")
+
+                return GenericLoader.from_filesystem(
+                    file_path,
+                    parser=LanguageParser(
+                        language=language,
+                        parser_threshold=1000
+                    )
+                )
+
+            self.log("Loader : default")
+
             from langchain_community.document_loaders import TextLoader
             # Fallback to a generic text loader if file type is not specifically handled
             return TextLoader(file_path)
 
-    def vector_find_language_by_extension(self, extension: str) -> Optional[str]:
+    def vector_find_language_by_extension(self, extension: str) -> Optional[Language]:
         # @from lib/python3.10/site-packages/langchain_text_splitters/base.py
         extensions_map = {
             "cpp": ["cpp", "h", "hpp"],  # C++
@@ -293,18 +319,19 @@ class Assistant(BaseClass):
         )
 
         if language:
-            self.log(f"Using code splitter for [{language}]")
+            self.log(f"Splitter : {language}")
             from langchain_text_splitters import (
                 Language,
                 RecursiveCharacterTextSplitter,
             )
 
             return RecursiveCharacterTextSplitter.from_language(
-                language=cast(language, Language),
+                language=cast(Language, language),
                 chunk_size=50,
                 chunk_overlap=0
             )
         else:
+            self.log(f"Splitter : default")
             return RecursiveCharacterTextSplitter()
 
     def vector_create_file_chunks(self, file_path: str, file_signature: str):
