@@ -26,4 +26,4 @@ if TYPE_CHECKING:
 def ai__talk__ask(kernel: "Kernel", model: str) -> None:
     assistant = Assistant(kernel, model)
 
-    assistant.chat(action=CHAT_ACTION_FREE_TALK)
+    assistant.start(action=CHAT_ACTION_FREE_TALK)

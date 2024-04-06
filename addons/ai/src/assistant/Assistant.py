@@ -157,7 +157,7 @@ class Assistant(BaseClass):
 
         return model
 
-    def chat(self, action: Optional[str] = None) -> None:
+    def start(self, action: Optional[str] = None) -> None:
         previous_action: Optional[str] = None
 
         current_model = self.get_model()
@@ -169,7 +169,7 @@ class Assistant(BaseClass):
 
             user_command = None
             if action == CHAT_ACTION_FREE_TALK:
-                user_command = self.user_prompt()
+                user_command = self.chat()
             elif action == CHAT_ACTION_FREE_TALK_FILE:
                 user_command = self.chat_about_file_from(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:
@@ -228,12 +228,12 @@ class Assistant(BaseClass):
     def chat_about_file(self, full_path: str) -> Optional[str]:
         self.log(f"Chatting about {full_path}")
 
-        self.store_file(full_path)
+        self.vector_store_file(full_path)
         self.subject_file = full_path
 
-        return self.user_prompt()
+        return self.chat()
 
-    def delete_file(self, file_path: str):
+    def vector_delete_file(self, file_path: str):
         collection = self.chroma.get_or_create_collection("single_files")
 
         # Check for existing documents by the same source, regardless of the signature
@@ -247,7 +247,7 @@ class Assistant(BaseClass):
             self.log("Existing document versions found. Deleting...")
             collection.delete(ids=existing_docs["ids"])
 
-    def store_file(self, file_path: str):
+    def vector_store_file(self, file_path: str):
         from langchain.text_splitter import CharacterTextSplitter
         from langchain_community.document_loaders import TextLoader
 
@@ -262,7 +262,7 @@ class Assistant(BaseClass):
         )
 
         # Delete every version
-        self.delete_file(file_path)
+        self.vector_delete_file(file_path)
 
         if len(results["ids"]) > 0:
             self.log("Document already exists. Skipping...")
@@ -315,18 +315,18 @@ class Assistant(BaseClass):
 
         return str(action) if action else None
 
-    def user_prompt_help(self) -> None:
+    def show_help(self) -> None:
         self.log("Type '/exit' to quit.")
         self.log("Type '/menu' to pick an action.")
         self.log("Type '/?' or '/help' to display this message again.")
 
-    def user_prompt(
+    def chat(
         self,
         initial_prompt: Optional[str] = None,
         identity: str = AI_IDENTITY_DEFAULT,
         identity_parameters: Optional[StringKeysDict] = None,
     ) -> str:
-        self.user_prompt_help()
+        self.show_help()
 
         while True:
             ai_working = False
@@ -346,7 +346,7 @@ class Assistant(BaseClass):
                     initial_prompt = None
 
                 if user_input_lower in ["/?", "/help"]:
-                    self.user_prompt_help()
+                    self.show_help()
                 else:
                     self.log("..")
 
