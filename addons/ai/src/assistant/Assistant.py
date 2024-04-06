@@ -148,14 +148,13 @@ class Assistant(BaseClass):
         asked_exit = False
         while not asked_exit:
             if not action:
-                action = self.chat_choose_action(previous_action)
+                action = self.show_menu(previous_action)
                 previous_action = action
 
-            user_command = None
             if action == CHAT_ACTION_FREE_TALK:
-                user_command = self.chat()
+                action = self.chat()
             elif action == CHAT_ACTION_FREE_TALK_FILE:
-                user_command = self.chat_about_file_from(os.getcwd())
+                action = self.chat_about_file_from(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
@@ -168,13 +167,6 @@ class Assistant(BaseClass):
                 )
 
                 self.set_model(new_model)
-
-            if user_command == "/menu":
-                action = None
-            elif user_command == "/exit":
-                action = CHAT_ACTION_EXIT
-            elif user_command == "/talk_about_file":
-                action = CHAT_ACTION_FREE_TALK_FILE
 
             if action == CHAT_ACTION_EXIT:
                 asked_exit = True
@@ -292,8 +284,8 @@ class Assistant(BaseClass):
         file_signature = file_build_signature(file_path)
         chunks = self.vector_create_file_chunks(file_path, file_signature)
 
-        # Ignore if empty
-        if len(chunks) == 0:
+        # Ignore if empty or null, document already stored.
+        if (not chunks) or (len(chunks) == 0):
             return
 
         # Create a new DB from the documents (or add to existing)
@@ -306,7 +298,7 @@ class Assistant(BaseClass):
         chroma.persist()
         self.log("Document stored successfully.")
 
-    def chat_choose_action(self, last_action: Optional[str]) -> Optional[str]:
+    def show_menu(self, last_action: Optional[str]) -> Optional[str]:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
             CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[
@@ -336,15 +328,15 @@ class Assistant(BaseClass):
 
     def show_help(self) -> None:
         self.log("Type '/exit' to quit.")
+        self.log("Type '/help' or '/?' to display this message again.")
         self.log("Type '/menu' to show menu.")
-        self.log("Type '/?' or '/help' to display this message again.")
 
     def chat(
         self,
         initial_prompt: Optional[str] = None,
         identity: str = AI_IDENTITY_DEFAULT,
         identity_parameters: Optional[StringKeysDict] = None,
-    ) -> str:
+    ) -> Optional[str]:
         self.show_help()
 
         while True:
@@ -352,19 +344,19 @@ class Assistant(BaseClass):
 
             try:
                 if not initial_prompt:
-                    input = prompt_tool(">>> ", completer=self.completer)
-                    user_input_lower = input.strip().lower()
-
-                    if user_input_lower == "exit":
-                        user_input_lower = "/exit"
-
-                    if user_input_lower in ["/exit", "/menu", "/talk_about_file"]:
-                        return user_input_lower
+                    user_input = prompt_tool(">>> ", completer=self.completer)
+                    user_input_lower = user_input.strip().lower()
                 else:
-                    input = user_input_lower = initial_prompt
+                    user_input = user_input_lower = initial_prompt
                     initial_prompt = None
 
-                if user_input_lower in ["/?", "/help"]:
+                if user_input_lower == "/exit" or user_input_lower == "exit":
+                    return CHAT_ACTION_EXIT
+                elif user_input_lower == "/menu":
+                    return None
+                elif user_input_lower == "/talk_about_file":
+                    return CHAT_ACTION_FREE_TALK_FILE
+                elif user_input_lower in ["/help", "/?"]:
                     self.show_help()
                 else:
                     self.log("..")
@@ -381,12 +373,12 @@ class Assistant(BaseClass):
                             collection_name="single_files")
 
                         results = chroma.similarity_search_with_relevance_scores(
-                            input,
+                            user_input,
                             k=3,
                             filter={'source': self.subject_file})
 
                         result = self.get_model().request(
-                            input,
+                            user_input,
                             self.identities[AI_IDENTITY_FILE_INSPECTION],
                             identity_parameters or {
                                 "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
@@ -396,7 +388,7 @@ class Assistant(BaseClass):
                     else:
                         # Enforce model for this task
                         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
-                            input,
+                            user_input,
                             [
                                 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
                                 AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
@@ -408,7 +400,7 @@ class Assistant(BaseClass):
 
                         if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
                             result = self.get_model().request(
-                                input,
+                                user_input,
                                 self.identities[identity],
                                 identity_parameters or {}
                             )
