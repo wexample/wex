@@ -200,7 +200,6 @@ class Assistant(BaseClass):
     def chat_about_file_from(self, base_dir: str) -> Optional[str]:
         # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
         choices_dirs = {"..": ".."}
-
         choices_files = {}
 
         for element in os.listdir(base_dir):
@@ -221,12 +220,9 @@ class Assistant(BaseClass):
 
         if file:
             full_path = os.path.join(base_dir, file)
-
-            if os.path.isfile(file):
-                return self.chat_about_file(
-                    os.path.join(base_dir, file)
-                )
-            elif os.path.isdir(file):
+            if os.path.isfile(full_path):
+                return self.chat_about_file(full_path)
+            elif os.path.isdir(full_path):
                 return self.chat_about_file_from(full_path)
 
     def chat_about_file(self, full_path: str) -> Optional[str]:
