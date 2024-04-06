@@ -231,14 +231,39 @@ class Assistant(BaseClass):
             self.log("Existing document versions found. Deleting...")
             collection.delete(ids=existing_docs["ids"])
 
-    def vector_store_file(self, file_path: str):
-        from langchain.text_splitter import RecursiveCharacterTextSplitter
-        from langchain_community.document_loaders import TextLoader
+    def vector_create_file_loader(self, file_path: str):
+        # Dynamically determine the loader based on file extension
+        extension = os.path.splitext(file_path)[-1].lower()
+        if extension == '.md':
+            from langchain_community.document_loaders import UnstructuredMarkdownLoader
+            return UnstructuredMarkdownLoader(file_path)
+        elif extension == '.csv':
+            from langchain_community.document_loaders.csv_loader import CSVLoader
+            return CSVLoader(file_path)
+        elif extension == '.html':
+            from langchain_community.document_loaders import UnstructuredHTMLLoader
+            return UnstructuredHTMLLoader(file_path)
+        elif extension == '.json':
+            from langchain_community.document_loaders import JSONLoader
+            return JSONLoader(
+                file_path=file_path,
+                jq_schema='.',
+                text_content=False
+            )
+        elif extension == '.pdf':
+            from langchain_community.document_loaders import PyPDFLoader
+            return PyPDFLoader(file_path=file_path)
+        else:
+            from langchain_community.document_loaders import TextLoader
+            # Fallback to a generic text loader if file type is not specifically handled
+            return TextLoader(file_path)
 
+    def vector_create_file_chunks(self, file_path: str, file_signature: str):
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+        loader = self.vector_create_file_loader(file_path)
         text_splitter = RecursiveCharacterTextSplitter()
-        loader = TextLoader(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
-        file_signature = file_build_signature(file_path)
 
         results = collection.get(
             where={"signature": file_signature},
@@ -260,6 +285,16 @@ class Assistant(BaseClass):
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
             chunk.metadata = {'signature': file_signature, "source": file_path}
+
+        return chunks
+
+    def vector_store_file(self, file_path: str):
+        file_signature = file_build_signature(file_path)
+        chunks = self.vector_create_file_chunks(file_path, file_signature)
+
+        # Ignore if empty
+        if len(chunks) == 0:
+            return
 
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(
@@ -301,7 +336,7 @@ class Assistant(BaseClass):
 
     def show_help(self) -> None:
         self.log("Type '/exit' to quit.")
-        self.log("Type '/menu' to pick an action.")
+        self.log("Type '/menu' to show menu.")
         self.log("Type '/?' or '/help' to display this message again.")
 
     def chat(

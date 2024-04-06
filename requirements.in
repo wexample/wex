@@ -2,6 +2,7 @@ chromadb
 click
 gitpython
 inquirerpy
+jq
 langchain>=0.1.14
 langchainhub
 langchain-openai
@@ -9,6 +10,7 @@ langchain-community
 langchain-experimental
 openai
 psutil
+pypdf
 python-dotenv
 pyyaml
 prompt_toolkit

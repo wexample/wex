@@ -23,7 +23,15 @@ if TYPE_CHECKING:
     default=MODEL_NAME_OPEN_AI_GPT_4,
     help="Default model",
 )
-def ai__talk__ask(kernel: "Kernel", model: str) -> None:
+@option(
+    "--action",
+    "-a",
+    type=str,
+    required=True,
+    default=CHAT_ACTION_FREE_TALK,
+    help="Default action",
+)
+def ai__talk__ask(kernel: "Kernel", action: str, model: str) -> None:
     assistant = Assistant(kernel, model)
 
-    assistant.start(action=CHAT_ACTION_FREE_TALK)
+    assistant.start(action=action)
