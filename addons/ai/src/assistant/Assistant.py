@@ -8,6 +8,8 @@ from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import WordCompleter
 
+from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
+from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.model.AbstractModel import AbstractModel
 from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
 from addons.ai.src.model.OpenAiModel import (
@@ -15,11 +17,12 @@ from addons.ai.src.model.OpenAiModel import (
     MODEL_NAME_OPEN_AI_GPT_4,
     OpenAiModel,
 )
+from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.tool.CommandTool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
-from src.core.BaseClass import BaseClass
+from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict
@@ -52,13 +55,16 @@ AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_log
 AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_language"
 
 
-class Assistant(BaseClass):
+class Assistant(KernelChild):
+    subject: AbstractChatSubject
+
     def __init__(
         self,
         kernel: "Kernel",
         default_model: str
     ) -> None:
-        self.kernel = kernel
+        super().__init__(kernel)
+
         self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
@@ -72,7 +78,6 @@ class Assistant(BaseClass):
             ),
         }
 
-        self.subject_file: Optional[str] = None
         self.set_model(default_model)
         self.completer = WordCompleter([
             "/exit",
@@ -126,6 +131,11 @@ class Assistant(BaseClass):
 
         self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
+
+        self.set_default_subject()
+
+    def set_default_subject(self):
+        self.subject = DefaultSubject(self.kernel)
 
     def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
@@ -206,7 +216,7 @@ class Assistant(BaseClass):
         self.log(f"Chatting about {full_path}")
 
         self.vector_store_file(full_path)
-        self.subject_file = full_path
+        self.subject = FileChatSubject(full_path, self.kernel)
 
         return self.chat()
 
@@ -439,7 +449,7 @@ class Assistant(BaseClass):
                     ai_working = True
 
                     # Talk about a file
-                    if self.subject_file:
+                    if isinstance(self.subject, FileChatSubject):
                         embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
                         chroma = Chroma(
                             persist_directory=self.chroma_path,
@@ -449,7 +459,7 @@ class Assistant(BaseClass):
                         results = chroma.similarity_search_with_relevance_scores(
                             user_input,
                             k=3,
-                            filter={'source': self.subject_file})
+                            filter={'source': self.subject.get_path()})
 
                         result = self.get_model().chat(
                             user_input,
