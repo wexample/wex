@@ -377,7 +377,7 @@ class Assistant(BaseClass):
                             k=3,
                             filter={'source': self.subject_file})
 
-                        result = self.get_model().request(
+                        result = self.get_model().chat(
                             user_input,
                             self.identities[AI_IDENTITY_FILE_INSPECTION],
                             identity_parameters or {
@@ -399,7 +399,7 @@ class Assistant(BaseClass):
                         )
 
                         if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
-                            result = self.get_model().request(
+                            result = self.get_model().chat(
                                 user_input,
                                 self.identities[identity],
                                 identity_parameters or {}
@@ -416,7 +416,7 @@ class Assistant(BaseClass):
             except KeyboardInterrupt:
                 # User asked to quit
                 if not ai_working:
-                    return "/exit"
+                    return CHAT_ACTION_EXIT
                 # User asked to interrupt assistant.
                 else:
                     self.kernel.io.print(os.linesep)

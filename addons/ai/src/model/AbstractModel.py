@@ -52,7 +52,7 @@ class AbstractModel(KernelChild):
     def create_embeddings(self) -> Any:
         return None
 
-    def request(
+    def chat(
         self,
         input: str,
         identity: StringKeysDict,
