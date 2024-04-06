@@ -20,7 +20,7 @@ from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
 from src.core.BaseClass import BaseClass
 from src.helper.dict import dict_merge, dict_sort_values
-from src.helper.file import file_build_signature
+from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict
 from src.helper.registry import registry_get_all_commands
 
@@ -225,24 +225,25 @@ class Assistant(BaseClass):
 
     def vector_create_file_loader(self, file_path: str):
         # Dynamically determine the loader based on file extension
-        extension = os.path.splitext(file_path)[-1].lower()
-        if extension == '.md':
+        extension = file_get_extension(file_path)
+
+        if extension == 'md':
             from langchain_community.document_loaders import UnstructuredMarkdownLoader
             return UnstructuredMarkdownLoader(file_path)
-        elif extension == '.csv':
+        elif extension == 'csv':
             from langchain_community.document_loaders.csv_loader import CSVLoader
             return CSVLoader(file_path)
-        elif extension == '.html':
+        elif extension == 'html':
             from langchain_community.document_loaders import UnstructuredHTMLLoader
             return UnstructuredHTMLLoader(file_path)
-        elif extension == '.json':
+        elif extension == 'json':
             from langchain_community.document_loaders import JSONLoader
             return JSONLoader(
                 file_path=file_path,
                 jq_schema='.',
                 text_content=False
             )
-        elif extension == '.pdf':
+        elif extension == 'pdf':
             from langchain_community.document_loaders import PyPDFLoader
             return PyPDFLoader(file_path=file_path)
         else:
@@ -250,11 +251,65 @@ class Assistant(BaseClass):
             # Fallback to a generic text loader if file type is not specifically handled
             return TextLoader(file_path)
 
-    def vector_create_file_chunks(self, file_path: str, file_signature: str):
+    def vector_find_language_by_extension(self, extension: str) -> Optional[str]:
+        # @from lib/python3.10/site-packages/langchain_text_splitters/base.py
+        extensions_map = {
+            "cpp": ["cpp", "h", "hpp"],  # C++
+            "go": ["go"],  # Go
+            "java": ["java"],  # Java
+            "kotlin": ["kt"],  # Kotlin
+            "js": ["js"],  # JavaScript
+            "ts": ["ts"],  # TypeScript
+            "php": ["php"],  # PHP
+            "proto": ["proto"],  # Protocol Buffers
+            "python": ["py"],  # Python
+            "rst": ["rst"],  # reStructuredText
+            "ruby": ["rb"],  # Ruby
+            "rust": ["rs"],  # Rust
+            "scala": ["scala"],  # Scala
+            "swift": ["swift"],  # Swift
+            "markdown": ["md"],  # Markdown
+            "latex": ["tex"],  # LaTeX
+            "html": ["html", "htm"],  # HTML
+            "sol": ["sol"],  # Solidity
+            "csharp": ["cs"],  # C#
+            "cobol": ["cob", "cpy"],  # COBOL
+            "c": ["c"],  # C
+            "lua": ["lua"],  # Lua
+            "perl": ["pl"],  # Perl
+        }
+
+        for language, extensions in extensions_map.items():
+            if extension in extensions:
+                return language
+
+        return None
+
+    def vector_create_text_splitter(self, file_path: str):
         from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+        language = self.vector_find_language_by_extension(
+            file_get_extension(file_path)
+        )
+
+        if language:
+            self.log(f"Using code splitter for [{language}]")
+            from langchain_text_splitters import (
+                Language,
+                RecursiveCharacterTextSplitter,
+            )
+
+            return RecursiveCharacterTextSplitter.from_language(
+                language=cast(language, Language),
+                chunk_size=50,
+                chunk_overlap=0
+            )
+        else:
+            return RecursiveCharacterTextSplitter()
+
+    def vector_create_file_chunks(self, file_path: str, file_signature: str):
         loader = self.vector_create_file_loader(file_path)
-        text_splitter = RecursiveCharacterTextSplitter()
+        text_splitter = self.vector_create_text_splitter(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
 
         results = collection.get(
@@ -262,12 +317,12 @@ class Assistant(BaseClass):
             include=["metadatas"]
         )
 
-        # Delete every version
-        self.vector_delete_file(file_path)
-
         if len(results["ids"]) > 0:
             self.log("Document already exists. Skipping...")
             return
+
+        # Delete every version
+        self.vector_delete_file(file_path)
 
         # If the file is not already in Chroma, proceed with indexing
         self.log("Storing document to vector database...")
