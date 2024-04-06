@@ -1,13 +1,14 @@
 import os
-import re
 from typing import TYPE_CHECKING, Dict, Optional, cast
 
 import chromadb
 from langchain_community.document_loaders.parsers.language.language_parser import Language
 from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
-from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.document import Document
 
+from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.model.AbstractModel import AbstractModel
@@ -17,7 +18,6 @@ from addons.ai.src.model.OpenAiModel import (
     MODEL_NAME_OPEN_AI_GPT_4,
     OpenAiModel,
 )
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.tool.CommandTool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_GRAY, COLOR_RESET
@@ -41,7 +41,6 @@ CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_EXIT: "Exit",
     CHAT_ACTION_CHANGE_MODEL: "Change language model",
     CHAT_ACTION_FREE_TALK: "Free Talk",
-    CHAT_ACTION_FREE_TALK_FILE: "Talk about a file",
     CHAT_ACTION_LAST: "Last action",
 }
 
@@ -79,12 +78,12 @@ class Assistant(KernelChild):
         }
 
         self.set_model(default_model)
-        self.completer = WordCompleter([
+        self.completer = AssistantChatCompleter([
             "/exit",
             "/menu",
             "/talk_about_file",
             "/?",
-        ], pattern=re.compile(r'/\S*'))
+        ])
 
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
@@ -385,9 +384,6 @@ class Assistant(KernelChild):
     def show_menu(self, last_action: Optional[str]) -> Optional[str]:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
-            CHAT_ACTION_FREE_TALK_FILE: CHAT_ACTIONS_TRANSLATIONS[
-                CHAT_ACTION_FREE_TALK_FILE
-            ],
         }
 
         if len(self.models.keys()) > 1:
@@ -504,3 +500,19 @@ class Assistant(KernelChild):
                 # User asked to interrupt assistant.
                 else:
                     self.kernel.io.print(os.linesep)
+
+
+class AssistantChatCompleter(Completer):
+    def __init__(self, commands):
+        self.commands = commands
+
+    def get_completions(self, document: Document, complete_event):
+        word_before_cursor = document.get_word_before_cursor(WORD=True)
+
+        # Previous word was a space
+        if word_before_cursor == '':
+            return
+
+        for command in self.commands:
+            if command.startswith(word_before_cursor):
+                yield Completion(command, start_position=-len(word_before_cursor))
