@@ -278,31 +278,23 @@ class Assistant(BaseClass):
             return TextLoader(file_path)
 
     def vector_find_language_by_extension(self, extension: str) -> Optional[Language]:
-        # @from lib/python3.10/site-packages/langchain_text_splitters/base.py
+        # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
         extensions_map = {
-            "cpp": ["cpp", "h", "hpp"],  # C++
-            "go": ["go"],  # Go
-            "java": ["java"],  # Java
-            "kotlin": ["kt"],  # Kotlin
-            "js": ["js"],  # JavaScript
-            "ts": ["ts"],  # TypeScript
-            "php": ["php"],  # PHP
-            "proto": ["proto"],  # Protocol Buffers
-            "python": ["py"],  # Python
-            "rst": ["rst"],  # reStructuredText
-            "ruby": ["rb"],  # Ruby
-            "rust": ["rs"],  # Rust
-            "scala": ["scala"],  # Scala
-            "swift": ["swift"],  # Swift
-            "markdown": ["md"],  # Markdown
-            "latex": ["tex"],  # LaTeX
-            "html": ["html", "htm"],  # HTML
-            "sol": ["sol"],  # Solidity
-            "csharp": ["cs"],  # C#
+            "c": ["c"],  # C (*)
+            "cpp": ["cpp", "h", "hpp"],  # C++ (*)
+            "csharp": ["cs"],  # C# (*)
             "cobol": ["cob", "cpy"],  # COBOL
-            "c": ["c"],  # C
-            "lua": ["lua"],  # Lua
-            "perl": ["pl"],  # Perl
+            "go": ["go"],  # Go (*)
+            "java": ["java"],  # Java (*)
+            "js": ["js"],  # JavaScript (*) requires package esprima
+            "kotlin": ["kt"],  # Kotlin (*)
+            "lua": ["lua"],  # Lua (*)
+            "perl": ["pl"],  # Perl (*)
+            "python": ["py"],  # Python
+            "ruby": ["rb"],  # Ruby (*)
+            "rust": ["rs"],  # Rust (*)
+            "scala": ["scala"],  # Scala (*)
+            "typescript": ["ts"]  # TypeScript (*)
         }
 
         for language, extensions in extensions_map.items():
