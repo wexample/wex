@@ -51,26 +51,6 @@ AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
 AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_logo"
 AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_language"
 
-from prompt_toolkit.completion import Completer, Completion
-
-
-class AssistantTalkCompletion(Completer):
-    def __init__(self, words):
-        # Initial list of words for completion
-        self.words = words
-
-    def get_completions(self, document, complete_event):
-        # Extract the text before the cursor
-        text_before_cursor = document.text_before_cursor
-
-        # print(text_before_cursor)
-
-        # Check if the text starts with "/"
-        if text_before_cursor.endswith("/"):
-            yield Completion('/menu', start_position=0)
-
-        yield Completion('menu', start_position=0)
-
 
 class Assistant(BaseClass):
     def __init__(
