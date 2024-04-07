@@ -11,14 +11,14 @@ from prompt_toolkit.document import Document
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-from addons.ai.src.model.AbstractModel import AbstractModel
-from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
-from addons.ai.src.model.OpenAiModel import (
+from addons.ai.src.model.abstract_model import AbstractModel
+from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
+from addons.ai.src.model.open_ai_model import (
     MODEL_NAME_OPEN_AI_GPT_3_5_TURBO,
     MODEL_NAME_OPEN_AI_GPT_4,
     OpenAiModel,
 )
-from addons.ai.src.tool.CommandTool import CommandTool
+from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_GRAY, COLOR_RESET
 from src.const.types import StringKeysDict
@@ -95,11 +95,11 @@ class Assistant(KernelChild):
 
     def _init_completer(self):
         self.commands = {
-            "/command": "Ask to pick a command (legacy).",
+            "/command": "Ask to pick a command (beta).",
             "/exit": "quit.",
             "/menu": "show menu.",
             "/talk_about_file": "talk about a specific file.",
-            "/tool": "Ask to play a tool (legacy).",
+            "/tool": "Ask to play a tool (beta).",
             "/?": "display this message again.",
         }
 

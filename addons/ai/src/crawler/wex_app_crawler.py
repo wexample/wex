@@ -1,5 +1,5 @@
-from addons.ai.src.crawler.AppCrawler import CrawlerTreeItem
-from addons.ai.src.crawler.PythonAppCrawler import PythonAppCrawler
+from addons.ai.src.crawler.app_crawler import CrawlerTreeItem
+from addons.ai.src.crawler.python_app_crawler import PythonAppCrawler
 
 
 class WexAppCrawler(PythonAppCrawler):

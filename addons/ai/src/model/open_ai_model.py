@@ -1,11 +1,10 @@
-from typing import Any, cast, Optional, List
+from typing import Any, Optional, List
 
 from dotenv import dotenv_values
 from langchain.chains import create_tagging_chain
-from langchain.chains.llm import LLMChain
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-from addons.ai.src.model.AbstractModel import AbstractModel
+from addons.ai.src.model.abstract_model import AbstractModel
 from src.const.types import StringKeysDict
 
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_1106 = "open_ai:gpt-3.5-turbo-1106"

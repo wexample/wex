@@ -1,6 +1,6 @@
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
-from addons.ai.src.assistant.Assistant import Assistant
-from addons.ai.src.model.OllamaModel import MODEL_NAME_OLLAMA_MISTRAL
+from addons.ai.src.assistant.assistant import Assistant
+from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
 from tests.AbstractTestCase import AbstractTestCase
 
 

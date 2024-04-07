@@ -5,7 +5,7 @@ from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 
-from addons.ai.src.tool.CommandTool import CommandTool
+from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge

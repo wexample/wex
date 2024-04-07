@@ -2,7 +2,7 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_community.llms import Ollama
 
-from addons.ai.src.model.AbstractModel import AbstractModel
+from addons.ai.src.model.abstract_model import AbstractModel
 from addons.app.command.app.exec import app__app__exec
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME

@@ -2,8 +2,8 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 from src.decorator.option import option
 from typing import TYPE_CHECKING
-from addons.ai.src.assistant.Assistant import Assistant
-from addons.ai.src.model.OpenAiModel import MODEL_NAME_OPEN_AI_GPT_4
+from addons.ai.src.assistant.assistant import Assistant
+from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

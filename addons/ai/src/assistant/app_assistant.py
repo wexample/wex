@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from addons.ai.src.assistant.Assistant import Assistant
+from addons.ai.src.assistant.assistant import Assistant
 from src.const.types import StringKeysDict
 from src.helper.file import file_read
 
