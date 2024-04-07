@@ -1,14 +1,15 @@
 import os
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
-import chromadb
-from langchain_community.document_loaders.parsers.language.language_parser import (
-    Language,
-)
+import chromadb  # type: ignore
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders.parsers.language.language_parser import Language  # type: ignore
 from langchain_community.vectorstores.chroma import Chroma
+from langchain_core.document_loaders import BaseLoader  # type: ignore
+from langchain_core.documents.base import Document
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
-from prompt_toolkit.document import Document
+from prompt_toolkit.document import Document as ToolkitDocument
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
@@ -79,13 +80,16 @@ class Assistant(KernelChild):
         self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
-                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
+                self.kernel,
+                MODEL_NAME_OLLAMA_MISTRAL
             ),
             MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+                self.kernel,
+                MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
             ),
             MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
+                self.kernel,
+                MODEL_NAME_OPEN_AI_GPT_4
             ),
         }
 
@@ -129,31 +133,31 @@ class Assistant(KernelChild):
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                "\nNow we are talking about this file : {file_full_path}"
-                "\n_______________________________________File metadata"
-                "\nCreation Date: {file_creation_date}"
-                "\nFile Size: {file_size} bytes"
-                "\n_________________________________________End of file info"
+                          "\nNow we are talking about this file : {file_full_path}"
+                          "\n_______________________________________File metadata"
+                          "\nCreation Date: {file_creation_date}"
+                          "\nFile Size: {file_size} bytes"
+                          "\n_________________________________________End of file info"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Return one command name, but only if could help answer user message, None instead"
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Answer the question based only on the following context:"
-                "\n"
-                "\n{context}"
+                          "\n"
+                          "\n{context}"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
-                "\n\n{tools}\n\nUse the following format:"
-                "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
-                "\nAction: the action to take, should be one of [{tool_names}]"
-                "\nAction Input: the input to the action\nObservation: the result of the action"
-                "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
-                "\nFinal Answer: the final answer to the original input question"
-                "\n\nBegin!"
-                "\n\nQuestion: {input}"
-                "\nThought:{agent_scratchpad}"
+                          "\n\n{tools}\n\nUse the following format:"
+                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
+                          "\nAction: the action to take, should be one of [{tool_names}]"
+                          "\nAction Input: the input to the action\nObservation: the result of the action"
+                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
+                          "\nFinal Answer: the final answer to the original input question"
+                          "\n\nBegin!"
+                          "\n\nQuestion: {input}"
+                          "\nThought:{agent_scratchpad}"
             },
         }
 
@@ -225,7 +229,7 @@ class Assistant(KernelChild):
 
         self.log(f"{os.linesep}Ciao")
 
-    def set_selected_subject_file(self, base_dir: str) -> Optional[str]:
+    def set_selected_subject_file(self, base_dir: str) -> None:
         # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
         choices_dirs = {"..": ".."}
         choices_files = {}
@@ -249,9 +253,9 @@ class Assistant(KernelChild):
         if file:
             full_path = os.path.join(base_dir, file)
             if os.path.isfile(full_path):
-                return self.set_subject_file(full_path)
+                self.set_subject_file(full_path)
             elif os.path.isdir(full_path):
-                return self.set_selected_subject_file(full_path)
+                self.set_selected_subject_file(full_path)
 
     def set_subject_file(self, full_path: str) -> None:
         self.vector_store_file(full_path)
@@ -271,7 +275,7 @@ class Assistant(KernelChild):
             self.log("Existing document versions found. Deleting...")
             collection.delete(ids=existing_docs["ids"])
 
-    def vector_create_file_loader(self, file_path: str):
+    def vector_create_file_loader(self, file_path: str) -> BaseLoader:
         # Dynamically determine the loader based on file extension
         extension = file_get_extension(file_path)
 
@@ -347,21 +351,16 @@ class Assistant(KernelChild):
 
         for language, extensions in extensions_map.items():
             if extension in extensions:
-                return language
+                return cast(Language, language)
 
         return None
 
-    def vector_create_text_splitter(self, file_path: str):
-        from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+    def vector_create_text_splitter(self, file_path: str) -> RecursiveCharacterTextSplitter:
         language = self.vector_find_language_by_extension(file_get_extension(file_path))
 
         if language:
             self.log(f"Splitter : {language}")
-            from langchain_text_splitters import (
-                Language,
-                RecursiveCharacterTextSplitter,
-            )
+            from langchain_text_splitters import Language  # type: ignore
 
             return RecursiveCharacterTextSplitter.from_language(
                 language=cast(Language, language), chunk_size=50, chunk_overlap=0
@@ -370,7 +369,7 @@ class Assistant(KernelChild):
             self.log(f"Splitter : default")
             return RecursiveCharacterTextSplitter()
 
-    def vector_create_file_chunks(self, file_path: str, file_signature: str):
+    def vector_create_file_chunks(self, file_path: str, file_signature: str) -> List[Document]:
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
@@ -381,7 +380,7 @@ class Assistant(KernelChild):
 
         if len(results["ids"]) > 0:
             self.log("Document already exists. Skipping...")
-            return
+            return []
 
         # Delete every version
         self.vector_delete_file(file_path)
@@ -389,7 +388,11 @@ class Assistant(KernelChild):
         # If the file is not already in Chroma, proceed with indexing
         self.log("Storing document to vector database...")
         loader.load()
-        chunks = loader.load_and_split(text_splitter=text_splitter)
+
+        chunks = cast(
+            List[Document],
+            loader.load_and_split(text_splitter=text_splitter)
+        )
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
@@ -402,8 +405,8 @@ class Assistant(KernelChild):
         chunks = self.vector_create_file_chunks(file_path, file_signature)
 
         # Ignore if empty or null, document already stored.
-        if (not chunks) or (len(chunks) == 0):
-            return
+        if len(chunks) == 0:
+            return None
 
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(
@@ -414,6 +417,8 @@ class Assistant(KernelChild):
         )
         chroma.persist()
         self.log("Document stored successfully.")
+
+        return None
 
     def show_menu(self) -> Optional[str]:
         choices = {
@@ -453,6 +458,8 @@ class Assistant(KernelChild):
         # Demo usage
         if selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
             return "🥒"
+
+        return None
 
     def chat(
         self,
@@ -548,7 +555,7 @@ class AssistantChatCompleter(Completer):
         self.commands = commands
 
     def get_completions(
-        self, document: Document, complete_event: CompleteEvent
+        self, document: ToolkitDocument, complete_event: CompleteEvent
     ) -> Iterable[Completion]:
         word_before_cursor = document.get_word_before_cursor(WORD=True)
 

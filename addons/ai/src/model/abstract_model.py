@@ -1,6 +1,7 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 
+from langchain.agents import BaseSingleActionAgent, BaseMultiActionAgent
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
@@ -70,11 +71,14 @@ class AbstractModel(KernelChild):
 
         prompt = self.chat_create_prompt(identity)
 
-        agent = create_react_agent(self.get_llm(), tools, prompt=prompt)
+        agent = cast(
+            Union[BaseSingleActionAgent, BaseMultiActionAgent],
+            create_react_agent(self.get_llm(), tools, prompt=prompt)
+        )
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-        return agent_executor.invoke({"input": question})["output"]
+        return str(agent_executor.invoke({"input": question})["output"])
 
     @abstractmethod
     def choose_command(

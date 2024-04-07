@@ -20,7 +20,7 @@ class OpenAiModel(AbstractModel):
         if not self.api_key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
-        self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))
+        self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 
     def choose_command(
         self,
@@ -53,4 +53,4 @@ class OpenAiModel(AbstractModel):
         )
 
     def create_embeddings(self) -> Any:
-        return OpenAIEmbeddings(openai_api_key=self.api_key)
+        return OpenAIEmbeddings(openai_api_key=self.api_key)  # type: ignore
