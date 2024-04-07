@@ -81,6 +81,10 @@ class IOManager(KernelChild):
     def calc_log_messages_length(self) -> int:
         return sum(message["lines"] for message in self.log_messages)
 
+    def log_clear(self) -> None:
+        self.log_hide()
+        self.log_messages = []
+
     def log_hide(self) -> None:
         if self.log_length:
             total_lines_needed = self.calc_log_messages_length()

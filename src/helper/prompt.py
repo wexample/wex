@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, cast
 
 import click
-from click._termui_impl import ProgressBar, V
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
+from click._termui_impl import ProgressBar, V
 
 from src.const.types import StringsDict
 
@@ -20,20 +19,28 @@ def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[
 
 
 def prompt_progress_steps(
-    kernel: "Kernel", steps: Iterable[V], title: str = "Processing"
+    kernel: "Kernel", steps: Iterable[V], title: Optional[str] = None
 ) -> None:
+    previous_length = kernel.io.log_length
+
     with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
             step_callable = cast(Callable[..., Any], step)
-            kernel.io.log(f"{title} : {step_callable.__name__}")
+
+            # Play with length to keep status after bar.
+            kernel.io.log_length = 0
+            kernel.io.log(f" {step_callable.__name__}")
+            kernel.io.log_length = 10
 
             response = step_callable()
-
-            click.echo(os.linesep)
 
             # Step failed somewhere
             if response is False:
                 return
+
+            kernel.io.log_clear()
+
+    kernel.io.log_length = previous_length
 
 
 def prompt_choice_dict(
