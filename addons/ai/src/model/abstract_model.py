@@ -46,23 +46,28 @@ class AbstractModel(KernelChild):
         )
 
     def chat_merge_parameters(
-        self, input: str, identity_parameters: StringKeysDict
+        self,
+        user_input: str,
+        identity_parameters: StringKeysDict
     ) -> StringKeysDict:
-        return dict_merge({"input": input}, identity_parameters or {})
+        return dict_merge({"input": user_input}, identity_parameters or {})
 
     def create_embeddings(self) -> Any:
         return None
 
     def chat(
-        self, input: str,
+        self,
+        user_input: str,
         identity: StringKeysDict,
         identity_parameters: StringKeysDict
     ) -> str:
         chain = LLMChain(
-            llm=self.get_llm(), prompt=self.chat_create_prompt(identity), verbose=False
+            llm=self.get_llm(),
+            prompt=self.chat_create_prompt(identity),
+            verbose=False
         )
 
-        return str(chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
+        return str(chain.invoke(self.chat_merge_parameters(user_input, identity_parameters))[
             "text"
         ].strip())
 
@@ -85,7 +90,7 @@ class AbstractModel(KernelChild):
     @abstractmethod
     def choose_command(
         self,
-        input: str,
+        user_input: str,
         commands: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:

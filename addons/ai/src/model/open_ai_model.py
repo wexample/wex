@@ -14,9 +14,11 @@ MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 
 
 class OpenAiModel(AbstractModel):
+    api_key: Optional[str] = None
+    
     def activate(self) -> None:
         env_path = self.kernel.directory.path + ".env"
-        self.api_key: Optional[str] = dotenv_values(env_path).get("OPENAI_API_KEY")
+        self.api_key = dotenv_values(env_path).get("OPENAI_API_KEY")
         if not self.api_key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
@@ -24,7 +26,7 @@ class OpenAiModel(AbstractModel):
 
     def choose_command(
         self,
-        input: str,
+        user_input: str,
         commands: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:
@@ -44,7 +46,7 @@ class OpenAiModel(AbstractModel):
             self.get_llm(),
         )
 
-        response = chain.invoke({"input": input})
+        response = chain.invoke({"input": user_input})
 
         return (
             response["text"]["command"]

@@ -46,7 +46,7 @@ class OllamaModel(AbstractModel):
 
     def choose_command(
         self,
-        input: str,
+        user_input: str,
         commands: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:
