@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, cast, Iterable
 
 import chromadb
 from langchain_community.document_loaders.parsers.language.language_parser import (
@@ -7,7 +7,7 @@ from langchain_community.document_loaders.parsers.language.language_parser impor
 )
 from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
-from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.completion import CompleteEvent, Completer, Completion
 from prompt_toolkit.document import Document
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -23,7 +23,7 @@ from addons.ai.src.model.open_ai_model import (
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_GRAY, COLOR_RESET
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
@@ -129,31 +129,31 @@ class Assistant(KernelChild):
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                "\nNow we are talking about this file : {file_full_path}"
-                "\n_______________________________________File metadata"
-                "\nCreation Date: {file_creation_date}"
-                "\nFile Size: {file_size} bytes"
-                "\n_________________________________________End of file info"
+                          "\nNow we are talking about this file : {file_full_path}"
+                          "\n_______________________________________File metadata"
+                          "\nCreation Date: {file_creation_date}"
+                          "\nFile Size: {file_size} bytes"
+                          "\n_________________________________________End of file info"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Return one command name, but only if could help answer user message, None instead"
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Answer the question based only on the following context:"
-                "\n"
-                "\n{context}"
+                          "\n"
+                          "\n{context}"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
-                "\n\n{tools}\n\nUse the following format:"
-                "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
-                "\nAction: the action to take, should be one of [{tool_names}]"
-                "\nAction Input: the input to the action\nObservation: the result of the action"
-                "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
-                "\nFinal Answer: the final answer to the original input question"
-                "\n\nBegin!"
-                "\n\nQuestion: {input}"
-                "\nThought:{agent_scratchpad}"
+                          "\n\n{tools}\n\nUse the following format:"
+                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
+                          "\nAction: the action to take, should be one of [{tool_names}]"
+                          "\nAction Input: the input to the action\nObservation: the result of the action"
+                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
+                          "\nFinal Answer: the final answer to the original input question"
+                          "\n\nBegin!"
+                          "\n\nQuestion: {input}"
+                          "\nThought:{agent_scratchpad}"
             },
         }
 
@@ -440,7 +440,7 @@ class Assistant(KernelChild):
         for command, description in self.commands.items():
             self.log(f"Type '{command}' to {description}")
 
-    def choose(self, user_input: str):
+    def choose(self, user_input: str) -> Optional[str]:
         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
             user_input,
             [
@@ -544,10 +544,12 @@ class Assistant(KernelChild):
 
 
 class AssistantChatCompleter(Completer):
-    def __init__(self, commands):
+    def __init__(self, commands: StringsList) -> None:
         self.commands = commands
 
-    def get_completions(self, document: Document, complete_event):
+    def get_completions(
+        self, document: Document, complete_event: CompleteEvent
+    ) -> Iterable[Completion]:
         word_before_cursor = document.get_word_before_cursor(WORD=True)
 
         # Previous word was a space

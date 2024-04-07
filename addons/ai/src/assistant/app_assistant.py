@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 class AppAssistant(Assistant):
-    def __init__(self, manager: "AppAddonManager") -> None:
-        super().__init__(manager.kernel)
+    def __init__(self, manager: "AppAddonManager", default_model: str) -> None:
+        super().__init__(manager.kernel, default_model)
 
         self.manager = manager
 
