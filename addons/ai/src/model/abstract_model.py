@@ -26,7 +26,7 @@ class AbstractModel(KernelChild):
 
         return self._llm
 
-    def __init__(self, kernel: "Kernel", identifier: str):
+    def __init__(self, kernel: "Kernel", identifier: str) -> None:
         super().__init__(kernel)
 
         self.identifier = identifier

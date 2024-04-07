@@ -10,6 +10,8 @@ properties:
 scripts:
   - title: Remove every empty folder
     script: find . -type d -empty -delete
+  - title: Custom code rectification
+    script: wex .code/autocode
   - title: Regenerate app info
     script: wex app::info/update
   - title: Remove unused imports

@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, cast, Iterable
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb
 from langchain_community.document_loaders.parsers.language.language_parser import (
@@ -75,7 +75,7 @@ class Assistant(KernelChild):
             ],
         )
 
-    def _init_models(self):
+    def _init_models(self) -> None:
         self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
@@ -91,7 +91,7 @@ class Assistant(KernelChild):
 
         self.set_model(self.default_model)
 
-    def _init_completer(self):
+    def _init_completer(self) -> None:
         self.commands = {
             "/command": "Ask to pick a command (beta).",
             "/exit": "quit.",
@@ -103,7 +103,7 @@ class Assistant(KernelChild):
 
         self.completer = AssistantChatCompleter(list(self.commands.keys()))
 
-    def _init_tools(self):
+    def _init_tools(self) -> None:
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
         self.tools: List[CommandTool] = []
@@ -124,40 +124,40 @@ class Assistant(KernelChild):
 
         self.log(f"Loaded {len(self.tools)} tools")
 
-    def _init_identities(self):
+    def _init_identities(self) -> None:
         self.identities = {
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                          "\nNow we are talking about this file : {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_________________________________________End of file info"
+                "\nNow we are talking about this file : {file_full_path}"
+                "\n_______________________________________File metadata"
+                "\nCreation Date: {file_creation_date}"
+                "\nFile Size: {file_size} bytes"
+                "\n_________________________________________End of file info"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Return one command name, but only if could help answer user message, None instead"
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Answer the question based only on the following context:"
-                          "\n"
-                          "\n{context}"
+                "\n"
+                "\n{context}"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
-                          "\n\n{tools}\n\nUse the following format:"
-                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
-                          "\nAction: the action to take, should be one of [{tool_names}]"
-                          "\nAction Input: the input to the action\nObservation: the result of the action"
-                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
-                          "\nFinal Answer: the final answer to the original input question"
-                          "\n\nBegin!"
-                          "\n\nQuestion: {input}"
-                          "\nThought:{agent_scratchpad}"
+                "\n\n{tools}\n\nUse the following format:"
+                "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
+                "\nAction: the action to take, should be one of [{tool_names}]"
+                "\nAction Input: the input to the action\nObservation: the result of the action"
+                "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
+                "\nFinal Answer: the final answer to the original input question"
+                "\n\nBegin!"
+                "\n\nQuestion: {input}"
+                "\nThought:{agent_scratchpad}"
             },
         }
 
-    def _init_vector_database(self):
+    def _init_vector_database(self) -> None:
         manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
 
         if manager.is_valid_app():
@@ -170,16 +170,16 @@ class Assistant(KernelChild):
         self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
-    def _init_subject(self):
+    def _init_subject(self) -> None:
         self.set_default_subject()
 
-    def set_default_subject(self):
+    def set_default_subject(self) -> None:
         if self.subject:
             self.log("Leaving subject : " + self.subject.introduce())
 
         self.set_subject(DefaultSubject(self.kernel))
 
-    def set_subject(self, subject: AbstractChatSubject):
+    def set_subject(self, subject: AbstractChatSubject) -> None:
         self.log("Setting subject : " + subject.introduce())
         self.subject = subject
 
@@ -257,7 +257,7 @@ class Assistant(KernelChild):
         self.vector_store_file(full_path)
         self.set_subject(FileChatSubject(full_path, self.kernel))
 
-    def vector_delete_file(self, file_path: str):
+    def vector_delete_file(self, file_path: str) -> None:
         collection = self.chroma.get_or_create_collection("single_files")
 
         # Check for existing documents by the same source, regardless of the signature
@@ -397,7 +397,7 @@ class Assistant(KernelChild):
 
         return chunks
 
-    def vector_store_file(self, file_path: str):
+    def vector_store_file(self, file_path: str) -> None:
         file_signature = file_build_signature(file_path)
         chunks = self.vector_create_file_chunks(file_path, file_signature)
 

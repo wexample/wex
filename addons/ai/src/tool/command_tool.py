@@ -9,7 +9,7 @@ class CommandTool(BaseTool):
     name: str
     description: str
 
-    def __init__(self, **kwargs: Kwargs):
+    def __init__(self, **kwargs: Kwargs) -> None:
         super().__init__(**kwargs)
 
     def _run(self, *args: Args, **kwargs: Kwargs) -> str:
