@@ -69,6 +69,31 @@ class AbstractModel(KernelChild):
             "text"
         ].strip()
 
+    def chat_agent(
+        self,
+        question: str,
+        tools,
+        identity: StringKeysDict
+    ) -> str:
+        from langchain.agents import AgentExecutor, create_react_agent
+
+        prompt = self.chat_create_prompt(identity)
+
+        agent = create_react_agent(
+            self.get_llm(),
+            tools,
+            prompt=prompt
+        )
+
+        agent_executor = AgentExecutor(
+            agent=agent,
+            tools=tools,
+            verbose=True)
+
+        return agent_executor.invoke(
+            {"input": question}
+        )["output"]
+
     @abstractmethod
     def choose_command(
         self,

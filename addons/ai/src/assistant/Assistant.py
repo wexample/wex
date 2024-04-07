@@ -100,6 +100,7 @@ class Assistant(KernelChild):
             "/exit": "quit.",
             "/menu": "show menu.",
             "/talk_about_file": "talk about a specific file.",
+            "/tool": "Ask to play a tool.",
             "/?": "display this message again.",
         }
 
@@ -146,6 +147,18 @@ class Assistant(KernelChild):
                 "system": "Answer the question based only on the following context:"
                           "\n"
                           "\n{context}"
+            },
+            "test_agent": {
+                "system": "Answer the following questions as best you can. You have access to the following tools:"
+                          "\n\n{tools}\n\nUse the following format:"
+                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
+                          "\nAction: the action to take, should be one of [{tool_names}]"
+                          "\nAction Input: the input to the action\nObservation: the result of the action"
+                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
+                          "\nFinal Answer: the final answer to the original input question"
+                          "\n\nBegin!"
+                          "\n\nQuestion: {input}"
+                          "\nThought:{agent_scratchpad}"
             }
         }
 
@@ -477,10 +490,20 @@ class Assistant(KernelChild):
                     user_input = user_input_lower = initial_prompt
                     initial_prompt = None
 
+                result: Optional[str] = None
+
+                print(user_input_lower)
+
                 if user_input_lower == "/exit" or user_input_lower == "exit":
                     return CHAT_ACTION_EXIT
                 elif user_input_lower == "/menu":
                     return None
+                elif user_input_lower.startswith("/run_tool"):
+                    result = self.get_model().chat_agent(
+                        user_input.replace("/run_tool", ""),
+                        self.tools,
+                        self.identities["test_agent"]
+                    )
                 elif user_input_lower == "/talk_about_file":
                     return CHAT_ACTION_FREE_TALK_FILE
                 elif user_input_lower in ["/help", "/?"]:
@@ -519,9 +542,9 @@ class Assistant(KernelChild):
                             identity_parameters or {}
                         )
 
-                    # Let a new line separator
-                    self.kernel.io.print(COLOR_RESET)
-                    self.kernel.io.print(result)
+                # Let a new line separator
+                self.kernel.io.print(COLOR_RESET)
+                self.kernel.io.print(result)
             except KeyboardInterrupt:
                 # User asked to quit
                 if not ai_working:
@@ -544,4 +567,5 @@ class AssistantChatCompleter(Completer):
 
         for command in self.commands:
             if command.startswith(word_before_cursor):
-                yield Completion(command, start_position=-len(word_before_cursor))
+                yield Completion(command + ' ', start_position=-len(word_before_cursor))
+
