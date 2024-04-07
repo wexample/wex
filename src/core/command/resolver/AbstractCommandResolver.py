@@ -393,7 +393,6 @@ class AbstractCommandResolver(KernelChild):
                 command_file = os.path.join(directory, command_file_name)
                 parts = self.build_command_parts_from_file_path(command_file)
                 internal_command = self.build_command_from_parts(parts)
-
                 request = self.create_command_request(internal_command)
 
                 if request._runner:

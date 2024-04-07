@@ -72,7 +72,6 @@ class Assistant(KernelChild):
                 self._init_identities,
                 self._init_tools,
                 self._init_vector_database,
-                self._init_subject,
             ],
         )
 
@@ -174,13 +173,7 @@ class Assistant(KernelChild):
         self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
-    def _init_subject(self) -> None:
-        self.set_default_subject()
-
     def set_default_subject(self) -> None:
-        if self.subject:
-            self.log("Leaving subject : " + self.subject.introduce())
-
         self.set_subject(DefaultSubject(self.kernel))
 
     def set_subject(self, subject: AbstractChatSubject) -> None:
@@ -210,6 +203,7 @@ class Assistant(KernelChild):
                 action = self.show_menu()
 
             if action == CHAT_ACTION_FREE_TALK:
+                self.set_default_subject()
                 action = self.chat()
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
