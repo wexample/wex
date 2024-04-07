@@ -47,6 +47,7 @@ CHAT_ACTIONS_TRANSLATIONS = {
 AI_IDENTITY_DEFAULT = "default"
 AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
 AI_IDENTITY_FILE_INSPECTION = "file_inspection"
+AI_IDENTITY_COMMAND_SELECTOR = "command_selector"
 
 AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
@@ -98,6 +99,9 @@ class Assistant(KernelChild):
                           "\nCreation Date: {file_creation_date}"
                           "\nFile Size: {file_size} bytes"
                           "\n_________________________________________End of file info"
+            },
+            AI_IDENTITY_COMMAND_SELECTOR: {
+                "system": "Return one command name, but only if could help answer user message, None instead"
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Answer the question based only on the following context:"
@@ -411,6 +415,24 @@ class Assistant(KernelChild):
         self.log("Type '/help' or '/?' to display this message again.")
         self.log("Type '/menu' to show menu.")
 
+    def choose(self, user_input: str):
+        """
+        Legacy, must be reassigned.
+        """
+
+        # Enforce model for this task
+        return self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+            user_input,
+            [
+                AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
+                AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
+                AI_COMMAND_DISPLAY_A_CUCUMBER,
+                AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
+                None,
+            ],
+            self.identities[AI_IDENTITY_COMMAND_SELECTOR]
+        )
+
     def chat(
         self,
         initial_prompt: Optional[str] = None,
@@ -466,29 +488,11 @@ class Assistant(KernelChild):
                         )
                     # Default chatting
                     else:
-                        # Enforce model for this task
-                        selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+                        result = self.get_model().chat(
                             user_input,
-                            [
-                                AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
-                                AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
-                                AI_COMMAND_DISPLAY_A_CUCUMBER,
-                                AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
-                                None,
-                            ],
+                            self.identities[identity],
+                            identity_parameters or {}
                         )
-
-                        if selected_command == AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE:
-                            result = self.get_model().chat(
-                                user_input,
-                                self.identities[identity],
-                                identity_parameters or {}
-                            )
-
-                        elif selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
-                            result = "🥒"
-                        else:
-                            result = f"TODO COMMAND : {selected_command}"
 
                     # Let a new line separator
                     self.kernel.io.print(COLOR_RESET)

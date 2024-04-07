@@ -32,22 +32,21 @@ class OpenAiModel(AbstractModel):
         self,
         input: str,
         commands: List[str | None],
-        instruction: str = "Return one command name, but only if could help answer user message, None instead"
+        identity: StringKeysDict,
     ) -> Optional[str]:
         """
         The tagging mechanism works well on GPT4 only.
         """
-        schema = {
+        chain = create_tagging_chain({
             "properties": {
                 "command": {
                     "type": "string",
                     "enum": commands,
-                    "description": instruction,
+                    "description": identity["system"],
                 },
             },
-        }
+        }, self.get_llm())
 
-        chain = create_tagging_chain(schema, self.get_llm())
         response = chain.invoke({"input": input})
 
         return response["text"]["command"] \

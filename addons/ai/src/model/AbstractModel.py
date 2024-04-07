@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, List
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
+
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
@@ -73,7 +74,7 @@ class AbstractModel(KernelChild):
         self,
         input: str,
         commands: List[str | None],
-        instruction: str = "Return one command name, but only if could help answer user message, None instead"
+        identity: StringKeysDict,
     ) -> Optional[str]:
         return None
 
