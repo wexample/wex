@@ -4,9 +4,7 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb  # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders.parsers.language.language_parser import (
-    Language,
-)  # type: ignore
+from langchain_community.document_loaders.parsers.language.language_parser import Language  # type: ignore
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
@@ -181,6 +179,12 @@ class Assistant(KernelChild):
     def set_subject(self, subject: AbstractChatSubject) -> None:
         self.log("Setting subject : " + subject.introduce())
         self.subject = subject
+
+    def get_subject(self) -> AbstractChatSubject:
+        self._validate__should_not_be_none(self.subject)
+        assert isinstance(self.subject, AbstractChatSubject)
+
+        return self.subject
 
     def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
@@ -484,7 +488,7 @@ class Assistant(KernelChild):
                 end = len(user_input)
 
             # Extract the input text corresponding to the command, or None if empty
-            command_input = user_input[start:end].strip()
+            command_input: Optional[str] = user_input[start:end].strip()
             if command_input == "":
                 command_input = None
 
@@ -537,10 +541,10 @@ class Assistant(KernelChild):
                     elif command in ["help", "?"]:
                         self.show_help()
                     else:
-                        result = self.subject.process_user_input(
+                        result = self.get_subject().process_user_input(
                             user_input_split,
                             self.identities[identity_name],
-                            identity_parameters,
+                            identity_parameters or {},
                         )
 
                     if result:

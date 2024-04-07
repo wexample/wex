@@ -54,15 +54,17 @@ class AbstractModel(KernelChild):
         return None
 
     def chat(
-        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
-    ) -> Any:
+        self, input: str,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
+    ) -> str:
         chain = LLMChain(
             llm=self.get_llm(), prompt=self.chat_create_prompt(identity), verbose=False
         )
 
-        return chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
+        return str(chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
             "text"
-        ].strip()
+        ].strip())
 
     def chat_agent(
         self, question: str, tools: List[CommandTool], identity: StringKeysDict
