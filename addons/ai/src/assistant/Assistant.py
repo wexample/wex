@@ -34,14 +34,11 @@ if TYPE_CHECKING:
 CHAT_ACTION_EXIT = "EXIT"
 CHAT_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
 CHAT_ACTION_FREE_TALK = "FREE_TALK"
-CHAT_ACTION_FREE_TALK_FILE = "TALK_FILE"
-CHAT_ACTION_LAST = "ACTION_LAST"
 
 CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_EXIT: "Exit",
     CHAT_ACTION_CHANGE_MODEL: "Change language model",
     CHAT_ACTION_FREE_TALK: "Free Talk",
-    CHAT_ACTION_LAST: "Last action",
 }
 
 AI_IDENTITY_DEFAULT = "default"
@@ -57,7 +54,7 @@ AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_langu
 
 
 class Assistant(KernelChild):
-    subject: AbstractChatSubject
+    subject: Optional[AbstractChatSubject] = None
 
     def __init__(
         self,
@@ -179,7 +176,14 @@ class Assistant(KernelChild):
         self.set_default_subject()
 
     def set_default_subject(self):
-        self.subject = DefaultSubject(self.kernel)
+        if self.subject:
+            self.log('Leaving subject : ' + self.subject.introduce())
+
+        self.set_subject(DefaultSubject(self.kernel))
+
+    def set_subject(self, subject: AbstractChatSubject):
+        self.log('Setting subject : ' + subject.introduce())
+        self.subject = subject
 
     def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
@@ -197,19 +201,14 @@ class Assistant(KernelChild):
         return model
 
     def start(self, action: Optional[str] = None) -> None:
-        previous_action: Optional[str] = None
-
         current_model = self.get_model()
         asked_exit = False
         while not asked_exit:
             if not action:
-                action = self.show_menu(previous_action)
-                previous_action = action
+                action = self.show_menu()
 
             if action == CHAT_ACTION_FREE_TALK:
                 action = self.chat()
-            elif action == CHAT_ACTION_FREE_TALK_FILE:
-                action = self.chat_about_file_from(os.getcwd())
             elif action == CHAT_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
@@ -228,14 +227,14 @@ class Assistant(KernelChild):
 
         self.log(f"{os.linesep}Ciao")
 
-    def chat_about_file_from(self, base_dir: str) -> Optional[str]:
+    def set_selected_subject_file(self, base_dir: str) -> Optional[str]:
         # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
         choices_dirs = {"..": ".."}
         choices_files = {}
 
         for element in os.listdir(base_dir):
             if os.path.isdir(os.path.join(base_dir, element)):
-                element_label = f"📁{element}"
+                element_label = f"📁 {element}"
                 choices_dirs[element] = element_label
             else:
                 element_label = element
@@ -252,17 +251,13 @@ class Assistant(KernelChild):
         if file:
             full_path = os.path.join(base_dir, file)
             if os.path.isfile(full_path):
-                return self.chat_about_file(full_path)
+                return self.set_subject_file(full_path)
             elif os.path.isdir(full_path):
-                return self.chat_about_file_from(full_path)
+                return self.set_selected_subject_file(full_path)
 
-    def chat_about_file(self, full_path: str) -> Optional[str]:
-        self.log(f"Chatting about {full_path}")
-
+    def set_subject_file(self, full_path: str) -> None:
         self.vector_store_file(full_path)
-        self.subject = FileChatSubject(full_path, self.kernel)
-
-        return self.chat()
+        self.set_subject(FileChatSubject(full_path, self.kernel))
 
     def vector_delete_file(self, file_path: str):
         collection = self.chroma.get_or_create_collection("single_files")
@@ -426,7 +421,7 @@ class Assistant(KernelChild):
         chroma.persist()
         self.log("Document stored successfully.")
 
-    def show_menu(self, last_action: Optional[str]) -> Optional[str]:
+    def show_menu(self) -> Optional[str]:
         choices = {
             CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
         }
@@ -435,10 +430,6 @@ class Assistant(KernelChild):
             choices[CHAT_ACTION_CHANGE_MODEL] = CHAT_ACTIONS_TRANSLATIONS[
                 CHAT_ACTION_CHANGE_MODEL
             ]
-
-        if last_action:
-            last_action_label = f"{CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_LAST]} ({CHAT_ACTIONS_TRANSLATIONS[last_action]})"
-            choices[CHAT_ACTION_LAST] = last_action_label
 
         choices[CHAT_ACTION_EXIT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_EXIT]
 
@@ -505,7 +496,7 @@ class Assistant(KernelChild):
                         self.identities[AI_IDENTITY_TOOLS_AGENT]
                     )
                 elif user_input_lower == "/talk_about_file":
-                    return CHAT_ACTION_FREE_TALK_FILE
+                    self.set_selected_subject_file(os.getcwd())
                 elif user_input_lower in ["/help", "/?"]:
                     self.show_help()
                 else:
