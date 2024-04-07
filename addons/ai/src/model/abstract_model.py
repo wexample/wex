@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 
-from langchain.agents import BaseSingleActionAgent, BaseMultiActionAgent
+from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
@@ -73,7 +73,7 @@ class AbstractModel(KernelChild):
 
         agent = cast(
             Union[BaseSingleActionAgent, BaseMultiActionAgent],
-            create_react_agent(self.get_llm(), tools, prompt=prompt)
+            create_react_agent(self.get_llm(), tools, prompt=prompt),
         )
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)

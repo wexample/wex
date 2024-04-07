@@ -1,16 +1,16 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from langchain_community.vectorstores.chroma import Chroma
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
-from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
+from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.const.types import StringKeysDict
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
 
-SUBJECT_FILE_CHAT_PATCH = 'patch'
+SUBJECT_FILE_CHAT_PATCH = "patch"
 
 
 class FileChatSubject(AbstractChatSubject):
@@ -33,7 +33,7 @@ class FileChatSubject(AbstractChatSubject):
         self,
         user_input_split: StringKeysDict,
         identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        identity_parameters: StringKeysDict,
     ) -> Optional[str]:
         embedding_function = self.assistant.get_model(
             MODEL_NAME_OPEN_AI_GPT_4

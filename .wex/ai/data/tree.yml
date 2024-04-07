@@ -240,6 +240,11 @@ children:
                       file_chat_subject.py:
                         type: file
                     type: dir
+                  utils:
+                    children:
+                      identities.py:
+                        type: file
+                    type: dir
                 type: dir
               crawler:
                 children:

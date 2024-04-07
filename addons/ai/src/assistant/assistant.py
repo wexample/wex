@@ -4,7 +4,9 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb  # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders.parsers.language.language_parser import Language  # type: ignore
+from langchain_community.document_loaders.parsers.language.language_parser import (
+    Language,
+)  # type: ignore
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
@@ -15,6 +17,13 @@ from prompt_toolkit.document import Document as ToolkitDocument
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+from addons.ai.src.assistant.utils.identities import (
+    AI_IDENTITY_CODE_FILE_PATCHER,
+    AI_IDENTITY_COMMAND_SELECTOR,
+    AI_IDENTITY_DEFAULT,
+    AI_IDENTITY_FILE_INSPECTION,
+    AI_IDENTITY_TOOLS_AGENT,
+)
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
 from addons.ai.src.model.open_ai_model import (
@@ -24,8 +33,6 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from addons.ai.src.assistant.utils.identities import AI_IDENTITY_DEFAULT, AI_IDENTITY_CODE_FILE_PATCHER, \
-    AI_IDENTITY_COMMAND_SELECTOR, AI_IDENTITY_FILE_INSPECTION, AI_IDENTITY_TOOLS_AGENT
 from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
@@ -77,16 +84,13 @@ class Assistant(KernelChild):
         self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
-                self.kernel,
-                MODEL_NAME_OLLAMA_MISTRAL
+                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
             ),
             MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self.kernel,
-                MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
             ),
             MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
-                self.kernel,
-                MODEL_NAME_OPEN_AI_GPT_4
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
             ),
         }
 
@@ -347,7 +351,9 @@ class Assistant(KernelChild):
 
         return None
 
-    def vector_create_text_splitter(self, file_path: str) -> RecursiveCharacterTextSplitter:
+    def vector_create_text_splitter(
+        self, file_path: str
+    ) -> RecursiveCharacterTextSplitter:
         language = self.vector_find_language_by_extension(file_get_extension(file_path))
 
         if language:
@@ -361,7 +367,9 @@ class Assistant(KernelChild):
             self.log(f"Splitter : default")
             return RecursiveCharacterTextSplitter()
 
-    def vector_create_file_chunks(self, file_path: str, file_signature: str) -> List[Document]:
+    def vector_create_file_chunks(
+        self, file_path: str, file_signature: str
+    ) -> List[Document]:
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
         collection = self.chroma.get_or_create_collection("single_files")
@@ -382,8 +390,7 @@ class Assistant(KernelChild):
         loader.load()
 
         chunks = cast(
-            List[Document],
-            loader.load_and_split(text_splitter=text_splitter)
+            List[Document], loader.load_and_split(text_splitter=text_splitter)
         )
 
         # Ensuring metadata is correctly attached to each chunk.
@@ -459,14 +466,15 @@ class Assistant(KernelChild):
             return [{"command": "exit", "input": None}]
 
         # Escape command patterns for regex matching
-        command_patterns = '|'.join(re.escape(cmd) for cmd in self.commands.keys())
+        command_patterns = "|".join(re.escape(cmd) for cmd in self.commands.keys())
         matches = list(re.finditer(command_patterns, user_input))
 
         results: List[StringKeysDict] = []
 
         # Iterate over all matches
         for i, match in enumerate(matches):
-            command = match.group()[1:]  # Remove the '/' at the beginning of the command
+            # Remove the '/' at the beginning of the command
+            command = match.group()[1:]
             start = match.end()  # Start index for the input text following the command
 
             # If there is a next command, end index is the start of the next command; else, end of the string
@@ -484,9 +492,7 @@ class Assistant(KernelChild):
             results.append({"command": command, "input": command_input})
 
         if len(results) == 0:
-            return [
-                {"command": None, "input": user_input}
-            ]
+            return [{"command": None, "input": user_input}]
         return results
 
     def chat(
@@ -505,10 +511,7 @@ class Assistant(KernelChild):
                     user_input = initial_prompt
                     initial_prompt = None
                 else:
-                    user_input = prompt_tool(
-                        ">>> ",
-                        completer=self.completer
-                    )
+                    user_input = prompt_tool(">>> ", completer=self.completer)
 
                 user_input_splits = self.split_user_input_commands(user_input)
                 result: Optional[str] = None
@@ -537,7 +540,7 @@ class Assistant(KernelChild):
                         result = self.subject.process_user_input(
                             user_input_split,
                             self.identities[identity_name],
-                            identity_parameters
+                            identity_parameters,
                         )
 
                     if result:

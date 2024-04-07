@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class AbstractChatSubject(KernelChild):
-    def __init__(self, assistant: "Assistant"):
+    def __init__(self, assistant: "Assistant") -> None:
         super().__init__(assistant.kernel)
 
         self.assistant = assistant
@@ -25,6 +25,6 @@ class AbstractChatSubject(KernelChild):
         self,
         user_input_split: StringKeysDict,
         identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        identity_parameters: StringKeysDict,
     ) -> Optional[str]:
         return None

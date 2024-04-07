@@ -13,7 +13,7 @@ class DefaultSubject(AbstractChatSubject):
         self,
         user_input_split: StringKeysDict,
         identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        identity_parameters: StringKeysDict,
     ) -> Optional[str]:
         self.assistant.log("...")
 
