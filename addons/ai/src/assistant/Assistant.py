@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Dict, Optional, cast
+from typing import TYPE_CHECKING, Dict, Optional, cast, List
 
 import chromadb
 from langchain_community.document_loaders.parsers.language.language_parser import Language
@@ -46,8 +46,9 @@ CHAT_ACTIONS_TRANSLATIONS = {
 
 AI_IDENTITY_DEFAULT = "default"
 AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
-AI_IDENTITY_FILE_INSPECTION = "file_inspection"
 AI_IDENTITY_COMMAND_SELECTOR = "command_selector"
+AI_IDENTITY_FILE_INSPECTION = "file_inspection"
+AI_IDENTITY_TOOLS_AGENT = "tools_agent"
 
 AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
@@ -112,7 +113,7 @@ class Assistant(KernelChild):
     def _init_tools(self):
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
-        self.tools = []
+        self.tools: List[CommandTool] = []
 
         for command_name in all_commands:
             properties = all_commands[command_name]["properties"]
@@ -149,7 +150,7 @@ class Assistant(KernelChild):
                           "\n"
                           "\n{context}"
             },
-            "test_agent": {
+            AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
                           "\n\n{tools}\n\nUse the following format:"
                           "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
@@ -495,13 +496,13 @@ class Assistant(KernelChild):
                     return None
                 elif user_input_lower.startswith("/command"):
                     result = self.choose(
-                        user_input.replace("/run_tool", "")
+                        user_input.replace("/command", "")
                     )
                 elif user_input_lower.startswith("/tool"):
                     result = self.get_model().chat_agent(
-                        user_input.replace("/run_tool", ""),
+                        user_input.replace("/tool", ""),
                         self.tools,
-                        self.identities["test_agent"]
+                        self.identities[AI_IDENTITY_TOOLS_AGENT]
                     )
                 elif user_input_lower == "/talk_about_file":
                     return CHAT_ACTION_FREE_TALK_FILE
@@ -541,9 +542,10 @@ class Assistant(KernelChild):
                             identity_parameters or {}
                         )
 
-                # Let a new line separator
-                self.kernel.io.print(COLOR_RESET)
-                self.kernel.io.print(result)
+                if result:
+                    # Let a new line separator
+                    self.kernel.io.print(COLOR_RESET)
+                    self.kernel.io.print(result)
             except KeyboardInterrupt:
                 # User asked to quit
                 if not ai_working:
