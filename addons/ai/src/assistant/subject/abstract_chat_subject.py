@@ -1,12 +1,30 @@
 from abc import abstractmethod
+from typing import Optional, TYPE_CHECKING
 
+from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
+
+if TYPE_CHECKING:
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class AbstractChatSubject(KernelChild):
+    def __init__(self, assistant: "Assistant"):
+        super().__init__(assistant.kernel)
+
+        self.assistant = assistant
+
     @abstractmethod
     def name(self) -> str:
         pass
 
     def introduce(self) -> str:
         return self.name()
+
+    def process_user_input(
+        self,
+        user_input_split: StringKeysDict,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict
+    ) -> Optional[str]:
+        return None

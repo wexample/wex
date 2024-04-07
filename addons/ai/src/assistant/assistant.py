@@ -1,4 +1,5 @@
 import os
+import re
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb  # type: ignore
@@ -23,7 +24,9 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from src.const.globals import COLOR_GRAY, COLOR_RESET
+from addons.ai.src.assistant.utils.identities import AI_IDENTITY_DEFAULT, AI_IDENTITY_CODE_FILE_PATCHER, \
+    AI_IDENTITY_COMMAND_SELECTOR, AI_IDENTITY_FILE_INSPECTION, AI_IDENTITY_TOOLS_AGENT
+from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge, dict_sort_values
@@ -44,12 +47,6 @@ CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_FREE_TALK: "Free Talk",
 }
 
-AI_IDENTITY_DEFAULT = "default"
-AI_IDENTITY_CODE_FILE_PATCHER = "code_file_patcher"
-AI_IDENTITY_COMMAND_SELECTOR = "command_selector"
-AI_IDENTITY_FILE_INSPECTION = "file_inspection"
-AI_IDENTITY_TOOLS_AGENT = "tools_agent"
-
 AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
 AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_logo"
@@ -62,6 +59,7 @@ class Assistant(KernelChild):
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
         super().__init__(kernel)
 
+        self.ai_working = False
         self.default_model = default_model
 
         prompt_progress_steps(
@@ -98,10 +96,10 @@ class Assistant(KernelChild):
         self.commands = {
             "/command": "Ask to pick a command (beta).",
             "/exit": "quit.",
+            "/help": "display this message again.",
             "/menu": "show menu.",
             "/talk_about_file": "talk about a specific file.",
             "/tool": "Ask to play a tool (beta).",
-            "/?": "display this message again.",
         }
 
         self.completer = AssistantChatCompleter(list(self.commands.keys()))
@@ -174,7 +172,7 @@ class Assistant(KernelChild):
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
     def set_default_subject(self) -> None:
-        self.set_subject(DefaultSubject(self.kernel))
+        self.set_subject(DefaultSubject(self))
 
     def set_subject(self, subject: AbstractChatSubject) -> None:
         self.log("Setting subject : " + subject.introduce())
@@ -253,7 +251,7 @@ class Assistant(KernelChild):
 
     def set_subject_file(self, full_path: str) -> None:
         self.vector_store_file(full_path)
-        self.set_subject(FileChatSubject(full_path, self.kernel))
+        self.set_subject(FileChatSubject(self, full_path))
 
     def vector_delete_file(self, file_path: str) -> None:
         collection = self.chroma.get_or_create_collection("single_files")
@@ -437,7 +435,7 @@ class Assistant(KernelChild):
 
     def show_help(self) -> None:
         for command, description in self.commands.items():
-            self.log(f"Type '{command}' to {description}")
+            self.log(f"{command}\n    {description}")
 
     def choose(self, user_input: str) -> Optional[str]:
         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
@@ -455,89 +453,100 @@ class Assistant(KernelChild):
 
         return None
 
+    def split_user_input_commands(self, user_input: str) -> List[StringKeysDict]:
+        user_input_lower = user_input.strip().lower()
+        if user_input_lower == "exit":
+            return [{"command": "exit", "input": None}]
+
+        # Escape command patterns for regex matching
+        command_patterns = '|'.join(re.escape(cmd) for cmd in self.commands.keys())
+        matches = list(re.finditer(command_patterns, user_input))
+
+        results: List[StringKeysDict] = []
+
+        # Iterate over all matches
+        for i, match in enumerate(matches):
+            command = match.group()[1:]  # Remove the '/' at the beginning of the command
+            start = match.end()  # Start index for the input text following the command
+
+            # If there is a next command, end index is the start of the next command; else, end of the string
+            if i + 1 < len(matches):
+                end = matches[i + 1].start()
+            else:
+                end = len(user_input)
+
+            # Extract the input text corresponding to the command, or None if empty
+            command_input = user_input[start:end].strip()
+            if command_input == "":
+                command_input = None
+
+            # Append the command and its input to the results
+            results.append({"command": command, "input": command_input})
+
+        if len(results) == 0:
+            return [
+                {"command": None, "input": user_input}
+            ]
+        return results
+
     def chat(
         self,
         initial_prompt: Optional[str] = None,
-        identity: str = AI_IDENTITY_DEFAULT,
+        identity_name: str = AI_IDENTITY_DEFAULT,
         identity_parameters: Optional[StringKeysDict] = None,
     ) -> Optional[str]:
         self.show_help()
 
         while True:
-            ai_working = False
+            self.ai_working = False
 
             try:
-                if not initial_prompt:
-                    user_input = prompt_tool(">>> ", completer=self.completer)
-                    user_input_lower = user_input.strip().lower()
-                else:
-                    user_input = user_input_lower = initial_prompt
+                if initial_prompt:
+                    user_input = initial_prompt
                     initial_prompt = None
+                else:
+                    user_input = prompt_tool(
+                        ">>> ",
+                        completer=self.completer
+                    )
 
+                user_input_splits = self.split_user_input_commands(user_input)
                 result: Optional[str] = None
 
-                if user_input_lower == "/exit" or user_input_lower == "exit":
-                    return CHAT_ACTION_EXIT
-                elif user_input_lower == "/menu":
-                    return None
-                elif user_input_lower.startswith("/command"):
-                    result = self.choose(user_input.replace("/command", ""))
-                elif user_input_lower.startswith("/tool"):
-                    result = self.get_model().chat_agent(
-                        user_input.replace("/tool", ""),
-                        self.tools,
-                        self.identities[AI_IDENTITY_TOOLS_AGENT],
-                    )
-                elif user_input_lower == "/talk_about_file":
-                    self.set_selected_subject_file(os.getcwd())
-                elif user_input_lower in ["/help", "/?"]:
-                    self.show_help()
-                else:
-                    self.log("..")
+                for user_input_split in user_input_splits:
+                    command = user_input_split["command"]
+                    user_input_lower = user_input.strip().lower()
 
-                    self.kernel.io.print(COLOR_GRAY, end="")
-                    ai_working = True
-
-                    # Talk about a file
-                    if isinstance(self.subject, FileChatSubject):
-                        embedding_function = self.get_model(
-                            MODEL_NAME_OPEN_AI_GPT_4
-                        ).create_embeddings()
-                        chroma = Chroma(
-                            persist_directory=self.chroma_path,
-                            embedding_function=embedding_function,
-                            collection_name="single_files",
+                    if command == "exit":
+                        return CHAT_ACTION_EXIT
+                    elif command == "menu":
+                        return None
+                    elif command == "command":
+                        result = self.choose(user_input_split["input"])
+                    elif user_input_lower.startswith("/tool"):
+                        result = self.get_model().chat_agent(
+                            user_input_split["input"],
+                            self.tools,
+                            self.identities[AI_IDENTITY_TOOLS_AGENT],
                         )
-
-                        results = chroma.similarity_search_with_relevance_scores(
-                            user_input, k=3, filter={"source": self.subject.get_path()}
-                        )
-
-                        result = self.get_model().chat(
-                            user_input,
-                            self.identities[AI_IDENTITY_FILE_INSPECTION],
-                            identity_parameters
-                            or {
-                                "context": "\n\n---\n\n".join(
-                                    [doc.page_content for doc, _score in results]
-                                )
-                            },
-                        )
-                    # Default chatting
+                    elif command == "talk_about_file":
+                        self.set_selected_subject_file(os.getcwd())
+                    elif command in ["help", "?"]:
+                        self.show_help()
                     else:
-                        result = self.get_model().chat(
-                            user_input,
-                            self.identities[identity],
-                            identity_parameters or {},
+                        result = self.subject.process_user_input(
+                            user_input_split,
+                            self.identities[identity_name],
+                            identity_parameters
                         )
 
-                if result:
-                    # Let a new line separator
-                    self.kernel.io.print(COLOR_RESET)
-                    self.kernel.io.print(result)
+                    if result:
+                        # Let a new line separator
+                        self.kernel.io.print(COLOR_RESET)
+                        self.kernel.io.print(result)
             except KeyboardInterrupt:
                 # User asked to quit
-                if not ai_working:
+                if not self.ai_working:
                     return CHAT_ACTION_EXIT
                 # User asked to interrupt assistant.
                 else:
