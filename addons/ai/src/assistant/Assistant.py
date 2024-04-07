@@ -96,12 +96,16 @@ class Assistant(KernelChild):
         self.set_model(self.default_model)
 
     def _init_completer(self):
-        self.completer = AssistantChatCompleter([
-            "/exit",
-            "/menu",
-            "/talk_about_file",
-            "/?",
-        ])
+        self.commands = {
+            "/exit": "quit.",
+            "/menu": "show menu.",
+            "/talk_about_file": "talk about a specific file.",
+            "/?": "display this message again.",
+        }
+
+        self.completer = AssistantChatCompleter(
+            list(self.commands.keys())
+        )
 
     def _init_tools(self):
         # Create tools
@@ -433,9 +437,8 @@ class Assistant(KernelChild):
         return str(action) if action else None
 
     def show_help(self) -> None:
-        self.log("Type '/exit' to quit.")
-        self.log("Type '/help' or '/?' to display this message again.")
-        self.log("Type '/menu' to show menu.")
+        for command, description in self.commands.items():
+            self.log(f"Type '{command}' to {description}")
 
     def choose(self, user_input: str):
         """
