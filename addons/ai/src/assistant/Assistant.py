@@ -97,10 +97,11 @@ class Assistant(KernelChild):
 
     def _init_completer(self):
         self.commands = {
+            "/command": "Ask to pick a command (legacy).",
             "/exit": "quit.",
             "/menu": "show menu.",
             "/talk_about_file": "talk about a specific file.",
-            "/tool": "Ask to play a tool.",
+            "/tool": "Ask to play a tool (legacy).",
             "/?": "display this message again.",
         }
 
@@ -454,22 +455,18 @@ class Assistant(KernelChild):
             self.log(f"Type '{command}' to {description}")
 
     def choose(self, user_input: str):
-        """
-        Legacy, must be reassigned.
-        """
-
-        # Enforce model for this task
-        return self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+        selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
             user_input,
             [
-                AI_COMMAND_DISPLAY_CURRENT_FILES_LIST,
-                AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO,
                 AI_COMMAND_DISPLAY_A_CUCUMBER,
-                AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE,
                 None,
             ],
             self.identities[AI_IDENTITY_COMMAND_SELECTOR]
         )
+
+        # Demo usage
+        if selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
+            return "🥒"
 
     def chat(
         self,
@@ -492,13 +489,15 @@ class Assistant(KernelChild):
 
                 result: Optional[str] = None
 
-                print(user_input_lower)
-
                 if user_input_lower == "/exit" or user_input_lower == "exit":
                     return CHAT_ACTION_EXIT
                 elif user_input_lower == "/menu":
                     return None
-                elif user_input_lower.startswith("/run_tool"):
+                elif user_input_lower.startswith("/command"):
+                    result = self.choose(
+                        user_input.replace("/run_tool", "")
+                    )
+                elif user_input_lower.startswith("/tool"):
                     result = self.get_model().chat_agent(
                         user_input.replace("/run_tool", ""),
                         self.tools,
@@ -568,4 +567,3 @@ class AssistantChatCompleter(Completer):
         for command in self.commands:
             if command.startswith(word_before_cursor):
                 yield Completion(command + ' ', start_position=-len(word_before_cursor))
-
