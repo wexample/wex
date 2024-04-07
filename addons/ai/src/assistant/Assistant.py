@@ -25,7 +25,7 @@ from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
-from src.helper.prompt import prompt_choice_dict
+from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
 
 if TYPE_CHECKING:
@@ -65,6 +65,21 @@ class Assistant(KernelChild):
     ) -> None:
         super().__init__(kernel)
 
+        self.default_model = default_model
+
+        prompt_progress_steps(
+            kernel,
+            [
+                self._init_models,
+                self._init_completer,
+                self._init_identities,
+                self._init_tools,
+                self._init_vector_database,
+                self._init_subject,
+            ],
+        )
+
+    def _init_models(self):
         self._model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
@@ -78,7 +93,9 @@ class Assistant(KernelChild):
             ),
         }
 
-        self.set_model(default_model)
+        self.set_model(self.default_model)
+
+    def _init_completer(self):
         self.completer = AssistantChatCompleter([
             "/exit",
             "/menu",
@@ -86,10 +103,28 @@ class Assistant(KernelChild):
             "/?",
         ])
 
+    def _init_tools(self):
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
         self.tools = []
 
+        for command_name in all_commands:
+            properties = all_commands[command_name]["properties"]
+
+            if "ai_tool" in properties and properties["ai_tool"]:
+                self.log(f"Loading tool {command_name}")
+
+                command_tool = CommandTool(
+                    kernel=self.kernel,
+                    name=command_name,
+                    description=all_commands[command_name]["description"],
+                )
+
+                self.tools.append(command_tool)
+
+        self.log(f"Loaded {len(self.tools)} tools")
+
+    def _init_identities(self):
         self.identities = {
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
@@ -110,21 +145,7 @@ class Assistant(KernelChild):
             }
         }
 
-        for command_name in all_commands:
-            properties = all_commands[command_name]["properties"]
-
-            if "ai_tool" in properties and properties["ai_tool"]:
-                self.log(f"Loading tool {command_name}")
-
-                command_tool = CommandTool(
-                    kernel=self.kernel,
-                    name=command_name,
-                    description=all_commands[command_name]["description"],
-                )
-
-                self.tools.append(command_tool)
-
-        self.log(f"Loaded {len(self.tools)} tools")
+    def _init_vector_database(self):
         manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
 
         if manager.is_valid_app():
@@ -135,6 +156,7 @@ class Assistant(KernelChild):
         self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
+    def _init_subject(self):
         self.set_default_subject()
 
     def set_default_subject(self):
