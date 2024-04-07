@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Optional, List
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
@@ -45,9 +45,7 @@ class AbstractModel(KernelChild):
         )
 
     def chat_merge_parameters(
-        self,
-        input: str,
-        identity_parameters: StringKeysDict
+        self, input: str, identity_parameters: StringKeysDict
     ) -> StringKeysDict:
         return dict_merge({"input": input}, identity_parameters or {})
 
@@ -55,15 +53,10 @@ class AbstractModel(KernelChild):
         return None
 
     def chat(
-        self,
-        input: str,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        self, input: str, identity: StringKeysDict, identity_parameters: StringKeysDict
     ) -> Any:
         chain = LLMChain(
-            llm=self.get_llm(),
-            prompt=self.chat_create_prompt(identity),
-            verbose=False
+            llm=self.get_llm(), prompt=self.chat_create_prompt(identity), verbose=False
         )
 
         return chain.invoke(self.chat_merge_parameters(input, identity_parameters))[
@@ -71,29 +64,17 @@ class AbstractModel(KernelChild):
         ].strip()
 
     def chat_agent(
-        self,
-        question: str,
-        tools: List[CommandTool],
-        identity: StringKeysDict
+        self, question: str, tools: List[CommandTool], identity: StringKeysDict
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
         prompt = self.chat_create_prompt(identity)
 
-        agent = create_react_agent(
-            self.get_llm(),
-            tools,
-            prompt=prompt
-        )
+        agent = create_react_agent(self.get_llm(), tools, prompt=prompt)
 
-        agent_executor = AgentExecutor(
-            agent=agent,
-            tools=tools,
-            verbose=True)
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-        return agent_executor.invoke(
-            {"input": question}
-        )["output"]
+        return agent_executor.invoke({"input": question})["output"]
 
     @abstractmethod
     def choose_command(

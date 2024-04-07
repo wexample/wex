@@ -3,4 +3,4 @@ from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSu
 
 class DefaultSubject(AbstractChatSubject):
     def name(self) -> str:
-        return 'default'
+        return "default"

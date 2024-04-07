@@ -1,4 +1,4 @@
-from typing import Any, Optional, List
+from typing import Any, List, Optional
 
 from dotenv import dotenv_values
 from langchain.chains import create_tagging_chain
@@ -20,12 +20,7 @@ class OpenAiModel(AbstractModel):
         if not self.api_key:
             self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
 
-        self.set_llm(
-            ChatOpenAI(
-                api_key=self.api_key,
-                model_name=self.name
-            )
-        )
+        self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))
 
     def choose_command(
         self,
@@ -36,21 +31,26 @@ class OpenAiModel(AbstractModel):
         """
         The tagging mechanism works well on GPT4 only.
         """
-        chain = create_tagging_chain({
-            "properties": {
-                "command": {
-                    "type": "string",
-                    "enum": commands,
-                    "description": identity["system"],
+        chain = create_tagging_chain(
+            {
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "enum": commands,
+                        "description": identity["system"],
+                    },
                 },
             },
-        }, self.get_llm())
+            self.get_llm(),
+        )
 
         response = chain.invoke({"input": input})
 
-        return response["text"]["command"] \
-            if "text" in response and response["text"]["command"] != "None" \
+        return (
+            response["text"]["command"]
+            if "text" in response and response["text"]["command"] != "None"
             else None
+        )
 
     def create_embeddings(self) -> Any:
         return OpenAIEmbeddings(openai_api_key=self.api_key)

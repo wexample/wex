@@ -1,8 +1,10 @@
 import os
-from typing import TYPE_CHECKING, Dict, Optional, cast, List
+from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 import chromadb
-from langchain_community.document_loaders.parsers.language.language_parser import Language
+from langchain_community.document_loaders.parsers.language.language_parser import (
+    Language,
+)
 from langchain_community.vectorstores.chroma import Chroma
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import Completer, Completion
@@ -56,11 +58,7 @@ AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_langu
 class Assistant(KernelChild):
     subject: Optional[AbstractChatSubject] = None
 
-    def __init__(
-        self,
-        kernel: "Kernel",
-        default_model: str
-    ) -> None:
+    def __init__(self, kernel: "Kernel", default_model: str) -> None:
         super().__init__(kernel)
 
         self.default_model = default_model
@@ -103,9 +101,7 @@ class Assistant(KernelChild):
             "/?": "display this message again.",
         }
 
-        self.completer = AssistantChatCompleter(
-            list(self.commands.keys())
-        )
+        self.completer = AssistantChatCompleter(list(self.commands.keys()))
 
     def _init_tools(self):
         # Create tools
@@ -133,32 +129,32 @@ class Assistant(KernelChild):
             AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a helpful AI bot."
-                          "\nNow we are talking about this file : {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_________________________________________End of file info"
+                "\nNow we are talking about this file : {file_full_path}"
+                "\n_______________________________________File metadata"
+                "\nCreation Date: {file_creation_date}"
+                "\nFile Size: {file_size} bytes"
+                "\n_________________________________________End of file info"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Return one command name, but only if could help answer user message, None instead"
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Answer the question based only on the following context:"
-                          "\n"
-                          "\n{context}"
+                "\n"
+                "\n{context}"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
-                          "\n\n{tools}\n\nUse the following format:"
-                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
-                          "\nAction: the action to take, should be one of [{tool_names}]"
-                          "\nAction Input: the input to the action\nObservation: the result of the action"
-                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
-                          "\nFinal Answer: the final answer to the original input question"
-                          "\n\nBegin!"
-                          "\n\nQuestion: {input}"
-                          "\nThought:{agent_scratchpad}"
-            }
+                "\n\n{tools}\n\nUse the following format:"
+                "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
+                "\nAction: the action to take, should be one of [{tool_names}]"
+                "\nAction Input: the input to the action\nObservation: the result of the action"
+                "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
+                "\nFinal Answer: the final answer to the original input question"
+                "\n\nBegin!"
+                "\n\nQuestion: {input}"
+                "\nThought:{agent_scratchpad}"
+            },
         }
 
     def _init_vector_database(self):
@@ -167,7 +163,9 @@ class Assistant(KernelChild):
         if manager.is_valid_app():
             self.chroma_path = manager.get_env_dir("ai/embeddings", create=True)
         else:
-            self.chroma_path = self.kernel.get_or_create_path("tmp") + "ai/embeddings" + os.sep
+            self.chroma_path = (
+                self.kernel.get_or_create_path("tmp") + "ai/embeddings" + os.sep
+            )
 
         self.log(f"Embedding path is {self.chroma_path}")
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
@@ -177,12 +175,12 @@ class Assistant(KernelChild):
 
     def set_default_subject(self):
         if self.subject:
-            self.log('Leaving subject : ' + self.subject.introduce())
+            self.log("Leaving subject : " + self.subject.introduce())
 
         self.set_subject(DefaultSubject(self.kernel))
 
     def set_subject(self, subject: AbstractChatSubject):
-        self.log('Setting subject : ' + subject.introduce())
+        self.log("Setting subject : " + subject.introduce())
         self.subject = subject
 
     def log(self, message: str) -> None:
@@ -277,29 +275,30 @@ class Assistant(KernelChild):
         # Dynamically determine the loader based on file extension
         extension = file_get_extension(file_path)
 
-        if extension == 'md':
+        if extension == "md":
             self.log(f"Loader : Markdown")
             from langchain_community.document_loaders import UnstructuredMarkdownLoader
+
             return UnstructuredMarkdownLoader(file_path)
-        elif extension == 'csv':
+        elif extension == "csv":
             self.log(f"Loader : CSV")
             from langchain_community.document_loaders.csv_loader import CSVLoader
+
             return CSVLoader(file_path)
-        elif extension == 'html':
+        elif extension == "html":
             self.log(f"Loader : HTML")
             from langchain_community.document_loaders import UnstructuredHTMLLoader
+
             return UnstructuredHTMLLoader(file_path)
-        elif extension == 'json':
+        elif extension == "json":
             self.log(f"Loader : JSON")
             from langchain_community.document_loaders import JSONLoader
-            return JSONLoader(
-                file_path=file_path,
-                jq_schema='.',
-                text_content=False
-            )
-        elif extension == 'pdf':
+
+            return JSONLoader(file_path=file_path, jq_schema=".", text_content=False)
+        elif extension == "pdf":
             self.log(f"Loader : PDF")
             from langchain_community.document_loaders import PyPDFLoader
+
             return PyPDFLoader(file_path=file_path)
         else:
             language = self.vector_find_language_by_extension(
@@ -308,21 +307,21 @@ class Assistant(KernelChild):
 
             if language:
                 from langchain_community.document_loaders.generic import GenericLoader
-                from langchain_community.document_loaders.parsers.language import LanguageParser
+                from langchain_community.document_loaders.parsers.language import (
+                    LanguageParser,
+                )
 
                 self.log(f"Loader : {language}")
 
                 return GenericLoader.from_filesystem(
                     file_path,
-                    parser=LanguageParser(
-                        language=language,
-                        parser_threshold=1000
-                    )
+                    parser=LanguageParser(language=language, parser_threshold=1000),
                 )
 
             self.log("Loader : default")
 
             from langchain_community.document_loaders import TextLoader
+
             # Fallback to a generic text loader if file type is not specifically handled
             return TextLoader(file_path)
 
@@ -343,7 +342,7 @@ class Assistant(KernelChild):
             "ruby": ["rb"],  # Ruby (*)
             "rust": ["rs"],  # Rust (*)
             "scala": ["scala"],  # Scala (*)
-            "typescript": ["ts"]  # TypeScript (*)
+            "typescript": ["ts"],  # TypeScript (*)
         }
 
         for language, extensions in extensions_map.items():
@@ -355,9 +354,7 @@ class Assistant(KernelChild):
     def vector_create_text_splitter(self, file_path: str):
         from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-        language = self.vector_find_language_by_extension(
-            file_get_extension(file_path)
-        )
+        language = self.vector_find_language_by_extension(file_get_extension(file_path))
 
         if language:
             self.log(f"Splitter : {language}")
@@ -367,9 +364,7 @@ class Assistant(KernelChild):
             )
 
             return RecursiveCharacterTextSplitter.from_language(
-                language=cast(Language, language),
-                chunk_size=50,
-                chunk_overlap=0
+                language=cast(Language, language), chunk_size=50, chunk_overlap=0
             )
         else:
             self.log(f"Splitter : default")
@@ -381,8 +376,7 @@ class Assistant(KernelChild):
         collection = self.chroma.get_or_create_collection("single_files")
 
         results = collection.get(
-            where={"signature": file_signature},
-            include=["metadatas"]
+            where={"signature": file_signature}, include=["metadatas"]
         )
 
         if len(results["ids"]) > 0:
@@ -399,7 +393,7 @@ class Assistant(KernelChild):
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
-            chunk.metadata = {'signature': file_signature, "source": file_path}
+            chunk.metadata = {"signature": file_signature, "source": file_path}
 
         return chunks
 
@@ -416,7 +410,7 @@ class Assistant(KernelChild):
             chunks,
             self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
             collection_name="single_files",
-            persist_directory=self.chroma_path
+            persist_directory=self.chroma_path,
         )
         chroma.persist()
         self.log("Document stored successfully.")
@@ -453,7 +447,7 @@ class Assistant(KernelChild):
                 AI_COMMAND_DISPLAY_A_CUCUMBER,
                 None,
             ],
-            self.identities[AI_IDENTITY_COMMAND_SELECTOR]
+            self.identities[AI_IDENTITY_COMMAND_SELECTOR],
         )
 
         # Demo usage
@@ -486,14 +480,12 @@ class Assistant(KernelChild):
                 elif user_input_lower == "/menu":
                     return None
                 elif user_input_lower.startswith("/command"):
-                    result = self.choose(
-                        user_input.replace("/command", "")
-                    )
+                    result = self.choose(user_input.replace("/command", ""))
                 elif user_input_lower.startswith("/tool"):
                     result = self.get_model().chat_agent(
                         user_input.replace("/tool", ""),
                         self.tools,
-                        self.identities[AI_IDENTITY_TOOLS_AGENT]
+                        self.identities[AI_IDENTITY_TOOLS_AGENT],
                     )
                 elif user_input_lower == "/talk_about_file":
                     self.set_selected_subject_file(os.getcwd())
@@ -507,30 +499,35 @@ class Assistant(KernelChild):
 
                     # Talk about a file
                     if isinstance(self.subject, FileChatSubject):
-                        embedding_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings()
+                        embedding_function = self.get_model(
+                            MODEL_NAME_OPEN_AI_GPT_4
+                        ).create_embeddings()
                         chroma = Chroma(
                             persist_directory=self.chroma_path,
                             embedding_function=embedding_function,
-                            collection_name="single_files")
+                            collection_name="single_files",
+                        )
 
                         results = chroma.similarity_search_with_relevance_scores(
-                            user_input,
-                            k=3,
-                            filter={'source': self.subject.get_path()})
+                            user_input, k=3, filter={"source": self.subject.get_path()}
+                        )
 
                         result = self.get_model().chat(
                             user_input,
                             self.identities[AI_IDENTITY_FILE_INSPECTION],
-                            identity_parameters or {
-                                "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-                            }
+                            identity_parameters
+                            or {
+                                "context": "\n\n---\n\n".join(
+                                    [doc.page_content for doc, _score in results]
+                                )
+                            },
                         )
                     # Default chatting
                     else:
                         result = self.get_model().chat(
                             user_input,
                             self.identities[identity],
-                            identity_parameters or {}
+                            identity_parameters or {},
                         )
 
                 if result:
@@ -554,9 +551,9 @@ class AssistantChatCompleter(Completer):
         word_before_cursor = document.get_word_before_cursor(WORD=True)
 
         # Previous word was a space
-        if word_before_cursor == '':
+        if word_before_cursor == "":
             return
 
         for command in self.commands:
             if command.startswith(word_before_cursor):
-                yield Completion(command + ' ', start_position=-len(word_before_cursor))
+                yield Completion(command + " ", start_position=-len(word_before_cursor))

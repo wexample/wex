@@ -32,6 +32,22 @@ children:
                 status: hidden
                 type: file
             type: dir
+          embeddings:
+            children:
+              6347ad15-e001-49c8-b04b-0b3f2fba63b4:
+                children:
+                  data_level0.bin:
+                    type: file
+                  header.bin:
+                    type: file
+                  length.bin:
+                    type: file
+                  link_lists.bin:
+                    type: file
+                type: dir
+              chroma.sqlite3:
+                type: file
+            type: dir
         type: dir
       backup:
         children:
@@ -106,6 +122,8 @@ children:
             children:
               talk:
                 children:
+                  about_file.py:
+                    type: file
                   ask.py:
                     type: file
                 type: dir
@@ -209,32 +227,41 @@ children:
             children:
               assistant:
                 children:
-                  AppAssistant.py:
+                  app_assistant.py:
                     type: file
-                  Assistant.py:
+                  assistant.py:
                     type: file
+                  subject:
+                    children:
+                      abstract_chat_subject.py:
+                        type: file
+                      default_chat_subject.py:
+                        type: file
+                      file_chat_subject.py:
+                        type: file
+                    type: dir
                 type: dir
               crawler:
                 children:
-                  AppCrawler.py:
+                  app_crawler.py:
                     type: file
-                  PythonAppCrawler.py:
+                  python_app_crawler.py:
                     type: file
-                  WexAppCrawler.py:
+                  wex_app_crawler.py:
                     type: file
                 type: dir
               model:
                 children:
-                  AbstractModel.py:
+                  abstract_model.py:
                     type: file
-                  OllamaModel.py:
+                  ollama_model.py:
                     type: file
-                  OpenAiModel.py:
+                  open_ai_model.py:
                     type: file
                 type: dir
               tool:
                 children:
-                  CommandTool.py:
+                  command_tool.py:
                     type: file
                 type: dir
             type: dir
@@ -244,6 +271,8 @@ children:
                 children:
                   talk:
                     children:
+                      about_file.py:
+                        type: file
                       ask.py:
                         type: file
                     type: dir
@@ -2710,6 +2739,33 @@ children:
         children:
           config_bash:
             type: file
+          csv:
+            children:
+              simple.csv:
+                type: file
+            type: dir
+          html:
+            children:
+              simple.html:
+                type: file
+            type: dir
+          json:
+            children:
+              simple.json:
+                type: file
+            type: dir
+          md:
+            children:
+              simple.md:
+                type: file
+            type: dir
+          pdf:
+            children:
+              no-text.pdf:
+                type: file
+              simple.pdf:
+                type: file
+            type: dir
         type: dir
       test_core.py:
         type: file

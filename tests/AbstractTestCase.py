@@ -11,8 +11,8 @@ from src.const.types import (
     StringKeysDict,
     StringsDict,
 )
-from src.core.TestKernel import TestKernel
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy
 
@@ -115,14 +115,10 @@ class AbstractTestCase(unittest.TestCase):
         return dest_dir
 
     def build_test_samples_path(self) -> str:
-        return os.path.join(
-            self.kernel.directory.path, "tests", "samples"
-        ) + os.sep
+        return os.path.join(self.kernel.directory.path, "tests", "samples") + os.sep
 
     def build_test_file(self, file_name: str) -> str:
-        src_file = os.path.join(
-            self.build_test_samples_path(), file_name
-        )
+        src_file = os.path.join(self.build_test_samples_path(), file_name)
         dst_file = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", file_name
         )

@@ -15,24 +15,21 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self.assertGreater(len(assistant.identities.values()), 1)
 
         test_ext = [
-            'csv',
-            'html',
-            'json',
-            'md',
-            'pdf',
+            "csv",
+            "html",
+            "json",
+            "md",
+            "pdf",
         ]
 
         for ext in test_ext:
-            sample_path = self.build_test_samples_path() + ext + '/simple.' + ext
+            sample_path = self.build_test_samples_path() + ext + "/simple." + ext
 
             chunks = assistant.vector_create_file_chunks(
-                file_path=sample_path,
-                file_signature=f"test-{ext}"
+                file_path=sample_path, file_signature=f"test-{ext}"
             )
 
-            self.assertTrue(
-                len(chunks) > 0
-            )
+            self.assertTrue(len(chunks) > 0)
 
     def _test_ask_formatting(self) -> None:
         message = chat_format_message(

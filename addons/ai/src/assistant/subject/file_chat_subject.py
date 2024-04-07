@@ -8,10 +8,10 @@ if TYPE_CHECKING:
 
 class FileChatSubject(AbstractChatSubject):
     def name(self) -> str:
-        return 'file'
+        return "file"
 
     def introduce(self) -> str:
-        return f'Chatting about file {self.get_path()}'
+        return f"Chatting about file {self.get_path()}"
 
     def __init__(self, file_path: str, kernel: "Kernel") -> None:
         super().__init__(kernel)
