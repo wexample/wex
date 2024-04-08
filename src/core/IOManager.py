@@ -48,7 +48,7 @@ class IOManager(KernelChild):
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
-        # Performance optimisation
+        # Performance optimisation as error function may not be called frequently
         import logging
 
         message = f"[ERROR] {string_format_ignore_missing(message, parameters)}"
@@ -60,14 +60,15 @@ class IOManager(KernelChild):
                 "ERROR", parameters or {}, logging.FATAL if fatal else logging.ERROR
             )
 
-        if trace or not self.kernel.tty:
+        if fatal or trace or not self.kernel.tty:
             from src.core.FatalError import FatalError
 
             raise FatalError(message)
             # Do not exit, allowing unit testing to catch error.
         else:
             self.print(message)
-            sys.exit(0)
+            if fatal:
+                sys.exit(1)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
