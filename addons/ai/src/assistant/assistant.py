@@ -39,6 +39,7 @@ from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
+from prompt_toolkit.key_binding import KeyBindings
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -89,6 +90,7 @@ class Assistant(KernelChild):
         prompt_progress_steps(
             kernel,
             [
+                self._init_prompt,
                 self._init_models,
                 self._init_commands,
                 self._init_identities,
@@ -96,6 +98,19 @@ class Assistant(KernelChild):
                 self._init_vector_database,
             ],
         )
+
+    def _init_prompt(self) -> None:
+        kb = KeyBindings()
+
+        @kb.add('escape', 'enter')
+        def _(event):
+            event.current_buffer.insert_text('\n')
+
+        @kb.add('enter')
+        def _(event):
+            event.current_buffer.validate_and_handle()
+
+        self.prompt_key_binding = kb
 
     def _init_models(self) -> None:
         self._model: Optional[AbstractModel] = None
@@ -166,7 +181,7 @@ class Assistant(KernelChild):
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "You are an AI specialized in generating Git patches based on user requests and source code. "
                           "\nYou analyze the code and the user's instructions to create a precise and concise patch."
-                          "\nStart only the diff at the 'hunk header' (@@ -X,Y +X,Y @@) and ignore previous lines.\n"
+                          "\nStart only the diff at the 'hunk header' (@@ -R,L +R,L @@) and ignore previous lines.\n"
                           "\nPlease take care of the specified lines numbers at the beginning of each line, we added it just for you.\n"
             },
             AI_IDENTITY_TOOLS_AGENT: {
@@ -550,7 +565,8 @@ class Assistant(KernelChild):
                     user_input = prompt_tool(
                         ">>> ",
                         completer=self.create_completer(),
-                        multiline=True
+                        multiline=True,
+                        key_bindings=self.prompt_key_binding
                     )
 
                 user_input_splits = self.split_user_input_commands(user_input)
