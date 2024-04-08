@@ -1,7 +1,7 @@
-diff --git a/addons/ai/examples/hello_world_capitalized/example.py b/addons/ai/examples/hello_world_capitalized/example.py
+diff --git a/file_name.py b/file_name.py
 index 1234567..abcdefg 100644
---- a/addons/ai/examples/hello_world_capitalized/example.py
-+++ b/addons/ai/examples/hello_world_capitalized/example.py
+--- a/file_name.py
++++ b/file_name.py
 @@ -1,2 +1,2 @@
  def my_program_main_function():
 -    return 'Hello World!'

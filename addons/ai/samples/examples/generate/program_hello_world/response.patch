@@ -1,7 +1,7 @@
-diff --git a/addons/ai/examples/generating/program_hello_world/response.py b/addons/ai/examples/generating/program_hello_world/response.py
+diff --git a/file_name.py b/file_name.py
 new file mode 100644
 --- /dev/null
-+++ b/addons/ai/examples/generating/program_hello_world/response.py
++++ b/file_name.py
 @@ -0,0 +1,2 @@
 +def print_hello_world() -> str:
 +    return 'Hello World!'

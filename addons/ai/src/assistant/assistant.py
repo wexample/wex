@@ -165,7 +165,8 @@ class Assistant(KernelChild):
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "You are an AI specialized in generating Git patches based on user requests and source code. "
-                          "You analyze the code and the user's instructions to create a precise and concise patch."
+                          "\nYou analyze the code and the user's instructions to create a precise and concise patch."
+                          "\nFile path is always located at root, i.e. : /file_name.ext"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
