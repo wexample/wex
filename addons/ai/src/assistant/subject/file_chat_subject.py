@@ -8,9 +8,11 @@ from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
+from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict, StringsList
 from src.helper.command import execute_command_sync
-from src.helper.file import file_read_if_exists, file_read, file_write, file_remove_file_if_exists
+from src.helper.file import file_read_if_exists, file_read, file_write, file_remove_file_if_exists, \
+    file_read_with_lines_numbers
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -91,13 +93,20 @@ class FileChatSubject(AbstractChatSubject):
                 verbose=False
             )
 
+            file_name = os.path.basename(path)
             identity_parameters.update({
-                "file_name": os.path.basename(path),
+                "file_name": file_name,
                 "question": user_input,
-                "source": file_read(path)
+                "source": file_read_with_lines_numbers(path)
             })
 
-            patch_content = chain.invoke(
+            patch_content = (f"diff --git a/{file_name} b/{file_name}"
+                             f"\nindex 1234567..abcdefg {git_file_get_octal_mode(path)}"
+                             f"\n--- a/{file_name}"
+                             f"\n+++ b/{file_name}"
+                             f"\n")
+
+            patch_content += chain.invoke(
                 model.chat_merge_parameters(user_input, identity_parameters)
             )["text"].strip() + os.linesep
 
@@ -158,6 +167,6 @@ class FileChatSubject(AbstractChatSubject):
         return {
             'file_name': "file_name.py",
             'question': file_read_if_exists(f'{base_path}question.txt'),
-            'source': file_read_if_exists(f'{base_path}source.py'),
+            'source': file_read_with_lines_numbers(f'{base_path}source.py'),
             'patch': file_read_if_exists(f'{base_path}response.patch'),
         }

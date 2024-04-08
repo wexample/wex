@@ -166,7 +166,8 @@ class Assistant(KernelChild):
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "You are an AI specialized in generating Git patches based on user requests and source code. "
                           "\nYou analyze the code and the user's instructions to create a precise and concise patch."
-                          "\nFile path is always located at root, i.e. : /file_name.ext"
+                          "\nStart only the diff at the 'hunk header' (@@ -X,Y +X,Y @@) and ignore previous lines.\n"
+                          "\nPlease take care of the specified lines numbers at the beginning of each line, we added it just for you.\n"
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
@@ -416,7 +417,9 @@ class Assistant(KernelChild):
         loader.load()
 
         chunks = cast(
-            List[Document], loader.load_and_split(text_splitter=text_splitter)
+            List[Document], text_splitter.split_documents(
+                loader.load()
+            )
         )
 
         # Ensuring metadata is correctly attached to each chunk.
