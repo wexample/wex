@@ -359,31 +359,3 @@ def file_build_signature(file_path: str) -> str:
     return f"{file_path}-{file_size}-{int(last_modified)}"
 
 
-def file_read_with_lines_numbers(file_path: str) -> Optional[str]:
-    """
-    Reads a file and prefixes each line with its line number.
-
-    :param file_path: Path to the file to be read.
-    :return: A string where each line from the original file is prefixed with its line number, or None if the file doesn't exist.
-    """
-    try:
-        # Open the file and read lines
-        with open(file_path, 'r') as file:
-            file_content_lines = file.readlines()
-    except FileNotFoundError:
-        # If the file does not exist, return None
-        return None
-
-    # Determine the number of digits in the largest line number for proper alignment
-    max_line_number = len(file_content_lines)
-    number_zone_spacing = len(str(max_line_number))
-
-    # Initialize an empty string to accumulate the result
-    formatted_content = ""
-    for i, line in enumerate(file_content_lines, start=1):  # Start counting lines from 1
-        # Format each line with its line number, ensuring proper alignment
-        # Strip the newline character from each line and add it back manually to avoid double newlines when joining
-        line_number = f"{i:>{number_zone_spacing}} | {line.rstrip()}\n"
-        formatted_content += line_number
-
-    return formatted_content

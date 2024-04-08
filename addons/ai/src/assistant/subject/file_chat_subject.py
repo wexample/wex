@@ -9,8 +9,8 @@ from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict, StringsList
 from src.helper.command import execute_command_sync
-from src.helper.file import file_read_if_exists, file_write, file_remove_file_if_exists, \
-    file_read_with_lines_numbers
+from src.helper.file import file_read_if_exists, file_write, file_remove_file_if_exists, file_read
+from src.helper.string import string_has_trailing_new_line, string_add_lines_numbers
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -57,6 +57,8 @@ class FileChatSubject(AbstractChatSubject):
             patch_path = path + '.patch'
             model = self.assistant.get_model()
             file_name = os.path.basename(path)
+            file_content = file_read(path)
+            file_content_with_numbers = string_add_lines_numbers(file_content)
             patch_content = \
                 (f"diff --git a/{file_name} b/{file_name}"
                  f"\nindex 1234567..abcdefg {git_file_get_octal_mode(path)}"
@@ -67,7 +69,7 @@ class FileChatSubject(AbstractChatSubject):
             identity_parameters.update({
                 "file_name": file_name,
                 "question": user_input,
-                "source": file_read_with_lines_numbers(path)
+                "source": file_content_with_numbers
             })
 
             patch_content += model.chat_with_few_shots(
@@ -85,6 +87,10 @@ class FileChatSubject(AbstractChatSubject):
                     self.load_example_patch('patch/hello_world_capitalized')
                 ]
             ) + os.linesep
+
+            # This notation is a patch standard
+            if not string_has_trailing_new_line(file_content):
+                patch_content = patch_content.rstrip() + "\n\\ No newline at end of file"
 
             file_write(patch_path, patch_content)
 
@@ -138,10 +144,11 @@ class FileChatSubject(AbstractChatSubject):
 
     def load_example_patch(self, name):
         base_path = f'{self.kernel.directory.path}addons/ai/samples/examples/{name}/'
+        source = file_read_if_exists(f'{base_path}source.py')
 
         return {
             'file_name': "file_name.py",
             'question': file_read_if_exists(f'{base_path}question.txt'),
-            'source': file_read_with_lines_numbers(f'{base_path}source.py'),
+            'source': string_add_lines_numbers(source) if source else None,
             'patch': file_read_if_exists(f'{base_path}response.patch'),
         }

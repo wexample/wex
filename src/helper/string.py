@@ -2,9 +2,9 @@ import os
 import random
 import re
 import shutil
-import string
 from typing import Mapping, Optional
 
+import string
 from src.const.types import BasicInlineValue, StringsDict, StringsMatch
 
 
@@ -50,7 +50,7 @@ def string_format_ignore_missing(
 def string_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
-        lines.append((" " * indent) + text[i : i + max_width])
+        lines.append((" " * indent) + text[i: i + max_width])
     return os.linesep.join(lines)
 
 
@@ -61,7 +61,7 @@ def string_multiline_center(text: str, width: int) -> str:
 
 def string_trim_leading(text: str, leading_text: str) -> str:
     if text.startswith(leading_text):
-        return text[len(leading_text) :]
+        return text[len(leading_text):]
     else:
         return text
 
@@ -158,3 +158,25 @@ def string_random_password(length: int = 64) -> str:
     random_string = "".join(random.choice(characters) for _ in range(length))
 
     return random_string
+
+
+def string_has_trailing_new_line(file_content) -> bool:
+    return file_content.endswith("\n")
+
+
+def string_add_lines_numbers(file_content: str) -> Optional[str]:
+    file_content_lines = file_content.split(os.linesep)
+
+    # Determine the number of digits in the largest line number for proper alignment
+    max_line_number = len(file_content_lines)
+    number_zone_spacing = len(str(max_line_number))
+
+    # Initialize an empty string to accumulate the result
+    formatted_content = ""
+    for i, line in enumerate(file_content_lines, start=1):  # Start counting lines from 1
+        # Format each line with its line number, ensuring proper alignment
+        # Strip the newline character from each line and add it back manually to avoid double newlines when joining
+        line_number = f"{i:>{number_zone_spacing}} | {line.rstrip()}\n"
+        formatted_content += line_number
+
+    return formatted_content
