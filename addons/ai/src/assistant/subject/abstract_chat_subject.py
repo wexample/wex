@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Optional
 
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 
 if TYPE_CHECKING:
@@ -17,6 +17,9 @@ class AbstractChatSubject(KernelChild):
     @abstractmethod
     def name(self) -> str:
         pass
+
+    def get_completer_commands(self) -> StringsList:
+        return []
 
     def introduce(self) -> str:
         return self.name()

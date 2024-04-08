@@ -283,6 +283,14 @@ def file_env_to_dict(env_path: str) -> Dict[str, str]:
     return env_dict
 
 
+def file_read_if_exists(file_path: str, missing_value: Optional[str] = None) -> Optional[str]:
+    if not os.path.exists(file_path):
+        return missing_value
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        return file.read()
+
+
 def file_read(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()

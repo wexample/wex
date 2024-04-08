@@ -37,6 +37,7 @@ class AppDirectoryStructure(DirectoryStructure):
                             "should_exist": self.should_be_valid_app,
                             "on_missing": "create",
                             "default_content": f"APP_ENV={APP_ENV_PROD}",
+                            "shortcut": "env"
                         },
                         APP_FILE_APP_CONFIG: {
                             "type": "file",

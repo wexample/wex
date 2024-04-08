@@ -20,6 +20,7 @@ from addons.ai.src.assistant.utils.identities import (
     AI_IDENTITY_COMMAND_SELECTOR,
     AI_IDENTITY_DEFAULT,
     AI_IDENTITY_FILE_INSPECTION,
+    AI_IDENTITY_GIT_PATCH_CREATOR,
     AI_IDENTITY_TOOLS_AGENT,
 )
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -58,6 +59,24 @@ AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_log
 AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_language"
 
 
+class AssistantChatCompleter(Completer):
+    def __init__(self, commands: StringsList) -> None:
+        self.commands = commands
+
+    def get_completions(
+        self, document: ToolkitDocument, complete_event: CompleteEvent
+    ) -> Iterable[Completion]:
+        word_before_cursor = document.get_word_before_cursor(WORD=True)
+
+        # Previous word was a space
+        if word_before_cursor == "":
+            return
+
+        for command in self.commands:
+            if command.startswith(word_before_cursor):
+                yield Completion(command + " ", start_position=-len(word_before_cursor))
+
+
 class Assistant(KernelChild):
     subject: Optional[AbstractChatSubject] = None
 
@@ -71,7 +90,7 @@ class Assistant(KernelChild):
             kernel,
             [
                 self._init_models,
-                self._init_completer,
+                self._init_commands,
                 self._init_identities,
                 self._init_tools,
                 self._init_vector_database,
@@ -94,17 +113,15 @@ class Assistant(KernelChild):
 
         self.set_model(self.default_model)
 
-    def _init_completer(self) -> None:
+    def _init_commands(self) -> None:
         self.commands = {
-            "/command": "Ask to pick a command (beta).",
-            "/exit": "quit.",
-            "/help": "display this message again.",
-            "/menu": "show menu.",
-            "/talk_about_file": "talk about a specific file.",
-            "/tool": "Ask to play a tool (beta).",
+            "command": "Ask to pick a command (beta).",
+            "exit": "quit.",
+            "help": "display this message again.",
+            "menu": "show menu.",
+            "talk_about_file": "talk about a specific file.",
+            "tool": "Ask to play a tool (beta).",
         }
-
-        self.completer = AssistantChatCompleter(list(self.commands.keys()))
 
     def _init_tools(self) -> None:
         # Create tools
@@ -145,6 +162,10 @@ class Assistant(KernelChild):
                 "system": "Answer the question based only on the following context:"
                           "\n"
                           "\n{context}"
+            },
+            AI_IDENTITY_GIT_PATCH_CREATOR: {
+                "system": "You are an AI specialized in generating Git patches based on user requests and source code. "
+                          "You analyze the code and the user's instructions to create a precise and concise patch."
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Answer the following questions as best you can. You have access to the following tools:"
@@ -470,15 +491,14 @@ class Assistant(KernelChild):
             return [{"command": "exit", "input": None}]
 
         # Escape command patterns for regex matching
-        command_patterns = "|".join(re.escape(cmd) for cmd in self.commands.keys())
+        command_patterns = "|".join(re.escape(cmd) for cmd in self.create_subject_commands())
         matches = list(re.finditer(command_patterns, user_input))
 
         results: List[StringKeysDict] = []
 
         # Iterate over all matches
         for i, match in enumerate(matches):
-            # Remove the '/' at the beginning of the command
-            command = match.group()[1:]
+            command = match.group()
             start = match.end()  # Start index for the input text following the command
 
             # If there is a next command, end index is the start of the next command; else, end of the string
@@ -499,6 +519,14 @@ class Assistant(KernelChild):
             return [{"command": None, "input": user_input}]
         return results
 
+    def create_subject_commands(self) -> StringsList:
+        return list(self.commands.keys()) + self.subject.get_completer_commands()
+
+    def create_completer(self) -> AssistantChatCompleter:
+        return AssistantChatCompleter(
+            [f"/{command}" for command in self.create_subject_commands()]
+        )
+
     def chat(
         self,
         initial_prompt: Optional[str] = None,
@@ -515,14 +543,16 @@ class Assistant(KernelChild):
                     user_input = initial_prompt
                     initial_prompt = None
                 else:
-                    user_input = prompt_tool(">>> ", completer=self.completer)
+                    user_input = prompt_tool(
+                        ">>> ",
+                        completer=self.create_completer()
+                    )
 
                 user_input_splits = self.split_user_input_commands(user_input)
                 result: Optional[str] = None
 
                 for user_input_split in user_input_splits:
                     command = user_input_split["command"]
-                    user_input_lower = user_input.strip().lower()
 
                     if command == "exit":
                         return CHAT_ACTION_EXIT
@@ -530,7 +560,7 @@ class Assistant(KernelChild):
                         return None
                     elif command == "command":
                         result = self.choose(user_input_split["input"])
-                    elif user_input_lower.startswith("/tool"):
+                    elif command == "tool":
                         result = self.get_model().chat_agent(
                             user_input_split["input"],
                             self.tools,
@@ -558,21 +588,3 @@ class Assistant(KernelChild):
                 # User asked to interrupt assistant.
                 else:
                     self.kernel.io.print(os.linesep)
-
-
-class AssistantChatCompleter(Completer):
-    def __init__(self, commands: StringsList) -> None:
-        self.commands = commands
-
-    def get_completions(
-        self, document: ToolkitDocument, complete_event: CompleteEvent
-    ) -> Iterable[Completion]:
-        word_before_cursor = document.get_word_before_cursor(WORD=True)
-
-        # Previous word was a space
-        if word_before_cursor == "":
-            return
-
-        for command in self.commands:
-            if command.startswith(word_before_cursor):
-                yield Completion(command + " ", start_position=-len(word_before_cursor))

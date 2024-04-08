@@ -1,7 +1,7 @@
-diff --git a/.wex/command/samples/examples/explain/code_comment/source.py b/.wex/command/samples/examples/explain/code_comment/source.py
+diff --git a/addons/ai/examples/explain/code_comment/source.py b/addons/ai/examples/explain/code_comment/source.py
 index 09a094bf..3c971063 100644
---- a/.wex/command/samples/examples/explain/code_comment/source.py
-+++ b/.wex/command/samples/examples/explain/code_comment/source.py
+--- a/addons/ai/examples/explain/code_comment/source.py
++++ b/addons/ai/examples/explain/code_comment/source.py
 @@ -1,2 +1,2 @@
 -def print_hello_world() -> str:
 -    return 'Hello World!'
