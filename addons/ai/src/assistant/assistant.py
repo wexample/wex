@@ -549,7 +549,8 @@ class Assistant(KernelChild):
                 else:
                     user_input = prompt_tool(
                         ">>> ",
-                        completer=self.create_completer()
+                        completer=self.create_completer(),
+                        multiline=True
                     )
 
                 user_input_splits = self.split_user_input_commands(user_input)
