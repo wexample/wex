@@ -5,6 +5,7 @@ from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
+from langchain_core.prompts import BasePromptTemplate
 
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict
@@ -61,18 +62,46 @@ class AbstractModel(KernelChild):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict
     ) -> str:
-        chain = LLMChain(
-            llm=self.get_llm(),
-            prompt=self.chat_create_prompt(identity),
-            verbose=False
+        return self.chain_invoke_and_strip_result(
+            prompt_template=self.chat_create_prompt(identity),
+            user_input=user_input,
+            identity_parameters=identity_parameters
         )
 
-        return str(chain.invoke(self.chat_merge_parameters(user_input, identity_parameters))[
-            "text"
-        ].strip())
+    def chat_with_few_shots(
+        self,
+        user_input,
+        identity: StringKeysDict,
+        identity_parameters: StringKeysDict,
+        example_prompt,
+        examples
+    ):
+        from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+
+        example_prompt_template = PromptTemplate(
+            input_variables=["file_name", "question", "source", "patch"],
+            template=example_prompt + """{patch}"""
+        )
+
+        few_shot_prompt_template = FewShotPromptTemplate(
+            examples=examples,
+            example_prompt=example_prompt_template,
+            # The prefix is our instructions
+            prefix=identity["system"],
+            # The suffix our user input and output indicator
+            suffix=example_prompt,
+            input_variables=["file_name", "question", "source"],
+            example_separator="\n----------------------------------\n"
+        )
+
+        return self.chain_invoke_and_strip_result(
+            prompt_template=few_shot_prompt_template,
+            user_input=user_input,
+            identity_parameters=identity_parameters
+        )
 
     def chat_agent(
-        self, question: str, tools: List[CommandTool], identity: StringKeysDict
+        self, user_input: str, tools: List[CommandTool], identity: StringKeysDict
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
@@ -85,7 +114,26 @@ class AbstractModel(KernelChild):
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-        return str(agent_executor.invoke({"input": question})["output"])
+        return str(agent_executor.invoke({"input": user_input})["output"])
+
+    def chain_invoke_and_strip_result(
+        self,
+        prompt_template: BasePromptTemplate,
+        user_input: str,
+        identity_parameters: StringKeysDict
+    ) -> str:
+        chain = LLMChain(
+            llm=self.get_llm(),
+            prompt=prompt_template,
+            verbose=False
+        )
+
+        return chain.invoke(
+            self.chat_merge_parameters(
+                user_input,
+                identity_parameters
+            )
+        )["text"].strip()
 
     @abstractmethod
     def choose_command(

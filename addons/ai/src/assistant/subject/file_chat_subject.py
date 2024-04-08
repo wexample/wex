@@ -1,9 +1,7 @@
 import os.path
 from typing import TYPE_CHECKING, Optional
 
-from langchain.chains.llm import LLMChain
 from langchain_community.vectorstores.chroma import Chroma
-from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
@@ -11,7 +9,7 @@ from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict, StringsList
 from src.helper.command import execute_command_sync
-from src.helper.file import file_read_if_exists, file_read, file_write, file_remove_file_if_exists, \
+from src.helper.file import file_read_if_exists, file_write, file_remove_file_if_exists, \
     file_read_with_lines_numbers
 
 if TYPE_CHECKING:
@@ -56,61 +54,38 @@ class FileChatSubject(AbstractChatSubject):
 
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
             path = self.get_path()
-
-            examples = [
-                self.load_example_patch('generate/program_hello_world'),
-                self.load_example_patch('explain/code_comment'),
-                self.load_example_patch('patch/hello_world_capitalized')
-            ]
-
-            example_template_base = (
-                "User request:\n{question}\n\n"
-                "File name:\n{file_name}\n\n"
-                "Complete source code of the application:\n{source}\n\n"
-                "AI-generated Git patch:\n")
-
-            example_prompt = PromptTemplate(
-                input_variables=["file_name", "question", "source", "patch"],
-                template=example_template_base + """{patch}"""
-            )
-
-            few_shot_prompt_template = FewShotPromptTemplate(
-                examples=examples,
-                example_prompt=example_prompt,
-                # The prefix is our instructions
-                prefix=identity["system"],
-                # The suffix our user input and output indicator
-                suffix=example_template_base,
-                input_variables=["file_name", "question", "source"],
-                example_separator="\n----------------------------------\n"
-            )
-
+            patch_path = path + '.patch'
             model = self.assistant.get_model()
-
-            chain = LLMChain(
-                llm=model.get_llm(),
-                prompt=few_shot_prompt_template,
-                verbose=False
-            )
-
             file_name = os.path.basename(path)
+            patch_content = \
+                (f"diff --git a/{file_name} b/{file_name}"
+                 f"\nindex 1234567..abcdefg {git_file_get_octal_mode(path)}"
+                 f"\n--- a/{file_name}"
+                 f"\n+++ b/{file_name}"
+                 f"\n")
+
             identity_parameters.update({
                 "file_name": file_name,
                 "question": user_input,
                 "source": file_read_with_lines_numbers(path)
             })
 
-            patch_content = (f"diff --git a/{file_name} b/{file_name}"
-                             f"\nindex 1234567..abcdefg {git_file_get_octal_mode(path)}"
-                             f"\n--- a/{file_name}"
-                             f"\n+++ b/{file_name}"
-                             f"\n")
+            patch_content += model.chat_with_few_shots(
+                user_input=user_input,
+                identity=identity,
+                identity_parameters=identity_parameters,
+                example_prompt=(
+                    "User request:\n{question}\n\n"
+                    "File name:\n{file_name}\n\n"
+                    "Complete source code of the application:\n{source}\n\n"
+                    "AI-generated Git patch:\n"),
+                examples=[
+                    self.load_example_patch('generate/program_hello_world'),
+                    self.load_example_patch('explain/code_comment'),
+                    self.load_example_patch('patch/hello_world_capitalized')
+                ]
+            ) + os.linesep
 
-            patch_content += chain.invoke(
-                model.chat_merge_parameters(user_input, identity_parameters)
-            )["text"].strip() + os.linesep
-
-            patch_path = path + '.patch'
             file_write(patch_path, patch_content)
 
             success, content = execute_command_sync(
