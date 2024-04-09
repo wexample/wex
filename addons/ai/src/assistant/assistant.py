@@ -161,38 +161,39 @@ class Assistant(KernelChild):
 
     def _init_identities(self) -> None:
         self.identities = {
-            AI_IDENTITY_DEFAULT: {"system": "You are a helpful AI bot."},
+            AI_IDENTITY_DEFAULT: {"system": "You are a supportive AI assistant."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
-                "system": "You are a helpful AI bot."
-                          "\nNow we are talking about this file : {file_full_path}"
+                "system": "You are a supportive AI assistant."
+                          "\nFocused on this file: {file_full_path}"
                           "\n_______________________________________File metadata"
                           "\nCreation Date: {file_creation_date}"
                           "\nFile Size: {file_size} bytes"
-                          "\n_________________________________________End of file info"
+                          "\n_______________________________________End of file metadata"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
-                "system": "Return one command name, but only if could help answer user message, None instead"
+                "system": "Provide a command name that aids in responding to the user's query, or None if not applicable."
             },
             AI_IDENTITY_FILE_INSPECTION: {
-                "system": "Answer the question based only on the following context:"
+                "system": "Respond to inquiries based solely on the provided context:"
                           "\n"
                           "\n{context}"
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
-                "system": "You are an AI specialized in generating Git patches based on user requests and source code. "
-                          "\nYou analyze the code and the user's instructions to create a precise and concise patch."
-                          "\nStart only the diff at the 'hunk header' (@@ -R,L +R,L @@) and ignore previous lines.\n"
-                          "\nPlease take care of the specified lines numbers at the beginning of each line, we added it just for you.\n"
+                "system": "As an AI, generate file diffs in unidiff format based on user instructions."
+                          "\nFocus on creating accurate and succinct diffs for patch files."
+                          "\nBegin with the **hunk header** without preceding lines."
+                          "\nPay attention to the line numbers specified at the start of each diff line."
             },
             AI_IDENTITY_TOOLS_AGENT: {
-                "system": "Answer the following questions as best you can. You have access to the following tools:"
-                          "\n\n{tools}\n\nUse the following format:"
-                          "\n\nQuestion: the input question you must answer\nThought: you should always think about what to do"
-                          "\nAction: the action to take, should be one of [{tool_names}]"
-                          "\nAction Input: the input to the action\nObservation: the result of the action"
-                          "\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer"
-                          "\nFinal Answer: the final answer to the original input question"
-                          "\n\nBegin!"
+                "system": "Efficiently answer the questions using available tools:"
+                          "\n\n{tools}\n\nAdhere to this structure:"
+                          "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
+                          "\nAction: the chosen action, from [{tool_names}]"
+                          "\nAction Input: details for the action\nObservation: outcome of the action"
+                          "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
+                          "\nConcluding Thought: the insight leading to the final answer"
+                          "\nFinal Answer: the comprehensive response to the original question"
+                          "\n\nInitiate with:"
                           "\n\nQuestion: {input}"
                           "\nThought:{agent_scratchpad}"
             },
