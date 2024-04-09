@@ -2,10 +2,10 @@ import os
 import random
 import re
 import shutil
-import string
-from typing import Mapping, Optional
+from typing import Mapping, Optional, List
 
-from src.const.types import BasicInlineValue, StringsDict, StringsMatch
+import string
+from src.const.types import BasicInlineValue, StringsDict, StringsMatch, StringsList
 
 
 def string_to_snake_case(text: str) -> str:
@@ -50,7 +50,7 @@ def string_format_ignore_missing(
 def string_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
-        lines.append((" " * indent) + text[i : i + max_width])
+        lines.append((" " * indent) + text[i: i + max_width])
     return os.linesep.join(lines)
 
 
@@ -61,7 +61,7 @@ def string_multiline_center(text: str, width: int) -> str:
 
 def string_trim_leading(text: str, leading_text: str) -> str:
     if text.startswith(leading_text):
-        return text[len(leading_text) :]
+        return text[len(leading_text):]
     else:
         return text
 
@@ -182,3 +182,24 @@ def string_add_lines_numbers(file_content: str) -> Optional[str]:
         formatted_content += line_number
 
     return formatted_content
+
+
+def string_list_calculate_max_widths(array: StringsList) -> List[int]:
+    """
+    Calculate the maximum widths for each column based on the array.
+    """
+    if not array:  # If the array is empty, return an empty list
+        return []
+
+    # Find the row with the maximum number of columns
+    num_columns = max(len(row) for row in array)
+
+    # Initialize max widths with zeros for each column
+    max_widths = [0] * num_columns
+
+    for row in array:
+        for i, cell in enumerate(row):
+            # Update the max width for each column if current cell is larger
+            max_widths[i] = max(max_widths[i], len(str(cell)))
+
+    return max_widths

@@ -102,7 +102,6 @@ class FileChatSubject(AbstractChatSubject):
                         patch_content.rstrip() + "\n\\ No newline at end of file"
                     )
 
-                print(patch_content)
                 patch_set = patch.fromstring(patch_content.encode())
                 error_message = "Unable to create patch set"
                 if patch_set:
@@ -111,7 +110,6 @@ class FileChatSubject(AbstractChatSubject):
                         nonlocal error_message
 
                         error_message = "File can't be patched"
-                        file_write(path + ".patch", patch_content)
                         return patch_set.apply()
 
                     # Patch library expect patch to refer to a relative file,
