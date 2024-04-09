@@ -35,6 +35,7 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
+from src.helper.string import string_list_longest_word
 from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
@@ -484,8 +485,14 @@ class Assistant(KernelChild):
         return str(action) if action else None
 
     def show_help(self) -> None:
+        # Assuming string_list_longest_word returns the length of the longest word in a list
+        longest_command_length = string_list_longest_word(self.commands.keys())
+
+        # Display the menu in the specified format
         for command, description in self.commands.items():
-            self.log(f"{command}\n    {description}")
+            # Pad the command with spaces to align all descriptions
+            padded_command = command.ljust(longest_command_length)
+            self.log(f"/{padded_command} | {description}")
 
     def choose(self, user_input: str) -> Optional[str]:
         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(

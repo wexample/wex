@@ -203,3 +203,10 @@ def string_list_calculate_max_widths(array: StringsList) -> List[int]:
             max_widths[i] = max(max_widths[i], len(str(cell)))
 
     return max_widths
+
+
+def string_list_longest_word(word_list):
+    if not word_list:  # list is empty
+        return 0
+    else:
+        return max(len(word) for word in word_list)
