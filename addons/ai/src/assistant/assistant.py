@@ -4,13 +4,16 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb  # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders.parsers.language.language_parser import Language  # type: ignore
+from langchain_community.document_loaders.parsers.language.language_parser import (
+    Language,
+)  # type: ignore
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
 from prompt_toolkit import prompt as prompt_tool
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
 from prompt_toolkit.document import Document as ToolkitDocument
+from prompt_toolkit.key_binding import KeyBindings
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
@@ -39,7 +42,6 @@ from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
-from prompt_toolkit.key_binding import KeyBindings
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -102,12 +104,12 @@ class Assistant(KernelChild):
     def _init_prompt(self) -> None:
         kb = KeyBindings()
 
-        @kb.add('escape', 'enter')
-        def _(event):
-            event.current_buffer.insert_text('\n')
+        @kb.add("escape", "enter")
+        def _(event) -> None:
+            event.current_buffer.insert_text("\n")
 
-        @kb.add('enter')
-        def _(event):
+        @kb.add("enter")
+        def _(event) -> None:
             event.current_buffer.validate_and_handle()
 
         self.prompt_key_binding = kb
@@ -164,38 +166,38 @@ class Assistant(KernelChild):
             AI_IDENTITY_DEFAULT: {"system": "You are a supportive AI assistant."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a supportive AI assistant."
-                          "\nFocused on this file: {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_______________________________________End of file metadata"
+                "\nFocused on this file: {file_full_path}"
+                "\n_______________________________________File metadata"
+                "\nCreation Date: {file_creation_date}"
+                "\nFile Size: {file_size} bytes"
+                "\n_______________________________________End of file metadata"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Provide a command name that aids in responding to the user's query, or None if not applicable."
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Respond to inquiries based solely on the provided context:"
-                          "\n"
-                          "\n{context}"
+                "\n"
+                "\n{context}"
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "As an AI, generate file diffs in unidiff format based on user instructions."
-                          "\nFocus on creating accurate and succinct diffs for patch files."
-                          "\nBegin with the **hunk header** without preceding lines."
-                          "\nPay attention to the line numbers specified at the start of each diff line."
+                "\nFocus on creating accurate and succinct diffs for patch files."
+                "\nBegin with the **hunk header** without preceding lines."
+                "\nPay attention to the line numbers specified at the start of each diff line."
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Efficiently answer the questions using available tools:"
-                          "\n\n{tools}\n\nAdhere to this structure:"
-                          "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
-                          "\nAction: the chosen action, from [{tool_names}]"
-                          "\nAction Input: details for the action\nObservation: outcome of the action"
-                          "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
-                          "\nConcluding Thought: the insight leading to the final answer"
-                          "\nFinal Answer: the comprehensive response to the original question"
-                          "\n\nInitiate with:"
-                          "\n\nQuestion: {input}"
-                          "\nThought:{agent_scratchpad}"
+                "\n\n{tools}\n\nAdhere to this structure:"
+                "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
+                "\nAction: the chosen action, from [{tool_names}]"
+                "\nAction Input: details for the action\nObservation: outcome of the action"
+                "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
+                "\nConcluding Thought: the insight leading to the final answer"
+                "\nFinal Answer: the comprehensive response to the original question"
+                "\n\nInitiate with:"
+                "\n\nQuestion: {input}"
+                "\nThought:{agent_scratchpad}"
             },
         }
 
@@ -432,11 +434,7 @@ class Assistant(KernelChild):
         self.log("Storing document to vector database...")
         loader.load()
 
-        chunks = cast(
-            List[Document], text_splitter.split_documents(
-                loader.load()
-            )
-        )
+        chunks = cast(List[Document], text_splitter.split_documents(loader.load()))
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
@@ -511,7 +509,9 @@ class Assistant(KernelChild):
             return [{"command": "exit", "input": None}]
 
         # Escape command patterns for regex matching
-        command_patterns = "|".join(re.escape(cmd) for cmd in self.create_subject_commands())
+        command_patterns = "|".join(
+            re.escape(cmd) for cmd in self.create_subject_commands()
+        )
         matches = list(re.finditer(command_patterns, user_input))
 
         results: List[StringKeysDict] = []
@@ -567,7 +567,7 @@ class Assistant(KernelChild):
                         ">>> ",
                         completer=self.create_completer(),
                         multiline=True,
-                        key_bindings=self.prompt_key_binding
+                        key_bindings=self.prompt_key_binding,
                     )
 
                 user_input_splits = self.split_user_input_commands(user_input)

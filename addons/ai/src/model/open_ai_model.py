@@ -15,7 +15,7 @@ MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 
 class OpenAiModel(AbstractModel):
     api_key: Optional[str] = None
-    
+
     def activate(self) -> None:
         env_path = self.kernel.directory.path + ".env"
         self.api_key = dotenv_values(env_path).get("OPENAI_API_KEY")

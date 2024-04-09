@@ -283,7 +283,9 @@ def file_env_to_dict(env_path: str) -> Dict[str, str]:
     return env_dict
 
 
-def file_read_if_exists(file_path: str, missing_value: Optional[str] = None) -> Optional[str]:
+def file_read_if_exists(
+    file_path: str, missing_value: Optional[str] = None
+) -> Optional[str]:
     if not os.path.exists(file_path):
         return missing_value
 
@@ -357,5 +359,3 @@ def file_build_signature(file_path: str) -> str:
     last_modified = file_stats.st_mtime
 
     return f"{file_path}-{file_size}-{int(last_modified)}"
-
-

@@ -146,13 +146,11 @@ children:
                     children:
                       code_comment:
                         children:
-                          prompt.txt:
+                          question.txt:
                             type: file
                           response.patch:
                             type: file
                           source.py:
-                            type: file
-                          tree.yml:
                             type: file
                         type: dir
                     type: dir
@@ -160,11 +158,9 @@ children:
                     children:
                       program_hello_world:
                         children:
-                          prompt.txt:
+                          question.txt:
                             type: file
                           response.patch:
-                            type: file
-                          tree.yml:
                             type: file
                         type: dir
                     type: dir
@@ -172,13 +168,11 @@ children:
                     children:
                       hello_world_capitalized:
                         children:
-                          prompt.txt:
+                          question.txt:
                             type: file
                           response.patch:
                             type: file
                           source.py:
-                            type: file
-                          tree.yml:
                             type: file
                         type: dir
                     type: dir
@@ -2683,6 +2677,8 @@ children:
           file.py:
             type: file
           module.py:
+            type: file
+          patch.py:
             type: file
           process.py:
             type: file

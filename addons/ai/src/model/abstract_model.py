@@ -47,9 +47,7 @@ class AbstractModel(KernelChild):
         )
 
     def chat_merge_parameters(
-        self,
-        user_input: str,
-        identity_parameters: StringKeysDict
+        self, user_input: str, identity_parameters: StringKeysDict
     ) -> StringKeysDict:
         return dict_merge({"input": user_input}, identity_parameters or {})
 
@@ -60,12 +58,12 @@ class AbstractModel(KernelChild):
         self,
         user_input: str,
         identity: StringKeysDict,
-        identity_parameters: StringKeysDict
+        identity_parameters: StringKeysDict,
     ) -> str:
         return self.chain_invoke_and_strip_result(
             prompt_template=self.chat_create_prompt(identity),
             user_input=user_input,
-            identity_parameters=identity_parameters
+            identity_parameters=identity_parameters,
         )
 
     def chat_with_few_shots(
@@ -74,13 +72,13 @@ class AbstractModel(KernelChild):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
         example_prompt,
-        examples
+        examples,
     ):
         from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
         example_prompt_template = PromptTemplate(
             input_variables=["file_name", "question", "source", "patch"],
-            template=example_prompt + """{patch}"""
+            template=example_prompt + """{patch}""",
         )
 
         few_shot_prompt_template = FewShotPromptTemplate(
@@ -91,13 +89,13 @@ class AbstractModel(KernelChild):
             # The suffix our user input and output indicator
             suffix=example_prompt,
             input_variables=["file_name", "question", "source"],
-            example_separator="\n----------------------------------\n"
+            example_separator="\n----------------------------------\n",
         )
 
         return self.chain_invoke_and_strip_result(
             prompt_template=few_shot_prompt_template,
             user_input=user_input,
-            identity_parameters=identity_parameters
+            identity_parameters=identity_parameters,
         )
 
     def chat_agent(
@@ -120,19 +118,12 @@ class AbstractModel(KernelChild):
         self,
         prompt_template: BasePromptTemplate,
         user_input: str,
-        identity_parameters: StringKeysDict
+        identity_parameters: StringKeysDict,
     ) -> str:
-        chain = LLMChain(
-            llm=self.get_llm(),
-            prompt=prompt_template,
-            verbose=False
-        )
+        chain = LLMChain(llm=self.get_llm(), prompt=prompt_template, verbose=False)
 
         return chain.invoke(
-            self.chat_merge_parameters(
-                user_input,
-                identity_parameters
-            )
+            self.chat_merge_parameters(user_input, identity_parameters)
         )["text"].strip()
 
     @abstractmethod
