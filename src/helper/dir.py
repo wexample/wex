@@ -1,14 +1,17 @@
 import os
 import shutil
+from typing import Any
 
 from src.const.types import AnyCallable
 
 
-def dir_execute_in_workdir(target_dir: str, callback: AnyCallable) -> None:
+def dir_execute_in_workdir(target_dir: str, callback: AnyCallable) -> Any:
     original_dir = os.getcwd()
     os.chdir(target_dir)
-    callback()
+    response = callback()
     os.chdir(original_dir)
+
+    return response
 
 
 def dir_empty_dir(dir_path: str) -> None:

@@ -1,6 +1,7 @@
 import os.path
 from typing import TYPE_CHECKING, Optional
 
+import patch
 from langchain_community.vectorstores.chroma import Chroma
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -8,8 +9,9 @@ from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict, StringsList
-from src.helper.command import execute_command_sync
-from src.helper.file import file_read_if_exists, file_write, file_remove_file_if_exists, file_read
+from src.helper.dir import dir_execute_in_workdir
+from src.helper.file import file_read_if_exists, file_read, file_write
+from src.helper.patch import patch_is_valid
 from src.helper.string import string_has_trailing_new_line, string_add_lines_numbers
 
 if TYPE_CHECKING:
@@ -54,7 +56,6 @@ class FileChatSubject(AbstractChatSubject):
 
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
             path = self.get_path()
-            patch_path = path + '.patch'
             model = self.assistant.get_model()
             file_name = os.path.basename(path)
             file_content = file_read(path)
@@ -88,34 +89,39 @@ class FileChatSubject(AbstractChatSubject):
                 ]
             ) + os.linesep
 
-            # This notation is a patch standard
-            if not string_has_trailing_new_line(file_content):
-                patch_content = patch_content.rstrip() + "\n\\ No newline at end of file"
+            error_message = "Generated patch body is not valid"
+            if patch_is_valid(patch_content):
+                # This notation is a patch standard
+                if not string_has_trailing_new_line(file_content):
+                    patch_content = patch_content.rstrip() + "\n\\ No newline at end of file"
 
-            file_write(patch_path, patch_content)
+                print(patch_content)
+                patch_set = patch.fromstring(patch_content.encode())
+                error_message = "Unable to create patch set"
+                if patch_set:
+                    def _patch_it():
+                        nonlocal error_message
 
-            success, content = execute_command_sync(
-                self.kernel,
-                [
-                    "git",
-                    "apply",
-                    patch_path
-                ],
-                working_directory=os.path.dirname(path),
-                ignore_error=True
-            )
+                        error_message = "File can't be patched"
+                        file_write(path + '.patch', patch_content)
+                        return patch_set.apply()
 
-            if not success:
-                self.kernel.io.error(
-                    f"Failed to patch : {patch_path} : {','.join(content)}",
-                    fatal=False,
-                    trace=False)
-            else:
-                file_remove_file_if_exists(patch_path)
+                    # Patch library expect patch to refer to a relative file,
+                    # so we move in the same dir.
+                    success = dir_execute_in_workdir(os.path.dirname(path), _patch_it)
+                    error_message = "Patching failed"
 
-                self.kernel.io.success(
-                    f"✏️ Patched : {path}"
-                )
+                    if success:
+                        self.kernel.io.success(
+                            f"Patched : {path}"
+                        )
+
+                        return None
+
+            self.kernel.io.error(
+                f"{error_message}: \n{patch_content}",
+                fatal=False,
+                trace=False)
 
             return None
 
