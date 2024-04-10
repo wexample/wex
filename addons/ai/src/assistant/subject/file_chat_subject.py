@@ -1,5 +1,5 @@
 import os.path
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 import patch
 from langchain_community.vectorstores.chroma import Chroma
@@ -9,35 +9,35 @@ from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict, StringsList
+from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.dir import dir_execute_in_workdir
-from src.helper.file import file_read, file_read_if_exists, file_write
+from src.helper.file import file_read, file_read_if_exists, file_set_user_or_sudo_user_owner
 from src.helper.patch import patch_is_valid
+from src.helper.prompt import prompt_choice_dict
 from src.helper.string import string_add_lines_numbers, string_has_trailing_new_line
 
-if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
-
 SUBJECT_FILE_CHAT_COMMAND_PATCH = "patch"
+SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE = "talk_about_file"
 
 
 class FileChatSubject(AbstractChatSubject):
-    def name(self) -> str:
+    chroma: Optional[Chroma] = None
+    file_path: Optional[str] = None
+
+    @staticmethod
+    def name() -> str:
         return "file"
 
     def introduce(self) -> str:
-        return f"Chatting about file {self.get_path()}"
-
-    def __init__(self, assistant: "Assistant", file_path: str) -> None:
-        super().__init__(assistant)
-        self.file_path = os.path.realpath(file_path)
-
-    def get_path(self) -> str:
-        self._validate__should_not_be_none(self.file_path)
-
-        return self.file_path
+        return f"Chatting about file {self.file_path}"
 
     def get_completer_commands(self) -> StringsList:
-        return [SUBJECT_FILE_CHAT_COMMAND_PATCH]
+        commands = [SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE]
+
+        if self.is_current_subject():
+            commands.append(SUBJECT_FILE_CHAT_COMMAND_PATCH)
+
+        return commands
 
     def process_user_input(
         self,
@@ -47,13 +47,13 @@ class FileChatSubject(AbstractChatSubject):
     ) -> Optional[str]:
         user_command = user_input_split["command"]
         user_input = user_input_split["input"]
-
-        # Avoid empty input error.
-        if not user_input:
-            return None
+        path = self.file_path
 
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
-            path = self.get_path()
+            # Avoid empty input error.
+            if not user_input:
+                return f'Please instruct how to patch this file {path}'
+
             model = self.assistant.get_model()
             file_name = os.path.basename(path)
             file_content = file_read(path)
@@ -105,7 +105,6 @@ class FileChatSubject(AbstractChatSubject):
                 patch_set = patch.fromstring(patch_content.encode())
                 error_message = "Unable to create patch set"
                 if patch_set:
-
                     def _patch_it():
                         nonlocal error_message
 
@@ -118,38 +117,84 @@ class FileChatSubject(AbstractChatSubject):
                     error_message = "Patching failed"
 
                     if success:
-                        self.kernel.io.success(f"Patched : {path}")
+                        file_set_user_or_sudo_user_owner(path)
 
-                        return None
+                        return f'✏️ Patched : {path}'
 
-            self.kernel.io.error(
-                f"{error_message}: \n{patch_content}", fatal=False, trace=False
+            return f'⚠️ {error_message}: \n{patch_content}'
+
+        elif user_command == SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE:
+            self.file_path = self.pick_a_file()
+
+            if not self.file_path:
+                return 'No file selected'
+
+            self.assistant.vector_store_file(self.file_path)
+            self.assistant.set_subject(self.name())
+
+            embedding_function = self.assistant.get_model(
+                MODEL_NAME_OPEN_AI_GPT_4
+            ).create_embeddings()
+
+            self.chroma = Chroma(
+                persist_directory=self.assistant.chroma_path,
+                embedding_function=embedding_function,
+                collection_name="single_files",
             )
 
-            return None
+        # Talking about a file and initialized.
+        if self.is_current_subject() and self.chroma and self.file_path:
+            # Avoid empty input error.
+            if not user_input:
+                return f'Please ask something about the file {path}'
 
-        embedding_function = self.assistant.get_model(
-            MODEL_NAME_OPEN_AI_GPT_4
-        ).create_embeddings()
-        chroma = Chroma(
-            persist_directory=self.assistant.chroma_path,
-            embedding_function=embedding_function,
-            collection_name="single_files",
-        )
-        results = chroma.similarity_search_with_relevance_scores(
-            user_input, k=3, filter={"source": self.get_path()}
+            results = self.chroma.similarity_search_with_relevance_scores(
+                user_input, k=3, filter={"source": self.file_path}
+            )
+
+            return self.assistant.get_model().chat(
+                user_input,
+                self.assistant.identities[AI_IDENTITY_FILE_INSPECTION],
+                identity_parameters
+                or {
+                    "context": "\n\n---\n\n".join(
+                        [doc.page_content for doc, _score in results]
+                    )
+                },
+            )
+
+        return None
+
+    def pick_a_file(self, base_dir: Optional[str] = None) -> Optional[str]:
+        base_dir = base_dir or os.getcwd()
+        # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
+        choices_dirs = {"..": ".."}
+        choices_files = {}
+
+        for element in os.listdir(base_dir):
+            if os.path.isdir(os.path.join(base_dir, element)):
+                element_label = f"📁 {element}"
+                choices_dirs[element] = element_label
+            else:
+                element_label = element
+                choices_files[element] = element_label
+
+        choices_dirs = dict_sort_values(choices_dirs)
+        choices_files = dict_sort_values(choices_files)
+
+        file = prompt_choice_dict(
+            "Select a file to talk about:",
+            dict_merge(choices_dirs, choices_files),
         )
 
-        return self.assistant.get_model().chat(
-            user_input,
-            self.assistant.identities[AI_IDENTITY_FILE_INSPECTION],
-            identity_parameters
-            or {
-                "context": "\n\n---\n\n".join(
-                    [doc.page_content for doc, _score in results]
-                )
-            },
-        )
+        if file:
+            full_path = os.path.join(base_dir, file)
+            if os.path.isfile(full_path):
+                return full_path
+            elif os.path.isdir(full_path):
+                self.pick_a_file(full_path)
+
+        return None
 
     def load_example_patch(self, name):
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"

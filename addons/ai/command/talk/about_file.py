@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.ai.src.assistant.assistant import Assistant
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
+from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 from src.decorator.option import option
@@ -15,5 +16,5 @@ if TYPE_CHECKING:
 def ai__talk__about_file(kernel: "Kernel", file: str) -> None:
     assistant = Assistant(kernel, MODEL_NAME_OPEN_AI_GPT_4)
 
-    assistant.set_subject_file(file)
+    assistant.set_subject(FileChatSubject.name())
     assistant.chat()

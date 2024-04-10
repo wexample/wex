@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import TYPE_CHECKING, Optional
 
 from src.const.types import StringKeysDict, StringsList
@@ -14,8 +13,8 @@ class AbstractChatSubject(KernelChild):
 
         self.assistant = assistant
 
-    @abstractmethod
-    def name(self) -> str:
+    @staticmethod
+    def name() -> str:
         pass
 
     def get_completer_commands(self) -> StringsList:
@@ -31,3 +30,6 @@ class AbstractChatSubject(KernelChild):
         identity_parameters: StringKeysDict,
     ) -> Optional[str]:
         return None
+
+    def is_current_subject(self) -> bool:
+        return self.assistant.get_current_subject() == self

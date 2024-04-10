@@ -35,14 +35,13 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from src.helper.string import string_list_longest_word
 from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
-from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
+from src.helper.string import string_list_longest_word
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -93,10 +92,11 @@ class Assistant(KernelChild):
         prompt_progress_steps(
             kernel,
             [
-                self._init_prompt,
                 self._init_models,
+                self._init_prompt,
                 self._init_commands,
                 self._init_identities,
+                self._init_subjects,
                 self._init_tools,
                 self._init_vector_database,
             ],
@@ -137,9 +137,20 @@ class Assistant(KernelChild):
             "exit": "quit.",
             "help": "display this message again.",
             "menu": "show menu.",
-            "talk_about_file": "talk about a specific file.",
             "tool": "Ask to play a tool (beta).",
         }
+
+    def _init_subjects(self) -> None:
+        subjects = [
+            FileChatSubject,
+            # Should be last, as fallback
+            DefaultSubject,
+        ]
+
+        self.subjects: Dict[str, AbstractChatSubject] = {}
+        for subject_class in subjects:
+            subject = cast(AbstractChatSubject, subject_class(self))
+            self.subjects[subject.name()] = subject
 
     def _init_tools(self) -> None:
         # Create tools
@@ -167,38 +178,38 @@ class Assistant(KernelChild):
             AI_IDENTITY_DEFAULT: {"system": "You are a supportive AI assistant."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
                 "system": "You are a supportive AI assistant."
-                "\nFocused on this file: {file_full_path}"
-                "\n_______________________________________File metadata"
-                "\nCreation Date: {file_creation_date}"
-                "\nFile Size: {file_size} bytes"
-                "\n_______________________________________End of file metadata"
+                          "\nFocused on this file: {file_full_path}"
+                          "\n_______________________________________File metadata"
+                          "\nCreation Date: {file_creation_date}"
+                          "\nFile Size: {file_size} bytes"
+                          "\n_______________________________________End of file metadata"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
                 "system": "Provide a command name that aids in responding to the user's query, or None if not applicable."
             },
             AI_IDENTITY_FILE_INSPECTION: {
                 "system": "Respond to inquiries based solely on the provided context:"
-                "\n"
-                "\n{context}"
+                          "\n"
+                          "\n{context}"
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "As an AI, generate file diffs in unidiff format based on user instructions."
-                "\nFocus on creating accurate and succinct diffs for patch files."
-                "\nBegin with the **hunk header** without preceding lines."
-                "\nPay attention to the line numbers specified at the start of each diff line."
+                          "\nFocus on creating accurate and succinct diffs for patch files."
+                          "\nBegin with the **hunk header** without preceding lines."
+                          "\nPay attention to the line numbers specified at the start of each diff line."
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Efficiently answer the questions using available tools:"
-                "\n\n{tools}\n\nAdhere to this structure:"
-                "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
-                "\nAction: the chosen action, from [{tool_names}]"
-                "\nAction Input: details for the action\nObservation: outcome of the action"
-                "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
-                "\nConcluding Thought: the insight leading to the final answer"
-                "\nFinal Answer: the comprehensive response to the original question"
-                "\n\nInitiate with:"
-                "\n\nQuestion: {input}"
-                "\nThought:{agent_scratchpad}"
+                          "\n\n{tools}\n\nAdhere to this structure:"
+                          "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
+                          "\nAction: the chosen action, from [{tool_names}]"
+                          "\nAction Input: details for the action\nObservation: outcome of the action"
+                          "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
+                          "\nConcluding Thought: the insight leading to the final answer"
+                          "\nFinal Answer: the comprehensive response to the original question"
+                          "\n\nInitiate with:"
+                          "\n\nQuestion: {input}"
+                          "\nThought:{agent_scratchpad}"
             },
         }
 
@@ -216,13 +227,15 @@ class Assistant(KernelChild):
         self.chroma = chromadb.PersistentClient(path=self.chroma_path)
 
     def set_default_subject(self) -> None:
-        self.set_subject(DefaultSubject(self))
+        self.set_subject(DefaultSubject.name())
 
-    def set_subject(self, subject: AbstractChatSubject) -> None:
+    def set_subject(self, name: str) -> None:
+        subject = cast(AbstractChatSubject, self.subjects[name])
+
         self.log("Setting subject : " + subject.introduce())
         self.subject = subject
 
-    def get_subject(self) -> AbstractChatSubject:
+    def get_current_subject(self) -> AbstractChatSubject:
         self._validate__should_not_be_none(self.subject)
         assert isinstance(self.subject, AbstractChatSubject)
 
@@ -270,38 +283,6 @@ class Assistant(KernelChild):
                 asked_exit = True
 
         self.log(f"{os.linesep}Ciao")
-
-    def set_selected_subject_file(self, base_dir: str) -> None:
-        # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
-        choices_dirs = {"..": ".."}
-        choices_files = {}
-
-        for element in os.listdir(base_dir):
-            if os.path.isdir(os.path.join(base_dir, element)):
-                element_label = f"📁 {element}"
-                choices_dirs[element] = element_label
-            else:
-                element_label = element
-                choices_files[element] = element_label
-
-        choices_dirs = dict_sort_values(choices_dirs)
-        choices_files = dict_sort_values(choices_files)
-
-        file = prompt_choice_dict(
-            "Select a file to talk about:",
-            dict_merge(choices_dirs, choices_files),
-        )
-
-        if file:
-            full_path = os.path.join(base_dir, file)
-            if os.path.isfile(full_path):
-                self.set_subject_file(full_path)
-            elif os.path.isdir(full_path):
-                self.set_selected_subject_file(full_path)
-
-    def set_subject_file(self, full_path: str) -> None:
-        self.vector_store_file(full_path)
-        self.set_subject(FileChatSubject(self, full_path))
 
     def vector_delete_file(self, file_path: str) -> None:
         collection = self.chroma.get_or_create_collection("single_files")
@@ -517,7 +498,7 @@ class Assistant(KernelChild):
 
         # Escape command patterns for regex matching
         command_patterns = "|".join(
-            re.escape(cmd) for cmd in self.create_subject_commands()
+            re.escape(cmd) for cmd in self.get_active_commands()
         )
         matches = list(re.finditer(command_patterns, user_input))
 
@@ -546,12 +527,17 @@ class Assistant(KernelChild):
             return [{"command": None, "input": user_input}]
         return results
 
-    def create_subject_commands(self) -> StringsList:
-        return list(self.commands.keys()) + self.subject.get_completer_commands()
+    def get_active_commands(self) -> StringsList:
+        commands = list(self.commands.keys())
+
+        for subject in self.subjects.values():
+            commands += cast(AbstractChatSubject, subject).get_completer_commands()
+
+        return commands
 
     def create_completer(self) -> AssistantChatCompleter:
         return AssistantChatCompleter(
-            [f"/{command}" for command in self.create_subject_commands()]
+            [f"/{command}" for command in self.get_active_commands()]
         )
 
     def chat(
@@ -595,16 +581,17 @@ class Assistant(KernelChild):
                             self.tools,
                             self.identities[AI_IDENTITY_TOOLS_AGENT],
                         )
-                    elif command == "talk_about_file":
-                        self.set_selected_subject_file(os.getcwd())
                     elif command in ["help", "?"]:
                         self.show_help()
                     else:
-                        result = self.get_subject().process_user_input(
-                            user_input_split,
-                            self.identities[identity_name],
-                            identity_parameters or {},
-                        )
+                        # Loop on subjects until one returns something.
+                        for subject in self.subjects.values():
+                            if not result:
+                                result = cast(AbstractChatSubject, subject).process_user_input(
+                                    user_input_split,
+                                    self.identities[identity_name],
+                                    identity_parameters or {},
+                                )
 
                     if result:
                         # Let a new line separator

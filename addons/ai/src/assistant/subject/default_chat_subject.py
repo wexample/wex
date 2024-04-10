@@ -6,7 +6,8 @@ from src.const.types import StringKeysDict
 
 
 class DefaultSubject(AbstractChatSubject):
-    def name(self) -> str:
+    @staticmethod
+    def name() -> str:
         return "default"
 
     def process_user_input(
