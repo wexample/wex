@@ -130,9 +130,15 @@ class FileChatSubject(AbstractChatSubject):
             return f'⚠️ {error_message}: \n{patch_content}'
 
         elif user_command == SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE:
-            self.set_file_path(
-                self.pick_a_file()
-            )
+            user_input_trimmed = user_input.strip()
+
+            if os.path.isfile(user_input_trimmed):
+                file_path = user_input_trimmed
+                user_input = None
+            else:
+                file_path = self.pick_a_file()
+
+            self.set_file_path(file_path)
 
             if not self.file_path:
                 return 'No file selected'
@@ -169,6 +175,11 @@ class FileChatSubject(AbstractChatSubject):
         return None
 
     def set_file_path(self, file_path: str) -> None:
+        file_path = os.path.realpath(file_path)
+
+        if not file_path:
+            return None
+
         self.file_path = file_path
         self.assistant.vector_store_file(self.file_path)
         self.assistant.set_subject(self.name())
