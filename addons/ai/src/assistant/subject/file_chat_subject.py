@@ -74,6 +74,8 @@ class FileChatSubject(AbstractChatSubject):
                 }
             )
 
+            self.assistant.spinner.start()
+
             patch_content += (
                 model.chat_with_few_shots(
                     user_input=user_input,
@@ -93,6 +95,8 @@ class FileChatSubject(AbstractChatSubject):
                 )
                 + os.linesep
             )
+
+            self.assistant.spinner.stop()
 
             error_message = "Generated patch body is not valid"
             if patch_is_valid(patch_content):
@@ -128,6 +132,9 @@ class FileChatSubject(AbstractChatSubject):
                 self.pick_a_file()
             )
 
+            if not self.file_path:
+                return 'No file selected'
+
         # Talking about a file and initialized.
         if self.chatting_ready():
             # Avoid empty input error.
@@ -138,7 +145,9 @@ class FileChatSubject(AbstractChatSubject):
                 user_input, k=3, filter={"source": self.file_path}
             )
 
-            return self.assistant.get_model().chat(
+            self.assistant.spinner.start()
+
+            response = self.assistant.get_model().chat(
                 user_input,
                 self.assistant.identities[AI_IDENTITY_FILE_INSPECTION],
                 identity_parameters
@@ -149,12 +158,13 @@ class FileChatSubject(AbstractChatSubject):
                 },
             )
 
+            self.assistant.spinner.stop()
+
+            return response
+
         return None
 
     def set_file_path(self, file_path: str) -> None:
-        if not file_path:
-            return 'No file selected'
-
         self.file_path = file_path
         self.assistant.vector_store_file(self.file_path)
         self.assistant.set_subject(self.name())
