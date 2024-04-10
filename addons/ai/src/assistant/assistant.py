@@ -1,5 +1,4 @@
 import os
-import re
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
 
 import chromadb  # type: ignore
@@ -37,8 +36,8 @@ from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
-from src.core.spinner import Spinner
 from src.core.KernelChild import KernelChild
+from src.core.spinner import Spinner
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
@@ -58,10 +57,21 @@ CHAT_ACTIONS_TRANSLATIONS = {
 }
 
 AI_COMMAND_PREFIX = "/"
-AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
-AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
-AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_logo"
-AI_COMMAND_ANSWER_WITH_NATURAL_HUMAN_LANGUAGE = "answer_with_natural_human_language"
+AI_FUNCTION_DISPLAY_A_CUCUMBER = "display_a_cucumber"
+
+ASSISTANT_COMMAND_EXIT = "exit"
+ASSISTANT_COMMAND_FUNCTION = "function"
+ASSISTANT_COMMAND_HELP = "help"
+ASSISTANT_COMMAND_MENU = "menu"
+ASSISTANT_COMMAND_TOOL = "tool"
+
+ASSISTANT_DEFAULT_COMMANDS = {
+    ASSISTANT_COMMAND_FUNCTION: "Ask to guess and run function (beta).",
+    ASSISTANT_COMMAND_EXIT: "quit.",
+    ASSISTANT_COMMAND_HELP: "display this message again.",
+    ASSISTANT_COMMAND_MENU: "show menu.",
+    ASSISTANT_COMMAND_TOOL: "Ask to run a tool (beta).",
+}
 
 
 class AssistantChatCompleter(Completer):
@@ -136,13 +146,7 @@ class Assistant(KernelChild):
         self.set_model(self.default_model)
 
     def _init_commands(self) -> None:
-        self.commands = {
-            "command": "Ask to pick a command (beta).",
-            "exit": "quit.",
-            "help": "display this message again.",
-            "menu": "show menu.",
-            "tool": "Ask to play a tool (beta).",
-        }
+        self.commands = ASSISTANT_DEFAULT_COMMANDS
 
     def _init_subjects(self) -> None:
         subjects = [
@@ -483,56 +487,56 @@ class Assistant(KernelChild):
 
         self.log(f"Press Alt+Enter to add a new line")
 
-    def choose(self, user_input: str) -> Optional[str]:
-        selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
+    def guess_function(self, user_input: str) -> Optional[str]:
+        selected_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).guess_function(
             user_input,
             [
-                AI_COMMAND_DISPLAY_A_CUCUMBER,
+                AI_FUNCTION_DISPLAY_A_CUCUMBER,
                 None,
             ],
             self.identities[AI_IDENTITY_COMMAND_SELECTOR],
         )
 
         # Demo usage
-        if selected_command == AI_COMMAND_DISPLAY_A_CUCUMBER:
+        if selected_function == AI_FUNCTION_DISPLAY_A_CUCUMBER:
             return "🥒"
 
         return None
 
     def split_user_input_commands(self, user_input: str) -> List[StringKeysDict]:
-        user_input_lower = user_input.strip().lower()
-        if user_input_lower == "exit":
+        user_input = user_input.strip()
+        # Special case if user types just "exit" without prefix.
+        if user_input.lower() == "exit":
             return [{"command": "exit", "input": None}]
 
-        # Escape command patterns for regex matching
-        command_patterns = "|".join(
-            re.escape(cmd) for cmd in self.get_active_commands()
-        )
-        matches = list(re.finditer(command_patterns, user_input))
+        results: List[Dict[str, Optional[str]]] = []
+        words = user_input.split()
 
-        results: List[StringKeysDict] = []
+        for i, word in enumerate(words):
+            if word.startswith(AI_COMMAND_PREFIX):
+                command = word[len(AI_COMMAND_PREFIX):].lower()  # Remove prefix and normalize
+                if command in ASSISTANT_DEFAULT_COMMANDS:
+                    # Find command input.
+                    # Input is considered as the text following the command until the next command or end.
+                    command_input = " ".join(words[i + 1:])  # Grab all text after command
+                    # If another command is found in the input, cut the input at that point
+                    next_command_index = next(
+                        (j for j, w in enumerate(words[i + 1:], start=i + 1) if w.startswith(AI_COMMAND_PREFIX)), None)
+                    if next_command_index:
+                        command_input = " ".join(words[i + 1:next_command_index])
 
-        # Iterate over all matches
-        for i, match in enumerate(matches):
-            command = match.group()
-            start = match.end()  # Start index for the input text following the command
+                    if command_input == "":
+                        command_input = None
 
-            # If there is a next command, end index is the start of the next command; else, end of the string
-            if i + 1 < len(matches):
-                end = matches[i + 1].start()
-            else:
-                end = len(user_input)
+                    results.append({"command": command, "input": command_input})
+                    # Break after finding a command to avoid parsing further commands in the same string.
+                    # If you need to handle multiple commands in one string, you might need a more complex approach.
+                    break
 
-            # Extract the input text corresponding to the command, or None if empty
-            command_input: Optional[str] = user_input[start:end].strip()
-            if command_input == "":
-                command_input = None
-
-            # Append the command and its input to the results
-            results.append({"command": command, "input": command_input})
-
-        if len(results) == 0:
+        if not results:
+            # No recognized command found
             return [{"command": None, "input": user_input}]
+
         return results
 
     def get_active_commands(self) -> StringsList:
@@ -581,8 +585,8 @@ class Assistant(KernelChild):
                         return CHAT_ACTION_EXIT
                     elif command == "menu":
                         return None
-                    elif command == "command":
-                        result = self.choose(user_input_split["input"])
+                    elif command == "function":
+                        result = self.guess_function(user_input_split["input"])
                     elif command == "tool":
                         result = self.get_model().chat_agent(
                             user_input_split["input"],

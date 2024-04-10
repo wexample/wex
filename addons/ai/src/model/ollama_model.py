@@ -44,10 +44,10 @@ class OllamaModel(AbstractModel):
             )
         )
 
-    def choose_command(
+    def guess_function(
         self,
         user_input: str,
-        commands: List[str | None],
+        functions: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:
         # Ollama tagging not set up.

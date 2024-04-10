@@ -127,10 +127,10 @@ class AbstractModel(KernelChild):
         )["text"].strip()
 
     @abstractmethod
-    def choose_command(
+    def guess_function(
         self,
         user_input: str,
-        commands: List[str | None],
+        functions: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:
         return None

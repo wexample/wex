@@ -24,10 +24,10 @@ class OpenAiModel(AbstractModel):
 
         self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 
-    def choose_command(
+    def guess_function(
         self,
         user_input: str,
-        commands: List[str | None],
+        functions: List[str | None],
         identity: StringKeysDict,
     ) -> Optional[str]:
         """
@@ -38,7 +38,7 @@ class OpenAiModel(AbstractModel):
                 "properties": {
                     "command": {
                         "type": "string",
-                        "enum": commands,
+                        "enum": functions,
                         "description": identity["system"],
                     },
                 },
