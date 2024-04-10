@@ -124,26 +124,12 @@ class FileChatSubject(AbstractChatSubject):
             return f'⚠️ {error_message}: \n{patch_content}'
 
         elif user_command == SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE:
-            self.file_path = self.pick_a_file()
-
-            if not self.file_path:
-                return 'No file selected'
-
-            self.assistant.vector_store_file(self.file_path)
-            self.assistant.set_subject(self.name())
-
-            embedding_function = self.assistant.get_model(
-                MODEL_NAME_OPEN_AI_GPT_4
-            ).create_embeddings()
-
-            self.chroma = Chroma(
-                persist_directory=self.assistant.chroma_path,
-                embedding_function=embedding_function,
-                collection_name="single_files",
+            self.set_file_path(
+                self.pick_a_file()
             )
 
         # Talking about a file and initialized.
-        if self.is_current_subject() and self.chroma and self.file_path:
+        if self.chatting_ready():
             # Avoid empty input error.
             if not user_input:
                 return f'Please ask something about the file {path}'
@@ -164,6 +150,27 @@ class FileChatSubject(AbstractChatSubject):
             )
 
         return None
+
+    def set_file_path(self, file_path: str) -> None:
+        if not file_path:
+            return 'No file selected'
+
+        self.file_path = file_path
+        self.assistant.vector_store_file(self.file_path)
+        self.assistant.set_subject(self.name())
+
+        embedding_function = self.assistant.get_model(
+            MODEL_NAME_OPEN_AI_GPT_4
+        ).create_embeddings()
+
+        self.chroma = Chroma(
+            persist_directory=self.assistant.chroma_path,
+            embedding_function=embedding_function,
+            collection_name="single_files",
+        )
+
+    def chatting_ready(self) -> bool:
+        return self.is_current_subject() and self.chroma and self.file_path
 
     def pick_a_file(self, base_dir: Optional[str] = None) -> Optional[str]:
         base_dir = base_dir or os.getcwd()

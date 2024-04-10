@@ -57,6 +57,7 @@ CHAT_ACTIONS_TRANSLATIONS = {
     CHAT_ACTION_FREE_TALK: "Free Talk",
 }
 
+AI_COMMAND_PREFIX = "/"
 AI_COMMAND_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 AI_COMMAND_DISPLAY_CURRENT_FILES_LIST = "display_current_files_list"
 AI_COMMAND_DISPLAY_THE_CURRENT_SOFTWARE_LOGO = "display_the_current_software_logo"
@@ -237,6 +238,8 @@ class Assistant(KernelChild):
 
         self.log("Setting subject : " + subject.introduce())
         self.subject = subject
+
+        return subject
 
     def get_current_subject(self) -> AbstractChatSubject:
         self._validate__should_not_be_none(self.subject)
@@ -476,7 +479,7 @@ class Assistant(KernelChild):
         for command, description in self.commands.items():
             # Pad the command with spaces to align all descriptions
             padded_command = command.ljust(longest_command_length)
-            self.log(f"/{padded_command} | {description}")
+            self.log(f"{AI_COMMAND_PREFIX}{padded_command} | {description}")
 
     def choose(self, user_input: str) -> Optional[str]:
         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
