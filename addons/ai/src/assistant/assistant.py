@@ -288,6 +288,8 @@ class Assistant(KernelChild):
                     abort="↩ Back"
                 )
 
+                menu_action = None
+
                 self.set_default_model(new_model)
 
             if menu_action == CHAT_MENU_ACTION_EXIT:

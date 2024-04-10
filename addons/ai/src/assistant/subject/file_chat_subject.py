@@ -49,20 +49,20 @@ class FileChatSubject(AbstractChatSubject):
     ) -> Optional[str]:
         user_command = user_input_split["command"]
         user_input = user_input_split["input"]
-        path = self.file_path
+        file_path = self.file_path
 
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
             # Avoid empty input error.
             if not user_input:
-                return f'Please instruct what to change in this file {path}'
+                return f'Please instruct what to change in this file {file_path}'
 
             model = self.assistant.get_default_model()
-            file_name = os.path.basename(path)
-            file_content = file_read(path)
+            file_name = os.path.basename(file_path)
+            file_content = file_read(file_path)
             file_content_with_numbers = string_add_lines_numbers(file_content)
             patch_content = (
                 f"diff --git a/{file_name} b/{file_name}"
-                f"\nindex 1234567..abcdefg {git_file_get_octal_mode(path)}"
+                f"\nindex 1234567..abcdefg {git_file_get_octal_mode(file_path)}"
                 f"\n--- a/{file_name}"
                 f"\n+++ b/{file_name}"
                 f"\n"
@@ -119,13 +119,13 @@ class FileChatSubject(AbstractChatSubject):
 
                     # Patch library expect patch to refer to a relative file,
                     # so we move in the same dir.
-                    success = dir_execute_in_workdir(os.path.dirname(path), _patch_it)
+                    success = dir_execute_in_workdir(os.path.dirname(file_path), _patch_it)
                     error_message = "Patching failed"
 
                     if success:
-                        file_set_user_or_sudo_user_owner(path)
+                        file_set_user_or_sudo_user_owner(file_path)
 
-                        return f'✏️ Patched : {path}'
+                        return f'✏️ Patched : {file_path}'
 
             return f'⚠️ {error_message}: \n{patch_content}'
 
@@ -137,11 +137,13 @@ class FileChatSubject(AbstractChatSubject):
             if not self.file_path:
                 return 'No file selected'
 
+            file_path = self.file_path
+
         # Talking about a file and initialized.
         if self.chatting_ready():
             # Avoid empty input error.
             if not user_input:
-                return f'Please ask something about the file {path}'
+                return f'Please ask something about the file {file_path}'
 
             results = self.chroma.similarity_search_with_relevance_scores(
                 user_input, k=3, filter={"source": self.file_path}
