@@ -481,6 +481,8 @@ class Assistant(KernelChild):
             padded_command = command.ljust(longest_command_length)
             self.log(f"{AI_COMMAND_PREFIX}{padded_command} | {description}")
 
+        self.log(f"Press Alt+Enter to add a new line")
+
     def choose(self, user_input: str) -> Optional[str]:
         selected_command = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).choose_command(
             user_input,
