@@ -16,13 +16,17 @@ class DefaultSubject(AbstractChatSubject):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
     ) -> Optional[str]:
-        self.assistant.log("...")
+        self.assistant.spinner.start()
 
         self.kernel.io.print(COLOR_GRAY, end="")
         self.assistant.ai_working = True
 
-        return self.assistant.get_model().chat(
+        response = self.assistant.get_model().chat(
             user_input_split["input"],
             identity,
             identity_parameters or {},
         )
+
+        self.assistant.spinner.stop()
+
+        return response

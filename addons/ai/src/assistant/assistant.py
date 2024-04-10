@@ -37,6 +37,7 @@ from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
+from src.core.spinner import Spinner
 from src.core.KernelChild import KernelChild
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
@@ -114,6 +115,8 @@ class Assistant(KernelChild):
             event.current_buffer.validate_and_handle()
 
         self.prompt_key_binding = kb
+
+        self.spinner = Spinner()
 
     def _init_models(self) -> None:
         self._model: Optional[AbstractModel] = None
