@@ -8,7 +8,7 @@ from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSu
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
-from src.const.types import StringKeysDict, StringsList
+from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.dir import dir_execute_in_workdir
 from src.helper.file import file_read, file_read_if_exists, file_set_user_or_sudo_user_owner
@@ -31,11 +31,13 @@ class FileChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
 
-    def get_completer_commands(self) -> StringsList:
-        commands = [SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE]
+    def get_completer_commands(self) -> StringKeysDict:
+        commands = {
+            SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE: "Talk about file",
+        }
 
         if self.is_current_subject():
-            commands.append(SUBJECT_FILE_CHAT_COMMAND_PATCH)
+            commands[SUBJECT_FILE_CHAT_COMMAND_PATCH] = "Modify file"
 
         return commands
 
@@ -52,9 +54,9 @@ class FileChatSubject(AbstractChatSubject):
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
             # Avoid empty input error.
             if not user_input:
-                return f'Please instruct how to patch this file {path}'
+                return f'Please instruct what to change in this file {path}'
 
-            model = self.assistant.get_model()
+            model = self.assistant.get_default_model()
             file_name = os.path.basename(path)
             file_content = file_read(path)
             file_content_with_numbers = string_add_lines_numbers(file_content)
@@ -147,7 +149,7 @@ class FileChatSubject(AbstractChatSubject):
 
             self.assistant.spinner.start()
 
-            response = self.assistant.get_model().chat(
+            response = self.assistant.get_default_model().chat(
                 user_input,
                 self.assistant.identities[AI_IDENTITY_FILE_INSPECTION],
                 identity_parameters
@@ -169,7 +171,7 @@ class FileChatSubject(AbstractChatSubject):
         self.assistant.vector_store_file(self.file_path)
         self.assistant.set_subject(self.name())
 
-        embedding_function = self.assistant.get_model(
+        embedding_function = self.assistant.get_default_model(
             MODEL_NAME_OPEN_AI_GPT_4
         ).create_embeddings()
 

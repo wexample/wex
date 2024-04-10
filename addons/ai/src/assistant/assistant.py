@@ -46,14 +46,14 @@ from src.helper.string import string_list_longest_word
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
+CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL = "CHANGE_MODEL"
 CHAT_MENU_ACTION_EXIT = "EXIT"
-CHAT_MENU_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
-CHAT_MENU_ACTION_TALK = "TALK"
+CHAT_MENU_ACTION_CHAT = "TALK"
 
 CHAT_MENU_ACTIONS_TRANSLATIONS = {
+    CHAT_MENU_ACTION_CHAT: "Back to chat",
+    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL: "Change default model",
     CHAT_MENU_ACTION_EXIT: "Exit",
-    CHAT_MENU_ACTION_CHANGE_MODEL: "Change language model",
-    CHAT_MENU_ACTION_TALK: "Back to talk",
 }
 
 AI_COMMAND_PREFIX = "/"
@@ -76,7 +76,7 @@ ASSISTANT_DEFAULT_COMMANDS = {
 
 class AssistantChatCompleter(Completer):
     def __init__(self, commands: StringsList) -> None:
-        self.commands = commands
+        self.active_commands = commands
 
     def get_completions(
         self, document: ToolkitDocument, complete_event: CompleteEvent
@@ -87,19 +87,19 @@ class AssistantChatCompleter(Completer):
         if word_before_cursor == "":
             return
 
-        for command in self.commands:
+        for command in self.active_commands:
             if command.startswith(word_before_cursor):
                 yield Completion(command + " ", start_position=-len(word_before_cursor))
 
 
 class Assistant(KernelChild):
     subject: Optional[AbstractChatSubject] = None
+    _default_model: Optional[AbstractModel] = None
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
         super().__init__(kernel)
 
-        self.ai_working = False
-        self.default_model = default_model
+        self._initial_default_model = default_model
 
         prompt_progress_steps(
             kernel,
@@ -113,6 +113,22 @@ class Assistant(KernelChild):
                 self._init_vector_database,
             ],
         )
+
+    def _init_models(self) -> None:
+        self._default_model: Optional[AbstractModel] = None
+        self.models: Dict[str, AbstractModel] = {
+            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
+                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
+            ),
+            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+            ),
+            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
+                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
+            ),
+        }
+
+        self.set_default_model(self._initial_default_model)
 
     def _init_prompt(self) -> None:
         kb = KeyBindings()
@@ -128,22 +144,6 @@ class Assistant(KernelChild):
         self.prompt_key_binding = kb
 
         self.spinner = Spinner()
-
-    def _init_models(self) -> None:
-        self._model: Optional[AbstractModel] = None
-        self.models: Dict[str, AbstractModel] = {
-            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
-                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
-            ),
-            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
-            ),
-            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
-            ),
-        }
-
-        self.set_model(self.default_model)
 
     def _init_commands(self) -> None:
         self.commands = ASSISTANT_DEFAULT_COMMANDS
@@ -254,29 +254,29 @@ class Assistant(KernelChild):
     def log(self, message: str) -> None:
         self.kernel.io.log(f"  {message}")
 
-    def set_model(self, identifier: str) -> None:
+    def set_default_model(self, identifier: str) -> None:
         self.log(f"Model set to : {identifier}")
 
-        self._model = self.models[identifier]
+        self._default_model = self.models[identifier]
 
-    def get_model(self, name: Optional[str] = None) -> AbstractModel:
-        model = self.models[name] if name else self._model
+    def get_default_model(self, name: Optional[str] = None) -> AbstractModel:
+        model = self.models[name] if name else self._default_model
         self._validate__should_not_be_none(model)
         assert isinstance(model, AbstractModel)
 
         return model
 
     def start(self, menu_action: Optional[str] = None) -> None:
-        current_model = self.get_model()
+        current_model = self.get_default_model()
         asked_exit = False
         while not asked_exit:
             if not menu_action:
                 menu_action = self.show_menu()
 
-            if menu_action == CHAT_MENU_ACTION_TALK:
+            if menu_action == CHAT_MENU_ACTION_CHAT:
                 self.set_default_subject()
                 menu_action = self.chat()
-            elif menu_action == CHAT_MENU_ACTION_CHANGE_MODEL:
+            elif menu_action == CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
                 models = {}
                 for model in self.models:
                     models[model] = model
@@ -285,9 +285,10 @@ class Assistant(KernelChild):
                     "Choose a new language model:",
                     models,
                     default=current_model.identifier,
+                    abort="↩ Back"
                 )
 
-                self.set_model(new_model)
+                self.set_default_model(new_model)
 
             if menu_action == CHAT_MENU_ACTION_EXIT:
                 asked_exit = True
@@ -445,7 +446,7 @@ class Assistant(KernelChild):
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(
             chunks,
-            self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
+            self.get_default_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
             collection_name="single_files",
             persist_directory=self.chroma_path,
         )
@@ -456,12 +457,12 @@ class Assistant(KernelChild):
 
     def show_menu(self) -> Optional[str]:
         choices = {
-            CHAT_MENU_ACTION_TALK: CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_TALK],
+            CHAT_MENU_ACTION_CHAT: CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_CHAT],
         }
 
         if len(self.models.keys()) > 1:
-            choices[CHAT_MENU_ACTION_CHANGE_MODEL] = CHAT_MENU_ACTIONS_TRANSLATIONS[
-                CHAT_MENU_ACTION_CHANGE_MODEL
+            choices[CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL] = CHAT_MENU_ACTIONS_TRANSLATIONS[
+                CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL
             ]
 
         choices[CHAT_MENU_ACTION_EXIT] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_EXIT]
@@ -470,17 +471,18 @@ class Assistant(KernelChild):
             "Choose an action to do with ai assistant:",
             choices,
             abort=None,
-            default=CHAT_MENU_ACTION_TALK,
+            default=CHAT_MENU_ACTION_CHAT,
         )
 
         return str(action) if action else None
 
     def show_help(self) -> None:
+        commands = self.get_active_commands()
         # Assuming string_list_longest_word returns the length of the longest word in a list
-        longest_command_length = string_list_longest_word(self.commands.keys())
+        longest_command_length = string_list_longest_word(commands.keys())
 
         # Display the menu in the specified format
-        for command, description in self.commands.items():
+        for command, description in commands.items():
             # Pad the command with spaces to align all descriptions
             padded_command = command.ljust(longest_command_length)
             self.log(f"{AI_COMMAND_PREFIX}{padded_command} | {description}")
@@ -488,7 +490,7 @@ class Assistant(KernelChild):
         self.log(f"Press Alt+Enter to add a new line")
 
     def guess_function(self, user_input: str) -> Optional[str]:
-        selected_function = self.get_model(MODEL_NAME_OPEN_AI_GPT_4).guess_function(
+        selected_function = self.get_default_model(MODEL_NAME_OPEN_AI_GPT_4).guess_function(
             user_input,
             [
                 AI_FUNCTION_DISPLAY_A_CUCUMBER,
@@ -511,11 +513,12 @@ class Assistant(KernelChild):
 
         results: List[Dict[str, Optional[str]]] = []
         words = user_input.split()
+        commands = self.get_active_commands()
 
         for i, word in enumerate(words):
             if word.startswith(AI_COMMAND_PREFIX):
                 command = word[len(AI_COMMAND_PREFIX):].lower()  # Remove prefix and normalize
-                if command in ASSISTANT_DEFAULT_COMMANDS:
+                if command in commands:
                     # Find command input.
                     # Input is considered as the text following the command until the next command or end.
                     command_input = " ".join(words[i + 1:])  # Grab all text after command
@@ -539,11 +542,13 @@ class Assistant(KernelChild):
 
         return results
 
-    def get_active_commands(self) -> StringsList:
-        commands = list(self.commands.keys())
+    def get_active_commands(self) -> StringKeysDict:
+        commands = self.commands.copy()
 
         for subject in self.subjects.values():
-            commands += cast(AbstractChatSubject, subject).get_completer_commands()
+            commands.update(
+                cast(AbstractChatSubject, subject).get_completer_commands()
+            )
 
         return commands
 
@@ -561,7 +566,6 @@ class Assistant(KernelChild):
         self.show_help()
 
         while True:
-            self.ai_working = False
 
             try:
                 if initial_prompt:
@@ -588,7 +592,7 @@ class Assistant(KernelChild):
                     elif command == "function":
                         result = self.guess_function(user_input_split["input"])
                     elif command == "tool":
-                        result = self.get_model().chat_agent(
+                        result = self.get_default_model().chat_agent(
                             user_input_split["input"],
                             self.tools,
                             self.identities[AI_IDENTITY_TOOLS_AGENT],
@@ -611,8 +615,9 @@ class Assistant(KernelChild):
                         self.kernel.io.print(result)
             except KeyboardInterrupt:
                 # User asked to quit
-                if not self.ai_working:
+                if not self.spinner.running:
                     return CHAT_MENU_ACTION_EXIT
                 # User asked to interrupt assistant.
                 else:
+                    self.spinner.stop()
                     self.kernel.io.print(os.linesep)

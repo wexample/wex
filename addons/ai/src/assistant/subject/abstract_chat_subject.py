@@ -17,8 +17,8 @@ class AbstractChatSubject(KernelChild):
     def name() -> str:
         pass
 
-    def get_completer_commands(self) -> StringsList:
-        return []
+    def get_completer_commands(self) -> StringKeysDict:
+        return {}
 
     def introduce(self) -> str:
         return self.name()
