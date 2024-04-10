@@ -233,7 +233,7 @@ class Assistant(KernelChild):
     def set_default_subject(self) -> None:
         self.set_subject(DefaultSubject.name())
 
-    def set_subject(self, name: str) -> None:
+    def set_subject(self, name: str) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
 
         self.log("Setting subject : " + subject.introduce())
