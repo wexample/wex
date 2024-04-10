@@ -5,6 +5,10 @@ TEXT_ALIGN_RIGHT = "right"
 MAX_WIDTH = 250
 
 
+def chat_get_terminal_width() -> int:
+    return shutil.get_terminal_size().columns
+
+
 def chat_format_message(
     text: str,
     align: str = TEXT_ALIGN_LEFT,

@@ -46,14 +46,14 @@ from src.helper.string import string_list_longest_word
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-CHAT_ACTION_EXIT = "EXIT"
-CHAT_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
-CHAT_ACTION_FREE_TALK = "FREE_TALK"
+CHAT_MENU_ACTION_EXIT = "EXIT"
+CHAT_MENU_ACTION_CHANGE_MODEL = "CHANGE_MODEL"
+CHAT_MENU_ACTION_TALK = "TALK"
 
-CHAT_ACTIONS_TRANSLATIONS = {
-    CHAT_ACTION_EXIT: "Exit",
-    CHAT_ACTION_CHANGE_MODEL: "Change language model",
-    CHAT_ACTION_FREE_TALK: "Free Talk",
+CHAT_MENU_ACTIONS_TRANSLATIONS = {
+    CHAT_MENU_ACTION_EXIT: "Exit",
+    CHAT_MENU_ACTION_CHANGE_MODEL: "Change language model",
+    CHAT_MENU_ACTION_TALK: "Back to talk",
 }
 
 AI_COMMAND_PREFIX = "/"
@@ -266,17 +266,17 @@ class Assistant(KernelChild):
 
         return model
 
-    def start(self, action: Optional[str] = None) -> None:
+    def start(self, menu_action: Optional[str] = None) -> None:
         current_model = self.get_model()
         asked_exit = False
         while not asked_exit:
-            if not action:
-                action = self.show_menu()
+            if not menu_action:
+                menu_action = self.show_menu()
 
-            if action == CHAT_ACTION_FREE_TALK:
+            if menu_action == CHAT_MENU_ACTION_TALK:
                 self.set_default_subject()
-                action = self.chat()
-            elif action == CHAT_ACTION_CHANGE_MODEL:
+                menu_action = self.chat()
+            elif menu_action == CHAT_MENU_ACTION_CHANGE_MODEL:
                 models = {}
                 for model in self.models:
                     models[model] = model
@@ -289,7 +289,7 @@ class Assistant(KernelChild):
 
                 self.set_model(new_model)
 
-            if action == CHAT_ACTION_EXIT:
+            if menu_action == CHAT_MENU_ACTION_EXIT:
                 asked_exit = True
 
         self.log(f"{os.linesep}Ciao")
@@ -456,21 +456,21 @@ class Assistant(KernelChild):
 
     def show_menu(self) -> Optional[str]:
         choices = {
-            CHAT_ACTION_FREE_TALK: CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_FREE_TALK],
+            CHAT_MENU_ACTION_TALK: CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_TALK],
         }
 
         if len(self.models.keys()) > 1:
-            choices[CHAT_ACTION_CHANGE_MODEL] = CHAT_ACTIONS_TRANSLATIONS[
-                CHAT_ACTION_CHANGE_MODEL
+            choices[CHAT_MENU_ACTION_CHANGE_MODEL] = CHAT_MENU_ACTIONS_TRANSLATIONS[
+                CHAT_MENU_ACTION_CHANGE_MODEL
             ]
 
-        choices[CHAT_ACTION_EXIT] = CHAT_ACTIONS_TRANSLATIONS[CHAT_ACTION_EXIT]
+        choices[CHAT_MENU_ACTION_EXIT] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_EXIT]
 
         action = prompt_choice_dict(
             "Choose an action to do with ai assistant:",
             choices,
             abort=None,
-            default=CHAT_ACTION_FREE_TALK,
+            default=CHAT_MENU_ACTION_TALK,
         )
 
         return str(action) if action else None
@@ -582,7 +582,7 @@ class Assistant(KernelChild):
                     command = user_input_split["command"]
 
                     if command == "exit":
-                        return CHAT_ACTION_EXIT
+                        return CHAT_MENU_ACTION_EXIT
                     elif command == "menu":
                         return None
                     elif command == "function":
@@ -612,7 +612,7 @@ class Assistant(KernelChild):
             except KeyboardInterrupt:
                 # User asked to quit
                 if not self.ai_working:
-                    return CHAT_ACTION_EXIT
+                    return CHAT_MENU_ACTION_EXIT
                 # User asked to interrupt assistant.
                 else:
                     self.kernel.io.print(os.linesep)
