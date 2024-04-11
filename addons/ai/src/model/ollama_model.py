@@ -1,7 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_community.llms import Ollama
 
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -52,3 +53,6 @@ class OllamaModel(AbstractModel):
     ) -> Optional[str]:
         # Ollama tagging not set up.
         return None
+
+    def create_embeddings(self) -> Any:
+        return OllamaEmbeddings()
