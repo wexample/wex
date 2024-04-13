@@ -12,6 +12,7 @@ from addons.ai.src.assistant.assistant import Assistant, ASSISTANT_DEFAULT_COMMA
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_DEFAULT
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
+from src.helper.package import package_enable_logging
 from src.helper.file import file_read, file_write
 from src.helper.patch import patch_apply_in_workdir
 from tests.AbstractTestCase import AbstractTestCase
@@ -173,6 +174,8 @@ class TestAiCommandTalkAsk(AbstractTestCase):
             patch_path = patches_dir + patch_file
             patch_data = file_read(patch_path).encode()
             patch_set = patch.fromstring(patch_data)
+
+            package_enable_logging()
 
             # Check if the patch set is loaded properly
             if not patch_set:
