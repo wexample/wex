@@ -1,9 +1,4 @@
-# HUNK_HEADER: Explanation of the line @@ -R +R @@
-# HUNK_HEADER_ORIGIN_START: Since the function is newly added, there are no original lines being changed, adn no **security margin**, thus the first number is 0
-# HUNK_HEADER_ORIGIN_LENGTH: Since no original lines are modified (it's an addition), the second number is 0
-# HUNK_HEADER_TARGET_START: The addition starts at the first line of the target file, so the third number is +1
-# HUNK_HEADER_TARGET_LENGTH: The addition includes two lines of code in the target file, so the last number is 2
-# DESCRIPTION: I have created a Python function that prints "Hello World"
-@@ -0,0 +1,2 @@
+# PATCH_START
 +def print_hello_world() -> str:
 +    return 'Hello World!'
+# DESCRIPTION: I have created a Python function that prints "Hello World"

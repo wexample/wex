@@ -1,12 +1,8 @@
-# HUNK_HEADER: Explanation of the line @@ -R +R @@
-# HUNK_HEADER_ORIGIN_START: The effective first changes start from line 10 of the original file, so we subtract the **security margin** of 3, the first number of the hunk header is 6
-# HUNK_HEADER_ORIGIN_LENGTH: The total change applies to one line of the original file, plus the **security margin** of 3, so the second number is 4
-# HUNK_HEADER_TARGET_START: The target also starts at line 10, with the same **security margin** subtraction of 3, the third number is 6
-# HUNK_HEADER_TARGET_LENGTH: The sum of the changes applied is 1 new line and one removed line, so the last stay the same at 4
-# DESCRIPTION: I have modified the function to make it return uppercase text
-@@ -6,4 +6,4 @@ def my_program_main_function(subject: str = "World") -> str:
+# PATCH_START
+ def my_program_main_function(subject: str = "World") -> str:
      subject (str): The name or title of the entity to be greeted. Defaults to "World".
 
      """
 -    return f"Hello " + subject + "!"
 +    return f"Hello " + subject + "!".upper()
+# DESCRIPTION: I have modified the function to make it return uppercase text

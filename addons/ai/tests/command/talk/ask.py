@@ -1,7 +1,6 @@
-import os
-from typing import cast
-
 import enum
+import os
+from typing import cast, Dict
 
 import patch
 from langchain_core.prompts import FewShotPromptTemplate
@@ -12,9 +11,11 @@ from addons.ai.src.assistant.assistant import Assistant, ASSISTANT_DEFAULT_COMMA
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.utils.identities import AI_IDENTITY_DEFAULT
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
-from src.helper.package import package_enable_logging
+from src.const.types import StringKeysDict
 from src.helper.file import file_read, file_write
-from src.helper.patch import patch_apply_in_workdir
+from src.helper.package import package_enable_logging
+from src.helper.patch import patch_apply_in_workdir, patch_clean, patch_create_hunk_header, patch_has_all_parts, \
+    patch_find_line_of_first_subgroup, patch_get_initial_lines, patch_get_initial_parts
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -27,6 +28,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self._test_ask_assistant(assistant)
         self._test_few_shot_prompt_template(assistant)
         self._test_few_shot_examples(assistant)
+        self._test_diff(assistant)
         self._test_patching(assistant)
 
     def _test_ask_parsing(self, assistant: Assistant) -> None:
@@ -127,7 +129,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                 file_chat_subject.load_example_patch("explain/code_comment"),
                 file_chat_subject.load_example_patch("patch/hello_world_capitalized"),
             ],
-            input_variables_names=["file_name", "question", "source"]
+            input_variables_names=["file_name", "question", "source_with_lines"]
         )
 
         self.assertTrue(
@@ -138,6 +140,17 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         )
 
     def _test_few_shot_examples(self, assistant: Assistant) -> None:
+        examples = self._get_all_examples(assistant)
+        for group in examples.values():
+            for example, example_name in group.items():
+                self.assertIsDict(
+                    example,
+                    f"Example patch \"{example_name}\" has been loaded"
+                )
+
+    def _get_all_examples(self, assistant: Assistant) -> Dict[str, StringKeysDict]:
+        examples = {}
+
         file_chat_subject = cast(
             FileChatSubject,
             assistant.subjects[FileChatSubject.name()]
@@ -145,12 +158,94 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
         base_dir = self.kernel.directory.path + 'addons/ai/samples/examples/'
         for group_name in os.listdir(base_dir):
-            for example_name in os.listdir(os.path.join(base_dir, group_name)):
-                example = file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
+            examples[group_name] = {}
 
-                self.assertIsDict(
-                    example,
-                    f"Example patch \"{example_name}\" has been loaded"
+            for example_name in os.listdir(os.path.join(base_dir, group_name)):
+                examples[group_name][example_name] = file_chat_subject.load_example_patch(
+                    f"{group_name}/{example_name}"
+                )
+
+        return examples
+
+    def _test_diff(self, assistant: Assistant) -> None:
+        file_content = ("This is a demo file"
+                        "\nWith several lines"
+                        "\nSome empty lines"
+                        "\n"
+                        "\nSome other lines"
+                        "\n    And some other lines surrounded by spaces    "
+                        "\nAnd no ending line")
+
+        self.assertTrue(
+            patch_has_all_parts(
+                file_content,
+                [
+                    ["Some empty lines", ""],
+                    ["    And some other lines surrounded by spaces    "],
+                ]
+            )
+        )
+
+        # This version does not support if spaces does not match.
+        self.assertFalse(
+            patch_has_all_parts(
+                file_content,
+                [
+                    [" Some empty lines", " "],
+                    [" And some other lines surrounded by spaces    "],
+                ]
+            )
+        )
+
+        self.assertEqual(
+            patch_find_line_of_first_subgroup(
+                file_content,
+                [
+                    ["Some empty lines", ""],
+                ],
+            ),
+            3
+        )
+
+        patch_content = (" This is a patch"
+                         "\n+With added line"
+                         "\n-With removed line"
+                         "\n "
+                         "\n And unchanged line")
+
+        self.assertEqual(
+            len(patch_get_initial_lines(patch_content)),
+            4
+        )
+
+        patch_content = ("+This is a new line"
+                         "\n With a line starting with space"
+                         "\n-This line starts with a dash and should be in the first group"
+                         "\n+Another new line"
+                         "\n This should be in a separate group because it's separated by a '+' line"
+                         "\n-This line also starts with a dash and should be in the second group")
+
+        groups = patch_get_initial_parts(patch_content)
+
+        self.assertEqual(
+            len(groups),
+            2
+        )
+
+        self.assertEqual(
+            len(groups[0]),
+            2
+        )
+
+        # Test examples
+        examples = self._get_all_examples(assistant)
+        for group in examples.values():
+            for example in group.values():
+                self.assertIsNotNone(
+                    patch_create_hunk_header(
+                        example["source"],
+                        patch_clean(example["response"]),
+                    )
                 )
 
     def _test_patching(self, assistant: Assistant) -> None:

@@ -203,10 +203,10 @@ class Assistant(KernelChild):
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
                 "system": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
-                          "\nStart the patch with a literal explanation of the calculation of the hunk header numbers"
-                          "\nThe patch body always starts 3 lines before the first change, if applicable, this is the **security margin**."
-                          "\nFocus on creating accurate and succinct diffs for patch files."
-                          "\nPay attention to the line numbers specified at the start of each diff line."
+                          "\nStart the patch with \"# PATCH_START\" then the patch content without header."
+                          "\nThe patch body always starts 3 lines before the first change, if applicable, this is the security margin."
+                          "\nFocus on creating accurate patch. You respect the exact original spacings and indentation."
+                          "\nTerminate with the # DESCRIPTION: information describing what you've done."
             },
             AI_IDENTITY_TOOLS_AGENT: {
                 "system": "Efficiently answer the questions using available tools:"

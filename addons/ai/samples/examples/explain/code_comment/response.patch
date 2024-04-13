@@ -1,11 +1,6 @@
-# HUNK_HEADER: Explanation of the line @@ -R +R @@
-# HUNK_HEADER_ORIGIN_START: We cant give more than one similar line of **security margin**, so we start at the first line of the original file and first number is -1
-# HUNK_HEADER_ORIGIN_LENGTH: The changes apply to two lines in the original file, so the second number is 2
-# HUNK_HEADER_TARGET_START: Change will match de beginning, so the third number is +1
-# HUNK_HEADER_TARGET_LENGTH: The changes apply to two lines in the target file, which remains consistent post modification, so the last number is also 2
-# DESCRIPTION: I have added comments in the given code to help user understand output type hint
-@@ -1,2 +1,2 @@
+# PATCH_START
 -def print_hello_world() -> str:
--    return 'Hello World!'
+-    return "Hello World!"
 +def print_hello_world() -> str:  # <------------- The "-> str" part defines the type of the returned variable as string
-+    return 'Hello World!'  # <------------- Indeed, the output value is a string
++    return "Hello World!"  # <------------- Indeed, the output value is a string
+# DESCRIPTION: I have added comments in the given code to help user understand output type hint
