@@ -38,6 +38,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
+from src.helper.data_json import load_json_if_valid
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
@@ -335,7 +336,9 @@ class Assistant(KernelChild):
             self.log(f"Loader : JSON")
             from langchain_community.document_loaders import JSONLoader
 
-            return JSONLoader(file_path=file_path, jq_schema=".", text_content=False)
+            if load_json_if_valid(file_path):
+                return JSONLoader(file_path=file_path, jq_schema=".", text_content=False)
+            return TextLoader(file_path)
         elif extension == "pdf":
             self.log(f"Loader : PDF")
             from langchain_community.document_loaders import PyPDFLoader
@@ -360,8 +363,6 @@ class Assistant(KernelChild):
                 )
 
             self.log("Loader : default")
-
-            from langchain_community.document_loaders import TextLoader
 
             # Fallback to a generic text loader if file type is not specifically handled
             return TextLoader(file_path)
