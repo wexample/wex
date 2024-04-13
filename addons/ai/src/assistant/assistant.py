@@ -612,9 +612,7 @@ class Assistant(KernelChild):
                                 )
 
                     if result:
-                        # Let a new line separator
-                        self.kernel.io.print(COLOR_RESET)
-                        self.kernel.io.print(result)
+                        self.print_ai(result)
             except KeyboardInterrupt:
                 # User asked to quit
                 if not self.spinner.running:
@@ -623,3 +621,8 @@ class Assistant(KernelChild):
                 else:
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
+
+    def print_ai(self, message: str):
+        # Let a new line separator
+        self.kernel.io.print(COLOR_RESET)
+        self.kernel.io.print(message)

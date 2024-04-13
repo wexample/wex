@@ -157,7 +157,9 @@ class FileChatSubject(AbstractChatSubject):
 
                         return f'✏️ {description}'
 
-            return f'⚠️ {error_message}: \n{patch_content}'
+            self.kernel.io.log(patch_content)
+
+            return f'⚠️ {error_message}'
 
         elif user_command == SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE:
             user_input_trimmed = user_input.strip() if user_input else None
