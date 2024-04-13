@@ -11,7 +11,7 @@ from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
 from src.helper.file import file_read, file_read_if_exists, file_set_user_or_sudo_user_owner
-from src.helper.patch import patch_is_valid, patch_apply_in_workdir
+from src.helper.patch import patch_is_valid, patch_apply_in_workdir, patch_extract_description_and_clean_patch
 from src.helper.prompt import prompt_choice_dict
 from src.helper.string import string_add_lines_numbers, string_has_trailing_new_line
 
@@ -40,32 +40,6 @@ class FileChatSubject(AbstractChatSubject):
 
         return commands
 
-    def extract_description_and_clean_patch(self, patch_content: str) -> Tuple[str, str]:
-        # Split the content into lines
-        lines = patch_content.split("\n")
-
-        # Define the prefix to look for
-        prefix = "# DESCRIPTION:"
-
-        # Initialize variables
-        description: Optional[str] = None
-        cleaned_patch = []
-
-        # Iterate over each line to find the prefix
-        for line in lines:
-            if line.strip().startswith(prefix):
-                # Extract the description and mark as found
-                description = line.strip()[len(prefix):].strip()
-            else:
-                # Add line to cleaned_patch if it is not the description line
-                cleaned_patch.append(line)
-
-        # Prepare the return values
-        cleaned_patch_content = "\n".join(cleaned_patch)
-
-        # Return the description and the cleaned patch content
-        return (description or 'No description'), cleaned_patch_content
-
     def process_user_input(
         self,
         user_input_split: StringKeysDict,
@@ -86,8 +60,6 @@ class FileChatSubject(AbstractChatSubject):
             file_content = file_read(file_path)
             file_content_with_numbers = string_add_lines_numbers(file_content)
 
-            print(file_content_with_numbers)
-
             identity_parameters.update(
                 {
                     "file_name": file_name,
@@ -98,7 +70,7 @@ class FileChatSubject(AbstractChatSubject):
 
             self.assistant.spinner.start()
 
-            patch_content = (
+            raw_patch_content = (
                 model.chat_with_few_shots(
                     user_input=user_input,
                     identity=identity,
@@ -119,7 +91,7 @@ class FileChatSubject(AbstractChatSubject):
                 + os.linesep
             )
 
-            description, patch_content = self.extract_description_and_clean_patch(patch_content)
+            description, patch_content = patch_extract_description_and_clean_patch(raw_patch_content)
 
             self.assistant.spinner.stop()
 
@@ -154,7 +126,7 @@ class FileChatSubject(AbstractChatSubject):
 
                         return f'✏️ {description}'
 
-            self.kernel.io.log(patch_content)
+            self.kernel.io.log(raw_patch_content)
 
             return f'⚠️ {error_message}'
 
