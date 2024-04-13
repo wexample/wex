@@ -9,7 +9,7 @@ from langchain_community.document_loaders.parsers.language.language_parser impor
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
-from prompt_toolkit import prompt as prompt_tool
+from prompt_toolkit import prompt as prompt_tool, HTML, print_formatted_text
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
 from prompt_toolkit.document import Document as ToolkitDocument
 from prompt_toolkit.key_binding import KeyBindings
@@ -34,7 +34,6 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from src.const.globals import COLOR_RESET
 from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -574,8 +573,14 @@ class Assistant(KernelChild):
                     user_input = initial_prompt
                     initial_prompt = None
                 else:
+                    from prompt_toolkit.styles import Style
+                    style = Style.from_dict({
+                        'prefix': '#333 bold',
+                    })
+
                     user_input = prompt_tool(
-                        ">>> ",
+                        HTML("<prefix>&gt;&gt;&gt; </prefix>"),
+                        style=style,
                         completer=self.create_completer(),
                         multiline=True,
                         key_bindings=self.prompt_key_binding,
@@ -624,5 +629,4 @@ class Assistant(KernelChild):
 
     def print_ai(self, message: str):
         # Let a new line separator
-        self.kernel.io.print(COLOR_RESET)
-        self.kernel.io.print(message)
+        print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{message}</ai>'))
