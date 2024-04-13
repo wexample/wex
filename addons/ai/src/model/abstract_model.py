@@ -6,9 +6,10 @@ from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import BasePromptTemplate
+from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
 from addons.ai.src.tool.command_tool import CommandTool
-from src.const.types import StringKeysDict
+from src.const.types import StringKeysDict, StringsList
 from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
 
@@ -66,6 +67,30 @@ class AbstractModel(KernelChild):
             identity_parameters=identity_parameters,
         )
 
+    def create_few_shot_prompt_template(
+        self,
+        identity: StringKeysDict,
+        example_prompt: str,
+        examples: List[StringKeysDict],
+        input_variables_names: StringsList,
+        response_variable_name: str = "response"
+    ) -> FewShotPromptTemplate:
+        example_prompt_template = PromptTemplate(
+            input_variables=input_variables_names + [response_variable_name],
+            template=example_prompt + "{" + response_variable_name + "}",
+        )
+
+        return FewShotPromptTemplate(
+            examples=examples,
+            example_prompt=example_prompt_template,
+            # The prefix is our instructions
+            prefix=identity["system"],
+            # The suffix our user input and output indicator
+            suffix=example_prompt,
+            input_variables=input_variables_names,
+            example_separator="\n----------------------------------\n",
+        )
+
     def chat_with_few_shots(
         self,
         user_input,
@@ -73,29 +98,17 @@ class AbstractModel(KernelChild):
         identity_parameters: StringKeysDict,
         example_prompt,
         examples,
+        input_variables_names
     ):
-        from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
-
-        example_prompt_template = PromptTemplate(
-            input_variables=["file_name", "question", "source", "patch"],
-            template=example_prompt + """{patch}""",
-        )
-
-        few_shot_prompt_template = FewShotPromptTemplate(
-            examples=examples,
-            example_prompt=example_prompt_template,
-            # The prefix is our instructions
-            prefix=identity["system"],
-            # The suffix our user input and output indicator
-            suffix=example_prompt,
-            input_variables=["file_name", "question", "source"],
-            example_separator="\n----------------------------------\n",
-        )
-
         return self.chain_invoke_and_strip_result(
-            prompt_template=few_shot_prompt_template,
+            prompt_template=self.create_few_shot_prompt_template(
+                identity=identity,
+                example_prompt=example_prompt,
+                examples=examples,
+                input_variables_names=input_variables_names
+            ),
             user_input=user_input,
-            identity_parameters=identity_parameters,
+            identity_parameters=identity_parameters
         )
 
     def chat_agent(

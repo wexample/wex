@@ -201,9 +201,10 @@ class Assistant(KernelChild):
                           "\n{context}"
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
-                "system": "As an AI, generate file diffs in unidiff format based on user instructions."
+                "system": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
+                          "\nThe patch encoded as a string in a json object regarding the examples, containing keys : description, patch."
                           "\nFocus on creating accurate and succinct diffs for patch files."
-                          "\nBegin with the **hunk header** without preceding lines."
+                          "\nBegin with the **hunk header** without any preceding line."
                           "\nPay attention to the line numbers specified at the start of each diff line."
             },
             AI_IDENTITY_TOOLS_AGENT: {
@@ -568,7 +569,6 @@ class Assistant(KernelChild):
         self.show_help()
 
         while True:
-
             try:
                 if initial_prompt:
                     user_input = initial_prompt

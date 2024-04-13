@@ -1,5 +1,5 @@
 import os.path
-from typing import Optional
+from typing import Optional, Tuple
 
 import patch
 from langchain_community.vectorstores.chroma import Chroma
@@ -41,6 +41,32 @@ class FileChatSubject(AbstractChatSubject):
 
         return commands
 
+    def extract_description_and_clean_patch(self, patch_content: str) -> Tuple[str, str]:
+        # Split the content into lines
+        lines = patch_content.split("\n")
+
+        # Define the prefix to look for
+        prefix = "# DESCRIPTION:"
+
+        # Initialize variables
+        description: Optional[str] = None
+        cleaned_patch = []
+
+        # Iterate over each line to find the prefix
+        for line in lines:
+            if line.strip().startswith(prefix):
+                # Extract the description and mark as found
+                description = line.strip()[len(prefix):].strip()
+            else:
+                # Add line to cleaned_patch if it is not the description line
+                cleaned_patch.append(line)
+
+        # Prepare the return values
+        cleaned_patch_content = "\n".join(cleaned_patch)
+
+        # Return the description and the cleaned patch content
+        return (description or 'No description'), cleaned_patch_content
+
     def process_user_input(
         self,
         user_input_split: StringKeysDict,
@@ -60,13 +86,6 @@ class FileChatSubject(AbstractChatSubject):
             file_name = os.path.basename(file_path)
             file_content = file_read(file_path)
             file_content_with_numbers = string_add_lines_numbers(file_content)
-            patch_content = (
-                f"diff --git a/{file_name} b/{file_name}"
-                f"\nindex 1234567..abcdefg {git_file_get_octal_mode(file_path)}"
-                f"\n--- a/{file_name}"
-                f"\n+++ b/{file_name}"
-                f"\n"
-            )
 
             identity_parameters.update(
                 {
@@ -78,7 +97,7 @@ class FileChatSubject(AbstractChatSubject):
 
             self.assistant.spinner.start()
 
-            patch_content += (
+            patch_content = (
                 model.chat_with_few_shots(
                     user_input=user_input,
                     identity=identity,
@@ -94,14 +113,26 @@ class FileChatSubject(AbstractChatSubject):
                         self.load_example_patch("explain/code_comment"),
                         self.load_example_patch("patch/hello_world_capitalized"),
                     ],
+                    input_variables_names=["file_name", "question", "source"]
                 )
                 + os.linesep
             )
+
+            description, patch_content = self.extract_description_and_clean_patch(patch_content)
 
             self.assistant.spinner.stop()
 
             error_message = "Generated patch body is not valid"
             if patch_is_valid(patch_content):
+                # Add headers that help applying patch
+                patch_content = (
+                    f"diff --git a/{file_name} b/{file_name}"
+                    f"\nindex 1234567..abcdefg {git_file_get_octal_mode(file_path)}"
+                    f"\n--- a/{file_name}"
+                    f"\n+++ b/{file_name}"
+                    f"\n" + patch_content
+                )
+
                 # This notation is a patch standard
                 if not string_has_trailing_new_line(file_content):
                     patch_content = (
@@ -114,34 +145,36 @@ class FileChatSubject(AbstractChatSubject):
                     def _patch_it():
                         nonlocal error_message
 
-                        error_message = "File can't be patched"
                         return patch_set.apply()
 
                     # Patch library expect patch to refer to a relative file,
                     # so we move in the same dir.
                     success = dir_execute_in_workdir(os.path.dirname(file_path), _patch_it)
                     error_message = "Patching failed"
-
                     if success:
                         file_set_user_or_sudo_user_owner(file_path)
+                        self.kernel.io.log(f'Patched : {file_path}')
 
-                        return f'✏️ Patched : {file_path}'
+                        return f'✏️ {description}'
 
             return f'⚠️ {error_message}: \n{patch_content}'
 
         elif user_command == SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE:
-            user_input_trimmed = user_input.strip()
+            user_input_trimmed = user_input.strip() if user_input else None
 
-            if os.path.isfile(user_input_trimmed):
+            if user_input_trimmed and os.path.isfile(user_input_trimmed):
                 file_path = user_input_trimmed
                 user_input = None
             else:
                 file_path = self.pick_a_file()
 
+                if not file_path:
+                    return 'No file selected'
+
             self.set_file_path(file_path)
 
             if not self.file_path:
-                return 'No file selected'
+                return f'File not found {file_path}'
 
             file_path = self.file_path
 
@@ -228,7 +261,7 @@ class FileChatSubject(AbstractChatSubject):
 
         return None
 
-    def load_example_patch(self, name):
+    def load_example_patch(self, name) -> StringKeysDict:
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
         source = file_read_if_exists(f"{base_path}source.py")
 
@@ -236,5 +269,5 @@ class FileChatSubject(AbstractChatSubject):
             "file_name": "file_name.py",
             "question": file_read_if_exists(f"{base_path}question.txt"),
             "source": string_add_lines_numbers(source) if source else None,
-            "patch": file_read_if_exists(f"{base_path}response.patch"),
+            "response": file_read_if_exists(f"{base_path}response.patch"),
         }
