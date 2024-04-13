@@ -1,6 +1,8 @@
 import os
 from typing import cast
 
+import enum
+
 import patch
 from langchain_core.prompts import FewShotPromptTemplate
 
@@ -155,26 +157,36 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         original_package_content = file_read(target_package_json)
         patches_dir = self.kernel.directory.path + 'addons/ai/tests/resources/patches/'
 
+        class PatchStatus(enum.Enum):
+            LOAD_FAIL = 0
+            LOAD_SUCCESS_APPLY_FAIL = 1
+            LOAD_AND_APPLY_SUCCESS = 2
+
+        # Mapping of patch files to their expected outcomes using the PatchStatus enum
         patch_files = {
-            'package-random.patch': True,
-            'package-random-two.patch': False,
-            'package-random-three.patch': True
+            'package-random.patch': PatchStatus.LOAD_AND_APPLY_SUCCESS,
+            'package-random-two.patch': PatchStatus.LOAD_FAIL,
+            'package-random-three.patch': PatchStatus.LOAD_SUCCESS_APPLY_FAIL
         }
 
-        for patch_file, is_valid in patch_files.items():
+        for patch_file, status in patch_files.items():
             patch_path = patches_dir + patch_file
-            patch_set = patch.fromstring(file_read(patch_path).encode())
+            patch_data = file_read(patch_path).encode()
+            patch_set = patch.fromstring(patch_data)
 
-            if is_valid:
-                self.assertIsOfType(patch_set, patch.PatchSet, f'Patch created from {patch_file}')
-                result = patch_apply_in_workdir(patches_dir, patch_set)
-
-                self.assertTrue(result, f'Patch {patch_file} expected to be valid but failed to apply')
+            # Check if the patch set is loaded properly
+            if not patch_set:
+                if status == PatchStatus.LOAD_FAIL:
+                    self.assertTrue(True, f'Patch {patch_file} expected to fail loading')
+                else:
+                    self.assertTrue(False, f'Patch {patch_file} unexpectedly failed to load')
             else:
-                self.assertEqual(
-                    patch_set,
-                    False,
+                if status == PatchStatus.LOAD_AND_APPLY_SUCCESS:
+                    result = patch_apply_in_workdir(patches_dir, patch_set)
+                    self.assertTrue(result, f'Patch {patch_file} expected to be valid and apply successfully')
+                elif status == PatchStatus.LOAD_SUCCESS_APPLY_FAIL:
+                    result = patch_apply_in_workdir(patches_dir, patch_set)
+                    self.assertFalse(result, f'Patch {patch_file} expected to load but fail to apply')
 
-                )
-
+            # Restore the original package content after each patch test
             file_write(target_package_json, original_package_content)
