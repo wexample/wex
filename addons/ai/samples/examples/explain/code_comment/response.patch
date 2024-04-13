@@ -1,3 +1,4 @@
+# DESCRIPTION: I have added comments in the given code to help user understand output type hint
 @@ -1,2 +1,2 @@
 -def print_hello_world() -> str:
 -    return 'Hello World!'

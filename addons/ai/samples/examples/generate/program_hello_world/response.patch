@@ -1,3 +1,4 @@
+# DESCRIPTION: I have created a Python function that prints "Hello World"
 @@ -0,0 +1,2 @@
 +def print_hello_world() -> str:
 +    return 'Hello World!'

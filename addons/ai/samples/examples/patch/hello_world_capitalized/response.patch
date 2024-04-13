@@ -1,3 +1,4 @@
+# DESCRIPTION: I have modified the function to make it return uppercase text
 @@ -1,2 +1,2 @@
  def my_program_main_function():
 -    return 'Hello World!'
