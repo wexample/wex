@@ -1,7 +1,17 @@
+import os
+from typing import cast
+
+import patch
+from langchain_core.prompts import FewShotPromptTemplate
+
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
 from addons.ai.src.assistant.assistant import Assistant, ASSISTANT_DEFAULT_COMMANDS, AI_COMMAND_PREFIX, \
     ASSISTANT_COMMAND_EXIT
+from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+from addons.ai.src.assistant.utils.identities import AI_IDENTITY_DEFAULT
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
+from src.helper.file import file_read, file_write
+from src.helper.patch import patch_apply_in_workdir
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -12,6 +22,9 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self._test_ask_parsing(assistant)
         self._test_ask_formatting(assistant)
         self._test_ask_assistant(assistant)
+        self._test_few_shot_prompt_template(assistant)
+        self._test_few_shot_examples(assistant)
+        self._test_patching(assistant)
 
     def _test_ask_parsing(self, assistant: Assistant) -> None:
         assistant.set_default_subject()
@@ -89,3 +102,78 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         )
 
         self.kernel.io.print(message)
+
+    def _test_few_shot_prompt_template(self, assistant: Assistant) -> None:
+        model = assistant.get_default_model()
+
+        file_chat_subject = cast(
+            FileChatSubject,
+            assistant.subjects[FileChatSubject.name()]
+        )
+
+        template = model.create_few_shot_prompt_template(
+            identity=assistant.identities[AI_IDENTITY_DEFAULT],
+            example_prompt=(
+                "User request:\n{question}\n\n"
+                "File name:\n{file_name}\n\n"
+                "Complete source code of the application:\n{source}\n\n"
+                "AI-generated Git patch:\n"
+            ),
+            examples=[
+                file_chat_subject.load_example_patch("generate/program_hello_world"),
+                file_chat_subject.load_example_patch("explain/code_comment"),
+                file_chat_subject.load_example_patch("patch/hello_world_capitalized"),
+            ],
+            input_variables_names=["file_name", "question", "source"]
+        )
+
+        self.assertTrue(
+            isinstance(
+                template,
+                FewShotPromptTemplate
+            )
+        )
+
+    def _test_few_shot_examples(self, assistant: Assistant) -> None:
+        file_chat_subject = cast(
+            FileChatSubject,
+            assistant.subjects[FileChatSubject.name()]
+        )
+
+        base_dir = self.kernel.directory.path + 'addons/ai/samples/examples/'
+        for group_name in os.listdir(base_dir):
+            for example_name in os.listdir(os.path.join(base_dir, group_name)):
+                example = file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
+
+                self.assertIsDict(
+                    example,
+                    f"Example patch \"{example_name}\" has been loaded"
+                )
+
+    def _test_patching(self, assistant: Assistant) -> None:
+        target_package_json = self.kernel.directory.path + 'addons/ai/tests/resources/patches/target-package.json'
+        original_package_content = file_read(target_package_json)
+        patches_dir = self.kernel.directory.path + 'addons/ai/tests/resources/patches/'
+
+        patch_files = {
+            'package-random.patch': True,
+            'package-random-two.patch': False
+        }
+
+        for patch_file, is_valid in patch_files.items():
+            patch_path = patches_dir + patch_file
+            patch_set = patch.fromstring(file_read(patch_path).encode())
+
+            if is_valid:
+                self.assertIsOfType(patch_set, patch.PatchSet, f'Patch created from {patch_file}')
+                result = patch_apply_in_workdir(patches_dir, patch_set)
+
+                self.assertTrue(result, f'Patch {patch_file} expected to be valid but failed to apply')
+            else:
+                self.assertEqual(
+                    patch_set,
+                    False,
+
+                )
+
+            file_write(target_package_json, original_package_content)
