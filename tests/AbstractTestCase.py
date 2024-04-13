@@ -54,17 +54,17 @@ class AbstractTestCase(unittest.TestCase):
             f"No such file or directory : {file_path}",
         )
 
-    def assertIsDict(self, value: Any) -> None:
-        self.assertIsOfType(value, dict)
+    def assertIsDict(self, value: Any, msg=None) -> None:
+        self.assertIsOfType(value, dict, msg)
 
-    def assertIsList(self, value: Any) -> None:
-        self.assertIsOfType(value, list)
+    def assertIsList(self, value: Any, msg=None) -> None:
+        self.assertIsOfType(value, list, msg)
 
-    def assertIsStr(self, value: Any) -> None:
-        self.assertIsOfType(value, str)
+    def assertIsStr(self, value: Any, msg=None) -> None:
+        self.assertIsOfType(value, str, msg)
 
-    def assertIsOfType(self, value: Any, type_: type) -> None:
-        self.assertTrue(isinstance(value, type_))
+    def assertIsOfType(self, value: Any, type_: type, msg=None) -> None:
+        self.assertTrue(isinstance(value, type_), msg)
 
     def assertResponseFirstEqual(
         self, response: AbstractResponse, expected: Any

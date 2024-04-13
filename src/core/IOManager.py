@@ -60,15 +60,14 @@ class IOManager(KernelChild):
                 "ERROR", parameters or {}, logging.FATAL if fatal else logging.ERROR
             )
 
-        if fatal or trace or not self.kernel.tty:
+        if trace or not self.kernel.tty:
             from src.core.FatalError import FatalError
 
             raise FatalError(message)
             # Do not exit, allowing unit testing to catch error.
         else:
             self.print(message)
-            if fatal:
-                sys.exit(1)
+            sys.exit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
