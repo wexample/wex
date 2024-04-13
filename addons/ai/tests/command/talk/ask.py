@@ -157,7 +157,8 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
         patch_files = {
             'package-random.patch': True,
-            'package-random-two.patch': False
+            'package-random-two.patch': False,
+            'package-random-three.patch': True
         }
 
         for patch_file, is_valid in patch_files.items():

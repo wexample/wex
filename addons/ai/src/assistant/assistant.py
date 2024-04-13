@@ -575,7 +575,7 @@ class Assistant(KernelChild):
                 else:
                     from prompt_toolkit.styles import Style
                     style = Style.from_dict({
-                        'prefix': '#333 bold',
+                        'prefix': '#666 bold',
                     })
 
                     user_input = prompt_tool(

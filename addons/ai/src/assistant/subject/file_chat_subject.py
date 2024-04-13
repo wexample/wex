@@ -10,9 +10,8 @@ from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
-from src.helper.dir import dir_execute_in_workdir
 from src.helper.file import file_read, file_read_if_exists, file_set_user_or_sudo_user_owner
-from src.helper.patch import patch_is_valid
+from src.helper.patch import patch_is_valid, patch_apply_in_workdir
 from src.helper.prompt import prompt_choice_dict
 from src.helper.string import string_add_lines_numbers, string_has_trailing_new_line
 
@@ -87,6 +86,8 @@ class FileChatSubject(AbstractChatSubject):
             file_content = file_read(file_path)
             file_content_with_numbers = string_add_lines_numbers(file_content)
 
+            print(file_content_with_numbers)
+
             identity_parameters.update(
                 {
                     "file_name": file_name,
@@ -141,15 +142,11 @@ class FileChatSubject(AbstractChatSubject):
 
                 patch_set = patch.fromstring(patch_content.encode())
                 error_message = "Unable to create patch set"
+
                 if patch_set:
-                    def _patch_it():
-                        nonlocal error_message
-
-                        return patch_set.apply()
-
                     # Patch library expect patch to refer to a relative file,
                     # so we move in the same dir.
-                    success = dir_execute_in_workdir(os.path.dirname(file_path), _patch_it)
+                    success = patch_apply_in_workdir(os.path.dirname(file_path), patch_set)
                     error_message = "Patching failed"
                     if success:
                         file_set_user_or_sudo_user_owner(file_path)
