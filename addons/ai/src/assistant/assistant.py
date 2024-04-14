@@ -15,13 +15,20 @@ from prompt_toolkit import HTML, print_formatted_text
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-from addons.ai.src.assistant.utils.identities import (
+from addons.ai.src.assistant.utils.globals import (
     AI_IDENTITY_CODE_FILE_PATCHER,
     AI_IDENTITY_COMMAND_SELECTOR,
     AI_IDENTITY_DEFAULT,
     AI_IDENTITY_FILE_INSPECTION,
     AI_IDENTITY_GIT_PATCH_CREATOR,
     AI_IDENTITY_TOOLS_AGENT,
+    ASSISTANT_DEFAULT_COMMANDS,
+    CHAT_MENU_ACTION_CHAT,
+    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
+    CHAT_MENU_ACTIONS_TRANSLATIONS,
+    CHAT_MENU_ACTION_EXIT,
+    AI_FUNCTION_DISPLAY_A_CUCUMBER,
+    AI_COMMAND_PREFIX,
 )
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
@@ -45,34 +52,6 @@ from src.helper.string import string_list_longest_word
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL = "CHANGE_MODEL"
-CHAT_MENU_ACTION_EXIT = "EXIT"
-CHAT_MENU_ACTION_CHAT = "TALK"
-
-CHAT_MENU_ACTIONS_TRANSLATIONS = {
-    CHAT_MENU_ACTION_CHAT: "Back to chat",
-    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL: "Change default model",
-    CHAT_MENU_ACTION_EXIT: "Exit",
-}
-
-AI_COMMAND_PREFIX = "/"
-AI_FUNCTION_DISPLAY_A_CUCUMBER = "display_a_cucumber"
-
-ASSISTANT_COMMAND_EXIT = "exit"
-ASSISTANT_COMMAND_FUNCTION = "function"
-ASSISTANT_COMMAND_HELP = "help"
-ASSISTANT_COMMAND_MENU = "menu"
-ASSISTANT_COMMAND_TOOL = "tool"
-
-ASSISTANT_DEFAULT_COMMANDS = {
-    ASSISTANT_COMMAND_FUNCTION: "Ask to guess and run function (beta).",
-    ASSISTANT_COMMAND_EXIT: "quit.",
-    ASSISTANT_COMMAND_HELP: "display this message again.",
-    ASSISTANT_COMMAND_MENU: "show menu.",
-    ASSISTANT_COMMAND_TOOL: "Ask to run a tool (beta).",
-}
-
-
 class Assistant(KernelChild):
     subject: Optional[AbstractChatSubject] = None
     _default_model: Optional[AbstractModel] = None
@@ -86,12 +65,12 @@ class Assistant(KernelChild):
             kernel,
             [
                 self._init_models,
+                self._init_vector_database,
                 self._init_prompt,
                 self._init_commands,
                 self._init_identities,
                 self._init_subjects,
                 self._init_tools,
-                self._init_vector_database,
             ],
         )
 

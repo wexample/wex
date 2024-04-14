@@ -5,7 +5,7 @@ import patch
 from langchain_community.vectorstores.chroma import Chroma
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
-from addons.ai.src.assistant.utils.identities import AI_IDENTITY_FILE_INSPECTION
+from addons.ai.src.assistant.utils.globals import AI_IDENTITY_FILE_INSPECTION
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict

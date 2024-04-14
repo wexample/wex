@@ -9,6 +9,7 @@ from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.styles import Style
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from src.const.types import StringsList
 from src.helper.html import html_remove_tags, html_split_prompt_parts
 
@@ -43,10 +44,17 @@ class PromptManager(AbstractAssistantChild):
         self.session = PromptSession()
         self.style = Style.from_dict({
             'prefix': '#666 bold',
-            'world': 'fg:green'
+            'command': 'fg:#60A9F7'
         })
         self.key_bindings = KeyBindings()
         self.setup_key_bindings()
+
+    def contains_any_active_command(self, text: str) -> bool:
+        for command in self.assistant.get_active_commands():
+            if f"{AI_COMMAND_PREFIX}{command}" in text:
+                return True
+
+        return False
 
     def setup_key_bindings(self):
         """Configure key bindings for handling prompt interactions."""
@@ -70,21 +78,34 @@ class PromptManager(AbstractAssistantChild):
                         html.unescape(html_remove_tags(parts[-1])),
                         overwrite=True
                     )
+                return
             event.app.current_buffer.delete_before_cursor()
             self.session.app.invalidate()
 
         @self.key_bindings.add("<any>")
         def handle_any(event: KeyPressEvent) -> None:
-            """Handle any key press to update the prompt."""
-            if event.data == "d":
-                prompt_chunk = event.current_buffer.text + event.data
-                prompt_chunk = html.escape(prompt_chunk)
-                prompt_chunk = prompt_chunk.replace(" world", " <world>world</world>")
-                event.current_buffer.text = ""
-                self.prompt += prompt_chunk
+            if self.contains_any_active_command(event.current_buffer.text):
+                self.session.app.current_buffer.text += event.data
+                self.prompt = self.get_full_text()
+                self.session.app.current_buffer.text = ""
             else:
                 event.app.current_buffer.insert_text(event.data)
             self.session.app.invalidate()
+
+    def get_full_text(self) -> str:
+        """
+        Return the concatenation of text from actual prompt and remaining buffer text.
+        :return:
+        """
+        prompt_chunk = self.session.app.current_buffer.text
+        prompt_chunk = html.escape(prompt_chunk)
+
+        for command in self.assistant.get_active_commands():
+            prompt_chunk = prompt_chunk.replace(
+                f"{AI_COMMAND_PREFIX}{command}",
+                f"<command>{AI_COMMAND_PREFIX}{command}</command>")
+
+        return self.prompt + prompt_chunk
 
     def get_prompt(self):
         """Generate the current styled prompt."""
@@ -92,10 +113,10 @@ class PromptManager(AbstractAssistantChild):
 
     def create_completer(self) -> AssistantChatCompleter:
         return AssistantChatCompleter(
-            [f"/{command}" for command in self.assistant.get_active_commands()]
+            [f"{AI_COMMAND_PREFIX}{command}" for command in self.assistant.get_active_commands()]
         )
 
-    def open(self):
+    def open(self) -> str:
         """Start the prompt session."""
         self.session.prompt(
             self.get_prompt,
@@ -104,3 +125,5 @@ class PromptManager(AbstractAssistantChild):
             key_bindings=self.key_bindings,
             multiline=True,
         )
+
+        return html_remove_tags(self.get_full_text())
