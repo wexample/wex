@@ -1,1 +1,1 @@
-Show how is defined the output type hinting
+Add comment explaining how is defined the output type hinting
