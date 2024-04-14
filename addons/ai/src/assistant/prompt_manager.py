@@ -84,7 +84,7 @@ class PromptManager(AbstractAssistantChild):
 
         @self.key_bindings.add("<any>")
         def handle_any(event: KeyPressEvent) -> None:
-            if self.contains_any_active_command(event.current_buffer.text):
+            if self.contains_any_active_command(event.current_buffer.text + event.data):
                 self.session.app.current_buffer.text += event.data
                 self.prompt = self.get_full_text()
                 self.session.app.current_buffer.text = ""
@@ -126,4 +126,7 @@ class PromptManager(AbstractAssistantChild):
             multiline=True,
         )
 
-        return html_remove_tags(self.get_full_text())
+        response = html_remove_tags(self.get_full_text())
+        self.prompt = ""
+
+        return response
