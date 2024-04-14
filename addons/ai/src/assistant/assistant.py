@@ -239,7 +239,6 @@ class Assistant(KernelChild):
         return model
 
     def start(self, menu_action: Optional[str] = None) -> None:
-        current_model = self.get_default_model()
         asked_exit = False
         while not asked_exit:
             if not menu_action:
@@ -249,6 +248,7 @@ class Assistant(KernelChild):
                 self.set_default_subject()
                 menu_action = self.chat()
             elif menu_action == CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
+                current_model = self.get_default_model()
                 models = {}
                 for model in self.models:
                     models[model] = model
