@@ -121,7 +121,7 @@ class FileChatSubject(AbstractChatSubject):
                         f"\nindex 1234567..abcdefg {git_file_get_octal_mode(file_path)}"
                         f"\n--- a/{file_name}"
                         f"\n+++ b/{file_name}"
-                        f"\n" + hunk_header + patch_content
+                        f"\n" + patch_content
                     )
 
                     # This notation is a patch standard
@@ -154,7 +154,7 @@ class FileChatSubject(AbstractChatSubject):
             else:
                 self.kernel.io.log(file_content)
                 self.kernel.io.log("____")
-                self.kernel.io.log(raw_patch_content)
+                self.kernel.io.log(patch_content)
 
             return f'⚠️ {error_message}'
 
