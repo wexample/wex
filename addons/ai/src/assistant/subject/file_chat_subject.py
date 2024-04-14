@@ -95,6 +95,7 @@ class FileChatSubject(AbstractChatSubject):
                         self.load_example_patch("generate/program_hello_world"),
                         self.load_example_patch("explain/code_comment"),
                         self.load_example_patch("patch/hello_world_capitalized"),
+                        self.load_example_patch("json/add_item"),
                     ],
                     input_variables_names=["file_name", "question", "source_with_lines"]
                 )
@@ -262,7 +263,7 @@ class FileChatSubject(AbstractChatSubject):
 
     def load_example_patch(self, name) -> StringKeysDict:
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
-        source = file_read_if_exists(f"{base_path}source.py")
+        source = file_read_if_exists(f"{base_path}source.txt")
 
         return {
             "file_name": "file_name.py",

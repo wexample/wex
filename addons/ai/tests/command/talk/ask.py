@@ -128,6 +128,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                 file_chat_subject.load_example_patch("generate/program_hello_world"),
                 file_chat_subject.load_example_patch("explain/code_comment"),
                 file_chat_subject.load_example_patch("patch/hello_world_capitalized"),
+                file_chat_subject.load_example_patch("json/add_item"),
             ],
             input_variables_names=["file_name", "question", "source_with_lines"]
         )

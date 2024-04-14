@@ -205,7 +205,8 @@ class Assistant(KernelChild):
                 "system": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
                           "\nStart the patch with \"# PATCH_START\" then the patch content without header."
                           "\nThe patch body always starts 3 lines before the first change, if applicable, this is the security margin."
-                          "\nFocus on creating accurate patch. You respect the exact original spacings and indentation."
+                          "\nYou respect the exact original spacings, indentation."
+                          "\nYou do not do any change without marking it with a + or a -."
                           "\nTerminate with the # DESCRIPTION: information describing what you've done."
             },
             AI_IDENTITY_TOOLS_AGENT: {
