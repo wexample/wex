@@ -1,18 +1,10 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
-from src.const.types import StringKeysDict, StringsList
-from src.core.KernelChild import KernelChild
-
-if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
+from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from src.const.types import StringKeysDict
 
 
-class AbstractChatSubject(KernelChild):
-    def __init__(self, assistant: "Assistant") -> None:
-        super().__init__(assistant.kernel)
-
-        self.assistant = assistant
-
+class AbstractChatSubject(AbstractAssistantChild):
     @staticmethod
     def name() -> str:
         pass

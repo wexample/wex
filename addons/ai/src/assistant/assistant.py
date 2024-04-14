@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 import chromadb  # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -10,10 +10,7 @@ from langchain_community.document_loaders.parsers.language.language_parser impor
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
-from prompt_toolkit import prompt as prompt_tool, HTML, print_formatted_text
-from prompt_toolkit.completion import CompleteEvent, Completer, Completion
-from prompt_toolkit.document import Document as ToolkitDocument
-from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit import HTML, print_formatted_text
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
@@ -34,8 +31,9 @@ from addons.ai.src.model.open_ai_model import (
     OpenAiModel,
 )
 from addons.ai.src.tool.command_tool import CommandTool
+from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.app.AppAddonManager import AppAddonManager
-from src.const.types import StringKeysDict, StringsList
+from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import load_json_if_valid
@@ -73,24 +71,6 @@ ASSISTANT_DEFAULT_COMMANDS = {
     ASSISTANT_COMMAND_MENU: "show menu.",
     ASSISTANT_COMMAND_TOOL: "Ask to run a tool (beta).",
 }
-
-
-class AssistantChatCompleter(Completer):
-    def __init__(self, commands: StringsList) -> None:
-        self.active_commands = commands
-
-    def get_completions(
-        self, document: ToolkitDocument, complete_event: CompleteEvent
-    ) -> Iterable[Completion]:
-        word_before_cursor = document.get_word_before_cursor(WORD=True)
-
-        # Previous word was a space
-        if word_before_cursor == "":
-            return
-
-        for command in self.active_commands:
-            if command.startswith(word_before_cursor):
-                yield Completion(command + " ", start_position=-len(word_before_cursor))
 
 
 class Assistant(KernelChild):
@@ -132,18 +112,7 @@ class Assistant(KernelChild):
         self.set_default_model(self._initial_default_model)
 
     def _init_prompt(self) -> None:
-        kb = KeyBindings()
-
-        @kb.add("escape", "enter")
-        def _(event) -> None:
-            event.current_buffer.insert_text("\n")
-
-        @kb.add("enter")
-        def _(event) -> None:
-            event.current_buffer.validate_and_handle()
-
-        self.prompt_key_binding = kb
-
+        self.prompt_manager = PromptManager(self)
         self.spinner = Spinner()
 
     def _init_commands(self) -> None:
@@ -557,11 +526,6 @@ class Assistant(KernelChild):
 
         return commands
 
-    def create_completer(self) -> AssistantChatCompleter:
-        return AssistantChatCompleter(
-            [f"/{command}" for command in self.get_active_commands()]
-        )
-
     def chat(
         self,
         initial_prompt: Optional[str] = None,
@@ -576,18 +540,7 @@ class Assistant(KernelChild):
                     user_input = initial_prompt
                     initial_prompt = None
                 else:
-                    from prompt_toolkit.styles import Style
-                    style = Style.from_dict({
-                        'prefix': '#666 bold',
-                    })
-
-                    user_input = prompt_tool(
-                        HTML("<prefix>&gt;&gt;&gt; </prefix>"),
-                        style=style,
-                        completer=self.create_completer(),
-                        multiline=True,
-                        key_bindings=self.prompt_key_binding,
-                    )
+                    user_input = self.prompt_manager.open()
 
                 user_input_splits = self.split_user_input_commands(user_input)
                 result: Optional[str] = None
