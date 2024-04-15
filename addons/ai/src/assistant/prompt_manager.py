@@ -50,8 +50,16 @@ class PromptManager(AbstractAssistantChild):
         self.setup_key_bindings()
 
     def contains_any_active_command(self, text: str) -> bool:
-        for command in self.assistant.get_active_commands():
-            if f"{AI_COMMAND_PREFIX}{command}" in text:
+        commands = self.assistant.get_active_commands()
+        prefix = AI_COMMAND_PREFIX
+
+        # Normalize the text by stripping and adding one space at both ends (simplifies boundary checks)
+        normalized_text = f" {text.strip()} "
+
+        for command in commands:
+            # Check if the command is at the beginning, in the middle, or at the end of the text
+            # We look for the command with a space before and after, or at the text boundaries
+            if f" {prefix}{command} " in normalized_text:
                 return True
 
         return False
