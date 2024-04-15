@@ -31,6 +31,7 @@ from addons.ai.src.assistant.utils.globals import (
     CHAT_MENU_ACTIONS_TRANSLATIONS,
     AI_FUNCTION_DISPLAY_A_CUCUMBER,
     AI_COMMAND_PREFIX,
+    AI_IDENTITY_INVESTIGATOR,
 )
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -42,6 +43,7 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
+from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -104,6 +106,7 @@ class Assistant(KernelChild):
     def _init_subjects(self) -> None:
         subjects = [
             FileChatSubject,
+            InvestigateChatSubject,
             # Should be last, as fallback
             DefaultSubject,
         ]
@@ -174,6 +177,13 @@ class Assistant(KernelChild):
                           "\n\nQuestion: {input}"
                           "\nThought:{agent_scratchpad}"
             },
+            AI_IDENTITY_INVESTIGATOR: {
+                "system": "You will ask the user questions so that we can identify the source of the problem together."
+                          "Start with only the first question. Be as concise as possible, "
+                          "no unnecessary introductions or explanations. "
+                          "The user will provide what they find, "
+                          "and then you will ask the next question based on that result."
+            }
         }
 
     def _init_vector_database(self) -> None:
