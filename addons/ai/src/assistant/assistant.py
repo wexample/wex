@@ -12,6 +12,7 @@ from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
 from prompt_toolkit import HTML, print_formatted_text
 
+from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
@@ -25,8 +26,9 @@ from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_DEFAULT_COMMANDS,
     CHAT_MENU_ACTION_CHAT,
     CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-    CHAT_MENU_ACTIONS_TRANSLATIONS,
+    CHAT_MENU_ACTION_THEME,
     CHAT_MENU_ACTION_EXIT,
+    CHAT_MENU_ACTIONS_TRANSLATIONS,
     AI_FUNCTION_DISPLAY_A_CUCUMBER,
     AI_COMMAND_PREFIX,
 )
@@ -38,7 +40,6 @@ from addons.ai.src.model.open_ai_model import (
     OpenAiModel,
 )
 from addons.ai.src.tool.command_tool import CommandTool
-from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
@@ -52,6 +53,7 @@ from src.helper.string import string_list_longest_word
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
+
 class Assistant(KernelChild):
     subject: Optional[AbstractChatSubject] = None
     _default_model: Optional[AbstractModel] = None
@@ -60,6 +62,7 @@ class Assistant(KernelChild):
         super().__init__(kernel)
 
         self._initial_default_model = default_model
+        self.colors_theme: Optional[str] = None
 
         prompt_progress_steps(
             kernel,
@@ -226,6 +229,23 @@ class Assistant(KernelChild):
             if menu_action == CHAT_MENU_ACTION_CHAT:
                 self.set_default_subject()
                 menu_action = self.chat()
+            elif menu_action == CHAT_MENU_ACTION_THEME:
+                from pygments.styles._mapping import STYLES
+
+                choice_dict = {}
+                for key, value in STYLES.items():
+                    style_name = value[1]
+                    class_name = key[:-5]
+                    choice_dict[style_name] = class_name
+
+                self.colors_theme = prompt_choice_dict(
+                    "Choose a theme:",
+                    choice_dict,
+                    default=self.colors_theme,
+                    abort="↩ Back"
+                )
+
+                menu_action = None
             elif menu_action == CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
                 current_model = self.get_default_model()
                 models = {}
@@ -418,6 +438,7 @@ class Assistant(KernelChild):
                 CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL
             ]
 
+        choices[CHAT_MENU_ACTION_THEME] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_THEME]
         choices[CHAT_MENU_ACTION_EXIT] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_EXIT]
 
         action = prompt_choice_dict(

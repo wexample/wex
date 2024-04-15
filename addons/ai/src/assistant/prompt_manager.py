@@ -113,10 +113,11 @@ class PromptManager(AbstractAssistantChild):
             name = 'Prompt Lexer'
             tokens = commands_tokens
 
-        if self.style_name:
-            style = get_style_by_name(self.style_name)
+        if self.assistant.colors_theme:
+            style = get_style_by_name(self.assistant.colors_theme)
         else:
             style = PromptPygmentStyle
+
         """Start the prompt session."""
         self.session.prompt(
             self.get_prompt,
