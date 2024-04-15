@@ -7,12 +7,14 @@ from prompt_toolkit.document import Document as ToolkitDocument
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.shortcuts import PromptSession
-from prompt_toolkit.styles import Style
+from prompt_toolkit.styles import style_from_pygments_cls
 from pygments.lexer import RegexLexer
-from pygments.token import Keyword
+from pygments.styles import get_style_by_name
+from pygments.token import Name
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
+from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
 from src.const.types import StringsList
 from src.helper.html import html_remove_tags
 
@@ -45,10 +47,7 @@ class PromptManager(AbstractAssistantChild):
         super().__init__(assistant)
         self.prompt = ""
         self.session = PromptSession()
-        self.style = Style.from_dict({
-            'prefix': '#666 bold',
-            'command': 'fg:#60A9F7'
-        })
+        self.style_name = None
         self.key_bindings = KeyBindings()
         self.setup_key_bindings()
 
@@ -107,21 +106,25 @@ class PromptManager(AbstractAssistantChild):
         commands = self.assistant.get_active_commands()
         for command, description in commands.items():
             pattern = rf'(^|(?<=\s))/\b{command}\b'
-            token_tuple = (pattern, Keyword.Namespace)
+            token_tuple = (pattern, Name.Builtin)
             commands_tokens['root'].append(token_tuple)
 
         class PromptLexer(RegexLexer):
             name = 'Prompt Lexer'
             tokens = commands_tokens
 
+        if self.style_name:
+            style = get_style_by_name(self.style_name)
+        else:
+            style = PromptPygmentStyle
         """Start the prompt session."""
         self.session.prompt(
             self.get_prompt,
             completer=self.create_completer(),
-            style=self.style,
+            style=style_from_pygments_cls(style),
             key_bindings=self.key_bindings,
             multiline=True,
-            lexer=PygmentsLexer(PromptLexer)
+            lexer=PygmentsLexer(PromptLexer),
         )
 
         response = html_remove_tags(self.get_full_text())
