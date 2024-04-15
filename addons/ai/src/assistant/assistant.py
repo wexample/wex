@@ -32,6 +32,7 @@ from addons.ai.src.assistant.utils.globals import (
     AI_FUNCTION_DISPLAY_A_CUCUMBER,
     AI_COMMAND_PREFIX,
 )
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
 from addons.ai.src.model.open_ai_model import (
@@ -479,13 +480,13 @@ class Assistant(KernelChild):
 
         return None
 
-    def split_user_input_commands(self, user_input: str) -> List[StringKeysDict]:
+    def split_user_input_commands(self, user_input: str) -> List[UserPromptSection]:
         user_input = user_input.strip()
         # Special case if user types just "exit" without prefix.
         if user_input.lower() == "exit":
-            return [{"command": "exit", "input": None}]
+            return [UserPromptSection("exit", None)]
 
-        results: List[Dict[str, Optional[str]]] = []
+        results: List[UserPromptSection] = []
         words = user_input.split()
         commands = self.get_active_commands()
 
@@ -505,14 +506,17 @@ class Assistant(KernelChild):
                     if command_input == "":
                         command_input = None
 
-                    results.append({"command": command, "input": command_input})
+                    results.append(
+                        UserPromptSection(command, command_input)
+                    )
+
                     # Break after finding a command to avoid parsing further commands in the same string.
                     # If you need to handle multiple commands in one string, you might need a more complex approach.
                     break
 
         if not results:
             # No recognized command found
-            return [{"command": None, "input": user_input}]
+            return [UserPromptSection(None, user_input)]
 
         return results
 
@@ -545,18 +549,18 @@ class Assistant(KernelChild):
                 user_input_splits = self.split_user_input_commands(user_input)
                 result: Optional[str] = None
 
-                for user_input_split in user_input_splits:
-                    command = user_input_split["command"]
+                for index, prompt_section in enumerate(user_input_splits):
+                    command = prompt_section.command
 
                     if command == "exit":
                         return CHAT_MENU_ACTION_EXIT
                     elif command == "menu":
                         return None
                     elif command == "function":
-                        result = self.guess_function(user_input_split["input"])
+                        result = self.guess_function(prompt_section.prompt)
                     elif command == "tool":
                         result = self.get_default_model().chat_agent(
-                            user_input_split["input"],
+                            prompt_section.prompt,
                             self.tools,
                             self.identities[AI_IDENTITY_TOOLS_AGENT],
                         )
@@ -567,9 +571,10 @@ class Assistant(KernelChild):
                         for subject in self.subjects.values():
                             if not result:
                                 result = cast(AbstractChatSubject, subject).process_user_input(
-                                    user_input_split,
+                                    prompt_section,
                                     self.identities[identity_name],
                                     identity_parameters or {},
+                                    user_input_splits[index + 1:]
                                 )
 
                     if result:

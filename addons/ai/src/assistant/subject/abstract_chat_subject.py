@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 
 
@@ -17,9 +18,10 @@ class AbstractChatSubject(AbstractAssistantChild):
 
     def process_user_input(
         self,
-        user_input_split: StringKeysDict,
+        prompt_section: UserPromptSection,
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
+        remaining_sections: List[UserPromptSection]
     ) -> Optional[str]:
         return None
 

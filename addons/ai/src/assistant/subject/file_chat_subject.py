@@ -1,11 +1,12 @@
 import os.path
-from typing import Optional
+from typing import Optional, List
 
 import patch
 from langchain_community.vectorstores.chroma import Chroma
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.globals import AI_IDENTITY_FILE_INSPECTION
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
@@ -43,12 +44,13 @@ class FileChatSubject(AbstractChatSubject):
 
     def process_user_input(
         self,
-        user_input_split: StringKeysDict,
+        prompt_section: UserPromptSection,
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
+        remaining_sections: List[UserPromptSection]
     ) -> Optional[str]:
-        user_command = user_input_split["command"]
-        user_input = user_input_split["input"]
+        user_command = prompt_section.command
+        user_input = prompt_section.prompt
         file_path = self.file_path
 
         if user_command == SUBJECT_FILE_CHAT_COMMAND_PATCH:

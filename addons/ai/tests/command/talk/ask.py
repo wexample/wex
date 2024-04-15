@@ -59,8 +59,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         should_success: bool
     ):
         user_input_splits = assistant.split_user_input_commands(text)
-        self.kernel.io.log(user_input_splits)
-        success = any(user_input_split["command"] == command for user_input_split in user_input_splits)
+        success = any(user_input_split.command == command for user_input_split in user_input_splits)
         self.assertTrue(success == should_success, f"Command \"{command}\" found in text : \"{text}\"")
 
     def _test_ask_assistant(self, assistant: Assistant) -> None:

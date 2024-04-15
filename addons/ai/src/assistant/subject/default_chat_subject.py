@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 
 
@@ -11,14 +12,15 @@ class DefaultSubject(AbstractChatSubject):
 
     def process_user_input(
         self,
-        user_input_split: StringKeysDict,
+        prompt_section: UserPromptSection,
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
+        remaining_sections: List[UserPromptSection]
     ) -> Optional[str]:
         self.assistant.spinner.start()
 
         response = self.assistant.get_default_model().chat(
-            user_input_split["input"],
+            prompt_section.prompt,
             identity,
             identity_parameters or {},
         )
