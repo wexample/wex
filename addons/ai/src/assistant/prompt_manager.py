@@ -5,6 +5,7 @@ from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
 from prompt_toolkit.document import Document as ToolkitDocument
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
+from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.styles import Style
 
@@ -75,31 +76,6 @@ class PromptManager(AbstractAssistantChild):
         def _(event: KeyPressEvent) -> None:
             event.current_buffer.validate_and_handle()
 
-        @self.key_bindings.add("backspace")
-        def handle_backspace(event: KeyPressEvent) -> None:
-            """Handle backspace key to manage prompt text."""
-            if event.current_buffer.text == "":
-                parts = html_split_prompt_parts(self.prompt)
-                if parts:
-                    self.prompt = ''.join(parts[:-1])
-                    event.current_buffer.insert_text(
-                        html.unescape(html_remove_tags(parts[-1])),
-                        overwrite=True
-                    )
-                return
-            event.app.current_buffer.delete_before_cursor()
-            self.session.app.invalidate()
-
-        @self.key_bindings.add("<any>")
-        def handle_any(event: KeyPressEvent) -> None:
-            if self.contains_any_active_command(event.current_buffer.text + event.data):
-                self.session.app.current_buffer.text += event.data
-                self.prompt = self.get_full_text()
-                self.session.app.current_buffer.text = ""
-            else:
-                event.app.current_buffer.insert_text(event.data)
-            self.session.app.invalidate()
-
     def get_full_text(self) -> str:
         """
         Return the concatenation of text from actual prompt and remaining buffer text.
@@ -125,6 +101,21 @@ class PromptManager(AbstractAssistantChild):
         )
 
     def open(self) -> str:
+        from pygments.lexer import RegexLexer
+        from pygments.token import Generic
+
+        commands_tokens = {'root': []}
+        commands = self.assistant.get_active_commands()
+        for command, description in commands.items():
+            pattern = rf'(^|(?<=\s))/\b{command}\b'
+            style = Generic.Inserted
+            token_tuple = (pattern, style)
+            commands_tokens['root'].append(token_tuple)
+
+        class PromptLexer(RegexLexer):
+            name = 'Prompt Lexer'
+            tokens = commands_tokens
+
         """Start the prompt session."""
         self.session.prompt(
             self.get_prompt,
@@ -132,6 +123,7 @@ class PromptManager(AbstractAssistantChild):
             style=self.style,
             key_bindings=self.key_bindings,
             multiline=True,
+            lexer=PygmentsLexer(PromptLexer)
         )
 
         response = html_remove_tags(self.get_full_text())
