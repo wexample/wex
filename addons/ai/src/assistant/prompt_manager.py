@@ -8,11 +8,13 @@ from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.styles import Style
+from pygments.lexer import RegexLexer
+from pygments.token import Keyword
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from src.const.types import StringsList
-from src.helper.html import html_remove_tags, html_split_prompt_parts
+from src.helper.html import html_remove_tags
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -101,15 +103,11 @@ class PromptManager(AbstractAssistantChild):
         )
 
     def open(self) -> str:
-        from pygments.lexer import RegexLexer
-        from pygments.token import Generic
-
         commands_tokens = {'root': []}
         commands = self.assistant.get_active_commands()
         for command, description in commands.items():
             pattern = rf'(^|(?<=\s))/\b{command}\b'
-            style = Generic.Inserted
-            token_tuple = (pattern, style)
+            token_tuple = (pattern, Keyword.Namespace)
             commands_tokens['root'].append(token_tuple)
 
         class PromptLexer(RegexLexer):
