@@ -16,6 +16,8 @@ from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
+from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_IDENTITY_CODE_FILE_PATCHER,
     AI_IDENTITY_COMMAND_SELECTOR,
@@ -43,7 +45,6 @@ from addons.ai.src.model.open_ai_model import (
 )
 from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
-from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -51,7 +52,6 @@ from src.helper.data_json import load_json_if_valid
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 from src.helper.registry import registry_get_all_commands
-from src.helper.string import string_list_longest_word
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -106,6 +106,7 @@ class Assistant(KernelChild):
     def _init_subjects(self) -> None:
         subjects = [
             FileChatSubject,
+            HelpChatSubject,
             InvestigateChatSubject,
             # Should be last, as fallback
             DefaultSubject,
@@ -461,19 +462,6 @@ class Assistant(KernelChild):
 
         return str(action) if action else None
 
-    def show_help(self) -> None:
-        commands = self.get_active_commands()
-        # Assuming string_list_longest_word returns the length of the longest word in a list
-        longest_command_length = string_list_longest_word(commands.keys())
-
-        # Display the menu in the specified format
-        for command, description in commands.items():
-            # Pad the command with spaces to align all descriptions
-            padded_command = command.ljust(longest_command_length)
-            self.log(f"{AI_COMMAND_PREFIX}{padded_command} | {description}")
-
-        self.log(f"Press Alt+Enter to add a new line")
-
     def guess_function(self, user_input: str) -> Optional[str]:
         selected_function = self.get_default_model(MODEL_NAME_OPEN_AI_GPT_4).guess_function(
             user_input,
@@ -546,7 +534,7 @@ class Assistant(KernelChild):
         identity_name: str = AI_IDENTITY_DEFAULT,
         identity_parameters: Optional[StringKeysDict] = None,
     ) -> Optional[str]:
-        self.show_help()
+        cast(HelpChatSubject, self.subjects[HelpChatSubject.name()]).show_help()
 
         while True:
             try:
@@ -557,7 +545,7 @@ class Assistant(KernelChild):
                     user_input = self.prompt_manager.open()
 
                 user_input_splits = self.split_user_input_commands(user_input)
-                result: Optional[str] = None
+                result: Optional[str | bool] = None
 
                 for index, prompt_section in enumerate(user_input_splits):
                     command = prompt_section.command
@@ -574,12 +562,11 @@ class Assistant(KernelChild):
                             self.tools,
                             self.identities[AI_IDENTITY_TOOLS_AGENT],
                         )
-                    elif command in ["help", "?"]:
-                        self.show_help()
                     else:
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
-                            if not result:
+                            # Accepts "bool" return to block process without returning message.
+                            if result is None:
                                 result = cast(AbstractChatSubject, subject).process_user_input(
                                     prompt_section,
                                     self.identities[identity_name],
@@ -587,7 +574,7 @@ class Assistant(KernelChild):
                                     user_input_splits[index + 1:]
                                 )
 
-                    if result:
+                    if isinstance(result, str):
                         self.print_ai(result)
             except KeyboardInterrupt:
                 # User asked to quit

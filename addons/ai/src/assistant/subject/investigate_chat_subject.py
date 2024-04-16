@@ -34,7 +34,7 @@ class InvestigateChatSubject(DefaultSubject):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
         remaining_sections: List[UserPromptSection]
-    ) -> Optional[str]:
+    ) -> Optional[bool | str]:
         return super().process_user_input(
             prompt_section,
             # Enforce identity

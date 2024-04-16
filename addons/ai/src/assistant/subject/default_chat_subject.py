@@ -16,7 +16,7 @@ class DefaultSubject(AbstractChatSubject):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
         remaining_sections: List[UserPromptSection]
-    ) -> Optional[str]:
+    ) -> Optional[bool | str]:
         self.assistant.spinner.start()
 
         response = self.assistant.get_default_model().chat(

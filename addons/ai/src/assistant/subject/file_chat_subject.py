@@ -48,7 +48,7 @@ class FileChatSubject(AbstractChatSubject):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
         remaining_sections: List[UserPromptSection]
-    ) -> Optional[str]:
+    ) -> Optional[bool | str]:
         user_command = prompt_section.command
         user_input = prompt_section.prompt
         file_path = self.file_path

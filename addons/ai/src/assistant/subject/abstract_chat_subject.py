@@ -22,7 +22,7 @@ class AbstractChatSubject(AbstractAssistantChild):
         identity: StringKeysDict,
         identity_parameters: StringKeysDict,
         remaining_sections: List[UserPromptSection]
-    ) -> Optional[str]:
+    ) -> Optional[bool | str]:
         return None
 
     def is_current_subject(self) -> bool:
