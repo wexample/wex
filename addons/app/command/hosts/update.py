@@ -37,7 +37,7 @@ def app__hosts__update(kernel: "Kernel", env: Optional[str] = None) -> None:
 
     new_block_content = os.linesep.join(new_block_content_list)
 
-    kernel.io.log(f"Updating {SYSTEM_HOSTS_PATH}")
+    manager.log(f"Updating {SYSTEM_HOSTS_PATH}")
 
     with open(SYSTEM_HOSTS_PATH, "r") as f:
         hosts_content = f.read()
