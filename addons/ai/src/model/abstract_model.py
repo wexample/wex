@@ -125,6 +125,8 @@ class AbstractModel(KernelChild):
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
+        # @see https://github.com/langchain-ai/langchain/discussions/6598
+        # At the moment there is a loop issue with agents
         return str(agent_executor.invoke({"input": user_input})["output"])
 
     def chain_invoke_and_strip_result(

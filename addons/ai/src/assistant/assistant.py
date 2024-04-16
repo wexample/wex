@@ -18,6 +18,7 @@ from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
 from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
+from addons.ai.src.assistant.subject.tool_chat_subject import ToolChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_IDENTITY_CODE_FILE_PATCHER,
     AI_IDENTITY_COMMAND_SELECTOR,
@@ -43,7 +44,6 @@ from addons.ai.src.model.open_ai_model import (
     MODEL_NAME_OPEN_AI_GPT_4,
     OpenAiModel,
 )
-from addons.ai.src.tool.command_tool import CommandTool
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
@@ -51,7 +51,6 @@ from src.core.spinner import Spinner
 from src.helper.data_json import load_json_if_valid
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
-from src.helper.registry import registry_get_all_commands
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -76,7 +75,6 @@ class Assistant(KernelChild):
                 self._init_commands,
                 self._init_identities,
                 self._init_subjects,
-                self._init_tools,
             ],
         )
 
@@ -107,6 +105,7 @@ class Assistant(KernelChild):
         subjects = [
             FileChatSubject,
             HelpChatSubject,
+            ToolChatSubject,
             InvestigateChatSubject,
             # Should be last, as fallback
             DefaultSubject,
@@ -116,27 +115,6 @@ class Assistant(KernelChild):
         for subject_class in subjects:
             subject = cast(AbstractChatSubject, subject_class(self))
             self.subjects[subject.name()] = subject
-
-    def _init_tools(self) -> None:
-        # Create tools
-        all_commands = registry_get_all_commands(self.kernel)
-        self.tools: List[CommandTool] = []
-
-        for command_name in all_commands:
-            properties = all_commands[command_name]["properties"]
-
-            if "ai_tool" in properties and properties["ai_tool"]:
-                self.log(f"Loading tool {command_name}")
-
-                command_tool = CommandTool(
-                    kernel=self.kernel,
-                    name=command_name,
-                    description=all_commands[command_name]["description"],
-                )
-
-                self.tools.append(command_tool)
-
-        self.log(f"Loaded {len(self.tools)} tools")
 
     def _init_identities(self) -> None:
         self.identities = {
@@ -166,12 +144,13 @@ class Assistant(KernelChild):
                           "\nTerminate with the # DESCRIPTION: information describing what you've done."
             },
             AI_IDENTITY_TOOLS_AGENT: {
-                "system": "Efficiently answer the questions using available tools:"
+                "system": "Efficiently answer the questions using one of available tools, then return the answer after first response:"
                           "\n\n{tools}\n\nAdhere to this structure:"
-                          "\n\nQuestion: the query you need to address\nThought: consider your approach carefully"
+                          "\n\nQuestion: the query you need to address"
+                          "\nThought: consider your approach carefully"
                           "\nAction: the chosen action, from [{tool_names}]"
-                          "\nAction Input: details for the action\nObservation: outcome of the action"
-                          "\nRepeat the Thought/Action/Action Input/Observation cycle as needed."
+                          "\nAction Input: details for the action"
+                          "\nObservation: outcome of the action"
                           "\nConcluding Thought: the insight leading to the final answer"
                           "\nFinal Answer: the comprehensive response to the original question"
                           "\n\nInitiate with:"
@@ -556,17 +535,11 @@ class Assistant(KernelChild):
                         return None
                     elif command == "function":
                         result = self.guess_function(prompt_section.prompt)
-                    elif command == "tool":
-                        result = self.get_default_model().chat_agent(
-                            prompt_section.prompt,
-                            self.tools,
-                            self.identities[AI_IDENTITY_TOOLS_AGENT],
-                        )
                     else:
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
-                            if result is None:
+                            if command in subject.get_completer_commands():
                                 result = cast(AbstractChatSubject, subject).process_user_input(
                                     prompt_section,
                                     self.identities[identity_name],

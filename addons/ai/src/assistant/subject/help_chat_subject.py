@@ -3,11 +3,10 @@ from typing import Optional, List
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from src.helper.string import string_list_longest_word
 from src.const.types import StringKeysDict
+from src.helper.string import string_list_longest_word
 
-SUBJECT_FILE_CHAT_COMMAND_HELP = "help"
-SUBJECT_FILE_CHAT_COMMAND_HELP_SHORT = "?"
+SUBJECT_HELP_CHAT_COMMAND_HELP = "help"
 
 
 class HelpChatSubject(AbstractChatSubject):
@@ -20,8 +19,7 @@ class HelpChatSubject(AbstractChatSubject):
 
     def get_completer_commands(self) -> StringKeysDict:
         return {
-            SUBJECT_FILE_CHAT_COMMAND_HELP: "Show help",
-            # SUBJECT_FILE_CHAT_COMMAND_HELP_SHORT: "Show help",
+            SUBJECT_HELP_CHAT_COMMAND_HELP: "Show help",
         }
 
     def process_user_input(

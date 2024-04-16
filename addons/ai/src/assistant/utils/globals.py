@@ -23,14 +23,10 @@ AI_FUNCTION_DISPLAY_A_CUCUMBER = "display_a_cucumber"
 
 ASSISTANT_COMMAND_EXIT = "exit"
 ASSISTANT_COMMAND_FUNCTION = "function"
-ASSISTANT_COMMAND_HELP = "help"
 ASSISTANT_COMMAND_MENU = "menu"
-ASSISTANT_COMMAND_TOOL = "tool"
 
 ASSISTANT_DEFAULT_COMMANDS = {
     ASSISTANT_COMMAND_FUNCTION: "Ask to guess and run function (beta).",
     ASSISTANT_COMMAND_EXIT: "quit.",
-    ASSISTANT_COMMAND_HELP: "display this message again.",
     ASSISTANT_COMMAND_MENU: "show menu.",
-    ASSISTANT_COMMAND_TOOL: "Ask to run a tool (beta).",
 }
