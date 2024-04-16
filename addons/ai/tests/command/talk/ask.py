@@ -108,7 +108,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self.kernel.io.print(message)
 
     def _test_few_shot_prompt_template(self, assistant: Assistant) -> None:
-        model = assistant.get_default_model()
+        model = assistant.get_model()
 
         file_chat_subject = cast(
             FileChatSubject,

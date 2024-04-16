@@ -27,3 +27,10 @@ class AbstractChatSubject(AbstractAssistantChild):
 
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
+
+    def fallback_subject(self) -> bool:
+        """
+        Ask to execute subject, even no command explicitly prompted by the user.
+        :return:
+        """
+        return False

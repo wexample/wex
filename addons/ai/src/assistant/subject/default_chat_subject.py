@@ -19,7 +19,7 @@ class DefaultSubject(AbstractChatSubject):
     ) -> Optional[bool | str]:
         self.assistant.spinner.start()
 
-        response = self.assistant.get_default_model().chat(
+        response = self.assistant.get_model().chat(
             prompt_section.prompt,
             identity,
             identity_parameters or {},
@@ -28,3 +28,6 @@ class DefaultSubject(AbstractChatSubject):
         self.assistant.spinner.stop()
 
         return response
+
+    def fallback_subject(self) -> bool:
+        return True

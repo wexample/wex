@@ -42,3 +42,6 @@ class InvestigateChatSubject(DefaultSubject):
             identity_parameters,
             remaining_sections,
         )
+
+    def fallback_subject(self) -> bool:
+        return False

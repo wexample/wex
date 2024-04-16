@@ -18,7 +18,7 @@ class AgentChatSubject(AbstractChatSubject):
         return "tool"
 
     def introduce(self) -> str:
-        return f"Ask agent to use a tool"
+        return f"Ask agent to use a tool (beta)"
 
     def get_completer_commands(self) -> StringKeysDict:
         return {
@@ -37,7 +37,7 @@ class AgentChatSubject(AbstractChatSubject):
         if not prompt_section.prompt:
             return "Please ask some question to help agent pick a tool."
 
-        return self.assistant.get_default_model().chat_agent(
+        return self.assistant.get_model().chat_agent(
             prompt_section.prompt,
             self.tools,
             self.assistant.identities[AI_IDENTITY_TOOLS_AGENT],

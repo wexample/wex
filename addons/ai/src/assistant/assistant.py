@@ -14,11 +14,12 @@ from prompt_toolkit import HTML, print_formatted_text
 
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+from addons.ai.src.assistant.subject.agent_chat_subject import AgentChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
 from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
-from addons.ai.src.assistant.subject.tool_chat_subject import ToolChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_IDENTITY_CODE_FILE_PATCHER,
     AI_IDENTITY_COMMAND_SELECTOR,
@@ -32,9 +33,10 @@ from addons.ai.src.assistant.utils.globals import (
     CHAT_MENU_ACTION_THEME,
     CHAT_MENU_ACTION_EXIT,
     CHAT_MENU_ACTIONS_TRANSLATIONS,
-    AI_FUNCTION_DISPLAY_A_CUCUMBER,
     AI_COMMAND_PREFIX,
     AI_IDENTITY_INVESTIGATOR,
+    ASSISTANT_COMMAND_MENU,
+    ASSISTANT_COMMAND_EXIT,
 )
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -105,8 +107,9 @@ class Assistant(KernelChild):
         subjects = [
             FileChatSubject,
             HelpChatSubject,
-            ToolChatSubject,
+            AgentChatSubject,
             InvestigateChatSubject,
+            FunctionChatSubject,
             # Should be last, as fallback
             DefaultSubject,
         ]
@@ -204,7 +207,7 @@ class Assistant(KernelChild):
 
         self._default_model = self.models[identifier]
 
-    def get_default_model(self, name: Optional[str] = None) -> AbstractModel:
+    def get_model(self, name: Optional[str] = None) -> AbstractModel:
         model = self.models[name] if name else self._default_model
         self._validate__should_not_be_none(model)
         assert isinstance(model, AbstractModel)
@@ -238,7 +241,7 @@ class Assistant(KernelChild):
 
                 menu_action = None
             elif menu_action == CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
-                current_model = self.get_default_model()
+                current_model = self.get_model()
                 models = {}
                 for model in self.models:
                     models[model] = model
@@ -410,7 +413,7 @@ class Assistant(KernelChild):
         # Create a new DB from the documents (or add to existing)
         chroma = Chroma.from_documents(
             chunks,
-            self.get_default_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
+            self.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
             collection_name="single_files",
             persist_directory=self.chroma_path,
         )
@@ -440,22 +443,6 @@ class Assistant(KernelChild):
         )
 
         return str(action) if action else None
-
-    def guess_function(self, user_input: str) -> Optional[str]:
-        selected_function = self.get_default_model(MODEL_NAME_OPEN_AI_GPT_4).guess_function(
-            user_input,
-            [
-                AI_FUNCTION_DISPLAY_A_CUCUMBER,
-                None,
-            ],
-            self.identities[AI_IDENTITY_COMMAND_SELECTOR],
-        )
-
-        # Demo usage
-        if selected_function == AI_FUNCTION_DISPLAY_A_CUCUMBER:
-            return "🥒"
-
-        return None
 
     def split_user_input_commands(self, user_input: str) -> List[UserPromptSection]:
         user_input = user_input.strip()
@@ -529,17 +516,15 @@ class Assistant(KernelChild):
                 for index, prompt_section in enumerate(user_input_splits):
                     command = prompt_section.command
 
-                    if command == "exit":
+                    if command == ASSISTANT_COMMAND_EXIT:
                         return CHAT_MENU_ACTION_EXIT
-                    elif command == "menu":
+                    elif command == ASSISTANT_COMMAND_MENU:
                         return None
-                    elif command == "function":
-                        result = self.guess_function(prompt_section.prompt)
                     else:
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
-                            if command in subject.get_completer_commands():
+                            if not result and (command in subject.get_completer_commands() or subject.fallback_subject()):
                                 result = cast(AbstractChatSubject, subject).process_user_input(
                                     prompt_section,
                                     self.identities[identity_name],

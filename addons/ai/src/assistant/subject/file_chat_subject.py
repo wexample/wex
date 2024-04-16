@@ -66,7 +66,7 @@ class FileChatSubject(AbstractChatSubject):
                      "\n  - Adding a comma in the end of line should also be reflected as a line change."
                      "\n  - Also the last item of a json dict should not have a comma in the end of line.")
 
-            model = self.assistant.get_default_model()
+            model = self.assistant.get_model()
             file_name = os.path.basename(file_path)
             # Strip the original file to prevent having to fix mismatches.
             file_content = file_read(file_path).strip()
@@ -90,7 +90,7 @@ class FileChatSubject(AbstractChatSubject):
                     example_prompt=(
                         "User request:\n{question}\n\n"
                         "File name:\n{file_name}\n\n"
-                        "Complete source code of the application:\n{source_with_lines}\n\n"
+                        "File content:\n{source_with_lines}\n\n"
                         "AI-generated Git patch:\n"
                     ),
                     examples=[
@@ -192,7 +192,7 @@ class FileChatSubject(AbstractChatSubject):
 
             self.assistant.spinner.start()
 
-            response = self.assistant.get_default_model().chat(
+            response = self.assistant.get_model().chat(
                 user_input,
                 self.assistant.identities[AI_IDENTITY_FILE_INSPECTION],
                 identity_parameters
@@ -219,7 +219,7 @@ class FileChatSubject(AbstractChatSubject):
         self.assistant.vector_store_file(self.file_path)
         self.assistant.set_subject(self.name())
 
-        embedding_function = self.assistant.get_default_model(
+        embedding_function = self.assistant.get_model(
             MODEL_NAME_OPEN_AI_GPT_4
         ).create_embeddings()
 

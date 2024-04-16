@@ -9,7 +9,7 @@ from src.const.globals import (
     COLOR_RED,
     COLOR_RESET,
     COMMAND_TYPE_ADDON,
-    VERBOSITY_LEVEL_DEFAULT,
+    VERBOSITY_LEVEL_DEFAULT, COLOR_YELLOW,
 )
 from src.const.types import (
     AnyCallable,
@@ -18,8 +18,8 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.KernelChild import KernelChild
+from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
 if TYPE_CHECKING:
@@ -40,6 +40,18 @@ class IOManager(KernelChild):
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: List[IOManagerLogMessage] = []
         self.indent_string: str = "  "
+
+    def warn(
+        self,
+        message: str,
+        parameters: Optional[StringsDict] = None,
+        fatal: bool = True,
+        trace: bool = True,
+    ) -> NoReturn:
+        message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
+        message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
+
+        self.print(message)
 
     def error(
         self,
