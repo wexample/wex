@@ -24,6 +24,11 @@ class KernelDirectoryStructure(AppDirectoryStructure):
                             }
                         },
                     },
+                    ".env": {
+                        "type": "file",
+                        "on_missing": "create",
+                        "should_exist": True,
+                    },
                     "tmp": {
                         "shortcut": "tmp",
                         "should_exist": True,

@@ -1,6 +1,5 @@
 from typing import Any, List, Optional
 
-from dotenv import dotenv_values
 from langchain.chains import create_tagging_chain
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
@@ -17,10 +16,7 @@ class OpenAiModel(AbstractModel):
     api_key: Optional[str] = None
 
     def activate(self) -> None:
-        env_path = self.kernel.directory.path + ".env"
-        self.api_key = dotenv_values(env_path).get("OPENAI_API_KEY")
-        if not self.api_key:
-            self.kernel.io.error(f"Missing configuration OPENAI_API_KEY in {env_path}")
+        self.api_key = self.kernel.env("OPENAI_API_KEY", required=True)
 
         self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 

@@ -194,7 +194,7 @@ class AppAddonManager(AddonManager):
         return False
 
     def is_valid_app(self) -> bool:
-        return self.is_app_root(self.get_app_dir())
+        return self.app_dir and self.is_app_root(self.get_app_dir())
 
     @classmethod
     def _load_config(

@@ -1,6 +1,8 @@
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Union
+
+from dotenv import dotenv_values
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.env.get import _app__env__get
@@ -16,13 +18,13 @@ from src.const.globals import (
 )
 from src.core.AddonManager import AddonManager
 from src.core.BaseClass import BaseClass
+from src.core.IOManager import IOManager
+from src.core.Logger import Logger
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
 from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
 from src.core.file.KernelSystemRootDirectoryStructure import (
     KernelSystemRootDirectoryStructure,
 )
-from src.core.IOManager import IOManager
-from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
@@ -108,7 +110,7 @@ class Kernel(BaseClass):
             "core.cli": os.path.join(root_path, "cli", CORE_COMMAND_NAME),
             "tmp": tmp_path,
             "templates": os.path.join(root_path, "src", "resources", "templates")
-            + os.sep,
+                         + os.sep,
             "task": os.path.join(tmp_path, "task") + os.sep,
         }
 
@@ -120,6 +122,8 @@ class Kernel(BaseClass):
             env=_app__env__get(self, root_path),
             path=os.sep,
         )
+
+        self.env_values = dotenv_values(self.directory.path + ".env")
 
         # Create logger after task id and locations set.
         self.logger: Logger = Logger(self)
@@ -569,3 +573,20 @@ class Kernel(BaseClass):
             error: "ErrorMessage" = errors[0]
 
             self.io.error(error.message, error.parameters)
+
+    def env(
+        self,
+        key: str,
+        default: Union[str, int, None] = None,
+        required: bool = False
+    ) -> str | int | None:
+        value = self.env_values.get(key)
+        if value is None:
+            if required:
+                self.io.error(
+                    f"Missing required environment variable {key} in {self.directory.shortcuts['.env'].path}",
+                    {"key": key})
+            else:
+                return default
+
+        return value

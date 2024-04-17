@@ -212,6 +212,9 @@ class Assistant(KernelChild):
         self._validate__should_not_be_none(model)
         assert isinstance(model, AbstractModel)
 
+        if not model.activated:
+            model.activate()
+
         return model
 
     def start(self, menu_action: Optional[str] = None) -> None:
@@ -524,7 +527,8 @@ class Assistant(KernelChild):
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
-                            if not result and (command in subject.get_completer_commands() or subject.fallback_subject()):
+                            if not result and (
+                                command in subject.get_completer_commands() or subject.fallback_subject()):
                                 result = cast(AbstractChatSubject, subject).process_user_input(
                                     prompt_section,
                                     self.identities[identity_name],

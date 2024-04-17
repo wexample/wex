@@ -20,15 +20,6 @@ if TYPE_CHECKING:
 class AbstractModel(KernelChild):
     _llm: Optional[BaseLanguageModel[Any]]
 
-    def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
-        self._llm = llm
-
-    def get_llm(self) -> BaseLanguageModel[Any]:
-        self._validate__should_not_be_none(self._llm)
-        assert isinstance(self._llm, BaseLanguageModel)
-
-        return self._llm
-
     def __init__(self, kernel: "Kernel", identifier: str) -> None:
         super().__init__(kernel)
 
@@ -37,7 +28,16 @@ class AbstractModel(KernelChild):
 
         self.service: str = service
         self.name: str = name
-        self.activate()
+        self.activated: bool = False
+
+    def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
+        self._llm = llm
+
+    def get_llm(self) -> BaseLanguageModel[Any]:
+        self._validate__should_not_be_none(self._llm)
+        assert isinstance(self._llm, BaseLanguageModel)
+
+        return self._llm
 
     def chat_create_prompt(self, identity: StringKeysDict) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_messages(
@@ -152,4 +152,4 @@ class AbstractModel(KernelChild):
 
     @abstractmethod
     def activate(self) -> None:
-        pass
+        self.activated = True
