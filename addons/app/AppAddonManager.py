@@ -255,7 +255,7 @@ class AppAddonManager(AddonManager):
                         "email": email,
                     },
                 },
-                "wex": {"version": core_kernel_get_version(self.kernel)},
+                CORE_COMMAND_NAME: {"version": core_kernel_get_version(self.kernel)},
             },
         )
 

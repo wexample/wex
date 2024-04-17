@@ -7,7 +7,6 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
 
 @app_command(help="Install the proxy service", command_type=COMMAND_TYPE_SERVICE)
@@ -27,7 +26,7 @@ def proxy__service__install(
 
     shutil.copytree(
         os.path.join(
-            service_resolver.get_registered_service_data("proxy")["dir"],
+            service_resolver.get_registered_service_data(service)["dir"],
             "samples",
             "proxy",
         ),

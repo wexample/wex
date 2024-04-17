@@ -23,5 +23,5 @@ class NullResponse(AbstractResponse, ABC):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return super().print(render_mode, interactive_data)
+            return str(super().print(render_mode, interactive_data))
         return None

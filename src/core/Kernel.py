@@ -12,6 +12,7 @@ from src.const.globals import (
     VERBOSITY_LEVEL_MAXIMUM,
     VERBOSITY_LEVEL_MEDIUM,
     VERBOSITY_LEVEL_QUIET,
+    CORE_COMMAND_NAME,
 )
 from src.core.AddonManager import AddonManager
 from src.core.BaseClass import BaseClass
@@ -104,7 +105,7 @@ class Kernel(BaseClass):
             "entrypoint": entrypoint_path,
             "root": root_path,
             "addons": os.path.join(root_path, "addons") + os.sep,
-            "core.cli": os.path.join(root_path, "cli", "wex"),
+            "core.cli": os.path.join(root_path, "cli", CORE_COMMAND_NAME),
             "tmp": tmp_path,
             "templates": os.path.join(root_path, "src", "resources", "templates")
             + os.sep,

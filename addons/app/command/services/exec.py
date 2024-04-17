@@ -33,7 +33,7 @@ def app__services__exec(
 
         manager.kernel.io.log(command_name, verbosity=VERBOSITY_LEVEL_MAXIMUM)
 
-        output[service] = manager.kernel.run_command(
+        output[f"{COMMAND_CHAR_SERVICE}{service}"] = manager.kernel.run_command(
             command_name, arguments_dict_copy, quiet=True
         )
 

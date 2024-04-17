@@ -1,6 +1,7 @@
 from addons.app.command.config.get import app__config__get
 from addons.app.command.config.set import app__config__set
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.const.globals import CORE_COMMAND_NAME
 
 
 class TestAppCommandConfigSet(AbstractAppTestCase):
@@ -22,12 +23,12 @@ class TestAppCommandConfigSet(AbstractAppTestCase):
 
         # Rollback.
         self.kernel.run_function(
-            app__config__set, {"app-dir": app_dir, "key": "global.name", "value": "wex"}
+            app__config__set, {"app-dir": app_dir, "key": "global.name", "value": CORE_COMMAND_NAME}
         )
 
         self.assertEqual(
             self.kernel.run_function(
                 app__config__get, {"app-dir": app_dir, "key": "global.name"}
             ).first(),
-            "wex",
+            CORE_COMMAND_NAME,
         )
