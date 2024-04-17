@@ -151,7 +151,7 @@ class Assistant(KernelChild):
         self.identities = {
             AI_IDENTITY_DEFAULT: {"system": "You are a supportive AI assistant."},
             AI_IDENTITY_CODE_FILE_PATCHER: {
-                "system": "You are a supportive AI assistant."
+                "interaction_mode": "You are a supportive AI assistant."
                           "\nFocused on this file: {file_full_path}"
                           "\n_______________________________________File metadata"
                           "\nCreation Date: {file_creation_date}"
@@ -159,15 +159,15 @@ class Assistant(KernelChild):
                           "\n_______________________________________End of file metadata"
             },
             AI_IDENTITY_COMMAND_SELECTOR: {
-                "system": "Provide a command name that aids in responding to the user's query, or None if not applicable."
+                "interaction_mode": "Provide a command name that aids in responding to the user's query, or None if not applicable."
             },
             AI_IDENTITY_FILE_INSPECTION: {
-                "system": "Respond to inquiries based solely on the provided context:"
+                "interaction_mode": "Respond to inquiries based solely on the provided context:"
                           "\n"
                           "\n{context}"
             },
             AI_IDENTITY_GIT_PATCH_CREATOR: {
-                "system": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
+                "interaction_mode": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
                           "\nStart the patch with \"# PATCH_START\" then the patch content without header."
                           "\nThe patch body always starts 3 lines before the first change, if applicable, this is the security margin."
                           "\nYou respect the exact original spacings, indentation."
@@ -175,7 +175,7 @@ class Assistant(KernelChild):
                           "\nTerminate with the # DESCRIPTION: information describing what you've done."
             },
             AI_IDENTITY_TOOLS_AGENT: {
-                "system": "Efficiently answer the questions using one of available tools, then return the answer after first response:"
+                "interaction_mode": "Efficiently answer the questions using one of available tools, then return the answer after first response:"
                           "\n\n{tools}\n\nAdhere to this structure:"
                           "\n\nQuestion: the query you need to address"
                           "\nThought: consider your approach carefully"
@@ -189,7 +189,7 @@ class Assistant(KernelChild):
                           "\nThought:{agent_scratchpad}"
             },
             AI_IDENTITY_INVESTIGATOR: {
-                "system": "You will ask the user questions so that we can identify the source of the problem together."
+                "interaction_mode": "You will ask the user questions so that we can identify the source of the problem together."
                           "Start with only the first question. Be as concise as possible, "
                           "no unnecessary introductions or explanations. "
                           "The user will provide what they find, "
@@ -495,7 +495,7 @@ class Assistant(KernelChild):
 
         # Prompt the user to choose an action
         action = prompt_choice_dict(
-            "Choose an action to do with ai assistant:",
+            "Menu:",
             choices,
             abort=None,
             default=CHAT_MENU_ACTION_CHAT,
