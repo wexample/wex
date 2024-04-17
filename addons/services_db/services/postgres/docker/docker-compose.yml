@@ -1,7 +1,7 @@
 services:
     postgres:
         container_name: ${RUNTIME_NAME}_postgres
-        image: postgres:15.4
+        image: postgres:16.2
         environment:
           - POSTGRES_DB=${SERVICE_POSTGRES_NAME}
           - POSTGRES_USER=${SERVICE_POSTGRES_USER}
