@@ -140,10 +140,13 @@ class AppAddonManager(AddonManager):
 
         return env_file_path
 
-    def get_env_dir(self, dir: str, create: bool = False) -> str:
+    def get_env_dir(self, dir: Optional[str] = None, create: bool = False) -> str:
         app_dir = self.get_app_dir()
 
-        env_dir = os.path.join(app_dir, APP_DIR_APP_DATA, dir) + os.sep
+        if dir:
+            env_dir = os.path.join(app_dir, APP_DIR_APP_DATA, dir) + os.sep
+        else:
+            env_dir = os.path.join(app_dir, APP_DIR_APP_DATA)
 
         if create and not os.path.exists(env_dir):
             os.makedirs(env_dir, exist_ok=True)
