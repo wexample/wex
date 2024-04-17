@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast, Union
 
 import click.core
 
@@ -17,8 +17,8 @@ from src.const.types import (
     ShellCommandsDeepList,
     ShellCommandsList,
 )
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
+from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.file import file_create_parent_dir
 
 if TYPE_CHECKING:
@@ -65,6 +65,7 @@ def execute_command_tree_sync(
     command_tree: ShellCommandsDeepList,
     working_directory: str | None = None,
     ignore_error: bool = False,
+    interactive: bool = False,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     if isinstance(command_tree, list) and any(
@@ -89,7 +90,7 @@ def execute_command_tree_sync(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i : i + 1] = output
+                    command_tree[i: i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -99,6 +100,7 @@ def execute_command_tree_sync(
         command=cast(ShellCommandsList, command_tree),
         working_directory=working_directory,
         ignore_error=ignore_error,
+        interactive=interactive,
         **kwargs,
     )
 
@@ -136,43 +138,58 @@ def execute_command_async(
 
 def execute_command_sync(
     kernel: "Kernel",
-    command: ShellCommandsList | str,
+    command: Union[ShellCommandsList, str],
     working_directory: Optional[str] = None,
     ignore_error: bool = False,
-    **kwargs: Any,
+    interactive: bool = False,
+    **kwargs: Any
 ) -> ShellCommandResponseTuple:
     if working_directory is None:
         working_directory = os.getcwd()
 
     command_str = command_to_string(command)
     kernel.io.log(
-        f"Running shell command : {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
+        f"Running shell command: {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
     )
 
-    popen_args = {
-        "cwd": working_directory,
-        "stdout": subprocess.PIPE,
-        "stderr": subprocess.STDOUT,
-        **kwargs,
-    }
+    if interactive:
+        try:
+            result = subprocess.run(command, cwd=working_directory, text=True, check=not ignore_error)
+            success = result.returncode == 0
+            output_lines = result.stdout.splitlines() if result.stdout else []
+            if not success and not ignore_error:
+                kernel.io.error(
+                    f"Error when running command: {command_str}" + os.linesep + os.linesep + "\n".join(output_lines)
+                )
+            kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
+            return success, output_lines
+        except subprocess.CalledProcessError as e:
+            kernel.io.error(f"Error when running command: {command_str} - {str(e)}")
+            return False, str(e).splitlines()
+    else:
+        popen_args = {
+            "cwd": working_directory,
+            "stdout": subprocess.PIPE,
+            "stderr": subprocess.STDOUT,
+            **kwargs,
+        }
 
-    process = subprocess.Popen(command, **popen_args)
-    out_content, _ = process.communicate()
-    assert isinstance(out_content, bytes)
-    out_content_decoded: str = out_content.decode()
-    success: bool = process.returncode == 0
+        process = subprocess.Popen(command, **popen_args)
+        out_content, _ = process.communicate()
+        assert isinstance(out_content, bytes)
+        out_content_decoded: str = out_content.decode()
+        success: bool = process.returncode == 0
 
-    if not success and not ignore_error:
-        kernel.io.error(
-            f"Error when running command : {command_to_string(command)}"
-            + os.linesep
-            + os.linesep
-            + out_content_decoded
-        )
+        if not success and not ignore_error:
+            kernel.io.error(
+                f"Error when running command: {command_str}"
+                + os.linesep
+                + os.linesep
+                + out_content_decoded
+            )
 
-    kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
-
-    return success, out_content_decoded.splitlines()
+        kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        return success, out_content_decoded.splitlines()
 
 
 def command_escape(string: str, quote_char: str = '"') -> str:
