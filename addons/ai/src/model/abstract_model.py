@@ -8,20 +8,20 @@ from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import BasePromptTemplate
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
+from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
-from src.core.KernelChild import KernelChild
 from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from addons.ai.src.assistant.assistant import Assistant
 
 
-class AbstractModel(KernelChild):
+class AbstractModel(AbstractAssistantChild):
     _llm: Optional[BaseLanguageModel[Any]]
 
-    def __init__(self, kernel: "Kernel", identifier: str) -> None:
-        super().__init__(kernel)
+    def __init__(self, assistant: "Assistant", identifier: str) -> None:
+        super().__init__(assistant)
 
         self.identifier = identifier
         service, name = identifier.split(":")

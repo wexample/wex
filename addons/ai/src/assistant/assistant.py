@@ -2,6 +2,7 @@ import os
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 import chromadb  # type: ignore
+import psycopg2
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.parsers.language.language_parser import (
@@ -47,6 +48,8 @@ from addons.ai.src.model.open_ai_model import (
     OpenAiModel,
 )
 from addons.app.AppAddonManager import AppAddonManager
+from addons.app.command.helper.start import app__helper__start
+from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -71,26 +74,48 @@ class Assistant(KernelChild):
         prompt_progress_steps(
             kernel,
             [
-                self._init_models,
-                self._init_vector_database,
+                self._init_helper,
+                self._init_database,
                 self._init_prompt,
                 self._init_commands,
                 self._init_identities,
                 self._init_subjects,
+                self._init_models,
             ],
+        )
+
+    def _init_helper(self) -> None:
+        # Start AI helper app
+        response = self.kernel.run_function(
+            app__helper__start,
+            {
+                "name": HELPER_APP_AI_SHORT_NAME,
+                "create-network": False,
+            }
+        )
+
+        self.helper_app_dir = str(response.last())
+
+        self.assistant_app_manager = AppAddonManager(
+            self.kernel,
+            "assistant_app",
+            str(response.last()),
         )
 
     def _init_models(self) -> None:
         self._default_model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
-                self.kernel, MODEL_NAME_OLLAMA_MISTRAL
+                self,
+                MODEL_NAME_OLLAMA_MISTRAL
             ),
             MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+                self,
+                MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
             ),
             MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
-                self.kernel, MODEL_NAME_OPEN_AI_GPT_4
+                self,
+                MODEL_NAME_OPEN_AI_GPT_4
             ),
         }
 
@@ -169,18 +194,19 @@ class Assistant(KernelChild):
             }
         }
 
-    def _init_vector_database(self) -> None:
-        manager: AppAddonManager = cast(AppAddonManager, self.kernel.addons["app"])
+    def _init_database(self) -> None:
+        database_config = self.assistant_app_manager.get_config("service.postgres").get_dict()
 
-        if manager.is_valid_app():
-            self.chroma_path = manager.get_env_dir("ai/embeddings", create=True)
-        else:
-            self.chroma_path = (
-                self.kernel.get_or_create_path("tmp") + "ai/embeddings" + os.sep
-            )
+        conn = psycopg2.connect(
+            dbname=database_config["name"],
+            user=database_config["user"],
+            password=database_config["password"],
+            host="localhost",
+            port=5444
+        )
 
-        self.log(f"Embedding path is {self.chroma_path}")
-        self.chroma = chromadb.PersistentClient(path=self.chroma_path)
+        self.db_cursor = conn.cursor()
+        self.log("Database connected")
 
     def set_default_subject(self) -> None:
         self.set_subject(DefaultSubject.name())

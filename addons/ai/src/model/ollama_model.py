@@ -7,8 +7,6 @@ from langchain_community.llms import Ollama
 
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.app.command.app.exec import app__app__exec
-from addons.app.command.helper.start import app__helper__start
-from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.types import StringKeysDict
 
 MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
@@ -16,21 +14,12 @@ MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
 
 class OllamaModel(AbstractModel):
     def activate(self) -> None:
-        # Start AI helper app
-        response = self.kernel.run_function(
-            app__helper__start,
-            {
-                "name": HELPER_APP_AI_SHORT_NAME,
-                "create-network": False,
-            }
-        )
-
-        app_dir = str(response.last())
-
         # Start Ollama in helper app
         self.kernel.run_function(
             app__app__exec,
-            {"app-dir": app_dir, "command": f"ollama run {self.name}"},
+            {
+                "app-dir": self.assistant.helper_app_dir,
+                "command": f"ollama run {self.name}"},
         )
 
         # Connect Ollama
