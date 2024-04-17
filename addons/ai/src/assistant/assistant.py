@@ -38,6 +38,7 @@ from addons.ai.src.assistant.utils.globals import (
     AI_IDENTITY_INVESTIGATOR,
     ASSISTANT_COMMAND_MENU,
     ASSISTANT_COMMAND_EXIT,
+    CHAT_MENU_ACTION_CHANGE_PERSONALITY,
 )
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -54,6 +55,7 @@ from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import load_json_if_valid
+from src.helper.data_yaml import yaml_load
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 
@@ -78,6 +80,7 @@ class Assistant(KernelChild):
                 self._init_database,
                 self._init_prompt,
                 self._init_commands,
+                self._init_personalities,
                 self._init_identities,
                 self._init_subjects,
                 self._init_models,
@@ -194,6 +197,19 @@ class Assistant(KernelChild):
             }
         }
 
+    def _init_personalities(self) -> None:
+        personalities_path = f"{self.kernel.directory.path}addons/ai/samples/personalities/"
+        personalities = {}
+
+        # Scan the directory for files and load their contents
+        for filename in os.listdir(personalities_path):
+            if filename.endswith(".yml"):
+                name_without_extension, _ = os.path.splitext(filename)
+                personalities[name_without_extension] = yaml_load(os.path.join(personalities_path, filename))
+
+        self.personality: str = "default"
+        self.personalities = personalities
+
     def _init_database(self) -> None:
         database_config = self.assistant_app_manager.get_config("service.postgres").get_dict()
 
@@ -265,6 +281,19 @@ class Assistant(KernelChild):
                     "Choose a theme:",
                     choice_dict,
                     default=self.colors_theme,
+                    abort="↩ Back"
+                )
+
+                menu_action = None
+            elif menu_action == CHAT_MENU_ACTION_CHANGE_PERSONALITY:
+                choice_dict = {}
+                for key, personality in self.personalities.items():
+                    choice_dict[key] = personality["summary"]
+
+                self.personality = prompt_choice_dict(
+                    "Choose a personality:",
+                    choice_dict,
+                    default=self.personality,
                     abort="↩ Back"
                 )
 
@@ -452,18 +481,19 @@ class Assistant(KernelChild):
         return None
 
     def show_menu(self) -> Optional[str]:
-        choices = {
-            CHAT_MENU_ACTION_CHAT: CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_CHAT],
-        }
+        # List of all possible menu actions
+        menu_actions = [
+            CHAT_MENU_ACTION_CHAT,
+            CHAT_MENU_ACTION_THEME,
+            CHAT_MENU_ACTION_CHANGE_PERSONALITY,
+            CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
+            CHAT_MENU_ACTION_EXIT
+        ]
 
-        if len(self.models.keys()) > 1:
-            choices[CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL] = CHAT_MENU_ACTIONS_TRANSLATIONS[
-                CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL
-            ]
+        # Initialize choices dictionary using a dictionary comprehension
+        choices = {action: CHAT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions}
 
-        choices[CHAT_MENU_ACTION_THEME] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_THEME]
-        choices[CHAT_MENU_ACTION_EXIT] = CHAT_MENU_ACTIONS_TRANSLATIONS[CHAT_MENU_ACTION_EXIT]
-
+        # Prompt the user to choose an action
         action = prompt_choice_dict(
             "Choose an action to do with ai assistant:",
             choices,
@@ -471,6 +501,7 @@ class Assistant(KernelChild):
             default=CHAT_MENU_ACTION_CHAT,
         )
 
+        # Return the chosen action as a string or None if aborted
         return str(action) if action else None
 
     def split_user_input_commands(self, user_input: str) -> List[UserPromptSection]:
@@ -554,7 +585,11 @@ class Assistant(KernelChild):
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
                             if not result and (
-                                command in subject.get_completer_commands() or subject.fallback_subject()):
+                                command in subject.get_completer_commands() or subject.fallback_subject()
+                            ):
+                                identity = self.identities[identity_name]
+                                identity["system"] += self.personalities[self.personality]["prompt"]
+
                                 result = cast(AbstractChatSubject, subject).process_user_input(
                                     prompt_section,
                                     self.identities[identity_name],
