@@ -5,11 +5,14 @@ inquirerpy
 jq
 langchain>=0.1.14
 langchainhub
+langchain_cohere
+langchain_postgres
 langchain-openai
 langchain-community
 langchain-experimental
 openai
 psutil
+psycopg[binary]
 pypdf
 python-dotenv
 pyyaml

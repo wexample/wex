@@ -62,6 +62,8 @@ click==8.1.3
     #   nltk
     #   typer-slim
     #   uvicorn
+cohere==5.3.0
+    # via langchain-cohere
 coloredlogs==15.0.1
     # via onnxruntime
 dataclasses-json==0.6.3
@@ -83,6 +85,8 @@ exceptiongroup==1.2.0
     # via anyio
 fastapi==0.110.1
     # via chromadb
+fastavro==1.9.4
+    # via cohere
 filelock==3.13.3
     # via huggingface-hub
 filetype==1.2.0
@@ -118,7 +122,9 @@ httpcore==1.0.2
 httptools==0.6.1
     # via uvicorn
 httpx==0.26.0
-    # via openai
+    # via
+    #   cohere
+    #   openai
 huggingface-hub==0.22.2
     # via tokenizers
 humanfriendly==10.0
@@ -154,6 +160,8 @@ langchain==0.1.14
     # via
     #   -r requirements.in
     #   langchain-experimental
+langchain-cohere==0.1.0
+    # via -r requirements.in
 langchain-community==0.0.31
     # via
     #   -r requirements.in
@@ -161,13 +169,18 @@ langchain-community==0.0.31
 langchain-core==0.1.40
     # via
     #   langchain
+    #   langchain-cohere
     #   langchain-community
     #   langchain-experimental
     #   langchain-openai
+    #   langchain-postgres
     #   langchain-text-splitters
+    #   langgraph
 langchain-experimental==0.0.52
     # via -r requirements.in
 langchain-openai==0.0.2.post1
+    # via -r requirements.in
+langchain-postgres==0.0.3
     # via -r requirements.in
 langchain-text-splitters==0.0.1
     # via langchain
@@ -175,6 +188,8 @@ langchainhub==0.1.14
     # via -r requirements.in
 langdetect==1.0.9
     # via unstructured
+langgraph==0.0.32
+    # via langchain-postgres
 langsmith==0.1.40
     # via
     #   langchain
@@ -216,7 +231,9 @@ numpy==1.26.3
     #   langchain
     #   langchain-community
     #   langchain-openai
+    #   langchain-postgres
     #   onnxruntime
+    #   pgvector
     #   unstructured
 oauthlib==3.2.2
     # via
@@ -281,6 +298,8 @@ packaging==23.2
     #   unstructured-client
 pfzy==0.3.4
     # via inquirerpy
+pgvector==0.2.5
+    # via langchain-postgres
 posthog==3.5.0
     # via chromadb
 prompt-toolkit==3.0.38
@@ -294,6 +313,14 @@ protobuf==4.25.3
     #   opentelemetry-proto
 psutil==5.9.5
     # via -r requirements.in
+psycopg[binary]==3.1.18
+    # via
+    #   -r requirements.in
+    #   langchain-postgres
+psycopg-binary==3.1.18
+    # via psycopg
+psycopg-pool==3.2.1
+    # via langchain-postgres
 pulsar-client==3.4.0
     # via chromadb
 pyasn1==0.6.0
@@ -305,6 +332,7 @@ pyasn1-modules==0.4.0
 pydantic==2.5.3
     # via
     #   chromadb
+    #   cohere
     #   fastapi
     #   langchain
     #   langchain-core
@@ -353,6 +381,7 @@ requests==2.31.0
     # via
     #   -r requirements.in
     #   chromadb
+    #   cohere
     #   huggingface-hub
     #   kubernetes
     #   langchain
@@ -392,6 +421,7 @@ sqlalchemy==2.0.25
     # via
     #   langchain
     #   langchain-community
+    #   langchain-postgres
 starlette==0.37.2
     # via fastapi
 sympy==1.12
@@ -407,7 +437,9 @@ tenacity==8.2.3
 tiktoken==0.5.2
     # via langchain-openai
 tokenizers==0.15.2
-    # via chromadb
+    # via
+    #   chromadb
+    #   cohere
 tomli==2.0.1
     # via
     #   build
@@ -428,16 +460,21 @@ typer-slim[standard]==0.12.0
     #   typer-cli
     #   typer-slim
 types-requests==2.31.0.20240106
-    # via langchainhub
+    # via
+    #   cohere
+    #   langchainhub
 typing-extensions==4.9.0
     # via
     #   anyio
     #   asgiref
     #   chromadb
+    #   cohere
     #   fastapi
     #   huggingface-hub
     #   openai
     #   opentelemetry-sdk
+    #   psycopg
+    #   psycopg-pool
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
