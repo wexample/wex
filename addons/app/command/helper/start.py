@@ -77,7 +77,7 @@ def app__helper__start(
         kernel.io.log(f"Creating helper app dir : {helper_app_path}")
         os.makedirs(helper_app_path, exist_ok=True)
 
-        return kernel.run_function(
+        kernel.run_function(
             app__app__init,
             {
                 "app-dir": helper_app_path,
@@ -111,10 +111,10 @@ def app__helper__start(
         if not create_network:
             manager.set_config("docker.create_network", create_network)
 
-    def _app__helper__start__start() -> AbstractResponse:
+    def _app__helper__start__start() -> None:
         nonlocal env
 
-        return kernel.run_function(
+        kernel.run_function(
             app__app__start,
             {
                 "app-dir": helper_app_path,

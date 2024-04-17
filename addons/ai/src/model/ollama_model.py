@@ -22,9 +22,7 @@ class OllamaModel(AbstractModel):
             {
                 "name": HELPER_APP_AI_SHORT_NAME,
                 "create-network": False,
-            },
-            # Disable async execution
-            fast_mode=True,
+            }
         )
 
         app_dir = str(response.last())
