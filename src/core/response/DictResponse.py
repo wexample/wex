@@ -71,7 +71,8 @@ class DictResponse(AbstractTerminalSectionResponse):
 
             for key in data:
                 if isinstance(data[key], AbstractResponse):
-                    print_string.append(key + ": " + data[key].print(render_mode))
+                    # Ensure string in case of None response
+                    print_string.append(key + ": " + str(data[key].print(render_mode)))
                 else:
                     print_string.append(key + ": " + str(data[key]))
 
