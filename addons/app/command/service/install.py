@@ -142,11 +142,14 @@ def app__service__install(
         if not manager.has_config("docker.main_db_container"):
             manager.set_config("docker.main_db_container", service)
 
+    if "docker" in service_config:
+        docker_config = manager.get_config("docker").get_dict()
+        config_docker = dict_merge(docker_config, service_config["docker"])
+        manager.set_config("docker", config_docker)
+
     if "global" in service_config:
         global_config = manager.get_config("global").get_dict()
-
         config_global = dict_merge(global_config, service_config["global"])
-
         manager.set_config("global", config_global)
 
     kernel.run_command(

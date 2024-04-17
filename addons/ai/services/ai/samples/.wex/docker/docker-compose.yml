@@ -3,3 +3,7 @@ services:
     extends:
       file: ${RUNTIME_SERVICE_AI_YML_ENV}
       service: ai
+networks:
+  wex_net_ai:
+    name: wex_net_ai
+    driver: bridge
