@@ -10,7 +10,6 @@ from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APPS_LIST
 from src.helper.prompt import prompt_progress_steps
-from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option

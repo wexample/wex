@@ -4,11 +4,8 @@ from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 from addons.app.decorator.app_command import app_command
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
+from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -20,21 +17,17 @@ def app__app__restart(
     manager: "AppAddonManager",
     app_dir: str,
     fast: bool = False,
-) -> QueuedCollectionResponse:
+) -> None:
     kernel = manager.kernel
     options = {"app-dir": app_dir, "fast": fast}
 
-    def _app__app__restart__stop(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse:
+    def _app__app__restart__stop() -> AbstractResponse:
         return kernel.run_function(app__app__stop, options)
 
-    def _app__app__restart__start(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse:
+    def _app__app__restart__start() -> AbstractResponse:
         return kernel.run_function(app__app__start, options)
 
-    return QueuedCollectionResponse(
+    prompt_progress_steps(
         kernel,
         [
             _app__app__restart__stop,
