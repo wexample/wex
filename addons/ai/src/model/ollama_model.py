@@ -33,8 +33,6 @@ class OllamaModel(AbstractModel):
         self.kernel.run_function(
             app__app__exec,
             {"app-dir": app_dir, "command": f"ollama run {self.name}"},
-            # Disable async execution
-            fast_mode=True,
         )
 
         # Connect Ollama

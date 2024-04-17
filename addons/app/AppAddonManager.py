@@ -18,7 +18,6 @@ from addons.app.const.app import (
     APP_FILEPATH_REL_CONFIG_RUNTIME,
     APP_FILEPATH_REL_DOCKER_ENV,
     APP_FILEPATH_REL_ENV,
-    ERR_APP_SHOULD_RUN,
     HELPER_APP_PROXY_SHORT_NAME,
     PROXY_FILE_APPS_REGISTRY,
 )
@@ -511,7 +510,7 @@ class AppAddonManager(AddonManager):
                 self.kernel.io.message_next_command(app__app__start)
 
                 self.kernel.io.error(
-                    ERR_APP_SHOULD_RUN,
+                    'The application should be running to execute "{command}", in {dir}',
                     {
                         "command": request.get_string_command(),
                         "dir": app_dir_resolved,

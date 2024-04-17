@@ -13,7 +13,7 @@ from src.core.response.NonInteractiveShellCommandResponse import (
 from src.core.response.NullResponse import NullResponse
 from src.decorator.option import option
 from src.helper.args import args_parse_one
-from src.helper.command import command_escape, command_to_string
+from src.helper.command import command_to_string
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -132,6 +132,6 @@ def app__app__exec(
         return NonInteractiveShellCommandResponse(kernel, docker_command, ignore_error)
 
     # Append the final command to docker_command
-    docker_command += ["-c", command_escape(final_command_str)]
+    docker_command += ["-c", final_command_str]
 
     return InteractiveShellCommandResponse(kernel, docker_command, ignore_error)

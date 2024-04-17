@@ -10,10 +10,7 @@ from addons.app.helper.docker import (
     docker_exec_app_compose,
     docker_get_app_compose_files,
 )
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+from src.helper.prompt import prompt_progress_steps
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -30,20 +27,16 @@ def app__config__write(
     app_dir: str,
     user: Optional[str] = None,
     group: Optional[str] = None,
-) -> QueuedCollectionResponse:
+) -> None:
     kernel = manager.kernel
 
-    def _app__config__write__runtime(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    def _app__config__write__runtime() -> None:
         nonlocal user
         nonlocal group
 
         manager.build_runtime_config(user, group)
 
-    def _app__config__write__docker(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    def _app__config__write__docker() -> None:
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "config/write-compose-pre"}
         )
@@ -75,7 +68,7 @@ def app__config__write(
             app__hook__exec, {"app-dir": app_dir, "hook": "config/write-post"}
         )
 
-    return QueuedCollectionResponse(
+    prompt_progress_steps(
         kernel,
         [
             _app__config__write__runtime,
