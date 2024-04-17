@@ -12,7 +12,7 @@ langchain-community
 langchain-experimental
 openai
 psutil
-psycopg[binary]
+psycopg2-binary
 pypdf
 python-dotenv
 pyyaml
