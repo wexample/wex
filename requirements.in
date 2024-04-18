@@ -12,11 +12,11 @@ langchain-community
 langchain-experimental
 openai
 psutil
-psycopg2-binary
 pypdf
 python-dotenv
 pyyaml
 prompt_toolkit
 requests
+sqlalchemy
 unstructured
 unstructured[md]

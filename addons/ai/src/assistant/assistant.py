@@ -1,8 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
-import psycopg2
 from prompt_toolkit import HTML, print_formatted_text
+from sqlalchemy import create_engine
 
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -160,15 +160,12 @@ class Assistant(KernelChild):
     def _init_database(self) -> None:
         database_config = self.assistant_app_manager.get_config("service.postgres").get_dict()
 
-        conn = psycopg2.connect(
-            dbname=database_config["name"],
-            user=database_config["user"],
-            password=database_config["password"],
-            host="localhost",
-            port=5444
+        self.db_engine = create_engine(
+            f"postgresql://{database_config['user']}"
+            f":{database_config['password']}@localhost"
+            f":5444/{database_config['name']}"
         )
 
-        self.db_cursor = conn.cursor()
         self.log("Database connected")
 
     def set_default_subject(self) -> None:

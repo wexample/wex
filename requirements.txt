@@ -317,8 +317,6 @@ psycopg==3.1.18
     # via langchain-postgres
 psycopg-pool==3.2.1
     # via langchain-postgres
-psycopg2-binary==2.9.9
-    # via -r requirements.in
 pulsar-client==3.4.0
     # via chromadb
 pyasn1==0.6.0
@@ -417,6 +415,7 @@ soupsieve==2.5
     # via beautifulsoup4
 sqlalchemy==2.0.25
     # via
+    #   -r requirements.in
     #   langchain
     #   langchain-community
     #   langchain-postgres
@@ -456,6 +455,7 @@ typer-slim[standard]==0.12.0
     # via
     #   typer
     #   typer-cli
+    #   typer-slim
 types-requests==2.31.0.20240106
     # via
     #   cohere
@@ -496,7 +496,9 @@ urllib3==2.1.0
     #   types-requests
     #   unstructured-client
 uvicorn[standard]==0.29.0
-    # via chromadb
+    # via
+    #   chromadb
+    #   uvicorn
 uvloop==0.19.0
     # via uvicorn
 watchfiles==0.21.0
