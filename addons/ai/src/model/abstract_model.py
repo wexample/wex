@@ -50,7 +50,7 @@ class AbstractModel(AbstractAssistantChild):
                 ("system",
                  f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
                 ("system",
-                 "##INSTRUCTIONS\n" + user_prompt.prompt),
+                 "##INSTRUCTIONS\n" + assistant.get_current_subject().interaction_mode.get_initial_prompt()),
                 ("human",
                  "{input}"),
             ]
