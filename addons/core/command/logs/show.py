@@ -5,7 +5,7 @@ from src.core.response.TableResponse import TableBody, TableBodyLine, TableRespo
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.no_log import no_log
-from src.helper.data_json import load_json_if_valid
+from src.helper.data_json import json_load_if_valid
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -23,7 +23,7 @@ def core__logs__show(kernel: "Kernel", max: int = 10) -> TableResponse:
     response.set_header(["Command", "Date", "Status"])
 
     for filepath in last_files:
-        log = load_json_if_valid(filepath)
+        log = json_load_if_valid(filepath)
 
         if log:
             output.append(

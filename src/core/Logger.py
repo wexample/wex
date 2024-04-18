@@ -11,7 +11,7 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.helper.data_json import parse_json_if_valid
+from src.helper.data_json import json_parse_if_valid
 from src.helper.file import file_set_user_or_sudo_user_owner
 
 LOG_STATUS_COMPLETE = "complete"
@@ -91,7 +91,7 @@ class Logger:
                 self.write(task_id=self.kernel.parent_task_id, log_data=parent_logs)
 
     def load_logs(self, task_id: str) -> LoggerLogData:
-        logs = parse_json_if_valid(
+        logs = json_parse_if_valid(
             self.kernel.task_file_load("json", task_id=task_id, delete_after_read=False)
         )
 

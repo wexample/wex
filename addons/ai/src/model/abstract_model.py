@@ -9,6 +9,7 @@ from langchain_core.prompts import BasePromptTemplate
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
 from src.helper.dict import dict_merge
@@ -39,11 +40,19 @@ class AbstractModel(AbstractAssistantChild):
 
         return self._llm
 
-    def chat_create_prompt(self, identity: StringKeysDict) -> ChatPromptTemplate:
+    def chat_create_prompt(self, user_prompt: UserPromptSection) -> ChatPromptTemplate:
+        assistant = self.assistant
+
         return ChatPromptTemplate.from_messages(
             [
-                ("system", identity["system"]),
-                ("human", "{input}"),
+                ("system",
+                 "##YOUR PERSONALITY\n" + (assistant.personalities[assistant.personality]["prompt"] or "")),
+                ("system",
+                 f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
+                ("system",
+                 "##INSTRUCTIONS\n" + user_prompt.prompt),
+                ("human",
+                 "{input}"),
             ]
         )
 
@@ -57,13 +66,12 @@ class AbstractModel(AbstractAssistantChild):
 
     def chat(
         self,
-        user_input: str,
-        identity: StringKeysDict,
+        prompt_section: UserPromptSection,
         identity_parameters: StringKeysDict,
     ) -> str:
         return self.chain_invoke_and_strip_result(
-            prompt_template=self.chat_create_prompt(identity),
-            user_input=user_input,
+            prompt_template=self.chat_create_prompt(prompt_section),
+            user_input=prompt_section.prompt,
             identity_parameters=identity_parameters,
         )
 

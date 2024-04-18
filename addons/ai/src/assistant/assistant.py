@@ -13,11 +13,10 @@ from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
 from prompt_toolkit import HTML, print_formatted_text
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.agent_chat_subject import AgentChatSubject
-from addons.ai.src.assistant.subject.default_chat_subject import DefaultSubject
+from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
@@ -33,6 +32,7 @@ from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_COMMAND_MENU,
     ASSISTANT_COMMAND_EXIT,
     CHAT_MENU_ACTION_CHANGE_PERSONALITY,
+    CHAT_MENU_ACTION_CHANGE_LANGUAGE,
 )
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -48,7 +48,7 @@ from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
-from src.helper.data_json import load_json_if_valid
+from src.helper.data_json import json_load_if_valid, json_load
 from src.helper.data_yaml import yaml_load
 from src.helper.file import file_build_signature, file_get_extension
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
@@ -58,8 +58,8 @@ if TYPE_CHECKING:
 
 
 class Assistant(KernelChild):
+    language: str
     subject: AbstractChatSubject
-    interaction_mode: AbstractInteractionMode
     _default_model: Optional[AbstractModel] = None
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
@@ -74,6 +74,7 @@ class Assistant(KernelChild):
                 self._init_helper,
                 self._init_database,
                 self._init_prompt,
+                self._init_locales,
                 self._init_commands,
                 self._init_personalities,
                 self._init_subjects,
@@ -125,6 +126,14 @@ class Assistant(KernelChild):
     def _init_commands(self) -> None:
         self.commands = ASSISTANT_DEFAULT_COMMANDS
 
+    def _init_locales(self) -> None:
+        self.languages = json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json")
+        self.language = "en"
+        self.set_language(self.language)
+
+    def set_language(self, code: str):
+        self.language = code
+
     def _init_subjects(self) -> None:
         subjects = [
             FileChatSubject,
@@ -133,7 +142,7 @@ class Assistant(KernelChild):
             InvestigateChatSubject,
             FunctionChatSubject,
             # Should be last, as fallback
-            DefaultSubject,
+            DefaultChatSubject,
         ]
 
         self.subjects: Dict[str, AbstractChatSubject] = {}
@@ -171,7 +180,7 @@ class Assistant(KernelChild):
         self.log("Database connected")
 
     def set_default_subject(self) -> None:
-        self.set_subject(DefaultSubject.name())
+        self.set_subject(DefaultChatSubject.name())
 
     def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
@@ -219,6 +228,15 @@ class Assistant(KernelChild):
                 # Reset default subject.
                 self.set_default_subject()
                 menu_action = self.chat()
+            elif menu_action == CHAT_MENU_ACTION_CHANGE_LANGUAGE:
+                self.language = prompt_choice_dict(
+                    "Choose a language",
+                    self.languages,
+                    default=self.language,
+                    abort="↩ Back"
+                )
+
+                menu_action = None
             elif menu_action == CHAT_MENU_ACTION_THEME:
                 from pygments.styles._mapping import STYLES
 
@@ -308,7 +326,7 @@ class Assistant(KernelChild):
             self.log(f"Loader : JSON")
             from langchain_community.document_loaders import JSONLoader
 
-            if load_json_if_valid(file_path):
+            if json_load_if_valid(file_path):
                 return JSONLoader(file_path=file_path, jq_schema=".", text_content=False)
             return TextLoader(file_path)
         elif extension == "pdf":
@@ -436,6 +454,7 @@ class Assistant(KernelChild):
         menu_actions = [
             CHAT_MENU_ACTION_CHAT,
             CHAT_MENU_ACTION_THEME,
+            CHAT_MENU_ACTION_CHANGE_LANGUAGE,
             CHAT_MENU_ACTION_CHANGE_PERSONALITY,
             CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
             CHAT_MENU_ACTION_EXIT
@@ -508,8 +527,6 @@ class Assistant(KernelChild):
     def chat(
         self,
         initial_prompt: Optional[str] = None,
-        identity_name: str = AI_IDENTITY_DEFAULT,
-        identity_parameters: Optional[StringKeysDict] = None,
     ) -> Optional[str]:
         cast(HelpChatSubject, self.subjects[HelpChatSubject.name()]).show_help()
 
@@ -536,7 +553,7 @@ class Assistant(KernelChild):
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
                             if not result and subject.use_as_current_subject(prompt_section):
-                                self.interaction_mode.process_user_input(
+                                result = subject.interaction_mode.process_user_input(
                                     prompt_section,
                                     user_input_splits[index + 1:]
                                 )

@@ -4,12 +4,12 @@ from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssis
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
+    from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
-    def __init__(self, assistant: "Assistant"):
-        super().__init__(assistant)
+    def __init__(self, subject: "AbstractChatSubject"):
+        super().__init__(subject.assistant)
 
         self._output_formatting_prompt: Optional[str] = None
 
