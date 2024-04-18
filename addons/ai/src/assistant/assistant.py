@@ -13,6 +13,7 @@ from langchain_core.document_loaders import BaseLoader  # type: ignore
 from langchain_core.documents.base import Document
 from prompt_toolkit import HTML, print_formatted_text
 
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.agent_chat_subject import AgentChatSubject
@@ -22,12 +23,6 @@ from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSu
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
 from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
 from addons.ai.src.assistant.utils.globals import (
-    AI_IDENTITY_CODE_FILE_PATCHER,
-    AI_IDENTITY_COMMAND_SELECTOR,
-    AI_IDENTITY_DEFAULT,
-    AI_IDENTITY_FILE_INSPECTION,
-    AI_IDENTITY_GIT_PATCH_CREATOR,
-    AI_IDENTITY_TOOLS_AGENT,
     ASSISTANT_DEFAULT_COMMANDS,
     CHAT_MENU_ACTION_CHAT,
     CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
@@ -35,7 +30,6 @@ from addons.ai.src.assistant.utils.globals import (
     CHAT_MENU_ACTION_EXIT,
     CHAT_MENU_ACTIONS_TRANSLATIONS,
     AI_COMMAND_PREFIX,
-    AI_IDENTITY_INVESTIGATOR,
     ASSISTANT_COMMAND_MENU,
     ASSISTANT_COMMAND_EXIT,
     CHAT_MENU_ACTION_CHANGE_PERSONALITY,
@@ -64,7 +58,8 @@ if TYPE_CHECKING:
 
 
 class Assistant(KernelChild):
-    subject: Optional[AbstractChatSubject] = None
+    subject: AbstractChatSubject
+    interaction_mode: AbstractInteractionMode
     _default_model: Optional[AbstractModel] = None
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
@@ -81,7 +76,6 @@ class Assistant(KernelChild):
                 self._init_prompt,
                 self._init_commands,
                 self._init_personalities,
-                self._init_identities,
                 self._init_subjects,
                 self._init_models,
             ],
@@ -147,55 +141,7 @@ class Assistant(KernelChild):
             subject = cast(AbstractChatSubject, subject_class(self))
             self.subjects[subject.name()] = subject
 
-    def _init_identities(self) -> None:
-        self.identities = {
-            AI_IDENTITY_DEFAULT: {"system": "You are a supportive AI assistant."},
-            AI_IDENTITY_CODE_FILE_PATCHER: {
-                "interaction_mode": "You are a supportive AI assistant."
-                          "\nFocused on this file: {file_full_path}"
-                          "\n_______________________________________File metadata"
-                          "\nCreation Date: {file_creation_date}"
-                          "\nFile Size: {file_size} bytes"
-                          "\n_______________________________________End of file metadata"
-            },
-            AI_IDENTITY_COMMAND_SELECTOR: {
-                "interaction_mode": "Provide a command name that aids in responding to the user's query, or None if not applicable."
-            },
-            AI_IDENTITY_FILE_INSPECTION: {
-                "interaction_mode": "Respond to inquiries based solely on the provided context:"
-                          "\n"
-                          "\n{context}"
-            },
-            AI_IDENTITY_GIT_PATCH_CREATOR: {
-                "interaction_mode": "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
-                          "\nStart the patch with \"# PATCH_START\" then the patch content without header."
-                          "\nThe patch body always starts 3 lines before the first change, if applicable, this is the security margin."
-                          "\nYou respect the exact original spacings, indentation."
-                          "\nYou do not do any change without marking it with a + or a -."
-                          "\nTerminate with the # DESCRIPTION: information describing what you've done."
-            },
-            AI_IDENTITY_TOOLS_AGENT: {
-                "interaction_mode": "Efficiently answer the questions using one of available tools, then return the answer after first response:"
-                          "\n\n{tools}\n\nAdhere to this structure:"
-                          "\n\nQuestion: the query you need to address"
-                          "\nThought: consider your approach carefully"
-                          "\nAction: the chosen action, from [{tool_names}]"
-                          "\nAction Input: details for the action"
-                          "\nObservation: outcome of the action"
-                          "\nConcluding Thought: the insight leading to the final answer"
-                          "\nFinal Answer: the comprehensive response to the original question"
-                          "\n\nInitiate with:"
-                          "\n\nQuestion: {input}"
-                          "\nThought:{agent_scratchpad}"
-            },
-            AI_IDENTITY_INVESTIGATOR: {
-                "interaction_mode": "You will ask the user questions so that we can identify the source of the problem together."
-                          "Start with only the first question. Be as concise as possible, "
-                          "no unnecessary introductions or explanations. "
-                          "The user will provide what they find, "
-                          "and then you will ask the next question based on that result."
-            }
-        }
+        self.set_default_subject()
 
     def _init_personalities(self) -> None:
         personalities_path = f"{self.kernel.directory.path}addons/ai/samples/personalities/"
@@ -227,11 +173,15 @@ class Assistant(KernelChild):
     def set_default_subject(self) -> None:
         self.set_subject(DefaultSubject.name())
 
-    def set_subject(self, name: str) -> AbstractChatSubject:
+    def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
+        introduction = subject.introduce()
 
-        self.log("Setting subject : " + subject.introduce())
-        self.subject = subject
+        if subject.activate(prompt_section):
+            self.log("Setting subject: " + introduction)
+            self.subject = subject
+        else:
+            self.log("Failed to set subject: " + introduction)
 
         return subject
 
@@ -266,6 +216,7 @@ class Assistant(KernelChild):
                 menu_action = self.show_menu()
 
             if menu_action == CHAT_MENU_ACTION_CHAT:
+                # Reset default subject.
                 self.set_default_subject()
                 menu_action = self.chat()
             elif menu_action == CHAT_MENU_ACTION_THEME:
@@ -584,16 +535,9 @@ class Assistant(KernelChild):
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
-                            if not result and (
-                                command in subject.get_completer_commands() or subject.fallback_subject()
-                            ):
-                                identity = self.identities[identity_name]
-                                identity["system"] += self.personalities[self.personality]["prompt"]
-
-                                result = cast(AbstractChatSubject, subject).process_user_input(
+                            if not result and subject.use_as_current_subject(prompt_section):
+                                self.interaction_mode.process_user_input(
                                     prompt_section,
-                                    self.identities[identity_name],
-                                    identity_parameters or {},
                                     user_input_splits[index + 1:]
                                 )
 

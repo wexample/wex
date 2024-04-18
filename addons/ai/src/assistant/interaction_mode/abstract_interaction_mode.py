@@ -1,9 +1,10 @@
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 
-from addons.ai.src.assistant.assistant import Assistant
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+
+if TYPE_CHECKING:
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
@@ -34,7 +35,6 @@ class AbstractInteractionMode(AbstractAssistantChild):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        subject: AbstractChatSubject,
         remaining_sections: List[UserPromptSection]
     ) -> Optional[bool | str]:
         return None
