@@ -384,7 +384,7 @@ class Assistant(KernelChild):
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
                             if not result and subject.use_as_current_subject(prompt_section):
-                                result = subject.interaction_mode.process_user_input(
+                                result = subject.process_prompt_section(
                                     prompt_section,
                                     user_input_splits[index + 1:]
                                 )
@@ -400,6 +400,6 @@ class Assistant(KernelChild):
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
 
-    def print_ai(self, message: str):
+    def print_ai(self, message: str) -> None:
         # Let a new line separator
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{message}</ai>'))

@@ -78,3 +78,13 @@ class AbstractChatSubject(AbstractAssistantChild):
 
     def get_prompt_parameters(self) -> Dict:
         return {}
+
+    def process_prompt_section(
+        self,
+        prompt_section: UserPromptSection,
+        remaining_sections: List[UserPromptSection]
+    ) -> Optional[bool | str]:
+        return self.interaction_mode.process_user_input(
+            prompt_section,
+            remaining_sections
+        )

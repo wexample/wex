@@ -3,7 +3,6 @@ from typing import Optional, List
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 from src.const.types import StringKeysDict
 from src.helper.string import string_list_longest_word
 
@@ -23,11 +22,9 @@ class HelpChatSubject(AbstractChatSubject):
             SUBJECT_HELP_CHAT_COMMAND_HELP: "Show help",
         }
 
-    def process_user_input(
+    def process_prompt_section(
         self,
         prompt_section: UserPromptSection,
-        interaction_mode: AbstractInteractionMode,
-        template_parameters: StringKeysDict,
         remaining_sections: List[UserPromptSection]
     ) -> Optional[bool | str]:
         self.show_help()
