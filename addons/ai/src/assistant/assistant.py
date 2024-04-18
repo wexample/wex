@@ -24,6 +24,7 @@ from addons.ai.src.assistant.utils.globals import (
     CHAT_MENU_ACTION_CHANGE_PERSONALITY,
     CHAT_MENU_ACTION_CHANGE_LANGUAGE,
 )
+from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
@@ -35,6 +36,7 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
+from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -56,6 +58,7 @@ class Assistant(KernelChild):
 
         self._initial_default_model = default_model
         self.colors_theme: Optional[str] = None
+        self.history: List[HistoryItem] = []
 
         prompt_progress_steps(
             kernel,
@@ -133,6 +136,7 @@ class Assistant(KernelChild):
             HelpChatSubject,
             AgentChatSubject,
             FunctionChatSubject,
+            PreviousResponseSubject,
             # Should be last, as fallback
             DefaultChatSubject,
         ]
@@ -385,6 +389,9 @@ class Assistant(KernelChild):
                                     prompt_section,
                                     user_input_splits[index + 1:]
                                 )
+
+                    self.history.append(HistoryItem(prompt_section.prompt))
+                    self.history.append(HistoryItem(result))
 
                     if isinstance(result, str):
                         self.print_ai(result)

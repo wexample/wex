@@ -53,7 +53,6 @@ class AbstractModel(AbstractAssistantChild):
 
         return ChatPromptTemplate.from_messages(
             parts + [
-                personality_prompt,
                 ("system",
                  f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
                 ("system",

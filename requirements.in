@@ -13,6 +13,7 @@ langchain-experimental
 openai
 psutil
 pypdf
+pyperclip
 python-dotenv
 pyyaml
 prompt_toolkit
