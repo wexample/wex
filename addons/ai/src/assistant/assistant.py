@@ -11,7 +11,6 @@ from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubj
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
-from addons.ai.src.assistant.subject.investigate_chat_subject import InvestigateChatSubject
 from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_DEFAULT_COMMANDS,
     CHAT_MENU_ACTION_CHAT,
@@ -133,7 +132,6 @@ class Assistant(KernelChild):
             FileChatSubject,
             HelpChatSubject,
             AgentChatSubject,
-            InvestigateChatSubject,
             FunctionChatSubject,
             # Should be last, as fallback
             DefaultChatSubject,
