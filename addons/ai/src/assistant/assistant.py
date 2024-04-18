@@ -206,7 +206,7 @@ class Assistant(KernelChild):
 
         return model
 
-    def start(self, menu_action: Optional[str] = None) -> None:
+    def start(self, menu_action: str) -> None:
         asked_exit = False
         while not asked_exit:
             if not menu_action:

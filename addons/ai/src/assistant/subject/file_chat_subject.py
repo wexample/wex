@@ -28,6 +28,9 @@ class FileChatSubject(AbstractChatSubject):
             FilePatchInteractionMode,
         ]
 
+    def get_default_interaction_mode(self) -> Optional[str]:
+        return FileExploreInteractionMode.name()
+
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
 

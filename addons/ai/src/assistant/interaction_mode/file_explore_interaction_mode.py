@@ -39,7 +39,7 @@ class FileExploreInteractionMode(AbstractInteractionMode):
         return "file_explore"
 
     def get_initial_prompt(self) -> Optional[str]:
-        return ("Respond to inquiries based solely on the provided context:"
+        return ("## CONTEXT:"
                 "\n{context}")
 
     def process_user_input(
@@ -199,7 +199,6 @@ class FileExploreInteractionMode(AbstractInteractionMode):
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
 
-        self.vectorstore.similarity_search()
         # collection = self.vectorstore.get_collection()
 
         # results = collection.get(

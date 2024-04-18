@@ -43,16 +43,22 @@ class AbstractModel(AbstractAssistantChild):
     def chat_create_prompt(self) -> ChatPromptTemplate:
         assistant = self.assistant
 
-        return ChatPromptTemplate.from_messages(
-            [
+        parts = []
+        personality_prompt = assistant.personalities[assistant.personality]["prompt"]
+        if personality_prompt:
+            parts.append(
                 ("system",
-                 "##YOUR PERSONALITY\n" + (assistant.personalities[assistant.personality]["prompt"] or "")),
+                 "##YOUR PERSONALITY\n" + personality_prompt),
+            )
+
+        return ChatPromptTemplate.from_messages(
+            parts + [
+                personality_prompt,
                 ("system",
                  f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
                 ("system",
                  "##INSTRUCTIONS\n" + (assistant.get_current_subject().interaction_mode.get_initial_prompt() or "")),
-                ("human",
-                 "{input}"),
+                ("human", "{input}"),
             ]
         )
 

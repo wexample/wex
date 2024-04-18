@@ -11,7 +11,6 @@ Join our community, support us, and find work at https://wexample.com 🤝❤️
  - A strict framework for development and applications management.
  - Initialize and run Docker application.
  - Talk about your app with the AI integration.
- - Ability to execute both Python and Bash commands seamlessly, without the need for subprocesses.
 
 ## Install
 
