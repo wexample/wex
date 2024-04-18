@@ -34,7 +34,6 @@ class OllamaModel(AbstractModel):
         self,
         user_input: str,
         functions: List[str | None],
-        identity: StringKeysDict,
     ) -> Optional[str]:
         self.kernel.io.warn("Guessing function with tagging chain is not supported yet by OllamaModel")
         # Ollama tagging not set up.

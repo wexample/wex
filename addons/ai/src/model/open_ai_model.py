@@ -4,7 +4,6 @@ from langchain.chains import create_tagging_chain
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from addons.ai.src.model.abstract_model import AbstractModel
-from src.const.types import StringKeysDict
 
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_1106 = "open_ai:gpt-3.5-turbo-1106"
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_16K = "open_ai:gpt-3.5-turbo-16k"
@@ -24,7 +23,6 @@ class OpenAiModel(AbstractModel):
         self,
         user_input: str,
         functions: List[str | None],
-        identity: StringKeysDict,
     ) -> Optional[str]:
         """
         The tagging mechanism works well on GPT4 only.
@@ -35,7 +33,7 @@ class OpenAiModel(AbstractModel):
                     "command": {
                         "type": "string",
                         "enum": functions,
-                        "description": identity["system"],
+                        "description": self.assistant.get_current_subject().interaction_mode.get_initial_prompt(),
                     },
                 },
             },
