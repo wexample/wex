@@ -40,7 +40,7 @@ class AbstractModel(AbstractAssistantChild):
 
         return self._llm
 
-    def chat_create_prompt(self, user_prompt: UserPromptSection) -> ChatPromptTemplate:
+    def chat_create_prompt(self) -> ChatPromptTemplate:
         assistant = self.assistant
 
         return ChatPromptTemplate.from_messages(
@@ -70,7 +70,7 @@ class AbstractModel(AbstractAssistantChild):
         identity_parameters: StringKeysDict,
     ) -> str:
         return self.chain_invoke_and_strip_result(
-            prompt_template=self.chat_create_prompt(prompt_section),
+            prompt_template=self.chat_create_prompt(),
             user_input=prompt_section.prompt,
             identity_parameters=identity_parameters,
         )
@@ -120,22 +120,24 @@ class AbstractModel(AbstractAssistantChild):
         )
 
     def chat_agent(
-        self, user_input: str, tools: List[CommandTool], identity: StringKeysDict
+        self,
+        user_prompt: UserPromptSection,
+        tools: List[CommandTool]
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
-        prompt = self.chat_create_prompt(identity)
+        prompt_template = self.chat_create_prompt()
 
         agent = cast(
             Union[BaseSingleActionAgent, BaseMultiActionAgent],
-            create_react_agent(self.get_llm(), tools, prompt=prompt),
+            create_react_agent(self.get_llm(), tools, prompt=prompt_template),
         )
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
         # @see https://github.com/langchain-ai/langchain/discussions/6598
         # At the moment there is a loop issue with agents
-        return str(agent_executor.invoke({"input": user_input})["output"])
+        return str(agent_executor.invoke({"input": user_prompt.prompt})["output"])
 
     def chain_invoke_and_strip_result(
         self,
@@ -154,7 +156,6 @@ class AbstractModel(AbstractAssistantChild):
         self,
         user_input: str,
         functions: List[str | None],
-        identity: StringKeysDict,
     ) -> Optional[str]:
         return None
 

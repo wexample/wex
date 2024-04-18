@@ -84,6 +84,11 @@ class AbstractChatSubject(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection]
     ) -> Optional[bool | str]:
+        # By default interaction mode is required.
+        if not self.interaction_mode:
+            self.assistant.log(f"No interaction mode defined for subject : {self.name()}")
+            return False
+
         return self.interaction_mode.process_user_input(
             prompt_section,
             remaining_sections
