@@ -116,7 +116,6 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         )
 
         template = model.create_few_shot_prompt_template(
-            identity=assistant.identities[AI_IDENTITY_DEFAULT],
             example_prompt=(
                 "User request:\n{question}\n\n"
                 "File name:\n{file_name}\n\n"

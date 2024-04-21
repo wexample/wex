@@ -61,28 +61,22 @@ class AbstractModel(AbstractAssistantChild):
             ]
         )
 
-    def chat_merge_parameters(
-        self, user_input: str, identity_parameters: StringKeysDict
-    ) -> StringKeysDict:
-        return dict_merge({"input": user_input}, identity_parameters or {})
-
     def create_embeddings(self) -> Any:
         return None
 
     def chat(
         self,
         prompt_section: UserPromptSection,
-        identity_parameters: StringKeysDict,
+        prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
         return self.chain_invoke_and_strip_result(
             prompt_template=self.chat_create_prompt(),
             user_input=prompt_section.prompt,
-            identity_parameters=identity_parameters,
+            prompt_parameters=prompt_parameters,
         )
 
     def create_few_shot_prompt_template(
         self,
-        identity: StringKeysDict,
         example_prompt: str,
         examples: List[StringKeysDict],
         input_variables_names: StringsList,
@@ -97,7 +91,7 @@ class AbstractModel(AbstractAssistantChild):
             examples=examples,
             example_prompt=example_prompt_template,
             # The prefix is our instructions
-            prefix=identity["system"],
+            prefix=self.assistant.get_current_subject().interaction_mode.get_initial_prompt(),
             # The suffix our user input and output indicator
             suffix=example_prompt,
             input_variables=input_variables_names,
@@ -107,21 +101,19 @@ class AbstractModel(AbstractAssistantChild):
     def chat_with_few_shots(
         self,
         user_input,
-        identity: StringKeysDict,
-        identity_parameters: StringKeysDict,
+        prompt_parameters: StringKeysDict,
         example_prompt,
         examples,
         input_variables_names
     ):
         return self.chain_invoke_and_strip_result(
             prompt_template=self.create_few_shot_prompt_template(
-                identity=identity,
                 example_prompt=example_prompt,
                 examples=examples,
                 input_variables_names=input_variables_names
             ),
             user_input=user_input,
-            identity_parameters=identity_parameters
+            prompt_parameters=prompt_parameters
         )
 
     def chat_agent(
@@ -148,12 +140,16 @@ class AbstractModel(AbstractAssistantChild):
         self,
         prompt_template: BasePromptTemplate,
         user_input: str,
-        identity_parameters: StringKeysDict,
+        prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
         chain = LLMChain(llm=self.get_llm(), prompt=prompt_template, verbose=False)
 
         return chain.invoke(
-            self.chat_merge_parameters(user_input, identity_parameters)
+            dict_merge(
+                {"input": user_input},
+                self.assistant.get_current_subject().get_prompt_parameters(),
+                prompt_parameters or {}
+            )
         )["text"].strip()
 
     @abstractmethod
