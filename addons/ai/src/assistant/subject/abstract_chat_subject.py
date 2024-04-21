@@ -22,7 +22,7 @@ class AbstractChatSubject(AbstractAssistantChild):
         return self.name()
 
     @abstractmethod
-    def get_default_interaction_mode(self) -> Optional[str]:
+    def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
         modes = self.get_interaction_modes()
         if not len(modes):
             return None
@@ -31,7 +31,7 @@ class AbstractChatSubject(AbstractAssistantChild):
 
         first_mode = modes[0]
         assert issubclass(first_mode, AbstractInteractionMode)
-        return first_mode.name()
+        return first_mode
 
     @abstractmethod
     def get_interaction_modes(self) -> List[type]:
@@ -70,10 +70,6 @@ class AbstractChatSubject(AbstractAssistantChild):
 
         self.interaction_modes = interaction_modes
 
-        # Set default
-        mode_name = self.get_default_interaction_mode()
-        self.interaction_mode = interaction_modes[mode_name] if mode_name else None
-
         return True
 
     def get_prompt_parameters(self) -> Dict:
@@ -84,6 +80,10 @@ class AbstractChatSubject(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection]
     ) -> Optional[bool | str]:
+        # Set default
+        mode = self.get_interaction_mode(prompt_section)
+        self.interaction_mode = self.interaction_modes[cast(AbstractInteractionMode, mode).name()] if mode else None
+
         # By default interaction mode is required.
         if not self.interaction_mode:
             self.assistant.log(f"No interaction mode defined for subject : {self.name()}")

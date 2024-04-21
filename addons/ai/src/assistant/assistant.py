@@ -212,13 +212,16 @@ class Assistant(KernelChild):
 
     def start(self, menu_action: str) -> None:
         asked_exit = False
+
+        # Reset default subject.
+        if not self.subject:
+            self.set_default_subject()
+
         while not asked_exit:
             if not menu_action:
                 menu_action = self.show_menu()
 
             if menu_action == CHAT_MENU_ACTION_CHAT:
-                # Reset default subject.
-                self.set_default_subject()
                 menu_action = self.chat()
             elif menu_action == CHAT_MENU_ACTION_CHANGE_LANGUAGE:
                 self.language = prompt_choice_dict(
