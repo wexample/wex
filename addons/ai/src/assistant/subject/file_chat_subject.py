@@ -7,9 +7,7 @@ from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSu
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 from src.helper.dict import dict_merge, dict_sort_values
-from src.helper.file import file_read_if_exists
 from src.helper.prompt import prompt_choice_dict
-from src.helper.string import string_add_lines_numbers
 
 SUBJECT_FILE_CHAT_COMMAND_PATCH = "patch"
 SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE = "talk_about_file"
@@ -107,15 +105,3 @@ class FileChatSubject(AbstractChatSubject):
                 self.pick_a_file(full_path)
 
         return None
-
-    def load_example_patch(self, name) -> StringKeysDict:
-        base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
-        source = file_read_if_exists(f"{base_path}source.txt")
-
-        return {
-            "file_name": "file_name.py",
-            "question": file_read_if_exists(f"{base_path}question.txt"),
-            "source": source,
-            "source_with_lines": string_add_lines_numbers(source) if source else None,
-            "response": file_read_if_exists(f"{base_path}response.patch"),
-        }
