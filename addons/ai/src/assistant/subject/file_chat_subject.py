@@ -6,8 +6,7 @@ from addons.ai.src.assistant.interaction_mode.file_patch_interaction_mode import
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
-from src.helper.dict import dict_merge, dict_sort_values
-from src.helper.prompt import prompt_choice_dict
+from src.helper.prompt import prompt_pick_a_file
 
 SUBJECT_FILE_CHAT_COMMAND_PATCH = "patch"
 SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE = "talk_about_file"
@@ -52,7 +51,7 @@ class FileChatSubject(AbstractChatSubject):
             if user_input_trimmed and os.path.isfile(user_input_trimmed):
                 file_path = user_input_trimmed
             else:
-                file_path = self.pick_a_file()
+                file_path = prompt_pick_a_file()
 
                 if not file_path:
                     self.assistant.log("No file selected")
@@ -74,34 +73,3 @@ class FileChatSubject(AbstractChatSubject):
             return None
 
         self.file_path = file_path
-
-    def pick_a_file(self, base_dir: Optional[str] = None) -> Optional[str]:
-        base_dir = base_dir or os.getcwd()
-        # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
-        choices_dirs = {"..": ".."}
-        choices_files = {}
-
-        for element in os.listdir(base_dir):
-            if os.path.isdir(os.path.join(base_dir, element)):
-                element_label = f"📁 {element}"
-                choices_dirs[element] = element_label
-            else:
-                element_label = element
-                choices_files[element] = element_label
-
-        choices_dirs = dict_sort_values(choices_dirs)
-        choices_files = dict_sort_values(choices_files)
-
-        file = prompt_choice_dict(
-            "Select a file to talk about:",
-            dict_merge(choices_dirs, choices_files),
-        )
-
-        if file:
-            full_path = os.path.join(base_dir, file)
-            if os.path.isfile(full_path):
-                return full_path
-            elif os.path.isdir(full_path):
-                self.pick_a_file(full_path)
-
-        return None
