@@ -4,17 +4,19 @@ from typing import Any, Optional
 from src.const.types import StringKeysDict, StringKeysMapping
 
 
-def dict_merge(dict1: StringKeysDict, dict2: StringKeysDict) -> StringKeysDict:
+def dict_merge(*dicts):
     """
-    Recursively merge two dictionaries.
-    If a key exists in both dictionaries, the values are merged recursively.
+    Recursively merge multiple dictionaries.
+    If a key exists in multiple dictionaries, the values are merged recursively.
+    The function can take any number of dictionary arguments.
     """
-    result = copy.deepcopy(dict1)
-    for key, value in dict2.items():
-        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-            result[key] = dict_merge(result[key], value)
-        else:
-            result[key] = copy.deepcopy(value)
+    result = {}
+    for dictionary in dicts:
+        for key, value in dictionary.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = dict_merge(result[key], value)  # Recursively merge dicts
+            else:
+                result[key] = copy.deepcopy(value)
     return result
 
 
