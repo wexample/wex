@@ -1,3 +1,4 @@
+import html
 import os
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
@@ -413,4 +414,4 @@ class Assistant(KernelChild):
 
     def print_ai(self, message: str) -> None:
         # Let a new line separator
-        print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{message}</ai>'))
+        print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))

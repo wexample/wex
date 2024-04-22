@@ -47,6 +47,25 @@ class AbstractModel(AbstractAssistantChild):
     def chat_create_prompt(self) -> ChatPromptTemplate:
         assistant = self.assistant
 
+        # from typing import List
+        #
+        # from langchain_core.output_parsers import JsonOutputParser
+        # from langchain_core.prompts import PromptTemplate
+        # from langchain_core.pydantic_v1 import BaseModel, Field
+        # from langchain_openai import ChatOpenAI
+        #
+        # class Joke(BaseModel):
+        #     setup: str = Field(description="question to set up a joke")
+        #     punchline: str = Field(description="answer to resolve the joke")
+        #
+        # parser = JsonOutputParser(pydantic_object=Joke)
+        #
+        # prompt = PromptTemplate(
+        #     template="Answer the user query.\n{format_instructions}\n{query}\n",
+        #     input_variables=["query"],
+        #     partial_variables={"format_instructions": parser.get_format_instructions()},
+        # )
+
         parts = []
         personality_prompt = assistant.personalities[assistant.personality]["prompt"]
         if personality_prompt:
@@ -73,6 +92,11 @@ class AbstractModel(AbstractAssistantChild):
         return ChatPromptTemplate.from_messages(
             parts + [("human", "{input}")]
         )
+        # return ChatPromptTemplate(
+        #     input_variables=["query"],
+        #     messages=parts + [("human", "{input}")],
+        #     partial_variables={"format_instructions": parser.get_format_instructions()},
+        # )
 
     def create_embeddings(self) -> Any:
         return None
