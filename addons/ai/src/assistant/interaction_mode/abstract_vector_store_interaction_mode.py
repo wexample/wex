@@ -1,23 +1,31 @@
+from abc import abstractmethod
 from typing import List, cast, Optional, Dict
 from xml.dom.minidom import Document
-from abc import abstractmethod
+
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_community.document_loaders.parsers.language.language_parser import (
     Language,
 )  # type: ignore
 from langchain_core.documents.base import Document
 from langchain_postgres.vectorstores import PGVector
+from unstructured.cleaners.core import remove_punctuation, clean, clean_extra_whitespace
 from yaml import BaseLoader
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.helper.data_json import json_load_if_valid
-from src.helper.file import file_build_signature, file_get_extension
+from src.helper.file import file_get_extension
 
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
+    def __init__(self, subject: "AbstractChatSubject"):
+        super().__init__(subject)
+        self.init_vector_store()
+
     def get_vector_store_collection_name(self) -> str:
         return self.name()
 
@@ -26,14 +34,14 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
                 "\n{context}")
 
     @abstractmethod
-    def get_similarity_search_filter(self) -> Dict[str, str]:
+    def get_similarity_search_filter(self, prompt_section: UserPromptSection) -> Dict[str, str]:
         pass
 
     def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
         results = self.vectorstore.similarity_search_with_relevance_scores(
             prompt_section.prompt,
             k=3,
-            filter=self.get_similarity_search_filter()
+            filter=self.get_similarity_search_filter(prompt_section)
         )
 
         return {
@@ -107,20 +115,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             # Fallback to a generic text loader if file type is not specifically handled
             return TextLoader(file_path)
 
-    def vector_delete_file(self, file_path: str) -> None:
-        collection = self.chroma.get_or_create_collection("single_files")
-
-        # Check for existing documents by the same source, regardless of the signature
-        # This is to find any versions of the file, not just ones with a matching signature
-        existing_docs = collection.get(
-            where={"source": file_path},
-        )
-
-        # If there are existing documents, delete them before proceeding
-        if len(existing_docs["ids"]) > 0:
-            self.assistant.log("Existing document versions found. Deleting...")
-            collection.delete(ids=existing_docs["ids"])
-
     def vector_find_language_by_extension(self, extension: str) -> Optional[Language]:
         # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
         extensions_map = {
@@ -171,19 +165,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
 
-        # collection = self.vectorstore.get_collection()
-
-        # results = collection.get(
-        #     where={"signature": file_signature}, include=["metadatas"]
-        # )
-        #
-        # if len(results["ids"]) > 0:
-        #     self.assistant.log("Document already exists. Skipping...")
-        #     return []
-
-        # # Delete every version
-        # self.vector_delete_file(file_path)
-
         # If the file is not already in Chroma, proceed with indexing
         self.assistant.log("Storing document to vector database...")
         loader.load()
@@ -196,7 +177,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
         return chunks
 
-    def vector_store_file(self, file_path: str, signature:str) -> None:
+    def vector_store_file(self, file_path: str, signature: str) -> None:
         self.assistant.log(f"Storing document {file_path}")
 
         chunks = self.vector_create_file_chunks(file_path, signature)
@@ -212,3 +193,22 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         self.assistant.log("Document stored successfully")
 
         return None
+
+    def vector_store_url(self, url: str, signature: str) -> None:
+        loader = UnstructuredURLLoader(
+            urls=[url],
+            mode="elements",
+            post_processors=[clean, remove_punctuation, clean_extra_whitespace])
+
+        elements = loader.load()
+        selected_elements = [e for e in elements if e.metadata['category'] == "NarrativeText"]
+        full_clean = " ".join([e.page_content for e in selected_elements])
+
+        self.vectorstore.add_documents(
+            [
+                Document(
+                    page_content=full_clean,
+                    metadata={"signature": signature}
+                )
+            ]
+        )
