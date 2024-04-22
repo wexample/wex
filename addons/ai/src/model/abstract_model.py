@@ -195,7 +195,7 @@ class AbstractModel(AbstractAssistantChild):
                 prompt_parameters or {}
             ),
             config={"configurable": {"user_id": "123", "conversation_id": "1"}},
-        ).content.strip()
+        ).content
 
     @abstractmethod
     def guess_function(
