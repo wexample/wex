@@ -2,7 +2,6 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
-from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -56,16 +55,23 @@ class AbstractModel(AbstractAssistantChild):
                  "##YOUR PERSONALITY\n" + personality_prompt),
             )
 
-        return ChatPromptTemplate.from_messages(
-            parts + [
-                ("system",
-                 f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
-                ("system",
-                 "##INSTRUCTIONS\n" + (assistant.get_current_subject().interaction_mode.get_initial_prompt() or "")),
-                ("system",
-                 "##CONVERSATION HISTORY\n{history}"),
-                ("human", "{input}"),
+        parts += [
+            ("system", f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
+        ]
+
+        initial_prompt = (assistant.get_current_subject().interaction_mode.get_initial_prompt() or "")
+        if initial_prompt:
+            parts += [
+                ("system", "##INSTRUCTIONS\n" + initial_prompt),
             ]
+
+        if len(self.memory):
+            parts += [
+                ("system", "##CONVERSATION HISTORY\n{history}"),
+            ]
+
+        return ChatPromptTemplate.from_messages(
+            parts + [("human", "{input}")]
         )
 
     def create_embeddings(self) -> Any:
@@ -155,13 +161,12 @@ class AbstractModel(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
-        chain = LLMChain(llm=self.get_llm(), prompt=prompt_template, verbose=False)
+        chain = prompt_template | self.get_llm()
 
         with_message_history = RunnableWithMessageHistory(
             chain,
             self.get_session_history,
             input_messages_key="input",
-            output_messages_key="text",
             history_messages_key="history",
             history_factory_config=[
                 ConfigurableFieldSpec(
@@ -185,12 +190,12 @@ class AbstractModel(AbstractAssistantChild):
 
         return with_message_history.invoke(
             dict_merge(
-                {"input": user_input},
+                {"input": prompt_section.prompt},
                 self.assistant.get_current_subject().get_prompt_parameters(),
                 prompt_parameters or {}
             ),
             config={"configurable": {"user_id": "123", "conversation_id": "1"}},
-        )["text"].strip()
+        ).content.strip()
 
     @abstractmethod
     def guess_function(
