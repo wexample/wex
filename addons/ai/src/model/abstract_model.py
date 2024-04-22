@@ -4,15 +4,18 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.chains.llm import LLMChain
 from langchain.prompts import ChatPromptTemplate
+from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import BasePromptTemplate
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+from langchain_core.runnables import ConfigurableFieldSpec
+from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
-from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -30,6 +33,7 @@ class AbstractModel(AbstractAssistantChild):
         self.service: str = service
         self.name: str = name
         self.activated: bool = False
+        self.memory = {}
 
     def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
         self._llm = llm
@@ -57,6 +61,8 @@ class AbstractModel(AbstractAssistantChild):
                  f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
                 ("system",
                  "##INSTRUCTIONS\n" + (assistant.get_current_subject().interaction_mode.get_initial_prompt() or "")),
+                ("system",
+                 "##CONVERSATION HISTORY\n{history}"),
                 ("human", "{input}"),
             ]
         )
@@ -136,6 +142,12 @@ class AbstractModel(AbstractAssistantChild):
         # At the moment there is a loop issue with agents
         return str(agent_executor.invoke({"input": user_prompt.prompt})["output"])
 
+    def get_session_history(self, user_id: str, conversation_id: str) -> BaseChatMessageHistory:
+        if (user_id, conversation_id) not in self.memory:
+            self.memory[(user_id, conversation_id)] = ChatMessageHistory()
+
+        return self.memory[(user_id, conversation_id)]
+
     def chain_invoke_and_strip_result(
         self,
         prompt_template: BasePromptTemplate,
@@ -144,12 +156,35 @@ class AbstractModel(AbstractAssistantChild):
     ) -> str:
         chain = LLMChain(llm=self.get_llm(), prompt=prompt_template, verbose=False)
 
-        return chain.invoke(
-            dict_merge(
-                {"input": user_input},
-                self.assistant.get_current_subject().get_prompt_parameters(),
-                prompt_parameters or {}
-            )
+        with_message_history = RunnableWithMessageHistory(
+            chain,
+            self.get_session_history,
+            input_messages_key="input",
+            output_messages_key="text",
+            history_messages_key="history",
+            history_factory_config=[
+                ConfigurableFieldSpec(
+                    id="user_id",
+                    annotation=str,
+                    name="User ID",
+                    description="Unique identifier for the user.",
+                    default="",
+                    is_shared=True,
+                ),
+                ConfigurableFieldSpec(
+                    id="conversation_id",
+                    annotation=str,
+                    name="Conversation ID",
+                    description="Unique identifier for the conversation.",
+                    default="",
+                    is_shared=True,
+                ),
+            ],
+        )
+
+        return with_message_history.invoke(
+            {"input": user_input},
+            config={"configurable": {"user_id": "123", "conversation_id": "1"}},
         )["text"].strip()
 
     @abstractmethod
