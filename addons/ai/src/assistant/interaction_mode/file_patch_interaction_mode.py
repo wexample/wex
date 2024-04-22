@@ -61,7 +61,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
 
         raw_patch_content = (
             model.chat_with_few_shots(
-                user_input=user_input,
+                prompt_section=prompt_section,
                 prompt_parameters={
                     "file_name": file_name,
                     "question": user_input,

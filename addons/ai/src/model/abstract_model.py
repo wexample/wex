@@ -78,7 +78,7 @@ class AbstractModel(AbstractAssistantChild):
     ) -> str:
         return self.chain_invoke_and_strip_result(
             prompt_template=self.chat_create_prompt(),
-            user_input=prompt_section.prompt,
+            prompt_section=prompt_section,
             prompt_parameters=prompt_parameters,
         )
 
@@ -107,7 +107,7 @@ class AbstractModel(AbstractAssistantChild):
 
     def chat_with_few_shots(
         self,
-        user_input,
+        prompt_section: UserPromptSection,
         prompt_parameters: StringKeysDict,
         example_prompt,
         examples,
@@ -119,13 +119,13 @@ class AbstractModel(AbstractAssistantChild):
                 examples=examples,
                 input_variables_names=input_variables_names
             ),
-            user_input=user_input,
+            prompt_section=prompt_section,
             prompt_parameters=prompt_parameters
         )
 
     def chat_agent(
         self,
-        user_prompt: UserPromptSection,
+        prompt_section: UserPromptSection,
         tools: List[CommandTool]
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
@@ -141,7 +141,7 @@ class AbstractModel(AbstractAssistantChild):
 
         # @see https://github.com/langchain-ai/langchain/discussions/6598
         # At the moment there is a loop issue with agents
-        return str(agent_executor.invoke({"input": user_prompt.prompt})["output"])
+        return str(agent_executor.invoke({"input": prompt_section.prompt})["output"])
 
     def get_session_history(self, user_id: str, conversation_id: str) -> BaseChatMessageHistory:
         if (user_id, conversation_id) not in self.memory:
@@ -152,7 +152,7 @@ class AbstractModel(AbstractAssistantChild):
     def chain_invoke_and_strip_result(
         self,
         prompt_template: BasePromptTemplate,
-        user_input: str,
+        prompt_section: UserPromptSection,
         prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
         chain = LLMChain(llm=self.get_llm(), prompt=prompt_template, verbose=False)
