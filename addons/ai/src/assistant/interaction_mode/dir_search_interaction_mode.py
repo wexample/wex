@@ -8,7 +8,7 @@ from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_
     AbstractVectorStoreInteractionMode
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.globals import VERBOSITY_LEVEL_QUIET
-from src.helper.file import file_is_utf8_encoding
+from src.helper.file import file_is_utf8_encoding, file_build_signature
 
 if TYPE_CHECKING:
     from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -30,7 +30,7 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
         subject = cast(DirChatSubject, self.assistant.get_current_subject())
 
         return {
-            "source": subject.dir_path
+            "signature": file_build_signature(subject.dir_path)
         }
 
     def process_user_input(
@@ -64,7 +64,7 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
             self.kernel.verbosity = VERBOSITY_LEVEL_QUIET
             with click.progressbar(storable_files) as bar:
                 for file in bar:
-                    self.vector_store_file(file)
+                    self.vector_store_file(file, file_build_signature(subject.dir_path))
             self.kernel.verbosity = verbosity
             self.last_stored_path = subject.dir_path
 

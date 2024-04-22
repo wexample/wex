@@ -4,6 +4,7 @@ from chromadb import ClientAPI
 from langchain_core.document_loaders import BaseLoader  # type: ignore
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import AbstractVectorStoreInteractionMode
+from src.helper.file import file_build_signature
 
 if TYPE_CHECKING:
     from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -26,7 +27,7 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         subject = cast(FileChatSubject, self.assistant.get_current_subject())
 
         return {
-            "source": subject.file_path
+            "signature": file_build_signature(subject.file_path)
         }
 
     def process_user_input(
@@ -41,7 +42,7 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         if not subject.file_path:
             return f'No file selected'
 
-        self.vector_store_file(subject.file_path)
+        self.vector_store_file(subject.file_path, file_build_signature(subject.file_path))
 
         # Avoid empty input error.
         if not prompt_section.prompt:

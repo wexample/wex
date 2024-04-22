@@ -350,18 +350,31 @@ def file_create_symlink(target_path: str, symlink_path: str) -> None:
 
 
 def file_build_signature(file_path: str) -> str:
-    """
-    Generate a signature for a file based on its size and last modified timestamp.
-    This signature can be used to quickly check if a file has been modified.
-    """
-    file_stats = os.stat(file_path)
-    file_size = file_stats.st_size
-    last_modified = file_stats.st_mtime
+    if os.path.isdir(file_path):
+        total_size = 0
+        latest_mod_time = 0
+        # Walk through the directory and sum up the sizes and find the latest modification time.
+        for root, dirs, files in os.walk(file_path):
+            for name in files + dirs:
+                sub_path = os.path.join(root, name)
+                try:
+                    stats = os.stat(sub_path, follow_symlinks=False)
+                    total_size += stats.st_size
+                    if stats.st_mtime > latest_mod_time:
+                        latest_mod_time = stats.st_mtime
+                except FileNotFoundError:
+                    # If the file gets deleted between os.walk and os.stat, ignore it.
+                    continue
+        return f"{file_path}-{total_size}-{int(latest_mod_time)}"
+    else:
+        # Handle the file case similar to the original function.
+        stats = os.stat(file_path)
+        file_size = stats.st_size
+        last_modified = stats.st_mtime
+        return f"{file_path}-{file_size}-{int(last_modified)}"
 
-    return f"{file_path}-{file_size}-{int(last_modified)}"
 
-
-def file_is_utf8_encoding(file_path)->bool:
+def file_is_utf8_encoding(file_path) -> bool:
     """
     Check if the file at `file_path` is encoded in UTF-8.
 

@@ -164,7 +164,9 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             return RecursiveCharacterTextSplitter()
 
     def vector_create_file_chunks(
-        self, file_path: str, file_signature: str
+        self,
+        file_path: str,
+        file_signature: str
     ) -> List[Document]:
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
@@ -191,14 +193,14 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
             chunk.metadata = {"signature": file_signature, "source": file_path}
+            print(chunk.metadata)
 
         return chunks
 
-    def vector_store_file(self, file_path: str) -> None:
+    def vector_store_file(self, file_path: str, signature:str) -> None:
         self.assistant.log(f"Storing document {file_path}")
 
-        file_signature = file_build_signature(file_path)
-        chunks = self.vector_create_file_chunks(file_path, file_signature)
+        chunks = self.vector_create_file_chunks(file_path, signature)
 
         # Ignore if empty or null, document already stored.
         if len(chunks) == 0:
