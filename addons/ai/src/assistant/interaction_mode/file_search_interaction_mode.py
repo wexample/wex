@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 
 
-class FileExploreInteractionMode(AbstractInteractionMode):
+class FileSearchInteractionMode(AbstractInteractionMode):
     chroma: Optional[ClientAPI] = None
     chroma_path: Optional[str] = None
 
@@ -39,7 +39,7 @@ class FileExploreInteractionMode(AbstractInteractionMode):
 
     @staticmethod
     def name() -> str:
-        return "file_explore"
+        return "file_search"
 
     def get_initial_prompt(self) -> Optional[str]:
         return ("## CONTEXT:"
