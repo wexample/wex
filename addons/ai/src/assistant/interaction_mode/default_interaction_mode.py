@@ -18,6 +18,7 @@ class DefaultInteractionMode(AbstractInteractionMode):
 
         response = self.assistant.get_model().chat(
             prompt_section,
+            self.get_interaction_mode_prompt_parameters(prompt_section)
         )
 
         self.assistant.spinner.stop()

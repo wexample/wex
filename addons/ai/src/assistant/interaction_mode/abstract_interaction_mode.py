@@ -1,4 +1,4 @@
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING, Dict
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -19,6 +19,9 @@ class AbstractInteractionMode(AbstractAssistantChild):
 
     def get_initial_prompt(self) -> Optional[str]:
         return None
+
+    def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
+        return {}
 
     def set_output_formatting_prompt(self, prompt: str) -> None:
         if self._output_formatting_prompt is None:
