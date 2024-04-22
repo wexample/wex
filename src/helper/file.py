@@ -359,3 +359,24 @@ def file_build_signature(file_path: str) -> str:
     last_modified = file_stats.st_mtime
 
     return f"{file_path}-{file_size}-{int(last_modified)}"
+
+
+def file_is_utf8_encoding(file_path)->bool:
+    """
+    Check if the file at `file_path` is encoded in UTF-8.
+
+    Args:
+        file_path (str): The path to the file to check.
+
+    Returns:
+        bool: True if the file is UTF-8 encoded, False otherwise.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            file.read()  # Try to read the whole file with UTF-8 encoding
+        return True
+    except UnicodeDecodeError:
+        return False
+    except FileNotFoundError:
+        print(f"The file {file_path} does not exist.")
+        return False

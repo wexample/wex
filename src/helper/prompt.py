@@ -9,8 +9,8 @@ from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
 from click._termui_impl import ProgressBar, V
 
-from src.helper.dict import dict_sort_values, dict_merge
 from src.const.types import StringsDict
+from src.helper.dict import dict_sort_values, dict_merge
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -111,3 +111,41 @@ def prompt_pick_a_file(base_dir: Optional[str] = None) -> Optional[str]:
 
     return None
 
+
+def prompt_pick_a_dir(base_dir: Optional[str] = None) -> Optional[str]:
+    base_dir = base_dir or os.getcwd()
+    # Initialize dictionaries to separate directories and special options.
+    choices_dirs = {"..": ".."}
+
+    # Iterate over the contents of the base directory.
+    for element in os.listdir(base_dir):
+        if os.path.isdir(os.path.join(base_dir, element)):
+            # Mark directories with a folder emoji for easy identification.
+            element_label = f"📁 {element}"
+            choices_dirs[element] = element_label
+        else:
+            # Regular files are ignored in this directory picker.
+            continue
+
+    # Sort directory choices. This function should be defined elsewhere.
+    choices_dirs = dict_sort_values(choices_dirs)
+
+    choices_dirs.update({
+        base_dir: "> Select this directory"
+    })
+
+    # Present choices and prompt the user to pick a directory or select the current one.
+    selected = prompt_choice_dict(
+        "Select a directory or choose the current one:",
+        choices_dirs
+    )
+
+    if selected:
+        if selected == base_dir:
+            # If the special item for selecting the current directory is chosen.
+            return selected
+        elif os.path.isdir(selected):
+            # If a directory is chosen, recurse into this directory.
+            return prompt_pick_a_dir(os.path.join(base_dir, selected))
+
+    return None

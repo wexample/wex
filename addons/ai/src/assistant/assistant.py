@@ -37,6 +37,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
+from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -132,6 +133,7 @@ class Assistant(KernelChild):
 
     def _init_subjects(self) -> None:
         subjects = [
+            DirChatSubject,
             FileChatSubject,
             HelpChatSubject,
             AgentChatSubject,

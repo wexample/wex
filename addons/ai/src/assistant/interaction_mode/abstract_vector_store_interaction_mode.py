@@ -1,6 +1,6 @@
 from typing import List, cast, Optional, Dict
 from xml.dom.minidom import Document
-
+from abc import abstractmethod
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.parsers.language.language_parser import (
@@ -11,8 +11,8 @@ from langchain_postgres.vectorstores import PGVector
 from yaml import BaseLoader
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
-from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.helper.data_json import json_load_if_valid
 from src.helper.file import file_build_signature, file_get_extension
 
@@ -25,23 +25,22 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         return ("## CONTEXT:"
                 "\n{context}")
 
-    def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
-        from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-        subject = cast(FileChatSubject, self.assistant.get_current_subject())
+    @abstractmethod
+    def get_similarity_search_filter(self) -> Dict[str, str]:
+        pass
 
+    def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
         results = self.vectorstore.similarity_search_with_relevance_scores(
             prompt_section.prompt,
             k=3,
-            filter={
-                "source": subject.file_path
-            }
+            filter=self.get_similarity_search_filter()
         )
 
         return {
-                "context": "\n\n---\n\n".join(
-                    [doc.page_content for doc, _score in results]
-                )
-            }
+            "context": "\n\n---\n\n".join(
+                [doc.page_content for doc, _score in results]
+            )
+        }
 
     def init_vector_store(self):
         self.vectorstore = PGVector(
@@ -196,6 +195,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         return chunks
 
     def vector_store_file(self, file_path: str) -> None:
+        self.assistant.log(f"Storing document {file_path}")
+
         file_signature = file_build_signature(file_path)
         chunks = self.vector_create_file_chunks(file_path, file_signature)
 
@@ -207,6 +208,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             chunks
         )
 
-        self.assistant.log("Document stored successfully.")
+        self.assistant.log("Document stored successfully")
 
         return None

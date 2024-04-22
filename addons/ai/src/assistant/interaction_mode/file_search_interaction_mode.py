@@ -1,4 +1,4 @@
-from typing import Optional, List, cast, TYPE_CHECKING
+from typing import Optional, List, cast, TYPE_CHECKING, Dict
 
 from chromadb import ClientAPI
 from langchain_core.document_loaders import BaseLoader  # type: ignore
@@ -20,6 +20,14 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
     @staticmethod
     def name() -> str:
         return "file_search"
+
+    def get_similarity_search_filter(self) -> Dict[str, str]:
+        from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+        subject = cast(FileChatSubject, self.assistant.get_current_subject())
+
+        return {
+            "source": subject.file_path
+        }
 
     def process_user_input(
         self,
