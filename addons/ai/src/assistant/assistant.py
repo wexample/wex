@@ -38,6 +38,7 @@ from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
 from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
+from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -139,6 +140,7 @@ class Assistant(KernelChild):
             AgentChatSubject,
             FunctionChatSubject,
             PreviousResponseSubject,
+            RemoteUrlSubject,
             # Should be last, as fallback
             DefaultChatSubject,
         ]

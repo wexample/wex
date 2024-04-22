@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def __init__(self, subject: "AbstractChatSubject"):
         super().__init__(subject)
-        self.init_vector_store()
         # Use a temporary trick to not vectorize any file
         self.last_stored_path: Optional[str] = None
 
@@ -25,12 +24,9 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def name() -> str:
         return "dir_search"
 
-    def get_similarity_search_filter(self) -> Dict[str, str]:
-        from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
-        subject = cast(DirChatSubject, self.assistant.get_current_subject())
-
+    def get_similarity_search_filter(self, prompt_section: UserPromptSection) -> Dict[str, str]:
         return {
-            "signature": file_build_signature(subject.dir_path)
+            "signature": self.last_stored_path
         }
 
     def process_user_input(
@@ -72,13 +68,7 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
         if not prompt_section.prompt:
             return f'Please ask something about the directory {subject.dir_path}'
 
-        self.assistant.spinner.start()
-
-        response = self.assistant.get_model().chat(
+        return super().process_user_input(
             prompt_section,
-            self.get_interaction_mode_prompt_parameters(prompt_section),
+            remaining_sections
         )
-
-        self.assistant.spinner.stop()
-
-        return response

@@ -40,4 +40,13 @@ class AbstractInteractionMode(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection]
     ) -> Optional[bool | str]:
-        return None
+        self.assistant.spinner.start()
+
+        response = self.assistant.get_model().chat(
+            prompt_section,
+            self.get_interaction_mode_prompt_parameters(prompt_section),
+        )
+
+        self.assistant.spinner.stop()
+
+        return response
