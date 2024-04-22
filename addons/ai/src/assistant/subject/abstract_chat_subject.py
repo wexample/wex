@@ -21,7 +21,6 @@ class AbstractChatSubject(AbstractAssistantChild):
     def introduce(self) -> str:
         return self.name()
 
-    @abstractmethod
     def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
         modes = self.get_interaction_modes()
         if not len(modes):
@@ -60,7 +59,6 @@ class AbstractChatSubject(AbstractAssistantChild):
         """
         return False
 
-    @abstractmethod
     def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
         # Build interaction modes classes
         interaction_modes: Dict[str, AbstractInteractionMode] = {}
