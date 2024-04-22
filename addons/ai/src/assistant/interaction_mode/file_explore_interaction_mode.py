@@ -33,6 +33,9 @@ class FileExploreInteractionMode(AbstractInteractionMode):
             connection=self.assistant.db_engine,
             use_jsonb=True,
         )
+        self.vectorstore.drop_tables()
+        self.vectorstore.create_tables_if_not_exists()
+        self.vectorstore.create_collection()
 
     @staticmethod
     def name() -> str:

@@ -15,6 +15,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
+from src.helper.dict import dict_merge
 from src.const.types import StringKeysDict, StringsList
 
 if TYPE_CHECKING:
@@ -183,7 +184,11 @@ class AbstractModel(AbstractAssistantChild):
         )
 
         return with_message_history.invoke(
-            {"input": user_input},
+            dict_merge(
+                {"input": user_input},
+                self.assistant.get_current_subject().get_prompt_parameters(),
+                prompt_parameters or {}
+            ),
             config={"configurable": {"user_id": "123", "conversation_id": "1"}},
         )["text"].strip()
 
