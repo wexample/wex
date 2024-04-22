@@ -193,7 +193,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:
             chunk.metadata = {"signature": file_signature, "source": file_path}
-            print(chunk.metadata)
 
         return chunks
 
