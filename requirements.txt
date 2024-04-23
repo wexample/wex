@@ -73,10 +73,14 @@ dataclasses-json==0.6.3
     #   unstructured
 dataclasses-json-speakeasy==0.5.11
     # via unstructured-client
+defusedxml==0.7.1
+    # via -r requirements.in
 deprecated==1.2.14
     # via
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
+dicttoxml==1.7.16
+    # via -r requirements.in
 distro==1.9.0
     # via openai
 emoji==2.11.0

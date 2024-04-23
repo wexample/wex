@@ -1,5 +1,7 @@
 chromadb
 click
+defusedxml
+dicttoxml
 gitpython
 inquirerpy
 jq
