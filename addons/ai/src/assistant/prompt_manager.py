@@ -10,7 +10,7 @@ from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.styles import style_from_pygments_cls
 from pygments.lexer import RegexLexer
 from pygments.styles import get_style_by_name
-from pygments.token import Name
+from pygments.token import Name, Operator
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
@@ -112,12 +112,18 @@ class PromptManager(AbstractAssistantChild):
         )
 
     def open(self) -> str:
-        commands_tokens = {'root': []}
+        commands_tokens = {
+            'root': [],
+            'option': [
+                (r':([a-zA-Z0-9-_]+)', Operator, '#pop')
+            ]
+        }
+
         commands = self.assistant.get_active_commands()
         for command, description in commands.items():
-            pattern = rf'(^|(?<=\s))/\b{command}\b'
-            token_tuple = (pattern, Name.Builtin)
-            commands_tokens['root'].append(token_tuple)
+            commands_tokens['root'].append(
+                (rf'(^|(?<=\s))/\b{command}\b', Name.Builtin, 'option')
+            )
 
         class PromptLexer(RegexLexer):
             name = 'Prompt Lexer'
