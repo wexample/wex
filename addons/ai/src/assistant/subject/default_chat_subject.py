@@ -31,7 +31,10 @@ class DefaultChatSubject(AbstractChatSubject):
     def get_commands(self) -> StringKeysDict:
         commands = {
             SUBJECT_DEFAULT_DEFAULT: "Free talk",
-            SUBJECT_DEFAULT_FORMAT: f"Return formated response : {','.join(FORMATED_DATA_FORMATS)}"
+            SUBJECT_DEFAULT_FORMAT: {
+                "description": f"Return formated response",
+                "options": FORMATED_DATA_FORMATS
+            }
         }
 
         if self.is_current_subject():

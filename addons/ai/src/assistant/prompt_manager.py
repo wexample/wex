@@ -1,5 +1,5 @@
 import html
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Iterable, Dict, Any
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
@@ -15,7 +15,6 @@ from pygments.token import Name
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
-from src.const.types import StringsList
 from src.helper.html import html_remove_tags
 
 if TYPE_CHECKING:
@@ -23,7 +22,7 @@ if TYPE_CHECKING:
 
 
 class AssistantChatCompleter(Completer):
-    def __init__(self, commands: StringsList) -> None:
+    def __init__(self, commands: Dict[str, Any]) -> None:
         self.active_commands = commands
 
     def get_completions(
@@ -36,8 +35,14 @@ class AssistantChatCompleter(Completer):
             return
 
         for command in self.active_commands:
-            if command.startswith(word_before_cursor):
-                yield Completion(command + " ", start_position=-len(word_before_cursor))
+            prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
+            if prefixed_command.startswith(word_before_cursor):
+                if "options" in self.active_commands[command]:
+                    pass
+                else:
+                    prefixed_command += " "
+
+                yield Completion(prefixed_command, start_position=-len(word_before_cursor))
 
 
 class PromptManager(AbstractAssistantChild):
@@ -98,7 +103,7 @@ class PromptManager(AbstractAssistantChild):
 
     def create_completer(self) -> AssistantChatCompleter:
         return AssistantChatCompleter(
-            [f"{AI_COMMAND_PREFIX}{command}" for command in self.assistant.get_active_commands()]
+            self.assistant.get_active_commands()
         )
 
     def open(self) -> str:

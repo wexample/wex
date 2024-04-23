@@ -36,9 +36,15 @@ class HelpChatSubject(AbstractChatSubject):
         longest_command_length = string_list_longest_word(commands.keys())
 
         # Display the menu in the specified format
-        for command, description in commands.items():
+        for command, info in commands.items():
             # Pad the command with spaces to align all descriptions
             padded_command = command.ljust(longest_command_length)
-            self.assistant.log(f"{AI_COMMAND_PREFIX}{padded_command} | {description}")
+            self.assistant.log(
+                f"{AI_COMMAND_PREFIX}{padded_command} | "
+                f"{info if isinstance(info, str) else info['description']}")
+
+            if "options" in info:
+                for option in info['options']:
+                    self.assistant.log("".rjust(longest_command_length) + f"      :{option}")
 
         self.assistant.log(f"Press Alt+Enter to add a new line")
