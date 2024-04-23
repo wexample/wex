@@ -1,4 +1,6 @@
-from typing import Optional, List, TYPE_CHECKING, Dict
+from typing import Optional, List, TYPE_CHECKING, Dict, Any
+
+from langchain_core.output_parsers import BaseOutputParser
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -50,3 +52,13 @@ class AbstractInteractionMode(AbstractAssistantChild):
         self.assistant.spinner.stop()
 
         return response
+
+    def get_output_parser(self, prompt_section: UserPromptSection) -> Optional[BaseOutputParser]:
+        return None
+
+    def chain_response_to_string(
+        self,
+        prompt_section: UserPromptSection,
+        chain_response: Any
+    ) -> str:
+        return chain_response.content

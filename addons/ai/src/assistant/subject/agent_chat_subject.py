@@ -4,7 +4,7 @@ from addons.ai.src.assistant.interaction_mode.tool_picker_interaction_mode impor
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from src.const.types import StringKeysDict
 
-SUBJECT_TOOL_CHAT_COMMAND_AGENT = "agent"
+SUBJECT_AGENT_COMMAND_AGENT = "agent"
 
 
 class AgentChatSubject(AbstractChatSubject):
@@ -22,5 +22,5 @@ class AgentChatSubject(AbstractChatSubject):
 
     def get_completer_commands(self) -> StringKeysDict:
         return {
-            SUBJECT_TOOL_CHAT_COMMAND_AGENT: "Ask agent to use a tool",
+            SUBJECT_AGENT_COMMAND_AGENT: "Ask agent to use a tool",
         }

@@ -14,8 +14,8 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
-from src.helper.dict import dict_merge
 from src.const.types import StringKeysDict, StringsList
+from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -44,27 +44,8 @@ class AbstractModel(AbstractAssistantChild):
 
         return self._llm
 
-    def chat_create_prompt(self) -> ChatPromptTemplate:
+    def chat_create_prompt(self, prompt_section) -> ChatPromptTemplate:
         assistant = self.assistant
-
-        # from typing import List
-        #
-        # from langchain_core.output_parsers import JsonOutputParser
-        # from langchain_core.prompts import PromptTemplate
-        # from langchain_core.pydantic_v1 import BaseModel, Field
-        # from langchain_openai import ChatOpenAI
-        #
-        # class Joke(BaseModel):
-        #     setup: str = Field(description="question to set up a joke")
-        #     punchline: str = Field(description="answer to resolve the joke")
-        #
-        # parser = JsonOutputParser(pydantic_object=Joke)
-        #
-        # prompt = PromptTemplate(
-        #     template="Answer the user query.\n{format_instructions}\n{query}\n",
-        #     input_variables=["query"],
-        #     partial_variables={"format_instructions": parser.get_format_instructions()},
-        # )
 
         parts = []
         personality_prompt = assistant.personalities[assistant.personality]["prompt"]
@@ -75,7 +56,9 @@ class AbstractModel(AbstractAssistantChild):
             )
 
         parts += [
-            ("system", f"##LANGUAGE\nYou use \"{assistant.languages[assistant.language]}\" language in every text."),
+            ("system", f"##LANGUAGE"
+                       f"\nYou use \"{assistant.languages[assistant.language]}\" language in every text, "
+                       f"even if the person uses another language."),
         ]
 
         initial_prompt = (assistant.get_current_subject().interaction_mode.get_initial_prompt() or "")
@@ -89,14 +72,15 @@ class AbstractModel(AbstractAssistantChild):
                 ("system", "##CONVERSATION HISTORY\n{history}"),
             ]
 
+        parser = self.assistant.get_current_subject().interaction_mode.get_output_parser(prompt_section)
+        if parser:
+            parts += [
+                ("system", "{format_instructions}"),
+            ]
+
         return ChatPromptTemplate.from_messages(
             parts + [("human", "{input}")]
         )
-        # return ChatPromptTemplate(
-        #     input_variables=["query"],
-        #     messages=parts + [("human", "{input}")],
-        #     partial_variables={"format_instructions": parser.get_format_instructions()},
-        # )
 
     def create_embeddings(self) -> Any:
         return None
@@ -106,8 +90,8 @@ class AbstractModel(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
-        return self.chain_invoke_and_strip_result(
-            prompt_template=self.chat_create_prompt(),
+        return self.chain_invoke_and_parse(
+            prompt_template=self.chat_create_prompt(prompt_section),
             prompt_section=prompt_section,
             prompt_parameters=prompt_parameters,
         )
@@ -143,7 +127,7 @@ class AbstractModel(AbstractAssistantChild):
         examples,
         input_variables_names
     ):
-        return self.chain_invoke_and_strip_result(
+        return self.chain_invoke_and_parse(
             prompt_template=self.create_few_shot_prompt_template(
                 example_prompt=example_prompt,
                 examples=examples,
@@ -160,7 +144,7 @@ class AbstractModel(AbstractAssistantChild):
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
-        prompt_template = self.chat_create_prompt()
+        prompt_template = self.chat_create_prompt(prompt_section)
 
         agent = cast(
             Union[BaseSingleActionAgent, BaseMultiActionAgent],
@@ -179,13 +163,14 @@ class AbstractModel(AbstractAssistantChild):
 
         return self.memory[(user_id, conversation_id)]
 
-    def chain_invoke_and_strip_result(
+    def chain_invoke_and_parse(
         self,
         prompt_template: BasePromptTemplate,
         prompt_section: UserPromptSection,
         prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
-        chain = prompt_template | self.get_llm()
+        model = self.get_llm()
+        chain = prompt_template | model
 
         with_message_history = RunnableWithMessageHistory(
             chain,
@@ -212,14 +197,31 @@ class AbstractModel(AbstractAssistantChild):
             ],
         )
 
-        return with_message_history.invoke(
-            dict_merge(
-                {"input": prompt_section.prompt},
-                self.assistant.get_current_subject().get_prompt_parameters(),
-                prompt_parameters or {}
-            ),
-            config={"configurable": {"user_id": "123", "conversation_id": "1"}},
-        ).content
+        interaction_mode = self.assistant.get_current_subject().interaction_mode
+        parser = interaction_mode.get_output_parser(prompt_section)
+        config = {"configurable": {"user_id": "123", "conversation_id": "1"}}
+        input = dict_merge(
+            {"input": prompt_section.prompt},
+            self.assistant.get_current_subject().get_prompt_parameters(),
+            prompt_parameters or {}
+        )
+
+        if parser:
+            input["format_instructions"] = parser.get_format_instructions()
+            chain_response = (with_message_history | parser).invoke(
+                input,
+                config
+            )
+        else:
+            chain_response = with_message_history.invoke(
+                input,
+                config
+            ).content
+
+            return interaction_mode.chain_response_to_string(
+            prompt_section,
+            chain_response
+        )
 
     @abstractmethod
     def guess_function(

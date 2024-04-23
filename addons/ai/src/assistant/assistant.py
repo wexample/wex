@@ -314,19 +314,24 @@ class Assistant(KernelChild):
         # Return the chosen action as a string or None if aborted
         return str(action) if action else None
 
-    def split_user_input_commands(self, user_input: str) -> List[UserPromptSection]:
+    def split_prompt_sections(self, user_input: str) -> List[UserPromptSection]:
         user_input = user_input.strip()
         # Special case if user types just "exit" without prefix.
         if user_input.lower() == "exit":
             return [UserPromptSection("exit", None)]
 
+        # Split on word to ensure commands is not attached to another word.
         results: List[UserPromptSection] = []
         words = user_input.split()
         commands = self.get_active_commands()
 
         for i, word in enumerate(words):
             if word.startswith(AI_COMMAND_PREFIX):
-                command = word[len(AI_COMMAND_PREFIX):].lower()  # Remove prefix and normalize
+                # Split command and options
+                command_parts = word[len(AI_COMMAND_PREFIX):].split(':')
+                command = command_parts[0].lower()  # First part is the command, normalized
+                options = command_parts[1:] if len(command_parts) > 1 else None  # Subsequent parts are options
+
                 if command in commands:
                     # Find command input.
                     # Input is considered as the text following the command until the next command or end.
@@ -341,7 +346,7 @@ class Assistant(KernelChild):
                         command_input = None
 
                     results.append(
-                        UserPromptSection(command, command_input)
+                        UserPromptSection(command, command_input, options)
                     )
 
                     # Break after finding a command to avoid parsing further commands in the same string.
@@ -378,10 +383,10 @@ class Assistant(KernelChild):
                 else:
                     user_input = self.prompt_manager.open()
 
-                user_input_splits = self.split_user_input_commands(user_input)
+                prompt_sections = self.split_prompt_sections(user_input)
                 result: Optional[str | bool] = None
 
-                for index, prompt_section in enumerate(user_input_splits):
+                for index, prompt_section in enumerate(prompt_sections):
                     command = prompt_section.command
 
                     if command == ASSISTANT_COMMAND_EXIT:
@@ -395,7 +400,7 @@ class Assistant(KernelChild):
                             if not result and subject.use_as_current_subject(prompt_section):
                                 result = subject.process_prompt_section(
                                     prompt_section,
-                                    user_input_splits[index + 1:]
+                                    prompt_sections[index + 1:]
                                 )
 
                     self.history.append(HistoryItem(prompt_section.prompt))

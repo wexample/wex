@@ -1,13 +1,16 @@
 from typing import List, Optional
 
 from addons.ai.src.assistant.interaction_mode.default_interaction_mode import DefaultInteractionMode
+from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import FORMATED_DATA_FORMATS, \
+    FormatedDataInteractionMode
 from addons.ai.src.assistant.interaction_mode.investigation_interaction_mode import InvestigationInteractionMode
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 
-ASSISTANT_INTERACTION_MODE_DEFAULT = "default"
-ASSISTANT_INTERACTION_MODE_INVESTIGATE = "investigate"
+SUBJECT_DEFAULT_DEFAULT = "default"
+SUBJECT_DEFAULT_INVESTIGATE = "investigate"
+SUBJECT_DEFAULT_FORMAT = "format"
 
 
 class DefaultChatSubject(AbstractChatSubject):
@@ -18,7 +21,8 @@ class DefaultChatSubject(AbstractChatSubject):
     def get_interaction_modes(self) -> List[type]:
         return [
             DefaultInteractionMode,
-            InvestigationInteractionMode
+            InvestigationInteractionMode,
+            FormatedDataInteractionMode
         ]
 
     def is_fallback_subject(self) -> bool:
@@ -26,15 +30,20 @@ class DefaultChatSubject(AbstractChatSubject):
 
     def get_completer_commands(self) -> StringKeysDict:
         commands = {
-            ASSISTANT_INTERACTION_MODE_DEFAULT: "Free talk",
+            SUBJECT_DEFAULT_DEFAULT: "Free talk",
+            SUBJECT_DEFAULT_FORMAT: f"Return formated response : {','.join(FORMATED_DATA_FORMATS)}"
         }
 
         if self.is_current_subject():
-            commands[ASSISTANT_INTERACTION_MODE_INVESTIGATE] = "Focus on fixing a problem"
+            commands[SUBJECT_DEFAULT_INVESTIGATE] = "Focus on fixing a problem"
 
         return commands
 
     def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
-        if prompt_section and prompt_section.command == ASSISTANT_INTERACTION_MODE_INVESTIGATE:
-            return InvestigationInteractionMode
+        if prompt_section:
+            if prompt_section.command == SUBJECT_DEFAULT_INVESTIGATE:
+                return InvestigationInteractionMode
+            elif prompt_section.command == SUBJECT_DEFAULT_FORMAT:
+                return FormatedDataInteractionMode
+
         return DefaultInteractionMode
