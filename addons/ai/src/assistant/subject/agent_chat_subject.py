@@ -20,7 +20,7 @@ class AgentChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Ask agent to use a tool (beta)"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_AGENT_COMMAND_AGENT: "Ask agent to use a tool",
         }

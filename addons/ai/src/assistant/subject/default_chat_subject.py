@@ -28,7 +28,7 @@ class DefaultChatSubject(AbstractChatSubject):
     def is_fallback_subject(self) -> bool:
         return True
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         commands = {
             SUBJECT_DEFAULT_DEFAULT: "Free talk",
             SUBJECT_DEFAULT_FORMAT: f"Return formated response : {','.join(FORMATED_DATA_FORMATS)}"

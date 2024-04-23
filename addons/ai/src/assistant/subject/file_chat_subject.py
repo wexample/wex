@@ -33,7 +33,7 @@ class FileChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         commands = {
             SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE: "Talk about file",
         }

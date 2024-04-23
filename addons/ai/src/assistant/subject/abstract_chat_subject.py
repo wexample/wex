@@ -15,7 +15,7 @@ class AbstractChatSubject(AbstractAssistantChild):
     def name() -> str:
         pass
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {}
 
     def introduce(self) -> str:
@@ -44,7 +44,7 @@ class AbstractChatSubject(AbstractAssistantChild):
             # But command match with allowed ones, or this is a fallback.
             if (
                 prompt_section.command and
-                prompt_section.command in self.get_completer_commands()
+                prompt_section.command in self.get_commands()
             ) or self.is_fallback_subject():
                 # So this is the new subject.
                 self.assistant.set_subject(self.name(), prompt_section)

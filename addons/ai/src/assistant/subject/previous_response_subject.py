@@ -18,7 +18,7 @@ class PreviousResponseSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Reusing previous response"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         items = {}
 
         if len(self.assistant.history):

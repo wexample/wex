@@ -364,7 +364,7 @@ class Assistant(KernelChild):
 
         for subject in self.subjects.values():
             commands.update(
-                cast(AbstractChatSubject, subject).get_completer_commands()
+                cast(AbstractChatSubject, subject).get_commands()
             )
 
         return commands

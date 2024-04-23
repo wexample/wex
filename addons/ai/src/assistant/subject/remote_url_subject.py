@@ -20,7 +20,7 @@ class RemoteUrlSubject(AbstractChatSubject):
             UrlSearchInteractionMode,
         ]
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_PREVIOUS_RESPONSE_COMMAND_FETCH_URL: "Fetch web page content from URL"
         }

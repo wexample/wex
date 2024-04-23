@@ -25,7 +25,7 @@ class DirChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Chatting about all files in given directory {self.dir_path}"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_DIR: "Talk about file",
         }

@@ -17,7 +17,7 @@ class HelpChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Display help"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_HELP_CHAT_COMMAND_HELP: "Show help",
         }

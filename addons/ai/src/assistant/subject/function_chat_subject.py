@@ -15,7 +15,7 @@ class FunctionChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Execute a function selected by tagging system (beta)"
 
-    def get_completer_commands(self) -> StringKeysDict:
+    def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_FUNCTION_CHAT_COMMAND_AGENT: "Use a function (beta)",
         }
