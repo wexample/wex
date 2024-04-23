@@ -29,7 +29,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
     def get_vector_store_collection_name(self) -> str:
         return self.name()
 
-    def get_initial_prompt(self) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return ("## CONTEXT:"
                 "\n{context}")
 

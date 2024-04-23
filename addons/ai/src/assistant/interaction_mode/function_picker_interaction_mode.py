@@ -10,7 +10,7 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
     def name() -> str:
         return "function_picker"
 
-    def get_initial_prompt(self) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return "Provide a command name that aids in responding to the user's query, or None if not applicable."
 
     def process_user_input(
@@ -23,7 +23,7 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
 
         selected_function = self.assistant.get_model().guess_function(
             self,
-            prompt_section.prompt,
+            prompt_section,
             [
                 AI_FUNCTION_DISPLAY_A_CUCUMBER,
                 None,

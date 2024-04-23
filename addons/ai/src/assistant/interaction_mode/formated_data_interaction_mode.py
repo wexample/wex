@@ -22,11 +22,10 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
     def name() -> str:
         return "formated_data"
 
-    def get_initial_prompt(self) -> Optional[str]:
-        return ("You generate structured data with any other text before or after. "
-                "No introduction. "
-                "No conclusion. "
-                "No markdown code block.")
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+        return (f"You generate structured data in {(' '.join(prompt_section.options)).upper()} format, "
+                f"with any other text before or after. "
+                "No introduction. No conclusion. No markdown code block.")
 
     def get_output_parser(self, prompt_section: UserPromptSection) -> Optional[BaseOutputParser]:
         if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.options:

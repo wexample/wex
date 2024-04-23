@@ -13,7 +13,7 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
     def name() -> str:
         return "tool_picker"
 
-    def get_initial_prompt(self) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             "Efficiently answer the questions using one of available tools, "
             "then return the answer after first response:"

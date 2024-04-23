@@ -19,7 +19,7 @@ class AbstractInteractionMode(AbstractAssistantChild):
     def name() -> str:
         pass
 
-    def get_initial_prompt(self) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return None
 
     def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:

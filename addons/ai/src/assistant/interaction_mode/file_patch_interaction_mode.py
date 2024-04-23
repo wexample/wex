@@ -18,7 +18,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
     def name() -> str:
         return "file_patch"
 
-    def get_initial_prompt(self) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return ("You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
                 "\nStart the patch with \"# PATCH_START\" then the patch content without header."
                 "\nThe patch body always starts 3 lines before the first change, "

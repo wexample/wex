@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_1106 = "open_ai:gpt-3.5-turbo-1106"
 MODEL_NAME_OPEN_AI_GPT_3_5_TURBO_16K = "open_ai:gpt-3.5-turbo-16k"
@@ -22,6 +23,7 @@ class OpenAiModel(AbstractModel):
 
     def guess_function(
         self,
+        prompt_section: UserPromptSection,
         interaction_mode: AbstractInteractionMode,
         user_input: str,
         functions: List[str | None],
