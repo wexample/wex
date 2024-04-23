@@ -45,6 +45,7 @@ class AbstractInteractionMode(AbstractAssistantChild):
         self.assistant.spinner.start()
 
         response = self.assistant.get_model().chat(
+            self,
             prompt_section,
             self.get_interaction_mode_prompt_parameters(prompt_section),
         )

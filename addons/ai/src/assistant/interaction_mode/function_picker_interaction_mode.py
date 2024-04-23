@@ -22,6 +22,7 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
             return "Please ask some question to help select a function."
 
         selected_function = self.assistant.get_model().guess_function(
+            self,
             prompt_section.prompt,
             [
                 AI_FUNCTION_DISPLAY_A_CUCUMBER,

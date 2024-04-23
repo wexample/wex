@@ -80,14 +80,14 @@ class AbstractChatSubject(AbstractAssistantChild):
     ) -> Optional[bool | str]:
         # Set default
         mode = self.get_interaction_mode(prompt_section)
-        self.interaction_mode = self.interaction_modes[cast(AbstractInteractionMode, mode).name()] if mode else None
+        interaction_mode = self.interaction_modes[cast(AbstractInteractionMode, mode).name()] if mode else None
 
         # By default interaction mode is required.
-        if not self.interaction_mode:
+        if not interaction_mode:
             self.assistant.log(f"No interaction mode defined for subject : {self.name()}")
             return False
 
-        return self.interaction_mode.process_user_input(
+        return interaction_mode.process_user_input(
             prompt_section,
             remaining_sections
         )

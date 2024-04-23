@@ -7,7 +7,7 @@ from langchain_community.llms import Ollama
 
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.app.command.app.exec import app__app__exec
-from src.const.types import StringKeysDict
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 
 MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
 
@@ -32,6 +32,7 @@ class OllamaModel(AbstractModel):
 
     def guess_function(
         self,
+        interaction_mode: AbstractInteractionMode,
         user_input: str,
         functions: List[str | None],
     ) -> Optional[str]:

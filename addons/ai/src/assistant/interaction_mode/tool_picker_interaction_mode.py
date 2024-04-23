@@ -62,6 +62,7 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
             return "Please ask some question to help agent pick a tool."
 
         return self.assistant.get_model().chat_agent(
+            self,
             prompt_section,
             self.tools,
         )
