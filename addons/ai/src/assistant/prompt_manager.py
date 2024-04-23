@@ -34,9 +34,14 @@ class AssistantChatCompleter(Completer):
         if word_before_cursor == "":
             return
 
+        parts = word_before_cursor.split(':')
         for command in self.active_commands:
             prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
-            if prefixed_command.startswith(word_before_cursor):
+
+            if parts[0] == prefixed_command:
+                for option in self.active_commands[command]["options"]:
+                    yield Completion(prefixed_command + f":{option} ", start_position=-len(word_before_cursor))
+            elif prefixed_command.startswith(parts[0]):
                 if "options" in self.active_commands[command]:
                     pass
                 else:
