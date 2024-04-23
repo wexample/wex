@@ -104,6 +104,7 @@ class AbstractModel(AbstractAssistantChild):
 
     def create_few_shot_prompt_template(
         self,
+        interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
         example_prompt: str,
         examples: List[StringKeysDict],
@@ -119,7 +120,7 @@ class AbstractModel(AbstractAssistantChild):
             examples=examples,
             example_prompt=example_prompt_template,
             # The prefix is our instructions
-            prefix=self.assistant.get_current_subject().interaction_mode.get_initial_prompt(prompt_section),
+            prefix=interaction_mode.get_initial_prompt(prompt_section),
             # The suffix our user input and output indicator
             suffix=example_prompt,
             input_variables=input_variables_names,
@@ -138,6 +139,7 @@ class AbstractModel(AbstractAssistantChild):
         return self.chain_invoke_and_parse(
             interaction_mode=interaction_mode,
             prompt_template=self.create_few_shot_prompt_template(
+                interaction_mode=interaction_mode,
                 prompt_section=prompt_section,
                 example_prompt=example_prompt,
                 examples=examples,
@@ -233,9 +235,8 @@ class AbstractModel(AbstractAssistantChild):
     @abstractmethod
     def guess_function(
         self,
-        prompt_section: UserPromptSection,
         interaction_mode: AbstractInteractionMode,
-        user_input: str,
+        prompt_section: UserPromptSection,
         functions: List[str | None],
     ) -> Optional[str]:
         return None

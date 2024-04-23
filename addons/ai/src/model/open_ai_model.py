@@ -23,9 +23,8 @@ class OpenAiModel(AbstractModel):
 
     def guess_function(
         self,
-        prompt_section: UserPromptSection,
         interaction_mode: AbstractInteractionMode,
-        user_input: str,
+        prompt_section: UserPromptSection,
         functions: List[str | None],
     ) -> Optional[str]:
         """
@@ -37,14 +36,14 @@ class OpenAiModel(AbstractModel):
                     "command": {
                         "type": "string",
                         "enum": functions,
-                        "description": interaction_mode.get_initial_prompt(),
+                        "description": interaction_mode.get_initial_prompt(prompt_section),
                     },
                 },
             },
             self.get_llm(),
         )
 
-        response = chain.invoke({"input": user_input})
+        response = chain.invoke({"input": prompt_section.prompt})
 
         return (
             response["text"]["command"]

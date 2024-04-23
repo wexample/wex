@@ -1,9 +1,11 @@
+import os
 from typing import Optional, Any
 
 from langchain_core.output_parsers import BaseOutputParser
 
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import AbstractInteractionMode
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.assistant.model.person import Person
 
 FORMATED_DATA_FORMAT_COMMA_SEPARATED = 'comma-separated'
 FORMATED_DATA_FORMAT_JSON = 'json'
@@ -45,7 +47,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
                 class Config:
                     extra = Extra.allow
 
-            return YamlOutputParser(pydantic_object=AnyFieldObjectContainer)
+            return YamlOutputParser(pydantic_object=Person)
 
     def chain_response_to_string(
         self,
@@ -55,9 +57,9 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
         if FORMATED_DATA_FORMAT_YAML in prompt_section.options:
             import yaml
-            return yaml.dump(chain_response.dict())
+            return os.linesep + yaml.dump(chain_response.dict())
         elif FORMATED_DATA_FORMAT_XML in prompt_section.options:
             import dicttoxml
-            return dicttoxml.dicttoxml(chain_response).decode()
+            return os.linesep + dicttoxml.dicttoxml(chain_response).decode()
 
         return str(chain_response)
