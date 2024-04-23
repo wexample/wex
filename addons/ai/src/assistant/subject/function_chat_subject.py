@@ -19,9 +19,3 @@ class FunctionChatSubject(AbstractChatSubject):
         return {
             SUBJECT_FUNCTION_CHAT_COMMAND_AGENT: "Use a function (beta)",
         }
-
-    def get_interaction_modes(self) -> List[type]:
-        return [
-            FunctionPickerInteractionMode
-        ]
-

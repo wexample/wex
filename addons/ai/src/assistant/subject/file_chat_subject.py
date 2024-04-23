@@ -19,12 +19,6 @@ class FileChatSubject(AbstractChatSubject):
     def name() -> str:
         return "file"
 
-    def get_interaction_modes(self) -> List[type]:
-        return [
-            FileSearchInteractionMode,
-            FilePatchInteractionMode,
-        ]
-
     def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
         if prompt_section and prompt_section.command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
             return FilePatchInteractionMode

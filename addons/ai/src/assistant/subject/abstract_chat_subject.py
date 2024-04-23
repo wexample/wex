@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, cast, Dict, Optional
+from typing import List, Dict, Optional
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
@@ -21,20 +21,9 @@ class AbstractChatSubject(AbstractAssistantChild):
     def introduce(self) -> str:
         return self.name()
 
-    def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
-        modes = self.get_interaction_modes()
-        if not len(modes):
-            return None
-
-        assert len(modes)
-
-        first_mode = modes[0]
-        assert issubclass(first_mode, AbstractInteractionMode)
-        return first_mode
-
     @abstractmethod
-    def get_interaction_modes(self) -> List[type]:
-        return []
+    def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
+        pass
 
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
@@ -47,7 +36,7 @@ class AbstractChatSubject(AbstractAssistantChild):
                 prompt_section.command in self.get_commands()
             ) or self.is_fallback_subject():
                 # So this is the new subject.
-                self.assistant.set_subject(self.name(), prompt_section)
+                self.assistant.set_subject(self.name())
             else:
                 return False
         return True
@@ -59,17 +48,6 @@ class AbstractChatSubject(AbstractAssistantChild):
         """
         return False
 
-    def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
-        # Build interaction modes classes
-        interaction_modes: Dict[str, AbstractInteractionMode] = {}
-        for interaction_mode_class in self.get_interaction_modes():
-            instance = cast(AbstractInteractionMode, interaction_mode_class(self))
-            interaction_modes[instance.name()] = instance
-
-        self.interaction_modes = interaction_modes
-
-        return True
-
     def get_prompt_parameters(self) -> Dict:
         return {}
 
@@ -80,7 +58,7 @@ class AbstractChatSubject(AbstractAssistantChild):
     ) -> Optional[bool | str]:
         # Set default
         mode = self.get_interaction_mode(prompt_section)
-        interaction_mode = self.interaction_modes[cast(AbstractInteractionMode, mode).name()] if mode else None
+        interaction_mode: AbstractInteractionMode = mode(self)
 
         # By default interaction mode is required.
         if not interaction_mode:

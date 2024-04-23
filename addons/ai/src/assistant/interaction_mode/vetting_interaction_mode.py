@@ -1,10 +1,15 @@
-from typing import Optional
+from typing import Optional, TypeVar
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from langchain_core.pydantic_v1 import BaseModel, Extra
+from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import FormatedDataInteractionMode
+from addons.ai.src.assistant.model.person import Person
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
-class VettingInteractionMode(AbstractInteractionMode):
+class VettingInteractionMode(FormatedDataInteractionMode):
 
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
-        return "Provide a command name that aids in responding to the user's query, or None if not applicable."
+        return "Fill up the dataset based on given text content"
+
+    def get_pydantic_model(self) -> TypeVar("T", bound=BaseModel):
+        return Person

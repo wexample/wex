@@ -1,11 +1,11 @@
 import os
-from typing import Optional, Any
+from typing import Optional, Any, TypeVar
 
 from langchain_core.output_parsers import BaseOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Extra
 
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import AbstractInteractionMode
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from addons.ai.src.assistant.model.person import Person
 
 FORMATED_DATA_FORMAT_COMMA_SEPARATED = 'comma-separated'
 FORMATED_DATA_FORMAT_JSON = 'json'
@@ -41,13 +41,14 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
             return XMLOutputParser()
         elif FORMATED_DATA_FORMAT_YAML in prompt_section.options:
             from langchain.output_parsers import YamlOutputParser
-            from langchain_core.pydantic_v1 import BaseModel, Extra
+            return YamlOutputParser(pydantic_object=self.get_pydantic_model())
 
-            class AnyFieldObjectContainer(BaseModel):
-                class Config:
-                    extra = Extra.allow
+    def get_pydantic_model(self) -> TypeVar("T", bound=BaseModel):
+        class AnyFieldObjectContainer(BaseModel):
+            class Config:
+                extra = Extra.allow
 
-            return YamlOutputParser(pydantic_object=Person)
+        return AnyFieldObjectContainer
 
     def chain_response_to_string(
         self,

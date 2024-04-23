@@ -17,11 +17,6 @@ class DirChatSubject(AbstractChatSubject):
     def name() -> str:
         return "dir"
 
-    def get_interaction_modes(self) -> List[type]:
-        return [
-            DirSearchInteractionMode,
-        ]
-
     def introduce(self) -> str:
         return f"Chatting about all files in given directory {self.dir_path}"
 

@@ -9,9 +9,13 @@ from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.agent_chat_subject import AgentChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
+from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
+from addons.ai.src.assistant.subject.people_chat_subject import PeopleChatSubject
+from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
+from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
 from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_DEFAULT_COMMANDS,
     CHAT_MENU_ACTION_CHAT,
@@ -37,9 +41,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
-from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
-from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
 from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
@@ -140,6 +141,7 @@ class Assistant(KernelChild):
             HelpChatSubject,
             AgentChatSubject,
             FunctionChatSubject,
+            PeopleChatSubject,
             PreviousResponseSubject,
             RemoteUrlSubject,
             # Should be last, as fallback
@@ -180,14 +182,11 @@ class Assistant(KernelChild):
     def set_default_subject(self) -> None:
         self.set_subject(DefaultChatSubject.name())
 
-    def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
+    def set_subject(self, name: str) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
 
-        if subject.activate(prompt_section):
-            self.log("Setting subject: " + subject.introduce())
-            self.subject = subject
-        else:
-            self.log("Failed to activate subject: " + name)
+        self.log("Setting subject: " + subject.introduce())
+        self.subject = subject
 
         return subject
 
