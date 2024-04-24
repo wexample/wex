@@ -14,9 +14,6 @@ class PeopleChatSubject(AbstractChatSubject):
     def name() -> str:
         return "people"
 
-    def is_fallback_subject(self) -> bool:
-        return True
-
     def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_PEOPLE_COMMAND_VET: {
