@@ -3,8 +3,6 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import BasePromptTemplate
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
@@ -34,7 +32,6 @@ class AbstractModel(AbstractAssistantChild):
         self.service: str = service
         self.name: str = name
         self.activated: bool = False
-        self.memory = {}
 
     def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
         self._llm = llm
@@ -71,7 +68,7 @@ class AbstractModel(AbstractAssistantChild):
                 ("system", "##INSTRUCTIONS\n" + initial_prompt),
             ]
 
-        if len(self.memory):
+        if len(self.assistant.active_memory):
             parts += [
                 ("system", "##CONVERSATION HISTORY\n{history}"),
             ]
@@ -170,12 +167,6 @@ class AbstractModel(AbstractAssistantChild):
         # At the moment there is a loop issue with agents
         return str(agent_executor.invoke({"input": prompt_section.prompt})["output"])
 
-    def get_session_history(self, user_id: str, conversation_id: str) -> BaseChatMessageHistory:
-        if (user_id, conversation_id) not in self.memory:
-            self.memory[(user_id, conversation_id)] = ChatMessageHistory()
-
-        return self.memory[(user_id, conversation_id)]
-
     def chain_invoke_and_parse(
         self,
         interaction_mode: AbstractInteractionMode,
@@ -188,7 +179,7 @@ class AbstractModel(AbstractAssistantChild):
 
         with_message_history = RunnableWithMessageHistory(
             chain,
-            self.get_session_history,
+            self.assistant.get_session_history,
             input_messages_key="input",
             history_messages_key="history",
             history_factory_config=[
@@ -212,7 +203,13 @@ class AbstractModel(AbstractAssistantChild):
         )
 
         parser = interaction_mode.get_output_parser(prompt_section)
-        config = {"configurable": {"user_id": "123", "conversation_id": "1"}}
+        config = {
+            "configurable": {
+                "user_id": self.assistant.user_id,
+                "conversation_id": self.assistant.conversation_id
+            }
+        }
+
         input_data = dict_merge(
             {"input": prompt_section.prompt},
             self.assistant.get_current_subject().get_prompt_parameters(),

@@ -1,7 +1,9 @@
 import html
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, cast, Tuple
 
+from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import create_engine
 
@@ -16,6 +18,7 @@ from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
 from addons.ai.src.assistant.subject.people_chat_subject import PeopleChatSubject
 from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
 from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
+from addons.ai.src.assistant.subject.terminal_chat_subject import TerminalChatSubject
 from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_DEFAULT_COMMANDS,
     CHAT_MENU_ACTION_CHAT,
@@ -63,6 +66,10 @@ class Assistant(KernelChild):
         self._initial_default_model = default_model
         self.colors_theme: Optional[str] = None
         self.history: List[HistoryItem] = []
+        self.active_memory: Dict[Tuple[int, int], ChatMessageHistory] = {}
+        self.user_id: int = 1
+        self.conversation_id: int = 1
+        self.subject: Optional[AbstractChatSubject] = None
 
         prompt_progress_steps(
             kernel,
@@ -136,14 +143,15 @@ class Assistant(KernelChild):
 
     def _init_subjects(self) -> None:
         subjects = [
+            AgentChatSubject,
             DirChatSubject,
             FileChatSubject,
             HelpChatSubject,
-            AgentChatSubject,
             FunctionChatSubject,
             PeopleChatSubject,
             PreviousResponseSubject,
             RemoteUrlSubject,
+            TerminalChatSubject,
             # Should be last, as fallback
             DefaultChatSubject,
         ]
@@ -180,7 +188,8 @@ class Assistant(KernelChild):
         self.log("Database connected")
 
     def set_default_subject(self) -> None:
-        self.set_subject(DefaultChatSubject.name())
+        if not isinstance(self.subject, DefaultChatSubject):
+            self.set_subject(DefaultChatSubject.name())
 
     def set_subject(self, name: str) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
@@ -345,7 +354,7 @@ class Assistant(KernelChild):
                         command_input = None
 
                     results.append(
-                        UserPromptSection(command, command_input, options)
+                        UserPromptSection(command, html.unescape(command_input), options)
                     )
 
                     # Break after finding a command to avoid parsing further commands in the same string.
@@ -416,6 +425,20 @@ class Assistant(KernelChild):
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
 
+            self.set_default_subject()
+
     def print_ai(self, message: str) -> None:
         # Let a new line separator
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
+
+    def get_current_session_history(self) -> BaseChatMessageHistory:
+        return self.get_session_history(
+            self.user_id,
+            self.conversation_id
+        )
+
+    def get_session_history(self, user_id: int, conversation_id: int) -> BaseChatMessageHistory:
+        if (user_id, conversation_id) not in self.active_memory:
+            self.active_memory[(user_id, conversation_id)] = ChatMessageHistory()
+
+        return self.active_memory[(user_id, conversation_id)]
