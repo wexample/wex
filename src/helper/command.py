@@ -164,7 +164,7 @@ def execute_command_sync(
             kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
             return success, output_lines
         except subprocess.CalledProcessError as e:
-            kernel.io.error(f"Error when running command: {command_str} - {str(e)}")
+            kernel.io.error(f"Error when running command: {command_str}\n\n{str(e)}")
             return False, str(e).splitlines()
     else:
         popen_args = {
