@@ -66,6 +66,21 @@ def core__test__run(
     def _wait_remote() -> None:
         success = False
         while not success:
+            # Display logs
+            success, content = execute_command_sync(
+                kernel,
+                [
+                    "docker",
+                    "logs",
+                    "wex_test_remote",
+                    "--tail",
+                    "10",
+                ],
+                ignore_error=True,
+            )
+            kernel.io.print(os.linesep.join(content))
+
+            # Check ready
             success, content = execute_command_sync(
                 kernel,
                 [
