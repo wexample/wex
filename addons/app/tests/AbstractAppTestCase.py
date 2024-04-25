@@ -51,11 +51,6 @@ class AbstractAppTestCase(AbstractTestCase):
             },
         )
 
-        first = response.first()
-        if isinstance(first, QueuedCollectionStopResponse):
-            if first.reason == "APP_ALREADY_RUNNING" and not force_restart:
-                return
-
         name = os.path.basename(app_dir.rstrip(os.sep))
         app_name_snake = string_to_snake_case(name)
 

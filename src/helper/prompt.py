@@ -28,12 +28,6 @@ def prompt_progress_steps(
     with prompt_build_progress_bar(steps, label=title) as progress_bar:
         for step in progress_bar:
             step_callable = cast(Callable[..., Any], step)
-
-            # Play with length to keep status after bar.
-            kernel.io.log_length = 0
-            kernel.io.log(f" {step_callable.__name__}")
-            kernel.io.log_length = 10
-
             response = step_callable()
 
             # Step failed somewhere
