@@ -8,17 +8,11 @@ from addons.app.command.env.get import _app__env__get
 from addons.core.command.test.cleanup import core__test__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
+from src.helper.command import execute_command_sync, execute_command_tree_sync
 from src.helper.module import module_load_from_file
 from src.helper.prompt import prompt_progress_steps
 
@@ -42,14 +36,14 @@ if TYPE_CHECKING:
 def core__test__run(
     kernel: "Kernel", command: Optional[str] = None, debug: bool = False
 ) -> None:
-    def _remote_compose(command_part: StringsList) -> InteractiveShellCommandResponse:
+    def _remote_compose(command_part: StringsList) -> None:
         test_env = _app__env__get(
             kernel, kernel.directory.path, key="TEST_REMOTE_ENV", default="pipeline"
         )
 
         suffix = "." + test_env if test_env != "pipeline" else ""
 
-        return InteractiveShellCommandResponse(
+        execute_command_tree_sync(
             kernel,
             [
                 "docker",
@@ -58,11 +52,11 @@ def core__test__run(
                 f"{kernel.directory.path}.wex/docker/test_remote/docker-compose.test-remote{suffix}.yml",
             ]
             + command_part,
-            workdir=kernel.directory.path,
+            working_directory=kernel.directory.path,
         )
 
-    def _start_remote() -> InteractiveShellCommandResponse:
-        return _remote_compose(
+    def _start_remote() -> None:
+        _remote_compose(
             [
                 "up",
                 "-d",
@@ -87,8 +81,8 @@ def core__test__run(
             kernel.io.log("Test remote server starting...")
             time.sleep(10)
 
-    def _stop_remote() -> InteractiveShellCommandResponse:
-        return _remote_compose(
+    def _stop_remote():
+        _remote_compose(
             [
                 "down",
             ]
