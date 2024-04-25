@@ -93,7 +93,7 @@ def app__app__start(
 
         return True
 
-    def _app__app__start__proxy() -> bool:
+    def _app__app__start__proxy() -> None:
         nonlocal env
 
         # Current app is not the reverse proxy itself.
@@ -103,11 +103,11 @@ def app__app__start(
 
             if not manager.require_proxy():
                 kernel.io.message(f"Don't require proxy")
-                return True
+                return
 
             if no_proxy:
                 kernel.io.message(f"Proxy explicitly disabled")
-                return True
+                return
 
             proxy_path = manager.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, env)
 
@@ -120,8 +120,7 @@ def app__app__start(
                     "app-dir": proxy_path,
                     "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
                 },
-            ).first()
-            ):
+            ).first()):
                 from addons.app.command.helper.start import app__helper__start
 
                 kernel.run_function(
@@ -134,8 +133,6 @@ def app__app__start(
                     },
                 )
 
-        return True
-
     def _app__app__start__config() -> None:
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
@@ -143,6 +140,9 @@ def app__app__start(
             app__hook__exec,
             {"app-dir": app_dir, "hook": "app/start-pre"}
         )
+
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
 
         if manager.require_proxy():
             # Save app in proxy apps.
@@ -158,9 +158,15 @@ def app__app__start(
             },
         )
 
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
+
     compose_options = []
 
     def _app__app__start__start_hooks() -> None:
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
+
         nonlocal compose_options
 
         # Load config after building
@@ -180,6 +186,9 @@ def app__app__start(
                 "arguments": {"app-dir": app_dir, "options": compose_options},
             },
         ).first()
+
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
 
         compose_options += [
             item
@@ -207,6 +216,9 @@ def app__app__start(
         manager.set_runtime_config("started", True)
 
         kernel.run_function(app__hosts__update)
+
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
 
     def _app__app__start__pending() -> None:
         def _check() -> bool:
@@ -236,6 +248,8 @@ def app__app__start(
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-post"}
         )
+        # Ensure workdir due to lacking management
+        manager.set_app_workdir(app_dir)
 
         kernel.run_function(app__app__serve, {"app-dir": app_dir})
 
@@ -248,6 +262,8 @@ def app__app__start(
             kernel.run_function(
                 app__hook__exec, {"app-dir": app_dir, "hook": "app/first-init"}
             )
+            # Ensure workdir due to lacking management
+            manager.set_app_workdir(app_dir)
 
             with open(first_start_lock, "w") as file:
                 file.write("1")
@@ -276,8 +292,6 @@ def app__app__start(
                 app__app__go,
             ]
         )
-
-        return manager.get_app_dir()
 
     steps: List[Callable]
 

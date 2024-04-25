@@ -32,33 +32,33 @@ def app__app__started(
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
     if manager.require_proxy() and not manager.has_proxy_app():
-        manager.log(
+        manager.kernel.io.log(
             f"App is not registered in proxy of env [{manager.get_env()}]",
             verbosity=VERBOSITY_LEVEL_MAXIMUM,
         )
         return False
 
     if not manager.has_runtime_config("started"):
-        manager.log(
+        manager.kernel.io.log(
             f"Runtime config file is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
 
     started = manager.get_runtime_config("started").get_bool()
     if not started:
-        manager.log(
+        manager.kernel.io.log(
             f"Runtime config is marked as stopped", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
 
     if not manager.runtime_docker_compose:
-        manager.log(
+        manager.kernel.io.log(
             f"Runtime docker config is missing", verbosity=VERBOSITY_LEVEL_MAXIMUM
         )
         return False
 
     if mode == APP_STARTED_CHECK_MODE_CONFIG:
-        manager.log(f"Config files exists", verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        manager.kernel.io.log(f"Config files exists", verbosity=VERBOSITY_LEVEL_MAXIMUM)
         return True
 
     container_names = manager.kernel.run_function(
@@ -73,14 +73,14 @@ def app__app__started(
     all_runs: bool = True
     for name in container_names:
         if name in running_containers:
-            manager.log(
+            manager.kernel.io.log(
                 f"Container {name} runs", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_ANY_CONTAINER:
                 return True
         else:
             all_runs = False
-            manager.log(
+            manager.kernel.io.log(
                 f"Container {name} does not run", verbosity=VERBOSITY_LEVEL_MAXIMUM
             )
             if mode == APP_STARTED_CHECK_MODE_FULL:

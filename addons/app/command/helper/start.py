@@ -57,6 +57,7 @@ def app__helper__start(
     # App name is same of main service
     helper_service_name = name
     helper_app_path = manager.get_helper_app_path(name, env)
+    current_dir = os.getcwd()
 
     def _app__helper__start__create() -> Any:
         nonlocal env
@@ -127,5 +128,11 @@ def app__helper__start(
             _app__helper__start__start,
         ],
     )
+
+    # Ensure workdir due to lacking management
+    if manager.is_app_root(current_dir):
+        manager.set_app_workdir(current_dir)
+    else:
+        os.chdir(current_dir)
 
     return helper_app_path
