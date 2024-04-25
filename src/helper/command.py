@@ -163,18 +163,27 @@ def execute_command_sync(
 
     if interactive:
         try:
-            result = subprocess.run(command, cwd=working_directory, text=True, check=not ignore_error)
-            success = result.returncode == 0
+            result = subprocess.run(command, cwd=working_directory, text=True, capture_output=True, check=not ignore_error)
             output_lines = result.stdout.splitlines() if result.stdout else []
-            if not success and not ignore_error:
-                kernel.io.error(
-                    f"Error when running command: {command_str}" + os.linesep + os.linesep + "\n".join(output_lines)
-                )
-            kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
-            return success, output_lines
+            error_lines = result.stderr.splitlines() if result.stderr else []
+
+            if result.returncode != 0 and not ignore_error:
+                # Log error only if ignoring errors is not specified
+                kernel.io.error(f"Error when running command: {command_str}\nStdout:\n{os.linesep.join(output_lines)}\n\nStderr:\n{os.linesep.join(error_lines)}")
+            else:
+                # Log output at maximum verbosity if execution was successful or errors are ignored
+                kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
+
+            return result.returncode == 0, output_lines
+
         except subprocess.CalledProcessError as e:
-            kernel.io.error(f"Error when running command: {command_str}\n\n{str(e)}")
-            return False, str(e).splitlines()
+            # When the command fails, log the error and the captured stderr
+            error_lines = e.stderr.splitlines() if e.stderr else []
+            kernel.io.error(
+                f"Error when running command: {command_str}\n\n{os.linesep.join(error_lines)}"
+            )
+            return False, error_lines
+
     else:
         popen_args = {
             "cwd": working_directory,

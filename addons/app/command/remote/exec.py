@@ -59,5 +59,5 @@ def app__remote__exec(
         remote_get_connexion_command(
             manager=manager, environment=environment, terminal=terminal
         )
-        + [address, f"'{command_to_string(args_parse_list_or_strings_list(command))}'"],
+        + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"],
     )
