@@ -9,10 +9,10 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APPS_LIST
-from src.helper.prompt import prompt_progress_steps
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
+from src.helper.prompt import prompt_progress_steps
 from src.helper.system import system_port_check
 
 if TYPE_CHECKING:
@@ -83,6 +83,8 @@ def app__helper__start(
                 "services": [helper_service_name],
                 "git": False,
                 "env": env,
+                "port": port,
+                "port_secure": port_secure,
             },
         )
 
@@ -93,17 +95,10 @@ def app__helper__start(
             nonlocal port_secure
 
             user = user or getpass.getuser()
+            ports = manager.get_config(f"port", default=[]).get_dict()
 
-            # Override default service ports
-            if port:
+            for port in ports.values():
                 system_port_check(kernel, port)
-                manager.set_config(f"service.{helper_service_name}.port_public", port)
-
-            if port_secure:
-                system_port_check(kernel, port_secure)
-                manager.set_config(
-                    f"service.{helper_service_name}.port_public_secure", port_secure
-                )
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 

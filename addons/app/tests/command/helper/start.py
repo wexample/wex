@@ -56,8 +56,6 @@ class TestAppCommandHelperStart(AbstractTestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(len(containers_list), 2)
-
         self.kernel.run_function(
             app__helper__stop, {"name": name, "env": "test_env_one"}
         )

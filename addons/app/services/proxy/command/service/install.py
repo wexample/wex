@@ -14,11 +14,21 @@ def proxy__service__install(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     def callback() -> None:
-        port = 80
-        port_secure = 443
+        manager.set_config(
+            "port.public",
+            manager.get_config(
+                "port.public",
+                default=80
+            ).get_int()
+        )
 
-        manager.set_config("global.port_public", port)
-        manager.set_config("global.port_public_secure", port_secure)
+        manager.set_config(
+            "port.public_secure",
+            manager.get_config(
+                "port.public_secure",
+                default=443
+            ).get_int()
+        )
 
     service_resolver = cast(
         "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]

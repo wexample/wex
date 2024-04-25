@@ -139,6 +139,12 @@ def app__app__init(
         domains_list = args_split_arg_array(domains)
         manager._config = manager.create_config(name_snake, domains_list)
 
+        if port or port_secure:
+            manager._config["port"] = {
+                "public": port,
+                "public_secure": port_secure,
+            }
+
         manager.save_config()
 
     def _init_step_set_workdir() -> None:

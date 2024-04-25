@@ -4,5 +4,5 @@ services:
       file: ${RUNTIME_SERVICE_PROXY_YML_ENV}
       service: proxy
     ports:
-      - ${SERVICE_PROXY_PORT_PUBLIC:-80}:80
-      - ${SERVICE_PROXY_PORT_PUBLIC_SECURE:-443}:443
+      - ${PORT_PUBLIC:-80}:80
+      - ${PORT_PUBLIC_SECURE:-443}:443

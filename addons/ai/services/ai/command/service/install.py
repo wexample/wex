@@ -17,7 +17,7 @@ def ai__service__install(
 ) -> None:
     docker_config_path = manager.get_env_dir() + DOCKER_COMPOSE_REL_PATH_BASE
     docker_config = yaml_load(docker_config_path)
-    docker_config["services"]["wex_ai_postgres"] = {"ports": ["5444:5432"]}
+    docker_config["services"]["wex_ai_postgres"] = {"ports": [f"5{manager.get_config('port.public').get_int()}:5432"]}
 
     yaml_write(
         docker_config_path,
