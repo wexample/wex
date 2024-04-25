@@ -44,6 +44,10 @@ if TYPE_CHECKING:
     help="Comma separated list of domains names",
 )
 @option("--env", "-e", type=str, required=False, help="App environment")
+@option("--port", "-p", type=int, required=False, help="Port for web server")
+@option(
+    "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
+)
 def app__app__init(
     manager: "AppAddonManager",
     app_dir: str,
@@ -52,6 +56,8 @@ def app__app__init(
     domains: str = "",
     git: bool = True,
     env: str | None = None,
+    port: Optional[int] = None,
+    port_secure: Optional[int] = None,
 ) -> None:
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
@@ -88,7 +94,7 @@ def app__app__init(
         for service in services_resolved:
             if (
                 not service
-                in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+                    in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
             ):
                 kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": service})
 

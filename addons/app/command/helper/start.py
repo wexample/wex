@@ -95,7 +95,7 @@ def app__helper__start(
             nonlocal port_secure
 
             user = user or getpass.getuser()
-            ports = manager.get_config(f"port", default=[]).get_dict()
+            ports = manager.get_config(f"port", default={}).get_dict()
 
             for port in ports.values():
                 system_port_check(kernel, port)

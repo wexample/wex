@@ -206,7 +206,9 @@ class AppAddonManager(AddonManager):
         return yaml_load_dict(path, default) or {}
 
     def create_config(
-        self, app_name: str, domains: Optional[StringsList] = None
+        self,
+        app_name: str,
+        domains: Optional[StringsList] = None,
     ) -> AppConfig:
         if domains is None:
             domains = []
