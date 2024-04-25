@@ -83,7 +83,6 @@ def execute_command_tree_sync(
                     command_tree=cast(ShellCommandsDeepList, sub_command),
                     working_directory=working_directory,
                     ignore_error=ignore_error,
-                    interactive=interactive,
                     as_sudo_user=as_sudo_user,
                     **kwargs,
                 )
