@@ -8,9 +8,14 @@ class TestAppCommandAppExec(AbstractAppTestCase):
         app_dir = self.create_and_start_test_app(services=["php"])
 
         response = self.kernel.run_function(
-            app__app__exec, {"app-dir": app_dir, "command": "echo TEST"}
+            app__app__exec,
+            {
+                "app-dir": app_dir,
+                "command": "echo TEST",
+                "sync": True
+            }
         )
 
-        self.assertEqual(response.first(), "TEST")
+        self.assertEqual(response.first(), ["TEST"])
 
         self.kernel.run_function(app__app__stop, {"app-dir": app_dir})
