@@ -11,12 +11,12 @@ from src.const.types import StringsList
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
 from src.core.response.QueuedCollectionResponse import (
     QueuedCollectionResponse,
     QueuedCollectionResponseCollection,
+)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
 )
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
@@ -128,13 +128,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                        (not command)
-                        or command_name == command
-                        or (
-                            command.endswith("*")
-                            and command_name.startswith(command[:-1])
-                        )
+                    (not command)
+                    or command_name == command
+                    or (
+                        command.endswith("*")
+                        and command_name.startswith(command[:-1])
                     )
+                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 

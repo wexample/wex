@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast, Union
 
 import click.core
 
+from src.helper.user import get_user_or_sudo_user
 from src.const.globals import (
     VERBOSITY_LEVEL_MAXIMUM,
     VERBOSITY_LEVEL_MEDIUM,
@@ -66,6 +67,7 @@ def execute_command_tree_sync(
     working_directory: str | None = None,
     ignore_error: bool = False,
     interactive: bool = False,
+    as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     if isinstance(command_tree, list) and any(
@@ -80,6 +82,9 @@ def execute_command_tree_sync(
                     kernel=kernel,
                     command_tree=cast(ShellCommandsDeepList, sub_command),
                     working_directory=working_directory,
+                    ignore_error=ignore_error,
+                    interactive=interactive,
+                    as_sudo_user=as_sudo_user,
                     **kwargs,
                 )
 
@@ -101,6 +106,7 @@ def execute_command_tree_sync(
         working_directory=working_directory,
         ignore_error=ignore_error,
         interactive=interactive,
+        as_sudo_user=as_sudo_user,
         **kwargs,
     )
 
@@ -142,10 +148,14 @@ def execute_command_sync(
     working_directory: Optional[str] = None,
     ignore_error: bool = False,
     interactive: bool = False,
+    as_sudo_user: bool = True,
     **kwargs: Any
 ) -> ShellCommandResponseTuple:
     if working_directory is None:
         working_directory = os.getcwd()
+
+    if as_sudo_user:
+        command = ["sudo", "-u", get_user_or_sudo_user()] + command
 
     command_str = command_to_string(command)
     kernel.io.log(
