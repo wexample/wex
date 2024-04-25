@@ -352,9 +352,11 @@ class Assistant(KernelChild):
 
                     if command_input == "":
                         command_input = None
+                    else:
+                        command_input = html.unescape(command_input)
 
                     results.append(
-                        UserPromptSection(command, html.unescape(command_input), options)
+                        UserPromptSection(command, command_input, options)
                     )
 
                     # Break after finding a command to avoid parsing further commands in the same string.
