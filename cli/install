@@ -20,25 +20,30 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Install pip if not installed
+sudo apt-get update
+
+# Install python3-pip and python3-venv if not installed
 if ! command_exists pip; then
-    echo "Installing pip..."
-    sudo apt-get update
+    echo "Installing python3-pip and python3-venv..."
     sudo apt-get -y install python3-pip python3-venv
 fi
 
 # Install procps if not installed
 if ! command_exists ps; then
     echo "Installing procps..."
-    sudo apt-get update
     sudo apt-get -y install procps
 fi
 
 # Install sshpass if not installed
 if ! command_exists sshpass; then
     echo "Installing sshpass..."
-    sudo apt-get update
     sudo apt-get -y install sshpass
+fi
+
+# Install libpq-dev if not installed
+if ! command_exists psql; then
+    echo "Installing libpq-dev..."
+    sudo apt-get -y install libpq-dev
 fi
 
 # Create and activate virtual environment

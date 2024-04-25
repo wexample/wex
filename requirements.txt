@@ -300,6 +300,8 @@ packaging==23.2
     #   marshmallow
     #   onnxruntime
     #   unstructured-client
+patch==1.16
+    # via -r requirements.in
 pfzy==0.3.4
     # via inquirerpy
 pgvector==0.2.5
