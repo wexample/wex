@@ -65,23 +65,12 @@ def core__test__run(
 
     def _wait_remote() -> None:
         success = False
-        while not success:
-            # Display logs
-            success, content = execute_command_sync(
-                kernel,
-                [
-                    "docker",
-                    "logs",
-                    "wex_test_remote",
-                    "--tail",
-                    "10",
-                ],
-                ignore_error=True,
-            )
-            kernel.io.print(os.linesep.join(content))
+        preview_previous = []
+        preview_length = 10
 
+        while not success:
             # Check ready
-            success, content = execute_command_sync(
+            success, _ = execute_command_sync(
                 kernel,
                 [
                     "docker",
@@ -93,8 +82,29 @@ def core__test__run(
                 ],
                 ignore_error=True,
             )
-            kernel.io.log("Test remote server starting...")
-            time.sleep(10)
+
+            if not success:
+                # Display logs
+                _, preview = execute_command_sync(
+                    kernel,
+                    [
+                        "docker",
+                        "logs",
+                        "wex_test_remote",
+                        "--tail",
+                        str(preview_length),
+                    ],
+                    ignore_error=True,
+                )
+
+                preview = preview[-preview_length:]
+
+                kernel.io.clear_last_n_lines((len(preview_previous) + 1))
+                kernel.io.print("\n".join(preview))
+                kernel.io.log("Test remote server starting...")
+
+                preview_previous = preview
+                time.sleep(1)
 
     def _stop_remote():
         _remote_compose(
