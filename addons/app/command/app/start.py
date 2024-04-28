@@ -237,6 +237,7 @@ def app__app__start(
                     kernel.io.log(f"{context} is not running..")
                     return False
 
+            time.sleep(2)
             return True
 
         while not _check():

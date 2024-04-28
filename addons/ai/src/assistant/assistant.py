@@ -177,12 +177,13 @@ class Assistant(KernelChild):
         self.personalities = personalities
 
     def _init_database(self) -> None:
-        database_config = self.assistant_app_manager.get_config("service.postgres").get_dict()
+        manager = self.assistant_app_manager
+        database_config = manager.get_config("service.postgres").get_dict()
 
         self.db_engine = create_engine(
             f"postgresql://{database_config['user']}"
             f":{database_config['password']}@localhost"
-            f":5444/{database_config['name']}"
+            f":5{manager.get_config('port.public', 444).get_int()}/{database_config['name']}"
         )
 
         self.log("Database connected")
