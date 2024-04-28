@@ -1,6 +1,3 @@
-from typing import List
-
-from addons.ai.src.assistant.interaction_mode.function_picker_interaction_mode import FunctionPickerInteractionMode
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from src.const.types import StringKeysDict
 

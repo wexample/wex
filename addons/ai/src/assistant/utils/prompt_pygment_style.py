@@ -1,6 +1,19 @@
 from pygments.style import Style
-from pygments.token import Keyword, Name, Comment, String, Error, Literal, \
-    Number, Operator, Other, Punctuation, Text, Generic, Whitespace
+from pygments.token import (
+    Comment,
+    Error,
+    Generic,
+    Keyword,
+    Literal,
+    Name,
+    Number,
+    Operator,
+    Other,
+    Punctuation,
+    String,
+    Text,
+    Whitespace,
+)
 
 background = "#282a36"
 foreground = "#f8f8f2"
@@ -17,7 +30,7 @@ deletion = "#8b080b"
 
 
 class PromptPygmentStyle(Style):
-    name = 'prompt'
+    name = "prompt"
 
     background_color = background
     highlight_color = selection
@@ -28,10 +41,8 @@ class PromptPygmentStyle(Style):
 
     styles = {
         Whitespace: foreground,
-
         Comment: comment,
         Comment.Preproc: pink,
-
         Generic: foreground,
         Generic.Deleted: deletion,
         Generic.Emph: "underline",
@@ -40,16 +51,12 @@ class PromptPygmentStyle(Style):
         Generic.Output: selection,
         Generic.EmphStrong: "underline",
         Generic.Subheading: "bold",
-
         Error: foreground,
-
         Keyword: pink,
         Keyword.Constant: pink,
         Keyword.Declaration: cyan + " italic",
         Keyword.Type: cyan,
-
         Literal: foreground,
-
         Name: foreground,
         Name.Attribute: green,
         Name.Builtin: cyan + " bold",
@@ -59,16 +66,10 @@ class PromptPygmentStyle(Style):
         Name.Label: cyan + " italic",
         Name.Tag: pink,
         Name.Variable: cyan + " italic",
-
         Number: orange,
-
         Operator: pink,
-
         Other: foreground,
-
         Punctuation: foreground,
-
         String: purple,
-
         Text: foreground,
     }

@@ -4,13 +4,20 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
-from langchain_core.prompts import BasePromptTemplate
-from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+from langchain_core.prompts import (
+    BasePromptTemplate,
+    FewShotPromptTemplate,
+    PromptTemplate,
+)
 from langchain_core.runnables import ConfigurableFieldSpec
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
-from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
+from addons.ai.src.assistant.utils.abstract_assistant_child import (
+    AbstractAssistantChild,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
@@ -45,21 +52,24 @@ class AbstractModel(AbstractAssistantChild):
     def chat_create_prompt(
         self,
         interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection) -> ChatPromptTemplate:
+        prompt_section: UserPromptSection,
+    ) -> ChatPromptTemplate:
         assistant = self.assistant
 
         parts = []
         personality_prompt = assistant.personalities[assistant.personality]["prompt"]
         if personality_prompt:
             parts.append(
-                ("system",
-                 "##YOUR PERSONALITY\n" + personality_prompt),
+                ("system", "##YOUR PERSONALITY\n" + personality_prompt),
             )
 
         parts += [
-            ("system", f"##LANGUAGE"
-                       f"\nYou use \"{assistant.languages[assistant.language]}\" language in every text, "
-                       f"even if the person uses another language."),
+            (
+                "system",
+                f"##LANGUAGE"
+                f'\nYou use "{assistant.languages[assistant.language]}" language in every text, '
+                f"even if the person uses another language.",
+            ),
         ]
 
         initial_prompt = interaction_mode.get_initial_prompt(prompt_section) or ""
@@ -79,9 +89,7 @@ class AbstractModel(AbstractAssistantChild):
                 ("system", "{format_instructions}"),
             ]
 
-        return ChatPromptTemplate.from_messages(
-            parts + [("human", "{input}")]
-        )
+        return ChatPromptTemplate.from_messages(parts + [("human", "{input}")])
 
     def create_embeddings(self) -> Any:
         return None
@@ -106,7 +114,7 @@ class AbstractModel(AbstractAssistantChild):
         example_prompt: str,
         examples: List[StringKeysDict],
         input_variables_names: StringsList,
-        response_variable_name: str = "response"
+        response_variable_name: str = "response",
     ) -> FewShotPromptTemplate:
         example_prompt_template = PromptTemplate(
             input_variables=input_variables_names + [response_variable_name],
@@ -131,7 +139,7 @@ class AbstractModel(AbstractAssistantChild):
         prompt_parameters: StringKeysDict,
         example_prompt,
         examples,
-        input_variables_names
+        input_variables_names,
     ):
         return self.chain_invoke_and_parse(
             interaction_mode=interaction_mode,
@@ -140,17 +148,17 @@ class AbstractModel(AbstractAssistantChild):
                 prompt_section=prompt_section,
                 example_prompt=example_prompt,
                 examples=examples,
-                input_variables_names=input_variables_names
+                input_variables_names=input_variables_names,
             ),
             prompt_section=prompt_section,
-            prompt_parameters=prompt_parameters
+            prompt_parameters=prompt_parameters,
         )
 
     def chat_agent(
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        tools: List[CommandTool]
+        tools: List[CommandTool],
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
@@ -206,27 +214,23 @@ class AbstractModel(AbstractAssistantChild):
         config = {
             "configurable": {
                 "user_id": self.assistant.user_id,
-                "conversation_id": self.assistant.conversation_id
+                "conversation_id": self.assistant.conversation_id,
             }
         }
 
         input_data = dict_merge(
             {"input": prompt_section.prompt},
             self.assistant.get_current_subject().get_prompt_parameters(),
-            prompt_parameters or {}
+            prompt_parameters or {},
         )
 
         final_chain = with_message_history
         if parser:
             input_data["format_instructions"] = parser.get_format_instructions()
-            final_chain = (with_message_history | parser)
+            final_chain = with_message_history | parser
 
         return interaction_mode.chain_response_to_string(
-            prompt_section,
-            final_chain.invoke(
-                input_data,
-                config
-            )
+            prompt_section, final_chain.invoke(input_data, config)
         )
 
     @abstractmethod

@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 def ai__talk__about_file(kernel: "Kernel", file: str) -> None:
     assistant = Assistant(kernel, MODEL_NAME_OPEN_AI_GPT_4)
 
-    cast(FileChatSubject, assistant.set_subject(
-        FileChatSubject.name()))
+    cast(FileChatSubject, assistant.set_subject(FileChatSubject.name()))
 
     assistant.start(CHAT_MENU_ACTION_CHAT)

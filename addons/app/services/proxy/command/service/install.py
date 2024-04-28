@@ -15,19 +15,12 @@ def proxy__service__install(
 ) -> None:
     def callback() -> None:
         manager.set_config(
-            "port.public",
-            manager.get_config(
-                "port.public",
-                default=80
-            ).get_int()
+            "port.public", manager.get_config("port.public", default=80).get_int()
         )
 
         manager.set_config(
             "port.public_secure",
-            manager.get_config(
-                "port.public_secure",
-                default=443
-            ).get_int()
+            manager.get_config("port.public_secure", default=443).get_int(),
         )
 
     service_resolver = cast(

@@ -8,11 +8,12 @@ class TestAppCommandHookExec(AbstractAppTestCase):
         app_dir = self.create_and_start_test_app(services=["php"])
 
         results = self.kernel.run_function(
-            app__hook__exec, {
+            app__hook__exec,
+            {
                 "app-dir": app_dir,
                 "hook": "missing/hook",
                 # "sync": True
-            }
+            },
         ).first()
 
         self.assertEqual(results[f"{COMMAND_CHAR_SERVICE}php"].print(), None)

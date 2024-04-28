@@ -1,6 +1,6 @@
 import getpass
 import os.path
-from typing import TYPE_CHECKING, Optional, cast, Any
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from click import Choice
 

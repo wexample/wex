@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 from addons.ai.src.assistant.assistant import CHAT_MENU_ACTION_CHAT, Assistant
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
-from src.decorator.as_sudo import as_sudo
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
+from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 

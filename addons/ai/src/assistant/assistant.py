@@ -1,6 +1,6 @@
 import html
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, cast, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
 
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -16,21 +16,23 @@ from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
 from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
 from addons.ai.src.assistant.subject.people_chat_subject import PeopleChatSubject
-from addons.ai.src.assistant.subject.previous_response_subject import PreviousResponseSubject
+from addons.ai.src.assistant.subject.previous_response_subject import (
+    PreviousResponseSubject,
+)
 from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
 from addons.ai.src.assistant.subject.terminal_chat_subject import TerminalChatSubject
 from addons.ai.src.assistant.utils.globals import (
-    ASSISTANT_DEFAULT_COMMANDS,
-    CHAT_MENU_ACTION_CHAT,
-    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-    CHAT_MENU_ACTION_THEME,
-    CHAT_MENU_ACTION_EXIT,
-    CHAT_MENU_ACTIONS_TRANSLATIONS,
     AI_COMMAND_PREFIX,
-    ASSISTANT_COMMAND_MENU,
     ASSISTANT_COMMAND_EXIT,
-    CHAT_MENU_ACTION_CHANGE_PERSONALITY,
+    ASSISTANT_COMMAND_MENU,
+    ASSISTANT_DEFAULT_COMMANDS,
+    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
     CHAT_MENU_ACTION_CHANGE_LANGUAGE,
+    CHAT_MENU_ACTION_CHANGE_PERSONALITY,
+    CHAT_MENU_ACTION_CHAT,
+    CHAT_MENU_ACTION_EXIT,
+    CHAT_MENU_ACTION_THEME,
+    CHAT_MENU_ACTIONS_TRANSLATIONS,
 )
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -92,7 +94,7 @@ class Assistant(KernelChild):
             {
                 "name": HELPER_APP_AI_SHORT_NAME,
                 "create-network": False,
-            }
+            },
         )
 
         self.helper_app_dir = str(response.last())
@@ -110,18 +112,11 @@ class Assistant(KernelChild):
     def _init_models(self) -> None:
         self._default_model: Optional[AbstractModel] = None
         self.models: Dict[str, AbstractModel] = {
-            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(
-                self,
-                MODEL_NAME_OLLAMA_MISTRAL
-            ),
+            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self, MODEL_NAME_OLLAMA_MISTRAL),
             MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self,
-                MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+                self, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
             ),
-            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(
-                self,
-                MODEL_NAME_OPEN_AI_GPT_4
-            ),
+            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(self, MODEL_NAME_OPEN_AI_GPT_4),
         }
 
         self.set_default_model(self._initial_default_model)
@@ -134,11 +129,13 @@ class Assistant(KernelChild):
         self.commands = ASSISTANT_DEFAULT_COMMANDS
 
     def _init_locales(self) -> None:
-        self.languages = json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json")
+        self.languages = json_load(
+            f"{self.kernel.directory.path}addons/ai/samples/languages.json"
+        )
         self.language = "en"
         self.set_language(self.language)
 
-    def set_language(self, code: str):
+    def set_language(self, code: str) -> None:
         self.language = code
 
     def _init_subjects(self) -> None:
@@ -164,14 +161,18 @@ class Assistant(KernelChild):
         self.set_default_subject()
 
     def _init_personalities(self) -> None:
-        personalities_path = f"{self.kernel.directory.path}addons/ai/samples/personalities/"
+        personalities_path = (
+            f"{self.kernel.directory.path}addons/ai/samples/personalities/"
+        )
         personalities = {}
 
         # Scan the directory for files and load their contents
         for filename in os.listdir(personalities_path):
             if filename.endswith(".yml"):
                 name_without_extension, _ = os.path.splitext(filename)
-                personalities[name_without_extension] = yaml_load(os.path.join(personalities_path, filename))
+                personalities[name_without_extension] = yaml_load(
+                    os.path.join(personalities_path, filename)
+                )
 
         self.personality: str = "default"
         self.personalities = personalities
@@ -242,7 +243,7 @@ class Assistant(KernelChild):
                     "Choose a language",
                     self.languages,
                     default=self.language,
-                    abort="↩ Back"
+                    abort="↩ Back",
                 )
 
                 menu_action = None
@@ -259,7 +260,7 @@ class Assistant(KernelChild):
                     "Choose a theme:",
                     choice_dict,
                     default=self.colors_theme,
-                    abort="↩ Back"
+                    abort="↩ Back",
                 )
 
                 menu_action = None
@@ -272,7 +273,7 @@ class Assistant(KernelChild):
                     "Choose a personality:",
                     choice_dict,
                     default=self.personality,
-                    abort="↩ Back"
+                    abort="↩ Back",
                 )
 
                 menu_action = None
@@ -286,7 +287,7 @@ class Assistant(KernelChild):
                     "Choose a new language model:",
                     models,
                     default=current_model.identifier,
-                    abort="↩ Back"
+                    abort="↩ Back",
                 )
 
                 menu_action = None
@@ -306,11 +307,13 @@ class Assistant(KernelChild):
             CHAT_MENU_ACTION_CHANGE_LANGUAGE,
             CHAT_MENU_ACTION_CHANGE_PERSONALITY,
             CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-            CHAT_MENU_ACTION_EXIT
+            CHAT_MENU_ACTION_EXIT,
         ]
 
         # Initialize choices dictionary using a dictionary comprehension
-        choices = {action: CHAT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions}
+        choices = {
+            action: CHAT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions
+        }
 
         # Prompt the user to choose an action
         action = prompt_choice_dict(
@@ -337,28 +340,38 @@ class Assistant(KernelChild):
         for i, word in enumerate(words):
             if word.startswith(AI_COMMAND_PREFIX):
                 # Split command and options
-                command_parts = word[len(AI_COMMAND_PREFIX):].split(':')
-                command = command_parts[0].lower()  # First part is the command, normalized
-                options = command_parts[1:] if len(command_parts) > 1 else None  # Subsequent parts are options
+                command_parts = word[len(AI_COMMAND_PREFIX) :].split(":")
+                command = command_parts[
+                    0
+                ].lower()  # First part is the command, normalized
+                options = (
+                    command_parts[1:] if len(command_parts) > 1 else None
+                )  # Subsequent parts are options
 
                 if command in commands:
                     # Find command input.
                     # Input is considered as the text following the command until the next command or end.
-                    command_input = " ".join(words[i + 1:])  # Grab all text after command
+                    command_input = " ".join(
+                        words[i + 1 :]
+                    )  # Grab all text after command
                     # If another command is found in the input, cut the input at that point
                     next_command_index = next(
-                        (j for j, w in enumerate(words[i + 1:], start=i + 1) if w.startswith(AI_COMMAND_PREFIX)), None)
+                        (
+                            j
+                            for j, w in enumerate(words[i + 1 :], start=i + 1)
+                            if w.startswith(AI_COMMAND_PREFIX)
+                        ),
+                        None,
+                    )
                     if next_command_index:
-                        command_input = " ".join(words[i + 1:next_command_index])
+                        command_input = " ".join(words[i + 1 : next_command_index])
 
                     if command_input == "":
                         command_input = None
                     else:
                         command_input = html.unescape(command_input)
 
-                    results.append(
-                        UserPromptSection(command, command_input, options)
-                    )
+                    results.append(UserPromptSection(command, command_input, options))
 
                     # Break after finding a command to avoid parsing further commands in the same string.
                     # If you need to handle multiple commands in one string, you might need a more complex approach.
@@ -374,9 +387,7 @@ class Assistant(KernelChild):
         commands = self.commands.copy()
 
         for subject in self.subjects.values():
-            commands.update(
-                cast(AbstractChatSubject, subject).get_commands()
-            )
+            commands.update(cast(AbstractChatSubject, subject).get_commands())
 
         return commands
 
@@ -408,10 +419,11 @@ class Assistant(KernelChild):
                         # Loop on subjects until one returns something.
                         for subject in self.subjects.values():
                             # Accepts "bool" return to block process without returning message.
-                            if not result and subject.use_as_current_subject(prompt_section):
+                            if not result and subject.use_as_current_subject(
+                                prompt_section
+                            ):
                                 result = subject.process_prompt_section(
-                                    prompt_section,
-                                    prompt_sections[index + 1:]
+                                    prompt_section, prompt_sections[index + 1 :]
                                 )
 
                     self.history.append(HistoryItem(prompt_section.prompt))
@@ -435,12 +447,11 @@ class Assistant(KernelChild):
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
 
     def get_current_session_history(self) -> BaseChatMessageHistory:
-        return self.get_session_history(
-            self.user_id,
-            self.conversation_id
-        )
+        return self.get_session_history(self.user_id, self.conversation_id)
 
-    def get_session_history(self, user_id: int, conversation_id: int) -> BaseChatMessageHistory:
+    def get_session_history(
+        self, user_id: int, conversation_id: int
+    ) -> BaseChatMessageHistory:
         if (user_id, conversation_id) not in self.active_memory:
             self.active_memory[(user_id, conversation_id)] = ChatMessageHistory()
 

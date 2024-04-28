@@ -1,8 +1,12 @@
 from abc import abstractmethod
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
-from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
+from addons.ai.src.assistant.utils.abstract_assistant_child import (
+    AbstractAssistantChild,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 
@@ -22,7 +26,9 @@ class AbstractChatSubject(AbstractAssistantChild):
         return self.name()
 
     @abstractmethod
-    def get_interaction_mode(self, prompt_section: Optional[UserPromptSection] = None) -> Optional[type]:
+    def get_interaction_mode(
+        self, prompt_section: Optional[UserPromptSection] = None
+    ) -> Optional[type]:
         pass
 
     def is_current_subject(self) -> bool:
@@ -32,8 +38,7 @@ class AbstractChatSubject(AbstractAssistantChild):
         if not self.is_current_subject():
             # But command match with allowed ones, or this is a fallback.
             if (
-                prompt_section.command and
-                prompt_section.command in self.get_commands()
+                prompt_section.command and prompt_section.command in self.get_commands()
             ) or self.is_fallback_subject():
                 # So this is the new subject.
                 self.assistant.set_subject(self.name())
@@ -54,7 +59,7 @@ class AbstractChatSubject(AbstractAssistantChild):
     def process_prompt_section(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         # Set default
         mode = self.get_interaction_mode(prompt_section)
@@ -62,10 +67,9 @@ class AbstractChatSubject(AbstractAssistantChild):
 
         # By default interaction mode is required.
         if not interaction_mode:
-            self.assistant.log(f"No interaction mode defined for subject : {self.name()}")
+            self.assistant.log(
+                f"No interaction mode defined for subject : {self.name()}"
+            )
             return False
 
-        return interaction_mode.process_user_input(
-            prompt_section,
-            remaining_sections
-        )
+        return interaction_mode.process_user_input(prompt_section, remaining_sections)

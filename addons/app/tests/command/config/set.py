@@ -23,7 +23,8 @@ class TestAppCommandConfigSet(AbstractAppTestCase):
 
         # Rollback.
         self.kernel.run_function(
-            app__config__set, {"app-dir": app_dir, "key": "global.name", "value": CORE_COMMAND_NAME}
+            app__config__set,
+            {"app-dir": app_dir, "key": "global.name", "value": CORE_COMMAND_NAME},
         )
 
         self.assertEqual(

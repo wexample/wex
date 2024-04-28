@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
@@ -25,7 +25,7 @@ class HelpChatSubject(AbstractChatSubject):
     def process_prompt_section(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         self.show_help()
         return True
@@ -41,10 +41,13 @@ class HelpChatSubject(AbstractChatSubject):
             padded_command = command.ljust(longest_command_length)
             self.assistant.log(
                 f"{AI_COMMAND_PREFIX}{padded_command} | "
-                f"{info if isinstance(info, str) else info['description']}")
+                f"{info if isinstance(info, str) else info['description']}"
+            )
 
             if "options" in info:
-                for option in info['options']:
-                    self.assistant.log("".rjust(longest_command_length) + f"      :{option}")
+                for option in info["options"]:
+                    self.assistant.log(
+                        "".rjust(longest_command_length) + f"      :{option}"
+                    )
 
         self.assistant.log(f"Press Alt+Enter to add a new line")

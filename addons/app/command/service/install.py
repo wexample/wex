@@ -155,7 +155,7 @@ def app__service__install(
     kernel.run_command(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}service/install",
         {"app-dir": app_dir, "service": service},
-        quiet=True
+        quiet=True,
     )
 
 

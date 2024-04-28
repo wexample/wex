@@ -1,15 +1,27 @@
 import os
-import patch
-from typing import Optional, List, cast
+from typing import List, Optional, cast
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+import patch
+
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.default.helper.git_utils import git_file_get_octal_mode
-from src.helper.patch import patch_apply_in_workdir, extract_information, patch_clean, patch_create_hunk_header, \
-    patch_is_valid
 from src.const.types import StringKeysDict
-from src.helper.file import file_get_extension, file_read, file_set_user_or_sudo_user_owner
-from src.helper.file import file_read_if_exists
+from src.helper.file import (
+    file_get_extension,
+    file_read,
+    file_read_if_exists,
+    file_set_user_or_sudo_user_owner,
+)
+from src.helper.patch import (
+    extract_information,
+    patch_apply_in_workdir,
+    patch_clean,
+    patch_create_hunk_header,
+    patch_is_valid,
+)
 from src.helper.string import string_add_lines_numbers, string_has_trailing_new_line
 
 
@@ -19,18 +31,20 @@ class FilePatchInteractionMode(AbstractInteractionMode):
         return "file_patch"
 
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
-        return ("You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
-                "\nStart the patch with \"# PATCH_START\" then the patch content without header."
-                "\nThe patch body always starts 3 lines before the first change, "
-                "if applicable, this is the security margin."
-                "\nYou respect the exact original spacings, indentation."
-                "\nYou do not do any change without marking it with a + or a -."
-                "\nTerminate with the # DESCRIPTION: information describing what you've done.")
+        return (
+            "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
+            '\nStart the patch with "# PATCH_START" then the patch content without header.'
+            "\nThe patch body always starts 3 lines before the first change, "
+            "if applicable, this is the security margin."
+            "\nYou respect the exact original spacings, indentation."
+            "\nYou do not do any change without marking it with a + or a -."
+            "\nTerminate with the # DESCRIPTION: information describing what you've done."
+        )
 
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 
@@ -40,7 +54,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
 
         # Avoid empty input error.
         if not user_input:
-            return f'Please instruct what to change in this file {file_path}'
+            return f"Please instruct what to change in this file {file_path}"
 
         # Per file format system prompt.
         extension = file_get_extension(file_path)
@@ -80,14 +94,16 @@ class FilePatchInteractionMode(AbstractInteractionMode):
                     self.load_example_patch("patch/hello_world_capitalized"),
                     self.load_example_patch("json/add_item"),
                 ],
-                input_variables_names=["file_name", "question", "source_with_lines"]
+                input_variables_names=["file_name", "question", "source_with_lines"],
             )
             + os.linesep
         )
 
         self.assistant.spinner.stop()
 
-        description = extract_information(raw_patch_content, "DESCRIPTION", "No description")
+        description = extract_information(
+            raw_patch_content, "DESCRIPTION", "No description"
+        )
 
         # Patch content
         patch_content = patch_clean(raw_patch_content)
@@ -120,13 +136,15 @@ class FilePatchInteractionMode(AbstractInteractionMode):
                 if patch_set:
                     # Patch library expect patch to refer to a relative file,
                     # so we move in the same dir.
-                    success = patch_apply_in_workdir(os.path.dirname(file_path), patch_set)
+                    success = patch_apply_in_workdir(
+                        os.path.dirname(file_path), patch_set
+                    )
                     error_message = "Patching failed"
                     if success:
                         file_set_user_or_sudo_user_owner(file_path)
-                        self.kernel.io.log(f'Patched : {file_path}')
+                        self.kernel.io.log(f"Patched : {file_path}")
 
-                        return f'✏️ {description}'
+                        return f"✏️ {description}"
 
                 self.kernel.io.log(file_content)
                 self.kernel.io.log("____")
@@ -140,7 +158,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
             self.kernel.io.log("____")
             self.kernel.io.log(patch_content)
 
-        return f'⚠️ {error_message}'
+        return f"⚠️ {error_message}"
 
     def load_example_patch(self, name) -> StringKeysDict:
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"

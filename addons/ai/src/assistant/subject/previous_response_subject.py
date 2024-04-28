@@ -1,4 +1,4 @@
-from typing import Optional, List, cast
+from typing import List, Optional, cast
 
 import pyperclip
 
@@ -22,16 +22,21 @@ class PreviousResponseSubject(AbstractChatSubject):
         items = {}
 
         if len(self.assistant.history):
-            items[SUBJECT_PREVIOUS_RESPONSE_COMMAND_COPY_TO_CLIPBOARD] = "Copy previous response to clipboard"
+            items[
+                SUBJECT_PREVIOUS_RESPONSE_COMMAND_COPY_TO_CLIPBOARD
+            ] = "Copy previous response to clipboard"
 
         return items
 
     def process_prompt_section(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
-        if prompt_section.command == SUBJECT_PREVIOUS_RESPONSE_COMMAND_COPY_TO_CLIPBOARD:
+        if (
+            prompt_section.command
+            == SUBJECT_PREVIOUS_RESPONSE_COMMAND_COPY_TO_CLIPBOARD
+        ):
             if len(self.assistant.history):
                 item = self.assistant.history[-1]
                 pyperclip.copy(cast(HistoryItem, item).content)

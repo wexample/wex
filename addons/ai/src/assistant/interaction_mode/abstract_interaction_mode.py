@@ -1,8 +1,10 @@
-from typing import Optional, List, TYPE_CHECKING, Dict, Any
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from langchain_core.output_parsers import BaseOutputParser
 
-from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.abstract_assistant_child import (
+    AbstractAssistantChild,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 if TYPE_CHECKING:
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
-    def __init__(self, subject: "AbstractChatSubject"):
+    def __init__(self, subject: "AbstractChatSubject") -> None:
         super().__init__(subject.assistant)
 
         self._output_formatting_prompt: Optional[str] = None
@@ -22,12 +24,14 @@ class AbstractInteractionMode(AbstractAssistantChild):
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return None
 
-    def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
+    def get_interaction_mode_prompt_parameters(
+        self, prompt_section: UserPromptSection
+    ) -> Dict[str, str]:
         return {}
 
     def set_output_formatting_prompt(self, prompt: str) -> None:
         if self._output_formatting_prompt is None:
-            self._output_formatting_prompt = ''
+            self._output_formatting_prompt = ""
 
         self._output_formatting_prompt += prompt
 
@@ -40,7 +44,7 @@ class AbstractInteractionMode(AbstractAssistantChild):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         self.assistant.spinner.start()
 
@@ -54,12 +58,12 @@ class AbstractInteractionMode(AbstractAssistantChild):
 
         return response
 
-    def get_output_parser(self, prompt_section: UserPromptSection) -> Optional[BaseOutputParser]:
+    def get_output_parser(
+        self, prompt_section: UserPromptSection
+    ) -> Optional[BaseOutputParser]:
         return None
 
     def chain_response_to_string(
-        self,
-        prompt_section: UserPromptSection,
-        chain_response: Any
+        self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:
         return chain_response.content

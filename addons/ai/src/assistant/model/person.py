@@ -37,4 +37,6 @@ class Person(BaseModel):
     social_info: Optional[SocialInfo] = Field(default_factory=SocialInfo)
     family_info: Optional[FamilyInfo] = Field(default_factory=FamilyInfo)
     sexual_info: Optional[SexualInfo] = Field(default_factory=SexualInfo)
-    general_observations: Optional[GeneralObservations] = Field(default_factory=GeneralObservations)
+    general_observations: Optional[GeneralObservations] = Field(
+        default_factory=GeneralObservations
+    )

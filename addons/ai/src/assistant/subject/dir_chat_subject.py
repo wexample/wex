@@ -1,7 +1,6 @@
 import os
-from typing import Optional, List
+from typing import Optional
 
-from addons.ai.src.assistant.interaction_mode.dir_search_interaction_mode import DirSearchInteractionMode
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict

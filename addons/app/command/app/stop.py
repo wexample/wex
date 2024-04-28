@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Callable
+from typing import TYPE_CHECKING, Callable, List
 
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.started import app__app__started
@@ -28,10 +28,7 @@ def app__app__stop(
     name = manager.get_app_name()
 
     def _app__app__stop__checkup() -> bool:
-        if not kernel.run_function(
-            app__app__started,
-            {"app-dir": app_dir}
-        ).first():
+        if not kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
             manager.log("App already stopped")
             return False
 
@@ -41,8 +38,7 @@ def app__app__stop(
 
     def _app__app__stop__stop() -> None:
         kernel.run_function(
-            app__hook__exec,
-            {"app-dir": app_dir, "hook": "app/stop-pre"}
+            app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-pre"}
         )
 
         execute_command_sync(
@@ -54,7 +50,7 @@ def app__app__stop(
                 ["stop"],
             ),
             working_directory=app_dir,
-            interactive=True
+            interactive=True,
         )
 
     def _app__app__stop__rm() -> None:
@@ -67,7 +63,7 @@ def app__app__stop(
                 ["rm", "-f"],
             ),
             working_directory=app_dir,
-            interactive=True
+            interactive=True,
         )
 
     def _app__app__stop__update_hosts() -> None:
@@ -85,8 +81,7 @@ def app__app__stop(
         manager.set_runtime_config("started", False)
 
         kernel.run_function(
-            app__hook__exec,
-            {"app-dir": app_dir, "hook": "app/stop-post"}
+            app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-post"}
         )
 
     steps: List[Callable]

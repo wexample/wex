@@ -1,6 +1,8 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.helper.registry import registry_get_all_commands
@@ -54,7 +56,7 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         self.init_tools()
 

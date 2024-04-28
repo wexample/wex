@@ -1,6 +1,8 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.utils.globals import AI_FUNCTION_DISPLAY_A_CUCUMBER
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
@@ -16,7 +18,7 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         if not prompt_section.prompt:
             return "Please ask some question to help select a function."

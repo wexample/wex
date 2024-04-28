@@ -1,5 +1,5 @@
 import os
-from typing import Optional, List
+from typing import List, Optional
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -27,19 +27,13 @@ class TerminalChatSubject(AbstractChatSubject):
     def process_prompt_section(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection]
+        remaining_sections: List[UserPromptSection],
     ) -> Optional[bool | str]:
         success, response = execute_command_sync(
-            self.kernel,
-            prompt_section.prompt,
-            ignore_error=True,
-            shell=True
+            self.kernel, prompt_section.prompt, ignore_error=True, shell=True
         )
 
         response_str = os.linesep.join(response)
         self.assistant.get_current_session_history().add_message(response_str)
 
-        return ("Running: "
-                + prompt_section.prompt
-                + ":" + os.linesep
-                + response_str)
+        return "Running: " + prompt_section.prompt + ":" + os.linesep + response_str

@@ -94,7 +94,7 @@ def app__app__init(
         for service in services_resolved:
             if (
                 not service
-                    in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
+                in kernel.resolvers[COMMAND_TYPE_SERVICE].get_registry_data()
             ):
                 kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": service})
 

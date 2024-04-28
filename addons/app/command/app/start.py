@@ -1,6 +1,6 @@
 import os.path
 import time
-from typing import TYPE_CHECKING, Optional, List, Callable
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 import click
 
@@ -115,12 +115,13 @@ def app__app__start(
             if (
                 not os.path.exists(proxy_path)
                 or not kernel.run_function(
-                app__app__started,
-                {
-                    "app-dir": proxy_path,
-                    "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-                },
-            ).first()):
+                    app__app__started,
+                    {
+                        "app-dir": proxy_path,
+                        "mode": APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+                    },
+                ).first()
+            ):
                 from addons.app.command.helper.start import app__helper__start
 
                 kernel.run_function(
@@ -137,8 +138,7 @@ def app__app__start(
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
         kernel.run_function(
-            app__hook__exec,
-            {"app-dir": app_dir, "hook": "app/start-pre"}
+            app__hook__exec, {"app-dir": app_dir, "hook": "app/start-pre"}
         )
 
         # Ensure workdir due to lacking management
@@ -197,7 +197,7 @@ def app__app__start(
             for item in value
         ]
 
-    def _app__app__start__starting():
+    def _app__app__start__starting() -> None:
         nonlocal compose_options
 
         execute_command_sync(
@@ -209,7 +209,7 @@ def app__app__start(
                 compose_options,
             ),
             working_directory=app_dir,
-            interactive=True
+            interactive=True,
         )
 
     def _app__app__start__update_hosts() -> None:

@@ -1,5 +1,5 @@
 import html
-from typing import TYPE_CHECKING, Iterable, Dict, Any
+from typing import TYPE_CHECKING, Any, Dict, Iterable
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
@@ -12,7 +12,9 @@ from pygments.lexer import RegexLexer
 from pygments.styles import get_style_by_name
 from pygments.token import Name, Operator
 
-from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.abstract_assistant_child import (
+    AbstractAssistantChild,
+)
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
 from src.helper.html import html_remove_tags
@@ -34,26 +36,31 @@ class AssistantChatCompleter(Completer):
         if word_before_cursor == "":
             return
 
-        parts = word_before_cursor.split(':')
+        parts = word_before_cursor.split(":")
         for command in self.active_commands:
             prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
 
             if parts[0] == prefixed_command:
                 for option in self.active_commands[command]["options"]:
-                    yield Completion(prefixed_command + f":{option} ", start_position=-len(word_before_cursor))
+                    yield Completion(
+                        prefixed_command + f":{option} ",
+                        start_position=-len(word_before_cursor),
+                    )
             elif prefixed_command.startswith(parts[0]):
                 if "options" in self.active_commands[command]:
                     pass
                 else:
                     prefixed_command += " "
 
-                yield Completion(prefixed_command, start_position=-len(word_before_cursor))
+                yield Completion(
+                    prefixed_command, start_position=-len(word_before_cursor)
+                )
 
 
 class PromptManager(AbstractAssistantChild):
     """Class to manage a styled command prompt."""
 
-    def __init__(self, assistant: "Assistant"):
+    def __init__(self, assistant: "Assistant") -> None:
         super().__init__(assistant)
         self.prompt = ""
         self.session = PromptSession()
@@ -76,7 +83,7 @@ class PromptManager(AbstractAssistantChild):
 
         return False
 
-    def setup_key_bindings(self):
+    def setup_key_bindings(self) -> None:
         """Configure key bindings for handling prompt interactions."""
 
         @self.key_bindings.add("escape", "enter")
@@ -98,7 +105,8 @@ class PromptManager(AbstractAssistantChild):
         for command in self.assistant.get_active_commands():
             prompt_chunk = prompt_chunk.replace(
                 f"{AI_COMMAND_PREFIX}{command}",
-                f"<command>{AI_COMMAND_PREFIX}{command}</command>")
+                f"<command>{AI_COMMAND_PREFIX}{command}</command>",
+            )
 
         return self.prompt + prompt_chunk
 
@@ -107,26 +115,22 @@ class PromptManager(AbstractAssistantChild):
         return HTML("<prefix>&gt;&gt;&gt; </prefix>" + self.prompt)
 
     def create_completer(self) -> AssistantChatCompleter:
-        return AssistantChatCompleter(
-            self.assistant.get_active_commands()
-        )
+        return AssistantChatCompleter(self.assistant.get_active_commands())
 
     def open(self) -> str:
         commands_tokens = {
-            'root': [],
-            'option': [
-                (r':([a-zA-Z0-9-_]+)', Operator, '#pop')
-            ]
+            "root": [],
+            "option": [(r":([a-zA-Z0-9-_]+)", Operator, "#pop")],
         }
 
         commands = self.assistant.get_active_commands()
         for command, description in commands.items():
-            commands_tokens['root'].append(
-                (rf'(^|(?<=\s))/\b{command}\b', Name.Builtin, 'option')
+            commands_tokens["root"].append(
+                (rf"(^|(?<=\s))/\b{command}\b", Name.Builtin, "option")
             )
 
         class PromptLexer(RegexLexer):
-            name = 'Prompt Lexer'
+            name = "Prompt Lexer"
             tokens = commands_tokens
 
         if self.assistant.colors_theme:

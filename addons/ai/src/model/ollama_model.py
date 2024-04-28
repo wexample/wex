@@ -1,11 +1,13 @@
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_community.llms import Ollama
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
 from addons.app.command.app.exec import app__app__exec
@@ -20,7 +22,8 @@ class OllamaModel(AbstractModel):
             app__app__exec,
             {
                 "app-dir": self.assistant.helper_app_dir,
-                "command": f"ollama run {self.name}"},
+                "command": f"ollama run {self.name}",
+            },
         )
 
         # Connect Ollama
@@ -37,7 +40,9 @@ class OllamaModel(AbstractModel):
         prompt_section: UserPromptSection,
         functions: List[str | None],
     ) -> Optional[str]:
-        self.kernel.io.warn("Guessing function with tagging chain is not supported yet by OllamaModel")
+        self.kernel.io.warn(
+            "Guessing function with tagging chain is not supported yet by OllamaModel"
+        )
         # Ollama tagging not set up.
         return None
 

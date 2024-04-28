@@ -32,12 +32,15 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
             kernel.get_path("addons") + "app/containers/network/docker-compose.yml"
         )
     else:
-        if (manager.get_config("docker.has_default_network", default=True)
-            or manager.has_main_service() and manager.get_service_config(
-            key="docker.has_default_network",
-            service=manager.get_main_service(),
-            default=True
-        ).get_bool()):
+        if (
+            manager.get_config("docker.has_default_network", default=True)
+            or manager.has_main_service()
+            and manager.get_service_config(
+                key="docker.has_default_network",
+                service=manager.get_main_service(),
+                default=True,
+            ).get_bool()
+        ):
             compose_files.append(
                 kernel.get_path("addons") + "app/containers/default/docker-compose.yml"
             )

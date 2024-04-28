@@ -11,19 +11,17 @@ if TYPE_CHECKING:
 
 @app_command(help="Install the ai service", command_type=COMMAND_TYPE_SERVICE)
 def ai__service__install(
-    manager: "AppAddonManager",
-    app_dir: str,
-    service: str
+    manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     docker_config_path = manager.get_env_dir() + DOCKER_COMPOSE_REL_PATH_BASE
     docker_config = yaml_load(docker_config_path)
 
     key = f"{manager.get_app_name()}_postgres"
-    docker_config["services"][key] = docker_config["services"][key] if key in docker_config["services"] else {}
-    docker_config["services"][key]["ports"] = [
-        f"5{manager.get_config('port.public', 444).get_int()}:5432"]
-
-    yaml_write(
-        docker_config_path,
-        docker_config
+    docker_config["services"][key] = (
+        docker_config["services"][key] if key in docker_config["services"] else {}
     )
+    docker_config["services"][key]["ports"] = [
+        f"5{manager.get_config('port.public', 444).get_int()}:5432"
+    ]
+
+    yaml_write(docker_config_path, docker_config)

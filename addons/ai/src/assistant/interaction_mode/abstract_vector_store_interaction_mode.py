@@ -1,19 +1,20 @@
 from abc import abstractmethod
-from typing import List, cast, Optional, Dict
+from typing import Dict, List, Optional, cast
 from xml.dom.minidom import Document
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader
-from langchain_community.document_loaders import UnstructuredURLLoader
+from langchain_community.document_loaders import TextLoader, UnstructuredURLLoader
 from langchain_community.document_loaders.parsers.language.language_parser import (
     Language,
 )  # type: ignore
 from langchain_core.documents.base import Document
 from langchain_postgres.vectorstores import PGVector
-from unstructured.cleaners.core import remove_punctuation, clean, clean_extra_whitespace
+from unstructured.cleaners.core import clean, clean_extra_whitespace, remove_punctuation
 from yaml import BaseLoader
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
@@ -22,7 +23,7 @@ from src.helper.file import file_get_extension
 
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
-    def __init__(self, subject: "AbstractChatSubject"):
+    def __init__(self, subject: "AbstractChatSubject") -> None:
         super().__init__(subject)
         self.init_vector_store()
 
@@ -30,29 +31,32 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         return self.name()
 
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
-        return ("## CONTEXT:"
-                "\n{context}")
+        return "## CONTEXT:" "\n{context}"
 
     @abstractmethod
-    def get_similarity_search_filter(self, prompt_section: UserPromptSection) -> Dict[str, str]:
+    def get_similarity_search_filter(
+        self, prompt_section: UserPromptSection
+    ) -> Dict[str, str]:
         pass
 
-    def get_interaction_mode_prompt_parameters(self, prompt_section: UserPromptSection) -> Dict[str, str]:
+    def get_interaction_mode_prompt_parameters(
+        self, prompt_section: UserPromptSection
+    ) -> Dict[str, str]:
         results = self.vectorstore.similarity_search_with_relevance_scores(
             prompt_section.prompt,
             k=3,
-            filter=self.get_similarity_search_filter(prompt_section)
+            filter=self.get_similarity_search_filter(prompt_section),
         )
 
         return {
-            "context": "\n\n---\n\n".join(
-                [doc.page_content for doc, _score in results]
-            )
+            "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
         }
 
-    def init_vector_store(self):
+    def init_vector_store(self) -> None:
         self.vectorstore = PGVector(
-            embeddings=self.assistant.get_model(MODEL_NAME_OPEN_AI_GPT_4).create_embeddings(),
+            embeddings=self.assistant.get_model(
+                MODEL_NAME_OPEN_AI_GPT_4
+            ).create_embeddings(),
             collection_name=self.get_vector_store_collection_name(),
             connection=self.assistant.db_engine,
             use_jsonb=True,
@@ -85,7 +89,9 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             from langchain_community.document_loaders import JSONLoader
 
             if json_load_if_valid(file_path):
-                return JSONLoader(file_path=file_path, jq_schema=".", text_content=False)
+                return JSONLoader(
+                    file_path=file_path, jq_schema=".", text_content=False
+                )
             return TextLoader(file_path)
         elif extension == "pdf":
             self.assistant.log(f"Loader : PDF")
@@ -105,10 +111,13 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
                 self.assistant.log(f"Loader : {language}")
 
-                return cast(BaseLoader, GenericLoader.from_filesystem(
-                    file_path,
-                    parser=LanguageParser(language=language, parser_threshold=1000),
-                ))
+                return cast(
+                    BaseLoader,
+                    GenericLoader.from_filesystem(
+                        file_path,
+                        parser=LanguageParser(language=language, parser_threshold=1000),
+                    ),
+                )
 
             self.assistant.log("Loader : default")
 
@@ -158,9 +167,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             return RecursiveCharacterTextSplitter()
 
     def vector_create_file_chunks(
-        self,
-        file_path: str,
-        file_signature: str
+        self, file_path: str, file_signature: str
     ) -> List[Document]:
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
@@ -186,9 +193,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         if len(chunks) == 0:
             return None
 
-        self.vectorstore.add_documents(
-            chunks
-        )
+        self.vectorstore.add_documents(chunks)
 
         self.assistant.log("Document stored successfully")
 
@@ -198,17 +203,15 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         loader = UnstructuredURLLoader(
             urls=[url],
             mode="elements",
-            post_processors=[clean, remove_punctuation, clean_extra_whitespace])
+            post_processors=[clean, remove_punctuation, clean_extra_whitespace],
+        )
 
         elements = loader.load()
-        selected_elements = [e for e in elements if e.metadata['category'] == "NarrativeText"]
+        selected_elements = [
+            e for e in elements if e.metadata["category"] == "NarrativeText"
+        ]
         full_clean = " ".join([e.page_content for e in selected_elements])
 
         self.vectorstore.add_documents(
-            [
-                Document(
-                    page_content=full_clean,
-                    metadata={"signature": signature}
-                )
-            ]
+            [Document(page_content=full_clean, metadata={"signature": signature})]
         )

@@ -10,8 +10,8 @@ from addons.app.helper.docker import (
     docker_exec_app_compose,
     docker_get_app_compose_files,
 )
-from src.helper.prompt import prompt_progress_steps
 from src.decorator.option import option
+from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
