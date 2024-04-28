@@ -25,6 +25,13 @@ if TYPE_CHECKING:
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
 @option(
+    "--follow",
+    "-f",
+    is_flag=True,
+    default=False,
+    help="When specifying single command to test, continue all remaining tests",
+)
+@option(
     "--debug",
     "-d",
     type=bool,
@@ -34,7 +41,10 @@ if TYPE_CHECKING:
     help="Single command to test",
 )
 def core__test__run(
-    kernel: "Kernel", command: Optional[str] = None, debug: bool = False
+    kernel: "Kernel",
+    command: Optional[str] = None,
+    follow: bool = False,
+    debug: bool = False,
 ) -> None:
     def _remote_compose(command_part: StringsList) -> None:
         test_env = _app__env__get(
@@ -106,7 +116,7 @@ def core__test__run(
                 preview_previous = preview
                 time.sleep(1)
 
-    def _stop_remote():
+    def _stop_remote() -> None:
         _remote_compose(
             [
                 "down",
@@ -117,6 +127,7 @@ def core__test__run(
         kernel.run_function(core__test__cleanup)
 
     def _run_tests() -> None:
+        nonlocal command
         kernel.io.log("Starting test suite..")
 
         loader = unittest.TestLoader()
@@ -138,13 +149,13 @@ def core__test__run(
                     "test" in command_data
                     and command_data["test"]
                     and (
-                    (not command)
-                    or command_name == command
-                    or (
-                        command.endswith("*")
-                        and command_name.startswith(command[:-1])
+                        (not command)
+                        or command_name == command
+                        or (
+                            command.endswith("*")
+                            and command_name.startswith(command[:-1])
+                        )
                     )
-                )
                 ):
                     kernel.io.log(f"Found test for command: {command_name}")
 
@@ -153,6 +164,10 @@ def core__test__run(
                     )
 
                     suite.addTests(loader.loadTestsFromModule(cast(Any, module)))
+
+                    # Next found commands will be added.
+                    if follow:
+                        command = None
 
         result = unittest.TextTestRunner(failfast=True).run(suite)
 
