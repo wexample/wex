@@ -117,7 +117,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         )
 
         self.assertEqual(
-            response.first().split("\n")[1],
+            response.first(),
             unique_value,
             "The value in the local database hase been transferred and mounted in remote database",
         )

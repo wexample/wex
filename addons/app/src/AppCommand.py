@@ -11,7 +11,6 @@ from src.const.types import (
     YamlCommandScript,
 )
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.command import command_escape
 from src.helper.string import string_replace_multiple
 
 if TYPE_CHECKING:
@@ -81,27 +80,19 @@ class AppCommand(ScriptCommand):
             command = super().run_script(runner, script, variables)
 
             if "container_name" in script and isinstance(script["container_name"], str):
-                from src.helper.command import command_to_string
-
                 if "directory" in script:
                     command = cast(
                         StringsList, ["cd", script["directory"], "&&"] + command
                     )
 
-                command_string = command_to_string(command)
-                command_string = command_escape(command_string)
-
                 wrap_command = [
                     "docker",
                     "exec",
                     docker_build_long_container_name(kernel, script["container_name"]),
-                    manager.get_service_shell(),
-                    "-c",
-                    command_string,
-                ]
+                ] + command
 
                 return wrap_command
         else:
-            command = super().run_script(runner, script, variables)
+            return super().run_script(runner, script, variables)
 
         return command
