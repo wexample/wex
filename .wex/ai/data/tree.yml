@@ -150,7 +150,7 @@ children:
                             type: file
                           response.patch:
                             type: file
-                          source.py:
+                          source.txt:
                             type: file
                         type: dir
                     type: dir
@@ -164,6 +164,18 @@ children:
                             type: file
                         type: dir
                     type: dir
+                  json:
+                    children:
+                      add_item:
+                        children:
+                          question.txt:
+                            type: file
+                          response.patch:
+                            type: file
+                          source.txt:
+                            type: file
+                        type: dir
+                    type: dir
                   patch:
                     children:
                       hello_world_capitalized:
@@ -172,15 +184,32 @@ children:
                             type: file
                           response.patch:
                             type: file
-                          source.py:
+                          source.txt:
                             type: file
                         type: dir
                     type: dir
                 type: dir
+              languages.json:
+                type: file
+              personalities:
+                children:
+                  cantankerous.yml:
+                    type: file
+                  default.yml:
+                    type: file
+                  furious.yml:
+                    type: file
+                  gentle.yml:
+                    type: file
+                  joyful.yml:
+                    type: file
+                  skeptical.yml:
+                    type: file
+                  sultry.yml:
+                    type: file
+                type: dir
               prompts:
                 children:
-                  git_patch_generator.txt:
-                    type: file
                   program_file_structure.txt:
                     type: file
                   program_full_code.txt:
@@ -197,6 +226,14 @@ children:
             children:
               ai:
                 children:
+                  command:
+                    children:
+                      service:
+                        children:
+                          install.py:
+                            type: file
+                        type: dir
+                    type: dir
                   docker:
                     children:
                       docker-compose.yml:
@@ -221,22 +258,80 @@ children:
             children:
               assistant:
                 children:
-                  app_assistant.py:
-                    type: file
                   assistant.py:
+                    type: file
+                  interaction_mode:
+                    children:
+                      abstract_interaction_mode.py:
+                        type: file
+                      abstract_vector_store_interaction_mode.py:
+                        type: file
+                      default_interaction_mode.py:
+                        type: file
+                      dir_search_interaction_mode.py:
+                        type: file
+                      file_patch_interaction_mode.py:
+                        type: file
+                      file_search_interaction_mode.py:
+                        type: file
+                      formated_data_interaction_mode.py:
+                        type: file
+                      function_picker_interaction_mode.py:
+                        type: file
+                      investigation_interaction_mode.py:
+                        type: file
+                      tool_picker_interaction_mode.py:
+                        type: file
+                      url_search_interaction_mode.py:
+                        type: file
+                      vetting_interaction_mode.py:
+                        type: file
+                    type: dir
+                  model:
+                    children:
+                      person.py:
+                        type: file
+                      reliable_value.py:
+                        type: file
+                    type: dir
+                  prompt_manager.py:
                     type: file
                   subject:
                     children:
                       abstract_chat_subject.py:
                         type: file
+                      agent_chat_subject.py:
+                        type: file
                       default_chat_subject.py:
                         type: file
+                      dir_chat_subject.py:
+                        type: file
                       file_chat_subject.py:
+                        type: file
+                      function_chat_subject.py:
+                        type: file
+                      help_chat_subject.py:
+                        type: file
+                      people_chat_subject.py:
+                        type: file
+                      previous_response_subject.py:
+                        type: file
+                      remote_url_subject.py:
+                        type: file
+                      terminal_chat_subject.py:
                         type: file
                     type: dir
                   utils:
                     children:
-                      identities.py:
+                      abstract_assistant_child.py:
+                        type: file
+                      globals.py:
+                        type: file
+                      history_item.py:
+                        type: file
+                      prompt_pygment_style.py:
+                        type: file
+                      user_prompt_section.py:
                         type: file
                     type: dir
                 type: dir
@@ -273,6 +368,20 @@ children:
                       about_file.py:
                         type: file
                       ask.py:
+                        type: file
+                    type: dir
+                type: dir
+              resources:
+                children:
+                  patches:
+                    children:
+                      package-random-three.patch:
+                        type: file
+                      package-random-two.patch:
+                        type: file
+                      package-random.patch:
+                        type: file
+                      target-package.json:
                         type: file
                     type: dir
                 type: dir
@@ -2636,6 +2745,8 @@ children:
                     type: file
                 type: dir
             type: dir
+          spinner.py:
+            type: file
         type: dir
       decorator:
         children:
@@ -2676,7 +2787,11 @@ children:
             type: file
           file.py:
             type: file
+          html.py:
+            type: file
           module.py:
+            type: file
+          package.py:
             type: file
           patch.py:
             type: file
@@ -2726,6 +2841,8 @@ children:
   tests:
     children:
       AbstractTestCase.py:
+        type: file
+      __init__.py:
         type: file
       resources:
         children:
