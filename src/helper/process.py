@@ -70,9 +70,13 @@ def process_kill_by_command(kernel: "Kernel", command: str) -> None:
                 kernel.io.log(f"Killing process {pid}, running command : {command}")
                 os.kill(pid, signal.SIGTERM)
             except ValueError:
-                kernel.io.warn(f"Tried to kill an invalid PID: {pid}, running command : {command}")
+                kernel.io.warn(
+                    f"Tried to kill an invalid PID: {pid}, running command : {command}"
+                )
             except ProcessLookupError:
-                kernel.io.warn(f"Tried to kill a missing PID: {pid}, running command : {command}")
+                kernel.io.warn(
+                    f"Tried to kill a missing PID: {pid}, running command : {command}"
+                )
 
 
 def process_kill(process: psutil.Process) -> bool:

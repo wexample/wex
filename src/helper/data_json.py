@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Union, List, Dict
+from typing import Any, Dict, List, Union
 
 
 def json_parse_if_valid(json_data: str) -> Any | bool:

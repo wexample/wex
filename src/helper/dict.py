@@ -13,7 +13,11 @@ def dict_merge(*dicts):
     result = {}
     for dictionary in dicts:
         for key, value in dictionary.items():
-            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            if (
+                key in result
+                and isinstance(result[key], dict)
+                and isinstance(value, dict)
+            ):
                 result[key] = dict_merge(result[key], value)  # Recursively merge dicts
             else:
                 result[key] = copy.deepcopy(value)

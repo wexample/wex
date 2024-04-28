@@ -8,8 +8,9 @@ from src.const.globals import (
     COLOR_GREEN,
     COLOR_RED,
     COLOR_RESET,
+    COLOR_YELLOW,
     COMMAND_TYPE_ADDON,
-    VERBOSITY_LEVEL_DEFAULT, COLOR_YELLOW,
+    VERBOSITY_LEVEL_DEFAULT,
 )
 from src.const.types import (
     AnyCallable,
@@ -18,8 +19,8 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.core.KernelChild import KernelChild
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.KernelChild import KernelChild
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
 if TYPE_CHECKING:

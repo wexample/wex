@@ -2,10 +2,10 @@ import os
 import random
 import re
 import shutil
-from typing import Mapping, Optional, List
-
 import string
-from src.const.types import BasicInlineValue, StringsDict, StringsMatch, StringsList
+from typing import List, Mapping, Optional
+
+from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch
 
 
 def string_to_snake_case(text: str) -> str:
@@ -50,7 +50,7 @@ def string_format_ignore_missing(
 def string_truncate(text: str, max_width: int, indent: int = 0) -> str:
     lines = []
     for i in range(0, len(text), max_width):
-        lines.append((" " * indent) + text[i: i + max_width])
+        lines.append((" " * indent) + text[i : i + max_width])
     return os.linesep.join(lines)
 
 
@@ -61,7 +61,7 @@ def string_multiline_center(text: str, width: int) -> str:
 
 def string_trim_leading(text: str, leading_text: str) -> str:
     if text.startswith(leading_text):
-        return text[len(leading_text):]
+        return text[len(leading_text) :]
     else:
         return text
 

@@ -4,13 +4,13 @@ import os
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, cast
 
 import click
+from click._termui_impl import ProgressBar, V
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
-from click._termui_impl import ProgressBar, V
 
 from src.const.types import StringsDict
-from src.helper.dict import dict_sort_values, dict_merge
+from src.helper.dict import dict_merge, dict_sort_values
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -124,14 +124,11 @@ def prompt_pick_a_dir(base_dir: Optional[str] = None) -> Optional[str]:
     # Sort directory choices. This function should be defined elsewhere.
     choices_dirs = dict_sort_values(choices_dirs)
 
-    choices_dirs.update({
-        base_dir: "> Select this directory"
-    })
+    choices_dirs.update({base_dir: "> Select this directory"})
 
     # Present choices and prompt the user to pick a directory or select the current one.
     selected = prompt_choice_dict(
-        "Select a directory or choose the current one:",
-        choices_dirs
+        "Select a directory or choose the current one:", choices_dirs
     )
 
     if selected:

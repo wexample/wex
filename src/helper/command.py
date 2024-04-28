@@ -3,11 +3,10 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast, Union
+from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, Union, cast
 
 import click.core
 
-from src.helper.user import get_user_or_sudo_user
 from src.const.globals import (
     VERBOSITY_LEVEL_MAXIMUM,
     VERBOSITY_LEVEL_MEDIUM,
@@ -18,9 +17,10 @@ from src.const.types import (
     ShellCommandsDeepList,
     ShellCommandsList,
 )
-from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
+from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -94,7 +94,7 @@ def execute_command_tree_sync(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i: i + 1] = output
+                    command_tree[i : i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -148,7 +148,7 @@ def execute_command_sync(
     ignore_error: bool = False,
     interactive: bool = False,
     as_sudo_user: bool = True,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     if working_directory is None:
         working_directory = os.getcwd()
@@ -163,16 +163,30 @@ def execute_command_sync(
 
     if interactive:
         try:
-            result = subprocess.run(command, cwd=working_directory, text=True, capture_output=True, check=not ignore_error)
+            result = subprocess.run(
+                command,
+                cwd=working_directory,
+                text=True,
+                capture_output=True,
+                check=not ignore_error,
+            )
             output_lines = result.stdout.splitlines() if result.stdout else []
             error_lines = result.stderr.splitlines() if result.stderr else []
 
             if result.returncode != 0 and not ignore_error:
                 # Log error only if ignoring errors is not specified
-                kernel.io.error(f"Error when running command: {command_str}\nStdout:\n{os.linesep.join(output_lines)}\n\nStderr:\n{os.linesep.join(error_lines)}")
+                kernel.io.error(
+                    f"Command response code error: "
+                    f"\n{command_str}"
+                    f"\n\nCommand argument : \n{str(command)}"
+                    f"\n\nStdout:\n{os.linesep.join(output_lines)}\n"
+                    f"\n\nStderr:\n{os.linesep.join(error_lines)}"
+                )
             else:
                 # Log output at maximum verbosity if execution was successful or errors are ignored
-                kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
+                kernel.io.log(
+                    "\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM
+                )
 
             return result.returncode == 0, output_lines
 
@@ -180,7 +194,10 @@ def execute_command_sync(
             # When the command fails, log the error and the captured stderr
             error_lines = e.stderr.splitlines() if e.stderr else []
             kernel.io.error(
-                f"Error when running command: {command_str}\n\n{os.linesep.join(error_lines)}"
+                f"Error when running interactive sync command: "
+                f"\n{command_str}"
+                f"\n\nCommand argument : \n{str(command)}"
+                f"\n\n{os.linesep.join(error_lines)}"
             )
             return False, error_lines
 
@@ -200,7 +217,9 @@ def execute_command_sync(
 
         if not success and not ignore_error:
             kernel.io.error(
-                f"Error when running command: {command_str}"
+                f"Error when running sync command: "
+                f"\n{command_str}"
+                f"\n\nCommand argument : \n{str(command)}"
                 + os.linesep
                 + os.linesep
                 + out_content_decoded

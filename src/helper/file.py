@@ -385,7 +385,7 @@ def file_is_utf8_encoding(file_path) -> bool:
         bool: True if the file is UTF-8 encoded, False otherwise.
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             file.read()  # Try to read the whole file with UTF-8 encoding
         return True
     except UnicodeDecodeError:
