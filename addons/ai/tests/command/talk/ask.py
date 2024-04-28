@@ -12,9 +12,11 @@ from addons.ai.src.assistant.assistant import (
     ASSISTANT_DEFAULT_COMMANDS,
     Assistant,
 )
+from addons.ai.src.assistant.interaction_mode.file_search_interaction_mode import (
+    FileSearchInteractionMode,
+)
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
-from addons.ai.src.assistant.interaction_mode.file_search_interaction_mode import FileSearchInteractionMode
 from src.const.types import StringKeysDict
 from src.helper.file import file_read, file_write
 from src.helper.package import package_enable_logging
@@ -103,14 +105,15 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
         assistant.set_subject(FileChatSubject.name())
         subject = assistant.get_current_subject()
-        interaction_mode = cast(FileSearchInteractionMode, subject.get_interaction_mode()(subject))
+        interaction_mode = cast(
+            FileSearchInteractionMode, subject.get_interaction_mode()(subject)
+        )
 
         for ext in test_ext:
             sample_path = self.build_test_samples_path() + ext + "/simple." + ext
 
             chunks = interaction_mode.vector_create_file_chunks(
-                file_path=sample_path,
-                file_signature=f"test-{ext}"
+                file_path=sample_path, file_signature=f"test-{ext}"
             )
 
             self.assertTrue(len(chunks) > 0)

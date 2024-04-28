@@ -25,6 +25,8 @@ def ai__service__install(
     ]
 
     # Override postgres with pgvector image.
-    docker_config["services"][key]["image"] = "gitlab-docker.wexample.com/wexample-public/docker/pgvector:latest"
+    docker_config["services"][key][
+        "image"
+    ] = "gitlab-docker.wexample.com/wexample-public/docker/pgvector:latest"
 
     yaml_write(docker_config_path, docker_config)
