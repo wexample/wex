@@ -41,7 +41,7 @@ def test__demo_command__response_collection_three(
             _test__demo_command__response_collection_three_one,
             TEST_DEMO_COMMAND_THREE_RESULT_ONE,
             InteractiveShellCommandResponse(
-                kernel, ["echo", f'"{TEST_DEMO_COMMAND_THREE_RESULT_SHELL}"']
+                kernel, ["echo", f"{TEST_DEMO_COMMAND_THREE_RESULT_SHELL}"]
             ),
         ],
     )

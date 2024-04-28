@@ -65,7 +65,7 @@ def test__demo_command__response_collection_two(
             f"{TEST_DEMO_COMMAND_TWO_RESULT_FIRST}(2)",
             _test__demo_command__response_collection_two__simple_function,
             InteractiveShellCommandResponse(
-                kernel, ["echo", f'"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"']
+                kernel, ["echo", f"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"]
             ),
             _test__demo_command__response_collection_two__another_simple_function,
             _test__demo_command__response_collection_two__run_another_collection,

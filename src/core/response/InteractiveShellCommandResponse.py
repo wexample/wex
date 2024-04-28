@@ -22,12 +22,14 @@ class InteractiveShellCommandResponse(AbstractResponse):
         kernel: "Kernel",
         shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
+        as_sudo_user: bool = True,
         workdir: Optional[str] = None,
     ) -> None:
         super().__init__(kernel)
 
         self.shell_command = cast(ShellCommandsDeepList, shell_command.copy())
         self.interactive_data = True
+        self.as_sudo_user = as_sudo_user
         self.ignore_error = ignore_error
         self.workdir = workdir
         self.success = None
@@ -43,7 +45,8 @@ class InteractiveShellCommandResponse(AbstractResponse):
             command_tree=self.shell_command,
             working_directory=self.workdir,
             ignore_error=self.ignore_error,
-            interactive=True
+            as_sudo_user=self.as_sudo_user,
+            interactive=True,
         )
 
         self.success = success

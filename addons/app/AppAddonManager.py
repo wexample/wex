@@ -31,8 +31,9 @@ from src.const.globals import (
     CORE_COMMAND_NAME,
     DATE_FORMAT_SECOND,
     SHELL_DEFAULT,
+    VERBOSITY_LEVEL_DEFAULT,
     VERBOSITY_LEVEL_MEDIUM,
-    VERSION_DEFAULT, VERBOSITY_LEVEL_DEFAULT,
+    VERSION_DEFAULT,
 )
 from src.const.types import (
     AnyAppConfig,
@@ -122,8 +123,8 @@ class AppAddonManager(AddonManager):
         return (
             os.sep
             + os.path.join(
-            "var", "www", environment or self.kernel.registry_structure.content.env
-        )
+                "var", "www", environment or self.kernel.registry_structure.content.env
+            )
             + os.sep
         )
 
@@ -403,7 +404,7 @@ class AppAddonManager(AddonManager):
         message: str,
         color: str = COLOR_GRAY,
         indent: int = 0,
-        verbosity: int = VERBOSITY_LEVEL_DEFAULT
+        verbosity: int = VERBOSITY_LEVEL_DEFAULT,
     ) -> None:
         if self.app_dir:
             if self.first_log_indent is None:
@@ -412,12 +413,7 @@ class AppAddonManager(AddonManager):
             if self.kernel.io.log_indent == self.first_log_indent:
                 message = f"[{self.get_app_name()}] {message}"
 
-        self.kernel.io.log(
-            message,
-            color,
-            indent,
-            verbosity
-        )
+        self.kernel.io.log(message, color, indent, verbosity)
 
     def has_config(
         self, key: str, with_type: Optional[type] = None, accept_none: bool = False

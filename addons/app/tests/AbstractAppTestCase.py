@@ -1,5 +1,4 @@
 import os.path
-import re
 import shutil
 from typing import Optional, cast
 
@@ -20,9 +19,6 @@ from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
 from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 

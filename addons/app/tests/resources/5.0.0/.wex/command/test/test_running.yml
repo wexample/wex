@@ -13,18 +13,25 @@ options:
 scripts:
   - title: Test outside but with running app
     app_should_run: true
+    interpreter: ['/bin/bash', '-c']
     script: echo "BASH_RESPONSE_RUNNING"
 
   - title: Test inside container
     context: container
     container_name: php
-    script: ls -la /var/tmp/ && echo "TEST_EXECUTION_ORDER" > /var/tmp/test-file-two
+    script: ls -la /var/tmp/
 
-  - title: Test removing previously created file
+  - title: Test echo inside container
+    context: container
+    container_name: php
+    script: echo "TEST_EXECUTION_ORDER" > /var/tmp/test-file-two
+
+  - title: Test previously created file
     context: container
     container_name: php
     script: cat /var/tmp/test-file-two
 
   - title: Print test argument
     app_should_run: true
+    interpreter: ['/bin/bash', '-c']
     script: echo "$TEST_ARG"

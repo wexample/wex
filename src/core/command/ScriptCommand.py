@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 
 import click
 
+from src.const.globals import SHELL_DEFAULT
 from src.const.types import (
     AnyCallable,
     Args,
@@ -139,13 +140,11 @@ class ScriptCommand(BaseClass):
         from src.helper.string import string_replace_multiple
 
         if "script" in script:
-            from src.helper.command import command_escape
-
             script_string: str = str(script["script"])
             script_string = string_replace_multiple(script_string, variables)
 
-            if "interpreter" in script:
-                script_string = command_escape(script_string)
+            if "interpreter" not in script:
+                script["interpreter"] = [SHELL_DEFAULT, "-c"]
         elif "file" in script:
             script_string = string_replace_multiple(script["file"], variables)
 

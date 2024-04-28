@@ -92,10 +92,8 @@ class TestAppCommandWebhookExec(AbstractWebhookTestCase):
         lines = data["value"]
 
         self.assertEqual(lines[0][0][0], "BASH_RESPONSE_RUNNING")
-
         self.assertTrue(" test-file" in lines[0][1][0])
-
-        self.assertEqual(lines[0][2][0], "TEST_EXECUTION_ORDER")
-        self.assertEqual(lines[0][3][0], test_arg)
+        self.assertEqual(lines[0][3][0], "TEST_EXECUTION_ORDER")
+        self.assertEqual(lines[0][4][0], test_arg)
 
         self.stop_test_app(app_dir)

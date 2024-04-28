@@ -132,6 +132,7 @@ class YamlCommandScript(TypedDict):
     script: Optional[str]
     title: str
     type: str
+    variable: str
 
 
 class YamlCommandOption(TypedDict):

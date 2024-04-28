@@ -157,8 +157,18 @@ class YamlCommandRunner(AbstractCommandRunner):
                         self, script_config, variables
                     )
 
+                storage_variable = None
+                if "variable" in script_config:
+                    storage_variable = script_config["variable"]
+
                 response: AbstractResponse
-                response = InteractiveShellCommandResponse(self.kernel, command_list)
+
+                response = InteractiveShellCommandResponse(
+                    self.kernel, command_list, as_sudo_user=False
+                )
+
+                if storage_variable:
+                    variables[storage_variable] = response
 
                 commands_collection.append(response)
 
