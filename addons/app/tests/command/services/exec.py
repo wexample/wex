@@ -1,5 +1,6 @@
 from addons.app.command.services.exec import app__services__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
+from src.const.globals import COMMAND_CHAR_SERVICE
 
 
 class TestAppCommandServicesExec(AbstractAppTestCase):
@@ -11,4 +12,4 @@ class TestAppCommandServicesExec(AbstractAppTestCase):
         )
 
         # The command does not exist
-        self.assertEqual(response.first()["php"].print(), None)
+        self.assertEqual(response.first()[f"{COMMAND_CHAR_SERVICE}php"].print(), None)
