@@ -18,5 +18,6 @@ class InvestigationInteractionMode(DefaultInteractionMode):
             "Save as much text as possible so that the discussion can be reread quickly, "
             "no unnecessary introductions or explanations. "
             "The user will provide what they find, "
+            "Never use any kind of ordered or unordered lists. "
             "and then you will ask the next question based on that result."
         )

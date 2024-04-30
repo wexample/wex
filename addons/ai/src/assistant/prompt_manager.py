@@ -41,11 +41,12 @@ class AssistantChatCompleter(Completer):
             prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
 
             if parts[0] == prefixed_command:
-                for option in self.active_commands[command]["options"]:
-                    yield Completion(
-                        prefixed_command + f":{option} ",
-                        start_position=-len(word_before_cursor),
-                    )
+                if isinstance(self.active_commands[command], dict):
+                    for option in self.active_commands[command]["options"]:
+                        yield Completion(
+                            prefixed_command + f":{option} ",
+                            start_position=-len(word_before_cursor),
+                        )
             elif prefixed_command.startswith(parts[0]):
                 if "options" in self.active_commands[command]:
                     pass
