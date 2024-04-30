@@ -72,6 +72,7 @@ class Assistant(KernelChild):
         self.user_id: int = 1
         self.conversation_id: int = 1
         self.subject: Optional[AbstractChatSubject] = None
+        self.last_prompt_sections = None
 
         prompt_progress_steps(
             kernel,
@@ -431,6 +432,8 @@ class Assistant(KernelChild):
 
                     if isinstance(result, str):
                         self.print_ai(result)
+
+                self.last_prompt_sections = prompt_sections
             except KeyboardInterrupt:
                 # User asked to quit
                 if not self.spinner.running:

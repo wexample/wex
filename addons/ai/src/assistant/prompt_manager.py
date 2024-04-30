@@ -41,7 +41,8 @@ class AssistantChatCompleter(Completer):
             prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
 
             if parts[0] == prefixed_command:
-                if isinstance(self.active_commands[command], dict):
+                if (isinstance(self.active_commands[command], dict)
+                    and "options" in self.active_commands[command]):
                     for option in self.active_commands[command]["options"]:
                         yield Completion(
                             prefixed_command + f":{option} ",
@@ -139,9 +140,23 @@ class PromptManager(AbstractAssistantChild):
         else:
             style = PromptPygmentStyle
 
+        initial_message = ""
+        if self.assistant.last_prompt_sections:
+            last_section = self.assistant.last_prompt_sections[-1]
+            last_command_key = last_section.command
+            last_command = commands[last_command_key]
+            if isinstance(last_command, dict) and "sticky" in last_command and last_command["sticky"]:
+                initial_message = AI_COMMAND_PREFIX + last_command_key
+
+                if len(last_section.options):
+                    initial_message += ":" + (":".join(last_section.options))
+
+                initial_message += " "
+
         """Start the prompt session."""
         self.session.prompt(
-            self.get_prompt,
+            message=self.get_prompt,
+            default=initial_message,
             completer=self.create_completer(),
             style=style_from_pygments_cls(style),
             key_bindings=self.key_bindings,
