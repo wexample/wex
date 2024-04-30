@@ -12,8 +12,10 @@ from addons.ai.src.assistant.interaction_mode.investigation_interaction_mode imp
 )
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.assistant.interaction_mode.chat_interaction_mode import ChatInteractionMode
 from src.const.types import StringKeysDict
 
+SUBJECT_DEFAULT_COMMAND_CHAT = "chat"
 SUBJECT_DEFAULT_COMMAND_DEFAULT = "default"
 SUBJECT_DEFAULT_COMMAND_INVESTIGATE = "investigate"
 SUBJECT_DEFAULT_COMMAND_FORMAT = "format"
@@ -29,6 +31,7 @@ class DefaultChatSubject(AbstractChatSubject):
 
     def get_commands(self) -> StringKeysDict:
         commands = {
+            SUBJECT_DEFAULT_COMMAND_CHAT: "Short chat responses",
             SUBJECT_DEFAULT_COMMAND_DEFAULT: "Free talk",
             SUBJECT_DEFAULT_COMMAND_FORMAT: {
                 "description": f"Return formated response",
@@ -45,7 +48,9 @@ class DefaultChatSubject(AbstractChatSubject):
         self, prompt_section: Optional[UserPromptSection] = None
     ) -> Optional[type]:
         if prompt_section:
-            if prompt_section.command == SUBJECT_DEFAULT_COMMAND_INVESTIGATE:
+            if prompt_section.command == SUBJECT_DEFAULT_COMMAND_CHAT:
+                return ChatInteractionMode
+            elif prompt_section.command == SUBJECT_DEFAULT_COMMAND_INVESTIGATE:
                 return InvestigationInteractionMode
             elif prompt_section.command == SUBJECT_DEFAULT_COMMAND_FORMAT:
                 return FormatedDataInteractionMode
