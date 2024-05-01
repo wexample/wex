@@ -144,14 +144,16 @@ class PromptManager(AbstractAssistantChild):
         if self.assistant.last_prompt_sections:
             last_section = self.assistant.last_prompt_sections[-1]
             last_command_key = last_section.command
-            last_command = commands[last_command_key]
-            if isinstance(last_command, dict) and "sticky" in last_command and last_command["sticky"]:
-                initial_message = AI_COMMAND_PREFIX + last_command_key
 
-                if len(last_section.options):
-                    initial_message += ":" + (":".join(last_section.options))
+            if last_section.command:
+                last_command = commands[last_command_key]
+                if isinstance(last_command, dict) and "sticky" in last_command and last_command["sticky"]:
+                    initial_message = AI_COMMAND_PREFIX + last_command_key
 
-                initial_message += " "
+                    if len(last_section.options):
+                        initial_message += ":" + (":".join(last_section.options))
+
+                    initial_message += " "
 
         """Start the prompt session."""
         self.session.prompt(
