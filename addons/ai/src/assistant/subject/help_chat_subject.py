@@ -47,7 +47,7 @@ class HelpChatSubject(AbstractChatSubject):
             if "options" in info:
                 for option in info["options"]:
                     self.assistant.log(
-                        "".rjust(longest_command_length) + f"      :{option}"
+                        f"    :{option}"
                     )
 
         self.assistant.log(f"Press Alt+Enter to add a new line")
