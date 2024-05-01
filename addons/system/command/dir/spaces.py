@@ -10,7 +10,6 @@ from src.helper.file import file_get_human_readable_size
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
 
-
 @ai_tool()
 @command(help="Return sizes of current directory subdirectories")
 @option("--dir", "-d", type=str, required=False, help="Directory to inspect")
@@ -23,7 +22,7 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
         for dirpath, dirnames, filenames in os.walk(directory):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
-                if os.path.isfile(fp):
+                if os.path.isfile(fp) and not os.path.islink(fp):
                     try:
                         total_size += os.path.getsize(fp)
                     except OSError:
@@ -51,7 +50,7 @@ def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableRes
         size = None
         if os.path.isdir(entry):
             size = get_dir_size(entry)
-        elif os.path.isfile(entry):
+        elif os.path.isfile(entry) and not os.path.islink(entry):
             size = os.path.getsize(entry)
 
         if size is not None:
