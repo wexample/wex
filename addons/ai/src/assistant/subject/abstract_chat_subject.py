@@ -34,42 +34,6 @@ class AbstractChatSubject(AbstractAssistantChild):
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
 
-    def use_as_current_subject(self, prompt_section: UserPromptSection) -> bool:
-        if not self.is_current_subject():
-            # But command match with allowed ones, or this is a fallback.
-            if (
-                prompt_section.command and prompt_section.command in self.get_commands()
-            ) or self.is_fallback_subject():
-                # So this is the new subject.
-                self.assistant.set_subject(self.name())
-            else:
-                return False
-        return True
-
-    def is_fallback_subject(self) -> bool:
-        """
-        Ask to execute subject, even no command explicitly prompted by the user.
-        :return:
-        """
-        return False
-
     def get_prompt_parameters(self) -> Dict:
         return {}
 
-    def process_prompt_section(
-        self,
-        prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
-    ) -> Optional[bool | str]:
-        # Set default
-        mode = self.get_interaction_mode(prompt_section)
-        interaction_mode: AbstractInteractionMode = mode(self)
-
-        # By default interaction mode is required.
-        if not interaction_mode:
-            self.assistant.log(
-                f"No interaction mode defined for subject : {self.name()}"
-            )
-            return False
-
-        return interaction_mode.process_user_input(prompt_section, remaining_sections)
