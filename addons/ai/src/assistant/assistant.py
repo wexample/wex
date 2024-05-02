@@ -8,9 +8,11 @@ from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import create_engine
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
+from addons.ai.src.assistant.command.agent_command import AgentCommand
 from addons.ai.src.assistant.command.chat_command import ChatCommand
 from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.command.exit_command import ExitCommand
+from addons.ai.src.assistant.command.format_command import FormatCommand
 from addons.ai.src.assistant.command.help_command import HelpCommand
 from addons.ai.src.assistant.command.menu_command import MenuCommand
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
@@ -39,7 +41,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from addons.ai.src.assistant.command.agent_command import AgentCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -124,6 +125,7 @@ class Assistant(KernelChild):
             ChatCommand,
             DefaultCommand,
             ExitCommand,
+            FormatCommand,
             HelpCommand,
             MenuCommand,
             SubjectCommand,
