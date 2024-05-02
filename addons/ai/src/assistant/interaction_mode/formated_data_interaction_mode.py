@@ -3,11 +3,8 @@ from typing import Any, Optional, TypeVar
 
 from langchain_core.output_parsers import BaseOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Extra
-
-from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import (
-    AbstractInteractionMode,
-)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 
 FORMATED_DATA_FORMAT_COMMA_SEPARATED = "comma-separated"
 FORMATED_DATA_FORMAT_JSON = "json"
