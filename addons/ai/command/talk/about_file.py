@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, cast
 
-from addons.ai.src.assistant.assistant import CHAT_MENU_ACTION_CHAT, Assistant
+from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_CHAT, Assistant
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.const.globals import COMMAND_TYPE_ADDON
@@ -18,4 +18,4 @@ def ai__talk__about_file(kernel: "Kernel", file: str) -> None:
 
     cast(FileChatSubject, assistant.set_subject(FileChatSubject.name()))
 
-    assistant.start(CHAT_MENU_ACTION_CHAT)
+    assistant.start(ASSISTANT_MENU_ACTION_CHAT)

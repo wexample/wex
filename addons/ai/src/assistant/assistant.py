@@ -23,16 +23,13 @@ from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
 from addons.ai.src.assistant.subject.terminal_chat_subject import TerminalChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_COMMAND_PREFIX,
-    ASSISTANT_COMMAND_EXIT,
-    ASSISTANT_COMMAND_MENU,
-    ASSISTANT_DEFAULT_COMMANDS,
-    CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-    CHAT_MENU_ACTION_CHANGE_LANGUAGE,
-    CHAT_MENU_ACTION_CHANGE_PERSONALITY,
-    CHAT_MENU_ACTION_CHAT,
-    CHAT_MENU_ACTION_EXIT,
-    CHAT_MENU_ACTION_THEME,
-    CHAT_MENU_ACTIONS_TRANSLATIONS,
+    ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
+    ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE,
+    ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY,
+    ASSISTANT_MENU_ACTION_CHAT,
+    ASSISTANT_MENU_ACTION_EXIT,
+    ASSISTANT_MENU_ACTION_THEME,
+    ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
 )
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -237,9 +234,9 @@ class Assistant(KernelChild):
             if not menu_action:
                 menu_action = self.show_menu()
 
-            if menu_action == CHAT_MENU_ACTION_CHAT:
+            if menu_action == ASSISTANT_MENU_ACTION_CHAT:
                 menu_action = self.chat()
-            elif menu_action == CHAT_MENU_ACTION_CHANGE_LANGUAGE:
+            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE:
                 self.language = prompt_choice_dict(
                     "Choose a language",
                     self.languages,
@@ -248,7 +245,7 @@ class Assistant(KernelChild):
                 )
 
                 menu_action = None
-            elif menu_action == CHAT_MENU_ACTION_THEME:
+            elif menu_action == ASSISTANT_MENU_ACTION_THEME:
                 from pygments.styles._mapping import STYLES
 
                 choice_dict = {}
@@ -265,7 +262,7 @@ class Assistant(KernelChild):
                 )
 
                 menu_action = None
-            elif menu_action == CHAT_MENU_ACTION_CHANGE_PERSONALITY:
+            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY:
                 choice_dict = {}
                 for key, personality in self.personalities.items():
                     choice_dict[key] = personality["summary"]
@@ -278,7 +275,7 @@ class Assistant(KernelChild):
                 )
 
                 menu_action = None
-            elif menu_action == CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
+            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
                 current_model = self.get_model()
                 models = {}
                 for model in self.models:
@@ -295,7 +292,7 @@ class Assistant(KernelChild):
 
                 self.set_default_model(new_model)
 
-            if menu_action == CHAT_MENU_ACTION_EXIT:
+            if menu_action == ASSISTANT_MENU_ACTION_EXIT:
                 asked_exit = True
 
         self.log(f"{os.linesep}Ciao")
@@ -303,17 +300,17 @@ class Assistant(KernelChild):
     def show_menu(self) -> Optional[str]:
         # List of all possible menu actions
         menu_actions = [
-            CHAT_MENU_ACTION_CHAT,
-            CHAT_MENU_ACTION_THEME,
-            CHAT_MENU_ACTION_CHANGE_LANGUAGE,
-            CHAT_MENU_ACTION_CHANGE_PERSONALITY,
-            CHAT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-            CHAT_MENU_ACTION_EXIT,
+            ASSISTANT_MENU_ACTION_CHAT,
+            ASSISTANT_MENU_ACTION_THEME,
+            ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE,
+            ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY,
+            ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
+            ASSISTANT_MENU_ACTION_EXIT,
         ]
 
         # Initialize choices dictionary using a dictionary comprehension
         choices = {
-            action: CHAT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions
+            action: ASSISTANT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions
         }
 
         # Prompt the user to choose an action
@@ -321,7 +318,7 @@ class Assistant(KernelChild):
             "Menu:",
             choices,
             abort=None,
-            default=CHAT_MENU_ACTION_CHAT,
+            default=ASSISTANT_MENU_ACTION_CHAT,
         )
 
         # Return the chosen action as a string or None if aborted
@@ -437,7 +434,7 @@ class Assistant(KernelChild):
             except KeyboardInterrupt:
                 # User asked to quit
                 if not self.spinner.running:
-                    return CHAT_MENU_ACTION_EXIT
+                    return ASSISTANT_MENU_ACTION_EXIT
                 # User asked to interrupt assistant.
                 else:
                     self.spinner.stop()
