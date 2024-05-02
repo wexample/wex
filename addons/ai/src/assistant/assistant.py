@@ -42,6 +42,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
+from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -131,6 +132,7 @@ class Assistant(KernelChild):
             InvestigateCommand,
             MenuCommand,
             SubjectCommand,
+            TerminalCommand,
         ]
 
         self.commands: Dict[str, AbstractCommand] = {}

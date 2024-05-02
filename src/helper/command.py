@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, Union, cast, List
 
 import click.core
 
@@ -17,8 +17,8 @@ from src.const.types import (
     ShellCommandsDeepList,
     ShellCommandsList,
 )
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
+from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.file import file_create_parent_dir
 from src.helper.user import get_user_or_sudo_user
 
@@ -94,7 +94,7 @@ def execute_command_tree_sync(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i : i + 1] = output
+                    command_tree[i: i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -154,9 +154,14 @@ def execute_command_sync(
         working_directory = os.getcwd()
 
     if as_sudo_user:
-        command = ["sudo", "-u", get_user_or_sudo_user()] + command
+        command_prefix: Union[List[str], str] = ["sudo", "-u", get_user_or_sudo_user()]
+        if isinstance(command, str):
+            command_prefix = command_to_string(command_prefix) + " "
+
+        command = command_prefix + command
 
     command_str = command_to_string(command)
+
     kernel.io.log(
         f"Running shell command: {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
     )
