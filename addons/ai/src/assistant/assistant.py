@@ -7,20 +7,16 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import create_engine
 
+from addons.ai.src.assistant.command.abstract_command import AbstractCommand
+from addons.ai.src.assistant.command.chat_command import ChatCommand
+from addons.ai.src.assistant.command.default_command import DefaultCommand
+from addons.ai.src.assistant.command.exit_command import ExitCommand
+from addons.ai.src.assistant.command.help_command import HelpCommand
+from addons.ai.src.assistant.command.menu_command import MenuCommand
+from addons.ai.src.assistant.command.subject_command import SubjectCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
-from addons.ai.src.assistant.subject.agent_chat_subject import AgentChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
-from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
-from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-from addons.ai.src.assistant.subject.function_chat_subject import FunctionChatSubject
-from addons.ai.src.assistant.subject.help_chat_subject import HelpChatSubject
-from addons.ai.src.assistant.subject.people_chat_subject import PeopleChatSubject
-from addons.ai.src.assistant.subject.previous_response_subject import (
-    PreviousResponseSubject,
-)
-from addons.ai.src.assistant.subject.remote_url_subject import RemoteUrlSubject
-from addons.ai.src.assistant.subject.terminal_chat_subject import TerminalChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_COMMAND_PREFIX,
     ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
@@ -43,7 +39,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from src.const.types import StringKeysDict
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -56,7 +51,6 @@ if TYPE_CHECKING:
 
 class Assistant(KernelChild):
     language: str
-    subject: AbstractChatSubject
     _default_model: Optional[AbstractModel] = None
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
@@ -124,7 +118,18 @@ class Assistant(KernelChild):
         self.spinner = Spinner()
 
     def _init_commands(self) -> None:
-        self.commands = ASSISTANT_DEFAULT_COMMANDS
+        commands = [
+            ChatCommand,
+            DefaultCommand,
+            ExitCommand,
+            HelpCommand,
+            MenuCommand,
+            SubjectCommand,
+        ]
+
+        self.commands: Dict[str, AbstractCommand] = {}
+        for command_type in commands:
+            self.commands[command_type.name()] = command_type(self)
 
     def _init_locales(self) -> None:
         self.languages = json_load(
@@ -138,16 +143,6 @@ class Assistant(KernelChild):
 
     def _init_subjects(self) -> None:
         subjects = [
-            AgentChatSubject,
-            DirChatSubject,
-            FileChatSubject,
-            HelpChatSubject,
-            FunctionChatSubject,
-            PeopleChatSubject,
-            PreviousResponseSubject,
-            RemoteUrlSubject,
-            TerminalChatSubject,
-            # Should be last, as fallback
             DefaultChatSubject,
         ]
 
@@ -327,8 +322,8 @@ class Assistant(KernelChild):
     def split_prompt_sections(self, user_input: str) -> List[UserPromptSection]:
         user_input = user_input.strip()
         # Special case if user types just "exit" without prefix.
-        if user_input.lower() == "exit":
-            return [UserPromptSection("exit", None)]
+        if user_input.lower() == ExitCommand.name():
+            return [UserPromptSection(self.commands[ExitCommand.name()], None)]
 
         # Split on word to ensure commands is not attached to another word.
         results: List[UserPromptSection] = []
@@ -338,7 +333,7 @@ class Assistant(KernelChild):
         for i, word in enumerate(words):
             if word.startswith(AI_COMMAND_PREFIX):
                 # Split command and options
-                command_parts = word[len(AI_COMMAND_PREFIX) :].split(":")
+                command_parts = word[len(AI_COMMAND_PREFIX):].split(":")
                 command = command_parts[
                     0
                 ].lower()  # First part is the command, normalized
@@ -350,26 +345,26 @@ class Assistant(KernelChild):
                     # Find command input.
                     # Input is considered as the text following the command until the next command or end.
                     command_input = " ".join(
-                        words[i + 1 :]
+                        words[i + 1:]
                     )  # Grab all text after command
                     # If another command is found in the input, cut the input at that point
                     next_command_index = next(
                         (
                             j
-                            for j, w in enumerate(words[i + 1 :], start=i + 1)
+                            for j, w in enumerate(words[i + 1:], start=i + 1)
                             if w.startswith(AI_COMMAND_PREFIX)
                         ),
                         None,
                     )
                     if next_command_index:
-                        command_input = " ".join(words[i + 1 : next_command_index])
+                        command_input = " ".join(words[i + 1: next_command_index])
 
                     if command_input == "":
                         command_input = None
                     else:
                         command_input = html.unescape(command_input)
 
-                    results.append(UserPromptSection(command, command_input, options))
+                    results.append(UserPromptSection(self.commands[command], command_input, options))
 
                     # Break after finding a command to avoid parsing further commands in the same string.
                     # If you need to handle multiple commands in one string, you might need a more complex approach.
@@ -381,11 +376,8 @@ class Assistant(KernelChild):
 
         return results
 
-    def get_active_commands(self) -> StringKeysDict:
+    def get_active_commands(self) -> Dict[str, AbstractCommand]:
         commands = self.commands.copy()
-
-        for subject in self.subjects.values():
-            commands.update(cast(AbstractChatSubject, subject).get_commands())
 
         return commands
 
@@ -393,7 +385,7 @@ class Assistant(KernelChild):
         self,
         initial_prompt: Optional[str] = None,
     ) -> Optional[str]:
-        cast(HelpChatSubject, self.subjects[HelpChatSubject.name()]).show_help()
+        self.commands[HelpCommand.name()].execute()
 
         while True:
             try:
@@ -404,31 +396,27 @@ class Assistant(KernelChild):
                     user_input = self.prompt_manager.open()
 
                 prompt_sections = self.split_prompt_sections(user_input)
-                result: Optional[str | bool] = None
 
                 for index, prompt_section in enumerate(prompt_sections):
-                    command = prompt_section.command
 
-                    if command == ASSISTANT_COMMAND_EXIT:
-                        return CHAT_MENU_ACTION_EXIT
-                    elif command == ASSISTANT_COMMAND_MENU:
-                        return None
+                    if prompt_section.has_command():
+                        command = prompt_section.get_command()
+
+                        if isinstance(command, ExitCommand):
+                            return ASSISTANT_MENU_ACTION_EXIT
+                        elif isinstance(command, MenuCommand):
+                            return None
                     else:
-                        # Loop on subjects until one returns something.
-                        for subject in self.subjects.values():
-                            # Accepts "bool" return to block process without returning message.
-                            if not result and subject.use_as_current_subject(
-                                prompt_section
-                            ):
-                                result = subject.process_prompt_section(
-                                    prompt_section, prompt_sections[index + 1 :]
-                                )
+                        command = self.commands[DefaultCommand.name()]
 
                     self.history.append(HistoryItem(prompt_section.prompt))
-                    self.history.append(HistoryItem(result))
 
-                    if isinstance(result, str):
-                        self.print_ai(result)
+                    result = command.execute(prompt_section, prompt_sections[index + 1:])
+                    result_str = result.render()
+                    self.history.append(HistoryItem(result_str))
+
+                    if isinstance(result_str, str):
+                        self.print_ai(result_str)
 
                 self.last_prompt_sections = prompt_sections
             except KeyboardInterrupt:
@@ -439,8 +427,6 @@ class Assistant(KernelChild):
                 else:
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
-
-            self.set_default_subject()
 
     def print_ai(self, message: str) -> None:
         # Let a new line separator
@@ -456,3 +442,7 @@ class Assistant(KernelChild):
             self.active_memory[(user_id, conversation_id)] = ChatMessageHistory()
 
         return self.active_memory[(user_id, conversation_id)]
+
+    def text_has_a_command(self, text: str) -> bool:
+        sections = self.split_prompt_sections(text)
+        return len(sections) and sections[-1].has_command()

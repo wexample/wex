@@ -1,5 +1,5 @@
 import html
-from typing import TYPE_CHECKING, Any, Dict, Iterable
+from typing import TYPE_CHECKING, Any, Dict, Iterable, cast
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
@@ -17,6 +17,7 @@ from addons.ai.src.assistant.utils.abstract_assistant_child import (
 )
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.helper.html import html_remove_tags
 
 if TYPE_CHECKING:
@@ -37,26 +38,26 @@ class AssistantChatCompleter(Completer):
             return
 
         parts = word_before_cursor.split(":")
-        for command in self.active_commands:
-            prefixed_command = f"{AI_COMMAND_PREFIX}{command}"
+        for command_name, command in self.active_commands.items():
+            prefixed_command = f"{AI_COMMAND_PREFIX}{command_name}"
 
             if parts[0] == prefixed_command:
-                if (isinstance(self.active_commands[command], dict)
-                    and "options" in self.active_commands[command]):
-                    for option in self.active_commands[command]["options"]:
-                        yield Completion(
-                            prefixed_command + f":{option} ",
-                            start_position=-len(word_before_cursor),
-                        )
-            elif prefixed_command.startswith(parts[0]):
-                if "options" in self.active_commands[command]:
-                    pass
-                else:
-                    prefixed_command += " "
+                for option in self.active_commands[command_name].options:
+                    yield Completion(
+                        prefixed_command + f":{option} ",
+                        start_position=-len(word_before_cursor),
+                    )
 
-                yield Completion(
-                    prefixed_command, start_position=-len(word_before_cursor)
-                )
+            elif prefixed_command.startswith(parts[0]):
+                if command.is_active(document.text):
+                    if len(self.active_commands[command_name].options):
+                        pass
+                    else:
+                        prefixed_command += " "
+
+                    yield Completion(
+                        prefixed_command, start_position=-len(word_before_cursor)
+                    )
 
 
 class PromptManager(AbstractAssistantChild):
@@ -142,13 +143,12 @@ class PromptManager(AbstractAssistantChild):
 
         initial_message = ""
         if self.assistant.last_prompt_sections:
-            last_section = self.assistant.last_prompt_sections[-1]
-            last_command_key = last_section.command
-
-            if last_section.command:
-                last_command = commands[last_command_key]
-                if isinstance(last_command, dict) and "sticky" in last_command and last_command["sticky"]:
-                    initial_message = AI_COMMAND_PREFIX + last_command_key
+            last_section = cast(UserPromptSection, self.assistant.last_prompt_sections[-1])
+            if last_section.has_command():
+                command = last_section.get_command()
+                
+                if command.sticky:
+                    initial_message = AI_COMMAND_PREFIX + command.name()
 
                     if len(last_section.options):
                         initial_message += ":" + (":".join(last_section.options))
