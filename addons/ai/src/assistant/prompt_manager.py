@@ -42,7 +42,7 @@ class AssistantChatCompleter(Completer):
             prefixed_command = f"{AI_COMMAND_PREFIX}{command_name}"
 
             if parts[0] == prefixed_command:
-                for option in self.active_commands[command_name].options:
+                for option in self.active_commands[command_name].get_flags():
                     yield Completion(
                         prefixed_command + f":{option} ",
                         start_position=-len(word_before_cursor),
@@ -50,7 +50,7 @@ class AssistantChatCompleter(Completer):
 
             elif prefixed_command.startswith(parts[0]):
                 if command.is_active(document.text):
-                    if len(self.active_commands[command_name].options):
+                    if len(self.active_commands[command_name].get_flags()):
                         pass
                     else:
                         prefixed_command += " "
@@ -146,12 +146,12 @@ class PromptManager(AbstractAssistantChild):
             last_section = cast(UserPromptSection, self.assistant.last_prompt_sections[-1])
             if last_section.has_command():
                 command = last_section.get_command()
-                
+
                 if command.sticky:
                     initial_message = AI_COMMAND_PREFIX + command.name()
 
-                    if len(last_section.options):
-                        initial_message += ":" + (":".join(last_section.options))
+                    if len(last_section.flags):
+                        initial_message += ":" + (":".join(last_section.flags))
 
                     initial_message += " "
 

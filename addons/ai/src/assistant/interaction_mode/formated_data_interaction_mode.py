@@ -25,7 +25,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
-            f"You generate structured data in {(' '.join(prompt_section.options)).upper()} format, "
+            f"You generate structured data in {(' '.join(prompt_section.flags)).upper()} format, "
             f"with any other text before or after. "
             "No introduction. No conclusion. No markdown code block."
         )
@@ -33,19 +33,19 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
     def get_output_parser(
         self, prompt_section: UserPromptSection
     ) -> Optional[BaseOutputParser]:
-        if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.options:
+        if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.flags:
             from langchain_core.output_parsers import CommaSeparatedListOutputParser
 
             return CommaSeparatedListOutputParser()
-        elif FORMATED_DATA_FORMAT_JSON in prompt_section.options:
+        elif FORMATED_DATA_FORMAT_JSON in prompt_section.flags:
             from langchain_core.output_parsers import JsonOutputParser
 
             return JsonOutputParser()
-        elif FORMATED_DATA_FORMAT_XML in prompt_section.options:
+        elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
             from langchain.output_parsers import XMLOutputParser
 
             return XMLOutputParser()
-        elif FORMATED_DATA_FORMAT_YAML in prompt_section.options:
+        elif FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
             from langchain.output_parsers import YamlOutputParser
 
             return YamlOutputParser(pydantic_object=self.get_pydantic_model())
@@ -60,11 +60,11 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
     def chain_response_to_string(
         self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:
-        if FORMATED_DATA_FORMAT_YAML in prompt_section.options:
+        if FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
             import yaml
 
             return os.linesep + yaml.dump(chain_response.dict())
-        elif FORMATED_DATA_FORMAT_XML in prompt_section.options:
+        elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
             import dicttoxml
 
             return os.linesep + dicttoxml.dicttoxml(chain_response).decode()

@@ -12,11 +12,11 @@ class UserPromptSection(BaseClass):
         self,
         command: Optional[AbstractCommand],
         prompt: Optional[str],
-        options: Optional[List[str]] = None,
+        flags: Optional[List[str]] = None,
     ) -> None:
         self._command = command
         self.prompt = prompt
-        self.options = options or []
+        self.flags = flags or []
 
     def has_command(self) -> bool:
         return self._command is not None

@@ -33,7 +33,7 @@ class HelpCommand(AbstractCommand):
                 f"{AI_COMMAND_PREFIX}{padded_command} | {command.description}"
             )
 
-            for option in command.options:
+            for option in command.get_flags():
                 self.assistant.log(
                     f"    :{option}"
                 )

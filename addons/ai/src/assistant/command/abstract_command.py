@@ -14,11 +14,13 @@ class AbstractCommand(AbstractAssistantChild):
     description: str = False
     sticky: bool = False
     root_only: str = False
-    options: List[str] = []
 
     @staticmethod
     def name() -> str:
         pass
+
+    def get_flags(self) -> List[str]:
+        return []
 
     def execute(
         self,
