@@ -20,7 +20,11 @@ class AbstractCommand(AbstractAssistantChild):
     def name() -> str:
         pass
 
-    def execute(self, prompt_section: Optional["UserPromptSection"] = None) -> AbstractInteractionResponse:
+    def execute(
+        self,
+        prompt_section: Optional["UserPromptSection"] = None,
+        remaining_sections: Optional[List["UserPromptSection"]] = None
+    ) -> AbstractInteractionResponse:
         return NullInteractionResponse()
 
     @abstractmethod
