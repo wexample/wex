@@ -45,6 +45,8 @@ from addons.ai.src.assistant.command.investigate_command import InvestigateComma
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.function_command import FunctionCommand
 from addons.ai.src.assistant.command.vet_command import VetCommand
+
+from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -156,6 +158,7 @@ class Assistant(KernelChild):
     def _init_subjects(self) -> None:
         subjects = [
             DefaultChatSubject,
+            FileChatSubject
         ]
 
         self.subjects: Dict[str, AbstractChatSubject] = {}
@@ -201,8 +204,9 @@ class Assistant(KernelChild):
     def set_subject(self, name: str) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
 
-        self.log("Setting subject: " + subject.introduce())
         self.subject = subject
+        self.subject.activate()
+        self.log("[subject] " + subject.introduce())
 
         return subject
 

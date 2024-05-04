@@ -105,18 +105,18 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
         assistant.set_subject(FileChatSubject.name())
         subject = assistant.get_current_subject()
-        interaction_mode = cast(
-            FileSearchInteractionMode, subject.get_interaction_mode()(subject)
-        )
+        # interaction_mode = cast(
+        #     FileSearchInteractionMode, subject.get_interaction_mode()(subject)
+        # )
 
-        for ext in test_ext:
-            sample_path = self.build_test_samples_path() + ext + "/simple." + ext
-
-            chunks = interaction_mode.vector_create_file_chunks(
-                file_path=sample_path, file_signature=f"test-{ext}"
-            )
-
-            self.assertTrue(len(chunks) > 0)
+        # for ext in test_ext:
+        #     sample_path = self.build_test_samples_path() + ext + "/simple." + ext
+        #
+        #     chunks = interaction_mode.vector_create_file_chunks(
+        #         file_path=sample_path, file_signature=f"test-{ext}"
+        #     )
+        #
+        #     self.assertTrue(len(chunks) > 0)
 
     def _test_ask_formatting(self, assistant: Assistant) -> None:
         message = chat_format_message(

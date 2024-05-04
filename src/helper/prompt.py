@@ -101,7 +101,7 @@ def prompt_pick_a_file(base_dir: Optional[str] = None) -> Optional[str]:
         if os.path.isfile(full_path):
             return full_path
         elif os.path.isdir(full_path):
-            prompt_pick_a_file(full_path)
+            return prompt_pick_a_file(full_path)
 
     return None
 

@@ -1,12 +1,6 @@
 import os.path
 from typing import Optional
 
-from addons.ai.src.assistant.interaction_mode.file_patch_interaction_mode import (
-    FilePatchInteractionMode,
-)
-from addons.ai.src.assistant.interaction_mode.file_search_interaction_mode import (
-    FileSearchInteractionMode,
-)
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
@@ -22,13 +16,6 @@ class FileChatSubject(AbstractChatSubject):
     @staticmethod
     def name() -> str:
         return "file"
-
-    def get_interaction_mode(
-        self, prompt_section: Optional[UserPromptSection] = None
-    ) -> Optional[type]:
-        if prompt_section and prompt_section.command == SUBJECT_FILE_CHAT_COMMAND_PATCH:
-            return FilePatchInteractionMode
-        return FileSearchInteractionMode
 
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
