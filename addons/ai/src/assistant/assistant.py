@@ -43,6 +43,7 @@ from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
+from addons.ai.src.assistant.command.function_command import FunctionCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -128,6 +129,7 @@ class Assistant(KernelChild):
             DefaultCommand,
             ExitCommand,
             FormatCommand,
+            FunctionCommand,
             HelpCommand,
             InvestigateCommand,
             MenuCommand,

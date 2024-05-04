@@ -5,6 +5,9 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 )
 from addons.ai.src.assistant.utils.globals import AI_FUNCTION_DISPLAY_A_CUCUMBER
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.null_interaction_response import NullInteractionResponse
 
 
 class FunctionPickerInteractionMode(AbstractInteractionMode):
@@ -19,9 +22,9 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
         self,
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection],
-    ) -> Optional[bool | str]:
+    ) -> AbstractInteractionResponse:
         if not prompt_section.prompt:
-            return "Please ask some question to help select a function."
+            return StringInteractionResponse("Please ask some question to help select a function.")
 
         selected_function = self.assistant.get_model().guess_function(
             self,
@@ -34,8 +37,8 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
 
         # Demo usage
         if selected_function == AI_FUNCTION_DISPLAY_A_CUCUMBER:
-            return "🥒"
+            return StringInteractionResponse("🥒")
         else:
             self.assistant.log(f"No function selected : {str(selected_function)}")
 
-        return True
+        return NullInteractionResponse()
