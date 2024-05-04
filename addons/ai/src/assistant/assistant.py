@@ -44,6 +44,7 @@ from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.function_command import FunctionCommand
+from addons.ai.src.assistant.command.vet_command import VetCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -135,6 +136,7 @@ class Assistant(KernelChild):
             MenuCommand,
             SubjectCommand,
             TerminalCommand,
+            VetCommand,
         ]
 
         self.commands: Dict[str, AbstractCommand] = {}
@@ -408,7 +410,6 @@ class Assistant(KernelChild):
                 prompt_sections = self.split_prompt_sections(user_input)
 
                 for index, prompt_section in enumerate(prompt_sections):
-
                     if prompt_section.has_command():
                         command = prompt_section.get_command()
 
