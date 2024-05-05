@@ -17,6 +17,7 @@ class UserPromptSection(BaseClass):
         self._command = command
         self.prompt = prompt
         self.flags = flags or []
+        self.prompt_configurations: [Tuple[str, str]] = []
 
     def has_command(self) -> bool:
         return self._command is not None

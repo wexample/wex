@@ -68,7 +68,7 @@ class AbstractModel(AbstractAssistantChild):
                 "system",
                 f"##LANGUAGE"
                 f'\nYou use "{assistant.languages[assistant.language]}" language in every text, '
-                f"even if the person uses another language.",
+                f"even if the person uses another language, unless you are explicitly asked to do otherwise.",
             ),
         ]
 
@@ -89,7 +89,10 @@ class AbstractModel(AbstractAssistantChild):
                 ("system", "{format_instructions}"),
             ]
 
-        return ChatPromptTemplate.from_messages(parts + [("human", "{input}")])
+        return ChatPromptTemplate.from_messages(
+            parts
+            + prompt_section.prompt_configurations
+            + [("human", "{input}")])
 
     def create_embeddings(self) -> Any:
         return None
