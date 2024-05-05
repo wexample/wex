@@ -51,6 +51,7 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
+from addons.ai.src.assistant.command.copy_clipboard_command import CopyClipboardCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -133,6 +134,7 @@ class Assistant(KernelChild):
         commands = [
             AgentCommand,
             ChatCommand,
+            CopyClipboardCommand,
             DefaultCommand,
             ExitCommand,
             FileRewriteCommand,
