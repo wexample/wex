@@ -20,16 +20,6 @@ class FileChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
 
-    def get_commands(self) -> StringKeysDict:
-        commands = {
-            SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE: "Talk about file",
-        }
-
-        if self.is_current_subject():
-            commands[SUBJECT_FILE_CHAT_COMMAND_PATCH] = "Modify file"
-
-        return commands
-
     def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
