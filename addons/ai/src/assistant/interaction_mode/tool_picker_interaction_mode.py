@@ -11,10 +11,6 @@ from src.helper.registry import registry_get_all_commands
 class ToolPickerInteractionMode(AbstractInteractionMode):
     tools: List[CommandTool]
 
-    @staticmethod
-    def name() -> str:
-        return "tool_picker"
-
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             "Efficiently answer the questions using one of available tools, "

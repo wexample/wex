@@ -11,10 +11,6 @@ from addons.ai.src.assistant.interaction_response.null_interaction_response impo
 
 
 class FunctionPickerInteractionMode(AbstractInteractionMode):
-    @staticmethod
-    def name() -> str:
-        return "function_picker"
-
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return "Provide a command name that aids in responding to the user's query, or None if not applicable."
 

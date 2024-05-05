@@ -13,10 +13,6 @@ if TYPE_CHECKING:
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
-    @staticmethod
-    def name() -> str:
-        pass
-
     def get_initial_prompt(self, prompt_section: "UserPromptSection") -> Optional[str]:
         return None
 

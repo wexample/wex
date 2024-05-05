@@ -19,10 +19,6 @@ FORMATED_DATA_FORMATS = [
 
 
 class FormatedDataInteractionMode(AbstractInteractionMode):
-    @staticmethod
-    def name() -> str:
-        return "formated_data"
-
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             f"You generate structured data in {(' '.join(prompt_section.flags)).upper()} format, "

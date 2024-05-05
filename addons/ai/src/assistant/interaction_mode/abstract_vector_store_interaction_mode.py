@@ -15,6 +15,7 @@ from yaml import BaseLoader
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.helper.data_json import json_load_if_valid
@@ -29,11 +30,24 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         super().__init__(assistant)
         self.init_vector_store()
 
+    @staticmethod
     def get_vector_store_collection_name(self) -> str:
-        return self.name()
+        pass
 
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
-        return "## CONTEXT:" "\n{context}"
+    def process_user_input(
+        self,
+        prompt_section: "UserPromptSection",
+        remaining_sections: List["UserPromptSection"],
+    ) -> AbstractInteractionResponse:
+
+        prompt_section.prompt_configurations.append(
+            ("system", "## CONTEXT:" "\n{context}")
+        )
+
+        return super().process_user_input(
+            prompt_section,
+            remaining_sections,
+        )
 
     @abstractmethod
     def get_similarity_search_filter(

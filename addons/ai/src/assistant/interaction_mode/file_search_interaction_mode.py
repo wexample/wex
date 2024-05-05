@@ -10,8 +10,7 @@ from src.helper.file import file_build_signature
 
 
 class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
-    @staticmethod
-    def name() -> str:
+    def get_vector_store_collection_name(self) -> str:
         return "file_search"
 
     def get_similarity_search_filter(

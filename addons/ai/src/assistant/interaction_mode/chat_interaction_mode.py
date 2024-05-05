@@ -7,10 +7,6 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class ChatInteractionMode(DefaultInteractionMode):
-    @staticmethod
-    def name() -> str:
-        return "chat"
-
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             "Converse with the user as in a human to human chat. "

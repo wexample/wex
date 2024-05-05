@@ -19,10 +19,6 @@ class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
         # Use a temporary trick to not vectorize any file
         self.last_stored_url: Optional[str] = None
 
-    @staticmethod
-    def name() -> str:
-        return "url_search"
-
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
     ) -> Dict[str, str]:

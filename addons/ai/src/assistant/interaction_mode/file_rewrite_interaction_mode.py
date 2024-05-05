@@ -14,10 +14,6 @@ from src.helper.file import file_read, file_write
 class FileRewriteInteractionMode(AbstractInteractionMode):
     file_length_limit: int = 1000
 
-    @staticmethod
-    def name() -> str:
-        return "file_rewrite"
-
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             f"You will give a new version of this file, following given guidelines. "
