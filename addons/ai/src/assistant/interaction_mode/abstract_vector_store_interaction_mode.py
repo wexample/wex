@@ -78,7 +78,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
                 MODEL_NAME_OPEN_AI_GPT_4
             ).create_embeddings(),
             collection_name=self.get_vector_store_collection_name(),
-            connection=self.assistant.db_engine,
+            connection=self.assistant.database.engine,
             use_jsonb=True,
         )
         self.vectorstore.drop_tables()

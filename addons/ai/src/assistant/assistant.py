@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from prompt_toolkit import HTML, print_formatted_text
-from sqlalchemy import create_engine, MetaData, Table, select
-from sqlalchemy.orm import sessionmaker
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.command.agent_command import AgentCommand
@@ -55,12 +53,12 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
+from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
 from src.helper.data_yaml import yaml_load
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
-from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -205,19 +203,10 @@ class Assistant(KernelChild):
         self.personalities = personalities
 
     def _init_database(self) -> None:
-        manager = self.assistant_app_manager
-        database_config = manager.get_config("service.postgres").get_dict()
-
-        self.db_engine = create_engine(
-            f"postgresql://{database_config['user']}"
-            f":{database_config['password']}@localhost"
-            f":5{manager.get_config('port.public', 444).get_int()}/{database_config['name']}"
-        )
-
-        self.log("Database connected")
+        self.database = DatabaseManager(self)
 
     def _init_user(self) -> None:
-        self.user = self.get_or_create_user()
+        self.user = self.database.get_or_create_user()
 
     def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
@@ -255,31 +244,6 @@ class Assistant(KernelChild):
             model.activate()
 
         return model
-
-    def get_or_create_user(self):
-        username = get_user_or_sudo_user()
-        Session = sessionmaker(bind=self.db_engine)
-        session = Session()
-
-        # Reflect the tables
-        metadata = MetaData()
-
-        user = Table('user', metadata, autoload_with=self.db_engine)
-
-        # Query for the user
-        query = select(user).where(user.columns.name == username)
-        result = session.execute(query).fetchone()
-
-        if result is None:
-            self.log(f"User {username} not found in database. Creating now.")
-            ins = user.insert().values(name=username)
-            session.execute(ins)
-            session.commit()
-            self.log(f"User {username} created.")
-        else:
-            self.log(f"User {username} found in database.")
-
-        return session.execute(query).fetchone()
 
     def start(self, menu_action: str) -> None:
         asked_exit = False
