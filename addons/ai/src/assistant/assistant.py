@@ -10,7 +10,9 @@ from sqlalchemy import create_engine
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.command.agent_command import AgentCommand
 from addons.ai.src.assistant.command.chat_command import ChatCommand
+from addons.ai.src.assistant.command.copy_clipboard_command import CopyClipboardCommand
 from addons.ai.src.assistant.command.default_command import DefaultCommand
+from addons.ai.src.assistant.command.dir_search_command import DirSearchCommand
 from addons.ai.src.assistant.command.exit_command import ExitCommand
 from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
 from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
@@ -27,6 +29,7 @@ from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
+from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from addons.ai.src.assistant.utils.globals import (
@@ -51,9 +54,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from addons.ai.src.assistant.command.copy_clipboard_command import CopyClipboardCommand
-from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
-from addons.ai.src.assistant.command.dir_search_command import DirSearchCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -350,6 +350,22 @@ class Assistant(KernelChild):
         # Return the chosen action as a string or None if aborted
         return str(action) if action else None
 
+    def split_command(self, word: str) -> List[str]:
+        return word[len(AI_COMMAND_PREFIX):].split(":")
+
+    def extract_active_command(self, word: str) -> Optional[str]:
+        commands = self.get_active_commands()
+        if word.startswith(AI_COMMAND_PREFIX):
+            # Split command and options
+            command_parts = self.split_command(word)
+            # First part is the command, normalized
+            command = command_parts[0].lower()
+
+            if command in commands:
+                return command
+
+        return None
+
     def split_prompt_sections(self, user_input: str) -> List[UserPromptSection]:
         user_input = user_input.strip()
         # Special case if user types just "exit" without prefix.
@@ -359,51 +375,36 @@ class Assistant(KernelChild):
         # Split on word to ensure commands is not attached to another word.
         results: List[UserPromptSection] = []
         words = user_input.split()
-        commands = self.get_active_commands()
+        current_user_input_part: List[str] = []
+        current_section: Optional[UserPromptSection] = None
 
         for i, word in enumerate(words):
-            if word.startswith(AI_COMMAND_PREFIX):
+            command = self.extract_active_command(word)
+
+            if command:
                 # Split command and options
-                command_parts = word[len(AI_COMMAND_PREFIX):].split(":")
-                command = command_parts[
-                    0
-                ].lower()  # First part is the command, normalized
-                options = (
+                command_parts = self.split_command(word)
+
+                if current_section and len(current_user_input_part):
+                    current_section.prompt += " ".join(current_user_input_part)
+                    results.append(current_section)
+
+                current_section = UserPromptSection(
+                    self.commands[command],
+                    None,
                     command_parts[1:] if len(command_parts) > 1 else None
-                )  # Subsequent parts are options
+                )
+            else:
+                current_user_input_part.append(
+                    word
+                )
 
-                if command in commands:
-                    # Find command input.
-                    # Input is considered as the text following the command until the next command or end.
-                    command_input = " ".join(
-                        words[i + 1:]
-                    )  # Grab all text after command
-                    # If another command is found in the input, cut the input at that point
-                    next_command_index = next(
-                        (
-                            j
-                            for j, w in enumerate(words[i + 1:], start=i + 1)
-                            if w.startswith(AI_COMMAND_PREFIX)
-                        ),
-                        None,
-                    )
-                    if next_command_index:
-                        command_input = " ".join(words[i + 1: next_command_index])
-
-                    if command_input == "":
-                        command_input = None
-                    else:
-                        command_input = html.unescape(command_input)
-
-                    results.append(UserPromptSection(self.commands[command], command_input, options))
-
-                    # Break after finding a command to avoid parsing further commands in the same string.
-                    # If you need to handle multiple commands in one string, you might need a more complex approach.
-                    break
-
-        if not results:
+        if not current_section:
             # No recognized command found
             return [UserPromptSection(None, user_input)]
+        else:
+            current_section.prompt = " ".join(current_user_input_part)
+            results.append(current_section)
 
         return results
 
