@@ -22,6 +22,7 @@ from addons.ai.src.assistant.command.investigate_command import InvestigateComma
 from addons.ai.src.assistant.command.menu_command import MenuCommand
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
+from addons.ai.src.assistant.command.url_search_command import UrlSearchCommand
 from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
@@ -144,6 +145,7 @@ class Assistant(KernelChild):
             MenuCommand,
             SubjectCommand,
             TerminalCommand,
+            UrlSearchCommand,
             VetCommand,
         ]
 

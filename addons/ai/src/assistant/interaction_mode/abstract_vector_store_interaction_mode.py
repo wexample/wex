@@ -30,8 +30,12 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         super().__init__(assistant)
         self.init_vector_store()
 
-    @staticmethod
+    @abstractmethod
     def get_vector_store_collection_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_storage_signature(self) -> str:
         pass
 
     def process_user_input(
