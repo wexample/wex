@@ -1,10 +1,13 @@
-CREATE TABLE assistant_conversation (
+DROP TABLE IF EXISTS wex_ai.assistant_conversation_item;
+DROP TABLE IF EXISTS wex_ai.assistant_conversation;
+
+CREATE TABLE wex_ai.assistant_conversation (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE assistant_conversation_item (
+CREATE TABLE wex_ai.assistant_conversation_item (
     id SERIAL PRIMARY KEY,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author VARCHAR(255),
@@ -12,7 +15,7 @@ CREATE TABLE assistant_conversation_item (
     message TEXT,
     model VARCHAR(255),
     lang VARCHAR(255),
-    conversation_id INT REFERENCES assistant_conversation(id),
+    conversation_id INT REFERENCES wex_ai.assistant_conversation(id),
     personality VARCHAR(255),
     subject VARCHAR(255),
     subject_data JSON,
