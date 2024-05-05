@@ -17,7 +17,8 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
         return (
             f"You will give a new version of this file, following given guidelines. "
-            f"Return only the new file content with any other text before or after. "
+            f"Return the whole new file content with any other text before or after. "
+            f"Include unchanged parts of the original file if still present in the new version. "
             "No introduction. No conclusion. No markdown code block."
         )
 
