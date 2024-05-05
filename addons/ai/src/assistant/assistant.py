@@ -50,6 +50,7 @@ from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
 from addons.ai.src.assistant.command.file_search_command import FileSearchCommand
 from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
+from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -164,7 +165,8 @@ class Assistant(KernelChild):
     def _init_subjects(self) -> None:
         subjects = [
             DefaultChatSubject,
-            FileChatSubject
+            FileChatSubject,
+            UrlChatSubject
         ]
 
         self.subjects: Dict[str, AbstractChatSubject] = {}
