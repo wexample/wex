@@ -78,7 +78,7 @@ class AbstractModel(AbstractAssistantChild):
                 ("system", "##INSTRUCTIONS\n" + initial_prompt),
             ]
 
-        if len(self.assistant.active_memory):
+        if len(self.assistant.active_memory.messages):
             parts += [
                 ("system", "##CONVERSATION HISTORY\n{history}"),
             ]

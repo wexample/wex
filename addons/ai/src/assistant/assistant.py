@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast, Any
 
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.messages import HumanMessage, AIMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
 
@@ -78,7 +79,7 @@ class Assistant(KernelChild):
         self._initial_default_model = default_model
         self.colors_theme: Optional[str] = None
         self.history: List[HistoryItem] = []
-        self.active_memory: Dict[Tuple[int, int], ChatMessageHistory] = {}
+        self.active_memory: ChatMessageHistory = ChatMessageHistory()
         self.subject: Optional[AbstractChatSubject] = None
         self.last_prompt_sections = None
 
@@ -219,7 +220,25 @@ class Assistant(KernelChild):
 
     def set_conversation(self, id_conversation: Optional[int] = None):
         self.conversation = self.database.get_or_create_conversation(id_conversation)
-        self.history: List[HistoryItem] = []
+        self.history: List[HistoryItem] = self.database.get_conversation_items(
+            self.conversation.id
+        )
+
+        self.active_memory.clear()
+        messages = []
+        for item in self.history:
+            if item.author == "ai":
+                message = AIMessage(
+                    content=item.message,
+                )
+            else:
+                message = HumanMessage(
+                    content=item.message,
+                )
+
+            messages.append(message)
+
+        self.active_memory.add_messages(messages)
 
     def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
@@ -448,11 +467,11 @@ class Assistant(KernelChild):
                     else:
                         command = self.commands[DefaultCommand.name()]
 
-                    self.set_history_item(prompt_section.prompt)
+                    self.set_history_item(prompt_section.prompt, "user")
 
                     result = command.execute(prompt_section, prompt_sections[index + 1:])
                     result_str = result.render()
-                    self.set_history_item(result_str)
+                    self.set_history_item(result_str, "ai")
 
                     if isinstance(result_str, str):
                         self.print_ai(result_str)
@@ -467,10 +486,11 @@ class Assistant(KernelChild):
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
 
-    def set_history_item(self, content: Optional[str]):
+    def set_history_item(self, content: Optional[str], author: str):
         item = HistoryItem(
             message=content,
-            conversation_id=self.conversation.id
+            conversation_id=self.conversation.id,
+            author=author
         )
 
         self.history.append(item)
@@ -480,16 +500,10 @@ class Assistant(KernelChild):
         # Let a new line separator
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
 
-    def get_current_session_history(self) -> BaseChatMessageHistory:
-        return self.get_session_history(self.user.id, self.conversation.id)
-
     def get_session_history(
         self, user_id: int, conversation_id: int
     ) -> BaseChatMessageHistory:
-        if (user_id, conversation_id) not in self.active_memory:
-            self.active_memory[(user_id, conversation_id)] = ChatMessageHistory()
-
-        return self.active_memory[(user_id, conversation_id)]
+        return self.active_memory
 
     def text_has_a_command(self, text: str) -> bool:
         sections = self.split_prompt_sections(text)

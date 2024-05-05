@@ -25,8 +25,8 @@ class CopyClipboardCommand(AbstractCommand):
             # so we take the second previous one.
             item = cast(HistoryItem, self.assistant.history[-2])
 
-            if item and item.content:
-                pyperclip.copy(cast(HistoryItem, item).content)
+            if item and item.message:
+                pyperclip.copy(cast(HistoryItem, item).message)
                 return StringInteractionResponse("Previous response copied to clipboard")
 
         return StringInteractionResponse("No history items found")
