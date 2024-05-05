@@ -87,6 +87,7 @@ class Assistant(KernelChild):
                 self._init_helper,
                 self._init_database,
                 self._init_user,
+                self._init_conversation,
                 self._init_prompt,
                 self._init_locales,
                 self._init_commands,
@@ -207,6 +208,9 @@ class Assistant(KernelChild):
 
     def _init_user(self) -> None:
         self.user = self.database.get_or_create_user()
+
+    def _init_conversation(self) -> None:
+        self.conversation = self.database.get_or_create_conversation()
 
     def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
