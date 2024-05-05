@@ -6,6 +6,8 @@ import patch
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
@@ -45,7 +47,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
         self,
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection],
-    ) -> Optional[bool | str]:
+    ) -> AbstractInteractionResponse:
         from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 
         user_input = prompt_section.prompt
@@ -54,15 +56,18 @@ class FilePatchInteractionMode(AbstractInteractionMode):
 
         # Avoid empty input error.
         if not user_input:
-            return f"Please instruct what to change in this file {file_path}"
+            return StringInteractionResponse(f"Please instruct what to change in this file {file_path}")
 
         # Per file format system prompt.
         extension = file_get_extension(file_path)
         if extension == "json":
-            self.set_output_formatting_prompt(
-                "As this is a JSON file, you respect these rules :"
-                "\n  - Adding a comma in the end of line should also be reflected as a line change."
-                "\n  - Also the last item of a json dict should not have a comma in the end of line."
+            prompt_section.prompt_configurations.append(
+                (
+                    "system",
+                    "As this is a JSON file, you respect these rules :"
+                    "\n  - Adding a comma in the end of line should also be reflected as a line change."
+                    "\n  - Also the last item of a json dict should not have a comma in the end of line."
+                )
             )
 
         model = self.assistant.get_model()
@@ -144,7 +149,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
                         file_set_user_or_sudo_user_owner(file_path)
                         self.kernel.io.log(f"Patched : {file_path}")
 
-                        return f"✏️ {description}"
+                        return StringInteractionResponse(f"✏️ {description}")
 
                 self.kernel.io.log(file_content)
                 self.kernel.io.log("____")
@@ -158,7 +163,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
             self.kernel.io.log("____")
             self.kernel.io.log(patch_content)
 
-        return f"⚠️ {error_message}"
+        return StringInteractionResponse(f"⚠️ {error_message}")
 
     def load_example_patch(self, name) -> StringKeysDict:
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"

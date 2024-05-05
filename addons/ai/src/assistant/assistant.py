@@ -49,6 +49,7 @@ from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
 from addons.ai.src.assistant.command.file_search_command import FileSearchCommand
+from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -135,6 +136,7 @@ class Assistant(KernelChild):
             ExitCommand,
             FileRewriteCommand,
             FileSearchCommand,
+            FilePatchCommand,
             FormatCommand,
             FunctionCommand,
             HelpCommand,
