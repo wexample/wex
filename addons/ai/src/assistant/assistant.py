@@ -1,10 +1,11 @@
 import html
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast, Any
 
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from prompt_toolkit import HTML, print_formatted_text
+from sqlalchemy import Row
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.command.agent_command import AgentCommand
@@ -31,15 +32,16 @@ from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubj
 from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
+from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from addons.ai.src.assistant.utils.globals import (
     AI_COMMAND_PREFIX,
-    ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-    ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE,
-    ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY,
-    ASSISTANT_MENU_ACTION_CHAT,
+    ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
+    ASSISTANT_MENU_ACTION_LANGUAGE,
+    ASSISTANT_MENU_ACTION_PERSONALITY,
+    ASSISTANT_MENU_ACTION_BACK,
     ASSISTANT_MENU_ACTION_EXIT,
     ASSISTANT_MENU_ACTION_THEME,
-    ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
+    ASSISTANT_MENU_ACTIONS_TRANSLATIONS, ASSISTANT_MENU_ACTION_CONVERSATIONS, ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
 )
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -53,7 +55,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -65,7 +66,9 @@ if TYPE_CHECKING:
 
 
 class Assistant(KernelChild):
+    conversation: Row[Tuple[Any, ...]]
     language: str
+    user: Row[Tuple[Any, ...]]
     _default_model: Optional[AbstractModel] = None
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
@@ -76,8 +79,6 @@ class Assistant(KernelChild):
         self.colors_theme: Optional[str] = None
         self.history: List[HistoryItem] = []
         self.active_memory: Dict[Tuple[int, int], ChatMessageHistory] = {}
-        self.user_id: int = 1
-        self.conversation_id: int = 1
         self.subject: Optional[AbstractChatSubject] = None
         self.last_prompt_sections = None
 
@@ -210,7 +211,15 @@ class Assistant(KernelChild):
         self.user = self.database.get_or_create_user()
 
     def _init_conversation(self) -> None:
-        self.conversation = self.database.get_or_create_conversation()
+        last_conversation = self.database.get_last_conversation()
+
+        self.set_conversation(
+            last_conversation.id if last_conversation else None
+        )
+
+    def set_conversation(self, id_conversation: Optional[int] = None):
+        self.conversation = self.database.get_or_create_conversation(id_conversation)
+        self.history: List[HistoryItem] = []
 
     def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
@@ -260,9 +269,9 @@ class Assistant(KernelChild):
             if not menu_action:
                 menu_action = self.show_menu()
 
-            if menu_action == ASSISTANT_MENU_ACTION_CHAT:
+            if menu_action == ASSISTANT_MENU_ACTION_BACK:
                 menu_action = self.chat()
-            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE:
+            elif menu_action == ASSISTANT_MENU_ACTION_LANGUAGE:
                 self.language = prompt_choice_dict(
                     "Choose a language",
                     self.languages,
@@ -288,7 +297,21 @@ class Assistant(KernelChild):
                 )
 
                 menu_action = None
-            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY:
+            elif menu_action == ASSISTANT_MENU_ACTION_NEW_CONVERSATION:
+                self.set_conversation()
+                menu_action = ASSISTANT_MENU_ACTION_BACK
+            elif menu_action == ASSISTANT_MENU_ACTION_CONVERSATIONS:
+                self.set_conversation(
+                    int(prompt_choice_dict(
+                        "Pick a conversation:",
+                        self.database.get_conversations_dict(),
+                        default=self.conversation.id,
+                        abort="↩ Back",
+                    ))
+                )
+
+                menu_action = ASSISTANT_MENU_ACTION_BACK
+            elif menu_action == ASSISTANT_MENU_ACTION_PERSONALITY:
                 choice_dict = {}
                 for key, personality in self.personalities.items():
                     choice_dict[key] = personality["summary"]
@@ -301,7 +324,7 @@ class Assistant(KernelChild):
                 )
 
                 menu_action = None
-            elif menu_action == ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL:
+            elif menu_action == ASSISTANT_MENU_ACTION_DEFAULT_MODEL:
                 current_model = self.get_model()
                 models = {}
                 for model in self.models:
@@ -324,27 +347,12 @@ class Assistant(KernelChild):
         self.log(f"{os.linesep}Ciao")
 
     def show_menu(self) -> Optional[str]:
-        # List of all possible menu actions
-        menu_actions = [
-            ASSISTANT_MENU_ACTION_CHAT,
-            ASSISTANT_MENU_ACTION_THEME,
-            ASSISTANT_MENU_ACTION_CHANGE_LANGUAGE,
-            ASSISTANT_MENU_ACTION_CHANGE_PERSONALITY,
-            ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
-            ASSISTANT_MENU_ACTION_EXIT,
-        ]
-
-        # Initialize choices dictionary using a dictionary comprehension
-        choices = {
-            action: ASSISTANT_MENU_ACTIONS_TRANSLATIONS[action] for action in menu_actions
-        }
-
         # Prompt the user to choose an action
         action = prompt_choice_dict(
             "Menu:",
-            choices,
+            ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
             abort=None,
-            default=ASSISTANT_MENU_ACTION_CHAT,
+            default=ASSISTANT_MENU_ACTION_BACK,
         )
 
         # Return the chosen action as a string or None if aborted
@@ -464,7 +472,7 @@ class Assistant(KernelChild):
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
 
     def get_current_session_history(self) -> BaseChatMessageHistory:
-        return self.get_session_history(self.user_id, self.conversation_id)
+        return self.get_session_history(self.user.id, self.conversation.id)
 
     def get_session_history(
         self, user_id: int, conversation_id: int

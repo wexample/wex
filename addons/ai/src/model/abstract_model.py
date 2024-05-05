@@ -216,8 +216,8 @@ class AbstractModel(AbstractAssistantChild):
         parser = interaction_mode.get_output_parser(prompt_section)
         config = {
             "configurable": {
-                "user_id": self.assistant.user_id,
-                "conversation_id": self.assistant.conversation_id,
+                "user_id": self.assistant.user.id,
+                "conversation_id": self.assistant.conversation.id,
             }
         }
 

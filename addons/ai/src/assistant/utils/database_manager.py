@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Dict, Tuple, Any
+from typing import TYPE_CHECKING, List, Dict, Tuple, Any, Optional
 
 from sqlalchemy import create_engine, MetaData, Table, select, Row
 from sqlalchemy.orm import sessionmaker
@@ -59,13 +59,32 @@ class DatabaseManager(AbstractAssistantChild):
             self.session.execute(ins)
             self.session.commit()
             self.assistant.log(f"User {username} created.")
-            
+
             return self.session.execute(query).fetchone()
         else:
             self.assistant.log(f"User {username} found in database.")
             return result
 
-    def get_or_create_conversation(self) -> Row[Tuple[Any, ...]]:
+    def get_conversations_dict(self) -> {}:
+        conversations = self.get_conversations()
+        conversations_dict = {}
+
+        for conversation in conversations:
+            conversations_dict[conversation.id] = (
+                conversation.date_created.strftime("%Y-%m-%d %H:%M:%S")
+                + '|' + (conversation.title or "(No title)"))
+
+        return conversations_dict
+
+    def get_conversations(self) -> Row[Tuple[Any, ...]]:
+        user = self.get_or_create_user()
+        table = self.tables["assistant_conversation"]
+        query = (select(table)
+                 .where(table.columns.user_id == user.id))
+
+        return self.session.execute(query).fetchall()
+
+    def get_last_conversation(self) -> Row[Tuple[Any, ...]]:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
 
@@ -73,7 +92,17 @@ class DatabaseManager(AbstractAssistantChild):
         query = (select(table)
                  .where(table.columns.user_id == user.id)
                  .limit(1))
-        result = self.session.execute(query).fetchone()
+
+        return self.session.execute(query).fetchone()
+
+    def get_or_create_conversation(self, conversation_id: Optional[int] = None) -> Row[Tuple[Any, ...]]:
+        user = self.get_or_create_user()
+        table = self.tables["assistant_conversation"]
+        result: Optional[Row[Tuple[Any, ...]]] = None
+
+        if conversation_id:
+            query = select(table).where(table.columns.id == conversation_id)
+            result = self.session.execute(query).fetchone()
 
         if result is None:
             self.assistant.log(f"No conversation found for {user.name} not found in database. Creating now.")
@@ -81,10 +110,10 @@ class DatabaseManager(AbstractAssistantChild):
                 user_id=user.id,
                 date_created=datetime.now(),
             )
-            self.session.execute(ins)
+            result = self.session.execute(ins)
             self.session.commit()
 
-            return self.session.execute(query).fetchone()
+            return self.get_or_create_conversation(result.inserted_primary_key[0])
         else:
-            self.assistant.log(f"Using conversation: {result.title}")
+            self.assistant.log(f"Using conversation: {result.title or '(No title)'}")
             return result
