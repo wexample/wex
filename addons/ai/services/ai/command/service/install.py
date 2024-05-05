@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
+from src.helper.service import service_copy_sample_dir
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.data_yaml import yaml_load, yaml_write
 
@@ -30,3 +31,9 @@ def ai__service__install(
     ] = "gitlab-docker.wexample.com/wexample-public/docker/pgvector:latest"
 
     yaml_write(docker_config_path, docker_config)
+
+    service_copy_sample_dir(
+        manager.kernel,
+        service,
+        "postgres/dumps"
+    )
