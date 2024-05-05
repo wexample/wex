@@ -24,7 +24,7 @@ from src.helper.file import file_get_extension
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
     def __init__(self, subject: "AbstractChatSubject") -> None:
-        super().__init__(subject)
+        super().__init__(subject.assistant)
         self.init_vector_store()
 
     def get_vector_store_collection_name(self) -> str:
