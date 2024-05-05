@@ -1,3 +1,4 @@
+import os.path
 from typing import Dict, List, cast, TYPE_CHECKING
 
 from langchain_core.document_loaders import BaseLoader  # type: ignore
@@ -34,13 +35,14 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection],
     ) -> AbstractInteractionResponse:
-        from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-
-        subject = cast(FileChatSubject, self.assistant.get_current_subject())
+        subject = self.get_file_subject()
 
         # Avoid empty input error.
         if not subject.file_path:
             return StringInteractionResponse(f"No file selected")
+
+        if not os.path.exists(subject.file_path):
+            return StringInteractionResponse(f"File does not exists")
 
         self.vector_store_file(
             subject.file_path,

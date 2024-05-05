@@ -52,6 +52,8 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from addons.ai.src.assistant.command.copy_clipboard_command import CopyClipboardCommand
+from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
+from addons.ai.src.assistant.command.dir_search_command import DirSearchCommand
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -136,6 +138,7 @@ class Assistant(KernelChild):
             ChatCommand,
             CopyClipboardCommand,
             DefaultCommand,
+            DirSearchCommand,
             ExitCommand,
             FileRewriteCommand,
             FileSearchCommand,
@@ -168,6 +171,7 @@ class Assistant(KernelChild):
     def _init_subjects(self) -> None:
         subjects = [
             DefaultChatSubject,
+            DirChatSubject,
             FileChatSubject,
             UrlChatSubject
         ]
