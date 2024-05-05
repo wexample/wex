@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, MetaData, Table, select, Row
 from sqlalchemy.orm import sessionmaker
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.history_item import HistoryItem
 from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
@@ -117,3 +118,7 @@ class DatabaseManager(AbstractAssistantChild):
         else:
             self.assistant.log(f"Using conversation: {result.title or '(No title)'}")
             return result
+
+    def save_assistant_conversation_item(self, assistant_conversation_item: HistoryItem) -> None:
+        self.session.add(assistant_conversation_item)
+        self.session.commit()

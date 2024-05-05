@@ -448,11 +448,11 @@ class Assistant(KernelChild):
                     else:
                         command = self.commands[DefaultCommand.name()]
 
-                    self.history.append(HistoryItem(prompt_section.prompt))
+                    self.set_history_item(prompt_section.prompt)
 
                     result = command.execute(prompt_section, prompt_sections[index + 1:])
                     result_str = result.render()
-                    self.history.append(HistoryItem(result_str))
+                    self.set_history_item(result_str)
 
                     if isinstance(result_str, str):
                         self.print_ai(result_str)
@@ -466,6 +466,15 @@ class Assistant(KernelChild):
                 else:
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
+
+    def set_history_item(self, content: Optional[str]):
+        item = HistoryItem(
+            message=content,
+            conversation_id=self.conversation.id
+        )
+
+        self.history.append(item)
+        self.database.save_assistant_conversation_item(item)
 
     def print_ai(self, message: str) -> None:
         # Let a new line separator
