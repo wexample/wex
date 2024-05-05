@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Dict, List, Optional, cast
+from typing import Dict, List, Optional, cast, TYPE_CHECKING
 from xml.dom.minidom import Document
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -15,16 +15,18 @@ from yaml import BaseLoader
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.helper.data_json import json_load_if_valid
 from src.helper.file import file_get_extension
 
+if TYPE_CHECKING:
+    from addons.ai.src.assistant.assistant import Assistant
+
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
-    def __init__(self, subject: "AbstractChatSubject") -> None:
-        super().__init__(subject.assistant)
+    def __init__(self, assistant: "Assistant") -> None:
+        super().__init__(assistant)
         self.init_vector_store()
 
     def get_vector_store_collection_name(self) -> str:

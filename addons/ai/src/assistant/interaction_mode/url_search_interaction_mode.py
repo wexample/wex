@@ -10,12 +10,12 @@ from addons.ai.src.assistant.interaction_response.string_interaction_response im
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 if TYPE_CHECKING:
-    from ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
-    def __init__(self, subject: "AbstractChatSubject") -> None:
-        super().__init__(subject)
+    def __init__(self, assistant: "Assistant") -> None:
+        super().__init__(assistant)
         # Use a temporary trick to not vectorize any file
         self.last_stored_url: Optional[str] = None
 
