@@ -1,20 +1,20 @@
-DROP TABLE IF EXISTS wex_ai.assistant_conversation_item;
-DROP TABLE IF EXISTS wex_ai.assistant_conversation;
-DROP TABLE IF EXISTS wex_ai.user;
+DROP TABLE IF EXISTS "assistant_conversation_item";
+DROP TABLE IF EXISTS "assistant_conversation";
+DROP TABLE IF EXISTS "user";
 
-CREATE TABLE wex_ai.user (
+CREATE TABLE "user" (
     id SERIAL PRIMARY KEY,
-    password VARCHAR(255)
+    name VARCHAR(255)
 );
 
-CREATE TABLE wex_ai.assistant_conversation (
+CREATE TABLE "assistant_conversation" (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_id INT REFERENCES wex_ai.user(id)
+    user_id INT REFERENCES "user"(id)
 );
 
-CREATE TABLE wex_ai.assistant_conversation_item (
+CREATE TABLE "assistant_conversation_item" (
     id SERIAL PRIMARY KEY,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author VARCHAR(255),
@@ -22,7 +22,7 @@ CREATE TABLE wex_ai.assistant_conversation_item (
     message TEXT,
     model VARCHAR(255),
     lang VARCHAR(255),
-    conversation_id INT REFERENCES wex_ai.assistant_conversation(id),
+    conversation_id INT REFERENCES "assistant_conversation"(id),
     personality VARCHAR(255),
     subject VARCHAR(255),
     subject_data JSON,
