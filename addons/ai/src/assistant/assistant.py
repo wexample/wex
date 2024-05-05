@@ -12,13 +12,22 @@ from addons.ai.src.assistant.command.agent_command import AgentCommand
 from addons.ai.src.assistant.command.chat_command import ChatCommand
 from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.command.exit_command import ExitCommand
+from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
+from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
+from addons.ai.src.assistant.command.file_search_command import FileSearchCommand
 from addons.ai.src.assistant.command.format_command import FormatCommand
+from addons.ai.src.assistant.command.function_command import FunctionCommand
 from addons.ai.src.assistant.command.help_command import HelpCommand
+from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
 from addons.ai.src.assistant.command.menu_command import MenuCommand
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
+from addons.ai.src.assistant.command.terminal_command import TerminalCommand
+from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
+from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from addons.ai.src.assistant.utils.globals import (
     AI_COMMAND_PREFIX,
     ASSISTANT_MENU_ACTION_CHANGE_DEFAULT_MODEL,
@@ -41,16 +50,6 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
-from addons.ai.src.assistant.command.terminal_command import TerminalCommand
-from addons.ai.src.assistant.command.function_command import FunctionCommand
-from addons.ai.src.assistant.command.vet_command import VetCommand
-
-from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
-from addons.ai.src.assistant.command.file_search_command import FileSearchCommand
-from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
-from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
@@ -205,15 +204,15 @@ class Assistant(KernelChild):
 
         self.log("Database connected")
 
-    def set_default_subject(self) -> None:
+    def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
-            self.set_subject(DefaultChatSubject.name())
+            self.set_subject(DefaultChatSubject.name(), prompt_section)
 
-    def set_subject(self, name: str) -> AbstractChatSubject:
+    def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
         subject = cast(AbstractChatSubject, self.subjects[name])
 
         self.subject = subject
-        self.subject.activate()
+        self.subject.activate(prompt_section)
         self.log("[subject] " + subject.introduce())
 
         return subject

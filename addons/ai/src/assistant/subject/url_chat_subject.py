@@ -11,7 +11,7 @@ class UrlChatSubject(AbstractChatSubject):
 
     @staticmethod
     def name() -> str:
-        return "file"
+        return "url"
 
     def introduce(self) -> str:
         return f"Chatting about URL {self.url}"
@@ -21,7 +21,7 @@ class UrlChatSubject(AbstractChatSubject):
             user_input = prompt_section.prompt if prompt_section else None
             user_input_trimmed = user_input.strip() if user_input else None
 
-            if not prompt_section.prompt:
+            if not user_input_trimmed:
                 self.assistant.log(f"Please provide a URL")
                 return False
 

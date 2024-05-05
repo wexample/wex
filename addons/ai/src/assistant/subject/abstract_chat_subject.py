@@ -6,6 +6,7 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 from addons.ai.src.assistant.utils.abstract_assistant_child import (
     AbstractAssistantChild,
 )
+from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 
 
@@ -17,7 +18,7 @@ class AbstractChatSubject(AbstractAssistantChild):
     def name() -> str:
         pass
 
-    def activate(self) -> bool:
+    def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
         return True
 
     def get_commands(self) -> StringKeysDict:
