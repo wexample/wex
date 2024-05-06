@@ -231,11 +231,13 @@ class Assistant(KernelChild):
         for item in self.history:
             if item.author == "ai":
                 message = AIMessage(
-                    content=item.message,
+                    # Support null message.
+                    content=item.message or "",
                 )
             else:
                 message = HumanMessage(
-                    content=item.message,
+                    # Support null message.
+                    content=item.message or "",
                 )
 
             messages.append(message)
@@ -471,12 +473,25 @@ class Assistant(KernelChild):
 
                     self.set_history_item(prompt_section.prompt, "user")
 
-                    result = command.execute(prompt_section, prompt_sections[index + 1:])
-                    result_str = result.render()
-                    self.set_history_item(result_str, "ai")
+                    try:
+                        result = command.execute(prompt_section, prompt_sections[index + 1:])
+                        result_str = result.render()
+                        self.set_history_item(result_str, "ai")
 
-                    if isinstance(result_str, str):
-                        self.print_ai(result_str)
+                        if isinstance(result_str, str):
+                            self.print_ai(result_str)
+                    except Exception as e:
+                        import traceback
+
+                        self.kernel.io.error(
+                            f"Error during executing command: {str(e)}\n{traceback.format_exc()}",
+                            fatal=False,
+                        )
+
+                        self.set_history_item(str(e), "error")
+
+                        # In cas of still running.
+                        self.spinner.stop()
 
                 self.last_prompt_sections = prompt_sections
             except KeyboardInterrupt:
