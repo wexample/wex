@@ -23,6 +23,7 @@ from addons.ai.src.assistant.command.function_command import FunctionCommand
 from addons.ai.src.assistant.command.help_command import HelpCommand
 from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
 from addons.ai.src.assistant.command.menu_command import MenuCommand
+from addons.ai.src.assistant.command.new_conversation_command import NewConversationCommand
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.url_search_command import UrlSearchCommand
@@ -75,7 +76,6 @@ class Assistant(KernelChild):
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
         super().__init__(kernel)
 
-        self.user = None
         self._initial_default_model = default_model
         self.colors_theme: Optional[str] = None
         self.history: List[HistoryItem] = []
@@ -153,6 +153,7 @@ class Assistant(KernelChild):
             HelpCommand,
             InvestigateCommand,
             MenuCommand,
+            NewConversationCommand,
             SubjectCommand,
             TerminalCommand,
             UrlSearchCommand,
@@ -220,6 +221,7 @@ class Assistant(KernelChild):
 
     def set_conversation(self, id_conversation: Optional[int] = None):
         self.conversation = self.database.get_or_create_conversation(id_conversation)
+        self.last_prompt_sections = []
         self.history: List[HistoryItem] = self.database.get_conversation_items(
             self.conversation.id
         )

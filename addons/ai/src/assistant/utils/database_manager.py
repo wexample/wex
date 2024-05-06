@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Dict, Tuple, Any, Optional, Sequence
+from typing import TYPE_CHECKING, List, Dict, Tuple, Any, Optional, cast
 
 from sqlalchemy import create_engine, MetaData, Table, select, Row
 from sqlalchemy.orm import sessionmaker
@@ -123,9 +123,9 @@ class DatabaseManager(AbstractAssistantChild):
         self.session.add(assistant_conversation_item)
         self.session.commit()
 
-    def get_conversation_items(self, conversation_id: int) -> Sequence[Row[tuple[Any, ...] | Any]]:
+    def get_conversation_items(self, conversation_id: int) -> List[HistoryItem]:
         query = self.session.query(HistoryItem).filter(
             HistoryItem.conversation_id == conversation_id
         ).order_by(HistoryItem.date_created)
 
-        return query.all()
+        return cast(List[HistoryItem], query.all())
