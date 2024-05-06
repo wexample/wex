@@ -18,6 +18,7 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
         return (
             f"You will give a new version of this file, following given guidelines. "
             f"Return the whole new file content with any other text before or after. "
+            f"The file content starts after the hashed title"
             f"Include unchanged parts of the original file if still present in the new version. "
             "No introduction. No conclusion. No markdown code block."
         )

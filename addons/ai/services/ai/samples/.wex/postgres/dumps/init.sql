@@ -10,6 +10,8 @@ CREATE TABLE "user" (
 CREATE TABLE "assistant_conversation" (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
+    subject VARCHAR(255),
+    subject_data JSON,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT REFERENCES "user"(id)
 );
@@ -24,7 +26,5 @@ CREATE TABLE "assistant_conversation_item" (
     lang VARCHAR(255),
     conversation_id INT REFERENCES "assistant_conversation"(id),
     personality VARCHAR(255),
-    subject VARCHAR(255),
-    subject_data JSON,
     command VARCHAR(255)
 );
