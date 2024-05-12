@@ -520,7 +520,18 @@ class Assistant(KernelChild):
     def get_session_history(
         self, user_id: int, conversation_id: int
     ) -> BaseChatMessageHistory:
-        return self.active_memory
+        max_token = 1000
+        llm = self.get_model().get_llm()
+        total_count = 0
+        history: ChatMessageHistory = ChatMessageHistory()
+
+        for message in reversed(self.active_memory.messages):
+            total_count += llm.get_num_tokens(message.content)
+
+            if total_count < max_token:
+                history.add_message(message)
+
+        return history
 
     def text_has_a_command(self, text: str) -> bool:
         sections = self.split_prompt_sections(text)
