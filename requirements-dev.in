@@ -1,5 +1,6 @@
 autoflake
 black
+coverage
 isort
 mypy
 no_implicit_optional

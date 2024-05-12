@@ -425,7 +425,7 @@ class Assistant(KernelChild):
                     None,
                     command_parts[1:] if len(command_parts) > 1 else None
                 )
-            else:
+            elif word:
                 current_user_input_part.append(
                     word
                 )

@@ -10,6 +10,8 @@ black==23.11.0
     # via -r requirements-dev.in
 click==8.1.7
     # via black
+coverage==7.5.1
+    # via -r requirements-dev.in
 isort==5.12.0
     # via -r requirements-dev.in
 libcst==1.1.0

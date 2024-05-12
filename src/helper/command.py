@@ -153,6 +153,9 @@ def execute_command_sync(
     if working_directory is None:
         working_directory = os.getcwd()
 
+    if isinstance(command, str):
+        command = command.split()
+
     if as_sudo_user:
         command_prefix: Union[List[str], str] = ["sudo", "-u", get_user_or_sudo_user()]
         if isinstance(command, str):
@@ -166,72 +169,46 @@ def execute_command_sync(
         f"Running shell command: {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
     )
 
-    if interactive:
-        try:
-            result = subprocess.run(
+    try:
+        if interactive:
+            process = subprocess.Popen(
                 command,
                 cwd=working_directory,
-                text=True,
-                capture_output=True,
-                check=not ignore_error,
+                stdin=None,
+                stdout=None,
+                stderr=None,
+                **kwargs
             )
-            output_lines = result.stdout.splitlines() if result.stdout else []
-            error_lines = result.stderr.splitlines() if result.stderr else []
+            process.wait()
+        else:
+            process = subprocess.Popen(
+                command,
+                cwd=working_directory,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                **kwargs
+            )
 
-            if result.returncode != 0 and not ignore_error:
-                # Log error only if ignoring errors is not specified
-                kernel.io.error(
-                    f"Command response code error: "
-                    f"\n{command_str}"
-                    f"\n\nCommand argument : \n{str(command)}"
-                    f"\n\nStdout:\n{os.linesep.join(output_lines)}\n"
-                    f"\n\nStderr:\n{os.linesep.join(error_lines)}"
-                )
-            else:
-                # Log output at maximum verbosity if execution was successful or errors are ignored
-                kernel.io.log(
-                    "\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM
-                )
+        output, errors = process.communicate()
 
-            return result.returncode == 0, output_lines
+        output_lines = output.splitlines() if output else []
+        error_lines = errors.splitlines() if errors else []
 
-        except subprocess.CalledProcessError as e:
-            # When the command fails, log the error and the captured stderr
-            error_lines = e.stderr.splitlines() if e.stderr else []
+        if process.returncode != 0 and not ignore_error:
             kernel.io.error(
-                f"Error when running interactive sync command: "
-                f"\n{command_str}"
-                f"\n\nCommand argument : \n{str(command)}"
-                f"\n\n{os.linesep.join(error_lines)}"
+                f"Command response code error: {command_str}\n\nStdout:\n{os.linesep.join(output_lines)}\n\nStderr:\n{os.linesep.join(error_lines)}"
             )
             return False, error_lines
 
-    else:
-        popen_args = {
-            "cwd": working_directory,
-            "stdout": subprocess.PIPE,
-            "stderr": subprocess.STDOUT,
-            **kwargs,
-        }
+        kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        return process.returncode == 0, output_lines
 
-        process = subprocess.Popen(command, **popen_args)
-        out_content, _ = process.communicate()
-        assert isinstance(out_content, bytes)
-        out_content_decoded: str = out_content.decode()
-        success: bool = process.returncode == 0
-
-        if not success and not ignore_error:
-            kernel.io.error(
-                f"Error when running sync command: "
-                f"\n{command_str}"
-                f"\n\nCommand argument : \n{str(command)}"
-                + os.linesep
-                + os.linesep
-                + out_content_decoded
-            )
-
-        kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
-        return success, out_content_decoded.splitlines()
+    except subprocess.CalledProcessError as e:
+        kernel.io.error(
+            f"Error when running command: {command_str}\n\n{str(e)}"
+        )
+        return False, e.stderr.splitlines() if e.stderr else []
 
 
 def command_escape(string: str, quote_char: str = '"') -> str:
