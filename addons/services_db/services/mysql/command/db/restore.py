@@ -17,20 +17,30 @@ if TYPE_CHECKING:
 def mysql__db__restore(
     manager: "AppAddonManager", app_dir: str, service: str, file_name: str
 ) -> str:
-    command = [
-        "mysql",
-        manager.kernel.run_function(
-            mysql__db__connect,
-            {
-                "app-dir": app_dir,
-                "service": service,
-            },
-            type=COMMAND_TYPE_SERVICE,
-        ).first(),
-        manager.get_app_name(),
-        "<",
-        "/var/www/dumps/" + file_name,
-    ]
+    database_name = manager.get_app_name()
+    manager.log(f'Recreating an empty database "{database_name}"')
+    manager.kernel.run_function(
+        app__app__exec,
+        {
+            "app-dir": app_dir,
+            "container-name": service,
+            # Ask to execute bash
+            "command": [
+                "mysql",
+                manager.kernel.run_function(
+                    mysql__db__connect,
+                    {
+                        "app-dir": app_dir,
+                        "service": service,
+                    },
+                    type=COMMAND_TYPE_SERVICE,
+                ).first(),
+                "-e",
+                f"'DROP DATABASE IF EXISTS {database_name}; CREATE DATABASE {database_name}'",
+            ],
+            "sync": True,
+        },
+    )
 
     manager.kernel.run_function(
         app__app__exec,
@@ -38,7 +48,20 @@ def mysql__db__restore(
             "app-dir": app_dir,
             "container-name": service,
             # Ask to execute bash
-            "command": command,
+            "command": [
+                "mysql",
+                manager.kernel.run_function(
+                    mysql__db__connect,
+                    {
+                        "app-dir": app_dir,
+                        "service": service,
+                    },
+                    type=COMMAND_TYPE_SERVICE,
+                ).first(),
+                database_name,
+                "<",
+                "/var/www/dumps/" + file_name,
+            ],
             "sync": True,
         },
     )
