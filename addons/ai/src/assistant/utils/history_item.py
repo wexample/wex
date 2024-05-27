@@ -18,8 +18,6 @@ class HistoryItem(Base):
     lang = Column(String)
     conversation_id = Column(Integer)
     personality = Column(String)
-    subject = Column(String)
-    subject_data = Column(JSON)
     command = Column(String)
 
     def __init__(self, **kw: Any) -> None:
