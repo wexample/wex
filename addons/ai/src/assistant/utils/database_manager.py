@@ -44,7 +44,7 @@ class DatabaseManager(AbstractAssistantChild):
                 autoload_with=self.engine
             )
 
-        self.assistant.log("Database ready")
+        self.kernel.io.success("Database ready")
 
     def get_or_create_user(self) -> Row[Tuple[Any, ...]]:
         username = get_user_or_sudo_user()
