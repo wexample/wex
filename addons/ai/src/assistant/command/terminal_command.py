@@ -28,7 +28,7 @@ class TerminalCommand(AbstractCommand):
         )
 
         response_str = os.linesep.join(response)
-        self.assistant.active_memory.add_message(response_str)
+        self.assistant.set_history_item(response_str, 'user')
 
         return StringInteractionResponse(
             "Running: " + prompt_section.prompt + ":" + os.linesep + response_str

@@ -511,6 +511,15 @@ class Assistant(KernelChild):
         )
 
         self.history.append(item)
+
+        if content:
+            if author == 'ai':
+                message = AIMessage(content)
+            else:
+                message = HumanMessage(content)
+
+            self.active_memory.add_message(message)
+
         self.database.save_assistant_conversation_item(item)
 
     def print_ai(self, message: str) -> None:
