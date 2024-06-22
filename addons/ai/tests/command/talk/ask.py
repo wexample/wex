@@ -1,10 +1,10 @@
 import enum
 import os
-import pprint
 from typing import Dict, cast, List
 
 import patch
 from langchain_core.prompts import FewShotPromptTemplate
+from wexample_helpers.helpers.file_helper import file_write
 
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
 from addons.ai.src.assistant.assistant import (
@@ -17,7 +17,7 @@ from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
 from addons.ai.src.assistant.command.chat_command import ChatCommand
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
-from src.helper.file import file_read, file_write
+from src.helper.file import file_read
 from src.helper.package import package_enable_logging
 from src.helper.patch import (
     patch_apply_in_workdir,
