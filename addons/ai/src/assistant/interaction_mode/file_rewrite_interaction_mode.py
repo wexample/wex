@@ -1,7 +1,7 @@
 import os
 from typing import Optional, List, cast
 
-from wexample_helpers.helpers.file_helper import file_write
+from wexample_helpers.helpers.file_helper import file_write, file_read
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -10,7 +10,6 @@ from addons.ai.src.assistant.interaction_response.abstract_interaction_response 
 from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from src.helper.file import file_read
 
 
 class FileRewriteInteractionMode(AbstractInteractionMode):

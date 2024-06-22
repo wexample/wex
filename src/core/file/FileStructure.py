@@ -1,14 +1,13 @@
 import os
 from typing import Optional
 
-from wexample_helpers.helpers.file_helper import file_write
+from wexample_helpers.helpers.file_helper import file_write, file_read
 
 from src.const.types import BasicValue, FileSystemStructureSchemaItem
 from src.core.file.AbstractFileSystemStructure import (
     FILE_SYSTEM_ERROR_WRONG_EXTENSION,
     AbstractFileSystemStructure,
 )
-from src.helper.file import file_create_parent_and_touch, file_read
 
 
 class FileStructure(AbstractFileSystemStructure):

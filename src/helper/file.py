@@ -293,11 +293,6 @@ def file_read_if_exists(
         return file.read()
 
 
-def file_read(file_path: str) -> str:
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
-
-
 def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
     matched_files = []
 

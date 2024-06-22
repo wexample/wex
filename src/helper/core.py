@@ -3,8 +3,9 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.file_helper import file_read
+
 from src.const.globals import FILE_VERSION
-from src.helper.file import file_read
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

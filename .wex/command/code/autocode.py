@@ -2,9 +2,11 @@ import ast
 import os
 import re
 
+from wexample_helpers.helpers.file_helper import file_read
+
 from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import AnyCallable
-from src.helper.file import file_search, file_read
+from src.helper.file import file_search
 from src.const.globals import COMMAND_TYPE_APP
 from addons.app.decorator.app_command import app_command
 

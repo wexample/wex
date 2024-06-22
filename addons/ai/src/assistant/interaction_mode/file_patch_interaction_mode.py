@@ -2,6 +2,7 @@ import os
 from typing import List, Optional, cast
 
 import patch
+from wexample_helpers.helpers.file_helper import file_read
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -13,7 +14,6 @@ from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
 from src.helper.file import (
     file_get_extension,
-    file_read,
     file_read_if_exists,
     file_set_user_or_sudo_user_owner,
 )
