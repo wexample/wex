@@ -1,6 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Optional, cast
 
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG, ERR_SERVICE_NOT_FOUND
 from src.const.globals import (
     COMMAND_CHAR_SERVICE,
@@ -17,7 +19,6 @@ from src.const.types import (
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
-from src.helper.data_yaml import yaml_load
 from src.helper.service import service_get_dir
 from src.helper.string import string_to_snake_case
 
@@ -198,7 +199,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                             "commands": self.scan_commands_groups(commands_path, test),
                             "addon": addon,
                             "dir": service_path,
-                            "config": yaml_load(
+                            "config": yaml_read(
                                 file_path=config_file_path, default={"dependencies": []}
                             ),
                         },

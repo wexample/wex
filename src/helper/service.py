@@ -2,8 +2,9 @@ import os
 import shutil
 from typing import TYPE_CHECKING, Any, Dict, List, cast
 
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.data_yaml import yaml_load
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -28,7 +29,7 @@ def service_load_config(kernel: "Kernel", service: str) -> Any:
         return False
 
     # Allow service to not define a config file
-    return yaml_load(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
+    return yaml_read(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
 
 
 def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:

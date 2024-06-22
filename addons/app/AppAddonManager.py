@@ -54,7 +54,7 @@ from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
-from src.helper.data_yaml import yaml_load, yaml_load_dict, yaml_write
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
 from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
     DICT_ITEM_EXISTS_ACTION_REPLACE,
@@ -157,7 +157,7 @@ class AppAddonManager(AddonManager):
     def load_script(self, name: str) -> Optional[YamlContent]:
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
 
-        return yaml_load(script_dir)
+        return yaml_read(script_dir)
 
     def get_helper_app_name(self, short_name: str) -> str:
         return "-".join([CORE_COMMAND_NAME, short_name])
@@ -170,7 +170,7 @@ class AppAddonManager(AddonManager):
     def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load(
+            yaml_read(
                 self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment)
                 + PROXY_FILE_APPS_REGISTRY,
                 {},
@@ -204,7 +204,7 @@ class AppAddonManager(AddonManager):
     def _load_config(
         cls, path: str, default: Optional[YamlContentDict] = None
     ) -> YamlContentDict:
-        return yaml_load_dict(path, default) or {}
+        return yaml_read_dict(path, default) or {}
 
     def create_config(
         self,

@@ -7,6 +7,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.command.agent_command import AgentCommand
@@ -60,7 +61,6 @@ from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
 from src.helper.data_json import json_load
-from src.helper.data_yaml import yaml_load
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 
 if TYPE_CHECKING:
@@ -199,7 +199,7 @@ class Assistant(KernelChild):
         for filename in os.listdir(personalities_path):
             if filename.endswith(".yml"):
                 name_without_extension, _ = os.path.splitext(filename)
-                personalities[name_without_extension] = yaml_load(
+                personalities[name_without_extension] = yaml_read(
                     os.path.join(personalities_path, filename)
                 )
 

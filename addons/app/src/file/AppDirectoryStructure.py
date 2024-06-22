@@ -1,6 +1,8 @@
 import os
 from typing import cast
 
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
 from addons.app.const.app import (
     APP_DIR_APP_DATA_NAME,
     APP_ENV_PROD,
@@ -9,7 +11,6 @@ from addons.app.const.app import (
 )
 from src.const.types import AppConfig, FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
-from src.helper.data_yaml import yaml_load
 from src.helper.dict import dict_merge
 
 
@@ -54,7 +55,7 @@ class AppDirectoryStructure(DirectoryStructure):
             self.path, APP_DIR_APP_DATA_NAME, APP_FILE_APP_CONFIG
         )
 
-        yaml_data = yaml_load(config_file)
+        yaml_data = yaml_read(config_file)
         if yaml_data:
             config = cast(AppConfig, yaml_data)
 

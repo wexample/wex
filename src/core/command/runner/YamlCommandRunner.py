@@ -4,6 +4,7 @@ import types
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from src.const.types import (
     Args,
@@ -25,7 +26,6 @@ from src.core.response.ResponseCollectionResponse import ResponseCollectionRespo
 from src.decorator.command import command
 from src.helper.args import args_convert_dict_to_args
 from src.helper.command import apply_command_decorator, internal_command_to_shell
-from src.helper.data_yaml import yaml_load
 from src.helper.dict import dict_get_item_by_path
 
 if TYPE_CHECKING:
@@ -56,7 +56,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 )
 
     def load_yaml_command(self, path: str) -> YamlCommand:
-        return cast(YamlCommand, yaml_load(path, {}))
+        return cast(YamlCommand, yaml_read(path, {}))
 
     def get_options_names(self) -> StringsList:
         names = []

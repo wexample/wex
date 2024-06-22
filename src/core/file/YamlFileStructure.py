@@ -1,9 +1,10 @@
 from typing import Optional, cast
 
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
+
 from src.const.types import BasicValue, YamlContent, YamlContentDict
 from src.core.file.FileStructure import FileStructure
 from src.helper.args import args_is_basic_value
-from src.helper.data_yaml import yaml_load, yaml_write
 
 
 class YamlFileStructure(FileStructure):
@@ -23,7 +24,7 @@ class YamlFileStructure(FileStructure):
     def load_content_yaml(
         self, default: Optional[YamlContentDict] = None
     ) -> YamlContent:
-        return yaml_load(self.path) or default
+        return yaml_read(self.path) or default
 
     def load_content(self, default: Optional[YamlContentDict] = None) -> None:
         self.content = self.load_content_yaml(default)
