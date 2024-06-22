@@ -340,6 +340,7 @@ pydantic==2.5.3
     #   langchain-core
     #   langsmith
     #   openai
+    #   wexample-prompt
 pydantic-core==2.14.6
     # via pydantic
 pygments==2.17.2
@@ -375,6 +376,7 @@ pyyaml==6.0.1
     #   langchain-community
     #   langchain-core
     #   uvicorn
+    #   wexample-helpers-yaml
 rapidfuzz==3.7.0
     # via unstructured
 regex==2023.12.25
@@ -519,6 +521,14 @@ websocket-client==1.7.0
     # via kubernetes
 websockets==12.0
     # via uvicorn
+wexample-helpers==0.0.1
+    # via
+    #   -r requirements.in
+    #   wexample-helpers-yaml
+wexample-helpers-yaml==0.0.1
+    # via -r requirements.in
+wexample-prompt==0.0.1
+    # via -r requirements.in
 wrapt==1.16.0
     # via
     #   deprecated

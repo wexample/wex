@@ -25,3 +25,6 @@ sqlalchemy
 unstructured
 unstructured[md]
 validators
+wexample-helpers
+wexample-helpers-yaml
+wexample-prompt
