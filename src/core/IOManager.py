@@ -19,8 +19,8 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.KernelChild import KernelChild
+from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
 if TYPE_CHECKING:

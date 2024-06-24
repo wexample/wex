@@ -5,9 +5,9 @@ import click
 
 from src.const.args import ARGS_HELP
 from src.const.types import StringsList
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.KernelChild import KernelChild
+from src.core.command.ScriptCommand import ScriptCommand
 from src.core.response.AbortResponse import AbortResponse
 
 if TYPE_CHECKING:

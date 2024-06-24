@@ -2,8 +2,8 @@ import importlib.util
 from typing import Any, Optional, cast
 
 from src.const.types import StringsList
-from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
 class PythonCommandRunner(AbstractCommandRunner):

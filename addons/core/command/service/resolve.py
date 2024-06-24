@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.args import args_split_arg_array
+
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import CoreCommandCommaSeparatedList, StringsList
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.args import args_split_arg_array
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

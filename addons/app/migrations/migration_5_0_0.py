@@ -2,6 +2,7 @@ import os.path
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import yaml
+from wexample_helpers.helpers.string_helper import string_to_snake_case
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.AppAddonManager import AppAddonManager
@@ -15,7 +16,6 @@ from addons.app.migrations.migration_4_0_0 import (
 from addons.docker.types.docker import DockerCompose
 from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
 from src.helper.prompt import prompt_progress_steps
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel

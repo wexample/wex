@@ -2,12 +2,12 @@ from abc import ABC
 from typing import TYPE_CHECKING, cast
 
 import yaml
+from wexample_helpers.helpers.args import args_replace_one
 
 from src.const.types import BasicInlineValue
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.helper.args import args_replace_one
 from src.helper.process import process_post_exec_function
 
 if TYPE_CHECKING:

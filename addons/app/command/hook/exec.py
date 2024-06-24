@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, Optional, cast
 
+from wexample_helpers.helpers.args import args_parse_dict
+
 from addons.app.command.services.exec import app__services__exec
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_CHAR_APP, VERBOSITY_LEVEL_MAXIMUM
 from src.const.types import StringKeysDict
 from src.decorator.option import option
-from src.helper.args import args_parse_dict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

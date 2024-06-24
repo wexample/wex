@@ -1,6 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional
 
+from src.helper.click_helper import args_convert_dict_to_long_names_dict, args_convert_to_dict, args_convert_dict_to_args
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.const.types import (
     CoreCommandArgsList,
@@ -11,11 +12,6 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.args import (
-    args_convert_dict_to_args,
-    args_convert_dict_to_long_names_dict,
-    args_convert_to_dict,
-)
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import (

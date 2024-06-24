@@ -1,6 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional, cast
 
+from wexample_helpers.helpers.string_helper import string_to_snake_case
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG, ERR_SERVICE_NOT_FOUND
@@ -16,11 +17,10 @@ from src.const.types import (
     RegistryService,
     StringsList,
 )
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
+from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.response.AbortResponse import AbortResponse
 from src.helper.service import service_get_dir
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse

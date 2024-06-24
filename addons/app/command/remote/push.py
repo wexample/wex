@@ -3,6 +3,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 import requests
+from wexample_helpers.helpers.string_helper import string_to_snake_case
 
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.const.app import APP_ENV_PROD
@@ -19,7 +20,6 @@ from src.const.types import FileSystemStructureSchema
 from src.core.response.DictResponse import DictResponse
 from src.decorator.option import option
 from src.helper.command import execute_command_sync
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

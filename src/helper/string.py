@@ -2,17 +2,12 @@ import os
 import random
 import re
 import shutil
-import string
 from typing import List, Mapping, Optional
 
+from wexample_helpers.helpers.string_helper import string_to_snake_case
+
+import string
 from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch
-
-
-def string_to_snake_case(text: str) -> str:
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", text)
-    s2 = re.sub("([a-z])([A-Z])", r"\1_\2", s1).lower()
-    s3 = re.sub("([0-9])([A-Z])", r"\1\2", s2)
-    return str(re.sub("\W+", "_", s3))
 
 
 def string_to_kebab_case(text: str) -> str:

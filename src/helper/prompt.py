@@ -4,10 +4,10 @@ import os
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, cast
 
 import click
-from click._termui_impl import ProgressBar, V
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
+from click._termui_impl import ProgressBar, V
 
 from src.const.types import StringsDict
 from src.helper.dict import dict_merge, dict_sort_values

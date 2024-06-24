@@ -1,10 +1,10 @@
 from typing import Optional, cast
 
+from wexample_helpers.helpers.args import args_is_basic_value
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
 
 from src.const.types import BasicValue, YamlContent, YamlContentDict
 from src.core.file.FileStructure import FileStructure
-from src.helper.args import args_is_basic_value
 
 
 class YamlFileStructure(FileStructure):

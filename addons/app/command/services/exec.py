@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.args import args_parse_dict
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import (
     COMMAND_CHAR_SERVICE,
@@ -8,7 +10,6 @@ from src.const.globals import (
 )
 from src.const.types import StringKeysDict
 from src.decorator.option import option
-from src.helper.args import args_parse_dict
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

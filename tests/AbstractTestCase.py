@@ -11,8 +11,8 @@ from src.const.types import (
     StringKeysDict,
     StringsDict,
 )
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.TestKernel import TestKernel
+from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy
 

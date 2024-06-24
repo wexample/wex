@@ -2,9 +2,11 @@ import os
 import re
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.string_helper import string_to_snake_case
+
 from src.const.globals import COMMAND_EXTENSION_PYTHON
 from src.helper.file import file_create_from_template
-from src.helper.string import string_to_pascal_case, string_to_snake_case
+from src.helper.string import string_to_pascal_case
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest

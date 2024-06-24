@@ -6,6 +6,7 @@ from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.test.create import core__test__create
 from addons.core.command.version.new_write import core__version__new_write
+from src.helper.click_helper import args_convert_to_dict, args_convert_dict_to_args
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     CORE_COMMAND_NAME,
@@ -14,7 +15,6 @@ from src.const.globals import (
 )
 from src.core.FatalError import FatalError
 from src.core.response.AbortResponse import AbortResponse
-from src.helper.args import args_convert_dict_to_args, args_convert_to_dict
 from src.helper.module import module_load_from_file
 from src.helper.registry import registry_get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method

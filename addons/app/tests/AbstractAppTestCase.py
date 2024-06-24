@@ -1,6 +1,9 @@
 import os.path
+import re
 import shutil
 from typing import Optional, cast
+
+from wexample_helpers.helpers.string_helper import string_to_snake_case
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
@@ -19,7 +22,6 @@ from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList
 from src.core.response.AbstractResponse import AbstractResponse
-from src.helper.string import string_to_snake_case
 from tests.AbstractTestCase import AbstractTestCase
 
 
