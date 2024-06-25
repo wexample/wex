@@ -65,6 +65,11 @@ children:
               format.yml:
                 type: file
             type: dir
+          develop:
+            children:
+              setup.yml:
+                type: file
+            type: dir
           local_command:
             children:
               test.py:
@@ -97,6 +102,15 @@ children:
         type: dir
       python:
         status: hidden
+        type: dir
+      tests:
+        children:
+          command:
+            children:
+              develop:
+                children: {}
+                type: dir
+            type: dir
         type: dir
       tmp:
         status: hidden
@@ -228,6 +242,11 @@ children:
                 children:
                   command:
                     children:
+                      app:
+                        children:
+                          start_post.py:
+                            type: file
+                        type: dir
                       service:
                         children:
                           install.py:
@@ -248,6 +267,14 @@ children:
                               docker-compose.yml:
                                 type: file
                             type: dir
+                          postgres:
+                            children:
+                              dumps:
+                                children:
+                                  init.sql:
+                                    type: file
+                                type: dir
+                            type: dir
                         type: dir
                     type: dir
                   service.config.yml:
@@ -260,17 +287,64 @@ children:
                 children:
                   assistant.py:
                     type: file
+                  command:
+                    children:
+                      abstract_command.py:
+                        type: file
+                      agent_command.py:
+                        type: file
+                      chat_command.py:
+                        type: file
+                      copy_clipboard_command.py:
+                        type: file
+                      default_command.py:
+                        type: file
+                      dir_search_command.py:
+                        type: file
+                      exit_command.py:
+                        type: file
+                      file_patch_command.py:
+                        type: file
+                      file_rewrite_command.py:
+                        type: file
+                      file_search_command.py:
+                        type: file
+                      format_command.py:
+                        type: file
+                      function_command.py:
+                        type: file
+                      help_command.py:
+                        type: file
+                      investigate_command.py:
+                        type: file
+                      menu_command.py:
+                        type: file
+                      new_conversation_command.py:
+                        type: file
+                      subject_command.py:
+                        type: file
+                      terminal_command.py:
+                        type: file
+                      url_search_command.py:
+                        type: file
+                      vet_command.py:
+                        type: file
+                    type: dir
                   interaction_mode:
                     children:
                       abstract_interaction_mode.py:
                         type: file
                       abstract_vector_store_interaction_mode.py:
                         type: file
+                      chat_interaction_mode.py:
+                        type: file
                       default_interaction_mode.py:
                         type: file
                       dir_search_interaction_mode.py:
                         type: file
                       file_patch_interaction_mode.py:
+                        type: file
+                      file_rewrite_interaction_mode.py:
                         type: file
                       file_search_interaction_mode.py:
                         type: file
@@ -280,11 +354,22 @@ children:
                         type: file
                       investigation_interaction_mode.py:
                         type: file
+                      prompt_exit_interaction_mode.py:
+                        type: file
                       tool_picker_interaction_mode.py:
                         type: file
                       url_search_interaction_mode.py:
                         type: file
                       vetting_interaction_mode.py:
+                        type: file
+                    type: dir
+                  interaction_response:
+                    children:
+                      abstract_interaction_response.py:
+                        type: file
+                      null_interaction_response.py:
+                        type: file
+                      string_interaction_response.py:
                         type: file
                     type: dir
                   model:
@@ -300,30 +385,22 @@ children:
                     children:
                       abstract_chat_subject.py:
                         type: file
-                      agent_chat_subject.py:
-                        type: file
                       default_chat_subject.py:
                         type: file
                       dir_chat_subject.py:
                         type: file
                       file_chat_subject.py:
                         type: file
-                      function_chat_subject.py:
-                        type: file
-                      help_chat_subject.py:
-                        type: file
-                      people_chat_subject.py:
-                        type: file
-                      previous_response_subject.py:
-                        type: file
                       remote_url_subject.py:
                         type: file
-                      terminal_chat_subject.py:
+                      url_chat_subject.py:
                         type: file
                     type: dir
                   utils:
                     children:
                       abstract_assistant_child.py:
+                        type: file
+                      database_manager.py:
                         type: file
                       globals.py:
                         type: file
@@ -500,6 +577,11 @@ children:
                   find.py:
                     type: file
                 type: dir
+              logs:
+                children:
+                  follow.py:
+                    type: file
+                type: dir
               migration:
                 children:
                   migrate.py:
@@ -627,6 +709,9 @@ children:
                 type: file
               migration_5_0_34.py:
                 type: file
+            type: dir
+          pip:
+            children: {}
             type: dir
           samples:
             children:
@@ -884,6 +969,11 @@ children:
                   location:
                     children:
                       find.py:
+                        type: file
+                    type: dir
+                  logs:
+                    children:
+                      follow.py:
                         type: file
                     type: dir
                   migration:
@@ -2590,6 +2680,8 @@ children:
         type: file
       wex:
         type: file
+      wex-coverage:
+        type: file
       wex-wrapper:
         type: file
     type: dir
@@ -2769,17 +2861,15 @@ children:
         type: dir
       helper:
         children:
-          args.py:
-            type: file
           array.py:
+            type: file
+          click_helper.py:
             type: file
           command.py:
             type: file
           core.py:
             type: file
           data_json.py:
-            type: file
-          data_yaml.py:
             type: file
           dict.py:
             type: file

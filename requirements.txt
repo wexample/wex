@@ -521,13 +521,13 @@ websocket-client==1.7.0
     # via kubernetes
 websockets==12.0
     # via uvicorn
-wexample-helpers==0.0.1
+wexample-helpers==0.0.5
     # via
     #   -r requirements.in
     #   wexample-helpers-yaml
-wexample-helpers-yaml==0.0.1
+wexample-helpers-yaml==0.0.3
     # via -r requirements.in
-wexample-prompt==0.0.1
+wexample-prompt==0.0.3
     # via -r requirements.in
 wrapt==1.16.0
     # via
