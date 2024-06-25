@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from wexample_helpers.helpers.args import args_parse_list_or_strings_list
 
@@ -7,6 +7,7 @@ from addons.app.helper.remote import (
     remote_get_connexion_address,
     remote_get_connexion_command,
 )
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
@@ -41,24 +42,42 @@ if TYPE_CHECKING:
     is_flag=True,
     help="Open a terminal",
 )
+@option(
+    "--sync",
+    "-s",
+    type=bool,
+    is_flag=True,
+    required=False,
+    help="Execute command in a sub process",
+)
 def app__remote__exec(
     manager: "AppAddonManager",
     app_dir: str,
     environment: str,
     command: str,
     terminal: bool,
-) -> Optional[InteractiveShellCommandResponse]:
+    sync: bool = False,
+) -> Optional[Union[InteractiveShellCommandResponse, NonInteractiveShellCommandResponse]]:
     address = remote_get_connexion_address(
-        manager=manager, environment=environment, command=app__remote__exec
+        manager=manager,
+        environment=environment,
+        command=app__remote__exec
     )
 
     if not address:
         return None
 
+    command = remote_get_connexion_command(
+            manager=manager, environment=environment, terminal=terminal
+        ) + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"]
+
+    if sync:
+        return NonInteractiveShellCommandResponse(
+            manager.kernel,
+            command,
+        )
+
     return InteractiveShellCommandResponse(
         manager.kernel,
-        remote_get_connexion_command(
-            manager=manager, environment=environment, terminal=terminal
-        )
-        + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"],
+        command,
     )
