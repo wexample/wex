@@ -1,3 +1,25 @@
 #!/usr/bin/env bash
 
-echo "hi"
+# Find current file directory
+# supporting symlinks
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
+WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
+
+# Source .env file if it exists
+if [ -f "${WEX_ROOT}/.env" ]; then
+    . "${WEX_ROOT}/.env"
+fi
+
+. "${WEX_DIR_CLI}/_init.sh"
+
+# Trap to handle interruptions and cleanup
+trap cleanup EXIT INT TERM
+
+WEX_TASK_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
+
+# Allow to override python executor
+WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.wex/python/venv/bin/python}
+
+# Load main python script
+${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"
+
