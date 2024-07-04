@@ -58,7 +58,7 @@ from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
-from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
+from wexample_helpers.helper.dict_helper import dict_get_item_by_path, dict_has_item_by_path
 from src.helper.file import (
     DICT_ITEM_EXISTS_ACTION_REPLACE,
     file_env_to_dict,

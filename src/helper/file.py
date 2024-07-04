@@ -200,7 +200,7 @@ def file_set_dict_item_by_path(
             and isinstance(data[final_key], dict)
             and isinstance(value, dict)
         ):
-            from src.helper.dict import dict_merge
+            from wexample_helpers.helper.dict_helper import dict_merge
 
             data[final_key] = dict_merge(data[final_key], value)
     else:
