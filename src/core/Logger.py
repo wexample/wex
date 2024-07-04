@@ -5,13 +5,14 @@ import os
 import time
 from typing import TYPE_CHECKING, List, Optional, TypedDict, cast
 
+from wexample_helpers.helpers.json_helper import json_parse_if_valid
+
 from src.const.types import (
     CoreCommandArgsList,
     StringKeysDict,
     StringsDict,
     StringsList,
 )
-from src.helper.data_json import json_parse_if_valid
 from src.helper.file import file_set_user_or_sudo_user_owner
 
 LOG_STATUS_COMPLETE = "complete"

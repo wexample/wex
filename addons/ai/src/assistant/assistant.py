@@ -7,6 +7,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
+from wexample_helpers.helpers.json_helper import json_load
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
@@ -60,7 +61,6 @@ from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.core.KernelChild import KernelChild
 from src.core.spinner import Spinner
-from src.helper.data_json import json_load
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 
 if TYPE_CHECKING:

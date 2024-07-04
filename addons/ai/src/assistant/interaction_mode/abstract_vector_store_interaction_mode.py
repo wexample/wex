@@ -10,6 +10,7 @@ from langchain_community.document_loaders.parsers.language.language_parser impor
 from langchain_core.documents.base import Document
 from langchain_postgres.vectorstores import PGVector
 from unstructured.cleaners.core import clean, clean_extra_whitespace, remove_punctuation
+from wexample_helpers.helpers.json_helper import json_load_if_valid
 from yaml import BaseLoader
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
@@ -18,7 +19,6 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
-from src.helper.data_json import json_load_if_valid
 from src.helper.file import file_get_extension
 
 if TYPE_CHECKING:

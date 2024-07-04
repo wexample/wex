@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, cast
 
+from wexample_helpers.helpers.json_helper import json_load_if_valid
+
 from src.core.Logger import LoggerLogData
 from src.core.response.TableResponse import TableBody, TableBodyLine, TableResponse
 from src.decorator.alias import alias
 from src.decorator.command import command
 from src.decorator.no_log import no_log
-from src.helper.data_json import json_load_if_valid
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
