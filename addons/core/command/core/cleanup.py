@@ -7,7 +7,7 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.option import option
-from src.helper.dir import dir_empty_dir
+from wexample_helpers.helpers.directory_helper import directory_empty_dir
 
 if TYPE_CHECKING:
     from src.core.Kernel import Kernel
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 def core__core__cleanup(kernel: "Kernel", test: bool = False) -> None:
     tmp_dir = kernel.get_or_create_path("tmp")
     # Do not hard remove "tmp" as it might be a mounted volume
-    dir_empty_dir(tmp_dir)
+    directory_empty_dir(tmp_dir)
 
     os.makedirs(os.path.dirname(tmp_dir), exist_ok=True)
     with open(os.path.join(tmp_dir, ".gitkeep"), "a"):

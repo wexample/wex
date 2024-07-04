@@ -1,5 +1,5 @@
 from addons.app.command.location.find import app__location__find
-from src.helper.dir import dir_execute_in_workdir
+from wexample_helpers.helpers.directory_helper import directory_execute_inside
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -28,4 +28,4 @@ class TestAppCommandLocationFind(AbstractTestCase):
             ).first()
             self.assertEqual(app_location, root_dir)
 
-        dir_execute_in_workdir(tmp_dir, _test_find)
+        directory_execute_inside(tmp_dir, _test_find)

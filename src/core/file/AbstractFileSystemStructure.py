@@ -10,7 +10,7 @@ from src.const.types import (
     StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
-from src.helper.dir import dir_set_permissions_recursively
+from wexample_helpers.helpers.file_helper import file_change_mode_recursive
 from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:
@@ -149,7 +149,7 @@ class AbstractFileSystemStructure(BaseClass):
                     self.add_error(FILE_SYSTEM_ERROR_NOT_FOUND, {"path": self.path})
 
         if self.permissions:
-            dir_set_permissions_recursively(self.path, self.permissions["mode"])
+            file_change_mode_recursive(self.path, self.permissions["mode"])
 
         if self.user:
             set_owner_recursively(
