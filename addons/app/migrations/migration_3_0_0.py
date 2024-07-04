@@ -5,7 +5,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def migration_3_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:

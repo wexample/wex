@@ -8,7 +8,7 @@ from src.decorator.option import option
 from src.helper.test import create_test_from_command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

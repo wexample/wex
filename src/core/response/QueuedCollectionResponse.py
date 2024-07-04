@@ -35,7 +35,7 @@ from src.core.response.queue_collection.QueuedCollectionStopResponse import (
 )
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 QueuedCollectionStepValue = int | None
 QueuedCollectionStepsList = List[QueuedCollectionStepValue]

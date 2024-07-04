@@ -10,7 +10,7 @@ from addons.app.migrations.migration_4_0_0 import (
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def migration_5_0_1(kernel: "Kernel", manager: AppAddonManager) -> None:

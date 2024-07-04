@@ -4,7 +4,7 @@ from src.const.types import KernelRegistry, RegistryResolverData, YamlContentDic
 from src.core.file.YamlFileStructure import YamlFileStructure
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class KernelRegistryFileStructure(YamlFileStructure):

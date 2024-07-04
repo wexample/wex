@@ -9,7 +9,7 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("logs")

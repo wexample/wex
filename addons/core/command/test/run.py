@@ -17,7 +17,7 @@ from src.helper.module import module_load_from_file
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("test")

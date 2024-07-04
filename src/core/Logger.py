@@ -20,7 +20,7 @@ LOG_STATUS_STARTED = "started"
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class LoggerLogDataError(TypedDict):

@@ -1,5 +1,5 @@
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
-from src.core.Kernel import Kernel
+from src.utils.kernel import Kernel
 
 
 class TestKernel(Kernel):

@@ -23,7 +23,7 @@ from src.decorator.option import option
 from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Build a new version of current core, or commit new version changes")

@@ -1,7 +1,7 @@
 from langchain.tools import BaseTool
 
 from src.const.types import Args, Kwargs
-from src.core.Kernel import Kernel
+from src.utils.kernel import Kernel
 
 
 class CommandTool(BaseTool):

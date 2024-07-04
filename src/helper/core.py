@@ -8,7 +8,7 @@ from wexample_helpers.helpers.file_helper import file_read
 from src.const.globals import FILE_VERSION
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def core_dir_get_version(core_dir: str) -> str:

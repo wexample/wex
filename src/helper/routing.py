@@ -10,7 +10,7 @@ from src.helper.command import command_get_option
 
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_NAME_CHARS = re.compile(r"^[a-zA-Z0-9_&]+$")

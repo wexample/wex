@@ -13,7 +13,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import execute_command_tree_sync
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class NonInteractiveShellCommandResponse(AbstractResponse):

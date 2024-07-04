@@ -10,7 +10,7 @@ from src.helper.string import string_to_pascal_case
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def file_path_to_test_class_name(kernel: "Kernel", file_path: str) -> str:

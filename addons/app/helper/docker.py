@@ -14,7 +14,7 @@ from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 

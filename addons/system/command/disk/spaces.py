@@ -8,7 +8,7 @@ from src.decorator.command import command
 from src.helper.file import file_get_human_readable_size
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @ai_tool()

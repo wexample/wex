@@ -28,7 +28,7 @@ from src.const.types import (
     StringsMatch,
 )
 from src.core.CommandRequest import CommandRequest
-from src.core.KernelChild import KernelChild
+from src.utils.kernelChild import KernelChild
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse

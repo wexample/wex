@@ -20,7 +20,7 @@ from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION = "function-response-text"
 

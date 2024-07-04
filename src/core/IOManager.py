@@ -19,12 +19,12 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.core.KernelChild import KernelChild
+from src.utils.kernelChild import KernelChild
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 IO_DEFAULT_LOG_LENGTH = 0
 

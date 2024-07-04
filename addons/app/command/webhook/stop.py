@@ -10,7 +10,7 @@ from src.helper.process import process_kill_by_command
 from src.helper.system import system_service_daemon_exec, system_service_daemon_reload
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

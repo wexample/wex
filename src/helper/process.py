@@ -15,7 +15,7 @@ from src.helper.command import (
 )
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def process_post_exec(

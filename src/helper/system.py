@@ -11,7 +11,7 @@ from src.helper.command import execute_command_sync
 from src.helper.process import process_get_all_by_port
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def system_is_port_open(port: int, host: str = "localhost") -> bool:

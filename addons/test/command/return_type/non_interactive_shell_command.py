@@ -7,7 +7,7 @@ from src.core.response.NonInteractiveShellCommandResponse import (
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return an int value", command_type=COMMAND_TYPE_ADDON)

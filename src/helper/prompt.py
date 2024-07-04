@@ -13,7 +13,7 @@ from src.const.types import StringsDict
 from wexample_helpers.helper.dict_helper import dict_merge, dict_sort_values
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[V]:

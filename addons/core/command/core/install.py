@@ -20,7 +20,7 @@ from src.helper.file import file_create_from_template
 from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

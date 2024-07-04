@@ -4,7 +4,7 @@ from addons.app.helper.docker import docker_is_current
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return true if current environment is a Docker container")

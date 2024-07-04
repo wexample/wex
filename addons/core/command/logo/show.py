@@ -9,7 +9,7 @@ from src.helper.core import core_kernel_get_version
 from src.helper.string import string_multiline_center, string_truncate
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @ai_tool()

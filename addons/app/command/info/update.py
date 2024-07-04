@@ -2,7 +2,7 @@ from addons.ai.src.crawler.app_crawler import CrawlerTreeItem
 from addons.ai.src.crawler.wex_app_crawler import WexAppCrawler
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from addons.app.decorator.app_command import app_command
-from src.core.Kernel import Kernel
+from src.utils.kernel import Kernel
 
 
 @app_command(help="Description")

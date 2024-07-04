@@ -5,7 +5,7 @@ from src.const.globals import VERSION_DEFAULT
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def migration_5_0_10(kernel: "Kernel", manager: AppAddonManager) -> None:

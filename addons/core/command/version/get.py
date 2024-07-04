@@ -5,7 +5,7 @@ from src.decorator.command import command
 from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("-v")

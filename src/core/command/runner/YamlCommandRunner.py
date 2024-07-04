@@ -29,7 +29,7 @@ from src.helper.command import apply_command_decorator, internal_command_to_shel
 from wexample_helpers.helper.dict_helper import dict_get_item_by_path
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 COMMAND_TYPE_BASH: str = "bash"
 COMMAND_TYPE_BASH_FILE: str = "bash-file"

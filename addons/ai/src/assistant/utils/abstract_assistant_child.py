@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.core.KernelChild import KernelChild
+from src.utils.kernelChild import KernelChild
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant

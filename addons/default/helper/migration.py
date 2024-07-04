@@ -6,7 +6,7 @@ from src.const.types import AnyCallable
 from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 MIGRATION_MINIMAL_VERSION = "3.0.0"
 

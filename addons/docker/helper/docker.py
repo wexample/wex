@@ -9,7 +9,7 @@ from wexample_helpers.helper.dict_helper import dict_merge
 from src.helper.user import is_sudo
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def user_has_docker_permission(username: str) -> bool:

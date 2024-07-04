@@ -23,7 +23,7 @@ from src.helper.file import file_create_parent_dir
 from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def internal_command_to_shell(

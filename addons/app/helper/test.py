@@ -11,7 +11,7 @@ from src.const.types import StringsList
 from src.core.file.DirectoryStructure import DirectoryStructure
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 DEFAULT_APP_TEST_NAME: str = "test-app"
 DEFAULT_ENVIRONMENT_TEST_REMOTE: str = "test_remote"

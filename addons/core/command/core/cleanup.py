@@ -10,7 +10,7 @@ from src.decorator.option import option
 from wexample_helpers.helpers.directory_helper import directory_empty_dir
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("cleanup")

@@ -7,7 +7,7 @@ from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def service_get_dir(kernel: "Kernel", service: str) -> str | bool:

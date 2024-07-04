@@ -11,7 +11,7 @@ if TYPE_CHECKING:
         RegistryCommandsCollection,
         RegistryService,
     )
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:

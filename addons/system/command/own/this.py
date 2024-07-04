@@ -7,7 +7,7 @@ from src.decorator.option import option
 from src.helper.user import get_user_or_sudo_user, set_owner_recursively
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

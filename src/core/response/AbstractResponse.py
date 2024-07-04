@@ -17,10 +17,10 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
-from src.core.KernelChild import KernelChild
+from src.utils.kernelChild import KernelChild
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class AbstractResponse(KernelChild, HasRequest):

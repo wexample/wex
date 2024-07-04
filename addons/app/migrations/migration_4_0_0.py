@@ -14,7 +14,7 @@ from src.const.types import StringsDict, StringsList
 from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:

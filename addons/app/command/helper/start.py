@@ -16,7 +16,7 @@ from src.helper.prompt import prompt_progress_steps
 from src.helper.system import system_port_check
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

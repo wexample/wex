@@ -16,7 +16,7 @@ from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 TEST_DEMO_COMMAND_TWO_RESULT_FIRST = "..TWO:simple-text"
 TEST_DEMO_COMMAND_TWO_RESULT_SHELL = "..TWO:shell-response"

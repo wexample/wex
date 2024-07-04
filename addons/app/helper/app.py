@@ -7,7 +7,7 @@ from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
 from src.helper.file import file_create_parent_and_touch
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:

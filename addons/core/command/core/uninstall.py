@@ -11,7 +11,7 @@ from wexample_helpers.helpers.file_helper import file_remove_file_if_exists
 from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

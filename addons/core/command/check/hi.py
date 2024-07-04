@@ -4,7 +4,7 @@ from src.decorator.alias import alias
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("hi")

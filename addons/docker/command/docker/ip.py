@@ -8,7 +8,7 @@ from src.decorator.command import command
 from src.helper.command import command_exists, execute_command_sync
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return the current docker local ip")
