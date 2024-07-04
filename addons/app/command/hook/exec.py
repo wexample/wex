@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, cast
 
-from wexample_helpers.helpers.args import args_parse_dict
+from wexample_helpers.helpers.args_helper import args_parse_dict
 
 from addons.app.command.services.exec import app__services__exec
 from addons.app.decorator.app_command import app_command

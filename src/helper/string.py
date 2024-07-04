@@ -10,13 +10,6 @@ import string
 from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch
 
 
-def string_to_kebab_case(text: str) -> str:
-    """
-    Convert text to kebab case, converting spaces and underscores to dashes.
-    """
-    return re.sub(r"[_\s]+", "-", re.sub(r"([a-z])([A-Z])", r"\1-\2", text)).lower()
-
-
 def string_to_camel_case(text: str) -> str:
     s1 = string_to_snake_case(text)
     return re.sub(r"_([a-z])", lambda x: x.group(1).upper(), s1)

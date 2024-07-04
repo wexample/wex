@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from git import Repo
-from wexample_helpers.helpers.args import args_split_arg_array
+from wexample_helpers.helpers.args_helper import args_split_arg_array
 from wexample_helpers.helpers.string_helper import string_to_snake_case
 
 from addons.app.command.app.start import app__app__start

@@ -3,7 +3,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Union
 
 from dotenv import dotenv_values
-from wexample_helpers.helpers.args import args_shift_one
+from wexample_helpers.helpers.args_helper import args_shift_one
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.env.get import _app__env__get

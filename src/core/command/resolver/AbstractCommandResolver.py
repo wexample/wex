@@ -3,9 +3,9 @@ import re
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string_helper import string_to_snake_case, string_to_kebab_case
+from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_args
 
-from src.helper.click_helper import args_convert_dict_to_args
 from src.const.globals import (
     COMMAND_EXTENSIONS,
     COMMAND_SEPARATOR_ADDON,
@@ -43,7 +43,6 @@ from src.helper.file import (
     file_set_owner_for_path_and_ancestors,
 )
 from src.helper.string import (
-    string_to_kebab_case,
     string_trim_leading,
 )
 from src.helper.user import get_user_or_sudo_user
@@ -278,7 +277,7 @@ class AbstractCommandResolver(KernelChild):
             CORE_COMMAND_NAME,
             self.build_command_from_function(script_command),
         ] + (
-            args_convert_dict_to_args(script_command.click_command, args)
+            click_args_convert_dict_to_args(script_command.click_command, args)
             if args
             else []
         )

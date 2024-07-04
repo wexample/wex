@@ -1,12 +1,12 @@
 import os
 
 import click
+from wexample_wex_core.helpers.click_helper import click_args_convert_to_dict, click_args_convert_dict_to_args
 
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show
 from addons.core.command.test.create import core__test__create
 from addons.core.command.version.new_write import core__version__new_write
-from src.helper.click_helper import args_convert_to_dict, args_convert_dict_to_args
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
     CORE_COMMAND_NAME,
@@ -63,7 +63,7 @@ class TestCore(AbstractTestCase):
         self.assertTrue(isinstance(response, AbortResponse))
 
     def test_convert_args_to_dict(self) -> None:
-        args = args_convert_to_dict(
+        args = click_args_convert_to_dict(
             create_fake_click_function(),
             [
                 "--name",
@@ -83,7 +83,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_dict_to_args(self) -> None:
-        args = args_convert_dict_to_args(
+        args = click_args_convert_dict_to_args(
             create_fake_click_function(),
             {
                 "name": "John",

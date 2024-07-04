@@ -1,6 +1,6 @@
 from typing import Optional, cast
 
-from wexample_helpers.helpers.args import args_is_basic_value
+from wexample_helpers.helpers.args_helper import args_is_basic_value
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
 
 from src.const.types import BasicValue, YamlContent, YamlContentDict

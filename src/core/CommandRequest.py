@@ -1,7 +1,9 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional
 
-from src.helper.click_helper import args_convert_dict_to_long_names_dict, args_convert_to_dict, args_convert_dict_to_args
+from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_long_names_dict, \
+    click_args_convert_dict_to_args, click_args_convert_to_dict
+
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.const.types import (
     CoreCommandArgsList,
@@ -76,9 +78,9 @@ class CommandRequest(BaseClass):
     def get_args_dict(self) -> StringKeysDict:
         script_command = self.get_script_command()
 
-        return args_convert_dict_to_long_names_dict(
+        return click_args_convert_dict_to_long_names_dict(
             script_command.click_command,
-            args_convert_to_dict(script_command.click_command, self.get_args_list()),
+            click_args_convert_to_dict(script_command.click_command, self.get_args_list()),
         )
 
     def set_script_command(self, script_command: ScriptCommand) -> None:
@@ -151,7 +153,7 @@ class CommandRequest(BaseClass):
                     # Runner can now convert args.
                     if isinstance(self._args_source, dict):
                         self.set_args_list(
-                            args_convert_dict_to_args(
+                            click_args_convert_dict_to_args(
                                 script_command.click_command, self._args_source
                             )
                         )

@@ -3,8 +3,8 @@ import getpass
 import os
 import sys
 
-from wexample_helpers.helpers.args import args_shift_one, args_push_one
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.args_helper import args_shift_one, args_push_one
+from wexample_helpers.helpers.string_helper import string_to_snake_case, string_to_kebab_case
 
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
@@ -67,7 +67,6 @@ from src.helper.file import (
     file_write_dict_to_config,
 )
 from src.helper.service import service_load_config
-from src.helper.string import string_to_kebab_case
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest

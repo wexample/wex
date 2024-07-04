@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional, cast
 
-from wexample_helpers.helpers.args import args_shift_one
+from wexample_helpers.helpers.args_helper import args_shift_one
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.CommandRequest import CommandRequest, HasRequest
