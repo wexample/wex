@@ -1,5 +1,5 @@
 from src.core.FatalError import FatalError
-from src.helper.file import file_remove_file_if_exists
+from wexample_helpers.helpers.file_helper import file_remove_file_if_exists
 from tests.AbstractTestCase import AbstractTestCase
 
 

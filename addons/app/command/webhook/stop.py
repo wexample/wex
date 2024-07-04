@@ -5,7 +5,7 @@ from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import COMMAND_TYPE_ADDON, SERVICE_DAEMON_PATH
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from src.helper.file import file_remove_file_if_exists
+from wexample_helpers.helpers.file_helper import file_remove_file_if_exists
 from src.helper.process import process_kill_by_command
 from src.helper.system import system_service_daemon_exec, system_service_daemon_reload
 
