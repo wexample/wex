@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-class KernelChild(BaseClass):
+class AbsractKernelChild(BaseClass):
     kernel: "Kernel"
 
     def __init__(self, kernel: "Kernel") -> None:

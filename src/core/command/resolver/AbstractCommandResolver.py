@@ -28,7 +28,7 @@ from src.const.types import (
     StringsMatch,
 )
 from src.core.CommandRequest import CommandRequest
-from src.utils.kernelChild import KernelChild
+from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
@@ -48,7 +48,7 @@ from src.helper.string import (
 from src.helper.user import get_user_or_sudo_user
 
 
-class AbstractCommandResolver(KernelChild):
+class AbstractCommandResolver(AbsractKernelChild):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":

@@ -19,7 +19,7 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.utils.kernelChild import KernelChild
+from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
 
@@ -34,7 +34,7 @@ class IOManagerLogMessage(TypedDict):
     lines: int
 
 
-class IOManager(KernelChild):
+class IOManager(AbsractKernelChild):
     def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
         self.log_indent: int = 0

@@ -59,7 +59,7 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from src.utils.kernelChild import KernelChild
+from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.spinner import Spinner
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
 
@@ -67,7 +67,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-class Assistant(KernelChild):
+class Assistant(AbsractKernelChild):
     conversation: Row[Tuple[Any, ...]]
     language: str
     user: Row[Tuple[Any, ...]]
