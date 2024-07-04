@@ -59,10 +59,9 @@ from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
 from wexample_helpers.helpers.dict_helper import dict_get_item_by_path, dict_has_item_by_path, dict_set_item_by_path,
-    DICT_ITEM_EXISTS_ACTION_REPLACE
+    DICT_ITEM_EXISTS_ACTION_REPLACE, dict_remove_item_by_path
 from src.helper.file import (
     file_env_to_dict,
-    file_remove_dict_item_by_path,
     file_write_dict_to_config,
 )
 from src.helper.service import service_load_config
@@ -345,12 +344,12 @@ class AppAddonManager(AddonManager):
         self.save_config()
 
     def remove_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
+        dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_config()
 
     def remove_runtime_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
+        dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_runtime_config()
 

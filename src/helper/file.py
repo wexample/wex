@@ -217,16 +217,6 @@ def file_read_if_exists(
         return file.read()
 
 
-def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
-    keys = key.split(".")
-    for k in keys[:-1]:
-        if k not in data or not isinstance(data[k], dict):
-            return
-        data = data[k]
-
-    data.pop(keys[-1], None)
-
-
 def file_remove_duplicated_lines(file: str) -> None:
     with open(file, "r") as f:
         lines = f.readlines()
