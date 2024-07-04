@@ -1,5 +1,0 @@
-services:
-  sonarqube:
-    extends:
-      file: ${RUNTIME_SERVICE_SONARQUBE_YML_ENV}
-      service: sonarqube

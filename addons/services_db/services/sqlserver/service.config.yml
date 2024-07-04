@@ -1,4 +1,0 @@
-tags:
-  - db
-test:
-  exec_command: "SELECT TOP(1)* FROM sys.syslogins"

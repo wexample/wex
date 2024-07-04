@@ -1,3 +1,0 @@
-networks:
-  wex_net:
-    external: true

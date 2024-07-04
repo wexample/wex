@@ -1,6 +1,0 @@
-db:
-  dump_extension: sql
-tags:
-  - db
-test:
-  exec_command: "\\l"

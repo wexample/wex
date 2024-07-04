@@ -1,5 +1,0 @@
-# Used by scripts to run, place every temp files here.
-/*
-
-# Except itself
-!/.gitignore

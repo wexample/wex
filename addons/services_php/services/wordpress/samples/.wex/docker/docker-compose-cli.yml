@@ -1,4 +1,0 @@
-        # We use this container
-        extends:
-          file: ${RUNTIME_SERVICE_WORDPRESS_YML_ENV}
-          service: cli

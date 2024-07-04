@@ -1,5 +1,0 @@
-services:
-  laravel:
-    extends:
-      file: ${RUNTIME_SERVICE_LARAVEL_YML_ENV}
-      service: laravel

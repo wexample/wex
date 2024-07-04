@@ -1,4 +1,0 @@
-# Redis dumps
-/redis/dumps/*
-# Redis data
-/redis/data/*

@@ -1,1 +1,0 @@
-Add comment explaining how is defined the output type hinting

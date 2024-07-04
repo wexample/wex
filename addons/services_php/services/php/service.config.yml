@@ -1,3 +1,0 @@
-shell: /bin/bash
-main: true
-require_proxy: true

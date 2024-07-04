@@ -1,8 +1,0 @@
-services:
-  proxy:
-    extends:
-      file: ${RUNTIME_SERVICE_PROXY_YML_ENV}
-      service: proxy
-    ports:
-      - ${PORT_PUBLIC:-80}:80
-      - ${PORT_PUBLIC_SECURE:-443}:443
