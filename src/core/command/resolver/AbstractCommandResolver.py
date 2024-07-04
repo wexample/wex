@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
 from wexample_helpers.helpers.string_helper import string_to_snake_case, string_to_kebab_case
+from wexample_helpers.helpers.file_helper import file_list_subdirectories
 from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_args
 
 from src.const.globals import (
@@ -39,7 +40,6 @@ from src.core.response.NullResponse import NullResponse
 from src.decorator.attach import CommandAttachment
 from src.helper.command import command_to_string
 from src.helper.file import (
-    file_list_subdirectories,
     file_set_owner_for_path_and_ancestors,
 )
 from src.helper.string import (

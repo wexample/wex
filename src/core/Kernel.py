@@ -34,7 +34,7 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
-from src.helper.file import file_list_subdirectories, file_remove_file_if_exists
+from wexample_helpers.helpers.file_helper import file_list_subdirectories, file_remove_file_if_exists
 
 if TYPE_CHECKING:
     from src.const.types import (

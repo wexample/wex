@@ -5,18 +5,6 @@ import shutil
 from typing import IO, Any, Dict, List, Optional, Tuple
 
 
-def file_list_subdirectories(path: str) -> List[str]:
-    subdirectories = []
-    for item in os.listdir(path):
-        item_path = os.path.join(path, item)
-        if os.path.isdir(item_path) and not item.startswith("."):
-            subdirectories.append(os.path.basename(item_path))
-
-    subdirectories.sort()
-
-    return subdirectories
-
-
 def file_set_user_or_sudo_user_owner(file: str) -> None:
     from src.helper.user import get_user_or_sudo_user
 
@@ -178,12 +166,6 @@ def file_remove_dict_item_by_path(data: Dict[str, Any], key: str) -> None:
         data = data[k]
 
     data.pop(keys[-1], None)
-
-
-def file_remove_file_if_exists(file: str) -> None:
-    if os.path.isfile(file) or os.path.islink(file):
-        os.remove(file)
-
 
 def file_get_human_readable_size(size: float, decimal_places: int = 2) -> str:
     for unit in ["B", "KB", "MB", "GB", "TB"]:
