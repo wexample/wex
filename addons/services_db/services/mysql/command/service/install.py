@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.file import DICT_ITEM_EXISTS_ACTION_MERGE
+from wexample_helpers.helpers.dict_helper import DICT_ITEM_EXISTS_ACTION_MERGE
 from src.helper.string import string_random_password
 
 if TYPE_CHECKING:

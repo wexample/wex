@@ -58,12 +58,11 @@ from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
-from wexample_helpers.helper.dict_helper import dict_get_item_by_path, dict_has_item_by_path
+from wexample_helpers.helpers.dict_helper import dict_get_item_by_path, dict_has_item_by_path, dict_set_item_by_path,
+    DICT_ITEM_EXISTS_ACTION_REPLACE
 from src.helper.file import (
-    DICT_ITEM_EXISTS_ACTION_REPLACE,
     file_env_to_dict,
     file_remove_dict_item_by_path,
-    file_set_dict_item_by_path,
     file_write_dict_to_config,
 )
 from src.helper.service import service_load_config
@@ -333,7 +332,7 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(self.config_to_dict(config), key, value, when_exist)
+        dict_set_item_by_path(self.config_to_dict(config), key, value, when_exist)
 
     def set_config(
         self,

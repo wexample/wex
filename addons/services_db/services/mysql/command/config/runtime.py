@@ -5,7 +5,7 @@ from addons.app.const.app import APP_DIR_TMP
 from addons.app.decorator.app_command import app_command
 from addons.services_db.const.mysql import MYSQL_CONF_FILE
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.file import DICT_ITEM_EXISTS_ACTION_ABORT
+from wexample_helpers.helpers.file import DICT_ITEM_EXISTS_ACTION_ABORT
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
