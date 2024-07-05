@@ -11,7 +11,7 @@ from src.const.globals import (
 )
 from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.decorator.option import option
-from wexample_helpers.helper.dict_helper import dict_get_item_by_path, dict_sort_values
+from wexample_helpers.helpers.dict_helper import dict_get_item_by_path, dict_sort_values
 from src.helper.file import file_delete_file_or_dir, file_path_has_no_extension
 from src.helper.prompt import prompt_choice
 

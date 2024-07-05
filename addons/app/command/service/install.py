@@ -13,7 +13,7 @@ from src.const.globals import (
     COMMAND_TYPE_SERVICE,
 )
 from src.decorator.option import option
-from wexample_helpers.helper.dict_helper import dict_merge
+from wexample_helpers.helpers.dict_helper import dict_merge
 from src.helper.file import file_create_parent_and_touch, file_merge_new_lines
 from src.helper.service import service_get_dir
 

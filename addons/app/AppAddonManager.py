@@ -58,7 +58,7 @@ from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
-from wexample_helpers.helpers.dict_helper import dict_get_item_by_path, dict_has_item_by_path, dict_set_item_by_path,
+from wexample_helpers.helpers.dict_helper import dict_get_item_by_path, dict_has_item_by_path, dict_set_item_by_path, \
     DICT_ITEM_EXISTS_ACTION_REPLACE, dict_remove_item_by_path
 from src.helper.file import (
     file_env_to_dict,
@@ -123,8 +123,8 @@ class AppAddonManager(AddonManager):
         return (
             os.sep
             + os.path.join(
-                "var", "www", environment or self.kernel.registry_structure.content.env
-            )
+            "var", "www", environment or self.kernel.registry_structure.content.env
+        )
             + os.sep
         )
 

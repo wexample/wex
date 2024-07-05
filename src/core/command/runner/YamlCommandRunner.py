@@ -26,7 +26,7 @@ from src.core.response.InteractiveShellCommandResponse import (
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.command import command
 from src.helper.command import apply_command_decorator, internal_command_to_shell
-from wexample_helpers.helper.dict_helper import dict_get_item_by_path
+from wexample_helpers.helpers.dict_helper import dict_get_item_by_path
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
