@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Main entry point for the application."""
 
-from wexample_wex_core.core.Kernel import Kernel
+from wexample_wex_core.utils.kernel import Kernel
 
 if __name__ == '__main__':
     Kernel(

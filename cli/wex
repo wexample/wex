@@ -12,6 +12,16 @@ fi
 
 . "${WEX_DIR_CLI}/_init.sh"
 
+# Function to handle cleanup on exit or interruption
+cleanup() {
+    if [ -f "${WEX_POST_EXEC}" ]; then
+        rm "${WEX_POST_EXEC}"
+    fi
+    if [ -f "${WEX_TASK_REDIRECT}" ]; then
+        rm "${WEX_TASK_REDIRECT}"
+    fi
+}
+
 # Trap to handle interruptions and cleanup
 trap cleanup EXIT INT TERM
 
