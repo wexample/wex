@@ -1,6 +1,7 @@
 services:
     symfony:
         container_name: ${RUNTIME_NAME}_symfony
+        image: gitlab-docker.wexample.com/wexample-public/docker/symfony:6.2
         extends:
             file: ${RUNTIME_SERVICE_PHP_YML_ENV}
             service: php
