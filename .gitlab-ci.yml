@@ -98,7 +98,7 @@ checkup_pipeline_image_remote:
 .checkup_source:
   stage: checkup_builds
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master ]
+  extends: [ .merge_to_master, .fails_if_non_commited_changes ]
   resource_group: main_pipeline
   needs:
     - checkup_pipeline_image_rc
@@ -112,10 +112,6 @@ checkup_pipeline_image_remote:
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
     - touch .wex/.env # Need a fake file to not warn if missing
-  after_script:
-    # Fail if some code has not been formatted
-    - git diff
-    - git diff-index --quiet HEAD -- || exit 1
 
 checkup_code:
   extends: [ .checkup_source ]
