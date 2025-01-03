@@ -12,11 +12,16 @@ if TYPE_CHECKING:
 @option(
     "--protocol", "-p", type=str, required=False, default="postgresql", help="Protocol"
 )
+@option("--database", "-d", type=str, required=False, help="Database name")
 def postgres__db__connect(
-    manager: "AppAddonManager", app_dir: str, service: str, protocol: str = "postgresql"
+    manager: "AppAddonManager",
+    app_dir: str,
+    service: str,
+    protocol: str = "postgresql",
+    database: str | None = None,
 ) -> str:
     user = manager.get_config(f"service.{service}.user").get_str()
     password = manager.get_config(f"service.{service}.password").get_str()
-    name = manager.get_config(f"service.{service}.name").get_str()
+    name = database or manager.get_config(f"service.{service}.name").get_str()
 
     return f'{protocol}://{user}:"{password}"@localhost/{name}'

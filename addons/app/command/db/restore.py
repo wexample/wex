@@ -21,8 +21,9 @@ if TYPE_CHECKING:
 
 @app_command(help="Restore a database dump", should_run=True)
 @option("--file-path", "-fp", type=str, required=False, help="Force file path")
+@option("--database", "-d", type=str, required=False, help="Force database name")
 def app__db__restore(
-    manager: "AppAddonManager", app_dir: str, file_path: str | None = None
+    manager: "AppAddonManager", app_dir: str, file_path: str | None = None, database: str | None = None
 ) -> None:
     kernel = manager.kernel
 
@@ -37,6 +38,7 @@ def app__db__restore(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/dumps-list",
         {
             "app-dir": app_dir,
+            "database": database,
             "service": service,
         },
     ).first()
@@ -102,10 +104,24 @@ def app__db__restore(
 
     manager.log("Restoring...")
 
+    kernel.run_command(
+        f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/destroy",
+        {
+            "app-dir": app_dir,
+            "database": database,
+            "service": service,
+        },
+    ).first()
+
     file_name = os.path.basename(file_path_str)
     kernel.run_command(
         f"{COMMAND_CHAR_SERVICE}{service}{COMMAND_SEPARATOR_ADDON}db/restore",
-        {"app-dir": app_dir, "service": service, "file-name": file_name},
+        {
+            "app-dir": app_dir,
+            "database": database,
+            "service": service,
+            "file-name": file_name
+        },
     ).first()
 
     if is_zip:

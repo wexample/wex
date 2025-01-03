@@ -14,33 +14,10 @@ if TYPE_CHECKING:
 
 @app_command(help="Restore db dump", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
+@option("--database", "-d", type=str, required=False, help="Database name")
 def mysql__db__restore(
-    manager: "AppAddonManager", app_dir: str, service: str, file_name: str
+    manager: "AppAddonManager", app_dir: str, service: str, file_name: str, database: str | None = None
 ) -> str:
-    database_name = manager.get_app_name()
-    manager.log(f'Recreating an empty database "{database_name}"')
-    manager.kernel.run_function(
-        app__app__exec,
-        {
-            "app-dir": app_dir,
-            "container-name": service,
-            # Ask to execute bash
-            "command": [
-                "mysql",
-                manager.kernel.run_function(
-                    mysql__db__connect,
-                    {
-                        "app-dir": app_dir,
-                        "service": service,
-                    },
-                    type=COMMAND_TYPE_SERVICE,
-                ).first(),
-                "-e",
-                f"'DROP DATABASE IF EXISTS {database_name}; CREATE DATABASE {database_name}'",
-            ],
-            "sync": True,
-        },
-    )
 
     manager.kernel.run_function(
         app__app__exec,
@@ -58,7 +35,7 @@ def mysql__db__restore(
                     },
                     type=COMMAND_TYPE_SERVICE,
                 ).first(),
-                database_name,
+                database,
                 "<",
                 "/var/www/dumps/" + file_name,
             ],
