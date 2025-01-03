@@ -18,7 +18,7 @@ from addons.ai.src.assistant.utils.abstract_assistant_child import (
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from wexample_helpers.helpers.html import html_remove_tags
+from wexample_helpers.helpers.html_helper import html_remove_tags
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant

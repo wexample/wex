@@ -14,8 +14,9 @@ if TYPE_CHECKING:
 
 @app_command(help="Restore db dump", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
+@option("--database", "-d", type=str, required=False, help="Database name")
 def postgres__db__restore(
-    manager: "AppAddonManager", app_dir: str, service: str, file_name: str
+    manager: "AppAddonManager", app_dir: str, service: str, file_name: str, database: str | None = None
 ) -> None:
     command = [
         "psql",
@@ -24,10 +25,11 @@ def postgres__db__restore(
             {
                 "app-dir": app_dir,
                 "service": service,
+                "database": database,
             },
             type=COMMAND_TYPE_SERVICE,
         ).first(),
-        manager.get_app_name(),
+        database,
         "<",
         "/var/www/dumps/" + file_name,
     ]

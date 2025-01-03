@@ -12,20 +12,19 @@ if TYPE_CHECKING:
 
 @app_command(help="Restore db dump", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
+@option("--database", "-d", type=str, required=False, help="Database name")
 def sqlserver__db__restore(
-    manager: "AppAddonManager", app_dir: str, service: str, file_name: str
+    manager: "AppAddonManager", app_dir: str, service: str, file_name: str, database: str | None = None
 ) -> None:
-    app_name = manager.get_app_name()
-
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {
             "app-dir": app_dir,
             "service": service,
-            "command": f"USE master; ALTER DATABASE [{app_name}] "
+            "command": f"USE master; ALTER DATABASE [{database}] "
             f"SET SINGLE_USER WITH ROLLBACK IMMEDIATE; "
-            f"RESTORE DATABASE [{app_name}] FROM DISK = '/var/opt/mssql/dumps/{file_name}' "
-            f"WITH REPLACE; ALTER DATABASE [{app_name}] SET MULTI_USER;",
+            f"RESTORE DATABASE [{database}] FROM DISK = '/var/opt/mssql/dumps/{file_name}' "
+            f"WITH REPLACE; ALTER DATABASE [{database}] SET MULTI_USER;",
         },
         type=COMMAND_TYPE_SERVICE,
     ).first()
