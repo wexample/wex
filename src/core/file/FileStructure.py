@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from wexample_helpers.helpers.file_helper import file_write, file_read
+from wexample_helpers.helpers.file import file_write, file_read
 
 from src.helper.file import file_create_parent_and_touch
 from src.const.types import BasicValue, FileSystemStructureSchemaItem

@@ -3,7 +3,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Union
 
 from dotenv import dotenv_values
-from wexample_helpers.helpers.args_helper import args_shift_one
+from wexample_helpers.helpers.args import args_shift_one
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.env.get import _app__env__get
@@ -34,7 +34,7 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
-from wexample_helpers.helpers.file_helper import file_list_subdirectories, file_remove_file_if_exists
+from wexample_helpers.helpers.file import file_list_subdirectories, file_remove_file_if_exists
 
 if TYPE_CHECKING:
     from src.const.types import (

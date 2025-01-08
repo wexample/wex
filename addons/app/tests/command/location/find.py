@@ -1,5 +1,5 @@
 from addons.app.command.location.find import app__location__find
-from wexample_helpers.helpers.directory_helper import directory_execute_inside
+from wexample_helpers.helpers.directory import directory_execute_inside
 from tests.AbstractTestCase import AbstractTestCase
 
 

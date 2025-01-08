@@ -4,7 +4,7 @@ import re
 import shutil
 from typing import List, Mapping, Optional
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
 import string
 from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch

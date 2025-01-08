@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.args_helper import args_parse_dict
+from wexample_helpers.helpers.args import args_parse_dict
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import (

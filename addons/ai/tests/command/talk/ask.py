@@ -4,7 +4,7 @@ from typing import Dict, cast, List
 
 import patch
 from langchain_core.prompts import FewShotPromptTemplate
-from wexample_helpers.helpers.file_helper import file_write, file_read
+from wexample_helpers.helpers.file import file_write, file_read
 
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
 from addons.ai.src.assistant.assistant import (

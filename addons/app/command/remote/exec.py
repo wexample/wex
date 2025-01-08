@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
-from wexample_helpers.helpers.args_helper import args_parse_list_or_strings_list
+from wexample_helpers.helpers.args import args_parse_list_or_strings_list
 
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (

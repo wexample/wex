@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List
 
 from src.const.globals import COMMAND_SEPARATOR_ADDON
-from wexample_helpers.helpers.dict_helper import dict_merge
+from wexample_helpers.helpers.dict import dict_merge
 
 if TYPE_CHECKING:
     from src.const.types import (

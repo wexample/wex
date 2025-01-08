@@ -11,7 +11,7 @@ from addons.app.const.app import (
 )
 from src.const.types import AppConfig, FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
-from wexample_helpers.helpers.dict_helper import dict_merge
+from wexample_helpers.helpers.dict import dict_merge
 
 
 class AppDirectoryStructure(DirectoryStructure):

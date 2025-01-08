@@ -3,7 +3,7 @@ import re
 import shutil
 from typing import Optional, cast
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start

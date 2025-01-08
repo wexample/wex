@@ -3,8 +3,8 @@ import re
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case, string_to_kebab_case
-from wexample_helpers.helpers.file_helper import file_list_subdirectories
+from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
+from wexample_helpers.helpers.file import file_list_subdirectories
 from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_args
 
 from src.const.globals import (

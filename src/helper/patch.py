@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import patch
-from wexample_helpers.helpers.directory_helper import directory_execute_inside
+from wexample_helpers.helpers.directory import directory_execute_inside
 
 
 def patch_is_valid(text: str) -> bool:

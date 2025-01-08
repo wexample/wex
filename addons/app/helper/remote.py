@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.const.types import StringsList

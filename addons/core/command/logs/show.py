@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, cast
 
-from wexample_helpers.helpers.json_helper import json_load_if_valid
+from wexample_helpers.helpers.json import json_load_if_valid
 
 from src.core.Logger import LoggerLogData
 from src.core.response.TableResponse import TableBody, TableBodyLine, TableResponse

@@ -2,7 +2,7 @@ import ast
 import os
 import re
 
-from wexample_helpers.helpers.file_helper import file_read
+from wexample_helpers.helpers.file import file_read
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command

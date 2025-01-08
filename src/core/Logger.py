@@ -5,7 +5,7 @@ import os
 import time
 from typing import TYPE_CHECKING, List, Optional, TypedDict, cast
 
-from wexample_helpers.helpers.json_helper import json_parse_if_valid
+from wexample_helpers.helpers.json import json_parse_if_valid
 
 from src.const.types import (
     CoreCommandArgsList,

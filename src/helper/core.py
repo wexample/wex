@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.file_helper import file_read
+from wexample_helpers.helpers.file import file_read
 
 from src.const.globals import FILE_VERSION
 

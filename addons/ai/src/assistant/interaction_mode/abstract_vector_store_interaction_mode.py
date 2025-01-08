@@ -10,7 +10,7 @@ from langchain_community.document_loaders.parsers.language.language_parser impor
 from langchain_core.documents.base import Document
 from langchain_postgres.vectorstores import PGVector
 from unstructured.cleaners.core import clean, clean_extra_whitespace, remove_punctuation
-from wexample_helpers.helpers.json_helper import json_load_if_valid
+from wexample_helpers.helpers.json import json_load_if_valid
 from yaml import BaseLoader
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (

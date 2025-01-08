@@ -2,7 +2,7 @@ import os.path
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import yaml
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.AppAddonManager import AppAddonManager

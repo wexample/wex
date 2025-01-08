@@ -1,7 +1,7 @@
 import os
 from typing import Optional, List, cast
 
-from wexample_helpers.helpers.file_helper import file_write, file_read
+from wexample_helpers.helpers.file import file_write, file_read
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,

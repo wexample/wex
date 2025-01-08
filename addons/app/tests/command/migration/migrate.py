@@ -6,7 +6,7 @@ from addons.app.command.migration.migrate import app__migration__migrate
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import CORE_COMMAND_NAME
 from src.helper.core import core_kernel_get_version
-from wexample_helpers.helpers.directory_helper import directory_execute_inside
+from wexample_helpers.helpers.directory import directory_execute_inside
 
 
 class TestAppCommandMigrationMigrate(AbstractAppTestCase):

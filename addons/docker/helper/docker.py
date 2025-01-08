@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import yaml
 
 from src.helper.command import execute_command_sync
-from wexample_helpers.helpers.dict_helper import dict_merge
+from wexample_helpers.helpers.dict import dict_merge
 from src.helper.user import is_sudo
 
 if TYPE_CHECKING:

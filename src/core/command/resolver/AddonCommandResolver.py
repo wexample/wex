@@ -1,7 +1,7 @@
 import os
 from typing import Optional, cast
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,

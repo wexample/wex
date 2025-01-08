@@ -10,7 +10,7 @@ from InquirerPy.utils import InquirerPyDefault
 from click._termui_impl import ProgressBar, V
 
 from src.const.types import StringsDict
-from wexample_helpers.helpers.dict_helper import dict_merge, dict_sort_values
+from wexample_helpers.helpers.dict import dict_merge, dict_sort_values
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

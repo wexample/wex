@@ -7,7 +7,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
-from wexample_helpers.helpers.json_helper import json_load
+from wexample_helpers.helpers.json import json_load
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand

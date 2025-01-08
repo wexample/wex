@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.args_helper import args_parse_one
+from wexample_helpers.helpers.args import args_parse_one
 
 from addons.app.decorator.app_command import app_command
 from src.decorator.option import option

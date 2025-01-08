@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
-from wexample_helpers.helpers.args_helper import args_in_function, args_is_basic_value
+from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (

@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional, cast
 
-from wexample_helpers.helpers.string_helper import string_to_snake_case, string_to_kebab_case
+from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.const.globals import (

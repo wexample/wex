@@ -7,7 +7,7 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.option import option
-from wexample_helpers.helpers.directory_helper import directory_empty_dir
+from wexample_helpers.helpers.directory import directory_empty_dir
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

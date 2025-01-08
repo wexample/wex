@@ -21,7 +21,7 @@ from addons.ai.src.assistant.utils.abstract_assistant_child import (
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
-from wexample_helpers.helpers.dict_helper import dict_merge
+from wexample_helpers.helpers.dict import dict_merge
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant

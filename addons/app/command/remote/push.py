@@ -3,7 +3,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 import requests
-from wexample_helpers.helpers.string_helper import string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.const.app import APP_ENV_PROD
