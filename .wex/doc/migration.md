@@ -5,6 +5,18 @@
 - Current version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex`
 - New version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-6`
 
+## Dependencies
+
+The project uses Python packages with the `wexample-*` prefix. These packages are developed locally and can be found in `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/PIP/pip`. Currently, the main dependency is `wexample-wex-core`, which itself has local dependencies.
+
+### Local Development Setup
+
+To install all local packages in development mode, run:
+```bash
+python /home/weeger/Desktop/WIP/WEB/WEXAMPLE/PIP/pip/.wex/python/script/install_all_packages.py
+```
+This script will install all local packages in editable mode, allowing for immediate code changes to take effect.
+
 ## Current State
 
 The v6 implementation is built on Python using modern practices, with a clear separation between the core functionality (wexample-wex-core v6.0.1) and the CLI interface. The project uses pip-compile for dependency management and includes both standard and development installation scripts. The architecture follows a kernel-based approach, where the main entry point delegates execution to a core kernel component.
