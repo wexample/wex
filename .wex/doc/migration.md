@@ -5,6 +5,13 @@
 - Current version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex`
 - New version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-6`
 
+## Breaking Changes
+
+Major changes from v5 to v6 include:
+
+- Addons are now separated into individual Python pip packages
+- Internal "command" components have been renamed to "instruction"
+
 ## Dependencies
 
 The project uses Python packages with the `wexample-*` prefix. These packages are developed locally and can be found in `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/PIP/pip`. Currently, the main dependency is `wexample-wex-core`, which itself has local dependencies.
