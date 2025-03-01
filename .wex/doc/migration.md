@@ -5,6 +5,10 @@
 - Current version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex`
 - New version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-6`
 
+## Current State
+
+The v6 implementation is built on Python using modern practices, with a clear separation between the core functionality (wexample-wex-core v6.0.1) and the CLI interface. The project uses pip-compile for dependency management and includes both standard and development installation scripts. The architecture follows a kernel-based approach, where the main entry point delegates execution to a core kernel component.
+
 ## Objectives
 
 Version 6 maintains the same core objectives and main usage as the current version, but aims for overall improvement in the following aspects:

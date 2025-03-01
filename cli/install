@@ -17,27 +17,9 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Function to install a package if not present
-install_if_missing() {
-    local package=$1
-    local check_command=${2:-$1}
-    
-    if ! command_exists "$check_command"; then
-        echo "Installing ${package}..."
-        sudo apt-get -y install "$package"
-    fi
-}
-
 # Update package list
 echo "Updating package list..."
 sudo apt-get update
-
-# Install required system packages
-install_if_missing "python3-pip" "pip"
-install_if_missing "python3-venv"
-install_if_missing "procps" "ps"
-install_if_missing "sshpass"
-install_if_missing "libpq-dev" "psql"
 
 # Setup Python virtual environment
 echo "Setting up Python virtual environment..."
