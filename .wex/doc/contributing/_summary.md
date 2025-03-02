@@ -35,6 +35,6 @@ The `Directory registry` in summaries presents brief content descriptions to hel
 
 ## Directory registry
 
-Like any other one, this is the registery of the current directory.
+Like any other one, this is the registry of the current directory.
 
 - 📄 exporting-skeleton.md: This file contains the instructions on how to create a new documentation, based on the structure of current one
