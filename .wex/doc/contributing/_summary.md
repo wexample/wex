@@ -5,12 +5,13 @@ You are reading this file because you want to improve this documentation.
 ## General rules
 
 - Write all documentation in English
-- Keep information concise to save data and reader time
+- Keep information concise to save data and reader time, avoiding useless details or comments
 - Avoid multiline code examples when possible, use simple lists instead
 - Start each file by explaining why the reader is reading it: "You are reading this file [because, if, when]..."
   Note that the reader is not the "user" (the person this documentation is about), but a third party tasked with performing actions for the user
 - You can add and edit everything, fix typos and English language quality, remove non-relevant content, but in other
   hand you should respect the existing information as the documentation starts to be quite mature.
+- Never us ordered list, use markdown symbols (-, *) instead 
 
 ## Summary files
 
