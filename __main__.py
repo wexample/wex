@@ -5,9 +5,11 @@ if __name__ == '__main__':
     try:
         from wexample_wex_core.common.kernel import Kernel
 
-        Kernel(
+        (Kernel(
             entrypoint_path=__file__,
-        ).exec_argv()
+        )
+         .setup()
+         .exec_argv())
     except Exception as e:
         from wexample_app.helpers.debug import debug_handle_app_error
 
