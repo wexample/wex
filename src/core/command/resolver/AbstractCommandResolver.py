@@ -189,6 +189,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     @classmethod
     def build_match(cls, command: str) -> Optional[StringsMatch]:
+        import re
         return re.match(cls.get_pattern(), command) if command else None
 
     def get_base_path(self) -> Optional[str]:
