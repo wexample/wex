@@ -34,3 +34,27 @@ The v5 command system is implemented in `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/W
 
 3. **Testing**:
    - `cli/wex` Should not fail
+
+### Addon Commands Implementation
+
+#### Command Format
+Addon commands follow the format: `addon::group/command`, for example:
+- `default::info/show`
+
+#### Addon Locations
+Addons are stored in specific locations within packages:
+1. Core addons: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/PIP/pip/wex-core/wexample_wex_core/addons`
+2. Additional addons (future): `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/PIP/pip/wex-addon-app/wexample_wex_addon_app/addons`
+
+#### Command Resolution Process
+The addon resolver should:
+1. Parse the command format (e.g., `default::info/show`)
+2. Locate the corresponding Python file (e.g., `addons/default/instructions/info/show.py`)
+3. Convert command path to method name (e.g., `default__info__show`)
+4. Execute the method
+
+#### Reference Implementation
+The v5 implementation in `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-5/src/core/command/resolver/AddonCommandResolver.py` provides a reference for:
+- Command path resolution
+- Method name conversion
+- Execution flow
