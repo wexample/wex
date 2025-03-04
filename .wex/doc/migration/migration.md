@@ -4,6 +4,7 @@
 
 - Current version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex`
 - New version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-6`
+- Temp migration version: `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/WEX/local/wex-5`
 
 ## Breaking Changes
 
@@ -42,9 +43,10 @@ Version 6 maintains the same core objectives and main usage as the current versi
 
 The migration process follows these steps:
 
-1. Compare directories and files structure between v5 and v6
+1. Compare directories and files structure between wex-5 and wex-6
 2. Identify and prioritize core functionalities
 3. Migrate core features from v5 to v6 with improvements
-4. When possible, backport v6 improvements to v5
+4. Let the user remove migrated changes from wex-5 
+5. Once everything migrated wex-5 should be empty
 
 This parallel development approach allows for continuous improvement of both versions while ensuring a smooth transition to v6.
