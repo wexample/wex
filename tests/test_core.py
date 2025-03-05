@@ -1,7 +1,7 @@
 import os
 
 import click
-from wexample_wex_core.helpers.click_helper import click_args_convert_to_dict, click_args_convert_dict_to_args
+from src.helper.click import click_args_convert_to_dict, click_args_convert_dict_to_args
 
 from addons.core.command.command.create import core__command__create
 from addons.core.command.logo.show import core__logo__show

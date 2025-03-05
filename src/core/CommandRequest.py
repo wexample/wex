@@ -1,8 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional
 
-from wexample_wex_core.helpers.click_helper import click_args_convert_dict_to_long_names_dict, \
-    click_args_convert_dict_to_args, click_args_convert_to_dict
+from src.helper.click import (click_args_convert_dict_to_long_names_dict, \
+    click_args_convert_dict_to_args, click_args_convert_to_dict)
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.const.types import (
