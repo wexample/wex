@@ -34,7 +34,7 @@ from src.decorator.command import command
 from src.decorator.no_log import no_log
 from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
-from wexample_helpers.helpers.file import file_list_subdirectories, file_remove_file_if_exists
+from wexample_helpers.helpers.file import file_list_subdirectories, file_remove_if_exists
 
 if TYPE_CHECKING:
     from src.const.types import (
@@ -563,7 +563,7 @@ class Kernel(BaseClass):
             self.set_task_id(value)
 
             # Cleanup task files to avoid loops.
-            file_remove_file_if_exists(self.task_file_path("post-exec"))
+            file_remove_if_exists(self.task_file_path("post-exec"))
 
     def file_structure_display_errors(
         self, file_system_structure: "AbstractFileSystemStructure"
