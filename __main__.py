@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Main entry point for the application."""
+from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
 
 if __name__ == '__main__':
     try:
@@ -8,7 +9,8 @@ if __name__ == '__main__':
 
         (Kernel(entrypoint_path=__file__)
          .setup(addons=[
-            DefaultAddonManager
+            DefaultAddonManager,
+            TestAddonManager
         ])
          .exec_argv())
     except Exception as e:
