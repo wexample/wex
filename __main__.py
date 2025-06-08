@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 """Main entry point for the application."""
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
-        from wexample_wex_core.common.kernel import Kernel
-        from wexample_wex_core.addons.default.default_addon_manager import DefaultAddonManager
-        from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
-        from wexample_wex_addon_dev_python.python_addon_manager import PythonAddonManager
-
-        (Kernel(entrypoint_path=__file__)
-         .setup(addons=[
+        from wexample_wex_addon_dev_python.python_addon_manager import (
+            PythonAddonManager,
+        )
+        from wexample_wex_core.addons.default.default_addon_manager import (
             DefaultAddonManager,
-            TestAddonManager,
-            PythonAddonManager
-        ])
-         .exec_argv())
+        )
+        from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
+        from wexample_wex_core.common.kernel import Kernel
+
+        (
+            Kernel(entrypoint_path=__file__)
+            .setup(addons=[DefaultAddonManager, TestAddonManager, PythonAddonManager])
+            .exec_argv()
+        )
     except Exception as e:
         from wexample_app.helpers.debug import debug_handle_app_error
 
