@@ -148,7 +148,7 @@ def string_random_password(length: int = 64) -> str:
     return random_string
 
 
-def string_has_trailing_new_line(file_content) -> bool:
+def string_has_trailing_new_line(file_content: str) -> bool:
     return file_content.endswith("\n")
 
 
@@ -193,7 +193,7 @@ def string_list_calculate_max_widths(array: StringsList) -> List[int]:
     return max_widths
 
 
-def string_list_longest_word(word_list):
+def string_list_longest_word(word_list: StringsList) -> int:
     if not word_list:  # list is empty
         return 0
     else:
