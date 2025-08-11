@@ -73,7 +73,7 @@ Each service has a unique name for all addons.
 
 A webhook listener allow you to control your server and applications remotely.
 
-    # Start listener on port 4242
+    # Start listener on port 46017
     wex app::webhook/listen 
 
 This is existing entrypoints :
