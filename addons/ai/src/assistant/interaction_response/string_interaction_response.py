@@ -2,7 +2,7 @@ from addons.ai.src.assistant.interaction_response.abstract_interaction_response 
 
 
 class StringInteractionResponse(AbstractInteractionResponse):
-    def __init__(self, string: str):
+    def __init__(self, string: str) -> None:
         self.string = string
 
     def render(self) -> str:

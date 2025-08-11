@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class DatabaseManager(AbstractAssistantChild):
-    def __init__(self, assistant: 'Assistant'):
+    def __init__(self, assistant: 'Assistant') -> None:
         super().__init__(assistant)
 
         manager = assistant.assistant_app_manager

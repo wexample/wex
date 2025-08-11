@@ -219,7 +219,7 @@ class Assistant(AbsractKernelChild):
             last_conversation.id if last_conversation else None
         )
 
-    def set_conversation(self, id_conversation: Optional[int] = None):
+    def set_conversation(self, id_conversation: Optional[int] = None) -> None:
         self.conversation = self.database.get_or_create_conversation(id_conversation)
         self.last_prompt_sections = []
         self.history: List[HistoryItem] = self.database.get_conversation_items(
@@ -503,7 +503,7 @@ class Assistant(AbsractKernelChild):
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
 
-    def set_history_item(self, content: Optional[str], author: str):
+    def set_history_item(self, content: Optional[str], author: str) -> None:
         item = HistoryItem(
             message=content,
             conversation_id=self.conversation.id,
