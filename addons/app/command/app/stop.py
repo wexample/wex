@@ -84,7 +84,7 @@ def app__app__stop(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-post"}
         )
 
-    steps: List[Callable[[], None]]
+    steps: List[Callable[[], object]]
     if fast:
         steps = [
             # Just load docker compose
