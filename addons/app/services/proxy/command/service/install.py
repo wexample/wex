@@ -24,7 +24,7 @@ def proxy__service__install(
         )
 
     service_resolver = cast(
-        "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
+        Any, manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
     )
 
     shutil.copytree(
