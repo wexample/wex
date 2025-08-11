@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -23,4 +23,4 @@ class HistoryItem(Base):
     def __init__(self, **kw: Any) -> None:
         super().__init__(**kw)
 
-        self.date_created = datetime.now()
+        self.date_created = cast(Column[datetime], datetime.now())
