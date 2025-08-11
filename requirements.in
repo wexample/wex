@@ -26,6 +26,7 @@ unstructured
 unstructured[md]
 validators
 wexample-wex-core
+wexample-file
 wexample-helpers
 wexample-helpers-yaml
 wexample-prompt
