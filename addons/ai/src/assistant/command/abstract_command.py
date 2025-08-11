@@ -11,13 +11,14 @@ if TYPE_CHECKING:
 
 
 class AbstractCommand(AbstractAssistantChild):
-    description: str = False
+    description: str = "Undefined command"
     sticky: bool = False
-    root_only: str = False
+    root_only: bool = False
 
     @staticmethod
+    @abstractmethod
     def name() -> str:
-        pass
+        ...
 
     def get_flags(self) -> List[str]:
         return []

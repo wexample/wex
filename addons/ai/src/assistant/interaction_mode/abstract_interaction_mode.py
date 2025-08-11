@@ -40,10 +40,10 @@ class AbstractInteractionMode(AbstractAssistantChild):
 
     def get_output_parser(
         self, prompt_section: "UserPromptSection"
-    ) -> Optional[BaseOutputParser]:
+    ) -> Optional[BaseOutputParser[Any]]:
         return None
 
     def chain_response_to_string(
         self, prompt_section: "UserPromptSection", chain_response: Any
     ) -> str:
-        return chain_response.content
+        return str(chain_response.content)
