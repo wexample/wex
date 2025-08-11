@@ -53,6 +53,8 @@ checkup_remote:
     # Try to disable obsolete auths
     DOCKER_AUTH_CONFIG: "{}"
   script:
+    # Loading .wex/command trigger a module import error that requires wexample_helpers
+    - pip install -r requirements.txt
     - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
     # Check target environment is ready to receive hooks
