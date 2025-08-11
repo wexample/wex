@@ -26,6 +26,7 @@ def app__db__restore(
     manager: "AppAddonManager", app_dir: str, file_path: str | None = None, database: str | None = None
 ) -> None:
     kernel = manager.kernel
+    database = database or manager.get_app_name()
 
     if not manager.has_config("docker.main_db_container"):
         kernel.io.error("Missing db container")
