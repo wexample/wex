@@ -31,5 +31,5 @@ class DefaultCommand(AbstractCommand):
 
         return interaction_mode(self.assistant).process_user_input(
             prompt_section=prompt_section,
-            remaining_sections=remaining_sections,
+            remaining_sections=remaining_sections or [],
         )

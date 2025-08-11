@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class FileSearchCommand(DefaultCommand):
     description: str = "Similarity search into file"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:

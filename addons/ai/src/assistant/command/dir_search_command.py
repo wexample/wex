@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class DirSearchCommand(DefaultCommand):
     description: str = "Similarity search into directory"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:

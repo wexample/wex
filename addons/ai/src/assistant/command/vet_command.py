@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class VetCommand(DefaultCommand):
     description: str = "Vet a people based on given data"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:

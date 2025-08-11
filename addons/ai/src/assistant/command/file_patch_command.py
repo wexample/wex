@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class FilePatchCommand(DefaultCommand):
     description: str = "Create a patch an apply it to file"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:

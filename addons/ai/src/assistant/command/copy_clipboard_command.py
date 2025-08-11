@@ -1,11 +1,13 @@
-from typing import Optional, List, cast
+from typing import Optional, List, TYPE_CHECKING
 
-import pyperclip
+import pyperclip  # type: ignore[import-untyped]
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
 from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
-from addons.ai.src.assistant.utils.history_item import HistoryItem
+
+if TYPE_CHECKING:
+    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class CopyClipboardCommand(AbstractCommand):
@@ -23,10 +25,10 @@ class CopyClipboardCommand(AbstractCommand):
         if len(self.assistant.history) > 1:
             # The direct previous item is the actual command,
             # so we take the second previous one.
-            item = cast(HistoryItem, self.assistant.history[-2])
+            item = self.assistant.history[-2]
 
             if item and item.message:
-                pyperclip.copy(cast(HistoryItem, item).message)
+                pyperclip.copy(item.message)
                 return StringInteractionResponse("Previous response copied to clipboard")
 
         return StringInteractionResponse("No history items found")

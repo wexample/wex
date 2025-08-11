@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class FileRewriteCommand(DefaultCommand):
     description: str = "Rewrite a file following given guidelines"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class UrlSearchCommand(DefaultCommand):
     description: str = "Similarity search into web page"
-    root_only: str = True
+    root_only: bool = True
 
     @staticmethod
     def name() -> str:
