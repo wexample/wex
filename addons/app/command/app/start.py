@@ -294,7 +294,7 @@ def app__app__start(
             ]
         )
 
-    steps: List[Callable[[], None]]
+    steps: List[Callable[[], object]]
 
     if fast:
         steps = [
