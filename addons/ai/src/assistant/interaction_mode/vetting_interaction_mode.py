@@ -1,4 +1,4 @@
-from typing import Optional, TypeVar
+from typing import Optional, Type
 
 from langchain_core.pydantic_v1 import BaseModel
 
@@ -21,5 +21,5 @@ class VettingInteractionMode(FormatedDataInteractionMode):
             "This is a first analysis from a non trusted source, so most of information are unreliable"
         )
 
-    def get_pydantic_model(self) -> TypeVar("T", bound=BaseModel):
+    def get_pydantic_model(self) -> Type[BaseModel]:
         return Person

@@ -3,6 +3,12 @@ from typing import List, Optional
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.helper.registry import registry_get_all_commands
@@ -53,14 +59,15 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
         self,
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection],
-    ) -> Optional[bool | str]:
+    ) -> AbstractInteractionResponse:
         self.init_tools()
 
         if not prompt_section.prompt:
-            return "Please ask some question to help agent pick a tool."
+            return StringInteractionResponse("Please ask some question to help agent pick a tool.")
 
-        return self.assistant.get_model().chat_agent(
+        result = self.assistant.get_model().chat_agent(
             self,
             prompt_section,
             self.tools,
         )
+        return StringInteractionResponse(result if result is not None else "")

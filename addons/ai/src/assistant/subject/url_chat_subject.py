@@ -25,8 +25,8 @@ class UrlChatSubject(AbstractChatSubject):
                 self.assistant.log(f"Please provide a URL")
                 return False
 
-            if not validators.url(prompt_section.prompt):
-                self.assistant.log(f"Provided URL is not valid: {prompt_section.prompt}")
+            if not validators.url(user_input_trimmed):
+                self.assistant.log(f"Provided URL is not valid: {user_input_trimmed}")
                 return False
 
             self.url = user_input_trimmed

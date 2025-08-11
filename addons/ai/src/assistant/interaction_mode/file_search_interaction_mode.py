@@ -1,8 +1,6 @@
 import os.path
 from typing import Dict, List, cast, TYPE_CHECKING
 
-from langchain_core.document_loaders import BaseLoader  # type: ignore
-
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import (
     AbstractVectorStoreInteractionMode,
 )
@@ -23,7 +21,7 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         return cast("FileChatSubject", self.assistant.get_current_subject())
 
     def get_storage_signature(self) -> str:
-        return file_build_signature(self.get_file_subject().file_path)
+        return file_build_signature(self.get_file_subject().file_path or "")
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection

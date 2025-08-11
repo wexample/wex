@@ -1,5 +1,5 @@
 import os
-from typing import Any, Optional, TypeVar
+from typing import Any, Optional, Type
 
 from langchain_core.output_parsers import BaseOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Extra
@@ -28,7 +28,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
     def get_output_parser(
         self, prompt_section: UserPromptSection
-    ) -> Optional[BaseOutputParser]:
+    ) -> Optional[BaseOutputParser[Any]]:
         if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.flags:
             from langchain_core.output_parsers import CommaSeparatedListOutputParser
 
@@ -46,7 +46,9 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
             return YamlOutputParser(pydantic_object=self.get_pydantic_model())
 
-    def get_pydantic_model(self) -> TypeVar("T", bound=BaseModel):
+        return None
+
+    def get_pydantic_model(self) -> Type[BaseModel]:
         class AnyFieldObjectContainer(BaseModel):
             class Config:
                 extra = Extra.allow
@@ -59,10 +61,14 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
         if FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
             import yaml
 
-            return os.linesep + yaml.dump(chain_response.dict())
+            dumped = yaml.dump(chain_response.dict()) if hasattr(chain_response, "dict") else yaml.dump(chain_response)
+            return os.linesep + str(dumped)
         elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
-            import dicttoxml
+            import dicttoxml  # type: ignore[import-untyped]
 
-            return os.linesep + dicttoxml.dicttoxml(chain_response).decode()
+            xml_bytes = dicttoxml.dicttoxml(chain_response)
+            xml_text = xml_bytes.decode() if hasattr(xml_bytes, "decode") else str(xml_bytes)
+            xml_text_str: str = str(xml_text)
+            return os.linesep + xml_text_str
 
         return str(chain_response)

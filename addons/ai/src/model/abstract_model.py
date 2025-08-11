@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, List, Optional, Union, cast, Dict, Sequence
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
@@ -9,8 +9,9 @@ from langchain_core.prompts import (
     FewShotPromptTemplate,
     PromptTemplate,
 )
-from langchain_core.runnables import ConfigurableFieldSpec
+from langchain_core.runnables import ConfigurableFieldSpec, Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.messages import BaseMessage
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -56,8 +57,11 @@ class AbstractModel(AbstractAssistantChild):
     ) -> ChatPromptTemplate:
         assistant = self.assistant
 
-        parts = []
-        personality_prompt = assistant.personalities[assistant.personality]["prompt"]
+        parts: List[tuple[str, str]] = []
+        personalities = cast(Dict[str, Dict[str, Any]], assistant.personalities)
+        personality_conf = personalities.get(assistant.personality, {})
+        raw_personality_prompt = personality_conf.get("prompt")
+        personality_prompt = str(raw_personality_prompt) if raw_personality_prompt is not None else ""
         if personality_prompt:
             parts.append(
                 ("system", "##YOUR PERSONALITY\n" + personality_prompt),
@@ -67,7 +71,7 @@ class AbstractModel(AbstractAssistantChild):
             (
                 "system",
                 f"##LANGUAGE"
-                f'\nYou use "{assistant.languages[assistant.language]}" language in every text, '
+                f'\nYou use "{str(cast(Dict[str, Any], assistant.languages).get(assistant.language, ""))}" language in every text, '
                 f"even if the person uses another language, unless you are explicitly asked to do otherwise.",
             ),
         ]
@@ -112,11 +116,11 @@ class AbstractModel(AbstractAssistantChild):
 
     def create_few_shot_prompt_template(
         self,
-        interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection,
-        example_prompt: str,
-        examples: List[StringKeysDict],
-        input_variables_names: StringsList,
+        interaction_mode: Optional[AbstractInteractionMode] = None,
+        prompt_section: Optional[UserPromptSection] = None,
+        example_prompt: str = "",
+        examples: List[StringKeysDict] = [],
+        input_variables_names: StringsList = [],
         response_variable_name: str = "response",
     ) -> FewShotPromptTemplate:
         example_prompt_template = PromptTemplate(
@@ -124,11 +128,16 @@ class AbstractModel(AbstractAssistantChild):
             template=example_prompt + "{" + response_variable_name + "}",
         )
 
+        # Determine prefix from interaction mode if provided
+        prefix_text = (
+            interaction_mode.get_initial_prompt(prompt_section) if interaction_mode and prompt_section else ""
+        ) or ""
+
         return FewShotPromptTemplate(
             examples=examples,
             example_prompt=example_prompt_template,
             # The prefix is our instructions
-            prefix=interaction_mode.get_initial_prompt(prompt_section),
+            prefix=prefix_text,
             # The suffix our user input and output indicator
             suffix=example_prompt,
             input_variables=input_variables_names,
@@ -140,10 +149,10 @@ class AbstractModel(AbstractAssistantChild):
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
         prompt_parameters: StringKeysDict,
-        example_prompt,
-        examples,
-        input_variables_names,
-    ):
+        example_prompt: str,
+        examples: List[StringKeysDict],
+        input_variables_names: StringsList,
+    ) -> str:
         return self.chain_invoke_and_parse(
             interaction_mode=interaction_mode,
             prompt_template=self.create_few_shot_prompt_template(
@@ -181,15 +190,22 @@ class AbstractModel(AbstractAssistantChild):
     def chain_invoke_and_parse(
         self,
         interaction_mode: AbstractInteractionMode,
-        prompt_template: BasePromptTemplate,
+        prompt_template: BasePromptTemplate[Any],
         prompt_section: UserPromptSection,
         prompt_parameters: Optional[StringKeysDict] = None,
     ) -> str:
         model = self.get_llm()
-        chain = prompt_template | model
+        chain_serializable = prompt_template | model
+        chain = cast(Runnable[Dict[str, Any], Any], chain_serializable)
 
         with_message_history = RunnableWithMessageHistory(
-            chain,
+            cast(
+                Runnable[
+                    Union[Sequence[BaseMessage], Dict[str, Any]],
+                    Union[str, BaseMessage, Sequence[BaseMessage], Dict[str, Any]],
+                ],
+                chain,
+            ),
             self.assistant.get_session_history,
             input_messages_key="input",
             history_messages_key="history",
@@ -214,7 +230,7 @@ class AbstractModel(AbstractAssistantChild):
         )
 
         parser = interaction_mode.get_output_parser(prompt_section)
-        config = {
+        config: Dict[str, Dict[str, Any]] = {
             "configurable": {
                 "user_id": self.assistant.user.id,
                 "conversation_id": self.assistant.conversation.id,
@@ -227,14 +243,17 @@ class AbstractModel(AbstractAssistantChild):
             prompt_parameters or {},
         )
 
-        final_chain = with_message_history
         if parser:
             input_data["format_instructions"] = parser.get_format_instructions()
-            final_chain = with_message_history | parser
-
-        return interaction_mode.chain_response_to_string(
-            prompt_section, final_chain.invoke(input_data, config)
-        )
+            return interaction_mode.chain_response_to_string(
+                prompt_section,
+                (with_message_history | parser).invoke(input_data, cast(Any, config)),
+            )
+        else:
+            return interaction_mode.chain_response_to_string(
+                prompt_section,
+                with_message_history.invoke(input_data, cast(Any, config)),
+            )
 
     @abstractmethod
     def guess_function(

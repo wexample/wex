@@ -1,17 +1,17 @@
 from abc import abstractmethod
 from typing import Dict, List, Optional, cast, TYPE_CHECKING
-from xml.dom.minidom import Document
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader, UnstructuredURLLoader
 from langchain_community.document_loaders.parsers.language.language_parser import (
     Language,
-)  # type: ignore
+)
 from langchain_core.documents.base import Document
+from langchain_core.vectorstores import VectorStore
 from langchain_postgres.vectorstores import PGVector
 from unstructured.cleaners.core import clean, clean_extra_whitespace, remove_punctuation
 from wexample_helpers.helpers.json import json_load_if_valid
-from yaml import BaseLoader
+from langchain_community.document_loaders.base import BaseLoader
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
     def __init__(self, assistant: "Assistant") -> None:
         super().__init__(assistant)
+        self.vectorstore: VectorStore
         self.init_vector_store()
 
     @abstractmethod
@@ -63,7 +64,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         self, prompt_section: UserPromptSection
     ) -> Dict[str, str]:
         results = self.vectorstore.similarity_search_with_relevance_scores(
-            prompt_section.prompt,
+            prompt_section.prompt or "",
             k=3,
             filter=self.get_similarity_search_filter(prompt_section),
         )
@@ -93,31 +94,32 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             self.assistant.log(f"Loader : Markdown")
             from langchain_community.document_loaders import UnstructuredMarkdownLoader
 
-            return UnstructuredMarkdownLoader(file_path)
+            return cast(BaseLoader, UnstructuredMarkdownLoader(file_path))
         elif extension == "csv":
             self.assistant.log(f"Loader : CSV")
             from langchain_community.document_loaders.csv_loader import CSVLoader
 
-            return CSVLoader(file_path)
+            return cast(BaseLoader, CSVLoader(file_path))
         elif extension == "html":
             self.assistant.log(f"Loader : HTML")
             from langchain_community.document_loaders import UnstructuredHTMLLoader
 
-            return UnstructuredHTMLLoader(file_path)
+            return cast(BaseLoader, UnstructuredHTMLLoader(file_path))
         elif extension == "json":
             self.assistant.log(f"Loader : JSON")
             from langchain_community.document_loaders import JSONLoader
 
             if json_load_if_valid(file_path):
-                return JSONLoader(
-                    file_path=file_path, jq_schema=".", text_content=False
+                return cast(
+                    BaseLoader,
+                    JSONLoader(file_path=file_path, jq_schema=".", text_content=False),
                 )
-            return TextLoader(file_path)
+            return cast(BaseLoader, TextLoader(file_path))
         elif extension == "pdf":
             self.assistant.log(f"Loader : PDF")
             from langchain_community.document_loaders import PyPDFLoader
 
-            return PyPDFLoader(file_path=file_path)
+            return cast(BaseLoader, PyPDFLoader(file_path=file_path))
         else:
             language = self.vector_find_language_by_extension(
                 file_get_extension(file_path)
@@ -142,7 +144,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             self.assistant.log("Loader : default")
 
             # Fallback to a generic text loader if file type is not specifically handled
-            return TextLoader(file_path)
+            return cast(BaseLoader, TextLoader(file_path))
 
     def vector_find_language_by_extension(self, extension: str) -> Optional[Language]:
         # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
@@ -177,7 +179,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
         if language:
             self.assistant.log(f"Splitter : {language}")
-            from langchain_text_splitters import Language  # type: ignore
+            from langchain_text_splitters import Language
 
             return RecursiveCharacterTextSplitter.from_language(
                 language=cast(Language, language), chunk_size=50, chunk_overlap=0
@@ -196,7 +198,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         self.assistant.log("Storing document to vector database...")
         loader.load()
 
-        chunks = cast(List[Document], text_splitter.split_documents(loader.load()))
+        chunks = text_splitter.split_documents(loader.load())
 
         # Ensuring metadata is correctly attached to each chunk.
         for chunk in chunks:

@@ -1,5 +1,5 @@
 import html
-from typing import TYPE_CHECKING, Any, Dict, Iterable, cast
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, cast
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
@@ -66,8 +66,8 @@ class PromptManager(AbstractAssistantChild):
     def __init__(self, assistant: "Assistant") -> None:
         super().__init__(assistant)
         self.prompt = ""
-        self.session = PromptSession()
-        self.style_name = None
+        self.session: PromptSession[Any] = PromptSession()
+        self.style_name: Optional[str] = None
         self.key_bindings = KeyBindings()
         self.setup_key_bindings()
 
@@ -113,7 +113,7 @@ class PromptManager(AbstractAssistantChild):
 
         return self.prompt + prompt_chunk
 
-    def get_prompt(self):
+    def get_prompt(self) -> HTML:
         """Generate the current styled prompt."""
         return HTML("<prefix>&gt;&gt;&gt; </prefix>" + self.prompt)
 
@@ -121,15 +121,15 @@ class PromptManager(AbstractAssistantChild):
         return AssistantChatCompleter(self.assistant.get_active_commands())
 
     def open(self) -> str:
-        commands_tokens = {
+        commands_tokens: Dict[str, List[Any]] = {
             "root": [],
             "option": [(r":([a-zA-Z0-9-_]+)", Operator, "#pop")],
         }
 
         commands = self.assistant.get_active_commands()
-        for command, description in commands.items():
+        for cmd_name, _cmd in commands.items():
             commands_tokens["root"].append(
-                (rf"(^|(?<=\s))/\b{command}\b", Name.Builtin, "option")
+                (rf"(^|(?<=\s))/\b{cmd_name}\b", Name.Builtin, "option")
             )
 
         class PromptLexer(RegexLexer):
@@ -143,7 +143,7 @@ class PromptManager(AbstractAssistantChild):
 
         initial_message = ""
         if self.assistant.last_prompt_sections:
-            last_section = cast(UserPromptSection, self.assistant.last_prompt_sections[-1])
+            last_section = self.assistant.last_prompt_sections[-1]
             if last_section.has_command():
                 command = last_section.get_command()
 
@@ -166,7 +166,7 @@ class PromptManager(AbstractAssistantChild):
             lexer=PygmentsLexer(PromptLexer),
         )
 
-        response = html_remove_tags(self.get_full_text())
+        response = cast(str, html_remove_tags(self.get_full_text()))  # type: ignore[no-untyped-call]
         self.prompt = ""
 
         return response

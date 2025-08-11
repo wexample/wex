@@ -19,7 +19,8 @@ class OpenAiModel(AbstractModel):
     api_key: Optional[str] = None
 
     def activate(self) -> None:
-        self.api_key = self.kernel.env("OPENAI_API_KEY", required=True)
+        api_key_val = self.kernel.env("OPENAI_API_KEY", required=True)
+        self.api_key = str(api_key_val)
 
         self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 

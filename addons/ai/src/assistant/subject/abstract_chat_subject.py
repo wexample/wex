@@ -16,7 +16,7 @@ class AbstractChatSubject(AbstractAssistantChild):
 
     @staticmethod
     def name() -> str:
-        pass
+        return ""
 
     def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
         return True
@@ -30,5 +30,5 @@ class AbstractChatSubject(AbstractAssistantChild):
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
 
-    def get_prompt_parameters(self) -> Dict:
+    def get_prompt_parameters(self) -> Dict[str, str]:
         return {}

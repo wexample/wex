@@ -29,7 +29,8 @@ class DirChatSubject(AbstractChatSubject):
             user_input = prompt_section.prompt if prompt_section else None
             user_input_trimmed = user_input.strip() if user_input else None
 
-            if user_input_trimmed and os.path.isfile(user_input_trimmed):
+            dir_path: Optional[str]
+            if user_input_trimmed and os.path.isdir(user_input_trimmed):
                 dir_path = user_input_trimmed
             else:
                 dir_path = prompt_pick_a_dir()
@@ -48,9 +49,7 @@ class DirChatSubject(AbstractChatSubject):
         return False
 
     def set_dir_path(self, dir_path: str) -> None:
-        dir_path = os.path.realpath(dir_path)
-
-        if not dir_path:
-            return None
-
-        self.dir_path = dir_path
+        real = os.path.realpath(dir_path)
+        if not real:
+            return
+        self.dir_path = real

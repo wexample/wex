@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional, cast
 
-import patch
+import patch  # type: ignore[import-untyped]
 from wexample_helpers.helpers.file import file_read
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
@@ -53,12 +53,14 @@ class FilePatchInteractionMode(AbstractInteractionMode):
         user_input = prompt_section.prompt
         subject = cast(FileChatSubject, self.assistant.get_current_subject())
         file_path = subject.file_path
-
+        
         # Avoid empty input error.
         if not user_input:
             return StringInteractionResponse(f"Please instruct what to change in this file {file_path}")
 
         # Per file format system prompt.
+        if not file_path:
+            return StringInteractionResponse("No file selected")
         extension = file_get_extension(file_path)
         if extension == "json":
             prompt_section.prompt_configurations.append(
@@ -165,7 +167,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
 
         return StringInteractionResponse(f"⚠️ {error_message}")
 
-    def load_example_patch(self, name) -> StringKeysDict:
+    def load_example_patch(self, name: str) -> StringKeysDict:
         base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
         source = file_read_if_exists(f"{base_path}source.txt")
 

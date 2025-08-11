@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast, Any
 
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
 from wexample_helpers.helpers.json import json_load
@@ -47,6 +47,12 @@ from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_MENU_ACTION_THEME,
     ASSISTANT_MENU_ACTIONS_TRANSLATIONS, ASSISTANT_MENU_ACTION_CONVERSATIONS, ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
 )
+
+# Explicit exports for tests and external imports
+__all__ = [
+    "AI_COMMAND_PREFIX",
+    "ASSISTANT_MENU_ACTION_BACK",
+]
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -72,6 +78,7 @@ class Assistant(AbsractKernelChild):
     language: str
     user: Row[Tuple[Any, ...]]
     _default_model: Optional[AbstractModel] = None
+    last_prompt_sections: Optional[List[UserPromptSection]]
 
     def __init__(self, kernel: "Kernel", default_model: str) -> None:
         super().__init__(kernel)
@@ -162,11 +169,15 @@ class Assistant(AbsractKernelChild):
 
         self.commands: Dict[str, AbstractCommand] = {}
         for command_type in commands:
-            self.commands[command_type.name()] = command_type(self)
+            # mypy: command_type is a concrete subclass, but as Type[AbstractCommand]
+            # it is considered abstract; cast to Any for instantiation.
+            self.commands[command_type.name()] = cast(Any, command_type)(self)
 
     def _init_locales(self) -> None:
-        self.languages = json_load(
-            f"{self.kernel.directory.path}addons/ai/samples/languages.json"
+        # languages.json is expected to be a dict[str, str]
+        self.languages = cast(
+            Dict[str, str],
+            json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json"),
         )
         self.language = "en"
         self.set_language(self.language)
@@ -184,7 +195,7 @@ class Assistant(AbsractKernelChild):
 
         self.subjects: Dict[str, AbstractChatSubject] = {}
         for subject_class in subjects:
-            subject = cast(AbstractChatSubject, subject_class(self))
+            subject = subject_class(self)
             self.subjects[subject.name()] = subject
 
         self.set_default_subject()
@@ -222,25 +233,23 @@ class Assistant(AbsractKernelChild):
     def set_conversation(self, id_conversation: Optional[int] = None) -> None:
         self.conversation = self.database.get_or_create_conversation(id_conversation)
         self.last_prompt_sections = []
-        self.history: List[HistoryItem] = self.database.get_conversation_items(
+        self.history = self.database.get_conversation_items(
             self.conversation.id
         )
 
         self.active_memory.clear()
-        messages = []
+        messages: List[BaseMessage] = []
         for item in self.history:
+            msg: BaseMessage
             if item.author == "ai":
-                message = AIMessage(
-                    # Support null message.
-                    content=item.message or "",
-                )
+                # item.message may be a SQLAlchemy Column; coerce to str
+                content_str = item.message if isinstance(item.message, str) else str(item.message or "")
+                msg = AIMessage(content=content_str)
             else:
-                message = HumanMessage(
-                    # Support null message.
-                    content=item.message or "",
-                )
+                content_str = item.message if isinstance(item.message, str) else str(item.message or "")
+                msg = HumanMessage(content=content_str)
 
-            messages.append(message)
+            messages.append(msg)
 
         self.active_memory.add_messages(messages)
 
@@ -249,7 +258,7 @@ class Assistant(AbsractKernelChild):
             self.set_subject(DefaultChatSubject.name(), prompt_section)
 
     def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
-        subject = cast(AbstractChatSubject, self.subjects[name])
+        subject = self.subjects[name]
 
         self.subject = subject
         self.subject.activate(prompt_section)
@@ -281,7 +290,7 @@ class Assistant(AbsractKernelChild):
 
         return model
 
-    def start(self, menu_action: str) -> None:
+    def start(self, menu_action: Optional[str]) -> None:
         asked_exit = False
 
         # Reset default subject.
@@ -295,26 +304,30 @@ class Assistant(AbsractKernelChild):
             if menu_action == ASSISTANT_MENU_ACTION_BACK:
                 menu_action = self.chat()
             elif menu_action == ASSISTANT_MENU_ACTION_LANGUAGE:
-                self.language = prompt_choice_dict(
+                # Ensure dict[str, str]
+                languages_dict: Dict[str, str] = {str(k): str(v) for k, v in self.languages.items()}
+                lang_choice = prompt_choice_dict(
                     "Choose a language",
-                    self.languages,
+                    languages_dict,
                     default=self.language,
                     abort="↩ Back",
                 )
+                if lang_choice:
+                    self.language = lang_choice
 
                 menu_action = None
             elif menu_action == ASSISTANT_MENU_ACTION_THEME:
                 from pygments.styles._mapping import STYLES
 
-                choice_dict = {}
+                theme_choices: Dict[str, str] = {}
                 for key, value in STYLES.items():
                     style_name = value[1]
                     class_name = key[:-5]
-                    choice_dict[style_name] = class_name
+                    theme_choices[style_name] = class_name
 
                 self.colors_theme = prompt_choice_dict(
                     "Choose a theme:",
-                    choice_dict,
+                    theme_choices,
                     default=self.colors_theme,
                     abort="↩ Back",
                 )
@@ -324,32 +337,41 @@ class Assistant(AbsractKernelChild):
                 self.set_conversation()
                 menu_action = ASSISTANT_MENU_ACTION_BACK
             elif menu_action == ASSISTANT_MENU_ACTION_CONVERSATIONS:
-                self.set_conversation(
-                    int(prompt_choice_dict(
-                        "Pick a conversation:",
-                        self.database.get_conversations_dict(),
-                        default=self.conversation.id,
-                        abort="↩ Back",
-                    ))
+                convs_raw = self.database.get_conversations_dict()
+                convs: Dict[str, str] = {str(k): str(v) for k, v in convs_raw.items()}
+                choice = prompt_choice_dict(
+                    "Pick a conversation:",
+                    convs,
+                    default=str(self.conversation.id),
+                    abort="↩ Back",
                 )
+                if choice is not None:
+                    self.set_conversation(int(choice))
 
                 menu_action = ASSISTANT_MENU_ACTION_BACK
             elif menu_action == ASSISTANT_MENU_ACTION_PERSONALITY:
-                choice_dict = {}
+                personality_choices: Dict[str, str] = {}
                 for key, personality in self.personalities.items():
-                    choice_dict[key] = personality["summary"]
+                    # personality may be various structured data; coerce to str safely
+                    try:
+                        summary = str(personality.get("summary", ""))  # type: ignore[union-attr]
+                    except Exception:
+                        summary = str(personality)
+                    personality_choices[key] = summary
 
-                self.personality = prompt_choice_dict(
+                new_personality = prompt_choice_dict(
                     "Choose a personality:",
-                    choice_dict,
+                    personality_choices,
                     default=self.personality,
                     abort="↩ Back",
                 )
+                if new_personality is not None:
+                    self.personality = new_personality
 
                 menu_action = None
             elif menu_action == ASSISTANT_MENU_ACTION_DEFAULT_MODEL:
                 current_model = self.get_model()
-                models = {}
+                models: Dict[str, str] = {}
                 for model in self.models:
                     models[model] = model
 
@@ -362,7 +384,8 @@ class Assistant(AbsractKernelChild):
 
                 menu_action = None
 
-                self.set_default_model(new_model)
+                if new_model is not None:
+                    self.set_default_model(new_model)
 
             if menu_action == ASSISTANT_MENU_ACTION_EXIT:
                 asked_exit = True
@@ -411,19 +434,19 @@ class Assistant(AbsractKernelChild):
 
         for i, word in enumerate(words):
             command = self.extract_active_command(word)
-
             if command:
                 # Split command and options
                 command_parts = self.split_command(word)
 
                 if current_section and len(current_user_input_part):
-                    current_section.prompt += " ".join(current_user_input_part)
+                    current_section.prompt = (current_section.prompt or "") + " ".join(current_user_input_part)
                     results.append(current_section)
 
+                current_user_input_part = []
                 current_section = UserPromptSection(
                     self.commands[command],
                     None,
-                    command_parts[1:] if len(command_parts) > 1 else None
+                    command_parts[1:] if len(command_parts) > 1 else None,
                 )
             elif word:
                 current_user_input_part.append(
@@ -512,13 +535,14 @@ class Assistant(AbsractKernelChild):
 
         self.history.append(item)
 
-        if content:
+        if content is not None:
+            msg: BaseMessage
             if author == 'ai':
-                message = AIMessage(content)
+                msg = AIMessage(content=content or "")
             else:
-                message = HumanMessage(content)
+                msg = HumanMessage(content=content or "")
 
-            self.active_memory.add_message(message)
+            self.active_memory.add_message(msg)
 
         self.database.save_assistant_conversation_item(item)
 
@@ -535,7 +559,9 @@ class Assistant(AbsractKernelChild):
         history: ChatMessageHistory = ChatMessageHistory()
 
         for message in reversed(self.active_memory.messages):
-            total_count += llm.get_num_tokens(message.content)
+            # Only count tokens on string content
+            if isinstance(message.content, str):
+                total_count += llm.get_num_tokens(message.content)
 
             if total_count < max_token:
                 history.add_message(message)
@@ -544,4 +570,4 @@ class Assistant(AbsractKernelChild):
 
     def text_has_a_command(self, text: str) -> bool:
         sections = self.split_prompt_sections(text)
-        return len(sections) and sections[-1].has_command()
+        return bool(sections) and sections[-1].has_command()

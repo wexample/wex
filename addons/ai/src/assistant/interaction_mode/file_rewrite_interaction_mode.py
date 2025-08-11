@@ -33,6 +33,8 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
             return StringInteractionResponse("Please provide a guideline to indicate what to change in the file")
 
         subject = cast(FileChatSubject, self.assistant.subject)
+        if not subject.file_path:
+            return StringInteractionResponse("No file selected")
         file_content = file_read(subject.file_path)
 
         if len(file_content) > self.file_length_limit:
@@ -49,7 +51,8 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
             remaining_sections,
         )
 
-        file_write(subject.file_path, response.render())
+        rendered = response.render()
+        file_write(subject.file_path, rendered if rendered is not None else "")
 
         self.assistant.log("File has been rewritten")
 

@@ -2,7 +2,7 @@ import enum
 import os
 from typing import Dict, cast, List
 
-import patch
+import patch  # type: ignore[import-untyped]
 from langchain_core.prompts import FewShotPromptTemplate
 from wexample_helpers.helpers.file import file_write, file_read
 
@@ -205,7 +205,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                 )
 
     def _get_all_examples(self, assistant: Assistant) -> Dict[str, StringKeysDict]:
-        examples = {}
+        examples: Dict[str, StringKeysDict] = {}
 
         file_chat_subject = cast(
             FileChatSubject, assistant.subjects[FileChatSubject.name()]
