@@ -28,4 +28,5 @@ class TestAppCommandLocationFind(AbstractTestCase):
             ).first()
             self.assertEqual(app_location, root_dir)
 
-        directory_execute_inside(tmp_dir, _test_find)
+        with directory_execute_inside(tmp_dir):
+            _test_find()

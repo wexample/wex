@@ -1,19 +1,19 @@
-from typing import TYPE_CHECKING, Optional, Union
-
-from wexample_helpers.helpers.args import args_parse_list_or_strings_list
+from typing import TYPE_CHECKING, Optional, Union, List, cast
 
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (
     remote_get_connexion_address,
     remote_get_connexion_command,
 )
-from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
+from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 from src.decorator.option import option
 from src.helper.command import command_to_string
+from wexample_helpers.const.types import StringsList
+from wexample_helpers.helpers.args import args_parse_list_or_strings_list
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -51,12 +51,12 @@ if TYPE_CHECKING:
     help="Execute command in a sub process",
 )
 def app__remote__exec(
-    manager: "AppAddonManager",
-    app_dir: str,
-    environment: str,
-    command: str,
-    terminal: bool,
-    sync: bool = False,
+        manager: "AppAddonManager",
+        app_dir: str,
+        environment: str,
+        command: str,
+        terminal: bool,
+        sync: bool = False,
 ) -> Optional[Union[InteractiveShellCommandResponse, NonInteractiveShellCommandResponse]]:
     address = remote_get_connexion_address(
         manager=manager,
@@ -74,7 +74,7 @@ def app__remote__exec(
     if sync:
         return NonInteractiveShellCommandResponse(
             manager.kernel,
-            remote_command,
+            cast(List[Union[str, StringsList]], remote_command),
         )
 
     return InteractiveShellCommandResponse(

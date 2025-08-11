@@ -30,4 +30,5 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
                     core_kernel_get_version(self.kernel),
                 )
 
-            directory_execute_inside(test_app_dir, _test_migrate)
+            with directory_execute_inside(test_app_dir):
+                _test_migrate()

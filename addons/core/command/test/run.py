@@ -13,6 +13,7 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command_sync, execute_command_tree_sync
+from typing import List, Union, cast
 from src.helper.module import module_load_from_file
 from src.helper.prompt import prompt_progress_steps
 
@@ -55,13 +56,13 @@ def core__test__run(
 
         execute_command_tree_sync(
             kernel,
-            [
+            cast(List[Union[str, StringsList]], [
                 "docker",
                 "compose",
                 "-f",
                 f"{kernel.directory.path}.wex/docker/test_remote/docker-compose.test-remote{suffix}.yml",
             ]
-            + command_part,
+            + command_part),
             working_directory=kernel.directory.path,
         )
 
@@ -75,7 +76,7 @@ def core__test__run(
 
     def _wait_remote() -> None:
         success = False
-        preview_previous = []
+        preview_previous: StringsList = []
         preview_length = 10
 
         while not success:
