@@ -551,24 +551,33 @@ websocket-client==1.7.0
     # via kubernetes
 websockets==12.0
     # via uvicorn
-wexample-config==0.0.41
-    # via wexample-file
-wexample-file==0.0.1
-    # via -r requirements.in
-wexample-helpers==0.0.57
+wexample-app==0.0.46
+    # via wexample-wex-core
+wexample-config==0.0.48
+    # via wexample-filestate
+wexample-file==0.0.3
+    # via
+    #   -r requirements.in
+    #   wexample-filestate
+wexample-filestate==0.0.46
+    # via
+    #   wexample-app
+    #   wexample-wex-core
+wexample-helpers==0.0.63
     # via
     #   -r requirements.in
     #   wexample-config
     #   wexample-file
     #   wexample-helpers-yaml
-wexample-helpers-yaml==0.0.3
-    # via -r requirements.in
-wexample-prompt==0.0.38
+wexample-helpers-yaml==0.0.64
     # via
     #   -r requirements.in
-    #   wexample-file
-wexample-wex-core==6.0.1
-    # via -r requirements.in
+    #   wexample-app
+wexample-prompt==0.0.43
+    # via
+    #   -r requirements.in
+    #   wexample-filestate
+wexample-wex-core==6.0.39
 wheel==0.45.1
     # via pip-tools
 wrapt==1.16.0
