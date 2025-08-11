@@ -2,15 +2,16 @@ from datetime import datetime
 from typing import Any, cast
 
 from sqlalchemy import Column, Integer, String, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
-Base: Any = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class HistoryItem(Base):
     __tablename__ = 'assistant_conversation_item'
     id = Column(Integer, primary_key=True)
-    date_created = Column(DateTime)
+    date_created = Column(DateTime, default=datetime.utcnow)
     author = Column(String)
     context_window = Column(Text)
     message = Column(Text)
@@ -22,5 +23,3 @@ class HistoryItem(Base):
 
     def __init__(self, **kw: Any) -> None:
         super().__init__(**kw)
-
-        self.date_created = cast(Column[datetime], datetime.now())

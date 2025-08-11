@@ -159,9 +159,10 @@ def execute_command_sync(
     if as_sudo_user:
         command_prefix: List[str] = ["sudo", "-u", get_user_or_sudo_user()]
         if isinstance(command, str):
-            command = command.split()
-
-        command = cast(List[str], command_prefix + cast(List[str], command))
+            cmd_list: List[str] = command.split()
+        else:
+            cmd_list = list(command)
+        command = command_prefix + cmd_list
 
     command_str = command_to_string(command)
 

@@ -44,7 +44,7 @@ def prompt_choice_dict(
     choices: StringsDict,
     default: Optional[str] = None,
     **kwargs: Any,
-) -> Any:
+) -> Optional[str]:
     items = choices.items()
 
     choice = prompt_choice(

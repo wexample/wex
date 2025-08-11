@@ -98,8 +98,8 @@ def app__helper__start(
             user = user or getpass.getuser()
             ports = manager.get_config(f"port", default={}).get_dict()
 
-            for port in ports.values():
-                system_port_check(kernel, port)
+            for p in ports.values():
+                system_port_check(kernel, int(p))
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 

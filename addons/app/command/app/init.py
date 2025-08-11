@@ -1,6 +1,6 @@
 import os.path
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast, Dict, Any
 
 from git import Repo
 from wexample_helpers.helpers.args import args_split_arg_array
@@ -146,7 +146,8 @@ def app__app__init(
         manager._config = manager.create_config(name_snake, domains_list)
 
         if port or port_secure:
-            manager._config["port"] = {
+            config_mut = cast(Dict[str, Any], manager._config)
+            config_mut["port"] = {
                 "public": port,
                 "public_secure": port_secure,
             }

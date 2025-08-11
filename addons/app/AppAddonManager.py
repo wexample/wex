@@ -156,8 +156,7 @@ class AppAddonManager(AddonManager):
 
     def load_script(self, name: str) -> Optional[YamlContent]:
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
-
-        return yaml_read(script_dir)
+        return cast(Optional[YamlContent], yaml_read(script_dir))
 
     def get_helper_app_name(self, short_name: str) -> str:
         return "-".join([CORE_COMMAND_NAME, short_name])
@@ -198,7 +197,7 @@ class AppAddonManager(AddonManager):
         return False
 
     def is_valid_app(self) -> bool:
-        return self.app_dir and self.is_app_root(self.get_app_dir())
+        return bool(self.app_dir) and self.is_app_root(self.get_app_dir())
 
     @classmethod
     def _load_config(

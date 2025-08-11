@@ -32,7 +32,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self.as_sudo_user = as_sudo_user
         self.ignore_error = ignore_error
         self.workdir = workdir
-        self.success = None
+        self.success: Optional[bool] = None
 
     def render_content(
         self,

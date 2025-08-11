@@ -271,7 +271,7 @@ def app__app__start(
 
             manager.set_runtime_config("initialized", True)
 
-    def _app__app__start__complete() -> str:
+    def _app__app__start__complete() -> None:
         env = manager.get_env()
 
         if manager.has_runtime_config("domains"):
@@ -294,7 +294,7 @@ def app__app__start(
             ]
         )
 
-    steps: List[Callable]
+    steps: List[Callable[[], None]]
 
     if fast:
         steps = [
