@@ -48,7 +48,7 @@ class IOManager(AbsractKernelChild):
         parameters: Optional[StringsDict] = None,
         fatal: bool = True,
         trace: bool = True,
-    ) -> NoReturn:
+    ) -> None:
         message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
         message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
 
@@ -80,7 +80,7 @@ class IOManager(AbsractKernelChild):
             # Do not exit, allowing unit testing to catch error.
         else:
             self.print(message)
-            sys.exit(0)
+            raise SystemExit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1

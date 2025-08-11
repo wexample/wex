@@ -64,18 +64,18 @@ def process_kill_by_command(kernel: "Kernel", command: str) -> None:
     )
 
     if pids:
-        for pid in pids:
+        for pid_str in pids:
             try:
-                pid = int(pid.strip())
-                kernel.io.log(f"Killing process {pid}, running command : {command}")
-                os.kill(pid, signal.SIGTERM)
+                pid_int = int(pid_str.strip())
+                kernel.io.log(f"Killing process {pid_int}, running command : {command}")
+                os.kill(pid_int, signal.SIGTERM)
             except ValueError:
                 kernel.io.warn(
-                    f"Tried to kill an invalid PID: {pid}, running command : {command}"
+                    f"Tried to kill an invalid PID: {pid_str}, running command : {command}"
                 )
             except ProcessLookupError:
                 kernel.io.warn(
-                    f"Tried to kill a missing PID: {pid}, running command : {command}"
+                    f"Tried to kill a missing PID: {pid_str}, running command : {command}"
                 )
 
 

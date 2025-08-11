@@ -63,15 +63,16 @@ def prompt_choice(
     default: Optional[InquirerPyDefault] = None,
     abort: Optional[str] = "> Abort",
     **kwargs: Any,
-) -> Any:
+) -> Optional[str]:
     choices_all = choices.copy()
 
     if abort:
         choices_all.append(Choice(value=None, name=abort))
 
-    return inquirer.select(  # type: ignore
+    result = inquirer.select(  # type: ignore
         message=question, choices=choices_all, default=default, **kwargs
     ).execute()
+    return cast(Optional[str], result)
 
 
 def prompt_pick_a_file(base_dir: Optional[str] = None) -> Optional[str]:
