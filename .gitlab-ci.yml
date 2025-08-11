@@ -13,6 +13,7 @@ variables:
 
 include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
 # Rules when branch has been merged.
 .merge_branch_rules: &merge-branch-master-rules
