@@ -56,6 +56,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         error_code = 500
+        from wexample_helpers.helpers.array import array_replace_value
 
         try:
             error: Optional[str] = None
