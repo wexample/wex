@@ -2,7 +2,7 @@ import os
 from typing import Any, Optional, Type
 
 from langchain_core.output_parsers import BaseOutputParser
-from langchain_core.pydantic_v1 import BaseModel, Extra
+from pydantic import BaseModel, Extra
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 

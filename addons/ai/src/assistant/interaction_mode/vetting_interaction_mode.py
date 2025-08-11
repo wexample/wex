@@ -1,6 +1,6 @@
 from typing import Optional, Type
 
-from langchain_core.pydantic_v1 import BaseModel
+from pydantic import BaseModel
 
 from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import (
     FormatedDataInteractionMode,
