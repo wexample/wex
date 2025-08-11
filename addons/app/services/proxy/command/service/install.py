@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
@@ -11,8 +11,10 @@ if TYPE_CHECKING:
 
 @app_command(help="Install the proxy service", command_type=COMMAND_TYPE_SERVICE)
 def proxy__service__install(
-    manager: "AppAddonManager", app_dir: str, service: str
+        manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
+    from wexample_wex_core.resolver.service_command_resolver import ServiceCommandResolver
+
     def callback() -> None:
         manager.set_config(
             "port.public", manager.get_config("port.public", default=80).get_int()
@@ -24,7 +26,8 @@ def proxy__service__install(
         )
 
     service_resolver = cast(
-        Any, manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
+        ServiceCommandResolver,
+        manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
     )
 
     shutil.copytree(
