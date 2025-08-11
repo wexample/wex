@@ -20,7 +20,7 @@ def file_build_date_time_name() -> str:
 def file_build_signature(file_path: str) -> str:
     if os.path.isdir(file_path):
         total_size = 0
-        latest_mod_time = 0
+        latest_mod_time: float = 0.0
         # Walk through the directory and sum up the sizes and find the latest modification time.
         for root, dirs, files in os.walk(file_path):
             for name in files + dirs:
@@ -171,7 +171,7 @@ def file_get_owner(file_path: str) -> str:
     return owner_info.pw_name
 
 
-def file_is_utf8_encoding(file_path) -> bool:
+def file_is_utf8_encoding(file_path: str) -> bool:
     """
     Check if the file at `file_path` is encoded in UTF-8.
 
