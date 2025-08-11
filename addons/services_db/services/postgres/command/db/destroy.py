@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
+from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -23,7 +24,7 @@ def postgres__db__destroy(
 
     fallback_database = "postgres"
 
-    def run_psql_command(command, message):
+    def run_psql_command(command: str, message: str) -> AbstractResponse:
         manager.log(message)
         result = manager.kernel.run_function(
             app__app__exec,

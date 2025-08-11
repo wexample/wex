@@ -67,17 +67,17 @@ def app__remote__exec(
     if not address:
         return None
 
-    command = remote_get_connexion_command(
-            manager=manager, environment=environment, terminal=terminal
-        ) + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"]
+    remote_command = remote_get_connexion_command(
+        manager=manager, environment=environment, terminal=terminal
+    ) + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"]
 
     if sync:
         return NonInteractiveShellCommandResponse(
             manager.kernel,
-            command,
+            remote_command,
         )
 
     return InteractiveShellCommandResponse(
         manager.kernel,
-        command,
+        remote_command,
     )
