@@ -23,6 +23,10 @@ class DefaultCommand(AbstractCommand):
         self,
         prompt_section: Optional["UserPromptSection"] = None,
         remaining_sections: Optional[List["UserPromptSection"]] = None) -> AbstractInteractionResponse:
+        if prompt_section is None:
+            # Fallback: nothing to process
+            return super().execute(prompt_section, remaining_sections)
+
         interaction_mode = self.get_interaction_mode(prompt_section)
 
         return interaction_mode(self.assistant).process_user_input(

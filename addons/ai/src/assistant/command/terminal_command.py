@@ -23,13 +23,17 @@ class TerminalCommand(AbstractCommand):
         prompt_section: Optional["UserPromptSection"] = None,
         remaining_sections: Optional[List["UserPromptSection"]] = None
     ) -> AbstractInteractionResponse:
+        if prompt_section is None or prompt_section.prompt is None:
+            return StringInteractionResponse("No command provided")
+
+        cmd: str = prompt_section.prompt
         success, response = execute_command_sync(
-            self.kernel, prompt_section.prompt, ignore_error=True, shell=True
+            self.kernel, cmd, ignore_error=True, shell=True
         )
 
         response_str = os.linesep.join(response)
         self.assistant.set_history_item(response_str, 'user')
 
         return StringInteractionResponse(
-            "Running: " + prompt_section.prompt + ":" + os.linesep + response_str
+            "Running: " + cmd + ":" + os.linesep + response_str
         )

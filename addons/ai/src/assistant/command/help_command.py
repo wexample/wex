@@ -23,7 +23,7 @@ class HelpCommand(AbstractCommand):
     ) -> AbstractInteractionResponse:
         commands = self.assistant.get_active_commands()
         # Assuming string_list_longest_word returns the length of the longest word in a list
-        longest_command_length = string_list_longest_word(commands.keys())
+        longest_command_length = string_list_longest_word(list(commands.keys()))
 
         # Display the menu in the specified format
         for command_name, command in commands.items():

@@ -22,7 +22,7 @@ class SubjectCommand(AbstractCommand):
         prompt_section: Optional["UserPromptSection"] = None,
         remaining_sections: Optional[List["UserPromptSection"]] = None
     ) -> AbstractInteractionResponse:
-        if len(prompt_section.flags):
+        if prompt_section is not None and getattr(prompt_section, "flags", None):
             self.assistant.set_subject(prompt_section.flags[-1], prompt_section)
             
         return super().execute(prompt_section)
