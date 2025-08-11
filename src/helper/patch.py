@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-import patch
+import patch  # type: ignore[import-untyped]
 from wexample_helpers.helpers.directory import directory_execute_inside
 
 
@@ -19,10 +19,11 @@ def patch_is_valid(text: str) -> bool:
 
 
 def patch_apply_in_workdir(workdir: str, patch_set: patch.PatchSet) -> bool:
-    def _patch_it():
-        return patch_set.apply()
+    def _patch_it() -> bool:
+        return bool(patch_set.apply())
 
-    return directory_execute_inside(workdir, _patch_it)
+    with directory_execute_inside(workdir):
+        return _patch_it()
 
 
 def extract_information(

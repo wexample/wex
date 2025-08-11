@@ -24,7 +24,7 @@ class YamlFileStructure(FileStructure):
     def load_content_yaml(
         self, default: Optional[YamlContentDict] = None
     ) -> YamlContent:
-        return yaml_read(self.path) or default
+        return cast(YamlContent, yaml_read(self.path) or default)
 
     def load_content(self, default: Optional[YamlContentDict] = None) -> None:
         self.content = self.load_content_yaml(default)
