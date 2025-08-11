@@ -1,4 +1,4 @@
-from ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 
 
 class PromptExitInteractionMode(AbstractInteractionMode):

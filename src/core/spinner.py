@@ -4,7 +4,7 @@ import time
 
 
 class Spinner:
-    def __init__(self, message=" ", delay=0.1) -> None:
+    def __init__(self, message: str = " ", delay: float = 0.1) -> None:
         self.spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         self.delay = delay
         self.message = message
