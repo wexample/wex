@@ -106,6 +106,7 @@ def __core__core__install_symlink(kernel: "Kernel", destination: str) -> None:
 def __core__core__install_webhook_server(kernel: "Kernel") -> None:
     kernel.io.log(f"Installing webhooks server ...")
 
+    # TODO fails on install: PermissionError: [Errno 13] Permission denied
     kernel.run_function(app__webhook__listen, {"asynchronous": True, "force": True})
 
 
