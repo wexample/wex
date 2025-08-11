@@ -49,6 +49,9 @@ checkup_remote:
   stage: checkup_pipeline
   extends: [ .merge_to_master ]
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  variables:
+    # Try to disable obsolete auths
+    DOCKER_AUTH_CONFIG: "{}"
   script:
     - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
