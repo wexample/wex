@@ -23,5 +23,5 @@ def sqlserver__db__go(
     name = database or manager.get_config(f"service.{service}.name").get_str()
 
     return (
-        f'/opt/mssql-tools/bin/sqlcmd -S localhost -U {user} -P "{password}" -d {name}'
+        f'/opt/mssql-tools/bin/sqlcmd -C -S localhost -U {user} -P "{password}" -d {name}'
     )
