@@ -99,7 +99,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             "The local file has been created remotely",
         )
 
-        self.kernel.run_function(
+        response = self.kernel.run_function(
             app__remote__exec,
             {
                 "app-dir": app_dir,
@@ -108,6 +108,8 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "sync": True
             },
         )
+
+        self.log(response.first())
 
         response = self.kernel.run_function(
             app__remote__exec,
@@ -119,8 +121,14 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             },
         )
 
+        self.log(response.first())
+
+        # Get the last non-empty value.s
+        values = [s.strip() for s in (response.output_bag or []) if isinstance(s, str) and s.strip()]
+        last = values[-1] if values else ""
+
         self.assertEqual(
-            response.first(),
+            last,
             unique_value,
             "The value in the local database hase been transferred and mounted in remote database",
         )
