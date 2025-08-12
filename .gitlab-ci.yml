@@ -3,13 +3,8 @@ stages:
 
 .test_cleanup:
   script:
-    - |
-      if docker -H "${DOCKER_HOST:-unix:///var/run/docker.sock}" info >/dev/null 2>&1; then
-        docker -H "${DOCKER_HOST:-unix:///var/run/docker.sock}" ps -q --filter name=test_app_ | xargs -r -I {} docker -H "${DOCKER_HOST:-unix:///var/run/docker.sock}" rm -f {}
-        docker -H "${DOCKER_HOST:-unix:///var/run/docker.sock}" ps -q --filter name=wex_proxy_test_ | xargs -r -I {} docker -H "${DOCKER_HOST:-unix:///var/run/docker.sock}" rm -f {}
-      else
-        echo "Docker daemon not accessible, skipping container cleanup"
-      fi
+    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
     - rm -rf /var/www/test
     - rm -rf /var/www/test_*
 
