@@ -47,8 +47,6 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
-#  variables:
-#    GIT_STRATEGY: none
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
