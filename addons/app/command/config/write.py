@@ -60,8 +60,14 @@ def app__config__write(
                 return f"path={p} owner={user}:{group} mode={mode}"
 
             paths = [
+                "/var",
+                "/var/www",
+                "/var/www/test",
+                "/var/www/test/wex-proxy",
+                "/var/www/test/wex-proxy/.wex",
                 "/var/www/test/wex-proxy/.wex/tmp",
                 "/var/www/test/wex-proxy/.wex/tmp/docker.env",
+                os.path.join(app_dir, ".wex"),
                 os.path.join(app_dir, ".wex", "tmp"),
                 os.path.join(app_dir, ".wex", "tmp", "docker.env"),
             ]
@@ -76,6 +82,23 @@ def app__config__write(
                         print(f"[compose-debug] stat/ls failed for {p}: {e}")
                 else:
                     print(f"[compose-debug] missing: {p}")
+
+            # Vérifier explicitement l'accès en tant que 'owner'
+            env_file = "/var/www/test/wex-proxy/.wex/tmp/docker.env"
+            if os.path.exists(env_file):
+                for cmd in (
+                    ["sudo", "-n", "-u", "owner", "stat", env_file],
+                    ["sudo", "-n", "-u", "owner", "head", "-n1", env_file],
+                ):
+                    try:
+                        res = subprocess.run(cmd, capture_output=True, text=True)
+                        print(f"[compose-debug] run {' '.join(cmd)} -> rc={res.returncode}")
+                        if res.stdout:
+                            print("[compose-debug] stdout:", res.stdout.strip())
+                        if res.stderr:
+                            print("[compose-debug] stderr:", res.stderr.strip())
+                    except Exception as e:
+                        print(f"[compose-debug] failed to run {' '.join(cmd)}: {e}")
         except Exception as e:
             print(f"[compose-debug] permission debug failed: {e}")
 
