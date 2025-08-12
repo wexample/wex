@@ -11,10 +11,45 @@ options:
     default: DEFAULT_VALUE
     type: str
 scripts:
-  - echo "This command can be ran from the web"
-  - echo "This command should be ran in an app, which should run"
-  - echo "This is the app path ${RUNTIME_PATH_APP}"
-  - echo "This is the app name ${RUNTIME_NAME}"
-  - echo "This is the given option value ${OPTION}"
-  - wex app/started
-  - echo "TEST_COMPLETE"
+  - title: This command can be ran from the web
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "This command can be ran from the web"
+    sync: true
+
+  - title: This command should be ran in an app, which should run
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "This command should be ran in an app, which should run"
+    sync: true
+
+  - title: This is the app path ${RUNTIME_PATH_APP}
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "This is the app path ${RUNTIME_PATH_APP}"
+    sync: true
+
+  - title: This is the app name ${RUNTIME_NAME}
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "This is the app name ${RUNTIME_NAME}"
+    sync: true
+
+  - title: This is the given option value ${OPTION}
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "This is the given option value ${OPTION}"
+    sync: true
+
+  - title: Wex command
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: wex app/started
+    sync: true
+
+  - title: Complete
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "TEST_COMPLETE"
+    sync: true
+

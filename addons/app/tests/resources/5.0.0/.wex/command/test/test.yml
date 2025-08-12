@@ -5,21 +5,29 @@ command:
 properties:
   - app_webhook
 scripts:
-  - echo "MINIMAL_BASH_RESPONSE"
+  - title: TODO
+    app_should_run: true
+    interpreter: ['/bin/bash', '-c']
+    script: echo "MINIMAL_BASH_RESPONSE"
+    sync: true
 
   - title: Testing new scripts format
     context: host
     script: echo "BASH_RESPONSE"
+    sync: true
 
   - title: Another in bash
     type: bash-file
     file: .wex/script/test.sh
+    sync: true
 
   - title: Inline python
     interpreter: ['python3', '-c']
     script: print('PYTHON_SUCCESS')
+    sync: true
 
   - title: File in python
     type: python-file
     interpreter: [ 'python3' ]
     file: .wex/script/test.py
+    sync: true

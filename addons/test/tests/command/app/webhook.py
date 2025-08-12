@@ -80,12 +80,13 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
 
         self.assertEqual(stderr, "")
 
-        self.assertEqual(lines[0][0], "MINIMAL_BASH_RESPONSE")
+        self.assertEqual(lines[0], "MINIMAL_BASH_RESPONSE")
 
-        self.assertEqual(lines[1][0], "BASH_RESPONSE")
+        self.assertEqual(lines[1], "BASH_RESPONSE")
 
-        self.assertEqual(lines[2][0], "BASH_RESPONSE_FROM_FILE")
+        self.assertEqual(lines[2], "BASH_RESPONSE_FROM_FILE")
 
-        self.assertEqual(lines[3][0], "PYTHON_SUCCESS")
+        self.assertEqual(lines[3], "PYTHON_SUCCESS")
 
-        self.assertEqual(lines[4][0], "PYTHON_SUCCESS_FROM_FILE")
+        self.assertEqual(lines[4], "PYTHON_SUCCESS_FROM_FILE")
+
