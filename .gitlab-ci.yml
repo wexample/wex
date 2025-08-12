@@ -46,6 +46,7 @@ include:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+  extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
   variables:
     GIT_STRATEGY: none
     DOCKER_DRIVER: overlay2
