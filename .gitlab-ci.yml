@@ -49,14 +49,6 @@ test:
   extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
   variables:
     GIT_STRATEGY: none
-  # Should be available in .docker_login soon.
-  before_script:
-    - |
-      if [ -S /var/run/docker.sock ]; then
-        echo "Fixing docker.sock permissions"
-        sudo chmod 666 /var/run/docker.sock || true
-      fi
-      docker info || true
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
