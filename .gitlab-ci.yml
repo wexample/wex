@@ -49,7 +49,7 @@ test:
   extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
   variables:
     GIT_STRATEGY: none
-    DOCKER_DRIVER: overlay2
+    #DOCKER_DRIVER: overlay2
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .test_rescue, script ]
