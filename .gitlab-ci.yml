@@ -8,6 +8,28 @@ include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
+# Login to container registry.
+.docker_login:
+  script:
+    # Display the registry we are connecting to, taking into account whether a port is specified.
+    - echo "Connecting to $CI_REGISTRY$CI_REGISTRY_PORT_WITH_COLON"
+    # Log into the Docker registry, accounting for sudo and daemon availability.
+    - |
+      set -e
+      DOCKER_CLI="docker"
+      # Try plain docker first
+      if ! docker info >/dev/null 2>&1; then
+        # Try with sudo if available (non-interactive)
+        if command -v sudo >/dev/null 2>&1; then
+          DOCKER_CLI="sudo -n docker"
+        fi
+      fi
+      if $DOCKER_CLI info >/dev/null 2>&1; then
+        echo "$CI_REGISTRY_PASSWORD" | $DOCKER_CLI login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY$CI_REGISTRY_PORT_WITH_COLON"
+      else
+        echo "Docker daemon not accessible, skipping docker login"
+      fi
+
 # Rules when branch has been merged.
 .merge_branch_rules: &merge-branch-master-rules
   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
