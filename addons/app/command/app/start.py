@@ -63,6 +63,11 @@ def app__app__start(
     kernel = manager.kernel
     name = manager.get_app_name()
 
+    print(" START APP")
+    print(name)
+    print(user)
+    print(group)
+
     def _app__app__start__checkup() -> bool:
         nonlocal env
 
@@ -123,6 +128,10 @@ def app__app__start(
                 ).first()
             ):
                 from addons.app.command.helper.start import app__helper__start
+
+                print('START PROXY WITH')
+                print(user)
+                print(group)
 
                 kernel.run_function(
                     app__helper__start,
