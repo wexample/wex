@@ -25,7 +25,7 @@ from addons.app.const.app import (
 )
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import docker_exec_app_compose_command
-from src.const.globals import CORE_COMMAND_NAME
+from src.const.globals import CORE_COMMAND_NAME, USER_WWW_DATA
 from src.core.response.AbortResponse import AbortResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
@@ -54,8 +54,8 @@ def app__app__start(
     manager: "AppAddonManager",
     app_dir: str,
     clear_cache: bool = False,
-    user: Optional[str] = None,
-    group: Optional[str] = None,
+    user: Optional[str] = USER_WWW_DATA,
+    group: Optional[str] = USER_WWW_DATA,
     env: Optional[str] = None,
     no_proxy: bool = False,
     fast: bool = False,
