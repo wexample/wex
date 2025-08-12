@@ -10,6 +10,13 @@ include:
 
 # Login to container registry.
 .docker_login_v2:
+  before_script:
+    - |
+      if [ -S /var/run/docker.sock ]; then
+        echo "Fixing docker.sock permissions"
+        sudo chmod 666 /var/run/docker.sock || true
+      fi
+      docker info || true
   script:
     # Display the registry we are connecting to, taking into account whether a port is specified.
     - echo "Connecting to $CI_REGISTRY$CI_REGISTRY_PORT_WITH_COLON"
@@ -52,13 +59,8 @@ include:
 
 .test_cleanup:
   script:
-    - |
-      if docker info >/dev/null 2>&1; then
-        docker ps -q --filter name=test_app_ | xargs -r docker rm -f
-        docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
-      else
-        echo "Docker daemon not accessible, skipping container cleanup"
-      fi
+    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
     - rm -rf /var/www/test
     - rm -rf /var/www/test_*
 
@@ -76,14 +78,6 @@ test:
   extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login_v2 ]
   variables:
     GIT_STRATEGY: none
-  before_script:
-    # Rendre le socket Docker accessible à l'utilisateur non-root (owner)
-    - |
-      if [ -S /var/run/docker.sock ]; then
-        echo "Fixing docker.sock permissions"
-        sudo chmod 666 /var/run/docker.sock || true
-      fi
-      docker info || true
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login_v2, script ]
