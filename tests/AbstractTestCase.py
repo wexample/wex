@@ -40,9 +40,6 @@ class AbstractTestCase(unittest.TestCase):
         # If workdir changed.
         current_dir = os.getcwd()
         if current_dir != self.test_dir:
-            print('   > DEBUG')
-            print(self)
-            self.log(f"  DEBUG!")
             self.log(f"Reset working directory to : {self.test_dir}")
 
             os.chdir(self.test_dir)

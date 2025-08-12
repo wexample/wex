@@ -114,10 +114,7 @@ class AbstractAppTestCase(AbstractTestCase):
 
         self.reset_workdir()
 
-        print('    > DELETE')
-
         if exist:
-            print('    > REMOVE')
             shutil.rmtree(app_dir)
 
         return exist
