@@ -8,7 +8,6 @@ include:
 #  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
-# Login to container registry.
 .docker_login:
   script:
     # Display the registry we are connecting to, taking into account whether a port is specified.
