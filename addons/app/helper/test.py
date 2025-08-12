@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
 from addons.docker.helper.docker import docker_container_ip
+from helper.file import file_set_owner
 from src.const.types import StringsList
 from src.core.file.DirectoryStructure import DirectoryStructure
 
@@ -27,7 +28,7 @@ def test_get_app_dir(kernel: "Kernel", name: str) -> str:
 
 
 def test_build_app_name(
-    name: str = DEFAULT_APP_TEST_NAME, services: Optional[StringsList] = None
+        name: str = DEFAULT_APP_TEST_NAME, services: Optional[StringsList] = None
 ) -> str:
     services = services or []
 
@@ -46,12 +47,25 @@ def test_build_app_name(
     return name + "-" + hash_object.hexdigest()[:8]
 
 
+def test_create_env_dir(
+        kernel: "Kernel",
+):
+    from src.const.globals import USER_WWW_DATA
+
+    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
+    app_env_dir = os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST)
+    kernel.io.log(f"Creating test app en dir : {app_env_dir} with owner {USER_WWW_DATA}:{USER_WWW_DATA}")
+    os.makedirs(app_env_dir)
+    file_set_owner(file_path=app_env_dir, username=USER_WWW_DATA, group=USER_WWW_DATA)
+
+
 def test_create_app(
-    kernel: "Kernel",
-    name: str,
-    services: Optional[List[str]] = None,
-    force_restart: bool = False,
+        kernel: "Kernel",
+        name: str,
+        services: Optional[List[str]] = None,
+        force_restart: bool = False,
 ) -> str:
+    test_create_env_dir(kernel=kernel)
     app_dir = test_get_app_dir(kernel, name)
     current_dir = os.getcwd()
 
