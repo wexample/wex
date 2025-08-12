@@ -15,7 +15,7 @@ include:
 .merge_to_master:
   resource_group: main_pipeline
   rules:
-    - *merge-branch-master-rules
+    *merge-branch-master-rules
 
 .on_master:
   resource_group: main_pipeline
