@@ -86,6 +86,8 @@ dicttoxml==1.7.16
     # via -r requirements.in
 distro==1.9.0
     # via openai
+dotenv==0.9.9
+    # via wexample-app
 emoji==2.11.0
     # via unstructured
 fastapi==0.110.1
@@ -318,10 +320,14 @@ pgvector==0.2.5
     # via langchain-postgres
 pip-tools==7.5.0
     # via
+    #   wexample-app
     #   wexample-config
     #   wexample-file
+    #   wexample-filestate
     #   wexample-helpers
+    #   wexample-helpers-yaml
     #   wexample-prompt
+    #   wexample-wex-core
 pluggy==1.6.0
     # via pytest
 posthog==3.5.0
@@ -360,8 +366,10 @@ pydantic==2.5.3
     #   langchain-core
     #   langsmith
     #   openai
+    #   wexample-app
     #   wexample-config
     #   wexample-file
+    #   wexample-filestate
     #   wexample-helpers
     #   wexample-helpers-yaml
     #   wexample-prompt
@@ -384,10 +392,14 @@ pyproject-hooks==1.0.0
     #   pip-tools
 pytest==8.4.1
     # via
+    #   wexample-app
     #   wexample-config
     #   wexample-file
+    #   wexample-filestate
     #   wexample-helpers
+    #   wexample-helpers-yaml
     #   wexample-prompt
+    #   wexample-wex-core
 python-dateutil==2.9.0.post0
     # via
     #   kubernetes
@@ -396,7 +408,9 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
     # via
     #   -r requirements.in
+    #   dotenv
     #   uvicorn
+    #   wexample-app
 python-iso639==2024.2.7
     # via unstructured
 python-magic==0.4.27
@@ -577,7 +591,8 @@ wexample-prompt==0.0.43
     # via
     #   -r requirements.in
     #   wexample-filestate
-wexample-wex-core==6.0.39
+wexample-wex-core==6.0.40
+    # via -r requirements.in
 wheel==0.45.1
     # via pip-tools
 wrapt==1.16.0
