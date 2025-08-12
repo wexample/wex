@@ -57,5 +57,5 @@ test:
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv -c app::webhook/exec
+    - sudo -u owner sudo wex test -vvv
     - !reference [.test_cleanup, script]
