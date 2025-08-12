@@ -4,9 +4,9 @@ stages:
 variables:
   MAIN_BRANCH_NAME: "master"
 
-#include:
-#  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
-#  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
+include:
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
 # Login to container registry.
 .docker_login:
