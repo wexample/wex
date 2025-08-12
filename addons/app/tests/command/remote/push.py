@@ -124,7 +124,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self.log(response.first())
 
         # Get the last non-empty value.s
-        values = [s.strip() for s in (response.output_bag or []) if isinstance(s, str) and s.strip()]
+        values = [s.strip() for s in (response.first() or []) if isinstance(s, str) and s.strip()]
         last = values[-1] if values else ""
 
         self.assertEqual(
