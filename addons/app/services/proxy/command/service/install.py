@@ -16,7 +16,7 @@ def proxy__service__install(
     # Don't know how to solve quicly this error.
     from wexample_wex_core.resolver.service_command_resolver import (
         ServiceCommandResolver,
-    )  # type: ignore[import-untyped]
+    )
 
     def callback() -> None:
         manager.set_config(
