@@ -50,15 +50,16 @@ test:
 #  variables:
 #    GIT_STRATEGY: none
   script:
+    # Use up to date code
     - rm -rf /opt/wex
     - mv $CI_PROJECT_DIR /opt/
-    - ls -la /opt/
-#    - !reference [ .test_cleanup, script ]
-#    - !reference [ .docker_login, script ]
-#    - !reference [ .test_rescue, script ]
-#    # Change environment
-#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-#    - sudo wex rebuild
-#    # Run tests, as "owner", with sudo.
-#    - sudo -u owner sudo wex test -vvv
-#    - !reference [.test_cleanup, script]
+    # Run
+    - !reference [ .test_cleanup, script ]
+    - !reference [ .docker_login, script ]
+    - !reference [ .test_rescue, script ]
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
+    # Run tests, as "owner", with sudo.
+    - sudo -u owner sudo wex test -vvv
+    - !reference [.test_cleanup, script]
