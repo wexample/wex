@@ -53,6 +53,7 @@ test:
     # Use up to date code
     - rm -rf /opt/wex
     - mv $CI_PROJECT_DIR /opt/
+    - ls -la /opt/wex/
     # Run
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
