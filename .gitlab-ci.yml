@@ -5,10 +5,11 @@ variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
-#  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
-.docker_login:
+# Login to container registry.
+.docker_login_v2:
   script:
     # Display the registry we are connecting to, taking into account whether a port is specified.
     - echo "Connecting to $CI_REGISTRY$CI_REGISTRY_PORT_WITH_COLON"
@@ -67,7 +68,7 @@ include:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
+  extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login_v2 ]
   variables:
     GIT_STRATEGY: none
   script:
