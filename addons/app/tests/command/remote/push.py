@@ -92,7 +92,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
 
         self.log(response.first())
 
-        lines = response.first().split("\n")
+        lines = response.first()
         self.assertTrue(
             # The last line is the file info.
             lines[len(lines) - 1].startswith("-rw"),
