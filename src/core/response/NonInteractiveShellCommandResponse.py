@@ -55,9 +55,6 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
 
         return self
 
-    def storable_data(self) -> bool:
-        return False
-
     def print(
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
