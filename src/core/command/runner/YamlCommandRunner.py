@@ -4,8 +4,6 @@ import types
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
-from src.helper.click import click_args_convert_dict_to_args
 
 from src.const.types import (
     Args,
@@ -20,13 +18,12 @@ from src.core.command.ScriptCommand import ScriptCommand
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.command import command
+from src.helper.click import click_args_convert_dict_to_args
 from src.helper.command import apply_command_decorator, internal_command_to_shell
 from wexample_helpers.helpers.dict import dict_get_item_by_path
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -84,6 +81,9 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.get_content_or_fail()["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
+        from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+        from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+
         request = self.get_request()
         content = self.get_content_or_fail()
 
@@ -92,7 +92,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         resolver: AbstractCommandResolver = request.resolver
 
         def _script_command_handler(
-            *args: Args, **kwargs: Kwargs
+                *args: Args, **kwargs: Kwargs
         ) -> Optional[ResponseCollectionResponse]:
             commands_collection: ResponseCollection = []
 
@@ -163,9 +163,14 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 response: AbstractResponse
 
-                response = InteractiveShellCommandResponse(
-                    self.kernel, command_list, as_sudo_user=False
-                )
+                if 'sync' in script_config:
+                    response = NonInteractiveShellCommandResponse(
+                        self.kernel, command_list, as_sudo_user=False
+                    )
+                else:
+                    response = InteractiveShellCommandResponse(
+                        self.kernel, command_list, as_sudo_user=False
+                    )
 
                 if storage_variable:
                     variables[storage_variable] = response
@@ -209,7 +214,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         # Apply extra decorators
         properties = (
-            dict_get_item_by_path(data=content, key="properties", default=[]) or []
+                dict_get_item_by_path(data=content, key="properties", default=[]) or []
         )
 
         for property in properties:

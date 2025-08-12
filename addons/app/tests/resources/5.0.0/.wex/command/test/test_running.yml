@@ -15,23 +15,28 @@ scripts:
     app_should_run: true
     interpreter: ['/bin/bash', '-c']
     script: echo "BASH_RESPONSE_RUNNING"
+    sync: true
 
   - title: Test inside container
     context: container
     container_name: php
     script: ls -la /var/tmp/
+    sync: true
 
   - title: Test echo inside container
     context: container
     container_name: php
     script: echo "TEST_EXECUTION_ORDER" > /var/tmp/test-file-two
+    sync: true
 
   - title: Test previously created file
     context: container
     container_name: php
     script: cat /var/tmp/test-file-two
+    sync: true
 
   - title: Print test argument
     app_should_run: true
     interpreter: ['/bin/bash', '-c']
     script: echo "$TEST_ARG"
+    sync: true

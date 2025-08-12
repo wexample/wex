@@ -131,6 +131,7 @@ class YamlCommandScript(TypedDict):
     interpreter: StringsList
     options: Optional[StringKeysDict]
     script: Optional[str]
+    sync: bool
     title: str
     type: str
     variable: str
