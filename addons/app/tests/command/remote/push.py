@@ -105,6 +105,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f"ls -la {remote_temp_push_dir}",
+                "sync": True
             },
         )
 
@@ -114,6 +115,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f'cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c "SELECT test_value FROM {app_name}.test_migration"',
+                "sync": True
             },
         )
 
