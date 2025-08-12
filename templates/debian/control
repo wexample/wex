@@ -1,5 +1,5 @@
 Source: wex
-Section: web
+Section: utils
 Priority: optional
 Maintainer: wexample <contact@wexample.com>
 Build-Depends: debhelper-compat (= 13), dh-python, python3-setuptools, python3-all
@@ -8,6 +8,5 @@ Homepage: https://wexample.com
 
 Package: wex
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}, bash-completion, git, python3 (>= 3.10), python3-pip, python3-venv, procps, sshpass, sudo
-Description:Single entrypoint to execute custom scripts,
- and run Docker application on several environments.
+Depends: ${python3:Depends}, ${misc:Depends}, bash-completion, git, python3 (>= 3.10), python3-pip, python3-venv, procps, sshpass, sudo, libpq5, python3-psycopg2
+Description: wex - a versatile script execution and Docker management tool

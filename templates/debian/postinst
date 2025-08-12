@@ -1,5 +1,10 @@
 #!/bin/bash
 
-. /usr/lib/wex/cli/install
+set -e
+
+# Note:
+# Do not run apt or pip here. Installing packages during postinst can clash
+# with dpkg/apt locks when APT is resolving dependencies. Declare all runtime
+# dependencies in debian/control so APT installs them before configuring wex.
 
 exit 0
