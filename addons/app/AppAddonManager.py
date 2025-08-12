@@ -63,6 +63,7 @@ from wexample_helpers.helpers.dict import dict_get_item_by_path, dict_has_item_b
 from src.helper.file import (
     file_env_to_dict,
     file_write_dict_to_config,
+    file_set_owner,
 )
 from src.helper.service import service_load_config
 
@@ -272,7 +273,9 @@ class AppAddonManager(AddonManager):
     def save_config(self) -> None:
         self._save_config(self.config_path, self._config)
 
-    def save_runtime_config(self) -> None:
+    def save_runtime_config(
+            self, user: Optional[str] = None, group: Optional[str] = None
+    ) -> None:
         self._save_config(self.runtime_config_path, self._runtime_config)
 
         app_dir: str = self.get_runtime_config("path.app").get_str()
@@ -291,6 +294,12 @@ class AppAddonManager(AddonManager):
 
         # Write as docker env file
         file_write_dict_to_config(env_dict, config_path)
+
+        file_set_owner(
+            file_path=config_path,
+            username=user,
+            group=group,
+        )
 
     def config_to_docker_env(self) -> AppDockerEnvConfig:
         if not self._runtime_config or not self._config:
@@ -763,7 +772,11 @@ class AppAddonManager(AddonManager):
         self.log(f"Build config file")
 
         self._runtime_config = runtime_config
-        self.save_runtime_config()
+
+        self.save_runtime_config(
+            user=user,
+            group=group,
+        )
 
         self.kernel.run_function(
             app__hook__exec, {"app-dir": self.app_dir, "hook": "config/runtime"}

@@ -50,7 +50,6 @@ test:
 #  variables:
 #    GIT_STRATEGY: none
   script:
-    # Run
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
     - !reference [ .test_rescue, script ]
