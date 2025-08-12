@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.command.db.exec import app__db__exec
-from addons.app.decorator.app_command import app_command
 from addons.app.command.db.restore import app__db__restore
+from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.response.AbstractResponse import AbstractResponse
 
@@ -30,8 +30,8 @@ def ai__app__start_post(
             app__db__restore,
             {
                 "app-dir": app_dir,
-                "file-path": manager.get_env_dir() + "postgres/dumps/init.sql"
-            }
+                "file-path": manager.get_env_dir() + "postgres/dumps/init.sql",
+            },
         )
 
     return None

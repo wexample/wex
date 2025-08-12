@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Optional, cast
 
-from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
 
 from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
 from src.const.globals import (
@@ -15,8 +15,8 @@ from src.const.types import (
     RegistryCommandsCollection,
     StringsList,
 )
-from src.core.CommandRequest import CommandRequest
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (

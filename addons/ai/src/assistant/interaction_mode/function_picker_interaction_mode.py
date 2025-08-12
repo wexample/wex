@@ -3,11 +3,17 @@ from typing import List, Optional
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.null_interaction_response import (
+    NullInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
 from addons.ai.src.assistant.utils.globals import AI_FUNCTION_DISPLAY_A_CUCUMBER
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
-from addons.ai.src.assistant.interaction_response.null_interaction_response import NullInteractionResponse
 
 
 class FunctionPickerInteractionMode(AbstractInteractionMode):
@@ -20,7 +26,9 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
         remaining_sections: List[UserPromptSection],
     ) -> AbstractInteractionResponse:
         if not prompt_section.prompt:
-            return StringInteractionResponse("Please ask some question to help select a function.")
+            return StringInteractionResponse(
+                "Please ask some question to help select a function."
+            )
 
         selected_function = self.assistant.get_model().guess_function(
             self,

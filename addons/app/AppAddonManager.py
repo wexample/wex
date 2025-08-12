@@ -2,13 +2,23 @@ import datetime
 import getpass
 import os
 import sys
-
-from wexample_helpers.helpers.args import args_shift_one, args_push_one
-from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
-
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
 import yaml
+from wexample_helpers.helpers.args import args_push_one, args_shift_one
+from wexample_helpers.helpers.dict import (
+    DICT_ITEM_EXISTS_ACTION_REPLACE,
+    dict_get_item_by_path,
+    dict_has_item_by_path,
+    dict_remove_item_by_path,
+    dict_set_item_by_path,
+)
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
+from wexample_helpers_yaml.helpers.yaml_helpers import (
+    yaml_read,
+    yaml_read_dict,
+    yaml_write,
+)
 
 from addons.app.command.location.find import app__location__find
 from addons.app.const.app import (
@@ -57,20 +67,13 @@ from src.const.types import (
 from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_read_dict, yaml_write
-from wexample_helpers.helpers.dict import dict_get_item_by_path, dict_has_item_by_path, dict_set_item_by_path, \
-    DICT_ITEM_EXISTS_ACTION_REPLACE, dict_remove_item_by_path
-from src.helper.file import (
-    file_env_to_dict,
-    file_write_dict_to_config,
-    file_set_owner,
-)
+from src.helper.file import file_env_to_dict, file_set_owner, file_write_dict_to_config
 from src.helper.service import service_load_config
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
-    from src.utils.kernel import Kernel
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.utils.kernel import Kernel
 
 
 class AppAddonManager(AddonManager):
@@ -124,8 +127,8 @@ class AppAddonManager(AddonManager):
         return (
             os.sep
             + os.path.join(
-            "var", "www", environment or self.kernel.registry_structure.content.env
-        )
+                "var", "www", environment or self.kernel.registry_structure.content.env
+            )
             + os.sep
         )
 
@@ -274,7 +277,7 @@ class AppAddonManager(AddonManager):
         self._save_config(self.config_path, self._config)
 
     def save_runtime_config(
-            self, user: Optional[str] = None, group: Optional[str] = None
+        self, user: Optional[str] = None, group: Optional[str] = None
     ) -> None:
         self._save_config(self.runtime_config_path, self._runtime_config)
 

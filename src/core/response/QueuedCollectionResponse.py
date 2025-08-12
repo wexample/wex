@@ -13,8 +13,8 @@ from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
 )
-from src.core.CommandRequest import CommandRequest
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.FunctionResponse import FunctionResponse
@@ -86,9 +86,9 @@ class QueuedCollectionResponse(AbstractResponse):
         # Share path manager across root request and all involved collections
         root_request = request.get_root_parent()
         if "queue_collection_path_manager" not in root_request.storage:
-            root_request.storage[
-                "queue_collection_path_manager"
-            ] = QueuedCollectionPathManager(root_request)
+            root_request.storage["queue_collection_path_manager"] = (
+                QueuedCollectionPathManager(root_request)
+            )
 
         path_manager = root_request.storage["queue_collection_path_manager"]
         self.set_path_manager(path_manager)

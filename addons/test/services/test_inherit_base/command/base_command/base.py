@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Optional
 
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.utils.kernel import Kernel
 from src.decorator.option import option
 from src.decorator.test_command import test_command
+from src.utils.kernel import Kernel
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

@@ -6,8 +6,12 @@ import click
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import (
     AbstractVectorStoreInteractionMode,
 )
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
-from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.globals import VERBOSITY_LEVEL_QUIET
 from src.helper.file import file_build_signature, file_is_utf8_encoding
@@ -68,6 +72,8 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
 
         # Avoid empty input error.
         if not prompt_section.prompt:
-            return StringInteractionResponse(f"Please ask something about the directory {subject.dir_path}")
+            return StringInteractionResponse(
+                f"Please ask something about the directory {subject.dir_path}"
+            )
 
         return super().process_user_input(prompt_section, remaining_sections)

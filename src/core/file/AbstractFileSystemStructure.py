@@ -2,6 +2,8 @@ import os.path
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
+from wexample_helpers.helpers.file import file_change_mode_recursive
+
 from src.const.types import (
     FileSystemStructurePermission,
     FileSystemStructureSchema,
@@ -10,7 +12,6 @@ from src.const.types import (
     StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
-from wexample_helpers.helpers.file import file_change_mode_recursive
 from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:

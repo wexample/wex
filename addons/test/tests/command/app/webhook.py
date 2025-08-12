@@ -89,4 +89,3 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
         self.assertEqual(lines[3], "PYTHON_SUCCESS")
 
         self.assertEqual(lines[4], "PYTHON_SUCCESS_FROM_FILE")
-

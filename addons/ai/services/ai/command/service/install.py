@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, cast
 
+from wexample_helpers.const.types import StringKeysDict
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
+
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
-from wexample_helpers.const.types import StringKeysDict
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.helper.service import service_copy_sample_dir
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install the ai service", command_type=COMMAND_TYPE_SERVICE)
 def ai__service__install(
-        manager: "AppAddonManager", app_dir: str, service: str
+    manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     docker_config_path = manager.get_env_dir() + DOCKER_COMPOSE_REL_PATH_BASE
     # yaml_read returns a StructuredData union. Cast to a dict for typed indexing.
@@ -38,8 +39,4 @@ def ai__service__install(
 
     yaml_write(docker_config_path, docker_config)
 
-    service_copy_sample_dir(
-        manager.kernel,
-        service,
-        "postgres/dumps"
-    )
+    service_copy_sample_dir(manager.kernel, service, "postgres/dumps")

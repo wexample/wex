@@ -1,4 +1,3 @@
-from addons.default.command.python.init_dirs import default__python__init_dirs
 from tests.AbstractTestCase import AbstractTestCase
 
 

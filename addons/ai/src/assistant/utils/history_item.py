@@ -1,15 +1,16 @@
 from datetime import datetime
-from typing import Any, cast
+from typing import Any
 
-from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase
+
 
 class Base(DeclarativeBase):
     pass
 
 
 class HistoryItem(Base):
-    __tablename__ = 'assistant_conversation_item'
+    __tablename__ = "assistant_conversation_item"
     id = Column(Integer, primary_key=True)
     date_created = Column(DateTime, default=datetime.utcnow)
     author = Column(String)

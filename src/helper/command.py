@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, Union, cast, List
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, cast
 
 import click.core
 
@@ -17,8 +17,8 @@ from src.const.types import (
     ShellCommandsDeepList,
     ShellCommandsList,
 )
-from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
 from src.helper.user import get_user_or_sudo_user
 
@@ -94,7 +94,7 @@ def execute_command_tree_sync(
                         return success, output
 
                     # Replace the nested command with the output of its execution
-                    command_tree[i: i + 1] = output
+                    command_tree[i : i + 1] = output
 
                 # Now command_tree is a flat list with the results of the inner command included
 
@@ -178,7 +178,7 @@ def execute_command_sync(
                 stdin=None,
                 stdout=None,
                 stderr=None,
-                **kwargs
+                **kwargs,
             )
             process.wait()
         else:
@@ -188,7 +188,7 @@ def execute_command_sync(
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
-                **kwargs
+                **kwargs,
             )
 
         output, errors = process.communicate()
@@ -206,9 +206,7 @@ def execute_command_sync(
         return process.returncode == 0, output_lines
 
     except subprocess.CalledProcessError as e:
-        kernel.io.error(
-            f"Error when running command: {command_str}\n\n{str(e)}"
-        )
+        kernel.io.error(f"Error when running command: {command_str}\n\n{str(e)}")
         return False, e.stderr.splitlines() if e.stderr else []
 
 

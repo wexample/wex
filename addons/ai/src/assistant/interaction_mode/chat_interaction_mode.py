@@ -22,4 +22,3 @@ class ChatInteractionMode(DefaultInteractionMode):
             "Never detail subjects if user does not ask you to do so. "
             "Use simple and concise sentence like in a real conversation, even when you explain something."
         )
-

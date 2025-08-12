@@ -1,9 +1,6 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional
 
-from src.helper.click import (click_args_convert_dict_to_long_names_dict, \
-    click_args_convert_dict_to_args, click_args_convert_to_dict)
-
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.const.types import (
     CoreCommandArgsList,
@@ -14,6 +11,11 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
+from src.helper.click import (
+    click_args_convert_dict_to_args,
+    click_args_convert_dict_to_long_names_dict,
+    click_args_convert_to_dict,
+)
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import (
@@ -80,7 +82,9 @@ class CommandRequest(BaseClass):
 
         return click_args_convert_dict_to_long_names_dict(
             script_command.click_command,
-            click_args_convert_to_dict(script_command.click_command, self.get_args_list()),
+            click_args_convert_to_dict(
+                script_command.click_command, self.get_args_list()
+            ),
         )
 
     def set_script_command(self, script_command: ScriptCommand) -> None:

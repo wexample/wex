@@ -1,6 +1,6 @@
 import os.path
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, cast, Dict, Any
+from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
 from git import Repo
 from wexample_helpers.helpers.args import args_split_arg_array

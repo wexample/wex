@@ -1,7 +1,9 @@
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List, Optional
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from src.helper.string import string_list_longest_word
 
@@ -19,7 +21,7 @@ class HelpCommand(AbstractCommand):
     def execute(
         self,
         prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None
+        remaining_sections: Optional[List["UserPromptSection"]] = None,
     ) -> AbstractInteractionResponse:
         commands = self.assistant.get_active_commands()
         # Assuming string_list_longest_word returns the length of the longest word in a list
@@ -34,9 +36,7 @@ class HelpCommand(AbstractCommand):
             )
 
             for option in command.get_flags():
-                self.assistant.log(
-                    f"    :{option}"
-                )
+                self.assistant.log(f"    :{option}")
 
         self.assistant.log(f"Press Alt+Enter to add a new line")
 

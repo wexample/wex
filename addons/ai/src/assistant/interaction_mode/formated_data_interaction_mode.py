@@ -3,8 +3,11 @@ from typing import Any, Optional, Type
 
 from langchain_core.output_parsers import BaseOutputParser
 from pydantic import BaseModel, Extra
+
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import AbstractInteractionMode
 
 FORMATED_DATA_FORMAT_COMMA_SEPARATED = "comma-separated"
 FORMATED_DATA_FORMAT_JSON = "json"
@@ -61,13 +64,19 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
         if FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
             import yaml
 
-            dumped = yaml.dump(chain_response.dict()) if hasattr(chain_response, "dict") else yaml.dump(chain_response)
+            dumped = (
+                yaml.dump(chain_response.dict())
+                if hasattr(chain_response, "dict")
+                else yaml.dump(chain_response)
+            )
             return os.linesep + str(dumped)
         elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
             import dicttoxml  # type: ignore[import-untyped]
 
             xml_bytes = dicttoxml.dicttoxml(chain_response)
-            xml_text = xml_bytes.decode() if hasattr(xml_bytes, "decode") else str(xml_bytes)
+            xml_text = (
+                xml_bytes.decode() if hasattr(xml_bytes, "decode") else str(xml_bytes)
+            )
             xml_text_str: str = str(xml_text)
             return os.linesep + xml_text_str
 

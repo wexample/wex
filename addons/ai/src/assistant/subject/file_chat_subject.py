@@ -3,8 +3,8 @@ from typing import Optional
 
 from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from src.helper.prompt import prompt_pick_a_file
 from src.const.types import StringKeysDict
+from src.helper.prompt import prompt_pick_a_file
 
 SUBJECT_FILE_CHAT_COMMAND_PATCH = "patch"
 SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE = "talk_about_file"
@@ -55,5 +55,6 @@ class FileChatSubject(AbstractChatSubject):
         from addons.ai.src.assistant.interaction_mode.file_patch_interaction_mode import (
             FilePatchInteractionMode,
         )
+
         # Delegate to the interaction mode implementation
         return FilePatchInteractionMode(self.assistant).load_example_patch(name)

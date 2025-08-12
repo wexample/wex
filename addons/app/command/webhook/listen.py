@@ -3,6 +3,8 @@ import time
 from http.server import HTTPServer
 from typing import TYPE_CHECKING, Optional, cast
 
+from wexample_helpers.helpers.file import file_remove_if_exists
+
 from addons.app.command.webhook.status import app__webhook__status
 from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from addons.system.command.system.is_docker import system__system__is_docker
@@ -23,7 +25,6 @@ from src.helper.core import (
     core_get_daemon_service_resource_path,
     core_kernel_get_version,
 )
-from wexample_helpers.helpers.file import file_remove_if_exists
 from src.helper.process import process_kill_by_command, process_kill_by_port
 from src.helper.routing import routing_build_webhook_route_map
 from src.helper.system import (

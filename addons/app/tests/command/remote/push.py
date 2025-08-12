@@ -86,7 +86,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f"ls -la {remote_temp_push_dir}test_subdir/subdir-file.txt",
-                "sync": True
+                "sync": True,
             },
         )
 
@@ -105,7 +105,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f"ls -la {remote_temp_push_dir}",
-                "sync": True
+                "sync": True,
             },
         )
 
@@ -117,14 +117,18 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f'cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c "SELECT test_value FROM {app_name}.test_migration"',
-                "sync": True
+                "sync": True,
             },
         )
 
         self.log(response.first())
 
         # Get the last non-empty value.s
-        values = [s.strip() for s in (response.first() or []) if isinstance(s, str) and s.strip()]
+        values = [
+            s.strip()
+            for s in (response.first() or [])
+            if isinstance(s, str) and s.strip()
+        ]
         last = values[-1] if values else ""
 
         self.assertEqual(

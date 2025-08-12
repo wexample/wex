@@ -1,10 +1,10 @@
 import html
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast, Any
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
 
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
 from wexample_helpers.helpers.json import json_load
@@ -25,7 +25,9 @@ from addons.ai.src.assistant.command.function_command import FunctionCommand
 from addons.ai.src.assistant.command.help_command import HelpCommand
 from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
 from addons.ai.src.assistant.command.menu_command import MenuCommand
-from addons.ai.src.assistant.command.new_conversation_command import NewConversationCommand
+from addons.ai.src.assistant.command.new_conversation_command import (
+    NewConversationCommand,
+)
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.url_search_command import UrlSearchCommand
@@ -39,13 +41,15 @@ from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from addons.ai.src.assistant.utils.globals import (
     AI_COMMAND_PREFIX,
-    ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
-    ASSISTANT_MENU_ACTION_LANGUAGE,
-    ASSISTANT_MENU_ACTION_PERSONALITY,
     ASSISTANT_MENU_ACTION_BACK,
+    ASSISTANT_MENU_ACTION_CONVERSATIONS,
+    ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
     ASSISTANT_MENU_ACTION_EXIT,
+    ASSISTANT_MENU_ACTION_LANGUAGE,
+    ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
+    ASSISTANT_MENU_ACTION_PERSONALITY,
     ASSISTANT_MENU_ACTION_THEME,
-    ASSISTANT_MENU_ACTIONS_TRANSLATIONS, ASSISTANT_MENU_ACTION_CONVERSATIONS, ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
+    ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
 )
 
 # Explicit exports for tests and external imports
@@ -65,9 +69,9 @@ from addons.ai.src.model.open_ai_model import (
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
-from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.spinner import Spinner
 from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -186,12 +190,7 @@ class Assistant(AbsractKernelChild):
         self.language = code
 
     def _init_subjects(self) -> None:
-        subjects = [
-            DefaultChatSubject,
-            DirChatSubject,
-            FileChatSubject,
-            UrlChatSubject
-        ]
+        subjects = [DefaultChatSubject, DirChatSubject, FileChatSubject, UrlChatSubject]
 
         self.subjects: Dict[str, AbstractChatSubject] = {}
         for subject_class in subjects:
@@ -226,16 +225,12 @@ class Assistant(AbsractKernelChild):
     def _init_conversation(self) -> None:
         last_conversation = self.database.get_last_conversation()
 
-        self.set_conversation(
-            last_conversation.id if last_conversation else None
-        )
+        self.set_conversation(last_conversation.id if last_conversation else None)
 
     def set_conversation(self, id_conversation: Optional[int] = None) -> None:
         self.conversation = self.database.get_or_create_conversation(id_conversation)
         self.last_prompt_sections = []
-        self.history = self.database.get_conversation_items(
-            self.conversation.id
-        )
+        self.history = self.database.get_conversation_items(self.conversation.id)
 
         self.active_memory.clear()
         messages: List[BaseMessage] = []
@@ -243,21 +238,33 @@ class Assistant(AbsractKernelChild):
             msg: BaseMessage
             if item.author == "ai":
                 # item.message may be a SQLAlchemy Column; coerce to str
-                content_str = item.message if isinstance(item.message, str) else str(item.message or "")
+                content_str = (
+                    item.message
+                    if isinstance(item.message, str)
+                    else str(item.message or "")
+                )
                 msg = AIMessage(content=content_str)
             else:
-                content_str = item.message if isinstance(item.message, str) else str(item.message or "")
+                content_str = (
+                    item.message
+                    if isinstance(item.message, str)
+                    else str(item.message or "")
+                )
                 msg = HumanMessage(content=content_str)
 
             messages.append(msg)
 
         self.active_memory.add_messages(messages)
 
-    def set_default_subject(self, prompt_section: Optional[UserPromptSection] = None) -> None:
+    def set_default_subject(
+        self, prompt_section: Optional[UserPromptSection] = None
+    ) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
             self.set_subject(DefaultChatSubject.name(), prompt_section)
 
-    def set_subject(self, name: str, prompt_section: Optional[UserPromptSection] = None) -> AbstractChatSubject:
+    def set_subject(
+        self, name: str, prompt_section: Optional[UserPromptSection] = None
+    ) -> AbstractChatSubject:
         subject = self.subjects[name]
 
         self.subject = subject
@@ -305,7 +312,9 @@ class Assistant(AbsractKernelChild):
                 menu_action = self.chat()
             elif menu_action == ASSISTANT_MENU_ACTION_LANGUAGE:
                 # Ensure dict[str, str]
-                languages_dict: Dict[str, str] = {str(k): str(v) for k, v in self.languages.items()}
+                languages_dict: Dict[str, str] = {
+                    str(k): str(v) for k, v in self.languages.items()
+                }
                 lang_choice = prompt_choice_dict(
                     "Choose a language",
                     languages_dict,
@@ -405,7 +414,7 @@ class Assistant(AbsractKernelChild):
         return str(action) if action else None
 
     def split_command(self, word: str) -> List[str]:
-        return word[len(AI_COMMAND_PREFIX):].split(":")
+        return word[len(AI_COMMAND_PREFIX) :].split(":")
 
     def extract_active_command(self, word: str) -> Optional[str]:
         commands = self.get_active_commands()
@@ -439,7 +448,9 @@ class Assistant(AbsractKernelChild):
                 command_parts = self.split_command(word)
 
                 if current_section and len(current_user_input_part):
-                    current_section.prompt = (current_section.prompt or "") + " ".join(current_user_input_part)
+                    current_section.prompt = (current_section.prompt or "") + " ".join(
+                        current_user_input_part
+                    )
                     results.append(current_section)
 
                 current_user_input_part = []
@@ -449,9 +460,7 @@ class Assistant(AbsractKernelChild):
                     command_parts[1:] if len(command_parts) > 1 else None,
                 )
             elif word:
-                current_user_input_part.append(
-                    word
-                )
+                current_user_input_part.append(word)
 
         if not current_section:
             # No recognized command found
@@ -497,7 +506,9 @@ class Assistant(AbsractKernelChild):
                     self.set_history_item(prompt_section.prompt, "user")
 
                     try:
-                        result = command.execute(prompt_section, prompt_sections[index + 1:])
+                        result = command.execute(
+                            prompt_section, prompt_sections[index + 1 :]
+                        )
                         result_str = result.render()
                         self.set_history_item(result_str, "ai")
 
@@ -528,16 +539,14 @@ class Assistant(AbsractKernelChild):
 
     def set_history_item(self, content: Optional[str], author: str) -> None:
         item = HistoryItem(
-            message=content,
-            conversation_id=self.conversation.id,
-            author=author
+            message=content, conversation_id=self.conversation.id, author=author
         )
 
         self.history.append(item)
 
         if content is not None:
             msg: BaseMessage
-            if author == 'ai':
+            if author == "ai":
                 msg = AIMessage(content=content or "")
             else:
                 msg = HumanMessage(content=content or "")

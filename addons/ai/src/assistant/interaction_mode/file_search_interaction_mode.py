@@ -1,11 +1,15 @@
 import os.path
-from typing import Dict, List, cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List, cast
 
 from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import (
     AbstractVectorStoreInteractionMode,
 )
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
-from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.helper.file import file_build_signature
 
@@ -42,13 +46,12 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         if not os.path.exists(subject.file_path):
             return StringInteractionResponse(f"File does not exists")
 
-        self.vector_store_file(
-            subject.file_path,
-            self.get_storage_signature()
-        )
+        self.vector_store_file(subject.file_path, self.get_storage_signature())
 
         # Avoid empty input error.
         if not prompt_section.prompt:
-            return StringInteractionResponse(f"Please ask something about the file {subject.file_path}")
+            return StringInteractionResponse(
+                f"Please ask something about the file {subject.file_path}"
+            )
 
         return super().process_user_input(prompt_section, remaining_sections)

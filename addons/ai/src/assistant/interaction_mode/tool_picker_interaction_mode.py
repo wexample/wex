@@ -63,7 +63,9 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
         self.init_tools()
 
         if not prompt_section.prompt:
-            return StringInteractionResponse("Please ask some question to help agent pick a tool.")
+            return StringInteractionResponse(
+                "Please ask some question to help agent pick a tool."
+            )
 
         result = self.assistant.get_model().chat_agent(
             self,

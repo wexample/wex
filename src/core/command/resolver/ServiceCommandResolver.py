@@ -17,8 +17,8 @@ from src.const.types import (
     RegistryService,
     StringsList,
 )
-from src.core.CommandRequest import CommandRequest
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.helper.service import service_get_dir
 

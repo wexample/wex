@@ -1,11 +1,13 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Dict, Tuple, Any, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
-from sqlalchemy import create_engine, MetaData, Table, select
-from sqlalchemy.engine import Row, CursorResult
+from sqlalchemy import MetaData, Table, create_engine, select
+from sqlalchemy.engine import CursorResult, Row
 from sqlalchemy.orm import sessionmaker
 
-from addons.ai.src.assistant.utils.abstract_assistant_child import AbstractAssistantChild
+from addons.ai.src.assistant.utils.abstract_assistant_child import (
+    AbstractAssistantChild,
+)
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from src.helper.user import get_user_or_sudo_user
 
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class DatabaseManager(AbstractAssistantChild):
-    def __init__(self, assistant: 'Assistant') -> None:
+    def __init__(self, assistant: "Assistant") -> None:
         super().__init__(assistant)
 
         manager = assistant.assistant_app_manager
@@ -39,11 +41,7 @@ class DatabaseManager(AbstractAssistantChild):
 
         self.tables: Dict[str, Table] = {}
         for table in tables:
-            self.tables[table] = Table(
-                table,
-                self.metadata,
-                autoload_with=self.engine
-            )
+            self.tables[table] = Table(table, self.metadata, autoload_with=self.engine)
 
         self.kernel.io.success("Database ready")
 
@@ -76,15 +74,16 @@ class DatabaseManager(AbstractAssistantChild):
         for conversation in conversations:
             conversations_dict[conversation.id] = (
                 conversation.date_created.strftime("%Y-%m-%d %H:%M:%S")
-                + '|' + (conversation.title or "(No title)"))
+                + "|"
+                + (conversation.title or "(No title)")
+            )
 
         return conversations_dict
 
     def get_conversations(self) -> List[Row[Tuple[Any, ...]]]:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
-        query = (select(table)
-                 .where(table.columns.user_id == user.id))
+        query = select(table).where(table.columns.user_id == user.id)
 
         rows = self.session.execute(query).fetchall()
         return list(rows)
@@ -94,13 +93,13 @@ class DatabaseManager(AbstractAssistantChild):
         table = self.tables["assistant_conversation"]
 
         # Query for the user
-        query = (select(table)
-                 .where(table.columns.user_id == user.id)
-                 .limit(1))
+        query = select(table).where(table.columns.user_id == user.id).limit(1)
 
         return self.session.execute(query).fetchone()
 
-    def get_or_create_conversation(self, conversation_id: Optional[int] = None) -> Row[Tuple[Any, ...]]:
+    def get_or_create_conversation(
+        self, conversation_id: Optional[int] = None
+    ) -> Row[Tuple[Any, ...]]:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
         result: Optional[Row[Tuple[Any, ...]]] = None
@@ -110,7 +109,9 @@ class DatabaseManager(AbstractAssistantChild):
             result = self.session.execute(query).fetchone()
 
         if result is None:
-            self.assistant.log(f"No conversation found for {user.name} not found in database. Creating now.")
+            self.assistant.log(
+                f"No conversation found for {user.name} not found in database. Creating now."
+            )
             ins = table.insert().values(
                 user_id=user.id,
                 date_created=datetime.now(),
@@ -118,18 +119,24 @@ class DatabaseManager(AbstractAssistantChild):
             insert_result: CursorResult[Any] = self.session.execute(ins)
             self.session.commit()
 
-            return self.get_or_create_conversation(insert_result.inserted_primary_key[0])
+            return self.get_or_create_conversation(
+                insert_result.inserted_primary_key[0]
+            )
         else:
             self.assistant.log(f"Using conversation: {result.title or '(No title)'}")
             return result
 
-    def save_assistant_conversation_item(self, assistant_conversation_item: HistoryItem) -> None:
+    def save_assistant_conversation_item(
+        self, assistant_conversation_item: HistoryItem
+    ) -> None:
         self.session.add(assistant_conversation_item)
         self.session.commit()
 
     def get_conversation_items(self, conversation_id: int) -> List[HistoryItem]:
-        query = self.session.query(HistoryItem).filter(
-            HistoryItem.conversation_id == conversation_id
-        ).order_by(HistoryItem.date_created)
+        query = (
+            self.session.query(HistoryItem)
+            .filter(HistoryItem.conversation_id == conversation_id)
+            .order_by(HistoryItem.date_created)
+        )
 
         return query.all()

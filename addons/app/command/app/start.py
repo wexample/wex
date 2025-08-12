@@ -45,8 +45,22 @@ if TYPE_CHECKING:
     default=False,
     help="Forces a rebuild of images",
 )
-@option("--user", "-u", type=str, required=False, default=USER_WWW_DATA, help="Owner of application files")
-@option("--group", "-g", type=str, required=False, default=USER_WWW_DATA, help="Group of application files")
+@option(
+    "--user",
+    "-u",
+    type=str,
+    required=False,
+    default=USER_WWW_DATA,
+    help="Owner of application files",
+)
+@option(
+    "--group",
+    "-g",
+    type=str,
+    required=False,
+    default=USER_WWW_DATA,
+    help="Group of application files",
+)
 @option("--env", "-e", type=str, required=False, help="App environment")
 @option("--no-proxy", "-nopx", is_flag=True, required=False, help="Do not start proxy")
 @option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")

@@ -11,8 +11,8 @@ from src.const.types import (
     StringKeysDict,
     StringsDict,
 )
-from src.core.TestKernel import TestKernel
 from src.core.response.AbstractResponse import AbstractResponse
+from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
 from src.helper.file import file_create_directories_and_copy
 
@@ -63,7 +63,9 @@ class AbstractTestCase(unittest.TestCase):
     def assertIsStr(self, value: Any, msg: Optional[str] = None) -> None:
         self.assertIsOfType(value, str, msg)
 
-    def assertIsOfType(self, value: Any, type_: type[Any], msg: Optional[str] = None) -> None:
+    def assertIsOfType(
+        self, value: Any, type_: type[Any], msg: Optional[str] = None
+    ) -> None:
         self.assertTrue(isinstance(value, type_), msg)
 
     def assertResponseFirstEqual(

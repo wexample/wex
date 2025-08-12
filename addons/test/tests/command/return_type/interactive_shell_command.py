@@ -19,11 +19,13 @@ class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
             {
                 KERNEL_RENDER_MODE_NONE: None,
                 KERNEL_RENDER_MODE_JSON: json.dumps(
-                    {"value": [
-                        ""
-                        # TODO v6
-                        # "INTERACTIVE_SHELL_COMMAND_RESPONSE"
-                    ]}
+                    {
+                        "value": [
+                            ""
+                            # TODO v6
+                            # "INTERACTIVE_SHELL_COMMAND_RESPONSE"
+                        ]
+                    }
                 ),
                 # TODO v6
                 # KERNEL_RENDER_MODE_TERMINAL: "INTERACTIVE_SHELL_COMMAND_RESPONSE",

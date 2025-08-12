@@ -1,9 +1,13 @@
 import os
-from typing import Optional, TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import AbstractInteractionResponse
-from addons.ai.src.assistant.interaction_response.string_interaction_response import StringInteractionResponse
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
 from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
@@ -21,7 +25,7 @@ class TerminalCommand(AbstractCommand):
     def execute(
         self,
         prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None
+        remaining_sections: Optional[List["UserPromptSection"]] = None,
     ) -> AbstractInteractionResponse:
         if prompt_section is None or prompt_section.prompt is None:
             return StringInteractionResponse("No command provided")
@@ -32,7 +36,7 @@ class TerminalCommand(AbstractCommand):
         )
 
         response_str = os.linesep.join(response)
-        self.assistant.set_history_item(response_str, 'user')
+        self.assistant.set_history_item(response_str, "user")
 
         return StringInteractionResponse(
             "Running: " + cmd + ":" + os.linesep + response_str

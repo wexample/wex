@@ -10,9 +10,9 @@ from src.const.globals import (
     COMMAND_TYPE_ADDON,
 )
 from src.const.types import RegistryAddon, RegistryResolverData, StringsList
-from src.core.CommandRequest import CommandRequest
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.command.ScriptCommand import ScriptCommand
+from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
 
 

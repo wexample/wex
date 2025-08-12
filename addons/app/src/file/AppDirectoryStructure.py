@@ -1,6 +1,7 @@
 import os
 from typing import cast
 
+from wexample_helpers.helpers.dict import dict_merge
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.const.app import (
@@ -11,7 +12,6 @@ from addons.app.const.app import (
 )
 from src.const.types import AppConfig, FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
-from wexample_helpers.helpers.dict import dict_merge
 
 
 class AppDirectoryStructure(DirectoryStructure):

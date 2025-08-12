@@ -1,9 +1,10 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Union, cast, Dict, Sequence
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
+from langchain_core.messages import BaseMessage
 from langchain_core.prompts import (
     BasePromptTemplate,
     FewShotPromptTemplate,
@@ -11,7 +12,7 @@ from langchain_core.prompts import (
 )
 from langchain_core.runnables import ConfigurableFieldSpec, Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.messages import BaseMessage
+from wexample_helpers.helpers.dict import dict_merge
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -22,7 +23,6 @@ from addons.ai.src.assistant.utils.abstract_assistant_child import (
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
-from wexample_helpers.helpers.dict import dict_merge
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
@@ -61,7 +61,9 @@ class AbstractModel(AbstractAssistantChild):
         personalities = cast(Dict[str, Dict[str, Any]], assistant.personalities)
         personality_conf = personalities.get(assistant.personality, {})
         raw_personality_prompt = personality_conf.get("prompt")
-        personality_prompt = str(raw_personality_prompt) if raw_personality_prompt is not None else ""
+        personality_prompt = (
+            str(raw_personality_prompt) if raw_personality_prompt is not None else ""
+        )
         if personality_prompt:
             parts.append(
                 ("system", "##YOUR PERSONALITY\n" + personality_prompt),
@@ -94,9 +96,8 @@ class AbstractModel(AbstractAssistantChild):
             ]
 
         return ChatPromptTemplate.from_messages(
-            parts
-            + prompt_section.prompt_configurations
-            + [("human", "{input}")])
+            parts + prompt_section.prompt_configurations + [("human", "{input}")]
+        )
 
     def create_embeddings(self) -> Any:
         return None
@@ -130,7 +131,9 @@ class AbstractModel(AbstractAssistantChild):
 
         # Determine prefix from interaction mode if provided
         prefix_text = (
-            interaction_mode.get_initial_prompt(prompt_section) if interaction_mode and prompt_section else ""
+            interaction_mode.get_initial_prompt(prompt_section)
+            if interaction_mode and prompt_section
+            else ""
         ) or ""
 
         return FewShotPromptTemplate(

@@ -1,5 +1,4 @@
 import os.path
-import re
 import shutil
 from typing import Optional, cast
 

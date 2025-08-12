@@ -1,21 +1,18 @@
 import enum
 import os
-from typing import Dict, cast, List
+from typing import Dict, List, cast
 
 import patch  # type: ignore[import-untyped]
 from langchain_core.prompts import FewShotPromptTemplate
-from wexample_helpers.helpers.file import file_write, file_read
+from wexample_helpers.helpers.file import file_read, file_write
 
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
-from addons.ai.src.assistant.assistant import (
-    AI_COMMAND_PREFIX,
-    Assistant,
-)
+from addons.ai.src.assistant.assistant import AI_COMMAND_PREFIX, Assistant
+from addons.ai.src.assistant.command.chat_command import ChatCommand
 from addons.ai.src.assistant.command.exit_command import ExitCommand
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
-from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
-from addons.ai.src.assistant.command.chat_command import ChatCommand
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
 from src.const.types import StringKeysDict
 from src.helper.package import package_enable_logging
 from src.helper.patch import (
@@ -48,41 +45,49 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         assistant.set_default_subject()
 
         self._found_one_command(
-            assistant,
-            ChatCommand.name(),
-            f"/chat This is a short question",
-            True
+            assistant, ChatCommand.name(), f"/chat This is a short question", True
         )
 
         splits = self._found_one_command(
-            assistant,
-            "subject",
-            f"/subject:file /this/is/a/path/to/file.txt",
-            True
+            assistant, "subject", f"/subject:file /this/is/a/path/to/file.txt", True
         )
 
-        self.assertEqual(
-            splits[0].prompt,
-            "/this/is/a/path/to/file.txt"
-        )
+        self.assertEqual(splits[0].prompt, "/this/is/a/path/to/file.txt")
 
         for command in assistant.commands.values():
             # Fail expected
             if not isinstance(command, ExitCommand):
                 command_name = command.name()
 
-                self._found_one_command(assistant, command_name, f"{command_name}", False)
-                self._found_one_command(assistant, command_name, f"Lorem{command_name}ipsum", False)
-                self._found_one_command(assistant, command_name, f"Lorem{command_name}", False)
-                self._found_one_command(assistant, command_name, f"{command_name}ipsum", False)
                 self._found_one_command(
-                    assistant, command_name, f"Lorem{AI_COMMAND_PREFIX}{command_name}ipsum", False
+                    assistant, command_name, f"{command_name}", False
                 )
                 self._found_one_command(
-                    assistant, command_name, f"Lorem{AI_COMMAND_PREFIX}{command_name}", False
+                    assistant, command_name, f"Lorem{command_name}ipsum", False
                 )
                 self._found_one_command(
-                    assistant, command_name, f"{AI_COMMAND_PREFIX}{command_name}ipsum", False
+                    assistant, command_name, f"Lorem{command_name}", False
+                )
+                self._found_one_command(
+                    assistant, command_name, f"{command_name}ipsum", False
+                )
+                self._found_one_command(
+                    assistant,
+                    command_name,
+                    f"Lorem{AI_COMMAND_PREFIX}{command_name}ipsum",
+                    False,
+                )
+                self._found_one_command(
+                    assistant,
+                    command_name,
+                    f"Lorem{AI_COMMAND_PREFIX}{command_name}",
+                    False,
+                )
+                self._found_one_command(
+                    assistant,
+                    command_name,
+                    f"{AI_COMMAND_PREFIX}{command_name}ipsum",
+                    False,
                 )
 
                 # Success expected
@@ -90,32 +95,37 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                     assistant, command_name, f"{AI_COMMAND_PREFIX}{command_name}", True
                 )
                 self._found_one_command(
-                    assistant, command_name, f"Lorem {AI_COMMAND_PREFIX}{command_name}", True
+                    assistant,
+                    command_name,
+                    f"Lorem {AI_COMMAND_PREFIX}{command_name}",
+                    True,
                 )
                 self._found_one_command(
-                    assistant, command_name, f"{AI_COMMAND_PREFIX}{command_name} ipsum", True
+                    assistant,
+                    command_name,
+                    f"{AI_COMMAND_PREFIX}{command_name} ipsum",
+                    True,
                 )
                 self._found_one_command(
-                    assistant, command_name, f"Lorem {AI_COMMAND_PREFIX}{command_name} ipsum", True
+                    assistant,
+                    command_name,
+                    f"Lorem {AI_COMMAND_PREFIX}{command_name} ipsum",
+                    True,
                 )
 
     def _found_one_command(
-        self,
-        assistant: Assistant,
-        command: str,
-        text: str,
-        should_succeed: bool
+        self, assistant: Assistant, command: str, text: str, should_succeed: bool
     ) -> List[UserPromptSection]:
         user_input_splits = assistant.split_prompt_sections(text)
 
         success = any(
-            user_input_split.has_command() and user_input_split.get_command().name() == command
+            user_input_split.has_command()
+            and user_input_split.get_command().name() == command
             for user_input_split in user_input_splits
         )
 
         self.assertTrue(
-            success == should_succeed,
-            f'Command "{command}" found in text : "{text}"'
+            success == should_succeed, f'Command "{command}" found in text : "{text}"'
         )
 
         return user_input_splits
@@ -134,7 +144,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         ]
 
         assistant.set_subject(FileChatSubject.name())
-        subject = assistant.get_current_subject()
+        assistant.get_current_subject()
         # interaction_mode = cast(
         #     FileSearchInteractionMode, subject.get_interaction_mode()(subject)
         # )
@@ -216,9 +226,9 @@ class TestAiCommandTalkAsk(AbstractTestCase):
             examples[group_name] = {}
 
             for example_name in os.listdir(os.path.join(base_dir, group_name)):
-                examples[group_name][
-                    example_name
-                ] = file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
+                examples[group_name][example_name] = (
+                    file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
+                )
 
         return examples
 

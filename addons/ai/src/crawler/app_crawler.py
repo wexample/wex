@@ -3,10 +3,10 @@ from datetime import datetime
 from typing import Optional, TypedDict, cast
 
 import yaml
+from wexample_helpers.helpers.dict import dict_merge
 
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from src.const.types import StringKeysDict
-from wexample_helpers.helpers.dict import dict_merge
 
 
 class CrawlerTreeItem(TypedDict, total=False):

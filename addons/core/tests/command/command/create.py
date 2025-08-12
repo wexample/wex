@@ -1,8 +1,9 @@
 import os
 import shutil
 
-from addons.core.command.command.create import core__command__create
 from wexample_helpers.helpers.file import file_remove_if_exists
+
+from addons.core.command.command.create import core__command__create
 from tests.AbstractTestCase import AbstractTestCase
 
 

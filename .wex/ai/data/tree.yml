@@ -127,15 +127,6 @@ children:
       python:
         status: hidden
         type: dir
-      tests:
-        children:
-          command:
-            children:
-              develop:
-                children: {}
-                type: dir
-            type: dir
-        type: dir
       tmp:
         status: hidden
         type: dir
@@ -3141,9 +3132,6 @@ children:
         type: dir
       include:
         children:
-          python3.11:
-            children: {}
-            type: dir
           site:
             children:
               python3.11:

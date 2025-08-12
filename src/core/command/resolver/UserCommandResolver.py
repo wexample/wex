@@ -2,7 +2,7 @@ import os
 import sys
 from typing import TYPE_CHECKING, Optional
 
-from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from src.const.globals import (
@@ -12,8 +12,8 @@ from src.const.globals import (
     COMMAND_TYPE_USER,
 )
 from src.const.types import StringsList
-from src.core.CommandRequest import CommandRequest
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.core.CommandRequest import CommandRequest
 from src.helper.user import get_user_or_sudo_user_home_data_path
 
 if TYPE_CHECKING:

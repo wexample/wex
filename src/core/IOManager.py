@@ -19,9 +19,9 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

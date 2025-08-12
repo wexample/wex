@@ -2,6 +2,8 @@ import os
 import zipfile
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.dict import dict_get_item_by_path, dict_sort_values
+
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.db import get_db_service_dumps_path
 from src.const.globals import (
@@ -11,7 +13,6 @@ from src.const.globals import (
 )
 from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 from src.decorator.option import option
-from wexample_helpers.helpers.dict import dict_get_item_by_path, dict_sort_values
 from src.helper.file import file_delete_file_or_dir, file_path_has_no_extension
 from src.helper.prompt import prompt_choice
 
@@ -23,7 +24,10 @@ if TYPE_CHECKING:
 @option("--file-path", "-fp", type=str, required=False, help="Force file path")
 @option("--database", "-d", type=str, required=False, help="Force database name")
 def app__db__restore(
-    manager: "AppAddonManager", app_dir: str, file_path: str | None = None, database: str | None = None
+    manager: "AppAddonManager",
+    app_dir: str,
+    file_path: str | None = None,
+    database: str | None = None,
 ) -> None:
     kernel = manager.kernel
     database = database or manager.get_app_name()
@@ -121,7 +125,7 @@ def app__db__restore(
             "app-dir": app_dir,
             "database": database,
             "service": service,
-            "file-name": file_name
+            "file-name": file_name,
         },
     ).first()
 

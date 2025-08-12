@@ -8,15 +8,24 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
 
 
-@app_command(help="Destroy database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
+@app_command(
+    help="Destroy database", command_type=COMMAND_TYPE_SERVICE, should_run=True
+)
 @option("--database", "-d", type=str, required=False, help="Database name")
-@option("--recreate", "-r", type=bool, required=False, default=True, help="Recreate an empty database")
+@option(
+    "--recreate",
+    "-r",
+    type=bool,
+    required=False,
+    default=True,
+    help="Recreate an empty database",
+)
 def mysql__db__destroy(
     manager: "AppAddonManager",
     app_dir: str,
     service: str,
     database: str | None = None,
-    recreate: bool = True
+    recreate: bool = True,
 ) -> None:
     from addons.app.command.app.exec import app__app__exec
     from addons.services_db.services.mysql.command.db.connect import mysql__db__connect

@@ -2,9 +2,8 @@ import os
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
-from wexample_helpers.helpers.string import string_to_snake_case, string_to_kebab_case
 from wexample_helpers.helpers.file import file_list_subdirectories
-from src.helper.click import click_args_convert_dict_to_args
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
 
 from src.const.globals import (
     COMMAND_EXTENSIONS,
@@ -26,9 +25,8 @@ from src.const.types import (
     StringsList,
     StringsMatch,
 )
-from src.core.CommandRequest import CommandRequest
-from src.utils.abstract_kernel_child import AbsractKernelChild
 from src.core.command.ScriptCommand import ScriptCommand
+from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.DefaultResponse import DefaultResponse
@@ -37,14 +35,12 @@ from src.core.response.FunctionResponse import FunctionResponse
 from src.core.response.ListResponse import ListResponse
 from src.core.response.NullResponse import NullResponse
 from src.decorator.attach import CommandAttachment
+from src.helper.click import click_args_convert_dict_to_args
 from src.helper.command import command_to_string
-from src.helper.file import (
-    file_set_owner_for_path_and_ancestors,
-)
-from src.helper.string import (
-    string_trim_leading,
-)
+from src.helper.file import file_set_owner_for_path_and_ancestors
+from src.helper.string import string_trim_leading
 from src.helper.user import get_user_or_sudo_user
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 
 class AbstractCommandResolver(AbsractKernelChild):
@@ -189,6 +185,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     @classmethod
     def build_match(cls, command: str) -> Optional[StringsMatch]:
         import re
+
         return re.match(cls.get_pattern(), command) if command else None
 
     def get_base_path(self) -> Optional[str]:

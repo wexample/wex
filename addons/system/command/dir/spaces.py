@@ -10,6 +10,7 @@ from src.helper.file import file_get_human_readable_size
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
+
 @ai_tool()
 @command(help="Return sizes of current directory subdirectories")
 @option("--dir", "-d", type=str, required=False, help="Directory to inspect")
