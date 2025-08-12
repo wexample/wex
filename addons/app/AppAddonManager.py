@@ -295,10 +295,6 @@ class AppAddonManager(AddonManager):
         # Write as docker env file
         file_write_dict_to_config(env_dict, config_path)
 
-        print("_______________Setting owner")
-        print(config_path)
-        print(user)
-        print(group)
         file_set_owner(
             file_path=config_path,
             username=user,

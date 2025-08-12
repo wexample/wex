@@ -109,10 +109,6 @@ def app__helper__start(
     def _app__helper__start__start() -> None:
         nonlocal env
 
-        print(' START WITH')
-        print(user)
-        print(group)
-
         kernel.run_function(
             app__app__start,
             {
