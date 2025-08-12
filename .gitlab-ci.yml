@@ -51,7 +51,7 @@ test:
 #    GIT_STRATEGY: none
   script:
     - rm -rf /opt/wex
-    - mv -r $CI_PROJECT_DIR /opt/
+    - mv $CI_PROJECT_DIR /opt/
     - ls -la /opt/
 #    - !reference [ .test_cleanup, script ]
 #    - !reference [ .docker_login, script ]
