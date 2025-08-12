@@ -163,12 +163,12 @@ class YamlCommandRunner(AbstractCommandRunner):
 
                 response: AbstractResponse
 
-                if 'sync' in script_config:
-                    response = NonInteractiveShellCommandResponse(
+                if 'sync' in script_config and (script_config['sync'] == False):
+                    response = InteractiveShellCommandResponse(
                         self.kernel, command_list, as_sudo_user=False
                     )
                 else:
-                    response = InteractiveShellCommandResponse(
+                    response = NonInteractiveShellCommandResponse(
                         self.kernel, command_list, as_sudo_user=False
                     )
 

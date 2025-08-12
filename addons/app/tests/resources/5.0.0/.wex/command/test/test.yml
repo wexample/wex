@@ -5,11 +5,7 @@ command:
 properties:
   - app_webhook
 scripts:
-  - title: TODO
-    app_should_run: true
-    interpreter: ['/bin/bash', '-c']
-    script: echo "MINIMAL_BASH_RESPONSE"
-    sync: true
+  - echo "MINIMAL_BASH_RESPONSE"
 
   - title: Testing new scripts format
     context: host
