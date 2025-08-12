@@ -7,4 +7,14 @@ set -e
 # with dpkg/apt locks when APT is resolving dependencies. Declare all runtime
 # dependencies in debian/control so APT installs them before configuring wex.
 
+case "$1" in
+  configure)
+    if [ -x "/usr/lib/wex/cli/install" ]; then
+      # Avoid running apt during dpkg configuration; dependencies must be in Depends
+      export WEX_SKIP_APT=1
+      bash "/usr/lib/wex/cli/install"
+    fi
+    ;;
+esac
+
 exit 0
