@@ -45,40 +45,6 @@ class AbstractAppTestCase(AbstractTestCase):
         cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
     def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
-        print('DEBUG>>>>>>')
-        # Debug permissions before starting app to investigate permission denied issues
-        try:
-            def _fmt_stat(p: str) -> str:
-                st = os.stat(p)
-                user = pwd.getpwuid(st.st_uid).pw_name
-                group = grp.getgrgid(st.st_gid).gr_name
-                mode = oct(st.st_mode & 0o777)
-                return f"path={p} owner={user}:{group} mode={mode}"
-
-            to_check = [
-                "/var/www/test/wex-proxy/.wex/tmp",
-                "/var/www/test/wex-proxy/.wex/tmp/docker.env",
-            ]
-            # Also check within current app_dir if relevant
-            candidate = os.path.join(app_dir, ".wex", "tmp")
-            to_check.append(candidate)
-            candidate_env = os.path.join(candidate, "docker.env")
-            to_check.append(candidate_env)
-
-            print(f"EUID={os.geteuid()} EGID={os.getegid()}")
-            for p in to_check:
-                if os.path.exists(p):
-                    try:
-                        print(_fmt_stat(p))
-                        # Best-effort detailed ls
-                        out = subprocess.run(["/bin/ls", "-lLd", p], capture_output=True, text=True)
-                        print(out.stdout.strip())
-                    except Exception as e:  # pragma: no cover
-                        print(f"stat/ls failed for {p}: {e}")
-                else:
-                    print(f"path missing: {p}")
-        except Exception as e:  # pragma: no cover
-            print(f"permission debug failed: {e}")
         response = self.kernel.run_function(
             app__app__start,
             {

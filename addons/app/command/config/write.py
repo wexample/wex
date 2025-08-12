@@ -1,4 +1,7 @@
 import os
+import pwd
+import grp
+import subprocess
 from typing import TYPE_CHECKING, Optional
 
 import yaml
@@ -46,6 +49,35 @@ def app__config__write(
         if not len(compose_files) != 0:
             manager.log("No docker compose file")
             return
+
+        # Debug permissions juste avant l'appel à docker compose
+        try:
+            def _fmt_stat(p: str) -> str:
+                st = os.stat(p)
+                user = pwd.getpwuid(st.st_uid).pw_name
+                group = grp.getgrgid(st.st_gid).gr_name
+                mode = oct(st.st_mode & 0o777)
+                return f"path={p} owner={user}:{group} mode={mode}"
+
+            paths = [
+                "/var/www/test/wex-proxy/.wex/tmp",
+                "/var/www/test/wex-proxy/.wex/tmp/docker.env",
+                os.path.join(app_dir, ".wex", "tmp"),
+                os.path.join(app_dir, ".wex", "tmp", "docker.env"),
+            ]
+            print(f"[compose-debug] EUID={os.geteuid()} EGID={os.getegid()}")
+            for p in paths:
+                if os.path.exists(p):
+                    try:
+                        print("[compose-debug]", _fmt_stat(p))
+                        out = subprocess.run(["/bin/ls", "-lLd", p], capture_output=True, text=True)
+                        print("[compose-debug]", out.stdout.strip())
+                    except Exception as e:
+                        print(f"[compose-debug] stat/ls failed for {p}: {e}")
+                else:
+                    print(f"[compose-debug] missing: {p}")
+        except Exception as e:
+            print(f"[compose-debug] permission debug failed: {e}")
 
         manager.log(f"Compiling docker compose file...")
         yml_content = str(
