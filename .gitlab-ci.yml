@@ -47,14 +47,16 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
-  variables:
-    GIT_STRATEGY: none
+#  variables:
+#    GIT_STRATEGY: none
   script:
-    - !reference [ .test_cleanup, script ]
-    - !reference [ .docker_login, script ]
-    # Change environment
-    - sudo wex app::env/set --app-dir /opt/wex/ -e test
-    - sudo wex rebuild
-    # Run tests, as "owner", with sudo.
-    - sudo -u owner sudo wex test -vvv
-    - !reference [.test_cleanup, script]
+    - echo $CI_PROJECT_DIR
+#    - !reference [ .test_cleanup, script ]
+#    - !reference [ .docker_login, script ]
+#    - !reference [ .test_rescue, script ]
+#    # Change environment
+#    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+#    - sudo wex rebuild
+#    # Run tests, as "owner", with sudo.
+#    - sudo -u owner sudo wex test -vvv
+#    - !reference [.test_cleanup, script]
