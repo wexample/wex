@@ -86,6 +86,7 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f"ls -la {remote_temp_push_dir}test_subdir/subdir-file.txt",
+                "sync": True
             },
         )
 
