@@ -151,8 +151,6 @@ test:
   needs:
     - checkup_code
     - checkup_format
-  variables:
-    GIT_STRATEGY: none
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
