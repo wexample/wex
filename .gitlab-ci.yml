@@ -54,17 +54,8 @@ include:
   script:
     - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
     - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
-    - |
-      # Avoid "Device or resource busy"
-      shopt -s nullglob
-      for P in /var/www/test /var/www/test_*; do
-        if [ -d "$P" ]; then
-          echo "Cleaning contents of $P"
-          find "$P" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
-          rm -rf "$P"/* 2>/dev/null || true
-          rm -rf "$P"/.[!.]* "$P"/..?* 2>/dev/null || true
-        fi
-      done
+    - rm -rf /var/www/test
+    - rm -rf /var/www/test_*
 
 # Use this into test job to use last repo,
 # instead of rebuilding "rc" image.
