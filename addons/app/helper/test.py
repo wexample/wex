@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING, List, Optional, cast
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST
 from addons.docker.helper.docker import docker_container_ip
-from helper.file import file_set_owner
 from src.const.types import StringsList
 from src.core.file.DirectoryStructure import DirectoryStructure
+from src.helper.file import file_set_owner
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -49,11 +49,12 @@ def test_build_app_name(
 
 def test_create_env_dir(
         kernel: "Kernel",
+        env_name: str
 ):
     from src.const.globals import USER_WWW_DATA
 
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
-    app_env_dir = os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST)
+    app_env_dir = os.path.join(apps_dir.get_parent_dir(), env_name)
     kernel.io.log(f"Creating test app env dir: {app_env_dir} with owner {USER_WWW_DATA}:{USER_WWW_DATA}")
     # Create if missing; ensure traverse perms (755) for subsequent access by non-root
     os.makedirs(app_env_dir, mode=0o755, exist_ok=True)
@@ -74,7 +75,7 @@ def test_create_app(
         services: Optional[List[str]] = None,
         force_restart: bool = False,
 ) -> str:
-    test_create_env_dir(kernel=kernel)
+    test_create_env_dir(kernel=kernel, env_name=APP_ENV_TEST)
     app_dir = test_get_app_dir(kernel, name)
     current_dir = os.getcwd()
 
