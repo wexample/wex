@@ -45,6 +45,7 @@ class AbstractAppTestCase(AbstractTestCase):
         cast(AppAddonManager, self.kernel.addons["app"]).load_config()
 
     def start_test_app(self, app_dir: str, force_restart: bool = False) -> None:
+        print('DEBUG>>>>>>')
         # Debug permissions before starting app to investigate permission denied issues
         try:
             def _fmt_stat(p: str) -> str:
@@ -64,20 +65,20 @@ class AbstractAppTestCase(AbstractTestCase):
             candidate_env = os.path.join(candidate, "docker.env")
             to_check.append(candidate_env)
 
-            self.log(f"EUID={os.geteuid()} EGID={os.getegid()}")
+            print(f"EUID={os.geteuid()} EGID={os.getegid()}")
             for p in to_check:
                 if os.path.exists(p):
                     try:
-                        self.log(_fmt_stat(p))
+                        print(_fmt_stat(p))
                         # Best-effort detailed ls
                         out = subprocess.run(["/bin/ls", "-lLd", p], capture_output=True, text=True)
-                        self.log(out.stdout.strip())
+                        print(out.stdout.strip())
                     except Exception as e:  # pragma: no cover
-                        self.log(f"stat/ls failed for {p}: {e}")
+                        print(f"stat/ls failed for {p}: {e}")
                 else:
-                    self.log(f"path missing: {p}")
+                    print(f"path missing: {p}")
         except Exception as e:  # pragma: no cover
-            self.log(f"permission debug failed: {e}")
+            print(f"permission debug failed: {e}")
         response = self.kernel.run_function(
             app__app__start,
             {
