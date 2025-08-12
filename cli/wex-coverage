@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Find current file directory
+# supporting symlinks
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
+WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
+
+COVERAGE_PATH="${WEX_ROOT}.wex/python/venv/bin/coverage"
+WEX_INTERPRETER="${COVERAGE_PATH} run"
+COVERAGE_DIR_OUTPUT="${WEX_ROOT}tmp/coverage/"
+export COVERAGE_FILE="${COVERAGE_DIR_OUTPUT}.coverage"
+
+# This script serves as the entry point for the 'wex' application when installed via an APT package.
+# It attempts to execute the 'wex' file from the absolute path '/usr/lib/wex/cli/'.
+#. ${WEX_DIR_CLI}wex
+
+${COVERAGE_PATH} html -d "${COVERAGE_DIR_OUTPUT}html"

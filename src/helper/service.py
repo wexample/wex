@@ -2,12 +2,12 @@ import os
 import shutil
 from typing import TYPE_CHECKING, Any, Dict, List, cast
 
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
 from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_SERVICE_CONFIG
-from src.helper.data_yaml import yaml_load
 
 if TYPE_CHECKING:
-    from addons.app.AppAddonManager import AppAddonManager
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def service_get_dir(kernel: "Kernel", service: str) -> str | bool:
@@ -28,7 +28,7 @@ def service_load_config(kernel: "Kernel", service: str) -> Any:
         return False
 
     # Allow service to not define a config file
-    return yaml_load(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
+    return yaml_read(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
 
 
 def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:
@@ -58,6 +58,8 @@ def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:
 
 
 def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None:
+    from addons.app.AppAddonManager import AppAddonManager
+
     service_dir = service_get_dir(kernel, service)
     if not isinstance(service_dir, str):
         return
@@ -66,7 +68,7 @@ def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None
         os.path.join(service_dir, "samples", APP_DIR_APP_DATA) + os.sep
     )
 
-    manager = cast("AppAddonManager", kernel.addons["app"])
+    manager = cast(AppAddonManager, kernel.addons["app"])
 
     env_dir: str = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 

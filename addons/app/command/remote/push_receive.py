@@ -12,7 +12,7 @@ from src.helper.file import file_create_directories_and_copy
 from src.helper.user import user_resolve_home_path
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @app_webhook()

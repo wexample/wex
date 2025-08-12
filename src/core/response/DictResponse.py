@@ -14,7 +14,7 @@ from src.core.response.AbstractTerminalSectionResponse import (
 )
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class DictResponse(AbstractTerminalSectionResponse):
@@ -71,7 +71,8 @@ class DictResponse(AbstractTerminalSectionResponse):
 
             for key in data:
                 if isinstance(data[key], AbstractResponse):
-                    print_string.append(data[key].print(render_mode))
+                    # Ensure string in case of None response
+                    print_string.append(key + ": " + str(data[key].print(render_mode)))
                 else:
                     print_string.append(key + ": " + str(data[key]))
 

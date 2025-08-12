@@ -10,4 +10,4 @@ services:
     environment:
       - RUNTIME_ENV=${RUNTIME_ENV}
     networks:
-      - wex_net
+      - ${DOCKER_NETWORK_NAME:-wex_net}

@@ -14,7 +14,7 @@ class TestAppCommandVersionGet(AbstractTestCase):
             app__version__get, {"app-dir": SYSTEM_WWW_PATH}
         )
 
-        self.assertEquals(version.print(), None)
+        self.assertEqual(version.print(), None)
 
         self.log("Test in " + self.kernel.directory.path)
         os.chdir(self.kernel.directory.path)
@@ -23,4 +23,4 @@ class TestAppCommandVersionGet(AbstractTestCase):
             app__version__get, {"app-dir": self.kernel.directory.path}
         )
 
-        self.assertEquals(version.print(), core_kernel_get_version(self.kernel))
+        self.assertEqual(version.print(), core_kernel_get_version(self.kernel))

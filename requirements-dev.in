@@ -1,9 +1,12 @@
 autoflake
 black
+coverage
 isort
 mypy
+pip-tools
 no_implicit_optional
 types-psutil
 types-pyyaml
+types-Pygments
 types-requests
 type-yaml

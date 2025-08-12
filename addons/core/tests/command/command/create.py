@@ -1,8 +1,9 @@
 import os
 import shutil
 
+from wexample_helpers.helpers.file import file_remove_if_exists
+
 from addons.core.command.command.create import core__command__create
-from src.helper.file import file_remove_file_if_exists
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -16,8 +17,8 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
             self.kernel.get_path("addons", ["core", "tests"]) + test_file_path_command
         )
 
-        file_remove_file_if_exists(test_file_path)
-        file_remove_file_if_exists(test_file_path_test)
+        file_remove_if_exists(test_file_path)
+        file_remove_if_exists(test_file_path_test)
 
         self.kernel.run_function(
             core__command__create, {"command": "core::lorem/ipsum"}

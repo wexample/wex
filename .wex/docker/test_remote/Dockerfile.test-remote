@@ -4,6 +4,7 @@ FROM gitlab-docker.wexample.com/wexample/wex/rc
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
         bash \
+        libpq-dev \
         openssh-server \
     && rm -rf /var/lib/apt/lists/* \
     # Generate SSH keys.

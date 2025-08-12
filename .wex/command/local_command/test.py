@@ -1,10 +1,11 @@
-from src.decorator.command import command
-from src.decorator.option import option
-from src.const.globals import COMMAND_TYPE_APP
 from typing import TYPE_CHECKING
 
+from src.const.globals import COMMAND_TYPE_APP
+from src.decorator.command import command
+from src.decorator.option import option
+
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="An app test command", command_type=COMMAND_TYPE_APP)

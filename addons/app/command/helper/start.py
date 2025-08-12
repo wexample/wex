@@ -1,6 +1,6 @@
 import getpass
 import os.path
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from click import Choice
 
@@ -9,21 +9,14 @@ from addons.app.command.app.init import app__app__init
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APPS_LIST
-from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
+from src.helper.prompt import prompt_progress_steps
 from src.helper.system import system_port_check
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()
@@ -59,15 +52,14 @@ def app__helper__start(
     group: Optional[str] = None,
     port: Optional[int] = None,
     port_secure: Optional[int] = None,
-) -> QueuedCollectionResponse:
+) -> str:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     # App name is same of main service
     helper_service_name = name
     helper_app_path = manager.get_helper_app_path(name, env)
+    current_dir = os.getcwd()
 
-    def _app__helper__start__create(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse | QueuedCollectionStopResponse:
+    def _app__helper__start__create() -> Any:
         nonlocal env
         kernel.io.log("Starting helper app")
 
@@ -80,55 +72,44 @@ def app__helper__start(
                     "app-dir": helper_app_path,
                 },
             ).first():
-                return QueuedCollectionStopResponse(
-                    kernel, "HELPER_APP_ALREADY_STARTED", response=helper_app_path
-                )
+                return False
 
         kernel.io.log(f"Creating helper app dir : {helper_app_path}")
         os.makedirs(helper_app_path, exist_ok=True)
 
-        return kernel.run_function(
+        kernel.run_function(
             app__app__init,
             {
                 "app-dir": helper_app_path,
                 "services": [helper_service_name],
                 "git": False,
                 "env": env,
+                "port": port,
+                "port_secure": port_secure,
             },
         )
 
-    def _app__helper__start__checkup(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    def _app__helper__start__checkup() -> None:
         def _callback() -> None:
             nonlocal user
             nonlocal port
             nonlocal port_secure
 
             user = user or getpass.getuser()
+            ports = manager.get_config(f"port", default={}).get_dict()
 
-            # Override default service ports
-            if port:
-                system_port_check(kernel, port)
-                manager.set_config(f"service.{helper_service_name}.port_public", port)
-
-            if port_secure:
-                system_port_check(kernel, port_secure)
-                manager.set_config(
-                    f"service.{helper_service_name}.port_public_secure", port_secure
-                )
+            for p in ports.values():
+                system_port_check(kernel, int(p))
 
         manager.exec_in_app_workdir(helper_app_path, _callback)
 
         if not create_network:
             manager.set_config("docker.create_network", create_network)
 
-    def _app__helper__start__start(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> AbstractResponse:
+    def _app__helper__start__start() -> None:
         nonlocal env
 
-        return kernel.run_function(
+        kernel.run_function(
             app__app__start,
             {
                 "app-dir": helper_app_path,
@@ -139,7 +120,7 @@ def app__helper__start(
             },
         )
 
-    return QueuedCollectionResponse(
+    prompt_progress_steps(
         kernel,
         [
             _app__helper__start__create,
@@ -147,3 +128,11 @@ def app__helper__start(
             _app__helper__start__start,
         ],
     )
+
+    # Ensure workdir due to lacking management
+    if manager.is_app_root(current_dir):
+        manager.set_app_workdir(current_dir)
+    else:
+        os.chdir(current_dir)
+
+    return helper_app_path

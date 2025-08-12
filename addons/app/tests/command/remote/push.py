@@ -86,25 +86,17 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
                 "app-dir": app_dir,
                 "environment": environment,
                 "command": f"ls -la {remote_temp_push_dir}test_subdir/subdir-file.txt",
+                "sync": True,
             },
         )
 
         self.log(response.first())
 
-        lines = response.first().split("\n")
+        lines = response.first()
         self.assertTrue(
             # The last line is the file info.
             lines[len(lines) - 1].startswith("-rw"),
             "The local file has been created remotely",
-        )
-
-        self.kernel.run_function(
-            app__remote__exec,
-            {
-                "app-dir": app_dir,
-                "environment": environment,
-                "command": f"ls -la {remote_temp_push_dir}",
-            },
         )
 
         response = self.kernel.run_function(
@@ -112,12 +104,35 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
             {
                 "app-dir": app_dir,
                 "environment": environment,
-                "command": f'cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c "SELECT test_value FROM {app_name}.test_migration"',
+                "command": f"ls -la {remote_temp_push_dir}",
+                "sync": True,
             },
         )
 
+        self.log(response.first())
+
+        response = self.kernel.run_function(
+            app__remote__exec,
+            {
+                "app-dir": app_dir,
+                "environment": environment,
+                "command": f'cd /var/www/{environment}/{app_dir_basename} && wex db/exec -c "SELECT test_value FROM {app_name}.test_migration"',
+                "sync": True,
+            },
+        )
+
+        self.log(response.first())
+
+        # Get the last non-empty value.s
+        values = [
+            s.strip()
+            for s in (response.first() or [])
+            if isinstance(s, str) and s.strip()
+        ]
+        last = values[-1] if values else ""
+
         self.assertEqual(
-            response.first().split("\n")[1],
+            last,
             unique_value,
             "The value in the local database hase been transferred and mounted in remote database",
         )

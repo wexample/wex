@@ -10,11 +10,10 @@ from src.const.types import (
 )
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.helper.command import command_to_string, execute_command_sync
-from src.helper.process import process_post_exec
+from src.helper.command import execute_command_tree_sync
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class InteractiveShellCommandResponse(AbstractResponse):
@@ -23,14 +22,17 @@ class InteractiveShellCommandResponse(AbstractResponse):
         kernel: "Kernel",
         shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
+        as_sudo_user: bool = True,
         workdir: Optional[str] = None,
     ) -> None:
         super().__init__(kernel)
 
         self.shell_command = cast(ShellCommandsDeepList, shell_command.copy())
         self.interactive_data = True
+        self.as_sudo_user = as_sudo_user
         self.ignore_error = ignore_error
         self.workdir = workdir
+        self.success: Optional[bool] = None
 
     def render_content(
         self,
@@ -38,31 +40,19 @@ class InteractiveShellCommandResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
-        if self.kernel.fast_mode:
-            # When using fast mode, we need to preserve consistency between shell executions.
-            # Ex : ['echo', '"OK"'] should return OK without quotes.
-            # As we don't use shlex to wrap arguments,
-            # we need to enable shell=True here.
+        success, content = execute_command_tree_sync(
+            self.kernel,
+            command_tree=self.shell_command,
+            working_directory=self.workdir,
+            ignore_error=self.ignore_error,
+            as_sudo_user=self.as_sudo_user,
+            interactive=True,
+        )
 
-            success, content = execute_command_sync(
-                self.kernel,
-                command_to_string(self.shell_command),
-                working_directory=self.workdir,
-                ignore_error=self.ignore_error,
-                shell=True,
-            )
+        self.success = success
 
-            self.success = success
-
-            # Output data as it was printed in a shell.
-            self.output_bag.append(os.linesep.join(content))
-
-        # Do not add to render bag, but append only once.
-        elif not self.rendered:
-            if self.ignore_error:
-                self.shell_command += ["||", "true"]
-
-            process_post_exec(self.kernel, self.shell_command, self.workdir)
+        # Output data as it was printed in a shell.
+        self.output_bag.append(os.linesep.join(content))
 
         return self
 

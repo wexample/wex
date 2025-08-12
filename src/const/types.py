@@ -40,6 +40,7 @@ JsonContentDict = StringKeysDict
 YamlContent = BasicValue
 YamlContentDict = StringKeysDict
 
+
 AnyCallable = Callable[..., Any]
 Args = Any
 DecoratedCallable = Callable[..., AnyCallable]
@@ -130,8 +131,10 @@ class YamlCommandScript(TypedDict):
     interpreter: StringsList
     options: Optional[StringKeysDict]
     script: Optional[str]
+    sync: bool
     title: str
     type: str
+    variable: str
 
 
 class YamlCommandOption(TypedDict):

@@ -1,5 +1,0 @@
-You should generate a git patch to apply on the code to change the program behaviour.
-ONLY return a git patch without any other text, no introduction no conclusion,
-no markdown or special syntax, except GIT PATCH.
-Don't reply if question subject is not about the program.
-If you are unable te return a git patch just return KO.

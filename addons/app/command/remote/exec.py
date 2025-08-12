@@ -1,4 +1,7 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional, Union, cast
+
+from wexample_helpers.const.types import StringsList
+from wexample_helpers.helpers.args import args_parse_list_or_strings_list
 
 from addons.app.decorator.app_command import app_command
 from addons.app.helper.remote import (
@@ -9,8 +12,10 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.response.InteractiveShellCommandResponse import (
     InteractiveShellCommandResponse,
 )
+from src.core.response.NonInteractiveShellCommandResponse import (
+    NonInteractiveShellCommandResponse,
+)
 from src.decorator.option import option
-from src.helper.args import args_parse_list_or_strings_list
 from src.helper.command import command_to_string
 
 if TYPE_CHECKING:
@@ -40,13 +45,24 @@ if TYPE_CHECKING:
     is_flag=True,
     help="Open a terminal",
 )
+@option(
+    "--sync",
+    "-s",
+    type=bool,
+    is_flag=True,
+    required=False,
+    help="Execute command in a sub process",
+)
 def app__remote__exec(
     manager: "AppAddonManager",
     app_dir: str,
     environment: str,
     command: str,
     terminal: bool,
-) -> Optional[InteractiveShellCommandResponse]:
+    sync: bool = False,
+) -> Optional[
+    Union[InteractiveShellCommandResponse, NonInteractiveShellCommandResponse]
+]:
     address = remote_get_connexion_address(
         manager=manager, environment=environment, command=app__remote__exec
     )
@@ -54,10 +70,17 @@ def app__remote__exec(
     if not address:
         return None
 
+    remote_command = remote_get_connexion_command(
+        manager=manager, environment=environment, terminal=terminal
+    ) + [address, f"{command_to_string(args_parse_list_or_strings_list(command))}"]
+
+    if sync:
+        return NonInteractiveShellCommandResponse(
+            manager.kernel,
+            cast(List[Union[str, StringsList]], remote_command),
+        )
+
     return InteractiveShellCommandResponse(
         manager.kernel,
-        remote_get_connexion_command(
-            manager=manager, environment=environment, terminal=terminal
-        )
-        + [address, f"'{command_to_string(args_parse_list_or_strings_list(command))}'"],
+        remote_command,
     )

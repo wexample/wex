@@ -5,6 +5,20 @@ import sys
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
 
 import yaml
+from wexample_helpers.helpers.args import args_push_one, args_shift_one
+from wexample_helpers.helpers.dict import (
+    DICT_ITEM_EXISTS_ACTION_REPLACE,
+    dict_get_item_by_path,
+    dict_has_item_by_path,
+    dict_remove_item_by_path,
+    dict_set_item_by_path,
+)
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
+from wexample_helpers_yaml.helpers.yaml_helpers import (
+    yaml_read,
+    yaml_read_dict,
+    yaml_write,
+)
 
 from addons.app.command.location.find import app__location__find
 from addons.app.const.app import (
@@ -18,7 +32,6 @@ from addons.app.const.app import (
     APP_FILEPATH_REL_CONFIG_RUNTIME,
     APP_FILEPATH_REL_DOCKER_ENV,
     APP_FILEPATH_REL_ENV,
-    ERR_APP_SHOULD_RUN,
     HELPER_APP_PROXY_SHORT_NAME,
     PROXY_FILE_APPS_REGISTRY,
 )
@@ -32,6 +45,7 @@ from src.const.globals import (
     CORE_COMMAND_NAME,
     DATE_FORMAT_SECOND,
     SHELL_DEFAULT,
+    VERBOSITY_LEVEL_DEFAULT,
     VERBOSITY_LEVEL_MEDIUM,
     VERSION_DEFAULT,
 )
@@ -52,24 +66,14 @@ from src.const.types import (
 )
 from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
-from src.helper.args import args_push_one, args_shift_one
 from src.helper.core import core_kernel_get_version
-from src.helper.data_yaml import yaml_load, yaml_load_dict, yaml_write
-from src.helper.dict import dict_get_item_by_path, dict_has_item_by_path
-from src.helper.file import (
-    DICT_ITEM_EXISTS_ACTION_REPLACE,
-    file_env_to_dict,
-    file_remove_dict_item_by_path,
-    file_set_dict_item_by_path,
-    file_write_dict_to_config,
-)
+from src.helper.file import file_env_to_dict, file_set_owner, file_write_dict_to_config
 from src.helper.service import service_load_config
-from src.helper.string import string_to_kebab_case, string_to_snake_case
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
-    from src.core.Kernel import Kernel
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.utils.kernel import Kernel
 
 
 class AppAddonManager(AddonManager):
@@ -141,10 +145,13 @@ class AppAddonManager(AddonManager):
 
         return env_file_path
 
-    def get_env_dir(self, dir: str, create: bool = False) -> str:
+    def get_env_dir(self, dir: Optional[str] = None, create: bool = False) -> str:
         app_dir = self.get_app_dir()
 
-        env_dir = os.path.join(app_dir, APP_DIR_APP_DATA, dir) + os.sep
+        if dir:
+            env_dir = os.path.join(app_dir, APP_DIR_APP_DATA, dir) + os.sep
+        else:
+            env_dir = os.path.join(app_dir, APP_DIR_APP_DATA)
 
         if create and not os.path.exists(env_dir):
             os.makedirs(env_dir, exist_ok=True)
@@ -153,8 +160,7 @@ class AppAddonManager(AddonManager):
 
     def load_script(self, name: str) -> Optional[YamlContent]:
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
-
-        return yaml_load(script_dir)
+        return cast(Optional[YamlContent], yaml_read(script_dir))
 
     def get_helper_app_name(self, short_name: str) -> str:
         return "-".join([CORE_COMMAND_NAME, short_name])
@@ -167,7 +173,7 @@ class AppAddonManager(AddonManager):
     def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
-            yaml_load(
+            yaml_read(
                 self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment)
                 + PROXY_FILE_APPS_REGISTRY,
                 {},
@@ -195,16 +201,18 @@ class AppAddonManager(AddonManager):
         return False
 
     def is_valid_app(self) -> bool:
-        return self.is_app_root(self.get_app_dir())
+        return bool(self.app_dir) and self.is_app_root(self.get_app_dir())
 
     @classmethod
     def _load_config(
         cls, path: str, default: Optional[YamlContentDict] = None
     ) -> YamlContentDict:
-        return yaml_load_dict(path, default) or {}
+        return yaml_read_dict(path, default) or {}
 
     def create_config(
-        self, app_name: str, domains: Optional[StringsList] = None
+        self,
+        app_name: str,
+        domains: Optional[StringsList] = None,
     ) -> AppConfig:
         if domains is None:
             domains = []
@@ -255,7 +263,7 @@ class AppAddonManager(AddonManager):
                         "email": email,
                     },
                 },
-                "wex": {"version": core_kernel_get_version(self.kernel)},
+                CORE_COMMAND_NAME: {"version": core_kernel_get_version(self.kernel)},
             },
         )
 
@@ -268,7 +276,9 @@ class AppAddonManager(AddonManager):
     def save_config(self) -> None:
         self._save_config(self.config_path, self._config)
 
-    def save_runtime_config(self) -> None:
+    def save_runtime_config(
+        self, user: Optional[str] = None, group: Optional[str] = None
+    ) -> None:
         self._save_config(self.runtime_config_path, self._runtime_config)
 
         app_dir: str = self.get_runtime_config("path.app").get_str()
@@ -287,6 +297,12 @@ class AppAddonManager(AddonManager):
 
         # Write as docker env file
         file_write_dict_to_config(env_dict, config_path)
+
+        file_set_owner(
+            file_path=config_path,
+            username=user,
+            group=group,
+        )
 
     def config_to_docker_env(self) -> AppDockerEnvConfig:
         if not self._runtime_config or not self._config:
@@ -326,7 +342,7 @@ class AppAddonManager(AddonManager):
         if isinstance(value, dict) or isinstance(value, list):
             value = value.copy()
 
-        file_set_dict_item_by_path(self.config_to_dict(config), key, value, when_exist)
+        dict_set_item_by_path(self.config_to_dict(config), key, value, when_exist)
 
     def set_config(
         self,
@@ -339,12 +355,12 @@ class AppAddonManager(AddonManager):
         self.save_config()
 
     def remove_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
+        dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_config()
 
     def remove_runtime_config(self, key: str) -> None:
-        file_remove_dict_item_by_path(self.config_to_dict(self._config), key)
+        dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_runtime_config()
 
@@ -394,7 +410,13 @@ class AppAddonManager(AddonManager):
 
         return ConfigValue(value=value)
 
-    def log(self, message: str, color: str = COLOR_GRAY, indent: int = 0) -> None:
+    def log(
+        self,
+        message: str,
+        color: str = COLOR_GRAY,
+        indent: int = 0,
+        verbosity: int = VERBOSITY_LEVEL_DEFAULT,
+    ) -> None:
         if self.app_dir:
             if self.first_log_indent is None:
                 self.first_log_indent = self.kernel.io.log_indent
@@ -402,7 +424,7 @@ class AppAddonManager(AddonManager):
             if self.kernel.io.log_indent == self.first_log_indent:
                 message = f"[{self.get_app_name()}] {message}"
 
-        self.kernel.io.log(message, color, indent)
+        self.kernel.io.log(message, color, indent, verbosity)
 
     def has_config(
         self, key: str, with_type: Optional[type] = None, accept_none: bool = False
@@ -511,7 +533,7 @@ class AppAddonManager(AddonManager):
                 self.kernel.io.message_next_command(app__app__start)
 
                 self.kernel.io.error(
-                    ERR_APP_SHOULD_RUN,
+                    'The application should be running to execute "{command}", in {dir}',
                     {
                         "command": request.get_string_command(),
                         "dir": app_dir_resolved,
@@ -753,7 +775,11 @@ class AppAddonManager(AddonManager):
         self.log(f"Build config file")
 
         self._runtime_config = runtime_config
-        self.save_runtime_config()
+
+        self.save_runtime_config(
+            user=user,
+            group=group,
+        )
 
         self.kernel.run_function(
             app__hook__exec, {"app-dir": self.app_dir, "hook": "config/runtime"}

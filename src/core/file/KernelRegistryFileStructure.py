@@ -4,7 +4,7 @@ from src.const.types import KernelRegistry, RegistryResolverData, YamlContentDic
 from src.core.file.YamlFileStructure import YamlFileStructure
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class KernelRegistryFileStructure(YamlFileStructure):
@@ -26,9 +26,9 @@ class KernelRegistryFileStructure(YamlFileStructure):
 
         self.content = KernelRegistry(
             env=content["env"] if content and "env" in content else "undefined",
-            resolvers=content["resolvers"]
-            if content and "resolvers" in content
-            else {},
+            resolvers=(
+                content["resolvers"] if content and "resolvers" in content else {}
+            ),
         )
 
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:

@@ -14,7 +14,7 @@ from src.const.globals import (
 )
 from src.core.FatalError import FatalError
 from src.core.response.AbortResponse import AbortResponse
-from src.helper.args import args_convert_dict_to_args, args_convert_to_dict
+from src.helper.click import click_args_convert_dict_to_args, click_args_convert_to_dict
 from src.helper.module import module_load_from_file
 from src.helper.registry import registry_get_all_commands_from_registry_part
 from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
@@ -63,7 +63,7 @@ class TestCore(AbstractTestCase):
         self.assertTrue(isinstance(response, AbortResponse))
 
     def test_convert_args_to_dict(self) -> None:
-        args = args_convert_to_dict(
+        args = click_args_convert_to_dict(
             create_fake_click_function(),
             [
                 "--name",
@@ -83,7 +83,7 @@ class TestCore(AbstractTestCase):
         )
 
     def test_convert_dict_to_args(self) -> None:
-        args = args_convert_dict_to_args(
+        args = click_args_convert_dict_to_args(
             create_fake_click_function(),
             {
                 "name": "John",

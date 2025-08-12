@@ -23,7 +23,7 @@ class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
                         "DEFAULT",
                         {"lorem": "ipsum"},
                         "FUNCTION_OK",
-                        ["INTERACTIVE_SHELL_COMMAND_RESPONSE"],
+                        [""],
                         {"key": "value"},
                         "NON_INTERACTIVE_SHELL_COMMAND_RESPONSE",
                         {
@@ -36,7 +36,7 @@ class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
                 KERNEL_RENDER_MODE_TERMINAL: """DEFAULT
 lorem: ipsum
 FUNCTION_OK
-INTERACTIVE_SHELL_COMMAND_RESPONSE
+
 key : value
 
 NON_INTERACTIVE_SHELL_COMMAND_RESPONSE

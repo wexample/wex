@@ -7,27 +7,34 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.command.resolver.ServiceCommandResolver import ServiceCommandResolver
 
 
 @app_command(help="Install the proxy service", command_type=COMMAND_TYPE_SERVICE)
 def proxy__service__install(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
-    def callback() -> None:
-        port = 80
-        port_secure = 443
+    # Don't know how to solve quicly this error.
+    from wexample_wex_core.resolver.service_command_resolver import (
+        ServiceCommandResolver,
+    )
 
-        manager.set_config("global.port_public", port)
-        manager.set_config("global.port_public_secure", port_secure)
+    def callback() -> None:
+        manager.set_config(
+            "port.public", manager.get_config("port.public", default=80).get_int()
+        )
+
+        manager.set_config(
+            "port.public_secure",
+            manager.get_config("port.public_secure", default=443).get_int(),
+        )
 
     service_resolver = cast(
-        "ServiceCommandResolver", manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
+        ServiceCommandResolver, manager.kernel.resolvers[COMMAND_TYPE_SERVICE]
     )
 
     shutil.copytree(
         os.path.join(
-            service_resolver.get_registered_service_data("proxy")["dir"],
+            service_resolver.get_registered_service_data(service)["dir"],
             "samples",
             "proxy",
         ),

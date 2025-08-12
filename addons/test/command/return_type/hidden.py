@@ -5,7 +5,7 @@ from src.core.response.HiddenResponse import HiddenResponse
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return a hidden value", command_type=COMMAND_TYPE_ADDON)

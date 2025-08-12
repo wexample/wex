@@ -3,7 +3,7 @@ Description=Wexd Daemon for webhooks listening
 After=network.target
 
 [Service]
-ExecStart=wex core::webhook/serve -p 4242
+ExecStart=wex core::webhook/serve -p 46017
 Restart=always
 Environment=PYTHONUNBUFFERED=1
 

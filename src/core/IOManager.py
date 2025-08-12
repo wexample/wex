@@ -8,6 +8,7 @@ from src.const.globals import (
     COLOR_GREEN,
     COLOR_RED,
     COLOR_RESET,
+    COLOR_YELLOW,
     COMMAND_TYPE_ADDON,
     VERBOSITY_LEVEL_DEFAULT,
 )
@@ -19,11 +20,11 @@ from src.const.types import (
     StringsList,
 )
 from src.core.command.ScriptCommand import ScriptCommand
-from src.core.KernelChild import KernelChild
 from src.helper.string import string_count_lines_needed, string_format_ignore_missing
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 IO_DEFAULT_LOG_LENGTH = 0
 
@@ -33,13 +34,25 @@ class IOManagerLogMessage(TypedDict):
     lines: int
 
 
-class IOManager(KernelChild):
+class IOManager(AbsractKernelChild):
     def __init__(self, kernel: "Kernel") -> None:
         super().__init__(kernel)
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
         self.log_messages: List[IOManagerLogMessage] = []
         self.indent_string: str = "  "
+
+    def warn(
+        self,
+        message: str,
+        parameters: Optional[StringsDict] = None,
+        fatal: bool = True,
+        trace: bool = True,
+    ) -> None:
+        message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
+        message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
+
+        self.print(message)
 
     def error(
         self,
@@ -48,7 +61,7 @@ class IOManager(KernelChild):
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
-        # Performance optimisation
+        # Performance optimisation as error function may not be called frequently
         import logging
 
         message = f"[ERROR] {string_format_ignore_missing(message, parameters)}"
@@ -67,7 +80,7 @@ class IOManager(KernelChild):
             # Do not exit, allowing unit testing to catch error.
         else:
             self.print(message)
-            sys.exit(0)
+            raise SystemExit(0)
 
     def log_indent_up(self) -> None:
         self.log_indent += 1
@@ -80,6 +93,10 @@ class IOManager(KernelChild):
 
     def calc_log_messages_length(self) -> int:
         return sum(message["lines"] for message in self.log_messages)
+
+    def log_clear(self) -> None:
+        self.log_hide()
+        self.log_messages = []
 
     def log_hide(self) -> None:
         if self.log_length:

@@ -2,37 +2,35 @@ import os
 import sys
 import time
 import unittest
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
 
 from addons.app.command.env.get import _app__env__get
 from addons.core.command.test.cleanup import core__test__cleanup
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.QueuedCollectionResponse import (
-    QueuedCollectionResponse,
-    QueuedCollectionResponseCollection,
-)
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
+from src.helper.command import execute_command_sync, execute_command_tree_sync
 from src.helper.module import module_load_from_file
+from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("test")
 @as_sudo()
 @command(help="Run all tests or given command test")
 @option("--command", "-c", type=str, required=False, help="Single command to test")
+@option(
+    "--follow",
+    "-f",
+    is_flag=True,
+    default=False,
+    help="When specifying single command to test, continue all remaining tests",
+)
 @option(
     "--debug",
     "-d",
@@ -43,43 +41,49 @@ if TYPE_CHECKING:
     help="Single command to test",
 )
 def core__test__run(
-    kernel: "Kernel", command: Optional[str] = None, debug: bool = False
-) -> QueuedCollectionResponse:
-    def _remote_compose(command_part: StringsList) -> InteractiveShellCommandResponse:
+    kernel: "Kernel",
+    command: Optional[str] = None,
+    follow: bool = False,
+    debug: bool = False,
+) -> None:
+    def _remote_compose(command_part: StringsList) -> None:
         test_env = _app__env__get(
             kernel, kernel.directory.path, key="TEST_REMOTE_ENV", default="pipeline"
         )
 
         suffix = "." + test_env if test_env != "pipeline" else ""
 
-        return InteractiveShellCommandResponse(
+        execute_command_tree_sync(
             kernel,
-            [
-                "docker",
-                "compose",
-                "-f",
-                f"{kernel.directory.path}.wex/docker/test_remote/docker-compose.test-remote{suffix}.yml",
-            ]
-            + command_part,
-            workdir=kernel.directory.path,
+            cast(
+                List[Union[str, StringsList]],
+                [
+                    "docker",
+                    "compose",
+                    "-f",
+                    f"{kernel.directory.path}.wex/docker/test_remote/docker-compose.test-remote{suffix}.yml",
+                ]
+                + command_part,
+            ),
+            working_directory=kernel.directory.path,
         )
 
-    def _start_remote(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> InteractiveShellCommandResponse:
-        return _remote_compose(
+    def _start_remote() -> None:
+        _remote_compose(
             [
                 "up",
                 "-d",
             ]
         )
 
-    def _wait_remote(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> None:
+    def _wait_remote() -> None:
         success = False
+        preview_previous: StringsList = []
+        preview_length = 10
+
         while not success:
-            success, content = execute_command_sync(
+            # Check ready
+            success, _ = execute_command_sync(
                 kernel,
                 [
                     "docker",
@@ -91,22 +95,42 @@ def core__test__run(
                 ],
                 ignore_error=True,
             )
-            kernel.io.log("Test remote server starting...")
-            time.sleep(10)
 
-    def _stop_remote(
-        queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> InteractiveShellCommandResponse:
-        return _remote_compose(
+            if not success:
+                # Display logs
+                _, preview = execute_command_sync(
+                    kernel,
+                    [
+                        "docker",
+                        "logs",
+                        "wex_test_remote",
+                        "--tail",
+                        str(preview_length),
+                    ],
+                    ignore_error=True,
+                )
+
+                preview = preview[-preview_length:]
+
+                kernel.io.clear_last_n_lines((len(preview_previous) + 1))
+                kernel.io.print("\n".join(preview))
+                kernel.io.log("Test remote server starting...")
+
+                preview_previous = preview
+                time.sleep(1)
+
+    def _stop_remote() -> None:
+        _remote_compose(
             [
                 "down",
             ]
         )
 
-    def _cleanup(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
+    def _cleanup() -> None:
         kernel.run_function(core__test__cleanup)
 
-    def _run_tests(queue: AbstractQueuedCollectionResponseQueueManager) -> None:
+    def _run_tests() -> None:
+        nonlocal command
         kernel.io.log("Starting test suite..")
 
         loader = unittest.TestLoader()
@@ -144,12 +168,14 @@ def core__test__run(
 
                     suite.addTests(loader.loadTestsFromModule(cast(Any, module)))
 
+                    # Next found commands will be added.
+                    if follow:
+                        command = None
+
         result = unittest.TextTestRunner(failfast=True).run(suite)
 
         if not result.wasSuccessful():
             sys.exit(1)
-
-    steps: QueuedCollectionResponseCollection
 
     # Debug focus on speed.
     if debug:
@@ -164,7 +190,7 @@ def core__test__run(
             _stop_remote,
         ]
 
-    return QueuedCollectionResponse(
+    prompt_progress_steps(
         kernel,
         steps,
     )

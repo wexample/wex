@@ -3,6 +3,8 @@ import shutil
 from typing import TYPE_CHECKING
 
 import yaml
+from wexample_helpers.helpers.dict import dict_merge
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
@@ -12,10 +14,8 @@ from src.const.globals import (
     COMMAND_TYPE_SERVICE,
 )
 from src.decorator.option import option
-from src.helper.dict import dict_merge
 from src.helper.file import file_create_parent_and_touch, file_merge_new_lines
 from src.helper.service import service_get_dir
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -142,11 +142,14 @@ def app__service__install(
         if not manager.has_config("docker.main_db_container"):
             manager.set_config("docker.main_db_container", service)
 
+    if "docker" in service_config:
+        docker_config = manager.get_config("docker").get_dict()
+        config_docker = dict_merge(docker_config, service_config["docker"])
+        manager.set_config("docker", config_docker)
+
     if "global" in service_config:
         global_config = manager.get_config("global").get_dict()
-
         config_global = dict_merge(global_config, service_config["global"])
-
         manager.set_config("global", config_global)
 
     kernel.run_command(

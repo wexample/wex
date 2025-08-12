@@ -14,23 +14,14 @@ if TYPE_CHECKING:
 
 @app_command(help="Restore db dump", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 @option("--file-name", "-f", type=str, required=True, help="Dump file name")
+@option("--database", "-d", type=str, required=False, help="Database name")
 def mysql__db__restore(
-    manager: "AppAddonManager", app_dir: str, service: str, file_name: str
+    manager: "AppAddonManager",
+    app_dir: str,
+    service: str,
+    file_name: str,
+    database: str,
 ) -> str:
-    command = [
-        "mysql",
-        manager.kernel.run_function(
-            mysql__db__connect,
-            {
-                "app-dir": app_dir,
-                "service": service,
-            },
-            type=COMMAND_TYPE_SERVICE,
-        ).first(),
-        manager.get_app_name(),
-        "<",
-        "/var/www/dumps/" + file_name,
-    ]
 
     manager.kernel.run_function(
         app__app__exec,
@@ -38,7 +29,20 @@ def mysql__db__restore(
             "app-dir": app_dir,
             "container-name": service,
             # Ask to execute bash
-            "command": command,
+            "command": [
+                "mysql",
+                manager.kernel.run_function(
+                    mysql__db__connect,
+                    {
+                        "app-dir": app_dir,
+                        "service": service,
+                    },
+                    type=COMMAND_TYPE_SERVICE,
+                ).first(),
+                database,
+                "<",
+                "/var/www/dumps/" + file_name,
+            ],
             "sync": True,
         },
     )

@@ -1,0 +1,10 @@
+# PATCH_START
+   "dependencies": {{
+     "ejs": "^3.1.9",
+     "express": "^4.18.2",
+-    "puppeteer": "^21.7.0"
++    "puppeteer": "^21.7.0",
++    "random": "^1.0.0"
+   }}
+ }}
+# DESCRIPTION: I have added a dependency to a fake package called random

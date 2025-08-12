@@ -1,6 +1,8 @@
 import os
 from typing import Optional, cast
 
+from wexample_helpers.helpers.string import string_to_snake_case
+
 from src.const.globals import (
     COMMAND_PATTERN_ADDON,
     COMMAND_SEPARATOR_ADDON,
@@ -12,7 +14,6 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
-from src.helper.string import string_to_snake_case
 
 
 class AddonCommandResolver(AbstractCommandResolver):

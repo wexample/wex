@@ -7,16 +7,16 @@ from src.const.args import ARGS_HELP
 from src.const.types import StringsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest, HasRequest
-from src.core.KernelChild import KernelChild
 from src.core.response.AbortResponse import AbortResponse
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
-class AbstractCommandRunner(KernelChild, HasRequest):
+class AbstractCommandRunner(AbsractKernelChild, HasRequest):
     def __init__(self, kernel: "Kernel") -> None:
-        KernelChild.__init__(self, kernel)
+        AbsractKernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
         self._path: None | CommandRequest

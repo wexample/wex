@@ -8,7 +8,7 @@ from src.decorator.option import option
 from src.helper.process import process_get_all_by_port
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return process info", command_type=COMMAND_TYPE_ADDON)

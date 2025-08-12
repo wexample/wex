@@ -4,6 +4,8 @@ import types
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
+from wexample_helpers.helpers.dict import dict_get_item_by_path
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from src.const.types import (
     Args,
@@ -18,18 +20,13 @@ from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
 from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.command import command
-from src.helper.args import args_convert_dict_to_args
+from src.helper.click import click_args_convert_dict_to_args
 from src.helper.command import apply_command_decorator, internal_command_to_shell
-from src.helper.data_yaml import yaml_load
-from src.helper.dict import dict_get_item_by_path
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 COMMAND_TYPE_BASH: str = "bash"
 COMMAND_TYPE_BASH_FILE: str = "bash-file"
@@ -56,7 +53,7 @@ class YamlCommandRunner(AbstractCommandRunner):
                 )
 
     def load_yaml_command(self, path: str) -> YamlCommand:
-        return cast(YamlCommand, yaml_load(path, {}))
+        return cast(YamlCommand, yaml_read(path, {}))
 
     def get_options_names(self) -> StringsList:
         names = []
@@ -84,6 +81,13 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.get_content_or_fail()["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
+        from src.core.response.InteractiveShellCommandResponse import (
+            InteractiveShellCommandResponse,
+        )
+        from src.core.response.NonInteractiveShellCommandResponse import (
+            NonInteractiveShellCommandResponse,
+        )
+
         request = self.get_request()
         content = self.get_content_or_fail()
 
@@ -142,13 +146,15 @@ class YamlCommandRunner(AbstractCommandRunner):
                     command_list = internal_command_to_shell(
                         kernel=self.kernel,
                         internal_command=command_str,
-                        args=args_convert_dict_to_args(
+                        args=click_args_convert_dict_to_args(
                             command_request.get_script_command().click_command,
                             cast(
                                 CoreCommandArgsDict,
-                                script_config["options"]
-                                if "options" in script_config
-                                else {},
+                                (
+                                    script_config["options"]
+                                    if "options" in script_config
+                                    else {}
+                                ),
                             ),
                         ),
                     )
@@ -157,8 +163,23 @@ class YamlCommandRunner(AbstractCommandRunner):
                         self, script_config, variables
                     )
 
+                storage_variable = None
+                if "variable" in script_config:
+                    storage_variable = script_config["variable"]
+
                 response: AbstractResponse
-                response = InteractiveShellCommandResponse(self.kernel, command_list)
+
+                if "sync" in script_config and (script_config["sync"] == False):
+                    response = InteractiveShellCommandResponse(
+                        self.kernel, command_list, as_sudo_user=False
+                    )
+                else:
+                    response = NonInteractiveShellCommandResponse(
+                        self.kernel, command_list, as_sudo_user=False
+                    )
+
+                if storage_variable:
+                    variables[storage_variable] = response
 
                 commands_collection.append(response)
 

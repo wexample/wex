@@ -1,4 +1,8 @@
+dependencies:
+  - postgres
 main: true
+docker:
+  network_name: wex_net_ai
 structure:
   schema:
     ollama:

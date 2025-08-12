@@ -10,7 +10,7 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.HasAttachedResponse import HasAttachedResponse
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class QueuedCollectionStopCurrentStepResponse(

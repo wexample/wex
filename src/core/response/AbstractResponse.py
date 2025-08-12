@@ -17,17 +17,17 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
-from src.core.KernelChild import KernelChild
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
-class AbstractResponse(KernelChild, HasRequest):
+class AbstractResponse(AbsractKernelChild, HasRequest):
     def __init__(
         self, kernel: "Kernel", default_render_mode: Optional[str] = None
     ) -> None:
-        KernelChild.__init__(self, kernel)
+        AbsractKernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
         self._default_render_mode = default_render_mode

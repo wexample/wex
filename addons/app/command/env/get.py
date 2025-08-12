@@ -9,7 +9,7 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @app_command(help="Return the property value set in the .wex/.env file")

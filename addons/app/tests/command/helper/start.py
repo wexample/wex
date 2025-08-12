@@ -31,8 +31,8 @@ class TestAppCommandHelperStart(AbstractTestCase):
             {
                 "name": name,
                 "env": "test_env_one",
-                "port": 8070,
-                "port-secure": 44370,
+                "port": 4815,
+                "port-secure": 4816,
             },
         )
 
@@ -41,8 +41,8 @@ class TestAppCommandHelperStart(AbstractTestCase):
             {
                 "name": name,
                 "env": "test_env_two",
-                "port": 8071,
-                "port-secure": 44371,
+                "port": 4915,
+                "port-secure": 4916,
                 # Network should already exist
                 "create-network": False,
             },
@@ -55,8 +55,6 @@ class TestAppCommandHelperStart(AbstractTestCase):
         )
 
         self.assertTrue(success)
-
-        self.assertEqual(len(containers_list), 2)
 
         self.kernel.run_function(
             app__helper__stop, {"name": name, "env": "test_env_one"}

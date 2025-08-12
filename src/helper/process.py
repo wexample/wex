@@ -15,7 +15,7 @@ from src.helper.command import (
 )
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def process_post_exec(
@@ -64,9 +64,19 @@ def process_kill_by_command(kernel: "Kernel", command: str) -> None:
     )
 
     if pids:
-        for pid in pids:
-            kernel.io.log(f"Killing process {pid}")
-            os.kill(int(pid), signal.SIGTERM)
+        for pid_str in pids:
+            try:
+                pid_int = int(pid_str.strip())
+                kernel.io.log(f"Killing process {pid_int}, running command : {command}")
+                os.kill(pid_int, signal.SIGTERM)
+            except ValueError:
+                kernel.io.warn(
+                    f"Tried to kill an invalid PID: {pid_str}, running command : {command}"
+                )
+            except ProcessLookupError:
+                kernel.io.warn(
+                    f"Tried to kill a missing PID: {pid_str}, running command : {command}"
+                )
 
 
 def process_kill(process: psutil.Process) -> bool:

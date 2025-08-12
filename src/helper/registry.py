@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List
 
+from wexample_helpers.helpers.dict import dict_merge
+
 from src.const.globals import COMMAND_SEPARATOR_ADDON
-from src.helper.dict import dict_merge
 
 if TYPE_CHECKING:
     from src.const.types import (
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
         RegistryCommandsCollection,
         RegistryService,
     )
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
@@ -27,7 +28,7 @@ def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
 
 
 def registry_get_all_commands_from_registry_part(
-    registry_part: Dict[str, Dict[str, Any]]
+    registry_part: Dict[str, Dict[str, Any]],
 ) -> RegistryCommandsCollection:
     output: RegistryCommandsCollection = {}
 

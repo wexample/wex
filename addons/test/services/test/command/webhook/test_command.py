@@ -5,7 +5,7 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @app_webhook()

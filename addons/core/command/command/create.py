@@ -15,7 +15,7 @@ from src.decorator.option import option
 from src.helper.file import file_create_from_template
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

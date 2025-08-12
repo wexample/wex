@@ -1,12 +1,13 @@
 import os
 from typing import List
 
+from wexample_helpers.helpers.directory import directory_execute_inside
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.migration.migrate import app__migration__migrate
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import CORE_COMMAND_NAME
 from src.helper.core import core_kernel_get_version
-from src.helper.dir import dir_execute_in_workdir
 
 
 class TestAppCommandMigrationMigrate(AbstractAppTestCase):
@@ -30,4 +31,5 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
                     core_kernel_get_version(self.kernel),
                 )
 
-            dir_execute_in_workdir(test_app_dir, _test_migrate)
+            with directory_execute_inside(test_app_dir):
+                _test_migrate()

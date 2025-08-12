@@ -8,7 +8,6 @@ from typing import Any, Dict, Optional, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import Args, Kwargs, StringsList
-from src.helper.array import array_replace_value
 from src.helper.routing import (
     RouteInfo,
     routing_get_route_info,
@@ -57,6 +56,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         error_code = 500
+        from wexample_helpers.helpers.array import array_replace_value
 
         try:
             error: Optional[str] = None

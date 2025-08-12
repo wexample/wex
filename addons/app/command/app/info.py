@@ -21,14 +21,16 @@ def app__app__info(manager: "AppAddonManager", app_dir: str) -> TableResponse:
             ["Version", manager.get_config("global.version", "-").get_str()],
             [
                 "Status",
-                "Started"
-                if kernel.run_function(
-                    app__app__started,
-                    {
-                        "app-dir": app_dir,
-                    },
-                ).first()
-                else "Stopped",
+                (
+                    "Started"
+                    if kernel.run_function(
+                        app__app__started,
+                        {
+                            "app-dir": app_dir,
+                        },
+                    ).first()
+                    else "Stopped"
+                ),
             ],
             [
                 "Environment",

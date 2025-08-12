@@ -6,4 +6,4 @@ services:
       # Models storage dir
       - ${RUNTIME_PATH_APP}ollama/:/root/.ollama/models/
     ports:
-      - ${SERVICE_AI_PORT_PUBLIC:-11434}:11434
+      - ${PORT_PUBLIC:-11434}:11434

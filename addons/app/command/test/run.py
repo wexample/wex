@@ -4,7 +4,7 @@ from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)

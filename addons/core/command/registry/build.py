@@ -7,7 +7,7 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.const.types import KernelRegistry
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @alias("rebuild")

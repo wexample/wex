@@ -1,0 +1,26 @@
+from datetime import datetime
+from typing import Any
+
+from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.orm import DeclarativeBase
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class HistoryItem(Base):
+    __tablename__ = "assistant_conversation_item"
+    id = Column(Integer, primary_key=True)
+    date_created = Column(DateTime, default=datetime.utcnow)
+    author = Column(String)
+    context_window = Column(Text)
+    message = Column(Text)
+    model = Column(String)
+    lang = Column(String)
+    conversation_id = Column(Integer)
+    personality = Column(String)
+    command = Column(String)
+
+    def __init__(self, **kw: Any) -> None:
+        super().__init__(**kw)

@@ -11,10 +11,10 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.args import (
-    args_convert_dict_to_args,
-    args_convert_dict_to_long_names_dict,
-    args_convert_to_dict,
+from src.helper.click import (
+    click_args_convert_dict_to_args,
+    click_args_convert_dict_to_long_names_dict,
+    click_args_convert_to_dict,
 )
 
 if TYPE_CHECKING:
@@ -80,9 +80,11 @@ class CommandRequest(BaseClass):
     def get_args_dict(self) -> StringKeysDict:
         script_command = self.get_script_command()
 
-        return args_convert_dict_to_long_names_dict(
+        return click_args_convert_dict_to_long_names_dict(
             script_command.click_command,
-            args_convert_to_dict(script_command.click_command, self.get_args_list()),
+            click_args_convert_to_dict(
+                script_command.click_command, self.get_args_list()
+            ),
         )
 
     def set_script_command(self, script_command: ScriptCommand) -> None:
@@ -155,7 +157,7 @@ class CommandRequest(BaseClass):
                     # Runner can now convert args.
                     if isinstance(self._args_source, dict):
                         self.set_args_list(
-                            args_convert_dict_to_args(
+                            click_args_convert_dict_to_args(
                                 script_command.click_command, self._args_source
                             )
                         )

@@ -2,7 +2,7 @@ import inspect
 import os
 import shutil
 import unittest
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (
@@ -54,17 +54,19 @@ class AbstractTestCase(unittest.TestCase):
             f"No such file or directory : {file_path}",
         )
 
-    def assertIsDict(self, value: Any) -> None:
-        self.assertIsOfType(value, dict)
+    def assertIsDict(self, value: Any, msg: Optional[str] = None) -> None:
+        self.assertIsOfType(value, dict, msg)
 
-    def assertIsList(self, value: Any) -> None:
-        self.assertIsOfType(value, list)
+    def assertIsList(self, value: Any, msg: Optional[str] = None) -> None:
+        self.assertIsOfType(value, list, msg)
 
-    def assertIsStr(self, value: Any) -> None:
-        self.assertIsOfType(value, str)
+    def assertIsStr(self, value: Any, msg: Optional[str] = None) -> None:
+        self.assertIsOfType(value, str, msg)
 
-    def assertIsOfType(self, value: Any, type_: type) -> None:
-        self.assertTrue(isinstance(value, type_))
+    def assertIsOfType(
+        self, value: Any, type_: type[Any], msg: Optional[str] = None
+    ) -> None:
+        self.assertTrue(isinstance(value, type_), msg)
 
     def assertResponseFirstEqual(
         self, response: AbstractResponse, expected: Any
@@ -114,10 +116,11 @@ class AbstractTestCase(unittest.TestCase):
 
         return dest_dir
 
+    def build_test_samples_path(self) -> str:
+        return os.path.join(self.kernel.directory.path, "tests", "samples") + os.sep
+
     def build_test_file(self, file_name: str) -> str:
-        src_file = os.path.join(
-            self.kernel.directory.path, "tests", "samples", file_name
-        )
+        src_file = os.path.join(self.build_test_samples_path(), file_name)
         dst_file = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", file_name
         )

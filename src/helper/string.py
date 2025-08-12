@@ -3,23 +3,11 @@ import random
 import re
 import shutil
 import string
-from typing import Mapping, Optional
+from typing import List, Mapping, Optional
 
-from src.const.types import BasicInlineValue, StringsDict, StringsMatch
+from wexample_helpers.helpers.string import string_to_snake_case
 
-
-def string_to_snake_case(text: str) -> str:
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", text)
-    s2 = re.sub("([a-z])([A-Z])", r"\1_\2", s1).lower()
-    s3 = re.sub("([0-9])([A-Z])", r"\1\2", s2)
-    return str(re.sub("\W+", "_", s3))
-
-
-def string_to_kebab_case(text: str) -> str:
-    """
-    Convert text to kebab case, converting spaces and underscores to dashes.
-    """
-    return re.sub(r"[_\s]+", "-", re.sub(r"([a-z])([A-Z])", r"\1-\2", text)).lower()
+from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch
 
 
 def string_to_camel_case(text: str) -> str:
@@ -158,3 +146,55 @@ def string_random_password(length: int = 64) -> str:
     random_string = "".join(random.choice(characters) for _ in range(length))
 
     return random_string
+
+
+def string_has_trailing_new_line(file_content: str) -> bool:
+    return file_content.endswith("\n")
+
+
+def string_add_lines_numbers(file_content: str) -> Optional[str]:
+    file_content_lines = file_content.split(os.linesep)
+
+    # Determine the number of digits in the largest line number for proper alignment
+    max_line_number = len(file_content_lines)
+    number_zone_spacing = len(str(max_line_number))
+
+    # Initialize an empty string to accumulate the result
+    formatted_content = ""
+    for i, line in enumerate(
+        file_content_lines, start=1
+    ):  # Start counting lines from 1
+        # Format each line with its line number, ensuring proper alignment
+        # Strip the newline character from each line and add it back manually to avoid double newlines when joining
+        line_number = f"{i:>{number_zone_spacing}} | {line.rstrip()}\n"
+        formatted_content += line_number
+
+    return formatted_content
+
+
+def string_list_calculate_max_widths(array: StringsList) -> List[int]:
+    """
+    Calculate the maximum widths for each column based on the array.
+    """
+    if not array:  # If the array is empty, return an empty list
+        return []
+
+    # Find the row with the maximum number of columns
+    num_columns = max(len(row) for row in array)
+
+    # Initialize max widths with zeros for each column
+    max_widths = [0] * num_columns
+
+    for row in array:
+        for i, cell in enumerate(row):
+            # Update the max width for each column if current cell is larger
+            max_widths[i] = max(max_widths[i], len(str(cell)))
+
+    return max_widths
+
+
+def string_list_longest_word(word_list: StringsList) -> int:
+    if not word_list:  # list is empty
+        return 0
+    else:
+        return max(len(word) for word in word_list)

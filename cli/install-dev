@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Find the current file directory, supporting symlinks
+WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/"
+WEX_DIR_ROOT=$(realpath "${WEX_DIR_CLI}../")/
+
+. ${WEX_DIR_ROOT}.wex/.env
+
+# Install every local dev pip packages
+for dir in $(ls -d ${LOCAL_PIP_PACKAGES_PATH}*); do
+  pip install -e ${dir}
+done

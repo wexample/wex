@@ -3,13 +3,13 @@ import pwd
 from typing import TYPE_CHECKING
 
 import yaml
+from wexample_helpers.helpers.dict import dict_merge
 
 from src.helper.command import execute_command_sync
-from src.helper.dict import dict_merge
 from src.helper.user import is_sudo
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def user_has_docker_permission(username: str) -> bool:

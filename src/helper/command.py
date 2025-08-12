@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, NoReturn, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, cast
 
 import click.core
 
@@ -20,9 +20,10 @@ from src.const.types import (
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
 from src.helper.file import file_create_parent_dir
+from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def internal_command_to_shell(
@@ -65,6 +66,8 @@ def execute_command_tree_sync(
     command_tree: ShellCommandsDeepList,
     working_directory: str | None = None,
     ignore_error: bool = False,
+    interactive: bool = False,
+    as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     if isinstance(command_tree, list) and any(
@@ -79,6 +82,8 @@ def execute_command_tree_sync(
                     kernel=kernel,
                     command_tree=cast(ShellCommandsDeepList, sub_command),
                     working_directory=working_directory,
+                    ignore_error=ignore_error,
+                    as_sudo_user=as_sudo_user,
                     **kwargs,
                 )
 
@@ -99,6 +104,8 @@ def execute_command_tree_sync(
         command=cast(ShellCommandsList, command_tree),
         working_directory=working_directory,
         ignore_error=ignore_error,
+        interactive=interactive,
+        as_sudo_user=as_sudo_user,
         **kwargs,
     )
 
@@ -136,43 +143,71 @@ def execute_command_async(
 
 def execute_command_sync(
     kernel: "Kernel",
-    command: ShellCommandsList | str,
+    command: Union[ShellCommandsList, str],
     working_directory: Optional[str] = None,
     ignore_error: bool = False,
+    interactive: bool = False,
+    as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     if working_directory is None:
         working_directory = os.getcwd()
 
+    if isinstance(command, str):
+        command = command.split()
+
+    if as_sudo_user:
+        command_prefix: List[str] = ["sudo", "-u", get_user_or_sudo_user()]
+        if isinstance(command, str):
+            cmd_list: List[str] = command.split()
+        else:
+            cmd_list = list(command)
+        command = command_prefix + cmd_list
+
     command_str = command_to_string(command)
+
     kernel.io.log(
-        f"Running shell command : {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
+        f"Running shell command: {command_str}", verbosity=VERBOSITY_LEVEL_MAXIMUM
     )
 
-    popen_args = {
-        "cwd": working_directory,
-        "stdout": subprocess.PIPE,
-        "stderr": subprocess.STDOUT,
-        **kwargs,
-    }
+    try:
+        if interactive:
+            process = subprocess.Popen(
+                command,
+                cwd=working_directory,
+                stdin=None,
+                stdout=None,
+                stderr=None,
+                **kwargs,
+            )
+            process.wait()
+        else:
+            process = subprocess.Popen(
+                command,
+                cwd=working_directory,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                **kwargs,
+            )
 
-    process = subprocess.Popen(command, **popen_args)
-    out_content, _ = process.communicate()
-    assert isinstance(out_content, bytes)
-    out_content_decoded: str = out_content.decode()
-    success: bool = process.returncode == 0
+        output, errors = process.communicate()
 
-    if not success and not ignore_error:
-        kernel.io.error(
-            f"Error when running command : {command_to_string(command)}"
-            + os.linesep
-            + os.linesep
-            + out_content_decoded
-        )
+        output_lines = output.splitlines() if output else []
+        error_lines = errors.splitlines() if errors else []
 
-    kernel.io.log(out_content_decoded, verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        if process.returncode != 0 and not ignore_error:
+            kernel.io.error(
+                f"Command response code error: {command_str}\n\nStdout:\n{os.linesep.join(output_lines)}\n\nStderr:\n{os.linesep.join(error_lines)}"
+            )
+            return False, error_lines
 
-    return success, out_content_decoded.splitlines()
+        kernel.io.log("\n".join(output_lines), verbosity=VERBOSITY_LEVEL_MAXIMUM)
+        return process.returncode == 0, output_lines
+
+    except subprocess.CalledProcessError as e:
+        kernel.io.error(f"Error when running command: {command_str}\n\n{str(e)}")
+        return False, e.stderr.splitlines() if e.stderr else []
 
 
 def command_escape(string: str, quote_char: str = '"') -> str:

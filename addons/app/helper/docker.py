@@ -14,7 +14,7 @@ from src.helper.user import get_user_or_sudo_user
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 
@@ -32,9 +32,18 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
             kernel.get_path("addons") + "app/containers/network/docker-compose.yml"
         )
     else:
-        compose_files.append(
-            kernel.get_path("addons") + "app/containers/default/docker-compose.yml"
-        )
+        if (
+            manager.get_config("docker.has_default_network", default=True)
+            or manager.has_main_service()
+            and manager.get_service_config(
+                key="docker.has_default_network",
+                service=manager.get_main_service(),
+                default=True,
+            ).get_bool()
+        ):
+            compose_files.append(
+                kernel.get_path("addons") + "app/containers/default/docker-compose.yml"
+            )
 
     compose_files.append(app_compose_file)
 

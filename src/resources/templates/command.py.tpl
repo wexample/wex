@@ -4,7 +4,7 @@ from src.decorator.option import option
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @command(help="Description", command_type={command_type_constant})

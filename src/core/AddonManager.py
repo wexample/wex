@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
-from src.core.KernelChild import KernelChild
+from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
-class AddonManager(KernelChild):
+class AddonManager(AbsractKernelChild):
     def __init__(self, kernel: "Kernel", name: str) -> None:
         super().__init__(kernel)
 

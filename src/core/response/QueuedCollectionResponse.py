@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, List, Optional, cast
 
+from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
+
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -31,10 +33,9 @@ from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse 
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
 )
-from src.helper.args import args_in_function, args_is_basic_value
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 QueuedCollectionStepValue = int | None
 QueuedCollectionStepsList = List[QueuedCollectionStepValue]
@@ -85,9 +86,9 @@ class QueuedCollectionResponse(AbstractResponse):
         # Share path manager across root request and all involved collections
         root_request = request.get_root_parent()
         if "queue_collection_path_manager" not in root_request.storage:
-            root_request.storage[
-                "queue_collection_path_manager"
-            ] = QueuedCollectionPathManager(root_request)
+            root_request.storage["queue_collection_path_manager"] = (
+                QueuedCollectionPathManager(root_request)
+            )
 
         path_manager = root_request.storage["queue_collection_path_manager"]
         self.set_path_manager(path_manager)

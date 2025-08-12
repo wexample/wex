@@ -9,7 +9,7 @@ services: {} # Delete braces after editing
 #        - VIRTUAL_HOST=${RUNTIME_DOMAINS_STRING}
 #        - VIRTUAL_PORT=80
 #      # Edit if you want to use a local Dockerfile for your app.
-#      image: wexample/${GLOBAL_NAME}:latest
+#      image: ${RUNTIME_NAME}:latest
 #      build:
 #        context: ${RUNTIME_PATH_APP}
 #        dockerfile: ./.wex/docker/Dockerfile.default

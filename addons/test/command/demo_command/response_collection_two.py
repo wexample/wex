@@ -16,7 +16,7 @@ from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 TEST_DEMO_COMMAND_TWO_RESULT_FIRST = "..TWO:simple-text"
 TEST_DEMO_COMMAND_TWO_RESULT_SHELL = "..TWO:shell-response"
@@ -65,7 +65,7 @@ def test__demo_command__response_collection_two(
             f"{TEST_DEMO_COMMAND_TWO_RESULT_FIRST}(2)",
             _test__demo_command__response_collection_two__simple_function,
             InteractiveShellCommandResponse(
-                kernel, ["echo", f'"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"']
+                kernel, ["echo", f"{TEST_DEMO_COMMAND_TWO_RESULT_SHELL}"]
             ),
             _test__demo_command__response_collection_two__another_simple_function,
             _test__demo_command__response_collection_two__run_another_collection,

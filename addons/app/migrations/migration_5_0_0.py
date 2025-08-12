@@ -2,6 +2,8 @@ import os.path
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import yaml
+from wexample_helpers.helpers.string import string_to_snake_case
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.service.install import app__service__install
@@ -13,12 +15,10 @@ from addons.app.migrations.migration_4_0_0 import (
 )
 from addons.docker.types.docker import DockerCompose
 from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
-from src.helper.data_yaml import yaml_load
 from src.helper.prompt import prompt_progress_steps
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
@@ -123,7 +123,7 @@ def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
         # Loop through each docker-compose file
         for docker_file in docker_files:
             # Read the YAML file
-            content = cast(DockerCompose, yaml_load(docker_file))
+            content = cast(DockerCompose, yaml_read(docker_file))
 
             # "version" is no longer required
             if "version" in content:

@@ -6,6 +6,7 @@ from src.const.types import (
     OptionalCoreCommandArgsDict,
     ResponsePrintType,
     ShellCommandsDeepList,
+    ShellCommandsList,
     StringsList,
 )
 from src.core.CommandRequest import CommandRequest
@@ -13,23 +14,25 @@ from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import execute_command_tree_sync
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class NonInteractiveShellCommandResponse(AbstractResponse):
     def __init__(
         self,
         kernel: "Kernel",
-        shell_command: ShellCommandsDeepList,
+        shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
+        as_sudo_user: bool = True,
         workdir: Optional[str] = None,
     ) -> None:
         super().__init__(kernel)
 
-        self.success: bool | None = None
-        self.shell_command: ShellCommandsDeepList = shell_command
+        self.shell_command = cast(ShellCommandsDeepList, shell_command.copy())
+        self.as_sudo_user = as_sudo_user
         self.ignore_error: bool = ignore_error
         self.workdir = workdir
+        self.success: Optional[bool] = None
 
     def render_content(
         self,
@@ -40,8 +43,9 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         success, content = execute_command_tree_sync(
             kernel=self.kernel,
             command_tree=self.shell_command,
-            ignore_error=self.ignore_error,
             working_directory=self.workdir,
+            ignore_error=self.ignore_error,
+            as_sudo_user=self.as_sudo_user,
         )
 
         self.success = success

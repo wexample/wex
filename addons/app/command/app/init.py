@@ -1,8 +1,10 @@
 import os.path
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
 from git import Repo
+from wexample_helpers.helpers.args import args_split_arg_array
+from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.command.app.start import app__app__start
 from addons.app.command.hook.exec import app__hook__exec
@@ -14,9 +16,7 @@ from addons.core.command.service.resolve import core__service__resolve
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
-from src.helper.args import args_split_arg_array
 from src.helper.prompt import prompt_progress_steps
-from src.helper.string import string_to_snake_case
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -44,6 +44,10 @@ if TYPE_CHECKING:
     help="Comma separated list of domains names",
 )
 @option("--env", "-e", type=str, required=False, help="App environment")
+@option("--port", "-p", type=int, required=False, help="Port for web server")
+@option(
+    "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
+)
 def app__app__init(
     manager: "AppAddonManager",
     app_dir: str,
@@ -52,6 +56,8 @@ def app__app__init(
     domains: str = "",
     git: bool = True,
     env: str | None = None,
+    port: Optional[int] = None,
+    port_secure: Optional[int] = None,
 ) -> None:
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
@@ -138,6 +144,13 @@ def app__app__init(
 
         domains_list = args_split_arg_array(domains)
         manager._config = manager.create_config(name_snake, domains_list)
+
+        if port or port_secure:
+            config_mut = cast(Dict[str, Any], manager._config)
+            config_mut["port"] = {
+                "public": port,
+                "public_secure": port_secure,
+            }
 
         manager.save_config()
 

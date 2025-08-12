@@ -6,7 +6,7 @@ from src.decorator.option import option
 from src.helper.process import process_get_all_by_port, process_kill
 
 if TYPE_CHECKING:
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()

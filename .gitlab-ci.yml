@@ -13,6 +13,7 @@ variables:
 
 include:
   - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
+  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
 
 # Rules when branch has been merged.
 .merge_branch_rules: &merge-branch-master-rules
@@ -21,7 +22,7 @@ include:
 .merge_to_master:
   resource_group: main_pipeline
   rules:
-    - *merge-branch-master-rules
+    *merge-branch-master-rules
 
 .on_master:
   resource_group: main_pipeline
@@ -48,7 +49,12 @@ checkup_remote:
   stage: checkup_pipeline
   extends: [ .merge_to_master ]
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  variables:
+    # Try to disable obsolete auths
+    DOCKER_AUTH_CONFIG: "{}"
   script:
+    # Loading .wex/command trigger a module import error that requires wexample_helpers
+    - . cli/install
     - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
     # Check target environment is ready to receive hooks
@@ -98,7 +104,7 @@ checkup_pipeline_image_remote:
 .checkup_source:
   stage: checkup_builds
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master ]
+  extends: [ .merge_to_master, .fails_if_non_commited_changes ]
   resource_group: main_pipeline
   needs:
     - checkup_pipeline_image_rc
@@ -112,10 +118,6 @@ checkup_pipeline_image_remote:
     - source .wex/python/venv/bin/activate
     - pip install -r requirements-dev.txt
     - touch .wex/.env # Need a fake file to not warn if missing
-  after_script:
-    # Fail if some code has not been formatted
-    - git diff
-    - git diff-index --quiet HEAD -- || exit 1
 
 checkup_code:
   extends: [ .checkup_source ]
@@ -149,8 +151,6 @@ test:
   needs:
     - checkup_code
     - checkup_format
-  variables:
-    GIT_STRATEGY: none
   script:
     - !reference [ .test_cleanup, script ]
     - !reference [ .docker_login, script ]
@@ -159,7 +159,7 @@ test:
     - sudo wex rebuild
     # Run tests, as "owner", with sudo.
     - sudo -u owner sudo wex test -vvv
-    - !reference [ .test_cleanup, script ]
+    - !reference [.test_cleanup, script]
 
 build_apt:
   stage: build_apt
@@ -189,7 +189,7 @@ deploy:
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Ask apt repo to publish release
-    - curl "http://wexample.com:4242/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
+    - curl "http://wexample.com:46017/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 .checkup_install:
   extends: [ .on_master ]

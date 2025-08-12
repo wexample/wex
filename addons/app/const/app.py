@@ -21,9 +21,6 @@ APP_FILEPATH_REL_ENV: str = f"{APP_DIR_APP_DATA}{APP_FILE_APP_ENV}"
 ERR_APP_NOT_FOUND: str = (
     'No application directory found when running "{command}", searching from {dir}'
 )
-ERR_APP_SHOULD_RUN: str = (
-    'Application should be running to execute "{command}", in {dir}'
-)
 ERR_CORE_ACTION_NOT_FOUND: str = 'No core action found : "{command}"'
 ERR_SERVICE_NOT_FOUND: str = "Service not found : {service}"
 HELPER_APP_PROXY_SHORT_NAME: str = "proxy"

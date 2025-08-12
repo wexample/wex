@@ -5,13 +5,14 @@ import os
 import time
 from typing import TYPE_CHECKING, List, Optional, TypedDict, cast
 
+from wexample_helpers.helpers.json import json_parse_if_valid
+
 from src.const.types import (
     CoreCommandArgsList,
     StringKeysDict,
     StringsDict,
     StringsList,
 )
-from src.helper.data_json import parse_json_if_valid
 from src.helper.file import file_set_user_or_sudo_user_owner
 
 LOG_STATUS_COMPLETE = "complete"
@@ -19,7 +20,7 @@ LOG_STATUS_STARTED = "started"
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
-    from src.core.Kernel import Kernel
+    from src.utils.kernel import Kernel
 
 
 class LoggerLogDataError(TypedDict):
@@ -91,7 +92,7 @@ class Logger:
                 self.write(task_id=self.kernel.parent_task_id, log_data=parent_logs)
 
     def load_logs(self, task_id: str) -> LoggerLogData:
-        logs = parse_json_if_valid(
+        logs = json_parse_if_valid(
             self.kernel.task_file_load("json", task_id=task_id, delete_after_read=False)
         )
 

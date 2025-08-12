@@ -1,7 +1,8 @@
 import json
 
+from wexample_helpers.helpers.file import file_read
+
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
-from src.helper.file import file_read
 from src.helper.routing import routing_build_webhook_route_map, routing_is_allowed_route
 
 
@@ -79,12 +80,12 @@ class TestTestCommandAppWebhook(AbstractWebhookTestCase):
 
         self.assertEqual(stderr, "")
 
-        self.assertEqual(lines[0][0], "MINIMAL_BASH_RESPONSE")
+        self.assertEqual(lines[0], "MINIMAL_BASH_RESPONSE")
 
-        self.assertEqual(lines[1][0], "BASH_RESPONSE")
+        self.assertEqual(lines[1], "BASH_RESPONSE")
 
-        self.assertEqual(lines[2][0], "BASH_RESPONSE_FROM_FILE")
+        self.assertEqual(lines[2], "BASH_RESPONSE_FROM_FILE")
 
-        self.assertEqual(lines[3][0], "PYTHON_SUCCESS")
+        self.assertEqual(lines[3], "PYTHON_SUCCESS")
 
-        self.assertEqual(lines[4][0], "PYTHON_SUCCESS_FROM_FILE")
+        self.assertEqual(lines[4], "PYTHON_SUCCESS_FROM_FILE")

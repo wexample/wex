@@ -1,7 +1,7 @@
 services:
   redis:
     container_name: ${RUNTIME_NAME}_redis
-    image: redis:7.2.4
+    image: redis:7.2.4-alpine
     ports:
       - "6379:6379"
     command: --save 60 1 --loglevel warning
