@@ -50,7 +50,7 @@ test:
 #  variables:
 #    GIT_STRATEGY: none
   script:
-    # Use up to date code
+    # Use up-to-date code
     - rm -rf /opt/wex
     - mv $CI_PROJECT_DIR /opt/
     - ls -la /opt/wex/
