@@ -1,26 +1,29 @@
 FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 
+LABEL authors="wexample <contact@wexample.com>"
+
 # We use a different directory than /usr/lib/wex to separate manual installs
 # from APT-installed ones and allow testing a custom directory install.
 WORKDIR /opt/wex
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install minimal runtime dependencies (SSH client needed for tests), sudo for scripts
+# TODO Reuse wex official image to share minimal insallations
+
+# Install minimal runtime dependencies:
+#   - Curl for remote operations
+#   - Git for git repositories manipulations
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-      ca-certificates \
-      gnupg \
-      curl \
-      git \
-      openssh-client \
-      sudo \
-      bash; \
-    rm -rf /var/lib/apt/lists/*; \
+        ca-certificates \
+        curl \
+        git \
+        gnupg; \
     useradd --uid 1000 owner --create-home; \
     adduser owner sudo; \
-    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
+    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the application files to the container
 COPY . .
