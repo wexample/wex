@@ -1,0 +1,5 @@
+checkup_pipeline:docker:
+  stage: checkup_pipeline
+  extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
+  variables:
+    DOCKER_IMAGES_TO_REMOVE: "gitlab-docker.wexample.com/wexample/wex/rc:latest gitlab-docker.wexample.com/wexample/wex/test-remote:latest"

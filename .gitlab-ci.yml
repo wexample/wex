@@ -1,6 +1,6 @@
 stages:
   - checkup_pipeline
-#  - build_pipeline_images
+  - build_pipeline_images
 #  - checkup_builds
 #  - test
 #  - build_apt
@@ -12,28 +12,25 @@ variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
-  - project: 'wexample-public/ci-cd'
-    ref: main
-    file: '.gitlab-ci.checkup.yml'
-  - project: 'wexample-public/ci-cd'
-    ref: main
-    file: '.gitlab-ci.common.yml'
-  - project: 'wexample-public/ci-cd'
-    ref: main
-    file: '.gitlab-ci.docker.yml'
-  - project: 'wexample-public/ci-cd'
-    ref: main
-    file: '.gitlab-ci.app.yml'
-  - project: 'wexample-public/ci-cd'
-    ref: main
-    file: '.gitlab-ci.merge-rule.yml'
-  - local: '.gitlab-ci.app.yml'
+  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
+#  - project: 'wexample-public/ci-cd'
+#    ref: main
+#    file: '.gitlab-ci.checkup.yml'
+#  - project: 'wexample-public/ci-cd'
+#    ref: main
+#    file: '.gitlab-ci.common.yml'
+#  - project: 'wexample-public/ci-cd'
+#    ref: main
+#    file: '.gitlab-ci.docker.yml'
+#  - project: 'wexample-public/ci-cd'
+#    ref: main
+#    file: '.gitlab-ci.app.yml'
+#  - project: 'wexample-public/ci-cd'
+#    ref: main
+#    file: '.gitlab-ci.merge-rule.yml'
+#  - local: '.gitlab-ci.app.yml'
 
-checkup_docker:
-  stage: checkup_pipeline
-  extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
-  variables:
-    DOCKER_IMAGES_TO_REMOVE: "gitlab-docker.wexample.com/wexample/wex/rc:latest gitlab-docker.wexample.com/wexample/wex/test-remote:latest"
+
 
 #checkup_remote:
 #  extends: .app_check_remote
