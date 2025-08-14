@@ -34,11 +34,9 @@ checkup_builds:remote:
 checkup_builds:code:
   extends: [ .checkup_sources ]
   script:
-    - !reference [.checkup_sources, script]
     - wex .code/check
 
 checkup_builds:format:
   extends: [ .checkup_sources ]
   script:
-    - !reference [.checkup_sources, script]
     - wex .code/format
