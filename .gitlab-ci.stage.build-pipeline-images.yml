@@ -9,7 +9,7 @@ include:
 build-pipeline-image:rc:
   resource_group: main_pipeline
   stage: build_pipeline_images
-  extends: [ .merge_rule_to_main_branch, .app_build_image ]
+  extends: [ .merge_rule_to_main_branch_merge, .app_build_image ]
   needs:
     - checkup_pipeline:docker
     - checkup_pipeline:remote
@@ -20,7 +20,7 @@ build-pipeline-image:rc:
 build-pipeline-image:remote:
   resource_group: main_pipeline
   stage: build_pipeline_images
-  extends: [ .merge_rule_to_main_branch, .app_build_image ]
+  extends: [ .merge_rule_to_main_branch_merge, .app_build_image ]
   needs:
     - build-pipeline-image:rc
   variables:

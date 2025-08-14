@@ -5,7 +5,7 @@ include:
 
 checkup_builds:remote:
   stage: checkup_builds
-  extends: [ .merge_rule_to_main_branch ]
+  extends: [ .merge_rule_to_main_branch_merge ]
   image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
   needs:
     - build-pipeline-image:remote
@@ -17,7 +17,7 @@ checkup_builds:remote:
 .checkup_sources:
   resource_group: main_pipeline
   stage: checkup_builds
-  extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
+  extends: [ .merge_rule_to_main_branch_merge, .checkup_fails_if_non_committed ]
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   needs:
     - build-pipeline-image:rc
