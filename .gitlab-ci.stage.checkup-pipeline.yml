@@ -1,0 +1,28 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.docker.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.merge-rule.yml'
+
+checkup_pipeline:docker:
+  resource_group: main_pipeline
+  stage: checkup_pipeline
+  extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
+  variables:
+    DOCKER_IMAGES_TO_REMOVE: "gitlab-docker.wexample.com/wexample/wex/rc:latest gitlab-docker.wexample.com/wexample/wex/test-remote:latest"
+
+checkup_pipeline:remote:
+  resource_group: main_pipeline
+  stage: checkup_pipeline
+  extends: [ .merge_rule_to_main_branch ]
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  variables:
+    DOCKER_AUTH_CONFIG: "{}"
+  script:
+    - . cli/install # Loading .wex/command trigger a module import error that requires wexample_helpers TODO Should be fixed once version dependencies are well managed.
+    - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
+    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available --quiet -e ${REMOTE_ENV})
+    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi

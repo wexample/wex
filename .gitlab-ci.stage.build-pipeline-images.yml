@@ -1,0 +1,29 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.app.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.merge-rule.yml'
+
+build-pipeline-image:rc:
+  resource_group: main_pipeline
+  stage: build_pipeline_images
+  extends: [ .merge_rule_to_main_branch, .app_build_image ]
+  needs:
+    - checkup_pipeline:docker
+    - checkup_pipeline:remote
+  variables:
+    FLAVOR: rc
+    IMAGE_TAG: latest
+
+build-pipeline-image:remote:
+  resource_group: main_pipeline
+  stage: build_pipeline_images
+  extends: [ .merge_rule_to_main_branch, .app_build_image ]
+  needs:
+    - build-pipeline-image:rc
+  variables:
+    FLAVOR: test-remote
+    IMAGE_TAG: latest
+    IMAGE_DOCKERFILE: .wex/docker/test_remote/Dockerfile.${FLAVOR}

@@ -1,24 +1,32 @@
 # docker build -f .wex/docker/test_remote/Dockerfile.test-remote -t gitlab-docker.wexample.com/wexample/wex/test-remote .
 FROM gitlab-docker.wexample.com/wexample/wex/rc
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install only what's needed for the fake remote server
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
         bash \
         libpq-dev \
-        openssh-server \
-    && rm -rf /var/lib/apt/lists/* \
-    # Generate SSH keys.
-    && ssh-keygen -A \
-    # Set the root password.
-    && echo 'root:TEST_PASSWORD' | chpasswd \
-    # Create the missing privilege separation directory.
-    && mkdir -p /run/sshd \
-    # Configure SSHD directly by editing the file once.
-    && echo "PermitRootLogin yes\nPasswordAuthentication yes\nPermitEmptyPasswords no" >> /etc/ssh/sshd_config \
-    # Copy environment file.
-    && cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env \
-    # Running installation script.
-    && bash /opt/wex/cli/install
+        openssh-server; \
+    rm -rf /var/lib/apt/lists/*; \
+    # Prepare SSH daemon: host keys and runtime dir
+    ssh-keygen -A; \
+    mkdir -p /run/sshd; \
+    # Configure SSH via drop-in to keep defaults intact (Bookworm supports sshd_config.d)
+    install -d -m 0755 /etc/ssh/sshd_config.d; \
+    printf '%s\n' \
+      'PermitRootLogin yes' \
+      'PasswordAuthentication yes' \
+      'PermitEmptyPasswords no' \
+      > /etc/ssh/sshd_config.d/test_remote.conf; \
+    # Set the root password used by tests
+    echo 'root:TEST_PASSWORD' | chpasswd; \
+    # Copy environment file for tests
+    cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env; \
+    # Ensure install scripts are applied
+    bash /opt/wex/cli/install
 
 # Expose the SSH port.
 EXPOSE 22
