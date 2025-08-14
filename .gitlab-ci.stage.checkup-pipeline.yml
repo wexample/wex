@@ -1,3 +1,11 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.docker.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.merge-rule.yml'
+
 checkup_pipeline:docker:
   stage: checkup_pipeline
   extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
