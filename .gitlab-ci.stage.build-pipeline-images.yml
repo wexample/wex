@@ -7,8 +7,10 @@ build_pipeline_image_rc:
   stage: build_pipeline_images
   extends: [ .app_build_image ]
   needs:
-    - checkup_pipeline:docker
-    - checkup_pipeline:remote
+    - job: checkup_pipeline:docker
+      optional: true
+    - job: checkup_pipeline:remote
+      optional: true
   variables:
     FLAVOR: rc
 
