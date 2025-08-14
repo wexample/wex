@@ -8,7 +8,7 @@ checkup_builds:remote:
   extends: [ .merge_rule_to_main_branch ]
   image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
   needs:
-    - job: build_pipeline_image_test_remote
+    - build-pipeline-image:remote
   script:
     - wex hi
     - wex version
