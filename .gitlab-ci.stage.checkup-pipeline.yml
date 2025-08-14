@@ -19,6 +19,7 @@ checkup_pipeline:remote:
   variables:
     DOCKER_AUTH_CONFIG: "{}"
   script:
+    - . cli/install # Loading .wex/command trigger a module import error that requires wexample_helpers TODO Should be fixed once version dependencies are well managed.
     - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
     - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
     - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available --quiet -e ${REMOTE_ENV})
