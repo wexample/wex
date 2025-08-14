@@ -62,11 +62,13 @@ checkup_pipeline_image_remote:
 checkup_code:
   extends: [ .app_check_source ]
   script:
+    - !reference [.app_check_source, script]
     - wex .code/check
 
 checkup_format:
   extends: [ .app_check_source ]
   script:
+    - !reference [.app_check_source, script]
     - wex .code/format
 
 .test_cleanup:
