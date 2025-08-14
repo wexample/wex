@@ -30,8 +30,6 @@ include:
 #    file: '.gitlab-ci.merge-rule.yml'
 #  - local: '.gitlab-ci.app.yml'
 
-
-
 #checkup_remote:
 #  extends: .app_check_remote
 #
