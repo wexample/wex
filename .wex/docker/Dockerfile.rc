@@ -19,10 +19,15 @@ RUN set -eux; \
         ca-certificates \
         curl \
         git \
-        gnupg; \
+        gnupg \
+        sudo; \
     useradd --uid 1000 owner --create-home; \
-    adduser owner sudo; \
-    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner \
+    # Ensure sudo group exists (created by sudo package) and add user to it
+    usermod -aG sudo owner; \
+    # Create sudoers drop-in directory if not present and add owner rule
+    mkdir -p /etc/sudoers.d; \
+    echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner; \
+    chmod 0440 /etc/sudoers.d/owner; \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the application files to the container
