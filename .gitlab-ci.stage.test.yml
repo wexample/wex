@@ -18,7 +18,7 @@ include:
     - cp -r . /opt/wex
     - bash /opt/wex/cli/install
 
-test:
+test:run:
   resource_group: main_pipeline
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest

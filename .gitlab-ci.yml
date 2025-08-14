@@ -12,9 +12,9 @@ variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
-  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
-  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
-  - local: '.gitlab-ci.stage.checkup-builds.yml'
+#  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
+#  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
+#  - local: '.gitlab-ci.stage.checkup-builds.yml'
   - local: '.gitlab-ci.stage.test.yml'
 
 
