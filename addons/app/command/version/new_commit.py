@@ -14,20 +14,12 @@ def app__version__new_commit(manager: "AppAddonManager", app_dir: str) -> None:
     kernel = manager.kernel
     repo = Repo(app_dir)
     new_version = manager.get_config("global.version").get_str()
-    main_branch = manager.get_config("git.main_branch", "main").get_str()
 
     if not repo.is_dirty(untracked_files=True):
         kernel.io.log("No changes to commit")
         return None
 
-    kernel.io.log("Updating repo...")
-    try:
-        origin = repo.remote(name="origin")
-        origin.fetch(tags=True)
-        origin.pull(main_branch)
-    except Exception as e:
-        kernel.io.error("Git pull : " + str(e), trace=False)
-
+    # Commit directly on the current branch without switching branches
     kernel.io.log("Committing new version...")
     try:
         repo.git.add(A=True)
