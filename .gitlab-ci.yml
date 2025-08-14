@@ -130,7 +130,6 @@ test:
     - checkup_format
   script:
     - !reference [ .test_cleanup, script ]
-    - !reference [ script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
