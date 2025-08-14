@@ -24,13 +24,9 @@ include:
 
 checkup_docker:
   stage: checkup_pipeline
-  image: docker:24-cli
-  extends: [ .merge_rule_to_main_branch ]
-  script:
-    - docker rm -f wex_test_remote
-    - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
-    - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
-    - docker system prune -af --volumes || true
+  extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
+  variables:
+    DOCKER_IMAGES_TO_REMOVE: "gitlab-docker.wexample.com/wexample/wex/rc:latest gitlab-docker.wexample.com/wexample/wex/test-remote:latest"
 
 checkup_remote:
   stage: checkup_pipeline
