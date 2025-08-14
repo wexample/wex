@@ -24,8 +24,8 @@ build_docker:
   only:
     - master
   needs:
-    - checkup_install_debian
-    - checkup_install_ubuntu
+    - checkup-install:debian
+    - checkup-install:ubuntu:22
   trigger:
     project: wexample-public/docker
     branch: main
