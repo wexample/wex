@@ -1,0 +1,24 @@
+# Minimal environment to build a new WEX release (Debian package)
+FROM python:3.12-slim-bookworm
+
+LABEL authors="wexample <contact@wexample.com>"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Debian packaging toolchain required by build.py
+# Note: git and sudo are installed because the CI script uses them.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        debhelper \
+        devscripts \
+        dh-make \
+        dh-python \
+        python3-setuptools \
+        python3-all \
+        git \
+        sudo \
+        fakeroot; \
+    rm -rf /var/lib/apt/lists/*
+
