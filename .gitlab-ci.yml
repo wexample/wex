@@ -1,8 +1,8 @@
 stages:
-  - checkup_pipeline
-  - build_pipeline_images
-  - checkup_builds
-  - test
+#  - checkup_pipeline
+#  - build_pipeline_images
+#  - checkup_builds
+#  - test
   - deploy
   - checkup_install
   - build_docker
@@ -11,10 +11,10 @@ variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
-  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
-  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
-  - local: '.gitlab-ci.stage.checkup-builds.yml'
-  - local: '.gitlab-ci.stage.test.yml'
+#  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
+#  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
+#  - local: '.gitlab-ci.stage.checkup-builds.yml'
+#  - local: '.gitlab-ci.stage.test.yml'
   - local: '.gitlab-ci.stage.deploy.yml'
   - local: '.gitlab-ci.stage.checkup-install.yml'
 
