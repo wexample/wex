@@ -5,6 +5,7 @@ FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 WORKDIR /opt/wex
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV GIT_PYTHON_REFRESH=quiet
 
 # Install minimal runtime dependencies (SSH client needed for tests), sudo for scripts
 RUN set -eux; \
@@ -12,6 +13,8 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends \
       ca-certificates \
       gnupg \
+      curl \
+      git \
       openssh-client \
       sudo \
       bash; \
