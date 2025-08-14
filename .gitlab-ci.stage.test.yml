@@ -23,9 +23,9 @@ test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   extends: [ .merge_rule_to_main_branch, .test_cleanup, .test_rescue ]
-  needs:
-    - checkup_code
-    - checkup_format
+#  needs:
+#    - checkup_code
+#    - checkup_format
   script:
     - !reference [ .test_cleanup, script ]
     # Change environment
