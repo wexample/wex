@@ -1,0 +1,38 @@
+.app_check_remote:
+  stage: checkup_pipeline
+  extends: [ .merge_rule_to_main_branch ]
+  image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
+  variables:
+    DOCKER_AUTH_CONFIG: "{}"
+  script:
+    - . cli/install
+    - REMOTE_ENV=$(wex app::branch/env --quiet -b ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - echo "Checking remote environment for deployment on ${REMOTE_ENV}"
+    - DEPLOYMENT_SERVER_STATUS=$(wex app::remote/available --quiet -e ${REMOTE_ENV})
+    - if [ "$DEPLOYMENT_SERVER_STATUS" != "True" ]; then echo "$DEPLOYMENT_SERVER_STATUS" && exit 1; fi
+
+.app_check_pipeline_image_remote:
+  stage: checkup_builds
+  extends: [ .merge_rule_to_main_branch ]
+  image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
+  needs:
+    - job: build_pipeline_image_test_remote
+      optional: true
+  script:
+    - wex hi
+    - wex version
+    - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
+
+.app_check_source:
+  stage: checkup_builds
+  extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
+  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+  resource_group: main_pipeline
+  needs:
+    - job: checkup_pipeline_image_remote
+      optional: true
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - cd /opt/wex
+    - source .wex/python/venv/bin/activate
