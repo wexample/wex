@@ -22,12 +22,12 @@
 
 # Try to install using the new debian apt repository.
 checkup-install:debian:
-  extends: .checkup_install
+  extends: .checkup-install
   stage: checkup_install
   image: gitlab-docker.wexample.com/wexample-public/docker/debian
 
 # Try to install using the new debian apt repository.
 checkup-install:ubuntu:
-  extends: .checkup_install
+  extends: .checkup-install
   stage: checkup_install
   image: ubuntu:22.04
