@@ -1,6 +1,6 @@
 stages:
   - checkup_pipeline
-#  - build_pipeline_images
+  - build_pipeline_images
 #  - checkup_builds
 #  - test
 #  - build_apt
@@ -13,7 +13,7 @@ variables:
 
 include:
   - local: '.gitlab-ci.stage.checkup-pipeline.yml'
-#  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
+  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
 #  - project: 'wexample-public/ci-cd'
 #    ref: main
 #    file: '.gitlab-ci.checkup.yml'
