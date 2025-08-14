@@ -18,39 +18,23 @@ include:
   - project: 'wexample-public/ci-cd'
     ref: main
     file: '.gitlab-ci.app.yml'
-
-# Rules when branch has been merged.
-.merge_branch_rules: &merge-branch-master-rules
-  - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $MAIN_BRANCH_NAME'
-
-.merge_to_master:
-  resource_group: main_pipeline
-  rules:
-    *merge-branch-master-rules
-
-.on_master:
-  resource_group: main_pipeline
-  only:
-    - master
-
-.build_live_image:
-  extends: [ .merge_to_master, .app_build_image ]
-  script:
-    - !reference [ .app_build_image, script ]
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.merge-rule.yml'
 
 checkup_docker:
   stage: checkup_pipeline
-  image: docker
-  extends: [ .merge_to_master ]
+  image: docker:24-cli
+  extends: [ .merge_rule_to_main_branch ]
   script:
     - docker rm -f wex_test_remote
     - docker rmi gitlab-docker.wexample.com/wexample/wex/rc:latest 2> /dev/null || true
     - docker rmi gitlab-docker.wexample.com/wexample/wex/test-remote 2> /dev/null || true
-    - docker system prune -a
+    - docker system prune -af --volumes || true
 
 checkup_remote:
   stage: checkup_pipeline
-  extends: [ .merge_to_master ]
+  extends: [ .merge_rule_to_main_branch ]
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
   variables:
     # Try to disable obsolete auths
@@ -85,7 +69,7 @@ build_pipeline_image_test_remote:
 checkup_pipeline_image_remote:
   stage: checkup_builds
   image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
-  extends: [ .merge_to_master ]
+  extends: [ .merge_rule_to_main_branch ]
   needs:
     - job: build_pipeline_image_test_remote
       optional: true
@@ -122,7 +106,7 @@ checkup_format:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master, .test_cleanup, .test_rescue ]
+  extends: [ .merge_rule_to_main_branch, .test_cleanup, .test_rescue ]
   needs:
     - checkup_code
     - checkup_format
@@ -139,7 +123,8 @@ test:
 build_apt:
   stage: build_apt
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-  extends: [ .on_master ]
+  only:
+    - master
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Create build folder outside shared volume
@@ -158,7 +143,8 @@ build_apt:
 deploy:
   stage: deploy
   image: curlimages/curl
-  extends: [ .on_master ]
+  only:
+    - master
   needs:
     - build_apt
   script:
@@ -167,7 +153,8 @@ deploy:
     - curl "http://wexample.com:46017/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
 
 .checkup_install:
-  extends: [ .on_master ]
+  only:
+    - master
   script:
     # Stops script on failure
     - set -e
@@ -202,7 +189,8 @@ checkup_install_ubuntu:
 # Rebuild public image
 build_docker:
   stage: build_docker
-  extends: [ .on_master ]
+  only:
+    - master
   needs:
     - checkup_install_debian
     - checkup_install_ubuntu
