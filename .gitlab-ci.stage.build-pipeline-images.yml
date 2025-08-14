@@ -11,10 +11,8 @@ build-pipeline-image:rc:
   stage: build_pipeline_images
   extends: [ .merge_rule_to_main_branch, .app_build_image ]
   needs:
-    - job: checkup_pipeline:docker
-      optional: true
-    - job: checkup_pipeline:remote
-      optional: true
+    - checkup_pipeline:docker
+    - checkup_pipeline:remote
   variables:
     FLAVOR: rc
     IMAGE_TAG: latest

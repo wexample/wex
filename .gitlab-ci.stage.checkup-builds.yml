@@ -9,7 +9,6 @@ checkup_builds:remote:
   image: gitlab-docker.wexample.com/wexample/wex/test-remote:latest
   needs:
     - job: build_pipeline_image_test_remote
-      optional: true
   script:
     - wex hi
     - wex version
