@@ -129,7 +129,6 @@ test:
     - checkup_code
     - checkup_format
   script:
-    - !reference [ .merge_rule_to_main_branch, script ]
     - !reference [ .test_cleanup, script ]
     - !reference [ script ]
     # Change environment
