@@ -18,7 +18,7 @@
     # Uninstall
     - apt remove wex -y
   needs:
-    - deploy
+    - deploy:apt:publish
 
 # Try to install using the new debian apt repository.
 checkup-install:debian:
