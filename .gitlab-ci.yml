@@ -80,7 +80,7 @@ checkup_pipeline_image_remote:
   extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
   resource_group: main_pipeline
   needs:
-    - checkup_pipeline_image_rc
+    - build_pipeline_image_test_remote
     - job: checkup_pipeline_image_remote
       optional: true
   variables:
