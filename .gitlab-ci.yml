@@ -17,10 +17,17 @@ include:
     file: '.gitlab-ci.checkup.yml'
   - project: 'wexample-public/ci-cd'
     ref: main
+    file: '.gitlab-ci.common.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.docker.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
     file: '.gitlab-ci.app.yml'
   - project: 'wexample-public/ci-cd'
     ref: main
     file: '.gitlab-ci.merge-rule.yml'
+  - local: '.gitlab-ci.project.yml'
 
 checkup_docker:
   stage: checkup_pipeline
