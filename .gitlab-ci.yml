@@ -18,3 +18,6 @@ build:wex-build:build:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline"'
     - when: never
+  script:
+    - !reference [ .docker_login, script ]
+    - !reference [ .build_image_file, script ]
