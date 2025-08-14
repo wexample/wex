@@ -28,10 +28,6 @@ include:
 #    file: '.gitlab-ci.app.yml'
 
 
-#
-#checkup_pipeline_image_remote:
-#  extends: .app_check_pipeline_image_remote
-
 #checkup_code:
 #  extends: [ .app_check_source ]
 #  script:

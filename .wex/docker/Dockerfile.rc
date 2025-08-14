@@ -1,4 +1,4 @@
-FROM docker:24-cli-bookworm
+FROM gitlab-docker.wexample.com/wexample-public/docker/debian:docker
 
 # We use a different directory than /usr/lib/wex to separate manual installs
 # from APT-installed ones and allow testing a custom directory install.
@@ -16,7 +16,6 @@ RUN set -eux; \
       sudo \
       bash; \
     rm -rf /var/lib/apt/lists/*; \
-    # Create and configure a non-root user (UID 1000) with passwordless sudo
     useradd --uid 1000 owner --create-home; \
     adduser owner sudo; \
     echo "owner ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/owner
