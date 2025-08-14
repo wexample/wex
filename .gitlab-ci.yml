@@ -12,8 +12,12 @@ variables:
   MAIN_BRANCH_NAME: "master"
 
 include:
-  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.build-image.yml'
-  - remote: 'https://gitlab.wexample.com/wexample-public/ci-cd/-/raw/main/.gitlab-ci.checkup.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.docker.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.app.yml'
 
 # Rules when branch has been merged.
 .merge_branch_rules: &merge-branch-master-rules
@@ -30,10 +34,9 @@ include:
     - master
 
 .build_live_image:
-  extends: [ .merge_to_master, .globals, .docker_login, .build_image_app ]
+  extends: [ .merge_to_master, .app_build_image ]
   script:
-    - !reference [ .docker_login, script ]
-    - !reference [ .build_image_app, script ]
+    - !reference [ .app_build_image, script ]
 
 checkup_docker:
   stage: checkup_pipeline
@@ -119,13 +122,13 @@ checkup_format:
 test:
   stage: test
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  extends: [ .merge_to_master, .test_cleanup, .test_rescue, .docker_login ]
+  extends: [ .merge_to_master, .test_cleanup, .test_rescue ]
   needs:
     - checkup_code
     - checkup_format
   script:
     - !reference [ .test_cleanup, script ]
-    - !reference [ .docker_login, script ]
+    - !reference [ script ]
     # Change environment
     - sudo wex app::env/set --app-dir /opt/wex/ -e test
     - sudo wex rebuild
