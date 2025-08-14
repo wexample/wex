@@ -7,12 +7,14 @@ include:
     file: '.gitlab-ci.merge-rule.yml'
 
 checkup_pipeline:docker:
+  resource_group: main_pipeline
   stage: checkup_pipeline
   extends: [ .merge_rule_to_main_branch, .docker_checkup_prune ]
   variables:
     DOCKER_IMAGES_TO_REMOVE: "gitlab-docker.wexample.com/wexample/wex/rc:latest gitlab-docker.wexample.com/wexample/wex/test-remote:latest"
 
 checkup_pipeline:remote:
+  resource_group: main_pipeline
   stage: checkup_pipeline
   extends: [ .merge_rule_to_main_branch ]
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:latest
