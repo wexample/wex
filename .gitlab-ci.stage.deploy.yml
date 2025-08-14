@@ -1,7 +1,7 @@
 
 
 deploy:apt:build:
-  stage: build_apt
+  stage: deploy
   image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
   only:
     - master
@@ -26,7 +26,7 @@ deploy:apt:publish:
   only:
     - master
   needs:
-    - build_apt
+    - deploy:apt:build
   script:
     - BUILD_VERSION=$(cat version.txt)
     # Ask apt repo to publish release
