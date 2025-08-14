@@ -349,6 +349,8 @@ psycopg==3.1.18
     # via langchain-postgres
 psycopg-pool==3.2.1
     # via langchain-postgres
+psycopg2-binary==2.9.10
+    # via -r requirements.in
 pulsar-client==3.4.0
     # via chromadb
 pyasn1==0.6.0
