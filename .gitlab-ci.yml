@@ -6,14 +6,14 @@ include:
     ref: main
     file: '.gitlab-ci.build-image.yml'
 
-build:wex:latest:
+build:wex-build:build:
   stage: build
   extends: [.globals, .docker_login, .build_image_file]
   variables:
-    IMAGE_NAME: wex
+    IMAGE_NAME: wex-build
     IMAGE_TAG: build
     IMAGE_DOCKERFILE: .wex/docker/Dockerfile.build
-    IMAGE_BUILD_CONTEXT: images/wex/latest
+    IMAGE_BUILD_CONTEXT: .wex/docker
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline"'
