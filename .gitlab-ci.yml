@@ -1,7 +1,7 @@
 stages:
   - checkup_pipeline
   - build_pipeline_images
-#  - checkup_builds
+  - checkup_builds
 #  - test
 #  - build_apt
 #  - deploy
@@ -14,6 +14,7 @@ variables:
 include:
   - local: '.gitlab-ci.stage.checkup-pipeline.yml'
   - local: '.gitlab-ci.stage.build-pipeline-images.yml'
+  - local: '.gitlab-ci.stage.checkup-builds.yml'
 #  - project: 'wexample-public/ci-cd'
 #    ref: main
 #    file: '.gitlab-ci.checkup.yml'
@@ -28,17 +29,6 @@ include:
 #    file: '.gitlab-ci.app.yml'
 
 
-#checkup_code:
-#  extends: [ .app_check_source ]
-#  script:
-#    - !reference [.app_check_source, script]
-#    - wex .code/check
-
-#checkup_format:
-#  extends: [ .app_check_source ]
-#  script:
-#    - !reference [.app_check_source, script]
-#    - wex .code/format
 #
 #.test_cleanup:
 #  script:
