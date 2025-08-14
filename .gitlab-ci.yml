@@ -14,9 +14,6 @@ variables:
 include:
   - project: 'wexample-public/ci-cd'
     ref: main
-    file: '.gitlab-ci.docker.yml'
-  - project: 'wexample-public/ci-cd'
-    ref: main
     file: '.gitlab-ci.app.yml'
   - project: 'wexample-public/ci-cd'
     ref: main
@@ -50,7 +47,7 @@ checkup_remote:
 
 build_pipeline_image_rc:
   stage: build_pipeline_images
-  extends: [ .build_live_image ]
+  extends: [ .app_build_image ]
   needs:
     - checkup_docker
     - checkup_remote
@@ -59,7 +56,7 @@ build_pipeline_image_rc:
 
 build_pipeline_image_test_remote:
   stage: build_pipeline_images
-  extends: [ .build_live_image ]
+  extends: [ .app_build_image ]
   needs:
     - build_pipeline_image_rc
   variables:
