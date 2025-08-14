@@ -16,10 +16,10 @@ checkup_builds:remote:
     - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
 
 .checkup_sources:
+  resource_group: main_pipeline
   stage: checkup_builds
   extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
-  resource_group: main_pipeline
   needs:
     - job: checkup_pipeline_image_remote
       optional: true
