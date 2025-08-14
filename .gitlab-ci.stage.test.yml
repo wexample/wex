@@ -1,0 +1,36 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.merge-rule.yml'
+
+.test_cleanup:
+  script:
+    - docker ps -q --filter name=test_app_ | xargs -r docker rm -f
+    - docker ps -q --filter name=wex_proxy_test_ | xargs -r docker rm -f
+    - rm -rf /var/www/test
+    - rm -rf /var/www/test_*
+
+# Use this into test job to use last repo,
+# instead of rebuilding "rc" image.
+.test_rescue:
+  script:
+    - rm -rf /opt/wex
+    - cp -r . /opt/wex
+    - bash /opt/wex/cli/install
+
+test:
+  resource_group: main_pipeline
+  stage: test
+  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+  extends: [ .merge_rule_to_main_branch, .test_cleanup, .test_rescue ]
+  needs:
+    - checkup_code
+    - checkup_format
+  script:
+    - !reference [ .test_cleanup, script ]
+    # Change environment
+    - sudo wex app::env/set --app-dir /opt/wex/ -e test
+    - sudo wex rebuild
+    # Run tests, as "owner", with sudo.
+    - sudo -u owner sudo wex test -vvv
+    - !reference [ .test_cleanup, script ]
