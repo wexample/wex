@@ -8,5 +8,5 @@ Homepage: https://wexample.com
 
 Package: wex
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}, bash, bash-completion, git, python3 (>= 3.10), python3-pip, python3-venv, procps, sshpass, sudo, libpq5 | libpq5t64, ca-certificates
+Depends: ${python3:Depends}, ${misc:Depends}, bash, bash-completion, git, python3 (>= 3.10), python3-pip, python3-venv, procps, sshpass, sudo, ca-certificates
 Description: wex - a versatile script execution and Docker management tool
