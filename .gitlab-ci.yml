@@ -76,12 +76,12 @@ checkup_pipeline_image_remote:
     - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
 
 checkup_code:
-  extends: [ .checkup_source ]
+  extends: [ .checkup_pipeline_image_rc ]
   script:
     - wex .code/check
 
 checkup_format:
-  extends: [ .checkup_source ]
+  extends: [ .checkup_pipeline_image_rc ]
   script:
     - wex .code/format
 
