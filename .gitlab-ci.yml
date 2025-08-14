@@ -4,11 +4,11 @@ stages:
 include:
   - project: 'wexample-public/ci-cd'
     ref: main
-    file: '.gitlab-ci.build-image.yml'
+    file: '.gitlab-ci.docker.yml'
 
 build:wex-build:build:
   stage: build
-  extends: [.globals, .docker_login, .build_image_file]
+  extends: [.docker_build_image_file]
   variables:
     IMAGE_NAME: wex-build
     IMAGE_TAG: build
@@ -18,6 +18,3 @@ build:wex-build:build:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline"'
     - when: never
-  script:
-    - !reference [ .docker_login, script ]
-    - !reference [ .build_image_file, script ]
