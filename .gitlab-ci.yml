@@ -76,7 +76,7 @@ checkup_pipeline_image_remote:
     - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
 
 checkup_code:
-  extends: [ .build_pipeline_image_rc ]
+  extends: [ .merge_rule_to_main_branch ]
   script:
     - wex .code/check
 
@@ -108,6 +108,7 @@ test:
     - checkup_code
     - checkup_format
   script:
+    - !reference [ .merge_rule_to_main_branch, script ]
     - !reference [ .test_cleanup, script ]
     - !reference [ script ]
     # Change environment
