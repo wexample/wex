@@ -14,6 +14,9 @@ variables:
 include:
   - project: 'wexample-public/ci-cd'
     ref: main
+    file: '.gitlab-ci.checkup.yml'
+  - project: 'wexample-public/ci-cd'
+    ref: main
     file: '.gitlab-ci.app.yml'
   - project: 'wexample-public/ci-cd'
     ref: main
@@ -75,13 +78,31 @@ checkup_pipeline_image_remote:
     - wex version
     - cat /opt/wex/.wex/docker/test_remote/test_remote-entrypoint.sh
 
+.checkup_source:
+  stage: checkup_builds
+  image: gitlab-docker.wexample.com/wexample/wex/rc:latest
+  extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
+  resource_group: main_pipeline
+  needs:
+    - checkup_pipeline_image_rc
+    - job: checkup_pipeline_image_remote
+      optional: true
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    # Prepare checks
+    - cd /opt/wex
+    - source .wex/python/venv/bin/activate
+    - pip install -r requirements-dev.txt
+    - touch .wex/.env # Need a fake file to not warn if missing
+
 checkup_code:
-  extends: [ .merge_rule_to_main_branch ]
+  extends: [ .checkup_source ]
   script:
     - wex .code/check
 
 checkup_format:
-  extends: [ .build_pipeline_image_rc ]
+  extends: [ .checkup_source ]
   script:
     - wex .code/format
 
