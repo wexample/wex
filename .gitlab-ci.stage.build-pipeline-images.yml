@@ -6,7 +6,7 @@ include:
     ref: main
     file: '.gitlab-ci.merge-rule.yml'
 
-build_pipeline_image_rc:
+build-pipeline-image:rc:
   resource_group: main_pipeline
   stage: build_pipeline_images
   extends: [ .merge_rule_to_main_branch, .app_build_image ]
@@ -19,12 +19,12 @@ build_pipeline_image_rc:
     FLAVOR: rc
     IMAGE_TAG: latest
 
-build_pipeline_image_test_remote:
+build-pipeline-image:remote:
   resource_group: main_pipeline
   stage: build_pipeline_images
   extends: [ .merge_rule_to_main_branch, .app_build_image ]
   needs:
-    - build_pipeline_image_rc
+    - build-pipeline-image:rc
   variables:
     FLAVOR: test-remote
     IMAGE_TAG: latest

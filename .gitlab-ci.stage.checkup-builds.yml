@@ -21,7 +21,7 @@ checkup_builds:remote:
   extends: [ .merge_rule_to_main_branch, .checkup_fails_if_non_committed ]
   image: gitlab-docker.wexample.com/wexample/wex/rc:latest
   needs:
-    - job: build_pipeline_image_rc
+    - build-pipeline-image:rc
   variables:
     GIT_STRATEGY: none
   before_script:

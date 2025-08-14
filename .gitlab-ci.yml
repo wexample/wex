@@ -2,8 +2,7 @@ stages:
 #  - checkup_pipeline
 #  - build_pipeline_images
 #  - checkup_builds
-  - test
-#  - build_apt
+#  - test
 #  - deploy
 #  - checkup_install
 #  - build_docker
@@ -15,76 +14,12 @@ include:
 #  - local: '.gitlab-ci.stage.checkup-pipeline.yml'
 #  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
 #  - local: '.gitlab-ci.stage.checkup-builds.yml'
-  - local: '.gitlab-ci.stage.test.yml'
+#  - local: '.gitlab-ci.stage.test.yml'
+#  - local: '.gitlab-ci.stage.deploy.yml'
+  - local: '.gitlab-ci.stage.checkup-install.yml'
 
 
-#
-#build_apt:
-#  stage: build_apt
-#  image: gitlab-docker.wexample.com/wexample-public/docker/wex:build
-#  only:
-#    - master
-#  script:
-#    - BUILD_VERSION=$(cat version.txt)
-#    # Create build folder outside shared volume
-#    - mkdir -p /var/tmp/build
-#    # Create a copy of current git repo
-#    - cp -r .git /var/tmp/build
-#    # Go to build folder
-#    - cd /var/tmp/build
-#    # Checkout build branch
-#    - git fetch && git checkout build
-#    # Create link to source
-#    - ln -s ${CI_PROJECT_DIR} source
-#    # Build
-#    - sudo python3 /var/tmp/build/script/build.py -n wex -gid ${CI_PROJECT_ID} -gtk ${WEX_BUILD_TOKEN} -v ${BUILD_VERSION}
-#
-#deploy:
-#  stage: deploy
-#  image: curlimages/curl
-#  only:
-#    - master
-#  needs:
-#    - build_apt
-#  script:
-#    - BUILD_VERSION=$(cat version.txt)
-#    # Ask apt repo to publish release
-#    - curl "http://wexample.com:46017/webhook/app/prod/wex-apt-repo/apt/publish?p=${CI_PROJECT_ID}&v=${BUILD_VERSION}"
-#
-#.checkup_install:
-#  only:
-#    - master
-#  script:
-#    # Stops script on failure
-#    - set -e
-#    - apt update
-#    - apt install gnupg2 wget -y
-#    - wget -O - https://apt.wexample.com/gpg | apt-key add -
-#    - echo "deb http://apt.wexample.com/ stable main" | tee /etc/apt/sources.list.d/wexample.list
-#    - apt update
-#    - apt install wex -y
-#    - wex hi
-#    # Compare versions
-#    - BUILD_VERSION=$(cat version.txt) && echo "Deployed version should be ${BUILD_VERSION}"
-#    - CURRENT_VERSION=$(wex version) && echo "Image version is ${CURRENT_VERSION}"
-#    - test "$(cat version.txt)" = "$(wex version)" || exit 1
-#    # Uninstall
-#    - apt remove wex -y
-#  needs:
-#    - deploy
-#
-## Try to install using the new debian apt repository.
-#checkup_install_debian:
-#  extends: .checkup_install
-#  stage: checkup_install
-#  image: gitlab-docker.wexample.com/wexample-public/docker/debian
-#
-## Try to install using the new debian apt repository.
-#checkup_install_ubuntu:
-#  extends: .checkup_install
-#  stage: checkup_install
-#  image: ubuntu:22.04
-#
+
 ## Rebuild public image
 #build_docker:
 #  stage: build_docker
