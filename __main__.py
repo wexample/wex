@@ -11,10 +11,16 @@ if __name__ == "__main__":
         )
         from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
         from wexample_wex_core.common.kernel import Kernel
+        from wexample_wex_filestate.python_addon_manager import FilestateAddonManager
 
         (
             Kernel(entrypoint_path=__file__)
-            .setup(addons=[DefaultAddonManager, TestAddonManager, PythonAddonManager])
+            .setup(addons=[
+                DefaultAddonManager,
+                FilestateAddonManager,
+                PythonAddonManager,
+                TestAddonManager,
+            ])
             .exec_argv()
         )
     except Exception as e:
