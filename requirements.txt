@@ -345,12 +345,14 @@ psutil==5.9.5
     # via
     #   -r requirements.in
     #   unstructured
-psycopg==3.1.18
-    # via langchain-postgres
+psycopg[binary]==3.1.18
+    # via
+    #   -r requirements.in
+    #   langchain-postgres
+psycopg-binary==3.1.18
+    # via psycopg
 psycopg-pool==3.2.1
     # via langchain-postgres
-psycopg2-binary==2.9.10
-    # via -r requirements.in
 pulsar-client==3.4.0
     # via chromadb
 pyasn1==0.6.0

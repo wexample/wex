@@ -20,7 +20,7 @@ pyperclip
 python-dotenv
 pyyaml
 prompt_toolkit
-psycopg2-binary
+psycopg[binary]
 requests
 sqlalchemy
 unstructured
