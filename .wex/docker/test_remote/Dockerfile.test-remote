@@ -21,6 +21,8 @@ RUN set -eux; \
       'PasswordAuthentication yes' \
       'PermitEmptyPasswords no' \
       > /etc/ssh/sshd_config.d/test_remote.conf; \
+    # Set the root password used by tests
+    echo 'root:TEST_PASSWORD' | chpasswd; \
     # Copy environment file for tests
     cp /opt/wex/.wex/.env.test_remote /opt/wex/.wex/.env; \
     # Ensure install scripts are applied
