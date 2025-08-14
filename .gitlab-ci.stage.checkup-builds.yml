@@ -1,3 +1,8 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.checkup.yml'
+
 checkup_builds:remote:
   stage: checkup_builds
   extends: [ .merge_rule_to_main_branch ]
