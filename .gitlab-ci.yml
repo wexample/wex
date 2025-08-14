@@ -1,6 +1,6 @@
 stages:
   - checkup_pipeline
-#  - build_pipeline_images
+  - build_pipeline_images
 #  - checkup_builds
 #  - test
 #  - build_apt
@@ -13,6 +13,7 @@ variables:
 
 include:
   - local: '.gitlab-ci.stage.checkup-pipeline.yml'
+  - local: '.gitlab-ci.stage.build-pipeline-images.yml'
 #  - project: 'wexample-public/ci-cd'
 #    ref: main
 #    file: '.gitlab-ci.checkup.yml'
@@ -25,31 +26,8 @@ include:
 #  - project: 'wexample-public/ci-cd'
 #    ref: main
 #    file: '.gitlab-ci.app.yml'
-#  - project: 'wexample-public/ci-cd'
-#    ref: main
-#    file: '.gitlab-ci.merge-rule.yml'
-#  - local: '.gitlab-ci.app.yml'
 
-#checkup_remote:
-#  extends: .app_check_remote
-#
-#build_pipeline_image_rc:
-#  stage: build_pipeline_images
-#  extends: [ .app_build_image ]
-#  needs:
-#    - checkup_docker
-#    - checkup_remote
-#  variables:
-#    FLAVOR: rc
-#
-#build_pipeline_image_test_remote:
-#  stage: build_pipeline_images
-#  extends: [ .app_build_image ]
-#  needs:
-#    - build_pipeline_image_rc
-#  variables:
-#    FLAVOR: test-remote
-#    IMAGE_DOCKERFILE: .wex/docker/test_remote/Dockerfile.${FLAVOR}
+
 #
 #checkup_pipeline_image_remote:
 #  extends: .app_check_pipeline_image_remote

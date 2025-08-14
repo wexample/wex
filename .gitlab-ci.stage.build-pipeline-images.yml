@@ -1,0 +1,22 @@
+include:
+  - project: 'wexample-public/ci-cd'
+    ref: main
+    file: '.gitlab-ci.app.yml'
+
+build_pipeline_image_rc:
+  stage: build_pipeline_images
+  extends: [ .app_build_image ]
+  needs:
+    - checkup_pipeline:docker
+    - checkup_pipeline:remote
+  variables:
+    FLAVOR: rc
+
+build_pipeline_image_test_remote:
+  stage: build_pipeline_images
+  extends: [ .app_build_image ]
+  needs:
+    - build_pipeline_image_rc
+  variables:
+    FLAVOR: test-remote
+    IMAGE_DOCKERFILE: .wex/docker/test_remote/Dockerfile.${FLAVOR}
