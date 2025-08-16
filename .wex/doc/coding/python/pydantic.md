@@ -31,14 +31,15 @@ class MyClass(BaseModel):
 
     def __init__(**kwargs):
         BaseModel.__init__(self, **kwargs)
+        from somewhere import SomeType
         self._internal_var = SomeType(property="Yes")
 
     @property
-    def internal_var(self) -> "SomeType":
+    def public_var(self) -> "SomeType":
         return self._internal_var
 
-    @internal_var.setter
-    def internal_var(self, value: "SomeType") -> None:
+    @public_var.setter
+    def public_var(self, value: "SomeType") -> None:
         # Stay lazy as most as possible
         from somewhere import SomeType
         # Check value at setting, avoid checking it 
