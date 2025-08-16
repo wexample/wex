@@ -49,5 +49,21 @@ class MyClass(BaseModel):
         from somewhere import SomeType
         # Check value at setting, avoid checking it elsewhere
         if not isinstance(value, SomeType):
-            raise TypeError(f"internal_var must be SomeType, got {type(value)!r}")
+            raise TypeError(f"public_var must be SomeType, got {type(value)!r}")
         self._internal_var = value
+```
+
+### Variant: when mixins must run before initialization
+
+Use a custom `__init__`  and set the private attribute after all mixins are initialized.
+
+```
+class MyService(MixinClass, BaseModel):
+    name: str
+    
+    def __init__(self, **kwargs):
+        # Pydantic should be initialized first to allow mixins playing with it.
+        BaseModel.__init__(self, **kwargs)
+        MixinClass.__init__(self)
+        
+        self._internal_var = SomeType(property=self.name)
