@@ -28,6 +28,8 @@ if TYPE_CHECKING:
 
 
 class MyClass(BaseModel):
+    # Internal attribute: use a leading underscore (Python convention)
+    # and declare it with PrivateAttr() so Pydantic treats it as private.
     _internal_var: "SomeType" = PrivateAttr()
 
     # model_post_init runs AFTER Pydantic has validated/coerced model fields.
@@ -42,7 +44,8 @@ class MyClass(BaseModel):
     def public_var(self) -> "SomeType":
         # Getter is non-optional and always returns a conformant type
         return self._internal_var
-
+    
+    # Optional
     @public_var.setter
     def public_var(self, value: "SomeType") -> None:
         # Lazy import for runtime type checking
