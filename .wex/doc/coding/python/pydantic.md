@@ -9,7 +9,7 @@ You are reading this file because you want information about project specific Py
 - Follow latest Pydantic coding style
 - Never add this, except if explicitly asked for, let it in place if already set up:
   - `model_config = ConfigDict(arbitrary_types_allowed=True)`
-  - `class ``Config: ... arbitrary_types_allowed = True`
+  - `class Config: ... arbitrary_types_allowed = True`
 
 ## Internal property
 
@@ -55,15 +55,23 @@ class MyClass(BaseModel):
 
 ### Variant: when mixins must run before initialization
 
-Use a custom `__init__`  and set the private attribute after all mixins are initialized.
+Use a custom `__init__` and set the private attribute after all mixins are initialized.
 
 ```
+# ...
+from somewhere import MixinClass
+# ...
+
 class MyService(MixinClass, BaseModel):
     name: str
-    
+    # ...
+
     def __init__(self, **kwargs):
-        # Pydantic should be initialized first to allow mixins playing with it.
+        # Initialize Pydantic first
         BaseModel.__init__(self, **kwargs)
+        # Then initialize mixins (cooperative ideally)
         MixinClass.__init__(self)
-        
+        # Finally, set private attrs that depend on mixins/validated fields
+        from somewhere import SomeType  # lazy import
         self._internal_var = SomeType(property=self.name)
+     # ...
