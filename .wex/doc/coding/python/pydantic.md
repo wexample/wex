@@ -30,6 +30,9 @@ if TYPE_CHECKING:
 class MyClass(BaseModel):
     _internal_var: "SomeType" = PrivateAttr()
 
+    # model_post_init runs AFTER Pydantic has validated/coerced model fields.
+    # Use it to initialize PrivateAttr that may rely on validated state.
+    # If you depend on other mixins' __init__ ordering, prefer a custom __init__ or finalize().
     def model_post_init(self, __context: Any) -> None:
         # Lazy import at runtime to avoid circular imports
         from somewhere import SomeType
