@@ -6,14 +6,9 @@ from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
-from src.helper.user import (
-    get_user_group_name,
-    get_user_or_sudo_user,
-    group_exists,
-    set_owner_recursively,
-    set_permissions_recursively,
-    user_exists,
-)
+from src.helper.user import (get_user_group_name, get_user_or_sudo_user,
+                             group_exists, set_owner_recursively,
+                             set_permissions_recursively, user_exists)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

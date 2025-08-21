@@ -1,21 +1,18 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, List, Optional, Type
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
-    AbstractInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.null_interaction_response import (
-    NullInteractionResponse,
-)
-from addons.ai.src.assistant.utils.abstract_assistant_child import (
-    AbstractAssistantChild,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
+    AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.null_interaction_response import \
+    NullInteractionResponse
+from addons.ai.src.assistant.utils.abstract_assistant_child import \
+    AbstractAssistantChild
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+    from addons.ai.src.assistant.utils.user_prompt_section import \
+        UserPromptSection
 
 
 class AbstractCommand(AbstractAssistantChild):

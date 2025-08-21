@@ -2,9 +2,8 @@ from typing import Optional, Type
 
 from pydantic import BaseModel
 
-from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import (
-    FormatedDataInteractionMode,
-)
+from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import \
+    FormatedDataInteractionMode
 from addons.ai.src.assistant.model.person import Person
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 

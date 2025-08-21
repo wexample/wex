@@ -8,11 +8,8 @@ from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 from src.core.command.ScriptCommand import ScriptCommand
 from src.decorator.attach import attach
 from src.decorator.option import option
-from src.helper.file import (
-    file_build_date_time_name,
-    file_create_symlink,
-    file_delete_file_or_dir,
-)
+from src.helper.file import (file_build_date_time_name, file_create_symlink,
+                             file_delete_file_or_dir)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager

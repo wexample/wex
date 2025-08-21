@@ -15,15 +15,11 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
 from src.const.types import StringKeysDict
 from src.helper.package import package_enable_logging
-from src.helper.patch import (
-    patch_apply_in_workdir,
-    patch_clean,
-    patch_create_hunk_header,
-    patch_find_line_of_first_subgroup,
-    patch_get_initial_lines,
-    patch_get_initial_parts,
-    patch_has_all_parts,
-)
+from src.helper.patch import (patch_apply_in_workdir, patch_clean,
+                              patch_create_hunk_header,
+                              patch_find_line_of_first_subgroup,
+                              patch_get_initial_lines, patch_get_initial_parts,
+                              patch_has_all_parts)
 from tests.AbstractTestCase import AbstractTestCase
 
 

@@ -2,18 +2,16 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from langchain_core.output_parsers import BaseOutputParser
 
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
-    AbstractInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
-from addons.ai.src.assistant.utils.abstract_assistant_child import (
-    AbstractAssistantChild,
-)
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
+    AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.string_interaction_response import \
+    StringInteractionResponse
+from addons.ai.src.assistant.utils.abstract_assistant_child import \
+    AbstractAssistantChild
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+    from addons.ai.src.assistant.utils.user_prompt_section import \
+        UserPromptSection
 
 
 class AbstractInteractionMode(AbstractAssistantChild):

@@ -7,12 +7,9 @@ from addons.app.decorator.app_command import app_command
 from addons.app.helper.app import app_create_manager
 from addons.default.command.version.parse import default__version__parse
 from addons.default.helper.migration import (
-    MIGRATION_MINIMAL_VERSION,
-    migration_exec,
-    migration_extract_version_from_file_name,
-    migration_get_files,
-    migration_version_guess,
-)
+    MIGRATION_MINIMAL_VERSION, migration_exec,
+    migration_extract_version_from_file_name, migration_get_files,
+    migration_version_guess)
 from addons.default.helper.version import is_greater_than
 from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option

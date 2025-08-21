@@ -8,15 +8,12 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.start import app__app__start
 from addons.app.command.app.stop import app__app__stop
 from addons.app.const.app import APP_ENV_TEST, APP_FILEPATH_REL_ENV
-from addons.app.helper.test import (
-    DEFAULT_APP_TEST_NAME,
-    DEFAULT_ENVIRONMENT_TEST_REMOTE,
-    DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD,
-    DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME,
-    test_build_app_name,
-    test_create_app,
-    test_get_test_remote_address,
-)
+from addons.app.helper.test import (DEFAULT_APP_TEST_NAME,
+                                    DEFAULT_ENVIRONMENT_TEST_REMOTE,
+                                    DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD,
+                                    DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME,
+                                    test_build_app_name, test_create_app,
+                                    test_get_test_remote_address)
 from addons.default.command.file.append_once import default__file__append_once
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import AnyCallable, StringsList

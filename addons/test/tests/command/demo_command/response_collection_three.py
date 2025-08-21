@@ -1,8 +1,7 @@
 from addons.test.command.demo_command.response_collection_three import (
     TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION,
     TEST_DEMO_COMMAND_THREE_RESULT_ONE,
-    test__demo_command__response_collection_three,
-)
+    test__demo_command__response_collection_three)
 from tests.AbstractTestCase import AbstractTestCase
 
 

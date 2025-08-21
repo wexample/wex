@@ -2,11 +2,9 @@ import json
 from typing import Optional
 
 from addons.test.command.return_type.list import test__return_type__list
-from src.const.globals import (
-    KERNEL_RENDER_MODE_JSON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-)
+from src.const.globals import (KERNEL_RENDER_MODE_JSON,
+                               KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL)
 from tests.AbstractTestCase import AbstractTestCase
 
 

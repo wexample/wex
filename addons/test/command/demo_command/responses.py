@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
 from src.const.types import AnyCallable
-from src.core.response.NonInteractiveShellCommandResponse import (
-    NonInteractiveShellCommandResponse,
-)
+from src.core.response.NonInteractiveShellCommandResponse import \
+    NonInteractiveShellCommandResponse
 from src.decorator.option import option
 from src.decorator.test_command import test_command
 

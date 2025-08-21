@@ -2,72 +2,50 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
+from typing import (TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union,
+                    cast)
 
 import yaml
 from wexample_helpers.helpers.args import args_push_one, args_shift_one
-from wexample_helpers.helpers.dict import (
-    DICT_ITEM_EXISTS_ACTION_REPLACE,
-    dict_get_item_by_path,
-    dict_has_item_by_path,
-    dict_remove_item_by_path,
-    dict_set_item_by_path,
-)
-from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
-from wexample_helpers_yaml.helpers.yaml_helpers import (
-    yaml_read,
-    yaml_read_dict,
-    yaml_write,
-)
+from wexample_helpers.helpers.dict import (DICT_ITEM_EXISTS_ACTION_REPLACE,
+                                           dict_get_item_by_path,
+                                           dict_has_item_by_path,
+                                           dict_remove_item_by_path,
+                                           dict_set_item_by_path)
+from wexample_helpers.helpers.string import (string_to_kebab_case,
+                                             string_to_snake_case)
+from wexample_helpers_yaml.helpers.yaml_helpers import (yaml_read,
+                                                        yaml_read_dict,
+                                                        yaml_write)
 
 from addons.app.command.location.find import app__location__find
-from addons.app.const.app import (
-    APP_DIR_APP_DATA,
-    APP_ENV_DEV,
-    APP_ENV_LOCAL,
-    APP_ENV_PROD,
-    APP_ENV_TEST,
-    APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
-    APP_FILEPATH_REL_CONFIG,
-    APP_FILEPATH_REL_CONFIG_RUNTIME,
-    APP_FILEPATH_REL_DOCKER_ENV,
-    APP_FILEPATH_REL_ENV,
-    HELPER_APP_PROXY_SHORT_NAME,
-    PROXY_FILE_APPS_REGISTRY,
-)
+from addons.app.const.app import (APP_DIR_APP_DATA, APP_ENV_DEV, APP_ENV_LOCAL,
+                                  APP_ENV_PROD, APP_ENV_TEST,
+                                  APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
+                                  APP_FILEPATH_REL_CONFIG,
+                                  APP_FILEPATH_REL_CONFIG_RUNTIME,
+                                  APP_FILEPATH_REL_DOCKER_ENV,
+                                  APP_FILEPATH_REL_ENV,
+                                  HELPER_APP_PROXY_SHORT_NAME,
+                                  PROXY_FILE_APPS_REGISTRY)
 from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from addons.app.src.AppCommand import AppCommand
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
-from src.const.globals import (
-    COLOR_GRAY,
-    COMMAND_TYPE_APP,
-    COMMAND_TYPE_SERVICE,
-    CORE_COMMAND_NAME,
-    DATE_FORMAT_SECOND,
-    SHELL_DEFAULT,
-    VERBOSITY_LEVEL_DEFAULT,
-    VERBOSITY_LEVEL_MEDIUM,
-    VERSION_DEFAULT,
-)
-from src.const.types import (
-    AnyAppConfig,
-    AnyCallable,
-    AppConfig,
-    AppConfigValue,
-    AppDockerEnvConfig,
-    AppRuntimeConfig,
-    AppsPathsList,
-    DockerCompose,
-    StringKeysDict,
-    StringKeysMapping,
-    StringsList,
-    YamlContent,
-    YamlContentDict,
-)
+from src.const.globals import (COLOR_GRAY, COMMAND_TYPE_APP,
+                               COMMAND_TYPE_SERVICE, CORE_COMMAND_NAME,
+                               DATE_FORMAT_SECOND, SHELL_DEFAULT,
+                               VERBOSITY_LEVEL_DEFAULT, VERBOSITY_LEVEL_MEDIUM,
+                               VERSION_DEFAULT)
+from src.const.types import (AnyAppConfig, AnyCallable, AppConfig,
+                             AppConfigValue, AppDockerEnvConfig,
+                             AppRuntimeConfig, AppsPathsList, DockerCompose,
+                             StringKeysDict, StringKeysMapping, StringsList,
+                             YamlContent, YamlContentDict)
 from src.core.AddonManager import AddonManager
 from src.core.ConfigValue import ConfigValue
 from src.helper.core import core_kernel_get_version
-from src.helper.file import file_env_to_dict, file_set_owner, file_write_dict_to_config
+from src.helper.file import (file_env_to_dict, file_set_owner,
+                             file_write_dict_to_config)
 from src.helper.service import service_load_config
 
 if TYPE_CHECKING:
@@ -100,7 +78,8 @@ class AppAddonManager(AddonManager):
         from addons.app.decorator.app_command import app_command
         from addons.app.decorator.app_dir_option import app_dir_option
         from addons.app.decorator.app_webhook import app_webhook
-        from addons.app.decorator.option_webhook_listener import option_webhook_listener
+        from addons.app.decorator.option_webhook_listener import \
+            option_webhook_listener
         from addons.app.decorator.service_option import service_option
 
         self.kernel.decorators["command"].update({"app_command": app_command})
@@ -686,12 +665,10 @@ class AppAddonManager(AddonManager):
 
         from addons.app.command.env.get import app__env__get
         from addons.app.command.hook.exec import app__hook__exec
-        from src.helper.user import (
-            get_gid_from_group_name,
-            get_uid_from_user_name,
-            get_user_group_name,
-            get_user_or_sudo_user,
-        )
+        from src.helper.user import (get_gid_from_group_name,
+                                     get_uid_from_user_name,
+                                     get_user_group_name,
+                                     get_user_or_sudo_user)
 
         app_dir = self.get_app_dir()
         env = self.kernel.run_function(app__env__get, {"app-dir": self.app_dir}).first()

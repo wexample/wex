@@ -9,10 +9,8 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.service.install import app__service__install
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.migrations.migration_4_0_0 import (
-    _migration_4_0_0_et_docker_files,
-    _migration_4_0_0_replace_docker_mapping,
-    _migration_4_0_0_replace_docker_placeholders,
-)
+    _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping,
+    _migration_4_0_0_replace_docker_placeholders)
 from addons.docker.types.docker import DockerCompose
 from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
 from src.helper.prompt import prompt_progress_steps

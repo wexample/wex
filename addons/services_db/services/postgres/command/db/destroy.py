@@ -29,9 +29,8 @@ def postgres__db__destroy(
     recreate: bool = True,
 ) -> None:
     from addons.app.command.app.exec import app__app__exec
-    from addons.services_db.services.postgres.command.db.connect import (
-        postgres__db__connect,
-    )
+    from addons.services_db.services.postgres.command.db.connect import \
+        postgres__db__connect
 
     fallback_database = "postgres"
 

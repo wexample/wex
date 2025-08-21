@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING, List, Optional
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
-    AbstractInteractionResponse,
-)
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
+    AbstractInteractionResponse
 from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from src.helper.string import string_list_longest_word
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+    from addons.ai.src.assistant.utils.user_prompt_section import \
+        UserPromptSection
 
 
 class HelpCommand(AbstractCommand):

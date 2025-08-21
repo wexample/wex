@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Optional
 import git
 
 from addons.app.decorator.app_command import app_command
-from addons.default.command.version.increment import default__version__increment
+from addons.default.command.version.increment import \
+    default__version__increment
 from src.const.globals import VERSION_DEFAULT
 from src.decorator.option import option
 

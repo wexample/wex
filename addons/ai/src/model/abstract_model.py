@@ -1,25 +1,21 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
+from typing import (TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union,
+                    cast)
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import BaseMessage
-from langchain_core.prompts import (
-    BasePromptTemplate,
-    FewShotPromptTemplate,
-    PromptTemplate,
-)
+from langchain_core.prompts import (BasePromptTemplate, FewShotPromptTemplate,
+                                    PromptTemplate)
 from langchain_core.runnables import ConfigurableFieldSpec, Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from wexample_helpers.helpers.dict import dict_merge
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
-from addons.ai.src.assistant.utils.abstract_assistant_child import (
-    AbstractAssistantChild,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
+from addons.ai.src.assistant.utils.abstract_assistant_child import \
+    AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList

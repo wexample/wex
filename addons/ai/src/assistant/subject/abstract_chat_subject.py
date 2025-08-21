@@ -1,11 +1,9 @@
 from typing import Dict, Optional
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
-from addons.ai.src.assistant.utils.abstract_assistant_child import (
-    AbstractAssistantChild,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
+from addons.ai.src.assistant.utils.abstract_assistant_child import \
+    AbstractAssistantChild
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 

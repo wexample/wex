@@ -1,6 +1,5 @@
-from addons.system.command.git.rollback_permissions import (
-    system__git__rollback_permissions,
-)
+from addons.system.command.git.rollback_permissions import \
+    system__git__rollback_permissions
 from tests.AbstractTestCase import AbstractTestCase
 
 

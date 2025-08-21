@@ -17,6 +17,10 @@ env:
   runner:
     server:
       ip: 51.210.107.210
+files_state:
+  manager:
+    class: WexWorkdir
+    file: .wex/python/files_state/wex_workdir.py
 git:
   main_branch: master
 global:
@@ -25,6 +29,6 @@ global:
   name: wex
   services: []
   type: app
-  version: 5.0.171
+  version: 5.0.172
 wex:
-  version: 5.0.171
+  version: 5.0.172

@@ -2,19 +2,14 @@ from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_dir_option import app_dir_option
 from addons.app.helper.docker import docker_build_long_container_name
-from src.const.types import (
-    AnyCallable,
-    Args,
-    CoreCommandArgsDict,
-    Kwargs,
-    StringsList,
-    YamlCommandScript,
-)
+from src.const.types import (AnyCallable, Args, CoreCommandArgsDict, Kwargs,
+                             StringsList, YamlCommandScript)
 from src.core.command.ScriptCommand import ScriptCommand
 from src.helper.string import string_replace_multiple
 
 if TYPE_CHECKING:
-    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
+    from src.core.command.runner.AbstractCommandRunner import \
+        AbstractCommandRunner
 
 
 class AppCommand(ScriptCommand):

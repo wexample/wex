@@ -7,16 +7,15 @@ from addons.app.command.code.format import app__code__format
 from addons.app.command.config.set import app__config__set
 from addons.app.command.version.new_write import app__version__new_write
 from addons.core.command.version.new_commit import core__version__new_commit
-from addons.default.command.version.increment import default__version__increment
+from addons.default.command.version.increment import \
+    default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.const.globals import CORE_COMMAND_NAME, FILE_README
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
