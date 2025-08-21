@@ -1,5 +1,5 @@
-from workdir.python_workdir import PythonWorkdir
+from wexample_wex_addon_dev_python.workdir.python_workdir import PythonWorkdir
 
 
-class PipSuiteWorkdir(PythonWorkdir):
+class WexWorkdir(PythonWorkdir):
     pass
