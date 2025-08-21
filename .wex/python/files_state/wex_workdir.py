@@ -16,7 +16,25 @@ class WexWorkdir(PythonWorkdir):
         children.extend(
             [
                 {
+                    "name": "addons",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_init_children_factory(),
+                        self._create_python_file_children_filter(),
+                    ],
+                },
+                {
                     "name": "src",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_init_children_factory(),
+                        self._create_python_file_children_filter(),
+                    ],
+                },
+                {
+                    "name": "tests",
                     "type": DiskItemType.DIRECTORY,
                     "should_exist": True,
                     "children": [
