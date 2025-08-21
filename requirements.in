@@ -2,3 +2,4 @@ tomli
 wexample-wex-core
 wexample-wex-addon-app
 wexample-wex-addon-filestate
+wexample-wex-addon-filestate-python
