@@ -7,7 +7,8 @@ from src.const.types import OptionalCoreCommandArgsDict
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractEmptyResponse import AbstractEmptyResponse
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.HasAttachedResponse import HasAttachedResponse
+from src.core.response.queue_collection.HasAttachedResponse import \
+    HasAttachedResponse
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

@@ -6,33 +6,24 @@ from typing import TYPE_CHECKING, List, Optional, cast
 from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import (
-    AnyCallable,
-    BasicValue,
-    CoreCommandArgsDict,
-    OptionalCoreCommandArgsDict,
-    ResponsePrintType,
-)
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.const.types import (AnyCallable, BasicValue, CoreCommandArgsDict,
+                             OptionalCoreCommandArgsDict, ResponsePrintType)
+from src.core.command.resolver.AbstractCommandResolver import \
+    AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.FunctionResponse import FunctionResponse
-from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
-    DefaultQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import (
-    FastModeQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.QueuedCollectionPathManager import (
-    QueuedCollectionPathManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
-    QueuedCollectionStopCurrentStepResponse,
-)
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
+from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import \
+    DefaultQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import \
+    FastModeQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.QueuedCollectionPathManager import \
+    QueuedCollectionPathManager
+from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import \
+    QueuedCollectionStopCurrentStepResponse
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

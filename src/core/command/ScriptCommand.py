@@ -3,21 +3,15 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
 import click
 
 from src.const.globals import SHELL_DEFAULT
-from src.const.types import (
-    AnyCallable,
-    Args,
-    CoreCommandArgsDict,
-    Kwargs,
-    StringKeysDict,
-    StringsList,
-    YamlCommandScript,
-)
+from src.const.types import (AnyCallable, Args, CoreCommandArgsDict, Kwargs,
+                             StringKeysDict, StringsList, YamlCommandScript)
 from src.core.BaseClass import BaseClass
 from src.decorator.attach import CommandAttachment
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
+    from src.core.command.runner.AbstractCommandRunner import \
+        AbstractCommandRunner
 
 
 class ScriptCommand(BaseClass):

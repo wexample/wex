@@ -7,23 +7,21 @@ import click
 from wexample_helpers.helpers.dict import dict_get_item_by_path
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
-from src.const.types import (
-    Args,
-    CoreCommandArgsDict,
-    Kwargs,
-    StringsList,
-    YamlCommand,
-    YamlCommandScript,
-)
-from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
+from src.const.types import (Args, CoreCommandArgsDict, Kwargs, StringsList,
+                             YamlCommand, YamlCommandScript)
+from src.core.command.resolver.AbstractCommandResolver import \
+    AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+from src.core.response.AbstractResponse import (AbstractResponse,
+                                                ResponseCollection)
+from src.core.response.ResponseCollectionResponse import \
+    ResponseCollectionResponse
 from src.decorator.command import command
 from src.helper.click import click_args_convert_dict_to_args
-from src.helper.command import apply_command_decorator, internal_command_to_shell
+from src.helper.command import (apply_command_decorator,
+                                internal_command_to_shell)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -81,12 +79,10 @@ class YamlCommandRunner(AbstractCommandRunner):
         return self.get_content_or_fail()["type"]
 
     def build_script_command(self) -> Optional[ScriptCommand]:
-        from src.core.response.InteractiveShellCommandResponse import (
-            InteractiveShellCommandResponse,
-        )
-        from src.core.response.NonInteractiveShellCommandResponse import (
-            NonInteractiveShellCommandResponse,
-        )
+        from src.core.response.InteractiveShellCommandResponse import \
+            InteractiveShellCommandResponse
+        from src.core.response.NonInteractiveShellCommandResponse import \
+            NonInteractiveShellCommandResponse
 
         request = self.get_request()
         content = self.get_content_or_fail()

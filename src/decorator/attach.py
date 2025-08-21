@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Optional, TypedDict, Union
 from src.const.types import StringsList
 
 if TYPE_CHECKING:
-    from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
+    from src.core.command.ScriptCommand import (DecoratedScriptCommand,
+                                                ScriptCommand)
 
 CommandAttachmentPassArgsOption = Union[bool, StringsList]
 

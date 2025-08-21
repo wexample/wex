@@ -2,25 +2,14 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, List, NoReturn, Optional, TypedDict
 
-from src.const.globals import (
-    COLOR_CYAN,
-    COLOR_GRAY,
-    COLOR_GREEN,
-    COLOR_RED,
-    COLOR_RESET,
-    COLOR_YELLOW,
-    COMMAND_TYPE_ADDON,
-    VERBOSITY_LEVEL_DEFAULT,
-)
-from src.const.types import (
-    AnyCallable,
-    Kwargs,
-    OptionalCoreCommandArgsDict,
-    StringsDict,
-    StringsList,
-)
+from src.const.globals import (COLOR_CYAN, COLOR_GRAY, COLOR_GREEN, COLOR_RED,
+                               COLOR_RESET, COLOR_YELLOW, COMMAND_TYPE_ADDON,
+                               VERBOSITY_LEVEL_DEFAULT)
+from src.const.types import (AnyCallable, Kwargs, OptionalCoreCommandArgsDict,
+                             StringsDict, StringsList)
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.string import string_count_lines_needed, string_format_ignore_missing
+from src.helper.string import (string_count_lines_needed,
+                               string_format_ignore_missing)
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:

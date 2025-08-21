@@ -7,7 +7,8 @@ from typing import List, Mapping, Optional
 
 from wexample_helpers.helpers.string import string_to_snake_case
 
-from src.const.types import BasicInlineValue, StringsDict, StringsList, StringsMatch
+from src.const.types import (BasicInlineValue, StringsDict, StringsList,
+                             StringsMatch)
 
 
 def string_to_camel_case(text: str) -> str:

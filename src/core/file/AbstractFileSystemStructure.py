@@ -4,13 +4,10 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
 from wexample_helpers.helpers.file import file_change_mode_recursive
 
-from src.const.types import (
-    FileSystemStructurePermission,
-    FileSystemStructureSchema,
-    FileSystemStructureSchemaItem,
-    FileSystemStructureType,
-    StringMessageParameters,
-)
+from src.const.types import (FileSystemStructurePermission,
+                             FileSystemStructureSchema,
+                             FileSystemStructureSchemaItem,
+                             FileSystemStructureType, StringMessageParameters)
 from src.core.BaseClass import BaseClass
 from src.helper.user import set_owner_recursively
 
@@ -91,7 +88,8 @@ class AbstractFileSystemStructure(BaseClass):
                         class_definition = FileStructure
                         assert class_definition is FileStructure
                     else:
-                        from src.core.file.DirectoryStructure import DirectoryStructure
+                        from src.core.file.DirectoryStructure import \
+                            DirectoryStructure
 
                         class_definition = DirectoryStructure
                         assert class_definition is DirectoryStructure

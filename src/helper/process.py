@@ -8,11 +8,8 @@ import psutil
 
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.const.types import ShellCommandsDeepList
-from src.helper.command import (
-    command_to_string,
-    execute_command_sync,
-    internal_command_to_shell,
-)
+from src.helper.command import (command_to_string, execute_command_sync,
+                                internal_command_to_shell)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

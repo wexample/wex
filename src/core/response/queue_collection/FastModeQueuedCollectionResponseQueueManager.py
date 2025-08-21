@@ -3,15 +3,14 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.types import BasicInlineValue
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.QueuedCollectionStopResponse import \
+    QueuedCollectionStopResponse
 
 if TYPE_CHECKING:
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.core.response.QueuedCollectionResponse import \
+        QueuedCollectionResponse
 
 
 class FastModeQueuedCollectionResponseQueueManager(
@@ -42,7 +41,8 @@ class FastModeQueuedCollectionResponseQueueManager(
     def render_content_complete(
         self, response: Optional[AbstractResponse] = None
     ) -> "AbstractResponse":
-        from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+        from src.core.response.QueuedCollectionResponse import \
+            QueuedCollectionResponse
 
         if self.response.parent:
             if isinstance(self.response.parent, QueuedCollectionResponse):
