@@ -4,12 +4,8 @@ from typing import cast
 from wexample_helpers.helpers.dict import dict_merge
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
-from addons.app.const.app import (
-    APP_DIR_APP_DATA_NAME,
-    APP_ENV_PROD,
-    APP_FILE_APP_CONFIG,
-    APP_FILE_APP_ENV,
-)
+from addons.app.const.app import (APP_DIR_APP_DATA_NAME, APP_ENV_PROD,
+                                  APP_FILE_APP_CONFIG, APP_FILE_APP_ENV)
 from src.const.types import AppConfig, FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
 

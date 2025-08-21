@@ -3,11 +3,14 @@ from typing import Optional, cast
 
 from wexample_helpers.helpers.string import string_to_snake_case
 
-from src.const.globals import (COMMAND_PATTERN_ADDON, COMMAND_SEPARATOR_ADDON,
-                               COMMAND_SEPARATOR_GROUP, COMMAND_TYPE_ADDON)
+from src.const.globals import (
+    COMMAND_PATTERN_ADDON,
+    COMMAND_SEPARATOR_ADDON,
+    COMMAND_SEPARATOR_GROUP,
+    COMMAND_TYPE_ADDON,
+)
 from src.const.types import RegistryAddon, RegistryResolverData, StringsList
-from src.core.command.resolver.AbstractCommandResolver import \
-    AbstractCommandResolver
+from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.helper.registry import registry_get_all_commands
@@ -119,8 +122,10 @@ class AddonCommandResolver(AbstractCommandResolver):
                 # User typed "core:", we add a second ":"
                 return ":"
         elif cursor == 2:
-            from src.helper.registry import (registry_get_all_commands,
-                                             registry_remove_addons)
+            from src.helper.registry import (
+                registry_get_all_commands,
+                registry_remove_addons,
+            )
 
             addon = search_split[0]
 

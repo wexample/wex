@@ -5,12 +5,8 @@ import unittest
 from typing import Any, Iterable, Optional
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
-from src.const.types import (
-    AnyCallable,
-    ShellCommandResponseTuple,
-    StringKeysDict,
-    StringsDict,
-)
+from src.const.types import (AnyCallable, ShellCommandResponseTuple,
+                             StringKeysDict, StringsDict)
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync

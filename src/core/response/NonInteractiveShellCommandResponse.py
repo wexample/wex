@@ -2,9 +2,13 @@ import os
 from typing import TYPE_CHECKING, Optional, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import (OptionalCoreCommandArgsDict, ResponsePrintType,
-                             ShellCommandsDeepList, ShellCommandsList,
-                             StringsList)
+from src.const.types import (
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    ShellCommandsDeepList,
+    ShellCommandsList,
+    StringsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.helper.command import execute_command_tree_sync

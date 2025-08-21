@@ -28,7 +28,8 @@ def mysql__db__destroy(
     recreate: bool = True,
 ) -> None:
     from addons.app.command.app.exec import app__app__exec
-    from addons.services_db.services.mysql.command.db.connect import mysql__db__connect
+    from addons.services_db.services.mysql.command.db.connect import \
+        mysql__db__connect
 
     command = f"DROP DATABASE IF EXISTS {database}"
 

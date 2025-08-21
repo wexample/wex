@@ -1,4 +1,5 @@
-from addons.test.command.command.has_attached import test__command__has_attached
+from addons.test.command.command.has_attached import \
+    test__command__has_attached
 from tests.AbstractTestCase import AbstractTestCase
 
 

@@ -3,15 +3,12 @@ from typing import Optional
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME, test_create_app
-from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
+from addons.core.command.autocomplete.suggest import \
+    core__autocomplete__suggest
 from addons.core.command.command.create import core__command__create
-from src.const.globals import (
-    COMMAND_CHAR_APP,
-    COMMAND_CHAR_SERVICE,
-    COMMAND_CHAR_USER,
-    COMMAND_SEPARATOR_ADDON,
-    COMMAND_SEPARATOR_GROUP,
-)
+from src.const.globals import (COMMAND_CHAR_APP, COMMAND_CHAR_SERVICE,
+                               COMMAND_CHAR_USER, COMMAND_SEPARATOR_ADDON,
+                               COMMAND_SEPARATOR_GROUP)
 from tests.AbstractTestCase import AbstractTestCase
 
 

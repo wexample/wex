@@ -4,31 +4,22 @@ from typing import List, Optional, cast
 import patch  # type: ignore[import-untyped]
 from wexample_helpers.helpers.file import file_read
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
-    AbstractInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
+    AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.string_interaction_response import \
+    StringInteractionResponse
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.default.helper.git_utils import git_file_get_octal_mode
 from src.const.types import StringKeysDict
-from src.helper.file import (
-    file_get_extension,
-    file_read_if_exists,
-    file_set_user_or_sudo_user_owner,
-)
-from src.helper.patch import (
-    extract_information,
-    patch_apply_in_workdir,
-    patch_clean,
-    patch_create_hunk_header,
-    patch_is_valid,
-)
-from src.helper.string import string_add_lines_numbers, string_has_trailing_new_line
+from src.helper.file import (file_get_extension, file_read_if_exists,
+                             file_set_user_or_sudo_user_owner)
+from src.helper.patch import (extract_information, patch_apply_in_workdir,
+                              patch_clean, patch_create_hunk_header,
+                              patch_is_valid)
+from src.helper.string import (string_add_lines_numbers,
+                               string_has_trailing_new_line)
 
 
 class FilePatchInteractionMode(AbstractInteractionMode):
@@ -52,7 +43,8 @@ class FilePatchInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: List[UserPromptSection],
     ) -> AbstractInteractionResponse:
-        from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+        from addons.ai.src.assistant.subject.file_chat_subject import \
+            FileChatSubject
 
         user_input = prompt_section.prompt
         subject = cast(FileChatSubject, self.assistant.get_current_subject())

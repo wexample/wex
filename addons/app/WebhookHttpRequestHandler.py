@@ -8,12 +8,9 @@ from typing import Any, Dict, Optional, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import Args, Kwargs, StringsList
-from src.helper.routing import (
-    RouteInfo,
-    routing_get_route_info,
-    routing_get_route_name,
-    routing_is_allowed_route,
-)
+from src.helper.routing import (RouteInfo, routing_get_route_info,
+                                routing_get_route_name,
+                                routing_is_allowed_route)
 
 WEBHOOK_COMMAND_PATH_PLACEHOLDER = "__URL__"
 WEBHOOK_COMMAND_PORT_PLACEHOLDER = "__PORT__"

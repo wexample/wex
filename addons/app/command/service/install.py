@@ -8,11 +8,8 @@ from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
-from src.const.globals import (
-    COMMAND_CHAR_SERVICE,
-    COMMAND_SEPARATOR_ADDON,
-    COMMAND_TYPE_SERVICE,
-)
+from src.const.globals import (COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON,
+                               COMMAND_TYPE_SERVICE)
 from src.decorator.option import option
 from src.helper.file import file_create_parent_and_touch, file_merge_new_lines
 from src.helper.service import service_get_dir

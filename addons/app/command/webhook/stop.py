@@ -8,7 +8,8 @@ from src.const.globals import COMMAND_TYPE_ADDON, SERVICE_DAEMON_PATH
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.helper.process import process_kill_by_command
-from src.helper.system import system_service_daemon_exec, system_service_daemon_reload
+from src.helper.system import (system_service_daemon_exec,
+                               system_service_daemon_reload)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

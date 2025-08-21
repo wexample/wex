@@ -14,9 +14,8 @@ def proxy__service__install(
     manager: "AppAddonManager", app_dir: str, service: str
 ) -> None:
     # Don't know how to solve quicly this error.
-    from wexample_wex_core.resolver.service_command_resolver import (
-        ServiceCommandResolver,
-    )
+    from wexample_wex_core.resolver.service_command_resolver import \
+        ServiceCommandResolver
 
     def callback() -> None:
         manager.set_config(

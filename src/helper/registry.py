@@ -7,8 +7,11 @@ from wexample_helpers.helpers.dict import dict_merge
 from src.const.globals import COMMAND_SEPARATOR_ADDON
 
 if TYPE_CHECKING:
-    from src.const.types import (RegistryAllServices,
-                                 RegistryCommandsCollection, RegistryService)
+    from src.const.types import (
+        RegistryAllServices,
+        RegistryCommandsCollection,
+        RegistryService,
+    )
     from src.utils.kernel import Kernel
 
 

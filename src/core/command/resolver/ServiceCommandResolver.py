@@ -4,14 +4,20 @@ from typing import TYPE_CHECKING, Optional, cast
 from wexample_helpers.helpers.string import string_to_snake_case
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
-from addons.app.const.app import (APP_FILE_APP_SERVICE_CONFIG,
-                                  ERR_SERVICE_NOT_FOUND)
-from src.const.globals import (COMMAND_CHAR_SERVICE, COMMAND_PATTERN_SERVICE,
-                               COMMAND_SEPARATOR_ADDON, COMMAND_TYPE_SERVICE)
-from src.const.types import (AnyCallable, RegistryAllServices, RegistryService,
-                             StringsList)
-from src.core.command.resolver.AbstractCommandResolver import \
-    AbstractCommandResolver
+from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG, ERR_SERVICE_NOT_FOUND
+from src.const.globals import (
+    COMMAND_CHAR_SERVICE,
+    COMMAND_PATTERN_SERVICE,
+    COMMAND_SEPARATOR_ADDON,
+    COMMAND_TYPE_SERVICE,
+)
+from src.const.types import (
+    AnyCallable,
+    RegistryAllServices,
+    RegistryService,
+    StringsList,
+)
+from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
 from src.helper.service import service_get_dir

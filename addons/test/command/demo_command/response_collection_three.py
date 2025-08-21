@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING
 
 from src.core.response.AbortResponse import AbortResponse
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 from src.decorator.test_command import test_command

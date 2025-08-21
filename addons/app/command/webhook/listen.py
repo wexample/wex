@@ -8,30 +8,21 @@ from wexample_helpers.helpers.file import file_remove_if_exists
 from addons.app.command.webhook.status import app__webhook__status
 from addons.app.WebhookHttpRequestHandler import WebhookHttpRequestHandler
 from addons.system.command.system.is_docker import system__system__is_docker
-from src.const.globals import (
-    COMMAND_TYPE_ADDON,
-    SERVICE_DAEMON_NAME,
-    SERVICE_DAEMON_PATH,
-    SYSTEM_SERVICES_PATH,
-    WEBHOOK_LISTEN_PORT_DEFAULT,
-)
+from src.const.globals import (COMMAND_TYPE_ADDON, SERVICE_DAEMON_NAME,
+                               SERVICE_DAEMON_PATH, SYSTEM_SERVICES_PATH,
+                               WEBHOOK_LISTEN_PORT_DEFAULT)
 from src.const.types import AnyCallable
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 from src.helper.command import execute_command_async
-from src.helper.core import (
-    core_get_daemon_service_resource_path,
-    core_kernel_get_version,
-)
+from src.helper.core import (core_get_daemon_service_resource_path,
+                             core_kernel_get_version)
 from src.helper.process import process_kill_by_command, process_kill_by_port
 from src.helper.routing import routing_build_webhook_route_map
-from src.helper.system import (
-    system_is_port_open,
-    system_service_daemon_exec,
-    system_service_daemon_reload,
-)
+from src.helper.system import (system_is_port_open, system_service_daemon_exec,
+                               system_service_daemon_reload)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

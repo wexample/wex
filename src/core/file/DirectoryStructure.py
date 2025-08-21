@@ -1,8 +1,7 @@
 import os
 
 from src.const.types import AnyCallable, FileSystemStructureSchema
-from src.core.file.AbstractFileSystemStructure import \
-    AbstractFileSystemStructure
+from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
 
 
 class DirectoryStructure(AbstractFileSystemStructure):

@@ -1,14 +1,18 @@
 import os
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_TERMINAL)
-from src.const.types import (BasicInlineValue, OptionalCoreCommandArgsDict,
-                             ResponsePrintType, StringsList)
+from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import (
+    BasicInlineValue,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+    StringsList,
+)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.AbstractTerminalSectionResponse import \
-    AbstractTerminalSectionResponse
+from src.core.response.AbstractTerminalSectionResponse import (
+    AbstractTerminalSectionResponse,
+)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

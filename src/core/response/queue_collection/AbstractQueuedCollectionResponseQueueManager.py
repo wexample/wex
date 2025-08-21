@@ -6,7 +6,9 @@ from src.const.types import BasicInlineValue
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.response.QueuedCollectionResponse import (
-        QueuedCollectionResponse, QueuedCollectionStepsList)
+        QueuedCollectionResponse,
+        QueuedCollectionStepsList,
+    )
 
 
 class AbstractQueuedCollectionResponseQueueManager:

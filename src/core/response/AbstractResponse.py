@@ -3,11 +3,18 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, cast
 
-from src.const.globals import (KERNEL_RENDER_MODE_JSON,
-                               KERNEL_RENDER_MODE_NONE,
-                               KERNEL_RENDER_MODE_TERMINAL)
-from src.const.types import (AnyList, Args, JsonContent,
-                             OptionalCoreCommandArgsDict, ResponsePrintType)
+from src.const.globals import (
+    KERNEL_RENDER_MODE_JSON,
+    KERNEL_RENDER_MODE_NONE,
+    KERNEL_RENDER_MODE_TERMINAL,
+)
+from src.const.types import (
+    AnyList,
+    Args,
+    JsonContent,
+    OptionalCoreCommandArgsDict,
+    ResponsePrintType,
+)
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.utils.abstract_kernel_child import AbsractKernelChild

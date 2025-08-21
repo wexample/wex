@@ -4,10 +4,8 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.exec import app__app__exec
 from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
-from addons.app.WebhookHttpRequestHandler import (
-    WEBHOOK_STATUS_COMPLETE,
-    WEBHOOK_STATUS_STARTED,
-)
+from addons.app.WebhookHttpRequestHandler import (WEBHOOK_STATUS_COMPLETE,
+                                                  WEBHOOK_STATUS_STARTED)
 from src.const.globals import CORE_COMMAND_NAME
 from src.core.Logger import LOG_STATUS_COMPLETE
 

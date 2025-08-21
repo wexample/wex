@@ -4,9 +4,8 @@ from addons.core.command.version.new_commit import core__version__new_commit
 from addons.core.command.version.new_write import core__version__new_write
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option

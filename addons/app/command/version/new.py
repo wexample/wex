@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     help="New version number, auto generated if missing",
 )
 def app__version__new(
-        manager: "AppAddonManager", app_dir: str, version: Optional[str] = None
+    manager: "AppAddonManager", app_dir: str, version: Optional[str] = None
 ) -> str:
     new_version = manager.kernel.run_function(
         app__version__new_write,

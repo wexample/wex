@@ -4,9 +4,8 @@ from typing import Any, Optional, Type
 from langchain_core.output_parsers import BaseOutputParser
 from pydantic import BaseModel, Extra
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 FORMATED_DATA_FORMAT_COMMA_SEPARATED = "comma-separated"
@@ -33,7 +32,8 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
         self, prompt_section: UserPromptSection
     ) -> Optional[BaseOutputParser[Any]]:
         if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.flags:
-            from langchain_core.output_parsers import CommaSeparatedListOutputParser
+            from langchain_core.output_parsers import \
+                CommaSeparatedListOutputParser
 
             return CommaSeparatedListOutputParser()
         elif FORMATED_DATA_FORMAT_JSON in prompt_section.flags:

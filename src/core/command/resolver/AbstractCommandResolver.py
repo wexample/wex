@@ -3,18 +3,28 @@ from abc import abstractmethod
 from typing import Any, Dict, List, Optional, cast
 
 from wexample_helpers.helpers.file import file_list_subdirectories
-from wexample_helpers.helpers.string import (string_to_kebab_case,
-                                             string_to_snake_case)
+from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
 
-from src.const.globals import (COMMAND_EXTENSIONS, COMMAND_SEPARATOR_ADDON,
-                               COMMAND_SEPARATOR_FUNCTION_PARTS,
-                               COMMAND_SEPARATOR_GROUP, CORE_COMMAND_NAME,
-                               VERBOSITY_LEVEL_DEFAULT)
-from src.const.types import (AnyCallable, OptionalCoreCommandArgsDict,
-                             OptionalCoreCommandArgsListOrDict,
-                             RegistryCommand, RegistryCommandsCollection,
-                             RegistryResolverData, ShellCommandsList,
-                             StringKeysDict, StringsList, StringsMatch)
+from src.const.globals import (
+    COMMAND_EXTENSIONS,
+    COMMAND_SEPARATOR_ADDON,
+    COMMAND_SEPARATOR_FUNCTION_PARTS,
+    COMMAND_SEPARATOR_GROUP,
+    CORE_COMMAND_NAME,
+    VERBOSITY_LEVEL_DEFAULT,
+)
+from src.const.types import (
+    AnyCallable,
+    OptionalCoreCommandArgsDict,
+    OptionalCoreCommandArgsListOrDict,
+    RegistryCommand,
+    RegistryCommandsCollection,
+    RegistryResolverData,
+    ShellCommandsList,
+    StringKeysDict,
+    StringsList,
+    StringsMatch,
+)
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbortResponse import AbortResponse
@@ -158,8 +168,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         pass
 
     def get_commands_registry(self) -> RegistryCommandsCollection:
-        from src.helper.registry import \
-            registry_get_all_commands_from_registry_part
+        from src.helper.registry import registry_get_all_commands_from_registry_part
 
         if self.get_type() in self.kernel.registry_structure.content.resolvers:
             return registry_get_all_commands_from_registry_part(

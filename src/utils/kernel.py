@@ -1,27 +1,33 @@
 import os
 import sys
-from typing import (TYPE_CHECKING, Any, Callable, Dict, List, NoReturn,
-                    Optional, Union)
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Union
 
 from dotenv import dotenv_values
 from wexample_helpers.helpers.args import args_shift_one
-from wexample_helpers.helpers.file import (file_list_subdirectories,
-                                           file_remove_if_exists)
+from wexample_helpers.helpers.file import (
+    file_list_subdirectories,
+    file_remove_if_exists,
+)
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.env.get import _app__env__get
-from src.const.globals import (COMMAND_TYPE_ADDON, CORE_COMMAND_NAME,
-                               FILE_REGISTRY, KERNEL_RENDER_MODE_TERMINAL,
-                               VERBOSITY_LEVEL_DEFAULT,
-                               VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM,
-                               VERBOSITY_LEVEL_QUIET)
+from src.const.globals import (
+    COMMAND_TYPE_ADDON,
+    CORE_COMMAND_NAME,
+    FILE_REGISTRY,
+    KERNEL_RENDER_MODE_TERMINAL,
+    VERBOSITY_LEVEL_DEFAULT,
+    VERBOSITY_LEVEL_MAXIMUM,
+    VERBOSITY_LEVEL_MEDIUM,
+    VERBOSITY_LEVEL_QUIET,
+)
 from src.core.AddonManager import AddonManager
 from src.core.BaseClass import BaseClass
 from src.core.file.KernelDirectoryStructure import KernelDirectoryStructure
-from src.core.file.KernelRegistryFileStructure import \
-    KernelRegistryFileStructure
-from src.core.file.KernelSystemRootDirectoryStructure import \
-    KernelSystemRootDirectoryStructure
+from src.core.file.KernelRegistryFileStructure import KernelRegistryFileStructure
+from src.core.file.KernelSystemRootDirectoryStructure import (
+    KernelSystemRootDirectoryStructure,
+)
 from src.core.IOManager import IOManager
 from src.core.Logger import Logger
 from src.core.response.NullResponse import NullResponse
@@ -34,16 +40,19 @@ from src.decorator.test_command import test_command
 from src.decorator.verbosity import verbosity
 
 if TYPE_CHECKING:
-    from src.const.types import (CoreCommandArgsList, CoreCommandString,
-                                 OptionalCoreCommandArgsListOrDict,
-                                 StringsList)
-    from src.core.command.resolver.AbstractCommandResolver import \
-        AbstractCommandResolver
+    from src.const.types import (
+        CoreCommandArgsList,
+        CoreCommandString,
+        OptionalCoreCommandArgsListOrDict,
+        StringsList,
+    )
+    from src.core.command.resolver.AbstractCommandResolver import (
+        AbstractCommandResolver,
+    )
     from src.core.command.ScriptCommand import ScriptCommand
     from src.core.CommandRequest import CommandRequest
     from src.core.ErrorMessage import ErrorMessage
-    from src.core.file.AbstractFileSystemStructure import \
-        AbstractFileSystemStructure
+    from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
     from src.core.response.AbortResponse import AbortResponse
     from src.core.response.AbstractResponse import AbstractResponse
 

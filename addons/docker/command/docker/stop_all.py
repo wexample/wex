@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING, cast
 
 from src.const.types import ShellCommandsDeepList
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
+from src.core.response.InteractiveShellCommandResponse import \
+    InteractiveShellCommandResponse
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 

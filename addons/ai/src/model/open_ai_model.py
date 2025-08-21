@@ -3,9 +3,8 @@ from typing import Any, List, Optional
 from langchain.chains import create_tagging_chain
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
-    AbstractInteractionMode,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
+    AbstractInteractionMode
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
 

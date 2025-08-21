@@ -1,5 +1,17 @@
-from typing import (Any, Callable, Dict, List, Literal, Mapping, Match,
-                    Optional, Set, Tuple, TypedDict, Union)
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Match,
+    Optional,
+    Set,
+    Tuple,
+    TypedDict,
+    Union,
+)
 
 AddonNameType = Literal[
     "app",

@@ -8,13 +8,11 @@ from wexample_helpers.helpers.string import string_to_snake_case
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.const.app import APP_ENV_PROD
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.remote import (
-    remote_build_temp_push_dir,
-    remote_get_connexion_address,
-    remote_get_connexion_options,
-    remote_get_environment_ip,
-    remote_get_login_command,
-)
+from addons.app.helper.remote import (remote_build_temp_push_dir,
+                                      remote_get_connexion_address,
+                                      remote_get_connexion_options,
+                                      remote_get_environment_ip,
+                                      remote_get_login_command)
 from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
 from src.const.types import FileSystemStructureSchema
 from src.core.response.DictResponse import DictResponse

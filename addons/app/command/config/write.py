@@ -6,10 +6,8 @@ import yaml
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import (
-    docker_exec_app_compose,
-    docker_get_app_compose_files,
-)
+from addons.app.helper.docker import (docker_exec_app_compose,
+                                      docker_get_app_compose_files)
 from src.decorator.option import option
 from src.helper.prompt import prompt_progress_steps
 

@@ -1,4 +1,5 @@
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+from addons.ai.src.assistant.subject.abstract_chat_subject import \
+    AbstractChatSubject
 from src.const.types import StringKeysDict
 
 SUBJECT_PREVIOUS_RESPONSE_COMMAND_FETCH_URL = "fetch_url"

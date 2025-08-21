@@ -2,7 +2,8 @@ import html
 import os
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
 
-from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
+from langchain_community.chat_message_histories.in_memory import \
+    ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from prompt_toolkit import HTML, print_formatted_text
@@ -13,44 +14,43 @@ from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.command.agent_command import AgentCommand
 from addons.ai.src.assistant.command.chat_command import ChatCommand
-from addons.ai.src.assistant.command.copy_clipboard_command import CopyClipboardCommand
+from addons.ai.src.assistant.command.copy_clipboard_command import \
+    CopyClipboardCommand
 from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.command.dir_search_command import DirSearchCommand
 from addons.ai.src.assistant.command.exit_command import ExitCommand
 from addons.ai.src.assistant.command.file_patch_command import FilePatchCommand
-from addons.ai.src.assistant.command.file_rewrite_command import FileRewriteCommand
-from addons.ai.src.assistant.command.file_search_command import FileSearchCommand
+from addons.ai.src.assistant.command.file_rewrite_command import \
+    FileRewriteCommand
+from addons.ai.src.assistant.command.file_search_command import \
+    FileSearchCommand
 from addons.ai.src.assistant.command.format_command import FormatCommand
 from addons.ai.src.assistant.command.function_command import FunctionCommand
 from addons.ai.src.assistant.command.help_command import HelpCommand
-from addons.ai.src.assistant.command.investigate_command import InvestigateCommand
+from addons.ai.src.assistant.command.investigate_command import \
+    InvestigateCommand
 from addons.ai.src.assistant.command.menu_command import MenuCommand
-from addons.ai.src.assistant.command.new_conversation_command import (
-    NewConversationCommand,
-)
+from addons.ai.src.assistant.command.new_conversation_command import \
+    NewConversationCommand
 from addons.ai.src.assistant.command.subject_command import SubjectCommand
 from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.url_search_command import UrlSearchCommand
 from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
-from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
+from addons.ai.src.assistant.subject.abstract_chat_subject import \
+    AbstractChatSubject
+from addons.ai.src.assistant.subject.default_chat_subject import \
+    DefaultChatSubject
 from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from addons.ai.src.assistant.utils.globals import (
-    AI_COMMAND_PREFIX,
-    ASSISTANT_MENU_ACTION_BACK,
-    ASSISTANT_MENU_ACTION_CONVERSATIONS,
-    ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
-    ASSISTANT_MENU_ACTION_EXIT,
-    ASSISTANT_MENU_ACTION_LANGUAGE,
-    ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
-    ASSISTANT_MENU_ACTION_PERSONALITY,
-    ASSISTANT_MENU_ACTION_THEME,
-    ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
-)
+    AI_COMMAND_PREFIX, ASSISTANT_MENU_ACTION_BACK,
+    ASSISTANT_MENU_ACTION_CONVERSATIONS, ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
+    ASSISTANT_MENU_ACTION_EXIT, ASSISTANT_MENU_ACTION_LANGUAGE,
+    ASSISTANT_MENU_ACTION_NEW_CONVERSATION, ASSISTANT_MENU_ACTION_PERSONALITY,
+    ASSISTANT_MENU_ACTION_THEME, ASSISTANT_MENU_ACTIONS_TRANSLATIONS)
 
 # Explicit exports for tests and external imports
 __all__ = [
@@ -60,12 +60,10 @@ __all__ = [
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
-from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
+from addons.ai.src.model.ollama_model import (MODEL_NAME_OLLAMA_MISTRAL,
+                                              OllamaModel)
 from addons.ai.src.model.open_ai_model import (
-    MODEL_NAME_OPEN_AI_GPT_3_5_TURBO,
-    MODEL_NAME_OPEN_AI_GPT_4,
-    OpenAiModel,
-)
+    MODEL_NAME_OPEN_AI_GPT_3_5_TURBO, MODEL_NAME_OPEN_AI_GPT_4, OpenAiModel)
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME

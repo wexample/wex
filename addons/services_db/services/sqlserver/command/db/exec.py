@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
 from addons.app.decorator.app_command import app_command
-from addons.services_db.services.sqlserver.command.db.go import sqlserver__db__go
+from addons.services_db.services.sqlserver.command.db.go import \
+    sqlserver__db__go
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
 

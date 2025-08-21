@@ -1,20 +1,18 @@
 import os.path
 from typing import TYPE_CHECKING, Dict, List, cast
 
-from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import (
-    AbstractVectorStoreInteractionMode,
-)
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
-    AbstractInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
+from addons.ai.src.assistant.interaction_mode.abstract_vector_store_interaction_mode import \
+    AbstractVectorStoreInteractionMode
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
+    AbstractInteractionResponse
+from addons.ai.src.assistant.interaction_response.string_interaction_response import \
+    StringInteractionResponse
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.helper.file import file_build_signature
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+    from addons.ai.src.assistant.subject.file_chat_subject import \
+        FileChatSubject
 
 
 class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):

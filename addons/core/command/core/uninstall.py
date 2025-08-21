@@ -9,7 +9,8 @@ from addons.system.command.system.is_docker import system__system__is_docker
 from src.const.globals import CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
+from src.helper.user import (get_sudo_username,
+                             get_user_or_sudo_user_home_data_path)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel

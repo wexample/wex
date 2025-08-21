@@ -2,20 +2,26 @@ import os
 from typing import TYPE_CHECKING, Any, Optional
 
 from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
-from src.const.types import (CoreCommandArgsList, CoreCommandArgsListOrDict,
-                             OptionalCoreCommandArgsListOrDict, StringKeysDict,
-                             StringsMatch)
+from src.const.types import (
+    CoreCommandArgsList,
+    CoreCommandArgsListOrDict,
+    OptionalCoreCommandArgsListOrDict,
+    StringKeysDict,
+    StringsMatch,
+)
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.click import (click_args_convert_dict_to_args,
-                              click_args_convert_dict_to_long_names_dict,
-                              click_args_convert_to_dict)
+from src.helper.click import (
+    click_args_convert_dict_to_args,
+    click_args_convert_dict_to_long_names_dict,
+    click_args_convert_to_dict,
+)
 
 if TYPE_CHECKING:
-    from src.core.command.resolver.AbstractCommandResolver import \
-        AbstractCommandResolver
-    from src.core.command.runner.AbstractCommandRunner import \
-        AbstractCommandRunner
+    from src.core.command.resolver.AbstractCommandResolver import (
+        AbstractCommandResolver,
+    )
+    from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 
 class CommandRequest(BaseClass):
@@ -126,13 +132,13 @@ class CommandRequest(BaseClass):
             runner: Optional["AbstractCommandRunner"] = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
-                from src.core.command.runner.PythonCommandRunner import \
-                    PythonCommandRunner
+                from src.core.command.runner.PythonCommandRunner import (
+                    PythonCommandRunner,
+                )
 
                 runner = PythonCommandRunner(self.resolver.kernel)
             elif extension == COMMAND_EXTENSION_YAML:
-                from src.core.command.runner.YamlCommandRunner import \
-                    YamlCommandRunner
+                from src.core.command.runner.YamlCommandRunner import YamlCommandRunner
 
                 runner = YamlCommandRunner(self.resolver.kernel)
 

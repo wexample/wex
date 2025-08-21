@@ -2,7 +2,8 @@ from typing import cast
 
 from addons.app.command.webhook.exec import app__webhook__exec
 from addons.app.command.webhook.status import app__webhook__status
-from addons.app.command.webhook.status_process import app__webhook__status_process
+from addons.app.command.webhook.status_process import \
+    app__webhook__status_process
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 
 WEBHOOK_LISTENER_ROUTES_MAP = cast(

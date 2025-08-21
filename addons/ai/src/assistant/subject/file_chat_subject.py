@@ -1,7 +1,8 @@
 import os.path
 from typing import Optional
 
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
+from addons.ai.src.assistant.subject.abstract_chat_subject import \
+    AbstractChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from src.const.types import StringKeysDict
 from src.helper.prompt import prompt_pick_a_file
@@ -52,9 +53,8 @@ class FileChatSubject(AbstractChatSubject):
 
     # Test helper: expose examples loader through the subject API for convenience.
     def load_example_patch(self, name: str) -> StringKeysDict:
-        from addons.ai.src.assistant.interaction_mode.file_patch_interaction_mode import (
-            FilePatchInteractionMode,
-        )
+        from addons.ai.src.assistant.interaction_mode.file_patch_interaction_mode import \
+            FilePatchInteractionMode
 
         # Delegate to the interaction mode implementation
         return FilePatchInteractionMode(self.assistant).load_example_patch(name)

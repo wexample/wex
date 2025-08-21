@@ -1,13 +1,11 @@
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from addons.app.decorator.option_webhook_listener import option_webhook_listener
+from addons.app.decorator.option_webhook_listener import \
+    option_webhook_listener
 from addons.system.command.process.by_port import system__process__by_port
-from src.const.globals import (
-    COMMAND_TYPE_ADDON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-    WEBHOOK_LISTEN_PORT_DEFAULT,
-)
+from src.const.globals import (COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_NONE,
+                               KERNEL_RENDER_MODE_TERMINAL,
+                               WEBHOOK_LISTEN_PORT_DEFAULT)
 from src.const.types import StringKeysDict
 from src.core.response.DictResponse import DictResponse
 from src.core.response.KeyValueResponse import KeyValueResponse

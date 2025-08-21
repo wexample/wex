@@ -5,14 +5,17 @@ import yaml
 from wexample_helpers.helpers.args import args_replace_one
 
 from src.const.types import BasicInlineValue
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
-    AbstractQueuedCollectionResponseQueueManager
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
+    AbstractQueuedCollectionResponseQueueManager,
+)
 from src.helper.process import process_post_exec_function
 
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.response.QueuedCollectionResponse import (
-        QueuedCollectionResponse, QueuedCollectionStepsList)
+        QueuedCollectionResponse,
+        QueuedCollectionStepsList,
+    )
 
 
 class DefaultQueuedCollectionResponseQueueManager(

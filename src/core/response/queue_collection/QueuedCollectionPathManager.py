@@ -10,8 +10,10 @@ from src.core.response.AbstractResponse import AbstractResponse, HasResponse
 
 if TYPE_CHECKING:
     from src.core.response.QueuedCollectionResponse import (
-        QueuedCollectionResponse, QueuedCollectionStepsList,
-        QueuedCollectionStepValue)
+        QueuedCollectionResponse,
+        QueuedCollectionStepsList,
+        QueuedCollectionStepValue,
+    )
 
 
 class QueuedCollectionPathManager(HasResponse, HasRequest):

@@ -72,7 +72,9 @@ def routing_is_allowed_route(url: str, routes: WebhookListenerRoutesMap) -> bool
 
 def routing_build_webhook_route_map(kernel: "Kernel") -> WebhookListenerRoutesMap:
     from addons.app.WebhookHttpRequestHandler import (
-        WEBHOOK_COMMAND_PATH_PLACEHOLDER, WEBHOOK_COMMAND_PORT_PLACEHOLDER)
+        WEBHOOK_COMMAND_PATH_PLACEHOLDER,
+        WEBHOOK_COMMAND_PORT_PLACEHOLDER,
+    )
 
     routes_map = WEBHOOK_LISTENER_ROUTES_MAP.copy()
     for route_name in routes_map:

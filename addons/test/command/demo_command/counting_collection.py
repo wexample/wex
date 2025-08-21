@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
-    AbstractQueuedCollectionResponseQueueManager,
-)
+from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import \
+    AbstractQueuedCollectionResponseQueueManager
 from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option

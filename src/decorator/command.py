@@ -1,7 +1,6 @@
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import AnyCallable, Args, Kwargs
-from src.core.command.ScriptCommand import (DecoratedScriptCommand,
-                                            ScriptCommand)
+from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 
 # Define your custom decorator
