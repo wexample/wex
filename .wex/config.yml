@@ -17,6 +17,10 @@ env:
   runner:
     server:
       ip: 51.210.107.210
+files_state:
+  manager:
+    class: WexWorkdir
+    file: .wex/python/files_state/pip_suite_workdir.py
 git:
   main_branch: master
 global:
