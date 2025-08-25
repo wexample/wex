@@ -1,7 +1,7 @@
 from typing import Optional
 
 from wexample_config.const.types import DictConfig
-from wexample_wex_addon_dev_python.workdir.python_workdir import PythonWorkdir
+from wexample_filestate_python.workdir.python_workdir import PythonWorkdir
 
 
 class WexWorkdir(PythonWorkdir):
