@@ -48,8 +48,8 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
         # Execute in standard mode in a subshell.
         # Can take few seconds.
         self.log("Running collection test in standard mode...")
-        current_verbosity = self.kernel.verbosity
-        self.kernel.verbosity = 0
+        current_verbosity = self.kernel.default_context_verbosity
+        self.kernel.default_context_verbosity = 0
 
         internal_command = self.kernel.get_command_resolver(
             test__demo_command__response_collection.command_type
@@ -65,7 +65,7 @@ class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
             .stdout.decode("utf-8")
             .strip()
         )
-        self.kernel.verbosity = current_verbosity
+        self.kernel.default_context_verbosity = current_verbosity
 
         self.write_test_result(
             "response_collection_b",
