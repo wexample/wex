@@ -3,3 +3,6 @@ wexample-wex-core
 wexample-wex-addon-app
 wexample-wex-addon-filestate
 wexample-wex-addon-dev-python
+wexample-wex-addon-dev-php
+wexample-wex-addon-dev-css
+wexample-wex-addon-dev-javascript

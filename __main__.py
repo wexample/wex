@@ -3,6 +3,12 @@
 
 if __name__ == "__main__":
     try:
+        from wexample_wex_addon_dev_php.php_addon_manager import (
+            PhpAddonManager,
+        )
+        from wexample_wex_addon_dev_javascript.javascript_addon_manager import (
+            JavascriptAddonManager,
+        )
         from wexample_wex_addon_dev_python.python_addon_manager import (
             PythonAddonManager,
         )
@@ -20,6 +26,8 @@ if __name__ == "__main__":
                 AppAddonManager,
                 DefaultAddonManager,
                 FilestateAddonManager,
+                JavascriptAddonManager,
+                PhpAddonManager,
                 PythonAddonManager,
                 # TestAddonManager, TODO Add it only when testing core.
             ])
