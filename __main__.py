@@ -21,7 +21,9 @@ if __name__ == "__main__":
         from wexample_wex_addon_app.app_addon_manager import AppAddonManager
 
         (
-            Kernel(entrypoint_path=__file__)
+            Kernel(
+                entrypoint_path=__file__,
+            )
             .setup(addons=[
                 AppAddonManager,
                 DefaultAddonManager,
