@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Optional, cast
 
 from wexample_helpers.helpers.string import string_to_snake_case
@@ -27,7 +28,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
-    ) -> Optional[str]:
+    ) -> Path | None:
         match = request.get_match()
         # Unable to find command path if no addon name found.
         if match.group(1) is None:

@@ -235,7 +235,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     @abstractmethod
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
-    ) -> Optional[str]:
+    ) -> Path | None:
         pass
 
     def build_path_or_fail(

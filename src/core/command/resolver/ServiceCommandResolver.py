@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional, cast
 
 from wexample_helpers.helpers.string import string_to_snake_case
@@ -63,7 +64,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
-    ) -> Optional[str]:
+    ) -> Path | None:
         match = request.get_match()
         name = string_to_snake_case(match[1])
         path = service_get_dir(self.kernel, name)

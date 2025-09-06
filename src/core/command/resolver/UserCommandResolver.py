@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
@@ -45,7 +46,7 @@ class UserCommandResolver(AbstractCommandResolver):
 
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
-    ) -> Optional[str]:
+    ) -> Path | None:
         base_path = self.get_base_path()
         if not base_path:
             return None
