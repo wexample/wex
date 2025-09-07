@@ -8,7 +8,7 @@ The goal is to keep Python files and class definitions organized, predictable, a
 ## File-Level Ordering
 
 - **Module docstring** (single `"""` allowed at top-level).
-- **`from __future__ import …`** (always first if present).
+- **`from __future__ import …`** (always first if present).``
 - **Imports** (sorted separately with `isort`).
 - **`if TYPE_CHECKING:` block** (typing-only imports).
 - **Module metadata** (`__all__`, `__version__`, `__author__`, …).
@@ -32,10 +32,10 @@ The goal is to keep Python files and class definitions organized, predictable, a
 ## Class-Level Ordering
 
 - **Class header & decorators** (`@dataclass`, `@final`, `metaclass=…`).
-- **Class docstring**.
+- **Class docstring**.``
 - **Class attributes**
 
-  * Special ones first (`__slots__`, `__match_args__`, pydantic `Config`, …).
+  * Special ones first (`__slots__`, `__match_args__`, pydantic `Config`, …).``
   * Then public (A–Z).
   * Then private/protected (A–Z).
 - **Special methods (`__dunder__`)**
