@@ -6,7 +6,7 @@ The goals are: consistent field declarations, automatic `__init__`, and clear di
 ### Rules
 
 * Always decorate classes with `@base_class`
-* Use `public_field` for visible fields
+* Use `public_field` for visible fields``
 
     * `default=...` for scalars
     * `factory=...` for mutable containers (`list`, `dict`, `set`)
@@ -14,7 +14,7 @@ The goals are: consistent field declarations, automatic `__init__`, and clear di
 
     * Always excluded from `__init__`
 * Add an English `description` to **every field**
-* If extra initialization logic is needed, use `__attrs_post_init__` instead of overriding `__init__`
+* If extra initialization logic is needed, use `__attrs_post_init__` instead of overriding `__init__`, with propagating call to `super().__attrs_post_init__()`
 
 ### Example
 
@@ -38,6 +38,8 @@ class ExampleClass(BaseClass):
     )
 
     def __attrs_post_init__(self) -> None:
+      def __attrs_post_init__(self) -> None:
+        super().__attrs_post_init__()
         if not self.name:
             raise ValueError("name is required")
 ```
