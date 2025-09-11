@@ -325,12 +325,11 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def build_command_path(
             self, base_path: str, extension: str, subdir: Optional[str], command_path: str
-    ) -> Path:
-        base = Path(base_path)
+    ) -> str:
         if subdir:
-            base = base / subdir
+            base_path += f"{subdir}/"
 
-        return base / "command" / f"{command_path}.{extension}"
+        return os.path.join(base_path, "command", command_path + "." + extension)
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
