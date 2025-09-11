@@ -33,7 +33,7 @@ The v5 command system is implemented in `/home/weeger/Desktop/WIP/WEB/WEXAMPLE/W
    - No command resolver implementation found in wex-core
 
 3. **Testing**:
-   - `cli/wex` Should not fail
+   - `bin/wex` Should not fail
 
 ### Addon Commands Implementation
 

@@ -9,7 +9,7 @@ Test if the core command works using these methods:
 wex hi  # Returns "hi!"
 
 # From wex directory (no global install required)
-bash cli/wex hi  # Returns "hi!"
+bash bin/wex hi  # Returns "hi!"
 ```
 
 ## Testing
@@ -23,7 +23,7 @@ Execute all tests including core and every addon tests suite.
 
 ```bash
 # Run all tests with integrated logging
-bash cli/wex test::run/all
+bash bin/wex test::run/all
 ```
 
 ### Using Pytest Directly
