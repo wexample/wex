@@ -3,7 +3,7 @@
 !/**/.gitkeep
 
 # App environment.
-/.env
+.env
 
 # AI Generated embeddings
 /ai/embeddings/*

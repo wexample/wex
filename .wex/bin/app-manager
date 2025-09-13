@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+APP_ROOT="${APP_ROOT:-$ROOT}"
+AM_DIR="$ROOT/.wex/python/app_manager"
+
+# Require PDM to manage env and dependencies declared in pyproject.toml
+if ! command -v pdm >/dev/null 2>&1; then
+  echo Error: 'pdm' is required but not installed. Please install PDM: https://pdm.fming.dev >&2
+  exit 1
+fi
+
+# Install/sync dependencies as per $AM_DIR/pyproject.toml (creates/uses project venv)
+pdm --project "$AM_DIR" install -q
+
+export APP_ROOT
+exec pdm --project "$AM_DIR" run python -m wexample_wex_core.app_manager -- "$@"
