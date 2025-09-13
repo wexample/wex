@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from addons.test.command.command.has_attached import \
-    test__command__has_attached
+from addons.test.command.command.has_attached import test__command__has_attached
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.attach import attach
 from src.decorator.command import command

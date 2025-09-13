@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.core.response.InteractiveShellCommandResponse import \
-    InteractiveShellCommandResponse
+from src.core.response.InteractiveShellCommandResponse import (
+    InteractiveShellCommandResponse,
+)
 from src.decorator.command import command
 
 if TYPE_CHECKING:

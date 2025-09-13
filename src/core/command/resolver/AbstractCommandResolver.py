@@ -326,7 +326,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         return self.build_command_from_parts(parts)
 
     def build_command_path(
-            self, base_path: str, extension: str, subdir: Optional[str], command_path: str
+        self, base_path: str, extension: str, subdir: Optional[str], command_path: str
     ) -> str:
         if subdir:
             base_path += f"{subdir}/"

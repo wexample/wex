@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.services_db.services.postgres.command.db.connect import \
-    postgres__db__connect
+from addons.services_db.services.postgres.command.db.connect import (
+    postgres__db__connect,
+)
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:

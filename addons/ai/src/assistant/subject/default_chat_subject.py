@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from addons.ai.src.assistant.subject.abstract_chat_subject import \
-    AbstractChatSubject
+from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 
 SUBJECT_DEFAULT_COMMAND_CHAT = "chat"
 SUBJECT_DEFAULT_COMMAND_DEFAULT = "default"

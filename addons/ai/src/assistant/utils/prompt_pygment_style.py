@@ -1,9 +1,21 @@
 from __future__ import annotations
 
 from pygments.style import Style
-from pygments.token import (Comment, Error, Generic, Keyword, Literal, Name,
-                            Number, Operator, Other, Punctuation, String, Text,
-                            Whitespace)
+from pygments.token import (
+    Comment,
+    Error,
+    Generic,
+    Keyword,
+    Literal,
+    Name,
+    Number,
+    Operator,
+    Other,
+    Punctuation,
+    String,
+    Text,
+    Whitespace,
+)
 
 background = "#282a36"
 foreground = "#f8f8f2"

@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.command.ScriptCommand import (DecoratedScriptCommand,
-                                                ScriptCommand)
+    from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 
 def ai_tool() -> "DecoratedScriptCommand":

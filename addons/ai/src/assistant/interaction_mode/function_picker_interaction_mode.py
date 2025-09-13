@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import \
-    AbstractInteractionMode
-from addons.ai.src.assistant.interaction_response.abstract_interaction_response import \
-    AbstractInteractionResponse
-from addons.ai.src.assistant.interaction_response.null_interaction_response import \
-    NullInteractionResponse
-from addons.ai.src.assistant.interaction_response.string_interaction_response import \
-    StringInteractionResponse
-from addons.ai.src.assistant.utils.globals import \
-    AI_FUNCTION_DISPLAY_A_CUCUMBER
+from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
+    AbstractInteractionMode,
+)
+from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
+    AbstractInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.null_interaction_response import (
+    NullInteractionResponse,
+)
+from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+    StringInteractionResponse,
+)
+from addons.ai.src.assistant.utils.globals import AI_FUNCTION_DISPLAY_A_CUCUMBER
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 

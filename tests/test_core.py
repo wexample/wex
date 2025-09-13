@@ -26,6 +26,7 @@ class TestCore(AbstractTestCase):
     def test_init(self) -> None:
         from src.const.globals import CORE_COMMAND_NAME, OWNER_USERNAME, ROOT_USERNAME
         from src.helper.user import get_user_or_sudo_user
+
         user = get_user_or_sudo_user()
         message = f"Tests should be ran with sudo from non sudo user"
 
@@ -46,12 +47,14 @@ class TestCore(AbstractTestCase):
     def test_help(self) -> None:
         from src.core.response.AbortResponse import AbortResponse
         from addons.core.command.logo.show import core__logo__show
+
         response = self.kernel.run_function(core__logo__show, {"help": True})
 
         self.assertTrue(isinstance(response, AbortResponse))
 
     def test_convert_args_to_dict(self) -> None:
         from src.helper.click import click_args_convert_to_dict
+
         args = click_args_convert_to_dict(
             create_fake_click_function(),
             [
@@ -73,6 +76,7 @@ class TestCore(AbstractTestCase):
 
     def test_convert_dict_to_args(self) -> None:
         from src.helper.click import click_args_convert_dict_to_args
+
         args = click_args_convert_dict_to_args(
             create_fake_click_function(),
             {
@@ -88,6 +92,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_invalid(self) -> None:
         from src.core.FatalError import FatalError
+
         with self.assertRaises(FatalError):
             self.kernel.call_command("something/unexpected")
 
@@ -102,6 +107,7 @@ class TestCore(AbstractTestCase):
 
     def test_call_command_user(self) -> None:
         from addons.core.command.command.create import core__command__create
+
         self.kernel.run_function(
             core__command__create, {"command": "~test/command-call"}
         )
@@ -124,9 +130,13 @@ class TestCore(AbstractTestCase):
     def test_tests_coverage(self) -> None:
         from src.const.globals import COMMAND_TYPE_ADDON
         from addons.core.command.test.create import core__test__create
-        from src.helper.test import file_path_to_test_class_name, file_path_to_test_method
+        from src.helper.test import (
+            file_path_to_test_class_name,
+            file_path_to_test_method,
+        )
         from src.helper.module import module_load_from_file
         from src.helper.registry import registry_get_all_commands_from_registry_part
+
         for command, command_data in registry_get_all_commands_from_registry_part(
             self.kernel.get_command_resolver(COMMAND_TYPE_ADDON).get_registry_data()
         ).items():
@@ -164,6 +174,7 @@ class TestCore(AbstractTestCase):
         from src.const.globals import COMMAND_TYPE_ADDON
         from addons.core.command.logo.show import core__logo__show
         from addons.core.command.version.new_write import core__version__new_write
+
         self.assertEqual(
             self.kernel.get_command_resolver(
                 COMMAND_TYPE_ADDON
@@ -179,4 +190,5 @@ class TestCore(AbstractTestCase):
 
     def test_message_next_command(self) -> None:
         from addons.core.command.logo.show import core__logo__show
+
         self.kernel.io.message_next_command(core__logo__show)

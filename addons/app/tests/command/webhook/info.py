@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from addons.system.tests.command.process.by_port import \
-    TestSystemCommandProcessByPort
+from addons.system.tests.command.process.by_port import TestSystemCommandProcessByPort
 from tests.AbstractTestCase import AbstractTestCase
 
 
