@@ -157,9 +157,7 @@ class Kernel(BaseClass):
 
         self.handle_core_args()
 
-    def get_path(
-        self, name: str, sub_dirs: list[str] | None = None
-    ) -> str | NoReturn:
+    def get_path(self, name: str, sub_dirs: list[str] | None = None) -> str | NoReturn:
         """Get the path associated with the given name."""
         if name in self.path:
             base_path = self.path[name]
