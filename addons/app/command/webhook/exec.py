@@ -16,10 +16,9 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
 
+from typing import TypedDict
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
-
-from typing import TypedDict
 
 
 class SourceData(TypedDict, total=False):

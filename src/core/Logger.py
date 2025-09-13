@@ -16,13 +16,12 @@ from src.const.types import (
     StringsList,
 )
 from src.helper.file import file_set_user_or_sudo_user_owner
-
-LOG_STATUS_COMPLETE = "complete"
-LOG_STATUS_STARTED = "started"
-
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
     from src.utils.kernel import Kernel
+
+LOG_STATUS_COMPLETE = "complete"
+LOG_STATUS_STARTED = "started"
 
 
 class LoggerLogDataError(TypedDict):
