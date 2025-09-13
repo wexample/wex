@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional, cast
 
 from addons.app.command.remote.exec import app__remote__exec

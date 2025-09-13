@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from wexample_helpers.helpers.json import json_load_if_valid

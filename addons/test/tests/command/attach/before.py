@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.test.command.attach.before import test__attach__before
 from tests.AbstractTestCase import AbstractTestCase
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.test.command.logging.log import test__logging__log
 from src.const.globals import COMMAND_TYPE_ADDON
 from tests.AbstractTestCase import AbstractTestCase

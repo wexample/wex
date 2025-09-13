@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Dict, Optional, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import \

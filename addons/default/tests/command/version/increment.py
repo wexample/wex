@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.default.command.version.increment import \
     default__version__increment
 from src.const.globals import VERSION_DEFAULT

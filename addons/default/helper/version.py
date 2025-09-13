@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.const.types import StringsList, VersionDescriptor
 
 

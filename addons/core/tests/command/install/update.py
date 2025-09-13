@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.install.update import core__install__update
 from src.const.globals import COMMAND_TYPE_ADDON
 from tests.AbstractTestCase import AbstractTestCase

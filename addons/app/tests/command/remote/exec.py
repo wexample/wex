@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.remote.exec import app__remote__exec
 from addons.app.helper.test import DEFAULT_ENVIRONMENT_TEST_REMOTE
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

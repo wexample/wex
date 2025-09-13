@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from addons.app.command.version.get import app__version__get

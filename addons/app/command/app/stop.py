@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Callable, List
 
 from addons.app.command.app.perms import app__app__perms

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional, cast
 
 from wexample_helpers.helpers.args import args_parse_dict

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.default.command.config.get import default__config__get
 from addons.default.command.config.set import default__config__set
 from tests.AbstractTestCase import AbstractTestCase

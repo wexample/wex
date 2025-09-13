@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable, cast
 
 from src.const.types import AnyCallable, Args, Kwargs

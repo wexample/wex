@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import cast
 
 from addons.app.command.webhook.exec import app__webhook__exec

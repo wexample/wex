@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.const.types import FileSystemStructureSchema
 from src.core.file.DirectoryStructure import DirectoryStructure
 

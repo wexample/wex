@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import grp
 import os
 import pwd

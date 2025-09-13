@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.env.get import app__env__get
 from addons.app.command.env.set import app__env__set
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

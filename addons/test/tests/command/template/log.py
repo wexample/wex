@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.test.command.template.log import test__template__log
 from tests.AbstractTestCase import AbstractTestCase
 

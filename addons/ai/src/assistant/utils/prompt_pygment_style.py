@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pygments.style import Style
 from pygments.token import (Comment, Error, Generic, Keyword, Literal, Name,
                             Number, Operator, Other, Punctuation, String, Text,

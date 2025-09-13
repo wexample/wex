@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.system.command.process.by_port import system__process__by_port
 from addons.system.tests.AbstractPortTestCase import AbstractPortTestCase
 

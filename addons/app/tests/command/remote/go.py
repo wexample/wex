@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.remote.go import app__remote__go
 from addons.app.const.app import APP_ENV_TEST
 from tests.AbstractTestCase import AbstractTestCase

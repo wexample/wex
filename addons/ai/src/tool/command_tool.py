@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from langchain.tools import BaseTool
 
 from src.const.types import Args, Kwargs

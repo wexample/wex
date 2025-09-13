@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from wexample_helpers.helpers.dict import DICT_ITEM_EXISTS_ACTION_MERGE

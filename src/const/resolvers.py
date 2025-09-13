@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List
 
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver

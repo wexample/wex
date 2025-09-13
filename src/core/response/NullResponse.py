@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL

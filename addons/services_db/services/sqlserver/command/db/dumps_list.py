@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os.path
 from glob import glob
 from typing import TYPE_CHECKING

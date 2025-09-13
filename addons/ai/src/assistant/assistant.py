@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import html
 import os
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast

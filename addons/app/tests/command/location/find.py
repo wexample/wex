@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from wexample_helpers.helpers.directory import directory_execute_inside
 
 from addons.app.command.location.find import app__location__find

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.hook.exec import app__hook__exec
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import COMMAND_CHAR_APP, COMMAND_CHAR_SERVICE

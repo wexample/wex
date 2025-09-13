@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from addons.app.const.app import APP_DIR_APP_DATA

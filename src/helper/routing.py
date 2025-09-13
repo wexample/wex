@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from typing import TYPE_CHECKING, Any, Dict, Optional, TypedDict, cast
 from urllib.parse import parse_qs, urlparse

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import shutil
 import time
 from http.server import HTTPServer

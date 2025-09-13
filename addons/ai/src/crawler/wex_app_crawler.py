@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.ai.src.crawler.app_crawler import CrawlerTreeItem
 from addons.ai.src.crawler.python_app_crawler import PythonAppCrawler
 

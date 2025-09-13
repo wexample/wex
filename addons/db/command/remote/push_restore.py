@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from addons.app.command.db.restore import app__db__restore

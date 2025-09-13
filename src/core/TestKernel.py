@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.utils.kernel import Kernel
 

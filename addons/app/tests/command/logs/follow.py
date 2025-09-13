@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.logs.follow import app__logs__follow
 from tests.AbstractTestCase import AbstractTestCase
 

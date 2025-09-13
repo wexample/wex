@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.app.exec import app__app__exec
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 from src.core.FatalError import FatalError

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from addons.system.command.own.this import system__own__this

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 COLOR_BLUE = "\033[0;34m"
 COLOR_CYAN = "\033[0;36m"
 COLOR_DEFAULT = "\033[0m"

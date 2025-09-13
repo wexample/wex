@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.notification.notify import app__notification__notify
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 

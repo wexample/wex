@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.system.command.disk.spaces import system__disk__spaces
 from tests.AbstractTestCase import AbstractTestCase
 

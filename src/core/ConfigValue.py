@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 from src.const.types import AnyList, AppConfigValue, StringKeysDict

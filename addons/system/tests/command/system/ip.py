@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.system.command.system.ip import system__system__ip
 from tests.AbstractTestCase import AbstractTestCase
 

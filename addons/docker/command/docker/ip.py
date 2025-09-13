@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from addons.system.command.os.name import OS_NAME_MAC, system__os__name

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 from addons.app.const.app import APP_ENV_LOCAL, APP_ENV_PROD

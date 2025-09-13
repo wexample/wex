@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from addons.core.command.logs.rotate import core__logs__rotate

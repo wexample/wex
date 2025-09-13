@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.src.AppCommand import AppCommand
 from src.const.types import AnyCallable, Args, Kwargs
 from src.decorator.command import command

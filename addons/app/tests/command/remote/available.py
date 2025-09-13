@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.remote.available import app__remote__available
 from addons.app.const.app import APP_ENV_LOCAL
 from tests.AbstractTestCase import AbstractTestCase

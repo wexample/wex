@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from addons.ai.src.assistant.assistant import (ASSISTANT_MENU_ACTION_BACK,

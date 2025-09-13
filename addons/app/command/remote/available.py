@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from http.client import HTTPConnection
 from typing import TYPE_CHECKING

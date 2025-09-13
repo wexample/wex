@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 
 from addons.test.command.return_type.table import test__return_type__table

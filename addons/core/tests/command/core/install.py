@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.core.install import core__core__install
 from tests.AbstractTestCase import AbstractTestCase
 

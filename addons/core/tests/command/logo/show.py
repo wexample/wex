@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.logo.show import core__logo__show
 from tests.AbstractTestCase import AbstractTestCase
 

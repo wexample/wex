@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
 from src.const.globals import CORE_COMMAND_NAME
 from src.const.types import FileSystemStructureSchema

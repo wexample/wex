@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.ai.command.talk.about_file import ai__talk__about_file
 from tests.AbstractTestCase import AbstractTestCase
 

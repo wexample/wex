@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.branch.ip import app__branch__ip
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

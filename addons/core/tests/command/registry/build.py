@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.registry.build import core__registry__build
 from tests.AbstractTestCase import AbstractTestCase
 

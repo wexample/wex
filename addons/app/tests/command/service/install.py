@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from addons.app.command.config.write import app__config__write

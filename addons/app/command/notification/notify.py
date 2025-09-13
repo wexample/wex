@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
 from src.const.globals import (COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON,

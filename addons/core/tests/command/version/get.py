@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.version.get import core__version__get
 from tests.AbstractTestCase import AbstractTestCase
 

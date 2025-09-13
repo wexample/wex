@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 UPGRADE_TYPE_MAJOR: str = "major"
 UPGRADE_TYPE_INTERMEDIATE: str = "intermediate"
 UPGRADE_TYPE_MINOR: str = "minor"

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.ai.src.assistant.subject.abstract_chat_subject import \
     AbstractChatSubject
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.test.command.logging.event import test__logging__event
 from tests.AbstractTestCase import AbstractTestCase
 

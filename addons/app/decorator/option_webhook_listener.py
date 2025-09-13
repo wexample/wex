@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import click
 
 from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.system.command.system.is_docker import system__system__is_docker
 from tests.AbstractTestCase import AbstractTestCase
 

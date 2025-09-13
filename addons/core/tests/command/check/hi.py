@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.check.hi import core__check__hi
 from tests.AbstractTestCase import AbstractTestCase
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Type
 
 from addons.ai.src.assistant.command.default_command import DefaultCommand

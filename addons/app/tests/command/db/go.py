@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 

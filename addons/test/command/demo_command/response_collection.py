@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Dict, cast
 
 from addons.test.command.demo_command.counting_collection import \

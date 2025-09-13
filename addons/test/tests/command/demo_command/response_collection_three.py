@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.test.command.demo_command.response_collection_three import (
     TEST_DEMO_COMMAND_THREE_RESULT_FUNCTION,
     TEST_DEMO_COMMAND_THREE_RESULT_ONE,

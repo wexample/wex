@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.app.exec import app__app__exec
 from addons.app.command.app.stop import app__app__stop
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

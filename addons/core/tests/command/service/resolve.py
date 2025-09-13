@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.core.command.service.resolve import core__service__resolve
 from tests.AbstractTestCase import AbstractTestCase
 

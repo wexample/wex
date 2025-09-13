@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.version.new_write import app__version__new_write
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

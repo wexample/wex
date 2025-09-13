@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.webhook.status import app__webhook__status
 from tests.AbstractTestCase import AbstractTestCase
 

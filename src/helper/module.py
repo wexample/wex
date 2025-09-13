@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import importlib
 from importlib.abc import Loader
 from importlib.machinery import ModuleSpec

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.hosts.update import app__hosts__update
 from tests.AbstractTestCase import AbstractTestCase
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional, cast
 
 from wexample_helpers.helpers.args import args_is_basic_value

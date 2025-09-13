@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, List, Optional
 
 from langchain.chains import create_tagging_chain

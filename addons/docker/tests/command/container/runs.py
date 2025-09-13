@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.docker.command.container.runs import docker__container__runs
 from tests.AbstractTestCase import AbstractTestCase
 

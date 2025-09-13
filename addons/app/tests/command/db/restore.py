@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.db.dump import app__db__dump
 from addons.app.command.db.restore import app__db__restore
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase

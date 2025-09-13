@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.app.command.domain.list import app__domain__list
 from addons.app.const.app import APP_DIR_APP_DATA_NAME
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME

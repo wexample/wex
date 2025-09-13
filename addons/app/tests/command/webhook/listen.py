@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 
 from addons.app.command.webhook.listen import app__webhook__listen

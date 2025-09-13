@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 def package_enable_logging() -> None:
     import logging
 

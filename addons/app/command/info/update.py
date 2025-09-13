@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.ai.src.crawler.app_crawler import CrawlerTreeItem
 from addons.ai.src.crawler.wex_app_crawler import WexAppCrawler
 from addons.app.const.app import APP_DIR_APP_DATA_NAME

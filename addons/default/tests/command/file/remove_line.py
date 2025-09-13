@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from addons.default.command.file.remove_line import default__file__remove_line
 from tests.AbstractTestCase import AbstractTestCase
 

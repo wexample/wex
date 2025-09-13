@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 from addons.system.command.os.name import system__os__name

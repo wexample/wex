@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from addons.core.command.core.cleanup import core__core__cleanup
