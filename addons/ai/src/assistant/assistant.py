@@ -53,12 +53,6 @@ from addons.ai.src.assistant.utils.globals import (
     ASSISTANT_MENU_ACTION_THEME,
     ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
 )
-
-# Explicit exports for tests and external imports
-__all__ = [
-    "AI_COMMAND_PREFIX",
-    "ASSISTANT_MENU_ACTION_BACK",
-]
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
@@ -77,6 +71,10 @@ from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+__all__ = [
+    "AI_COMMAND_PREFIX",
+    "ASSISTANT_MENU_ACTION_BACK",
+]
 
 
 class Assistant(AbsractKernelChild):
