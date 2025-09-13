@@ -20,19 +20,19 @@ if TYPE_CHECKING:
 
 
 class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
-    def get_vector_store_collection_name(self) -> str:
-        return "file-search"
 
     def get_file_subject(self) -> FileChatSubject:
         return cast("FileChatSubject", self.assistant.get_current_subject())
-
-    def get_storage_signature(self) -> str:
-        return file_build_signature(self.get_file_subject().file_path or "")
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
     ) -> dict[str, str]:
         return {"signature": self.get_storage_signature()}
+
+    def get_storage_signature(self) -> str:
+        return file_build_signature(self.get_file_subject().file_path or "")
+    def get_vector_store_collection_name(self) -> str:
+        return "file-search"
 
     def process_user_input(
         self,

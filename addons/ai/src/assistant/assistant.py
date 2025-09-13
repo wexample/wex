@@ -110,122 +110,125 @@ class Assistant(AbsractKernelChild):
             ],
         )
 
-    def _init_helper(self) -> None:
-        # Start AI helper app
-        response = self.kernel.run_function(
-            app__helper__start,
-            {
-                "name": HELPER_APP_AI_SHORT_NAME,
-                "create-network": False,
-            },
-        )
+    def chat(
+        self,
+        initial_prompt: str | None = None,
+    ) -> str | None:
+        self.commands[HelpCommand.name()].execute()
 
-        self.helper_app_dir = str(response.last())
-        current_workdir = os.getcwd()
+        while True:
+            try:
+                if initial_prompt:
+                    user_input = initial_prompt
+                    initial_prompt = None
+                else:
+                    user_input = self.prompt_manager.open()
 
-        self.assistant_app_manager = AppAddonManager(
-            self.kernel,
-            "assistant_app",
-            str(response.last()),
-        )
+                prompt_sections = self.split_prompt_sections(user_input)
 
-        # Correct workdir which changes due to app creation
-        os.chdir(current_workdir)
+                for index, prompt_section in enumerate(prompt_sections):
+                    if prompt_section.has_command():
+                        command = prompt_section.get_command()
 
-    def _init_models(self) -> None:
-        self._default_model: AbstractModel | None = None
-        self.models: dict[str, AbstractModel] = {
-            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self, MODEL_NAME_OLLAMA_MISTRAL),
-            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
-                self, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
-            ),
-            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(self, MODEL_NAME_OPEN_AI_GPT_4),
-        }
+                        if isinstance(command, ExitCommand):
+                            return ASSISTANT_MENU_ACTION_EXIT
+                        elif isinstance(command, MenuCommand):
+                            return None
+                    else:
+                        command = self.commands[DefaultCommand.name()]
 
-        self.set_default_model(self._initial_default_model)
+                    self.set_history_item(prompt_section.prompt, "user")
 
-    def _init_prompt(self) -> None:
-        self.prompt_manager = PromptManager(self)
-        self.spinner = Spinner()
+                    try:
+                        result = command.execute(
+                            prompt_section, prompt_sections[index + 1 :]
+                        )
+                        result_str = result.render()
+                        self.set_history_item(result_str, "ai")
 
-    def _init_commands(self) -> None:
-        commands = [
-            AgentCommand,
-            ChatCommand,
-            CopyClipboardCommand,
-            DefaultCommand,
-            DirSearchCommand,
-            ExitCommand,
-            FileRewriteCommand,
-            FileSearchCommand,
-            FilePatchCommand,
-            FormatCommand,
-            FunctionCommand,
-            HelpCommand,
-            InvestigateCommand,
-            MenuCommand,
-            NewConversationCommand,
-            SubjectCommand,
-            TerminalCommand,
-            UrlSearchCommand,
-            VetCommand,
-        ]
+                        if isinstance(result_str, str):
+                            self.print_ai(result_str)
+                    except Exception as e:
+                        import traceback
 
-        self.commands: dict[str, AbstractCommand] = {}
-        for command_type in commands:
-            # mypy: command_type is a concrete subclass, but as Type[AbstractCommand]
-            # it is considered abstract; cast to Any for instantiation.
-            self.commands[command_type.name()] = cast(Any, command_type)(self)
+                        self.kernel.io.error(
+                            f"Error during executing command: {str(e)}\n{traceback.format_exc()}",
+                            fatal=False,
+                        )
 
-    def _init_locales(self) -> None:
-        # languages.json is expected to be a dict[str, str]
-        self.languages = cast(
-            dict[str, str],
-            json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json"),
-        )
-        self.language = "en"
-        self.set_language(self.language)
+                        self.set_history_item(str(e), "error")
 
-    def set_language(self, code: str) -> None:
-        self.language = code
+                        # In cas of still running.
+                        self.spinner.stop()
 
-    def _init_subjects(self) -> None:
-        subjects = [DefaultChatSubject, DirChatSubject, FileChatSubject, UrlChatSubject]
+                self.last_prompt_sections = prompt_sections
+            except KeyboardInterrupt:
+                # User asked to quit
+                if not self.spinner.running:
+                    return ASSISTANT_MENU_ACTION_EXIT
+                # User asked to interrupt assistant.
+                else:
+                    self.spinner.stop()
+                    self.kernel.io.print(os.linesep)
 
-        self.subjects: dict[str, AbstractChatSubject] = {}
-        for subject_class in subjects:
-            subject = subject_class(self)
-            self.subjects[subject.name()] = subject
+    def extract_active_command(self, word: str) -> str | None:
+        commands = self.get_active_commands()
+        if word.startswith(AI_COMMAND_PREFIX):
+            # Split command and options
+            command_parts = self.split_command(word)
+            # First part is the command, normalized
+            command = command_parts[0].lower()
 
-        self.set_default_subject()
+            if command in commands:
+                return command
 
-    def _init_personalities(self) -> None:
-        personalities_path = (
-            f"{self.kernel.directory.path}addons/ai/samples/personalities/"
-        )
-        personalities = {}
+        return None
 
-        # Scan the directory for files and load their contents
-        for filename in os.listdir(personalities_path):
-            if filename.endswith(".yml"):
-                name_without_extension, _ = os.path.splitext(filename)
-                personalities[name_without_extension] = yaml_read(
-                    os.path.join(personalities_path, filename)
-                )
+    def get_active_commands(self) -> dict[str, AbstractCommand]:
+        commands = self.commands.copy()
 
-        self.personality: str = "default"
-        self.personalities = personalities
+        return commands
 
-    def _init_database(self) -> None:
-        self.database = DatabaseManager(self)
+    def get_current_subject(self) -> AbstractChatSubject:
+        self._validate__should_not_be_none(self.subject)
+        assert isinstance(self.subject, AbstractChatSubject)
 
-    def _init_user(self) -> None:
-        self.user = self.database.get_or_create_user()
+        return self.subject
 
-    def _init_conversation(self) -> None:
-        last_conversation = self.database.get_last_conversation()
+    def get_model(self, name: str | None = None) -> AbstractModel:
+        model = self.models[name] if name else self._default_model
+        self._validate__should_not_be_none(model)
+        assert isinstance(model, AbstractModel)
 
-        self.set_conversation(last_conversation.id if last_conversation else None)
+        if not model.activated:
+            model.activate()
+
+        return model
+
+    def get_session_history(
+        self, user_id: int, conversation_id: int
+    ) -> BaseChatMessageHistory:
+        max_token = 1000
+        llm = self.get_model().get_llm()
+        total_count = 0
+        history: ChatMessageHistory = ChatMessageHistory()
+
+        for message in reversed(self.active_memory.messages):
+            # Only count tokens on string content
+            if isinstance(message.content, str):
+                total_count += llm.get_num_tokens(message.content)
+
+            if total_count < max_token:
+                history.add_message(message)
+
+        return history
+
+    def log(self, message: str) -> None:
+        self.kernel.io.log(f"  {message}")
+
+    def print_ai(self, message: str) -> None:
+        # Let a new line separator
+        print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
 
     def set_conversation(self, id_conversation: int | None = None) -> None:
         self.conversation = self.database.get_or_create_conversation(id_conversation)
@@ -256,11 +259,37 @@ class Assistant(AbsractKernelChild):
 
         self.active_memory.add_messages(messages)
 
+    def set_default_model(self, identifier: str) -> None:
+        self.log(f"Model set to : {identifier}")
+
+        self._default_model = self.models[identifier]
+
     def set_default_subject(
         self, prompt_section: UserPromptSection | None = None
     ) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
             self.set_subject(DefaultChatSubject.name(), prompt_section)
+
+    def set_history_item(self, content: str | None, author: str) -> None:
+        item = HistoryItem(
+            message=content, conversation_id=self.conversation.id, author=author
+        )
+
+        self.history.append(item)
+
+        if content is not None:
+            msg: BaseMessage
+            if author == "ai":
+                msg = AIMessage(content=content or "")
+            else:
+                msg = HumanMessage(content=content or "")
+
+            self.active_memory.add_message(msg)
+
+        self.database.save_assistant_conversation_item(item)
+
+    def set_language(self, code: str) -> None:
+        self.language = code
 
     def set_subject(
         self, name: str, prompt_section: UserPromptSection | None = None
@@ -273,29 +302,62 @@ class Assistant(AbsractKernelChild):
 
         return subject
 
-    def get_current_subject(self) -> AbstractChatSubject:
-        self._validate__should_not_be_none(self.subject)
-        assert isinstance(self.subject, AbstractChatSubject)
+    def show_menu(self) -> str | None:
+        # Prompt the user to choose an action
+        action = prompt_choice_dict(
+            "Menu:",
+            ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
+            abort=None,
+            default=ASSISTANT_MENU_ACTION_BACK,
+        )
 
-        return self.subject
+        # Return the chosen action as a string or None if aborted
+        return str(action) if action else None
 
-    def log(self, message: str) -> None:
-        self.kernel.io.log(f"  {message}")
+    def split_command(self, word: str) -> list[str]:
+        return word[len(AI_COMMAND_PREFIX) :].split(":")
 
-    def set_default_model(self, identifier: str) -> None:
-        self.log(f"Model set to : {identifier}")
+    def split_prompt_sections(self, user_input: str) -> list[UserPromptSection]:
+        user_input = user_input.strip()
+        # Special case if user types just "exit" without prefix.
+        if user_input.lower() == ExitCommand.name():
+            return [UserPromptSection(self.commands[ExitCommand.name()], None)]
 
-        self._default_model = self.models[identifier]
+        # Split on word to ensure commands is not attached to another word.
+        results: list[UserPromptSection] = []
+        words = user_input.split()
+        current_user_input_part: list[str] = []
+        current_section: UserPromptSection | None = None
 
-    def get_model(self, name: str | None = None) -> AbstractModel:
-        model = self.models[name] if name else self._default_model
-        self._validate__should_not_be_none(model)
-        assert isinstance(model, AbstractModel)
+        for i, word in enumerate(words):
+            command = self.extract_active_command(word)
+            if command:
+                # Split command and options
+                command_parts = self.split_command(word)
 
-        if not model.activated:
-            model.activate()
+                if current_section and len(current_user_input_part):
+                    current_section.prompt = (current_section.prompt or "") + " ".join(
+                        current_user_input_part
+                    )
+                    results.append(current_section)
 
-        return model
+                current_user_input_part = []
+                current_section = UserPromptSection(
+                    self.commands[command],
+                    None,
+                    command_parts[1:] if len(command_parts) > 1 else None,
+                )
+            elif word:
+                current_user_input_part.append(word)
+
+        if not current_section:
+            # No recognized command found
+            return [UserPromptSection(None, user_input)]
+        else:
+            current_section.prompt = " ".join(current_user_input_part)
+            results.append(current_section)
+
+        return results
 
     def start(self, menu_action: str | None) -> None:
         asked_exit = False
@@ -401,182 +463,120 @@ class Assistant(AbsractKernelChild):
 
         self.log(f"{os.linesep}Ciao")
 
-    def show_menu(self) -> str | None:
-        # Prompt the user to choose an action
-        action = prompt_choice_dict(
-            "Menu:",
-            ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
-            abort=None,
-            default=ASSISTANT_MENU_ACTION_BACK,
-        )
-
-        # Return the chosen action as a string or None if aborted
-        return str(action) if action else None
-
-    def split_command(self, word: str) -> list[str]:
-        return word[len(AI_COMMAND_PREFIX) :].split(":")
-
-    def extract_active_command(self, word: str) -> str | None:
-        commands = self.get_active_commands()
-        if word.startswith(AI_COMMAND_PREFIX):
-            # Split command and options
-            command_parts = self.split_command(word)
-            # First part is the command, normalized
-            command = command_parts[0].lower()
-
-            if command in commands:
-                return command
-
-        return None
-
-    def split_prompt_sections(self, user_input: str) -> list[UserPromptSection]:
-        user_input = user_input.strip()
-        # Special case if user types just "exit" without prefix.
-        if user_input.lower() == ExitCommand.name():
-            return [UserPromptSection(self.commands[ExitCommand.name()], None)]
-
-        # Split on word to ensure commands is not attached to another word.
-        results: list[UserPromptSection] = []
-        words = user_input.split()
-        current_user_input_part: list[str] = []
-        current_section: UserPromptSection | None = None
-
-        for i, word in enumerate(words):
-            command = self.extract_active_command(word)
-            if command:
-                # Split command and options
-                command_parts = self.split_command(word)
-
-                if current_section and len(current_user_input_part):
-                    current_section.prompt = (current_section.prompt or "") + " ".join(
-                        current_user_input_part
-                    )
-                    results.append(current_section)
-
-                current_user_input_part = []
-                current_section = UserPromptSection(
-                    self.commands[command],
-                    None,
-                    command_parts[1:] if len(command_parts) > 1 else None,
-                )
-            elif word:
-                current_user_input_part.append(word)
-
-        if not current_section:
-            # No recognized command found
-            return [UserPromptSection(None, user_input)]
-        else:
-            current_section.prompt = " ".join(current_user_input_part)
-            results.append(current_section)
-
-        return results
-
-    def get_active_commands(self) -> dict[str, AbstractCommand]:
-        commands = self.commands.copy()
-
-        return commands
-
-    def chat(
-        self,
-        initial_prompt: str | None = None,
-    ) -> str | None:
-        self.commands[HelpCommand.name()].execute()
-
-        while True:
-            try:
-                if initial_prompt:
-                    user_input = initial_prompt
-                    initial_prompt = None
-                else:
-                    user_input = self.prompt_manager.open()
-
-                prompt_sections = self.split_prompt_sections(user_input)
-
-                for index, prompt_section in enumerate(prompt_sections):
-                    if prompt_section.has_command():
-                        command = prompt_section.get_command()
-
-                        if isinstance(command, ExitCommand):
-                            return ASSISTANT_MENU_ACTION_EXIT
-                        elif isinstance(command, MenuCommand):
-                            return None
-                    else:
-                        command = self.commands[DefaultCommand.name()]
-
-                    self.set_history_item(prompt_section.prompt, "user")
-
-                    try:
-                        result = command.execute(
-                            prompt_section, prompt_sections[index + 1 :]
-                        )
-                        result_str = result.render()
-                        self.set_history_item(result_str, "ai")
-
-                        if isinstance(result_str, str):
-                            self.print_ai(result_str)
-                    except Exception as e:
-                        import traceback
-
-                        self.kernel.io.error(
-                            f"Error during executing command: {str(e)}\n{traceback.format_exc()}",
-                            fatal=False,
-                        )
-
-                        self.set_history_item(str(e), "error")
-
-                        # In cas of still running.
-                        self.spinner.stop()
-
-                self.last_prompt_sections = prompt_sections
-            except KeyboardInterrupt:
-                # User asked to quit
-                if not self.spinner.running:
-                    return ASSISTANT_MENU_ACTION_EXIT
-                # User asked to interrupt assistant.
-                else:
-                    self.spinner.stop()
-                    self.kernel.io.print(os.linesep)
-
-    def set_history_item(self, content: str | None, author: str) -> None:
-        item = HistoryItem(
-            message=content, conversation_id=self.conversation.id, author=author
-        )
-
-        self.history.append(item)
-
-        if content is not None:
-            msg: BaseMessage
-            if author == "ai":
-                msg = AIMessage(content=content or "")
-            else:
-                msg = HumanMessage(content=content or "")
-
-            self.active_memory.add_message(msg)
-
-        self.database.save_assistant_conversation_item(item)
-
-    def print_ai(self, message: str) -> None:
-        # Let a new line separator
-        print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
-
-    def get_session_history(
-        self, user_id: int, conversation_id: int
-    ) -> BaseChatMessageHistory:
-        max_token = 1000
-        llm = self.get_model().get_llm()
-        total_count = 0
-        history: ChatMessageHistory = ChatMessageHistory()
-
-        for message in reversed(self.active_memory.messages):
-            # Only count tokens on string content
-            if isinstance(message.content, str):
-                total_count += llm.get_num_tokens(message.content)
-
-            if total_count < max_token:
-                history.add_message(message)
-
-        return history
-
     def text_has_a_command(self, text: str) -> bool:
         sections = self.split_prompt_sections(text)
         return bool(sections) and sections[-1].has_command()
+
+    def _init_commands(self) -> None:
+        commands = [
+            AgentCommand,
+            ChatCommand,
+            CopyClipboardCommand,
+            DefaultCommand,
+            DirSearchCommand,
+            ExitCommand,
+            FileRewriteCommand,
+            FileSearchCommand,
+            FilePatchCommand,
+            FormatCommand,
+            FunctionCommand,
+            HelpCommand,
+            InvestigateCommand,
+            MenuCommand,
+            NewConversationCommand,
+            SubjectCommand,
+            TerminalCommand,
+            UrlSearchCommand,
+            VetCommand,
+        ]
+
+        self.commands: dict[str, AbstractCommand] = {}
+        for command_type in commands:
+            # mypy: command_type is a concrete subclass, but as Type[AbstractCommand]
+            # it is considered abstract; cast to Any for instantiation.
+            self.commands[command_type.name()] = cast(Any, command_type)(self)
+
+    def _init_conversation(self) -> None:
+        last_conversation = self.database.get_last_conversation()
+
+        self.set_conversation(last_conversation.id if last_conversation else None)
+
+    def _init_database(self) -> None:
+        self.database = DatabaseManager(self)
+
+    def _init_helper(self) -> None:
+        # Start AI helper app
+        response = self.kernel.run_function(
+            app__helper__start,
+            {
+                "name": HELPER_APP_AI_SHORT_NAME,
+                "create-network": False,
+            },
+        )
+
+        self.helper_app_dir = str(response.last())
+        current_workdir = os.getcwd()
+
+        self.assistant_app_manager = AppAddonManager(
+            self.kernel,
+            "assistant_app",
+            str(response.last()),
+        )
+
+        # Correct workdir which changes due to app creation
+        os.chdir(current_workdir)
+
+    def _init_locales(self) -> None:
+        # languages.json is expected to be a dict[str, str]
+        self.languages = cast(
+            dict[str, str],
+            json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json"),
+        )
+        self.language = "en"
+        self.set_language(self.language)
+
+    def _init_models(self) -> None:
+        self._default_model: AbstractModel | None = None
+        self.models: dict[str, AbstractModel] = {
+            MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self, MODEL_NAME_OLLAMA_MISTRAL),
+            MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
+                self, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
+            ),
+            MODEL_NAME_OPEN_AI_GPT_4: OpenAiModel(self, MODEL_NAME_OPEN_AI_GPT_4),
+        }
+
+        self.set_default_model(self._initial_default_model)
+
+    def _init_personalities(self) -> None:
+        personalities_path = (
+            f"{self.kernel.directory.path}addons/ai/samples/personalities/"
+        )
+        personalities = {}
+
+        # Scan the directory for files and load their contents
+        for filename in os.listdir(personalities_path):
+            if filename.endswith(".yml"):
+                name_without_extension, _ = os.path.splitext(filename)
+                personalities[name_without_extension] = yaml_read(
+                    os.path.join(personalities_path, filename)
+                )
+
+        self.personality: str = "default"
+        self.personalities = personalities
+
+    def _init_prompt(self) -> None:
+        self.prompt_manager = PromptManager(self)
+        self.spinner = Spinner()
+
+    def _init_subjects(self) -> None:
+        subjects = [DefaultChatSubject, DirChatSubject, FileChatSubject, UrlChatSubject]
+
+        self.subjects: dict[str, AbstractChatSubject] = {}
+        for subject_class in subjects:
+            subject = subject_class(self)
+            self.subjects[subject.name()] = subject
+
+        self.set_default_subject()
+
+    def _init_user(self) -> None:
+        self.user = self.database.get_or_create_user()

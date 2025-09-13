@@ -23,19 +23,19 @@ if TYPE_CHECKING:
 
 
 class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
-    def get_vector_store_collection_name(self) -> str:
-        return "dir-search"
 
     def get_dir_subject(self) -> DirChatSubject:
         return cast("DirChatSubject", self.assistant.get_current_subject())
-
-    def get_storage_signature(self) -> str:
-        return file_build_signature(self.get_dir_subject().dir_path or "")
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
     ) -> dict[str, str]:
         return {"signature": self.get_storage_signature()}
+
+    def get_storage_signature(self) -> str:
+        return file_build_signature(self.get_dir_subject().dir_path or "")
+    def get_vector_store_collection_name(self) -> str:
+        return "dir-search"
 
     def process_user_input(
         self,

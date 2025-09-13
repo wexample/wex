@@ -13,6 +13,18 @@ class YamlFileStructure(FileStructure):
     content: YamlContent
     file_extension: str = "yml"
 
+    def get_writable_content(self) -> YamlContent:
+        content = self.content
+        args_is_basic_value(content)
+
+        return cast(BasicValue, content)
+
+    def load_content(self, default: YamlContentDict | None = None) -> None:
+        self.content = self.load_content_yaml(default)
+
+    def load_content_yaml(self, default: YamlContentDict | None = None) -> YamlContent:
+        return cast(YamlContent, yaml_read(self.path) or default)
+
     def load_content_yaml_dict(
         self, default: YamlContentDict | None = None
     ) -> YamlContentDict:
@@ -23,17 +35,5 @@ class YamlFileStructure(FileStructure):
 
         return value
 
-    def load_content_yaml(self, default: YamlContentDict | None = None) -> YamlContent:
-        return cast(YamlContent, yaml_read(self.path) or default)
-
-    def load_content(self, default: YamlContentDict | None = None) -> None:
-        self.content = self.load_content_yaml(default)
-
     def write_content(self) -> None:
         yaml_write(self.path, self.get_writable_content())
-
-    def get_writable_content(self) -> YamlContent:
-        content = self.content
-        args_is_basic_value(content)
-
-        return cast(BasicValue, content)

@@ -113,6 +113,42 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         self.assertTrue("--search" in suggestions)
 
+    def tests_suggest_app(self) -> None:
+        app_dir = test_create_app(self.kernel, DEFAULT_APP_TEST_NAME)
+
+        def _callback() -> None:
+            # Search only ".", should return all app commands
+            suggestions: str = self.kernel.run_function(
+                core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
+            ).first()
+
+            # There is at least on custom app command in wex
+            self.assertTrue(len(suggestions.split(" ")) >= 1)
+
+            # Search ".te", to find created command
+            self._create_and_test_created_command(
+                COMMAND_CHAR_APP,
+            )
+
+        manager = self.kernel.addons["app"]
+        assert isinstance(manager, AppAddonManager)
+
+        manager.exec_in_app_workdir(app_dir, _callback)
+
+    def tests_suggest_app_args(self) -> None:
+        suggestions = self.kernel.run_function(
+            core__autocomplete__suggest,
+            {
+                "cursor": 1,
+                "search": COMMAND_CHAR_APP
+                + "local_command"
+                + COMMAND_SEPARATOR_GROUP
+                + "test ",
+            },
+        ).first()
+
+        self.assertTrue("local-option" in suggestions)
+
     def tests_suggest_service(self) -> None:
         suggestions: str
 
@@ -172,6 +208,22 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
 
         self.assertTrue("--option" in suggestions)
 
+    def tests_suggest_user(self) -> None:
+        # Search "~te", to find created command
+        self._create_and_test_created_command(
+            COMMAND_CHAR_USER,
+        )
+
+    def tests_suggest_user_args(self) -> None:
+        suggestions = self.kernel.run_function(
+            core__autocomplete__suggest,
+            {"cursor": 1, "search": COMMAND_CHAR_USER + "undefined/command "},
+        ).first()
+
+        # User command may not exist during test,
+        # we just check if undefined command completion does not fail.
+        self.assertEqual(suggestions, "")
+
     def _create_and_test_created_command(
         self, prefix: str, search: str | None = None
     ) -> None:
@@ -202,55 +254,3 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         # Test is optional at this point
         if info["test"]:
             os.remove(info["test"])
-
-    def tests_suggest_app(self) -> None:
-        app_dir = test_create_app(self.kernel, DEFAULT_APP_TEST_NAME)
-
-        def _callback() -> None:
-            # Search only ".", should return all app commands
-            suggestions: str = self.kernel.run_function(
-                core__autocomplete__suggest, {"cursor": 0, "search": COMMAND_CHAR_APP}
-            ).first()
-
-            # There is at least on custom app command in wex
-            self.assertTrue(len(suggestions.split(" ")) >= 1)
-
-            # Search ".te", to find created command
-            self._create_and_test_created_command(
-                COMMAND_CHAR_APP,
-            )
-
-        manager = self.kernel.addons["app"]
-        assert isinstance(manager, AppAddonManager)
-
-        manager.exec_in_app_workdir(app_dir, _callback)
-
-    def tests_suggest_app_args(self) -> None:
-        suggestions = self.kernel.run_function(
-            core__autocomplete__suggest,
-            {
-                "cursor": 1,
-                "search": COMMAND_CHAR_APP
-                + "local_command"
-                + COMMAND_SEPARATOR_GROUP
-                + "test ",
-            },
-        ).first()
-
-        self.assertTrue("local-option" in suggestions)
-
-    def tests_suggest_user(self) -> None:
-        # Search "~te", to find created command
-        self._create_and_test_created_command(
-            COMMAND_CHAR_USER,
-        )
-
-    def tests_suggest_user_args(self) -> None:
-        suggestions = self.kernel.run_function(
-            core__autocomplete__suggest,
-            {"cursor": 1, "search": COMMAND_CHAR_USER + "undefined/command "},
-        ).first()
-
-        # User command may not exist during test,
-        # we just check if undefined command completion does not fail.
-        self.assertEqual(suggestions, "")

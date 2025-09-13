@@ -31,22 +31,17 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         if steps:
             self.steps = list(map(int, str(steps).split(".")))
 
+    def build_step_path(self, steps: QueuedCollectionStepsList | None = None) -> str:
+        return ".".join(map(str, steps if steps is not None else self.steps))
+
     def get_response(self) -> QueuedCollectionResponse:
         return cast("QueuedCollectionResponse", super().get_response())
 
     def get_step_index(self) -> QueuedCollectionStepValue:
         return self.steps[self.get_response().step_position]
 
-    def start_rendering(
-        self, request: CommandRequest, response: QueuedCollectionResponse
-    ) -> None:
-        self.set_request(request)
-        self.set_response(response)
-
-        parent = self.get_response().find_parent_response_collection()
-        # Assign position
-        if parent:
-            response.step_position = parent.step_position + 1
+    def has_child_queue(self) -> bool:
+        return self.get_response().step_position >= len(self.steps)
 
     def save_to_map(self) -> None:
         response = self.get_response()
@@ -68,8 +63,13 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
 
         self.map[self.build_step_path()] = response
 
-    def has_child_queue(self) -> bool:
-        return self.get_response().step_position >= len(self.steps)
+    def start_rendering(
+        self, request: CommandRequest, response: QueuedCollectionResponse
+    ) -> None:
+        self.set_request(request)
+        self.set_response(response)
 
-    def build_step_path(self, steps: QueuedCollectionStepsList | None = None) -> str:
-        return ".".join(map(str, steps if steps is not None else self.steps))
+        parent = self.get_response().find_parent_response_collection()
+        # Assign position
+        if parent:
+            response.step_position = parent.step_position + 1

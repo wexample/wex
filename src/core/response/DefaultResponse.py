@@ -16,6 +16,13 @@ class DefaultResponse(AbstractResponse):
         super().__init__(kernel)
         self.content: Any = content
 
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        return self.get_first_output_printable_value()
+
     def render_content(
         self,
         request: CommandRequest,
@@ -25,10 +32,3 @@ class DefaultResponse(AbstractResponse):
         self.output_bag.append(self.content)
 
         return self
-
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        return self.get_first_output_printable_value()

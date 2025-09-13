@@ -33,25 +33,6 @@ class DictResponse(AbstractTerminalSectionResponse):
 
         self.dictionary_data: StringKeysDict = dictionary
 
-    def render_content(
-        self,
-        request: CommandRequest,
-        render_mode: str | None = None,
-        args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
-        render_mode = (
-            render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
-        )
-
-        # For HTTP mode, we simply use the dictionary to be converted as JSON
-        self.output_bag.append(self.dictionary_data)
-
-        self.render_content_multiple(
-            list(self.dictionary_data.values()), request, render_mode, args
-        )
-
-        return self
-
     def print(
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
@@ -89,3 +70,22 @@ class DictResponse(AbstractTerminalSectionResponse):
             return print_dict
 
         return None
+
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str | None = None,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
+        render_mode = (
+            render_mode or self._default_render_mode or KERNEL_RENDER_MODE_TERMINAL
+        )
+
+        # For HTTP mode, we simply use the dictionary to be converted as JSON
+        self.output_bag.append(self.dictionary_data)
+
+        self.render_content_multiple(
+            list(self.dictionary_data.values()), request, render_mode, args
+        )
+
+        return self

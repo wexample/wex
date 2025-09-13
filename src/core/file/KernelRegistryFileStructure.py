@@ -23,16 +23,6 @@ class KernelRegistryFileStructure(YamlFileStructure):
         # Always load at creation
         self.load_content()
 
-    def load_content(self, default: YamlContentDict | None = None) -> None:
-        content = self.load_content_yaml_dict(default)
-
-        self.content = KernelRegistry(
-            env=content["env"] if content and "env" in content else "undefined",
-            resolvers=(
-                content["resolvers"] if content and "resolvers" in content else {}
-            ),
-        )
-
     def build(self, test: bool = False, write: bool = True) -> KernelRegistry:
         from addons.app.command.env.get import _app__env__get
 
@@ -57,3 +47,13 @@ class KernelRegistryFileStructure(YamlFileStructure):
 
     def get_writable_content(self) -> YamlContentDict:
         return self.content.to_dict()
+
+    def load_content(self, default: YamlContentDict | None = None) -> None:
+        content = self.load_content_yaml_dict(default)
+
+        self.content = KernelRegistry(
+            env=content["env"] if content and "env" in content else "undefined",
+            resolvers=(
+                content["resolvers"] if content and "resolvers" in content else {}
+            ),
+        )

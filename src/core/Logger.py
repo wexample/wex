@@ -92,23 +92,6 @@ class Logger:
                 parent_logs["children"][date_now] = task_id
                 self.write(task_id=self.kernel.parent_task_id, log_data=parent_logs)
 
-    def load_logs(self, task_id: str) -> LoggerLogData:
-        logs = json_parse_if_valid(
-            self.kernel.task_file_load("json", task_id=task_id, delete_after_read=False)
-        )
-
-        return cast(LoggerLogData, logs or {})
-
-    def get_time_string(self) -> str:
-        return str(datetime.datetime.now())
-
-    def append_event(self, name: str, data: StringKeysDict | None = None) -> None:
-        event: LoggerLogDataEvent = {"name": name, "data": data}
-
-        self.log_data["events"].append(event)
-
-        self.write()
-
     def append_error(
         self,
         code: str,
@@ -129,11 +112,46 @@ class Logger:
 
         self.write()
 
+    def append_event(self, name: str, data: StringKeysDict | None = None) -> None:
+        event: LoggerLogDataEvent = {"name": name, "data": data}
+
+        self.log_data["events"].append(event)
+
+        self.write()
+
+    def build_summary(self, data: LoggerLogData) -> StringsList:
+        return [
+            data["dateStart"],
+            data["trace"][0]["command"] if len(data["trace"]) else "-",
+            data["status"],
+        ]
+
     def create_command_dict(self, request: CommandRequest) -> LoggerLogDataCommand:
         return {
             "command": request.get_string_command(),
             "args": request.get_args_list(),
         }
+
+    def get_all_logs_files(self) -> StringsList:
+        directory = self.kernel.get_or_create_path("task")
+
+        all_files = [
+            f
+            for f in os.listdir(directory)
+            if os.path.isfile(os.path.join(directory, f))
+        ]
+        json_files = [directory + f for f in all_files if f.endswith(".json")]
+        return sorted(json_files)
+
+    def get_time_string(self) -> str:
+        return str(datetime.datetime.now())
+
+    def load_logs(self, task_id: str) -> LoggerLogData:
+        logs = json_parse_if_valid(
+            self.kernel.task_file_load("json", task_id=task_id, delete_after_read=False)
+        )
+
+        return cast(LoggerLogData, logs or {})
 
     def log_request(self, request: CommandRequest) -> None:
         current_command_dict = self.create_command_dict(request)
@@ -161,6 +179,16 @@ class Logger:
 
         self.write()
 
+    def set_status_complete(self, task_id: str | None = None) -> None:
+        if task_id:
+            log_data = self.load_logs(task_id)
+        else:
+            task_id = self.kernel.get_task_id()
+            log_data = self.log_data
+
+        log_data["status"] = LOG_STATUS_COMPLETE
+        self.write(task_id, log_data)
+
     def write(
         self, task_id: None | str = None, log_data: LoggerLogData | None = None
     ) -> None:
@@ -180,31 +208,3 @@ class Logger:
         )
 
         file_set_user_or_sudo_user_owner(log_path)
-
-    def get_all_logs_files(self) -> StringsList:
-        directory = self.kernel.get_or_create_path("task")
-
-        all_files = [
-            f
-            for f in os.listdir(directory)
-            if os.path.isfile(os.path.join(directory, f))
-        ]
-        json_files = [directory + f for f in all_files if f.endswith(".json")]
-        return sorted(json_files)
-
-    def build_summary(self, data: LoggerLogData) -> StringsList:
-        return [
-            data["dateStart"],
-            data["trace"][0]["command"] if len(data["trace"]) else "-",
-            data["status"],
-        ]
-
-    def set_status_complete(self, task_id: str | None = None) -> None:
-        if task_id:
-            log_data = self.load_logs(task_id)
-        else:
-            task_id = self.kernel.get_task_id()
-            log_data = self.log_data
-
-        log_data["status"] = LOG_STATUS_COMPLETE
-        self.write(task_id, log_data)

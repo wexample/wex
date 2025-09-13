@@ -17,6 +17,18 @@ class FunctionResponse(AbstractResponse):
 
         self.function: AnyCallable = function
 
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        data = self.output_bag[0]
+
+        if isinstance(data, AbstractResponse):
+            return data.print()
+
+        return None
+
     def render_content(
         self,
         request: CommandRequest,
@@ -36,15 +48,3 @@ class FunctionResponse(AbstractResponse):
         self.output_bag.append(response)
 
         return self
-
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        data = self.output_bag[0]
-
-        if isinstance(data, AbstractResponse):
-            return data.print()
-
-        return None

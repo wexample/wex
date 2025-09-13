@@ -15,14 +15,44 @@ from src.const.types import JsonContentDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
-    def start_webhook_listener(self, port: int = 6543) -> int:
-        self.kernel.run_function(
-            app__webhook__listen, {"port": port, "asynchronous": True, "force": True}
+
+    def copy_command_dir(self, app_dir: str, sub_dir: str) -> None:
+        script_dir = os.path.join(
+            app_dir,
+            APP_DIR_APP_DATA,
+            sub_dir,
         )
 
-        time.sleep(2)
+        shutil.rmtree(script_dir)
 
-        return port
+        shutil.copytree(
+            os.path.join(
+                self.get_app_resources_path(),
+                "5.0.0",
+                APP_DIR_APP_DATA,
+                sub_dir,
+            ),
+            script_dir,
+        )
+
+    def create_and_start_test_app_webhook(self) -> tuple[str, str]:
+        app_dir = self.create_and_start_test_app(
+            DEFAULT_APP_TEST_NAME + "-webhook", services=["php"]
+        )
+
+        self.copy_command_dir(app_dir, "command")
+        self.copy_command_dir(app_dir, "script")
+
+        return app_dir, os.path.basename(os.path.dirname(app_dir))
+
+    def parse_response(self, response: HTTPResponse) -> JsonContentDict:
+        content = response.read()
+        self.kernel.io.log("PARSING : " + str(content))
+
+        data = json.loads(content)
+        self.assertTrue(isinstance(data, dict))
+
+        return cast(JsonContentDict, data)
 
     def request_listener(
         self, path: str, port: int = 6543, check_code: None | int = 200, wait: int = 0
@@ -66,41 +96,11 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             time.sleep(wait)
 
         return response
-
-    def parse_response(self, response: HTTPResponse) -> JsonContentDict:
-        content = response.read()
-        self.kernel.io.log("PARSING : " + str(content))
-
-        data = json.loads(content)
-        self.assertTrue(isinstance(data, dict))
-
-        return cast(JsonContentDict, data)
-
-    def copy_command_dir(self, app_dir: str, sub_dir: str) -> None:
-        script_dir = os.path.join(
-            app_dir,
-            APP_DIR_APP_DATA,
-            sub_dir,
+    def start_webhook_listener(self, port: int = 6543) -> int:
+        self.kernel.run_function(
+            app__webhook__listen, {"port": port, "asynchronous": True, "force": True}
         )
 
-        shutil.rmtree(script_dir)
+        time.sleep(2)
 
-        shutil.copytree(
-            os.path.join(
-                self.get_app_resources_path(),
-                "5.0.0",
-                APP_DIR_APP_DATA,
-                sub_dir,
-            ),
-            script_dir,
-        )
-
-    def create_and_start_test_app_webhook(self) -> tuple[str, str]:
-        app_dir = self.create_and_start_test_app(
-            DEFAULT_APP_TEST_NAME + "-webhook", services=["php"]
-        )
-
-        self.copy_command_dir(app_dir, "command")
-        self.copy_command_dir(app_dir, "script")
-
-        return app_dir, os.path.basename(os.path.dirname(app_dir))
+        return port

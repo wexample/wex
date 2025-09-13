@@ -35,13 +35,45 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         self.vectorstore: VectorStore
         self.init_vector_store()
 
+    def get_interaction_mode_prompt_parameters(
+        self, prompt_section: UserPromptSection
+    ) -> dict[str, str]:
+        results = self.vectorstore.similarity_search_with_relevance_scores(
+            prompt_section.prompt or "",
+            k=3,
+            filter=self.get_similarity_search_filter(prompt_section),
+        )
+
+        return {
+            "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+        }
+
     @abstractmethod
-    def get_vector_store_collection_name(self) -> str:
+    def get_similarity_search_filter(
+        self, prompt_section: UserPromptSection
+    ) -> dict[str, str]:
         pass
 
     @abstractmethod
     def get_storage_signature(self) -> str:
         pass
+
+    @abstractmethod
+    def get_vector_store_collection_name(self) -> str:
+        pass
+
+    def init_vector_store(self) -> None:
+        self.vectorstore = PGVector(
+            embeddings=self.assistant.get_model(
+                MODEL_NAME_OPEN_AI_GPT_4
+            ).create_embeddings(),
+            collection_name=self.get_vector_store_collection_name(),
+            connection=self.assistant.database.engine,
+            use_jsonb=True,
+        )
+        self.vectorstore.drop_tables()
+        self.vectorstore.create_tables_if_not_exists()
+        self.vectorstore.create_collection()
 
     def process_user_input(
         self,
@@ -58,37 +90,23 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             remaining_sections,
         )
 
-    @abstractmethod
-    def get_similarity_search_filter(
-        self, prompt_section: UserPromptSection
-    ) -> dict[str, str]:
-        pass
+    def vector_create_file_chunks(
+        self, file_path: str, file_signature: str
+    ) -> list[Document]:
+        loader = self.vector_create_file_loader(file_path)
+        text_splitter = self.vector_create_text_splitter(file_path)
 
-    def get_interaction_mode_prompt_parameters(
-        self, prompt_section: UserPromptSection
-    ) -> dict[str, str]:
-        results = self.vectorstore.similarity_search_with_relevance_scores(
-            prompt_section.prompt or "",
-            k=3,
-            filter=self.get_similarity_search_filter(prompt_section),
-        )
+        # If the file is not already in Chroma, proceed with indexing
+        self.assistant.log("Storing document to vector database...")
+        loader.load()
 
-        return {
-            "context": "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-        }
+        chunks = text_splitter.split_documents(loader.load())
 
-    def init_vector_store(self) -> None:
-        self.vectorstore = PGVector(
-            embeddings=self.assistant.get_model(
-                MODEL_NAME_OPEN_AI_GPT_4
-            ).create_embeddings(),
-            collection_name=self.get_vector_store_collection_name(),
-            connection=self.assistant.database.engine,
-            use_jsonb=True,
-        )
-        self.vectorstore.drop_tables()
-        self.vectorstore.create_tables_if_not_exists()
-        self.vectorstore.create_collection()
+        # Ensuring metadata is correctly attached to each chunk.
+        for chunk in chunks:
+            chunk.metadata = {"signature": file_signature, "source": file_path}
+
+        return chunks
 
     def vector_create_file_loader(self, file_path: str) -> BaseLoader:
         # Dynamically determine the loader based on file extension
@@ -150,6 +168,22 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             # Fallback to a generic text loader if file type is not specifically handled
             return cast(BaseLoader, TextLoader(file_path))
 
+    def vector_create_text_splitter(
+        self, file_path: str
+    ) -> RecursiveCharacterTextSplitter:
+        language = self.vector_find_language_by_extension(file_get_extension(file_path))
+
+        if language:
+            self.assistant.log(f"Splitter : {language}")
+            from langchain_text_splitters import Language
+
+            return RecursiveCharacterTextSplitter.from_language(
+                language=cast(Language, language), chunk_size=50, chunk_overlap=0
+            )
+        else:
+            self.assistant.log(f"Splitter : default")
+            return RecursiveCharacterTextSplitter()
+
     def vector_find_language_by_extension(self, extension: str) -> Language | None:
         # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
         extensions_map = {
@@ -175,40 +209,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
                 return cast(Language, language)
 
         return None
-
-    def vector_create_text_splitter(
-        self, file_path: str
-    ) -> RecursiveCharacterTextSplitter:
-        language = self.vector_find_language_by_extension(file_get_extension(file_path))
-
-        if language:
-            self.assistant.log(f"Splitter : {language}")
-            from langchain_text_splitters import Language
-
-            return RecursiveCharacterTextSplitter.from_language(
-                language=cast(Language, language), chunk_size=50, chunk_overlap=0
-            )
-        else:
-            self.assistant.log(f"Splitter : default")
-            return RecursiveCharacterTextSplitter()
-
-    def vector_create_file_chunks(
-        self, file_path: str, file_signature: str
-    ) -> list[Document]:
-        loader = self.vector_create_file_loader(file_path)
-        text_splitter = self.vector_create_text_splitter(file_path)
-
-        # If the file is not already in Chroma, proceed with indexing
-        self.assistant.log("Storing document to vector database...")
-        loader.load()
-
-        chunks = text_splitter.split_documents(loader.load())
-
-        # Ensuring metadata is correctly attached to each chunk.
-        for chunk in chunks:
-            chunk.metadata = {"signature": file_signature, "source": file_path}
-
-        return chunks
 
     def vector_store_file(self, file_path: str, signature: str) -> None:
         self.assistant.log(f"Storing document {file_path}")

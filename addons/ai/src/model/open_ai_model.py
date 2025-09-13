@@ -26,6 +26,9 @@ class OpenAiModel(AbstractModel):
 
         self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 
+    def create_embeddings(self) -> Any:
+        return OpenAIEmbeddings(openai_api_key=self.api_key)  # type: ignore
+
     def guess_function(
         self,
         interaction_mode: AbstractInteractionMode,
@@ -57,6 +60,3 @@ class OpenAiModel(AbstractModel):
             if "text" in response and response["text"]["command"] != "None"
             else None
         )
-
-    def create_embeddings(self) -> Any:
-        return OpenAIEmbeddings(openai_api_key=self.api_key)  # type: ignore

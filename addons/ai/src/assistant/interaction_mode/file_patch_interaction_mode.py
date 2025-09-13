@@ -49,6 +49,18 @@ class FilePatchInteractionMode(AbstractInteractionMode):
             "\nTerminate with the # DESCRIPTION: information describing what you've done."
         )
 
+    def load_example_patch(self, name: str) -> StringKeysDict:
+        base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
+        source = file_read_if_exists(f"{base_path}source.txt")
+
+        return {
+            "file_name": "file_name.py",
+            "question": file_read_if_exists(f"{base_path}question.txt"),
+            "source": source,
+            "source_with_lines": string_add_lines_numbers(source) if source else None,
+            "response": file_read_if_exists(f"{base_path}response.patch"),
+        }
+
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
@@ -174,15 +186,3 @@ class FilePatchInteractionMode(AbstractInteractionMode):
             self.kernel.io.log(patch_content)
 
         return StringInteractionResponse(f"⚠️ {error_message}")
-
-    def load_example_patch(self, name: str) -> StringKeysDict:
-        base_path = f"{self.kernel.directory.path}addons/ai/samples/examples/{name}/"
-        source = file_read_if_exists(f"{base_path}source.txt")
-
-        return {
-            "file_name": "file_name.py",
-            "question": file_read_if_exists(f"{base_path}question.txt"),
-            "source": source,
-            "source_with_lines": string_add_lines_numbers(source) if source else None,
-            "response": file_read_if_exists(f"{base_path}response.patch"),
-        }

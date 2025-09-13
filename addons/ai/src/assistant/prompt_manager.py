@@ -88,16 +88,8 @@ class PromptManager(AbstractAssistantChild):
 
         return False
 
-    def setup_key_bindings(self) -> None:
-        """Configure key bindings for handling prompt interactions."""
-
-        @self.key_bindings.add("escape", "enter")
-        def _(event: KeyPressEvent) -> None:
-            event.current_buffer.insert_text("\n")
-
-        @self.key_bindings.add("enter")
-        def _(event: KeyPressEvent) -> None:
-            event.current_buffer.validate_and_handle()
+    def create_completer(self) -> AssistantChatCompleter:
+        return AssistantChatCompleter(self.assistant.get_active_commands())
 
     def get_full_text(self) -> str:
         """
@@ -118,9 +110,6 @@ class PromptManager(AbstractAssistantChild):
     def get_prompt(self) -> HTML:
         """Generate the current styled prompt."""
         return HTML("<prefix>&gt;&gt;&gt; </prefix>" + self.prompt)
-
-    def create_completer(self) -> AssistantChatCompleter:
-        return AssistantChatCompleter(self.assistant.get_active_commands())
 
     def open(self) -> str:
         commands_tokens: dict[str, list[Any]] = {
@@ -172,3 +161,14 @@ class PromptManager(AbstractAssistantChild):
         self.prompt = ""
 
         return response
+
+    def setup_key_bindings(self) -> None:
+        """Configure key bindings for handling prompt interactions."""
+
+        @self.key_bindings.add("escape", "enter")
+        def _(event: KeyPressEvent) -> None:
+            event.current_buffer.insert_text("\n")
+
+        @self.key_bindings.add("enter")
+        def _(event: KeyPressEvent) -> None:
+            event.current_buffer.validate_and_handle()

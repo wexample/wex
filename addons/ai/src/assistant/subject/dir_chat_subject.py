@@ -17,14 +17,6 @@ class DirChatSubject(AbstractChatSubject):
     def name() -> str:
         return "dir"
 
-    def introduce(self) -> str:
-        return f"Chatting about all files in given directory {self.dir_path}"
-
-    def get_commands(self) -> StringKeysDict:
-        return {
-            SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_DIR: "Talk about file",
-        }
-
     def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
@@ -48,6 +40,14 @@ class DirChatSubject(AbstractChatSubject):
             return True
 
         return False
+
+    def get_commands(self) -> StringKeysDict:
+        return {
+            SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_DIR: "Talk about file",
+        }
+
+    def introduce(self) -> str:
+        return f"Chatting about all files in given directory {self.dir_path}"
 
     def set_dir_path(self, dir_path: str) -> None:
         real = os.path.realpath(dir_path)

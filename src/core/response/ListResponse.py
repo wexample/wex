@@ -26,16 +26,6 @@ class ListResponse(AbstractTerminalSectionResponse):
 
         self.list_data: AnyList = list_data
 
-    def render_content(
-        self,
-        request: CommandRequest,
-        render_mode: str | None = None,
-        args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
-        self.output_bag.append(self.list_data)
-
-        return self
-
     def print(
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
@@ -60,3 +50,13 @@ class ListResponse(AbstractTerminalSectionResponse):
             return print_dict
 
         return None
+
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str | None = None,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
+        self.output_bag.append(self.list_data)
+
+        return self

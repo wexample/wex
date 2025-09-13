@@ -41,47 +41,6 @@ class YamlCommandRunner(AbstractCommandRunner):
         super().__init__(kernel)
         self.content: YamlCommand | None = None
 
-    def set_request(self, request: CommandRequest) -> None:
-        super().set_request(request=request)
-        path = request.get_path()
-
-        if path:
-            self.content = self.load_yaml_command(path)
-
-            if not self.content:
-                self.kernel.io.error(
-                    f"Unable to load yaml script file content : {path}",
-                    trace=False,
-                )
-
-    def load_yaml_command(self, path: str) -> YamlCommand:
-        return cast(YamlCommand, yaml_read(path, {}))
-
-    def get_options_names(self) -> StringsList:
-        names = []
-        content = self.get_content_or_fail()
-
-        if "options" in content:
-            options = content["options"]
-
-            for option in options:
-                names.append(option["name"])
-                names.append(option["short"])
-
-        return names
-
-    def get_content_or_fail(self) -> YamlCommand:
-        if not self.content:
-            self.kernel.io.error(
-                "Trying to access request content before initialization"
-            )
-            assert False
-
-        return self.content
-
-    def get_command_type(self) -> str:
-        return self.get_content_or_fail()["type"]
-
     def build_script_command(self) -> ScriptCommand | None:
         from src.core.response.InteractiveShellCommandResponse import (
             InteractiveShellCommandResponse,
@@ -254,5 +213,46 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         return cast(ScriptCommand, script_command)
 
+    def get_command_type(self) -> str:
+        return self.get_content_or_fail()["type"]
+
+    def get_content_or_fail(self) -> YamlCommand:
+        if not self.content:
+            self.kernel.io.error(
+                "Trying to access request content before initialization"
+            )
+            assert False
+
+        return self.content
+
+    def get_options_names(self) -> StringsList:
+        names = []
+        content = self.get_content_or_fail()
+
+        if "options" in content:
+            options = content["options"]
+
+            for option in options:
+                names.append(option["name"])
+                names.append(option["short"])
+
+        return names
+
+    def load_yaml_command(self, path: str) -> YamlCommand:
+        return cast(YamlCommand, yaml_read(path, {}))
+
     def run(self) -> Any:
         return self.run_click_function(self.get_request().get_script_command())
+
+    def set_request(self, request: CommandRequest) -> None:
+        super().set_request(request=request)
+        path = request.get_path()
+
+        if path:
+            self.content = self.load_yaml_command(path)
+
+            if not self.content:
+                self.kernel.io.error(
+                    f"Unable to load yaml script file content : {path}",
+                    trace=False,
+                )

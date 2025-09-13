@@ -36,6 +36,19 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
         self.workdir = workdir
         self.success: bool | None = None
 
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        if not len(self.output_bag):
+            return None
+
+        output_string = self.output_bag[0]
+        assert isinstance(output_string, list)
+
+        return os.linesep.join(cast(StringsList, output_string))
+
     def render_content(
         self,
         request: CommandRequest,
@@ -56,16 +69,3 @@ class NonInteractiveShellCommandResponse(AbstractResponse):
             self.output_bag.append(content)
 
         return self
-
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        if not len(self.output_bag):
-            return None
-
-        output_string = self.output_bag[0]
-        assert isinstance(output_string, list)
-
-        return os.linesep.join(cast(StringsList, output_string))

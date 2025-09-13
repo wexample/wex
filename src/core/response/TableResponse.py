@@ -37,33 +37,6 @@ class TableResponse(AbstractTerminalSectionResponse):
         if body:
             self.set_body(body)
 
-    def set_header(self, header: StringsList) -> None:
-        self._header = header
-
-    def get_header(self) -> StringsList:
-        return self._header
-
-    def set_body(self, body: TableBody) -> None:
-        self._body = body
-
-    def get_body(self) -> TableBody:
-        return self._body
-
-    def render_content(
-        self,
-        request: CommandRequest,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
-        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            # Render the content based on the header and body attributes
-            self.render_cli_content()
-        elif render_mode == KERNEL_RENDER_MODE_JSON:
-            # Render the content in HTTP format
-            self.render_http_content()
-
-        return self
-
     def calculate_max_widths(self, array: StringsList) -> list[int]:
         """
         Calculate the maximum widths for each column based on the array.
@@ -83,6 +56,19 @@ class TableResponse(AbstractTerminalSectionResponse):
                 max_widths[i] = max(max_widths[i], len(str(cell)))
 
         return max_widths
+
+    def get_body(self) -> TableBody:
+        return self._body
+
+    def get_header(self) -> StringsList:
+        return self._header
+
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        return self.get_first_output_printable_value()
 
     def render_cli_content(self) -> None:
         combined_list: list[Any] = [self._header] + self._body
@@ -130,6 +116,21 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         self.output_bag.append(bash_array)
 
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            # Render the content based on the header and body attributes
+            self.render_cli_content()
+        elif render_mode == KERNEL_RENDER_MODE_JSON:
+            # Render the content in HTTP format
+            self.render_http_content()
+
+        return self
+
     def render_http_content(self) -> None:
         # Render the content as JSON for HTTP mode
         self.output_bag.append(
@@ -140,9 +141,8 @@ class TableResponse(AbstractTerminalSectionResponse):
             }
         )
 
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        return self.get_first_output_printable_value()
+    def set_body(self, body: TableBody) -> None:
+        self._body = body
+
+    def set_header(self, header: StringsList) -> None:
+        self._header = header

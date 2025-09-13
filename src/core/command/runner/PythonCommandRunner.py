@@ -30,15 +30,15 @@ class PythonCommandRunner(AbstractCommandRunner):
             ),
         )
 
+    def get_command_type(self) -> str:
+        return self.get_request().get_script_command().command_type
+
     def get_options_names(self) -> StringsList:
         params: StringsList = []
         for param in self.get_request().get_script_command().click_command.params:
             params += param.opts
 
         return params
-
-    def get_command_type(self) -> str:
-        return self.get_request().get_script_command().command_type
 
     def run(self) -> Any:
         return self.run_click_function(self.get_request().get_script_command())

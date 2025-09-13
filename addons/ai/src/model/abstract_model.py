@@ -44,154 +44,9 @@ class AbstractModel(AbstractAssistantChild):
         self.name: str = name
         self.activated: bool = False
 
-    def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
-        self._llm = llm
-
-    def get_llm(self) -> BaseLanguageModel[Any]:
-        self._validate__should_not_be_none(self._llm)
-        assert isinstance(self._llm, BaseLanguageModel)
-
-        return self._llm
-
-    def chat_create_prompt(
-        self,
-        interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection,
-    ) -> ChatPromptTemplate:
-        assistant = self.assistant
-
-        parts: list[tuple[str, str]] = []
-        personalities = cast(dict[str, dict[str, Any]], assistant.personalities)
-        personality_conf = personalities.get(assistant.personality, {})
-        raw_personality_prompt = personality_conf.get("prompt")
-        personality_prompt = (
-            str(raw_personality_prompt) if raw_personality_prompt is not None else ""
-        )
-        if personality_prompt:
-            parts.append(
-                ("system", "##YOUR PERSONALITY\n" + personality_prompt),
-            )
-
-        parts += [
-            (
-                "system",
-                f"##LANGUAGE"
-                f'\nYou use "{str(cast(dict[str, Any], assistant.languages).get(assistant.language, ""))}" language in every text, '
-                f"even if the person uses another language, unless you are explicitly asked to do otherwise.",
-            ),
-        ]
-
-        initial_prompt = interaction_mode.get_initial_prompt(prompt_section) or ""
-        if initial_prompt:
-            parts += [
-                ("system", "##INSTRUCTIONS\n" + initial_prompt),
-            ]
-
-        if len(self.assistant.active_memory.messages):
-            parts += [
-                ("system", "##CONVERSATION HISTORY\n{history}"),
-            ]
-
-        parser = interaction_mode.get_output_parser(prompt_section)
-        if parser:
-            parts += [
-                ("system", "{format_instructions}"),
-            ]
-
-        return ChatPromptTemplate.from_messages(
-            parts + prompt_section.prompt_configurations + [("human", "{input}")]
-        )
-
-    def create_embeddings(self) -> Any:
-        return None
-
-    def chat(
-        self,
-        interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection,
-        prompt_parameters: StringKeysDict | None = None,
-    ) -> str:
-        return self.chain_invoke_and_parse(
-            interaction_mode=interaction_mode,
-            prompt_template=self.chat_create_prompt(interaction_mode, prompt_section),
-            prompt_section=prompt_section,
-            prompt_parameters=prompt_parameters,
-        )
-
-    def create_few_shot_prompt_template(
-        self,
-        interaction_mode: AbstractInteractionMode | None = None,
-        prompt_section: UserPromptSection | None = None,
-        example_prompt: str = "",
-        examples: list[StringKeysDict] = [],
-        input_variables_names: StringsList = [],
-        response_variable_name: str = "response",
-    ) -> FewShotPromptTemplate:
-        example_prompt_template = PromptTemplate(
-            input_variables=input_variables_names + [response_variable_name],
-            template=example_prompt + "{" + response_variable_name + "}",
-        )
-
-        # Determine prefix from interaction mode if provided
-        prefix_text = (
-            interaction_mode.get_initial_prompt(prompt_section)
-            if interaction_mode and prompt_section
-            else ""
-        ) or ""
-
-        return FewShotPromptTemplate(
-            examples=examples,
-            example_prompt=example_prompt_template,
-            # The prefix is our instructions
-            prefix=prefix_text,
-            # The suffix our user input and output indicator
-            suffix=example_prompt,
-            input_variables=input_variables_names,
-            example_separator="\n----------------------------------\n",
-        )
-
-    def chat_with_few_shots(
-        self,
-        interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection,
-        prompt_parameters: StringKeysDict,
-        example_prompt: str,
-        examples: list[StringKeysDict],
-        input_variables_names: StringsList,
-    ) -> str:
-        return self.chain_invoke_and_parse(
-            interaction_mode=interaction_mode,
-            prompt_template=self.create_few_shot_prompt_template(
-                interaction_mode=interaction_mode,
-                prompt_section=prompt_section,
-                example_prompt=example_prompt,
-                examples=examples,
-                input_variables_names=input_variables_names,
-            ),
-            prompt_section=prompt_section,
-            prompt_parameters=prompt_parameters,
-        )
-
-    def chat_agent(
-        self,
-        interaction_mode: AbstractInteractionMode,
-        prompt_section: UserPromptSection,
-        tools: list[CommandTool],
-    ) -> str:
-        from langchain.agents import AgentExecutor, create_react_agent
-
-        prompt_template = self.chat_create_prompt(interaction_mode, prompt_section)
-
-        agent = cast(
-            Union[BaseSingleActionAgent, BaseMultiActionAgent],
-            create_react_agent(self.get_llm(), tools, prompt=prompt_template),
-        )
-
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-        # @see https://github.com/langchain-ai/langchain/discussions/6598
-        # At the moment there is a loop issue with agents
-        return str(agent_executor.invoke({"input": prompt_section.prompt})["output"])
+    @abstractmethod
+    def activate(self) -> None:
+        self.activated = True
 
     def chain_invoke_and_parse(
         self,
@@ -261,6 +116,152 @@ class AbstractModel(AbstractAssistantChild):
                 with_message_history.invoke(input_data, cast(Any, config)),
             )
 
+    def chat(
+        self,
+        interaction_mode: AbstractInteractionMode,
+        prompt_section: UserPromptSection,
+        prompt_parameters: StringKeysDict | None = None,
+    ) -> str:
+        return self.chain_invoke_and_parse(
+            interaction_mode=interaction_mode,
+            prompt_template=self.chat_create_prompt(interaction_mode, prompt_section),
+            prompt_section=prompt_section,
+            prompt_parameters=prompt_parameters,
+        )
+
+    def chat_agent(
+        self,
+        interaction_mode: AbstractInteractionMode,
+        prompt_section: UserPromptSection,
+        tools: list[CommandTool],
+    ) -> str:
+        from langchain.agents import AgentExecutor, create_react_agent
+
+        prompt_template = self.chat_create_prompt(interaction_mode, prompt_section)
+
+        agent = cast(
+            Union[BaseSingleActionAgent, BaseMultiActionAgent],
+            create_react_agent(self.get_llm(), tools, prompt=prompt_template),
+        )
+
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+        # @see https://github.com/langchain-ai/langchain/discussions/6598
+        # At the moment there is a loop issue with agents
+        return str(agent_executor.invoke({"input": prompt_section.prompt})["output"])
+
+    def chat_create_prompt(
+        self,
+        interaction_mode: AbstractInteractionMode,
+        prompt_section: UserPromptSection,
+    ) -> ChatPromptTemplate:
+        assistant = self.assistant
+
+        parts: list[tuple[str, str]] = []
+        personalities = cast(dict[str, dict[str, Any]], assistant.personalities)
+        personality_conf = personalities.get(assistant.personality, {})
+        raw_personality_prompt = personality_conf.get("prompt")
+        personality_prompt = (
+            str(raw_personality_prompt) if raw_personality_prompt is not None else ""
+        )
+        if personality_prompt:
+            parts.append(
+                ("system", "##YOUR PERSONALITY\n" + personality_prompt),
+            )
+
+        parts += [
+            (
+                "system",
+                f"##LANGUAGE"
+                f'\nYou use "{str(cast(dict[str, Any], assistant.languages).get(assistant.language, ""))}" language in every text, '
+                f"even if the person uses another language, unless you are explicitly asked to do otherwise.",
+            ),
+        ]
+
+        initial_prompt = interaction_mode.get_initial_prompt(prompt_section) or ""
+        if initial_prompt:
+            parts += [
+                ("system", "##INSTRUCTIONS\n" + initial_prompt),
+            ]
+
+        if len(self.assistant.active_memory.messages):
+            parts += [
+                ("system", "##CONVERSATION HISTORY\n{history}"),
+            ]
+
+        parser = interaction_mode.get_output_parser(prompt_section)
+        if parser:
+            parts += [
+                ("system", "{format_instructions}"),
+            ]
+
+        return ChatPromptTemplate.from_messages(
+            parts + prompt_section.prompt_configurations + [("human", "{input}")]
+        )
+
+    def chat_with_few_shots(
+        self,
+        interaction_mode: AbstractInteractionMode,
+        prompt_section: UserPromptSection,
+        prompt_parameters: StringKeysDict,
+        example_prompt: str,
+        examples: list[StringKeysDict],
+        input_variables_names: StringsList,
+    ) -> str:
+        return self.chain_invoke_and_parse(
+            interaction_mode=interaction_mode,
+            prompt_template=self.create_few_shot_prompt_template(
+                interaction_mode=interaction_mode,
+                prompt_section=prompt_section,
+                example_prompt=example_prompt,
+                examples=examples,
+                input_variables_names=input_variables_names,
+            ),
+            prompt_section=prompt_section,
+            prompt_parameters=prompt_parameters,
+        )
+
+    def create_embeddings(self) -> Any:
+        return None
+
+    def create_few_shot_prompt_template(
+        self,
+        interaction_mode: AbstractInteractionMode | None = None,
+        prompt_section: UserPromptSection | None = None,
+        example_prompt: str = "",
+        examples: list[StringKeysDict] = [],
+        input_variables_names: StringsList = [],
+        response_variable_name: str = "response",
+    ) -> FewShotPromptTemplate:
+        example_prompt_template = PromptTemplate(
+            input_variables=input_variables_names + [response_variable_name],
+            template=example_prompt + "{" + response_variable_name + "}",
+        )
+
+        # Determine prefix from interaction mode if provided
+        prefix_text = (
+            interaction_mode.get_initial_prompt(prompt_section)
+            if interaction_mode and prompt_section
+            else ""
+        ) or ""
+
+        return FewShotPromptTemplate(
+            examples=examples,
+            example_prompt=example_prompt_template,
+            # The prefix is our instructions
+            prefix=prefix_text,
+            # The suffix our user input and output indicator
+            suffix=example_prompt,
+            input_variables=input_variables_names,
+            example_separator="\n----------------------------------\n",
+        )
+
+    def get_llm(self) -> BaseLanguageModel[Any]:
+        self._validate__should_not_be_none(self._llm)
+        assert isinstance(self._llm, BaseLanguageModel)
+
+        return self._llm
+
     @abstractmethod
     def guess_function(
         self,
@@ -270,6 +271,5 @@ class AbstractModel(AbstractAssistantChild):
     ) -> str | None:
         return None
 
-    @abstractmethod
-    def activate(self) -> None:
-        self.activated = True
+    def set_llm(self, llm: BaseLanguageModel[Any]) -> None:
+        self._llm = llm

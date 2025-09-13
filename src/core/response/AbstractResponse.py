@@ -42,10 +42,98 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         # we call it "interactive".
         self.interactive_data = False
 
+    def first(self) -> Any:
+        return self.get_one(0)
+
+    def get(self, *args: Args) -> AbstractResponse:
+        current_element: AbstractResponse = self
+        for index in args:
+            try:
+                response = current_element.output_bag[index]
+                assert isinstance(response, AbstractResponse)
+                current_element = response
+            except (IndexError, AttributeError):
+                return self.kernel.io.error("Trying to access a out of range response")
+
+        assert isinstance(current_element, AbstractResponse)
+
+        return current_element
+
+    def get_first_output_printable_value(self) -> ResponsePrintType:
+        if not len(self.output_bag):
+            return None
+
+        data = self.output_bag[0]
+        assert isinstance(data, str | int | float | bool | None | list | dict)
+
+        # can be empty in "none" render mode.
+        return cast(ResponsePrintType, data)
+
+    def get_one(self, position: int) -> Any:
+        """
+        Return recursively the Xth item of the output bag.
+        Mainly used to retrieve the bare first or last one.
+        """
+        response: Any = self
+        while isinstance(response, AbstractResponse):
+            if len(response.output_bag):
+                response = response.output_bag[position]
+            else:
+                return response
+
+        return response
+
     def get_root_parent(self) -> AbstractResponse:
         if self.parent:
             return self.parent.get_root_parent()
         return self
+
+    def last(self) -> Any:
+        return self.get_one(-1)
+
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        if len(self.output_bag):
+            serialised = []
+            for output in self.output_bag:
+                if isinstance(output, AbstractResponse):
+                    if output.interactive_data or interactive_data:
+                        output_serialized = output.print(
+                            render_mode=render_mode,
+                            interactive_data=interactive_data,
+                        )
+                        if output_serialized is not None:
+                            serialised.append(output_serialized)
+                elif output is not None:
+                    serialised.append(output)
+
+            if not len(serialised):
+                return None
+
+            return serialised
+
+        return None
+
+    def print_wrapped(
+        self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
+    ) -> str | None:
+        if render_mode == KERNEL_RENDER_MODE_NONE:
+            return None
+
+        value = self.print(render_mode)
+
+        if render_mode == KERNEL_RENDER_MODE_JSON:
+            import json
+
+            return json.dumps(self.render_mode_json_wrap_data(value))
+
+        return str(value) if value is not None else None
+
+    def print_wrapped_str(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL) -> str:
+        return str(self.print_wrapped(render_mode))
 
     def render(
         self,
@@ -87,62 +175,6 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
     ) -> AbstractResponse:
         pass
 
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        if len(self.output_bag):
-            serialised = []
-            for output in self.output_bag:
-                if isinstance(output, AbstractResponse):
-                    if output.interactive_data or interactive_data:
-                        output_serialized = output.print(
-                            render_mode=render_mode,
-                            interactive_data=interactive_data,
-                        )
-                        if output_serialized is not None:
-                            serialised.append(output_serialized)
-                elif output is not None:
-                    serialised.append(output)
-
-            if not len(serialised):
-                return None
-
-            return serialised
-
-        return None
-
-    def get_one(self, position: int) -> Any:
-        """
-        Return recursively the Xth item of the output bag.
-        Mainly used to retrieve the bare first or last one.
-        """
-        response: Any = self
-        while isinstance(response, AbstractResponse):
-            if len(response.output_bag):
-                response = response.output_bag[position]
-            else:
-                return response
-
-        return response
-
-    def first(self) -> Any:
-        return self.get_one(0)
-
-    def last(self) -> Any:
-        return self.get_one(-1)
-
-    def storable_data(self) -> bool:
-        return True
-
-    def store_data(self) -> Any:
-        if self.storable_data() and self.print(
-            render_mode=KERNEL_RENDER_MODE_TERMINAL, interactive_data=False
-        ):
-            return self.first()
-        return None
-
     def render_content_multiple(
         self,
         collection: AnyList,
@@ -163,61 +195,29 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         return {"value": value}
 
-    def print_wrapped(
-        self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
-    ) -> str | None:
-        if render_mode == KERNEL_RENDER_MODE_NONE:
-            return None
+    def storable_data(self) -> bool:
+        return True
 
-        value = self.print(render_mode)
-
-        if render_mode == KERNEL_RENDER_MODE_JSON:
-            import json
-
-            return json.dumps(self.render_mode_json_wrap_data(value))
-
-        return str(value) if value is not None else None
-
-    def print_wrapped_str(self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL) -> str:
-        return str(self.print_wrapped(render_mode))
-
-    def get_first_output_printable_value(self) -> ResponsePrintType:
-        if not len(self.output_bag):
-            return None
-
-        data = self.output_bag[0]
-        assert isinstance(data, str | int | float | bool | None | list | dict)
-
-        # can be empty in "none" render mode.
-        return cast(ResponsePrintType, data)
-
-    def get(self, *args: Args) -> AbstractResponse:
-        current_element: AbstractResponse = self
-        for index in args:
-            try:
-                response = current_element.output_bag[index]
-                assert isinstance(response, AbstractResponse)
-                current_element = response
-            except (IndexError, AttributeError):
-                return self.kernel.io.error("Trying to access a out of range response")
-
-        assert isinstance(current_element, AbstractResponse)
-
-        return current_element
+    def store_data(self) -> Any:
+        if self.storable_data() and self.print(
+            render_mode=KERNEL_RENDER_MODE_TERMINAL, interactive_data=False
+        ):
+            return self.first()
+        return None
 
 
 class HasResponse(BaseClass):
     def __init__(self) -> None:
         self._response: None | AbstractResponse = None
 
-    def set_response(self, response: AbstractResponse) -> None:
-        self._response = response
-
     def get_response(self) -> AbstractResponse:
         self._validate__should_not_be_none(self._response)
         assert self._response is not None
 
         return self._response
+
+    def set_response(self, response: AbstractResponse) -> None:
+        self._response = response
 
 
 ResponseCollection = list[AbstractResponse]

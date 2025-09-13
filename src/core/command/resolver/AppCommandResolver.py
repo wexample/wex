@@ -41,23 +41,6 @@ class AppCommandResolver(AbstractCommandResolver):
             AppAddonManager, kernel.addons["app"]
         )
 
-    def render_request(
-        self, request: CommandRequest, render_mode: str
-    ) -> AbstractResponse:
-        if not self.get_base_path():
-            if not request.quiet:
-                self.kernel.io.error(
-                    ERR_APP_NOT_FOUND,
-                    {
-                        "command": request.get_string_command(),
-                        "dir": os.getcwd(),
-                    },
-                )
-
-            return AbortResponse(self.kernel, reason=ERR_APP_NOT_FOUND)
-
-        return super().render_request(request, render_mode)
-
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_APP
@@ -65,48 +48,6 @@ class AppCommandResolver(AbstractCommandResolver):
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_APP
-
-    def build_path(
-        self, request: CommandRequest, extension: str, subdir: str | None = None
-    ) -> Path | None:
-        match = request.get_match()
-        base_path = self.get_base_path()
-        if not base_path:
-            return None
-
-        return self.build_command_path(
-            base_path=base_path,
-            extension=extension,
-            subdir=subdir,
-            command_path=os.path.join(
-                string_to_snake_case(match[2]),
-                string_to_snake_case(match[3]),
-            ),
-        )
-
-    def build_command_from_parts(self, parts: StringsList) -> str:
-        # Convert each part to kebab-case
-        kebab_parts = [string_to_kebab_case(part) for part in parts]
-
-        return f"{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
-
-    def get_function_name_parts(self, parts: StringsList) -> StringsList:
-        return ["app", parts[1], parts[2]]
-
-    def get_base_path(self) -> str | None:
-        app_dir = self.app_addon_manager.app_dir
-        if not app_dir:
-            from addons.app.command.location.find import _app__location__find
-
-            app_dir = _app__location__find(
-                manager=self.app_addon_manager,
-                app_dir=os.getcwd() + os.sep,
-            )
-
-        if app_dir:
-            return f"{app_dir}{APP_DIR_APP_DATA}"
-
-        return None
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
@@ -141,6 +82,12 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return None
 
+    def build_command_from_parts(self, parts: StringsList) -> str:
+        # Convert each part to kebab-case
+        kebab_parts = [string_to_kebab_case(part) for part in parts]
+
+        return f"{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
+
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
@@ -149,6 +96,73 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[2],
             path_parts[3],
         ]
+
+    def build_path(
+        self, request: CommandRequest, extension: str, subdir: str | None = None
+    ) -> Path | None:
+        match = request.get_match()
+        base_path = self.get_base_path()
+        if not base_path:
+            return None
+
+        return self.build_command_path(
+            base_path=base_path,
+            extension=extension,
+            subdir=subdir,
+            command_path=os.path.join(
+                string_to_snake_case(match[2]),
+                string_to_snake_case(match[3]),
+            ),
+        )
+
+    def get_active_commands(self) -> RegistryCommandsCollection:
+        # Use ap dir if specified.
+        app_dir = self.app_addon_manager.app_dir
+
+        if not app_dir:
+            # Search commands from current working dir, ignoring if initial command is an app command.
+            app_dir = self.kernel.get_path("call")
+
+        app_command_dir = self.build_base_command_path(
+            os.path.join(app_dir, APP_DIR_APP_DATA)
+        )
+
+        return self.scan_commands_groups(app_command_dir)
+
+    def get_base_path(self) -> str | None:
+        app_dir = self.app_addon_manager.app_dir
+        if not app_dir:
+            from addons.app.command.location.find import _app__location__find
+
+            app_dir = _app__location__find(
+                manager=self.app_addon_manager,
+                app_dir=os.getcwd() + os.sep,
+            )
+
+        if app_dir:
+            return f"{app_dir}{APP_DIR_APP_DATA}"
+
+        return None
+
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
+        return ["app", parts[1], parts[2]]
+
+    def render_request(
+        self, request: CommandRequest, render_mode: str
+    ) -> AbstractResponse:
+        if not self.get_base_path():
+            if not request.quiet:
+                self.kernel.io.error(
+                    ERR_APP_NOT_FOUND,
+                    {
+                        "command": request.get_string_command(),
+                        "dir": os.getcwd(),
+                    },
+                )
+
+            return AbortResponse(self.kernel, reason=ERR_APP_NOT_FOUND)
+
+        return super().render_request(request, render_mode)
 
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
@@ -191,17 +205,3 @@ class AppCommandResolver(AbstractCommandResolver):
         assert isinstance(response, AbstractResponse)
 
         return response
-
-    def get_active_commands(self) -> RegistryCommandsCollection:
-        # Use ap dir if specified.
-        app_dir = self.app_addon_manager.app_dir
-
-        if not app_dir:
-            # Search commands from current working dir, ignoring if initial command is an app command.
-            app_dir = self.kernel.get_path("call")
-
-        app_command_dir = self.build_base_command_path(
-            os.path.join(app_dir, APP_DIR_APP_DATA)
-        )
-
-        return self.scan_commands_groups(app_command_dir)

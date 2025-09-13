@@ -157,62 +157,6 @@ class Kernel(BaseClass):
 
         self.handle_core_args()
 
-    def get_path(self, name: str, sub_dirs: list[str] | None = None) -> str | NoReturn:
-        """Get the path associated with the given name."""
-        if name in self.path:
-            base_path = self.path[name]
-
-            if sub_dirs:
-                return os.path.join(base_path, *sub_dirs) + os.sep
-
-            return base_path
-        else:
-            self.io.error(f"Core path not found {name}.")
-
-            sys.exit(1)
-
-    def get_or_create_path(self, name: str) -> str:
-        path = self.get_path(name)
-
-        # Check if the directory exists, and if not, create it
-        if not os.path.exists(path):
-            try:
-                os.makedirs(path)
-
-                from src.helper.file import file_set_user_or_sudo_user_owner
-
-                file_set_user_or_sudo_user_owner(path)
-            except PermissionError:
-                self.io.error(f"Permission denied: Could not create {path}.")
-
-                sys.exit(1)
-
-        return path
-
-    def load_registry(self) -> None:
-        self.registry_structure = KernelRegistryFileStructure(
-            self, os.path.join(self.directory.shortcuts["tmp"].path, FILE_REGISTRY)
-        )
-
-        # Load registry if empty
-        if not self.registry_structure.exists():
-            self.registry_structure.build()
-
-        # Check again
-        self.registry_structure.should_exist = True
-        self.registry_structure.checkup()
-
-    def trace(self, _exit: bool = True) -> NoReturn | None:
-        import traceback
-
-        for line in traceback.format_stack():
-            self.io.print(line.strip())
-
-        if _exit:
-            sys.exit(1)
-
-        return None
-
     def call(self) -> None:
         """
         Main entrypoint from bash call.
@@ -280,71 +224,182 @@ class Kernel(BaseClass):
             else None
         )
 
-    def run_command(
-        self,
-        command: CoreCommandString,
-        args: OptionalCoreCommandArgsListOrDict | None = None,
-        quiet: bool = False,
-        render_mode: str | None = None,
-        fast_mode: bool | None = None,
-    ) -> AbstractResponse:
-        self.set_temporary_fast_mode(fast_mode)
-
-        result = self.render_request(
-            self.create_command_request(command=command, args=args, quiet=quiet),
-            render_mode,
-        )
-
-        self.revert_temporary_fast_mode(fast_mode)
-
-        return result
-
-    def revert_temporary_fast_mode(self, value: bool | None) -> None:
-        """Revert fast mode status only if value have been forced"""
-        if value is not None:
-            self.fast_mode = self.fast_mode_previous or self.fast_mode
-
-    def set_temporary_fast_mode(self, value: bool | None) -> None:
-        self.fast_mode_previous = None
-
-        if value is not None:
-            self.fast_mode_previous = self.fast_mode
-            self.fast_mode = value
-
-    def run_function(
-        self,
-        function: ScriptCommand,
-        args: OptionalCoreCommandArgsListOrDict | None = None,
-        type: str = COMMAND_TYPE_ADDON,
-        quiet: bool = False,
-        render_mode: str | None = None,
-        fast_mode: bool | None = None,
-    ) -> AbstractResponse:
-        if not self.has_command_resolver(type):
-            return self.create_abort_response(
-                message=f'Resolver not found for type "{type}"'
-            )
-
-        self.set_temporary_fast_mode(fast_mode)
-
-        request = self.create_command_request(
-            command=self.get_command_resolver(type).build_command_from_function(
-                function
-            ),
-            args=args,
-            quiet=quiet,
-        )
-
-        result = self.render_request(request, render_mode)
-
-        self.revert_temporary_fast_mode(fast_mode)
-
-        return result
-
     def create_abort_response(self, message: str) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
 
         return AbortResponse(self, reason=message)
+
+    def create_command_request(
+        self,
+        command: CoreCommandString,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
+        quiet: bool = False,
+    ) -> CommandRequest | NoReturn:
+        command_type = self.guess_command_type(command)
+
+        if command_type:
+            request = self.get_command_resolver(command_type).create_command_request(
+                command, args
+            )
+            request.quiet = quiet
+
+            return request
+
+        if not quiet:
+            self.io.error(
+                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
+                {"command": command},
+                trace=False,
+            )
+
+        assert False
+
+    def env(
+        self, key: str, default: str | int | None = None, required: bool = False
+    ) -> str | int | None:
+        value = self.env_values.get(key)
+        if value is None:
+            if required:
+                self.io.error(
+                    f"Missing required environment variable {key} in {self.directory.shortcuts['.env'].path}",
+                    {"key": key},
+                )
+            else:
+                return default
+
+        return value
+
+    def file_structure_display_errors(
+        self, file_system_structure: AbstractFileSystemStructure
+    ) -> None:
+        errors = file_system_structure.get_all_errors()
+        if len(errors):
+            error: ErrorMessage = errors[0]
+
+            self.io.error(error.message, error.parameters)
+
+    def get_command_resolver(self, type: str) -> AbstractCommandResolver:
+        return self.resolvers[type]
+
+    def get_or_create_path(self, name: str) -> str:
+        path = self.get_path(name)
+
+        # Check if the directory exists, and if not, create it
+        if not os.path.exists(path):
+            try:
+                os.makedirs(path)
+
+                from src.helper.file import file_set_user_or_sudo_user_owner
+
+                file_set_user_or_sudo_user_owner(path)
+            except PermissionError:
+                self.io.error(f"Permission denied: Could not create {path}.")
+
+                sys.exit(1)
+
+        return path
+
+    def get_path(self, name: str, sub_dirs: list[str] | None = None) -> str | NoReturn:
+        """Get the path associated with the given name."""
+        if name in self.path:
+            base_path = self.path[name]
+
+            if sub_dirs:
+                return os.path.join(base_path, *sub_dirs) + os.sep
+
+            return base_path
+        else:
+            self.io.error(f"Core path not found {name}.")
+
+            sys.exit(1)
+
+    def get_task_id(self) -> str:
+        self._validate__should_not_be_none(self._task_id)
+        assert self._task_id is not None
+
+        return self._task_id
+
+    def guess_command_type(self, command: CoreCommandString) -> str | None:
+        for type in self.resolvers:
+            if self.resolvers[type].supports(command):
+                return type
+        return None
+
+    def handle_core_args(self) -> None:
+        if args_shift_one(self.sys_argv, "fast-mode", True) is not None:
+            self.fast_mode = True
+
+        if args_shift_one(self.sys_argv, "quiet", True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_QUIET
+
+        if args_shift_one(self.sys_argv, "vv", True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_MEDIUM
+
+        if args_shift_one(self.sys_argv, "vvv", True) is not None:
+            self.verbosity = VERBOSITY_LEVEL_MAXIMUM
+
+        value: str | bool | int | None
+        value = args_shift_one(self.sys_argv, "log-indent")
+        if value is not None:
+            self.io.log_indent = int(value)
+
+        # Setting verbosity will disable logging frame.
+        value = args_shift_one(self.sys_argv, "log-length")
+        if not sys.stdout.isatty() or self.verbosity != VERBOSITY_LEVEL_DEFAULT:
+            value = 0
+
+        if value is not None:
+            self.io.log_length = int(value)
+
+        value = args_shift_one(self.sys_argv, "render-mode")
+        if isinstance(value, str):
+            self.default_render_mode = value
+
+        value = args_shift_one(self.sys_argv, "parent-task-id")
+        if isinstance(value, str):
+            self.parent_task_id = value
+
+        # There is a task id redirection
+        value = args_shift_one(self.sys_argv, "kernel-task-id")
+        if isinstance(value, str):
+            self.task_file_write("task-redirect", value, replace=True)
+
+            self.set_task_id(value)
+
+            # Cleanup task files to avoid loops.
+            file_remove_if_exists(self.task_file_path("post-exec"))
+
+    def has_command_resolver(self, type: str) -> bool:
+        return type in self.resolvers
+
+    def hook_addons(self, name: str, args: dict[str, Any] | None = None) -> None:
+        args = args or {}
+
+        hook = f"hook_{name}"
+        # Init addons
+        for addon in self.addons:
+            addon_manager = self.addons[addon]
+            # Dynamically call the hook method if it exists
+            hook_method = getattr(addon_manager, hook, None)
+
+            if hook_method:
+                response = hook_method(**args)
+
+                if response:
+                    return
+
+    def load_registry(self) -> None:
+        self.registry_structure = KernelRegistryFileStructure(
+            self, os.path.join(self.directory.shortcuts["tmp"].path, FILE_REGISTRY)
+        )
+
+        # Load registry if empty
+        if not self.registry_structure.exists():
+            self.registry_structure.build()
+
+        # Check again
+        self.registry_structure.should_exist = True
+        self.registry_structure.checkup()
 
     def render_request(
         self, request: CommandRequest, render_mode: str | None = None
@@ -399,10 +454,79 @@ class Kernel(BaseClass):
             request, render_mode or self.default_render_mode
         )
 
-    def task_file_path(self, type: str, task_id: str | None = None) -> str:
-        return os.path.join(
-            self.get_or_create_path("task"), f"{task_id or self.get_task_id()}.{type}"
+    def revert_temporary_fast_mode(self, value: bool | None) -> None:
+        """Revert fast mode status only if value have been forced"""
+        if value is not None:
+            self.fast_mode = self.fast_mode_previous or self.fast_mode
+
+    def run_command(
+        self,
+        command: CoreCommandString,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
+        quiet: bool = False,
+        render_mode: str | None = None,
+        fast_mode: bool | None = None,
+    ) -> AbstractResponse:
+        self.set_temporary_fast_mode(fast_mode)
+
+        result = self.render_request(
+            self.create_command_request(command=command, args=args, quiet=quiet),
+            render_mode,
         )
+
+        self.revert_temporary_fast_mode(fast_mode)
+
+        return result
+
+    def run_function(
+        self,
+        function: ScriptCommand,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
+        type: str = COMMAND_TYPE_ADDON,
+        quiet: bool = False,
+        render_mode: str | None = None,
+        fast_mode: bool | None = None,
+    ) -> AbstractResponse:
+        if not self.has_command_resolver(type):
+            return self.create_abort_response(
+                message=f'Resolver not found for type "{type}"'
+            )
+
+        self.set_temporary_fast_mode(fast_mode)
+
+        request = self.create_command_request(
+            command=self.get_command_resolver(type).build_command_from_function(
+                function
+            ),
+            args=args,
+            quiet=quiet,
+        )
+
+        result = self.render_request(request, render_mode)
+
+        self.revert_temporary_fast_mode(fast_mode)
+
+        return result
+
+    def set_task_id(self, task_id: str) -> None:
+        self._task_id = task_id
+
+    def set_temporary_fast_mode(self, value: bool | None) -> None:
+        self.fast_mode_previous = None
+
+        if value is not None:
+            self.fast_mode_previous = self.fast_mode
+            self.fast_mode = value
+
+    def store_task_id(self) -> NoReturn | None:
+        task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
+        if task_id is None:
+            self.io.error(
+                'Please use the "bash ./cli/wex" file to run wex script.', trace=False
+            )
+
+        self.set_task_id(self.sys_argv[1])
+        return None
 
     def task_file_load(
         self,
@@ -439,6 +563,11 @@ class Kernel(BaseClass):
                 # If not creating a file, just return the default
                 return default
 
+    def task_file_path(self, type: str, task_id: str | None = None) -> str:
+        return os.path.join(
+            self.get_or_create_path("task"), f"{task_id or self.get_task_id()}.{type}"
+        )
+
     def task_file_write(
         self, type: str, body: str, task_id: str | None = None, replace: bool = False
     ) -> str:
@@ -453,142 +582,13 @@ class Kernel(BaseClass):
 
             return path
 
-    def guess_command_type(self, command: CoreCommandString) -> str | None:
-        for type in self.resolvers:
-            if self.resolvers[type].supports(command):
-                return type
+    def trace(self, _exit: bool = True) -> NoReturn | None:
+        import traceback
+
+        for line in traceback.format_stack():
+            self.io.print(line.strip())
+
+        if _exit:
+            sys.exit(1)
+
         return None
-
-    def hook_addons(self, name: str, args: dict[str, Any] | None = None) -> None:
-        args = args or {}
-
-        hook = f"hook_{name}"
-        # Init addons
-        for addon in self.addons:
-            addon_manager = self.addons[addon]
-            # Dynamically call the hook method if it exists
-            hook_method = getattr(addon_manager, hook, None)
-
-            if hook_method:
-                response = hook_method(**args)
-
-                if response:
-                    return
-
-    def has_command_resolver(self, type: str) -> bool:
-        return type in self.resolvers
-
-    def get_command_resolver(self, type: str) -> AbstractCommandResolver:
-        return self.resolvers[type]
-
-    def create_command_request(
-        self,
-        command: CoreCommandString,
-        args: OptionalCoreCommandArgsListOrDict | None = None,
-        quiet: bool = False,
-    ) -> CommandRequest | NoReturn:
-        command_type = self.guess_command_type(command)
-
-        if command_type:
-            request = self.get_command_resolver(command_type).create_command_request(
-                command, args
-            )
-            request.quiet = quiet
-
-            return request
-
-        if not quiet:
-            self.io.error(
-                "Invalid command format. Must be in the format 'addon::group/name' or 'group/name', got : {command}",
-                {"command": command},
-                trace=False,
-            )
-
-        assert False
-
-    def get_task_id(self) -> str:
-        self._validate__should_not_be_none(self._task_id)
-        assert self._task_id is not None
-
-        return self._task_id
-
-    def set_task_id(self, task_id: str) -> None:
-        self._task_id = task_id
-
-    def store_task_id(self) -> NoReturn | None:
-        task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
-        if task_id is None:
-            self.io.error(
-                'Please use the "bash ./cli/wex" file to run wex script.', trace=False
-            )
-
-        self.set_task_id(self.sys_argv[1])
-        return None
-
-    def handle_core_args(self) -> None:
-        if args_shift_one(self.sys_argv, "fast-mode", True) is not None:
-            self.fast_mode = True
-
-        if args_shift_one(self.sys_argv, "quiet", True) is not None:
-            self.verbosity = VERBOSITY_LEVEL_QUIET
-
-        if args_shift_one(self.sys_argv, "vv", True) is not None:
-            self.verbosity = VERBOSITY_LEVEL_MEDIUM
-
-        if args_shift_one(self.sys_argv, "vvv", True) is not None:
-            self.verbosity = VERBOSITY_LEVEL_MAXIMUM
-
-        value: str | bool | int | None
-        value = args_shift_one(self.sys_argv, "log-indent")
-        if value is not None:
-            self.io.log_indent = int(value)
-
-        # Setting verbosity will disable logging frame.
-        value = args_shift_one(self.sys_argv, "log-length")
-        if not sys.stdout.isatty() or self.verbosity != VERBOSITY_LEVEL_DEFAULT:
-            value = 0
-
-        if value is not None:
-            self.io.log_length = int(value)
-
-        value = args_shift_one(self.sys_argv, "render-mode")
-        if isinstance(value, str):
-            self.default_render_mode = value
-
-        value = args_shift_one(self.sys_argv, "parent-task-id")
-        if isinstance(value, str):
-            self.parent_task_id = value
-
-        # There is a task id redirection
-        value = args_shift_one(self.sys_argv, "kernel-task-id")
-        if isinstance(value, str):
-            self.task_file_write("task-redirect", value, replace=True)
-
-            self.set_task_id(value)
-
-            # Cleanup task files to avoid loops.
-            file_remove_if_exists(self.task_file_path("post-exec"))
-
-    def file_structure_display_errors(
-        self, file_system_structure: AbstractFileSystemStructure
-    ) -> None:
-        errors = file_system_structure.get_all_errors()
-        if len(errors):
-            error: ErrorMessage = errors[0]
-
-            self.io.error(error.message, error.parameters)
-
-    def env(
-        self, key: str, default: str | int | None = None, required: bool = False
-    ) -> str | int | None:
-        value = self.env_values.get(key)
-        if value is None:
-            if required:
-                self.io.error(
-                    f"Missing required environment variable {key} in {self.directory.shortcuts['.env'].path}",
-                    {"key": key},
-                )
-            else:
-                return default
-
-        return value

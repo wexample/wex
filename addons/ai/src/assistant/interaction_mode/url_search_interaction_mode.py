@@ -15,22 +15,22 @@ if TYPE_CHECKING:
 
 
 class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
-    def get_vector_store_collection_name(self) -> str:
-        return "url-search"
-
-    def get_storage_signature(self) -> str:
-        return self.get_url()
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
     ) -> dict[str, str]:
         return {"signature": self.get_url()}
 
-    def get_url_subject(self) -> UrlChatSubject:
-        return cast("UrlChatSubject", self.assistant.get_current_subject())
+    def get_storage_signature(self) -> str:
+        return self.get_url()
 
     def get_url(self) -> str:
         return self.get_url_subject().url or ""
+
+    def get_url_subject(self) -> UrlChatSubject:
+        return cast("UrlChatSubject", self.assistant.get_current_subject())
+    def get_vector_store_collection_name(self) -> str:
+        return "url-search"
 
     def process_user_input(
         self,

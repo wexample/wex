@@ -23,10 +23,10 @@ class UrlSearchCommand(DefaultCommand):
     def name() -> str:
         return "url-search"
 
-    def is_active(self, current_prompt: str) -> bool:
-        return isinstance(self.assistant.subject, UrlChatSubject)
-
     def get_interaction_mode(
         self, prompt_section: UserPromptSection
     ) -> type[AbstractInteractionMode]:
         return UrlSearchInteractionMode
+
+    def is_active(self, current_prompt: str) -> bool:
+        return isinstance(self.assistant.subject, UrlChatSubject)

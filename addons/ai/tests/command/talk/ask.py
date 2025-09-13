@@ -43,6 +43,92 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         # self._test_diff(assistant)
         # self._test_patching(assistant)
 
+    def _found_one_command(
+        self, assistant: Assistant, command: str, text: str, should_succeed: bool
+    ) -> list[UserPromptSection]:
+        user_input_splits = assistant.split_prompt_sections(text)
+
+        success = any(
+            user_input_split.has_command()
+            and user_input_split.get_command().name() == command
+            for user_input_split in user_input_splits
+        )
+
+        self.assertTrue(
+            success == should_succeed, f'Command "{command}" found in text : "{text}"'
+        )
+
+        return user_input_splits
+
+    def _get_all_examples(self, assistant: Assistant) -> dict[str, StringKeysDict]:
+        examples: dict[str, StringKeysDict] = {}
+
+        file_chat_subject = cast(
+            FileChatSubject, assistant.subjects[FileChatSubject.name()]
+        )
+
+        base_dir = self.kernel.directory.path + "addons/ai/samples/examples/"
+        for group_name in os.listdir(base_dir):
+            examples[group_name] = {}
+
+            for example_name in os.listdir(os.path.join(base_dir, group_name)):
+                examples[group_name][example_name] = (
+                    file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
+                )
+
+        return examples
+
+    def _test_ask_assistant(self, assistant: Assistant) -> None:
+        assistant = Assistant(self.kernel, MODEL_NAME_OLLAMA_MISTRAL)
+
+        self.assertGreater(len(assistant.personalities.values()), 1)
+
+        test_ext = [
+            "csv",
+            "html",
+            "json",
+            "md",
+            "pdf",
+        ]
+
+        assistant.set_subject(FileChatSubject.name())
+        assistant.get_current_subject()
+        # interaction_mode = cast(
+        #     FileSearchInteractionMode, subject.get_interaction_mode()(subject)
+        # )
+
+        # for ext in test_ext:
+        #     sample_path = self.build_test_samples_path() + ext + "/simple." + ext
+        #
+        #     chunks = interaction_mode.vector_create_file_chunks(
+        #         file_path=sample_path, file_signature=f"test-{ext}"
+        #     )
+        #
+        #     self.assertTrue(len(chunks) > 0)
+
+    def _test_ask_formatting(self, assistant: Assistant) -> None:
+        message = chat_format_message(
+            "Left align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah."
+        )
+
+        self.kernel.io.print(message)
+
+        self.assertTrue(
+            "+---" in message,
+        )
+
+        message = chat_format_message(
+            "Right align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah.",
+            align=TEXT_ALIGN_RIGHT,
+            padding=2,
+        )
+
+        self.assertTrue(
+            "+---" in message,
+        )
+
+        self.kernel.io.print(message)
+
     def _test_ask_parsing(self, assistant: Assistant) -> None:
         assistant.set_default_subject()
 
@@ -114,125 +200,6 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                     f"Lorem {AI_COMMAND_PREFIX}{command_name} ipsum",
                     True,
                 )
-
-    def _found_one_command(
-        self, assistant: Assistant, command: str, text: str, should_succeed: bool
-    ) -> list[UserPromptSection]:
-        user_input_splits = assistant.split_prompt_sections(text)
-
-        success = any(
-            user_input_split.has_command()
-            and user_input_split.get_command().name() == command
-            for user_input_split in user_input_splits
-        )
-
-        self.assertTrue(
-            success == should_succeed, f'Command "{command}" found in text : "{text}"'
-        )
-
-        return user_input_splits
-
-    def _test_ask_assistant(self, assistant: Assistant) -> None:
-        assistant = Assistant(self.kernel, MODEL_NAME_OLLAMA_MISTRAL)
-
-        self.assertGreater(len(assistant.personalities.values()), 1)
-
-        test_ext = [
-            "csv",
-            "html",
-            "json",
-            "md",
-            "pdf",
-        ]
-
-        assistant.set_subject(FileChatSubject.name())
-        assistant.get_current_subject()
-        # interaction_mode = cast(
-        #     FileSearchInteractionMode, subject.get_interaction_mode()(subject)
-        # )
-
-        # for ext in test_ext:
-        #     sample_path = self.build_test_samples_path() + ext + "/simple." + ext
-        #
-        #     chunks = interaction_mode.vector_create_file_chunks(
-        #         file_path=sample_path, file_signature=f"test-{ext}"
-        #     )
-        #
-        #     self.assertTrue(len(chunks) > 0)
-
-    def _test_ask_formatting(self, assistant: Assistant) -> None:
-        message = chat_format_message(
-            "Left align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah."
-        )
-
-        self.kernel.io.print(message)
-
-        self.assertTrue(
-            "+---" in message,
-        )
-
-        message = chat_format_message(
-            "Right align : Lorem ipsum dolor sit amet consecetur blah blah blah blah blah blah blah blah.",
-            align=TEXT_ALIGN_RIGHT,
-            padding=2,
-        )
-
-        self.assertTrue(
-            "+---" in message,
-        )
-
-        self.kernel.io.print(message)
-
-    def _test_few_shot_prompt_template(self, assistant: Assistant) -> None:
-        model = assistant.get_model()
-
-        file_chat_subject = cast(
-            FileChatSubject, assistant.subjects[FileChatSubject.name()]
-        )
-
-        template = model.create_few_shot_prompt_template(
-            example_prompt=(
-                "User request:\n{question}\n\n"
-                "File name:\n{file_name}\n\n"
-                "Complete source code of the application:\n{source}\n\n"
-                "AI-generated Git patch:\n"
-            ),
-            examples=[
-                file_chat_subject.load_example_patch("generate/program_hello_world"),
-                file_chat_subject.load_example_patch("explain/code_comment"),
-                file_chat_subject.load_example_patch("patch/hello_world_capitalized"),
-                file_chat_subject.load_example_patch("json/add_item"),
-            ],
-            input_variables_names=["file_name", "question", "source_with_lines"],
-        )
-
-        self.assertTrue(isinstance(template, FewShotPromptTemplate))
-
-    def _test_few_shot_examples(self, assistant: Assistant) -> None:
-        examples = self._get_all_examples(assistant)
-        for group in examples.values():
-            for example, example_name in group.items():
-                self.assertIsDict(
-                    example, f'Example patch "{example_name}" has been loaded'
-                )
-
-    def _get_all_examples(self, assistant: Assistant) -> dict[str, StringKeysDict]:
-        examples: dict[str, StringKeysDict] = {}
-
-        file_chat_subject = cast(
-            FileChatSubject, assistant.subjects[FileChatSubject.name()]
-        )
-
-        base_dir = self.kernel.directory.path + "addons/ai/samples/examples/"
-        for group_name in os.listdir(base_dir):
-            examples[group_name] = {}
-
-            for example_name in os.listdir(os.path.join(base_dir, group_name)):
-                examples[group_name][example_name] = (
-                    file_chat_subject.load_example_patch(f"{group_name}/{example_name}")
-                )
-
-        return examples
 
     def _test_diff(self, assistant: Assistant) -> None:
         file_content = (
@@ -311,6 +278,39 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                         patch_clean(example["response"]),
                     )
                 )
+
+    def _test_few_shot_examples(self, assistant: Assistant) -> None:
+        examples = self._get_all_examples(assistant)
+        for group in examples.values():
+            for example, example_name in group.items():
+                self.assertIsDict(
+                    example, f'Example patch "{example_name}" has been loaded'
+                )
+
+    def _test_few_shot_prompt_template(self, assistant: Assistant) -> None:
+        model = assistant.get_model()
+
+        file_chat_subject = cast(
+            FileChatSubject, assistant.subjects[FileChatSubject.name()]
+        )
+
+        template = model.create_few_shot_prompt_template(
+            example_prompt=(
+                "User request:\n{question}\n\n"
+                "File name:\n{file_name}\n\n"
+                "Complete source code of the application:\n{source}\n\n"
+                "AI-generated Git patch:\n"
+            ),
+            examples=[
+                file_chat_subject.load_example_patch("generate/program_hello_world"),
+                file_chat_subject.load_example_patch("explain/code_comment"),
+                file_chat_subject.load_example_patch("patch/hello_world_capitalized"),
+                file_chat_subject.load_example_patch("json/add_item"),
+            ],
+            input_variables_names=["file_name", "question", "source_with_lines"],
+        )
+
+        self.assertTrue(isinstance(template, FewShotPromptTemplate))
 
     def _test_patching(self, assistant: Assistant) -> None:
         target_package_json = (

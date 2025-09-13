@@ -24,6 +24,30 @@ FORMATED_DATA_FORMATS = [
 
 
 class FormatedDataInteractionMode(AbstractInteractionMode):
+
+    def chain_response_to_string(
+        self, prompt_section: UserPromptSection, chain_response: Any
+    ) -> str:
+        if FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
+            import yaml
+
+            dumped = (
+                yaml.dump(chain_response.dict())
+                if hasattr(chain_response, "dict")
+                else yaml.dump(chain_response)
+            )
+            return os.linesep + str(dumped)
+        elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
+            import dicttoxml  # type: ignore[import-untyped]
+
+            xml_bytes = dicttoxml.dicttoxml(chain_response)
+            xml_text = (
+                xml_bytes.decode() if hasattr(xml_bytes, "decode") else str(xml_bytes)
+            )
+            xml_text_str: str = str(xml_text)
+            return os.linesep + xml_text_str
+
+        return str(chain_response)
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             f"You generate structured data in {(' '.join(prompt_section.flags)).upper()} format, "
@@ -59,27 +83,3 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
                 extra = Extra.allow
 
         return AnyFieldObjectContainer
-
-    def chain_response_to_string(
-        self, prompt_section: UserPromptSection, chain_response: Any
-    ) -> str:
-        if FORMATED_DATA_FORMAT_YAML in prompt_section.flags:
-            import yaml
-
-            dumped = (
-                yaml.dump(chain_response.dict())
-                if hasattr(chain_response, "dict")
-                else yaml.dump(chain_response)
-            )
-            return os.linesep + str(dumped)
-        elif FORMATED_DATA_FORMAT_XML in prompt_section.flags:
-            import dicttoxml  # type: ignore[import-untyped]
-
-            xml_bytes = dicttoxml.dicttoxml(chain_response)
-            xml_text = (
-                xml_bytes.decode() if hasattr(xml_bytes, "decode") else str(xml_bytes)
-            )
-            xml_text_str: str = str(xml_text)
-            return os.linesep + xml_text_str
-
-        return str(chain_response)

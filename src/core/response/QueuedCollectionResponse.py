@@ -64,15 +64,6 @@ class QueuedCollectionResponse(AbstractResponse):
         self.id = QueuedCollectionResponse.ids_counter
         QueuedCollectionResponse.ids_counter += 1
 
-    def set_path_manager(self, path_manager: QueuedCollectionPathManager) -> None:
-        self._path_manager = path_manager
-
-    def get_path_manager(self) -> QueuedCollectionPathManager:
-        self._validate__should_not_be_none(self._path_manager)
-        assert self._path_manager is not None
-
-        return self._path_manager
-
     def find_parent_response_collection(self) -> None | QueuedCollectionResponse:
         current: AbstractResponse | None = self
         while current is not None:
@@ -81,6 +72,12 @@ class QueuedCollectionResponse(AbstractResponse):
                 return current
 
         return None
+
+    def get_path_manager(self) -> QueuedCollectionPathManager:
+        self._validate__should_not_be_none(self._path_manager)
+        assert self._path_manager is not None
+
+        return self._path_manager
 
     def init_path_manager(self, request: CommandRequest) -> QueuedCollectionPathManager:
         # Share path manager across root request and all involved collections
@@ -94,6 +91,19 @@ class QueuedCollectionResponse(AbstractResponse):
         self.set_path_manager(path_manager)
 
         return cast(QueuedCollectionPathManager, path_manager)
+
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        output = super().print(render_mode, interactive_data)
+
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            if isinstance(output, list) and len(output):
+                return os.linesep.join(map(str, output))
+
+        return output
 
     def render_content(
         self,
@@ -183,15 +193,5 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self.queue_manager.render_content_complete(response)
 
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        output = super().print(render_mode, interactive_data)
-
-        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            if isinstance(output, list) and len(output):
-                return os.linesep.join(map(str, output))
-
-        return output
+    def set_path_manager(self, path_manager: QueuedCollectionPathManager) -> None:
+        self._path_manager = path_manager

@@ -27,25 +27,23 @@ class AbstractTestCase(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.kernel = TestKernel(os.getcwd() + "/__main__.py")
 
-    def setUp(self) -> None:
-        # Add a new line between each test
-        self.kernel.io.print("")
+    def assertDictKeysEquals(self, result: StringsDict, expected: StringsDict) -> None:
+        for key, value in expected.items():
+            self.assertEqual(result.get(key), value, f"Failed for key: {key}")
 
-        self.test_dir = os.getcwd()
+    def assertIsDict(self, value: Any, msg: str | None = None) -> None:
+        self.assertIsOfType(value, dict, msg)
 
-    def tearDown(self) -> None:
-        # Add a new line between each test
-        self.kernel.io.print("")
+    def assertIsList(self, value: Any, msg: str | None = None) -> None:
+        self.assertIsOfType(value, list, msg)
 
-        self.reset_workdir()
+    def assertIsOfType(
+        self, value: Any, type_: type[Any], msg: str | None = None
+    ) -> None:
+        self.assertTrue(isinstance(value, type_), msg)
 
-    def reset_workdir(self) -> None:
-        # If workdir changed.
-        current_dir = os.getcwd()
-        if current_dir != self.test_dir:
-            self.log(f"Reset working directory to : {self.test_dir}")
-
-            os.chdir(self.test_dir)
+    def assertIsStr(self, value: Any, msg: str | None = None) -> None:
+        self.assertIsOfType(value, str, msg)
 
     def assertPathExists(self, file_path: str, exists: bool = True) -> None:
         """
@@ -57,34 +55,15 @@ class AbstractTestCase(unittest.TestCase):
             f"No such file or directory : {file_path}",
         )
 
-    def assertIsDict(self, value: Any, msg: str | None = None) -> None:
-        self.assertIsOfType(value, dict, msg)
-
-    def assertIsList(self, value: Any, msg: str | None = None) -> None:
-        self.assertIsOfType(value, list, msg)
-
-    def assertIsStr(self, value: Any, msg: str | None = None) -> None:
-        self.assertIsOfType(value, str, msg)
-
-    def assertIsOfType(
-        self, value: Any, type_: type[Any], msg: str | None = None
+    def assertResponseFirstContains(
+        self, response: AbstractResponse, expected: Any
     ) -> None:
-        self.assertTrue(isinstance(value, type_), msg)
+        self.assertTrue(expected in response.first())
 
     def assertResponseFirstEqual(
         self, response: AbstractResponse, expected: Any
     ) -> None:
         self.assertEqual(response.first(), expected)
-
-    def assertResponseOutputBagItemEqual(
-        self, response: AbstractResponse, index: int, expected: Any
-    ) -> None:
-        self.assertEqual(response.get(index).print(), expected)
-
-    def assertResponseFirstContains(
-        self, response: AbstractResponse, expected: Any
-    ) -> None:
-        self.assertTrue(expected in response.first())
 
     def assertResponseOutputBagItemContains(
         self, response: AbstractResponse, index: int, expected: Any
@@ -93,14 +72,15 @@ class AbstractTestCase(unittest.TestCase):
         assert isinstance(output, Iterable)
         self.assertTrue(expected in output)
 
+    def assertResponseOutputBagItemEqual(
+        self, response: AbstractResponse, index: int, expected: Any
+    ) -> None:
+        self.assertEqual(response.get(index).print(), expected)
+
     def assertStringContains(self, value: Any, expected: str) -> None:
         self.assertTrue(isinstance(value, str))
 
         self.assertTrue(expected in value)
-
-    def assertDictKeysEquals(self, result: StringsDict, expected: StringsDict) -> None:
-        for key, value in expected.items():
-            self.assertEqual(result.get(key), value, f"Failed for key: {key}")
 
     def build_test_dir(self, source_dir: str) -> str:
         # Get the directory name from source directory
@@ -119,9 +99,6 @@ class AbstractTestCase(unittest.TestCase):
 
         return dest_dir
 
-    def build_test_samples_path(self) -> str:
-        return os.path.join(self.kernel.directory.path, "tests", "samples") + os.sep
-
     def build_test_file(self, file_name: str) -> str:
         src_file = os.path.join(self.build_test_samples_path(), file_name)
         dst_file = os.path.join(
@@ -132,14 +109,22 @@ class AbstractTestCase(unittest.TestCase):
 
         return dst_file
 
-    def write_test_result(self, name: str, data: str) -> None:
-        result_path = os.path.join(
-            self.kernel.get_or_create_path("tmp"), "tests", "results"
-        )
-        os.makedirs(result_path, exist_ok=True)
+    def build_test_samples_path(self) -> str:
+        return os.path.join(self.kernel.directory.path, "tests", "samples") + os.sep
 
-        with open(f"{result_path}/{name}.txt", "w") as file_a:
-            file_a.write(data)
+    def for_each_render_mode(
+        self, callback: AnyCallable, expected: StringKeysDict
+    ) -> None:
+        from src.const.globals import KERNEL_RENDER_MODES
+
+        for render_mode in KERNEL_RENDER_MODES:
+            self.log(f"Test in render mode : {render_mode}")
+            value = callback(render_mode)
+
+            if render_mode in expected:
+                self.kernel.io.log(f"Expected : {str(expected[render_mode])}")
+                self.kernel.io.log(f"Got      : {str(value)}")
+                self.assertEqual(value, expected[render_mode], render_mode)
 
     def log(self, message: str) -> None:
         message = str(message)
@@ -153,24 +138,6 @@ class AbstractTestCase(unittest.TestCase):
                 f"test[{frame_type.f_code.co_name}]:" + str(message),
                 color=COLOR_LIGHT_MAGENTA,
             )
-
-    def start_docker_container(
-        self, name: str = "test_container"
-    ) -> ShellCommandResponseTuple:
-        return execute_command_sync(
-            self.kernel,
-            [
-                "docker",
-                "run",
-                "-d",
-                "--name",
-                name,
-                "debian:latest",
-                "tail",
-                "-f",
-                "/dev/null",
-            ],
-        )
 
     def remove_docker_container(
         self, name: str = "test_container"
@@ -196,16 +163,49 @@ class AbstractTestCase(unittest.TestCase):
             ],
         )
 
-    def for_each_render_mode(
-        self, callback: AnyCallable, expected: StringKeysDict
-    ) -> None:
-        from src.const.globals import KERNEL_RENDER_MODES
+    def reset_workdir(self) -> None:
+        # If workdir changed.
+        current_dir = os.getcwd()
+        if current_dir != self.test_dir:
+            self.log(f"Reset working directory to : {self.test_dir}")
 
-        for render_mode in KERNEL_RENDER_MODES:
-            self.log(f"Test in render mode : {render_mode}")
-            value = callback(render_mode)
+            os.chdir(self.test_dir)
 
-            if render_mode in expected:
-                self.kernel.io.log(f"Expected : {str(expected[render_mode])}")
-                self.kernel.io.log(f"Got      : {str(value)}")
-                self.assertEqual(value, expected[render_mode], render_mode)
+    def setUp(self) -> None:
+        # Add a new line between each test
+        self.kernel.io.print("")
+
+        self.test_dir = os.getcwd()
+
+    def start_docker_container(
+        self, name: str = "test_container"
+    ) -> ShellCommandResponseTuple:
+        return execute_command_sync(
+            self.kernel,
+            [
+                "docker",
+                "run",
+                "-d",
+                "--name",
+                name,
+                "debian:latest",
+                "tail",
+                "-f",
+                "/dev/null",
+            ],
+        )
+
+    def tearDown(self) -> None:
+        # Add a new line between each test
+        self.kernel.io.print("")
+
+        self.reset_workdir()
+
+    def write_test_result(self, name: str, data: str) -> None:
+        result_path = os.path.join(
+            self.kernel.get_or_create_path("tmp"), "tests", "results"
+        )
+        os.makedirs(result_path, exist_ok=True)
+
+        with open(f"{result_path}/{name}.txt", "w") as file_a:
+            file_a.write(data)

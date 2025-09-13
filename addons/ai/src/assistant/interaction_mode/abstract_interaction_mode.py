@@ -19,6 +19,11 @@ if TYPE_CHECKING:
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
+
+    def chain_response_to_string(
+        self, prompt_section: UserPromptSection, chain_response: Any
+    ) -> str:
+        return str(chain_response.content)
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return None
 
@@ -26,6 +31,11 @@ class AbstractInteractionMode(AbstractAssistantChild):
         self, prompt_section: UserPromptSection
     ) -> dict[str, str]:
         return {}
+
+    def get_output_parser(
+        self, prompt_section: UserPromptSection
+    ) -> BaseOutputParser[Any] | None:
+        return None
 
     def process_user_input(
         self,
@@ -43,13 +53,3 @@ class AbstractInteractionMode(AbstractAssistantChild):
         self.assistant.spinner.stop()
 
         return StringInteractionResponse(response)
-
-    def get_output_parser(
-        self, prompt_section: UserPromptSection
-    ) -> BaseOutputParser[Any] | None:
-        return None
-
-    def chain_response_to_string(
-        self, prompt_section: UserPromptSection, chain_response: Any
-    ) -> str:
-        return str(chain_response.content)

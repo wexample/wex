@@ -36,6 +36,9 @@ class OllamaModel(AbstractModel):
             )
         )
 
+    def create_embeddings(self) -> Any:
+        return OllamaEmbeddings()
+
     def guess_function(
         self,
         interaction_mode: AbstractInteractionMode,
@@ -47,6 +50,3 @@ class OllamaModel(AbstractModel):
         )
         # Ollama tagging not set up.
         return None
-
-    def create_embeddings(self) -> Any:
-        return OllamaEmbeddings()

@@ -30,28 +30,12 @@ if TYPE_CHECKING:
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
-    def render_request(
-        self, request: CommandRequest, render_mode: str
-    ) -> AbstractResponse:
-        match = request.get_match()
-        service = string_to_snake_case(match[1]) if match else None
-        if not service or service not in self.get_registry_data():
-            if not request.quiet:
-                self.kernel.io.error(
-                    ERR_SERVICE_NOT_FOUND,
-                    {
-                        "command": request.get_string_command(),
-                        "service": str(service),
-                    },
-                )
-            return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)
 
-        # Guess service name from command prefix if not passed.
-        args_list = request.get_args_list()
-        if "--service" not in args_list:
-            args_list.extend(["--service", service])
+    @classmethod
+    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
+        from addons.app.decorator.service_option import service_option
 
-        return super().render_request(request, render_mode)
+        return cast(AnyCallable, service_option()(function))
 
     @classmethod
     def get_pattern(cls) -> str:
@@ -60,32 +44,6 @@ class ServiceCommandResolver(AbstractCommandResolver):
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_SERVICE
-
-    def build_command_from_parts(self, parts: StringsList) -> str:
-        return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
-
-    def build_path(
-        self, request: CommandRequest, extension: str, subdir: str | None = None
-    ) -> Path | None:
-        match = request.get_match()
-        name = string_to_snake_case(match[1])
-        path = service_get_dir(self.kernel, name)
-
-        if not path:
-            self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": name})
-
-        return self.build_command_path(
-            base_path=str(path),
-            extension=extension,
-            subdir=subdir,
-            command_path=os.path.join(
-                string_to_snake_case(match.group(2)),
-                string_to_snake_case(match.group(3)),
-            ),
-        )
-
-    def get_function_name_parts(self, parts: StringsList) -> StringsList:
-        return [parts[0], parts[1], parts[2]]
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
@@ -132,43 +90,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def locate_function(self, request: CommandRequest) -> bool:
-        """
-        Support services inheritance, if a function is not found in a service,
-        search it into parent service.
-        """
-        from src.helper.service import service_get_inheritance_tree
-
-        request.match = self.build_match(request.get_string_command())
-
-        if request.match:
-            tree = service_get_inheritance_tree(
-                self.kernel, string_to_snake_case(request.match[1])
-            )
-
-            match_base = request.match
-            for service_tree_item in tree:
-                request.set_string_command(
-                    self.build_command_from_parts(
-                        [
-                            service_tree_item,
-                            request.match[2],
-                            request.match[3],
-                        ]
-                    )
-                )
-
-                if super().locate_function(request):
-                    request.match = match_base
-                    return True
-
-        return False
-
-    @classmethod
-    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
-        from addons.app.decorator.service_option import service_option
-
-        return cast(AnyCallable, service_option()(function))
+    def build_command_from_parts(self, parts: StringsList) -> str:
+        return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
@@ -178,6 +101,26 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[1],
             path_parts[2],
         ]
+
+    def build_path(
+        self, request: CommandRequest, extension: str, subdir: str | None = None
+    ) -> Path | None:
+        match = request.get_match()
+        name = string_to_snake_case(match[1])
+        path = service_get_dir(self.kernel, name)
+
+        if not path:
+            self.kernel.io.error(ERR_SERVICE_NOT_FOUND, {"service": name})
+
+        return self.build_command_path(
+            base_path=str(path),
+            extension=extension,
+            subdir=subdir,
+            command_path=os.path.join(
+                string_to_snake_case(match.group(2)),
+                string_to_snake_case(match.group(3)),
+            ),
+        )
 
     def build_registry_data(self, test: bool = False) -> RegistryAllServices:
         from src.helper.registry import registry_resolve_service_inheritance
@@ -214,8 +157,65 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return registry
 
-    def get_registered_services(self) -> StringsList:
-        return cast(StringsList, self.get_registry_data().keys())
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
+        return [parts[0], parts[1], parts[2]]
 
     def get_registered_service_data(self, name: str) -> RegistryService:
         return cast(RegistryService, self.get_registry_data()[name])
+
+    def get_registered_services(self) -> StringsList:
+        return cast(StringsList, self.get_registry_data().keys())
+
+    def locate_function(self, request: CommandRequest) -> bool:
+        """
+        Support services inheritance, if a function is not found in a service,
+        search it into parent service.
+        """
+        from src.helper.service import service_get_inheritance_tree
+
+        request.match = self.build_match(request.get_string_command())
+
+        if request.match:
+            tree = service_get_inheritance_tree(
+                self.kernel, string_to_snake_case(request.match[1])
+            )
+
+            match_base = request.match
+            for service_tree_item in tree:
+                request.set_string_command(
+                    self.build_command_from_parts(
+                        [
+                            service_tree_item,
+                            request.match[2],
+                            request.match[3],
+                        ]
+                    )
+                )
+
+                if super().locate_function(request):
+                    request.match = match_base
+                    return True
+
+        return False
+    def render_request(
+        self, request: CommandRequest, render_mode: str
+    ) -> AbstractResponse:
+        match = request.get_match()
+        service = string_to_snake_case(match[1]) if match else None
+        if not service or service not in self.get_registry_data():
+            if not request.quiet:
+                self.kernel.io.error(
+                    ERR_SERVICE_NOT_FOUND,
+                    {
+                        "command": request.get_string_command(),
+                        "service": str(service),
+                    },
+                )
+            return AbortResponse(self.kernel, reason=ERR_SERVICE_NOT_FOUND)
+
+        # Guess service name from command prefix if not passed.
+        args_list = request.get_args_list()
+        if "--service" not in args_list:
+            args_list.extend(["--service", service])
+
+        return super().render_request(request, render_mode)

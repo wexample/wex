@@ -44,17 +44,16 @@ class IOManager(AbsractKernelChild):
         self.log_messages: list[IOManagerLogMessage] = []
         self.indent_string: str = "  "
 
-    def warn(
-        self,
-        message: str,
-        parameters: StringsDict | None = None,
-        fatal: bool = True,
-        trace: bool = True,
-    ) -> None:
-        message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
-        message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
+    def build_indent(self, increment: int = 0) -> str:
+        return self.indent_string * (self.log_indent + increment)
 
-        self.print(message)
+    def calc_log_messages_length(self) -> int:
+        return sum(message["lines"] for message in self.log_messages)
+
+    def clear_last_n_lines(self, n: int) -> None:
+        for _ in range(n):
+            sys.stdout.write("\x1b[1A")  # Move cursor up by 1 line
+            sys.stdout.write("\x1b[2K")  # Clear current line
 
     def error(
         self,
@@ -84,35 +83,20 @@ class IOManager(AbsractKernelChild):
             self.print(message)
             raise SystemExit(0)
 
-    def log_indent_up(self) -> None:
-        self.log_indent += 1
-
-    def log_indent_down(self) -> None:
-        self.log_indent -= 1
-
-    def build_indent(self, increment: int = 0) -> str:
-        return self.indent_string * (self.log_indent + increment)
-
-    def calc_log_messages_length(self) -> int:
-        return sum(message["lines"] for message in self.log_messages)
-
-    def log_clear(self) -> None:
+    def exec_outside_log_frame(self, callback: AnyCallable) -> None:
         self.log_hide()
-        self.log_messages = []
 
-    def log_hide(self) -> None:
-        if self.log_length:
-            total_lines_needed = self.calc_log_messages_length()
-            self.clear_last_n_lines(total_lines_needed)
+        callback()
 
-    def clear_last_n_lines(self, n: int) -> None:
-        for _ in range(n):
-            sys.stdout.write("\x1b[1A")  # Move cursor up by 1 line
-            sys.stdout.write("\x1b[2K")  # Clear current line
+        self.log_show()
 
-    def log_show(self) -> None:
-        for message in self.log_messages:
-            self.print(message["message"])
+    def fail(self, message: str) -> None:
+        def _fail() -> None:
+            nonlocal message
+            self.log(f"{COLOR_RED}×{COLOR_RESET} {message}")
+            self.print(message)
+
+        self.exec_outside_log_frame(_fail)
 
     def log(
         self,
@@ -147,23 +131,24 @@ class IOManager(AbsractKernelChild):
         else:
             self.print(message)
 
-    def success(self, message: str) -> None:
-        def _success() -> None:
-            nonlocal message
-            self.log(f"{COLOR_GREEN}✔{COLOR_RESET} {message}")
+    def log_clear(self) -> None:
+        self.log_hide()
+        self.log_messages = []
 
-        self.exec_outside_log_frame(_success)
+    def log_hide(self) -> None:
+        if self.log_length:
+            total_lines_needed = self.calc_log_messages_length()
+            self.clear_last_n_lines(total_lines_needed)
 
-    def fail(self, message: str) -> None:
-        def _fail() -> None:
-            nonlocal message
-            self.log(f"{COLOR_RED}×{COLOR_RESET} {message}")
-            self.print(message)
+    def log_indent_down(self) -> None:
+        self.log_indent -= 1
 
-        self.exec_outside_log_frame(_fail)
+    def log_indent_up(self) -> None:
+        self.log_indent += 1
 
-    def print(self, message: Any, **kwargs: Kwargs) -> None:
-        print(message, **kwargs)
+    def log_show(self) -> None:
+        for message in self.log_messages:
+            self.print(message["message"])
 
     def message(self, message: str, text: None | str = None) -> None:
         import textwrap
@@ -179,33 +164,6 @@ class IOManager(AbsractKernelChild):
             self.print(message)
 
         self.exec_outside_log_frame(_message)
-
-    def exec_outside_log_frame(self, callback: AnyCallable) -> None:
-        self.log_hide()
-
-        callback()
-
-        self.log_show()
-
-    def message_next_command(
-        self,
-        script_command: ScriptCommand,
-        args: OptionalCoreCommandArgsDict = None,
-        command_type: str = COMMAND_TYPE_ADDON,
-        message: str = "You might want now to execute",
-    ) -> None:
-        command_string = self.kernel.get_command_resolver(
-            command_type
-        ).build_full_command_from_function(
-            script_command,
-            args,
-        )
-        if command_string:
-            self.message_all_next_commands(
-                [command_string],
-                command_type,
-                message,
-            )
 
     def message_all_next_commands(
         self,
@@ -229,3 +187,45 @@ class IOManager(AbsractKernelChild):
                 commands_strings.append(command)
 
         self.message(message + ":", os.linesep.join(commands_strings))
+
+    def message_next_command(
+        self,
+        script_command: ScriptCommand,
+        args: OptionalCoreCommandArgsDict = None,
+        command_type: str = COMMAND_TYPE_ADDON,
+        message: str = "You might want now to execute",
+    ) -> None:
+        command_string = self.kernel.get_command_resolver(
+            command_type
+        ).build_full_command_from_function(
+            script_command,
+            args,
+        )
+        if command_string:
+            self.message_all_next_commands(
+                [command_string],
+                command_type,
+                message,
+            )
+
+    def print(self, message: Any, **kwargs: Kwargs) -> None:
+        print(message, **kwargs)
+
+    def success(self, message: str) -> None:
+        def _success() -> None:
+            nonlocal message
+            self.log(f"{COLOR_GREEN}✔{COLOR_RESET} {message}")
+
+        self.exec_outside_log_frame(_success)
+
+    def warn(
+        self,
+        message: str,
+        parameters: StringsDict | None = None,
+        fatal: bool = True,
+        trace: bool = True,
+    ) -> None:
+        message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
+        message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
+
+        self.print(message)

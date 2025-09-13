@@ -18,9 +18,6 @@ class FileChatSubject(AbstractChatSubject):
     def name() -> str:
         return "file"
 
-    def introduce(self) -> str:
-        return f"Chatting about file {self.file_path}"
-
     def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
@@ -45,11 +42,8 @@ class FileChatSubject(AbstractChatSubject):
 
         return False
 
-    def set_file_path(self, file_path: str) -> None:
-        real = os.path.realpath(file_path)
-        if not real:
-            return
-        self.file_path = real
+    def introduce(self) -> str:
+        return f"Chatting about file {self.file_path}"
 
     # Test helper: expose examples loader through the subject API for convenience.
     def load_example_patch(self, name: str) -> StringKeysDict:
@@ -59,3 +53,9 @@ class FileChatSubject(AbstractChatSubject):
 
         # Delegate to the interaction mode implementation
         return FilePatchInteractionMode(self.assistant).load_example_patch(name)
+
+    def set_file_path(self, file_path: str) -> None:
+        real = os.path.realpath(file_path)
+        if not real:
+            return
+        self.file_path = real

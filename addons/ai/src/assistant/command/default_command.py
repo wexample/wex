@@ -24,11 +24,6 @@ class DefaultCommand(AbstractCommand):
     def name() -> str:
         return "default"
 
-    def get_interaction_mode(
-        self, prompt_section: UserPromptSection
-    ) -> type[AbstractInteractionMode]:
-        return DefaultInteractionMode
-
     def execute(
         self,
         prompt_section: UserPromptSection | None = None,
@@ -44,3 +39,8 @@ class DefaultCommand(AbstractCommand):
             prompt_section=prompt_section,
             remaining_sections=remaining_sections or [],
         )
+
+    def get_interaction_mode(
+        self, prompt_section: UserPromptSection
+    ) -> type[AbstractInteractionMode]:
+        return DefaultInteractionMode

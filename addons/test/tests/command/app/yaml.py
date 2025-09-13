@@ -6,17 +6,6 @@ from src.core.FatalError import FatalError
 
 
 class TestTestCommandAppYaml(AbstractWebhookTestCase):
-    def test_yaml_error(self) -> None:
-        """
-        Use a separated function to restore app location after error.
-        """
-        with self.assertRaises(FatalError):
-            self.kernel.run_command(
-                "test::app/yaml",
-                {
-                    "option": "test",
-                },
-            )
 
     def test_yaml(self) -> None:
         app_dir, app_name = self.create_and_start_test_app_webhook()
@@ -65,3 +54,14 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
         )
 
         self.assertResponseOutputBagItemContains(response, 7, "TEST_PYTHON_FILE")
+    def test_yaml_error(self) -> None:
+        """
+        Use a separated function to restore app location after error.
+        """
+        with self.assertRaises(FatalError):
+            self.kernel.run_command(
+                "test::app/yaml",
+                {
+                    "option": "test",
+                },
+            )

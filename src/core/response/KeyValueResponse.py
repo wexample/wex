@@ -28,6 +28,17 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
 
         self.dictionary_data = dictionary
 
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            return os.linesep.join(cast(StringsList, self.output_bag))
+        elif render_mode == KERNEL_RENDER_MODE_JSON:
+            return self.dictionary_data
+        return None
+
     def render_content(
         self,
         request: CommandRequest,
@@ -62,14 +73,3 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
             self.output_bag.append(self.dictionary_data)
 
         return self
-
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return os.linesep.join(cast(StringsList, self.output_bag))
-        elif render_mode == KERNEL_RENDER_MODE_JSON:
-            return self.dictionary_data
-        return None

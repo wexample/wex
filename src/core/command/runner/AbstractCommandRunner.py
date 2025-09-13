@@ -24,6 +24,10 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
         self._path: None | CommandRequest
 
     @abstractmethod
+    def build_script_command(self) -> ScriptCommand | None:
+        pass
+
+    @abstractmethod
     def get_command_type(self) -> str:
         pass
 
@@ -34,14 +38,6 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
     @abstractmethod
     def run(self) -> Any:
         pass
-
-    @abstractmethod
-    def build_script_command(self) -> ScriptCommand | None:
-        pass
-
-    def set_request(self, request: CommandRequest) -> None:
-        super().set_request(request)
-        request.set_runner(self)
 
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         try:
@@ -72,3 +68,7 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
         ctx.obj = self.get_request().first_arg
 
         return script_command.run_command(self, ctx)
+
+    def set_request(self, request: CommandRequest) -> None:
+        super().set_request(request)
+        request.set_runner(self)

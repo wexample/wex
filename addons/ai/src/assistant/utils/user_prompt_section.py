@@ -19,11 +19,11 @@ class UserPromptSection(BaseClass):
         self.flags = flags or []
         self.prompt_configurations: list[tuple[str, str]] = []
 
-    def has_command(self) -> bool:
-        return self._command is not None
-
     def get_command(self) -> AbstractCommand:
         self._validate__should_not_be_none(self._command)
         assert isinstance(self._command, AbstractCommand)
 
         return self._command
+
+    def has_command(self) -> bool:
+        return self._command is not None

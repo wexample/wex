@@ -61,24 +61,6 @@ class CommandRequest(BaseClass):
             # as it is managed outside.
             return
 
-    def set_path(self, path: str) -> None:
-        self._path = path
-
-    def get_path(self) -> str:
-        self._validate__should_not_be_none(self._path)
-        assert self._path is not None
-
-        return self._path
-
-    def set_args_list(self, args_list: CoreCommandArgsList) -> None:
-        self._args_list = args_list
-
-    def get_args_list(self) -> CoreCommandArgsList:
-        self._validate__should_not_be_none(self._args_list)
-        assert self._args_list is not None
-
-        return self._args_list
-
     def get_args_dict(self) -> StringKeysDict:
         script_command = self.get_script_command()
 
@@ -89,32 +71,11 @@ class CommandRequest(BaseClass):
             ),
         )
 
-    def set_script_command(self, script_command: ScriptCommand) -> None:
-        self._script_command = script_command
+    def get_args_list(self) -> CoreCommandArgsList:
+        self._validate__should_not_be_none(self._args_list)
+        assert self._args_list is not None
 
-    def get_script_command(self) -> ScriptCommand:
-        self._validate__should_not_be_none(self._script_command)
-        assert self._script_command is not None
-
-        return self._script_command
-
-    def set_string_command(self, string_command: str) -> None:
-        self._string_command = string_command
-
-    def get_string_command(self) -> str:
-        self._validate__should_not_be_none(self._string_command)
-        assert self._string_command is not None
-
-        return self._string_command
-
-    def set_runner(self, runner: AbstractCommandRunner) -> None:
-        self._runner = runner
-
-    def get_runner(self) -> AbstractCommandRunner:
-        self._validate__should_not_be_none(self._runner)
-        assert self._runner is not None
-
-        return self._runner
+        return self._args_list
 
     def get_match(self) -> StringsMatch:
         self._validate__should_not_be_none(self.match)
@@ -122,10 +83,34 @@ class CommandRequest(BaseClass):
 
         return self.match
 
+    def get_path(self) -> str:
+        self._validate__should_not_be_none(self._path)
+        assert self._path is not None
+
+        return self._path
+
     def get_root_parent(self) -> CommandRequest:
         if self.parent:
             return self.parent.get_root_parent()
         return self
+
+    def get_runner(self) -> AbstractCommandRunner:
+        self._validate__should_not_be_none(self._runner)
+        assert self._runner is not None
+
+        return self._runner
+
+    def get_script_command(self) -> ScriptCommand:
+        self._validate__should_not_be_none(self._script_command)
+        assert self._script_command is not None
+
+        return self._script_command
+
+    def get_string_command(self) -> str:
+        self._validate__should_not_be_none(self._string_command)
+        assert self._string_command is not None
+
+        return self._string_command
 
     def load_extension(self, extension: str) -> bool:
         path = self.resolver.build_path(self, extension)
@@ -170,16 +155,31 @@ class CommandRequest(BaseClass):
 
         return False
 
+    def set_args_list(self, args_list: CoreCommandArgsList) -> None:
+        self._args_list = args_list
+
+    def set_path(self, path: str) -> None:
+        self._path = path
+
+    def set_runner(self, runner: AbstractCommandRunner) -> None:
+        self._runner = runner
+
+    def set_script_command(self, script_command: ScriptCommand) -> None:
+        self._script_command = script_command
+
+    def set_string_command(self, string_command: str) -> None:
+        self._string_command = string_command
+
 
 class HasRequest(BaseClass):
     def __init__(self) -> None:
         self._request: None | CommandRequest = None
-
-    def set_request(self, request: CommandRequest) -> None:
-        self._request = request
 
     def get_request(self) -> CommandRequest:
         self._validate__should_not_be_none(self._request)
         assert self._request is not None
 
         return self._request
+
+    def set_request(self, request: CommandRequest) -> None:
+        self._request = request

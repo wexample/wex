@@ -23,6 +23,52 @@ class AppCrawler:
         self.root: str = root
         self.yaml_filepath: str = yaml_filepath
 
+    def build(self) -> CrawlerTreeItem:
+        tree = self.load_tree()
+
+        # Scan new files
+        new_tree = self.cleanup_tree(self.scan())
+
+        # Merge with existing tree
+        new_tree = self.merge_tree(tree, new_tree)
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        tree["last_updated"] = timestamp
+        self.save_to_yaml(self.yaml_filepath, new_tree)
+
+        return new_tree
+
+    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
+        tree["children"] = dict_merge(
+            tree["children"] or {},
+            {
+                ".git": {"type": "dir", "status": "hidden"},
+                APP_DIR_APP_DATA_NAME: {
+                    "children": {
+                        "ai": {
+                            "children": {
+                                "data": {
+                                    "children": {
+                                        "tree.yml": {
+                                            "type": "file",
+                                            "status": "hidden",
+                                            "description": "This current file",
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "tmp": {
+                        "type": "dir",
+                        "status": "hidden",
+                    },
+                },
+            },
+        )
+
+        return tree
+
     def load_tree(self) -> CrawlerTreeItem:
         try:
             with open(self.yaml_filepath) as f:
@@ -71,6 +117,10 @@ class AppCrawler:
 
         return merged_tree
 
+    def save_to_yaml(self, filepath: str, tree: CrawlerTreeItem) -> None:
+        with open(filepath, "w") as f:
+            yaml.dump(tree, f, default_flow_style=False)
+
     def scan(
         self, root: str | None = None, tree: CrawlerTreeItem | None = None
     ) -> CrawlerTreeItem:
@@ -92,53 +142,3 @@ class AppCrawler:
         tree["children"] = children
 
         return tree
-
-    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
-        tree["children"] = dict_merge(
-            tree["children"] or {},
-            {
-                ".git": {"type": "dir", "status": "hidden"},
-                APP_DIR_APP_DATA_NAME: {
-                    "children": {
-                        "ai": {
-                            "children": {
-                                "data": {
-                                    "children": {
-                                        "tree.yml": {
-                                            "type": "file",
-                                            "status": "hidden",
-                                            "description": "This current file",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "tmp": {
-                        "type": "dir",
-                        "status": "hidden",
-                    },
-                },
-            },
-        )
-
-        return tree
-
-    def build(self) -> CrawlerTreeItem:
-        tree = self.load_tree()
-
-        # Scan new files
-        new_tree = self.cleanup_tree(self.scan())
-
-        # Merge with existing tree
-        new_tree = self.merge_tree(tree, new_tree)
-
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        tree["last_updated"] = timestamp
-        self.save_to_yaml(self.yaml_filepath, new_tree)
-
-        return new_tree
-
-    def save_to_yaml(self, filepath: str, tree: CrawlerTreeItem) -> None:
-        with open(filepath, "w") as f:
-            yaml.dump(tree, f, default_flow_style=False)

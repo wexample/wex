@@ -120,14 +120,20 @@ class ScriptCommand(BaseClass):
 
         self.click_command: click.core.Command = click_command
 
-    def set_extra_value(self, name: str, value: bool = True) -> None:
-        self._extra[name] = value
+    def get_callback(self) -> AnyCallable:
+        self._validate__should_not_be_none(self.click_command.callback)
+        assert self.click_command.callback is not None
 
-    def get_extra_value(self, name: str, default: Any | None = None) -> Any:
-        return self._extra[name] if name in self._extra else default
+        return self.click_command.callback
+
+    def get_callback_name(self) -> str:
+        return self.get_callback().__name__
 
     def get_extra_properties(self) -> StringKeysDict:
         return self._extra
+
+    def get_extra_value(self, name: str, default: Any | None = None) -> Any:
+        return self._extra[name] if name in self._extra else default
 
     def run_command(
         self, runner: AbstractCommandRunner, ctx: click.core.Context
@@ -170,14 +176,8 @@ class ScriptCommand(BaseClass):
             else [script_string]
         )
 
-    def get_callback(self) -> AnyCallable:
-        self._validate__should_not_be_none(self.click_command.callback)
-        assert self.click_command.callback is not None
-
-        return self.click_command.callback
-
-    def get_callback_name(self) -> str:
-        return self.get_callback().__name__
+    def set_extra_value(self, name: str, value: bool = True) -> None:
+        self._extra[name] = value
 
 
 DecoratedScriptCommand = Callable[..., ScriptCommand]

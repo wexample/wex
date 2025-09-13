@@ -24,34 +24,64 @@ def test_index_fake_click_function() -> None:
 
 
 class TestCore(AbstractTestCase):
-    def test_init(self) -> None:
-        from src.const.globals import CORE_COMMAND_NAME, OWNER_USERNAME, ROOT_USERNAME
-        from src.helper.user import get_user_or_sudo_user
 
-        user = get_user_or_sudo_user()
-        message = f"Tests should be ran with sudo from non sudo user"
+    def test_build_command(self) -> None:
+        from addons.core.command.logo.show import core__logo__show
+        from addons.core.command.version.new_write import core__version__new_write
+        from src.const.globals import COMMAND_TYPE_ADDON
 
-        self.assertNotEqual(
-            user,
-            ROOT_USERNAME,
-            os.linesep.join(
-                [
-                    message,
-                    f"  To create user : sudo adduser {OWNER_USERNAME}",
-                    f"  To give it sudo power : sudo usermod -aG sudo {OWNER_USERNAME}",
-                    f"  To switch to user : sudo su {OWNER_USERNAME}",
-                    f"  Then run tests : sudo {CORE_COMMAND_NAME} test",
-                ]
-            ),
+        self.assertEqual(
+            self.kernel.get_command_resolver(
+                COMMAND_TYPE_ADDON
+            ).build_command_from_function(core__logo__show),
+            "core::logo/show",
+        )
+        self.assertEqual(
+            self.kernel.get_command_resolver(
+                COMMAND_TYPE_ADDON
+            ).build_full_command_from_function(core__version__new_write),
+            "wex core::version/new-write",
         )
 
-    def test_help(self) -> None:
-        from addons.core.command.logo.show import core__logo__show
-        from src.core.response.AbortResponse import AbortResponse
+    def test_call_command_addon(self) -> None:
+        self.assertIsNotNone(self.kernel.call_command("core::logo/show"))
 
-        response = self.kernel.run_function(core__logo__show, {"help": True})
+    def test_call_command_app(self) -> None:
+        self.assertEqual(
+            self.kernel.call_command(".local_command/test", {"local-option": "YES"}),
+            "OK:YES",
+        )
 
-        self.assertTrue(isinstance(response, AbortResponse))
+    def test_call_command_core_action(self) -> None:
+        self.assertEqual(self.kernel.call_command("hi"), "hi!")
+
+    def test_call_command_service(self) -> None:
+        self.assertEqual(self.kernel.call_command("@test::demo-command/first"), "FIRST")
+
+    def test_call_command_user(self) -> None:
+        from addons.core.command.command.create import core__command__create
+
+        self.kernel.run_function(
+            core__command__create, {"command": "~test/command-call"}
+        )
+
+        self.assertEqual(
+            self.kernel.call_command("~test/command-call", {"option": "test"}),
+            # No return from newly created command
+            None,
+        )
+
+    def test_call_invalid(self) -> None:
+        from src.core.FatalError import FatalError
+
+        with self.assertRaises(FatalError):
+            self.kernel.call_command("something/unexpected")
+
+        with self.assertRaises(FatalError):
+            self.kernel.call_command("nvfjkdvnfdkjvndfkjvnfd")
+
+        with self.assertRaises(FatalError):
+            self.kernel.call_command('*ù:-//;!,@"#^~§')
 
     def test_convert_args_to_dict(self) -> None:
         from src.helper.click import click_args_convert_to_dict
@@ -88,45 +118,38 @@ class TestCore(AbstractTestCase):
 
         self.assertEqual(args, ["--name", "John", "--greetings"])
 
-    def test_call_command_core_action(self) -> None:
-        self.assertEqual(self.kernel.call_command("hi"), "hi!")
+    def test_help(self) -> None:
+        from addons.core.command.logo.show import core__logo__show
+        from src.core.response.AbortResponse import AbortResponse
 
-    def test_call_invalid(self) -> None:
-        from src.core.FatalError import FatalError
+        response = self.kernel.run_function(core__logo__show, {"help": True})
 
-        with self.assertRaises(FatalError):
-            self.kernel.call_command("something/unexpected")
+        self.assertTrue(isinstance(response, AbortResponse))
+    def test_init(self) -> None:
+        from src.const.globals import CORE_COMMAND_NAME, OWNER_USERNAME, ROOT_USERNAME
+        from src.helper.user import get_user_or_sudo_user
 
-        with self.assertRaises(FatalError):
-            self.kernel.call_command("nvfjkdvnfdkjvndfkjvnfd")
+        user = get_user_or_sudo_user()
+        message = f"Tests should be ran with sudo from non sudo user"
 
-        with self.assertRaises(FatalError):
-            self.kernel.call_command('*ù:-//;!,@"#^~§')
-
-    def test_call_command_addon(self) -> None:
-        self.assertIsNotNone(self.kernel.call_command("core::logo/show"))
-
-    def test_call_command_user(self) -> None:
-        from addons.core.command.command.create import core__command__create
-
-        self.kernel.run_function(
-            core__command__create, {"command": "~test/command-call"}
+        self.assertNotEqual(
+            user,
+            ROOT_USERNAME,
+            os.linesep.join(
+                [
+                    message,
+                    f"  To create user : sudo adduser {OWNER_USERNAME}",
+                    f"  To give it sudo power : sudo usermod -aG sudo {OWNER_USERNAME}",
+                    f"  To switch to user : sudo su {OWNER_USERNAME}",
+                    f"  Then run tests : sudo {CORE_COMMAND_NAME} test",
+                ]
+            ),
         )
 
-        self.assertEqual(
-            self.kernel.call_command("~test/command-call", {"option": "test"}),
-            # No return from newly created command
-            None,
-        )
+    def test_message_next_command(self) -> None:
+        from addons.core.command.logo.show import core__logo__show
 
-    def test_call_command_app(self) -> None:
-        self.assertEqual(
-            self.kernel.call_command(".local_command/test", {"local-option": "YES"}),
-            "OK:YES",
-        )
-
-    def test_call_command_service(self) -> None:
-        self.assertEqual(self.kernel.call_command("@test::demo-command/first"), "FIRST")
+        self.kernel.io.message_next_command(core__logo__show)
 
     def test_tests_coverage(self) -> None:
         from addons.core.command.test.create import core__test__create
@@ -170,26 +193,3 @@ class TestCore(AbstractTestCase):
                     hasattr(test_class, test_method_name),
                     f"Method {test_method_name} not found in {test_class_name} class in {test_file_path}",
                 )
-
-    def test_build_command(self) -> None:
-        from addons.core.command.logo.show import core__logo__show
-        from addons.core.command.version.new_write import core__version__new_write
-        from src.const.globals import COMMAND_TYPE_ADDON
-
-        self.assertEqual(
-            self.kernel.get_command_resolver(
-                COMMAND_TYPE_ADDON
-            ).build_command_from_function(core__logo__show),
-            "core::logo/show",
-        )
-        self.assertEqual(
-            self.kernel.get_command_resolver(
-                COMMAND_TYPE_ADDON
-            ).build_full_command_from_function(core__version__new_write),
-            "wex core::version/new-write",
-        )
-
-    def test_message_next_command(self) -> None:
-        from addons.core.command.logo.show import core__logo__show
-
-        self.kernel.io.message_next_command(core__logo__show)

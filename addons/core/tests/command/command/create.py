@@ -35,9 +35,6 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
 
         shutil.rmtree(os.path.dirname(test_file_path_test))
 
-    def test_create_local(self) -> None:
-        self.kernel.run_function(core__command__create, {"command": "~test/create"})
-
     def test_create_dash(self) -> None:
         result = self.kernel.run_function(
             core__command__create, {"command": "core::test-with-dash/create"}
@@ -46,3 +43,6 @@ class TestCoreCommandCommandCreate(AbstractTestCase):
         shutil.rmtree(os.path.dirname(result["command"]))
 
         shutil.rmtree(os.path.dirname(result["test"]))
+
+    def test_create_local(self) -> None:
+        self.kernel.run_function(core__command__create, {"command": "~test/create"})

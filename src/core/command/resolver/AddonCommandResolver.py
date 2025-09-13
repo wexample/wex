@@ -28,44 +28,6 @@ class AddonCommandResolver(AbstractCommandResolver):
     def get_type(cls) -> str:
         return COMMAND_TYPE_ADDON
 
-    def build_path(
-        self, request: CommandRequest, extension: str, subdir: str | None = None
-    ) -> Path | None:
-        match = request.get_match()
-        # Unable to find command path if no addon name found.
-        if match.group(1) is None:
-            return None
-
-        return self.build_command_path(
-            base_path=self.kernel.get_path(
-                "addons", [string_to_snake_case(match.group(1))]
-            ),
-            extension=extension,
-            subdir=subdir,
-            command_path=os.path.join(
-                string_to_snake_case(match.group(2)),
-                string_to_snake_case(match.group(3)),
-            ),
-        )
-
-    def get_function_name_parts(self, parts: StringsList) -> StringsList:
-        return [
-            parts[0],
-            parts[1],
-            parts[2],
-        ]
-
-    def get_script_command_aliases(self, script_command: ScriptCommand) -> StringsList:
-        aliases = super().get_script_command_aliases(script_command)
-        match = self.build_match(self.build_command_from_function(script_command))
-
-        if match:
-            parts = match.groups()
-
-            aliases.append(COMMAND_SEPARATOR_GROUP.join([parts[1], parts[2]]))
-
-        return aliases
-
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
@@ -155,17 +117,6 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return None
 
-    def suggest_autocomplete_if_single(self, search_string: str) -> str:
-        all_commands = registry_get_all_commands(self.kernel)
-        all_names = [name for name in all_commands if name.startswith(search_string)]
-
-        if len(all_names) == 1:
-            # Adding a trailing space indicates
-            # that command is found
-            return all_names[0] + " "
-
-        return search_string
-
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
@@ -174,6 +125,26 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[1],
             path_parts[2],
         ]
+
+    def build_path(
+        self, request: CommandRequest, extension: str, subdir: str | None = None
+    ) -> Path | None:
+        match = request.get_match()
+        # Unable to find command path if no addon name found.
+        if match.group(1) is None:
+            return None
+
+        return self.build_command_path(
+            base_path=self.kernel.get_path(
+                "addons", [string_to_snake_case(match.group(1))]
+            ),
+            extension=extension,
+            subdir=subdir,
+            command_path=os.path.join(
+                string_to_snake_case(match.group(2)),
+                string_to_snake_case(match.group(3)),
+            ),
+        )
 
     def build_registry_data(self, test: bool = False) -> RegistryResolverData:
         registry: RegistryResolverData = {}
@@ -188,3 +159,32 @@ class AddonCommandResolver(AbstractCommandResolver):
                 }
 
         return registry
+
+    def get_function_name_parts(self, parts: StringsList) -> StringsList:
+        return [
+            parts[0],
+            parts[1],
+            parts[2],
+        ]
+
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> StringsList:
+        aliases = super().get_script_command_aliases(script_command)
+        match = self.build_match(self.build_command_from_function(script_command))
+
+        if match:
+            parts = match.groups()
+
+            aliases.append(COMMAND_SEPARATOR_GROUP.join([parts[1], parts[2]]))
+
+        return aliases
+
+    def suggest_autocomplete_if_single(self, search_string: str) -> str:
+        all_commands = registry_get_all_commands(self.kernel)
+        all_names = [name for name in all_commands if name.startswith(search_string)]
+
+        if len(all_names) == 1:
+            # Adding a trailing space indicates
+            # that command is found
+            return all_names[0] + " "
+
+        return search_string

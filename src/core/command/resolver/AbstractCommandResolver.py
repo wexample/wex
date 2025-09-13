@@ -47,45 +47,163 @@ from src.utils.abstract_kernel_child import AbsractKernelChild
 
 
 class AbstractCommandResolver(AbsractKernelChild):
-    def render_request(
-        self, request: CommandRequest, render_mode: str
-    ) -> AbstractResponse:
-        runner = request.get_runner()
 
-        self.kernel.hook_addons("render_request_pre", {"request": request})
-        self.execute_all_attached(request, "before")
+    @classmethod
+    def build_match(cls, command: str) -> StringsMatch | None:
+        import re
 
-        previous_verbosity = self.kernel.verbosity
-        script_command = request.get_script_command()
+        return re.match(cls.get_pattern(), command) if command else None
 
+    @classmethod
+    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
+        return function
+
+    @classmethod
+    @abstractmethod
+    def get_pattern(cls) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_type(cls) -> str:
+        pass
+
+    def autocomplete_suggest(
+        self, cursor: int, search_split: StringsList
+    ) -> str | None:
+        return None
+
+    def build_base_command_path(self, base_path: str) -> str:
+        return os.path.join(base_path, "command") + os.path.sep
+
+    def build_command_from_function(self, script_command: ScriptCommand) -> str:
         if (
-            script_command.verbosity is not None
-            and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT
+            not script_command.click_command
+            or not script_command.click_command.callback
         ):
-            self.kernel.verbosity = script_command.verbosity
+            self.kernel.io.error(
+                "Trying to build command name from non-located command function"
+            )
 
-        previous_request = self.kernel.current_request
-        self.kernel.current_request = request
+        parts = self.build_command_parts_from_function_name(
+            script_command.click_command.callback.__name__
+        )
 
-        self.kernel.logger.log_request(request=request)
+        return self.build_command_from_parts(parts)
 
-        # Execute request
-        response = self.wrap_response(response=runner.run())
+    def build_command_from_parts(self, parts: StringsList) -> str:
+        """
+        Returns the "default" format (addons style)
+        """
+        # Convert each part to kebab-case
+        kebab_parts = [string_to_kebab_case(part) for part in parts]
 
-        # Render response
-        response.render(request=request, render_mode=render_mode)
+        return f"{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
-        self.kernel.verbosity = previous_verbosity
-        self.kernel.current_request = previous_request
+    def build_command_parts_from_file_path(self, command_path: str) -> StringsList:
+        path_parts = command_path.split(os.sep)
 
-        if response:
-            self.kernel.hook_addons("render_request_post", {"response": response})
+        return [path_parts[-4], path_parts[-2], os.path.splitext(path_parts[-1])[0]]
 
-            # Ensure this is the real end of command, no repetition planned.
-            if not response.has_next_step:
-                self.execute_all_attached(request, "after", previous=response)
+    def build_command_parts_from_function_name(
+        self, function_name: str
+    ) -> ShellCommandsList:
+        """
+        Returns the "default" format (addons style)
+        """
+        return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 
-        return response
+    @abstractmethod
+    def build_command_parts_from_url_path_parts(
+        self, path_parts: StringsList
+    ) -> StringsList:
+        pass
+
+    def build_command_path(
+        self, base_path: str, extension: str, subdir: str | None, command_path: str
+    ) -> str:
+        if subdir:
+            base_path += f"{subdir}/"
+
+        return os.path.join(base_path, "command", command_path + "." + extension)
+
+    def build_full_command_from_function(
+        self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
+    ) -> str:
+        return command_to_string(
+            self.build_full_command_parts_from_script_command(script_command, args)
+        )
+
+    def build_full_command_parts_from_script_command(
+        self,
+        script_command: ScriptCommand,
+        args: OptionalCoreCommandArgsDict | None = None,
+    ) -> ShellCommandsList:
+        return [
+            CORE_COMMAND_NAME,
+            self.build_command_from_function(script_command),
+        ] + (
+            click_args_convert_dict_to_args(script_command.click_command, args)
+            if args
+            else []
+        )
+
+    @abstractmethod
+    def build_path(
+        self, request: CommandRequest, extension: str, subdir: str | None = None
+    ) -> Path | None:
+        pass
+
+    def build_path_or_fail(
+        self, request: CommandRequest, extension: str, subdir: str | None = None
+    ) -> str:
+        path = self.build_path(request=request, extension=extension, subdir=subdir)
+
+        if path is None:
+            self.kernel.io.error(
+                "Command file not found for command {command}",
+                {
+                    "command": request.get_string_command(),
+                },
+                trace=False,
+            )
+
+        assert path is not None
+
+        return path
+
+    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
+        return {}
+
+    def create_command_from_path(self, path: str) -> str | None:
+        parts = path.split(os.sep)
+
+        if not parts:
+            return None
+
+        command_parts = self.build_command_parts_from_url_path_parts(parts)
+
+        if not command_parts:
+            return None
+
+        return self.build_command_from_parts(command_parts)
+
+    def create_command_request(
+        self, command: str, args: OptionalCoreCommandArgsListOrDict | None = None
+    ) -> CommandRequest:
+        return CommandRequest(self, command, args or [])
+
+    def execute_all_attached(
+        self,
+        request: CommandRequest,
+        position: str,
+        previous: AbstractResponse | None = None,
+    ) -> None:
+        # Ask every other resolver to call each attached command type
+        for resolver in self.kernel.resolvers:
+            self.kernel.resolvers[resolver].execute_attached(
+                request, position, previous=previous
+            )
 
     def execute_attached(
         self,
@@ -139,36 +257,16 @@ class AbstractCommandResolver(AbsractKernelChild):
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()
 
-    def execute_all_attached(
-        self,
-        request: CommandRequest,
-        position: str,
-        previous: AbstractResponse | None = None,
-    ) -> None:
-        # Ask every other resolver to call each attached command type
-        for resolver in self.kernel.resolvers:
-            self.kernel.resolvers[resolver].execute_attached(
-                request, position, previous=previous
-            )
+    def get_base_command_path(self) -> str | None:
+        base_path = self.get_base_path()
 
-    def wrap_response(self, response: Any) -> AbstractResponse:
-        if isinstance(response, AbstractResponse):
-            return response
-        elif callable(response):
-            return FunctionResponse(self.kernel, response)
-        elif isinstance(response, dict):
-            return DictResponse(self.kernel, response)
-        elif isinstance(response, list):
-            return ListResponse(self.kernel, response)
-        elif response is None:
-            return NullResponse(self.kernel)
+        if not base_path:
+            return None
 
-        return DefaultResponse(self.kernel, response)
+        return self.build_base_command_path(base_path)
 
-    @classmethod
-    @abstractmethod
-    def get_pattern(cls) -> str:
-        pass
+    def get_base_path(self) -> str | None:
+        return None
 
     def get_commands_registry(self) -> RegistryCommandsCollection:
         from src.helper.registry import registry_get_all_commands_from_registry_part
@@ -180,85 +278,6 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return {}
 
-    @classmethod
-    @abstractmethod
-    def get_type(cls) -> str:
-        pass
-
-    @classmethod
-    def build_match(cls, command: str) -> StringsMatch | None:
-        import re
-
-        return re.match(cls.get_pattern(), command) if command else None
-
-    def get_base_path(self) -> str | None:
-        return None
-
-    def get_base_command_path(self) -> str | None:
-        base_path = self.get_base_path()
-
-        if not base_path:
-            return None
-
-        return self.build_base_command_path(base_path)
-
-    def build_base_command_path(self, base_path: str) -> str:
-        return os.path.join(base_path, "command") + os.path.sep
-
-    def set_command_file_permission(self, command_path: str) -> None:
-        base_path = self.get_base_path()
-
-        if base_path:
-            file_set_owner_for_path_and_ancestors(
-                base_path,
-                string_trim_leading(command_path, base_path),
-                get_user_or_sudo_user(),
-            )
-
-    def create_command_request(
-        self, command: str, args: OptionalCoreCommandArgsListOrDict | None = None
-    ) -> CommandRequest:
-        return CommandRequest(self, command, args or [])
-
-    def resolve_alias(self, command: str) -> str:
-        registry = self.get_commands_registry()
-        for item in registry:
-            if command in registry[item]["alias"]:
-                return item
-        return command
-
-    def supports(self, command: str) -> bool:
-        command = self.resolve_alias(command)
-
-        if self.build_match(command):
-            return True
-
-        return False
-
-    @abstractmethod
-    def build_path(
-        self, request: CommandRequest, extension: str, subdir: str | None = None
-    ) -> Path | None:
-        pass
-
-    def build_path_or_fail(
-        self, request: CommandRequest, extension: str, subdir: str | None = None
-    ) -> str:
-        path = self.build_path(request=request, extension=extension, subdir=subdir)
-
-        if path is None:
-            self.kernel.io.error(
-                "Command file not found for command {command}",
-                {
-                    "command": request.get_string_command(),
-                },
-                trace=False,
-            )
-
-        assert path is not None
-
-        return path
-
     def get_function_name(self, parts: list[str]) -> str:
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
@@ -268,118 +287,81 @@ class AbstractCommandResolver(AbsractKernelChild):
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         pass
 
-    def build_full_command_parts_from_script_command(
-        self,
-        script_command: ScriptCommand,
-        args: OptionalCoreCommandArgsDict | None = None,
-    ) -> ShellCommandsList:
-        return [
-            CORE_COMMAND_NAME,
-            self.build_command_from_function(script_command),
-        ] + (
-            click_args_convert_dict_to_args(script_command.click_command, args)
-            if args
-            else []
-        )
+    def get_registry_data(self) -> RegistryResolverData:
+        return self.kernel.registry_structure.get_resolver_data(self.get_type())
 
-    def build_full_command_from_function(
-        self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
-    ) -> str:
-        return command_to_string(
-            self.build_full_command_parts_from_script_command(script_command, args)
-        )
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> list[str]:
+        return script_command.aliases
 
-    def build_command_parts_from_function_name(
-        self, function_name: str
-    ) -> ShellCommandsList:
-        """
-        Returns the "default" format (addons style)
-        """
-        return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
+    def locate_function(self, request: CommandRequest) -> bool:
+        # Build dynamic variables
+        request.match = self.build_match(request.get_string_command())
 
-    def build_command_parts_from_file_path(self, command_path: str) -> StringsList:
-        path_parts = command_path.split(os.sep)
+        if request.match:
+            for extension in COMMAND_EXTENSIONS:
+                found = request.load_extension(extension)
 
-        return [path_parts[-4], path_parts[-2], os.path.splitext(path_parts[-1])[0]]
+                if found:
+                    return True
+        return False
+    def render_request(
+        self, request: CommandRequest, render_mode: str
+    ) -> AbstractResponse:
+        runner = request.get_runner()
 
-    def build_command_from_parts(self, parts: StringsList) -> str:
-        """
-        Returns the "default" format (addons style)
-        """
-        # Convert each part to kebab-case
-        kebab_parts = [string_to_kebab_case(part) for part in parts]
+        self.kernel.hook_addons("render_request_pre", {"request": request})
+        self.execute_all_attached(request, "before")
 
-        return f"{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
+        previous_verbosity = self.kernel.verbosity
+        script_command = request.get_script_command()
 
-    def build_command_from_function(self, script_command: ScriptCommand) -> str:
         if (
-            not script_command.click_command
-            or not script_command.click_command.callback
+            script_command.verbosity is not None
+            and self.kernel.verbosity == VERBOSITY_LEVEL_DEFAULT
         ):
-            self.kernel.io.error(
-                "Trying to build command name from non-located command function"
-            )
+            self.kernel.verbosity = script_command.verbosity
 
-        parts = self.build_command_parts_from_function_name(
-            script_command.click_command.callback.__name__
+        previous_request = self.kernel.current_request
+        self.kernel.current_request = request
+
+        self.kernel.logger.log_request(request=request)
+
+        # Execute request
+        response = self.wrap_response(response=runner.run())
+
+        # Render response
+        response.render(request=request, render_mode=render_mode)
+
+        self.kernel.verbosity = previous_verbosity
+        self.kernel.current_request = previous_request
+
+        if response:
+            self.kernel.hook_addons("render_request_post", {"response": response})
+
+            # Ensure this is the real end of command, no repetition planned.
+            if not response.has_next_step:
+                self.execute_all_attached(request, "after", previous=response)
+
+        return response
+
+    def resolve_alias(self, command: str) -> str:
+        registry = self.get_commands_registry()
+        for item in registry:
+            if command in registry[item]["alias"]:
+                return item
+        return command
+
+    def run_command_request_from_url_path(
+        self, path: str, args: OptionalCoreCommandArgsDict = None
+    ) -> AbstractResponse:
+        command = self.create_command_from_path(path)
+
+        if not command:
+            return AbortResponse(self.kernel, "COMMAND_NOT_FOUND_FROM_PATH")
+
+        return self.kernel.run_command(
+            command=command, args=cast(OptionalCoreCommandArgsListOrDict, args)
         )
-
-        return self.build_command_from_parts(parts)
-
-    def build_command_path(
-        self, base_path: str, extension: str, subdir: str | None, command_path: str
-    ) -> str:
-        if subdir:
-            base_path += f"{subdir}/"
-
-        return os.path.join(base_path, "command", command_path + "." + extension)
-
-    def autocomplete_suggest(
-        self, cursor: int, search_split: StringsList
-    ) -> str | None:
-        return None
-
-    def suggest_arguments(self, command: str, search: str) -> str:
-        request = self.create_command_request(command)
-
-        # Command is not recognised
-        if not request._runner:
-            return ""
-
-        function_params = request.get_runner().get_options_names()
-        search_params = [param for param in function_params if param.startswith(search)]
-
-        return " ".join(search_params)
-
-    def suggest_from_path(
-        self, commands_path: str, search_string: str, test_commands: bool = False
-    ) -> StringsList:
-        commands = self.scan_commands_groups(commands_path, test_commands)
-        commands_names: StringsList = []
-
-        for command, command_data in commands.items():
-            commands_names.append(command)
-
-        # Ignore non relevant values
-        commands_names = [
-            name for name in commands_names if name.startswith(search_string)
-        ]
-
-        return commands_names
-
-    def scan_commands_groups(
-        self, directory: str, test_commands: bool = False
-    ) -> RegistryCommandsCollection:
-        command_dict: RegistryCommandsCollection = {}
-
-        if os.path.exists(directory):
-            for group in file_list_subdirectories(directory):
-                group_path = os.path.join(directory, group)
-                command_dict.update(
-                    self.scan_commands(group_path, group, test_commands)
-                )
-
-        return command_dict
 
     def scan_commands(
         self, directory: str, group: str, test_commands: bool = False
@@ -459,58 +441,76 @@ class AbstractCommandResolver(AbsractKernelChild):
                         )
         return commands
 
-    def get_script_command_aliases(self, script_command: ScriptCommand) -> list[str]:
-        return script_command.aliases
+    def scan_commands_groups(
+        self, directory: str, test_commands: bool = False
+    ) -> RegistryCommandsCollection:
+        command_dict: RegistryCommandsCollection = {}
 
-    def locate_function(self, request: CommandRequest) -> bool:
-        # Build dynamic variables
-        request.match = self.build_match(request.get_string_command())
+        if os.path.exists(directory):
+            for group in file_list_subdirectories(directory):
+                group_path = os.path.join(directory, group)
+                command_dict.update(
+                    self.scan_commands(group_path, group, test_commands)
+                )
 
-        if request.match:
-            for extension in COMMAND_EXTENSIONS:
-                found = request.load_extension(extension)
+        return command_dict
 
-                if found:
-                    return True
+    def set_command_file_permission(self, command_path: str) -> None:
+        base_path = self.get_base_path()
+
+        if base_path:
+            file_set_owner_for_path_and_ancestors(
+                base_path,
+                string_trim_leading(command_path, base_path),
+                get_user_or_sudo_user(),
+            )
+
+    def suggest_arguments(self, command: str, search: str) -> str:
+        request = self.create_command_request(command)
+
+        # Command is not recognised
+        if not request._runner:
+            return ""
+
+        function_params = request.get_runner().get_options_names()
+        search_params = [param for param in function_params if param.startswith(search)]
+
+        return " ".join(search_params)
+
+    def suggest_from_path(
+        self, commands_path: str, search_string: str, test_commands: bool = False
+    ) -> StringsList:
+        commands = self.scan_commands_groups(commands_path, test_commands)
+        commands_names: StringsList = []
+
+        for command, command_data in commands.items():
+            commands_names.append(command)
+
+        # Ignore non relevant values
+        commands_names = [
+            name for name in commands_names if name.startswith(search_string)
+        ]
+
+        return commands_names
+
+    def supports(self, command: str) -> bool:
+        command = self.resolve_alias(command)
+
+        if self.build_match(command):
+            return True
+
         return False
 
-    @classmethod
-    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
-        return function
+    def wrap_response(self, response: Any) -> AbstractResponse:
+        if isinstance(response, AbstractResponse):
+            return response
+        elif callable(response):
+            return FunctionResponse(self.kernel, response)
+        elif isinstance(response, dict):
+            return DictResponse(self.kernel, response)
+        elif isinstance(response, list):
+            return ListResponse(self.kernel, response)
+        elif response is None:
+            return NullResponse(self.kernel)
 
-    def run_command_request_from_url_path(
-        self, path: str, args: OptionalCoreCommandArgsDict = None
-    ) -> AbstractResponse:
-        command = self.create_command_from_path(path)
-
-        if not command:
-            return AbortResponse(self.kernel, "COMMAND_NOT_FOUND_FROM_PATH")
-
-        return self.kernel.run_command(
-            command=command, args=cast(OptionalCoreCommandArgsListOrDict, args)
-        )
-
-    def create_command_from_path(self, path: str) -> str | None:
-        parts = path.split(os.sep)
-
-        if not parts:
-            return None
-
-        command_parts = self.build_command_parts_from_url_path_parts(parts)
-
-        if not command_parts:
-            return None
-
-        return self.build_command_from_parts(command_parts)
-
-    @abstractmethod
-    def build_command_parts_from_url_path_parts(
-        self, path_parts: StringsList
-    ) -> StringsList:
-        pass
-
-    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
-        return {}
-
-    def get_registry_data(self) -> RegistryResolverData:
-        return self.kernel.registry_structure.get_resolver_data(self.get_type())
+        return DefaultResponse(self.kernel, response)

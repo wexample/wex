@@ -13,9 +13,6 @@ class UrlChatSubject(AbstractChatSubject):
     def name() -> str:
         return "url"
 
-    def introduce(self) -> str:
-        return f"Chatting about URL {self.url}"
-
     def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
@@ -33,3 +30,6 @@ class UrlChatSubject(AbstractChatSubject):
             return True
 
         return False
+
+    def introduce(self) -> str:
+        return f"Chatting about URL {self.url}"

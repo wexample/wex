@@ -37,6 +37,12 @@ class FileStructure(AbstractFileSystemStructure):
                     {"path": self.path, "expected": self.file_extension},
                 )
 
+    def create_missing(self) -> None:
+        file_create_parent_and_touch(self.path, default=self.default_content)
+
+    def get_writable_content(self) -> BasicValue:
+        return self.content
+
     def load_content(self) -> None:
         self.content = file_read(self.path)
 
@@ -48,9 +54,3 @@ class FileStructure(AbstractFileSystemStructure):
 
     def write_content(self) -> None:
         file_write(self.path, str(self.get_writable_content()))
-
-    def get_writable_content(self) -> BasicValue:
-        return self.content
-
-    def create_missing(self) -> None:
-        file_create_parent_and_touch(self.path, default=self.default_content)

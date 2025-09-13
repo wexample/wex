@@ -29,15 +29,15 @@ class AbstractCommand(AbstractAssistantChild):
     @abstractmethod
     def name() -> str: ...
 
-    def get_flags(self) -> list[str]:
-        return []
-
     def execute(
         self,
         prompt_section: UserPromptSection | None = None,
         remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         return NullInteractionResponse()
+
+    def get_flags(self) -> list[str]:
+        return []
 
     @abstractmethod
     def get_interaction_mode(

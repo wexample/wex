@@ -36,6 +36,15 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self.workdir = workdir
         self.success: bool | None = None
 
+    def print(
+        self,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        interactive_data: bool = True,
+    ) -> ResponsePrintType:
+        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
+            return self.get_first_output_printable_value()
+        return self.output_bag
+
     def render_content(
         self,
         request: CommandRequest,
@@ -60,12 +69,3 @@ class InteractiveShellCommandResponse(AbstractResponse):
 
     def storable_data(self) -> bool:
         return False
-
-    def print(
-        self,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        interactive_data: bool = True,
-    ) -> ResponsePrintType:
-        if render_mode == KERNEL_RENDER_MODE_TERMINAL:
-            return self.get_first_output_printable_value()
-        return self.output_bag

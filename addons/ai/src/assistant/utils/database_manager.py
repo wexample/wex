@@ -47,27 +47,22 @@ class DatabaseManager(AbstractAssistantChild):
 
         self.kernel.io.success("Database ready")
 
-    def get_or_create_user(self) -> Row[tuple[Any, ...]]:
-        username = get_user_or_sudo_user()
-        table = self.tables["user"]
+    def get_conversation_items(self, conversation_id: int) -> list[HistoryItem]:
+        query = (
+            self.session.query(HistoryItem)
+            .filter(HistoryItem.conversation_id == conversation_id)
+            .order_by(HistoryItem.date_created)
+        )
 
-        # Query for the user
-        query = select(table).where(table.columns.name == username)
-        result: Row[tuple[Any, ...]] | None = self.session.execute(query).fetchone()
+        return query.all()
 
-        if result is None:
-            self.assistant.log(f"User {username} not found in database. Creating now.")
-            ins = table.insert().values(name=username)
-            self.session.execute(ins)
-            self.session.commit()
-            self.assistant.log(f"User {username} created.")
+    def get_conversations(self) -> list[Row[tuple[Any, ...]]]:
+        user = self.get_or_create_user()
+        table = self.tables["assistant_conversation"]
+        query = select(table).where(table.columns.user_id == user.id)
 
-            result = self.session.execute(query).fetchone()
-            assert result is not None
-            return result
-        else:
-            self.assistant.log(f"User {username} found in database.")
-            return result
+        rows = self.session.execute(query).fetchall()
+        return list(rows)
 
     def get_conversations_dict(self) -> dict[int, str]:
         conversations = self.get_conversations()
@@ -81,14 +76,6 @@ class DatabaseManager(AbstractAssistantChild):
             )
 
         return conversations_dict
-
-    def get_conversations(self) -> list[Row[tuple[Any, ...]]]:
-        user = self.get_or_create_user()
-        table = self.tables["assistant_conversation"]
-        query = select(table).where(table.columns.user_id == user.id)
-
-        rows = self.session.execute(query).fetchall()
-        return list(rows)
 
     def get_last_conversation(self) -> Row[tuple[Any, ...]] | None:
         user = self.get_or_create_user()
@@ -128,17 +115,30 @@ class DatabaseManager(AbstractAssistantChild):
             self.assistant.log(f"Using conversation: {result.title or '(No title)'}")
             return result
 
+    def get_or_create_user(self) -> Row[tuple[Any, ...]]:
+        username = get_user_or_sudo_user()
+        table = self.tables["user"]
+
+        # Query for the user
+        query = select(table).where(table.columns.name == username)
+        result: Row[tuple[Any, ...]] | None = self.session.execute(query).fetchone()
+
+        if result is None:
+            self.assistant.log(f"User {username} not found in database. Creating now.")
+            ins = table.insert().values(name=username)
+            self.session.execute(ins)
+            self.session.commit()
+            self.assistant.log(f"User {username} created.")
+
+            result = self.session.execute(query).fetchone()
+            assert result is not None
+            return result
+        else:
+            self.assistant.log(f"User {username} found in database.")
+            return result
+
     def save_assistant_conversation_item(
         self, assistant_conversation_item: HistoryItem
     ) -> None:
         self.session.add(assistant_conversation_item)
         self.session.commit()
-
-    def get_conversation_items(self, conversation_id: int) -> list[HistoryItem]:
-        query = (
-            self.session.query(HistoryItem)
-            .filter(HistoryItem.conversation_id == conversation_id)
-            .order_by(HistoryItem.date_created)
-        )
-
-        return query.all()

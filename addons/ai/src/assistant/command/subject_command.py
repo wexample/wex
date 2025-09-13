@@ -18,9 +18,6 @@ class SubjectCommand(AbstractCommand):
     def name() -> str:
         return "subject"
 
-    def get_flags(self) -> list[str]:
-        return cast(list[str], self.assistant.subjects.keys())
-
     def execute(
         self,
         prompt_section: UserPromptSection | None = None,
@@ -30,3 +27,6 @@ class SubjectCommand(AbstractCommand):
             self.assistant.set_subject(prompt_section.flags[-1], prompt_section)
 
         return super().execute(prompt_section)
+
+    def get_flags(self) -> list[str]:
+        return cast(list[str], self.assistant.subjects.keys())

@@ -11,10 +11,10 @@ class RemoteUrlSubject(AbstractChatSubject):
     def name() -> str:
         return "remote_url"
 
-    def introduce(self) -> str:
-        return f"Talk about a remote website"
-
     def get_commands(self) -> StringKeysDict:
         return {
             SUBJECT_PREVIOUS_RESPONSE_COMMAND_FETCH_URL: "Fetch web page content from URL"
         }
+
+    def introduce(self) -> str:
+        return f"Talk about a remote website"

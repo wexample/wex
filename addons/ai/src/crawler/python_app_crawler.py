@@ -4,6 +4,11 @@ from addons.ai.src.crawler.app_crawler import AppCrawler, CrawlerTreeItem
 
 
 class PythonAppCrawler(AppCrawler):
+
+    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
+        tree = super().cleanup_tree(tree)
+        self.tree_remove(tree, "__pycache__")
+        return tree
     def tree_remove(self, tree: CrawlerTreeItem, file_name: str) -> None:
         if "children" not in tree or not tree["children"]:
             return
@@ -13,8 +18,3 @@ class PythonAppCrawler(AppCrawler):
 
         if file_name in tree["children"]:
             del tree["children"][file_name]
-
-    def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
-        tree = super().cleanup_tree(tree)
-        self.tree_remove(tree, "__pycache__")
-        return tree

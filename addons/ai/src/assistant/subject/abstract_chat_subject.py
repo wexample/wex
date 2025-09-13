@@ -24,11 +24,11 @@ class AbstractChatSubject(AbstractAssistantChild):
     def get_commands(self) -> StringKeysDict:
         return {}
 
+    def get_prompt_parameters(self) -> dict[str, str]:
+        return {}
+
     def introduce(self) -> str:
         return self.name()
 
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
-
-    def get_prompt_parameters(self) -> dict[str, str]:
-        return {}

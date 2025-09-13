@@ -26,25 +26,8 @@ class DefaultQueuedCollectionResponseQueueManager(
     def __init__(self, response: QueuedCollectionResponse) -> None:
         super().__init__(response)
 
-    def get_previous_storage_path(self) -> str | None:
-        path = self.get_previous_response_path()
-
-        if path is None:
-            return None
-
-        return self.build_storage_path(path)
-
-    def get_previous_value(self) -> BasicInlineValue:
-        storage_path = self.get_previous_storage_path()
-
-        if not storage_path:
-            return None
-
-        previous_data = self.response.kernel.task_file_load(
-            storage_path, delete_after_read=False
-        )
-
-        return yaml.safe_load(previous_data)["body"] if previous_data else None
+    def build_storage_path(self, path: QueuedCollectionStepsList) -> str:
+        return "-".join(map(str, path)) + ".response"
 
     def enqueue_next_step_by_index(self, next_step_index: int) -> None:
         super().enqueue_next_step_by_index(next_step_index)
@@ -61,9 +44,6 @@ class DefaultQueuedCollectionResponseQueueManager(
         process_post_exec_function(
             self.response.kernel, root.get_request().get_string_command(), args
         )
-
-    def build_storage_path(self, path: QueuedCollectionStepsList) -> str:
-        return "-".join(map(str, path)) + ".response"
 
     def enqueue_next_step_if_exists(
         self, step_index: int, response: AbstractResponse
@@ -96,3 +76,23 @@ class DefaultQueuedCollectionResponseQueueManager(
                 self.response.kernel.task_file_load(previous_storage_path)
 
         return exists
+
+    def get_previous_storage_path(self) -> str | None:
+        path = self.get_previous_response_path()
+
+        if path is None:
+            return None
+
+        return self.build_storage_path(path)
+
+    def get_previous_value(self) -> BasicInlineValue:
+        storage_path = self.get_previous_storage_path()
+
+        if not storage_path:
+            return None
+
+        previous_data = self.response.kernel.task_file_load(
+            storage_path, delete_after_read=False
+        )
+
+        return yaml.safe_load(previous_data)["body"] if previous_data else None

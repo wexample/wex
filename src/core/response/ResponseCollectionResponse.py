@@ -18,16 +18,6 @@ class ResponseCollectionResponse(AbstractResponse):
 
         self.collection: ResponseCollection = collection
 
-    def render_content(
-        self,
-        request: CommandRequest,
-        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
-        args: OptionalCoreCommandArgsDict = None,
-    ) -> AbstractResponse:
-        self.render_content_multiple(self.collection, request, render_mode, args)
-
-        return self
-
     def print(
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
@@ -43,6 +33,16 @@ class ResponseCollectionResponse(AbstractResponse):
             return super().print(render_mode, interactive_data)
 
         return None
+
+    def render_content(
+        self,
+        request: CommandRequest,
+        render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
+        args: OptionalCoreCommandArgsDict = None,
+    ) -> AbstractResponse:
+        self.render_content_multiple(self.collection, request, render_mode, args)
+
+        return self
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         # Do not add extra json wrapping
