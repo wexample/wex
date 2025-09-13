@@ -32,13 +32,13 @@ deletion = "#8b080b"
 
 
 class PromptPygmentStyle(Style):
-    name = "prompt"
     background_color = background
     highlight_color = selection
     line_number_background_color = selection
     line_number_color = yellow
     line_number_special_background_color = comment
     line_number_special_color = green
+    name = "prompt"
     styles = {
         Whitespace: foreground,
         Comment: comment,
