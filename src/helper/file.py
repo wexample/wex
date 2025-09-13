@@ -209,9 +209,7 @@ def file_path_has_no_extension(file_path: str) -> bool:
     return os.path.splitext(file_path)[1] == ""
 
 
-def file_read_if_exists(
-    file_path: str, missing_value: str | None = None
-) -> str | None:
+def file_read_if_exists(file_path: str, missing_value: str | None = None) -> str | None:
     if not os.path.exists(file_path):
         return missing_value
 

@@ -168,9 +168,7 @@ class AbstractFileSystemStructure(BaseClass):
     def create_missing(self) -> None:
         pass
 
-    def add_error(
-        self, code: str, parameters: StringMessageParameters
-    ) -> ErrorMessage:
+    def add_error(self, code: str, parameters: StringMessageParameters) -> ErrorMessage:
         from src.core.ErrorMessage import ErrorMessage
 
         error = ErrorMessage(

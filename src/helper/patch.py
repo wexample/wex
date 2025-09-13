@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import patch  # type: ignore[import-untyped]
 from wexample_helpers.helpers.directory import directory_execute_inside
 

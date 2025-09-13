@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.resolver.AddonCommandResolver import AddonCommandResolver
 from src.core.command.resolver.AppCommandResolver import AppCommandResolver

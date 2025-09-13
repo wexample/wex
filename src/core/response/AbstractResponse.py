@@ -24,9 +24,7 @@ if TYPE_CHECKING:
 
 
 class AbstractResponse(AbsractKernelChild, HasRequest):
-    def __init__(
-        self, kernel: Kernel, default_render_mode: str | None = None
-    ) -> None:
+    def __init__(self, kernel: Kernel, default_render_mode: str | None = None) -> None:
         AbsractKernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 

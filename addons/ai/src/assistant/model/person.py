@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from pydantic import BaseModel, Field
 
 from addons.ai.src.assistant.model.reliable_value import ReliableValue

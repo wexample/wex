@@ -62,9 +62,7 @@ def app__remote__exec(
     command: str,
     terminal: bool,
     sync: bool = False,
-) -> None | (
-    InteractiveShellCommandResponse | NonInteractiveShellCommandResponse
-):
+) -> None | (InteractiveShellCommandResponse | NonInteractiveShellCommandResponse):
     address = remote_get_connexion_address(
         manager=manager, environment=environment, command=app__remote__exec
     )

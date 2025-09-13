@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.started import app__app__started

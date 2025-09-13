@@ -73,7 +73,7 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self._path_manager
 
-    def find_parent_response_collection(self) -> None|QueuedCollectionResponse:
+    def find_parent_response_collection(self) -> None | QueuedCollectionResponse:
         current: AbstractResponse | None = self
         while current is not None:
             current = current.parent

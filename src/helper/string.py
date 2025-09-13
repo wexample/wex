@@ -6,7 +6,6 @@ import re
 import shutil
 import string
 from collections.abc import Mapping
-from typing import List, Optional
 
 from wexample_helpers.helpers.string import string_to_snake_case
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from addons.test.command.return_type.int import test__return_type__int
 from src.const.globals import (
     KERNEL_RENDER_MODE_JSON,

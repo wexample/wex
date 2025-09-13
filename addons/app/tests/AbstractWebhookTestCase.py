@@ -39,9 +39,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             error_response_content = response.read()
 
             try:
-                error_data: JsonContentDict | None = json.loads(
-                    error_response_content
-                )
+                error_data: JsonContentDict | None = json.loads(error_response_content)
                 if error_data and "stderr" in error_data:
                     self.kernel.io.log(error_data["stderr"])
             except:

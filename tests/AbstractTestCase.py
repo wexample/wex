@@ -5,7 +5,7 @@ import os
 import shutil
 import unittest
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import Any
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (

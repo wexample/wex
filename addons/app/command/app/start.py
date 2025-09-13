@@ -3,7 +3,7 @@ from __future__ import annotations
 import os.path
 import time
 from collections.abc import Callable
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import click
 

@@ -4,12 +4,8 @@ from collections.abc import Callable, Mapping
 from re import Match
 from typing import (
     Any,
-    Dict,
-    List,
     Literal,
     Optional,
-    Set,
-    Tuple,
     TypedDict,
     Union,
 )

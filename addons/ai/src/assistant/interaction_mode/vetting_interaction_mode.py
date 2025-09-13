@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from pydantic import BaseModel
 
 from addons.ai.src.assistant.interaction_mode.formated_data_interaction_mode import (

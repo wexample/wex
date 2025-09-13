@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from src.core.registry.Command import RegistryCommand
 
 

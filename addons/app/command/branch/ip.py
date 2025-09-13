@@ -17,9 +17,7 @@ if TYPE_CHECKING:
     command_type=COMMAND_TYPE_ADDON,
 )
 @option("--branch", "-b", type=str, required=True, help="Branch name")
-def app__branch__ip(
-    manager: AppAddonManager, branch: str, app_dir: str
-) -> str | None:
+def app__branch__ip(manager: AppAddonManager, branch: str, app_dir: str) -> str | None:
     env = _app__branch__env(manager, branch)
 
     if env is not None:

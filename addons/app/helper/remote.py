@@ -40,9 +40,7 @@ def remote_get_environment_ip(
     return None
 
 
-def remote_get_login_command(
-    manager: AppAddonManager, environment: str
-) -> StringsList:
+def remote_get_login_command(manager: AppAddonManager, environment: str) -> StringsList:
     env_screaming_snake = string_to_snake_case(environment).upper()
     password = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_PASSWORD")
 

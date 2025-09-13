@@ -18,9 +18,7 @@ if TYPE_CHECKING:
 @option(
     "--key", "-k", type=str, required=False, default="APP_ENV", help="Key in env file"
 )
-def app__env__get(
-    manager: AppAddonManager, app_dir: str, key: str = "APP_ENV"
-) -> str:
+def app__env__get(manager: AppAddonManager, app_dir: str, key: str = "APP_ENV") -> str:
     return _app__env__get(manager.kernel, app_dir, key)
 
 
