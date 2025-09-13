@@ -30,7 +30,6 @@ if TYPE_CHECKING:
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
-
     @classmethod
     def decorate_command(cls, function: AnyCallable) -> AnyCallable:
         from addons.app.decorator.service_option import service_option

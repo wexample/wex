@@ -9,7 +9,6 @@ from src.core.response.AbstractResponse import AbstractResponse
 
 
 class NullResponse(AbstractResponse, ABC):
-
     def print(
         self,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,

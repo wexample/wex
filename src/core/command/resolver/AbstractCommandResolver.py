@@ -47,7 +47,6 @@ from src.utils.abstract_kernel_child import AbsractKernelChild
 
 
 class AbstractCommandResolver(AbsractKernelChild):
-
     @classmethod
     def build_match(cls, command: str) -> StringsMatch | None:
         import re

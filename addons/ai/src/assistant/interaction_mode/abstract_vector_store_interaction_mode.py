@@ -80,7 +80,6 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
-
         prompt_section.prompt_configurations.append(
             ("system", "## CONTEXT:" "\n{context}")
         )

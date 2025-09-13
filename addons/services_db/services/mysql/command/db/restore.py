@@ -24,7 +24,6 @@ def mysql__db__restore(
     file_name: str,
     database: str,
 ) -> str:
-
     manager.kernel.run_function(
         app__app__exec,
         {

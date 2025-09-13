@@ -27,7 +27,6 @@ from tests.AbstractTestCase import AbstractTestCase
 
 
 class AbstractAppTestCase(AbstractTestCase):
-
     def create_and_start_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,

@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 
 
 class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
-
     def get_dir_subject(self) -> DirChatSubject:
         return cast("DirChatSubject", self.assistant.get_current_subject())
 

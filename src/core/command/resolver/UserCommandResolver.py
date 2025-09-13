@@ -24,7 +24,6 @@ if TYPE_CHECKING:
 
 
 class UserCommandResolver(AbstractCommandResolver):
-
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_USER

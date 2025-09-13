@@ -24,7 +24,6 @@ def test_index_fake_click_function() -> None:
 
 
 class TestCore(AbstractTestCase):
-
     def test_build_command(self) -> None:
         from addons.core.command.logo.show import core__logo__show
         from addons.core.command.version.new_write import core__version__new_write

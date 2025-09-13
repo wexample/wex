@@ -15,7 +15,6 @@ from src.const.types import JsonContentDict
 
 
 class AbstractWebhookTestCase(AbstractAppTestCase):
-
     def copy_command_dir(self, app_dir: str, sub_dir: str) -> None:
         script_dir = os.path.join(
             app_dir,

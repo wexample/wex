@@ -127,7 +127,6 @@ def string_random_password_secure(length: int = 64) -> str:
     from at least three of the four following sets: Uppercase letters, Lowercase letters,
     Base 10 digits, and a reduced set of Symbols.
     """
-
     # Define character sets
     upper = string.ascii_uppercase  # Uppercase letters
     lower = string.ascii_lowercase  # Lowercase letters

@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 
 
 class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
-
     def get_file_subject(self) -> FileChatSubject:
         return cast("FileChatSubject", self.assistant.get_current_subject())
 

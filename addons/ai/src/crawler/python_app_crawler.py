@@ -4,7 +4,6 @@ from addons.ai.src.crawler.app_crawler import AppCrawler, CrawlerTreeItem
 
 
 class PythonAppCrawler(AppCrawler):
-
     def cleanup_tree(self, tree: CrawlerTreeItem) -> CrawlerTreeItem:
         tree = super().cleanup_tree(tree)
         self.tree_remove(tree, "__pycache__")

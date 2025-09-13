@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
-
     def chain_response_to_string(
         self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:

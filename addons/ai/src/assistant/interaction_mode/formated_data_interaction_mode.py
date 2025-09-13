@@ -24,7 +24,6 @@ FORMATED_DATA_FORMATS = [
 
 
 class FormatedDataInteractionMode(AbstractInteractionMode):
-
     def chain_response_to_string(
         self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:

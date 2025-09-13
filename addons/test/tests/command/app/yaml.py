@@ -6,7 +6,6 @@ from src.core.FatalError import FatalError
 
 
 class TestTestCommandAppYaml(AbstractWebhookTestCase):
-
     def test_yaml(self) -> None:
         app_dir, app_name = self.create_and_start_test_app_webhook()
 

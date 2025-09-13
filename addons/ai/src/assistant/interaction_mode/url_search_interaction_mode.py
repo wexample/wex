@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 
 class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
-
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
     ) -> dict[str, str]:
