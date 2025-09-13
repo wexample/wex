@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from typing import Optional
 
+from wexample_wex_addon_dev_python.workdir.python_workdir import PythonWorkdir
 from wexample_config.const.types import DictConfig
-from wexample_filestate_python.workdir.python_workdir import PythonWorkdir
 
 
-class WexWorkdir(PythonWorkdir):
+
+class AppWorkdir(PythonWorkdir):
     def prepare_value(self, raw_value: Optional[DictConfig] = None) -> DictConfig:
         from wexample_filestate.const.disk import DiskItemType
 
