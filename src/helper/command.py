@@ -26,26 +26,30 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def internal_command_to_shell(
-    kernel: Kernel, internal_command: str, args: None | list[str] = None
-) -> ShellCommandsList:
-    command = (
-        ["bash", kernel.get_path("core.cli"), internal_command]
-        + (args or [])
-        + ["--kernel-task-id", kernel.get_task_id()]
-    )
+def apply_command_decorator(
+    kernel: Kernel,
+    function: ScriptCommand,
+    group: str,
+    name: str,
+    options: dict[str, str] | None = None,
+) -> NoReturn | ScriptCommand:
+    if group in kernel.decorators and name in kernel.decorators[group]:
+        decorator = kernel.decorators[group][name]
+        options = options or {}
 
-    if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
-        command += ["--quiet"]
-    elif kernel.verbosity == VERBOSITY_LEVEL_MEDIUM:
-        command += ["--vv"]
-    elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
-        command += ["--vvv"]
+        script_command = decorator(**options)(function)
+        assert isinstance(script_command, ScriptCommand)
 
-    if kernel.io.log_length != IO_DEFAULT_LOG_LENGTH:
-        command += ["--log-length", str(kernel.io.log_length)]
+        return script_command
+    else:
+        kernel.io.error(f"Missing decorator {group}.{name}")
 
-    return command
+
+def command_escape(string: str, quote_char: str = '"') -> str:
+    # Escape existing quotes
+    escaped_string = string.replace("\\", "\\\\").replace(quote_char, "\\" + quote_char)
+    # Add quotes around the escaped string
+    return quote_char + escaped_string + quote_char
 
 
 def command_exists(shell_command: str) -> bool:
@@ -61,53 +65,29 @@ def command_exists(shell_command: str) -> bool:
     return out_content.decode() != ""
 
 
-def execute_command_tree_sync(
-    kernel: Kernel,
-    command_tree: ShellCommandsDeepList,
-    working_directory: str | None = None,
-    ignore_error: bool = False,
-    interactive: bool = False,
-    as_sudo_user: bool = True,
-    **kwargs: Any,
-) -> ShellCommandResponseTuple:
-    if isinstance(command_tree, list) and any(
-        isinstance(i, list) for i in command_tree
-    ):
-        # If the command_tree is a list and contains sub lists (nested commands)
-        # We execute the innermost command first
-        for i, sub_command in enumerate(command_tree):
-            if isinstance(sub_command, list):
-                # Recursive call to execute the nested command
-                result = execute_command_tree_sync(
-                    kernel=kernel,
-                    command_tree=cast(ShellCommandsDeepList, sub_command),
-                    working_directory=working_directory,
-                    ignore_error=ignore_error,
-                    as_sudo_user=as_sudo_user,
-                    **kwargs,
-                )
+def command_get_option(
+    script_command: ScriptCommand, option_name: str
+) -> click.core.Option | None:
+    for option in script_command.click_command.params:
+        if option.name == option_name:
+            return cast(click.core.Option, option)
 
-                if not isinstance(result, Popen):
-                    success, output = result
+    return None
 
-                    if not success:
-                        return success, output
 
-                    # Replace the nested command with the output of its execution
-                    command_tree[i : i + 1] = output
+def command_to_string(command: ShellCommandsList | ShellCommandsDeepList | str) -> str:
+    if isinstance(command, str):
+        return command
 
-                # Now command_tree is a flat list with the results of the inner command included
+    output = []
 
-    # Execute the modified (flattened) command_tree with the results of inner commands
-    return execute_command_sync(
-        kernel=kernel,
-        command=cast(ShellCommandsList, command_tree),
-        working_directory=working_directory,
-        ignore_error=ignore_error,
-        interactive=interactive,
-        as_sudo_user=as_sudo_user,
-        **kwargs,
-    )
+    for item in command:
+        if isinstance(item, list):
+            output.append("$(" + command_to_string(item) + ")")
+        else:
+            output.append(item)
+
+    return " ".join(output)
 
 
 def execute_command_async(
@@ -210,26 +190,75 @@ def execute_command_sync(
         return False, e.stderr.splitlines() if e.stderr else []
 
 
-def command_escape(string: str, quote_char: str = '"') -> str:
-    # Escape existing quotes
-    escaped_string = string.replace("\\", "\\\\").replace(quote_char, "\\" + quote_char)
-    # Add quotes around the escaped string
-    return quote_char + escaped_string + quote_char
+def execute_command_tree_sync(
+    kernel: Kernel,
+    command_tree: ShellCommandsDeepList,
+    working_directory: str | None = None,
+    ignore_error: bool = False,
+    interactive: bool = False,
+    as_sudo_user: bool = True,
+    **kwargs: Any,
+) -> ShellCommandResponseTuple:
+    if isinstance(command_tree, list) and any(
+        isinstance(i, list) for i in command_tree
+    ):
+        # If the command_tree is a list and contains sub lists (nested commands)
+        # We execute the innermost command first
+        for i, sub_command in enumerate(command_tree):
+            if isinstance(sub_command, list):
+                # Recursive call to execute the nested command
+                result = execute_command_tree_sync(
+                    kernel=kernel,
+                    command_tree=cast(ShellCommandsDeepList, sub_command),
+                    working_directory=working_directory,
+                    ignore_error=ignore_error,
+                    as_sudo_user=as_sudo_user,
+                    **kwargs,
+                )
+
+                if not isinstance(result, Popen):
+                    success, output = result
+
+                    if not success:
+                        return success, output
+
+                    # Replace the nested command with the output of its execution
+                    command_tree[i : i + 1] = output
+
+                # Now command_tree is a flat list with the results of the inner command included
+
+    # Execute the modified (flattened) command_tree with the results of inner commands
+    return execute_command_sync(
+        kernel=kernel,
+        command=cast(ShellCommandsList, command_tree),
+        working_directory=working_directory,
+        ignore_error=ignore_error,
+        interactive=interactive,
+        as_sudo_user=as_sudo_user,
+        **kwargs,
+    )
 
 
-def command_to_string(command: ShellCommandsList | ShellCommandsDeepList | str) -> str:
-    if isinstance(command, str):
-        return command
+def internal_command_to_shell(
+    kernel: Kernel, internal_command: str, args: None | list[str] = None
+) -> ShellCommandsList:
+    command = (
+        ["bash", kernel.get_path("core.cli"), internal_command]
+        + (args or [])
+        + ["--kernel-task-id", kernel.get_task_id()]
+    )
 
-    output = []
+    if kernel.verbosity == VERBOSITY_LEVEL_QUIET:
+        command += ["--quiet"]
+    elif kernel.verbosity == VERBOSITY_LEVEL_MEDIUM:
+        command += ["--vv"]
+    elif kernel.verbosity == VERBOSITY_LEVEL_MAXIMUM:
+        command += ["--vvv"]
 
-    for item in command:
-        if isinstance(item, list):
-            output.append("$(" + command_to_string(item) + ")")
-        else:
-            output.append(item)
+    if kernel.io.log_length != IO_DEFAULT_LOG_LENGTH:
+        command += ["--log-length", str(kernel.io.log_length)]
 
-    return " ".join(output)
+    return command
 
 
 def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
@@ -242,32 +271,3 @@ def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
             == command_b.click_command.callback.__name__
         )
     return False
-
-
-def apply_command_decorator(
-    kernel: Kernel,
-    function: ScriptCommand,
-    group: str,
-    name: str,
-    options: dict[str, str] | None = None,
-) -> NoReturn | ScriptCommand:
-    if group in kernel.decorators and name in kernel.decorators[group]:
-        decorator = kernel.decorators[group][name]
-        options = options or {}
-
-        script_command = decorator(**options)(function)
-        assert isinstance(script_command, ScriptCommand)
-
-        return script_command
-    else:
-        kernel.io.error(f"Missing decorator {group}.{name}")
-
-
-def command_get_option(
-    script_command: ScriptCommand, option_name: str
-) -> click.core.Option | None:
-    for option in script_command.click_command.params:
-        if option.name == option_name:
-            return cast(click.core.Option, option)
-
-    return None

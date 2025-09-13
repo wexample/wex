@@ -19,6 +19,14 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
+def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
+    if os.path.isdir(path + APP_DIR_APP_DATA_NAME):
+        if os.path.isfile(path + f"{APP_DIR_APP_DATA_NAME}/config"):
+            return True
+
+    return None
+
+
 def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
     app_dir = manager.get_app_dir()
     repo = git_get_or_create_repo(app_dir)
@@ -108,6 +116,28 @@ def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
     return glob.glob(f"{docker_dir}docker-compose.*")
 
 
+def _migration_4_0_0_replace_docker_mapping(
+    manager: AppAddonManager, replacement_mapping: StringsDict
+) -> None:
+    docker_files = _migration_4_0_0_et_docker_files(manager)
+
+    # Raw file replacements
+    # Loop through each docker-compose file
+    for docker_file in docker_files:
+        _migration_4_0_0_replace_placeholders(docker_file, replacement_mapping)
+
+
+def _migration_4_0_0_replace_docker_placeholders(
+    manager: AppAddonManager, replacement_mapping: StringsDict
+) -> None:
+    converted_mapping = {}
+
+    for old_str, new_str in replacement_mapping.items():
+        converted_mapping["${" + str(old_str) + "}"] = "${" + str(new_str) + "}"
+
+    _migration_4_0_0_replace_docker_mapping(manager, converted_mapping)
+
+
 def _migration_4_0_0_replace_placeholders(
     file_path: str, replacement_mapping: StringsDict
 ) -> None:
@@ -125,33 +155,3 @@ def _migration_4_0_0_replace_placeholders(
     # Override the file with updated content
     with open(file_path, "w") as f:
         f.write(content)
-
-
-def _migration_4_0_0_replace_docker_placeholders(
-    manager: AppAddonManager, replacement_mapping: StringsDict
-) -> None:
-    converted_mapping = {}
-
-    for old_str, new_str in replacement_mapping.items():
-        converted_mapping["${" + str(old_str) + "}"] = "${" + str(new_str) + "}"
-
-    _migration_4_0_0_replace_docker_mapping(manager, converted_mapping)
-
-
-def _migration_4_0_0_replace_docker_mapping(
-    manager: AppAddonManager, replacement_mapping: StringsDict
-) -> None:
-    docker_files = _migration_4_0_0_et_docker_files(manager)
-
-    # Raw file replacements
-    # Loop through each docker-compose file
-    for docker_file in docker_files:
-        _migration_4_0_0_replace_placeholders(docker_file, replacement_mapping)
-
-
-def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
-    if os.path.isdir(path + APP_DIR_APP_DATA_NAME):
-        if os.path.isfile(path + f"{APP_DIR_APP_DATA_NAME}/config"):
-            return True
-
-    return None

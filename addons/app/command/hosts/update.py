@@ -15,6 +15,16 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
+def add_domains_block(text: str, block_content: str) -> str:
+    """
+    Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
+    """
+    return (
+        text
+        + f"#[ {CORE_COMMAND_NAME} ]#{os.linesep}{block_content}{os.linesep}#[ end-{CORE_COMMAND_NAME} ]#{os.linesep}"
+    )
+
+
 @as_sudo()
 @command(help="Update local /etc/hosts file")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
@@ -73,13 +83,3 @@ def remove_domains_block(text: str) -> str:
             new_lines.append(line)
 
     return os.linesep.join(new_lines)
-
-
-def add_domains_block(text: str, block_content: str) -> str:
-    """
-    Adds a text surrounded by "#[ wex ]#...#[ end-wex ]#" in a given string variable.
-    """
-    return (
-        text
-        + f"#[ {CORE_COMMAND_NAME} ]#{os.linesep}{block_content}{os.linesep}#[ end-{CORE_COMMAND_NAME} ]#{os.linesep}"
-    )

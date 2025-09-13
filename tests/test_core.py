@@ -7,10 +7,6 @@ import click
 from tests.AbstractTestCase import AbstractTestCase
 
 
-def test_index_fake_click_function() -> None:
-    pass
-
-
 def create_fake_click_function() -> click.Command:
     name_option = click.Option(["-name"])
     greeting_option = click.Option(["--greeting", "-g"], is_flag=True, default=False)
@@ -21,6 +17,10 @@ def create_fake_click_function() -> click.Command:
         params=[name_option, greeting_option, flag_option],
         callback=test_index_fake_click_function,
     )
+
+
+def test_index_fake_click_function() -> None:
+    pass
 
 
 class TestCore(AbstractTestCase):

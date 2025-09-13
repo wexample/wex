@@ -12,6 +12,52 @@ if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
 
 
+def remote_build_temp_push_dir(environment: str, app_name: str) -> str:
+    return f"~/pushed/{environment}/{app_name}/"
+
+
+def remote_get_connexion_address(
+    manager: AppAddonManager,
+    environment: str,
+    command: ScriptCommand | None = None,
+) -> str | None:
+    domain_or_ip = remote_get_environment_ip(manager, environment, command)
+
+    if not domain_or_ip:
+        return None
+
+    env_screaming_snake = string_to_snake_case(environment).upper()
+    username = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_USERNAME")
+
+    return f"{username}@{domain_or_ip}"
+
+
+def remote_get_connexion_command(
+    manager: AppAddonManager, environment: str, terminal: bool = False
+) -> StringsList:
+    command_connect = (
+        remote_get_login_command(manager, environment)
+        + [
+            "ssh",
+        ]
+        + remote_get_connexion_options()
+    )
+
+    if terminal:
+        command_connect.append("-t")
+
+    return command_connect
+
+
+def remote_get_connexion_options() -> StringsList:
+    return [
+        "-o",
+        "StrictHostKeyChecking=no",
+        "-o",
+        "UserKnownHostsFile=/dev/null",
+    ]
+
+
 def remote_get_environment_ip(
     manager: AppAddonManager,
     environment: str,
@@ -48,49 +94,3 @@ def remote_get_login_command(manager: AppAddonManager, environment: str) -> Stri
         return ["sshpass", "-p", password]
 
     return []
-
-
-def remote_get_connexion_command(
-    manager: AppAddonManager, environment: str, terminal: bool = False
-) -> StringsList:
-    command_connect = (
-        remote_get_login_command(manager, environment)
-        + [
-            "ssh",
-        ]
-        + remote_get_connexion_options()
-    )
-
-    if terminal:
-        command_connect.append("-t")
-
-    return command_connect
-
-
-def remote_get_connexion_options() -> StringsList:
-    return [
-        "-o",
-        "StrictHostKeyChecking=no",
-        "-o",
-        "UserKnownHostsFile=/dev/null",
-    ]
-
-
-def remote_get_connexion_address(
-    manager: AppAddonManager,
-    environment: str,
-    command: ScriptCommand | None = None,
-) -> str | None:
-    domain_or_ip = remote_get_environment_ip(manager, environment, command)
-
-    if not domain_or_ip:
-        return None
-
-    env_screaming_snake = string_to_snake_case(environment).upper()
-    username = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_USERNAME")
-
-    return f"{username}@{domain_or_ip}"
-
-
-def remote_build_temp_push_dir(environment: str, app_name: str) -> str:
-    return f"~/pushed/{environment}/{app_name}/"

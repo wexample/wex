@@ -23,6 +23,11 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
+def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
+    # Not implemented yet.
+    return None
+
+
 def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
     # Convert main config file.
@@ -225,6 +230,22 @@ def migration_5_0_0_replace_docker_services_names(
     migration_5_0_0_replace_docker_services_references(content, services_names_changes)
 
 
+def migration_5_0_0_replace_docker_services_references(
+    content: DockerCompose, services_names_changes: StringsDict
+) -> None:
+    if "services" not in content:
+        return
+
+    for service_name, service_value in content["services"].items():
+        for field_name in ["depends_on", "links", "extends"]:
+            if field_name in service_value:
+                service_value_dict = cast(StringKeysDict, service_value)
+
+                service_value_dict[field_name] = replace_service_names_in_field(
+                    service_value_dict[field_name], services_names_changes
+                )
+
+
 def replace_service_names_in_field(
     field: StringsDict | StringsList, services_names_changes: StringsDict
 ) -> StringsDict | StringsList | None:
@@ -249,27 +270,6 @@ def replace_service_names_in_field(
                     new_value = new_value.replace(search, replacement)
             field_dict[new_key] = new_value
         return field_dict
-    return None
-
-
-def migration_5_0_0_replace_docker_services_references(
-    content: DockerCompose, services_names_changes: StringsDict
-) -> None:
-    if "services" not in content:
-        return
-
-    for service_name, service_value in content["services"].items():
-        for field_name in ["depends_on", "links", "extends"]:
-            if field_name in service_value:
-                service_value_dict = cast(StringKeysDict, service_value)
-
-                service_value_dict[field_name] = replace_service_names_in_field(
-                    service_value_dict[field_name], services_names_changes
-                )
-
-
-def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
-    # Not implemented yet.
     return None
 
 

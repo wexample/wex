@@ -22,13 +22,6 @@ DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME: str = "root"
 DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD: str = "TEST_PASSWORD"
 
 
-def test_get_app_dir(kernel: Kernel, name: str) -> str:
-    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
-    return (
-        f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
-    )
-
-
 def test_build_app_name(
     name: str = DEFAULT_APP_TEST_NAME, services: StringsList | None = None
 ) -> str:
@@ -47,29 +40,6 @@ def test_build_app_name(
 
     # Get the hexadecimal representation of the digest
     return name + "-" + hash_object.hexdigest()[:8]
-
-
-def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
-    from src.const.globals import USER_WWW_DATA
-
-    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
-    app_env_dir = os.path.join(apps_dir.get_parent_dir(), env_name)
-    kernel.io.log(
-        f"Creating test app env dir: {app_env_dir} with owner {USER_WWW_DATA}:{USER_WWW_DATA}"
-    )
-    # Create if missing; ensure traverse perms (755) for subsequent access by non-root
-    os.makedirs(app_env_dir, mode=0o755, exist_ok=True)
-    try:
-        os.chmod(app_env_dir, 0o755)
-    except Exception:
-        pass
-    try:
-        file_set_owner(
-            file_path=app_env_dir, username=USER_WWW_DATA, group=USER_WWW_DATA
-        )
-    except Exception:
-        # Non-fatal during CI; ownership may already be correct
-        pass
 
 
 def test_create_app(
@@ -105,6 +75,36 @@ def test_create_app(
     os.chdir(current_dir)
 
     return app_dir
+
+
+def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
+    from src.const.globals import USER_WWW_DATA
+
+    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
+    app_env_dir = os.path.join(apps_dir.get_parent_dir(), env_name)
+    kernel.io.log(
+        f"Creating test app env dir: {app_env_dir} with owner {USER_WWW_DATA}:{USER_WWW_DATA}"
+    )
+    # Create if missing; ensure traverse perms (755) for subsequent access by non-root
+    os.makedirs(app_env_dir, mode=0o755, exist_ok=True)
+    try:
+        os.chmod(app_env_dir, 0o755)
+    except Exception:
+        pass
+    try:
+        file_set_owner(
+            file_path=app_env_dir, username=USER_WWW_DATA, group=USER_WWW_DATA
+        )
+    except Exception:
+        # Non-fatal during CI; ownership may already be correct
+        pass
+
+
+def test_get_app_dir(kernel: Kernel, name: str) -> str:
+    apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
+    return (
+        f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
+    )
 
 
 def test_get_test_remote_address(kernel: Kernel) -> str:

@@ -14,18 +14,19 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def user_has_docker_permission(username: str) -> bool:
-    if is_sudo(username):
-        return True
+def docker_container_ip(kernel: Kernel, container_name: str) -> str:
+    success, diff = execute_command_sync(
+        kernel,
+        [
+            "docker",
+            "inspect",
+            "-f",
+            "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
+            container_name,
+        ],
+    )
 
-    try:
-        user_groups = [g.gr_name for g in grp.getgrall() if username in g.gr_mem]
-        gid = pwd.getpwnam(username).pw_gid
-        user_groups.append(grp.getgrgid(gid).gr_name)
-
-        return "docker" in user_groups
-    except KeyError:
-        return False
+    return diff[0]
 
 
 def merge_docker_compose_files(src: str, target: str) -> None:
@@ -43,16 +44,15 @@ def merge_docker_compose_files(src: str, target: str) -> None:
         yaml.dump(merged_data, f)
 
 
-def docker_container_ip(kernel: Kernel, container_name: str) -> str:
-    success, diff = execute_command_sync(
-        kernel,
-        [
-            "docker",
-            "inspect",
-            "-f",
-            "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
-            container_name,
-        ],
-    )
+def user_has_docker_permission(username: str) -> bool:
+    if is_sudo(username):
+        return True
 
-    return diff[0]
+    try:
+        user_groups = [g.gr_name for g in grp.getgrall() if username in g.gr_mem]
+        gid = pwd.getpwnam(username).pw_gid
+        user_groups.append(grp.getgrgid(gid).gr_name)
+
+        return "docker" in user_groups
+    except KeyError:
+        return False

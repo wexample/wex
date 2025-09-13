@@ -15,6 +15,19 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
+def registry_find_commands_by_function_property(
+    kernel: Kernel, name: str
+) -> dict[str, Any]:
+    commands = registry_get_all_commands(kernel)
+    filtered = {}
+
+    for command in commands:
+        if name in commands[command]["properties"]:
+            filtered[command] = commands[command]
+
+    return filtered
+
+
 def registry_get_all_commands(kernel: Kernel) -> dict[str, Any]:
     registry: dict[str, Any] = {}
 
@@ -53,16 +66,3 @@ def registry_resolve_service_inheritance(
             registry_resolve_service_inheritance(parent_service, services_dict)
             service["config"] = dict_merge(parent_service["config"], service["config"])
     return service
-
-
-def registry_find_commands_by_function_property(
-    kernel: Kernel, name: str
-) -> dict[str, Any]:
-    commands = registry_get_all_commands(kernel)
-    filtered = {}
-
-    for command in commands:
-        if name in commands[command]["properties"]:
-            filtered[command] = commands[command]
-
-    return filtered

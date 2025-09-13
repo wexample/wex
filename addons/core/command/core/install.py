@@ -54,10 +54,42 @@ def __core__core__check_requirements(kernel: Kernel) -> None:
         )
 
 
+def __core__core__install_autocomplete(kernel: Kernel) -> None:
+    handler_path = os.path.join(kernel.directory.path, "cli/autocomplete-handler")
+    script_path = "/etc/bash_completion.d/wex"
+    kernel.io.log(
+        f"Adding autocompletion handler in {script_path} sourcing {handler_path} ..."
+    )
+
+    file_create_from_template(
+        kernel.get_path("templates") + "handler.sh.tpl",
+        script_path,
+        {
+            "handler_path": handler_path,
+        },
+    )
+
+    __source_file(kernel, script_path)
+
+
 def __core__core__install_env(kernel: Kernel) -> None:
     kernel.io.log(f"Creating local env ...")
 
     app_create_env(APP_ENV_LOCAL, kernel.directory.path, False)
+
+
+def __core__core__install_rebuild(kernel: Kernel) -> None:
+    kernel.registry_structure.build()
+
+
+def __core__core__install_symlink(kernel: Kernel, destination: str) -> None:
+    file_remove_if_exists(destination)
+
+    os.symlink(kernel.get_path("core.cli"), destination)
+
+    os.chmod(destination, 0o755)
+
+    kernel.io.log(f"Created symlink in {destination}")
 
 
 def __core__core__install_terminal(kernel: Kernel) -> None:
@@ -78,43 +110,11 @@ def __core__core__install_terminal(kernel: Kernel) -> None:
     __source_file(kernel, script_path)
 
 
-def __core__core__install_autocomplete(kernel: Kernel) -> None:
-    handler_path = os.path.join(kernel.directory.path, "cli/autocomplete-handler")
-    script_path = "/etc/bash_completion.d/wex"
-    kernel.io.log(
-        f"Adding autocompletion handler in {script_path} sourcing {handler_path} ..."
-    )
-
-    file_create_from_template(
-        kernel.get_path("templates") + "handler.sh.tpl",
-        script_path,
-        {
-            "handler_path": handler_path,
-        },
-    )
-
-    __source_file(kernel, script_path)
-
-
-def __core__core__install_symlink(kernel: Kernel, destination: str) -> None:
-    file_remove_if_exists(destination)
-
-    os.symlink(kernel.get_path("core.cli"), destination)
-
-    os.chmod(destination, 0o755)
-
-    kernel.io.log(f"Created symlink in {destination}")
-
-
 def __core__core__install_webhook_server(kernel: Kernel) -> None:
     kernel.io.log(f"Installing webhooks server ...")
 
     # TODO fails on install: PermissionError: [Errno 13] Permission denied
     kernel.run_function(app__webhook__listen, {"asynchronous": True, "force": True})
-
-
-def __core__core__install_rebuild(kernel: Kernel) -> None:
-    kernel.registry_structure.build()
 
 
 def __source_file(kernel: Kernel, file_path: str) -> None:

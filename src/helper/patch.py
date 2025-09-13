@@ -4,28 +4,6 @@ import patch  # type: ignore[import-untyped]
 from wexample_helpers.helpers.directory import directory_execute_inside
 
 
-def patch_is_valid(text: str) -> bool:
-    # Check hunt header
-    if "@@" not in text:
-        return False
-
-    # Search for any + or - line
-    lines = text.split("\n")
-    for line in lines:
-        if line.startswith("+") or line.startswith("-"):
-            return True
-
-    return False
-
-
-def patch_apply_in_workdir(workdir: str, patch_set: patch.PatchSet) -> bool:
-    def _patch_it() -> bool:
-        return bool(patch_set.apply())
-
-    with directory_execute_inside(workdir):
-        return _patch_it()
-
-
 def extract_information(
     patch_content: str, prefix: str, default: str | None = None
 ) -> str | None:
@@ -43,6 +21,14 @@ def extract_information(
     return default
 
 
+def patch_apply_in_workdir(workdir: str, patch_set: patch.PatchSet) -> bool:
+    def _patch_it() -> bool:
+        return bool(patch_set.apply())
+
+    with directory_execute_inside(workdir):
+        return _patch_it()
+
+
 def patch_clean(patch_content: str) -> str:
     # Split the content into lines
     lines = patch_content.split("\n")
@@ -52,6 +38,120 @@ def patch_clean(patch_content: str) -> str:
 
     # Join the cleaned lines back into a single string
     return "\n".join(cleaned_lines).rstrip()
+
+
+def patch_create_hunk_header(file_content: str, patch_content: str) -> str | None:
+    patch_parts = patch_get_initial_parts(patch_content)
+
+    if patch_has_all_parts(file_content, patch_parts):
+        start_line = str(
+            patch_find_line_of_first_subgroup(
+                file_content=file_content, patch_parts=patch_parts
+            )
+        )
+
+        hunk_header = ""
+        hunk_header += (
+            "-"
+            + (start_line if file_content else "0")
+            + ","
+            + str(len(patch_get_initial_lines(patch_content)))
+            + " "
+        )
+        hunk_header += (
+            "+" + start_line + "," + str(len(patch_get_applied_lines(patch_content)))
+        )
+
+        return f"@@ {hunk_header} @@"
+
+    return None
+
+
+def patch_find_line_of_first_subgroup(
+    file_content: str, patch_parts: list[list[str]]
+) -> int:
+    """
+    Find the line number of the first subgroup in patch_parts within the file_content.
+
+    Args:
+    file_content (str): The full content of the file as a string split into lines.
+    patch_parts (list with list of str): List of groups of file parts to be checked.
+
+    Returns:
+    int: Line number where the first subgroup is found, or -1 if not found.
+    """
+    # Extract the first subgroup from the list, assuming there is at least one group and one subgroup
+    first_subgroup = patch_parts[0][0] if patch_parts and patch_parts[0] else None
+    if first_subgroup:
+        lines = file_content.split("\n")  # Split the content into lines
+        for index, line in enumerate(lines):
+            if first_subgroup in line:
+                return index + 1  # Return the line number (1-based index)
+    return -1  # Return -1 if the part is not found or if no parts are provided
+
+
+def patch_get_applied_lines(patch_content: str) -> list[str]:
+    """
+    Return lines as they would appear after the patch is applied (include only the "+" adds).
+    """
+    return patch_get_lines_by_type(patch_content, "+")
+
+
+def patch_get_initial_lines(patch_content: str) -> list[str]:
+    """
+    Return lines which belong to the initial file (exclude the "+" adds) in a patch set.
+    """
+    return patch_get_lines_by_type(patch_content, "-")
+
+
+def patch_get_initial_parts(patch_content: str) -> list[list[str]]:
+    """
+    Extract contiguous groups of lines starting with ' ' or '-', ignoring lines starting with '+' or other characters.
+
+    Args:
+    patch_content (str): The content of the patch file as a string.
+
+    Returns:
+    List[List[str]]: A list of groups, each containing lines starting with ' ' or '-'.
+    """
+    lines = patch_content.split("\n")  # Split the content into individual lines
+    result = []
+    current_group = []
+
+    for line in lines:
+        if line.startswith(" ") or line.startswith("-"):
+            # If the line starts with ' ' or '-', add it to the current group
+            current_group.append(line[1:])
+        elif current_group:
+            # If a new line doesn't match and there is an existing group, save it and start a new group
+            result.append(current_group)
+            current_group = []
+
+    # Add the last group if it's not empty
+    if current_group:
+        result.append(current_group)
+
+    return result
+
+
+def patch_get_lines_by_type(patch_content: str, line_type: str) -> list[str]:
+    """
+    Generic function to return lines based on their starting character.
+
+    Args:
+    patch_content (str): The content of the patch file as a string.
+    line_type (str): The character that lines must start with to be included.
+
+    Returns:
+    List[str]: A list of lines that start with the specified character.
+    """
+    lines = patch_content.split("\n")
+    selected_lines = []
+    for line in lines:
+        if line.startswith(" ") or line.startswith(line_type) or line.strip() == "":
+            # Remove the first char, " ", or "-", or "+"
+            selected_lines.append(line[1:])
+    return selected_lines
 
 
 def patch_has_all_parts(file_content: str, patch_parts: list[list[str]]) -> bool:
@@ -89,115 +189,15 @@ def patch_has_all_parts(file_content: str, patch_parts: list[list[str]]) -> bool
     return True  # All groups and parts were found in order
 
 
-def patch_find_line_of_first_subgroup(
-    file_content: str, patch_parts: list[list[str]]
-) -> int:
-    """
-    Find the line number of the first subgroup in patch_parts within the file_content.
+def patch_is_valid(text: str) -> bool:
+    # Check hunt header
+    if "@@" not in text:
+        return False
 
-    Args:
-    file_content (str): The full content of the file as a string split into lines.
-    patch_parts (list with list of str): List of groups of file parts to be checked.
-
-    Returns:
-    int: Line number where the first subgroup is found, or -1 if not found.
-    """
-    # Extract the first subgroup from the list, assuming there is at least one group and one subgroup
-    first_subgroup = patch_parts[0][0] if patch_parts and patch_parts[0] else None
-    if first_subgroup:
-        lines = file_content.split("\n")  # Split the content into lines
-        for index, line in enumerate(lines):
-            if first_subgroup in line:
-                return index + 1  # Return the line number (1-based index)
-    return -1  # Return -1 if the part is not found or if no parts are provided
-
-
-def patch_get_lines_by_type(patch_content: str, line_type: str) -> list[str]:
-    """
-    Generic function to return lines based on their starting character.
-
-    Args:
-    patch_content (str): The content of the patch file as a string.
-    line_type (str): The character that lines must start with to be included.
-
-    Returns:
-    List[str]: A list of lines that start with the specified character.
-    """
-    lines = patch_content.split("\n")
-    selected_lines = []
+    # Search for any + or - line
+    lines = text.split("\n")
     for line in lines:
-        if line.startswith(" ") or line.startswith(line_type) or line.strip() == "":
-            # Remove the first char, " ", or "-", or "+"
-            selected_lines.append(line[1:])
-    return selected_lines
+        if line.startswith("+") or line.startswith("-"):
+            return True
 
-
-def patch_get_initial_lines(patch_content: str) -> list[str]:
-    """
-    Return lines which belong to the initial file (exclude the "+" adds) in a patch set.
-    """
-    return patch_get_lines_by_type(patch_content, "-")
-
-
-def patch_get_applied_lines(patch_content: str) -> list[str]:
-    """
-    Return lines as they would appear after the patch is applied (include only the "+" adds).
-    """
-    return patch_get_lines_by_type(patch_content, "+")
-
-
-def patch_create_hunk_header(file_content: str, patch_content: str) -> str | None:
-    patch_parts = patch_get_initial_parts(patch_content)
-
-    if patch_has_all_parts(file_content, patch_parts):
-        start_line = str(
-            patch_find_line_of_first_subgroup(
-                file_content=file_content, patch_parts=patch_parts
-            )
-        )
-
-        hunk_header = ""
-        hunk_header += (
-            "-"
-            + (start_line if file_content else "0")
-            + ","
-            + str(len(patch_get_initial_lines(patch_content)))
-            + " "
-        )
-        hunk_header += (
-            "+" + start_line + "," + str(len(patch_get_applied_lines(patch_content)))
-        )
-
-        return f"@@ {hunk_header} @@"
-
-    return None
-
-
-def patch_get_initial_parts(patch_content: str) -> list[list[str]]:
-    """
-    Extract contiguous groups of lines starting with ' ' or '-', ignoring lines starting with '+' or other characters.
-
-    Args:
-    patch_content (str): The content of the patch file as a string.
-
-    Returns:
-    List[List[str]]: A list of groups, each containing lines starting with ' ' or '-'.
-    """
-    lines = patch_content.split("\n")  # Split the content into individual lines
-    result = []
-    current_group = []
-
-    for line in lines:
-        if line.startswith(" ") or line.startswith("-"):
-            # If the line starts with ' ' or '-', add it to the current group
-            current_group.append(line[1:])
-        elif current_group:
-            # If a new line doesn't match and there is an existing group, save it and start a new group
-            result.append(current_group)
-            current_group = []
-
-    # Add the last group if it's not empty
-    if current_group:
-        result.append(current_group)
-
-    return result
+    return False

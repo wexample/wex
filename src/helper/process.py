@@ -18,6 +18,60 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
+def process_get_all_by_port(port: int) -> psutil.Process | None:
+    port = int(port)
+
+    for process in psutil.process_iter():
+        try:
+            connections = process.connections()
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            continue
+        for connection in connections:
+            if connection.laddr.port == port:
+                return process
+    return None
+
+
+def process_kill(process: psutil.Process) -> bool:
+    try:
+        process.terminate()
+        return True
+    except (psutil.AccessDenied, psutil.NoSuchProcess):
+        return False
+
+
+def process_kill_by_command(kernel: Kernel, command: str) -> None:
+    success, pids = execute_command_sync(
+        kernel, ["pgrep", "-f", command], ignore_error=True
+    )
+
+    if pids:
+        for pid_str in pids:
+            try:
+                pid_int = int(pid_str.strip())
+                kernel.io.log(f"Killing process {pid_int}, running command : {command}")
+                os.kill(pid_int, signal.SIGTERM)
+            except ValueError:
+                kernel.io.warn(
+                    f"Tried to kill an invalid PID: {pid_str}, running command : {command}"
+                )
+            except ProcessLookupError:
+                kernel.io.warn(
+                    f"Tried to kill a missing PID: {pid_str}, running command : {command}"
+                )
+
+
+def process_kill_by_port(port: int) -> bool:
+    process = process_get_all_by_port(port)
+
+    if process is None:
+        return False
+
+    process_kill(process)
+
+    return True
+
+
 def process_post_exec(
     kernel: Kernel,
     command: ShellCommandsDeepList | str,
@@ -56,57 +110,3 @@ def process_post_exec_function(
         command += [">", "/dev/null", "2>&1", "&"]
 
     process_post_exec(kernel, cast(ShellCommandsDeepList, command))
-
-
-def process_kill_by_command(kernel: Kernel, command: str) -> None:
-    success, pids = execute_command_sync(
-        kernel, ["pgrep", "-f", command], ignore_error=True
-    )
-
-    if pids:
-        for pid_str in pids:
-            try:
-                pid_int = int(pid_str.strip())
-                kernel.io.log(f"Killing process {pid_int}, running command : {command}")
-                os.kill(pid_int, signal.SIGTERM)
-            except ValueError:
-                kernel.io.warn(
-                    f"Tried to kill an invalid PID: {pid_str}, running command : {command}"
-                )
-            except ProcessLookupError:
-                kernel.io.warn(
-                    f"Tried to kill a missing PID: {pid_str}, running command : {command}"
-                )
-
-
-def process_kill(process: psutil.Process) -> bool:
-    try:
-        process.terminate()
-        return True
-    except (psutil.AccessDenied, psutil.NoSuchProcess):
-        return False
-
-
-def process_kill_by_port(port: int) -> bool:
-    process = process_get_all_by_port(port)
-
-    if process is None:
-        return False
-
-    process_kill(process)
-
-    return True
-
-
-def process_get_all_by_port(port: int) -> psutil.Process | None:
-    port = int(port)
-
-    for process in psutil.process_iter():
-        try:
-            connections = process.connections()
-        except (psutil.AccessDenied, psutil.NoSuchProcess):
-            continue
-        for connection in connections:
-            if connection.laddr.port == port:
-                return process
-    return None

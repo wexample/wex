@@ -21,11 +21,6 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-class OutputData(TypedDict, total=False):
-    process: KeyValueResponse
-    log: TableResponse
-
-
 @as_sudo()
 @command(
     help="Give information about webhook listener status",
@@ -81,3 +76,8 @@ def app__webhook__status(
         cast(StringKeysDict, output),
         default_render_mode=KERNEL_RENDER_MODE_TERMINAL,
     )
+
+
+class OutputData(TypedDict, total=False):
+    process: KeyValueResponse
+    log: TableResponse

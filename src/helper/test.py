@@ -15,39 +15,6 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
-    """
-    Convert a file path to a test class name.
-
-    Example: "addon/tests/command/group/name.py" becomes "TestAddonGroupName"
-    """
-    file_path = os.path.relpath(file_path, kernel.get_path("addons"))
-    parts = file_path.split("/")
-
-    # Remove the file extension from the last part
-    parts[-1] = os.path.splitext(parts[-1])[0]
-
-    parts = [string_to_pascal_case(re.sub(r"[-_]", " ", p)) for p in parts]
-
-    del parts[1]
-    class_name = "".join(parts)
-
-    return f"Test{class_name}"
-
-
-def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
-    """
-    Convert a file path to a test method name.
-
-    Example: "addon/tests/command/group/name.py"  becomes "test_name"
-    """
-    file_path = os.path.relpath(file_path, kernel.get_path("addons"))
-    parts = file_path.split("/")
-    file_name = parts[-1][:-3]
-    test_method = f"test_{file_name}"
-    return test_method
-
-
 def create_test_from_command(
     kernel: Kernel, command: str, force: bool = False
 ) -> None | str:
@@ -100,3 +67,36 @@ def create_test_from_command(
     kernel.io.message(f"Created test file : {test_path}")
 
     return test_path
+
+
+def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
+    """
+    Convert a file path to a test class name.
+
+    Example: "addon/tests/command/group/name.py" becomes "TestAddonGroupName"
+    """
+    file_path = os.path.relpath(file_path, kernel.get_path("addons"))
+    parts = file_path.split("/")
+
+    # Remove the file extension from the last part
+    parts[-1] = os.path.splitext(parts[-1])[0]
+
+    parts = [string_to_pascal_case(re.sub(r"[-_]", " ", p)) for p in parts]
+
+    del parts[1]
+    class_name = "".join(parts)
+
+    return f"Test{class_name}"
+
+
+def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
+    """
+    Convert a file path to a test method name.
+
+    Example: "addon/tests/command/group/name.py"  becomes "test_name"
+    """
+    file_path = os.path.relpath(file_path, kernel.get_path("addons"))
+    parts = file_path.split("/")
+    file_name = parts[-1][:-3]
+    test_method = f"test_{file_name}"
+    return test_method

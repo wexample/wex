@@ -21,11 +21,6 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-class SourceData(TypedDict, total=False):
-    invalid_key: str
-    invalid_value: str
-
-
 @command(help="Execute a webhook")
 @option_webhook_listener(path=True)
 @option("--env", "-e", type=str, required=False, help="Env directory")
@@ -117,3 +112,8 @@ def app__webhook__exec(
             _log,
         ],
     )
+
+
+class SourceData(TypedDict, total=False):
+    invalid_key: str
+    invalid_value: str

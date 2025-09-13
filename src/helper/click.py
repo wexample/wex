@@ -11,6 +11,44 @@ from wexample_helpers.helpers.string import string_to_kebab_case
 from src.const.types import CoreCommandArgsDict, CoreCommandArgsList
 
 
+def click_args_convert_dict_to_args(
+    function: Command, args: CoreCommandArgsDict
+) -> CoreCommandArgsList:
+    """
+    Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
+    Any key in `args` that is not found in `function.params` is added to the
+    argument list as a key-value pair.
+    """
+    arg_list = []
+    args_long = click_args_convert_dict_to_long_names_dict(function=function, args=args)
+    args_long = args_convert_dict_to_snake_dict(input_dict=args_long)
+
+    for param in function.params:
+        if param.name in args_long:
+            if isinstance(param, click.Option):
+                param_name_kebab = string_to_kebab_case(param.name)
+
+                if param.is_flag:
+                    if args_long[param.name]:
+                        arg_list.append(f"--{param_name_kebab}")
+                    # Flag passed to False is just removed
+                elif args_long[param.name] is not None:
+                    arg_list.append(f"--{param_name_kebab}")
+                    value = args_long[param.name]
+                    if not isinstance(args_long[param.name], bool):
+                        value = str(value)
+                    arg_list.append(value)
+    # Append any remaining arguments as key-value pairs
+    for key, value in args_long.items():
+        if key not in [param.name for param in function.params] and value is not None:
+            arg_list.append(f"--{key}")
+            if not isinstance(value, bool):
+                # Convert to str to allow joining array.
+                arg_list.append(str(value))
+
+    return arg_list
+
+
 def click_args_convert_dict_to_long_names_dict(
     function: Command, args: CoreCommandArgsDict
 ) -> dict[str, Any]:
@@ -79,41 +117,3 @@ def click_args_convert_to_dict(
             i += 1
 
     return args_dict
-
-
-def click_args_convert_dict_to_args(
-    function: Command, args: CoreCommandArgsDict
-) -> CoreCommandArgsList:
-    """
-    Convert args {"my-arg": "value"} to list ["--my_arg", "value"].
-    Any key in `args` that is not found in `function.params` is added to the
-    argument list as a key-value pair.
-    """
-    arg_list = []
-    args_long = click_args_convert_dict_to_long_names_dict(function=function, args=args)
-    args_long = args_convert_dict_to_snake_dict(input_dict=args_long)
-
-    for param in function.params:
-        if param.name in args_long:
-            if isinstance(param, click.Option):
-                param_name_kebab = string_to_kebab_case(param.name)
-
-                if param.is_flag:
-                    if args_long[param.name]:
-                        arg_list.append(f"--{param_name_kebab}")
-                    # Flag passed to False is just removed
-                elif args_long[param.name] is not None:
-                    arg_list.append(f"--{param_name_kebab}")
-                    value = args_long[param.name]
-                    if not isinstance(args_long[param.name], bool):
-                        value = str(value)
-                    arg_list.append(value)
-    # Append any remaining arguments as key-value pairs
-    for key, value in args_long.items():
-        if key not in [param.name for param in function.params] and value is not None:
-            arg_list.append(f"--{key}")
-            if not isinstance(value, bool):
-                # Convert to str to allow joining array.
-                arg_list.append(str(value))
-
-    return arg_list

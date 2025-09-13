@@ -10,12 +10,6 @@ if TYPE_CHECKING:
 CommandAttachmentPassArgsOption = Union[bool, StringsList]
 
 
-class CommandAttachment(TypedDict, total=False):
-    command: str | ScriptCommand
-    pass_args: CommandAttachmentPassArgsOption
-    pass_previous: str | None
-
-
 def attach(
     position: str,
     command: str | ScriptCommand,
@@ -30,3 +24,9 @@ def attach(
         return script_command
 
     return decorator
+
+
+class CommandAttachment(TypedDict, total=False):
+    command: str | ScriptCommand
+    pass_args: CommandAttachmentPassArgsOption
+    pass_previous: str | None

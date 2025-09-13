@@ -13,8 +13,32 @@ if TYPE_CHECKING:
 MIGRATION_MINIMAL_VERSION = "3.0.0"
 
 
-def migration_get_path(kernel: Kernel) -> str:
-    return os.path.join(kernel.get_path("addons"), "app/migrations") + os.sep
+def migration_delete_dir_if_empty(kernel: Kernel, target_dir: str) -> None:
+    if not os.path.exists(target_dir):
+        kernel.io.log(f"Dir already deleted : {target_dir}")
+    elif len(os.listdir(target_dir)):
+        kernel.io.log(f"Dir not empty, leaving as it is : {target_dir}")
+    else:
+        os.rmdir(target_dir)
+
+
+def migration_exec(
+    kernel: Kernel, version: str, method_part: str, arguments: list[Any]
+) -> Any:
+    function = migration_get_function(kernel, version, method_part)
+
+    if function:
+        return function(*([kernel] + arguments))
+
+    return None
+
+
+def migration_extract_version_from_file_name(filename: str) -> None | str:
+    match = re.search(r"migration_(\d+_\d+_\d+)\.py", filename)
+    if match:
+        version = match.group(1).replace("_", ".")
+        return version
+    return None
 
 
 def migration_get_files(kernel: Kernel) -> list[str]:
@@ -51,15 +75,8 @@ def migration_get_function(
     return getattr(module, method_name, None)
 
 
-def migration_exec(
-    kernel: Kernel, version: str, method_part: str, arguments: list[Any]
-) -> Any:
-    function = migration_get_function(kernel, version, method_part)
-
-    if function:
-        return function(*([kernel] + arguments))
-
-    return None
+def migration_get_path(kernel: Kernel) -> str:
+    return os.path.join(kernel.get_path("addons"), "app/migrations") + os.sep
 
 
 def migration_version_guess(kernel: Kernel, path: str) -> str:
@@ -73,20 +90,3 @@ def migration_version_guess(kernel: Kernel, path: str) -> str:
             return version_string.replace("_", ".")
 
     return MIGRATION_MINIMAL_VERSION
-
-
-def migration_delete_dir_if_empty(kernel: Kernel, target_dir: str) -> None:
-    if not os.path.exists(target_dir):
-        kernel.io.log(f"Dir already deleted : {target_dir}")
-    elif len(os.listdir(target_dir)):
-        kernel.io.log(f"Dir not empty, leaving as it is : {target_dir}")
-    else:
-        os.rmdir(target_dir)
-
-
-def migration_extract_version_from_file_name(filename: str) -> None | str:
-    match = re.search(r"migration_(\d+_\d+_\d+)\.py", filename)
-    if match:
-        version = match.group(1).replace("_", ".")
-        return version
-    return None

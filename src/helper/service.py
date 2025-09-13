@@ -12,53 +12,6 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def service_get_dir(kernel: Kernel, service: str) -> str | bool:
-    dirs = service_get_all_dirs(kernel)
-
-    # Service dir is missing,
-    # it doesn't exist
-    if service not in dirs:
-        return False
-
-    return dirs[service]
-
-
-def service_load_config(kernel: Kernel, service: str) -> Any:
-    dirs = service_get_all_dirs(kernel)
-
-    if service not in dirs:
-        return False
-
-    # Allow service to not define a config file
-    return yaml_read(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
-
-
-def service_get_inheritance_tree(kernel: Kernel, service: str) -> list[str]:
-    # Initialize an empty list to store the inheritance tree
-    inheritance_tree: list[str] = []
-
-    # Get the configuration of the given service
-    service_config = service_load_config(kernel, service)
-
-    if not service_config:
-        return [service]
-
-    # Check if the service has an 'extends' property
-    parent_service = service_config.get("extends")
-
-    # If it does, recursively find its inheritance tree
-    if parent_service:
-        inheritance_tree.extend(service_get_inheritance_tree(kernel, parent_service))
-
-    # Add the current service to the inheritance tree
-    inheritance_tree.append(service)
-
-    # Reverse the list to make the original service the first element
-    inheritance_tree.reverse()
-
-    return inheritance_tree
-
-
 def service_copy_sample_dir(kernel: Kernel, service: str, subdir: str) -> None:
     from addons.app.AppAddonManager import AppAddonManager
 
@@ -91,3 +44,50 @@ def service_get_all_dirs(kernel: Kernel) -> dict[str, str]:
                 dirs[service] = os.path.join(services_dir, service) + os.sep
 
     return dirs
+
+
+def service_get_dir(kernel: Kernel, service: str) -> str | bool:
+    dirs = service_get_all_dirs(kernel)
+
+    # Service dir is missing,
+    # it doesn't exist
+    if service not in dirs:
+        return False
+
+    return dirs[service]
+
+
+def service_get_inheritance_tree(kernel: Kernel, service: str) -> list[str]:
+    # Initialize an empty list to store the inheritance tree
+    inheritance_tree: list[str] = []
+
+    # Get the configuration of the given service
+    service_config = service_load_config(kernel, service)
+
+    if not service_config:
+        return [service]
+
+    # Check if the service has an 'extends' property
+    parent_service = service_config.get("extends")
+
+    # If it does, recursively find its inheritance tree
+    if parent_service:
+        inheritance_tree.extend(service_get_inheritance_tree(kernel, parent_service))
+
+    # Add the current service to the inheritance tree
+    inheritance_tree.append(service)
+
+    # Reverse the list to make the original service the first element
+    inheritance_tree.reverse()
+
+    return inheritance_tree
+
+
+def service_load_config(kernel: Kernel, service: str) -> Any:
+    dirs = service_get_all_dirs(kernel)
+
+    if service not in dirs:
+        return False
+
+    # Allow service to not define a config file
+    return yaml_read(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))

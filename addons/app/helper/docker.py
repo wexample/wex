@@ -21,41 +21,43 @@ if TYPE_CHECKING:
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 
 
-def docker_get_app_compose_files(manager: AppAddonManager, app_dir: str) -> list[str]:
-    kernel = manager.kernel
-    app_compose_file = app_dir + APP_DIR_APP_DATA + DOCKER_COMPOSE_REL_PATH_BASE
-    compose_files: list[str] = []
+def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
+    manager = cast("AppAddonManager", kernel.addons["app"])
+    return f'{manager.get_runtime_config("name").get_str()}_{name}'
 
-    if not os.path.isfile(app_compose_file):
-        return compose_files
 
-    if manager.creates_network():
-        compose_files.append(
-            kernel.get_path("addons") + "app/containers/network/docker-compose.yml"
-        )
-    else:
-        if (
-            manager.get_config("docker.has_default_network", default=True)
-            or manager.has_main_service()
-            and manager.get_service_config(
-                key="docker.has_default_network",
-                service=manager.get_main_service(),
-                default=True,
-            ).get_bool()
-        ):
-            compose_files.append(
-                kernel.get_path("addons") + "app/containers/default/docker-compose.yml"
+def docker_exec_app_compose(
+    kernel: Kernel,
+    app_dir: str,
+    compose_files: list[str],
+    docker_command: str,
+    profile: str | None = None,
+    sync: bool = True,
+) -> str | None:
+    command = docker_exec_app_compose_command(
+        kernel,
+        app_dir,
+        compose_files,
+        docker_command,
+        profile,
+    )
+
+    if sync:
+        success, output = execute_command_sync(kernel, command)
+
+        if not success:
+            kernel.io.error(
+                f'Error during running docker compose "{docker_command}" : {os.linesep}{os.linesep}'
+                + command_to_string(command)
+                + os.linesep.join(output),
+                trace=False,
             )
 
-    compose_files.append(app_compose_file)
+        return os.linesep.join(output)
 
-    env_yml = (
-        f"{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{manager.get_env()}.yml"
-    )
-    if os.path.isfile(env_yml):
-        compose_files.append(env_yml)
+    process_post_exec(kernel, cast(ShellCommandsDeepList, command))
 
-    return compose_files
+    return None
 
 
 def docker_exec_app_compose_command(
@@ -101,43 +103,45 @@ def docker_exec_app_compose_command(
     return cast(ShellCommandsList, command + docker_command)
 
 
-def docker_exec_app_compose(
-    kernel: Kernel,
-    app_dir: str,
-    compose_files: list[str],
-    docker_command: str,
-    profile: str | None = None,
-    sync: bool = True,
-) -> str | None:
-    command = docker_exec_app_compose_command(
-        kernel,
-        app_dir,
-        compose_files,
-        docker_command,
-        profile,
-    )
+def docker_get_app_compose_files(manager: AppAddonManager, app_dir: str) -> list[str]:
+    kernel = manager.kernel
+    app_compose_file = app_dir + APP_DIR_APP_DATA + DOCKER_COMPOSE_REL_PATH_BASE
+    compose_files: list[str] = []
 
-    if sync:
-        success, output = execute_command_sync(kernel, command)
+    if not os.path.isfile(app_compose_file):
+        return compose_files
 
-        if not success:
-            kernel.io.error(
-                f'Error during running docker compose "{docker_command}" : {os.linesep}{os.linesep}'
-                + command_to_string(command)
-                + os.linesep.join(output),
-                trace=False,
+    if manager.creates_network():
+        compose_files.append(
+            kernel.get_path("addons") + "app/containers/network/docker-compose.yml"
+        )
+    else:
+        if (
+            manager.get_config("docker.has_default_network", default=True)
+            or manager.has_main_service()
+            and manager.get_service_config(
+                key="docker.has_default_network",
+                service=manager.get_main_service(),
+                default=True,
+            ).get_bool()
+        ):
+            compose_files.append(
+                kernel.get_path("addons") + "app/containers/default/docker-compose.yml"
             )
 
-        return os.linesep.join(output)
+    compose_files.append(app_compose_file)
 
-    process_post_exec(kernel, cast(ShellCommandsDeepList, command))
+    env_yml = (
+        f"{app_dir}{APP_DIR_APP_DATA}docker/docker-compose.{manager.get_env()}.yml"
+    )
+    if os.path.isfile(env_yml):
+        compose_files.append(env_yml)
 
-    return None
+    return compose_files
 
 
-def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
-    manager = cast("AppAddonManager", kernel.addons["app"])
-    return f'{manager.get_runtime_config("name").get_str()}_{name}'
+def docker_is_current() -> bool:
+    return os.path.exists("/.dockerenv")
 
 
 def docker_remove_filtered_container(
@@ -155,7 +159,3 @@ def docker_remove_filtered_container(
         ],
         ignore_error=True,
     )
-
-
-def docker_is_current() -> bool:
-    return os.path.exists("/.dockerenv")

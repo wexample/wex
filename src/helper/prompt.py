@@ -21,43 +21,6 @@ def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[
     return click.progressbar(steps, fill_char="▪", empty_char="⬝", **kwargs)
 
 
-def prompt_progress_steps(
-    kernel: Kernel, steps: Iterable[V], title: str | None = None
-) -> None:
-    previous_length = kernel.io.log_length
-
-    with prompt_build_progress_bar(steps, label=title) as progress_bar:
-        for step in progress_bar:
-            step_callable = cast(Callable[..., Any], step)
-            response = step_callable()
-
-            # Step failed somewhere
-            if response is False:
-                return
-
-            kernel.io.log_clear()
-
-    kernel.io.log_length = previous_length
-
-
-def prompt_choice_dict(
-    question: str,
-    choices: StringsDict,
-    default: str | None = None,
-    **kwargs: Any,
-) -> str | None:
-    items = choices.items()
-
-    choice = prompt_choice(
-        question,
-        list(choices.values()),
-        choices[default] if default else None,
-        **kwargs,
-    )
-
-    return next((key for key, value in items if value == choice), default)
-
-
 def prompt_choice(
     question: str,
     choices: list[Any | Any],
@@ -76,36 +39,22 @@ def prompt_choice(
     return cast(Optional[str], result)
 
 
-def prompt_pick_a_file(base_dir: str | None = None) -> str | None:
-    base_dir = base_dir or os.getcwd()
-    # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
-    choices_dirs = {"..": ".."}
-    choices_files = {}
+def prompt_choice_dict(
+    question: str,
+    choices: StringsDict,
+    default: str | None = None,
+    **kwargs: Any,
+) -> str | None:
+    items = choices.items()
 
-    for element in os.listdir(base_dir):
-        if os.path.isdir(os.path.join(base_dir, element)):
-            element_label = f"📁 {element}"
-            choices_dirs[element] = element_label
-        else:
-            element_label = element
-            choices_files[element] = element_label
-
-    choices_dirs = dict_sort_values(choices_dirs)
-    choices_files = dict_sort_values(choices_files)
-
-    file = prompt_choice_dict(
-        "Select a file to talk about:",
-        dict_merge(choices_dirs, choices_files),
+    choice = prompt_choice(
+        question,
+        list(choices.values()),
+        choices[default] if default else None,
+        **kwargs,
     )
 
-    if file:
-        full_path = os.path.join(base_dir, file)
-        if os.path.isfile(full_path):
-            return full_path
-        elif os.path.isdir(full_path):
-            return prompt_pick_a_file(full_path)
-
-    return None
+    return next((key for key, value in items if value == choice), default)
 
 
 def prompt_pick_a_dir(base_dir: str | None = None) -> str | None:
@@ -142,3 +91,54 @@ def prompt_pick_a_dir(base_dir: str | None = None) -> str | None:
             return prompt_pick_a_dir(os.path.join(base_dir, selected))
 
     return None
+
+
+def prompt_pick_a_file(base_dir: str | None = None) -> str | None:
+    base_dir = base_dir or os.getcwd()
+    # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
+    choices_dirs = {"..": ".."}
+    choices_files = {}
+
+    for element in os.listdir(base_dir):
+        if os.path.isdir(os.path.join(base_dir, element)):
+            element_label = f"📁 {element}"
+            choices_dirs[element] = element_label
+        else:
+            element_label = element
+            choices_files[element] = element_label
+
+    choices_dirs = dict_sort_values(choices_dirs)
+    choices_files = dict_sort_values(choices_files)
+
+    file = prompt_choice_dict(
+        "Select a file to talk about:",
+        dict_merge(choices_dirs, choices_files),
+    )
+
+    if file:
+        full_path = os.path.join(base_dir, file)
+        if os.path.isfile(full_path):
+            return full_path
+        elif os.path.isdir(full_path):
+            return prompt_pick_a_file(full_path)
+
+    return None
+
+
+def prompt_progress_steps(
+    kernel: Kernel, steps: Iterable[V], title: str | None = None
+) -> None:
+    previous_length = kernel.io.log_length
+
+    with prompt_build_progress_bar(steps, label=title) as progress_bar:
+        for step in progress_bar:
+            step_callable = cast(Callable[..., Any], step)
+            response = step_callable()
+
+            # Step failed somewhere
+            if response is False:
+                return
+
+            kernel.io.log_clear()
+
+    kernel.io.log_length = previous_length

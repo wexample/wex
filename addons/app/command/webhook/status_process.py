@@ -13,11 +13,6 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-class StatusProcess(TypedDict, total=False):
-    task: LoggerLogData
-    children: dict[str, LoggerLogData]
-
-
 @command(help="Return process info based on task id", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(path=True)
 def app__webhook__status_process(
@@ -56,3 +51,8 @@ def app__webhook__status_process(
         cast(StringKeysDict, output),
         default_render_mode=KERNEL_RENDER_MODE_TERMINAL,
     )
+
+
+class StatusProcess(TypedDict, total=False):
+    task: LoggerLogData
+    children: dict[str, LoggerLogData]

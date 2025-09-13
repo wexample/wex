@@ -141,14 +141,6 @@ def file_get_extension(file_path: str) -> str:
     return extension
 
 
-def file_get_human_readable_size(size: float, decimal_places: int = 2) -> str:
-    for unit in ["B", "KB", "MB", "GB", "TB"]:
-        if size < 1024.0:
-            break
-        size /= 1024.0
-    return f"{size:.{decimal_places}f} {unit}"
-
-
 def file_get_group(file_path: str) -> str:
     # Get the file stat object
     file_stat = os.stat(file_path)
@@ -159,6 +151,14 @@ def file_get_group(file_path: str) -> str:
     # Get the group's name
     group_info = grp.getgrgid(gid)
     return group_info.gr_name
+
+
+def file_get_human_readable_size(size: float, decimal_places: int = 2) -> str:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
+        if size < 1024.0:
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
 
 
 def file_get_owner(file_path: str) -> str:

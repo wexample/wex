@@ -176,6 +176,13 @@ def wordpress__url__replace(
     return QueuedCollectionResponse(kernel, [_build_urls, _replace])
 
 
+def wordpress__url__replace__is_valid_url(url: str) -> bool:
+    pattern = re.compile(
+        r"^https?://(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+(?::\d+)?/?$"
+    )
+    return bool(pattern.match(url))
+
+
 def wordpress__url__replace__prepare_url(
     manager: AppAddonManager, url: str
 ) -> str | None:
@@ -186,10 +193,3 @@ def wordpress__url__replace__prepare_url(
         return None
 
     return url
-
-
-def wordpress__url__replace__is_valid_url(url: str) -> bool:
-    pattern = re.compile(
-        r"^https?://(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]+(?::\d+)?/?$"
-    )
-    return bool(pattern.match(url))
