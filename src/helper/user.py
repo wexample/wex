@@ -4,7 +4,6 @@ import getpass
 import grp
 import os
 import pwd
-from typing import Optional
 
 from addons.app.const.app import APP_DIR_APP_DATA
 

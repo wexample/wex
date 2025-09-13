@@ -49,7 +49,7 @@ from src.utils.abstract_kernel_child import AbsractKernelChild
 class AbstractCommandResolver(AbsractKernelChild):
     def render_request(
         self, request: CommandRequest, render_mode: str
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         runner = request.get_runner()
 
         self.kernel.hook_addons("render_request_pre", {"request": request})
@@ -89,9 +89,9 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def execute_attached(
         self,
-        request: "CommandRequest",
+        request: CommandRequest,
         position: str,
-        previous: Optional[AbstractResponse] = None,
+        previous: AbstractResponse | None = None,
     ) -> None:
         request_command_string = request.get_string_command()
         commands = self.get_active_commands()
@@ -141,9 +141,9 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def execute_all_attached(
         self,
-        request: "CommandRequest",
+        request: CommandRequest,
         position: str,
-        previous: Optional[AbstractResponse] = None,
+        previous: AbstractResponse | None = None,
     ) -> None:
         # Ask every other resolver to call each attached command type
         for resolver in self.kernel.resolvers:
@@ -151,7 +151,7 @@ class AbstractCommandResolver(AbsractKernelChild):
                 request, position, previous=previous
             )
 
-    def wrap_response(self, response: Any) -> "AbstractResponse":
+    def wrap_response(self, response: Any) -> AbstractResponse:
         if isinstance(response, AbstractResponse):
             return response
         elif callable(response):
@@ -186,12 +186,12 @@ class AbstractCommandResolver(AbsractKernelChild):
         pass
 
     @classmethod
-    def build_match(cls, command: str) -> Optional[StringsMatch]:
+    def build_match(cls, command: str) -> StringsMatch | None:
         import re
 
         return re.match(cls.get_pattern(), command) if command else None
 
-    def get_base_path(self) -> Optional[str]:
+    def get_base_path(self) -> str | None:
         return None
 
     def get_base_command_path(self) -> str | None:
@@ -216,7 +216,7 @@ class AbstractCommandResolver(AbsractKernelChild):
             )
 
     def create_command_request(
-        self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
+        self, command: str, args: OptionalCoreCommandArgsListOrDict | None = None
     ) -> CommandRequest:
         return CommandRequest(self, command, args or [])
 
@@ -237,12 +237,12 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     @abstractmethod
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         pass
 
     def build_path_or_fail(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> str:
         path = self.build_path(request=request, extension=extension, subdir=subdir)
 
@@ -259,7 +259,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return path
 
-    def get_function_name(self, parts: List[str]) -> str:
+    def get_function_name(self, parts: list[str]) -> str:
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
         )
@@ -271,8 +271,8 @@ class AbstractCommandResolver(AbsractKernelChild):
     def build_full_command_parts_from_script_command(
         self,
         script_command: ScriptCommand,
-        args: Optional["OptionalCoreCommandArgsDict"] = None,
-    ) -> "ShellCommandsList":
+        args: OptionalCoreCommandArgsDict | None = None,
+    ) -> ShellCommandsList:
         return [
             CORE_COMMAND_NAME,
             self.build_command_from_function(script_command),
@@ -291,7 +291,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def build_command_parts_from_function_name(
         self, function_name: str
-    ) -> "ShellCommandsList":
+    ) -> ShellCommandsList:
         """
         Returns the "default" format (addons style)
         """
@@ -327,7 +327,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         return self.build_command_from_parts(parts)
 
     def build_command_path(
-        self, base_path: str, extension: str, subdir: Optional[str], command_path: str
+        self, base_path: str, extension: str, subdir: str | None, command_path: str
     ) -> str:
         if subdir:
             base_path += f"{subdir}/"
@@ -419,9 +419,9 @@ class AbstractCommandResolver(AbsractKernelChild):
                                 else None
                             )
 
-                        attachments: Dict[str, List[CommandAttachment]] = {}
+                        attachments: dict[str, list[CommandAttachment]] = {}
                         for position in script_command.attachments:
-                            attachments_list: List[CommandAttachment] = []
+                            attachments_list: list[CommandAttachment] = []
                             for attachment in script_command.attachments[position]:
                                 if isinstance(attachment["command"], ScriptCommand):
                                     attachment_string = (
@@ -459,7 +459,7 @@ class AbstractCommandResolver(AbsractKernelChild):
                         )
         return commands
 
-    def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:
+    def get_script_command_aliases(self, script_command: ScriptCommand) -> list[str]:
         return script_command.aliases
 
     def locate_function(self, request: CommandRequest) -> bool:
@@ -475,12 +475,12 @@ class AbstractCommandResolver(AbsractKernelChild):
         return False
 
     @classmethod
-    def decorate_command(cls, function: "AnyCallable") -> "AnyCallable":
+    def decorate_command(cls, function: AnyCallable) -> AnyCallable:
         return function
 
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         command = self.create_command_from_path(path)
 
         if not command:
@@ -490,7 +490,7 @@ class AbstractCommandResolver(AbsractKernelChild):
             command=command, args=cast(OptionalCoreCommandArgsListOrDict, args)
         )
 
-    def create_command_from_path(self, path: str) -> Optional[str]:
+    def create_command_from_path(self, path: str) -> str | None:
         parts = path.split(os.sep)
 
         if not parts:
@@ -509,8 +509,8 @@ class AbstractCommandResolver(AbsractKernelChild):
     ) -> StringsList:
         pass
 
-    def build_registry_data(self, test: bool = False) -> "RegistryResolverData":
+    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
         return {}
 
-    def get_registry_data(self) -> "RegistryResolverData":
+    def get_registry_data(self) -> RegistryResolverData:
         return self.kernel.registry_structure.get_resolver_data(self.get_type())

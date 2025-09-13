@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, List, Optional, cast
 from collections.abc import Callable, Iterable
+from typing import TYPE_CHECKING, Any, List, Optional, cast
 
 import click
 from click._termui_impl import ProgressBar, V

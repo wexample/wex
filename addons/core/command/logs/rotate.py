@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import os
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from src.decorator.command import command
 from src.decorator.option import option

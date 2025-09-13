@@ -4,8 +4,8 @@ import inspect
 import os
 import shutil
 import unittest
-from typing import Any, Optional
 from collections.abc import Iterable
+from typing import Any, Optional
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Optional
 
 from addons.test.command.return_type.key_value import test__return_type__key_value
 from src.const.globals import (

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
 from addons.services_php.services.php.command.app.exec import php__app__exec

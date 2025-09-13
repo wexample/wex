@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
 
 from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from src.core.BaseClass import BaseClass

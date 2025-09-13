@@ -6,7 +6,7 @@ import subprocess
 import traceback
 from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import Args, Kwargs, StringsList

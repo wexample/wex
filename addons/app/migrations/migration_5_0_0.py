@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import yaml
 from wexample_helpers.helpers.string import string_to_snake_case

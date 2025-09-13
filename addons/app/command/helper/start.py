@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import getpass
 import os.path
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from click import Choice
 

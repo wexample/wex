@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os.path
-from typing import Optional
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME, test_create_app

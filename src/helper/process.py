@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import signal
-from typing import TYPE_CHECKING, List, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 import psutil
 

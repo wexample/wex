@@ -3,7 +3,7 @@ from __future__ import annotations
 import shutil
 import time
 from http.server import HTTPServer
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from wexample_helpers.helpers.file import file_remove_if_exists
 

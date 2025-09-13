@@ -5,7 +5,7 @@ import os
 import shutil
 import time
 from http.client import HTTPConnection, HTTPResponse
-from typing import Optional, Tuple, cast
+from typing import cast
 
 from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.const.app import APP_DIR_APP_DATA

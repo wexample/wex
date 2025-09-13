@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (

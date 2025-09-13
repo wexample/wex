@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.command.version.new_commit import app__version__new_commit
 from addons.app.command.version.new_write import app__version__new_write

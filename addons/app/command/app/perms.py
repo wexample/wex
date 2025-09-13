@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.command.env.get import _app__env__get
 from addons.app.command.hook.exec import app__hook__exec

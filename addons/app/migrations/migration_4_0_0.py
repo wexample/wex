@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import glob
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA, APP_DIR_APP_DATA_NAME, APP_ENV_LOCAL

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from addons.ai.decorator.ai_tool import ai_tool
 from src.core.response.TableResponse import TableBody, TableResponse

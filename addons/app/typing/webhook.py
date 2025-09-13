@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict, TypedDict
 from re import Pattern
+from typing import Dict, TypedDict
 
 from src.const.types import StringsList
 from src.core.command.ScriptCommand import ScriptCommand

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from urllib.parse import parse_qsl, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener

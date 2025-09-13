@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.app.started import app__app__started

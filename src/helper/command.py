@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from subprocess import Popen
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import click.core
 

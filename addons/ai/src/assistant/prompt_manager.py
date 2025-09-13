@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import html
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion

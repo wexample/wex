@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime
-from typing import Optional, TypedDict, cast
+from typing import TypedDict, cast
 
 import yaml
 from wexample_helpers.helpers.dict import dict_merge

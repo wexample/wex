@@ -4,7 +4,7 @@ import hashlib
 import json
 import os
 import shutil
-from typing import TYPE_CHECKING, List, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from addons.app.command.app.init import app__app__init
 from addons.app.const.app import APP_ENV_TEST

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (

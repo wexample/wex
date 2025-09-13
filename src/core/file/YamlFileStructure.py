@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, cast
+from typing import cast
 
 from wexample_helpers.helpers.args import args_is_basic_value
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write

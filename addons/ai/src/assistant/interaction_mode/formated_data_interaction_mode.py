@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional, Type
+from typing import Any
 
 from langchain_core.output_parsers import BaseOutputParser
 from pydantic import BaseModel, Extra

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import enum
 import os
-from typing import Dict, List, cast
+from typing import cast
 
 import patch  # type: ignore[import-untyped]
 from langchain_core.prompts import FewShotPromptTemplate

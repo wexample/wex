@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Optional, cast
+from typing import cast
 
 from wexample_helpers.helpers.string import string_to_snake_case
 

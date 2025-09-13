@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import zipfile
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from addons.app.command.remote.push import app__remote__push
 from addons.app.decorator.app_command import app_command

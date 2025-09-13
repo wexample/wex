@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
+from re import Match
 from typing import (
     Any,
     Dict,
@@ -11,8 +13,6 @@ from typing import (
     TypedDict,
     Union,
 )
-from collections.abc import Callable, Mapping
-from re import Match
 
 AddonNameType = Literal[
     "app",

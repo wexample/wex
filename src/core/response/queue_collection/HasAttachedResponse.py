@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.core.CommandRequest import CommandRequest

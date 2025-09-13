@@ -4,7 +4,7 @@ import os
 import sys
 import time
 import unittest
-from typing import TYPE_CHECKING, Any, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
 from addons.app.command.env.get import _app__env__get
 from addons.core.command.test.cleanup import core__test__cleanup

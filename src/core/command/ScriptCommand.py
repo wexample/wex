@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 
 import click
 

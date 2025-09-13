@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from typing import Optional
 
 from addons.test.command.return_type.interactive_shell_command import (
     test__return_type__interactive_shell_command,

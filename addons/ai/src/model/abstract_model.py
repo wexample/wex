@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate

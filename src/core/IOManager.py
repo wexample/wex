@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import TYPE_CHECKING, Any, List, NoReturn, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, NoReturn, TypedDict
 
 from src.const.globals import (
     COLOR_CYAN,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import builtins
 import os
 import types
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import click
 from wexample_helpers.helpers.dict import dict_get_item_by_path

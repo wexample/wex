@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import List, Optional, cast
+from typing import cast
 
 from wexample_helpers.helpers.file import file_read, file_write
 

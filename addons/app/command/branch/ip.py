@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.command.branch.env import _app__branch__env
 from addons.app.decorator.app_command import app_command

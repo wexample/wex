@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.command.db.exec import app__db__exec
 from addons.app.command.db.restore import app__db__restore

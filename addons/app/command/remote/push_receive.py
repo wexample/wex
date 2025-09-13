@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_webhook import app_webhook

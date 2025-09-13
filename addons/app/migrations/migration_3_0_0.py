@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_DIR_APP_DATA_NAME

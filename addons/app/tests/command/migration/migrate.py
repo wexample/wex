@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from typing import List
 
 from wexample_helpers.helpers.directory import directory_execute_inside
 
