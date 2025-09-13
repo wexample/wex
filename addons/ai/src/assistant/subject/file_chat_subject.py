@@ -13,7 +13,7 @@ SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_FILE = "talk_about_file"
 
 
 class FileChatSubject(AbstractChatSubject):
-    file_path: Optional[str] = None
+    file_path: str | None = None
 
     @staticmethod
     def name() -> str:
@@ -22,12 +22,12 @@ class FileChatSubject(AbstractChatSubject):
     def introduce(self) -> str:
         return f"Chatting about file {self.file_path}"
 
-    def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
+    def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
             user_input_trimmed = user_input.strip() if user_input else None
 
-            file_path: Optional[str]
+            file_path: str | None
             if user_input_trimmed and os.path.isfile(user_input_trimmed):
                 file_path = user_input_trimmed
             else:

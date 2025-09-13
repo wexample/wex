@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 )
 @option("--port", "-p", type=int, required=False, help="Remote webhook listener port")
 def app__remote__available(
-    manager: "AppAddonManager", app_dir: str, environment: str, port: None | int = None
+    manager: AppAddonManager, app_dir: str, environment: str, port: None | int = None
 ) -> bool:
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__available

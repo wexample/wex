@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 
 
 def process_post_exec(
-    kernel: "Kernel",
+    kernel: Kernel,
     command: ShellCommandsDeepList | str,
-    workdir: Optional[str] = None,
+    workdir: str | None = None,
 ) -> None:
     if not workdir:
         workdir = os.getcwd()
@@ -42,9 +42,9 @@ def process_post_exec(
 
 
 def process_post_exec_function(
-    kernel: "Kernel",
+    kernel: Kernel,
     internal_command: str,
-    args: Optional[List[str]] = None,
+    args: list[str] | None = None,
     is_async: bool = False,
 ) -> None:
     command = internal_command_to_shell(
@@ -58,7 +58,7 @@ def process_post_exec_function(
     process_post_exec(kernel, cast(ShellCommandsDeepList, command))
 
 
-def process_kill_by_command(kernel: "Kernel", command: str) -> None:
+def process_kill_by_command(kernel: Kernel, command: str) -> None:
     success, pids = execute_command_sync(
         kernel, ["pgrep", "-f", command], ignore_error=True
     )
@@ -98,7 +98,7 @@ def process_kill_by_port(port: int) -> bool:
     return True
 
 
-def process_get_all_by_port(port: int) -> Optional[psutil.Process]:
+def process_get_all_by_port(port: int) -> psutil.Process | None:
     port = int(port)
 
     for process in psutil.process_iter():

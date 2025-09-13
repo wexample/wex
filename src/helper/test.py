@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def file_path_to_test_class_name(kernel: "Kernel", file_path: str) -> str:
+def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
     """
     Convert a file path to a test class name.
 
@@ -35,7 +35,7 @@ def file_path_to_test_class_name(kernel: "Kernel", file_path: str) -> str:
     return f"Test{class_name}"
 
 
-def file_path_to_test_method(kernel: "Kernel", file_path: str) -> str:
+def file_path_to_test_method(kernel: Kernel, file_path: str) -> str:
     """
     Convert a file path to a test method name.
 
@@ -49,9 +49,9 @@ def file_path_to_test_method(kernel: "Kernel", file_path: str) -> str:
 
 
 def create_test_from_command(
-    kernel: "Kernel", command: str, force: bool = False
+    kernel: Kernel, command: str, force: bool = False
 ) -> None | str:
-    request: "CommandRequest" = kernel.create_command_request(command)
+    request: CommandRequest = kernel.create_command_request(command)
 
     if not request.loaded:
         return None

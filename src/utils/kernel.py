@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union
+from collections.abc import Callable
 
 from dotenv import dotenv_values
 from wexample_helpers.helpers.args import args_shift_one
@@ -64,24 +65,24 @@ class Kernel(BaseClass):
     fast_mode: bool = False
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
     tty: bool = os.isatty(0)
-    registry_structure: "KernelRegistryFileStructure"
+    registry_structure: KernelRegistryFileStructure
 
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
         self._task_id: str | None = task_id
 
-        self.fast_mode_previous: Optional[bool] = None
-        self.root_request: Optional["CommandRequest"] = None
-        self.current_request: Optional["CommandRequest"] = None
-        self.current_response: Optional["AbstractResponse"] = None
+        self.fast_mode_previous: bool | None = None
+        self.root_request: CommandRequest | None = None
+        self.current_request: CommandRequest | None = None
+        self.current_response: AbstractResponse | None = None
         self.io = IOManager(self)
         self.post_exec: StringsList = []
-        self.previous_response: Optional["AbstractResponse"] = None
+        self.previous_response: AbstractResponse | None = None
         self.sys_argv: list[str] = sys.argv.copy()
         self.default_render_mode = KERNEL_RENDER_MODE_TERMINAL
         self.parent_task_id: None | str = None
-        self.tmp: Dict[str, str] = {}
+        self.tmp: dict[str, str] = {}
 
-        self.decorators: Dict[str, Dict[str, Callable[..., Any]]] = {
+        self.decorators: dict[str, dict[str, Callable[..., Any]]] = {
             "command": {
                 "command": command,
                 "test_command": test_command,
@@ -107,7 +108,7 @@ class Kernel(BaseClass):
         except FileNotFoundError:
             raise Exception("You are in a non existing directory")
 
-        self.path: Dict[str, str] = {
+        self.path: dict[str, str] = {
             "call": call_dir,
             "entrypoint": entrypoint_path,
             "root": root_path,
@@ -134,7 +135,7 @@ class Kernel(BaseClass):
         self.logger: Logger = Logger(self)
 
         # Initialize addons config
-        self.addons: Dict[str, AddonManager] = {}
+        self.addons: dict[str, AddonManager] = {}
         definitions = {"app": AppAddonManager}
 
         for name in file_list_subdirectories(self.get_path("addons")):
@@ -147,7 +148,7 @@ class Kernel(BaseClass):
         # Create resolvers
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
 
-        self.resolvers: Dict[str, AbstractCommandResolver] = {
+        self.resolvers: dict[str, AbstractCommandResolver] = {
             class_definition.get_type(): class_definition(self)
             for class_definition in COMMAND_RESOLVERS_CLASSES
         }
@@ -157,7 +158,7 @@ class Kernel(BaseClass):
         self.handle_core_args()
 
     def get_path(
-        self, name: str, sub_dirs: Optional[List[str]] = None
+        self, name: str, sub_dirs: list[str] | None = None
     ) -> str | NoReturn:
         """Get the path associated with the given name."""
         if name in self.path:
@@ -203,7 +204,7 @@ class Kernel(BaseClass):
         self.registry_structure.should_exist = True
         self.registry_structure.checkup()
 
-    def trace(self, _exit: bool = True) -> Optional[NoReturn]:
+    def trace(self, _exit: bool = True) -> NoReturn | None:
         import traceback
 
         for line in traceback.format_stack():
@@ -254,10 +255,10 @@ class Kernel(BaseClass):
 
     def call_command(
         self,
-        command: "CoreCommandString",
-        command_args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        command: CoreCommandString,
+        command_args: OptionalCoreCommandArgsListOrDict | None = None,
         render_mode: str | None = None,
-    ) -> Optional[str]:
+    ) -> str | None:
         render_mode = render_mode or self.default_render_mode
 
         response = self.run_command(
@@ -283,12 +284,12 @@ class Kernel(BaseClass):
 
     def run_command(
         self,
-        command: "CoreCommandString",
-        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        command: CoreCommandString,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
         quiet: bool = False,
         render_mode: str | None = None,
-        fast_mode: Optional[bool] = None,
-    ) -> "AbstractResponse":
+        fast_mode: bool | None = None,
+    ) -> AbstractResponse:
         self.set_temporary_fast_mode(fast_mode)
 
         result = self.render_request(
@@ -300,12 +301,12 @@ class Kernel(BaseClass):
 
         return result
 
-    def revert_temporary_fast_mode(self, value: Optional[bool]) -> None:
+    def revert_temporary_fast_mode(self, value: bool | None) -> None:
         """Revert fast mode status only if value have been forced"""
         if value is not None:
             self.fast_mode = self.fast_mode_previous or self.fast_mode
 
-    def set_temporary_fast_mode(self, value: Optional[bool]) -> None:
+    def set_temporary_fast_mode(self, value: bool | None) -> None:
         self.fast_mode_previous = None
 
         if value is not None:
@@ -314,13 +315,13 @@ class Kernel(BaseClass):
 
     def run_function(
         self,
-        function: "ScriptCommand",
-        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        function: ScriptCommand,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
         type: str = COMMAND_TYPE_ADDON,
         quiet: bool = False,
         render_mode: str | None = None,
-        fast_mode: Optional[bool] = None,
-    ) -> "AbstractResponse":
+        fast_mode: bool | None = None,
+    ) -> AbstractResponse:
         if not self.has_command_resolver(type):
             return self.create_abort_response(
                 message=f'Resolver not found for type "{type}"'
@@ -342,14 +343,14 @@ class Kernel(BaseClass):
 
         return result
 
-    def create_abort_response(self, message: str) -> "AbstractResponse":
+    def create_abort_response(self, message: str) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
 
         return AbortResponse(self, reason=message)
 
     def render_request(
-        self, request: "CommandRequest", render_mode: str | None = None
-    ) -> "AbstractResponse":
+        self, request: CommandRequest, render_mode: str | None = None
+    ) -> AbstractResponse:
         # Save unique root request
         self.root_request = self.root_request if self.root_request else request
 
@@ -421,7 +422,7 @@ class Kernel(BaseClass):
 
         # Check if the file exists
         if os.path.exists(file_path):
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 content = f.read()
 
             # Delete the file after reading, if requested
@@ -454,13 +455,13 @@ class Kernel(BaseClass):
 
             return path
 
-    def guess_command_type(self, command: "CoreCommandString") -> Optional[str]:
+    def guess_command_type(self, command: CoreCommandString) -> str | None:
         for type in self.resolvers:
             if self.resolvers[type].supports(command):
                 return type
         return None
 
-    def hook_addons(self, name: str, args: Optional[Dict[str, Any]] = None) -> None:
+    def hook_addons(self, name: str, args: dict[str, Any] | None = None) -> None:
         args = args or {}
 
         hook = f"hook_{name}"
@@ -479,15 +480,15 @@ class Kernel(BaseClass):
     def has_command_resolver(self, type: str) -> bool:
         return type in self.resolvers
 
-    def get_command_resolver(self, type: str) -> "AbstractCommandResolver":
+    def get_command_resolver(self, type: str) -> AbstractCommandResolver:
         return self.resolvers[type]
 
     def create_command_request(
         self,
-        command: "CoreCommandString",
-        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        command: CoreCommandString,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
         quiet: bool = False,
-    ) -> "CommandRequest" | NoReturn:
+    ) -> CommandRequest | NoReturn:
         command_type = self.guess_command_type(command)
 
         if command_type:
@@ -516,7 +517,7 @@ class Kernel(BaseClass):
     def set_task_id(self, task_id: str) -> None:
         self._task_id = task_id
 
-    def store_task_id(self) -> Optional[NoReturn]:
+    def store_task_id(self) -> NoReturn | None:
         task_id = self.sys_argv[1] if len(self.sys_argv) > 1 else None
         if task_id is None:
             self.io.error(
@@ -571,16 +572,16 @@ class Kernel(BaseClass):
             file_remove_if_exists(self.task_file_path("post-exec"))
 
     def file_structure_display_errors(
-        self, file_system_structure: "AbstractFileSystemStructure"
+        self, file_system_structure: AbstractFileSystemStructure
     ) -> None:
         errors = file_system_structure.get_all_errors()
         if len(errors):
-            error: "ErrorMessage" = errors[0]
+            error: ErrorMessage = errors[0]
 
             self.io.error(error.message, error.parameters)
 
     def env(
-        self, key: str, default: Union[str, int, None] = None, required: bool = False
+        self, key: str, default: str | int | None = None, required: bool = False
     ) -> str | int | None:
         value = self.env_values.get(key)
         if value is None:

@@ -10,5 +10,5 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def app__test__run(kernel: "Kernel", app_dir: str) -> None:
+def app__test__run(kernel: Kernel, app_dir: str) -> None:
     return None

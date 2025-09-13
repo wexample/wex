@@ -22,7 +22,7 @@ DEFAULT_ENVIRONMENT_TEST_SERVER_USERNAME: str = "root"
 DEFAULT_ENVIRONMENT_TEST_SERVER_PASSWORD: str = "TEST_PASSWORD"
 
 
-def test_get_app_dir(kernel: "Kernel", name: str) -> str:
+def test_get_app_dir(kernel: Kernel, name: str) -> str:
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
     return (
         f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
@@ -30,7 +30,7 @@ def test_get_app_dir(kernel: "Kernel", name: str) -> str:
 
 
 def test_build_app_name(
-    name: str = DEFAULT_APP_TEST_NAME, services: Optional[StringsList] = None
+    name: str = DEFAULT_APP_TEST_NAME, services: StringsList | None = None
 ) -> str:
     services = services or []
 
@@ -49,7 +49,7 @@ def test_build_app_name(
     return name + "-" + hash_object.hexdigest()[:8]
 
 
-def test_create_env_dir(kernel: "Kernel", env_name: str) -> None:
+def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
     from src.const.globals import USER_WWW_DATA
 
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
@@ -73,9 +73,9 @@ def test_create_env_dir(kernel: "Kernel", env_name: str) -> None:
 
 
 def test_create_app(
-    kernel: "Kernel",
+    kernel: Kernel,
     name: str,
-    services: Optional[List[str]] = None,
+    services: list[str] | None = None,
     force_restart: bool = False,
 ) -> str:
     test_create_env_dir(kernel=kernel, env_name=APP_ENV_TEST)
@@ -107,6 +107,6 @@ def test_create_app(
     return app_dir
 
 
-def test_get_test_remote_address(kernel: "Kernel") -> str:
+def test_get_test_remote_address(kernel: Kernel) -> str:
     # A test remote container should have been started.
     return docker_container_ip(kernel, "wex_test_remote")

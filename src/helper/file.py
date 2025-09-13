@@ -52,9 +52,9 @@ def file_create_directories_and_copy(path_from: str, path_to: str) -> None:
 
 
 def file_create_from_template(
-    template_path: str, dest_path: str, parameters: Dict[str, str]
+    template_path: str, dest_path: str, parameters: dict[str, str]
 ) -> None:
-    with open(template_path, "r") as template_file:
+    with open(template_path) as template_file:
         template_content = template_file.read()
 
     formatted_content = template_content.format(**parameters)
@@ -72,10 +72,10 @@ def file_create_from_template(
 
 def file_create_parent_and_touch(
     path: str,
-    content: Optional[str] = None,
-    default: Optional[str] = None,
+    content: str | None = None,
+    default: str | None = None,
     mode: str = "a",
-) -> Optional[IO[Any]]:
+) -> IO[Any] | None:
     if os.path.exists(path):
         if content is not None:
             with open(path, mode) as file:
@@ -118,10 +118,10 @@ def file_delete_file_or_dir(path: str) -> None:
         os.remove(path)
 
 
-def file_env_to_dict(env_path: str) -> Dict[str, str]:
-    env_dict: Dict[str, str] = {}
+def file_env_to_dict(env_path: str) -> dict[str, str]:
+    env_dict: dict[str, str] = {}
 
-    with open(env_path, "r") as f:
+    with open(env_path) as f:
         for line in f.readlines():
             line = line.strip()
 
@@ -184,7 +184,7 @@ def file_is_utf8_encoding(file_path: str) -> bool:
         bool: True if the file is UTF-8 encoded, False otherwise.
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as file:
+        with open(file_path, encoding="utf-8") as file:
             file.read()  # Try to read the whole file with UTF-8 encoding
         return True
     except UnicodeDecodeError:
@@ -195,7 +195,7 @@ def file_is_utf8_encoding(file_path: str) -> bool:
 
 
 def file_merge(src: str, dest: str) -> None:
-    with open(src, "r") as src_file, open(dest, "a") as dest_file:
+    with open(src) as src_file, open(dest, "a") as dest_file:
         dest_file.write(os.linesep)
         shutil.copyfileobj(src_file, dest_file)
 
@@ -210,17 +210,17 @@ def file_path_has_no_extension(file_path: str) -> bool:
 
 
 def file_read_if_exists(
-    file_path: str, missing_value: Optional[str] = None
-) -> Optional[str]:
+    file_path: str, missing_value: str | None = None
+) -> str | None:
     if not os.path.exists(file_path):
         return missing_value
 
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(file_path, encoding="utf-8") as file:
         return file.read()
 
 
 def file_remove_duplicated_lines(file: str) -> None:
-    with open(file, "r") as f:
+    with open(file) as f:
         lines = f.readlines()
 
     filtered = []
@@ -236,7 +236,7 @@ def file_remove_extension(file_path: str) -> str:
     return os.path.splitext(file_path)[0]
 
 
-def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
+def file_search(dir: str, pattern: str, recursive: bool = True) -> list[str]:
     matched_files = []
 
     if recursive:
@@ -255,7 +255,7 @@ def file_search(dir: str, pattern: str, recursive: bool = True) -> List[str]:
 
 
 def file_set_owner(
-    file_path: str, username: Optional[str] = None, group: Optional[str] = None
+    file_path: str, username: str | None = None, group: str | None = None
 ) -> None:
     from src.helper.user import get_gid_from_group_name, get_user_or_sudo_user
 
@@ -270,7 +270,7 @@ def file_set_owner(
 
 
 def file_set_owner_for_path_and_ancestors(
-    base_path: str, sub_path: str, owner: str, group: Optional[str] = None
+    base_path: str, sub_path: str, owner: str, group: str | None = None
 ) -> None:
     # Get the UID and GID
     uid = pwd.getpwnam(owner).pw_uid
@@ -301,13 +301,13 @@ def file_set_user_or_sudo_user_owner(file: str) -> None:
         file_set_owner(file, sudo_user)
 
 
-def file_touch(path: str, times: Optional[Tuple[int, int]] = None) -> None:
+def file_touch(path: str, times: tuple[int, int] | None = None) -> None:
     with open(path, "a"):
         os.utime(path, times)
 
 
 def file_write_dict_to_config(
-    dictionary: Dict[str, bool | str], target_path: str
+    dictionary: dict[str, bool | str], target_path: str
 ) -> None:
     output_lines = []
     for key, value in dictionary.items():

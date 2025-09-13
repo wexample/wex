@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class DefaultResponse(AbstractResponse):
-    def __init__(self, kernel: "Kernel", content: Any) -> None:
+    def __init__(self, kernel: Kernel, content: Any) -> None:
         super().__init__(kernel)
         self.content: Any = content
 

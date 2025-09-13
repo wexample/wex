@@ -38,7 +38,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
     def name() -> str:
         return "file_patch"
 
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             "You generate file diffs in unidiff format based on user instructions, and wrapped into a json object."
             '\nStart the patch with "# PATCH_START" then the patch content without header.'
@@ -52,7 +52,7 @@ class FilePatchInteractionMode(AbstractInteractionMode):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 

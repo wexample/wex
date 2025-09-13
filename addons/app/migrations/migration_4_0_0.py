@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def migration_4_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
+def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
     app_dir = manager.get_app_dir()
     repo = git_get_or_create_repo(app_dir)
     projects_dirs = ["project", "wordpress"]
@@ -115,7 +115,7 @@ def _migration_4_0_0_replace_placeholders(
         return
 
     # Read the file content
-    with open(file_path, "r") as f:
+    with open(file_path) as f:
         content = f.read()
 
     # Replace strings based on the mapping dictionary
@@ -149,7 +149,7 @@ def _migration_4_0_0_replace_docker_mapping(
         _migration_4_0_0_replace_placeholders(docker_file, replacement_mapping)
 
 
-def is_version_4_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
+def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
     if os.path.isdir(path + APP_DIR_APP_DATA_NAME):
         if os.path.isfile(path + f"{APP_DIR_APP_DATA_NAME}/config"):
             return True

@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 @alias("logs")
 @no_log()
 @command(help="Show a summary of log files")
-def core__logs__show(kernel: "Kernel", max: int = 10) -> TableResponse:
+def core__logs__show(kernel: Kernel, max: int = 10) -> TableResponse:
     output: TableBody = []
     files = kernel.logger.get_all_logs_files()
     last_files = files[-max:]

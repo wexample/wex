@@ -34,11 +34,11 @@ if TYPE_CHECKING:
     help="Force to create file if exists",
 )
 def core__test__create(
-    kernel: "Kernel",
-    command: Optional[str] = None,
+    kernel: Kernel,
+    command: str | None = None,
     all: bool = False,
     force: bool = False,
-) -> Optional[str | StringsList]:
+) -> str | StringsList | None:
     if not command:
         if all:
             output: StringsList = []

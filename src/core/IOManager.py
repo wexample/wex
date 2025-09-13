@@ -37,17 +37,17 @@ class IOManagerLogMessage(TypedDict):
 
 
 class IOManager(AbsractKernelChild):
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         super().__init__(kernel)
         self.log_indent: int = 0
         self.log_length: int = IO_DEFAULT_LOG_LENGTH
-        self.log_messages: List[IOManagerLogMessage] = []
+        self.log_messages: list[IOManagerLogMessage] = []
         self.indent_string: str = "  "
 
     def warn(
         self,
         message: str,
-        parameters: Optional[StringsDict] = None,
+        parameters: StringsDict | None = None,
         fatal: bool = True,
         trace: bool = True,
     ) -> None:
@@ -59,7 +59,7 @@ class IOManager(AbsractKernelChild):
     def error(
         self,
         message: str,
-        parameters: Optional[StringsDict] = None,
+        parameters: StringsDict | None = None,
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
@@ -120,7 +120,7 @@ class IOManager(AbsractKernelChild):
         color: str = COLOR_GRAY,
         increment: int = 0,
         verbosity: int = VERBOSITY_LEVEL_DEFAULT,
-        command: Optional[ScriptCommand] = None,
+        command: ScriptCommand | None = None,
     ) -> None:
         if verbosity > self.kernel.verbosity:
             return
@@ -209,7 +209,7 @@ class IOManager(AbsractKernelChild):
 
     def message_all_next_commands(
         self,
-        script_command_or_strings: List[ScriptCommand | str],
+        script_command_or_strings: list[ScriptCommand | str],
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute one of the following command",
     ) -> None:

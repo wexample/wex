@@ -12,10 +12,10 @@ from src.const.types import StringKeysDict
 
 
 class CrawlerTreeItem(TypedDict, total=False):
-    children: Optional[StringKeysDict]
-    description: Optional[str]
-    last_updated: Optional[str]
-    status: Optional[str]
+    children: StringKeysDict | None
+    description: str | None
+    last_updated: str | None
+    status: str | None
 
 
 class AppCrawler:
@@ -25,7 +25,7 @@ class AppCrawler:
 
     def load_tree(self) -> CrawlerTreeItem:
         try:
-            with open(self.yaml_filepath, "r") as f:
+            with open(self.yaml_filepath) as f:
                 return cast(CrawlerTreeItem, yaml.safe_load(f) or {})
         except FileNotFoundError:
             return cast(CrawlerTreeItem, {})
@@ -72,7 +72,7 @@ class AppCrawler:
         return merged_tree
 
     def scan(
-        self, root: Optional[str] = None, tree: Optional[CrawlerTreeItem] = None
+        self, root: str | None = None, tree: CrawlerTreeItem | None = None
     ) -> CrawlerTreeItem:
         if root is None:
             root = self.root

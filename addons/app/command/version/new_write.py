@@ -29,9 +29,9 @@ if TYPE_CHECKING:
     help="Create a new branch",
 )
 def app__version__new_write(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
-    version: Optional[str] = None,
+    version: str | None = None,
     branch: bool = True,
 ) -> str:
     kernel = manager.kernel

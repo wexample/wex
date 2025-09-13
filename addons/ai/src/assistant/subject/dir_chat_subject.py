@@ -12,7 +12,7 @@ SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_DIR = "talk_about_dir"
 
 
 class DirChatSubject(AbstractChatSubject):
-    dir_path: Optional[str] = None
+    dir_path: str | None = None
 
     @staticmethod
     def name() -> str:
@@ -26,12 +26,12 @@ class DirChatSubject(AbstractChatSubject):
             SUBJECT_FILE_CHAT_COMMAND_TALK_ABOUT_DIR: "Talk about file",
         }
 
-    def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
+    def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         if super().activate():
             user_input = prompt_section.prompt if prompt_section else None
             user_input_trimmed = user_input.strip() if user_input else None
 
-            dir_path: Optional[str]
+            dir_path: str | None
             if user_input_trimmed and os.path.isdir(user_input_trimmed):
                 dir_path = user_input_trimmed
             else:

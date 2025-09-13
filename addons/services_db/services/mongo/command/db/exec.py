@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     "--command", "-c", type=str, required=True, help="Command to execute in database"
 )
 def mongo__db__exec(
-    manager: "AppAddonManager", app_dir: str, service: str, command: str
+    manager: AppAddonManager, app_dir: str, service: str, command: str
 ) -> str:
     return (
         manager.kernel.run_function(

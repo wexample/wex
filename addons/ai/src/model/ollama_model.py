@@ -40,8 +40,8 @@ class OllamaModel(AbstractModel):
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        functions: List[str | None],
-    ) -> Optional[str]:
+        functions: list[str | None],
+    ) -> str | None:
         self.kernel.io.warn(
             "Guessing function with tagging chain is not supported yet by OllamaModel"
         )

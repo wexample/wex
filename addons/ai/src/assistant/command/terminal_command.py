@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class TerminalCommand(AbstractCommand):
     description: str = "Execute command in the terminal"
-    dir_path: Optional[str] = None
+    dir_path: str | None = None
 
     @staticmethod
     def name() -> str:
@@ -26,8 +26,8 @@ class TerminalCommand(AbstractCommand):
 
     def execute(
         self,
-        prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None,
+        prompt_section: UserPromptSection | None = None,
+        remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         if prompt_section is None or prompt_section.prompt is None:
             return StringInteractionResponse("No command provided")

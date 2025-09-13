@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Description")
 @option("--port", "-p", type=int, required=True, help="Port number")
-def system__kill__by_port(kernel: "Kernel", port: int) -> None:
+def system__kill__by_port(kernel: Kernel, port: int) -> None:
     process = process_get_all_by_port(port)
 
     if process:

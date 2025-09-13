@@ -28,11 +28,11 @@ WEBHOOK_STATUS_ERROR = "error"
 class Output(TypedDict, total=False):
     command: StringsList
     details: str
-    error: Optional[str]
-    info: Optional[RouteInfo]
+    error: str | None
+    info: RouteInfo | None
     path: str
     pid: int
-    response: Optional[Dict[Any, Any]]
+    response: dict[Any, Any] | None
     status: str
     stderr: str
     task_id: str
@@ -61,7 +61,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         from wexample_helpers.helpers.array import array_replace_value
 
         try:
-            error: Optional[str] = None
+            error: str | None = None
             output = Output()
 
             status = WEBHOOK_STATUS_STARTING
@@ -103,9 +103,9 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
                     stderr_file.close()
 
                     # Read the output from the files
-                    with open(self.log_stdout, "r") as f:
+                    with open(self.log_stdout) as f:
                         stdout = f.read().strip()
-                    with open(self.log_stderr, "r") as f:
+                    with open(self.log_stderr) as f:
                         stderr = f.read().strip()
 
                     try:

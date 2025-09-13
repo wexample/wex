@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 class AbsractKernelChild(BaseClass):
-    kernel: "Kernel"
+    kernel: Kernel
 
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         super().__init__()
         self.kernel = kernel

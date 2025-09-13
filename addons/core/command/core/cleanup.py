@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     default=False,
     help="Register also commands marked as only for testing",
 )
-def core__core__cleanup(kernel: "Kernel", test: bool = False) -> None:
+def core__core__cleanup(kernel: Kernel, test: bool = False) -> None:
     tmp_dir = kernel.get_or_create_path("tmp")
     # Do not hard remove "tmp" as it might be a mounted volume
     directory_empty_dir(tmp_dir)

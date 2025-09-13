@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 )
 @option("--branch", "-b", type=str, required=True, help="Branch name")
 def app__branch__ip(
-    manager: "AppAddonManager", branch: str, app_dir: str
-) -> Optional[str]:
+    manager: AppAddonManager, branch: str, app_dir: str
+) -> str | None:
     env = _app__branch__env(manager, branch)
 
     if env is not None:

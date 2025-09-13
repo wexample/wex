@@ -25,8 +25,8 @@ class CopyClipboardCommand(AbstractCommand):
 
     def execute(
         self,
-        prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None,
+        prompt_section: UserPromptSection | None = None,
+        remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         if len(self.assistant.history) > 1:
             # The direct previous item is the actual command,

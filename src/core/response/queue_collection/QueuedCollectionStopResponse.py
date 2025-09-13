@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class QueuedCollectionStopResponse(AbortResponse, HasAttachedResponse):
     def __init__(
-        self, kernel: "Kernel", reason: str, response: Optional[Any] = None
+        self, kernel: Kernel, reason: str, response: Any | None = None
     ) -> None:
         AbortResponse.__init__(self, kernel, reason)
         HasAttachedResponse.__init__(self, kernel, response)

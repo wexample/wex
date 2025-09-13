@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 )
 @option("--database", "-d", type=str, required=False, help="Database name")
 def postgres__db__connect(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     protocol: str = "postgresql",

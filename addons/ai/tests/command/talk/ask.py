@@ -117,7 +117,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
     def _found_one_command(
         self, assistant: Assistant, command: str, text: str, should_succeed: bool
-    ) -> List[UserPromptSection]:
+    ) -> list[UserPromptSection]:
         user_input_splits = assistant.split_prompt_sections(text)
 
         success = any(
@@ -216,8 +216,8 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                     example, f'Example patch "{example_name}" has been loaded'
                 )
 
-    def _get_all_examples(self, assistant: Assistant) -> Dict[str, StringKeysDict]:
-        examples: Dict[str, StringKeysDict] = {}
+    def _get_all_examples(self, assistant: Assistant) -> dict[str, StringKeysDict]:
+        examples: dict[str, StringKeysDict] = {}
 
         file_chat_subject = cast(
             FileChatSubject, assistant.subjects[FileChatSubject.name()]

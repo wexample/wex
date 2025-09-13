@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     help="Container name if not configured",
 )
 def app__logs__follow(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     tail: int,
     container_name: str | None = None,

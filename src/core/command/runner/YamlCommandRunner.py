@@ -37,9 +37,9 @@ COMMAND_TYPE_PYTHON_FILE: str = "python-file"
 
 
 class YamlCommandRunner(AbstractCommandRunner):
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         super().__init__(kernel)
-        self.content: Optional[YamlCommand] = None
+        self.content: YamlCommand | None = None
 
     def set_request(self, request: CommandRequest) -> None:
         super().set_request(request=request)
@@ -82,7 +82,7 @@ class YamlCommandRunner(AbstractCommandRunner):
     def get_command_type(self) -> str:
         return self.get_content_or_fail()["type"]
 
-    def build_script_command(self) -> Optional[ScriptCommand]:
+    def build_script_command(self) -> ScriptCommand | None:
         from src.core.response.InteractiveShellCommandResponse import (
             InteractiveShellCommandResponse,
         )
@@ -99,7 +99,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
-        ) -> Optional[ResponseCollectionResponse]:
+        ) -> ResponseCollectionResponse | None:
             commands_collection: ResponseCollection = []
 
             variables: CoreCommandArgsDict = {}

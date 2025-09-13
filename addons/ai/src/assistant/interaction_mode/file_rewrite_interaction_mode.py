@@ -21,7 +21,7 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 class FileRewriteInteractionMode(AbstractInteractionMode):
     file_length_limit: int = 1000
 
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             "You will give a new version of this file, following given guidelines. "
             "Return the whole new file content with any other text before or after. "
@@ -32,8 +32,8 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
 
     def process_user_input(
         self,
-        prompt_section: "UserPromptSection",
-        remaining_sections: List["UserPromptSection"],
+        prompt_section: UserPromptSection,
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         if not prompt_section.prompt:
             return StringInteractionResponse(

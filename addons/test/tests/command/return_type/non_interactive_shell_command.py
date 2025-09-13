@@ -27,7 +27,7 @@ class TestTestCommandReturnTypeNonInteractiveShellCommand(AbstractTestCase):
             },
         )
 
-    def _test_non_interactive_shell_command(self, render_mode: str) -> Optional[str]:
+    def _test_non_interactive_shell_command(self, render_mode: str) -> str | None:
         return self.kernel.run_function(
             function=test__return_type__non_interactive_shell_command,
             render_mode=render_mode,

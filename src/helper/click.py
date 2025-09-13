@@ -13,7 +13,7 @@ from src.const.types import CoreCommandArgsDict, CoreCommandArgsList
 
 def click_args_convert_dict_to_long_names_dict(
     function: Command, args: CoreCommandArgsDict
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     short_names = {}
 
     for param in function.params:
@@ -35,9 +35,9 @@ def click_args_convert_dict_to_long_names_dict(
 
 
 def click_args_convert_to_dict(
-    function: Command, arg_list: List[str]
-) -> Dict[str, Any]:
-    args_dict: Dict[str, str | bool] = {}
+    function: Command, arg_list: list[str]
+) -> dict[str, Any]:
+    args_dict: dict[str, str | bool] = {}
 
     param_dict = {
         opt.lstrip("-"): param

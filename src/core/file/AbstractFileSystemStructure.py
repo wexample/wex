@@ -24,25 +24,25 @@ FILE_SYSTEM_ACTION_ON_MISSING_CREATE = "create"
 
 FILE_SYSTEM_ERROR_NOT_FOUND: str = "FILE_SYSTEM_ERROR_NOT_FOUND"
 FILE_SYSTEM_ERROR_WRONG_EXTENSION: str = "FILE_SYSTEM_ERROR_WRONG_EXTENSION"
-FILE_SYSTEM_ERROR_MESSAGES: Dict[str, str] = {
+FILE_SYSTEM_ERROR_MESSAGES: dict[str, str] = {
     FILE_SYSTEM_ERROR_NOT_FOUND: "File or directory not found : {path}",
     FILE_SYSTEM_ERROR_WRONG_EXTENSION: "Wrong file extension for file {path}, expected {expected}",
 }
 
 
 class AbstractFileSystemStructure(BaseClass):
-    should_exist: Optional[bool] = True
-    children: Dict[str, Any]
+    should_exist: bool | None = True
+    children: dict[str, Any]
     path: str
     type: FileSystemStructureType
-    errors: "ErrorMessageList"
-    group: Optional[str] = None
+    errors: ErrorMessageList
+    group: str | None = None
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
-    parent_structure: Optional["AbstractFileSystemStructure"] = None
-    permissions: Optional[FileSystemStructurePermission] = None
-    shortcut: Optional[str] = None
-    shortcuts: Dict[str, "AbstractFileSystemStructure"]
-    user: Optional[str] = None
+    parent_structure: AbstractFileSystemStructure | None = None
+    permissions: FileSystemStructurePermission | None = None
+    shortcut: str | None = None
+    shortcuts: dict[str, AbstractFileSystemStructure]
+    user: str | None = None
 
     def __init__(self, path: str, initialize: bool = True) -> None:
         self.path = path
@@ -58,13 +58,13 @@ class AbstractFileSystemStructure(BaseClass):
         self.load_schema()
         self.checkup()
 
-    def set_parent(self, parent_structure: "AbstractFileSystemStructure") -> None:
+    def set_parent(self, parent_structure: AbstractFileSystemStructure) -> None:
         self.parent_structure = parent_structure
 
         if self.shortcut:
             parent_structure.set_shortcut(self.shortcut, self)
 
-    def set_shortcut(self, name: str, structure: "AbstractFileSystemStructure") -> None:
+    def set_shortcut(self, name: str, structure: AbstractFileSystemStructure) -> None:
         self.shortcuts[name] = structure
         if self.parent_structure:
             self.parent_structure.set_shortcut(name, structure)
@@ -170,7 +170,7 @@ class AbstractFileSystemStructure(BaseClass):
 
     def add_error(
         self, code: str, parameters: StringMessageParameters
-    ) -> "ErrorMessage":
+    ) -> ErrorMessage:
         from src.core.ErrorMessage import ErrorMessage
 
         error = ErrorMessage(
@@ -181,7 +181,7 @@ class AbstractFileSystemStructure(BaseClass):
 
         return error
 
-    def get_all_errors(self) -> "ErrorMessageList":
+    def get_all_errors(self) -> ErrorMessageList:
         errors = self.errors.copy()
 
         for children in self.children:

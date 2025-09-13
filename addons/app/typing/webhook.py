@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict, Pattern, TypedDict
+from typing import Dict, TypedDict
+from re import Pattern
 
 from src.const.types import StringsList
 from src.core.command.ScriptCommand import ScriptCommand
@@ -13,4 +14,4 @@ class WebhookRoute(TypedDict):
     script_command: ScriptCommand
 
 
-WebhookListenerRoutesMap = Dict[str, WebhookRoute]
+WebhookListenerRoutesMap = dict[str, WebhookRoute]

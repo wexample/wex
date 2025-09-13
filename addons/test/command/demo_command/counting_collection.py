@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 )
 @option("--initial", "-i", type=int, required=True, help="Argument")
 def test__demo_command__counting_collection(
-    kernel: "Kernel", initial: int
+    kernel: Kernel, initial: int
 ) -> QueuedCollectionResponse:
     def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> int:
         previous = queue.get_previous_value()

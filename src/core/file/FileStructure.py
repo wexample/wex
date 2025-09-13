@@ -15,7 +15,7 @@ from src.helper.file import file_create_parent_and_touch
 
 class FileStructure(AbstractFileSystemStructure):
     type = "file"
-    file_extension: Optional[str] = None
+    file_extension: str | None = None
     content: BasicValue
     default_content: str = ""
 

@@ -8,7 +8,7 @@ from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 # Define your custom decorator
 def command(
     *decorator_args: Args, **decorator_kwargs: Kwargs
-) -> "DecoratedScriptCommand":
+) -> DecoratedScriptCommand:
     if "help" not in decorator_kwargs:
         raise ValueError(
             "The 'help' argument is required for the custom command decorator."

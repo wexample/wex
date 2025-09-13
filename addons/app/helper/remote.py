@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 
 def remote_get_environment_ip(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     environment: str,
-    command: Optional["ScriptCommand"] = None,
-) -> Optional[str]:
+    command: ScriptCommand | None = None,
+) -> str | None:
     if manager.has_config(f"env.{environment}.server.ip"):
         ip = manager.get_config(f"env.{environment}.server.ip").get_str()
 
@@ -41,7 +41,7 @@ def remote_get_environment_ip(
 
 
 def remote_get_login_command(
-    manager: "AppAddonManager", environment: str
+    manager: AppAddonManager, environment: str
 ) -> StringsList:
     env_screaming_snake = string_to_snake_case(environment).upper()
     password = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_PASSWORD")
@@ -53,7 +53,7 @@ def remote_get_login_command(
 
 
 def remote_get_connexion_command(
-    manager: "AppAddonManager", environment: str, terminal: bool = False
+    manager: AppAddonManager, environment: str, terminal: bool = False
 ) -> StringsList:
     command_connect = (
         remote_get_login_command(manager, environment)
@@ -79,10 +79,10 @@ def remote_get_connexion_options() -> StringsList:
 
 
 def remote_get_connexion_address(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     environment: str,
-    command: Optional["ScriptCommand"] = None,
-) -> Optional[str]:
+    command: ScriptCommand | None = None,
+) -> str | None:
     domain_or_ip = remote_get_environment_ip(manager, environment, command)
 
     if not domain_or_ip:

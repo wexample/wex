@@ -14,6 +14,6 @@ if TYPE_CHECKING:
 @option("--option", "-o", is_flag=True, required=False, help="A first option as flag")
 @option("--another-option", "-ao", is_flag=True, required=False, help="Another option")
 def test__demo_command__first(
-    kernel: "Kernel", service: str, option: bool = False, another_option: bool = False
+    kernel: Kernel, service: str, option: bool = False, another_option: bool = False
 ) -> str:
     return "FIRST"

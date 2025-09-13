@@ -46,14 +46,14 @@ if TYPE_CHECKING:
     "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
 )
 def app__helper__start(
-    kernel: "Kernel",
+    kernel: Kernel,
     name: str,
     create_network: bool,
-    env: Optional[str] = None,
-    user: Optional[str] = None,
-    group: Optional[str] = None,
-    port: Optional[int] = None,
-    port_secure: Optional[int] = None,
+    env: str | None = None,
+    user: str | None = None,
+    group: str | None = None,
+    port: int | None = None,
+    port_secure: int | None = None,
 ) -> str:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     # App name is same of main service

@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class DefaultQueuedCollectionResponseQueueManager(
     AbstractQueuedCollectionResponseQueueManager, ABC
 ):
-    def __init__(self, response: "QueuedCollectionResponse") -> None:
+    def __init__(self, response: QueuedCollectionResponse) -> None:
         super().__init__(response)
 
     def get_previous_storage_path(self) -> str | None:
@@ -62,11 +62,11 @@ class DefaultQueuedCollectionResponseQueueManager(
             self.response.kernel, root.get_request().get_string_command(), args
         )
 
-    def build_storage_path(self, path: "QueuedCollectionStepsList") -> str:
+    def build_storage_path(self, path: QueuedCollectionStepsList) -> str:
         return "-".join(map(str, path)) + ".response"
 
     def enqueue_next_step_if_exists(
-        self, step_index: int, response: "AbstractResponse"
+        self, step_index: int, response: AbstractResponse
     ) -> bool:
         # Array is modified in super call
         steps_current = self.response.get_path_manager().steps.copy()

@@ -30,7 +30,7 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,
-        services: Optional[StringsList] = None,
+        services: StringsList | None = None,
         force_restart: bool = False,
     ) -> str:
         return test_create_app(
@@ -84,7 +84,7 @@ class AbstractAppTestCase(AbstractTestCase):
     def create_and_start_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,
-        services: Optional[StringsList] = None,
+        services: StringsList | None = None,
         force_restart: bool = False,
     ) -> str:
         name = test_build_app_name(name, services)

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class HasAttachedResponse(AbstractResponse):
-    def __init__(self, kernel: "Kernel", response: Optional[Any] = None) -> None:
+    def __init__(self, kernel: Kernel, response: Any | None = None) -> None:
         super().__init__(kernel)
 
         self.response: Any = response

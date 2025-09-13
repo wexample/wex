@@ -23,10 +23,10 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @app_command(help="Set app files permissions", should_be_valid=True)
-def app__app__perms(manager: "AppAddonManager", app_dir: str) -> None:
+def app__app__perms(manager: AppAddonManager, app_dir: str) -> None:
     kernel = manager.kernel
-    user: Optional[str | int]
-    group: Optional[str | int]
+    user: str | int | None
+    group: str | int | None
     env = _app__env__get(kernel, kernel.directory.path)
     no_auto_local_config = manager.get_config_or_service_config(
         key="permissions.no_auto_local", service=None, default=False

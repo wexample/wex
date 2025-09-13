@@ -18,7 +18,7 @@ MODEL_NAME_OPEN_AI_GPT_4 = "open_ai:gpt-4"
 
 
 class OpenAiModel(AbstractModel):
-    api_key: Optional[str] = None
+    api_key: str | None = None
 
     def activate(self) -> None:
         api_key_val = self.kernel.env("OPENAI_API_KEY", required=True)
@@ -30,8 +30,8 @@ class OpenAiModel(AbstractModel):
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        functions: List[str | None],
-    ) -> Optional[str]:
+        functions: list[str | None],
+    ) -> str | None:
         """
         The tagging mechanism works well on GPT4 only.
         """

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Return list of containers for given app")
-def app__container__list(manager: "AppAddonManager", app_dir: str) -> StringsList:
+def app__container__list(manager: AppAddonManager, app_dir: str) -> StringsList:
     container_names = []
 
     if manager.runtime_docker_compose and "services" in manager.runtime_docker_compose:

@@ -61,7 +61,7 @@ if TYPE_CHECKING:
     help="Do not ask for confirmation",
 )
 def wordpress__url__replace(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     new_url: None | str = None,
@@ -73,7 +73,7 @@ def wordpress__url__replace(
 
     def _build_urls(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> Optional[HiddenResponse | QueuedCollectionStopResponse]:
+    ) -> HiddenResponse | QueuedCollectionStopResponse | None:
         nonlocal new_url
         nonlocal old_url
 
@@ -177,8 +177,8 @@ def wordpress__url__replace(
 
 
 def wordpress__url__replace__prepare_url(
-    manager: "AppAddonManager", url: str
-) -> Optional[str]:
+    manager: AppAddonManager, url: str
+) -> str | None:
     url = url.rstrip("/")  # Remove trailing slash
 
     if not wordpress__url__replace__is_valid_url(url):

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install the ai service", command_type=COMMAND_TYPE_SERVICE)
 def ai__service__install(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     docker_config_path = manager.get_env_dir() + DOCKER_COMPOSE_REL_PATH_BASE
     # yaml_read returns a StructuredData union. Cast to a dict for typed indexing.

@@ -36,8 +36,8 @@ if TYPE_CHECKING:
     help="Remote environment (dev, prod)",
 )
 def app__remote__push(
-    manager: "AppAddonManager", environment: str, app_dir: str
-) -> Optional[DictResponse]:
+    manager: AppAddonManager, environment: str, app_dir: str
+) -> DictResponse | None:
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__push
     )

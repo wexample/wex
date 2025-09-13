@@ -26,7 +26,7 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def get_vector_store_collection_name(self) -> str:
         return "dir-search"
 
-    def get_dir_subject(self) -> "DirChatSubject":
+    def get_dir_subject(self) -> DirChatSubject:
         return cast("DirChatSubject", self.assistant.get_current_subject())
 
     def get_storage_signature(self) -> str:
@@ -34,13 +34,13 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         return {"signature": self.get_storage_signature()}
 
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         subject = self.get_dir_subject()
 

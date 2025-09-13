@@ -11,5 +11,5 @@ if TYPE_CHECKING:
 
 @alias("this-is-a-test-alias")
 @test_command()
-def test__demo_command__alias(kernel: "Kernel") -> str:
+def test__demo_command__alias(kernel: Kernel) -> str:
     return "ALIAS"

@@ -6,5 +6,5 @@ from pydantic import BaseModel
 
 
 class ReliableValue(BaseModel):
-    value: Union[str, int, None]
+    value: str | int | None
     reliability: Literal["reliable", "unreliable", "dubious"]

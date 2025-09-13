@@ -13,6 +13,6 @@ if TYPE_CHECKING:
 
 @attach(position="after", command=test__command__has_attached)
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def test__attach__after(kernel: "Kernel") -> str:
+def test__attach__after(kernel: Kernel) -> str:
     kernel.io.log(f"Running AFTER")
     return "AFTER"

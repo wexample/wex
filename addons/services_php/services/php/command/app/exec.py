@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 )
 @option("--container", "-c", type=str, required=False, help="Target container")
 def php__app__exec(
-    manager: "AppAddonManager", app_dir: str, service: str, container: None
-) -> Optional[ShellCommandsDeepList]:
+    manager: AppAddonManager, app_dir: str, service: str, container: None
+) -> ShellCommandsDeepList | None:
     # Prevent returning data when entering another container.
     if container == service:
         return ["cd", "/var/www/html"]

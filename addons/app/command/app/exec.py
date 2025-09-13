@@ -57,7 +57,7 @@ if TYPE_CHECKING:
     help="Do not fail on error",
 )
 def app__app__exec(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     command: str,
     container_name: str | None = None,

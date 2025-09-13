@@ -24,7 +24,7 @@ FORMATED_DATA_FORMATS = [
 
 
 class FormatedDataInteractionMode(AbstractInteractionMode):
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             f"You generate structured data in {(' '.join(prompt_section.flags)).upper()} format, "
             f"with any other text before or after. "
@@ -33,7 +33,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
     def get_output_parser(
         self, prompt_section: UserPromptSection
-    ) -> Optional[BaseOutputParser[Any]]:
+    ) -> BaseOutputParser[Any] | None:
         if FORMATED_DATA_FORMAT_COMMA_SEPARATED in prompt_section.flags:
             from langchain_core.output_parsers import CommaSeparatedListOutputParser
 
@@ -53,7 +53,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
 
         return None
 
-    def get_pydantic_model(self) -> Type[BaseModel]:
+    def get_pydantic_model(self) -> type[BaseModel]:
         class AnyFieldObjectContainer(BaseModel):
             class Config:
                 extra = Extra.allow

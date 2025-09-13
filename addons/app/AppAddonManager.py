@@ -4,7 +4,8 @@ import datetime
 import getpass
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from collections.abc import Mapping
 
 import yaml
 from wexample_helpers.helpers.args import args_push_one, args_shift_one
@@ -80,20 +81,20 @@ if TYPE_CHECKING:
 
 class AppAddonManager(AddonManager):
     def __init__(
-        self, kernel: "Kernel", name: str = COMMAND_TYPE_APP, app_dir: None | str = None
+        self, kernel: Kernel, name: str = COMMAND_TYPE_APP, app_dir: None | str = None
     ) -> None:
         super().__init__(kernel, name)
-        self._config: Optional[AppConfig] = None
-        self._runtime_config: Optional[AppRuntimeConfig] = None
+        self._config: AppConfig | None = None
+        self._runtime_config: AppRuntimeConfig | None = None
 
-        self.app_dir: Optional[str] = None
-        self.config_path: Optional[str] = None
-        self.app_dirs_stack: List[str | None] = []
-        self.runtime_config_path: Optional[str] = None
-        self.runtime_docker_compose: Optional[DockerCompose] = None
-        self.runtime_docker_compose_path: Optional[str] = None
-        self.first_log_indent: Optional[int] = None
-        self._directory: Optional[AppDirectoryStructure] = None
+        self.app_dir: str | None = None
+        self.config_path: str | None = None
+        self.app_dirs_stack: list[str | None] = []
+        self.runtime_config_path: str | None = None
+        self.runtime_docker_compose: DockerCompose | None = None
+        self.runtime_docker_compose_path: str | None = None
+        self.first_log_indent: int | None = None
+        self._directory: AppDirectoryStructure | None = None
 
         if app_dir:
             self.set_app_workdir(app_dir)
@@ -122,10 +123,10 @@ class AppAddonManager(AddonManager):
 
         return self._directory
 
-    def get_app_name(self, default: Optional[str] = None) -> str:
+    def get_app_name(self, default: str | None = None) -> str:
         return self.get_config("global.name", default).get_str()
 
-    def get_applications_path(self, environment: Optional[str] = None) -> str:
+    def get_applications_path(self, environment: str | None = None) -> str:
         return (
             os.sep
             + os.path.join(
@@ -147,7 +148,7 @@ class AppAddonManager(AddonManager):
 
         return env_file_path
 
-    def get_env_dir(self, dir: Optional[str] = None, create: bool = False) -> str:
+    def get_env_dir(self, dir: str | None = None, create: bool = False) -> str:
         app_dir = self.get_app_dir()
 
         if dir:
@@ -160,7 +161,7 @@ class AppAddonManager(AddonManager):
 
         return env_dir
 
-    def load_script(self, name: str) -> Optional[YamlContent]:
+    def load_script(self, name: str) -> YamlContent | None:
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
         return cast(Optional[YamlContent], yaml_read(script_dir))
 
@@ -168,11 +169,11 @@ class AppAddonManager(AddonManager):
         return "-".join([CORE_COMMAND_NAME, short_name])
 
     def get_helper_app_path(
-        self, short_name: str, environment: Optional[str] = None
+        self, short_name: str, environment: str | None = None
     ) -> str:
         return f"{self.get_applications_path(environment)}{self.get_helper_app_name(short_name)}{os.sep}"
 
-    def get_proxy_apps(self, environment: Optional[str] = None) -> AppsPathsList:
+    def get_proxy_apps(self, environment: str | None = None) -> AppsPathsList:
         return cast(
             AppsPathsList,
             yaml_read(
@@ -207,14 +208,14 @@ class AppAddonManager(AddonManager):
 
     @classmethod
     def _load_config(
-        cls, path: str, default: Optional[YamlContentDict] = None
+        cls, path: str, default: YamlContentDict | None = None
     ) -> YamlContentDict:
         return yaml_read_dict(path, default) or {}
 
     def create_config(
         self,
         app_name: str,
-        domains: Optional[StringsList] = None,
+        domains: StringsList | None = None,
     ) -> AppConfig:
         if domains is None:
             domains = []
@@ -269,7 +270,7 @@ class AppAddonManager(AddonManager):
             },
         )
 
-    def _save_config(self, path: Optional[str], config: Optional[AnyAppConfig]) -> None:
+    def _save_config(self, path: str | None, config: AnyAppConfig | None) -> None:
         if not path or not config:
             return
 
@@ -279,7 +280,7 @@ class AppAddonManager(AddonManager):
         self._save_config(self.config_path, self._config)
 
     def save_runtime_config(
-        self, user: Optional[str] = None, group: Optional[str] = None
+        self, user: str | None = None, group: str | None = None
     ) -> None:
         self._save_config(self.runtime_config_path, self._runtime_config)
 
@@ -287,7 +288,7 @@ class AppAddonManager(AddonManager):
 
         app_env_path = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
-        env_dict: Dict[str, Any] = {"# .env config": True}
+        env_dict: dict[str, Any] = {"# .env config": True}
 
         env_dict.update(file_env_to_dict(app_env_path))
 
@@ -317,13 +318,13 @@ class AppAddonManager(AddonManager):
     def dict_to_docker_env(
         self, config: Mapping[str, Any], parent_key: str = "", sep: str = "_"
     ) -> AppDockerEnvConfig:
-        items: List[Any] = []
+        items: list[Any] = []
 
         for k, v in config.items():
             new_key = parent_key + sep + k if parent_key else k
             new_key = string_to_snake_case(new_key)
             new_key = new_key.upper()
-            if isinstance(v, Dict):
+            if isinstance(v, dict):
                 items.extend(self.dict_to_docker_env(v, new_key, sep=sep).items())
             else:
                 items.append((new_key, cast(Any, v)))
@@ -332,8 +333,8 @@ class AppAddonManager(AddonManager):
 
     def _set_config_value(
         self,
-        config: Optional[AnyAppConfig],
-        key: Union[str | StringsList],
+        config: AnyAppConfig | None,
+        key: str | StringsList,
         value: Any,
         when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
@@ -348,7 +349,7 @@ class AppAddonManager(AddonManager):
 
     def set_config(
         self,
-        key: Union[str | StringsList],
+        key: str | StringsList,
         value: AppConfigValue,
         when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
@@ -366,7 +367,7 @@ class AppAddonManager(AddonManager):
 
         self.save_runtime_config()
 
-    def config_to_dict(self, config: Optional[AnyAppConfig]) -> StringKeysDict:
+    def config_to_dict(self, config: AnyAppConfig | None) -> StringKeysDict:
         if not config:
             return {}
 
@@ -395,7 +396,7 @@ class AppAddonManager(AddonManager):
         return self._config
 
     def get_config(
-        self, key: str, default: Optional[AppConfigValue] = None
+        self, key: str, default: AppConfigValue | None = None
     ) -> ConfigValue:
         return self._get_config_value(self.get_config_content(), key, default)
 
@@ -403,7 +404,7 @@ class AppAddonManager(AddonManager):
         self,
         config_dict: AppConfig | AppRuntimeConfig,
         key: str,
-        default: Optional[AppConfigValue] = None,
+        default: AppConfigValue | None = None,
     ) -> ConfigValue:
         value = dict_get_item_by_path(config_dict, key, default)
 
@@ -429,7 +430,7 @@ class AppAddonManager(AddonManager):
         self.kernel.io.log(message, color, indent, verbosity)
 
     def has_config(
-        self, key: str, with_type: Optional[type] = None, accept_none: bool = False
+        self, key: str, with_type: type | None = None, accept_none: bool = False
     ) -> bool:
         if not self._config:
             return False
@@ -455,11 +456,11 @@ class AppAddonManager(AddonManager):
         return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)
 
     def get_runtime_config(
-        self, key: str, default: Optional[AppConfigValue] = None
+        self, key: str, default: AppConfigValue | None = None
     ) -> ConfigValue:
         return self._get_config_value(self.get_runtime_config_content(), key, default)
 
-    def ignore_app_dir(self, request: "CommandRequest") -> bool:
+    def ignore_app_dir(self, request: CommandRequest) -> bool:
         if request._script_command is None:
             return False
 
@@ -467,7 +468,7 @@ class AppAddonManager(AddonManager):
         # This is not a function property class.
         return not isinstance(request.get_script_command(), AppCommand)
 
-    def hook_render_request_pre(self, request: "CommandRequest") -> None:
+    def hook_render_request_pre(self, request: CommandRequest) -> None:
         if self.ignore_app_dir(request):
             return
 
@@ -554,7 +555,7 @@ class AppAddonManager(AddonManager):
 
         return self.app_dir
 
-    def hook_render_request_post(self, response: "AbstractResponse") -> None:
+    def hook_render_request_post(self, response: AbstractResponse) -> None:
         request = response.get_request()
 
         if self.ignore_app_dir(
@@ -599,7 +600,7 @@ class AppAddonManager(AddonManager):
             yaml.dump(proxy_apps, f, indent=True)
 
     def has_proxy_app(
-        self, app_name: Optional[str] = None, environment: Optional[str] = None
+        self, app_name: str | None = None, environment: str | None = None
     ) -> bool:
         environment = environment or self.get_env()
 
@@ -682,7 +683,7 @@ class AppAddonManager(AddonManager):
         return response
 
     def build_runtime_config(
-        self, user: Optional[str] = None, group: Optional[str] = None
+        self, user: str | None = None, group: str | None = None
     ) -> None:
         import socket
 
@@ -788,7 +789,7 @@ class AppAddonManager(AddonManager):
         )
 
     def has_service_config(
-        self, key: str, service: str | None = None, default: Optional[Any] = None
+        self, key: str, service: str | None = None, default: Any | None = None
     ) -> bool:
         service = service or (
             self.get_main_service() if self.has_main_service() else None
@@ -802,7 +803,7 @@ class AppAddonManager(AddonManager):
         return self.has_config(key)
 
     def get_config_or_service_config(
-        self, key: str, service: str | None = None, default: Optional[Any] = None
+        self, key: str, service: str | None = None, default: Any | None = None
     ) -> ConfigValue:
         if self.has_config(key):
             return self.get_config(key)
@@ -810,7 +811,7 @@ class AppAddonManager(AddonManager):
         return self.get_service_config(key=key, service=service, default=default)
 
     def get_service_config(
-        self, key: str, service: str | None = None, default: Optional[Any] = None
+        self, key: str, service: str | None = None, default: Any | None = None
     ) -> ConfigValue:
         found_service = service or (
             self.get_main_service() if self.has_main_service() else None
@@ -890,7 +891,7 @@ class AppAddonManager(AddonManager):
 
         return False
 
-    def get_env_var(self, key: str) -> Optional[str]:
+    def get_env_var(self, key: str) -> str | None:
         from dotenv import dotenv_values
 
         app_env_path = os.path.join(self.get_app_dir(), APP_FILEPATH_REL_ENV)
@@ -898,7 +899,7 @@ class AppAddonManager(AddonManager):
 
         return str(value) if value else None
 
-    def get_env(self, app_dir: Optional[str] = None) -> str:
+    def get_env(self, app_dir: str | None = None) -> str:
         from addons.app.command.env.get import _app__env__get
 
         env = _app__env__get(self.kernel, app_dir or self.get_app_dir())
@@ -906,7 +907,7 @@ class AppAddonManager(AddonManager):
 
         return env
 
-    def app_is_reverse_proxy(self, app_dir: Optional[str] = None) -> bool:
+    def app_is_reverse_proxy(self, app_dir: str | None = None) -> bool:
         from addons.app.command.service.used import app__service__used
 
         return bool(

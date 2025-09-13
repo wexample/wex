@@ -22,10 +22,10 @@ class FormatCommand(DefaultCommand):
     def name() -> str:
         return "format"
 
-    def get_flags(self) -> List[str]:
+    def get_flags(self) -> list[str]:
         return FORMATED_DATA_FORMATS
 
     def get_interaction_mode(
-        self, prompt_section: "UserPromptSection"
-    ) -> Type[AbstractInteractionMode]:
+        self, prompt_section: UserPromptSection
+    ) -> type[AbstractInteractionMode]:
         return FormatedDataInteractionMode

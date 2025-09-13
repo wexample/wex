@@ -25,14 +25,14 @@ if TYPE_CHECKING:
 
 class AbstractResponse(AbsractKernelChild, HasRequest):
     def __init__(
-        self, kernel: "Kernel", default_render_mode: Optional[str] = None
+        self, kernel: Kernel, default_render_mode: str | None = None
     ) -> None:
         AbsractKernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
         self._default_render_mode = default_render_mode
-        self.parent: Optional["AbstractResponse"] = None
-        self.output_bag: List[ResponsePrintType | AbstractResponse] = []
+        self.parent: AbstractResponse | None = None
+        self.output_bag: list[ResponsePrintType | AbstractResponse] = []
         self.parent = None
         self.rendered = False
         # This may be used only by queued responses,
@@ -44,7 +44,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         # we call it "interactive".
         self.interactive_data = False
 
-    def get_root_parent(self) -> "AbstractResponse":
+    def get_root_parent(self) -> AbstractResponse:
         if self.parent:
             return self.parent.get_root_parent()
         return self
@@ -86,7 +86,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         request: CommandRequest,
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         pass
 
     def print(
@@ -167,7 +167,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
 
     def print_wrapped(
         self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
-    ) -> Optional[str]:
+    ) -> str | None:
         if render_mode == KERNEL_RENDER_MODE_NONE:
             return None
 
@@ -222,4 +222,4 @@ class HasResponse(BaseClass):
         return self._response
 
 
-ResponseCollection = List[AbstractResponse]
+ResponseCollection = list[AbstractResponse]

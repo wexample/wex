@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 )
 @option("--dir", "-d", type=str, required=True, help="Argument")
 def app__config__bind_files(
-    manager: "AppAddonManager", app_dir: str, dir: str
+    manager: AppAddonManager, app_dir: str, dir: str
 ) -> StringKeysDict:
     sub_dir_full = os.path.join(app_dir, APP_DIR_APP_DATA, dir)
     section_files = os.listdir(sub_dir_full)
@@ -29,7 +29,7 @@ def app__config__bind_files(
     for file in section_files:
         split = file.split(".")
         base_name = split[0]
-        conf_var_name_list: Optional[StringsList] = split.copy()
+        conf_var_name_list: StringsList | None = split.copy()
         is_env = False
 
         # Check if there are more than two pieces in the file name

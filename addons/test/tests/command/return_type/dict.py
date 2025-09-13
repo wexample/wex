@@ -23,7 +23,7 @@ class TestTestCommandReturnTypeDict(AbstractTestCase):
             },
         )
 
-    def _test_dict(self, render_mode: str) -> Optional[str]:
+    def _test_dict(self, render_mode: str) -> str | None:
         response = self.kernel.run_function(
             test__return_type__dict,
             {

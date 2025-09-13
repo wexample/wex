@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 @command(help="Parse a version string and return its components")
 @option("--version", "-v", type=str, required=True, help="The version string to parse")
-def default__version__parse(kernel: "Kernel", version: str) -> VersionDescriptor | None:
-    pre_build_number: Optional[int] = None
-    pre_build_type: Optional[str] = None
+def default__version__parse(kernel: Kernel, version: str) -> VersionDescriptor | None:
+    pre_build_number: int | None = None
+    pre_build_type: str | None = None
 
     try:
         # Handle 1.0.0-beta.1+build.1234

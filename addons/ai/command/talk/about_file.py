@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
 @option("--file", "-f", type=str, required=True, help="File path")
-def ai__talk__about_file(kernel: "Kernel", file: str) -> None:
+def ai__talk__about_file(kernel: Kernel, file: str) -> None:
     assistant = Assistant(kernel, MODEL_NAME_OPEN_AI_GPT_4)
 
     cast(FileChatSubject, assistant.set_subject(FileChatSubject.name()))

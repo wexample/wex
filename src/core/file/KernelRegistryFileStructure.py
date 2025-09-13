@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
 class KernelRegistryFileStructure(YamlFileStructure):
     # May not exist when cache flushed
-    should_exist: Optional[bool] = False
-    kernel: "Kernel"
+    should_exist: bool | None = False
+    kernel: Kernel
     content: KernelRegistry
 
-    def __init__(self, kernel: "Kernel", path: str, initialize: bool = True) -> None:
+    def __init__(self, kernel: Kernel, path: str, initialize: bool = True) -> None:
         self.kernel = kernel
 
         super().__init__(path=path, initialize=initialize)
@@ -23,7 +23,7 @@ class KernelRegistryFileStructure(YamlFileStructure):
         # Always load at creation
         self.load_content()
 
-    def load_content(self, default: Optional[YamlContentDict] = None) -> None:
+    def load_content(self, default: YamlContentDict | None = None) -> None:
         content = self.load_content_yaml_dict(default)
 
         self.content = KernelRegistry(

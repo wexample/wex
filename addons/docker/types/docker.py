@@ -4,56 +4,56 @@ from typing import Any, Dict, List, Optional, TypedDict, Union
 
 
 class DockerComposeHealthcheck(TypedDict, total=False):
-    test: Union[str, List[str]]
-    interval: Optional[str]
-    timeout: Optional[str]
-    retries: Optional[int]
-    start_period: Optional[str]
+    test: str | list[str]
+    interval: str | None
+    timeout: str | None
+    retries: int | None
+    start_period: str | None
 
 
 class DockerComposeDeploy(TypedDict, total=False):
-    mode: Optional[str]
-    replicas: Optional[int]
-    labels: Optional[List[str]]
-    update_config: Optional[Dict[str, Union[str, int]]]
-    resources: Optional[Dict[str, Dict[str, Dict[str, int]]]]
-    restart_policy: Optional[Dict[str, Union[str, int]]]
+    mode: str | None
+    replicas: int | None
+    labels: list[str] | None
+    update_config: dict[str, str | int] | None
+    resources: dict[str, dict[str, dict[str, int]]] | None
+    restart_policy: dict[str, str | int] | None
 
 
 class DockerComposeService(TypedDict, total=False):
-    container_name: Optional[str]
-    environment: Optional[Union[List[str], Dict[str, str]]]
-    image: Optional[str]
-    build: Optional[Union[str, Dict[str, Union[str, List[str]]]]]
-    command: Optional[Union[str, List[str]]]
-    entrypoint: Optional[Union[str, List[str]]]
-    ports: Optional[List[str]]
-    volumes: Optional[List[str]]
-    networks: Optional[List[str]]
-    depends_on: Optional[List[str]]
-    privileged: Optional[bool]
-    restart: Optional[str]
-    stdin_open: Optional[bool]
-    tty: Optional[bool]
-    deploy: Optional[DockerComposeDeploy]
-    healthcheck: Optional[DockerComposeHealthcheck]
+    container_name: str | None
+    environment: list[str] | dict[str, str] | None
+    image: str | None
+    build: str | dict[str, str | list[str]] | None
+    command: str | list[str] | None
+    entrypoint: str | list[str] | None
+    ports: list[str] | None
+    volumes: list[str] | None
+    networks: list[str] | None
+    depends_on: list[str] | None
+    privileged: bool | None
+    restart: str | None
+    stdin_open: bool | None
+    tty: bool | None
+    deploy: DockerComposeDeploy | None
+    healthcheck: DockerComposeHealthcheck | None
 
 
 class DockerComposeNetwork(TypedDict, total=False):
-    driver: Optional[str]
-    driver_opts: Optional[Dict[str, str]]
-    ipam: Optional[Dict[str, Any]]
-    external: Optional[bool]
+    driver: str | None
+    driver_opts: dict[str, str] | None
+    ipam: dict[str, Any] | None
+    external: bool | None
 
 
 class DockerComposeVolume(TypedDict, total=False):
-    driver: Optional[str]
-    driver_opts: Optional[Dict[str, str]]
-    external: Optional[bool]
+    driver: str | None
+    driver_opts: dict[str, str] | None
+    external: bool | None
 
 
 class DockerCompose(TypedDict, total=False):
     version: str
-    services: Dict[str, DockerComposeService]
-    networks: Optional[Dict[str, DockerComposeNetwork]]
-    volumes: Optional[Dict[str, DockerComposeVolume]]
+    services: dict[str, DockerComposeService]
+    networks: dict[str, DockerComposeNetwork] | None
+    volumes: dict[str, DockerComposeVolume] | None

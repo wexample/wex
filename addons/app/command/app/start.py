@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import os.path
 import time
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, List, Optional
+from collections.abc import Callable
 
 import click
 
@@ -67,12 +68,12 @@ if TYPE_CHECKING:
 @option("--no-proxy", "-nopx", is_flag=True, required=False, help="Do not start proxy")
 @option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")
 def app__app__start(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     clear_cache: bool = False,
-    user: Optional[str] = USER_WWW_DATA,
-    group: Optional[str] = USER_WWW_DATA,
-    env: Optional[str] = None,
+    user: str | None = USER_WWW_DATA,
+    group: str | None = USER_WWW_DATA,
+    env: str | None = None,
     no_proxy: bool = False,
     fast: bool = False,
 ) -> str:
@@ -310,7 +311,7 @@ def app__app__start(
             ]
         )
 
-    steps: List[Callable[[], object]]
+    steps: list[Callable[[], object]]
 
     if fast:
         steps = [

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 def app_webhook() -> AnyCallable:
-    def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
+    def decorator(script_command: ScriptCommand) -> ScriptCommand:
         script_command.set_extra_value("app_webhook")
 
         return script_command

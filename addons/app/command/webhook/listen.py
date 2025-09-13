@@ -77,12 +77,12 @@ if TYPE_CHECKING:
     help="Kill existing process if already running",
 )
 def app__webhook__listen(
-    kernel: "Kernel",
+    kernel: Kernel,
     port: int = WEBHOOK_LISTEN_PORT_DEFAULT,
     dry_run: bool = False,
     asynchronous: bool = False,
     force: bool = False,
-) -> Optional[AbstractResponse]:
+) -> AbstractResponse | None:
     if system_is_port_open(port):
         if force:
             kernel.io.log(f"Port already in use {port}, killing process...")

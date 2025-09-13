@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     help="Remote environment (dev, prod)",
 )
 def app__remote__go(
-    manager: "AppAddonManager", app_dir: str, environment: str
-) -> Optional[InteractiveShellCommandResponse]:
+    manager: AppAddonManager, app_dir: str, environment: str
+) -> InteractiveShellCommandResponse | None:
     result = manager.kernel.run_function(
         app__remote__exec,
         {

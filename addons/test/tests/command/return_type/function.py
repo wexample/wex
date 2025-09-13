@@ -23,7 +23,7 @@ class TestTestCommandReturnTypeFunction(AbstractTestCase):
             },
         )
 
-    def _test_function(self, render_mode: str) -> Optional[str]:
+    def _test_function(self, render_mode: str) -> str | None:
         response = self.kernel.run_function(
             test__return_type__function, {"arg": "test"}, render_mode=render_mode
         )

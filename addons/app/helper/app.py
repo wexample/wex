@@ -27,7 +27,7 @@ def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
     return True
 
 
-def app_create_manager(kernel: "Kernel", app_dir: str) -> AppAddonManager:
+def app_create_manager(kernel: Kernel, app_dir: str) -> AppAddonManager:
     """
     Force manager create even dir is not a valid app.
     Useful to work with apps in an invalid state.

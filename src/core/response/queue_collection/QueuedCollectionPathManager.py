@@ -22,23 +22,23 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         HasRequest.__init__(self)
 
         self.root_request = root_request
-        self._response: Optional["QueuedCollectionResponse"] = None
-        self.steps: "QueuedCollectionStepsList" = [None]
-        self.map: Dict[str, AbstractResponse] = {}
+        self._response: QueuedCollectionResponse | None = None
+        self.steps: QueuedCollectionStepsList = [None]
+        self.map: dict[str, AbstractResponse] = {}
 
         args = root_request.get_args_list().copy()
         steps = args_shift_one(args, "command-request-step")
         if steps:
             self.steps = list(map(int, str(steps).split(".")))
 
-    def get_response(self) -> "QueuedCollectionResponse":
+    def get_response(self) -> QueuedCollectionResponse:
         return cast("QueuedCollectionResponse", super().get_response())
 
-    def get_step_index(self) -> "QueuedCollectionStepValue":
+    def get_step_index(self) -> QueuedCollectionStepValue:
         return self.steps[self.get_response().step_position]
 
     def start_rendering(
-        self, request: CommandRequest, response: "QueuedCollectionResponse"
+        self, request: CommandRequest, response: QueuedCollectionResponse
     ) -> None:
         self.set_request(request)
         self.set_response(response)
@@ -71,5 +71,5 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
     def has_child_queue(self) -> bool:
         return self.get_response().step_position >= len(self.steps)
 
-    def build_step_path(self, steps: Optional[QueuedCollectionStepsList] = None) -> str:
+    def build_step_path(self, steps: QueuedCollectionStepsList | None = None) -> str:
         return ".".join(map(str, steps if steps is not None else self.steps))

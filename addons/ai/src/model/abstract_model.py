@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from collections.abc import Sequence
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
 from langchain.prompts import ChatPromptTemplate
@@ -31,9 +32,9 @@ if TYPE_CHECKING:
 
 
 class AbstractModel(AbstractAssistantChild):
-    _llm: Optional[BaseLanguageModel[Any]]
+    _llm: BaseLanguageModel[Any] | None
 
-    def __init__(self, assistant: "Assistant", identifier: str) -> None:
+    def __init__(self, assistant: Assistant, identifier: str) -> None:
         super().__init__(assistant)
 
         self.identifier = identifier
@@ -59,8 +60,8 @@ class AbstractModel(AbstractAssistantChild):
     ) -> ChatPromptTemplate:
         assistant = self.assistant
 
-        parts: List[tuple[str, str]] = []
-        personalities = cast(Dict[str, Dict[str, Any]], assistant.personalities)
+        parts: list[tuple[str, str]] = []
+        personalities = cast(dict[str, dict[str, Any]], assistant.personalities)
         personality_conf = personalities.get(assistant.personality, {})
         raw_personality_prompt = personality_conf.get("prompt")
         personality_prompt = (
@@ -75,7 +76,7 @@ class AbstractModel(AbstractAssistantChild):
             (
                 "system",
                 f"##LANGUAGE"
-                f'\nYou use "{str(cast(Dict[str, Any], assistant.languages).get(assistant.language, ""))}" language in every text, '
+                f'\nYou use "{str(cast(dict[str, Any], assistant.languages).get(assistant.language, ""))}" language in every text, '
                 f"even if the person uses another language, unless you are explicitly asked to do otherwise.",
             ),
         ]
@@ -108,7 +109,7 @@ class AbstractModel(AbstractAssistantChild):
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        prompt_parameters: Optional[StringKeysDict] = None,
+        prompt_parameters: StringKeysDict | None = None,
     ) -> str:
         return self.chain_invoke_and_parse(
             interaction_mode=interaction_mode,
@@ -119,10 +120,10 @@ class AbstractModel(AbstractAssistantChild):
 
     def create_few_shot_prompt_template(
         self,
-        interaction_mode: Optional[AbstractInteractionMode] = None,
-        prompt_section: Optional[UserPromptSection] = None,
+        interaction_mode: AbstractInteractionMode | None = None,
+        prompt_section: UserPromptSection | None = None,
         example_prompt: str = "",
-        examples: List[StringKeysDict] = [],
+        examples: list[StringKeysDict] = [],
         input_variables_names: StringsList = [],
         response_variable_name: str = "response",
     ) -> FewShotPromptTemplate:
@@ -155,7 +156,7 @@ class AbstractModel(AbstractAssistantChild):
         prompt_section: UserPromptSection,
         prompt_parameters: StringKeysDict,
         example_prompt: str,
-        examples: List[StringKeysDict],
+        examples: list[StringKeysDict],
         input_variables_names: StringsList,
     ) -> str:
         return self.chain_invoke_and_parse(
@@ -175,7 +176,7 @@ class AbstractModel(AbstractAssistantChild):
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        tools: List[CommandTool],
+        tools: list[CommandTool],
     ) -> str:
         from langchain.agents import AgentExecutor, create_react_agent
 
@@ -197,17 +198,17 @@ class AbstractModel(AbstractAssistantChild):
         interaction_mode: AbstractInteractionMode,
         prompt_template: BasePromptTemplate[Any],
         prompt_section: UserPromptSection,
-        prompt_parameters: Optional[StringKeysDict] = None,
+        prompt_parameters: StringKeysDict | None = None,
     ) -> str:
         model = self.get_llm()
         chain_serializable = prompt_template | model
-        chain = cast(Runnable[Dict[str, Any], Any], chain_serializable)
+        chain = cast(Runnable[dict[str, Any], Any], chain_serializable)
 
         with_message_history = RunnableWithMessageHistory(
             cast(
                 Runnable[
-                    Union[Sequence[BaseMessage], Dict[str, Any]],
-                    Union[str, BaseMessage, Sequence[BaseMessage], Dict[str, Any]],
+                    Union[Sequence[BaseMessage], dict[str, Any]],
+                    Union[str, BaseMessage, Sequence[BaseMessage], dict[str, Any]],
                 ],
                 chain,
             ),
@@ -235,7 +236,7 @@ class AbstractModel(AbstractAssistantChild):
         )
 
         parser = interaction_mode.get_output_parser(prompt_section)
-        config: Dict[str, Dict[str, Any]] = {
+        config: dict[str, dict[str, Any]] = {
             "configurable": {
                 "user_id": self.assistant.user.id,
                 "conversation_id": self.assistant.conversation.id,
@@ -265,8 +266,8 @@ class AbstractModel(AbstractAssistantChild):
         self,
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
-        functions: List[str | None],
-    ) -> Optional[str]:
+        functions: list[str | None],
+    ) -> str | None:
         return None
 
     @abstractmethod

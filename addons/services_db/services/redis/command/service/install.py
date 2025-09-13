@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install database service", command_type=COMMAND_TYPE_SERVICE)
 def redis__service__install(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     name = manager.get_app_name()
     manager.set_config(

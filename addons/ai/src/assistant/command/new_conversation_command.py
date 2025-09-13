@@ -23,8 +23,8 @@ class NewConversationCommand(DefaultCommand):
 
     def execute(
         self,
-        prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None,
+        prompt_section: UserPromptSection | None = None,
+        remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         self.assistant.set_conversation()
 

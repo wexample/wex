@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Update local /etc/hosts file")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
-def app__hosts__update(kernel: "Kernel", env: Optional[str] = None) -> None:
+def app__hosts__update(kernel: Kernel, env: str | None = None) -> None:
     new_block_content_list = []
     ip = kernel.run_function(docker__docker__ip).first()
 
@@ -41,7 +41,7 @@ def app__hosts__update(kernel: "Kernel", env: Optional[str] = None) -> None:
 
     manager.log(f"Updating {SYSTEM_HOSTS_PATH}")
 
-    with open(SYSTEM_HOSTS_PATH, "r") as f:
+    with open(SYSTEM_HOSTS_PATH) as f:
         hosts_content = f.read()
 
     # Remove old wex block

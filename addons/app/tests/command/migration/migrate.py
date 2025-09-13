@@ -16,7 +16,7 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
     def test_migrate(self) -> None:
         source_apps_dir = self.get_app_resources_path()
 
-        test_apps: List[str] = os.listdir(source_apps_dir)
+        test_apps: list[str] = os.listdir(source_apps_dir)
 
         for test_app_dir in test_apps:
             self.log(f"Migrating test app {test_app_dir}")

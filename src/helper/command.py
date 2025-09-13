@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 
 def internal_command_to_shell(
-    kernel: "Kernel", internal_command: str, args: None | list[str] = None
+    kernel: Kernel, internal_command: str, args: None | list[str] = None
 ) -> ShellCommandsList:
     command = (
         ["bash", kernel.get_path("core.cli"), internal_command]
@@ -62,7 +62,7 @@ def command_exists(shell_command: str) -> bool:
 
 
 def execute_command_tree_sync(
-    kernel: "Kernel",
+    kernel: Kernel,
     command_tree: ShellCommandsDeepList,
     working_directory: str | None = None,
     ignore_error: bool = False,
@@ -111,9 +111,9 @@ def execute_command_tree_sync(
 
 
 def execute_command_async(
-    kernel: "Kernel",
+    kernel: Kernel,
     command: ShellCommandsList,
-    working_directory: Optional[str] = None,
+    working_directory: str | None = None,
     **kwargs: Any,
 ) -> Popen[Any]:
     if working_directory is None:
@@ -142,9 +142,9 @@ def execute_command_async(
 
 
 def execute_command_sync(
-    kernel: "Kernel",
-    command: Union[ShellCommandsList, str],
-    working_directory: Optional[str] = None,
+    kernel: Kernel,
+    command: ShellCommandsList | str,
+    working_directory: str | None = None,
     ignore_error: bool = False,
     interactive: bool = False,
     as_sudo_user: bool = True,
@@ -157,9 +157,9 @@ def execute_command_sync(
         command = command.split()
 
     if as_sudo_user:
-        command_prefix: List[str] = ["sudo", "-u", get_user_or_sudo_user()]
+        command_prefix: list[str] = ["sudo", "-u", get_user_or_sudo_user()]
         if isinstance(command, str):
-            cmd_list: List[str] = command.split()
+            cmd_list: list[str] = command.split()
         else:
             cmd_list = list(command)
         command = command_prefix + cmd_list
@@ -245,11 +245,11 @@ def is_same_command(command_a: ScriptCommand, command_b: ScriptCommand) -> bool:
 
 
 def apply_command_decorator(
-    kernel: "Kernel",
+    kernel: Kernel,
     function: ScriptCommand,
     group: str,
     name: str,
-    options: Optional[Dict[str, str]] = None,
+    options: dict[str, str] | None = None,
 ) -> NoReturn | ScriptCommand:
     if group in kernel.decorators and name in kernel.decorators[group]:
         decorator = kernel.decorators[group][name]
@@ -265,7 +265,7 @@ def apply_command_decorator(
 
 def command_get_option(
     script_command: ScriptCommand, option_name: str
-) -> Optional[click.core.Option]:
+) -> click.core.Option | None:
     for option in script_command.click_command.params:
         if option.name == option_name:
             return cast(click.core.Option, option)

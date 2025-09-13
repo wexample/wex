@@ -26,10 +26,10 @@ if TYPE_CHECKING:
     help="Default returned value if not found in config file",
 )
 def app__config__get(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     key: str,
-    default: Optional[str] = None,
+    default: str | None = None,
     runtime: bool = False,
 ) -> AppConfigValue:
     if runtime:

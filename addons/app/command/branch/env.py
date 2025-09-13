@@ -17,12 +17,12 @@ if TYPE_CHECKING:
 )
 @option("--branch", "-b", type=str, required=True, help="Branch name")
 def app__branch__env(
-    manager: "AppAddonManager", branch: str, app_dir: str
-) -> Optional[str]:
+    manager: AppAddonManager, branch: str, app_dir: str
+) -> str | None:
     return _app__branch__env(manager, branch)
 
 
-def _app__branch__env(manager: "AppAddonManager", branch: str) -> Optional[str]:
+def _app__branch__env(manager: AppAddonManager, branch: str) -> str | None:
     environments_config = manager.get_config(f"env").get_dict()
 
     for env in environments_config:

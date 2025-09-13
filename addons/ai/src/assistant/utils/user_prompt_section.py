@@ -7,19 +7,19 @@ from src.core.BaseClass import BaseClass
 
 
 class UserPromptSection(BaseClass):
-    command: Optional[AbstractCommand]
-    prompt: Optional[str]
+    command: AbstractCommand | None
+    prompt: str | None
 
     def __init__(
         self,
-        command: Optional[AbstractCommand],
-        prompt: Optional[str],
-        flags: Optional[List[str]] = None,
+        command: AbstractCommand | None,
+        prompt: str | None,
+        flags: list[str] | None = None,
     ) -> None:
         self._command = command
         self.prompt = prompt
         self.flags = flags or []
-        self.prompt_configurations: List[Tuple[str, str]] = []
+        self.prompt_configurations: list[tuple[str, str]] = []
 
     def has_command(self) -> bool:
         return self._command is not None

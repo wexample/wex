@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @command(help="Resolve dependencies of a service")
 @option("--service", "-s", required=True, help="Find all service dependencies")
 def core__service__resolve(
-    kernel: "Kernel", service: CoreCommandCommaSeparatedList
+    kernel: Kernel, service: CoreCommandCommaSeparatedList
 ) -> StringsList:
     services = args_split_arg_array(service)
     resolved_services: StringsList = []

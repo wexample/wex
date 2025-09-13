@@ -29,8 +29,8 @@ def patch_apply_in_workdir(workdir: str, patch_set: patch.PatchSet) -> bool:
 
 
 def extract_information(
-    patch_content: str, prefix: str, default: Optional[str] = None
-) -> Optional[str]:
+    patch_content: str, prefix: str, default: str | None = None
+) -> str | None:
     # Format the prefix to fit the expected pattern in patch content
     formatted_prefix = f"# {prefix}:"
 
@@ -56,7 +56,7 @@ def patch_clean(patch_content: str) -> str:
     return "\n".join(cleaned_lines).rstrip()
 
 
-def patch_has_all_parts(file_content: str, patch_parts: List[List[str]]) -> bool:
+def patch_has_all_parts(file_content: str, patch_parts: list[list[str]]) -> bool:
     """
     Check if all groups of parts in patch_parts are contained in file_content in the given order.
     Each group must appear in the order provided within the group itself.
@@ -92,7 +92,7 @@ def patch_has_all_parts(file_content: str, patch_parts: List[List[str]]) -> bool
 
 
 def patch_find_line_of_first_subgroup(
-    file_content: str, patch_parts: List[List[str]]
+    file_content: str, patch_parts: list[list[str]]
 ) -> int:
     """
     Find the line number of the first subgroup in patch_parts within the file_content.
@@ -114,7 +114,7 @@ def patch_find_line_of_first_subgroup(
     return -1  # Return -1 if the part is not found or if no parts are provided
 
 
-def patch_get_lines_by_type(patch_content: str, line_type: str) -> List[str]:
+def patch_get_lines_by_type(patch_content: str, line_type: str) -> list[str]:
     """
     Generic function to return lines based on their starting character.
 
@@ -134,21 +134,21 @@ def patch_get_lines_by_type(patch_content: str, line_type: str) -> List[str]:
     return selected_lines
 
 
-def patch_get_initial_lines(patch_content: str) -> List[str]:
+def patch_get_initial_lines(patch_content: str) -> list[str]:
     """
     Return lines which belong to the initial file (exclude the "+" adds) in a patch set.
     """
     return patch_get_lines_by_type(patch_content, "-")
 
 
-def patch_get_applied_lines(patch_content: str) -> List[str]:
+def patch_get_applied_lines(patch_content: str) -> list[str]:
     """
     Return lines as they would appear after the patch is applied (include only the "+" adds).
     """
     return patch_get_lines_by_type(patch_content, "+")
 
 
-def patch_create_hunk_header(file_content: str, patch_content: str) -> Optional[str]:
+def patch_create_hunk_header(file_content: str, patch_content: str) -> str | None:
     patch_parts = patch_get_initial_parts(patch_content)
 
     if patch_has_all_parts(file_content, patch_parts):
@@ -175,7 +175,7 @@ def patch_create_hunk_header(file_content: str, patch_content: str) -> Optional[
     return None
 
 
-def patch_get_initial_parts(patch_content: str) -> List[List[str]]:
+def patch_get_initial_parts(patch_content: str) -> list[list[str]]:
     """
     Extract contiguous groups of lines starting with ' ' or '-', ignoring lines starting with '+' or other characters.
 

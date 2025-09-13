@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     "--command", "-c", type=str, required=True, help="Command to execute in database"
 )
 def mysql__db__exec(
-    manager: "AppAddonManager", app_dir: str, service: str, command: str
+    manager: AppAddonManager, app_dir: str, service: str, command: str
 ) -> str:
     app_name = manager.get_app_name()
 

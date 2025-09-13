@@ -17,7 +17,7 @@ class QueuedCollectionStopCurrentStepResponse(
     AbstractEmptyResponse, HasAttachedResponse
 ):
     def __init__(
-        self, kernel: "Kernel", reason: str, response: Optional[Any] = None
+        self, kernel: Kernel, reason: str, response: Any | None = None
     ) -> None:
         AbstractEmptyResponse.__init__(self, kernel, reason)
         HasAttachedResponse.__init__(self, kernel, response)

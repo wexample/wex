@@ -13,14 +13,14 @@ from src.const.types import StringKeysDict
 
 
 class AbstractChatSubject(AbstractAssistantChild):
-    interaction_modes: Dict[str, AbstractInteractionMode]
-    interaction_mode: Optional[AbstractInteractionMode]
+    interaction_modes: dict[str, AbstractInteractionMode]
+    interaction_mode: AbstractInteractionMode | None
 
     @staticmethod
     def name() -> str:
         return ""
 
-    def activate(self, prompt_section: Optional[UserPromptSection] = None) -> bool:
+    def activate(self, prompt_section: UserPromptSection | None = None) -> bool:
         return True
 
     def get_commands(self) -> StringKeysDict:
@@ -32,5 +32,5 @@ class AbstractChatSubject(AbstractAssistantChild):
     def is_current_subject(self) -> bool:
         return self.assistant.get_current_subject() == self
 
-    def get_prompt_parameters(self) -> Dict[str, str]:
+    def get_prompt_parameters(self) -> dict[str, str]:
         return {}

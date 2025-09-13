@@ -4,7 +4,8 @@ import inspect
 import os
 import shutil
 import unittest
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
+from collections.abc import Iterable
 
 from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (
@@ -56,17 +57,17 @@ class AbstractTestCase(unittest.TestCase):
             f"No such file or directory : {file_path}",
         )
 
-    def assertIsDict(self, value: Any, msg: Optional[str] = None) -> None:
+    def assertIsDict(self, value: Any, msg: str | None = None) -> None:
         self.assertIsOfType(value, dict, msg)
 
-    def assertIsList(self, value: Any, msg: Optional[str] = None) -> None:
+    def assertIsList(self, value: Any, msg: str | None = None) -> None:
         self.assertIsOfType(value, list, msg)
 
-    def assertIsStr(self, value: Any, msg: Optional[str] = None) -> None:
+    def assertIsStr(self, value: Any, msg: str | None = None) -> None:
         self.assertIsOfType(value, str, msg)
 
     def assertIsOfType(
-        self, value: Any, type_: type[Any], msg: Optional[str] = None
+        self, value: Any, type_: type[Any], msg: str | None = None
     ) -> None:
         self.assertTrue(isinstance(value, type_), msg)
 

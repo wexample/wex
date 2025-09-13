@@ -19,7 +19,7 @@ ALLOWED_QUERY_NAME_CHARS = re.compile(r"^[a-zA-Z0-9_&]+$")
 ALLOWED_QUERY_VALUE_CHARS = re.compile(r"^[a-zA-Z0-9_.+ \-]+$")
 
 
-def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
+def routing_get_route_name(url: str, routes: dict[str, Any]) -> str | None:
     parsed_url = urlparse(url)
     path = parsed_url.path
 
@@ -32,13 +32,13 @@ def routing_get_route_name(url: str, routes: Dict[str, Any]) -> Optional[str]:
 class RouteInfo(TypedDict):
     is_async: bool
     name: str
-    match: Optional[StringsList]
+    match: StringsList | None
     query: StringKeysDict
 
 
 def routing_get_route_info(
     url: str, routes: WebhookListenerRoutesMap
-) -> Optional[RouteInfo]:
+) -> RouteInfo | None:
     route_name = routing_get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
@@ -72,7 +72,7 @@ def routing_is_allowed_route(url: str, routes: WebhookListenerRoutesMap) -> bool
     return False
 
 
-def routing_build_webhook_route_map(kernel: "Kernel") -> WebhookListenerRoutesMap:
+def routing_build_webhook_route_map(kernel: Kernel) -> WebhookListenerRoutesMap:
     from addons.app.WebhookHttpRequestHandler import (
         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
         WEBHOOK_COMMAND_PORT_PLACEHOLDER,

@@ -29,7 +29,7 @@ APP_STARTED_CHECK_MODE_ANY_CONTAINER = "any-container"
     help="Define how to define if app is started or not",
 )
 def app__app__started(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:

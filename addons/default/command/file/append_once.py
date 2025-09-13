@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     required=True,
     help="Line to add if not already there somewhere in the file",
 )
-def default__file__append_once(kernel: "Kernel", file: str, line: str) -> None:
+def default__file__append_once(kernel: Kernel, file: str, line: str) -> None:
     """
     Append a line to a file if it doesn't exist already.
     """
@@ -27,7 +27,7 @@ def default__file__append_once(kernel: "Kernel", file: str, line: str) -> None:
     last_char = None
 
     # Open the file in read mode
-    with open(file, "r") as f:
+    with open(file) as f:
         # Check if the line exists already
         content = f.read()
         if line in content:

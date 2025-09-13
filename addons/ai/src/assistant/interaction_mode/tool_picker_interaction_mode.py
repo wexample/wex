@@ -17,9 +17,9 @@ from src.helper.registry import registry_get_all_commands
 
 
 class ToolPickerInteractionMode(AbstractInteractionMode):
-    tools: List[CommandTool]
+    tools: list[CommandTool]
 
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             "Efficiently answer the questions using one of available tools, "
             "then return the answer after first response:"
@@ -39,7 +39,7 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
     def init_tools(self) -> None:
         # Create tools
         all_commands = registry_get_all_commands(self.kernel)
-        self.tools: List[CommandTool] = []
+        self.tools: list[CommandTool] = []
 
         for command_name in all_commands:
             properties = all_commands[command_name]["properties"]
@@ -60,7 +60,7 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         self.init_tools()
 

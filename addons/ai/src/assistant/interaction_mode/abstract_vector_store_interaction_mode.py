@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
-    def __init__(self, assistant: "Assistant") -> None:
+    def __init__(self, assistant: Assistant) -> None:
         super().__init__(assistant)
         self.vectorstore: VectorStore
         self.init_vector_store()
@@ -45,8 +45,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
     def process_user_input(
         self,
-        prompt_section: "UserPromptSection",
-        remaining_sections: List["UserPromptSection"],
+        prompt_section: UserPromptSection,
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
 
         prompt_section.prompt_configurations.append(
@@ -61,12 +61,12 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
     @abstractmethod
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         pass
 
     def get_interaction_mode_prompt_parameters(
         self, prompt_section: UserPromptSection
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         results = self.vectorstore.similarity_search_with_relevance_scores(
             prompt_section.prompt or "",
             k=3,
@@ -150,7 +150,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             # Fallback to a generic text loader if file type is not specifically handled
             return cast(BaseLoader, TextLoader(file_path))
 
-    def vector_find_language_by_extension(self, extension: str) -> Optional[Language]:
+    def vector_find_language_by_extension(self, extension: str) -> Language | None:
         # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
         extensions_map = {
             "c": ["c"],  # C (*)
@@ -194,7 +194,7 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
     def vector_create_file_chunks(
         self, file_path: str, file_signature: str
-    ) -> List[Document]:
+    ) -> list[Document]:
         loader = self.vector_create_file_loader(file_path)
         text_splitter = self.vector_create_text_splitter(file_path)
 

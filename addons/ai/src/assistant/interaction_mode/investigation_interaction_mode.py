@@ -9,7 +9,7 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class InvestigationInteractionMode(DefaultInteractionMode):
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             "You will ask the user questions so that we can identify the source of the problem together."
             "Start with only the first question. "

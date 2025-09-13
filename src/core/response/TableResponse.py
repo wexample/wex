@@ -19,16 +19,16 @@ from src.core.response.AbstractTerminalSectionResponse import (
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
-TableBodyLine = List[BasicInlineValue]
-TableBody = List[TableBodyLine]
+TableBodyLine = list[BasicInlineValue]
+TableBody = list[TableBodyLine]
 
 
 class TableResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
-        kernel: "Kernel",
+        kernel: Kernel,
         title: str | None = None,
-        body: Optional[TableBody] = None,
+        body: TableBody | None = None,
     ) -> None:
         super().__init__(kernel, title)
         self._header: StringsList = []
@@ -64,7 +64,7 @@ class TableResponse(AbstractTerminalSectionResponse):
 
         return self
 
-    def calculate_max_widths(self, array: StringsList) -> List[int]:
+    def calculate_max_widths(self, array: StringsList) -> list[int]:
         """
         Calculate the maximum widths for each column based on the array.
         """
@@ -85,7 +85,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         return max_widths
 
     def render_cli_content(self) -> None:
-        combined_list: List[Any] = [self._header] + self._body
+        combined_list: list[Any] = [self._header] + self._body
 
         if not len(combined_list):
             self.output_bag.append("")

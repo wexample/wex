@@ -17,11 +17,11 @@ if TYPE_CHECKING:
 )
 @option("--database", "-d", type=str, required=False, help="Database name")
 def sqlserver__db__exec(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     command: str,
-    database: Optional[str] = None,
+    database: str | None = None,
 ) -> str:
     return (
         manager.kernel.run_function(

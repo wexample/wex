@@ -10,5 +10,5 @@ if TYPE_CHECKING:
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def test__command__has_attached(kernel: "Kernel") -> str:
+def test__command__has_attached(kernel: Kernel) -> str:
     return "OK"

@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 )
 @option("--container", "-c", type=str, required=False, help="Target container")
 def laravel__app__exec(
-    manager: "AppAddonManager", app_dir: str, service: str, container: None
-) -> Optional[AbstractResponse]:
+    manager: AppAddonManager, app_dir: str, service: str, container: None
+) -> AbstractResponse | None:
     if container == service:
         return manager.kernel.run_function(
             php__app__exec,

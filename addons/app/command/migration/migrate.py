@@ -41,9 +41,9 @@ if TYPE_CHECKING:
     help="Do not ask for confirmation",
 )
 def app__migration__migrate(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str | None = None,
-    from_version: Optional[str] = None,
+    from_version: str | None = None,
     yes: bool = False,
 ) -> None:
     kernel = manager.kernel

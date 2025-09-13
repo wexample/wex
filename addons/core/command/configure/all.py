@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @alias("configure")
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def core__configure__all(kernel: "Kernel") -> None:
+def core__configure__all(kernel: Kernel) -> None:
     kernel.run_function(
         app__env__choose,
         {

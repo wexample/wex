@@ -27,11 +27,11 @@ if TYPE_CHECKING:
     help="Execute command in a sub process",
 )
 def app__db__exec(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     command: str,
-    service: Optional[str] = None,
-    database: Optional[str] = None,
+    service: str | None = None,
+    database: str | None = None,
     sync: bool = False,
 ) -> AbstractResponse:
     service = service or manager.get_config("docker.main_db_container").get_str()

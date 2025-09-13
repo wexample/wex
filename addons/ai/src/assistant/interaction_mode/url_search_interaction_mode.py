@@ -23,10 +23,10 @@ class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
 
     def get_similarity_search_filter(
         self, prompt_section: UserPromptSection
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         return {"signature": self.get_url()}
 
-    def get_url_subject(self) -> "UrlChatSubject":
+    def get_url_subject(self) -> UrlChatSubject:
         return cast("UrlChatSubject", self.assistant.get_current_subject())
 
     def get_url(self) -> str:
@@ -35,7 +35,7 @@ class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         self.vector_store_url(self.get_url(), self.get_storage_signature())
 

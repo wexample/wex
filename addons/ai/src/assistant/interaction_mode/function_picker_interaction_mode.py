@@ -19,13 +19,13 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class FunctionPickerInteractionMode(AbstractInteractionMode):
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return "Provide a command name that aids in responding to the user's query, or None if not applicable."
 
     def process_user_input(
         self,
         prompt_section: UserPromptSection,
-        remaining_sections: List[UserPromptSection],
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         if not prompt_section.prompt:
             return StringInteractionResponse(

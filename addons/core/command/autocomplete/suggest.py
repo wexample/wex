@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     required=True,
     help="Separated arguments, without first command, i.e. : " "app :: config/write",
 )
-def core__autocomplete__suggest(kernel: "Kernel", cursor: int, search: str) -> str:
+def core__autocomplete__suggest(kernel: Kernel, cursor: int, search: str) -> str:
     """
     Works and interact with cli/autocomplete bash command to provide a smart autocomplete integration.
     Returns a string with suggestions to transmit to bash compgen.

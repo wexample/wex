@@ -25,14 +25,14 @@ class DefaultCommand(AbstractCommand):
         return "default"
 
     def get_interaction_mode(
-        self, prompt_section: "UserPromptSection"
-    ) -> Type[AbstractInteractionMode]:
+        self, prompt_section: UserPromptSection
+    ) -> type[AbstractInteractionMode]:
         return DefaultInteractionMode
 
     def execute(
         self,
-        prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None,
+        prompt_section: UserPromptSection | None = None,
+        remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         if prompt_section is None:
             # Fallback: nothing to process

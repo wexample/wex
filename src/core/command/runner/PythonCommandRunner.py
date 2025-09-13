@@ -9,7 +9,7 @@ from src.core.command.ScriptCommand import ScriptCommand
 
 
 class PythonCommandRunner(AbstractCommandRunner):
-    def build_script_command(self) -> Optional[ScriptCommand]:
+    def build_script_command(self) -> ScriptCommand | None:
         request = self.get_request()
         path = request.get_path()
 

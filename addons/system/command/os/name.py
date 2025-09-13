@@ -15,7 +15,7 @@ OS_NAME_WINDOWS: str = "windows"
 
 
 @command(help="Return the local OS name.")
-def system__os__name(kernel: "Kernel") -> str:
+def system__os__name(kernel: Kernel) -> str:
     os_name = platform.system()
 
     if os_name == "Darwin":

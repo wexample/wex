@@ -12,6 +12,6 @@ if TYPE_CHECKING:
 
 @app_command(help="Return true if service is installed on app")
 @service_option()
-def app__service__used(manager: "AppAddonManager", service: str, app_dir: str) -> bool:
+def app__service__used(manager: AppAddonManager, service: str, app_dir: str) -> bool:
     services = cast(RegistryAllServices, manager.get_config("service", {}).get_dict())
     return service in services.keys()

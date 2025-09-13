@@ -12,5 +12,5 @@ if TYPE_CHECKING:
 
 @app_webhook()
 @test_command(command_type=COMMAND_TYPE_SERVICE)
-def test__webhook__test_command(kernel: "Kernel", service: str) -> str:
+def test__webhook__test_command(kernel: Kernel, service: str) -> str:
     return "TEST_WEBHOOK_COMMAND"

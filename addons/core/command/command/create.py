@@ -47,11 +47,11 @@ if TYPE_CHECKING:
     help="Script file extension and resulting format",
 )
 def core__command__create(
-    kernel: "Kernel",
+    kernel: Kernel,
     command: str,
     force: bool = False,
     extension: str = COMMAND_EXTENSION_PYTHON,
-) -> Optional[StringKeysDict]:
+) -> StringKeysDict | None:
     kernel.io.log("Creating command file...")
     request = kernel.create_command_request(command)
 

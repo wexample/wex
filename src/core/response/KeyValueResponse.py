@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 class KeyValueResponse(AbstractTerminalSectionResponse):
     def __init__(
-        self, kernel: "Kernel", dictionary: StringKeysDict, title: str | None = None
+        self, kernel: Kernel, dictionary: StringKeysDict, title: str | None = None
     ) -> None:
         super().__init__(kernel, title)
 

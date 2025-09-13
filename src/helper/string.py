@@ -5,7 +5,8 @@ import random
 import re
 import shutil
 import string
-from typing import List, Mapping, Optional
+from typing import List, Optional
+from collections.abc import Mapping
 
 from wexample_helpers.helpers.string import string_to_snake_case
 
@@ -25,7 +26,7 @@ def string_to_pascal_case(text: str) -> str:
 
 
 def string_format_ignore_missing(
-    value: str, substitutions: Optional[StringsDict] = None
+    value: str, substitutions: StringsDict | None = None
 ) -> str:
     pattern = r"{(\w+)}"
     substitutions = substitutions or {}
@@ -154,7 +155,7 @@ def string_has_trailing_new_line(file_content: str) -> bool:
     return file_content.endswith("\n")
 
 
-def string_add_lines_numbers(file_content: str) -> Optional[str]:
+def string_add_lines_numbers(file_content: str) -> str | None:
     file_content_lines = file_content.split(os.linesep)
 
     # Determine the number of digits in the largest line number for proper alignment
@@ -174,7 +175,7 @@ def string_add_lines_numbers(file_content: str) -> Optional[str]:
     return formatted_content
 
 
-def string_list_calculate_max_widths(array: StringsList) -> List[int]:
+def string_list_calculate_max_widths(array: StringsList) -> list[int]:
     """
     Calculate the maximum widths for each column based on the array.
     """

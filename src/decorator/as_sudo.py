@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 
-def as_sudo() -> "DecoratedScriptCommand":
-    def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
+def as_sudo() -> DecoratedScriptCommand:
+    def decorator(script_command: ScriptCommand) -> ScriptCommand:
         # Say that the function is not allowed to be executed without sudo permissions.
         script_command.as_sudo = True
 

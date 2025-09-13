@@ -22,6 +22,6 @@ class AgentCommand(DefaultCommand):
         return "agent"
 
     def get_interaction_mode(
-        self, prompt_section: "UserPromptSection"
-    ) -> Type[AbstractInteractionMode]:
+        self, prompt_section: UserPromptSection
+    ) -> type[AbstractInteractionMode]:
         return ToolPickerInteractionMode

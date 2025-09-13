@@ -24,8 +24,8 @@ class AppCommand(ScriptCommand):
         self,
         function: AnyCallable,
         command_type: str,
-        decorator_args: "Args",
-        decorator_kwargs: "Kwargs",
+        decorator_args: Args,
+        decorator_kwargs: Kwargs,
     ) -> None:
         # Get and pop interesting args
         dir_required = decorator_kwargs.pop("dir_required", True)
@@ -52,7 +52,7 @@ class AppCommand(ScriptCommand):
 
     def run_script(
         self,
-        runner: "AbstractCommandRunner",
+        runner: AbstractCommandRunner,
         script: YamlCommandScript,
         variables: CoreCommandArgsDict,
     ) -> StringsList:

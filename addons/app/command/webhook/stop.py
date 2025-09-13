@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Stop webhook daemon")
 def app__webhook__stop(
-    kernel: "Kernel",
+    kernel: Kernel,
 ) -> None:
     use_daemon = not kernel.run_function(system__system__is_docker).first()
 

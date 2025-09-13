@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class DatabaseManager(AbstractAssistantChild):
-    def __init__(self, assistant: "Assistant") -> None:
+    def __init__(self, assistant: Assistant) -> None:
         super().__init__(assistant)
 
         manager = assistant.assistant_app_manager
@@ -35,25 +35,25 @@ class DatabaseManager(AbstractAssistantChild):
         self.session = sessionmaker(bind=self.engine)()
         self.metadata = MetaData()
 
-        tables: List[str] = [
+        tables: list[str] = [
             "user",
             "assistant_conversation",
             "assistant_conversation_item",
         ]
 
-        self.tables: Dict[str, Table] = {}
+        self.tables: dict[str, Table] = {}
         for table in tables:
             self.tables[table] = Table(table, self.metadata, autoload_with=self.engine)
 
         self.kernel.io.success("Database ready")
 
-    def get_or_create_user(self) -> Row[Tuple[Any, ...]]:
+    def get_or_create_user(self) -> Row[tuple[Any, ...]]:
         username = get_user_or_sudo_user()
         table = self.tables["user"]
 
         # Query for the user
         query = select(table).where(table.columns.name == username)
-        result: Optional[Row[Tuple[Any, ...]]] = self.session.execute(query).fetchone()
+        result: Row[tuple[Any, ...]] | None = self.session.execute(query).fetchone()
 
         if result is None:
             self.assistant.log(f"User {username} not found in database. Creating now.")
@@ -69,9 +69,9 @@ class DatabaseManager(AbstractAssistantChild):
             self.assistant.log(f"User {username} found in database.")
             return result
 
-    def get_conversations_dict(self) -> Dict[int, str]:
+    def get_conversations_dict(self) -> dict[int, str]:
         conversations = self.get_conversations()
-        conversations_dict: Dict[int, str] = {}
+        conversations_dict: dict[int, str] = {}
 
         for conversation in conversations:
             conversations_dict[conversation.id] = (
@@ -82,7 +82,7 @@ class DatabaseManager(AbstractAssistantChild):
 
         return conversations_dict
 
-    def get_conversations(self) -> List[Row[Tuple[Any, ...]]]:
+    def get_conversations(self) -> list[Row[tuple[Any, ...]]]:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
         query = select(table).where(table.columns.user_id == user.id)
@@ -90,7 +90,7 @@ class DatabaseManager(AbstractAssistantChild):
         rows = self.session.execute(query).fetchall()
         return list(rows)
 
-    def get_last_conversation(self) -> Optional[Row[Tuple[Any, ...]]]:
+    def get_last_conversation(self) -> Row[tuple[Any, ...]] | None:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
 
@@ -100,11 +100,11 @@ class DatabaseManager(AbstractAssistantChild):
         return self.session.execute(query).fetchone()
 
     def get_or_create_conversation(
-        self, conversation_id: Optional[int] = None
-    ) -> Row[Tuple[Any, ...]]:
+        self, conversation_id: int | None = None
+    ) -> Row[tuple[Any, ...]]:
         user = self.get_or_create_user()
         table = self.tables["assistant_conversation"]
-        result: Optional[Row[Tuple[Any, ...]]] = None
+        result: Row[tuple[Any, ...]] | None = None
 
         if conversation_id:
             query = select(table).where(table.columns.id == conversation_id)
@@ -134,7 +134,7 @@ class DatabaseManager(AbstractAssistantChild):
         self.session.add(assistant_conversation_item)
         self.session.commit()
 
-    def get_conversation_items(self, conversation_id: int) -> List[HistoryItem]:
+    def get_conversation_items(self, conversation_id: int) -> list[HistoryItem]:
         query = (
             self.session.query(HistoryItem)
             .filter(HistoryItem.conversation_id == conversation_id)

@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 @ai_tool()
 @alias("logo")
 @command(help="Show application logo")
-def core__logo__show(kernel: "Kernel") -> str:
+def core__logo__show(kernel: Kernel) -> str:
     width = 54
     padding = 2
 

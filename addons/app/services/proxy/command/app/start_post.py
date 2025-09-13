@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Start the proxy", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 def proxy__app__start_post(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     commands = [
         ["touch", "/var/log/nginx/access.log"],

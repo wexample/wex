@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 @option("--file-path", "-fp", type=str, required=False, help="Force file path")
 @option("--database", "-d", type=str, required=False, help="Force database name")
 def app__db__restore(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     file_path: str | None = None,
     database: str | None = None,

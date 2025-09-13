@@ -38,20 +38,20 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 QueuedCollectionStepValue = int | None
-QueuedCollectionStepsList = List[QueuedCollectionStepValue]
-QueuedCollectionResponseCollection = List[BasicValue | AnyCallable | AbstractResponse]
+QueuedCollectionStepsList = list[QueuedCollectionStepValue]
+QueuedCollectionResponseCollection = list[BasicValue | AnyCallable | AbstractResponse]
 
 
 class QueuedCollectionResponse(AbstractResponse):
     ids_counter = 0
 
     def __init__(
-        self, kernel: "Kernel", collection: QueuedCollectionResponseCollection
+        self, kernel: Kernel, collection: QueuedCollectionResponseCollection
     ) -> None:
         super().__init__(kernel)
         self.collection: QueuedCollectionResponseCollection = collection
         self.step_position: int = 0
-        self._path_manager: Optional[QueuedCollectionPathManager] = None
+        self._path_manager: QueuedCollectionPathManager | None = None
 
         manager_class = (
             FastModeQueuedCollectionResponseQueueManager
@@ -73,8 +73,8 @@ class QueuedCollectionResponse(AbstractResponse):
 
         return self._path_manager
 
-    def find_parent_response_collection(self) -> "None|QueuedCollectionResponse":
-        current: Optional["AbstractResponse"] = self
+    def find_parent_response_collection(self) -> None|QueuedCollectionResponse:
+        current: AbstractResponse | None = self
         while current is not None:
             current = current.parent
             if isinstance(current, QueuedCollectionResponse):

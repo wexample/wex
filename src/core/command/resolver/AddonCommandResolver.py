@@ -29,7 +29,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_ADDON
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         match = request.get_match()
         # Unable to find command path if no addon name found.
@@ -175,8 +175,8 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
-    def build_registry_data(self, test: bool = False) -> "RegistryResolverData":
-        registry: "RegistryResolverData" = {}
+    def build_registry_data(self, test: bool = False) -> RegistryResolverData:
+        registry: RegistryResolverData = {}
 
         for addon in self.kernel.addons:
             addon_command_path = self.kernel.get_path("addons", [addon, "command"])

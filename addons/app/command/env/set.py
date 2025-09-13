@@ -12,5 +12,5 @@ if TYPE_CHECKING:
 
 @app_command(help="Set APP_ENV value in .wex/.env file")
 @option("--environment", "-e", type=str, required=True, help="Environment name")
-def app__env__set(manager: "AppAddonManager", app_dir: str, environment: str) -> bool:
+def app__env__set(manager: AppAddonManager, app_dir: str, environment: str) -> bool:
     return app_create_env(environment, manager.get_app_dir(), True)

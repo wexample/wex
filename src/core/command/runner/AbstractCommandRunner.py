@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class AbstractCommandRunner(AbsractKernelChild, HasRequest):
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         AbsractKernelChild.__init__(self, kernel)
         HasRequest.__init__(self)
 
@@ -36,7 +36,7 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
         pass
 
     @abstractmethod
-    def build_script_command(self) -> Optional[ScriptCommand]:
+    def build_script_command(self) -> ScriptCommand | None:
         pass
 
     def set_request(self, request: CommandRequest) -> None:

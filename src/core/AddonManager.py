@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class AddonManager(AbsractKernelChild):
-    def __init__(self, kernel: "Kernel", name: str) -> None:
+    def __init__(self, kernel: Kernel, name: str) -> None:
         super().__init__(kernel)
 
         self.name: str = name

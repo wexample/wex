@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @ai_tool()
 @command(help="Return space usage of current system disks")
-def system__disk__spaces(kernel: "Kernel") -> TableResponse:
+def system__disk__spaces(kernel: Kernel) -> TableResponse:
     output_list = TableResponse(kernel)
     output_list.set_header(
         [

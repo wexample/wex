@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 @option("--separator", "-s", required=True, default=CONFIG_SEPARATOR_DEFAULT)
 @option("--default", "-d", default="")
 def default__config__get(
-    kernel: "Kernel",
+    kernel: Kernel,
     file: str,
     key: str,
     separator: str = CONFIG_SEPARATOR_DEFAULT,
@@ -27,7 +27,7 @@ def default__config__get(
     if not file or not os.path.isfile(file):
         return ""
 
-    with open(file, "r") as f:
+    with open(file) as f:
         lines = f.readlines()
 
     for line in lines:

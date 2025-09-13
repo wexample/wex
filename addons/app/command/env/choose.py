@@ -25,11 +25,11 @@ if TYPE_CHECKING:
     help="Question to ask to user",
 )
 def app__env__choose(
-    manager: "AppAddonManager", app_dir: str, question: str
+    manager: AppAddonManager, app_dir: str, question: str
 ) -> AbortResponse | str:
     env = prompt_choice(
         question,
-        cast(List[str | Choice], APP_ENVS),
+        cast(list[str | Choice], APP_ENVS),
         APP_ENV_LOCAL,
     )
 

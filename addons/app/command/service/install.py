@@ -71,7 +71,7 @@ if TYPE_CHECKING:
     help="Install dependencies",
 )
 def app__service__install(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     install_config: bool = True,
@@ -162,7 +162,7 @@ def app__service__install(
 
 
 def app_service_install_merge_dir(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     current_item: str,
     service_dir: str,
     app_dir: str,
@@ -205,9 +205,9 @@ def app_service_install_merge_dir(
 
                 file_create_parent_and_touch(dest_file, default="services: {}")
 
-                with open(dest_file, "r") as f:
+                with open(dest_file) as f:
                     app_compose = yaml.safe_load(f)
-                with open(abs_path, "r") as f:
+                with open(abs_path) as f:
                     extra_compose = yaml.safe_load(f) or {}
 
                 app_name = manager.get_app_name()

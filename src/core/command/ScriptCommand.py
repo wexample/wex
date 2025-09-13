@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from collections.abc import Callable
 
 import click
 
@@ -27,19 +28,19 @@ class ScriptCommand(BaseClass):
         self,
         function: AnyCallable,
         command_type: str,
-        decorator_args: "Args",
-        decorator_kwargs: "Kwargs",
+        decorator_args: Args,
+        decorator_kwargs: Kwargs,
     ) -> None:
         self.ai_tool: bool = False
         self.aliases: StringsList = []
         self.as_sudo: bool = False
         self.command_type: str = command_type
         self.no_log: bool = False
-        self.attachments: Dict[str, List[CommandAttachment]] = {
+        self.attachments: dict[str, list[CommandAttachment]] = {
             "after": [],
             "before": [],
         }
-        self.verbosity: Optional[int] = None
+        self.verbosity: int | None = None
         self._extra: StringKeysDict = {}
 
         from src.const.resolvers import COMMAND_RESOLVERS_CLASSES
@@ -122,20 +123,20 @@ class ScriptCommand(BaseClass):
     def set_extra_value(self, name: str, value: bool = True) -> None:
         self._extra[name] = value
 
-    def get_extra_value(self, name: str, default: Optional[Any] = None) -> Any:
+    def get_extra_value(self, name: str, default: Any | None = None) -> Any:
         return self._extra[name] if name in self._extra else default
 
     def get_extra_properties(self) -> StringKeysDict:
         return self._extra
 
     def run_command(
-        self, runner: "AbstractCommandRunner", ctx: click.core.Context
+        self, runner: AbstractCommandRunner, ctx: click.core.Context
     ) -> Any:
         return self.click_command.invoke(ctx)
 
     def run_script(
         self,
-        runner: "AbstractCommandRunner",
+        runner: AbstractCommandRunner,
         script: YamlCommandScript,
         variables: CoreCommandArgsDict,
     ) -> StringsList:
@@ -150,7 +151,7 @@ class ScriptCommand(BaseClass):
         elif "file" in script:
             script_string = string_replace_multiple(script["file"], variables)
 
-            manager: "AppAddonManager" = cast(
+            manager: AppAddonManager = cast(
                 "AppAddonManager", runner.kernel.addons["app"]
             )
 

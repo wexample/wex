@@ -31,8 +31,8 @@ if TYPE_CHECKING:
 @command(help="Build a new version of current core, or commit new version changes")
 @option("--type", "-t", type=str, required=False, help="Type of update")
 def core__version__new_write(
-    kernel: "Kernel", type: str = UPGRADE_TYPE_MINOR
-) -> Optional[QueuedCollectionResponse]:
+    kernel: Kernel, type: str = UPGRADE_TYPE_MINOR
+) -> QueuedCollectionResponse | None:
     version = core_kernel_get_version(kernel)
     root_dir = kernel.directory.path
     repo = Repo(root_dir)
@@ -48,7 +48,7 @@ def core__version__new_write(
 
     def _core__version__build__check_uncommitted(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> Optional[QueuedCollectionStopResponse]:
+    ) -> QueuedCollectionStopResponse | None:
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
             kernel.io.error(
@@ -97,7 +97,7 @@ def core__version__new_write(
         # Update README.md
         readme_path = os.path.join(root_dir, FILE_README)
 
-        with open(readme_path, "r") as file:
+        with open(readme_path) as file:
             readme_content = file.read()
 
         # Replace old version with new version

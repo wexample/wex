@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def migration_5_0_34(kernel: "Kernel", manager: AppAddonManager) -> None:
+def migration_5_0_34(kernel: Kernel, manager: AppAddonManager) -> None:
     def _migration_5_0_34_update_config() -> None:
         if manager.has_config("docker.main_container"):
             manager.set_config(

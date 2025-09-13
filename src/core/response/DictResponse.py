@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class DictResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
-        kernel: "Kernel",
+        kernel: Kernel,
         dictionary: StringKeysDict,
         title: str | None = None,
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     help="Rollback only permissions changes on current git repository",
     command_type=COMMAND_TYPE_ADDON,
 )
-def system__git__rollback_permissions(kernel: "Kernel") -> bool:
+def system__git__rollback_permissions(kernel: Kernel) -> bool:
     success, diff = execute_command_sync(
         kernel,
         ["git", "diff", "-p", "-R", "--no-ext-diff", "--no-color", "--diff-filter=M"],
@@ -44,7 +44,7 @@ def system__git__rollback_permissions(kernel: "Kernel") -> bool:
     return True
 
 
-def _apply_diff(kernel: "Kernel", diff_lines: StringsList) -> None:
+def _apply_diff(kernel: Kernel, diff_lines: StringsList) -> None:
     if len(diff_lines) < 3:
         return
 

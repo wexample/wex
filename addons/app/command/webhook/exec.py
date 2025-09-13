@@ -31,8 +31,8 @@ class SourceData(TypedDict, total=False):
 @option_webhook_listener(path=True)
 @option("--env", "-e", type=str, required=False, help="Env directory")
 def app__webhook__exec(
-    kernel: "Kernel", webhook_path: str, env: None | str = None
-) -> Optional[QueuedCollectionResponse]:
+    kernel: Kernel, webhook_path: str, env: None | str = None
+) -> QueuedCollectionResponse | None:
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data: SourceData = {}
@@ -68,7 +68,7 @@ def app__webhook__exec(
 
     def _check(
         queue: AbstractQueuedCollectionResponseQueueManager,
-    ) -> Optional[AbstractResponse]:
+    ) -> AbstractResponse | None:
         has_error = False
         # Get all query parameters
         args = []

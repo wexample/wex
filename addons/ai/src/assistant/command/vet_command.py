@@ -20,6 +20,6 @@ class VetCommand(DefaultCommand):
         return "vet"
 
     def get_interaction_mode(
-        self, prompt_section: "UserPromptSection"
-    ) -> Type[VettingInteractionMode]:
+        self, prompt_section: UserPromptSection
+    ) -> type[VettingInteractionMode]:
         return VettingInteractionMode

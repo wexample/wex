@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     should_run=True,
 )
 def mongo__service__ready(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> bool:
     exec_command = manager.kernel.run_function(
         mongo__db__exec,

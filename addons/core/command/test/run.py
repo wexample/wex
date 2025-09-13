@@ -43,8 +43,8 @@ if TYPE_CHECKING:
     help="Single command to test",
 )
 def core__test__run(
-    kernel: "Kernel",
-    command: Optional[str] = None,
+    kernel: Kernel,
+    command: str | None = None,
     follow: bool = False,
     debug: bool = False,
 ) -> None:
@@ -58,7 +58,7 @@ def core__test__run(
         execute_command_tree_sync(
             kernel,
             cast(
-                List[Union[str, StringsList]],
+                list[Union[str, StringsList]],
                 [
                     "docker",
                     "compose",

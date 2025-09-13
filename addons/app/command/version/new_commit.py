@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def app__version__new_commit(manager: "AppAddonManager", app_dir: str) -> None:
+def app__version__new_commit(manager: AppAddonManager, app_dir: str) -> None:
     kernel = manager.kernel
     repo = Repo(app_dir)
     new_version = manager.get_config("global.version").get_str()

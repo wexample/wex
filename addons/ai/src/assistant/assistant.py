@@ -80,20 +80,20 @@ if TYPE_CHECKING:
 
 
 class Assistant(AbsractKernelChild):
-    conversation: Row[Tuple[Any, ...]]
+    conversation: Row[tuple[Any, ...]]
     language: str
-    user: Row[Tuple[Any, ...]]
-    _default_model: Optional[AbstractModel] = None
-    last_prompt_sections: Optional[List[UserPromptSection]]
+    user: Row[tuple[Any, ...]]
+    _default_model: AbstractModel | None = None
+    last_prompt_sections: list[UserPromptSection] | None
 
-    def __init__(self, kernel: "Kernel", default_model: str) -> None:
+    def __init__(self, kernel: Kernel, default_model: str) -> None:
         super().__init__(kernel)
 
         self._initial_default_model = default_model
-        self.colors_theme: Optional[str] = None
-        self.history: List[HistoryItem] = []
+        self.colors_theme: str | None = None
+        self.history: list[HistoryItem] = []
         self.active_memory: ChatMessageHistory = ChatMessageHistory()
-        self.subject: Optional[AbstractChatSubject] = None
+        self.subject: AbstractChatSubject | None = None
         self.last_prompt_sections = None
 
         prompt_progress_steps(
@@ -135,8 +135,8 @@ class Assistant(AbsractKernelChild):
         os.chdir(current_workdir)
 
     def _init_models(self) -> None:
-        self._default_model: Optional[AbstractModel] = None
-        self.models: Dict[str, AbstractModel] = {
+        self._default_model: AbstractModel | None = None
+        self.models: dict[str, AbstractModel] = {
             MODEL_NAME_OLLAMA_MISTRAL: OllamaModel(self, MODEL_NAME_OLLAMA_MISTRAL),
             MODEL_NAME_OPEN_AI_GPT_3_5_TURBO: OpenAiModel(
                 self, MODEL_NAME_OPEN_AI_GPT_3_5_TURBO
@@ -173,7 +173,7 @@ class Assistant(AbsractKernelChild):
             VetCommand,
         ]
 
-        self.commands: Dict[str, AbstractCommand] = {}
+        self.commands: dict[str, AbstractCommand] = {}
         for command_type in commands:
             # mypy: command_type is a concrete subclass, but as Type[AbstractCommand]
             # it is considered abstract; cast to Any for instantiation.
@@ -182,7 +182,7 @@ class Assistant(AbsractKernelChild):
     def _init_locales(self) -> None:
         # languages.json is expected to be a dict[str, str]
         self.languages = cast(
-            Dict[str, str],
+            dict[str, str],
             json_load(f"{self.kernel.directory.path}addons/ai/samples/languages.json"),
         )
         self.language = "en"
@@ -194,7 +194,7 @@ class Assistant(AbsractKernelChild):
     def _init_subjects(self) -> None:
         subjects = [DefaultChatSubject, DirChatSubject, FileChatSubject, UrlChatSubject]
 
-        self.subjects: Dict[str, AbstractChatSubject] = {}
+        self.subjects: dict[str, AbstractChatSubject] = {}
         for subject_class in subjects:
             subject = subject_class(self)
             self.subjects[subject.name()] = subject
@@ -229,13 +229,13 @@ class Assistant(AbsractKernelChild):
 
         self.set_conversation(last_conversation.id if last_conversation else None)
 
-    def set_conversation(self, id_conversation: Optional[int] = None) -> None:
+    def set_conversation(self, id_conversation: int | None = None) -> None:
         self.conversation = self.database.get_or_create_conversation(id_conversation)
         self.last_prompt_sections = []
         self.history = self.database.get_conversation_items(self.conversation.id)
 
         self.active_memory.clear()
-        messages: List[BaseMessage] = []
+        messages: list[BaseMessage] = []
         for item in self.history:
             msg: BaseMessage
             if item.author == "ai":
@@ -259,13 +259,13 @@ class Assistant(AbsractKernelChild):
         self.active_memory.add_messages(messages)
 
     def set_default_subject(
-        self, prompt_section: Optional[UserPromptSection] = None
+        self, prompt_section: UserPromptSection | None = None
     ) -> None:
         if not isinstance(self.subject, DefaultChatSubject):
             self.set_subject(DefaultChatSubject.name(), prompt_section)
 
     def set_subject(
-        self, name: str, prompt_section: Optional[UserPromptSection] = None
+        self, name: str, prompt_section: UserPromptSection | None = None
     ) -> AbstractChatSubject:
         subject = self.subjects[name]
 
@@ -289,7 +289,7 @@ class Assistant(AbsractKernelChild):
 
         self._default_model = self.models[identifier]
 
-    def get_model(self, name: Optional[str] = None) -> AbstractModel:
+    def get_model(self, name: str | None = None) -> AbstractModel:
         model = self.models[name] if name else self._default_model
         self._validate__should_not_be_none(model)
         assert isinstance(model, AbstractModel)
@@ -299,7 +299,7 @@ class Assistant(AbsractKernelChild):
 
         return model
 
-    def start(self, menu_action: Optional[str]) -> None:
+    def start(self, menu_action: str | None) -> None:
         asked_exit = False
 
         # Reset default subject.
@@ -314,7 +314,7 @@ class Assistant(AbsractKernelChild):
                 menu_action = self.chat()
             elif menu_action == ASSISTANT_MENU_ACTION_LANGUAGE:
                 # Ensure dict[str, str]
-                languages_dict: Dict[str, str] = {
+                languages_dict: dict[str, str] = {
                     str(k): str(v) for k, v in self.languages.items()
                 }
                 lang_choice = prompt_choice_dict(
@@ -330,7 +330,7 @@ class Assistant(AbsractKernelChild):
             elif menu_action == ASSISTANT_MENU_ACTION_THEME:
                 from pygments.styles._mapping import STYLES
 
-                theme_choices: Dict[str, str] = {}
+                theme_choices: dict[str, str] = {}
                 for key, value in STYLES.items():
                     style_name = value[1]
                     class_name = key[:-5]
@@ -349,7 +349,7 @@ class Assistant(AbsractKernelChild):
                 menu_action = ASSISTANT_MENU_ACTION_BACK
             elif menu_action == ASSISTANT_MENU_ACTION_CONVERSATIONS:
                 convs_raw = self.database.get_conversations_dict()
-                convs: Dict[str, str] = {str(k): str(v) for k, v in convs_raw.items()}
+                convs: dict[str, str] = {str(k): str(v) for k, v in convs_raw.items()}
                 choice = prompt_choice_dict(
                     "Pick a conversation:",
                     convs,
@@ -361,7 +361,7 @@ class Assistant(AbsractKernelChild):
 
                 menu_action = ASSISTANT_MENU_ACTION_BACK
             elif menu_action == ASSISTANT_MENU_ACTION_PERSONALITY:
-                personality_choices: Dict[str, str] = {}
+                personality_choices: dict[str, str] = {}
                 for key, personality in self.personalities.items():
                     # personality may be various structured data; coerce to str safely
                     try:
@@ -382,7 +382,7 @@ class Assistant(AbsractKernelChild):
                 menu_action = None
             elif menu_action == ASSISTANT_MENU_ACTION_DEFAULT_MODEL:
                 current_model = self.get_model()
-                models: Dict[str, str] = {}
+                models: dict[str, str] = {}
                 for model in self.models:
                     models[model] = model
 
@@ -403,7 +403,7 @@ class Assistant(AbsractKernelChild):
 
         self.log(f"{os.linesep}Ciao")
 
-    def show_menu(self) -> Optional[str]:
+    def show_menu(self) -> str | None:
         # Prompt the user to choose an action
         action = prompt_choice_dict(
             "Menu:",
@@ -415,10 +415,10 @@ class Assistant(AbsractKernelChild):
         # Return the chosen action as a string or None if aborted
         return str(action) if action else None
 
-    def split_command(self, word: str) -> List[str]:
+    def split_command(self, word: str) -> list[str]:
         return word[len(AI_COMMAND_PREFIX) :].split(":")
 
-    def extract_active_command(self, word: str) -> Optional[str]:
+    def extract_active_command(self, word: str) -> str | None:
         commands = self.get_active_commands()
         if word.startswith(AI_COMMAND_PREFIX):
             # Split command and options
@@ -431,17 +431,17 @@ class Assistant(AbsractKernelChild):
 
         return None
 
-    def split_prompt_sections(self, user_input: str) -> List[UserPromptSection]:
+    def split_prompt_sections(self, user_input: str) -> list[UserPromptSection]:
         user_input = user_input.strip()
         # Special case if user types just "exit" without prefix.
         if user_input.lower() == ExitCommand.name():
             return [UserPromptSection(self.commands[ExitCommand.name()], None)]
 
         # Split on word to ensure commands is not attached to another word.
-        results: List[UserPromptSection] = []
+        results: list[UserPromptSection] = []
         words = user_input.split()
-        current_user_input_part: List[str] = []
-        current_section: Optional[UserPromptSection] = None
+        current_user_input_part: list[str] = []
+        current_section: UserPromptSection | None = None
 
         for i, word in enumerate(words):
             command = self.extract_active_command(word)
@@ -473,15 +473,15 @@ class Assistant(AbsractKernelChild):
 
         return results
 
-    def get_active_commands(self) -> Dict[str, AbstractCommand]:
+    def get_active_commands(self) -> dict[str, AbstractCommand]:
         commands = self.commands.copy()
 
         return commands
 
     def chat(
         self,
-        initial_prompt: Optional[str] = None,
-    ) -> Optional[str]:
+        initial_prompt: str | None = None,
+    ) -> str | None:
         self.commands[HelpCommand.name()].execute()
 
         while True:
@@ -539,7 +539,7 @@ class Assistant(AbsractKernelChild):
                     self.spinner.stop()
                     self.kernel.io.print(os.linesep)
 
-    def set_history_item(self, content: Optional[str], author: str) -> None:
+    def set_history_item(self, content: str | None, author: str) -> None:
         item = HistoryItem(
             message=content, conversation_id=self.conversation.id, author=author
         )

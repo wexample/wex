@@ -11,5 +11,5 @@ if TYPE_CHECKING:
 
 @command(help="Return a string")
 @option("--arg", "-a", type=str, required=True, help="Argument")
-def test__return_type__str(kernel: "Kernel", arg: str) -> str:
+def test__return_type__str(kernel: Kernel, arg: str) -> str:
     return str(arg)

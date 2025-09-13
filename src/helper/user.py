@@ -52,7 +52,7 @@ def get_user_or_sudo_user_home_data_path() -> str:
 
 
 def set_owner_recursively(
-    path: str, user: Optional[str | int] = None, group: Optional[str | int] = None
+    path: str, user: str | int | None = None, group: str | int | None = None
 ) -> None:
     if user is None:
         user = get_user_or_sudo_user()
@@ -153,7 +153,7 @@ def group_exists(group: str) -> bool:
 
 def is_sudo(username: str) -> bool:
     try:
-        with open("/etc/sudoers", "r") as f:
+        with open("/etc/sudoers") as f:
             content = f.readlines()
 
         for line in content:
@@ -163,7 +163,7 @@ def is_sudo(username: str) -> bool:
         import os
 
         for file in os.listdir("/etc/sudoers.d/"):
-            with open(os.path.join("/etc/sudoers.d/", file), "r") as f:
+            with open(os.path.join("/etc/sudoers.d/", file)) as f:
                 content = f.readlines()
             for line in content:
                 if line.strip().startswith(username):

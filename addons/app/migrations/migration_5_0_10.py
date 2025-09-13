@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def migration_5_0_10(kernel: "Kernel", manager: AppAddonManager) -> None:
+def migration_5_0_10(kernel: Kernel, manager: AppAddonManager) -> None:
     def _migration_5_0_10_update_config() -> None:
         manager.set_config("global.version", VERSION_DEFAULT)
 

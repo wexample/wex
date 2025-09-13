@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     default=ASSISTANT_MENU_ACTION_BACK,
     help="Default action",
 )
-def ai__talk__ask(kernel: "Kernel", action: str, model: str) -> None:
+def ai__talk__ask(kernel: Kernel, action: str, model: str) -> None:
     assistant = Assistant(kernel, model)
 
     assistant.start(menu_action=action)

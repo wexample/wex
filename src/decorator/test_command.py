@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Callable, cast
+from typing import cast
+from collections.abc import Callable
 
 from src.const.types import AnyCallable, Args, Kwargs
 from src.core.command.TestCommand import TestCommand

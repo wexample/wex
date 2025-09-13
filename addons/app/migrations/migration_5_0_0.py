@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def migration_5_0_0(kernel: "Kernel", manager: AppAddonManager) -> None:
+def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
     # Convert main config file.
     old_config_path = f"{env_dir}config"
@@ -227,7 +227,7 @@ def migration_5_0_0_replace_docker_services_names(
 
 def replace_service_names_in_field(
     field: StringsDict | StringsList, services_names_changes: StringsDict
-) -> Optional[StringsDict | StringsList]:
+) -> StringsDict | StringsList | None:
     if isinstance(field, list):
         field_list: AnyList = []
         for item in field:
@@ -268,13 +268,13 @@ def migration_5_0_0_replace_docker_services_references(
                 )
 
 
-def is_version_5_0_0(kernel: "Kernel", path: str) -> Optional[bool]:
+def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
     # Not implemented yet.
     return None
 
 
 def _get_config_value(
-    config: StringKeysDict, key: str, default: Optional[Any] = None
+    config: StringKeysDict, key: str, default: Any | None = None
 ) -> Any:
     return config[key] if key in config else default
 
@@ -285,7 +285,7 @@ def _parse_4_0_0_config_file(file_path: str) -> StringsDict:
 
     config: StringKeysDict = {}
 
-    with open(file_path, "r") as f:
+    with open(file_path) as f:
         for line in f.readlines():
             # Ignoring comments and empty lines
             line = line.strip()

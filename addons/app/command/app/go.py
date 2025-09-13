@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 )
 @option("--user", "-u", type=str, required=False, help="User name or uid")
 def app__app__go(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     container_name: str | None = None,
     user: str | None = None,

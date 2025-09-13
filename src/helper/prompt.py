@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, cast
+from typing import TYPE_CHECKING, Any, List, Optional, cast
+from collections.abc import Callable, Iterable
 
 import click
 from click._termui_impl import ProgressBar, V
@@ -21,7 +22,7 @@ def prompt_build_progress_bar(steps: Iterable[V], **kwargs: Any) -> ProgressBar[
 
 
 def prompt_progress_steps(
-    kernel: "Kernel", steps: Iterable[V], title: Optional[str] = None
+    kernel: Kernel, steps: Iterable[V], title: str | None = None
 ) -> None:
     previous_length = kernel.io.log_length
 
@@ -42,9 +43,9 @@ def prompt_progress_steps(
 def prompt_choice_dict(
     question: str,
     choices: StringsDict,
-    default: Optional[str] = None,
+    default: str | None = None,
     **kwargs: Any,
-) -> Optional[str]:
+) -> str | None:
     items = choices.items()
 
     choice = prompt_choice(
@@ -59,11 +60,11 @@ def prompt_choice_dict(
 
 def prompt_choice(
     question: str,
-    choices: List[Any | Any],
-    default: Optional[InquirerPyDefault] = None,
-    abort: Optional[str] = "> Abort",
+    choices: list[Any | Any],
+    default: InquirerPyDefault | None = None,
+    abort: str | None = "> Abort",
     **kwargs: Any,
-) -> Optional[str]:
+) -> str | None:
     choices_all = choices.copy()
 
     if abort:
@@ -75,7 +76,7 @@ def prompt_choice(
     return cast(Optional[str], result)
 
 
-def prompt_pick_a_file(base_dir: Optional[str] = None) -> Optional[str]:
+def prompt_pick_a_file(base_dir: str | None = None) -> str | None:
     base_dir = base_dir or os.getcwd()
     # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
     choices_dirs = {"..": ".."}
@@ -107,7 +108,7 @@ def prompt_pick_a_file(base_dir: Optional[str] = None) -> Optional[str]:
     return None
 
 
-def prompt_pick_a_dir(base_dir: Optional[str] = None) -> Optional[str]:
+def prompt_pick_a_dir(base_dir: str | None = None) -> str | None:
     base_dir = base_dir or os.getcwd()
     # Initialize dictionaries to separate directories and special options.
     choices_dirs = {"..": ".."}

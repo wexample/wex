@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import html
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from collections.abc import Iterable
 
 from prompt_toolkit import HTML
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
 
 
 class AssistantChatCompleter(Completer):
-    def __init__(self, commands: Dict[str, Any]) -> None:
+    def __init__(self, commands: dict[str, Any]) -> None:
         self.active_commands = commands
 
     def get_completions(
@@ -64,11 +65,11 @@ class AssistantChatCompleter(Completer):
 class PromptManager(AbstractAssistantChild):
     """Class to manage a styled command prompt."""
 
-    def __init__(self, assistant: "Assistant") -> None:
+    def __init__(self, assistant: Assistant) -> None:
         super().__init__(assistant)
         self.prompt = ""
         self.session: PromptSession[Any] = PromptSession()
-        self.style_name: Optional[str] = None
+        self.style_name: str | None = None
         self.key_bindings = KeyBindings()
         self.setup_key_bindings()
 
@@ -122,7 +123,7 @@ class PromptManager(AbstractAssistantChild):
         return AssistantChatCompleter(self.assistant.get_active_commands())
 
     def open(self) -> str:
-        commands_tokens: Dict[str, List[Any]] = {
+        commands_tokens: dict[str, list[Any]] = {
             "root": [],
             "option": [(r":([a-zA-Z0-9-_]+)", Operator, "#pop")],
         }

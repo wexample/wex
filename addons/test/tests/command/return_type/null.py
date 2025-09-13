@@ -23,7 +23,7 @@ class TestTestCommandReturnTypeNull(AbstractTestCase):
             },
         )
 
-    def _test_null(self, render_mode: str) -> Optional[str]:
+    def _test_null(self, render_mode: str) -> str | None:
         return self.kernel.run_function(
             function=test__return_type__null, render_mode=render_mode
         ).print_wrapped(render_mode)

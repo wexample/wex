@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     help="App environment, a same application may exists in various environment",
 )
 def db__remote__push_restore(
-    kernel: "Kernel",
+    kernel: Kernel,
     app: str,
     env: str,
 ) -> None:

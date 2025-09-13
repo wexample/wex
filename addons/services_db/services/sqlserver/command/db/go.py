@@ -15,10 +15,10 @@ if TYPE_CHECKING:
 )
 @option("--database", "-d", type=str, required=False, help="Database name")
 def sqlserver__db__go(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
-    database: Optional[str] = None,
+    database: str | None = None,
 ) -> str:
     user = manager.get_config(f"service.{service}.user").get_str()
     password = manager.get_config(f"service.{service}.password").get_str()

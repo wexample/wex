@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 @option("--file-name", "-f", type=str, required=True, help="Restore dump")
 @option("--database", "-d", type=str, required=False, help="Database name")
 def mongo__db__restore(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     file_name: str,

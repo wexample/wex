@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     should_run=True,
 )
 def mysql__service__ready(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> bool:
     response = manager.kernel.run_function(
         app__app__exec,

@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 @app_command(help="Start the ai service", command_type=COMMAND_TYPE_SERVICE)
 def ai__app__start_post(
-    manager: "AppAddonManager", app_dir: str, service: str
-) -> Optional[AbstractResponse]:
+    manager: AppAddonManager, app_dir: str, service: str
+) -> AbstractResponse | None:
     response = manager.kernel.run_function(
         app__db__exec,
         {

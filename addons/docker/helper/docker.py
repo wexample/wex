@@ -30,9 +30,9 @@ def user_has_docker_permission(username: str) -> bool:
 
 def merge_docker_compose_files(src: str, target: str) -> None:
     # Load both files as Python objects
-    with open(src, "r") as f:
+    with open(src) as f:
         data1 = yaml.safe_load(f)
-    with open(target, "r") as f:
+    with open(target) as f:
         data2 = yaml.safe_load(f) or {}
 
     # Recursively merge the two objects
@@ -43,7 +43,7 @@ def merge_docker_compose_files(src: str, target: str) -> None:
         yaml.dump(merged_data, f)
 
 
-def docker_container_ip(kernel: "Kernel", container_name: str) -> str:
+def docker_container_ip(kernel: Kernel, container_name: str) -> str:
     success, diff = execute_command_sync(
         kernel,
         [

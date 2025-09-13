@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 @app_command(help="List dumps", command_type=COMMAND_TYPE_SERVICE)
 @option("--database", "-d", type=str, required=False, help="Database name")
 def mongo__db__dumps_list(
-    manager: "AppAddonManager", app_dir: str, service: str, database: str | None = None
+    manager: AppAddonManager, app_dir: str, service: str, database: str | None = None
 ) -> StringsList:
     dumps_dir = get_db_service_dumps_path(manager, service)
 

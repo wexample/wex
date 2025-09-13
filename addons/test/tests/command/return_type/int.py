@@ -22,7 +22,7 @@ class TestTestCommandReturnTypeInt(AbstractTestCase):
             },
         )
 
-    def _test_int(self, render_mode: str) -> Optional[int]:
+    def _test_int(self, render_mode: str) -> int | None:
         response = self.kernel.run_function(
             test__return_type__int,
             {

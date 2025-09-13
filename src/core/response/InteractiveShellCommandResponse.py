@@ -21,11 +21,11 @@ if TYPE_CHECKING:
 class InteractiveShellCommandResponse(AbstractResponse):
     def __init__(
         self,
-        kernel: "Kernel",
+        kernel: Kernel,
         shell_command: ShellCommandsDeepList | ShellCommandsList,
         ignore_error: bool = False,
         as_sudo_user: bool = True,
-        workdir: Optional[str] = None,
+        workdir: str | None = None,
     ) -> None:
         super().__init__(kernel)
 
@@ -34,7 +34,7 @@ class InteractiveShellCommandResponse(AbstractResponse):
         self.as_sudo_user = as_sudo_user
         self.ignore_error = ignore_error
         self.workdir = workdir
-        self.success: Optional[bool] = None
+        self.success: bool | None = None
 
     def render_content(
         self,

@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     help="User which initiated push, files should reside in its home directory",
 )
 def app__remote__push_receive(
-    kernel: "Kernel",
+    kernel: Kernel,
     app: str,
     env: str,
     user: str,
@@ -79,8 +79,8 @@ def app__remote__push_receive(
 
 
 def _app__remote__push_receive_find_app_dir(
-    kernel: "Kernel", app_name: str, env: str
-) -> Optional[str]:
+    kernel: Kernel, app_name: str, env: str
+) -> str | None:
     manager = cast(AppAddonManager, kernel.addons["app"])
     apps = manager.get_proxy_apps(env)
 

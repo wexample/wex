@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 @option("--hook", "-h", type=str, required=True, help="Hook name")
 @option("--arguments", "-args", type=str, required=False, help="Arguments")
 def app__services__exec(
-    manager: "AppAddonManager", app_dir: str, hook: str, arguments: str
+    manager: AppAddonManager, app_dir: str, hook: str, arguments: str
 ) -> StringKeysDict:
     output = {}
 

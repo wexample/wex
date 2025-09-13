@@ -12,7 +12,7 @@ from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class VettingInteractionMode(FormatedDataInteractionMode):
-    def get_initial_prompt(self, prompt_section: UserPromptSection) -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             "You are a world-class detective tasked with analyzing "
             "conversations and transcriptions of suspected individuals. "
@@ -23,5 +23,5 @@ class VettingInteractionMode(FormatedDataInteractionMode):
             "This is a first analysis from a non trusted source, so most of information are unreliable"
         )
 
-    def get_pydantic_model(self) -> Type[BaseModel]:
+    def get_pydantic_model(self) -> type[BaseModel]:
         return Person

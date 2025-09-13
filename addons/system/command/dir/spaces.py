@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @ai_tool()
 @command(help="Return sizes of current directory subdirectories")
 @option("--dir", "-d", type=str, required=False, help="Directory to inspect")
-def system__dir__spaces(kernel: "Kernel", dir: Optional[str] = None) -> TableResponse:
+def system__dir__spaces(kernel: Kernel, dir: str | None = None) -> TableResponse:
     dir = dir or os.getcwd()
 
     # Function to calculate directory size

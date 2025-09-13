@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @app_command(help="Restarts app")
 @option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")
 def app__app__restart(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     fast: bool = False,
 ) -> None:

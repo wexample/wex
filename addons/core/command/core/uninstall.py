@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 @as_sudo()
 @command(help="Uninstall core")
-def core__core__uninstall(kernel: "Kernel") -> None:
+def core__core__uninstall(kernel: Kernel) -> None:
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)
     __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)
@@ -28,7 +28,7 @@ def core__core__uninstall(kernel: "Kernel") -> None:
     kernel.io.log("Bye!")
 
 
-def __core__core__uninstall_webhook_server(kernel: "Kernel") -> None:
+def __core__core__uninstall_webhook_server(kernel: Kernel) -> None:
     kernel.run_function(app__webhook__stop)
 
 
@@ -36,7 +36,7 @@ def __core__core__uninstall_symlink(destination: str) -> None:
     file_remove_if_exists(destination)
 
 
-def __core__core__uninstall_autocomplete(kernel: "Kernel") -> None:
+def __core__core__uninstall_autocomplete(kernel: Kernel) -> None:
     script_path = "/etc/bash_completion.d/wex"
 
     file_remove_if_exists(script_path)
@@ -44,7 +44,7 @@ def __core__core__uninstall_autocomplete(kernel: "Kernel") -> None:
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __core__core__uninstall_terminal(kernel: "Kernel") -> None:
+def __core__core__uninstall_terminal(kernel: Kernel) -> None:
     script_path = "/etc/profile.d/wex"
 
     file_remove_if_exists(script_path)
@@ -52,7 +52,7 @@ def __core__core__uninstall_terminal(kernel: "Kernel") -> None:
     __remove_source_file_for_docker(kernel, script_path)
 
 
-def __remove_source_file_for_docker(kernel: "Kernel", file_path: str) -> None:
+def __remove_source_file_for_docker(kernel: Kernel, file_path: str) -> None:
     if not kernel.run_function(system__system__is_docker):
         return
 
@@ -67,7 +67,7 @@ def __remove_source_file_for_docker(kernel: "Kernel", file_path: str) -> None:
 
 
 def __remove_source_file_in_bashrc(
-    kernel: "Kernel", file_path: str, bashrc_path: str
+    kernel: Kernel, file_path: str, bashrc_path: str
 ) -> None:
     if not os.path.exists(bashrc_path):
         return

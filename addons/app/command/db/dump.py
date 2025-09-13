@@ -30,12 +30,12 @@ if TYPE_CHECKING:
 @option("--zip", "-z", type=bool, required=False, default=True, help="Zip output file")
 @option("--tag", "-t", type=str, required=False, help="Add tag as suffix")
 def app__db__dump(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     file_name: str | None = None,
     zip: bool = True,
     tag: str | None = None,
-) -> Optional[str]:
+) -> str | None:
     if not manager.has_config("docker.main_db_container"):
         return None
 

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Service the app if need a service to start.")
-def app__app__serve(manager: "AppAddonManager", app_dir: str) -> None:
+def app__app__serve(manager: AppAddonManager, app_dir: str) -> None:
     manager.log("Serving app...")
 
     manager.kernel.run_function(

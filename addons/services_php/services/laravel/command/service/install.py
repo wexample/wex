@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
 def laravel__service__install(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     manager.kernel.run_function(
         php__service__install,

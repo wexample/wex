@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
-    registry: Dict[str, Any] = {}
+def registry_get_all_commands(kernel: Kernel) -> dict[str, Any]:
+    registry: dict[str, Any] = {}
 
     for resolver in kernel.resolvers:
         registry = {
@@ -28,7 +28,7 @@ def registry_get_all_commands(kernel: "Kernel") -> Dict[str, Any]:
 
 
 def registry_get_all_commands_from_registry_part(
-    registry_part: Dict[str, Dict[str, Any]],
+    registry_part: dict[str, dict[str, Any]],
 ) -> RegistryCommandsCollection:
     output: RegistryCommandsCollection = {}
 
@@ -39,7 +39,7 @@ def registry_get_all_commands_from_registry_part(
     return output
 
 
-def registry_remove_addons(commands_list: List[str]) -> List[str]:
+def registry_remove_addons(commands_list: list[str]) -> list[str]:
     return [command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list]
 
 
@@ -56,8 +56,8 @@ def registry_resolve_service_inheritance(
 
 
 def registry_find_commands_by_function_property(
-    kernel: "Kernel", name: str
-) -> Dict[str, Any]:
+    kernel: Kernel, name: str
+) -> dict[str, Any]:
     commands = registry_get_all_commands(kernel)
     filtered = {}
 

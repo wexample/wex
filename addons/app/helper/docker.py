@@ -21,10 +21,10 @@ if TYPE_CHECKING:
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 
 
-def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> List[str]:
+def docker_get_app_compose_files(manager: AppAddonManager, app_dir: str) -> list[str]:
     kernel = manager.kernel
     app_compose_file = app_dir + APP_DIR_APP_DATA + DOCKER_COMPOSE_REL_PATH_BASE
-    compose_files: List[str] = []
+    compose_files: list[str] = []
 
     if not os.path.isfile(app_compose_file):
         return compose_files
@@ -59,11 +59,11 @@ def docker_get_app_compose_files(manager: "AppAddonManager", app_dir: str) -> Li
 
 
 def docker_exec_app_compose_command(
-    kernel: "Kernel",
+    kernel: Kernel,
     app_dir: str,
-    compose_files: List[str],
-    docker_command: List[str] | str,
-    profile: Optional[str] = None,
+    compose_files: list[str],
+    docker_command: list[str] | str,
+    profile: str | None = None,
 ) -> ShellCommandsList:
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
@@ -76,7 +76,7 @@ def docker_exec_app_compose_command(
 
     manager = cast("AppAddonManager", kernel.addons["app"])
 
-    command: List[str] = [
+    command: list[str] = [
         "docker",
         "compose",
     ]
@@ -102,13 +102,13 @@ def docker_exec_app_compose_command(
 
 
 def docker_exec_app_compose(
-    kernel: "Kernel",
+    kernel: Kernel,
     app_dir: str,
-    compose_files: List[str],
+    compose_files: list[str],
     docker_command: str,
-    profile: Optional[str] = None,
+    profile: str | None = None,
     sync: bool = True,
-) -> Optional[str]:
+) -> str | None:
     command = docker_exec_app_compose_command(
         kernel,
         app_dir,
@@ -135,13 +135,13 @@ def docker_exec_app_compose(
     return None
 
 
-def docker_build_long_container_name(kernel: "Kernel", name: str) -> str:
+def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
     manager = cast("AppAddonManager", kernel.addons["app"])
     return f'{manager.get_runtime_config("name").get_str()}_{name}'
 
 
 def docker_remove_filtered_container(
-    kernel: "Kernel", filter: str
+    kernel: Kernel, filter: str
 ) -> ShellCommandResponseTuple:
     from src.helper.command import execute_command_tree_sync
 

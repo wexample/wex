@@ -24,6 +24,6 @@ if TYPE_CHECKING:
 )
 @option("--write", "-w", type=bool, default=True, help="Write registry file")
 def core__registry__build(
-    kernel: "Kernel", test: bool = False, write: bool = True
-) -> "KernelRegistry":
+    kernel: Kernel, test: bool = False, write: bool = True
+) -> KernelRegistry:
     return kernel.registry_structure.build(test=test, write=write)

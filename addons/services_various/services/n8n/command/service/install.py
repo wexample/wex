@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
 def n8n__service__install(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     manager.set_config(
         f"service.{service}",

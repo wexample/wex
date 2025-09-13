@@ -35,7 +35,7 @@ class TestTestCommandReturnTypeInteractiveShellCommand(AbstractTestCase):
             },
         )
 
-    def _test_interactive_shell_command(self, render_mode: str) -> Optional[str]:
+    def _test_interactive_shell_command(self, render_mode: str) -> str | None:
         return self.kernel.run_function(
             test__return_type__interactive_shell_command, render_mode=render_mode
         ).print_wrapped(render_mode)

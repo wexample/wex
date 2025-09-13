@@ -39,7 +39,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             error_response_content = response.read()
 
             try:
-                error_data: Optional[JsonContentDict] = json.loads(
+                error_data: JsonContentDict | None = json.loads(
                     error_response_content
                 )
                 if error_data and "stderr" in error_data:
@@ -97,7 +97,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             script_dir,
         )
 
-    def create_and_start_test_app_webhook(self) -> Tuple[str, str]:
+    def create_and_start_test_app_webhook(self) -> tuple[str, str]:
         app_dir = self.create_and_start_test_app(
             DEFAULT_APP_TEST_NAME + "-webhook", services=["php"]
         )

@@ -29,21 +29,21 @@ if TYPE_CHECKING:
 class CommandRequest(BaseClass):
     def __init__(
         self,
-        resolver: "AbstractCommandResolver",
+        resolver: AbstractCommandResolver,
         command: str,
-        args: Optional["OptionalCoreCommandArgsListOrDict"] = None,
+        args: OptionalCoreCommandArgsListOrDict | None = None,
     ) -> None:
         self._path: None | str = None
-        self._script_command: Optional[ScriptCommand] = None
+        self._script_command: ScriptCommand | None = None
         self._string_command: str = resolver.resolve_alias(command)
-        self._args_source: "CoreCommandArgsListOrDict" = args or []
-        self._args_list: Optional[CoreCommandArgsList] = []
-        self._runner: Optional["AbstractCommandRunner"] = None
+        self._args_source: CoreCommandArgsListOrDict = args or []
+        self._args_list: CoreCommandArgsList | None = []
+        self._runner: AbstractCommandRunner | None = None
 
         self.loaded: bool = False
         self.extension: None | str = None
         self.quiet: bool = False
-        self.resolver: "AbstractCommandResolver" = resolver
+        self.resolver: AbstractCommandResolver = resolver
         self.type: str = resolver.get_type()
         self.storage: StringKeysDict = (
             {}
@@ -51,7 +51,7 @@ class CommandRequest(BaseClass):
 
         self.parent = self.resolver.kernel.current_request
         self.first_arg: Any = self.resolver.kernel
-        self.match: Optional[StringsMatch] = None
+        self.match: StringsMatch | None = None
         self.localized: bool = False
 
         self.resolver.locate_function(self)
@@ -107,10 +107,10 @@ class CommandRequest(BaseClass):
 
         return self._string_command
 
-    def set_runner(self, runner: "AbstractCommandRunner") -> None:
+    def set_runner(self, runner: AbstractCommandRunner) -> None:
         self._runner = runner
 
-    def get_runner(self) -> "AbstractCommandRunner":
+    def get_runner(self) -> AbstractCommandRunner:
         self._validate__should_not_be_none(self._runner)
         assert self._runner is not None
 
@@ -122,7 +122,7 @@ class CommandRequest(BaseClass):
 
         return self.match
 
-    def get_root_parent(self) -> "CommandRequest":
+    def get_root_parent(self) -> CommandRequest:
         if self.parent:
             return self.parent.get_root_parent()
         return self
@@ -131,7 +131,7 @@ class CommandRequest(BaseClass):
         path = self.resolver.build_path(self, extension)
 
         if path and os.path.isfile(path):
-            runner: Optional["AbstractCommandRunner"] = None
+            runner: AbstractCommandRunner | None = None
 
             if extension == COMMAND_EXTENSION_PYTHON:
                 from src.core.command.runner.PythonCommandRunner import (

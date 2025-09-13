@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 @command(help="Build a new version of current core, or commit new version changes")
 @option("--type", "-t", type=str, required=False, help="Type of update")
 def core__version__new(
-    kernel: "Kernel", type: str = UPGRADE_TYPE_MINOR
+    kernel: Kernel, type: str = UPGRADE_TYPE_MINOR
 ) -> QueuedCollectionResponse:
     def _write(
         queue: AbstractQueuedCollectionResponseQueueManager,

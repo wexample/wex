@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class FastModeQueuedCollectionResponseQueueManager(
     AbstractQueuedCollectionResponseQueueManager, ABC
 ):
-    def __init__(self, response: "QueuedCollectionResponse") -> None:
+    def __init__(self, response: QueuedCollectionResponse) -> None:
         super().__init__(response)
 
     def get_previous_value(self) -> BasicInlineValue:
@@ -42,8 +42,8 @@ class FastModeQueuedCollectionResponseQueueManager(
         return None
 
     def render_content_complete(
-        self, response: Optional[AbstractResponse] = None
-    ) -> "AbstractResponse":
+        self, response: AbstractResponse | None = None
+    ) -> AbstractResponse:
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
         if self.response.parent:

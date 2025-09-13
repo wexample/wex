@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class UserCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         base_path = self.get_base_path()
 
         if base_path:
@@ -47,7 +47,7 @@ class UserCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_USER
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         base_path = self.get_base_path()
         if not base_path:
@@ -65,7 +65,7 @@ class UserCommandResolver(AbstractCommandResolver):
             ),
         )
 
-    def get_base_path(self) -> Optional[str]:
+    def get_base_path(self) -> str | None:
         return f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
     def get_function_name_parts(self, parts: StringsList) -> StringsList:

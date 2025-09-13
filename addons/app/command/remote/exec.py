@@ -56,15 +56,15 @@ if TYPE_CHECKING:
     help="Execute command in a sub process",
 )
 def app__remote__exec(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     environment: str,
     command: str,
     terminal: bool,
     sync: bool = False,
-) -> Optional[
-    Union[InteractiveShellCommandResponse, NonInteractiveShellCommandResponse]
-]:
+) -> None | (
+    InteractiveShellCommandResponse | NonInteractiveShellCommandResponse
+):
     address = remote_get_connexion_address(
         manager=manager, environment=environment, command=app__remote__exec
     )
@@ -79,7 +79,7 @@ def app__remote__exec(
     if sync:
         return NonInteractiveShellCommandResponse(
             manager.kernel,
-            cast(List[Union[str, StringsList]], remote_command),
+            cast(list[Union[str, StringsList]], remote_command),
         )
 
     return InteractiveShellCommandResponse(

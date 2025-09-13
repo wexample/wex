@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
 @option("--path", "-p", type=str, required=False, default=None, help="Argument")
-def default__python__init_dirs(kernel: "Kernel", path: Optional[str] = None) -> None:
+def default__python__init_dirs(kernel: Kernel, path: str | None = None) -> None:
     import os
 
     if path is None:

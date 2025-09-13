@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     help="Recreate an empty database",
 )
 def postgres__db__destroy(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     service: str,
     database: str | None = None,

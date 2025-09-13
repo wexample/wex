@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class ListResponse(AbstractTerminalSectionResponse):
     def __init__(
         self,
-        kernel: "Kernel",
+        kernel: Kernel,
         list_data: AnyList,
         default_render_mode: str = KERNEL_RENDER_MODE_JSON,
     ) -> None:

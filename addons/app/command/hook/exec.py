@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 @option("--hook", "-h", type=str, required=True, help="Hook name")
 @option("--arguments", "-args", type=str, required=False, help="Hook name")
 def app__hook__exec(
-    manager: "AppAddonManager", hook: str, arguments: str, app_dir: Optional[str] = None
+    manager: AppAddonManager, hook: str, arguments: str, app_dir: str | None = None
 ) -> StringKeysDict:
     arguments_dict = args_parse_dict(arguments)
 

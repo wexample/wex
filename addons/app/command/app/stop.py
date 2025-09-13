@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, List
+from collections.abc import Callable
 
 from addons.app.command.app.perms import app__app__perms
 from addons.app.command.app.started import app__app__started
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 @app_command(help="Stop the given app")
 @option("--fast", "-f", is_flag=True, required=False, help="Do not rewrite config")
 def app__app__stop(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
     fast: bool = False,
 ) -> None:
@@ -86,7 +87,7 @@ def app__app__stop(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-post"}
         )
 
-    steps: List[Callable[[], object]]
+    steps: list[Callable[[], object]]
     if fast:
         steps = [
             # Just load docker compose

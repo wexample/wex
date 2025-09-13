@@ -22,7 +22,7 @@ def system_is_port_open(port: int, host: str = "localhost") -> bool:
             return False
 
 
-def system_port_check(kernel: "Kernel", port_to_check: int) -> None:
+def system_port_check(kernel: Kernel, port_to_check: int) -> None:
     if not port_to_check:
         kernel.io.error(f"Invalid port {port_to_check}", trace=False)
 
@@ -40,26 +40,26 @@ def system_port_check(kernel: "Kernel", port_to_check: int) -> None:
 
 
 def system_service_daemon_reload(
-    kernel: "Kernel", command: str = "daemon-reload"
+    kernel: Kernel, command: str = "daemon-reload"
 ) -> None:
     execute_command_sync(kernel, ["systemctl", command], as_sudo_user=False)
 
 
-def system_service_daemon_exec(kernel: "Kernel", action: str) -> None:
+def system_service_daemon_exec(kernel: Kernel, action: str) -> None:
     system_service_exec(kernel, SERVICE_DAEMON_NAME, action, ignore_error=True)
 
 
 def system_service_exec(
-    kernel: "Kernel", service: str, action: str, **kwargs: Kwargs
+    kernel: Kernel, service: str, action: str, **kwargs: Kwargs
 ) -> None:
     execute_command_sync(
         kernel, ["systemctl", action, service], **kwargs, as_sudo_user=False
     )
 
 
-def system_get_bashrc_handler_path(kernel: "Kernel") -> str:
+def system_get_bashrc_handler_path(kernel: Kernel) -> str:
     return os.path.join(kernel.directory.path, "cli", "bashrc-handler")
 
 
-def system_get_daemon_service_path(kernel: "Kernel") -> str:
+def system_get_daemon_service_path(kernel: Kernel) -> str:
     return f". {system_get_bashrc_handler_path(kernel)}"

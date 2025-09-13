@@ -19,7 +19,7 @@ TEST_COUNT = 0
     should_run=True,
 )
 def proxy__service__ready(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> bool:
     # for container_name in list:
     success, running_containers = execute_command_sync(

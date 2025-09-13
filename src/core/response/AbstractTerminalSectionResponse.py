@@ -15,14 +15,14 @@ if TYPE_CHECKING:
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):
     def __init__(
         self,
-        kernel: "Kernel",
+        kernel: Kernel,
         title: str | None = None,
-        default_render_mode: Optional[str] = None,
+        default_render_mode: str | None = None,
     ) -> None:
         super().__init__(kernel, default_render_mode)
         self.title: str | None = title
 
-    def render_cli_title(self, line_width: Optional[int] = None) -> str:
+    def render_cli_title(self, line_width: int | None = None) -> str:
         terminal_width, _ = shutil.get_terminal_size()
         line_width = (
             terminal_width

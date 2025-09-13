@@ -33,7 +33,7 @@ class OutputData(TypedDict, total=False):
 )
 @option_webhook_listener(port_number=True)
 def app__webhook__status(
-    kernel: "Kernel", webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT
+    kernel: Kernel, webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT
 ) -> DictResponse:
     response = kernel.run_function(
         system__process__by_port,

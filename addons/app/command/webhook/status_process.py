@@ -15,14 +15,14 @@ if TYPE_CHECKING:
 
 class StatusProcess(TypedDict, total=False):
     task: LoggerLogData
-    children: Dict[str, LoggerLogData]
+    children: dict[str, LoggerLogData]
 
 
 @command(help="Return process info based on task id", command_type=COMMAND_TYPE_ADDON)
 @option_webhook_listener(path=True)
 def app__webhook__status_process(
-    kernel: "Kernel", webhook_path: str
-) -> Optional[DictResponse]:
+    kernel: Kernel, webhook_path: str
+) -> DictResponse | None:
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
     from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 

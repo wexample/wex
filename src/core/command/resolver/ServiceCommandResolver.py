@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
-    ) -> "AbstractResponse":
+    ) -> AbstractResponse:
         match = request.get_match()
         service = string_to_snake_case(match[1]) if match else None
         if not service or service not in self.get_registry_data():
@@ -65,7 +65,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         match = request.get_match()
         name = string_to_snake_case(match[1])

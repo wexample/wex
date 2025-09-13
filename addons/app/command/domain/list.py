@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 @app_command(help="Description")
-def app__domain__list(manager: "AppAddonManager", app_dir: str) -> AppConfigValue:
+def app__domain__list(manager: AppAddonManager, app_dir: str) -> AppConfigValue:
     manager.build_runtime_config()
 
     return manager.get_runtime_config("domains").get_list()

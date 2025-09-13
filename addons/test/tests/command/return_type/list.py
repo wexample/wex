@@ -23,7 +23,7 @@ class TestTestCommandReturnTypeList(AbstractTestCase):
             },
         )
 
-    def _test_list(self, render_mode: str) -> Optional[str]:
+    def _test_list(self, render_mode: str) -> str | None:
         response = self.kernel.run_function(
             test__return_type__list, {"arg": "yes"}, render_mode=render_mode
         )

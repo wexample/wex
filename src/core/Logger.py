@@ -34,7 +34,7 @@ class LoggerLogDataError(TypedDict):
 
 class LoggerLogDataEvent(TypedDict):
     name: str
-    data: Optional[StringKeysDict]
+    data: StringKeysDict | None
 
 
 class LoggerLogDataCommand(TypedDict):
@@ -45,22 +45,22 @@ class LoggerLogDataCommand(TypedDict):
 class LoggerLogData(TypedDict):
     task_id: str
     command: LoggerLogDataCommand
-    trace: List[LoggerLogDataCommand]
+    trace: list[LoggerLogDataCommand]
     dateStart: str
     dateLast: str
     duration: float
-    errors: List[LoggerLogDataError]
-    events: List[LoggerLogDataEvent]
+    errors: list[LoggerLogDataError]
+    events: list[LoggerLogDataEvent]
     children: StringsDict
     status: str
-    parent_task_id: Optional[str]
+    parent_task_id: str | None
 
 
 class Logger:
     current_command = None
     trace_depth: int = 10
 
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         self.kernel = kernel
 
         self.time_start = time.time()
@@ -103,7 +103,7 @@ class Logger:
     def get_time_string(self) -> str:
         return str(datetime.datetime.now())
 
-    def append_event(self, name: str, data: Optional[StringKeysDict] = None) -> None:
+    def append_event(self, name: str, data: StringKeysDict | None = None) -> None:
         event: LoggerLogDataEvent = {"name": name, "data": data}
 
         self.log_data["events"].append(event)
@@ -113,8 +113,8 @@ class Logger:
     def append_error(
         self,
         code: str,
-        parameters: Optional[StringKeysDict] = None,
-        log_level: Optional[int] = None,
+        parameters: StringKeysDict | None = None,
+        log_level: int | None = None,
     ) -> None:
         if parameters is None:
             parameters = {}
@@ -130,13 +130,13 @@ class Logger:
 
         self.write()
 
-    def create_command_dict(self, request: "CommandRequest") -> LoggerLogDataCommand:
+    def create_command_dict(self, request: CommandRequest) -> LoggerLogDataCommand:
         return {
             "command": request.get_string_command(),
             "args": request.get_args_list(),
         }
 
-    def log_request(self, request: "CommandRequest") -> None:
+    def log_request(self, request: CommandRequest) -> None:
         current_command_dict = self.create_command_dict(request)
 
         # Store root command
@@ -163,7 +163,7 @@ class Logger:
         self.write()
 
     def write(
-        self, task_id: None | str = None, log_data: Optional[LoggerLogData] = None
+        self, task_id: None | str = None, log_data: LoggerLogData | None = None
     ) -> None:
         # When writing current log, check if disabled.
         if (

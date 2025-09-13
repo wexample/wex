@@ -51,15 +51,15 @@ if TYPE_CHECKING:
     "--port-secure", "-ps", type=int, required=False, help="Secure port for web server"
 )
 def app__app__init(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
-    name: Optional[str] = None,
+    name: str | None = None,
     services: CoreCommandCommaSeparatedList = "",
     domains: str = "",
     git: bool = True,
     env: str | None = None,
-    port: Optional[int] = None,
-    port_secure: Optional[int] = None,
+    port: int | None = None,
+    port_secure: int | None = None,
 ) -> None:
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
@@ -88,7 +88,7 @@ def app__app__init(
         if not os.path.exists(app_dir):
             os.makedirs(app_dir, exist_ok=True)
 
-    def _init_step_check_services() -> Optional[bool]:
+    def _init_step_check_services() -> bool | None:
         if len(services_resolved) == 0:
             return None
 
@@ -148,7 +148,7 @@ def app__app__init(
         manager._config = manager.create_config(name_snake, domains_list)
 
         if port or port_secure:
-            config_mut = cast(Dict[str, Any], manager._config)
+            config_mut = cast(dict[str, Any], manager._config)
             config_mut["port"] = {
                 "public": port,
                 "public_secure": port_secure,

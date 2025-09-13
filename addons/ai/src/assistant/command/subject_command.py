@@ -18,13 +18,13 @@ class SubjectCommand(AbstractCommand):
     def name() -> str:
         return "subject"
 
-    def get_flags(self) -> List[str]:
-        return cast(List[str], self.assistant.subjects.keys())
+    def get_flags(self) -> list[str]:
+        return cast(list[str], self.assistant.subjects.keys())
 
     def execute(
         self,
-        prompt_section: Optional["UserPromptSection"] = None,
-        remaining_sections: Optional[List["UserPromptSection"]] = None,
+        prompt_section: UserPromptSection | None = None,
+        remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
         if prompt_section is not None and getattr(prompt_section, "flags", None):
             self.assistant.set_subject(prompt_section.flags[-1], prompt_section)

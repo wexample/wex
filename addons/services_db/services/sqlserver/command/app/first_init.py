@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Init database", command_type=COMMAND_TYPE_SERVICE, should_run=True)
 def sqlserver__app__first_init(
-    manager: "AppAddonManager", app_dir: str, service: str
+    manager: AppAddonManager, app_dir: str, service: str
 ) -> AbstractResponse:
     return manager.kernel.run_function(
         app__db__exec,

@@ -22,8 +22,8 @@ RESPONSES_DEFAULT_VALUES = {
 @test_command()
 @option("--type", "-t", required=True, help="Response type to test")
 def test__demo_command__responses(
-    kernel: "Kernel", type: str
-) -> Optional[str | AnyCallable | NonInteractiveShellCommandResponse]:
+    kernel: Kernel, type: str
+) -> str | AnyCallable | NonInteractiveShellCommandResponse | None:
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
     elif type == "function":

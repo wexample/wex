@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
-def service_get_dir(kernel: "Kernel", service: str) -> str | bool:
+def service_get_dir(kernel: Kernel, service: str) -> str | bool:
     dirs = service_get_all_dirs(kernel)
 
     # Service dir is missing,
@@ -23,7 +23,7 @@ def service_get_dir(kernel: "Kernel", service: str) -> str | bool:
     return dirs[service]
 
 
-def service_load_config(kernel: "Kernel", service: str) -> Any:
+def service_load_config(kernel: Kernel, service: str) -> Any:
     dirs = service_get_all_dirs(kernel)
 
     if service not in dirs:
@@ -33,9 +33,9 @@ def service_load_config(kernel: "Kernel", service: str) -> Any:
     return yaml_read(os.path.join(dirs[service], APP_FILE_APP_SERVICE_CONFIG))
 
 
-def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:
+def service_get_inheritance_tree(kernel: Kernel, service: str) -> list[str]:
     # Initialize an empty list to store the inheritance tree
-    inheritance_tree: List[str] = []
+    inheritance_tree: list[str] = []
 
     # Get the configuration of the given service
     service_config = service_load_config(kernel, service)
@@ -59,7 +59,7 @@ def service_get_inheritance_tree(kernel: "Kernel", service: str) -> List[str]:
     return inheritance_tree
 
 
-def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None:
+def service_copy_sample_dir(kernel: Kernel, service: str, subdir: str) -> None:
     from addons.app.AppAddonManager import AppAddonManager
 
     service_dir = service_get_dir(kernel, service)
@@ -81,7 +81,7 @@ def service_copy_sample_dir(kernel: "Kernel", service: str, subdir: str) -> None
     )
 
 
-def service_get_all_dirs(kernel: "Kernel") -> Dict[str, str]:
+def service_get_all_dirs(kernel: Kernel) -> dict[str, str]:
     dirs = {}
 
     for addon in kernel.addons:

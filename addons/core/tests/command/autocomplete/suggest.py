@@ -174,7 +174,7 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         self.assertTrue("--option" in suggestions)
 
     def _create_and_test_created_command(
-        self, prefix: str, search: Optional[str] = None
+        self, prefix: str, search: str | None = None
     ) -> None:
         command = prefix + "test/autocomplete-command"
         if not search:

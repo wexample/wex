@@ -11,5 +11,5 @@ if TYPE_CHECKING:
 
 @alias("hi")
 @command(help="Return hi! Used to check if core vitals are working")
-def core__check__hi(kernel: "Kernel") -> str:
+def core__check__hi(kernel: Kernel) -> str:
     return "hi!"

@@ -31,13 +31,13 @@ if TYPE_CHECKING:
 
 
 class AppCommandResolver(AbstractCommandResolver):
-    def __init__(self, kernel: "Kernel") -> None:
+    def __init__(self, kernel: Kernel) -> None:
         from addons.app.AppAddonManager import AppAddonManager
 
         super().__init__(kernel)
 
         # Shortcut.
-        self.app_addon_manager: "AppAddonManager" = cast(
+        self.app_addon_manager: AppAddonManager = cast(
             AppAddonManager, kernel.addons["app"]
         )
 
@@ -67,7 +67,7 @@ class AppCommandResolver(AbstractCommandResolver):
         return COMMAND_TYPE_APP
 
     def build_path(
-        self, request: CommandRequest, extension: str, subdir: Optional[str] = None
+        self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         match = request.get_match()
         base_path = self.get_base_path()
@@ -93,7 +93,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["app", parts[1], parts[2]]
 
-    def get_base_path(self) -> Optional[str]:
+    def get_base_path(self) -> str | None:
         app_dir = self.app_addon_manager.app_dir
         if not app_dir:
             from addons.app.command.location.find import _app__location__find

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @app_command(help="send app notification to service", command_type=COMMAND_TYPE_SERVICE)
 @option("--action", "-a", type=str, required=True, help="Action name")
 def n8n__notification__notify(
-    manager: "AppAddonManager", app_dir: str, service: str, action: str
+    manager: AppAddonManager, app_dir: str, service: str, action: str
 ) -> None:
     protocol = manager.get_config("notification.protocol", "https").get_str()
     domain = manager.get_config("notification.domain").get_str()
@@ -25,7 +25,7 @@ def n8n__notification__notify(
 
     url = f"{protocol}://{domain}/webhook{'-test' if test else ''}/{webhook_id}"
 
-    auth: Optional[HTTPBasicAuth] = None
+    auth: HTTPBasicAuth | None = None
 
     if manager.has_config("notification.auth"):
         auth_user = manager.get_config("notification.auth.login").get_str()

@@ -11,18 +11,18 @@ CommandAttachmentPassArgsOption = Union[bool, StringsList]
 
 
 class CommandAttachment(TypedDict, total=False):
-    command: Union[str, "ScriptCommand"]
+    command: str | ScriptCommand
     pass_args: CommandAttachmentPassArgsOption
-    pass_previous: Optional[str]
+    pass_previous: str | None
 
 
 def attach(
     position: str,
-    command: Union[str, "ScriptCommand"],
-    pass_args: Union[bool, StringsList] = False,
-    pass_previous: Optional["str"] = None,
-) -> "DecoratedScriptCommand":
-    def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
+    command: str | ScriptCommand,
+    pass_args: bool | StringsList = False,
+    pass_previous: str | None = None,
+) -> DecoratedScriptCommand:
+    def decorator(script_command: ScriptCommand) -> ScriptCommand:
         script_command.attachments[position].append(
             {"command": command, "pass_args": pass_args, "pass_previous": pass_previous}
         )

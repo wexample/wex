@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 
 import click
+
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -45,8 +46,8 @@ class TestCore(AbstractTestCase):
         )
 
     def test_help(self) -> None:
-        from src.core.response.AbortResponse import AbortResponse
         from addons.core.command.logo.show import core__logo__show
+        from src.core.response.AbortResponse import AbortResponse
 
         response = self.kernel.run_function(core__logo__show, {"help": True})
 
@@ -128,14 +129,14 @@ class TestCore(AbstractTestCase):
         self.assertEqual(self.kernel.call_command("@test::demo-command/first"), "FIRST")
 
     def test_tests_coverage(self) -> None:
-        from src.const.globals import COMMAND_TYPE_ADDON
         from addons.core.command.test.create import core__test__create
+        from src.const.globals import COMMAND_TYPE_ADDON
+        from src.helper.module import module_load_from_file
+        from src.helper.registry import registry_get_all_commands_from_registry_part
         from src.helper.test import (
             file_path_to_test_class_name,
             file_path_to_test_method,
         )
-        from src.helper.module import module_load_from_file
-        from src.helper.registry import registry_get_all_commands_from_registry_part
 
         for command, command_data in registry_get_all_commands_from_registry_part(
             self.kernel.get_command_resolver(COMMAND_TYPE_ADDON).get_registry_data()
@@ -171,9 +172,9 @@ class TestCore(AbstractTestCase):
                 )
 
     def test_build_command(self) -> None:
-        from src.const.globals import COMMAND_TYPE_ADDON
         from addons.core.command.logo.show import core__logo__show
         from addons.core.command.version.new_write import core__version__new_write
+        from src.const.globals import COMMAND_TYPE_ADDON
 
         self.assertEqual(
             self.kernel.get_command_resolver(

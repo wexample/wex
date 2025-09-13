@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     required=True,
     help="Exact line, ending an trailing spaces will be ignored",
 )
-def default__file__remove_line(kernel: "Kernel", file_path: str, line: str) -> None:
+def default__file__remove_line(kernel: Kernel, file_path: str, line: str) -> None:
     if not os.path.isfile(file_path):
         kernel.io.log("File does not exist.")
         return
@@ -27,7 +27,7 @@ def default__file__remove_line(kernel: "Kernel", file_path: str, line: str) -> N
     # Ensure line has no leading/trailing white space
     line = line.strip()
 
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         lines = file.readlines()
 
     with open(file_path, "w") as file:

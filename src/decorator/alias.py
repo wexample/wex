@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
 
-def alias(name: str) -> "DecoratedScriptCommand":
-    def decorator(script_command: "ScriptCommand") -> "ScriptCommand":
+def alias(name: str) -> DecoratedScriptCommand:
+    def decorator(script_command: ScriptCommand) -> ScriptCommand:
         script_command.aliases.append(name)
 
         return script_command

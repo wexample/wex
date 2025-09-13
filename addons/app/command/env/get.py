@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     "--key", "-k", type=str, required=False, default="APP_ENV", help="Key in env file"
 )
 def app__env__get(
-    manager: "AppAddonManager", app_dir: str, key: str = "APP_ENV"
+    manager: AppAddonManager, app_dir: str, key: str = "APP_ENV"
 ) -> str:
     return _app__env__get(manager.kernel, app_dir, key)
 
@@ -33,7 +33,7 @@ def _app__has_env_var(app_dir: str, key: str = "APP_ENV") -> bool:
 
 
 def _app__env__get(
-    kernel: "Kernel", app_dir: str, key: str = "APP_ENV", default: Optional[str] = None
+    kernel: Kernel, app_dir: str, key: str = "APP_ENV", default: str | None = None
 ) -> str:
     env_file = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 

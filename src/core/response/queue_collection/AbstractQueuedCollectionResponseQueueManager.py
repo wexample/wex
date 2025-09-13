@@ -14,19 +14,19 @@ if TYPE_CHECKING:
 
 
 class AbstractQueuedCollectionResponseQueueManager:
-    def __init__(self, response: "QueuedCollectionResponse") -> None:
-        self.response: "QueuedCollectionResponse" = response
+    def __init__(self, response: QueuedCollectionResponse) -> None:
+        self.response: QueuedCollectionResponse = response
 
     def render_content_complete(
-        self, response: Optional["AbstractResponse"] = None
-    ) -> "AbstractResponse":
+        self, response: AbstractResponse | None = None
+    ) -> AbstractResponse:
         return response or self.response
 
     @abstractmethod
     def get_previous_value(self) -> BasicInlineValue:
         pass
 
-    def get_previous_response_path(self) -> Optional["QueuedCollectionStepsList"]:
+    def get_previous_response_path(self) -> QueuedCollectionStepsList | None:
         path_manager = self.response.get_path_manager()
         step_index = path_manager.steps[self.response.step_position]
 
@@ -65,7 +65,7 @@ class AbstractQueuedCollectionResponseQueueManager:
         return False
 
     def enqueue_next_step_if_exists(
-        self, step_index: int, response: "AbstractResponse"
+        self, step_index: int, response: AbstractResponse
     ) -> bool:
         next_index = self.get_next_step_index(step_index)
         if next_index:

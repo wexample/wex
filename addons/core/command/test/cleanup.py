@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
-def core__test__cleanup(kernel: "Kernel") -> None:
+def core__test__cleanup(kernel: Kernel) -> None:
     kernel.io.log("Cleaning up tests...")
 
     docker_remove_filtered_container(kernel, "test_app_")

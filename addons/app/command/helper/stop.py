@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     help=f"One of helper app name : {','.join(HELPER_APPS_LIST)}",
 )
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
-def app__helper__stop(kernel: "Kernel", name: str, env: Optional[str] = None) -> None:
+def app__helper__stop(kernel: Kernel, name: str, env: str | None = None) -> None:
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     helper_app_path = manager.get_helper_app_path(name, env)
 

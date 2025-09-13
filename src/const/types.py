@@ -2,18 +2,17 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Callable,
     Dict,
     List,
     Literal,
-    Mapping,
-    Match,
     Optional,
     Set,
     Tuple,
     TypedDict,
     Union,
 )
+from collections.abc import Callable, Mapping
+from re import Match
 
 AddonNameType = Literal[
     "app",
@@ -27,13 +26,13 @@ AddonNameType = Literal[
     "test",
 ]
 
-AnyList = List[Any]
+AnyList = list[Any]
 
-StringKeysDict = Dict[str, Any]
+StringKeysDict = dict[str, Any]
 StringKeysMapping = Mapping[str, Any]
-StringsDict = Dict[str, str]
-StringsList = List[str]
-SetList = Set[str]
+StringsDict = dict[str, str]
+StringsList = list[str]
+SetList = set[str]
 StringsMatch = Match[str]
 BasicInlineValue = str | int | float | bool | None
 BasicValue = BasicInlineValue | AnyList | StringKeysDict
@@ -61,12 +60,12 @@ OptionalCoreCommandArgsDict = Optional[CoreCommandArgsDict]
 OptionalCoreCommandArgsListOrDict = Optional[CoreCommandArgsListOrDict]
 
 AppConfigValue = BasicValue
-AppDockerEnvConfig = Dict[str, AppConfigValue]
+AppDockerEnvConfig = dict[str, AppConfigValue]
 AppsPathsList = StringsDict
 
 ShellCommandsList = StringsList
-ShellCommandsDeepList = List[str | ShellCommandsList]
-ShellCommandResponseTuple = Tuple[bool, StringsList]
+ShellCommandsDeepList = list[str | ShellCommandsList]
+ShellCommandResponseTuple = tuple[bool, StringsList]
 
 FileSystemStructureType = Literal[
     "file",
@@ -75,17 +74,17 @@ FileSystemStructureType = Literal[
 
 
 class FileSystemStructureSchemaItem(TypedDict, total=False):
-    class_name: Optional[str]
-    default_content: Optional[str]
-    group: Optional[str]
-    on_missing: Optional[str]
-    permissions: Optional[int]
-    schema: Optional["FileSystemStructureSchema"]
-    shortcut: Optional[str]
-    should_exist: Optional[bool]
+    class_name: str | None
+    default_content: str | None
+    group: str | None
+    on_missing: str | None
+    permissions: int | None
+    schema: FileSystemStructureSchema | None
+    shortcut: str | None
+    should_exist: bool | None
     type: FileSystemStructureType
-    remote: Optional[str]
-    user: Optional[str]
+    remote: str | None
+    user: str | None
 
 
 class FileSystemStructurePermission(TypedDict):
@@ -105,7 +104,7 @@ class RegistryCommand(TypedDict):
     test: str
 
 
-RegistryCommandsCollection = Dict[str, RegistryCommand]
+RegistryCommandsCollection = dict[str, RegistryCommand]
 
 
 class RegistryService(TypedDict):
@@ -121,18 +120,18 @@ class RegistryAddon(TypedDict):
     name: str
 
 
-RegistryAllServices = Dict[str, RegistryService]
+RegistryAllServices = dict[str, RegistryService]
 RegistryResolverData = StringKeysDict
 
 
 class YamlCommandScript(TypedDict):
-    command: Optional[str]
-    container_name: Optional[str]
-    directory: Optional[str]
-    file: Optional[str]
+    command: str | None
+    container_name: str | None
+    directory: str | None
+    file: str | None
     interpreter: StringsList
-    options: Optional[StringKeysDict]
-    script: Optional[str]
+    options: StringKeysDict | None
+    script: str | None
     sync: bool
     title: str
     type: str
@@ -150,48 +149,48 @@ class YamlCommandOption(TypedDict):
 
 
 class YamlCommand(TypedDict):
-    attach: Optional[StringKeysDict]
+    attach: StringKeysDict | None
     help: str
     name: str
-    options: List[YamlCommandOption]
-    scripts: List[YamlCommandScript]
+    options: list[YamlCommandOption]
+    scripts: list[YamlCommandScript]
     type: str
 
 
 class AppConfig(TypedDict):
-    branch: Optional[str]
+    branch: str | None
     domain_main: str
     domain_tld: str
-    domains: List[str]
+    domains: list[str]
     domains_string: str
     env: StringKeysDict
     name: str
-    host: Dict[str, str]
-    password: Dict[str, str]
-    path: Dict[str, str]
+    host: dict[str, str]
+    password: dict[str, str]
+    path: dict[str, str]
     server: StringKeysDict
     service: StringKeysDict
     started: bool
     structure: FileSystemStructureSchema
-    user: Dict[str, str | int]
+    user: dict[str, str | int]
 
 
 class AppRuntimeConfig(TypedDict):
-    branch: Optional[str]
+    branch: str | None
     domain_main: str
     domain_tld: str
-    domains: List[str]
+    domains: list[str]
     domains_string: str
     env: str
     name: str
-    host: Dict[str, str]
-    password: Dict[str, str]
-    path: Dict[str, str]
+    host: dict[str, str]
+    password: dict[str, str]
+    path: dict[str, str]
     server: StringKeysDict
     service: StringKeysDict
     started: bool
     structure: FileSystemStructureSchema
-    user: Dict[str, str | int]
+    user: dict[str, str | int]
 
 
 AnyAppConfig = Union[AppConfig | AppRuntimeConfig]
@@ -203,9 +202,9 @@ class DockerCompose(TypedDict):
 
 class KernelRegistry(StringKeysDict):
     env: str
-    resolvers: Dict[str, RegistryResolverData]
+    resolvers: dict[str, RegistryResolverData]
 
-    def __init__(self, env: str, resolvers: Optional[StringKeysDict] = None) -> None:
+    def __init__(self, env: str, resolvers: StringKeysDict | None = None) -> None:
         super().__init__()
         self.env = env
         self.resolvers = resolvers or {}
@@ -215,8 +214,8 @@ class KernelRegistry(StringKeysDict):
 
 
 class VersionDescriptor(TypedDict):
-    major: Optional[int]
-    intermediate: Optional[int]
-    minor: Optional[int]
-    pre_build_type: Optional[str]
-    pre_build_number: Optional[int]
+    major: int | None
+    intermediate: int | None
+    minor: int | None
+    pre_build_type: str | None
+    pre_build_number: int | None

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @command(help="Build a new version of current core, or commit new version changes")
-def core__version__new_commit(kernel: "Kernel") -> None:
+def core__version__new_commit(kernel: Kernel) -> None:
     root_dir = kernel.directory.path
     repo = Repo(root_dir)
 

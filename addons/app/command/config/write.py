@@ -25,10 +25,10 @@ if TYPE_CHECKING:
 @option("--user", "-u", type=str, required=False, help="Owner of application files")
 @option("--group", "-g", type=str, required=False, help="Group of application files")
 def app__config__write(
-    manager: "AppAddonManager",
+    manager: AppAddonManager,
     app_dir: str,
-    user: Optional[str] = None,
-    group: Optional[str] = None,
+    user: str | None = None,
+    group: str | None = None,
 ) -> None:
     kernel = manager.kernel
 

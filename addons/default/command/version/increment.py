@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     help="Include build number",
 )
 def default__version__increment(
-    kernel: "Kernel",
+    kernel: Kernel,
     version: str,
     type: str = UPGRADE_TYPE_MINOR,
     increment: int = 1,

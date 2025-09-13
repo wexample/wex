@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class AbstractEmptyResponse(AbstractResponse, ABC):
     reason: str
 
-    def __init__(self, kernel: "Kernel", reason: str) -> None:
+    def __init__(self, kernel: Kernel, reason: str) -> None:
         super().__init__(kernel)
 
         self.reason = reason

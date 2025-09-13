@@ -19,18 +19,18 @@ if TYPE_CHECKING:
 
 
 class AbstractInteractionMode(AbstractAssistantChild):
-    def get_initial_prompt(self, prompt_section: "UserPromptSection") -> Optional[str]:
+    def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return None
 
     def get_interaction_mode_prompt_parameters(
-        self, prompt_section: "UserPromptSection"
-    ) -> Dict[str, str]:
+        self, prompt_section: UserPromptSection
+    ) -> dict[str, str]:
         return {}
 
     def process_user_input(
         self,
-        prompt_section: "UserPromptSection",
-        remaining_sections: List["UserPromptSection"],
+        prompt_section: UserPromptSection,
+        remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         self.assistant.spinner.start()
 
@@ -45,11 +45,11 @@ class AbstractInteractionMode(AbstractAssistantChild):
         return StringInteractionResponse(response)
 
     def get_output_parser(
-        self, prompt_section: "UserPromptSection"
-    ) -> Optional[BaseOutputParser[Any]]:
+        self, prompt_section: UserPromptSection
+    ) -> BaseOutputParser[Any] | None:
         return None
 
     def chain_response_to_string(
-        self, prompt_section: "UserPromptSection", chain_response: Any
+        self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:
         return str(chain_response.content)

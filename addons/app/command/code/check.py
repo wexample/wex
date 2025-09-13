@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 @app_command(
     help="Validate the code of current application", command_type=COMMAND_TYPE_ADDON
 )
-def app__code__check(manager: "AppAddonManager", app_dir: str) -> None:
+def app__code__check(manager: AppAddonManager, app_dir: str) -> None:
     """
     This method is a placeholder to allow local app command attachment.s
     """
