@@ -75,11 +75,11 @@ class FileSystemStructureSchemaItem(TypedDict, total=False):
     group: str | None
     on_missing: str | None
     permissions: int | None
+    remote: str | None
     schema: FileSystemStructureSchema | None
     shortcut: str | None
     should_exist: bool | None
     type: FileSystemStructureType
-    remote: str | None
     user: str | None
 
 
@@ -160,8 +160,8 @@ class AppConfig(TypedDict):
     domains: list[str]
     domains_string: str
     env: StringKeysDict
-    name: str
     host: dict[str, str]
+    name: str
     password: dict[str, str]
     path: dict[str, str]
     server: StringKeysDict
@@ -178,8 +178,8 @@ class AppRuntimeConfig(TypedDict):
     domains: list[str]
     domains_string: str
     env: str
-    name: str
     host: dict[str, str]
+    name: str
     password: dict[str, str]
     path: dict[str, str]
     server: StringKeysDict
@@ -210,8 +210,8 @@ class KernelRegistry(StringKeysDict):
 
 
 class VersionDescriptor(TypedDict):
-    major: int | None
     intermediate: int | None
+    major: int | None
     minor: int | None
-    pre_build_type: str | None
     pre_build_number: int | None
+    pre_build_type: str | None

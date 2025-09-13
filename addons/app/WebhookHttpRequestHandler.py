@@ -40,11 +40,11 @@ class Output(TypedDict, total=False):
 
 
 class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
-    task_id: str
     log_path: str
-    routes: WebhookListenerRoutesMap
     log_stderr: str
     log_stdout: str
+    routes: WebhookListenerRoutesMap
+    task_id: str
 
     def __init__(self, *args: Args, **kwargs: Kwargs) -> None:
         self.logger = logging.getLogger("wex-webhook")

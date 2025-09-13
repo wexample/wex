@@ -22,8 +22,8 @@ if TYPE_CHECKING:
 
 class AbstractCommand(AbstractAssistantChild):
     description: str = "Undefined command"
-    sticky: bool = False
     root_only: bool = False
+    sticky: bool = False
 
     @staticmethod
     @abstractmethod

@@ -12,17 +12,17 @@ class Base(DeclarativeBase):
 
 
 class HistoryItem(Base):
-    __tablename__ = "assistant_conversation_item"
-    id = Column(Integer, primary_key=True)
-    date_created = Column(DateTime, default=datetime.utcnow)
     author = Column(String)
+    command = Column(String)
     context_window = Column(Text)
+    conversation_id = Column(Integer)
+    date_created = Column(DateTime, default=datetime.utcnow)
+    id = Column(Integer, primary_key=True)
+    lang = Column(String)
     message = Column(Text)
     model = Column(String)
-    lang = Column(String)
-    conversation_id = Column(Integer)
     personality = Column(String)
-    command = Column(String)
+    __tablename__ = "assistant_conversation_item"
 
     def __init__(self, **kw: Any) -> None:
         super().__init__(**kw)

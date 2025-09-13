@@ -6,16 +6,16 @@ from addons.ai.src.assistant.model.reliable_value import ReliableValue
 
 
 class SocialInfo(BaseModel):
+    income_level: ReliableValue | None = None
+    profession: ReliableValue | None = None
     relationship_status: ReliableValue | None = None
     social_circle_description: ReliableValue | None = None
-    profession: ReliableValue | None = None
-    income_level: ReliableValue | None = None
 
 
 class FamilyInfo(BaseModel):
+    family_background: ReliableValue | None = None
     marital_status: ReliableValue | None = None
     number_of_children: ReliableValue | None = None
-    family_background: ReliableValue | None = None
 
 
 class SexualInfo(BaseModel):
@@ -24,19 +24,19 @@ class SexualInfo(BaseModel):
 
 
 class GeneralObservations(BaseModel):
-    physical_appearance: ReliableValue | None = None
-    personality_traits: ReliableValue | None = None
     hobbies_and_interests: ReliableValue | None = None
+    personality_traits: ReliableValue | None = None
+    physical_appearance: ReliableValue | None = None
 
 
 class Person(BaseModel):
-    first_name: ReliableValue
-    last_name: ReliableValue
     age: ReliableValue
     email: ReliableValue | None = None
-    social_info: SocialInfo | None = Field(default_factory=SocialInfo)
     family_info: FamilyInfo | None = Field(default_factory=FamilyInfo)
-    sexual_info: SexualInfo | None = Field(default_factory=SexualInfo)
+    first_name: ReliableValue
     general_observations: GeneralObservations | None = Field(
         default_factory=GeneralObservations
     )
+    last_name: ReliableValue
+    sexual_info: SexualInfo | None = Field(default_factory=SexualInfo)
+    social_info: SocialInfo | None = Field(default_factory=SocialInfo)

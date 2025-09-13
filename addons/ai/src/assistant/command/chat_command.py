@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 
 class ChatCommand(DefaultCommand):
     description: str = "Short chat response"
-    sticky: bool = True
     root_only: bool = True
+    sticky: bool = True
 
     @staticmethod
     def name() -> str:

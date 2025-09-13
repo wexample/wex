@@ -63,9 +63,9 @@ if TYPE_CHECKING:
 class Kernel(BaseClass):
     # Allow child classes override
     fast_mode: bool = False
-    verbosity: int = VERBOSITY_LEVEL_DEFAULT
-    tty: bool = os.isatty(0)
     registry_structure: KernelRegistryFileStructure
+    tty: bool = os.isatty(0)
+    verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
         self._task_id: str | None = task_id

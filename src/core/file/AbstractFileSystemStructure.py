@@ -31,17 +31,17 @@ FILE_SYSTEM_ERROR_MESSAGES: dict[str, str] = {
 
 
 class AbstractFileSystemStructure(BaseClass):
-    should_exist: bool | None = True
     children: dict[str, Any]
-    path: str
-    type: FileSystemStructureType
     errors: ErrorMessageList
     group: str | None = None
     on_missing: str = FILE_SYSTEM_ACTION_ON_MISSING_ERROR
     parent_structure: AbstractFileSystemStructure | None = None
+    path: str
     permissions: FileSystemStructurePermission | None = None
     shortcut: str | None = None
     shortcuts: dict[str, AbstractFileSystemStructure]
+    should_exist: bool | None = True
+    type: FileSystemStructureType
     user: str | None = None
 
     def __init__(self, path: str, initialize: bool = True) -> None:

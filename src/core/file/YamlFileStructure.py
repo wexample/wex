@@ -10,8 +10,8 @@ from src.core.file.FileStructure import FileStructure
 
 
 class YamlFileStructure(FileStructure):
-    file_extension: str = "yml"
     content: YamlContent
+    file_extension: str = "yml"
 
     def load_content_yaml_dict(
         self, default: YamlContentDict | None = None

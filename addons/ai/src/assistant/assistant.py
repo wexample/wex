@@ -80,9 +80,9 @@ __all__ = [
 class Assistant(AbsractKernelChild):
     conversation: Row[tuple[Any, ...]]
     language: str
+    last_prompt_sections: list[UserPromptSection] | None
     user: Row[tuple[Any, ...]]
     _default_model: AbstractModel | None = None
-    last_prompt_sections: list[UserPromptSection] | None
 
     def __init__(self, kernel: Kernel, default_model: str) -> None:
         super().__init__(kernel)

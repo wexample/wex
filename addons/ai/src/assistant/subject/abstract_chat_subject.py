@@ -11,8 +11,8 @@ from src.const.types import StringKeysDict
 
 
 class AbstractChatSubject(AbstractAssistantChild):
-    interaction_modes: dict[str, AbstractInteractionMode]
     interaction_mode: AbstractInteractionMode | None
+    interaction_modes: dict[str, AbstractInteractionMode]
 
     @staticmethod
     def name() -> str:

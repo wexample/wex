@@ -32,8 +32,8 @@ IO_DEFAULT_LOG_LENGTH = 0
 
 
 class IOManagerLogMessage(TypedDict):
-    message: str
     lines: int
+    message: str
 
 
 class IOManager(AbsractKernelChild):

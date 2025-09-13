@@ -54,5 +54,5 @@ def app__webhook__status_process(
 
 
 class StatusProcess(TypedDict, total=False):
-    task: LoggerLogData
     children: dict[str, LoggerLogData]
+    task: LoggerLogData

@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
 
 class KernelRegistryFileStructure(YamlFileStructure):
+    content: KernelRegistry
+    kernel: Kernel
     # May not exist when cache flushed
     should_exist: bool | None = False
-    kernel: Kernel
-    content: KernelRegistry
 
     def __init__(self, kernel: Kernel, path: str, initialize: bool = True) -> None:
         self.kernel = kernel

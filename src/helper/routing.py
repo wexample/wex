@@ -122,6 +122,6 @@ def routing_is_allowed_route(url: str, routes: WebhookListenerRoutesMap) -> bool
 
 class RouteInfo(TypedDict):
     is_async: bool
-    name: str
     match: StringsList | None
+    name: str
     query: StringKeysDict

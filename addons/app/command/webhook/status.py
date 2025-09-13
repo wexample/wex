@@ -79,5 +79,5 @@ def app__webhook__status(
 
 
 class OutputData(TypedDict, total=False):
-    process: KeyValueResponse
     log: TableResponse
+    process: KeyValueResponse

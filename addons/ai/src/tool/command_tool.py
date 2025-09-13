@@ -7,9 +7,9 @@ from src.utils.kernel import Kernel
 
 
 class CommandTool(BaseTool):
+    description: str
     kernel: Kernel
     name: str
-    description: str
 
     def __init__(self, **kwargs: Kwargs) -> None:
         super().__init__(**kwargs)

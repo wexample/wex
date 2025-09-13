@@ -13,10 +13,10 @@ from src.helper.file import file_create_parent_and_touch
 
 
 class FileStructure(AbstractFileSystemStructure):
-    type = "file"
-    file_extension: str | None = None
     content: BasicValue
     default_content: str = ""
+    file_extension: str | None = None
+    type = "file"
 
     def __init__(self, path: str, initialize: bool = True) -> None:
         self.content = None

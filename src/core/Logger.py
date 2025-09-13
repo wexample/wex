@@ -27,32 +27,32 @@ LOG_STATUS_STARTED = "started"
 class LoggerLogDataError(TypedDict):
     code: str
     date: str
-    parameters: StringKeysDict
     level: int
+    parameters: StringKeysDict
 
 
 class LoggerLogDataEvent(TypedDict):
-    name: str
     data: StringKeysDict | None
+    name: str
 
 
 class LoggerLogDataCommand(TypedDict):
-    command: str
     args: CoreCommandArgsList
+    command: str
 
 
 class LoggerLogData(TypedDict):
-    task_id: str
+    children: StringsDict
     command: LoggerLogDataCommand
-    trace: list[LoggerLogDataCommand]
-    dateStart: str
     dateLast: str
+    dateStart: str
     duration: float
     errors: list[LoggerLogDataError]
     events: list[LoggerLogDataEvent]
-    children: StringsDict
-    status: str
     parent_task_id: str | None
+    status: str
+    task_id: str
+    trace: list[LoggerLogDataCommand]
 
 
 class Logger:

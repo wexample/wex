@@ -8,8 +8,8 @@ class TestKernel(Kernel):
     # Post-exec script should be tested with
     # dedicated subprocesses during tests
     fast_mode = True
-    verbosity: int = VERBOSITY_LEVEL_MAXIMUM
     tty = False
+    verbosity: int = VERBOSITY_LEVEL_MAXIMUM
 
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
         super().__init__(
