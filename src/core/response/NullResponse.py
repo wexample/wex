@@ -17,6 +17,7 @@ class NullResponse(AbstractResponse, ABC):
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return super().print(render_mode, interactive_data)
         return None
+
     def render_content(
         self,
         request: CommandRequest,

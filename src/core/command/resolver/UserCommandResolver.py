@@ -100,6 +100,7 @@ class UserCommandResolver(AbstractCommandResolver):
 
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["user", parts[1], parts[2]]
+
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:

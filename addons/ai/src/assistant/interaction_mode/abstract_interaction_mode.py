@@ -23,6 +23,7 @@ class AbstractInteractionMode(AbstractAssistantChild):
         self, prompt_section: UserPromptSection, chain_response: Any
     ) -> str:
         return str(chain_response.content)
+
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return None
 

@@ -47,6 +47,7 @@ class FormatedDataInteractionMode(AbstractInteractionMode):
             return os.linesep + xml_text_str
 
         return str(chain_response)
+
     def get_initial_prompt(self, prompt_section: UserPromptSection) -> str | None:
         return (
             f"You generate structured data in {(' '.join(prompt_section.flags)).upper()} format, "

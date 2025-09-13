@@ -95,6 +95,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
             time.sleep(wait)
 
         return response
+
     def start_webhook_listener(self, port: int = 6543) -> int:
         self.kernel.run_function(
             app__webhook__listen, {"port": port, "asynchronous": True, "force": True}

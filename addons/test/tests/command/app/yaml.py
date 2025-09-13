@@ -53,6 +53,7 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
         )
 
         self.assertResponseOutputBagItemContains(response, 7, "TEST_PYTHON_FILE")
+
     def test_yaml_error(self) -> None:
         """
         Use a separated function to restore app location after error.

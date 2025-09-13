@@ -8,6 +8,7 @@ class PythonAppCrawler(AppCrawler):
         tree = super().cleanup_tree(tree)
         self.tree_remove(tree, "__pycache__")
         return tree
+
     def tree_remove(self, tree: CrawlerTreeItem, file_name: str) -> None:
         if "children" not in tree or not tree["children"]:
             return

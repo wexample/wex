@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 from urllib.parse import parse_qsl, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
@@ -16,7 +16,6 @@ from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
 
-from typing import TypedDict
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 

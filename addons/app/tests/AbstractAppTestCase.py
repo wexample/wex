@@ -101,6 +101,7 @@ class AbstractAppTestCase(AbstractTestCase):
                 "command": f'bash /opt/wex/.wex/docker/test_remote/test_remote-mirror_app.sh "{app_dir_name}"',
             },
         )
+
     def create_test_app(
         self,
         name: str = DEFAULT_APP_TEST_NAME,

@@ -28,6 +28,7 @@ class UrlSearchInteractionMode(AbstractVectorStoreInteractionMode):
 
     def get_url_subject(self) -> UrlChatSubject:
         return cast("UrlChatSubject", self.assistant.get_current_subject())
+
     def get_vector_store_collection_name(self) -> str:
         return "url-search"
 

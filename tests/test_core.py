@@ -124,6 +124,7 @@ class TestCore(AbstractTestCase):
         response = self.kernel.run_function(core__logo__show, {"help": True})
 
         self.assertTrue(isinstance(response, AbortResponse))
+
     def test_init(self) -> None:
         from src.const.globals import CORE_COMMAND_NAME, OWNER_USERNAME, ROOT_USERNAME
         from src.helper.user import get_user_or_sudo_user

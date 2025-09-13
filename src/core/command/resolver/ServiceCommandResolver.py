@@ -196,6 +196,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
                     return True
 
         return False
+
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:

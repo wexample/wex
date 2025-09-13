@@ -303,6 +303,7 @@ class AbstractCommandResolver(AbsractKernelChild):
                 if found:
                     return True
         return False
+
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
