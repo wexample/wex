@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 def proxy__app__start_post(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    # TODO Should be removed as it prevent monitoring configuration
+    return None
     commands = [
         ["touch", "/var/log/nginx/access.log"],
         ["ln", "-fs", "/proc/1/fd/1", "/var/log/nginx/access.log"],
