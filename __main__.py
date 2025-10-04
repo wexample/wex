@@ -2,40 +2,6 @@
 """Main entry point for the application."""
 
 if __name__ == "__main__":
-    try:
-        from wexample_wex_addon_dev_php.php_addon_manager import (
-            PhpAddonManager,
-        )
-        from wexample_wex_addon_dev_javascript.javascript_addon_manager import (
-            JavascriptAddonManager,
-        )
-        from wexample_wex_addon_dev_python.python_addon_manager import (
-            PythonAddonManager,
-        )
-        from wexample_wex_core.addons.default.default_addon_manager import (
-            DefaultAddonManager,
-        )
-        # from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
-        from wexample_wex_core.common.kernel import Kernel
-        from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
-        from wexample_wex_addon_app.app_addon_manager import AppAddonManager
+    from src.common.wex import Wex
 
-        (
-            Kernel(
-                entrypoint_path=__file__,
-            )
-            .setup(addons=[
-                AppAddonManager,
-                DefaultAddonManager,
-                FilestateAddonManager,
-                JavascriptAddonManager,
-                PhpAddonManager,
-                PythonAddonManager,
-                # TestAddonManager, TODO Add it only when testing core.
-            ])
-            .exec_argv()
-        )
-    except Exception as e:
-        from wexample_app.helpers.debug import debug_handle_app_error
-
-        debug_handle_app_error(e)
+    Wex(entrypoint_path=__file__).exec()
