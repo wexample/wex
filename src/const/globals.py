@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 # filestate: python-constant-sort
+COLOR_BLACK = "\033[0;30m"
 COLOR_BLUE = "\033[0;34m"
 COLOR_CYAN = "\033[0;36m"
 COLOR_DEFAULT = "\033[0m"
@@ -18,7 +19,6 @@ COLOR_RED = "\033[0;31m"
 COLOR_RESET = "\033[0m"
 COLOR_WHITE = "\033[0;37m"
 COLOR_YELLOW = "\033[0;33m"
-COLOR_BLACK = "\033[0;30m"
 
 COMMAND_SEPARATOR_ADDON = "::"
 COMMAND_SEPARATOR_FUNCTION_PARTS = "__"
