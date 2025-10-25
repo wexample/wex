@@ -35,7 +35,8 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         return ".".join(map(str, steps if steps is not None else self.steps))
 
     def get_response(self) -> QueuedCollectionResponse:
-        return cast("QueuedCollectionResponse", super().get_response())
+        from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+        return cast(QueuedCollectionResponse, super().get_response())
 
     def get_step_index(self) -> QueuedCollectionStepValue:
         return self.steps[self.get_response().step_position]
@@ -44,6 +45,7 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
         return self.get_response().step_position >= len(self.steps)
 
     def save_to_map(self) -> None:
+        from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
         response = self.get_response()
 
         response.kernel.io.log(

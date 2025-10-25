@@ -3,10 +3,8 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, cast
 
-from src.const.globals import (
-    KERNEL_RENDER_MODE_TERMINAL)
-from src.const.types import (
-    AnyList, Args, JsonContent, OptionalCoreCommandArgsDict)
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import AnyList, Args, JsonContent, OptionalCoreCommandArgsDict
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.utils.abstract_kernel_child import AbsractKernelChild
@@ -54,6 +52,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
 
     def get_first_output_printable_value(self) -> ResponsePrintType:
         from src.const.types import ResponsePrintType
+
         if not len(self.output_bag):
             return None
 
@@ -115,6 +114,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
     ) -> str | None:
         from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_NONE
+
         if render_mode == KERNEL_RENDER_MODE_NONE:
             return None
 
@@ -137,6 +137,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         args: OptionalCoreCommandArgsDict = None,
     ) -> None:
         from src.const.globals import KERNEL_RENDER_MODE_NONE
+
         self.set_request(request)
         self.parent = self.kernel.current_response
 

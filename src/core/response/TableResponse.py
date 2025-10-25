@@ -123,6 +123,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         from src.const.globals import KERNEL_RENDER_MODE_JSON
+
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
             self.render_cli_content()

@@ -2,18 +2,14 @@ from __future__ import annotations
 
 from abc import ABC
 from typing import TYPE_CHECKING, cast
-
-from src.const.types import BasicInlineValue
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
 )
 
 if TYPE_CHECKING:
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.core.response.AbstractResponse import AbstractResponse
+    from src.const.types import BasicInlineValue
 
 
 class FastModeQueuedCollectionResponseQueueManager(
@@ -23,6 +19,8 @@ class FastModeQueuedCollectionResponseQueueManager(
         super().__init__(response)
 
     def get_previous_value(self) -> BasicInlineValue:
+        from src.const.types import BasicInlineValue
+        from src.core.response.AbstractResponse import AbstractResponse
         self.response.find_parent_response_collection()
         path = self.get_previous_response_path()
 
@@ -44,6 +42,7 @@ class FastModeQueuedCollectionResponseQueueManager(
     def render_content_complete(
         self, response: AbstractResponse | None = None
     ) -> AbstractResponse:
+        from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
         if self.response.parent:

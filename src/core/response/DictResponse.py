@@ -10,13 +10,13 @@ from src.const.types import (
     StringKeysDict,
 )
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
     AbstractTerminalSectionResponse,
 )
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class DictResponse(AbstractTerminalSectionResponse):
@@ -38,6 +38,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
+        from src.core.response.AbstractResponse import AbstractResponse
         if not len(self.output_bag):
             return None
 
