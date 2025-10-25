@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 @option("--arg", "-a", type=str, required=True, help="Argument")
 def test__return_type__table(kernel: Kernel, arg: str) -> TableResponse:
     from src.core.response.TableResponse import TableResponse
+
     return TableResponse(
         kernel,
         "Test table",

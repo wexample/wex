@@ -11,6 +11,7 @@ from src.helper.routing import routing_build_webhook_route_map
 class TestTestCommandAppWebhook(AbstractWebhookTestCase):
     def test_webhook(self) -> None:
         from src.helper.routing import routing_is_allowed_route
+
         routes = routing_build_webhook_route_map(self.kernel)
 
         self.assertFalse(routing_is_allowed_route("/test", routes))

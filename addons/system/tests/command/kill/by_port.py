@@ -6,6 +6,7 @@ from src.helper.process import process_get_all_by_port
 class TestSystemCommandKillByPort(AbstractPortTestCase):
     def test_by_port(self) -> None:
         from addons.system.command.kill.by_port import system__kill__by_port
+
         port = 45678
         server_process = self.start_test_process(port)
 

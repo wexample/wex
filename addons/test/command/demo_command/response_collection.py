@@ -11,7 +11,9 @@ from src.decorator.test_command import test_command
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
     from src.core.response.HiddenResponse import HiddenResponse
-    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+    from src.core.response.NonInteractiveShellCommandResponse import (
+        NonInteractiveShellCommandResponse,
+    )
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
     from src.const.types import StringKeysDict
 

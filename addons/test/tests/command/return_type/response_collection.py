@@ -6,7 +6,12 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandReturnTypeResponseCollection(AbstractTestCase):
     def test_response_collection(self) -> None:
-        from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_TERMINAL
+        from src.const.globals import (
+            KERNEL_RENDER_MODE_JSON,
+            KERNEL_RENDER_MODE_NONE,
+            KERNEL_RENDER_MODE_TERMINAL,
+        )
+
         self.for_each_render_mode(
             self._test_response_collection,
             {
@@ -43,7 +48,10 @@ NON_INTERACTIVE_SHELL_COMMAND_RESPONSE
         )
 
     def _test_response_collection(self, render_mode: str) -> str | None:
-        from addons.test.command.return_type.response_collection import test__return_type__response_collection
+        from addons.test.command.return_type.response_collection import (
+            test__return_type__response_collection,
+        )
+
         return self.kernel.run_function(
             function=test__return_type__response_collection, render_mode=render_mode
         ).print_wrapped(render_mode)

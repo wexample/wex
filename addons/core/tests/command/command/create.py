@@ -10,6 +10,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestCoreCommandCommandCreate(AbstractTestCase):
     def test_create(self) -> None:
         from wexample_helpers.helpers.file import file_remove_if_exists
+
         test_file_path_command = f"command/lorem/ipsum.py"
         test_file_path = (
             self.kernel.get_path("addons", ["core"]) + test_file_path_command

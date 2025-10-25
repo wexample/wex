@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 def php__service__install(manager: AppAddonManager, app_dir: str, service: str) -> None:
     from addons.app.const.app import APP_ENVS, APP_ENV_LOCAL
     from src.helper.service import service_copy_sample_dir
+
     service_copy_sample_dir(manager.kernel, "php", "cron")
 
     # Install one "cron" file per environment

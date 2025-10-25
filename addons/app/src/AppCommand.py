@@ -55,8 +55,8 @@ class AppCommand(ScriptCommand):
         script: YamlCommandScript,
         variables: CoreCommandArgsDict,
     ) -> StringsList:
-        from addons.app.helper.docker import docker_build_long_container_name
         from addons.app.AppAddonManager import AppAddonManager
+        from addons.app.helper.docker import docker_build_long_container_name
 
         kernel = runner.kernel
         manager = kernel.addons["app"]

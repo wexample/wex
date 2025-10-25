@@ -7,17 +7,21 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.const.app import APP_FILEPATH_REL_CONFIG
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.helper.user import (
-    get_sudo_username, get_user_group_name)
+from src.helper.user import get_sudo_username, get_user_group_name
 
 
 class TestAppCommandAppPerms(AbstractAppTestCase):
     def test_perms(self) -> None:
         from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
         from addons.app.const.app import APP_DIR_TMP
-        from src.helper.user import get_gid_from_group_name, get_uid_from_user_name, get_user_or_sudo_user
+        from src.helper.user import (
+            get_gid_from_group_name,
+            get_uid_from_user_name,
+            get_user_or_sudo_user,
+        )
         from src.helper.file import file_get_group, file_get_owner
         from addons.app.command.app.perms import app__app__perms
+
         app_dir = self.create_test_app(DEFAULT_APP_TEST_NAME, force_restart=True)
 
         test_file = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)

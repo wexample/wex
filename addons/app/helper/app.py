@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
     from src.helper.file import file_create_parent_and_touch
     from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
+
     env_file_path = os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV)
 
     # Check if the file already exists
@@ -32,6 +33,7 @@ def app_create_manager(kernel: Kernel, app_dir: str) -> AppAddonManager:
     """
     from addons.app.AppAddonManager import AppAddonManager
     from addons.app.command.location.find import app__location__find
+
     if not app_dir:
         app_dir = kernel.run_function(app__location__find).first()
 

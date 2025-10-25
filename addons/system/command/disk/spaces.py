@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 def system__disk__spaces(kernel: Kernel) -> TableResponse:
     from src.core.response.TableResponse import TableResponse
     from src.helper.file import file_get_human_readable_size
+
     output_list = TableResponse(kernel)
     output_list.set_header(
         [

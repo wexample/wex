@@ -10,6 +10,7 @@ from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from src.const.types import JsonContentDict
 
@@ -46,6 +47,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
     def parse_response(self, response: HTTPResponse) -> JsonContentDict:
         from src.const.types import JsonContentDict
+
         content = response.read()
         self.kernel.io.log("PARSING : " + str(content))
 
@@ -99,6 +101,7 @@ class AbstractWebhookTestCase(AbstractAppTestCase):
 
     def start_webhook_listener(self, port: int = 6543) -> int:
         from addons.app.command.webhook.listen import app__webhook__listen
+
         self.kernel.run_function(
             app__webhook__listen, {"port": port, "asynchronous": True, "force": True}
         )

@@ -10,4 +10,5 @@ if TYPE_CHECKING:
 @command(help="Return true if current environment is a Docker container")
 def system__system__is_docker(kernel: Kernel) -> bool:
     from addons.app.helper.docker import docker_is_current
+
     return docker_is_current()

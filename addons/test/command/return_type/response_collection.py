@@ -18,11 +18,16 @@ def test__return_type__response_collection(
     from addons.test.command.return_type.function import _test__return_type__function
     from src.core.response.DictResponse import DictResponse
     from src.core.response.HiddenResponse import HiddenResponse
-    from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
     from src.core.response.FunctionResponse import FunctionResponse
     from src.core.response.TableResponse import TableResponse
     from src.core.response.NullResponse import NullResponse
-    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+    from src.core.response.NonInteractiveShellCommandResponse import (
+        NonInteractiveShellCommandResponse,
+    )
+
     return ResponseCollectionResponse(
         kernel,
         [

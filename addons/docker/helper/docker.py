@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 def docker_container_ip(kernel: Kernel, container_name: str) -> str:
     from src.helper.command import execute_command_sync
+
     success, diff = execute_command_sync(
         kernel,
         [
@@ -28,6 +29,7 @@ def docker_container_ip(kernel: Kernel, container_name: str) -> str:
 
 def merge_docker_compose_files(src: str, target: str) -> None:
     from wexample_helpers.helpers.dict import dict_merge
+
     # Load both files as Python objects
     with open(src) as f:
         data1 = yaml.safe_load(f)
@@ -44,6 +46,7 @@ def merge_docker_compose_files(src: str, target: str) -> None:
 
 def user_has_docker_permission(username: str) -> bool:
     from src.helper.user import is_sudo
+
     if is_sudo(username):
         return True
 

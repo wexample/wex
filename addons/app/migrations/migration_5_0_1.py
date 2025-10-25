@@ -11,11 +11,17 @@ if TYPE_CHECKING:
 def migration_5_0_1(kernel: Kernel, manager: AppAddonManager) -> None:
     from addons.app.const.app import APP_DIR_APP_DATA
     from src.helper.prompt import prompt_progress_steps
+
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     def _migration_5_0_1_update_config() -> None:
         from addons.app.const.app import APP_FILE_APP_CONFIG
-        from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_replace_docker_mapping, _migration_4_0_0_replace_docker_placeholders, _migration_4_0_0_replace_placeholders
+        from addons.app.migrations.migration_4_0_0 import (
+            _migration_4_0_0_replace_docker_mapping,
+            _migration_4_0_0_replace_docker_placeholders,
+            _migration_4_0_0_replace_placeholders,
+        )
+
         mapping = {
             # The only cli known was wordpress_cli
             "_mysql_8": "_mysql",

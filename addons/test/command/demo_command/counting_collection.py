@@ -23,6 +23,7 @@ def test__demo_command__counting_collection(
     kernel: Kernel, initial: int
 ) -> QueuedCollectionResponse:
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
     def callback(queue: AbstractQueuedCollectionResponseQueueManager) -> int:
         previous = queue.get_previous_value()
         assert isinstance(previous, int)

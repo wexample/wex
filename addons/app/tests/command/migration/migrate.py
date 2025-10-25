@@ -9,6 +9,7 @@ from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 class TestAppCommandMigrationMigrate(AbstractAppTestCase):
     def test_migrate(self) -> None:
         from wexample_helpers.helpers.directory import directory_execute_inside
+
         source_apps_dir = self.get_app_resources_path()
 
         test_apps: list[str] = os.listdir(source_apps_dir)
@@ -22,6 +23,7 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
                 from src.const.globals import CORE_COMMAND_NAME
                 from src.helper.core import core_kernel_get_version
                 from addons.app.command.migration.migrate import app__migration__migrate
+
                 self.kernel.run_function(app__migration__migrate, {"yes": True})
 
                 manager = AppAddonManager(self.kernel, app_dir=test_app_dir)

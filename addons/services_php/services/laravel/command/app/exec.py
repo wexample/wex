@@ -23,6 +23,7 @@ def laravel__app__exec(
 ) -> AbstractResponse | None:
     from src.const.globals import COMMAND_TYPE_SERVICE
     from addons.services_php.services.php.command.app.exec import php__app__exec
+
     if container == service:
         return manager.kernel.run_function(
             php__app__exec,

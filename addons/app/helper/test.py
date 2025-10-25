@@ -44,6 +44,7 @@ def test_create_app(
 ) -> str:
     from addons.app.const.app import APP_ENV_TEST
     from addons.app.command.app.init import app__app__init
+
     test_create_env_dir(kernel=kernel, env_name=APP_ENV_TEST)
     app_dir = test_get_app_dir(kernel, name)
     current_dir = os.getcwd()
@@ -101,6 +102,7 @@ def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
 def test_get_app_dir(kernel: Kernel, name: str) -> str:
     from src.core.file.DirectoryStructure import DirectoryStructure
     from addons.app.const.app import APP_ENV_TEST
+
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
     return (
         f"{os.path.join(apps_dir.get_parent_dir(), APP_ENV_TEST, name) + os.path.sep}"
@@ -109,5 +111,6 @@ def test_get_app_dir(kernel: Kernel, name: str) -> str:
 
 def test_get_test_remote_address(kernel: Kernel) -> str:
     from addons.docker.helper.docker import docker_container_ip
+
     # A test remote container should have been started.
     return docker_container_ip(kernel, "wex_test_remote")

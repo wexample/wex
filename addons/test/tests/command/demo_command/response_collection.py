@@ -12,8 +12,11 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandDemoCommandResponseCollection(AbstractTestCase):
     def test_response_collection(self) -> None:
-        from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+        from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+            QueuedCollectionStopResponse,
+        )
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
         response = self.kernel.run_function(test__demo_command__response_collection)
 
         first_response_print = response.print_wrapped_str()

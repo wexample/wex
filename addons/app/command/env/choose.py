@@ -26,6 +26,7 @@ def app__env__choose(
     from InquirerPy.base.control import Choice
     from src.helper.prompt import prompt_choice
     from addons.app.command.env.set import app__env__set
+
     env = prompt_choice(
         question,
         cast(list[str | Choice], APP_ENVS),

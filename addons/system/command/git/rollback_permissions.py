@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 )
 def system__git__rollback_permissions(kernel: Kernel) -> bool:
     from src.helper.command import execute_command_sync
+
     success, diff = execute_command_sync(
         kernel,
         ["git", "diff", "-p", "-R", "--no-ext-diff", "--no-color", "--diff-filter=M"],
@@ -46,6 +47,7 @@ def system__git__rollback_permissions(kernel: Kernel) -> bool:
 
 def _apply_diff(kernel: Kernel, diff_lines: StringsList) -> None:
     from src.helper.command import execute_command_sync
+
     if len(diff_lines) < 3:
         return
 

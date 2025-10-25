@@ -37,6 +37,7 @@ if TYPE_CHECKING:
 )
 def ai__talk__ask(kernel: Kernel, action: str, model: str) -> None:
     from addons.ai.src.assistant.assistant import Assistant
+
     assistant = Assistant(kernel, model)
 
     assistant.start(menu_action=action)

@@ -13,8 +13,11 @@ if TYPE_CHECKING:
 def laravel__config__runtime(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
-    from addons.services_php.services.php.command.config.runtime import php__config__runtime
+    from addons.services_php.services.php.command.config.runtime import (
+        php__config__runtime,
+    )
     from src.const.globals import COMMAND_TYPE_SERVICE
+
     manager.kernel.run_function(
         php__config__runtime,
         {"app-dir": app_dir, "service": service},

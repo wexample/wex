@@ -7,6 +7,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestAppCommandLocationFind(AbstractTestCase):
     def test_find(self) -> None:
         from wexample_helpers.helpers.directory import directory_execute_inside
+
         # Test without dir argument.
         app_location = self.kernel.run_function(app__location__find).first()
         self.assertEqual(app_location, self.kernel.directory.path)

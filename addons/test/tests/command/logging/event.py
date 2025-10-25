@@ -5,6 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestTestCommandLoggingEvent(AbstractTestCase):
     def test_event(self) -> None:
         from addons.test.command.logging.event import test__logging__event
+
         self.kernel.run_function(test__logging__event)
         has_empty_event = False
         has_event_with_data = False

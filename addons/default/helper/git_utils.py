@@ -4,6 +4,7 @@ import os
 import shutil
 import stat
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from git import Repo
 
@@ -28,6 +29,7 @@ def git_file_get_octal_mode(path: str) -> str:
 
 def git_get_or_create_repo(path: str) -> Repo:
     from git import InvalidGitRepositoryError, Repo
+
     try:
         return Repo(path)
     except InvalidGitRepositoryError:
@@ -36,6 +38,7 @@ def git_get_or_create_repo(path: str) -> Repo:
 
 def git_move_or_file_move(repo: Repo, src: str, target: str) -> None:
     from git import GitCommandError
+
     repo_dir = repo.working_tree_dir
 
     if not isinstance(repo_dir, str):

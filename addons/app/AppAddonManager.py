@@ -10,18 +10,36 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 import yaml
 from wexample_helpers.helpers.args import args_shift_one
 from wexample_helpers.helpers.dict import (
-    DICT_ITEM_EXISTS_ACTION_REPLACE, dict_get_item_by_path, dict_has_item_by_path)
+    DICT_ITEM_EXISTS_ACTION_REPLACE,
+    dict_get_item_by_path,
+    dict_has_item_by_path,
+)
 from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.command.location.find import app__location__find
 from addons.app.const.app import (
-    APP_DIR_APP_DATA, APP_FILEPATH_REL_COMPOSE_RUNTIME_YML, APP_FILEPATH_REL_CONFIG, APP_FILEPATH_REL_CONFIG_RUNTIME, APP_FILEPATH_REL_DOCKER_ENV, APP_FILEPATH_REL_ENV)
+    APP_DIR_APP_DATA,
+    APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
+    APP_FILEPATH_REL_CONFIG,
+    APP_FILEPATH_REL_CONFIG_RUNTIME,
+    APP_FILEPATH_REL_DOCKER_ENV,
+    APP_FILEPATH_REL_ENV,
+)
 from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
-from src.const.globals import (
-    COLOR_GRAY, COMMAND_TYPE_APP, VERBOSITY_LEVEL_DEFAULT)
+from src.const.globals import COLOR_GRAY, COMMAND_TYPE_APP, VERBOSITY_LEVEL_DEFAULT
 from src.const.types import (
-    AnyAppConfig, AnyCallable, AppConfig, AppConfigValue, AppDockerEnvConfig, AppRuntimeConfig, DockerCompose, StringKeysDict, StringsList, YamlContentDict)
+    AnyAppConfig,
+    AnyCallable,
+    AppConfig,
+    AppConfigValue,
+    AppDockerEnvConfig,
+    AppRuntimeConfig,
+    DockerCompose,
+    StringKeysDict,
+    StringsList,
+    YamlContentDict,
+)
 from src.core.AddonManager import AddonManager
 
 if TYPE_CHECKING:
@@ -95,6 +113,7 @@ class AppAddonManager(AddonManager):
         cls, path: str, default: YamlContentDict | None = None
     ) -> YamlContentDict:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read_dict
+
         return yaml_read_dict(path, default) or {}
 
     def add_proxy_app(self, name: str, app_dir: str) -> None:
@@ -244,8 +263,18 @@ class AppAddonManager(AddonManager):
     ) -> AppConfig:
         from src.helper.core import core_kernel_get_version
         from wexample_helpers.helpers.string import string_to_kebab_case
-        from src.const.globals import CORE_COMMAND_NAME, DATE_FORMAT_SECOND, VERSION_DEFAULT
-        from addons.app.const.app import APP_ENV_DEV, APP_ENV_LOCAL, APP_ENV_PROD, APP_ENV_TEST
+        from src.const.globals import (
+            CORE_COMMAND_NAME,
+            DATE_FORMAT_SECOND,
+            VERSION_DEFAULT,
+        )
+        from addons.app.const.app import (
+            APP_ENV_DEV,
+            APP_ENV_LOCAL,
+            APP_ENV_PROD,
+            APP_ENV_TEST,
+        )
+
         if domains is None:
             domains = []
 
@@ -434,6 +463,7 @@ class AppAddonManager(AddonManager):
 
     def get_helper_app_name(self, short_name: str) -> str:
         from src.const.globals import CORE_COMMAND_NAME
+
         return "-".join([CORE_COMMAND_NAME, short_name])
 
     def get_helper_app_path(
@@ -456,9 +486,13 @@ class AppAddonManager(AddonManager):
         return self.get_config(key="global.main_service").get_str()
 
     def get_proxy_apps(self, environment: str | None = None) -> AppsPathsList:
-        from addons.app.const.app import HELPER_APP_PROXY_SHORT_NAME, PROXY_FILE_APPS_REGISTRY
+        from addons.app.const.app import (
+            HELPER_APP_PROXY_SHORT_NAME,
+            PROXY_FILE_APPS_REGISTRY,
+        )
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
         from src.const.types import AppsPathsList
+
         return cast(
             AppsPathsList,
             yaml_read(
@@ -484,6 +518,7 @@ class AppAddonManager(AddonManager):
     ) -> ConfigValue:
         from src.core.ConfigValue import ConfigValue
         from src.helper.service import service_load_config
+
         found_service = service or (
             self.get_main_service() if self.has_main_service() else None
         )
@@ -504,6 +539,7 @@ class AppAddonManager(AddonManager):
 
     def get_service_shell(self, service: str | None = None) -> str:
         from src.const.globals import SHELL_DEFAULT
+
         if not self.has_config(key="docker.main_container_shell"):
             if self.has_main_service():
                 return self.get_service_config(
@@ -562,6 +598,7 @@ class AppAddonManager(AddonManager):
 
     def has_runtime_config(self, key: str) -> bool:
         from src.const.types import StringKeysMapping
+
         return dict_has_item_by_path(cast(StringKeysMapping, self._runtime_config), key)
 
     def has_service_config(
@@ -608,6 +645,7 @@ class AppAddonManager(AddonManager):
 
     def hook_render_request_pre(self, request: CommandRequest) -> None:
         from wexample_helpers.helpers.args import args_push_one
+
         if self.ignore_app_dir(request):
             return
 
@@ -690,6 +728,7 @@ class AppAddonManager(AddonManager):
 
     def ignore_app_dir(self, request: CommandRequest) -> bool:
         from addons.app.src.AppCommand import AppCommand
+
         if request._script_command is None:
             return False
 
@@ -717,6 +756,7 @@ class AppAddonManager(AddonManager):
     def load_script(self, name: str) -> YamlContent | None:
         from src.const.types import YamlContent
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
         return cast(Optional[YamlContent], yaml_read(script_dir))
 
@@ -738,12 +778,14 @@ class AppAddonManager(AddonManager):
 
     def remove_config(self, key: str) -> None:
         from wexample_helpers.helpers.dict import dict_remove_item_by_path
+
         dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_config()
 
     def remove_runtime_config(self, key: str) -> None:
         from wexample_helpers.helpers.dict import dict_remove_item_by_path
+
         dict_remove_item_by_path(self.config_to_dict(self._config), key)
 
         self.save_runtime_config()
@@ -757,7 +799,11 @@ class AppAddonManager(AddonManager):
         self._save_config(self.config_path, self._config)
 
     def save_proxy_apps(self, proxy_apps: AppsPathsList, environment: str) -> None:
-        from addons.app.const.app import HELPER_APP_PROXY_SHORT_NAME, PROXY_FILE_APPS_REGISTRY
+        from addons.app.const.app import (
+            HELPER_APP_PROXY_SHORT_NAME,
+            PROXY_FILE_APPS_REGISTRY,
+        )
+
         with open(
             self.get_helper_app_path(HELPER_APP_PROXY_SHORT_NAME, environment)
             + PROXY_FILE_APPS_REGISTRY,
@@ -768,7 +814,12 @@ class AppAddonManager(AddonManager):
     def save_runtime_config(
         self, user: str | None = None, group: str | None = None
     ) -> None:
-        from src.helper.file import file_env_to_dict, file_set_owner, file_write_dict_to_config
+        from src.helper.file import (
+            file_env_to_dict,
+            file_set_owner,
+            file_write_dict_to_config,
+        )
+
         self._save_config(self.runtime_config_path, self._runtime_config)
 
         app_dir: str = self.get_runtime_config("path.app").get_str()
@@ -796,6 +847,7 @@ class AppAddonManager(AddonManager):
 
     def set_app_workdir(self, app_dir: str) -> None:
         from src.const.globals import VERBOSITY_LEVEL_MEDIUM
+
         self.app_dir = app_dir
         self.config_path = os.path.join(app_dir, APP_FILEPATH_REL_CONFIG)
         self.runtime_config_path = os.path.join(
@@ -844,6 +896,7 @@ class AppAddonManager(AddonManager):
 
     def unset_app_workdir(self, fallback_dir: str | None = None) -> None:
         from src.const.globals import VERBOSITY_LEVEL_MEDIUM
+
         self.app_dir = None
         self.config_path = None
         self.runtime_config_path = None
@@ -867,6 +920,7 @@ class AppAddonManager(AddonManager):
         default: AppConfigValue | None = None,
     ) -> ConfigValue:
         from src.core.ConfigValue import ConfigValue
+
         value = dict_get_item_by_path(config_dict, key, default)
 
         if value is None and default is None:
@@ -877,6 +931,7 @@ class AppAddonManager(AddonManager):
     def _save_config(self, path: str | None, config: AnyAppConfig | None) -> None:
         from src.const.types import YamlContent
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_write
+
         if not path or not config:
             return
 
@@ -890,6 +945,7 @@ class AppAddonManager(AddonManager):
         when_exist: str = DICT_ITEM_EXISTS_ACTION_REPLACE,
     ) -> None:
         from wexample_helpers.helpers.dict import dict_set_item_by_path
+
         if not config:
             return None
 

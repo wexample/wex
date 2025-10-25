@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 def system__dir__spaces(kernel: Kernel, dir: str | None = None) -> TableResponse:
     from src.core.response.TableResponse import TableBody, TableResponse
     from src.helper.file import file_get_human_readable_size
+
     dir = dir or os.getcwd()
 
     # Function to calculate directory size

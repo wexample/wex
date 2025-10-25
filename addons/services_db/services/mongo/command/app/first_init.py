@@ -13,6 +13,7 @@ def mongo__app__first_init(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     from addons.app.command.db.exec import app__db__exec
+
     manager.kernel.run_function(
         app__db__exec,
         {

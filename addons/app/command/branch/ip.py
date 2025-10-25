@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 def app__branch__ip(manager: AppAddonManager, branch: str, app_dir: str) -> str | None:
     from addons.app.command.branch.env import _app__branch__env
     from addons.app.helper.remote import remote_get_environment_ip
+
     env = _app__branch__env(manager, branch)
 
     if env is not None:

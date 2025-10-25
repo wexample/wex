@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from addons.test.command.demo_command.responses import (
-    test__demo_command__responses)
+from addons.test.command.demo_command.responses import test__demo_command__responses
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandDemoCommandResponses(AbstractTestCase):
     def test_responses(self) -> None:
         from addons.test.command.demo_command.responses import RESPONSES_DEFAULT_VALUES
+
         for type in RESPONSES_DEFAULT_VALUES:
             response = self.kernel.run_function(
                 test__demo_command__responses, {"type": type}

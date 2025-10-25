@@ -9,6 +9,7 @@ class TestSystemCommandOwnThis(AbstractTestCase):
     def test_this(self) -> None:
         from src.helper.file import file_get_owner
         from addons.system.command.own.this import system__own__this
+
         test_file = self.build_test_file("config_bash")
 
         os.chown(

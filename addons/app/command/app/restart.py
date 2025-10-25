@@ -17,15 +17,18 @@ def app__app__restart(
     fast: bool = False,
 ) -> None:
     from src.helper.prompt import prompt_progress_steps
+
     kernel = manager.kernel
     options = {"app-dir": app_dir, "fast": fast}
 
     def _app__app__restart__stop() -> AbstractResponse:
         from addons.app.command.app.stop import app__app__stop
+
         return kernel.run_function(app__app__stop, options)
 
     def _app__app__restart__start() -> AbstractResponse:
         from addons.app.command.app.start import app__app__start
+
         return kernel.run_function(app__app__start, options)
 
     prompt_progress_steps(

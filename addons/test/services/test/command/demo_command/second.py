@@ -26,4 +26,5 @@ def test__demo_command__second(
     another_option_second: bool = False,
 ) -> str:
     from src.decorator.option import option
+
     return "SECOND"

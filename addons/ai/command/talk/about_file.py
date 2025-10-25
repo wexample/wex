@@ -15,6 +15,7 @@ def ai__talk__about_file(kernel: Kernel, file: str) -> None:
     from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
     from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
     from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_BACK, Assistant
+
     assistant = Assistant(kernel, MODEL_NAME_OPEN_AI_GPT_4)
 
     cast(FileChatSubject, assistant.set_subject(FileChatSubject.name()))

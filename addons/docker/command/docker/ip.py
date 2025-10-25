@@ -16,6 +16,7 @@ def docker__docker__ip(
     from addons.system.command.os.name import OS_NAME_MAC, system__os__name
     from src.helper.command import command_exists, execute_command_sync
     from addons.system.command.system.ip import system__system__ip
+
     if kernel.run_function(system__os__name).first() == OS_NAME_MAC:
         return "127.0.0.1"
 

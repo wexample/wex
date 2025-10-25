@@ -10,9 +10,12 @@ if TYPE_CHECKING:
 
 @command(help="Stop all running docker feature : containers, networks, volumes")
 def docker__docker__stop_all(kernel: Kernel) -> QueuedCollectionResponse:
-    from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
     from src.const.types import ShellCommandsDeepList
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
     return QueuedCollectionResponse(
         kernel,
         [

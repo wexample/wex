@@ -10,6 +10,7 @@ class TestAppCommandVersionGet(AbstractTestCase):
     def test_get(self) -> None:
         from src.helper.core import core_kernel_get_version
         from src.const.globals import SYSTEM_WWW_PATH
+
         self.log("Test in " + SYSTEM_WWW_PATH)
 
         version = self.kernel.run_function(

@@ -62,6 +62,7 @@ def migration_get_function(
     kernel: Kernel, version: str, method_part: str
 ) -> AnyCallable | None:
     from src.helper.module import module_load_from_file
+
     version_snake = version.replace(".", "_")
     path_migrations = migration_get_path(kernel)
     method_name = f"{method_part}_{version_snake}"

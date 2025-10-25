@@ -15,6 +15,7 @@ def ai__app__start_post(
 ) -> AbstractResponse | None:
     from addons.app.command.db.exec import app__db__exec
     from addons.app.command.db.restore import app__db__restore
+
     response = manager.kernel.run_function(
         app__db__exec,
         {

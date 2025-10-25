@@ -16,7 +16,9 @@ if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
     from src.core.response.HiddenResponse import HiddenResponse
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-    from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+    from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+        QueuedCollectionStopResponse,
+    )
 
 
 @app_command(

@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 @option("--port", "-p", type=int, required=True, help="Port number")
 def system__kill__by_port(kernel: Kernel, port: int) -> None:
     from src.helper.process import process_get_all_by_port, process_kill
+
     process = process_get_all_by_port(port)
 
     if process:

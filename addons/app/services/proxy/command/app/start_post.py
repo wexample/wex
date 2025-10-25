@@ -13,6 +13,7 @@ def proxy__app__start_post(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
     from addons.app.command.app.exec import app__app__exec
+
     # TODO Should be removed as it prevent monitoring configuration
     return None
     commands = [

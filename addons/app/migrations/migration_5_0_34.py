@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 def migration_5_0_34(kernel: Kernel, manager: AppAddonManager) -> None:
     from src.helper.prompt import prompt_progress_steps
+
     def _migration_5_0_34_update_config() -> None:
         if manager.has_config("docker.main_container"):
             manager.set_config(

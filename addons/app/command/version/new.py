@@ -22,6 +22,7 @@ def app__version__new(
 ) -> str:
     from addons.app.command.version.new_commit import app__version__new_commit
     from addons.app.command.version.new_write import app__version__new_write
+
     new_version = manager.kernel.run_function(
         app__version__new_write,
         {

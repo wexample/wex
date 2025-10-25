@@ -8,7 +8,12 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandReturnTypeFunction(AbstractTestCase):
     def test_function(self) -> None:
-        from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_TERMINAL
+        from src.const.globals import (
+            KERNEL_RENDER_MODE_JSON,
+            KERNEL_RENDER_MODE_NONE,
+            KERNEL_RENDER_MODE_TERMINAL,
+        )
+
         self.for_each_render_mode(
             self._test_function,
             {

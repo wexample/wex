@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
-from addons.app.command.remote.push_receive import (
-    app__remote__push_receive)
+from addons.app.command.remote.push_receive import app__remote__push_receive
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.command.ScriptCommand import ScriptCommand
 from src.decorator.attach import attach
@@ -39,7 +38,10 @@ def db__remote__push_restore(
     env: str,
 ) -> None:
     from addons.app.command.db.restore import app__db__restore
-    from addons.app.command.remote.push_receive import _app__remote__push_receive_find_app_dir
+    from addons.app.command.remote.push_receive import (
+        _app__remote__push_receive_find_app_dir,
+    )
+
     app_dir = _app__remote__push_receive_find_app_dir(kernel, app, env)
 
     if not app_dir:

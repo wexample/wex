@@ -5,6 +5,7 @@ from tests.AbstractTestCase import AbstractTestCase
 class TestDefaultCommandFileAppendOnce(AbstractTestCase):
     def test_append_once(self) -> None:
         from addons.default.command.file.append_once import default__file__append_once
+
         file = self.build_test_file("config_bash")
 
         with open(file, newline="") as f:

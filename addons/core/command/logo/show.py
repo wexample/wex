@@ -18,6 +18,7 @@ def core__logo__show(kernel: Kernel) -> str:
     from src.const.globals import COLOR_LIGHT_GRAY, COLOR_RED, COLOR_RESET
     from src.helper.core import core_kernel_get_version
     from src.helper.string import string_multiline_center, string_truncate
+
     width = 54
     padding = 2
 

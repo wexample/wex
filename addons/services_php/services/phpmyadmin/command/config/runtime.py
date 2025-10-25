@@ -15,6 +15,7 @@ def phpmyadmin__config__runtime(
 ) -> None:
     from addons.app.const.app import APP_ENV_LOCAL, APP_ENV_PROD
     from src.const.types import StringsList
+
     if not manager.has_runtime_config("domain_pma"):
         env = manager.get_env()
 
