@@ -2,17 +2,12 @@ from __future__ import annotations
 
 import re
 from typing import TYPE_CHECKING, Any, TypedDict, cast
-from urllib.parse import parse_qs, urlparse
-
-from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 from addons.app.typing.webhook import WebhookListenerRoutesMap
-from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_JSON
-from src.const.types import StringKeysDict, StringsList
-from src.helper.command import command_get_option
 
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
     from src.utils.kernel import Kernel
+    from src.const.types import StringKeysDict, StringsList
 
 # Added an explicit whitelist for query parameters
 ALLOWED_QUERY_NAME_CHARS = re.compile(r"^[a-zA-Z0-9_&]+$")
@@ -20,6 +15,9 @@ ALLOWED_QUERY_VALUE_CHARS = re.compile(r"^[a-zA-Z0-9_.+ \-]+$")
 
 
 def routing_build_webhook_route_map(kernel: Kernel) -> WebhookListenerRoutesMap:
+    from src.helper.command import command_get_option
+    from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_JSON
+    from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
     from addons.app.WebhookHttpRequestHandler import (
         WEBHOOK_COMMAND_PATH_PLACEHOLDER,
         WEBHOOK_COMMAND_PORT_PLACEHOLDER,
@@ -77,6 +75,8 @@ def routing_build_webhook_route_map(kernel: Kernel) -> WebhookListenerRoutesMap:
 def routing_get_route_info(
     url: str, routes: WebhookListenerRoutesMap
 ) -> RouteInfo | None:
+    from src.const.types import StringKeysDict, StringsList
+    from urllib.parse import parse_qs, urlparse
     route_name = routing_get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
@@ -96,6 +96,7 @@ def routing_get_route_info(
 
 
 def routing_get_route_name(url: str, routes: dict[str, Any]) -> str | None:
+    from urllib.parse import urlparse
     parsed_url = urlparse(url)
     path = parsed_url.path
 

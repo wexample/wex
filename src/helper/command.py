@@ -2,28 +2,15 @@ from __future__ import annotations
 
 import os
 import subprocess
-from subprocess import Popen
 from typing import TYPE_CHECKING, Any, NoReturn, cast
-
-import click.core
-
-from src.const.globals import (
-    VERBOSITY_LEVEL_MAXIMUM,
-    VERBOSITY_LEVEL_MEDIUM,
-    VERBOSITY_LEVEL_QUIET,
-)
 from src.const.types import (
-    ShellCommandResponseTuple,
-    ShellCommandsDeepList,
-    ShellCommandsList,
-)
-from src.core.command.ScriptCommand import ScriptCommand
-from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
-from src.helper.file import file_create_parent_dir
-from src.helper.user import get_user_or_sudo_user
+    ShellCommandResponseTuple)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from subprocess import Popen
+    from src.core.command.ScriptCommand import ScriptCommand
+    from src.const.types import ShellCommandsDeepList, ShellCommandsList
 
 
 def apply_command_decorator(
@@ -33,6 +20,7 @@ def apply_command_decorator(
     name: str,
     options: dict[str, str] | None = None,
 ) -> NoReturn | ScriptCommand:
+    from src.core.command.ScriptCommand import ScriptCommand
     if group in kernel.decorators and name in kernel.decorators[group]:
         decorator = kernel.decorators[group][name]
         options = options or {}
@@ -53,6 +41,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
 
 
 def command_exists(shell_command: str) -> bool:
+    from subprocess import Popen
     process = subprocess.Popen(
         "command -v " + shell_command,
         shell=True,
@@ -96,6 +85,9 @@ def execute_command_async(
     working_directory: str | None = None,
     **kwargs: Any,
 ) -> Popen[Any]:
+    from subprocess import Popen
+    from src.helper.file import file_create_parent_dir
+    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -130,6 +122,9 @@ def execute_command_sync(
     as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
+    from src.helper.user import get_user_or_sudo_user
+    from subprocess import Popen
+    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -199,6 +194,8 @@ def execute_command_tree_sync(
     as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
+    from src.const.types import ShellCommandsDeepList, ShellCommandsList
+    from subprocess import Popen
     if isinstance(command_tree, list) and any(
         isinstance(i, list) for i in command_tree
     ):
@@ -242,6 +239,8 @@ def execute_command_tree_sync(
 def internal_command_to_shell(
     kernel: Kernel, internal_command: str, args: None | list[str] = None
 ) -> ShellCommandsList:
+    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_QUIET
+    from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
     command = (
         ["bash", kernel.get_path("core.cli"), internal_command]
         + (args or [])

@@ -4,9 +4,6 @@ from typing import Any
 
 import click
 from click.core import Command
-from click.types import BoolParamType
-from wexample_helpers.helpers.args import args_convert_dict_to_snake_dict
-from wexample_helpers.helpers.string import string_to_kebab_case
 
 from src.const.types import CoreCommandArgsDict, CoreCommandArgsList
 
@@ -19,6 +16,8 @@ def click_args_convert_dict_to_args(
     Any key in `args` that is not found in `function.params` is added to the
     argument list as a key-value pair.
     """
+    from wexample_helpers.helpers.string import string_to_kebab_case
+    from wexample_helpers.helpers.args import args_convert_dict_to_snake_dict
     arg_list = []
     args_long = click_args_convert_dict_to_long_names_dict(function=function, args=args)
     args_long = args_convert_dict_to_snake_dict(input_dict=args_long)
@@ -52,6 +51,7 @@ def click_args_convert_dict_to_args(
 def click_args_convert_dict_to_long_names_dict(
     function: Command, args: CoreCommandArgsDict
 ) -> dict[str, Any]:
+    from wexample_helpers.helpers.string import string_to_kebab_case
     short_names = {}
 
     for param in function.params:
@@ -75,6 +75,7 @@ def click_args_convert_dict_to_long_names_dict(
 def click_args_convert_to_dict(
     function: Command, arg_list: list[str]
 ) -> dict[str, Any]:
+    from click.types import BoolParamType
     args_dict: dict[str, str | bool] = {}
 
     param_dict = {

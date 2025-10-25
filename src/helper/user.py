@@ -5,10 +5,9 @@ import grp
 import os
 import pwd
 
-from addons.app.const.app import APP_DIR_APP_DATA
-
 
 def create_user_home_data_path() -> str:
+    from addons.app.const.app import APP_DIR_APP_DATA
     path = f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -47,6 +46,7 @@ def get_user_group_name(user: str) -> str:
 
 
 def get_user_home_data_path() -> str:
+    from addons.app.const.app import APP_DIR_APP_DATA
     return f"{os.path.expanduser('~')}/{APP_DIR_APP_DATA}"
 
 
