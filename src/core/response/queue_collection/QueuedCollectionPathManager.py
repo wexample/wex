@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from wexample_helpers.helpers.args import args_shift_one
-
-from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.core.response.AbstractResponse import AbstractResponse, HasResponse
 

@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from abc import ABC
 from typing import TYPE_CHECKING, cast
+
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
 
 if TYPE_CHECKING:
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-    from src.core.response.AbstractResponse import AbstractResponse
     from src.const.types import BasicInlineValue
+    from src.core.response.AbstractResponse import AbstractResponse
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 
 class FastModeQueuedCollectionResponseQueueManager(

@@ -51,15 +51,10 @@ class DefaultQueuedCollectionResponseQueueManager(
     def enqueue_next_step_if_exists(
         self, step_index: int, response: AbstractResponse
     ) -> bool:
-        from src.core.response.QueuedCollectionResponse import QueuedCollectionStepsList
-
         # Array is modified in super call
         steps_current = self.response.get_path_manager().steps.copy()
         exists = super().enqueue_next_step_if_exists(step_index, response)
-        storage_path = cast(
-            "QueuedCollectionStepsList",
-            steps_current[: self.response.step_position + 1],
-        )
+        storage_path = steps_current[: self.response.step_position + 1]
 
         if exists:
             store_data = response.store_data()

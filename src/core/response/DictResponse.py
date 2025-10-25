@@ -15,8 +15,8 @@ from src.core.response.AbstractTerminalSectionResponse import (
 )
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.utils.kernel import Kernel
 
 
 class DictResponse(AbstractTerminalSectionResponse):
