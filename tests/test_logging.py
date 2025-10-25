@@ -1,11 +1,13 @@
 from __future__ import annotations
+
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestLogging(AbstractTestCase):
     def test_error(self) -> None:
-        from src.core.FatalError import FatalError
         from wexample_helpers.helpers.file import file_remove_if_exists
+
+        from src.core.FatalError import FatalError
 
         file_remove_if_exists(self.kernel.get_or_create_path("task"))
 
