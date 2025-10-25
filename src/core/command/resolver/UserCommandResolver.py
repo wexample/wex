@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
+
 from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
@@ -58,6 +59,7 @@ class UserCommandResolver(AbstractCommandResolver):
 
     def build_command_from_parts(self, parts: StringsList) -> str:
         from wexample_helpers.helpers.string import string_to_kebab_case
+
         from src.const.globals import COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
 
         # Convert each part to kebab-case

@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import cast
+
 from src.const.types import RegistryAddon, RegistryResolverData, StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.ScriptCommand import ScriptCommand

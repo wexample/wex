@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Any
 
-from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     BasicInlineValue,
     OptionalCoreCommandArgsDict,
@@ -122,6 +122,7 @@ class TableResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
+        from src.const.globals import KERNEL_RENDER_MODE_JSON
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Render the content based on the header and body attributes
             self.render_cli_content()

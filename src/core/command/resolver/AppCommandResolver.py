@@ -16,8 +16,8 @@ from src.core.command.resolver.AbstractCommandResolver import AbstractCommandRes
 from src.core.CommandRequest import CommandRequest
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.AbstractResponse import AbstractResponse
+    from src.utils.kernel import Kernel
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -80,6 +80,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
     def build_command_from_parts(self, parts: StringsList) -> str:
         from wexample_helpers.helpers.string import string_to_kebab_case
+
         from src.const.globals import COMMAND_CHAR_APP, COMMAND_SEPARATOR_GROUP
 
         # Convert each part to kebab-case
@@ -151,8 +152,8 @@ class AppCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
-        from src.core.response.AbortResponse import AbortResponse
         from addons.app.const.app import ERR_APP_NOT_FOUND
+        from src.core.response.AbortResponse import AbortResponse
 
         if not self.get_base_path():
             if not request.quiet:
@@ -171,8 +172,8 @@ class AppCommandResolver(AbstractCommandResolver):
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> AbstractResponse:
-        from src.core.response.AbstractResponse import AbstractResponse
         from src.core.response.AbortResponse import AbortResponse
+        from src.core.response.AbstractResponse import AbstractResponse
 
         parts = path.split("/")
 
@@ -191,10 +192,10 @@ class AppCommandResolver(AbstractCommandResolver):
         self_super: AbstractCommandResolver = cast(AbstractCommandResolver, super())
 
         def _callback() -> AbstractResponse:
+            from src.core.response.AbortResponse import AbortResponse
             from src.core.response.queue_collection.QueuedCollectionStopResponse import (
                 QueuedCollectionStopResponse,
             )
-            from src.core.response.AbortResponse import AbortResponse
 
             request = self.kernel.create_command_request(internal_command)
 

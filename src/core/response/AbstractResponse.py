@@ -4,23 +4,16 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, cast
 
 from src.const.globals import (
-    KERNEL_RENDER_MODE_JSON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-)
+    KERNEL_RENDER_MODE_TERMINAL)
 from src.const.types import (
-    AnyList,
-    Args,
-    JsonContent,
-    OptionalCoreCommandArgsDict,
-    ResponsePrintType,
-)
+    AnyList, Args, JsonContent, OptionalCoreCommandArgsDict)
 from src.core.BaseClass import BaseClass
 from src.core.CommandRequest import CommandRequest, HasRequest
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.const.types import ResponsePrintType
 
 
 class AbstractResponse(AbsractKernelChild, HasRequest):
@@ -60,6 +53,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         return current_element
 
     def get_first_output_printable_value(self) -> ResponsePrintType:
+        from src.const.types import ResponsePrintType
         if not len(self.output_bag):
             return None
 
@@ -120,6 +114,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
     def print_wrapped(
         self, render_mode: str = KERNEL_RENDER_MODE_TERMINAL
     ) -> str | None:
+        from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_NONE
         if render_mode == KERNEL_RENDER_MODE_NONE:
             return None
 
@@ -141,6 +136,7 @@ class AbstractResponse(AbsractKernelChild, HasRequest):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> None:
+        from src.const.globals import KERNEL_RENDER_MODE_NONE
         self.set_request(request)
         self.parent = self.kernel.current_response
 

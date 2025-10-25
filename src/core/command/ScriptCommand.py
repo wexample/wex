@@ -17,7 +17,6 @@ from src.core.BaseClass import BaseClass
 from src.decorator.attach import CommandAttachment
 
 if TYPE_CHECKING:
-    from addons.app.AppAddonManager import AppAddonManager
     from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 
 

@@ -32,8 +32,8 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
-        from src.const.types import StringsList
         from src.const.globals import KERNEL_RENDER_MODE_JSON
+        from src.const.types import StringsList
 
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(cast(StringsList, self.output_bag))

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from src.const.types import YamlContentDict
 from src.core.file.FileStructure import FileStructure
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.const.types import YamlContent
@@ -15,8 +14,9 @@ class YamlFileStructure(FileStructure):
     file_extension: str = "yml"
 
     def get_writable_content(self) -> YamlContent:
-        from src.const.types import BasicValue
         from wexample_helpers.helpers.args import args_is_basic_value
+
+        from src.const.types import BasicValue
 
         content = self.content
         args_is_basic_value(content)
@@ -28,6 +28,7 @@ class YamlFileStructure(FileStructure):
 
     def load_content_yaml(self, default: YamlContentDict | None = None) -> YamlContent:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         from src.const.types import YamlContent
 
         return cast(YamlContent, yaml_read(self.path) or default)

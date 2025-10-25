@@ -9,8 +9,8 @@ from src.const.types import ResponsePrintType
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.const.types import JsonContent
+    from src.utils.kernel import Kernel
 
 
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):

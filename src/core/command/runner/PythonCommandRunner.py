@@ -1,9 +1,9 @@
 from __future__ import annotations
-from typing import Any, cast
+
+from typing import TYPE_CHECKING, Any, cast
 
 from src.const.types import StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
@@ -11,8 +11,9 @@ if TYPE_CHECKING:
 
 class PythonCommandRunner(AbstractCommandRunner):
     def build_script_command(self) -> ScriptCommand | None:
-        from src.core.command.ScriptCommand import ScriptCommand
         from importlib import util
+
+        from src.core.command.ScriptCommand import ScriptCommand
 
         request = self.get_request()
         path = request.get_path()

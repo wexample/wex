@@ -24,10 +24,10 @@ from src.helper.click import click_args_convert_dict_to_args
 from src.helper.command import apply_command_decorator, internal_command_to_shell
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
-    from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
-    from src.core.command.ScriptCommand import ScriptCommand
     from src.const.types import YamlCommand
+    from src.core.command.ScriptCommand import ScriptCommand
+    from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+    from src.utils.kernel import Kernel
 
 COMMAND_TYPE_BASH: str = "bash"
 COMMAND_TYPE_BASH_FILE: str = "bash-file"
@@ -244,6 +244,7 @@ class YamlCommandRunner(AbstractCommandRunner):
 
     def load_yaml_command(self, path: str) -> YamlCommand:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         from src.const.types import YamlCommand
 
         return cast(YamlCommand, yaml_read(path, {}))

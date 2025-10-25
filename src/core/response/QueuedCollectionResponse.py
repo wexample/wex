@@ -3,8 +3,6 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, cast
 
-from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
-
 from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
     AnyCallable,
@@ -15,20 +13,9 @@ from src.const.types import (
 )
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbortResponse import AbortResponse
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.FunctionResponse import FunctionResponse
-from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
-    DefaultQueuedCollectionResponseQueueManager,
-)
-from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import (
-    FastModeQueuedCollectionResponseQueueManager,
-)
 from src.core.response.queue_collection.QueuedCollectionPathManager import (
     QueuedCollectionPathManager,
-)
-from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
-    QueuedCollectionStopCurrentStepResponse,
 )
 from src.core.response.queue_collection.QueuedCollectionStopResponse import (
     QueuedCollectionStopResponse,
@@ -48,6 +35,8 @@ class QueuedCollectionResponse(AbstractResponse):
     def __init__(
         self, kernel: Kernel, collection: QueuedCollectionResponseCollection
     ) -> None:
+        from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import FastModeQueuedCollectionResponseQueueManager
+        from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import DefaultQueuedCollectionResponseQueueManager
         super().__init__(kernel)
         self.collection: QueuedCollectionResponseCollection = collection
         self.step_position: int = 0
@@ -111,6 +100,10 @@ class QueuedCollectionResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
+        from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
+        from src.core.response.AbortResponse import AbortResponse
+        from src.core.response.FunctionResponse import FunctionResponse
+        from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import QueuedCollectionStopCurrentStepResponse
         if not request.resolver:
             return AbortResponse(
                 kernel=self.kernel, reason="MISSING_REQUEST_INITIALIZATION"

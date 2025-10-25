@@ -13,15 +13,15 @@ from src.core.CommandRequest import CommandRequest
 from src.helper.service import service_get_dir
 
 if TYPE_CHECKING:
-    from src.core.response.AbstractResponse import AbstractResponse
     from src.const.types import AnyCallable, StringsList
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
     @classmethod
     def decorate_command(cls, function: AnyCallable) -> AnyCallable:
-        from src.const.types import AnyCallable
         from addons.app.decorator.service_option import service_option
+        from src.const.types import AnyCallable
 
         return cast(AnyCallable, service_option()(function))
 
@@ -122,6 +122,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def build_registry_data(self, test: bool = False) -> RegistryAllServices:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         from src.helper.registry import registry_resolve_service_inheritance
 
         registry: RegistryAllServices = {}
@@ -202,8 +203,8 @@ class ServiceCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
-        from src.core.response.AbortResponse import AbortResponse
         from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+        from src.core.response.AbortResponse import AbortResponse
 
         match = request.get_match()
         service = string_to_snake_case(match[1]) if match else None

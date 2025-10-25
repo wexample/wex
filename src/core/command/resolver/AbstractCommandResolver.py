@@ -3,7 +3,8 @@ from __future__ import annotations
 import os
 from abc import abstractmethod
 from pathlib import Path
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
+
 from src.const.types import (
     AnyCallable,
     OptionalCoreCommandArgsDict,
@@ -17,13 +18,12 @@ from src.const.types import (
 )
 from src.decorator.attach import CommandAttachment
 from src.utils.abstract_kernel_child import AbsractKernelChild
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.core.response.AbstractResponse import AbstractResponse
-    from src.core.CommandRequest import CommandRequest
     from src.const.types import OptionalCoreCommandArgsListOrDict
     from src.core.command.ScriptCommand import ScriptCommand
+    from src.core.CommandRequest import CommandRequest
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AbstractCommandResolver(AbsractKernelChild):
@@ -74,8 +74,9 @@ class AbstractCommandResolver(AbsractKernelChild):
         """
         Returns the "default" format (addons style)
         """
-        from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP
         from wexample_helpers.helpers.string import string_to_kebab_case
+
+        from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP
 
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
@@ -125,8 +126,8 @@ class AbstractCommandResolver(AbsractKernelChild):
         script_command: ScriptCommand,
         args: OptionalCoreCommandArgsDict | None = None,
     ) -> ShellCommandsList:
-        from src.helper.click import click_args_convert_dict_to_args
         from src.const.globals import CORE_COMMAND_NAME
+        from src.helper.click import click_args_convert_dict_to_args
 
         return [
             CORE_COMMAND_NAME,
@@ -270,8 +271,9 @@ class AbstractCommandResolver(AbsractKernelChild):
         return {}
 
     def get_function_name(self, parts: list[str]) -> str:
-        from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
         from wexample_helpers.helpers.string import string_to_snake_case
+
+        from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
 
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
@@ -353,8 +355,8 @@ class AbstractCommandResolver(AbsractKernelChild):
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> AbstractResponse:
-        from src.core.response.AbortResponse import AbortResponse
         from src.const.types import OptionalCoreCommandArgsListOrDict
+        from src.core.response.AbortResponse import AbortResponse
 
         command = self.create_command_from_path(path)
 
@@ -464,8 +466,8 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def set_command_file_permission(self, command_path: str) -> None:
         from src.helper.file import file_set_owner_for_path_and_ancestors
-        from src.helper.user import get_user_or_sudo_user
         from src.helper.string import string_trim_leading
+        from src.helper.user import get_user_or_sudo_user
 
         base_path = self.get_base_path()
 
@@ -513,12 +515,12 @@ class AbstractCommandResolver(AbsractKernelChild):
         return False
 
     def wrap_response(self, response: Any) -> AbstractResponse:
-        from src.core.response.DefaultResponse import DefaultResponse
-        from src.core.response.NullResponse import NullResponse
-        from src.core.response.DictResponse import DictResponse
-        from src.core.response.ListResponse import ListResponse
-        from src.core.response.FunctionResponse import FunctionResponse
         from src.core.response.AbstractResponse import AbstractResponse
+        from src.core.response.DefaultResponse import DefaultResponse
+        from src.core.response.DictResponse import DictResponse
+        from src.core.response.FunctionResponse import FunctionResponse
+        from src.core.response.ListResponse import ListResponse
+        from src.core.response.NullResponse import NullResponse
 
         if isinstance(response, AbstractResponse):
             return response
