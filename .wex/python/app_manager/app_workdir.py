@@ -7,10 +7,9 @@ from wexample_wex_addon_dev_python.workdir.python_workdir import PythonWorkdir
 
 class AppWorkdir(PythonWorkdir):
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
-        raw_value["children"] = raw_value.get("children", [])
-        children = raw_value.get("children")
+        raw_value = super().prepare_value(raw_value=raw_value)
 
-        children.extend([
+        raw_value.get("children").extend([
             {
                 "name": "src",
                 "type": DiskItemType.DIRECTORY,
