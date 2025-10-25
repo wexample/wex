@@ -6,8 +6,6 @@ import shutil
 import unittest
 from collections.abc import Iterable
 from typing import Any
-
-from src.const.globals import COLOR_LIGHT_MAGENTA
 from src.const.types import (
     AnyCallable,
     ShellCommandResponseTuple,
@@ -17,7 +15,6 @@ from src.const.types import (
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.TestKernel import TestKernel
 from src.helper.command import execute_command_sync
-from src.helper.file import file_create_directories_and_copy
 
 
 class AbstractTestCase(unittest.TestCase):
@@ -100,6 +97,7 @@ class AbstractTestCase(unittest.TestCase):
         return dest_dir
 
     def build_test_file(self, file_name: str) -> str:
+        from src.helper.file import file_create_directories_and_copy
         src_file = os.path.join(self.build_test_samples_path(), file_name)
         dst_file = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", file_name
@@ -127,6 +125,7 @@ class AbstractTestCase(unittest.TestCase):
                 self.assertEqual(value, expected[render_mode], render_mode)
 
     def log(self, message: str) -> None:
+        from src.const.globals import COLOR_LIGHT_MAGENTA
         message = str(message)
         message = (
             f"{os.linesep}{message}" if message.count(os.linesep) > 0 else f" {message}"
