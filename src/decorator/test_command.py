@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from src.const.types import AnyCallable, Args, Kwargs
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.core.command.TestCommand import TestCommand

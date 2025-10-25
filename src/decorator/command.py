@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from src.const.types import AnyCallable, Args, Kwargs
 from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
