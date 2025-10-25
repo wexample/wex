@@ -4,16 +4,7 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, NoReturn, TypedDict
 
-from src.const.globals import (
-    COLOR_CYAN,
-    COLOR_GRAY,
-    COLOR_GREEN,
-    COLOR_RED,
-    COLOR_RESET,
-    COLOR_YELLOW,
-    COMMAND_TYPE_ADDON,
-    VERBOSITY_LEVEL_DEFAULT,
-)
+from src.const.globals import COLOR_GRAY, COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_DEFAULT
 from src.const.types import (
     AnyCallable,
     Kwargs,
@@ -21,12 +12,12 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.string import string_count_lines_needed, string_format_ignore_missing
+from src.helper.string import string_count_lines_needed
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.command.ScriptCommand import ScriptCommand
 
 IO_DEFAULT_LOG_LENGTH = 0
 
@@ -62,6 +53,9 @@ class IOManager(AbsractKernelChild):
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
+        from src.const.globals import COLOR_RED, COLOR_RESET
+        from src.helper.string import string_format_ignore_missing
+
         # Performance optimisation as error function may not be called frequently
         import logging
 
@@ -92,6 +86,8 @@ class IOManager(AbsractKernelChild):
 
     def fail(self, message: str) -> None:
         def _fail() -> None:
+            from src.const.globals import COLOR_RED, COLOR_RESET
+
             nonlocal message
             self.log(f"{COLOR_RED}×{COLOR_RESET} {message}")
             self.print(message)
@@ -106,6 +102,8 @@ class IOManager(AbsractKernelChild):
         verbosity: int = VERBOSITY_LEVEL_DEFAULT,
         command: ScriptCommand | None = None,
     ) -> None:
+        from src.const.globals import COLOR_RESET
+
         if verbosity > self.kernel.verbosity:
             return
 
@@ -154,6 +152,8 @@ class IOManager(AbsractKernelChild):
         import textwrap
 
         def _message() -> None:
+            from src.const.globals import COLOR_CYAN, COLOR_RESET
+
             nonlocal message
             nonlocal text
             message = f"{COLOR_CYAN}[wex]{COLOR_RESET} {message}"
@@ -171,6 +171,9 @@ class IOManager(AbsractKernelChild):
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute one of the following command",
     ) -> None:
+        from src.core.command.ScriptCommand import ScriptCommand
+        from src.const.globals import COLOR_CYAN, COLOR_RESET
+
         commands_strings: StringsList = []
         for command in script_command_or_strings:
             if isinstance(command, ScriptCommand):
@@ -213,6 +216,8 @@ class IOManager(AbsractKernelChild):
 
     def success(self, message: str) -> None:
         def _success() -> None:
+            from src.const.globals import COLOR_GREEN, COLOR_RESET
+
             nonlocal message
             self.log(f"{COLOR_GREEN}✔{COLOR_RESET} {message}")
 
@@ -225,6 +230,9 @@ class IOManager(AbsractKernelChild):
         fatal: bool = True,
         trace: bool = True,
     ) -> None:
+        from src.const.globals import COLOR_RESET, COLOR_YELLOW
+        from src.helper.string import string_format_ignore_missing
+
         message = f"[WARNING] {string_format_ignore_missing(message, parameters)}"
         message = f"{COLOR_YELLOW}{message}{COLOR_RESET}"
 
