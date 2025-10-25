@@ -1,0 +1,75 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "wex"
+version = "5.0.172"
+description = "A command manager"
+authors = [
+    { name = "Wexample", email = "contact@wexample.com" },
+]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "chromadb",
+    "click",
+    "defusedxml",
+    "dicttoxml",
+    "gitpython",
+    "inquirerpy",
+    "jq",
+    "langchain>=0.1.14",
+    "langchainhub",
+    "langchain_cohere",
+    "langchain_postgres",
+    "langchain-openai",
+    "langchain-community",
+    "langchain-experimental",
+    "openai",
+    "patch",
+    "psutil",
+    "pypdf",
+    "pyperclip",
+    "python-dotenv",
+    "pyyaml",
+    "prompt_toolkit",
+    "psycopg[binary]",
+    "requests",
+    "sqlalchemy",
+    "unstructured",
+    "unstructured[md]",
+    "validators",
+    "wexample-wex-core",
+    "wexample-file",
+    "wexample-helpers",
+    "wexample-helpers-yaml",
+    "wexample-prompt",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+homepage = "https://github.com/wexample/wex"
+
+[project.scripts]
+wex-wrapper = "cli.wex-wrapper:main"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+package-dir = "src"
+
+[[tool.pdm.build.packages]]
+include = "wexample_wex"
+from = "src"
