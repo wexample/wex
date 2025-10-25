@@ -10,8 +10,8 @@ from src.core.CommandRequest import CommandRequest, HasRequest
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.const.types import ResponsePrintType
+    from src.utils.kernel import Kernel
 
 
 class AbstractResponse(AbsractKernelChild, HasRequest):

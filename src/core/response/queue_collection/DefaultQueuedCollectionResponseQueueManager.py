@@ -32,6 +32,7 @@ class DefaultQueuedCollectionResponseQueueManager(
     def enqueue_next_step_by_index(self, next_step_index: int) -> None:
         from wexample_helpers.helpers.args import args_replace_one
         from src.helper.process import process_post_exec_function
+
         super().enqueue_next_step_by_index(next_step_index)
 
         root = self.response.get_root_parent()
@@ -51,6 +52,7 @@ class DefaultQueuedCollectionResponseQueueManager(
         self, step_index: int, response: AbstractResponse
     ) -> bool:
         from src.core.response.QueuedCollectionResponse import QueuedCollectionStepsList
+
         # Array is modified in super call
         steps_current = self.response.get_path_manager().steps.copy()
         exists = super().enqueue_next_step_if_exists(step_index, response)

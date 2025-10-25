@@ -39,6 +39,7 @@ class DictResponse(AbstractTerminalSectionResponse):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         from src.core.response.AbstractResponse import AbstractResponse
+
         if not len(self.output_bag):
             return None
 

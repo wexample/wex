@@ -21,6 +21,7 @@ class FastModeQueuedCollectionResponseQueueManager(
     def get_previous_value(self) -> BasicInlineValue:
         from src.const.types import BasicInlineValue
         from src.core.response.AbstractResponse import AbstractResponse
+
         self.response.find_parent_response_collection()
         path = self.get_previous_response_path()
 
@@ -42,7 +43,9 @@ class FastModeQueuedCollectionResponseQueueManager(
     def render_content_complete(
         self, response: AbstractResponse | None = None
     ) -> AbstractResponse:
-        from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+        from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+            QueuedCollectionStopResponse,
+        )
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
         if self.response.parent:

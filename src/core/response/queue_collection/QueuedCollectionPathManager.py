@@ -36,6 +36,7 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
 
     def get_response(self) -> QueuedCollectionResponse:
         from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
         return cast(QueuedCollectionResponse, super().get_response())
 
     def get_step_index(self) -> QueuedCollectionStepValue:
@@ -46,6 +47,7 @@ class QueuedCollectionPathManager(HasResponse, HasRequest):
 
     def save_to_map(self) -> None:
         from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
         response = self.get_response()
 
         response.kernel.io.log(

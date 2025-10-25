@@ -35,11 +35,11 @@ class QueuedCollectionResponse(AbstractResponse):
     def __init__(
         self, kernel: Kernel, collection: QueuedCollectionResponseCollection
     ) -> None:
-        from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import (
-            FastModeQueuedCollectionResponseQueueManager,
-        )
         from src.core.response.queue_collection.DefaultQueuedCollectionResponseQueueManager import (
             DefaultQueuedCollectionResponseQueueManager,
+        )
+        from src.core.response.queue_collection.FastModeQueuedCollectionResponseQueueManager import (
+            FastModeQueuedCollectionResponseQueueManager,
         )
 
         super().__init__(kernel)
@@ -106,6 +106,7 @@ class QueuedCollectionResponse(AbstractResponse):
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         from wexample_helpers.helpers.args import args_in_function, args_is_basic_value
+
         from src.core.response.AbortResponse import AbortResponse
         from src.core.response.FunctionResponse import FunctionResponse
         from src.core.response.queue_collection.QueuedCollectionStopCurrentStepResponse import (
