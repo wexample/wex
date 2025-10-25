@@ -5,10 +5,20 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import Any, cast
 from src.const.types import (
-    AnyCallable, OptionalCoreCommandArgsDict, RegistryCommand, RegistryCommandsCollection, RegistryResolverData, ShellCommandsList, StringKeysDict, StringsList, StringsMatch)
+    AnyCallable,
+    OptionalCoreCommandArgsDict,
+    RegistryCommand,
+    RegistryCommandsCollection,
+    RegistryResolverData,
+    ShellCommandsList,
+    StringKeysDict,
+    StringsList,
+    StringsMatch,
+)
 from src.decorator.attach import CommandAttachment
 from src.utils.abstract_kernel_child import AbsractKernelChild
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse
     from src.core.CommandRequest import CommandRequest
@@ -66,6 +76,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         """
         from src.const.globals import COMMAND_SEPARATOR_ADDON, COMMAND_SEPARATOR_GROUP
         from wexample_helpers.helpers.string import string_to_kebab_case
+
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
@@ -83,6 +94,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         Returns the "default" format (addons style)
         """
         from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
+
         return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 
     @abstractmethod
@@ -103,6 +115,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
     ) -> str:
         from src.helper.command import command_to_string
+
         return command_to_string(
             self.build_full_command_parts_from_script_command(script_command, args)
         )
@@ -114,6 +127,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     ) -> ShellCommandsList:
         from src.helper.click import click_args_convert_dict_to_args
         from src.const.globals import CORE_COMMAND_NAME
+
         return [
             CORE_COMMAND_NAME,
             self.build_command_from_function(script_command),
@@ -167,6 +181,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         self, command: str, args: OptionalCoreCommandArgsListOrDict | None = None
     ) -> CommandRequest:
         from src.core.CommandRequest import CommandRequest
+
         return CommandRequest(self, command, args or [])
 
     def execute_all_attached(
@@ -257,6 +272,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     def get_function_name(self, parts: list[str]) -> str:
         from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
         from wexample_helpers.helpers.string import string_to_snake_case
+
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
         )
@@ -273,6 +289,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
     def locate_function(self, request: CommandRequest) -> bool:
         from src.const.globals import COMMAND_EXTENSIONS
+
         # Build dynamic variables
         request.match = self.build_match(request.get_string_command())
 
@@ -288,6 +305,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
         from src.const.globals import VERBOSITY_LEVEL_DEFAULT
+
         runner = request.get_runner()
 
         self.kernel.hook_addons("render_request_pre", {"request": request})
@@ -337,6 +355,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     ) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
         from src.const.types import OptionalCoreCommandArgsListOrDict
+
         command = self.create_command_from_path(path)
 
         if not command:
@@ -352,6 +371,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         """Scans the given directory for command files and returns a dictionary of found commands."""
         from src.const.globals import COMMAND_EXTENSIONS
         from src.core.command.ScriptCommand import ScriptCommand
+
         commands: RegistryCommandsCollection = {}
 
         for command_file_name in os.listdir(directory):
@@ -430,6 +450,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         self, directory: str, test_commands: bool = False
     ) -> RegistryCommandsCollection:
         from wexample_helpers.helpers.file import file_list_subdirectories
+
         command_dict: RegistryCommandsCollection = {}
 
         if os.path.exists(directory):
@@ -445,6 +466,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         from src.helper.file import file_set_owner_for_path_and_ancestors
         from src.helper.user import get_user_or_sudo_user
         from src.helper.string import string_trim_leading
+
         base_path = self.get_base_path()
 
         if base_path:
@@ -497,6 +519,7 @@ class AbstractCommandResolver(AbsractKernelChild):
         from src.core.response.ListResponse import ListResponse
         from src.core.response.FunctionResponse import FunctionResponse
         from src.core.response.AbstractResponse import AbstractResponse
+
         if isinstance(response, AbstractResponse):
             return response
         elif callable(response):

@@ -20,6 +20,7 @@ class AbortResponse(AbstractEmptyResponse, ABC):
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
         from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
         # Nothing to do
         self.kernel.io.log(
             f"Aborting : {self.reason}", verbosity=VERBOSITY_LEVEL_MAXIMUM

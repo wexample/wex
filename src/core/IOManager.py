@@ -16,8 +16,8 @@ from src.helper.string import string_count_lines_needed
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.command.ScriptCommand import ScriptCommand
+    from src.utils.kernel import Kernel
 
 IO_DEFAULT_LOG_LENGTH = 0
 
@@ -53,11 +53,11 @@ class IOManager(AbsractKernelChild):
         fatal: bool = True,
         trace: bool = True,
     ) -> NoReturn:
-        from src.const.globals import COLOR_RED, COLOR_RESET
-        from src.helper.string import string_format_ignore_missing
-
         # Performance optimisation as error function may not be called frequently
         import logging
+
+        from src.const.globals import COLOR_RED, COLOR_RESET
+        from src.helper.string import string_format_ignore_missing
 
         message = f"[ERROR] {string_format_ignore_missing(message, parameters)}"
         message = f"{COLOR_RED}{message}{COLOR_RESET}"
@@ -171,8 +171,8 @@ class IOManager(AbsractKernelChild):
         command_type: str = COMMAND_TYPE_ADDON,
         message: str = "You might want now to execute one of the following command",
     ) -> None:
-        from src.core.command.ScriptCommand import ScriptCommand
         from src.const.globals import COLOR_CYAN, COLOR_RESET
+        from src.core.command.ScriptCommand import ScriptCommand
 
         commands_strings: StringsList = []
         for command in script_command_or_strings:

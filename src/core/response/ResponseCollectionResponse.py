@@ -25,6 +25,7 @@ class ResponseCollectionResponse(AbstractResponse):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         from src.const.globals import KERNEL_RENDER_MODE_JSON
+
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             output = super().print(render_mode, interactive_data)
             if isinstance(output, list) and len(output):
@@ -48,5 +49,6 @@ class ResponseCollectionResponse(AbstractResponse):
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         from src.const.types import JsonContent
+
         # Do not add extra json wrapping
         return cast(JsonContent, value)

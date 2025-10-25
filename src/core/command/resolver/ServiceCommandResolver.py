@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, cast
 from wexample_helpers.helpers.string import string_to_snake_case
 
 from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
-from src.const.types import (
-    RegistryAllServices, RegistryService)
+from src.const.types import RegistryAllServices, RegistryService
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
 from src.helper.service import service_get_dir
@@ -29,17 +28,20 @@ class ServiceCommandResolver(AbstractCommandResolver):
     @classmethod
     def get_pattern(cls) -> str:
         from src.const.globals import COMMAND_PATTERN_SERVICE
+
         return COMMAND_PATTERN_SERVICE
 
     @classmethod
     def get_type(cls) -> str:
         from src.const.globals import COMMAND_TYPE_SERVICE
+
         return COMMAND_TYPE_SERVICE
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
         from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+
         # Suggest @
         if cursor == 0 and search_split[0] == "":
             return COMMAND_CHAR_SERVICE
@@ -84,6 +86,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def build_command_from_parts(self, parts: StringsList) -> str:
         from src.const.globals import COMMAND_CHAR_SERVICE
+
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
     def build_command_parts_from_url_path_parts(
@@ -99,6 +102,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
         self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+
         match = request.get_match()
         name = string_to_snake_case(match[1])
         path = service_get_dir(self.kernel, name)
@@ -160,6 +164,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
     def get_registered_services(self) -> StringsList:
         from src.const.types import StringsList
+
         return cast(StringsList, self.get_registry_data().keys())
 
     def locate_function(self, request: CommandRequest) -> bool:
@@ -199,6 +204,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
     ) -> AbstractResponse:
         from src.core.response.AbortResponse import AbortResponse
         from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+
         match = request.get_match()
         service = string_to_snake_case(match[1]) if match else None
         if not service or service not in self.get_registry_data():

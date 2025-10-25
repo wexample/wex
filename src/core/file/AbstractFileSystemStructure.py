@@ -65,6 +65,7 @@ class AbstractFileSystemStructure(BaseClass):
     def checkup(self) -> None:
         from wexample_helpers.helpers.file import file_change_mode_recursive
         from src.helper.user import set_owner_recursively
+
         if not self.exists():
             if self.should_exist is True:
                 if self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_CREATE:

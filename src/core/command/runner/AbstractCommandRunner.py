@@ -39,6 +39,7 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
     def run_click_function(self, script_command: ScriptCommand) -> Any:
         from src.const.args import ARGS_HELP
         from src.core.response.AbortResponse import AbortResponse
+
         try:
             ctx: click.core.Context = script_command.click_command.make_context(
                 "", self.get_request().get_args_list().copy()

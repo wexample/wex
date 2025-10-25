@@ -32,6 +32,7 @@ class ListResponse(AbstractTerminalSectionResponse):
         interactive_data: bool = True,
     ) -> ResponsePrintType:
         from src.core.response.AbstractResponse import AbstractResponse
+
         data = self.output_bag[0]
         assert isinstance(data, list)
 

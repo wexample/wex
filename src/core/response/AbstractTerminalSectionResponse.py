@@ -48,5 +48,6 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
         from src.const.types import JsonContent
+
         # Do not add extra json wrapping
         return cast(JsonContent, value)

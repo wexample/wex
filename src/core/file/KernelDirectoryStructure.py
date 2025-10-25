@@ -9,6 +9,7 @@ class KernelDirectoryStructure(AppDirectoryStructure):
 
     def get_schema(self) -> FileSystemStructureSchema:
         from src.const.globals import CORE_COMMAND_NAME
+
         schema = super().get_schema()
 
         schema.update(

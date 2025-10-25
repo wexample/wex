@@ -5,8 +5,7 @@ import os
 from wexample_helpers.helpers.file import file_read
 
 from src.const.types import BasicValue, FileSystemStructureSchemaItem
-from src.core.file.AbstractFileSystemStructure import (
-    AbstractFileSystemStructure)
+from src.core.file.AbstractFileSystemStructure import AbstractFileSystemStructure
 
 
 class FileStructure(AbstractFileSystemStructure):
@@ -21,7 +20,10 @@ class FileStructure(AbstractFileSystemStructure):
         super().__init__(path=path, initialize=initialize)
 
     def checkup(self) -> None:
-        from src.core.file.AbstractFileSystemStructure import FILE_SYSTEM_ERROR_WRONG_EXTENSION
+        from src.core.file.AbstractFileSystemStructure import (
+            FILE_SYSTEM_ERROR_WRONG_EXTENSION,
+        )
+
         super().checkup()
 
         if self.file_extension:
@@ -37,6 +39,7 @@ class FileStructure(AbstractFileSystemStructure):
 
     def create_missing(self) -> None:
         from src.helper.file import file_create_parent_and_touch
+
         file_create_parent_and_touch(self.path, default=self.default_content)
 
     def get_writable_content(self) -> BasicValue:
@@ -53,4 +56,5 @@ class FileStructure(AbstractFileSystemStructure):
 
     def write_content(self) -> None:
         from wexample_helpers.helpers.file import file_write
+
         file_write(self.path, str(self.get_writable_content()))

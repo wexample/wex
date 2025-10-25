@@ -9,7 +9,12 @@ import click
 from wexample_helpers.helpers.dict import dict_get_item_by_path
 
 from src.const.types import (
-    Args, CoreCommandArgsDict, Kwargs, StringsList, YamlCommandScript)
+    Args,
+    CoreCommandArgsDict,
+    Kwargs,
+    StringsList,
+    YamlCommandScript,
+)
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from src.core.CommandRequest import CommandRequest
@@ -54,7 +59,10 @@ class YamlCommandRunner(AbstractCommandRunner):
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
         ) -> ResponseCollectionResponse | None:
-            from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+            from src.core.response.ResponseCollectionResponse import (
+                ResponseCollectionResponse,
+            )
+
             commands_collection: ResponseCollection = []
 
             variables: CoreCommandArgsDict = {}
@@ -237,6 +245,7 @@ class YamlCommandRunner(AbstractCommandRunner):
     def load_yaml_command(self, path: str) -> YamlCommand:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
         from src.const.types import YamlCommand
+
         return cast(YamlCommand, yaml_read(path, {}))
 
     def run(self) -> Any:

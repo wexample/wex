@@ -4,6 +4,7 @@ from typing import Any, cast
 from src.const.types import StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from src.core.command.ScriptCommand import ScriptCommand
 
@@ -12,6 +13,7 @@ class PythonCommandRunner(AbstractCommandRunner):
     def build_script_command(self) -> ScriptCommand | None:
         from src.core.command.ScriptCommand import ScriptCommand
         from importlib import util
+
         request = self.get_request()
         path = request.get_path()
 

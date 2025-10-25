@@ -4,8 +4,6 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, cast
 
 import click
-
-from src.const.globals import SHELL_DEFAULT
 from src.const.types import (
     AnyCallable,
     Args,

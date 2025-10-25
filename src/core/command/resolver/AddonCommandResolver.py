@@ -14,17 +14,20 @@ class AddonCommandResolver(AbstractCommandResolver):
     @classmethod
     def get_pattern(cls) -> str:
         from src.const.globals import COMMAND_PATTERN_ADDON
+
         return COMMAND_PATTERN_ADDON
 
     @classmethod
     def get_type(cls) -> str:
         from src.const.globals import COMMAND_TYPE_ADDON
+
         return COMMAND_TYPE_ADDON
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
         from src.const.globals import COMMAND_SEPARATOR_ADDON
+
         if cursor == 0:
             # User typed "wex co"
             if search_split[0] != "":
@@ -124,6 +127,7 @@ class AddonCommandResolver(AbstractCommandResolver):
         self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
         from wexample_helpers.helpers.string import string_to_snake_case
+
         match = request.get_match()
         # Unable to find command path if no addon name found.
         if match.group(1) is None:
@@ -164,6 +168,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
     def get_script_command_aliases(self, script_command: ScriptCommand) -> StringsList:
         from src.const.globals import COMMAND_SEPARATOR_GROUP
+
         aliases = super().get_script_command_aliases(script_command)
         match = self.build_match(self.build_command_from_function(script_command))
 
