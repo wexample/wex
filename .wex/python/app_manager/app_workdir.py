@@ -27,6 +27,4 @@ class AppWorkdir(PythonWorkdir):
             }]
         )
 
-        print('???')
-
         return raw_value
