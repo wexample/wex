@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import AnyCallable, Args, Kwargs
 from src.core.command.ScriptCommand import DecoratedScriptCommand, ScriptCommand
 
@@ -17,6 +15,8 @@ def command(
     def decorator(
         f: AnyCallable, script_command_class: type = ScriptCommand
     ) -> ScriptCommand:
+        from src.const.globals import COMMAND_TYPE_ADDON
+
         script_command = script_command_class(
             f,
             decorator_kwargs.pop("command_type", COMMAND_TYPE_ADDON),
