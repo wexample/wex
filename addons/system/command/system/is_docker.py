@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.helper.docker import docker_is_current
 from src.decorator.command import command
 
 if TYPE_CHECKING:
@@ -11,4 +9,5 @@ if TYPE_CHECKING:
 
 @command(help="Return true if current environment is a Docker container")
 def system__system__is_docker(kernel: Kernel) -> bool:
+    from addons.app.helper.docker import docker_is_current
     return docker_is_current()

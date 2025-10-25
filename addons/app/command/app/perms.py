@@ -1,21 +1,8 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.env.get import _app__env__get
-from addons.app.command.hook.exec import app__hook__exec
-from addons.app.const.app import APP_ENV_LOCAL
 from addons.app.decorator.app_command import app_command
-from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
-from src.helper.user import (
-    get_user_group_name,
-    get_user_or_sudo_user,
-    group_exists,
-    set_owner_recursively,
-    set_permissions_recursively,
-    user_exists,
-)
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -24,6 +11,11 @@ if TYPE_CHECKING:
 @as_sudo()
 @app_command(help="Set app files permissions", should_be_valid=True)
 def app__app__perms(manager: AppAddonManager, app_dir: str) -> None:
+    from src.helper.user import get_user_group_name, get_user_or_sudo_user, group_exists, set_owner_recursively, set_permissions_recursively, user_exists
+    from src.const.globals import USER_WWW_DATA
+    from addons.app.command.hook.exec import app__hook__exec
+    from addons.app.command.env.get import _app__env__get
+    from addons.app.const.app import APP_ENV_LOCAL
     kernel = manager.kernel
     user: str | int | None
     group: str | int | None

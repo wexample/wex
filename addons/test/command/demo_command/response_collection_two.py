@@ -1,24 +1,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.core.command.check.hi import core__check__hi
-from addons.test.command.demo_command.response_collection_three import (
-    test__demo_command__response_collection_three,
-)
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 TEST_DEMO_COMMAND_TWO_RESULT_FIRST = "..TWO:simple-text"
 TEST_DEMO_COMMAND_TWO_RESULT_SHELL = "..TWO:shell-response"
@@ -29,6 +22,7 @@ TEST_DEMO_COMMAND_TWO_RESULT_SHELL = "..TWO:shell-response"
 def test__demo_command__response_collection_two(
     kernel: Kernel, abort: bool = False
 ) -> QueuedCollectionResponse:
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
     def _test__demo_command__response_collection_two__simple_function(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> str:
@@ -42,6 +36,8 @@ def test__demo_command__response_collection_two(
     def _test__demo_command__response_collection_two__run_another_collection(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
+        from addons.test.command.demo_command.response_collection_three import test__demo_command__response_collection_three
+        from addons.core.command.check.hi import core__check__hi
         nonlocal abort
 
         # This run will return unused response.
@@ -56,6 +52,7 @@ def test__demo_command__response_collection_two(
     def _test__demo_command__response_collection_three_command(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> InteractiveShellCommandResponse:
+        from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
         return InteractiveShellCommandResponse(
             kernel, ["echo", "..TWO:interactive-shell-response"]
         )

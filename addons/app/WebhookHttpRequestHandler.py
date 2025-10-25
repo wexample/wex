@@ -5,17 +5,12 @@ import logging
 import subprocess
 import traceback
 from http.server import BaseHTTPRequestHandler
-from logging.handlers import RotatingFileHandler
 from typing import Any, TypedDict
 
 from addons.app.typing.webhook import WebhookListenerRoutesMap
 from src.const.types import Args, Kwargs, StringsList
 from src.helper.routing import (
-    RouteInfo,
-    routing_get_route_info,
-    routing_get_route_name,
-    routing_is_allowed_route,
-)
+    RouteInfo, routing_get_route_info, routing_get_route_name)
 
 WEBHOOK_COMMAND_PATH_PLACEHOLDER = "__URL__"
 WEBHOOK_COMMAND_PORT_PLACEHOLDER = "__PORT__"
@@ -47,6 +42,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
     task_id: str
 
     def __init__(self, *args: Args, **kwargs: Kwargs) -> None:
+        from logging.handlers import RotatingFileHandler
         self.logger = logging.getLogger("wex-webhook")
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(
@@ -57,6 +53,7 @@ class WebhookHttpRequestHandler(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def do_GET(self) -> None:
+        from src.helper.routing import routing_is_allowed_route
         error_code = 500
         from wexample_helpers.helpers.array import array_replace_value
 

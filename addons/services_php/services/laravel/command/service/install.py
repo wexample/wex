@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 def laravel__service__install(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    from src.helper.service import service_copy_sample_dir
+    from src.const.globals import COMMAND_TYPE_SERVICE
+    from addons.services_php.services.php.command.service.install import php__service__install
     manager.kernel.run_function(
         php__service__install,
         {

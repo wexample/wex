@@ -16,4 +16,5 @@ if TYPE_CHECKING:
 def test__other_demo_command__other(
     kernel: Kernel, service: str, option: bool = False, another_option: bool = False
 ) -> str:
+    from src.decorator.option import option
     return "FIRST"

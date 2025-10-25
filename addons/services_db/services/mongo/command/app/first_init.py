@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.db.exec import app__db__exec
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 
@@ -14,6 +12,7 @@ if TYPE_CHECKING:
 def mongo__app__first_init(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    from addons.app.command.db.exec import app__db__exec
     manager.kernel.run_function(
         app__db__exec,
         {

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import click
-
-from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
 from src.const.types import AnyCallable
 
 
@@ -10,6 +8,7 @@ def option_webhook_listener(
     port_number: bool = False, path: bool = False
 ) -> AnyCallable:
     def decorator(function: AnyCallable) -> AnyCallable:
+        from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
         if port_number:
             function = click.option(
                 "--webhook-port-number",

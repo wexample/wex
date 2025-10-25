@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 
@@ -14,6 +12,7 @@ if TYPE_CHECKING:
 def proxy__app__start_post(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    from addons.app.command.app.exec import app__app__exec
     # TODO Should be removed as it prevent monitoring configuration
     return None
     commands = [

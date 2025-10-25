@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from addons.app.command.env.get import app__env__get
-from addons.app.command.env.set import app__env__set
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 
 class TestAppCommandEnvSet(AbstractAppTestCase):
     def test_set(self) -> None:
+        from addons.app.command.env.set import app__env__set
         app_dir = self.create_test_app()
 
         self.kernel.run_function(

@@ -2,11 +2,8 @@ from __future__ import annotations
 
 import shutil
 from typing import TYPE_CHECKING
-
-from addons.app.const.app import APP_ENV_LOCAL, APP_ENVS
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.service import service_copy_sample_dir
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -14,6 +11,8 @@ if TYPE_CHECKING:
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
 def php__service__install(manager: AppAddonManager, app_dir: str, service: str) -> None:
+    from addons.app.const.app import APP_ENVS, APP_ENV_LOCAL
+    from src.helper.service import service_copy_sample_dir
     service_copy_sample_dir(manager.kernel, "php", "cron")
 
     # Install one "cron" file per environment

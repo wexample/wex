@@ -1,11 +1,10 @@
 from __future__ import annotations
-
-from addons.default.command.file.remove_line import default__file__remove_line
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandFileRemoveLine(AbstractTestCase):
     def test_remove_line(self) -> None:
+        from addons.default.command.file.remove_line import default__file__remove_line
         file = self.build_test_file("config_bash")
 
         with open(file, newline="") as f:

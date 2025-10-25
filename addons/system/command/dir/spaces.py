@@ -4,19 +4,20 @@ import os
 from typing import TYPE_CHECKING, cast
 
 from addons.ai.decorator.ai_tool import ai_tool
-from src.core.response.TableResponse import TableBody, TableResponse
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.file import file_get_human_readable_size
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.TableResponse import TableBody, TableResponse
 
 
 @ai_tool()
 @command(help="Return sizes of current directory subdirectories")
 @option("--dir", "-d", type=str, required=False, help="Directory to inspect")
 def system__dir__spaces(kernel: Kernel, dir: str | None = None) -> TableResponse:
+    from src.core.response.TableResponse import TableBody, TableResponse
+    from src.helper.file import file_get_human_readable_size
     dir = dir or os.getcwd()
 
     # Function to calculate directory size

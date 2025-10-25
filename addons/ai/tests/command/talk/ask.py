@@ -5,27 +5,16 @@ import os
 from typing import cast
 
 import patch  # type: ignore[import-untyped]
-from langchain_core.prompts import FewShotPromptTemplate
-from wexample_helpers.helpers.file import file_read, file_write
+from wexample_helpers.helpers.file import file_read
 
 from addons.ai.helper.chat import TEXT_ALIGN_RIGHT, chat_format_message
-from addons.ai.src.assistant.assistant import AI_COMMAND_PREFIX, Assistant
-from addons.ai.src.assistant.command.chat_command import ChatCommand
-from addons.ai.src.assistant.command.exit_command import ExitCommand
+from addons.ai.src.assistant.assistant import Assistant
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL
 from src.const.types import StringKeysDict
-from src.helper.package import package_enable_logging
 from src.helper.patch import (
-    patch_apply_in_workdir,
-    patch_clean,
-    patch_create_hunk_header,
-    patch_find_line_of_first_subgroup,
-    patch_get_initial_lines,
-    patch_get_initial_parts,
-    patch_has_all_parts,
-)
+    patch_apply_in_workdir, patch_get_initial_parts)
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -130,6 +119,9 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self.kernel.io.print(message)
 
     def _test_ask_parsing(self, assistant: Assistant) -> None:
+        from addons.ai.src.assistant.assistant import AI_COMMAND_PREFIX
+        from addons.ai.src.assistant.command.chat_command import ChatCommand
+        from addons.ai.src.assistant.command.exit_command import ExitCommand
         assistant.set_default_subject()
 
         self._found_one_command(
@@ -202,6 +194,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                 )
 
     def _test_diff(self, assistant: Assistant) -> None:
+        from src.helper.patch import patch_clean, patch_create_hunk_header, patch_find_line_of_first_subgroup, patch_get_initial_lines, patch_has_all_parts
         file_content = (
             "This is a demo file"
             "\nWith several lines"
@@ -288,6 +281,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
                 )
 
     def _test_few_shot_prompt_template(self, assistant: Assistant) -> None:
+        from langchain_core.prompts import FewShotPromptTemplate
         model = assistant.get_model()
 
         file_chat_subject = cast(
@@ -313,6 +307,8 @@ class TestAiCommandTalkAsk(AbstractTestCase):
         self.assertTrue(isinstance(template, FewShotPromptTemplate))
 
     def _test_patching(self, assistant: Assistant) -> None:
+        from wexample_helpers.helpers.file import file_write
+        from src.helper.package import package_enable_logging
         target_package_json = (
             self.kernel.directory.path
             + "addons/ai/tests/resources/patches/target-package.json"

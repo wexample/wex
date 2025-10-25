@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_BACK, Assistant
+from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_BACK
 from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     help="Default action",
 )
 def ai__talk__ask(kernel: Kernel, action: str, model: str) -> None:
+    from addons.ai.src.assistant.assistant import Assistant
     assistant = Assistant(kernel, model)
 
     assistant.start(menu_action=action)

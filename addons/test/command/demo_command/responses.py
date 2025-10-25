@@ -3,14 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.const.types import AnyCallable
-from src.core.response.NonInteractiveShellCommandResponse import (
-    NonInteractiveShellCommandResponse,
-)
 from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 
 RESPONSES_DEFAULT_VALUES = {
     "string": "STRING",
@@ -24,6 +22,7 @@ RESPONSES_DEFAULT_VALUES = {
 def test__demo_command__responses(
     kernel: Kernel, type: str
 ) -> str | AnyCallable | NonInteractiveShellCommandResponse | None:
+    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
     if type in RESPONSES_DEFAULT_VALUES:
         return RESPONSES_DEFAULT_VALUES[type]
     elif type == "function":

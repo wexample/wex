@@ -6,19 +6,7 @@ from typing import TYPE_CHECKING
 import click
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.app import app_create_manager
-from addons.default.command.version.parse import default__version__parse
-from addons.default.helper.migration import (
-    MIGRATION_MINIMAL_VERSION,
-    migration_exec,
-    migration_extract_version_from_file_name,
-    migration_get_files,
-    migration_version_guess,
-)
-from addons.default.helper.version import is_greater_than
-from src.const.globals import CORE_COMMAND_NAME
 from src.decorator.option import option
-from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -46,6 +34,12 @@ def app__migration__migrate(
     from_version: str | None = None,
     yes: bool = False,
 ) -> None:
+    from addons.default.helper.migration import MIGRATION_MINIMAL_VERSION, migration_exec, migration_extract_version_from_file_name, migration_get_files, migration_version_guess
+    from addons.app.helper.app import app_create_manager
+    from src.helper.core import core_kernel_get_version
+    from src.const.globals import CORE_COMMAND_NAME
+    from addons.default.helper.version import is_greater_than
+    from addons.default.command.version.parse import default__version__parse
     kernel = manager.kernel
     app_dir = app_dir or os.getcwd() + os.sep
     manager = app_create_manager(kernel, app_dir)

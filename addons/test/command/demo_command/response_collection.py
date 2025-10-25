@@ -1,28 +1,19 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
-
-from addons.test.command.demo_command.counting_collection import (
-    test__demo_command__counting_collection,
-)
-from addons.test.command.demo_command.response_collection_two import (
-    test__demo_command__response_collection_two,
-)
-from src.const.types import StringKeysDict
 from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.HiddenResponse import HiddenResponse
-from src.core.response.NonInteractiveShellCommandResponse import (
-    NonInteractiveShellCommandResponse,
-)
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.HiddenResponse import HiddenResponse
+    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.const.types import StringKeysDict
 
 TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION = "function-response-text"
 

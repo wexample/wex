@@ -1,20 +1,20 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
-
-from addons.app.const.app import APP_ENV_LOCAL, APP_ENV_PROD
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.const.types import StringsList
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.const.types import StringsList
 
 
 @app_command(help="Set runtime configuration", command_type=COMMAND_TYPE_SERVICE)
 def phpmyadmin__config__runtime(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    from addons.app.const.app import APP_ENV_LOCAL, APP_ENV_PROD
+    from src.const.types import StringsList
     if not manager.has_runtime_config("domain_pma"):
         env = manager.get_env()
 

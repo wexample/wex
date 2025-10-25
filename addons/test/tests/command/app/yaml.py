@@ -1,12 +1,10 @@
 from __future__ import annotations
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
-from src.core.FatalError import FatalError
 
 
 class TestTestCommandAppYaml(AbstractWebhookTestCase):
     def test_yaml(self) -> None:
+        from addons.app.command.app.exec import app__app__exec
         app_dir, app_name = self.create_and_start_test_app_webhook()
 
         self.kernel.run_function(
@@ -58,6 +56,7 @@ class TestTestCommandAppYaml(AbstractWebhookTestCase):
         """
         Use a separated function to restore app location after error.
         """
+        from src.core.FatalError import FatalError
         with self.assertRaises(FatalError):
             self.kernel.run_command(
                 "test::app/yaml",

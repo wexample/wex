@@ -5,7 +5,6 @@ import re
 from typing import TYPE_CHECKING, Any
 
 from src.const.types import AnyCallable
-from src.helper.module import module_load_from_file
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -62,6 +61,7 @@ def migration_get_files(kernel: Kernel) -> list[str]:
 def migration_get_function(
     kernel: Kernel, version: str, method_part: str
 ) -> AnyCallable | None:
+    from src.helper.module import module_load_from_file
     version_snake = version.replace(".", "_")
     path_migrations = migration_get_path(kernel)
     method_name = f"{method_part}_{version_snake}"

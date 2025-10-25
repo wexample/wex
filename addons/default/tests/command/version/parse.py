@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from addons.default.command.version.parse import default__version__parse
-from addons.default.const.default import UPGRADE_TYPE_BETA
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestDefaultCommandVersionParse(AbstractTestCase):
     def test_parse(self) -> None:
+        from addons.default.const.default import UPGRADE_TYPE_BETA
         test_cases = [
             (
                 "5.0.0-beta.41+build.20230822134237",

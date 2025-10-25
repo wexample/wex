@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from src.const.types import ShellCommandsList
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -22,6 +21,8 @@ if TYPE_CHECKING:
     help="Include stopped ones",
 )
 def docker__container__runs(kernel: Kernel, name: str, all: bool = False) -> bool:
+    from src.helper.command import execute_command_sync
+    from src.decorator.command import command
     command: ShellCommandsList = [
         "docker",
         "ps",

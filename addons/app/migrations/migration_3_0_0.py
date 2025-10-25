@@ -1,16 +1,14 @@
 from __future__ import annotations
-
-import os.path
 from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.const.app import APP_DIR_APP_DATA_NAME
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
 def is_version_3_0_0(kernel: Kernel, path: str) -> bool | None:
+    from addons.app.const.app import APP_DIR_APP_DATA_NAME
     if os.path.isfile(path + APP_DIR_APP_DATA_NAME):
         return True
     return None

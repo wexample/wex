@@ -5,11 +5,12 @@ import json
 from wexample_helpers.helpers.file import file_read
 
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
-from src.helper.routing import routing_build_webhook_route_map, routing_is_allowed_route
+from src.helper.routing import routing_build_webhook_route_map
 
 
 class TestTestCommandAppWebhook(AbstractWebhookTestCase):
     def test_webhook(self) -> None:
+        from src.helper.routing import routing_is_allowed_route
         routes = routing_build_webhook_route_map(self.kernel)
 
         self.assertFalse(routing_is_allowed_route("/test", routes))

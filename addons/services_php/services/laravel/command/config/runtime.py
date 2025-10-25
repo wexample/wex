@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.services_php.services.php.command.config.runtime import php__config__runtime
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
 def laravel__config__runtime(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
+    from addons.services_php.services.php.command.config.runtime import php__config__runtime
+    from src.const.globals import COMMAND_TYPE_SERVICE
     manager.kernel.run_function(
         php__config__runtime,
         {"app-dir": app_dir, "service": service},

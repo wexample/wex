@@ -1,26 +1,15 @@
 from __future__ import annotations
-
-import os.path
 from typing import TYPE_CHECKING, Any, cast
 
 import yaml
-from wexample_helpers.helpers.string import string_to_snake_case
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.command.service.install import app__service__install
-from addons.app.const.app import APP_DIR_APP_DATA
-from addons.app.migrations.migration_4_0_0 import (
-    _migration_4_0_0_et_docker_files,
-    _migration_4_0_0_replace_docker_mapping,
-    _migration_4_0_0_replace_docker_placeholders,
-)
-from addons.docker.types.docker import DockerCompose
-from src.const.types import AnyList, StringKeysDict, StringsDict, StringsList
-from src.helper.prompt import prompt_progress_steps
+from src.const.types import AnyList, StringsDict, StringsList
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from addons.docker.types.docker import DockerCompose
+    from src.const.types import StringKeysDict
 
 
 def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
@@ -29,6 +18,8 @@ def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
 
 
 def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
+    from addons.app.const.app import APP_DIR_APP_DATA
+    from src.helper.prompt import prompt_progress_steps
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
     # Convert main config file.
     old_config_path = f"{env_dir}config"
@@ -88,6 +79,8 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
             manager.save_config()
 
     def _migration_5_0_0_install_services() -> None:
+        from addons.app.command.service.install import app__service__install
+        from wexample_helpers.helpers.string import string_to_snake_case
         # Services
         services = _get_config_value(config, "SERVICES", [])
 
@@ -124,6 +117,9 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
             manager.set_config("service.mysql.password", mysql_db_password)
 
     def _migration_5_0_0_update_docker() -> None:
+        from addons.app.migrations.migration_4_0_0 import _migration_4_0_0_et_docker_files, _migration_4_0_0_replace_docker_mapping, _migration_4_0_0_replace_docker_placeholders
+        from addons.docker.types.docker import DockerCompose
+        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
         docker_files = _migration_4_0_0_et_docker_files(manager)
 
         # Yml file changes
@@ -233,6 +229,7 @@ def migration_5_0_0_replace_docker_services_names(
 def migration_5_0_0_replace_docker_services_references(
     content: DockerCompose, services_names_changes: StringsDict
 ) -> None:
+    from src.const.types import StringKeysDict
     if "services" not in content:
         return
 

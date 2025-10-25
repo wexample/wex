@@ -16,4 +16,5 @@ if TYPE_CHECKING:
 def test_inherit_base__base_command__base(
     kernel: Kernel, service: str, option: str | None = None
 ) -> str:
+    from src.decorator.option import option
     return f"BASE:{option}:{service}"

@@ -5,21 +5,14 @@ import os
 from typing import TYPE_CHECKING
 
 from addons.app.AppAddonManager import AppAddonManager
-from addons.app.const.app import APP_DIR_APP_DATA, APP_DIR_APP_DATA_NAME, APP_ENV_LOCAL
-from addons.app.helper.app import app_create_env
-from addons.default.helper.git_utils import (
-    git_get_or_create_repo,
-    git_move_or_file_move,
-)
-from addons.default.helper.migration import migration_delete_dir_if_empty
 from src.const.types import StringsDict, StringsList
-from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
 def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
+    from addons.app.const.app import APP_DIR_APP_DATA_NAME
     if os.path.isdir(path + APP_DIR_APP_DATA_NAME):
         if os.path.isfile(path + f"{APP_DIR_APP_DATA_NAME}/config"):
             return True
@@ -28,6 +21,8 @@ def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
 
 
 def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
+    from src.helper.prompt import prompt_progress_steps
+    from addons.default.helper.git_utils import git_get_or_create_repo
     app_dir = manager.get_app_dir()
     repo = git_get_or_create_repo(app_dir)
     projects_dirs = ["project", "wordpress"]
@@ -42,6 +37,8 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
 
     # Rename ".wex" file to "config"
     def _migration_4_0_0_config() -> None:
+        from addons.app.const.app import APP_DIR_APP_DATA_NAME
+        from addons.default.helper.git_utils import git_move_or_file_move
         if os.path.isfile(APP_DIR_APP_DATA_NAME):
             # Rename old config file
             git_move_or_file_move(repo, APP_DIR_APP_DATA_NAME, "config")
@@ -54,6 +51,9 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
 
     # Move every file and folder to ".wex", except the "project" dir
     def _migration_4_0_0_move_root_environment_files() -> None:
+        from addons.app.const.app import APP_DIR_APP_DATA_NAME, APP_ENV_LOCAL
+        from addons.app.helper.app import app_create_env
+        from addons.default.helper.git_utils import git_move_or_file_move
         for item in os.listdir(app_dir):
             if item in projects_dirs + [".git", APP_DIR_APP_DATA_NAME]:
                 continue
@@ -67,6 +67,8 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files() -> None:
+        from addons.default.helper.migration import migration_delete_dir_if_empty
+        from addons.default.helper.git_utils import git_move_or_file_move
         for projects_dir in projects_dirs:
             dir_project = os.path.join(app_dir, projects_dir)
 
@@ -108,6 +110,7 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
 
 
 def _migration_4_0_0_et_docker_files(manager: AppAddonManager) -> StringsList:
+    from addons.app.const.app import APP_DIR_APP_DATA
     env_dir = f"{manager.get_app_dir()}{APP_DIR_APP_DATA}"
 
     # Convert docker files.

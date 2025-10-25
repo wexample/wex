@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_dir_option import app_dir_option
-from addons.app.helper.docker import docker_build_long_container_name
 from src.const.types import (
     AnyCallable,
     Args,
@@ -56,6 +55,7 @@ class AppCommand(ScriptCommand):
         script: YamlCommandScript,
         variables: CoreCommandArgsDict,
     ) -> StringsList:
+        from addons.app.helper.docker import docker_build_long_container_name
         from addons.app.AppAddonManager import AppAddonManager
 
         kernel = runner.kernel

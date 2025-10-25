@@ -5,17 +5,19 @@ from typing import TYPE_CHECKING
 import psutil
 
 from addons.ai.decorator.ai_tool import ai_tool
-from src.core.response.TableResponse import TableBody, TableResponse
+from src.core.response.TableResponse import TableBody
 from src.decorator.command import command
-from src.helper.file import file_get_human_readable_size
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.TableResponse import TableResponse
 
 
 @ai_tool()
 @command(help="Return space usage of current system disks")
 def system__disk__spaces(kernel: Kernel) -> TableResponse:
+    from src.core.response.TableResponse import TableResponse
+    from src.helper.file import file_get_human_readable_size
     output_list = TableResponse(kernel)
     output_list.set_header(
         [

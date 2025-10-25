@@ -1,25 +1,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from wexample_helpers.helpers.args import args_parse_one
-
-from addons.app.command.hook.exec import app__hook__exec
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import docker_build_long_container_name
 from src.const.types import ShellCommandsDeepList
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
-from src.core.response.NonInteractiveShellCommandResponse import (
-    NonInteractiveShellCommandResponse,
-)
-from src.core.response.NullResponse import NullResponse
 from src.decorator.option import option
-from src.helper.command import command_to_string
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
 
 
 @app_command(help="Exec a command into app container", should_run=True)
@@ -66,6 +55,13 @@ def app__app__exec(
     interactive: bool = False,
     ignore_error: bool = False,
 ) -> InteractiveShellCommandResponse | NonInteractiveShellCommandResponse:
+    from src.core.response.InteractiveShellCommandResponse import InteractiveShellCommandResponse
+    from addons.app.helper.docker import docker_build_long_container_name
+    from src.helper.command import command_to_string
+    from wexample_helpers.helpers.args import args_parse_one
+    from src.core.response.NullResponse import NullResponse
+    from addons.app.command.hook.exec import app__hook__exec
+    from src.core.response.NonInteractiveShellCommandResponse import NonInteractiveShellCommandResponse
     kernel = manager.kernel
     container_name = container_name or manager.get_main_container_name()
 
