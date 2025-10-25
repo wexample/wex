@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, Any
-
-from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
 from src.const.types import (
     CoreCommandArgsList,
     CoreCommandArgsListOrDict,
@@ -13,11 +11,6 @@ from src.const.types import (
 )
 from src.core.BaseClass import BaseClass
 from src.core.command.ScriptCommand import ScriptCommand
-from src.helper.click import (
-    click_args_convert_dict_to_args,
-    click_args_convert_dict_to_long_names_dict,
-    click_args_convert_to_dict,
-)
 
 if TYPE_CHECKING:
     from src.core.command.resolver.AbstractCommandResolver import (
@@ -62,6 +55,7 @@ class CommandRequest(BaseClass):
             return
 
     def get_args_dict(self) -> StringKeysDict:
+        from src.helper.click import click_args_convert_dict_to_long_names_dict, click_args_convert_to_dict
         script_command = self.get_script_command()
 
         return click_args_convert_dict_to_long_names_dict(
@@ -113,6 +107,8 @@ class CommandRequest(BaseClass):
         return self._string_command
 
     def load_extension(self, extension: str) -> bool:
+        from src.const.globals import COMMAND_EXTENSION_PYTHON, COMMAND_EXTENSION_YAML
+        from src.helper.click import click_args_convert_dict_to_args
         path = self.resolver.build_path(self, extension)
 
         if path and os.path.isfile(path):

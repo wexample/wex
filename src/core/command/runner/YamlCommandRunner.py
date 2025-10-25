@@ -7,28 +7,22 @@ from typing import TYPE_CHECKING, Any, cast
 
 import click
 from wexample_helpers.helpers.dict import dict_get_item_by_path
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
 from src.const.types import (
-    Args,
-    CoreCommandArgsDict,
-    Kwargs,
-    StringsList,
-    YamlCommand,
-    YamlCommandScript,
-)
+    Args, CoreCommandArgsDict, Kwargs, StringsList, YamlCommandScript)
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
-from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
-from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
 from src.decorator.command import command
 from src.helper.click import click_args_convert_dict_to_args
 from src.helper.command import apply_command_decorator, internal_command_to_shell
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
+    from src.core.command.ScriptCommand import ScriptCommand
+    from src.const.types import YamlCommand
 
 COMMAND_TYPE_BASH: str = "bash"
 COMMAND_TYPE_BASH_FILE: str = "bash-file"
@@ -42,6 +36,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         self.content: YamlCommand | None = None
 
     def build_script_command(self) -> ScriptCommand | None:
+        from src.core.command.ScriptCommand import ScriptCommand
         from src.core.response.InteractiveShellCommandResponse import (
             InteractiveShellCommandResponse,
         )
@@ -59,6 +54,7 @@ class YamlCommandRunner(AbstractCommandRunner):
         def _script_command_handler(
             *args: Args, **kwargs: Kwargs
         ) -> ResponseCollectionResponse | None:
+            from src.core.response.ResponseCollectionResponse import ResponseCollectionResponse
             commands_collection: ResponseCollection = []
 
             variables: CoreCommandArgsDict = {}
@@ -239,6 +235,8 @@ class YamlCommandRunner(AbstractCommandRunner):
         return names
 
     def load_yaml_command(self, path: str) -> YamlCommand:
+        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+        from src.const.types import YamlCommand
         return cast(YamlCommand, yaml_read(path, {}))
 
     def run(self) -> Any:

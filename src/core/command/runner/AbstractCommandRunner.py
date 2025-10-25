@@ -4,12 +4,9 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any
 
 import click
-
-from src.const.args import ARGS_HELP
 from src.const.types import StringsList
 from src.core.command.ScriptCommand import ScriptCommand
 from src.core.CommandRequest import CommandRequest, HasRequest
-from src.core.response.AbortResponse import AbortResponse
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
@@ -40,6 +37,8 @@ class AbstractCommandRunner(AbsractKernelChild, HasRequest):
         pass
 
     def run_click_function(self, script_command: ScriptCommand) -> Any:
+        from src.const.args import ARGS_HELP
+        from src.core.response.AbortResponse import AbortResponse
         try:
             ctx: click.core.Context = script_command.click_command.make_context(
                 "", self.get_request().get_args_list().copy()

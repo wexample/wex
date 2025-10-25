@@ -3,13 +3,14 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, cast
 
-from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import JsonContent, OptionalCoreCommandArgsDict, ResponsePrintType
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+from src.const.types import OptionalCoreCommandArgsDict, ResponsePrintType
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse, ResponseCollection
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.const.types import JsonContent
 
 
 class ResponseCollectionResponse(AbstractResponse):
@@ -23,6 +24,7 @@ class ResponseCollectionResponse(AbstractResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
+        from src.const.globals import KERNEL_RENDER_MODE_JSON
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             output = super().print(render_mode, interactive_data)
             if isinstance(output, list) and len(output):
@@ -45,5 +47,6 @@ class ResponseCollectionResponse(AbstractResponse):
         return self
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
+        from src.const.types import JsonContent
         # Do not add extra json wrapping
         return cast(JsonContent, value)

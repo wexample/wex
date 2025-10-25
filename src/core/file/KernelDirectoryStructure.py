@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from addons.app.src.file.AppDirectoryStructure import AppDirectoryStructure
-from src.const.globals import CORE_COMMAND_NAME
 from src.const.types import FileSystemStructureSchema
 
 
@@ -9,6 +8,7 @@ class KernelDirectoryStructure(AppDirectoryStructure):
     should_exist: bool = True
 
     def get_schema(self) -> FileSystemStructureSchema:
+        from src.const.globals import CORE_COMMAND_NAME
         schema = super().get_schema()
 
         schema.update(

@@ -4,20 +4,9 @@ import os
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
-
-from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
-
-from addons.app.const.app import APP_DIR_APP_DATA
-from src.const.globals import (
-    COMMAND_CHAR_USER,
-    COMMAND_PATTERN_USER,
-    COMMAND_SEPARATOR_GROUP,
-    COMMAND_TYPE_USER,
-)
 from src.const.types import StringsList
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
-from src.helper.user import get_user_or_sudo_user_home_data_path
 
 if TYPE_CHECKING:
     from src.core.response.AbstractResponse import AbstractResponse
@@ -26,15 +15,18 @@ if TYPE_CHECKING:
 class UserCommandResolver(AbstractCommandResolver):
     @classmethod
     def get_pattern(cls) -> str:
+        from src.const.globals import COMMAND_PATTERN_USER
         return COMMAND_PATTERN_USER
 
     @classmethod
     def get_type(cls) -> str:
+        from src.const.globals import COMMAND_TYPE_USER
         return COMMAND_TYPE_USER
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
+        from src.const.globals import COMMAND_CHAR_USER
         if cursor == 0:
             base_command_path = self.get_base_command_path()
 
@@ -62,6 +54,8 @@ class UserCommandResolver(AbstractCommandResolver):
         return None
 
     def build_command_from_parts(self, parts: StringsList) -> str:
+        from wexample_helpers.helpers.string import string_to_kebab_case
+        from src.const.globals import COMMAND_CHAR_USER, COMMAND_SEPARATOR_GROUP
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
@@ -70,6 +64,7 @@ class UserCommandResolver(AbstractCommandResolver):
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
+        from src.const.globals import COMMAND_CHAR_USER
         return [
             COMMAND_CHAR_USER,
             path_parts[1],
@@ -79,6 +74,7 @@ class UserCommandResolver(AbstractCommandResolver):
     def build_path(
         self, request: CommandRequest, extension: str, subdir: str | None = None
     ) -> Path | None:
+        from wexample_helpers.helpers.string import string_to_snake_case
         base_path = self.get_base_path()
         if not base_path:
             return None
@@ -96,6 +92,8 @@ class UserCommandResolver(AbstractCommandResolver):
         )
 
     def get_base_path(self) -> str | None:
+        from addons.app.const.app import APP_DIR_APP_DATA
+        from src.helper.user import get_user_or_sudo_user_home_data_path
         return f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
     def get_function_name_parts(self, parts: StringsList) -> StringsList:

@@ -146,6 +146,8 @@ class ScriptCommand(BaseClass):
         script: YamlCommandScript,
         variables: CoreCommandArgsDict,
     ) -> StringsList:
+        from src.const.globals import SHELL_DEFAULT
+        from addons.app.AppAddonManager import AppAddonManager
         from src.helper.string import string_replace_multiple
 
         if "script" in script:

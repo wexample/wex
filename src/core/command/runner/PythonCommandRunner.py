@@ -1,25 +1,27 @@
 from __future__ import annotations
-
-import importlib.util
 from typing import Any, cast
 
 from src.const.types import StringsList
 from src.core.command.runner.AbstractCommandRunner import AbstractCommandRunner
-from src.core.command.ScriptCommand import ScriptCommand
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core.command.ScriptCommand import ScriptCommand
 
 
 class PythonCommandRunner(AbstractCommandRunner):
     def build_script_command(self) -> ScriptCommand | None:
+        from src.core.command.ScriptCommand import ScriptCommand
+        from importlib import util
         request = self.get_request()
         path = request.get_path()
 
         # Import module and load function.
-        spec = importlib.util.spec_from_file_location(path, path)
+        spec = util.spec_from_file_location(path, path)
 
         if not spec or not spec.loader:
             return None
 
-        module = importlib.util.module_from_spec(spec)
+        module = util.module_from_spec(spec)
         spec.loader.exec_module(module)
 
         return cast(

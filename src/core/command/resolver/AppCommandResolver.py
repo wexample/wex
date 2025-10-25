@@ -4,15 +4,9 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
-from wexample_helpers.helpers.string import string_to_kebab_case, string_to_snake_case
+from wexample_helpers.helpers.string import string_to_snake_case
 
-from addons.app.const.app import APP_DIR_APP_DATA, ERR_APP_NOT_FOUND
-from src.const.globals import (
-    COMMAND_CHAR_APP,
-    COMMAND_PATTERN_APP,
-    COMMAND_SEPARATOR_GROUP,
-    COMMAND_TYPE_APP,
-)
+from addons.app.const.app import APP_DIR_APP_DATA
 from src.const.types import (
     OptionalCoreCommandArgsDict,
     RegistryCommandsCollection,
@@ -20,14 +14,10 @@ from src.const.types import (
 )
 from src.core.command.resolver.AbstractCommandResolver import AbstractCommandResolver
 from src.core.CommandRequest import CommandRequest
-from src.core.response.AbortResponse import AbortResponse
-from src.core.response.AbstractResponse import AbstractResponse
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.AbstractResponse import AbstractResponse
 
 
 class AppCommandResolver(AbstractCommandResolver):
@@ -43,15 +33,18 @@ class AppCommandResolver(AbstractCommandResolver):
 
     @classmethod
     def get_pattern(cls) -> str:
+        from src.const.globals import COMMAND_PATTERN_APP
         return COMMAND_PATTERN_APP
 
     @classmethod
     def get_type(cls) -> str:
+        from src.const.globals import COMMAND_TYPE_APP
         return COMMAND_TYPE_APP
 
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
+        from src.const.globals import COMMAND_CHAR_APP
         if cursor == 0:
             # User typed "."
             if search_split[0].startswith(COMMAND_CHAR_APP):
@@ -83,6 +76,8 @@ class AppCommandResolver(AbstractCommandResolver):
         return None
 
     def build_command_from_parts(self, parts: StringsList) -> str:
+        from wexample_helpers.helpers.string import string_to_kebab_case
+        from src.const.globals import COMMAND_CHAR_APP, COMMAND_SEPARATOR_GROUP
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
@@ -91,6 +86,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
+        from src.const.globals import COMMAND_CHAR_APP
         return [
             COMMAND_CHAR_APP,
             path_parts[2],
@@ -150,6 +146,8 @@ class AppCommandResolver(AbstractCommandResolver):
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
+        from src.core.response.AbortResponse import AbortResponse
+        from addons.app.const.app import ERR_APP_NOT_FOUND
         if not self.get_base_path():
             if not request.quiet:
                 self.kernel.io.error(
@@ -167,6 +165,7 @@ class AppCommandResolver(AbstractCommandResolver):
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> AbstractResponse:
+        from src.core.response.AbstractResponse import AbstractResponse
         from src.core.response.AbortResponse import AbortResponse
 
         parts = path.split("/")
@@ -186,6 +185,8 @@ class AppCommandResolver(AbstractCommandResolver):
         self_super: AbstractCommandResolver = cast(AbstractCommandResolver, super())
 
         def _callback() -> AbstractResponse:
+            from src.core.response.queue_collection.QueuedCollectionStopResponse import QueuedCollectionStopResponse
+            from src.core.response.AbortResponse import AbortResponse
             request = self.kernel.create_command_request(internal_command)
 
             if not request._script_command:

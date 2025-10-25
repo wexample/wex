@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import os.path
+import os
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, cast
-
-from wexample_helpers.helpers.file import file_change_mode_recursive
 
 from src.const.types import (
     FileSystemStructurePermission,
@@ -14,7 +12,6 @@ from src.const.types import (
     StringMessageParameters,
 )
 from src.core.BaseClass import BaseClass
-from src.helper.user import set_owner_recursively
 
 if TYPE_CHECKING:
     from src.core.ErrorMessage import ErrorMessage, ErrorMessageList
@@ -66,6 +63,8 @@ class AbstractFileSystemStructure(BaseClass):
         return error
 
     def checkup(self) -> None:
+        from wexample_helpers.helpers.file import file_change_mode_recursive
+        from src.helper.user import set_owner_recursively
         if not self.exists():
             if self.should_exist is True:
                 if self.on_missing == FILE_SYSTEM_ACTION_ON_MISSING_CREATE:

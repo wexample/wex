@@ -5,11 +5,12 @@ import shutil
 from abc import ABC
 from typing import TYPE_CHECKING, cast
 
-from src.const.types import JsonContent, ResponsePrintType
+from src.const.types import ResponsePrintType
 from src.core.response.AbstractResponse import AbstractResponse
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.const.types import JsonContent
 
 
 class AbstractTerminalSectionResponse(AbstractResponse, ABC):
@@ -46,5 +47,6 @@ class AbstractTerminalSectionResponse(AbstractResponse, ABC):
         return ""
 
     def render_mode_json_wrap_data(self, value: ResponsePrintType) -> JsonContent:
+        from src.const.types import JsonContent
         # Do not add extra json wrapping
         return cast(JsonContent, value)

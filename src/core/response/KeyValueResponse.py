@@ -3,13 +3,9 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, cast
 
-from src.const.globals import KERNEL_RENDER_MODE_JSON, KERNEL_RENDER_MODE_TERMINAL
+from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
 from src.const.types import (
-    OptionalCoreCommandArgsDict,
-    ResponsePrintType,
-    StringKeysDict,
-    StringsList,
-)
+    OptionalCoreCommandArgsDict, ResponsePrintType, StringKeysDict)
 from src.core.CommandRequest import CommandRequest
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.AbstractTerminalSectionResponse import (
@@ -33,6 +29,8 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         interactive_data: bool = True,
     ) -> ResponsePrintType:
+        from src.const.types import StringsList
+        from src.const.globals import KERNEL_RENDER_MODE_JSON
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             return os.linesep.join(cast(StringsList, self.output_bag))
         elif render_mode == KERNEL_RENDER_MODE_JSON:
@@ -45,6 +43,7 @@ class KeyValueResponse(AbstractTerminalSectionResponse):
         render_mode: str = KERNEL_RENDER_MODE_TERMINAL,
         args: OptionalCoreCommandArgsDict = None,
     ) -> AbstractResponse:
+        from src.const.globals import KERNEL_RENDER_MODE_JSON
         if render_mode == KERNEL_RENDER_MODE_TERMINAL:
             # Calculate maximum key width for formatting
             max_key_width = max(len(str(key)) for key in self.dictionary_data.keys())

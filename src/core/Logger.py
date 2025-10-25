@@ -15,7 +15,6 @@ from src.const.types import (
     StringsDict,
     StringsList,
 )
-from src.helper.file import file_set_user_or_sudo_user_owner
 
 if TYPE_CHECKING:
     from src.core.CommandRequest import CommandRequest
@@ -193,6 +192,7 @@ class Logger:
     def write(
         self, task_id: None | str = None, log_data: LoggerLogData | None = None
     ) -> None:
+        from src.helper.file import file_set_user_or_sudo_user_owner
         # When writing current log, check if disabled.
         if (
             self.kernel.root_request
