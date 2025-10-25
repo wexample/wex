@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, cast
 import psutil
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.const.types import ShellCommandsDeepList
+    from src.utils.kernel import Kernel
 
 
 def process_get_all_by_port(port: int) -> psutil.Process | None:
@@ -72,8 +72,8 @@ def process_post_exec(
     command: ShellCommandsDeepList | str,
     workdir: str | None = None,
 ) -> None:
-    from src.helper.command import command_to_string
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+    from src.helper.command import command_to_string
 
     if not workdir:
         workdir = os.getcwd()

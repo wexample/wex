@@ -41,7 +41,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
 
 
 def command_exists(shell_command: str) -> bool:
-    from subprocess import Popen
+    pass
 
     process = subprocess.Popen(
         "command -v " + shell_command,
@@ -86,7 +86,6 @@ def execute_command_async(
     working_directory: str | None = None,
     **kwargs: Any,
 ) -> Popen[Any]:
-    from subprocess import Popen
     from src.helper.file import file_create_parent_dir
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
@@ -125,7 +124,6 @@ def execute_command_sync(
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     from src.helper.user import get_user_or_sudo_user
-    from subprocess import Popen
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 
     if working_directory is None:

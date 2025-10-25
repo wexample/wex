@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 def service_copy_sample_dir(kernel: Kernel, service: str, subdir: str) -> None:
-    from addons.app.const.app import APP_DIR_APP_DATA
     from addons.app.AppAddonManager import AppAddonManager
+    from addons.app.const.app import APP_DIR_APP_DATA
 
     service_dir = service_get_dir(kernel, service)
     if not isinstance(service_dir, str):
@@ -81,8 +81,9 @@ def service_get_inheritance_tree(kernel: Kernel, service: str) -> list[str]:
 
 
 def service_load_config(kernel: Kernel, service: str) -> Any:
-    from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
     from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
+    from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
 
     dirs = service_get_all_dirs(kernel)
 

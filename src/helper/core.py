@@ -3,15 +3,13 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.file import file_read
-
-from src.const.globals import FILE_VERSION
-
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
 
 
 def core_dir_get_version(core_dir: str) -> str:
+    from src.const.globals import FILE_VERSION
+    from wexample_helpers.helpers.file import file_read
     return file_read(f"{core_dir}{FILE_VERSION}").strip()
 
 

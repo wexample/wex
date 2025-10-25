@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Optional, cast
 
 import click
 from click._termui_impl import ProgressBar, V
-from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
 from InquirerPy.utils import InquirerPyDefault
-from wexample_helpers.helpers.dict import dict_merge, dict_sort_values
 
 from src.const.types import StringsDict
 

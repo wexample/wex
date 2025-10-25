@@ -2,10 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from wexample_helpers.helpers.dict import dict_merge
-
-from src.const.globals import COMMAND_SEPARATOR_ADDON
-
 if TYPE_CHECKING:
     from src.const.types import (
         RegistryAllServices,
@@ -53,12 +49,14 @@ def registry_get_all_commands_from_registry_part(
 
 
 def registry_remove_addons(commands_list: list[str]) -> list[str]:
+    from src.const.globals import COMMAND_SEPARATOR_ADDON
     return [command.split(COMMAND_SEPARATOR_ADDON)[1] for command in commands_list]
 
 
 def registry_resolve_service_inheritance(
     service: RegistryService, services_dict: RegistryAllServices
 ) -> RegistryService:
+    from wexample_helpers.helpers.dict import dict_merge
     if "extends" in service["config"]:
         parent_name = service["config"]["extends"]
         if parent_name in services_dict:

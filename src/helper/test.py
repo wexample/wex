@@ -12,9 +12,10 @@ if TYPE_CHECKING:
 def create_test_from_command(
     kernel: Kernel, command: str, force: bool = False
 ) -> None | str:
-    from src.helper.file import file_create_from_template
-    from src.const.globals import COMMAND_EXTENSION_PYTHON
     from wexample_helpers.helpers.string import string_to_snake_case
+
+    from src.const.globals import COMMAND_EXTENSION_PYTHON
+    from src.helper.file import file_create_from_template
 
     request: CommandRequest = kernel.create_command_request(command)
 
