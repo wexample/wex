@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, NoReturn
 
 from dotenv import dotenv_values
 from wexample_helpers.helpers.args import args_shift_one
+
 from addons.app.command.env.get import _app__env__get
 from src.const.globals import (
     COMMAND_TYPE_ADDON,
@@ -53,15 +54,16 @@ class Kernel(BaseClass):
     verbosity: int = VERBOSITY_LEVEL_DEFAULT
 
     def __init__(self, entrypoint_path: str, task_id: str | None = None) -> None:
+        from wexample_helpers.helpers.file import file_list_subdirectories
+
         from addons.app.AppAddonManager import AppAddonManager
-        from src.decorator.verbosity import verbosity
+        from src.const.globals import CORE_COMMAND_NAME
+        from src.decorator.alias import alias
+        from src.decorator.as_sudo import as_sudo
+        from src.decorator.attach import attach
         from src.decorator.no_log import no_log
         from src.decorator.test_command import test_command
-        from src.const.globals import CORE_COMMAND_NAME
-        from src.decorator.attach import attach
-        from wexample_helpers.helpers.file import file_list_subdirectories
-        from src.decorator.as_sudo import as_sudo
-        from src.decorator.alias import alias
+        from src.decorator.verbosity import verbosity
 
         self._task_id: str | None = task_id
 
@@ -401,8 +403,8 @@ class Kernel(BaseClass):
     def render_request(
         self, request: CommandRequest, render_mode: str | None = None
     ) -> AbstractResponse:
-        from src.core.response.NullResponse import NullResponse
         from src.core.response.AbortResponse import AbortResponse
+        from src.core.response.NullResponse import NullResponse
 
         # Save unique root request
         self.root_request = self.root_request if self.root_request else request
