@@ -3,13 +3,15 @@ from __future__ import annotations
 import os
 import subprocess
 from typing import TYPE_CHECKING, Any, NoReturn, cast
+
 from src.const.types import ShellCommandResponseTuple
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from subprocess import Popen
-    from src.core.command.ScriptCommand import ScriptCommand
+
     from src.const.types import ShellCommandsDeepList, ShellCommandsList
+    from src.core.command.ScriptCommand import ScriptCommand
+    from src.utils.kernel import Kernel
 
 
 def apply_command_decorator(
@@ -87,8 +89,9 @@ def execute_command_async(
     **kwargs: Any,
 ) -> Popen[Any]:
     from subprocess import Popen
-    from src.helper.file import file_create_parent_dir
+
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+    from src.helper.file import file_create_parent_dir
 
     if working_directory is None:
         working_directory = os.getcwd()
@@ -125,8 +128,9 @@ def execute_command_sync(
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
     from subprocess import Popen
-    from src.helper.user import get_user_or_sudo_user
+
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+    from src.helper.user import get_user_or_sudo_user
 
     if working_directory is None:
         working_directory = os.getcwd()
@@ -197,8 +201,9 @@ def execute_command_tree_sync(
     as_sudo_user: bool = True,
     **kwargs: Any,
 ) -> ShellCommandResponseTuple:
-    from src.const.types import ShellCommandsDeepList, ShellCommandsList
     from subprocess import Popen
+
+    from src.const.types import ShellCommandsDeepList, ShellCommandsList
 
     if isinstance(command_tree, list) and any(
         isinstance(i, list) for i in command_tree
