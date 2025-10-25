@@ -175,6 +175,7 @@ def string_replace_multiple(
 
 def string_to_camel_case(text: str) -> str:
     from wexample_helpers.helpers.string import string_to_snake_case
+
     s1 = string_to_snake_case(text)
     return re.sub(r"_([a-z])", lambda x: x.group(1).upper(), s1)
 

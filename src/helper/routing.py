@@ -77,6 +77,7 @@ def routing_get_route_info(
 ) -> RouteInfo | None:
     from src.const.types import StringKeysDict, StringsList
     from urllib.parse import parse_qs, urlparse
+
     route_name = routing_get_route_name(url, routes)
     if route_name:
         parsed_url = urlparse(url)
@@ -97,6 +98,7 @@ def routing_get_route_info(
 
 def routing_get_route_name(url: str, routes: dict[str, Any]) -> str | None:
     from urllib.parse import urlparse
+
     parsed_url = urlparse(url)
     path = parsed_url.path
 

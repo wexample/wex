@@ -35,6 +35,7 @@ def process_kill(process: psutil.Process) -> bool:
 
 def process_kill_by_command(kernel: Kernel, command: str) -> None:
     from src.helper.command import execute_command_sync
+
     success, pids = execute_command_sync(
         kernel, ["pgrep", "-f", command], ignore_error=True
     )
@@ -73,6 +74,7 @@ def process_post_exec(
 ) -> None:
     from src.helper.command import command_to_string
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
     if not workdir:
         workdir = os.getcwd()
 
@@ -99,6 +101,7 @@ def process_post_exec_function(
 ) -> None:
     from src.const.types import ShellCommandsDeepList
     from src.helper.command import internal_command_to_shell
+
     command = internal_command_to_shell(
         kernel=kernel, internal_command=internal_command, args=args
     )

@@ -83,6 +83,7 @@ def service_get_inheritance_tree(kernel: Kernel, service: str) -> list[str]:
 def service_load_config(kernel: Kernel, service: str) -> Any:
     from addons.app.const.app import APP_FILE_APP_SERVICE_CONFIG
     from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
     dirs = service_get_all_dirs(kernel)
 
     if service not in dirs:

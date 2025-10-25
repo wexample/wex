@@ -15,6 +15,7 @@ def create_test_from_command(
     from src.helper.file import file_create_from_template
     from src.const.globals import COMMAND_EXTENSION_PYTHON
     from wexample_helpers.helpers.string import string_to_snake_case
+
     request: CommandRequest = kernel.create_command_request(command)
 
     if not request.loaded:
@@ -73,6 +74,7 @@ def file_path_to_test_class_name(kernel: Kernel, file_path: str) -> str:
     Example: "addon/tests/command/group/name.py" becomes "TestAddonGroupName"
     """
     from src.helper.string import string_to_pascal_case
+
     file_path = os.path.relpath(file_path, kernel.get_path("addons"))
     parts = file_path.split("/")
 

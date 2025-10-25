@@ -30,6 +30,7 @@ def prompt_choice(
 ) -> str | None:
     from InquirerPy import inquirer
     from InquirerPy.base.control import Choice
+
     choices_all = choices.copy()
 
     if abort:
@@ -61,6 +62,7 @@ def prompt_choice_dict(
 
 def prompt_pick_a_dir(base_dir: str | None = None) -> str | None:
     from wexample_helpers.helpers.dict import dict_sort_values
+
     base_dir = base_dir or os.getcwd()
     # Initialize dictionaries to separate directories and special options.
     choices_dirs = {"..": ".."}
@@ -98,6 +100,7 @@ def prompt_pick_a_dir(base_dir: str | None = None) -> str | None:
 
 def prompt_pick_a_file(base_dir: str | None = None) -> str | None:
     from wexample_helpers.helpers.dict import dict_merge, dict_sort_values
+
     base_dir = base_dir or os.getcwd()
     # Use two dicts to keep dirs and files separated ignoring emojis in alphabetical sorting.
     choices_dirs = {"..": ".."}
@@ -133,6 +136,7 @@ def prompt_progress_steps(
     kernel: Kernel, steps: Iterable[V], title: str | None = None
 ) -> None:
     from collections.abc import Callable
+
     previous_length = kernel.io.log_length
 
     with prompt_build_progress_bar(steps, label=title) as progress_bar:

@@ -3,8 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from typing import TYPE_CHECKING, Any, NoReturn, cast
-from src.const.types import (
-    ShellCommandResponseTuple)
+from src.const.types import ShellCommandResponseTuple
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -21,6 +20,7 @@ def apply_command_decorator(
     options: dict[str, str] | None = None,
 ) -> NoReturn | ScriptCommand:
     from src.core.command.ScriptCommand import ScriptCommand
+
     if group in kernel.decorators and name in kernel.decorators[group]:
         decorator = kernel.decorators[group][name]
         options = options or {}
@@ -42,6 +42,7 @@ def command_escape(string: str, quote_char: str = '"') -> str:
 
 def command_exists(shell_command: str) -> bool:
     from subprocess import Popen
+
     process = subprocess.Popen(
         "command -v " + shell_command,
         shell=True,
@@ -88,6 +89,7 @@ def execute_command_async(
     from subprocess import Popen
     from src.helper.file import file_create_parent_dir
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -125,6 +127,7 @@ def execute_command_sync(
     from src.helper.user import get_user_or_sudo_user
     from subprocess import Popen
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
     if working_directory is None:
         working_directory = os.getcwd()
 
@@ -196,6 +199,7 @@ def execute_command_tree_sync(
 ) -> ShellCommandResponseTuple:
     from src.const.types import ShellCommandsDeepList, ShellCommandsList
     from subprocess import Popen
+
     if isinstance(command_tree, list) and any(
         isinstance(i, list) for i in command_tree
     ):
@@ -239,8 +243,13 @@ def execute_command_tree_sync(
 def internal_command_to_shell(
     kernel: Kernel, internal_command: str, args: None | list[str] = None
 ) -> ShellCommandsList:
-    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM, VERBOSITY_LEVEL_MEDIUM, VERBOSITY_LEVEL_QUIET
+    from src.const.globals import (
+        VERBOSITY_LEVEL_MAXIMUM,
+        VERBOSITY_LEVEL_MEDIUM,
+        VERBOSITY_LEVEL_QUIET,
+    )
     from src.core.IOManager import IO_DEFAULT_LOG_LENGTH
+
     command = (
         ["bash", kernel.get_path("core.cli"), internal_command]
         + (args or [])

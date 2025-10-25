@@ -22,6 +22,7 @@ def extract_information(
 
 def patch_apply_in_workdir(workdir: str, patch_set: patch.PatchSet) -> bool:
     from wexample_helpers.helpers.directory import directory_execute_inside
+
     def _patch_it() -> bool:
         return bool(patch_set.apply())
 
