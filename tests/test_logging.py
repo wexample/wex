@@ -6,6 +6,7 @@ class TestLogging(AbstractTestCase):
     def test_error(self) -> None:
         from src.core.FatalError import FatalError
         from wexample_helpers.helpers.file import file_remove_if_exists
+
         file_remove_if_exists(self.kernel.get_or_create_path("task"))
 
         with self.assertRaises(FatalError, msg=None):
@@ -15,6 +16,7 @@ class TestLogging(AbstractTestCase):
 
     def test_history(self) -> None:
         from wexample_helpers.helpers.file import file_remove_if_exists
+
         file_remove_if_exists(self.kernel.get_or_create_path("task"))
 
         self.kernel.run_command("hi")

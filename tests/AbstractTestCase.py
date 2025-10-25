@@ -98,6 +98,7 @@ class AbstractTestCase(unittest.TestCase):
 
     def build_test_file(self, file_name: str) -> str:
         from src.helper.file import file_create_directories_and_copy
+
         src_file = os.path.join(self.build_test_samples_path(), file_name)
         dst_file = os.path.join(
             self.kernel.get_or_create_path("tmp"), "tests", file_name
@@ -126,6 +127,7 @@ class AbstractTestCase(unittest.TestCase):
 
     def log(self, message: str) -> None:
         from src.const.globals import COLOR_LIGHT_MAGENTA
+
         message = str(message)
         message = (
             f"{os.linesep}{message}" if message.count(os.linesep) > 0 else f" {message}"
