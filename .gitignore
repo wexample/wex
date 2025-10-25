@@ -32,3 +32,54 @@ build/
 /ENV/
 /.venv/
 /.ENV/
+/.history/
+/*.code-workspace
+*.swp
+*~
+*.orig
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+.git-credentials
+.env
+.env.*
+.env.local
+.env.*.local
+*.log
+logs/
+log/
+.cache/
+cache/
+tmp/
+temp/
+out/
+coverage/
+coverage-*.json
+coverage*.lcov
+*.pid
+*.pid.lock
+.pdm-python
+.python-version
+.venv
+# Python artifacts
+*.egg-info
+*.py[cod]
+# Build directories
+/build/
+/dist/
+/pip-wheel-metadata/
+# Virtual environments
+venv/
+# Test and coverage artifacts
+.tox/
+.mypy_cache/
+pytest_cache/
+.coverage
+htmlcov/
+# Editor and IDE settings
+.vscode/
+.idea/
