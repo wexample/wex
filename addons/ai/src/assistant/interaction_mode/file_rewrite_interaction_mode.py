@@ -33,6 +33,7 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
         from wexample_helpers.helpers.file import file_write
+
         from addons.ai.src.assistant.interaction_response.string_interaction_response import (
             StringInteractionResponse,
         )

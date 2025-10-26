@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
+
 from addons.app.decorator.app_webhook import app_webhook
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchema
@@ -50,8 +52,8 @@ def app__remote__push_receive(
     def _app__remote__push_receive_copy_to_destination(
         item_name: str, schema: FileSystemStructureSchema
     ) -> None:
-        from src.helper.user import user_resolve_home_path
         from src.helper.file import file_create_directories_and_copy
+        from src.helper.user import user_resolve_home_path
 
         if ("remote" not in schema) or (schema["remote"] != "push"):
             return None

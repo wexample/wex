@@ -13,10 +13,11 @@ MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
 
 class OllamaModel(AbstractModel):
     def activate(self) -> None:
-        from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-        from addons.app.command.app.exec import app__app__exec
         from langchain.callbacks.manager import CallbackManager
+        from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
         from langchain_community.llms import Ollama
+
+        from addons.app.command.app.exec import app__app__exec
 
         # Start Ollama in helper app
         self.kernel.run_function(

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from src.const.types import StringsList
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command

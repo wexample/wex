@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import click
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
@@ -57,14 +59,14 @@ def app__app__start(
     name = manager.get_app_name()
 
     def _app__app__start__checkup() -> bool:
-        from addons.app.const.app import APP_FILEPATH_REL_ENV
-        from addons.app.command.env.choose import app__env__choose
-        from src.core.response.AbortResponse import AbortResponse
         from addons.app.command.app.started import (
             APP_STARTED_CHECK_MODE_ANY_CONTAINER,
             app__app__started,
         )
+        from addons.app.command.env.choose import app__env__choose
         from addons.app.command.env.set import app__env__set
+        from addons.app.const.app import APP_FILEPATH_REL_ENV
+        from src.core.response.AbortResponse import AbortResponse
 
         nonlocal env
 
@@ -144,8 +146,8 @@ def app__app__start(
 
     def _app__app__start__config() -> None:
         from addons.app.command.app.perms import app__app__perms
-        from addons.app.command.hook.exec import app__hook__exec
         from addons.app.command.config.write import app__config__write
+        from addons.app.command.hook.exec import app__hook__exec
 
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
@@ -267,8 +269,8 @@ def app__app__start(
             time.sleep(2)
 
     def _app__app__start__serve() -> None:
-        from addons.app.command.hook.exec import app__hook__exec
         from addons.app.command.app.serve import app__app__serve
+        from addons.app.command.hook.exec import app__hook__exec
 
         # Postpone execution
         kernel.run_function(

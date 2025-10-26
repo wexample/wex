@@ -11,7 +11,6 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
-    from addons.app.AppAddonManager import AppAddonManager
 
 
 @as_sudo()

@@ -16,12 +16,13 @@ if TYPE_CHECKING:
 def app__services__exec(
     manager: AppAddonManager, app_dir: str, hook: str, arguments: str
 ) -> StringKeysDict:
+    from wexample_helpers.helpers.args import args_parse_dict
+
     from src.const.globals import (
         COMMAND_CHAR_SERVICE,
         COMMAND_SEPARATOR_ADDON,
         VERBOSITY_LEVEL_MAXIMUM,
     )
-    from wexample_helpers.helpers.args import args_parse_dict
 
     output = {}
 

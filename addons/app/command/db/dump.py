@@ -30,12 +30,12 @@ def app__db__dump(
     zip: bool = True,
     tag: str | None = None,
 ) -> str | None:
+    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
     from src.helper.file import (
         file_build_date_time_name,
         file_create_symlink,
         file_delete_file_or_dir,
     )
-    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
     if not manager.has_config("docker.main_db_container"):
         return None

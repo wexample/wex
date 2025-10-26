@@ -22,10 +22,11 @@ from addons.ai.src.tool.command_tool import CommandTool
 from src.const.types import StringKeysDict, StringsList
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
-    from langchain_core.language_models import BaseLanguageModel
     from langchain.prompts import ChatPromptTemplate
+    from langchain_core.language_models import BaseLanguageModel
     from langchain_core.prompts import FewShotPromptTemplate
+
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class AbstractModel(AbstractAssistantChild):

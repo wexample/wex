@@ -33,10 +33,10 @@ def app__logs__follow(
     tail: int,
     container_name: str | None = None,
 ) -> InteractiveShellCommandResponse:
+    from addons.app.helper.docker import docker_build_long_container_name
     from src.core.response.InteractiveShellCommandResponse import (
         InteractiveShellCommandResponse,
     )
-    from addons.app.helper.docker import docker_build_long_container_name
 
     container_name = container_name or manager.get_main_container_name()
 

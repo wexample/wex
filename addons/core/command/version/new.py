@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
@@ -10,8 +11,8 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Build a new version of current core, or commit new version changes")

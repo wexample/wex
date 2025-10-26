@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from typing import TYPE_CHECKING, cast
+
 from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_core.vectorstores import VectorStore
 from langchain_postgres.vectorstores import PGVector
@@ -18,10 +19,11 @@ from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
 from src.helper.file import file_get_extension
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
     from langchain_community.document_loaders.base import BaseLoader
     from langchain_core.documents.base import Document
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
@@ -104,8 +106,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
 
     def vector_create_file_loader(self, file_path: str) -> BaseLoader:
         from langchain_community.document_loaders import TextLoader
-        from wexample_helpers.helpers.json import json_load_if_valid
         from langchain_community.document_loaders.base import BaseLoader
+        from wexample_helpers.helpers.json import json_load_if_valid
 
         # Dynamically determine the loader based on file extension
         extension = file_get_extension(file_path)

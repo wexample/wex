@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
-from addons.app.decorator.app_command import app_command
 
+from addons.app.decorator.app_command import app_command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -16,10 +16,11 @@ if TYPE_CHECKING:
 def app__hook__exec(
     manager: AppAddonManager, hook: str, arguments: str, app_dir: str | None = None
 ) -> StringKeysDict:
-    from src.const.types import StringKeysDict
-    from src.const.globals import COMMAND_CHAR_APP, VERBOSITY_LEVEL_MAXIMUM
     from wexample_helpers.helpers.args import args_parse_dict
+
     from addons.app.command.services.exec import app__services__exec
+    from src.const.globals import COMMAND_CHAR_APP, VERBOSITY_LEVEL_MAXIMUM
+    from src.const.types import StringKeysDict
 
     arguments_dict = args_parse_dict(arguments)
 

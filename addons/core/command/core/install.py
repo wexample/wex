@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import sys
 from typing import TYPE_CHECKING
+
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -14,8 +15,8 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Install core")
 def core__core__install(kernel: Kernel) -> AbstractResponse:
-    from src.const.globals import CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT
     from addons.core.command.logo.show import core__logo__show
+    from src.const.globals import CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT
 
     __core__core__check_requirements(kernel)
     __core__core__install_env(kernel)

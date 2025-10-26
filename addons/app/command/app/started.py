@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.decorator.option import option
 
@@ -30,8 +31,8 @@ def app__app__started(
     mode: str = APP_STARTED_CHECK_MODE_ANY_CONTAINER,
 ) -> bool:
     from addons.app.command.container.list import app__container__list
-    from src.helper.command import execute_command_sync
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+    from src.helper.command import execute_command_sync
 
     if manager.require_proxy() and not manager.has_proxy_app():
         manager.kernel.io.log(

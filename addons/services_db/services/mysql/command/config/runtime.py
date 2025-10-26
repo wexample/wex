@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 
@@ -13,8 +14,9 @@ if TYPE_CHECKING:
 def mysql__config__runtime(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> None:
-    from addons.app.const.app import APP_DIR_TMP
     from wexample_helpers.helpers.dict import DICT_ITEM_EXISTS_ACTION_ABORT
+
+    from addons.app.const.app import APP_DIR_TMP
     from addons.services_db.const.mysql import MYSQL_CONF_FILE
 
     # Set db as main database.

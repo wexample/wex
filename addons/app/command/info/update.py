@@ -7,7 +7,7 @@ from src.utils.kernel import Kernel
 
 @app_command(help="Description")
 def app__info__update(kernel: Kernel, app_dir: str) -> CrawlerTreeItem:
-    from addons.app.const.app import APP_DIR_APP_DATA_NAME
     from addons.ai.src.crawler.wex_app_crawler import WexAppCrawler
+    from addons.app.const.app import APP_DIR_APP_DATA_NAME
 
     return WexAppCrawler(app_dir, f"{APP_DIR_APP_DATA_NAME}/ai/data/tree.yml").build()

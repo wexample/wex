@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import shutil
+
 from src.helper.command import execute_command_tree_sync
 from tests.AbstractTestCase import AbstractTestCase
 
@@ -22,9 +23,9 @@ class TestAppCommandHelperStart(AbstractTestCase):
         shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two", ignore_errors=True)
 
     def _test_helper_app(self, name: str) -> None:
-        from addons.app.helper.docker import docker_remove_filtered_container
-        from addons.app.command.helper.stop import app__helper__stop
         from addons.app.command.helper.start import app__helper__start
+        from addons.app.command.helper.stop import app__helper__stop
+        from addons.app.helper.docker import docker_remove_filtered_container
 
         filter = f"wex_{name}_test_env_"
         docker_remove_filtered_container(self.kernel, filter)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
+
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
@@ -55,8 +56,8 @@ def __core__core__uninstall_webhook_server(kernel: Kernel) -> None:
 
 
 def __remove_source_file_for_docker(kernel: Kernel, file_path: str) -> None:
-    from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
     from addons.system.command.system.is_docker import system__system__is_docker
+    from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
 
     if not kernel.run_function(system__system__is_docker):
         return

@@ -4,6 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 import yaml
+
 from addons.app.decorator.app_command import app_command
 from src.decorator.option import option
 
@@ -33,8 +34,8 @@ def app__config__write(
         manager.build_runtime_config(user, group)
 
     def _app__config__write__docker() -> None:
-        from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
         from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
         from addons.app.helper.docker import (
             docker_exec_app_compose,
             docker_get_app_compose_files,

@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, cast
+
 from addons.app.decorator.app_command import app_command
 from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
@@ -45,9 +47,10 @@ def app__app__init(
     port: int | None = None,
     port_secure: int | None = None,
 ) -> None:
+    from wexample_helpers.helpers.string import string_to_snake_case
+
     from addons.core.command.service.resolve import core__service__resolve
     from src.helper.prompt import prompt_progress_steps
-    from wexample_helpers.helpers.string import string_to_snake_case
 
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
@@ -77,8 +80,8 @@ def app__app__init(
             os.makedirs(app_dir, exist_ok=True)
 
     def _init_step_check_services() -> bool | None:
-        from src.const.globals import COMMAND_TYPE_SERVICE
         from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+        from src.const.globals import COMMAND_TYPE_SERVICE
 
         if len(services_resolved) == 0:
             return None
@@ -96,9 +99,10 @@ def app__app__init(
         return None
 
     def _init_step_copy_app() -> None:
-        from pathlib import Path
-        from addons.app.const.app import APP_DIR_APP_DATA
         import shutil
+        from pathlib import Path
+
+        from addons.app.const.app import APP_DIR_APP_DATA
 
         app_sample_dir = (
             os.path.join(kernel.get_path("addons"), "app", "samples", "app") + "/"

@@ -59,11 +59,11 @@ from src.helper.prompt import prompt_choice_dict
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from addons.ai.src.assistant.subject.abstract_chat_subject import (
         AbstractChatSubject,
     )
     from addons.ai.src.model.abstract_model import AbstractModel
+    from src.utils.kernel import Kernel
 __all__ = [
     "AI_COMMAND_PREFIX",
     "ASSISTANT_MENU_ACTION_BACK",

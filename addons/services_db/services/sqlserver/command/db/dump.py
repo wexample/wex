@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
@@ -13,11 +15,11 @@ if TYPE_CHECKING:
 def sqlserver__db__dump(
     manager: AppAddonManager, app_dir: str, service: str, file_name: str
 ) -> str:
+    from addons.app.command.app.exec import app__app__exec
+    from addons.app.helper.db import get_db_service_dumps_path
     from addons.services_db.services.sqlserver.command.db.exec import (
         sqlserver__db__exec,
     )
-    from addons.app.command.app.exec import app__app__exec
-    from addons.app.helper.db import get_db_service_dumps_path
 
     file_name += ".bak"
     app_name = manager.get_app_name()

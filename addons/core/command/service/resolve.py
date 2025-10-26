@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from src.const.types import CoreCommandCommaSeparatedList, StringsList
 from src.decorator.command import command
 from src.decorator.option import option

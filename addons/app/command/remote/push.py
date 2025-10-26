@@ -5,6 +5,7 @@ import os
 from typing import TYPE_CHECKING
 
 import requests
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchema
@@ -26,14 +27,15 @@ if TYPE_CHECKING:
 def app__remote__push(
     manager: AppAddonManager, environment: str, app_dir: str
 ) -> DictResponse | None:
+    from wexample_helpers.helpers.string import string_to_snake_case
+
+    from addons.app.const.app import APP_ENV_PROD
     from addons.app.helper.remote import (
         remote_get_connexion_address,
         remote_get_environment_ip,
     )
-    from wexample_helpers.helpers.string import string_to_snake_case
-    from src.core.response.DictResponse import DictResponse
-    from addons.app.const.app import APP_ENV_PROD
     from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
+    from src.core.response.DictResponse import DictResponse
 
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__push

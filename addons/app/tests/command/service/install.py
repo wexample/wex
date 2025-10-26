@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 from src.const.globals import COMMAND_TYPE_SERVICE
@@ -8,11 +9,11 @@ from src.const.globals import COMMAND_TYPE_SERVICE
 
 class TestAppCommandServiceInstall(AbstractAppTestCase):
     def test_install(self) -> None:
+        from addons.app.command.config.write import app__config__write
+        from addons.app.command.service.install import app__service__install
         from src.core.command.resolver.ServiceCommandResolver import (
             ServiceCommandResolver,
         )
-        from addons.app.command.config.write import app__config__write
-        from addons.app.command.service.install import app__service__install
 
         resolver = self.kernel.resolvers[COMMAND_TYPE_SERVICE]
         assert isinstance(resolver, ServiceCommandResolver)

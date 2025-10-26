@@ -57,14 +57,14 @@ class FilePatchInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
-        from addons.default.helper.git_utils import git_file_get_octal_mode
-        from src.helper.string import string_has_trailing_new_line
-        from src.helper.file import file_set_user_or_sudo_user_owner
         from addons.ai.src.assistant.interaction_response.string_interaction_response import (
             StringInteractionResponse,
         )
-        from src.helper.patch import patch_is_valid
         from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+        from addons.default.helper.git_utils import git_file_get_octal_mode
+        from src.helper.file import file_set_user_or_sudo_user_owner
+        from src.helper.patch import patch_is_valid
+        from src.helper.string import string_has_trailing_new_line
 
         user_input = prompt_section.prompt
         subject = cast(FileChatSubject, self.assistant.get_current_subject())

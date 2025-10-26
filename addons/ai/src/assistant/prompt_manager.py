@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast
+
 from prompt_toolkit.completion import CompleteEvent, Completer
 from prompt_toolkit.document import Document as ToolkitDocument
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
@@ -19,9 +20,10 @@ from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyle
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.assistant import Assistant
-    from prompt_toolkit.completion import Completion
     from prompt_toolkit import HTML
+    from prompt_toolkit.completion import Completion
+
+    from addons.ai.src.assistant.assistant import Assistant
 
 
 class AssistantChatCompleter(Completer):
@@ -114,9 +116,9 @@ class PromptManager(AbstractAssistantChild):
         return HTML("<prefix>&gt;&gt;&gt; </prefix>" + self.prompt)
 
     def open(self) -> str:
-        from pygments.token import Name
         from prompt_toolkit.lexers import PygmentsLexer
         from prompt_toolkit.styles import style_from_pygments_cls
+        from pygments.token import Name
 
         commands_tokens: dict[str, list[Any]] = {
             "root": [],

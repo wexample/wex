@@ -23,9 +23,10 @@ if TYPE_CHECKING:
 def app__remote__available(
     manager: AppAddonManager, app_dir: str, environment: str, port: None | int = None
 ) -> bool:
+    from http.client import HTTPConnection
+
     from addons.app.helper.remote import remote_get_environment_ip
     from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
-    from http.client import HTTPConnection
 
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__available

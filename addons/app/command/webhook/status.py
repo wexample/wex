@@ -9,10 +9,10 @@ from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.DictResponse import DictResponse
     from src.core.response.KeyValueResponse import KeyValueResponse
     from src.core.response.TableResponse import TableResponse
+    from src.utils.kernel import Kernel
 
 
 @as_sudo()
@@ -24,12 +24,12 @@ if TYPE_CHECKING:
 def app__webhook__status(
     kernel: Kernel, webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT
 ) -> DictResponse:
-    from src.const.types import StringKeysDict
-    from src.core.response.TableResponse import TableResponse
     from addons.system.command.process.by_port import system__process__by_port
-    from src.core.response.KeyValueResponse import KeyValueResponse
     from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_TERMINAL
+    from src.const.types import StringKeysDict
     from src.core.response.DictResponse import DictResponse
+    from src.core.response.KeyValueResponse import KeyValueResponse
+    from src.core.response.TableResponse import TableResponse
 
     response = kernel.run_function(
         system__process__by_port,

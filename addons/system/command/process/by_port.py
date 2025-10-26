@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_ADDON
@@ -6,16 +7,17 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.KeyValueResponse import KeyValueResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return process info", command_type=COMMAND_TYPE_ADDON)
 @option("--port", "-p", type=int, required=True, help="Port number")
 def system__process__by_port(kernel: Kernel, port: int) -> KeyValueResponse:
-    from src.core.response.KeyValueResponse import KeyValueResponse
-    from src.const.globals import DATE_FORMAT_SECOND
     from datetime import datetime
+
+    from src.const.globals import DATE_FORMAT_SECOND
+    from src.core.response.KeyValueResponse import KeyValueResponse
     from src.helper.process import process_get_all_by_port
 
     process = process_get_all_by_port(port)

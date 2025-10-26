@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
@@ -23,11 +24,11 @@ if TYPE_CHECKING:
 def app__remote__go(
     manager: AppAddonManager, app_dir: str, environment: str
 ) -> InteractiveShellCommandResponse | None:
+    from addons.app.command.remote.exec import app__remote__exec
+    from src.const.globals import SHELL_DEFAULT
     from src.core.response.InteractiveShellCommandResponse import (
         InteractiveShellCommandResponse,
     )
-    from addons.app.command.remote.exec import app__remote__exec
-    from src.const.globals import SHELL_DEFAULT
 
     result = manager.kernel.run_function(
         app__remote__exec,

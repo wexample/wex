@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 def ai__service__install(manager: AppAddonManager, app_dir: str, service: str) -> None:
     from wexample_helpers.const.types import StringKeysDict
     from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
+
     from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
     from src.helper.service import service_copy_sample_dir
 

@@ -32,8 +32,8 @@ def app__version__new_write(
     version: str | None = None,
     branch: bool = True,
 ) -> str:
-    from src.const.globals import VERSION_DEFAULT
     from addons.default.command.version.increment import default__version__increment
+    from src.const.globals import VERSION_DEFAULT
 
     kernel = manager.kernel
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.option import option
@@ -31,8 +32,8 @@ def app__db__exec(
     database: str | None = None,
     sync: bool = False,
 ) -> AbstractResponse:
-    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
     from addons.app.command.app.exec import app__app__exec
+    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
     service = service or manager.get_config("docker.main_db_container").get_str()
 

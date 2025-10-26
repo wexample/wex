@@ -6,8 +6,8 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.HiddenResponse import HiddenResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return a hidden value", command_type=COMMAND_TYPE_ADDON)

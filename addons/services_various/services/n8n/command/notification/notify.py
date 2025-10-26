@@ -10,7 +10,6 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from requests.auth import HTTPBasicAuth
 
 
 @app_command(help="send app notification to service", command_type=COMMAND_TYPE_SERVICE)

@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, cast
+
 from src.const.types import ShellCommandResponseTuple
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
-    from src.utils.kernel import Kernel
     from src.const.types import ShellCommandsList
+    from src.utils.kernel import Kernel
 
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 
@@ -64,11 +65,11 @@ def docker_exec_app_compose_command(
     docker_command: list[str] | str,
     profile: str | None = None,
 ) -> ShellCommandsList:
-    from src.helper.user import get_user_or_sudo_user
     from addons.app.AppAddonManager import AppAddonManager
     from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
-    from src.const.types import ShellCommandsList
     from addons.docker.helper.docker import user_has_docker_permission
+    from src.const.types import ShellCommandsList
+    from src.helper.user import get_user_or_sudo_user
 
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):

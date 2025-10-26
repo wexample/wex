@@ -9,13 +9,13 @@ from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 
 class TestAppCommandWebhookExec(AbstractWebhookTestCase):
     def test_exec(self) -> None:
+        from addons.app.command.app.exec import app__app__exec
         from addons.app.WebhookHttpRequestHandler import (
             WEBHOOK_STATUS_COMPLETE,
             WEBHOOK_STATUS_STARTED,
         )
-        from src.core.Logger import LOG_STATUS_COMPLETE
-        from addons.app.command.app.exec import app__app__exec
         from src.const.globals import CORE_COMMAND_NAME
+        from src.core.Logger import LOG_STATUS_COMPLETE
 
         manager = AppAddonManager(self.kernel, app_dir=self.kernel.directory.path)
 

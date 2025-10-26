@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME, test_create_app
 from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
 from addons.core.command.command.create import core__command__create

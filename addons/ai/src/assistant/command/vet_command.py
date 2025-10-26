@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 from addons.ai.src.assistant.command.default_command import DefaultCommand
 
 if TYPE_CHECKING:
-    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
     from addons.ai.src.assistant.interaction_mode.vetting_interaction_mode import (
         VettingInteractionMode,
     )
+    from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
 
 class VetCommand(DefaultCommand):

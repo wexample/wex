@@ -5,14 +5,15 @@ import sys
 import time
 import unittest
 from typing import TYPE_CHECKING, Any, Union, cast
+
 from src.decorator.alias import alias
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.const.types import StringsList
+    from src.utils.kernel import Kernel
 
 
 @alias("test")
@@ -45,8 +46,8 @@ def core__test__run(
 
     def _remote_compose(command_part: StringsList) -> None:
         from addons.app.command.env.get import _app__env__get
-        from src.helper.command import execute_command_tree_sync
         from src.const.types import StringsList
+        from src.helper.command import execute_command_tree_sync
 
         test_env = _app__env__get(
             kernel, kernel.directory.path, key="TEST_REMOTE_ENV", default="pipeline"

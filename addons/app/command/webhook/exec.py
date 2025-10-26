@@ -12,8 +12,8 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Execute a webhook")
@@ -22,9 +22,10 @@ if TYPE_CHECKING:
 def app__webhook__exec(
     kernel: Kernel, webhook_path: str, env: None | str = None
 ) -> QueuedCollectionResponse | None:
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
     from urllib.parse import parse_qsl, urlparse
+
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
     source_data: SourceData = {}
     parsed_url = urlparse(webhook_path)

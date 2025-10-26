@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
 
@@ -11,9 +12,9 @@ if TYPE_CHECKING:
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
 def app__app__info(manager: AppAddonManager, app_dir: str) -> TableResponse:
-    from src.core.response.TableResponse import TableResponse
     from addons.app.command.app.started import app__app__started
     from addons.app.command.env.get import app__env__get
+    from src.core.response.TableResponse import TableResponse
 
     kernel = manager.kernel
     output_list = TableResponse(kernel)
