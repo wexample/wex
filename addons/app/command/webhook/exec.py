@@ -2,22 +2,18 @@ from __future__ import annotations
 
 import re
 from typing import TYPE_CHECKING, TypedDict
-from urllib.parse import parse_qsl, urlparse
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 
 @command(help="Execute a webhook")
@@ -26,6 +22,8 @@ if TYPE_CHECKING:
 def app__webhook__exec(
     kernel: Kernel, webhook_path: str, env: None | str = None
 ) -> QueuedCollectionResponse | None:
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from urllib.parse import parse_qsl, urlparse
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
 
     source_data: SourceData = {}
@@ -62,6 +60,10 @@ def app__webhook__exec(
     def _check(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse | None:
+        from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+            QueuedCollectionStopResponse,
+        )
+
         has_error = False
         # Get all query parameters
         args = []

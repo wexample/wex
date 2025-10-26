@@ -6,9 +6,6 @@ from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.interaction_response.null_interaction_response import (
-    NullInteractionResponse,
-)
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -26,6 +23,10 @@ class NewConversationCommand(DefaultCommand):
         prompt_section: UserPromptSection | None = None,
         remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.null_interaction_response import (
+            NullInteractionResponse,
+        )
+
         self.assistant.set_conversation()
 
         return NullInteractionResponse()

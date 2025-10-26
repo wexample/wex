@@ -1,10 +1,5 @@
 from __future__ import annotations
-
-import os.path
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
-from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
@@ -18,6 +13,9 @@ if TYPE_CHECKING:
 def mongo__db__dump(
     manager: AppAddonManager, app_dir: str, service: str, file_name: str
 ) -> str:
+    from addons.app.command.app.exec import app__app__exec
+    from addons.app.const.app import APP_DIR_APP_DATA
+
     env_dir = f"{manager.app_dir}{APP_DIR_APP_DATA}"
 
     manager.kernel.run_function(

@@ -25,6 +25,6 @@ def test__demo_command_2__third(
     option: bool = False,
     another_option_third: bool = False,
 ) -> str:
-    from src.decorator.option import option
+    pass
 
     return "THIRD"

@@ -2,10 +2,6 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
-
-from dotenv import dotenv_values
-
-from addons.app.const.app import APP_FILEPATH_REL_ENV
 from addons.app.decorator.app_command import app_command
 from src.decorator.option import option
 
@@ -25,6 +21,9 @@ def app__env__get(manager: AppAddonManager, app_dir: str, key: str = "APP_ENV") 
 def _app__env__get(
     kernel: Kernel, app_dir: str, key: str = "APP_ENV", default: str | None = None
 ) -> str:
+    from addons.app.const.app import APP_FILEPATH_REL_ENV
+    from dotenv import dotenv_values
+
     env_file = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
 
     if _app__has_env_var(app_dir, key):
@@ -39,6 +38,9 @@ def _app__env__get(
 
 
 def _app__has_env_var(app_dir: str, key: str = "APP_ENV") -> bool:
+    from addons.app.const.app import APP_FILEPATH_REL_ENV
+    from dotenv import dotenv_values
+
     env_file = os.path.join(app_dir, APP_FILEPATH_REL_ENV)
     # Load the environment variables from the file
     env = dotenv_values(env_file).get(key)

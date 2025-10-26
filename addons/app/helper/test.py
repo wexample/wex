@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 from typing import TYPE_CHECKING, cast
+
 from src.const.types import StringsList
 
 if TYPE_CHECKING:
@@ -42,8 +43,8 @@ def test_create_app(
     services: list[str] | None = None,
     force_restart: bool = False,
 ) -> str:
-    from addons.app.const.app import APP_ENV_TEST
     from addons.app.command.app.init import app__app__init
+    from addons.app.const.app import APP_ENV_TEST
 
     test_create_env_dir(kernel=kernel, env_name=APP_ENV_TEST)
     app_dir = test_get_app_dir(kernel, name)
@@ -75,9 +76,9 @@ def test_create_app(
 
 
 def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
+    from src.const.globals import USER_WWW_DATA
     from src.core.file.DirectoryStructure import DirectoryStructure
     from src.helper.file import file_set_owner
-    from src.const.globals import USER_WWW_DATA
 
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
     app_env_dir = os.path.join(apps_dir.get_parent_dir(), env_name)
@@ -100,8 +101,8 @@ def test_create_env_dir(kernel: Kernel, env_name: str) -> None:
 
 
 def test_get_app_dir(kernel: Kernel, name: str) -> str:
-    from src.core.file.DirectoryStructure import DirectoryStructure
     from addons.app.const.app import APP_ENV_TEST
+    from src.core.file.DirectoryStructure import DirectoryStructure
 
     apps_dir = cast(DirectoryStructure, kernel.system_root_directory.shortcuts["apps"])
     return (

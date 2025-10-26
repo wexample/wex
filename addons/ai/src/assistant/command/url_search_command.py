@@ -6,10 +6,6 @@ from addons.ai.src.assistant.command.default_command import DefaultCommand
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
-from addons.ai.src.assistant.interaction_mode.url_search_interaction_mode import (
-    UrlSearchInteractionMode,
-)
-from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -26,7 +22,13 @@ class UrlSearchCommand(DefaultCommand):
     def get_interaction_mode(
         self, prompt_section: UserPromptSection
     ) -> type[AbstractInteractionMode]:
+        from addons.ai.src.assistant.interaction_mode.url_search_interaction_mode import (
+            UrlSearchInteractionMode,
+        )
+
         return UrlSearchInteractionMode
 
     def is_active(self, current_prompt: str) -> bool:
+        from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
+
         return isinstance(self.assistant.subject, UrlChatSubject)

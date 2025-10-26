@@ -10,8 +10,8 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.utils.kernel import Kernel
 
 
 @command(

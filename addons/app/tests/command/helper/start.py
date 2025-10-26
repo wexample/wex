@@ -2,28 +2,30 @@ from __future__ import annotations
 
 import os
 import shutil
-
-from addons.app.command.helper.start import app__helper__start
-from addons.app.command.helper.stop import app__helper__stop
-from addons.app.const.app import HELPER_APPS_LIST
-from addons.app.helper.docker import docker_remove_filtered_container
-from src.const.globals import SYSTEM_WWW_PATH
 from src.helper.command import execute_command_tree_sync
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestAppCommandHelperStart(AbstractTestCase):
     def test_start(self) -> None:
+        from addons.app.const.app import HELPER_APPS_LIST
+
         for name in HELPER_APPS_LIST:
             self._test_helper_app(name)
 
     def _cleanup(self) -> None:
+        from src.const.globals import SYSTEM_WWW_PATH
+
         os.chdir(self.test_dir)
         # Cleanup
         shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_one", ignore_errors=True)
         shutil.rmtree(f"{SYSTEM_WWW_PATH}test_env_two", ignore_errors=True)
 
     def _test_helper_app(self, name: str) -> None:
+        from addons.app.helper.docker import docker_remove_filtered_container
+        from addons.app.command.helper.stop import app__helper__stop
+        from addons.app.command.helper.start import app__helper__start
+
         filter = f"wex_{name}_test_env_"
         docker_remove_filtered_container(self.kernel, filter)
         self._cleanup()

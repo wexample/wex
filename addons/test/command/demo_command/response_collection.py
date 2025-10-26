@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
+
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
@@ -9,13 +10,13 @@ from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
+    from src.const.types import StringKeysDict
     from src.core.response.HiddenResponse import HiddenResponse
     from src.core.response.NonInteractiveShellCommandResponse import (
         NonInteractiveShellCommandResponse,
     )
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
-    from src.const.types import StringKeysDict
+    from src.utils.kernel import Kernel
 
 TEST_DEMO_COMMAND_RESULT_FIRST_FUNCTION = "function-response-text"
 

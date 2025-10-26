@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 import git
 
 from addons.app.decorator.app_command import app_command
-from addons.default.command.version.increment import default__version__increment
-from src.const.globals import VERSION_DEFAULT
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -34,6 +32,9 @@ def app__version__new_write(
     version: str | None = None,
     branch: bool = True,
 ) -> str:
+    from src.const.globals import VERSION_DEFAULT
+    from addons.default.command.version.increment import default__version__increment
+
     kernel = manager.kernel
 
     if version:

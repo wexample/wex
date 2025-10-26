@@ -1,13 +1,13 @@
 from __future__ import annotations
-
-from addons.app.command.config.get import app__config__get
-from addons.app.command.config.set import app__config__set
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.globals import CORE_COMMAND_NAME
 
 
 class TestAppCommandConfigSet(AbstractAppTestCase):
     def test_set(self) -> None:
+        from addons.app.command.config.set import app__config__set
+        from src.const.globals import CORE_COMMAND_NAME
+        from addons.app.command.config.get import app__config__get
+
         app_dir = self.create_test_app()
 
         # Change value.

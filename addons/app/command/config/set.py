@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.args import args_parse_one
-
 from addons.app.decorator.app_command import app_command
 from src.decorator.option import option
 
@@ -17,4 +15,6 @@ if TYPE_CHECKING:
 def app__config__set(
     manager: AppAddonManager, app_dir: str, key: str, value: str
 ) -> None:
+    from wexample_helpers.helpers.args import args_parse_one
+
     manager.set_config(key, args_parse_one(value))

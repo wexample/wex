@@ -8,8 +8,8 @@ from src.decorator.command import command
 from src.decorator.option import option
 
 if TYPE_CHECKING:
+    from src.core.response.TableResponse import TableResponse
     from src.utils.kernel import Kernel
-    from src.core.response.TableResponse import TableBody, TableResponse
 
 
 @ai_tool()

@@ -3,17 +3,13 @@ from __future__ import annotations
 import html
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast
-
-from prompt_toolkit import HTML
-from prompt_toolkit.completion import CompleteEvent, Completer, Completion
+from prompt_toolkit.completion import CompleteEvent, Completer
 from prompt_toolkit.document import Document as ToolkitDocument
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
-from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.shortcuts import PromptSession
-from prompt_toolkit.styles import style_from_pygments_cls
 from pygments.lexer import RegexLexer
 from pygments.styles import get_style_by_name
-from pygments.token import Name, Operator
+from pygments.token import Operator
 from wexample_helpers.helpers.html import html_remove_tags
 
 from addons.ai.src.assistant.utils.abstract_assistant_child import (
@@ -24,6 +20,8 @@ from addons.ai.src.assistant.utils.prompt_pygment_style import PromptPygmentStyl
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
+    from prompt_toolkit.completion import Completion
+    from prompt_toolkit import HTML
 
 
 class AssistantChatCompleter(Completer):
@@ -33,6 +31,8 @@ class AssistantChatCompleter(Completer):
     def get_completions(
         self, document: ToolkitDocument, complete_event: CompleteEvent
     ) -> Iterable[Completion]:
+        from prompt_toolkit.completion import Completion
+
         word_before_cursor = document.get_word_before_cursor(WORD=True)
 
         # Previous word was a space
@@ -109,9 +109,15 @@ class PromptManager(AbstractAssistantChild):
 
     def get_prompt(self) -> HTML:
         """Generate the current styled prompt."""
+        from prompt_toolkit import HTML
+
         return HTML("<prefix>&gt;&gt;&gt; </prefix>" + self.prompt)
 
     def open(self) -> str:
+        from pygments.token import Name
+        from prompt_toolkit.lexers import PygmentsLexer
+        from prompt_toolkit.styles import style_from_pygments_cls
+
         commands_tokens: dict[str, list[Any]] = {
             "root": [],
             "option": [(r":([a-zA-Z0-9-_]+)", Operator, "#pop")],

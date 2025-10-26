@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import docker_build_long_container_name
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -19,6 +17,9 @@ TEST_COUNT = 0
     should_run=True,
 )
 def proxy__service__ready(manager: AppAddonManager, app_dir: str, service: str) -> bool:
+    from addons.app.helper.docker import docker_build_long_container_name
+    from src.helper.command import execute_command_sync
+
     # for container_name in list:
     success, running_containers = execute_command_sync(
         manager.kernel,

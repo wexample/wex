@@ -5,19 +5,8 @@ import shutil
 from typing import TYPE_CHECKING
 
 import yaml
-from wexample_helpers.helpers.dict import dict_merge
-from wexample_helpers.helpers.string import string_to_snake_case
-
-from addons.app.const.app import APP_DIR_APP_DATA
 from addons.app.decorator.app_command import app_command
-from src.const.globals import (
-    COMMAND_CHAR_SERVICE,
-    COMMAND_SEPARATOR_ADDON,
-    COMMAND_TYPE_SERVICE,
-)
 from src.decorator.option import option
-from src.helper.file import file_create_parent_and_touch, file_merge_new_lines
-from src.helper.service import service_get_dir
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -80,6 +69,16 @@ def app__service__install(
     force: bool = False,
     ignore_dependencies: bool = False,
 ) -> None:
+    from src.const.globals import (
+        COMMAND_CHAR_SERVICE,
+        COMMAND_SEPARATOR_ADDON,
+        COMMAND_TYPE_SERVICE,
+    )
+    from wexample_helpers.helpers.string import string_to_snake_case
+    from wexample_helpers.helpers.dict import dict_merge
+    from src.helper.service import service_get_dir
+    from addons.app.const.app import APP_DIR_APP_DATA
+
     kernel = manager.kernel
     service = string_to_snake_case(service)
     kernel.io.log(f"Installing service : {service}")
@@ -169,6 +168,10 @@ def app_service_install_merge_dir(
     install_docker: bool,
     install_git: bool,
 ) -> None:
+    from src.helper.file import file_create_parent_and_touch, file_merge_new_lines
+    from wexample_helpers.helpers.dict import dict_merge
+    from addons.app.const.app import APP_DIR_APP_DATA
+
     kernel = manager.kernel
     abs_path = os.path.join(service_dir, APP_DIR_APP_DATA, current_item)
     kernel.io.log(f"Merging {current_item}")

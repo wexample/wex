@@ -1,11 +1,6 @@
 from __future__ import annotations
-
-import os.path
 import time
-
-from addons.app.command.db.exec import app__db__exec
 from addons.app.command.remote.exec import app__remote__exec
-from addons.app.command.remote.push import app__remote__push
 from addons.app.helper.remote import remote_build_temp_push_dir
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
@@ -15,6 +10,9 @@ class TestAppCommandRemotePush(AbstractAppTestCase):
         self._test_push_with_db()
 
     def _test_push_with_db(self) -> None:
+        from addons.app.command.db.exec import app__db__exec
+        from addons.app.command.remote.push import app__remote__push
+
         manager = self.create_and_start_test_app_and_prepare_remote(
             services=["php", "mysql"]
         )

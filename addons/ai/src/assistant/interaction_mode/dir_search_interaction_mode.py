@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 
 class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def get_dir_subject(self) -> DirChatSubject:
+        from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
+
         return cast("DirChatSubject", self.assistant.get_current_subject())
 
     def get_similarity_search_filter(
@@ -32,6 +34,8 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
         return {"signature": self.get_storage_signature()}
 
     def get_storage_signature(self) -> str:
+        from src.helper.file import file_build_signature
+
         return file_build_signature(self.get_dir_subject().dir_path or "")
 
     def get_vector_store_collection_name(self) -> str:
@@ -42,6 +46,11 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
+        from src.helper.file import file_build_signature, file_is_utf8_encoding
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         subject = self.get_dir_subject()
 
         # Avoid empty input error.

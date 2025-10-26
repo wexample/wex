@@ -1,12 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from git import Repo
-
-from addons.app.command.version.new_commit import app__version__new_commit
-from addons.app.const.app import APP_FILEPATH_REL_CONFIG
-from src.const.globals import FILE_README, FILE_VERSION
 from src.decorator.command import command
 
 if TYPE_CHECKING:
@@ -15,6 +9,11 @@ if TYPE_CHECKING:
 
 @command(help="Build a new version of current core, or commit new version changes")
 def core__version__new_commit(kernel: Kernel) -> None:
+    from addons.app.const.app import APP_FILEPATH_REL_CONFIG
+    from addons.app.command.version.new_commit import app__version__new_commit
+    from src.const.globals import FILE_README, FILE_VERSION
+    from git import Repo
+
     root_dir = kernel.directory.path
     repo = Repo(root_dir)
 

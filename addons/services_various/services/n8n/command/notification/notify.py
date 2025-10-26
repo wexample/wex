@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import requests
-from requests.auth import HTTPBasicAuth
 
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
@@ -11,6 +10,7 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from requests.auth import HTTPBasicAuth
 
 
 @app_command(help="send app notification to service", command_type=COMMAND_TYPE_SERVICE)
@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 def n8n__notification__notify(
     manager: AppAddonManager, app_dir: str, service: str, action: str
 ) -> None:
+    from requests.auth import HTTPBasicAuth
+
     protocol = manager.get_config("notification.protocol", "https").get_str()
     domain = manager.get_config("notification.domain").get_str()
     test = manager.get_config("notification.test", False).get_bool()

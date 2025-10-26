@@ -1,24 +1,17 @@
 from __future__ import annotations
 
 import getpass
-import os.path
 from typing import TYPE_CHECKING, Any, cast
 
 from click import Choice
-
-from addons.app.AppAddonManager import AppAddonManager
-from addons.app.command.app.init import app__app__init
-from addons.app.command.app.start import app__app__start
-from addons.app.command.app.started import app__app__started
 from addons.app.const.app import HELPER_APPS_LIST
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.prompt import prompt_progress_steps
-from src.helper.system import system_port_check
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from addons.app.AppAddonManager import AppAddonManager
 
 
 @as_sudo()
@@ -55,6 +48,9 @@ def app__helper__start(
     port: int | None = None,
     port_secure: int | None = None,
 ) -> str:
+    from addons.app.AppAddonManager import AppAddonManager
+    from src.helper.prompt import prompt_progress_steps
+
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     # App name is same of main service
     helper_service_name = name
@@ -62,6 +58,9 @@ def app__helper__start(
     current_dir = os.getcwd()
 
     def _app__helper__start__create() -> Any:
+        from addons.app.command.app.started import app__app__started
+        from addons.app.command.app.init import app__app__init
+
         nonlocal env
         kernel.io.log("Starting helper app")
 
@@ -93,6 +92,8 @@ def app__helper__start(
 
     def _app__helper__start__checkup() -> None:
         def _callback() -> None:
+            from src.helper.system import system_port_check
+
             nonlocal user
             nonlocal port
             nonlocal port_secure
@@ -109,6 +110,8 @@ def app__helper__start(
             manager.set_config("docker.create_network", create_network)
 
     def _app__helper__start__start() -> None:
+        from addons.app.command.app.start import app__app__start
+
         nonlocal env
 
         kernel.run_function(

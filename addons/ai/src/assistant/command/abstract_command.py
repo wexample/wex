@@ -9,9 +9,6 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.interaction_response.null_interaction_response import (
-    NullInteractionResponse,
-)
 from addons.ai.src.assistant.utils.abstract_assistant_child import (
     AbstractAssistantChild,
 )
@@ -34,6 +31,10 @@ class AbstractCommand(AbstractAssistantChild):
         prompt_section: UserPromptSection | None = None,
         remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.null_interaction_response import (
+            NullInteractionResponse,
+        )
+
         return NullInteractionResponse()
 
     def get_flags(self) -> list[str]:

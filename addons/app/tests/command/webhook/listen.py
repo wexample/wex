@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-
-from addons.app.command.webhook.listen import app__webhook__listen
 from addons.app.tests.AbstractWebhookTestCase import AbstractWebhookTestCase
 
 
 class TestAppCommandWebhookListen(AbstractWebhookTestCase):
     def test_listen(self) -> None:
+        from addons.app.command.webhook.listen import app__webhook__listen
+
         self.kernel.run_function(
             app__webhook__listen, {"dry-run": True, "port": 1234, "force": True}
         )

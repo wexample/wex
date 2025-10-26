@@ -6,9 +6,6 @@ from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
-from addons.ai.src.assistant.interaction_mode.default_interaction_mode import (
-    DefaultInteractionMode,
-)
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
@@ -43,4 +40,8 @@ class DefaultCommand(AbstractCommand):
     def get_interaction_mode(
         self, prompt_section: UserPromptSection
     ) -> type[AbstractInteractionMode]:
+        from addons.ai.src.assistant.interaction_mode.default_interaction_mode import (
+            DefaultInteractionMode,
+        )
+
         return DefaultInteractionMode

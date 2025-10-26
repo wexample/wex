@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.services_db.services.mysql.command.db.go import mysql__db__go
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
 
@@ -18,6 +17,8 @@ if TYPE_CHECKING:
 def mysql__db__exec(
     manager: AppAddonManager, app_dir: str, service: str, command: str
 ) -> str:
+    from addons.services_db.services.mysql.command.db.go import mysql__db__go
+
     app_name = manager.get_app_name()
 
     return (

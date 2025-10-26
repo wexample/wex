@@ -6,12 +6,6 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.interaction_response.null_interaction_response import (
-    NullInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
 from addons.ai.src.assistant.utils.globals import AI_FUNCTION_DISPLAY_A_CUCUMBER
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 
@@ -25,6 +19,13 @@ class FunctionPickerInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.null_interaction_response import (
+            NullInteractionResponse,
+        )
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         if not prompt_section.prompt:
             return StringInteractionResponse(
                 "Please ask some question to help select a function."

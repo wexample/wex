@@ -42,15 +42,7 @@ from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.subject.url_chat_subject import UrlChatSubject
 from addons.ai.src.assistant.utils.database_manager import DatabaseManager
 from addons.ai.src.assistant.utils.globals import (
-    AI_COMMAND_PREFIX,
     ASSISTANT_MENU_ACTION_BACK,
-    ASSISTANT_MENU_ACTION_CONVERSATIONS,
-    ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
-    ASSISTANT_MENU_ACTION_EXIT,
-    ASSISTANT_MENU_ACTION_LANGUAGE,
-    ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
-    ASSISTANT_MENU_ACTION_PERSONALITY,
-    ASSISTANT_MENU_ACTION_THEME,
     ASSISTANT_MENU_ACTIONS_TRANSLATIONS,
 )
 from addons.ai.src.assistant.utils.history_item import HistoryItem
@@ -71,6 +63,10 @@ from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from addons.ai.src.assistant.subject.abstract_chat_subject import (
+        AbstractChatSubject,
+    )
+    from addons.ai.src.model.abstract_model import AbstractModel
 __all__ = [
     "AI_COMMAND_PREFIX",
     "ASSISTANT_MENU_ACTION_BACK",
@@ -85,6 +81,8 @@ class Assistant(AbsractKernelChild):
     _default_model: AbstractModel | None = None
 
     def __init__(self, kernel: Kernel, default_model: str) -> None:
+        from src.helper.prompt import prompt_progress_steps
+
         super().__init__(kernel)
 
         self._initial_default_model = default_model
@@ -114,6 +112,8 @@ class Assistant(AbsractKernelChild):
         self,
         initial_prompt: str | None = None,
     ) -> str | None:
+        from addons.ai.src.assistant.utils.globals import ASSISTANT_MENU_ACTION_EXIT
+
         self.commands[HelpCommand.name()].execute()
 
         while True:
@@ -172,6 +172,8 @@ class Assistant(AbsractKernelChild):
                     self.kernel.io.print(os.linesep)
 
     def extract_active_command(self, word: str) -> str | None:
+        from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
+
         commands = self.get_active_commands()
         if word.startswith(AI_COMMAND_PREFIX):
             # Split command and options
@@ -190,12 +192,18 @@ class Assistant(AbsractKernelChild):
         return commands
 
     def get_current_subject(self) -> AbstractChatSubject:
+        from addons.ai.src.assistant.subject.abstract_chat_subject import (
+            AbstractChatSubject,
+        )
+
         self._validate__should_not_be_none(self.subject)
         assert isinstance(self.subject, AbstractChatSubject)
 
         return self.subject
 
     def get_model(self, name: str | None = None) -> AbstractModel:
+        from addons.ai.src.model.abstract_model import AbstractModel
+
         model = self.models[name] if name else self._default_model
         self._validate__should_not_be_none(model)
         assert isinstance(model, AbstractModel)
@@ -227,6 +235,8 @@ class Assistant(AbsractKernelChild):
         self.kernel.io.log(f"  {message}")
 
     def print_ai(self, message: str) -> None:
+        from prompt_toolkit import HTML, print_formatted_text
+
         # Let a new line separator
         print_formatted_text(HTML(f'✨ <ai fg="#9ABBD9">{html.escape(message)}</ai>'))
 
@@ -315,6 +325,8 @@ class Assistant(AbsractKernelChild):
         return str(action) if action else None
 
     def split_command(self, word: str) -> list[str]:
+        from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
+
         return word[len(AI_COMMAND_PREFIX) :].split(":")
 
     def split_prompt_sections(self, user_input: str) -> list[UserPromptSection]:
@@ -360,6 +372,16 @@ class Assistant(AbsractKernelChild):
         return results
 
     def start(self, menu_action: str | None) -> None:
+        from addons.ai.src.assistant.utils.globals import (
+            ASSISTANT_MENU_ACTION_CONVERSATIONS,
+            ASSISTANT_MENU_ACTION_DEFAULT_MODEL,
+            ASSISTANT_MENU_ACTION_EXIT,
+            ASSISTANT_MENU_ACTION_LANGUAGE,
+            ASSISTANT_MENU_ACTION_NEW_CONVERSATION,
+            ASSISTANT_MENU_ACTION_PERSONALITY,
+            ASSISTANT_MENU_ACTION_THEME,
+        )
+
         asked_exit = False
 
         # Reset default subject.

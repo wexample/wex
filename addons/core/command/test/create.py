@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import StringsList
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.test import create_test_from_command
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -39,6 +36,9 @@ def core__test__create(
     all: bool = False,
     force: bool = False,
 ) -> str | StringsList | None:
+    from src.const.globals import COMMAND_TYPE_ADDON
+    from src.helper.test import create_test_from_command
+
     if not command:
         if all:
             output: StringsList = []

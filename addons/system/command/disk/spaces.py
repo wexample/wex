@@ -9,8 +9,8 @@ from src.core.response.TableResponse import TableBody
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.TableResponse import TableResponse
+    from src.utils.kernel import Kernel
 
 
 @ai_tool()

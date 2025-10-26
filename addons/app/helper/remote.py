@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from wexample_helpers.helpers.string import string_to_snake_case
-
-from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
 from src.const.types import StringsList
 
 if TYPE_CHECKING:
@@ -21,6 +17,8 @@ def remote_get_connexion_address(
     environment: str,
     command: ScriptCommand | None = None,
 ) -> str | None:
+    from wexample_helpers.helpers.string import string_to_snake_case
+
     domain_or_ip = remote_get_environment_ip(manager, environment, command)
 
     if not domain_or_ip:
@@ -63,6 +61,8 @@ def remote_get_environment_ip(
     environment: str,
     command: ScriptCommand | None = None,
 ) -> str | None:
+    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
     if manager.has_config(f"env.{environment}.server.ip"):
         ip = manager.get_config(f"env.{environment}.server.ip").get_str()
 
@@ -87,6 +87,8 @@ def remote_get_environment_ip(
 
 
 def remote_get_login_command(manager: AppAddonManager, environment: str) -> StringsList:
+    from wexample_helpers.helpers.string import string_to_snake_case
+
     env_screaming_snake = string_to_snake_case(environment).upper()
     password = manager.get_env_var(f"ENV_{env_screaming_snake}_SERVER_PASSWORD")
 

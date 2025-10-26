@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import click
+
 from src.const.types import AnyCallable
 
 

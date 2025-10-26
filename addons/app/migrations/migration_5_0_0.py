@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, cast
 
 import yaml
@@ -7,9 +8,9 @@ from addons.app.AppAddonManager import AppAddonManager
 from src.const.types import AnyList, StringsDict, StringsList
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from addons.docker.types.docker import DockerCompose
     from src.const.types import StringKeysDict
+    from src.utils.kernel import Kernel
 
 
 def is_version_5_0_0(kernel: Kernel, path: str) -> bool | None:
@@ -80,8 +81,9 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
             manager.save_config()
 
     def _migration_5_0_0_install_services() -> None:
-        from addons.app.command.service.install import app__service__install
         from wexample_helpers.helpers.string import string_to_snake_case
+
+        from addons.app.command.service.install import app__service__install
 
         # Services
         services = _get_config_value(config, "SERVICES", [])
@@ -119,13 +121,14 @@ def migration_5_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
             manager.set_config("service.mysql.password", mysql_db_password)
 
     def _migration_5_0_0_update_docker() -> None:
+        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         from addons.app.migrations.migration_4_0_0 import (
             _migration_4_0_0_et_docker_files,
             _migration_4_0_0_replace_docker_mapping,
             _migration_4_0_0_replace_docker_placeholders,
         )
         from addons.docker.types.docker import DockerCompose
-        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
 
         docker_files = _migration_4_0_0_et_docker_files(manager)
 

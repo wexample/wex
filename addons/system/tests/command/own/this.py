@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import os
+
 from src.helper.user import get_user_or_sudo_user
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestSystemCommandOwnThis(AbstractTestCase):
     def test_this(self) -> None:
-        from src.helper.file import file_get_owner
         from addons.system.command.own.this import system__own__this
+        from src.helper.file import file_get_owner
 
         test_file = self.build_test_file("config_bash")
 

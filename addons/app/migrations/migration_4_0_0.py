@@ -22,8 +22,8 @@ def is_version_4_0_0(kernel: Kernel, path: str) -> bool | None:
 
 
 def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
-    from src.helper.prompt import prompt_progress_steps
     from addons.default.helper.git_utils import git_get_or_create_repo
+    from src.helper.prompt import prompt_progress_steps
 
     app_dir = manager.get_app_dir()
     repo = git_get_or_create_repo(app_dir)
@@ -71,8 +71,8 @@ def migration_4_0_0(kernel: Kernel, manager: AppAddonManager) -> None:
 
     # Move every file and folder from project/* to root (app_dir)
     def _migration_4_0_0_move_project_files() -> None:
-        from addons.default.helper.migration import migration_delete_dir_if_empty
         from addons.default.helper.git_utils import git_move_or_file_move
+        from addons.default.helper.migration import migration_delete_dir_if_empty
 
         for projects_dir in projects_dirs:
             dir_project = os.path.join(app_dir, projects_dir)

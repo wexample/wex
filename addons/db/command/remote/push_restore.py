@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
+
 from addons.app.command.remote.push_receive import app__remote__push_receive
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.command.ScriptCommand import ScriptCommand

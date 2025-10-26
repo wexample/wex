@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.ai.src.assistant.command.default_command import DefaultCommand
-from addons.ai.src.assistant.interaction_mode.vetting_interaction_mode import (
-    VettingInteractionMode,
-)
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
+    from addons.ai.src.assistant.interaction_mode.vetting_interaction_mode import (
+        VettingInteractionMode,
+    )
 
 
 class VetCommand(DefaultCommand):
@@ -22,4 +22,8 @@ class VetCommand(DefaultCommand):
     def get_interaction_mode(
         self, prompt_section: UserPromptSection
     ) -> type[VettingInteractionMode]:
+        from addons.ai.src.assistant.interaction_mode.vetting_interaction_mode import (
+            VettingInteractionMode,
+        )
+
         return VettingInteractionMode

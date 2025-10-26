@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -12,6 +9,9 @@ if TYPE_CHECKING:
 
 @app_command(help="Enter into database management CLI")
 def app__db__go(manager: AppAddonManager, app_dir: str) -> None:
+    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+    from addons.app.command.app.exec import app__app__exec
+
     # There is a probable mismatch between container / service names
     # but for now each service have only one container.
     service = manager.get_config("docker.main_db_container").get_str()

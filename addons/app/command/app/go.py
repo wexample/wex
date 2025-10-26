@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
 from src.core.response.AbstractResponse import AbstractResponse
 from src.decorator.option import option
@@ -26,6 +24,8 @@ def app__app__go(
     container_name: str | None = None,
     user: str | None = None,
 ) -> AbstractResponse:
+    from addons.app.command.app.exec import app__app__exec
+
     return manager.kernel.run_function(
         app__app__exec,
         {

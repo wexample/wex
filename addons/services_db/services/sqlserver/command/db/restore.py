@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
-from addons.services_db.services.sqlserver.command.db.exec import sqlserver__db__exec
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.decorator.option import option
 
@@ -22,6 +19,11 @@ def sqlserver__db__restore(
     file_name: str,
     database: str,
 ) -> None:
+    from addons.services_db.services.sqlserver.command.db.exec import (
+        sqlserver__db__exec,
+    )
+    from addons.app.command.app.exec import app__app__exec
+
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {

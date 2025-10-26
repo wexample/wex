@@ -6,10 +6,10 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.InteractiveShellCommandResponse import (
         InteractiveShellCommandResponse,
     )
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return an int value", command_type=COMMAND_TYPE_ADDON)

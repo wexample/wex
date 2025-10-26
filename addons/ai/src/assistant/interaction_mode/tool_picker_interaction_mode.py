@@ -6,9 +6,6 @@ from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.tool.command_tool import CommandTool
 from src.helper.registry import registry_get_all_commands
@@ -60,6 +57,10 @@ class ToolPickerInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         self.init_tools()
 
         if not prompt_section.prompt:

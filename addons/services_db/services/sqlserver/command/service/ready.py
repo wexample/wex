@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.exec import app__app__exec
 from addons.app.decorator.app_command import app_command
-from addons.services_db.services.sqlserver.command.db.exec import sqlserver__db__exec
 from src.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -19,6 +16,11 @@ if TYPE_CHECKING:
 def sqlserver__service__ready(
     manager: AppAddonManager, app_dir: str, service: str
 ) -> bool:
+    from addons.services_db.services.sqlserver.command.db.exec import (
+        sqlserver__db__exec,
+    )
+    from addons.app.command.app.exec import app__app__exec
+
     exec_command = manager.kernel.run_function(
         sqlserver__db__exec,
         {

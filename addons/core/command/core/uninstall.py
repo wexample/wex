@@ -2,16 +2,8 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
-
-from wexample_helpers.helpers.file import file_remove_if_exists
-
-from addons.app.command.webhook.stop import app__webhook__stop
-from addons.default.command.file.remove_line import default__file__remove_line
-from addons.system.command.system.is_docker import system__system__is_docker
-from src.const.globals import CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
-from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -20,6 +12,8 @@ if TYPE_CHECKING:
 @as_sudo()
 @command(help="Uninstall core")
 def core__core__uninstall(kernel: Kernel) -> None:
+    from src.const.globals import CORE_BIN_FILE_LOCAL, CORE_BIN_FILE_ROOT
+
     __core__core__uninstall_webhook_server(kernel)
     __core__core__uninstall_symlink(CORE_BIN_FILE_ROOT)
     __core__core__uninstall_symlink(CORE_BIN_FILE_LOCAL)
@@ -29,6 +23,8 @@ def core__core__uninstall(kernel: Kernel) -> None:
 
 
 def __core__core__uninstall_autocomplete(kernel: Kernel) -> None:
+    from wexample_helpers.helpers.file import file_remove_if_exists
+
     script_path = "/etc/bash_completion.d/wex"
 
     file_remove_if_exists(script_path)
@@ -37,10 +33,14 @@ def __core__core__uninstall_autocomplete(kernel: Kernel) -> None:
 
 
 def __core__core__uninstall_symlink(destination: str) -> None:
+    from wexample_helpers.helpers.file import file_remove_if_exists
+
     file_remove_if_exists(destination)
 
 
 def __core__core__uninstall_terminal(kernel: Kernel) -> None:
+    from wexample_helpers.helpers.file import file_remove_if_exists
+
     script_path = "/etc/profile.d/wex"
 
     file_remove_if_exists(script_path)
@@ -49,10 +49,15 @@ def __core__core__uninstall_terminal(kernel: Kernel) -> None:
 
 
 def __core__core__uninstall_webhook_server(kernel: Kernel) -> None:
+    from addons.app.command.webhook.stop import app__webhook__stop
+
     kernel.run_function(app__webhook__stop)
 
 
 def __remove_source_file_for_docker(kernel: Kernel, file_path: str) -> None:
+    from src.helper.user import get_sudo_username, get_user_or_sudo_user_home_data_path
+    from addons.system.command.system.is_docker import system__system__is_docker
+
     if not kernel.run_function(system__system__is_docker):
         return
 
@@ -69,6 +74,8 @@ def __remove_source_file_for_docker(kernel: Kernel, file_path: str) -> None:
 def __remove_source_file_in_bashrc(
     kernel: Kernel, file_path: str, bashrc_path: str
 ) -> None:
+    from addons.default.command.file.remove_line import default__file__remove_line
+
     if not os.path.exists(bashrc_path):
         return
 

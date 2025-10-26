@@ -2,23 +2,22 @@ from __future__ import annotations
 
 from typing import Any
 
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain_community.embeddings.ollama import OllamaEmbeddings
-from langchain_community.llms import Ollama
-
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
 from addons.ai.src.model.abstract_model import AbstractModel
-from addons.app.command.app.exec import app__app__exec
 
 MODEL_NAME_OLLAMA_MISTRAL = "ollama:mistral"
 
 
 class OllamaModel(AbstractModel):
     def activate(self) -> None:
+        from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+        from addons.app.command.app.exec import app__app__exec
+        from langchain.callbacks.manager import CallbackManager
+        from langchain_community.llms import Ollama
+
         # Start Ollama in helper app
         self.kernel.run_function(
             app__app__exec,
@@ -37,6 +36,8 @@ class OllamaModel(AbstractModel):
         )
 
     def create_embeddings(self) -> Any:
+        from langchain_community.embeddings.ollama import OllamaEmbeddings
+
         return OllamaEmbeddings()
 
     def guess_function(

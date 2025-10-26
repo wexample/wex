@@ -3,16 +3,17 @@ from __future__ import annotations
 import json
 
 from addons.test.command.return_type.list import test__return_type__list
-from src.const.globals import (
-    KERNEL_RENDER_MODE_JSON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-)
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeList(AbstractTestCase):
     def test_list(self) -> None:
+        from src.const.globals import (
+            KERNEL_RENDER_MODE_JSON,
+            KERNEL_RENDER_MODE_NONE,
+            KERNEL_RENDER_MODE_TERMINAL,
+        )
+
         self.for_each_render_mode(
             self._test_list,
             {

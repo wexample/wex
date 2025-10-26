@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import os
-
-from addons.core.command.logs.rotate import core__logs__rotate
 from tests.AbstractTestCase import AbstractTestCase
 
 
@@ -14,6 +12,8 @@ def _change_modification_time(test_log_path: str, days: int) -> None:
 
 class TestCoreCommandLogsRotate(AbstractTestCase):
     def test_rotate(self) -> None:
+        from addons.core.command.logs.rotate import core__logs__rotate
+
         # First remove all logs.
         self.kernel.run_function(
             function=core__logs__rotate, args={"max-days": False, "max-count": False}

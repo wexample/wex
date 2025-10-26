@@ -3,16 +3,13 @@ from __future__ import annotations
 import os
 from typing import cast
 
-from wexample_helpers.helpers.file import file_read, file_write
+from wexample_helpers.helpers.file import file_read
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
 )
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
-)
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
 )
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
@@ -35,6 +32,11 @@ class FileRewriteInteractionMode(AbstractInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
+        from wexample_helpers.helpers.file import file_write
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         if not prompt_section.prompt:
             return StringInteractionResponse(
                 "Please provide a guideline to indicate what to change in the file"

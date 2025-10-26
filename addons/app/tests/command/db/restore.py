@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from addons.app.command.db.dump import app__db__dump
-from addons.app.command.db.restore import app__db__restore
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.helper.file import file_remove_extension
 
 
 class TestAppCommandDbRestore(AbstractAppTestCase):
     def test_restore(self) -> None:
         def callback(db_service: str) -> None:
+            from addons.app.command.db.restore import app__db__restore
+            from src.helper.file import file_remove_extension
+
             self.log(f"Testing database restore : {db_service}")
 
             app_dir = self.create_and_start_test_app(

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from git import Repo
-
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_ADDON
 
@@ -13,6 +11,8 @@ if TYPE_CHECKING:
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
 def app__version__new_commit(manager: AppAddonManager, app_dir: str) -> None:
+    from git import Repo
+
     kernel = manager.kernel
     repo = Repo(app_dir)
     new_version = manager.get_config("global.version").get_str()

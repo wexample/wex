@@ -2,22 +2,14 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, cast
-
-from addons.core.command.test.create import core__test__create
-from src.const.globals import (
-    COMMAND_CHAR_USER,
-    COMMAND_EXTENSION_PYTHON,
-    COMMAND_TYPE_ADDON,
-    COMMAND_TYPE_CORE,
-)
-from src.const.types import StringKeysDict
+from src.const.globals import COMMAND_EXTENSION_PYTHON
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.file import file_create_from_template
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.const.types import StringKeysDict
 
 
 @as_sudo()
@@ -52,6 +44,15 @@ def core__command__create(
     force: bool = False,
     extension: str = COMMAND_EXTENSION_PYTHON,
 ) -> StringKeysDict | None:
+    from addons.core.command.test.create import core__test__create
+    from src.const.types import StringKeysDict
+    from src.const.globals import (
+        COMMAND_CHAR_USER,
+        COMMAND_TYPE_ADDON,
+        COMMAND_TYPE_CORE,
+    )
+    from src.helper.file import file_create_from_template
+
     kernel.io.log("Creating command file...")
     request = kernel.create_command_request(command)
 

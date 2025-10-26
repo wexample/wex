@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from addons.default.const.default import UPGRADE_TYPE_MINOR
 from src.decorator.command import command
 from src.decorator.option import option
@@ -28,6 +29,7 @@ def default__version__increment(
     increment: int = 1,
     build: bool = False,
 ) -> str:
+    from addons.default.command.version.parse import default__version__parse
     from addons.default.const.default import (
         UPGRADE_TYPE_ALPHA,
         UPGRADE_TYPE_BETA,
@@ -38,7 +40,6 @@ def default__version__increment(
         UPGRADE_TYPE_RC,
         UPGRADE_TYPE_SNAPSHOT,
     )
-    from addons.default.command.version.parse import default__version__parse
     from addons.default.helper.version import version_join
 
     version_dict = kernel.run_function(

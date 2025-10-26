@@ -6,8 +6,8 @@ from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.KeyValueResponse import KeyValueResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return a key / value response", command_type=COMMAND_TYPE_ADDON)

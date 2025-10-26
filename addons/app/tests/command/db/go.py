@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
-from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
 
 
 class TestAppCommandDbGo(AbstractAppTestCase):
     def test_go(self) -> None:
+        from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+
         db_service = "mysql"
         app_dir = self.create_and_start_test_app(services=["php"])
 

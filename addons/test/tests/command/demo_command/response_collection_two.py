@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from addons.test.command.demo_command.response_collection_two import (
     test__demo_command__response_collection_two,
 )
@@ -7,11 +8,11 @@ from tests.AbstractTestCase import AbstractTestCase
 
 class TestTestCommandDemoCommandResponseCollectionTwo(AbstractTestCase):
     def test_response_collection_two(self) -> None:
-        from addons.test.command.demo_command.response_collection_two import (
-            TEST_DEMO_COMMAND_TWO_RESULT_FIRST,
-        )
         from addons.test.command.demo_command.response_collection_three import (
             TEST_DEMO_COMMAND_THREE_RESULT_ONE,
+        )
+        from addons.test.command.demo_command.response_collection_two import (
+            TEST_DEMO_COMMAND_TWO_RESULT_FIRST,
         )
 
         result = self.kernel.run_function(test__demo_command__response_collection_two)

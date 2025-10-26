@@ -4,6 +4,7 @@ import re
 from typing import TYPE_CHECKING
 
 import click
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.core.response.AbstractResponse import ResponseCollection
@@ -15,10 +16,10 @@ from src.decorator.option import option
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
     from src.core.response.HiddenResponse import HiddenResponse
-    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
     from src.core.response.queue_collection.QueuedCollectionStopResponse import (
         QueuedCollectionStopResponse,
     )
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 
 
 @app_command(

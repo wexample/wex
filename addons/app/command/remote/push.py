@@ -5,26 +5,14 @@ import os
 from typing import TYPE_CHECKING
 
 import requests
-from wexample_helpers.helpers.string import string_to_snake_case
-
-from addons.app.command.remote.exec import app__remote__exec
-from addons.app.const.app import APP_ENV_PROD
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.remote import (
-    remote_build_temp_push_dir,
-    remote_get_connexion_address,
-    remote_get_connexion_options,
-    remote_get_environment_ip,
-    remote_get_login_command,
-)
-from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchema
-from src.core.response.DictResponse import DictResponse
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.response.DictResponse import DictResponse
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON, should_be_valid=True)
@@ -38,6 +26,15 @@ if TYPE_CHECKING:
 def app__remote__push(
     manager: AppAddonManager, environment: str, app_dir: str
 ) -> DictResponse | None:
+    from addons.app.helper.remote import (
+        remote_get_connexion_address,
+        remote_get_environment_ip,
+    )
+    from wexample_helpers.helpers.string import string_to_snake_case
+    from src.core.response.DictResponse import DictResponse
+    from addons.app.const.app import APP_ENV_PROD
+    from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
+
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__push
     )
@@ -58,6 +55,8 @@ def app__remote__push(
     def _app__remote__push_copy_to_remote(
         item_name: str, schema: FileSystemStructureSchema
     ) -> None:
+        from addons.app.helper.remote import remote_build_temp_push_dir
+
         if (not "remote" in schema) or (schema["remote"] != "push"):
             return None
 
@@ -78,6 +77,8 @@ def app__remote__push(
                 _send_directory(item_realpath, remote_item_path)
 
     def _create_remote_dir(remote_item_dir: str) -> None:
+        from addons.app.command.remote.exec import app__remote__exec
+
         manager.kernel.io.log(f"Creating remote dir {remote_item_dir}")
         manager.kernel.run_function(
             app__remote__exec,
@@ -91,6 +92,12 @@ def app__remote__push(
         )
 
     def _send_file(local_path: str, remote_path: str) -> None:
+        from addons.app.helper.remote import (
+            remote_get_connexion_options,
+            remote_get_login_command,
+        )
+        from src.helper.command import execute_command_sync
+
         # Ensure the remote directory is created before sending the file
         _create_remote_dir(os.path.dirname(remote_path))
 

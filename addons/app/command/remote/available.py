@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import json
-from http.client import HTTPConnection
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.remote import remote_get_environment_ip
-from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 
 if TYPE_CHECKING:
@@ -25,6 +23,10 @@ if TYPE_CHECKING:
 def app__remote__available(
     manager: AppAddonManager, app_dir: str, environment: str, port: None | int = None
 ) -> bool:
+    from addons.app.helper.remote import remote_get_environment_ip
+    from src.const.globals import WEBHOOK_LISTEN_PORT_DEFAULT
+    from http.client import HTTPConnection
+
     domain_or_ip = remote_get_environment_ip(
         manager, environment, command=app__remote__available
     )

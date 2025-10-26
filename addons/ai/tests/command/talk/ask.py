@@ -316,6 +316,7 @@ class TestAiCommandTalkAsk(AbstractTestCase):
 
     def _test_patching(self, assistant: Assistant) -> None:
         from wexample_helpers.helpers.file import file_write
+
         from src.helper.package import package_enable_logging
 
         target_package_json = (

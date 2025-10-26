@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
@@ -8,9 +9,9 @@ from src.decorator.option import option
 from src.decorator.test_command import test_command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.AbortResponse import AbortResponse
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.utils.kernel import Kernel
 
 
 TEST_DEMO_COMMAND_THREE_RESULT_ONE = "....THREE:simple-text"

@@ -1,39 +1,13 @@
 from __future__ import annotations
-
-import os.path
 import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import click
-
-from addons.app.command.app.go import app__app__go
-from addons.app.command.app.perms import app__app__perms
-from addons.app.command.app.serve import app__app__serve
-from addons.app.command.app.started import (
-    APP_STARTED_CHECK_MODE_ANY_CONTAINER,
-    app__app__started,
-)
-from addons.app.command.config.write import app__config__write
-from addons.app.command.env.choose import app__env__choose
-from addons.app.command.env.set import app__env__set
-from addons.app.command.hook.exec import app__hook__exec
-from addons.app.command.hosts.update import app__hosts__update
-from addons.app.const.app import (
-    APP_DIR_APP_DATA,
-    APP_ENV_LOCAL,
-    APP_FILEPATH_REL_COMPOSE_RUNTIME_YML,
-    APP_FILEPATH_REL_ENV,
-    HELPER_APP_PROXY_SHORT_NAME,
-)
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import docker_exec_app_compose_command
-from src.const.globals import CORE_COMMAND_NAME, USER_WWW_DATA
-from src.core.response.AbortResponse import AbortResponse
+from src.const.globals import USER_WWW_DATA
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
-from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -77,10 +51,21 @@ def app__app__start(
     no_proxy: bool = False,
     fast: bool = False,
 ) -> str:
+    from src.helper.prompt import prompt_progress_steps
+
     kernel = manager.kernel
     name = manager.get_app_name()
 
     def _app__app__start__checkup() -> bool:
+        from addons.app.const.app import APP_FILEPATH_REL_ENV
+        from addons.app.command.env.choose import app__env__choose
+        from src.core.response.AbortResponse import AbortResponse
+        from addons.app.command.app.started import (
+            APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+            app__app__started,
+        )
+        from addons.app.command.env.set import app__env__set
+
         nonlocal env
 
         if not os.path.exists(APP_FILEPATH_REL_ENV):
@@ -111,6 +96,12 @@ def app__app__start(
         return True
 
     def _app__app__start__proxy() -> None:
+        from addons.app.command.app.started import (
+            APP_STARTED_CHECK_MODE_ANY_CONTAINER,
+            app__app__started,
+        )
+        from addons.app.const.app import HELPER_APP_PROXY_SHORT_NAME
+
         nonlocal env
 
         # Current app is not the reverse proxy itself.
@@ -152,6 +143,10 @@ def app__app__start(
                 )
 
     def _app__app__start__config() -> None:
+        from addons.app.command.app.perms import app__app__perms
+        from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.command.config.write import app__config__write
+
         kernel.run_function(app__app__perms, {"app-dir": app_dir})
 
         kernel.run_function(
@@ -181,6 +176,8 @@ def app__app__start(
     compose_options = []
 
     def _app__app__start__start_hooks() -> None:
+        from addons.app.command.hook.exec import app__hook__exec
+
         # Ensure workdir due to lacking management
         manager.set_app_workdir(app_dir)
 
@@ -215,6 +212,10 @@ def app__app__start(
         ]
 
     def _app__app__start__starting() -> None:
+        from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+        from addons.app.helper.docker import docker_exec_app_compose_command
+        from src.helper.command import execute_command_sync
+
         nonlocal compose_options
 
         execute_command_sync(
@@ -230,6 +231,8 @@ def app__app__start(
         )
 
     def _app__app__start__update_hosts() -> None:
+        from addons.app.command.hosts.update import app__hosts__update
+
         manager.set_runtime_config("started", True)
 
         kernel.run_function(app__hosts__update)
@@ -239,6 +242,8 @@ def app__app__start(
 
     def _app__app__start__pending() -> None:
         def _check() -> bool:
+            from addons.app.command.hook.exec import app__hook__exec
+
             # Postpone execution
             response = kernel.run_function(
                 app__hook__exec, {"app-dir": app_dir, "hook": "service/ready"}
@@ -262,6 +267,9 @@ def app__app__start(
             time.sleep(2)
 
     def _app__app__start__serve() -> None:
+        from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.command.app.serve import app__app__serve
+
         # Postpone execution
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/start-post"}
@@ -272,6 +280,10 @@ def app__app__start(
         kernel.run_function(app__app__serve, {"app-dir": app_dir})
 
     def _app__app__start__first_init() -> None:
+        from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.const.app import APP_DIR_APP_DATA
+        from src.const.globals import CORE_COMMAND_NAME
+
         env_dir = f"{manager.get_app_dir()}{APP_DIR_APP_DATA}"
         first_start_lock = os.path.join(
             env_dir, "tmp", f"{CORE_COMMAND_NAME}.first-start"
@@ -289,6 +301,9 @@ def app__app__start(
             manager.set_runtime_config("initialized", True)
 
     def _app__app__start__complete() -> None:
+        from addons.app.command.app.go import app__app__go
+        from addons.app.const.app import APP_ENV_LOCAL
+
         env = manager.get_env()
 
         if manager.has_runtime_config("domains"):

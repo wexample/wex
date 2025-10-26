@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from addons.app.command.env.choose import app__env__choose
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.alias import alias
 from src.decorator.command import command
@@ -14,6 +12,8 @@ if TYPE_CHECKING:
 @alias("configure")
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
 def core__configure__all(kernel: Kernel) -> None:
+    from addons.app.command.env.choose import app__env__choose
+
     kernel.run_function(
         app__env__choose,
         {

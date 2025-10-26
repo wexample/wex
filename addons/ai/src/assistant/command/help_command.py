@@ -6,7 +6,6 @@ from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
 from src.helper.string import string_list_longest_word
 
 if TYPE_CHECKING:
@@ -25,6 +24,8 @@ class HelpCommand(AbstractCommand):
         prompt_section: UserPromptSection | None = None,
         remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.utils.globals import AI_COMMAND_PREFIX
+
         commands = self.assistant.get_active_commands()
         # Assuming string_list_longest_word returns the length of the longest word in a list
         longest_command_length = string_list_longest_word(list(commands.keys()))

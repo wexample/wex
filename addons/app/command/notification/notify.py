@@ -2,11 +2,7 @@ from __future__ import annotations
 
 from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_command import app_command
-from src.const.globals import (
-    COMMAND_CHAR_SERVICE,
-    COMMAND_SEPARATOR_ADDON,
-    COMMAND_TYPE_ADDON,
-)
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.option import option
 
 
@@ -15,6 +11,8 @@ from src.decorator.option import option
 def app__notification__notify(
     manager: AppAddonManager, app_dir: str, action: str
 ) -> None:
+    from src.const.globals import COMMAND_CHAR_SERVICE, COMMAND_SEPARATOR_ADDON
+
     if manager.has_config("notification.service"):
         notification_service = manager.get_config("notification.service").get_str()
 

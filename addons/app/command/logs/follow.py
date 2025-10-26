@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import docker_build_long_container_name
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
 from src.decorator.option import option
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
 
 
 @app_command(help="Follow logs", should_run=True)
@@ -34,6 +33,11 @@ def app__logs__follow(
     tail: int,
     container_name: str | None = None,
 ) -> InteractiveShellCommandResponse:
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
+    from addons.app.helper.docker import docker_build_long_container_name
+
     container_name = container_name or manager.get_main_container_name()
 
     return InteractiveShellCommandResponse(

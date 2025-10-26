@@ -2,26 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union, cast
 
-from wexample_helpers.const.types import StringsList
-from wexample_helpers.helpers.args import args_parse_list_or_strings_list
-
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.remote import (
-    remote_get_connexion_address,
-    remote_get_connexion_command,
-)
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.core.response.InteractiveShellCommandResponse import (
-    InteractiveShellCommandResponse,
-)
-from src.core.response.NonInteractiveShellCommandResponse import (
-    NonInteractiveShellCommandResponse,
-)
 from src.decorator.option import option
-from src.helper.command import command_to_string
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
+    from src.core.response.NonInteractiveShellCommandResponse import (
+        NonInteractiveShellCommandResponse,
+    )
 
 
 @app_command(help="Description", command_type=COMMAND_TYPE_ADDON)
@@ -63,6 +55,20 @@ def app__remote__exec(
     terminal: bool,
     sync: bool = False,
 ) -> None | (InteractiveShellCommandResponse | NonInteractiveShellCommandResponse):
+    from src.core.response.InteractiveShellCommandResponse import (
+        InteractiveShellCommandResponse,
+    )
+    from wexample_helpers.helpers.args import args_parse_list_or_strings_list
+    from src.core.response.NonInteractiveShellCommandResponse import (
+        NonInteractiveShellCommandResponse,
+    )
+    from wexample_helpers.const.types import StringsList
+    from addons.app.helper.remote import (
+        remote_get_connexion_address,
+        remote_get_connexion_command,
+    )
+    from src.helper.command import command_to_string
+
     address = remote_get_connexion_address(
         manager=manager, environment=environment, command=app__remote__exec
     )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
+
 from src.const.globals import COMMAND_TYPE_ADDON
 from src.decorator.command import command
 from src.decorator.option import option
@@ -12,9 +13,9 @@ if TYPE_CHECKING:
 @command(help="Description", command_type=COMMAND_TYPE_ADDON)
 @option("--file", "-f", type=str, required=True, help="File path")
 def ai__talk__about_file(kernel: Kernel, file: str) -> None:
+    from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_BACK, Assistant
     from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
     from addons.ai.src.model.open_ai_model import MODEL_NAME_OPEN_AI_GPT_4
-    from addons.ai.src.assistant.assistant import ASSISTANT_MENU_ACTION_BACK, Assistant
 
     assistant = Assistant(kernel, MODEL_NAME_OPEN_AI_GPT_4)
 

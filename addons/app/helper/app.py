@@ -4,13 +4,13 @@ import os
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from addons.app.AppAddonManager import AppAddonManager
+    from src.utils.kernel import Kernel
 
 
 def app_create_env(env: str, app_dir: str, rewrite: bool = True) -> bool:
-    from src.helper.file import file_create_parent_and_touch
     from addons.app.const.app import APP_DIR_APP_DATA, APP_FILE_APP_ENV
+    from src.helper.file import file_create_parent_and_touch
 
     env_file_path = os.path.join(app_dir, APP_DIR_APP_DATA, APP_FILE_APP_ENV)
 

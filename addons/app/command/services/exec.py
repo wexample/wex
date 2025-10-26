@@ -2,14 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from wexample_helpers.helpers.args import args_parse_dict
-
 from addons.app.decorator.app_command import app_command
-from src.const.globals import (
-    COMMAND_CHAR_SERVICE,
-    COMMAND_SEPARATOR_ADDON,
-    VERBOSITY_LEVEL_MAXIMUM,
-)
 from src.const.types import StringKeysDict
 from src.decorator.option import option
 
@@ -23,6 +16,13 @@ if TYPE_CHECKING:
 def app__services__exec(
     manager: AppAddonManager, app_dir: str, hook: str, arguments: str
 ) -> StringKeysDict:
+    from src.const.globals import (
+        COMMAND_CHAR_SERVICE,
+        COMMAND_SEPARATOR_ADDON,
+        VERBOSITY_LEVEL_MAXIMUM,
+    )
+    from wexample_helpers.helpers.args import args_parse_dict
+
     output = {}
 
     arguments_dict = args_parse_dict(arguments)

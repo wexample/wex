@@ -1,7 +1,9 @@
 from __future__ import annotations
-
-from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from src.core.BaseClass import BaseClass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 
 
 class UserPromptSection(BaseClass):
@@ -20,6 +22,8 @@ class UserPromptSection(BaseClass):
         self.prompt_configurations: list[tuple[str, str]] = []
 
     def get_command(self) -> AbstractCommand:
+        from addons.ai.src.assistant.command.abstract_command import AbstractCommand
+
         self._validate__should_not_be_none(self._command)
         assert isinstance(self._command, AbstractCommand)
 

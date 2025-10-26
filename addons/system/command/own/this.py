@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.user import get_user_or_sudo_user, set_owner_recursively
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -18,6 +17,8 @@ if TYPE_CHECKING:
 )
 @option("--path", "-p", type=str, required=False, default=None, help="Argument")
 def system__own__this(kernel: Kernel, path: str | None = None) -> None:
+    from src.helper.user import get_user_or_sudo_user, set_owner_recursively
+
     if path is None:
         path = os.getcwd()
 

@@ -2,26 +2,19 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, cast
-
-from addons.app.const.app import APP_DIR_APP_DATA, APP_FILEPATH_REL_DOCKER_ENV
-from addons.docker.helper.docker import user_has_docker_permission
-from src.const.types import (
-    ShellCommandResponseTuple,
-    ShellCommandsDeepList,
-    ShellCommandsList,
-)
-from src.helper.command import command_to_string, execute_command_sync
-from src.helper.process import process_post_exec
-from src.helper.user import get_user_or_sudo_user
+from src.const.types import ShellCommandResponseTuple
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
     from src.utils.kernel import Kernel
+    from src.const.types import ShellCommandsList
 
 DOCKER_COMPOSE_REL_PATH_BASE = "docker/docker-compose.yml"
 
 
 def docker_build_long_container_name(kernel: Kernel, name: str) -> str:
+    from addons.app.AppAddonManager import AppAddonManager
+
     manager = cast("AppAddonManager", kernel.addons["app"])
     return f'{manager.get_runtime_config("name").get_str()}_{name}'
 
@@ -34,6 +27,10 @@ def docker_exec_app_compose(
     profile: str | None = None,
     sync: bool = True,
 ) -> str | None:
+    from src.const.types import ShellCommandsDeepList
+    from src.helper.command import command_to_string, execute_command_sync
+    from src.helper.process import process_post_exec
+
     command = docker_exec_app_compose_command(
         kernel,
         app_dir,
@@ -67,6 +64,12 @@ def docker_exec_app_compose_command(
     docker_command: list[str] | str,
     profile: str | None = None,
 ) -> ShellCommandsList:
+    from src.helper.user import get_user_or_sudo_user
+    from addons.app.AppAddonManager import AppAddonManager
+    from addons.app.const.app import APP_FILEPATH_REL_DOCKER_ENV
+    from src.const.types import ShellCommandsList
+    from addons.docker.helper.docker import user_has_docker_permission
+
     username = get_user_or_sudo_user()
     if not user_has_docker_permission(username):
         kernel.io.error(
@@ -104,6 +107,8 @@ def docker_exec_app_compose_command(
 
 
 def docker_get_app_compose_files(manager: AppAddonManager, app_dir: str) -> list[str]:
+    from addons.app.const.app import APP_DIR_APP_DATA
+
     kernel = manager.kernel
     app_compose_file = app_dir + APP_DIR_APP_DATA + DOCKER_COMPOSE_REL_PATH_BASE
     compose_files: list[str] = []

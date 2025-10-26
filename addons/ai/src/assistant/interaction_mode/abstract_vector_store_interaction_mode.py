@@ -2,18 +2,10 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from typing import TYPE_CHECKING, cast
-
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader, UnstructuredURLLoader
-from langchain_community.document_loaders.base import BaseLoader
-from langchain_community.document_loaders.parsers.language.language_parser import (
-    Language,
-)
-from langchain_core.documents.base import Document
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_core.vectorstores import VectorStore
 from langchain_postgres.vectorstores import PGVector
 from unstructured.cleaners.core import clean, clean_extra_whitespace, remove_punctuation
-from wexample_helpers.helpers.json import json_load_if_valid
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -27,6 +19,9 @@ from src.helper.file import file_get_extension
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
+    from langchain_community.document_loaders.base import BaseLoader
+    from langchain_core.documents.base import Document
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
@@ -108,6 +103,10 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         return chunks
 
     def vector_create_file_loader(self, file_path: str) -> BaseLoader:
+        from langchain_community.document_loaders import TextLoader
+        from wexample_helpers.helpers.json import json_load_if_valid
+        from langchain_community.document_loaders.base import BaseLoader
+
         # Dynamically determine the loader based on file extension
         extension = file_get_extension(file_path)
 
@@ -170,6 +169,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
     def vector_create_text_splitter(
         self, file_path: str
     ) -> RecursiveCharacterTextSplitter:
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+
         language = self.vector_find_language_by_extension(file_get_extension(file_path))
 
         if language:
@@ -184,6 +185,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
             return RecursiveCharacterTextSplitter()
 
     def vector_find_language_by_extension(self, extension: str) -> Language | None:
+        from langchain_text_splitters import Language
+
         # @from https://python.langchain.com/docs/integrations/document_loaders/source_code/
         extensions_map = {
             "c": ["c"],  # C (*)
@@ -225,6 +228,8 @@ class AbstractVectorStoreInteractionMode(AbstractInteractionMode):
         return None
 
     def vector_store_url(self, url: str, signature: str) -> None:
+        from langchain_core.documents.base import Document
+
         loader = UnstructuredURLLoader(
             urls=[url],
             mode="elements",

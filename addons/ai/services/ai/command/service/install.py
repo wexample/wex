@@ -2,13 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from wexample_helpers.const.types import StringKeysDict
-from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
-
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
 from src.const.globals import COMMAND_TYPE_SERVICE
-from src.helper.service import service_copy_sample_dir
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -16,6 +11,11 @@ if TYPE_CHECKING:
 
 @app_command(help="Install the ai service", command_type=COMMAND_TYPE_SERVICE)
 def ai__service__install(manager: AppAddonManager, app_dir: str, service: str) -> None:
+    from wexample_helpers.const.types import StringKeysDict
+    from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read, yaml_write
+    from addons.app.helper.docker import DOCKER_COMPOSE_REL_PATH_BASE
+    from src.helper.service import service_copy_sample_dir
+
     docker_config_path = manager.get_env_dir() + DOCKER_COMPOSE_REL_PATH_BASE
     # yaml_read returns a StructuredData union. Cast to a dict for typed indexing.
     docker_config = cast(StringKeysDict, yaml_read(docker_config_path) or {})

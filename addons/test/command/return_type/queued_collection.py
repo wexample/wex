@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from src.decorator.command import command
 
 if TYPE_CHECKING:
-    from src.utils.kernel import Kernel
     from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.utils.kernel import Kernel
 
 
 @command(help="Return a queued collection")

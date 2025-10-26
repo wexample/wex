@@ -4,7 +4,6 @@ import os
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.app import app_create_manager
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
 def app__version__get(
     manager: AppAddonManager, app_dir: str | None = None
 ) -> str | None:
+    from addons.app.helper.app import app_create_manager
+
     manager = app_create_manager(manager.kernel, app_dir or os.getcwd())
 
     if manager.has_config(f"global.version"):

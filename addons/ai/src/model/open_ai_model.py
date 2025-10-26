@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 from langchain.chains import create_tagging_chain
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from addons.ai.src.assistant.interaction_mode.abstract_interaction_mode import (
     AbstractInteractionMode,
@@ -21,12 +20,16 @@ class OpenAiModel(AbstractModel):
     api_key: str | None = None
 
     def activate(self) -> None:
+        from langchain_openai import ChatOpenAI
+
         api_key_val = self.kernel.env("OPENAI_API_KEY", required=True)
         self.api_key = str(api_key_val)
 
         self.set_llm(ChatOpenAI(api_key=self.api_key, model_name=self.name))  # type: ignore
 
     def create_embeddings(self) -> Any:
+        from langchain_openai import OpenAIEmbeddings
+
         return OpenAIEmbeddings(openai_api_key=self.api_key)  # type: ignore
 
     def guess_function(

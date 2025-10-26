@@ -2,30 +2,20 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
-
-from git import Repo
-
-from addons.app.command.code.format import app__code__format
-from addons.app.command.config.set import app__config__set
-from addons.app.command.version.new_write import app__version__new_write
-from addons.core.command.version.new_commit import core__version__new_commit
-from addons.default.command.version.increment import default__version__increment
 from addons.default.const.default import UPGRADE_TYPE_MINOR
-from src.const.globals import CORE_COMMAND_NAME, FILE_README
 from src.core.response.AbstractResponse import AbstractResponse
 from src.core.response.queue_collection.AbstractQueuedCollectionResponseQueueManager import (
     AbstractQueuedCollectionResponseQueueManager,
 )
-from src.core.response.queue_collection.QueuedCollectionStopResponse import (
-    QueuedCollectionStopResponse,
-)
-from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.core import core_kernel_get_version
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+    from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+        QueuedCollectionStopResponse,
+    )
 
 
 @command(help="Build a new version of current core, or commit new version changes")
@@ -33,6 +23,10 @@ if TYPE_CHECKING:
 def core__version__new_write(
     kernel: Kernel, type: str = UPGRADE_TYPE_MINOR
 ) -> QueuedCollectionResponse | None:
+    from src.helper.core import core_kernel_get_version
+    from git import Repo
+    from src.core.response.QueuedCollectionResponse import QueuedCollectionResponse
+
     version = core_kernel_get_version(kernel)
     root_dir = kernel.directory.path
     repo = Repo(root_dir)
@@ -42,6 +36,8 @@ def core__version__new_write(
     def _core__version__build__format(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> AbstractResponse:
+        from addons.app.command.code.format import app__code__format
+
         kernel.io.log(f"Executing auto formatting scripts...")
 
         return kernel.run_function(app__code__format, {"app-dir": root_dir})
@@ -49,6 +45,10 @@ def core__version__new_write(
     def _core__version__build__check_uncommitted(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> QueuedCollectionStopResponse | None:
+        from src.core.response.queue_collection.QueuedCollectionStopResponse import (
+            QueuedCollectionStopResponse,
+        )
+
         # There is no uncommitted change
         if repo.is_dirty(untracked_files=True):
             kernel.io.error(
@@ -66,6 +66,12 @@ def core__version__new_write(
     def _core__version__build__increment_version(
         queue: AbstractQueuedCollectionResponseQueueManager,
     ) -> None:
+        from src.const.globals import CORE_COMMAND_NAME, FILE_README
+        from addons.app.command.config.set import app__config__set
+        from addons.core.command.version.new_commit import core__version__new_commit
+        from addons.default.command.version.increment import default__version__increment
+        from addons.app.command.version.new_write import app__version__new_write
+
         kernel.io.log(f"Building new version from {current_version}...")
 
         new_version = kernel.run_function(

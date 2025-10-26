@@ -5,14 +5,8 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Union, cast
 
 from langchain.agents import BaseMultiActionAgent, BaseSingleActionAgent
-from langchain.prompts import ChatPromptTemplate
-from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import BaseMessage
-from langchain_core.prompts import (
-    BasePromptTemplate,
-    FewShotPromptTemplate,
-    PromptTemplate,
-)
+from langchain_core.prompts import BasePromptTemplate, PromptTemplate
 from langchain_core.runnables import ConfigurableFieldSpec, Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from wexample_helpers.helpers.dict import dict_merge
@@ -29,6 +23,9 @@ from src.const.types import StringKeysDict, StringsList
 
 if TYPE_CHECKING:
     from addons.ai.src.assistant.assistant import Assistant
+    from langchain_core.language_models import BaseLanguageModel
+    from langchain.prompts import ChatPromptTemplate
+    from langchain_core.prompts import FewShotPromptTemplate
 
 
 class AbstractModel(AbstractAssistantChild):
@@ -155,6 +152,8 @@ class AbstractModel(AbstractAssistantChild):
         interaction_mode: AbstractInteractionMode,
         prompt_section: UserPromptSection,
     ) -> ChatPromptTemplate:
+        from langchain.prompts import ChatPromptTemplate
+
         assistant = self.assistant
 
         parts: list[tuple[str, str]] = []
@@ -233,6 +232,8 @@ class AbstractModel(AbstractAssistantChild):
         input_variables_names: StringsList = [],
         response_variable_name: str = "response",
     ) -> FewShotPromptTemplate:
+        from langchain_core.prompts import FewShotPromptTemplate
+
         example_prompt_template = PromptTemplate(
             input_variables=input_variables_names + [response_variable_name],
             template=example_prompt + "{" + response_variable_name + "}",
@@ -257,6 +258,8 @@ class AbstractModel(AbstractAssistantChild):
         )
 
     def get_llm(self) -> BaseLanguageModel[Any]:
+        from langchain_core.language_models import BaseLanguageModel
+
         self._validate__should_not_be_none(self._llm)
         assert isinstance(self._llm, BaseLanguageModel)
 

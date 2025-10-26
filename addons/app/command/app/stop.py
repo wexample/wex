@@ -2,18 +2,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from typing import TYPE_CHECKING
-
-from addons.app.command.app.perms import app__app__perms
-from addons.app.command.app.started import app__app__started
-from addons.app.command.hook.exec import app__hook__exec
-from addons.app.command.hosts.update import app__hosts__update
-from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.docker import docker_exec_app_compose_command
 from src.decorator.as_sudo import as_sudo
 from src.decorator.option import option
-from src.helper.command import execute_command_sync
-from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -27,10 +18,15 @@ def app__app__stop(
     app_dir: str,
     fast: bool = False,
 ) -> None:
+    from src.helper.prompt import prompt_progress_steps
+
     kernel = manager.kernel
     name = manager.get_app_name()
 
     def _app__app__stop__checkup() -> bool:
+        from addons.app.command.app.started import app__app__started
+        from addons.app.command.app.perms import app__app__perms
+
         if not kernel.run_function(app__app__started, {"app-dir": app_dir}).first():
             manager.log("App already stopped")
             return False
@@ -40,6 +36,11 @@ def app__app__stop(
         return True
 
     def _app__app__stop__stop() -> None:
+        from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+        from src.helper.command import execute_command_sync
+        from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.helper.docker import docker_exec_app_compose_command
+
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/stop-pre"}
         )
@@ -57,6 +58,10 @@ def app__app__stop(
         )
 
     def _app__app__stop__rm() -> None:
+        from addons.app.const.app import APP_FILEPATH_REL_COMPOSE_RUNTIME_YML
+        from addons.app.helper.docker import docker_exec_app_compose_command
+        from src.helper.command import execute_command_sync
+
         execute_command_sync(
             kernel,
             command=docker_exec_app_compose_command(
@@ -70,6 +75,8 @@ def app__app__stop(
         )
 
     def _app__app__stop__update_hosts() -> None:
+        from addons.app.command.hosts.update import app__hosts__update
+
         if manager.require_proxy():
             manager.log("Unregistering app")
             apps = manager.get_proxy_apps()
@@ -81,6 +88,8 @@ def app__app__stop(
         kernel.run_function(app__hosts__update)
 
     def _app__app__stop__complete() -> None:
+        from addons.app.command.hook.exec import app__hook__exec
+
         manager.set_runtime_config("started", False)
 
         kernel.run_function(

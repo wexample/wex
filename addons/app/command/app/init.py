@@ -1,24 +1,8 @@
 from __future__ import annotations
-
-import os.path
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
-
-from git import Repo
-from wexample_helpers.helpers.args import args_split_arg_array
-from wexample_helpers.helpers.string import string_to_snake_case
-
-from addons.app.command.app.start import app__app__start
-from addons.app.command.hook.exec import app__hook__exec
-from addons.app.command.service.install import app__service__install
-from addons.app.const.app import APP_DIR_APP_DATA, ERR_SERVICE_NOT_FOUND
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.app import app_create_env
-from addons.core.command.service.resolve import core__service__resolve
-from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
-from src.helper.prompt import prompt_progress_steps
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
@@ -61,6 +45,10 @@ def app__app__init(
     port: int | None = None,
     port_secure: int | None = None,
 ) -> None:
+    from addons.core.command.service.resolve import core__service__resolve
+    from src.helper.prompt import prompt_progress_steps
+    from wexample_helpers.helpers.string import string_to_snake_case
+
     kernel = manager.kernel
     current_dir = os.getcwd() + os.sep
     env = env or kernel.registry_structure.content.env
@@ -89,6 +77,9 @@ def app__app__init(
             os.makedirs(app_dir, exist_ok=True)
 
     def _init_step_check_services() -> bool | None:
+        from src.const.globals import COMMAND_TYPE_SERVICE
+        from addons.app.const.app import ERR_SERVICE_NOT_FOUND
+
         if len(services_resolved) == 0:
             return None
 
@@ -105,6 +96,8 @@ def app__app__init(
         return None
 
     def _init_step_copy_app() -> None:
+        from pathlib import Path
+        from addons.app.const.app import APP_DIR_APP_DATA
         import shutil
 
         app_sample_dir = (
@@ -132,6 +125,8 @@ def app__app__init(
             kernel.io.log(f"Renaming {sample_file}")
 
     def _init_step_create_env() -> None:
+        from addons.app.helper.app import app_create_env
+
         assert isinstance(app_dir, str)
         assert isinstance(env, str)
 
@@ -139,6 +134,8 @@ def app__app__init(
         app_create_env(env, app_dir)
 
     def _init_step_create_config() -> None:
+        from wexample_helpers.helpers.args import args_split_arg_array
+
         nonlocal domains
         nonlocal manager
 
@@ -162,6 +159,8 @@ def app__app__init(
         manager.set_app_workdir(app_dir)
 
     def _init_step_install_service() -> None:
+        from addons.app.command.service.install import app__service__install
+
         for service in services_resolved:
             kernel.io.log(f"Installing service {service}")
 
@@ -176,6 +175,8 @@ def app__app__init(
             ).first()
 
     def _init_step_init_git() -> None:
+        from git import Repo
+
         nonlocal git
 
         if git:
@@ -184,6 +185,8 @@ def app__app__init(
             Repo.init(app_dir)
 
     def _init_step_hooks() -> None:
+        from addons.app.command.hook.exec import app__hook__exec
+
         kernel.run_function(
             app__hook__exec, {"app-dir": app_dir, "hook": "app/init-post"}
         )
@@ -192,6 +195,8 @@ def app__app__init(
         manager.unset_app_workdir(current_dir)
 
     def _init_step_complete() -> None:
+        from addons.app.command.app.start import app__app__start
+
         kernel.io.message_next_command(
             app__app__start, message=f"Your app has been created in {env} environment"
         )

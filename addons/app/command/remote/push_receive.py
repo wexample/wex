@@ -1,17 +1,10 @@
 from __future__ import annotations
-
-import os.path
 from typing import TYPE_CHECKING, cast
-
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.decorator.app_webhook import app_webhook
-from addons.app.helper.remote import remote_build_temp_push_dir
-from src.const.globals import COMMAND_TYPE_ADDON, VERBOSITY_LEVEL_MAXIMUM
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.const.types import FileSystemStructureSchema
 from src.decorator.command import command
 from src.decorator.option import option
-from src.helper.file import file_create_directories_and_copy
-from src.helper.user import user_resolve_home_path
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
@@ -42,6 +35,9 @@ def app__remote__push_receive(
     env: str,
     user: str,
 ) -> bool:
+    from addons.app.AppAddonManager import AppAddonManager
+    from addons.app.helper.remote import remote_build_temp_push_dir
+
     app_dir = _app__remote__push_receive_find_app_dir(kernel, app, env)
 
     if not app_dir:
@@ -54,6 +50,9 @@ def app__remote__push_receive(
     def _app__remote__push_receive_copy_to_destination(
         item_name: str, schema: FileSystemStructureSchema
     ) -> None:
+        from src.helper.user import user_resolve_home_path
+        from src.helper.file import file_create_directories_and_copy
+
         if ("remote" not in schema) or (schema["remote"] != "push"):
             return None
 
@@ -81,6 +80,9 @@ def app__remote__push_receive(
 def _app__remote__push_receive_find_app_dir(
     kernel: Kernel, app_name: str, env: str
 ) -> str | None:
+    from addons.app.AppAddonManager import AppAddonManager
+    from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
+
     manager = cast(AppAddonManager, kernel.addons["app"])
     apps = manager.get_proxy_apps(env)
 

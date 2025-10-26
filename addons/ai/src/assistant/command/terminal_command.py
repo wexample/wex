@@ -7,9 +7,6 @@ from addons.ai.src.assistant.command.abstract_command import AbstractCommand
 from addons.ai.src.assistant.interaction_response.abstract_interaction_response import (
     AbstractInteractionResponse,
 )
-from addons.ai.src.assistant.interaction_response.string_interaction_response import (
-    StringInteractionResponse,
-)
 from src.helper.command import execute_command_sync
 
 if TYPE_CHECKING:
@@ -29,6 +26,10 @@ class TerminalCommand(AbstractCommand):
         prompt_section: UserPromptSection | None = None,
         remaining_sections: list[UserPromptSection] | None = None,
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         if prompt_section is None or prompt_section.prompt is None:
             return StringInteractionResponse("No command provided")
 

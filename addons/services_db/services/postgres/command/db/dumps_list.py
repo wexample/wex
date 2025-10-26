@@ -1,11 +1,7 @@
 from __future__ import annotations
-
-import os.path
-from glob import glob
 from typing import TYPE_CHECKING
 
 from addons.app.decorator.app_command import app_command
-from addons.app.helper.db import get_db_service_dumps_path
 from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import StringsList
 from src.decorator.option import option
@@ -19,6 +15,9 @@ if TYPE_CHECKING:
 def postgres__db__dumps_list(
     manager: AppAddonManager, app_dir: str, service: str, database: str | None = None
 ) -> StringsList:
+    from glob import glob
+    from addons.app.helper.db import get_db_service_dumps_path
+
     dumps_dir = get_db_service_dumps_path(manager, service)
 
     # Search for .zip and .sql files

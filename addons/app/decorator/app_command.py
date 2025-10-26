@@ -1,6 +1,8 @@
 from __future__ import annotations
-from src.const.types import AnyCallable, Args, Kwargs
+
 from typing import TYPE_CHECKING
+
+from src.const.types import AnyCallable, Args, Kwargs
 
 if TYPE_CHECKING:
     from addons.app.src.AppCommand import AppCommand
@@ -8,8 +10,8 @@ if TYPE_CHECKING:
 
 def app_command(*decorator_args: Args, **decorator_kwargs: Kwargs) -> AnyCallable:
     def decorator(function: AnyCallable) -> AppCommand:
-        from src.decorator.command import command
         from addons.app.src.AppCommand import AppCommand
+        from src.decorator.command import command
 
         # Convert function to command
         app_script_command = command(*decorator_args, **decorator_kwargs)(

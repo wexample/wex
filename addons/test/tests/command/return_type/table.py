@@ -3,16 +3,13 @@ from __future__ import annotations
 import json
 
 from addons.test.command.return_type.table import test__return_type__table
-from src.const.globals import (
-    KERNEL_RENDER_MODE_JSON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-)
 from tests.AbstractTestCase import AbstractTestCase
 
 
 class TestTestCommandReturnTypeTable(AbstractTestCase):
     def test_table(self) -> None:
+        from src.const.globals import KERNEL_RENDER_MODE_NONE
+
         self.for_each_render_mode(
             self._test_table,
             {
@@ -21,6 +18,11 @@ class TestTestCommandReturnTypeTable(AbstractTestCase):
         )
 
     def _test_table(self, render_mode: str) -> str | None:
+        from src.const.globals import (
+            KERNEL_RENDER_MODE_JSON,
+            KERNEL_RENDER_MODE_TERMINAL,
+        )
+
         response = self.kernel.run_function(
             test__return_type__table, {"arg": "test"}, render_mode=render_mode
         )

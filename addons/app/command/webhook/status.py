@@ -3,22 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
-from addons.system.command.process.by_port import system__process__by_port
-from src.const.globals import (
-    COMMAND_TYPE_ADDON,
-    KERNEL_RENDER_MODE_NONE,
-    KERNEL_RENDER_MODE_TERMINAL,
-    WEBHOOK_LISTEN_PORT_DEFAULT,
-)
-from src.const.types import StringKeysDict
-from src.core.response.DictResponse import DictResponse
-from src.core.response.KeyValueResponse import KeyValueResponse
-from src.core.response.TableResponse import TableBody, TableResponse
+from src.const.globals import COMMAND_TYPE_ADDON, WEBHOOK_LISTEN_PORT_DEFAULT
+from src.core.response.TableResponse import TableBody
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
+    from src.core.response.DictResponse import DictResponse
+    from src.core.response.KeyValueResponse import KeyValueResponse
+    from src.core.response.TableResponse import TableResponse
 
 
 @as_sudo()
@@ -30,6 +24,13 @@ if TYPE_CHECKING:
 def app__webhook__status(
     kernel: Kernel, webhook_port_number: int = WEBHOOK_LISTEN_PORT_DEFAULT
 ) -> DictResponse:
+    from src.const.types import StringKeysDict
+    from src.core.response.TableResponse import TableResponse
+    from addons.system.command.process.by_port import system__process__by_port
+    from src.core.response.KeyValueResponse import KeyValueResponse
+    from src.const.globals import KERNEL_RENDER_MODE_NONE, KERNEL_RENDER_MODE_TERMINAL
+    from src.core.response.DictResponse import DictResponse
+
     response = kernel.run_function(
         system__process__by_port,
         {"port": webhook_port_number},

@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
-from wexample_helpers.helpers.args import args_split_arg_array
-
-from src.const.globals import COMMAND_TYPE_SERVICE
 from src.const.types import CoreCommandCommaSeparatedList, StringsList
 from src.decorator.command import command
 from src.decorator.option import option
@@ -18,10 +14,14 @@ if TYPE_CHECKING:
 def core__service__resolve(
     kernel: Kernel, service: CoreCommandCommaSeparatedList
 ) -> StringsList:
+    from wexample_helpers.helpers.args import args_split_arg_array
+
     services = args_split_arg_array(service)
     resolved_services: StringsList = []
 
     def resolve_dependencies(service: str, resolved_services: StringsList) -> None:
+        from src.const.globals import COMMAND_TYPE_SERVICE
+
         if service in resolved_services:
             return
 

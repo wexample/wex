@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, cast
 
 from addons.app.decorator.option_webhook_listener import option_webhook_listener
-from src.const.globals import COMMAND_TYPE_ADDON, KERNEL_RENDER_MODE_TERMINAL
-from src.const.types import StringKeysDict
+from src.const.globals import COMMAND_TYPE_ADDON
 from src.core.Logger import LoggerLogData
-from src.core.response.DictResponse import DictResponse
 from src.decorator.command import command
 
 if TYPE_CHECKING:
+    from src.core.response.DictResponse import DictResponse
     from src.utils.kernel import Kernel
 
 
@@ -19,6 +18,9 @@ def app__webhook__status_process(
     kernel: Kernel, webhook_path: str
 ) -> DictResponse | None:
     from addons.app.const.webhook import WEBHOOK_LISTENER_ROUTES_MAP
+    from src.const.globals import KERNEL_RENDER_MODE_TERMINAL
+    from src.const.types import StringKeysDict
+    from src.core.response.DictResponse import DictResponse
     from src.helper.routing import routing_get_route_info, routing_is_allowed_route
 
     if not routing_is_allowed_route(webhook_path, WEBHOOK_LISTENER_ROUTES_MAP):

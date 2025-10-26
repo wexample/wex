@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import shutil
 from typing import TYPE_CHECKING
+
 from addons.app.decorator.app_command import app_command
 from src.const.globals import COMMAND_TYPE_SERVICE
 
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 
 @app_command(help="Install service", command_type=COMMAND_TYPE_SERVICE)
 def php__service__install(manager: AppAddonManager, app_dir: str, service: str) -> None:
-    from addons.app.const.app import APP_ENVS, APP_ENV_LOCAL
+    from addons.app.const.app import APP_ENV_LOCAL, APP_ENVS
     from src.helper.service import service_copy_sample_dir
 
     service_copy_sample_dir(manager.kernel, "php", "cron")

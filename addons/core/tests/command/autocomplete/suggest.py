@@ -1,8 +1,4 @@
 from __future__ import annotations
-
-import os.path
-
-from addons.app.AppAddonManager import AppAddonManager
 from addons.app.helper.test import DEFAULT_APP_TEST_NAME, test_create_app
 from addons.core.command.autocomplete.suggest import core__autocomplete__suggest
 from addons.core.command.command.create import core__command__create
@@ -114,6 +110,8 @@ class TestCoreCommandAutocompleteSuggest(AbstractTestCase):
         self.assertTrue("--search" in suggestions)
 
     def tests_suggest_app(self) -> None:
+        from addons.app.AppAddonManager import AppAddonManager
+
         app_dir = test_create_app(self.kernel, DEFAULT_APP_TEST_NAME)
 
         def _callback() -> None:

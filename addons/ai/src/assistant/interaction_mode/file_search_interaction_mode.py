@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 
 class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
     def get_file_subject(self) -> FileChatSubject:
+        from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
+
         return cast("FileChatSubject", self.assistant.get_current_subject())
 
     def get_similarity_search_filter(
@@ -29,6 +31,8 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         return {"signature": self.get_storage_signature()}
 
     def get_storage_signature(self) -> str:
+        from src.helper.file import file_build_signature
+
         return file_build_signature(self.get_file_subject().file_path or "")
 
     def get_vector_store_collection_name(self) -> str:
@@ -39,6 +43,10 @@ class FileSearchInteractionMode(AbstractVectorStoreInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
+        from addons.ai.src.assistant.interaction_response.string_interaction_response import (
+            StringInteractionResponse,
+        )
+
         subject = self.get_file_subject()
 
         # Avoid empty input error.
