@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 def app__helper__stop(kernel: Kernel, name: str, env: str | None = None) -> None:
     from addons.app.command.app.stop import app__app__stop
     from addons.app.AppAddonManager import AppAddonManager
+
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     helper_app_path = manager.get_helper_app_path(name, env)
 

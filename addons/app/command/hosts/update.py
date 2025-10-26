@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os.path
 from typing import TYPE_CHECKING
+
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 from src.decorator.option import option
@@ -26,10 +27,10 @@ def add_domains_block(text: str, block_content: str) -> str:
 @command(help="Update local /etc/hosts file")
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 def app__hosts__update(kernel: Kernel, env: str | None = None) -> None:
-    from addons.app.command.app.started import app__app__started
     from addons.app.AppAddonManager import AppAddonManager
-    from src.const.globals import SYSTEM_HOSTS_PATH
+    from addons.app.command.app.started import app__app__started
     from addons.docker.command.docker.ip import docker__docker__ip
+    from src.const.globals import SYSTEM_HOSTS_PATH
 
     new_block_content_list = []
     ip = kernel.run_function(docker__docker__ip).first()

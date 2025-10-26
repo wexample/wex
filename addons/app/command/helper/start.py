@@ -4,6 +4,7 @@ import getpass
 from typing import TYPE_CHECKING, Any, cast
 
 from click import Choice
+
 from addons.app.const.app import HELPER_APPS_LIST
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -57,8 +58,8 @@ def app__helper__start(
     current_dir = os.getcwd()
 
     def _app__helper__start__create() -> Any:
-        from addons.app.command.app.started import app__app__started
         from addons.app.command.app.init import app__app__init
+        from addons.app.command.app.started import app__app__started
 
         nonlocal env
         kernel.io.log("Starting helper app")

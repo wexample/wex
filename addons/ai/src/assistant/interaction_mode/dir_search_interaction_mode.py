@@ -42,10 +42,10 @@ class DirSearchInteractionMode(AbstractVectorStoreInteractionMode):
         prompt_section: UserPromptSection,
         remaining_sections: list[UserPromptSection],
     ) -> AbstractInteractionResponse:
-        from src.helper.file import file_build_signature, file_is_utf8_encoding
         from addons.ai.src.assistant.interaction_response.string_interaction_response import (
             StringInteractionResponse,
         )
+        from src.helper.file import file_build_signature, file_is_utf8_encoding
 
         subject = self.get_dir_subject()
 
