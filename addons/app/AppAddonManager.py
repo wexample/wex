@@ -43,11 +43,11 @@ from src.const.types import (
 from src.core.AddonManager import AddonManager
 
 if TYPE_CHECKING:
+    from src.const.types import AppsPathsList, YamlContent
     from src.core.CommandRequest import CommandRequest
+    from src.core.ConfigValue import ConfigValue
     from src.core.response.AbstractResponse import AbstractResponse
     from src.utils.kernel import Kernel
-    from src.const.types import AppsPathsList, YamlContent
-    from src.core.ConfigValue import ConfigValue
 
 
 class AppAddonManager(AddonManager):
@@ -137,12 +137,12 @@ class AppAddonManager(AddonManager):
     def build_runtime_config(
         self, user: str | None = None, group: str | None = None
     ) -> None:
-        from src.const.globals import COMMAND_TYPE_SERVICE
-        from addons.app.const.app import HELPER_APP_PROXY_SHORT_NAME
         import socket
 
         from addons.app.command.env.get import app__env__get
         from addons.app.command.hook.exec import app__hook__exec
+        from addons.app.const.app import HELPER_APP_PROXY_SHORT_NAME
+        from src.const.globals import COMMAND_TYPE_SERVICE
         from src.helper.user import (
             get_gid_from_group_name,
             get_uid_from_user_name,
@@ -261,19 +261,20 @@ class AppAddonManager(AddonManager):
         app_name: str,
         domains: StringsList | None = None,
     ) -> AppConfig:
-        from src.helper.core import core_kernel_get_version
         from wexample_helpers.helpers.string import string_to_kebab_case
-        from src.const.globals import (
-            CORE_COMMAND_NAME,
-            DATE_FORMAT_SECOND,
-            VERSION_DEFAULT,
-        )
+
         from addons.app.const.app import (
             APP_ENV_DEV,
             APP_ENV_LOCAL,
             APP_ENV_PROD,
             APP_ENV_TEST,
         )
+        from src.const.globals import (
+            CORE_COMMAND_NAME,
+            DATE_FORMAT_SECOND,
+            VERSION_DEFAULT,
+        )
+        from src.helper.core import core_kernel_get_version
 
         if domains is None:
             domains = []
@@ -486,11 +487,12 @@ class AppAddonManager(AddonManager):
         return self.get_config(key="global.main_service").get_str()
 
     def get_proxy_apps(self, environment: str | None = None) -> AppsPathsList:
+        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
         from addons.app.const.app import (
             HELPER_APP_PROXY_SHORT_NAME,
             PROXY_FILE_APPS_REGISTRY,
         )
-        from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
         from src.const.types import AppsPathsList
 
         return cast(
@@ -754,8 +756,9 @@ class AppAddonManager(AddonManager):
             )
 
     def load_script(self, name: str) -> YamlContent | None:
-        from src.const.types import YamlContent
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
+
+        from src.const.types import YamlContent
 
         script_dir = self.get_env_file_path(os.path.join("script", name + ".yml"))
         return cast(Optional[YamlContent], yaml_read(script_dir))
@@ -929,8 +932,9 @@ class AppAddonManager(AddonManager):
         return ConfigValue(value=value)
 
     def _save_config(self, path: str | None, config: AnyAppConfig | None) -> None:
-        from src.const.types import YamlContent
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_write
+
+        from src.const.types import YamlContent
 
         if not path or not config:
             return

@@ -21,8 +21,8 @@ if TYPE_CHECKING:
     help="Include stopped ones",
 )
 def docker__container__runs(kernel: Kernel, name: str, all: bool = False) -> bool:
-    from src.helper.command import execute_command_sync
     from src.decorator.command import command
+    from src.helper.command import execute_command_sync
 
     command: ShellCommandsList = [
         "docker",
