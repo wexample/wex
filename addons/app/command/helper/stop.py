@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os.path
 from typing import TYPE_CHECKING, cast
+
 from addons.app.const.app import HELPER_APPS_LIST
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
@@ -9,7 +10,6 @@ from src.decorator.option import option
 
 if TYPE_CHECKING:
     from src.utils.kernel import Kernel
-    from addons.app.AppAddonManager import AppAddonManager
 
 
 @as_sudo()
@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 )
 @option("--env", "-e", type=str, required=False, help="Env for accessing apps")
 def app__helper__stop(kernel: Kernel, name: str, env: str | None = None) -> None:
-    from addons.app.command.app.stop import app__app__stop
     from addons.app.AppAddonManager import AppAddonManager
+    from addons.app.command.app.stop import app__app__stop
 
     manager: AppAddonManager = cast(AppAddonManager, kernel.addons["app"])
     helper_app_path = manager.get_helper_app_path(name, env)
