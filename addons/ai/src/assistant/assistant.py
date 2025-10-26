@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any, cast
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from prompt_toolkit import HTML, print_formatted_text
 from sqlalchemy import Row
 from wexample_helpers.helpers.json import json_load
 from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read
@@ -35,7 +34,6 @@ from addons.ai.src.assistant.command.terminal_command import TerminalCommand
 from addons.ai.src.assistant.command.url_search_command import UrlSearchCommand
 from addons.ai.src.assistant.command.vet_command import VetCommand
 from addons.ai.src.assistant.prompt_manager import PromptManager
-from addons.ai.src.assistant.subject.abstract_chat_subject import AbstractChatSubject
 from addons.ai.src.assistant.subject.default_chat_subject import DefaultChatSubject
 from addons.ai.src.assistant.subject.dir_chat_subject import DirChatSubject
 from addons.ai.src.assistant.subject.file_chat_subject import FileChatSubject
@@ -47,7 +45,6 @@ from addons.ai.src.assistant.utils.globals import (
 )
 from addons.ai.src.assistant.utils.history_item import HistoryItem
 from addons.ai.src.assistant.utils.user_prompt_section import UserPromptSection
-from addons.ai.src.model.abstract_model import AbstractModel
 from addons.ai.src.model.ollama_model import MODEL_NAME_OLLAMA_MISTRAL, OllamaModel
 from addons.ai.src.model.open_ai_model import (
     MODEL_NAME_OPEN_AI_GPT_3_5_TURBO,
@@ -58,7 +55,7 @@ from addons.app.AppAddonManager import AppAddonManager
 from addons.app.command.helper.start import app__helper__start
 from addons.app.const.app import HELPER_APP_AI_SHORT_NAME
 from src.core.spinner import Spinner
-from src.helper.prompt import prompt_choice_dict, prompt_progress_steps
+from src.helper.prompt import prompt_choice_dict
 from src.utils.abstract_kernel_child import AbsractKernelChild
 
 if TYPE_CHECKING:
