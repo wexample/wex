@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from addons.app.tests.AbstractAppTestCase import AbstractAppTestCase
 
 

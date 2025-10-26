@@ -20,9 +20,9 @@ class TestAppCommandMigrationMigrate(AbstractAppTestCase):
             test_app_dir = self.build_test_dir(source_apps_dir + test_app_dir) + os.sep
 
             def _test_migrate() -> None:
+                from addons.app.command.migration.migrate import app__migration__migrate
                 from src.const.globals import CORE_COMMAND_NAME
                 from src.helper.core import core_kernel_get_version
-                from addons.app.command.migration.migrate import app__migration__migrate
 
                 self.kernel.run_function(app__migration__migrate, {"yes": True})
 

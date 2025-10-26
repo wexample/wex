@@ -12,15 +12,15 @@ from src.helper.user import get_sudo_username, get_user_group_name
 
 class TestAppCommandAppPerms(AbstractAppTestCase):
     def test_perms(self) -> None:
-        from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
+        from addons.app.command.app.perms import app__app__perms
         from addons.app.const.app import APP_DIR_TMP
+        from src.const.globals import ROOT_USERNAME, USER_WWW_DATA
+        from src.helper.file import file_get_group, file_get_owner
         from src.helper.user import (
             get_gid_from_group_name,
             get_uid_from_user_name,
             get_user_or_sudo_user,
         )
-        from src.helper.file import file_get_group, file_get_owner
-        from addons.app.command.app.perms import app__app__perms
 
         app_dir = self.create_test_app(DEFAULT_APP_TEST_NAME, force_restart=True)
 
