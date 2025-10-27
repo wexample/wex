@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, cast
 from addons.app.decorator.app_command import app_command
 from src.const.types import CoreCommandCommaSeparatedList
 from src.decorator.option import option
+from wexample_helpers.helpers.args import args_split_arg_array
 
 if TYPE_CHECKING:
     from addons.app.AppAddonManager import AppAddonManager
