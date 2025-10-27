@@ -3,6 +3,8 @@ help: Install local development configuration
 command:
   decorator: app_command
 scripts:
+  - title: Install local app
+    script: pip install -e ${LOCAL_PIP_PACKAGES_PATH}app
   - title: Install local filestate
     script: pip install -e ${LOCAL_PIP_PACKAGES_PATH}filestate
   - title: Install local helper
