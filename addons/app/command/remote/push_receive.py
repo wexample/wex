@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING, cast
 
 from addons.app.decorator.app_webhook import app_webhook
