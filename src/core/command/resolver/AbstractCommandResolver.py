@@ -55,6 +55,7 @@ class AbstractCommandResolver(AbsractKernelChild):
     def build_base_command_path(self, base_path: str) -> str:
         return os.path.join(base_path, "command") + os.path.sep
 
+    @classmethod
     def build_command_from_function(self, script_command: ScriptCommand) -> str:
         if (
             not script_command.click_command
