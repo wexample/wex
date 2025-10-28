@@ -10,6 +10,9 @@ if __name__ == "__main__":
         from wexample_wex_core.addons.default.default_addon_manager import (
             DefaultAddonManager,
         )
+        from wexample_wex_core.addons.git.git_addon_manager import (
+            GitAddonManager,
+        )
         from wexample_wex_core.common.kernel import Kernel
         from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
         from wexample_wex_addon_app.app_addon_manager import AppAddonManager
@@ -21,6 +24,7 @@ if __name__ == "__main__":
             .setup(addons=[
                 AppAddonManager,
                 DefaultAddonManager,
+                GitAddonManager,
             ])
             .exec_argv()
         )
