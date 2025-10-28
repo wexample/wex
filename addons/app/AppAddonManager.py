@@ -110,9 +110,26 @@ class AppAddonManager(AddonManager):
 
     @classmethod
     def _load_config(
-        cls, path: str, default: YamlContentDict | None = None
+        cls,
+            path: str,
+            default: YamlContentDict | None = None,
+            parameters: None | dict = None
     ) -> YamlContentDict:
         from wexample_helpers_yaml.helpers.yaml_helpers import yaml_read_dict
+
+        if parameters and os.path.exists(path):
+            # Read the raw YAML content
+            with open(path, 'r') as f:
+                yaml_content = f.read()
+            
+            # Replace placeholders with parameter values
+            for key, value in parameters.items():
+                # Support both ${VAR} and $VAR patterns
+                yaml_content = yaml_content.replace(f'${{{key}}}', str(value))
+                yaml_content = yaml_content.replace(f'${key}', str(value))
+            
+            # Parse the expanded YAML content
+            return yaml.safe_load(yaml_content) or {}
 
         return yaml_read_dict(path, default) or {}
 
@@ -742,13 +759,25 @@ class AppAddonManager(AddonManager):
         return bool(self.app_dir) and self.is_app_root(self.get_app_dir())
 
     def load_config(self) -> None:
+        from src.helper.file import (
+            file_env_to_dict,
+        )
+
+        app_env_path = os.path.join(self.app_dir, APP_FILEPATH_REL_ENV)
+        parameters = file_env_to_dict(app_env_path)
+
         if isinstance(self.config_path, str):
-            self._config = cast(AppConfig, self._load_config(self.config_path))
+            self._config = cast(AppConfig, self._load_config(
+                self.config_path,
+                parameters=parameters
+            ))
 
         if isinstance(self.runtime_config_path, str):
             self._runtime_config = cast(
-                AppRuntimeConfig, self._load_config(self.runtime_config_path)
-            )
+                AppRuntimeConfig, self._load_config(
+                    self.runtime_config_path,
+                    parameters=parameters
+                ))
 
         if isinstance(self.runtime_docker_compose_path, str):
             self.runtime_docker_compose = cast(
