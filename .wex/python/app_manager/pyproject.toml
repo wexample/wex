@@ -6,8 +6,8 @@ requires-python = ">=3.10"
 dependencies = [
     "jinja2",
     "wexample-wex-addon-app==0.0.46",
-    "wexample-wex-addon-python==0.0.42",
-    "wexample-wex-addon-filestate==0.0.6",
+    "wexample-wex-addon-dev-python==0.0.48",
+    "wexample-wex-addon-filestate==0.0.8",
     "wexample-wex-core>=0.1.0",
     "wexample-file>=0.0.9",
     "wexample-filestate==0.0.54",
