@@ -32,7 +32,7 @@ if [ ! -z "${DOCKER_HOST}" ]; then
 fi
 
 # Allow to override python executor
-WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.wex/python/venv/bin/python}
+WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.venv/bin/python}
 
 # Load main python script
 ${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" "${WEX_TASK_ID}" "${@}"

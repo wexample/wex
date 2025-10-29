@@ -5,7 +5,7 @@
 WEX_DIR_CLI="$(realpath "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")")/"
 WEX_ROOT="$(realpath "${WEX_DIR_CLI}../")/"
 
-COVERAGE_PATH="${WEX_ROOT}.wex/python/venv/bin/coverage"
+COVERAGE_PATH="${WEX_ROOT}.venv/bin/coverage"
 WEX_INTERPRETER="${COVERAGE_PATH} run"
 COVERAGE_DIR_OUTPUT="${WEX_ROOT}tmp/coverage/"
 export COVERAGE_FILE="${COVERAGE_DIR_OUTPUT}.coverage"
