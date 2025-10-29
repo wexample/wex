@@ -28,7 +28,7 @@ trap cleanup EXIT INT TERM
 WEX_REQUEST_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
 
 # Allow to override python executor
-WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.wex/python/venv/bin/python}
+WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.venv/bin/python}
 
 # Load main python script
 ${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" "${WEX_REQUEST_ID}" "${@}"
