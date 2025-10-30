@@ -41,6 +41,7 @@ from src.const.types import (
     YamlContentDict,
 )
 from src.core.AddonManager import AddonManager
+from wexample_helpers_yaml.helpers.yaml_helpers import yaml_fill_unresolved_vars
 
 if TYPE_CHECKING:
     from src.const.types import AppsPathsList, YamlContent
@@ -127,7 +128,10 @@ class AppAddonManager(AddonManager):
                 # Support both ${VAR} and $VAR patterns
                 yaml_content = yaml_content.replace(f'${{{key}}}', str(value))
                 yaml_content = yaml_content.replace(f'${key}', str(value))
-            
+
+            # Support unresolved vars.
+            yaml_content = yaml_fill_unresolved_vars(yaml_content)
+
             # Parse the expanded YAML content
             return yaml.safe_load(yaml_content) or {}
 
