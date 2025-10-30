@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import os
-import tempfile
+import re
 from typing import TYPE_CHECKING
 
 from src.const.globals import COMMAND_TYPE_ADDON
-from src.const.types import StringsList
 from src.decorator.as_sudo import as_sudo
 from src.decorator.command import command
 
@@ -21,45 +19,35 @@ if TYPE_CHECKING:
 def system__git__rollback_permissions(kernel: Kernel) -> bool:
     from src.helper.command import execute_command_sync
 
-    success, diff = execute_command_sync(
+    success, output = execute_command_sync(
         kernel,
-        ["git", "diff", "-p", "-R", "--no-ext-diff", "--no-color", "--diff-filter=M"],
+        ["git", "diff", "--summary"],
         ignore_error=True,
     )
 
     if not success:
         return False
 
-    current_diff: StringsList = []
-    for line in diff:
-        if line.startswith("diff"):
-            if current_diff:
-                _apply_diff(kernel, current_diff)
-                current_diff = []
-        if line.startswith(("old mode", "new mode", "diff")):
-            current_diff.append(line)
+    mode_pattern = re.compile(r'^\s*mode change \d+ => \d+ (.+)$')
 
-    if current_diff:
-        _apply_diff(kernel, current_diff)
+    files_to_restore = []
+    for line in output:
+        match = mode_pattern.match(line)
+        if match:
+            files_to_restore.append(match.group(1))
+
+    if not files_to_restore:
+        kernel.io.log("No permission changes to rollback")
+        return True
+
+    for file_path in files_to_restore:
+        kernel.io.log(f"Rolling back permissions for {file_path}")
+        success, _ = execute_command_sync(
+            kernel,
+            ["git", "checkout", "HEAD", "--", file_path],
+            ignore_error=True,
+        )
+        if not success:
+            kernel.io.error(f"Failed to rollback {file_path}")
 
     return True
-
-
-def _apply_diff(kernel: Kernel, diff_lines: StringsList) -> None:
-    from src.helper.command import execute_command_sync
-
-    if len(diff_lines) < 3:
-        return
-
-    kernel.io.log(f"Rolling back {diff_lines[0]}")
-
-    diff_str = "\n".join(diff_lines) + "\n"
-    with tempfile.NamedTemporaryFile(delete=False, mode="w") as temp_file:
-        temp_file.write(diff_str)
-        temp_file_path = temp_file.name
-
-    success, _ = execute_command_sync(
-        kernel, ["git", "apply", temp_file_path], ignore_error=True
-    )
-
-    os.remove(temp_file_path)
