@@ -9,7 +9,7 @@ env:
     email: contact@wexample.com
   local:
     email: contact@wexample.com
-    dependencies_paths:
+    libraries:
       - ${LOCAL_PIP_PACKAGES_PATH}
   prod:
     branch: master
