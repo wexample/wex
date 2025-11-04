@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import time
 from collections.abc import Callable
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import click
@@ -229,7 +230,7 @@ def app__app__start(
                 [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
                 compose_options,
             ),
-            working_directory=app_dir,
+            cwd=app_dir,
             interactive=True,
         )
 

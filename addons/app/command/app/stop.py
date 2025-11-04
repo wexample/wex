@@ -54,7 +54,7 @@ def app__app__stop(
                 [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
                 ["stop"],
             ),
-            working_directory=app_dir,
+            cwd=app_dir,
             interactive=True,
         )
 
@@ -71,7 +71,7 @@ def app__app__stop(
                 [APP_FILEPATH_REL_COMPOSE_RUNTIME_YML],
                 ["rm", "-f"],
             ),
-            working_directory=app_dir,
+            cwd=app_dir,
             interactive=True,
         )
 

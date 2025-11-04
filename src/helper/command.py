@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 from src.const.types import ShellCommandResponseTuple
@@ -121,7 +122,7 @@ def execute_command_async(
 def execute_command_sync(
     kernel: Kernel,
     command: ShellCommandsList | str,
-    working_directory: str | None = None,
+    cwd: str | None = None,
     ignore_error: bool = False,
     interactive: bool = False,
     as_sudo_user: bool = True,
@@ -132,8 +133,8 @@ def execute_command_sync(
     from src.const.globals import VERBOSITY_LEVEL_MAXIMUM
     from src.helper.user import get_user_or_sudo_user
 
-    if working_directory is None:
-        working_directory = os.getcwd()
+    if cwd is None:
+        cwd = os.getcwd()
 
     if isinstance(command, str):
         command = command.split()
@@ -156,7 +157,7 @@ def execute_command_sync(
         if interactive:
             process = Popen(
                 command,
-                cwd=working_directory,
+                cwd=Path(cwd),
                 stdin=None,
                 stdout=None,
                 stderr=None,
@@ -166,7 +167,7 @@ def execute_command_sync(
         else:
             process = Popen(
                 command,
-                cwd=working_directory,
+                cwd=Path(cwd),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -237,7 +238,7 @@ def execute_command_tree_sync(
     return execute_command_sync(
         kernel=kernel,
         command=cast(ShellCommandsList, command_tree),
-        working_directory=working_directory,
+        cwd=working_directory,
         ignore_error=ignore_error,
         interactive=interactive,
         as_sudo_user=as_sudo_user,
