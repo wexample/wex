@@ -23,7 +23,9 @@ sudo apt-get update
 
 # Setup Python virtual environment
 echo "Setting up Python virtual environment..."
-VENV_PATH="${WEX_DIR_ROOT}.wex/python/venv"
+
+# Standard venv path at project root
+VENV_PATH="${WEX_DIR_ROOT}.venv"
 
 # Remove existing venv if present
 if [ -d "$VENV_PATH" ]; then
