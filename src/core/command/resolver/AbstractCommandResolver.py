@@ -275,8 +275,9 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         from src.const.globals import COMMAND_SEPARATOR_FUNCTION_PARTS
 
-        return string_to_snake_case(
-            COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
+        return COMMAND_SEPARATOR_FUNCTION_PARTS.join(
+            string_to_snake_case(part)
+            for part in self.get_function_name_parts(parts)
         )
 
     @abstractmethod
