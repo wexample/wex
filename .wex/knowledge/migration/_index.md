@@ -2,6 +2,10 @@
 
 Global dashboard for tracking the v5 → v6 migration progress.
 
+## ⚠️ Core mechanisms (priority — do before individual commands)
+
+- [ ] [core-mechanisms](inventory/core-mechanisms.md) — Registry, YAML runner, app/user resolvers, attach system, structured output
+
 ## Core
 
 - [ ] [kernel](inventory/kernel.md) — Main orchestrator, task ID, verbosity, entry point

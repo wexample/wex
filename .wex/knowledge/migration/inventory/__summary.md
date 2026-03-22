@@ -6,6 +6,7 @@ Each file covers one functional domain. For each item: v5 location, migration st
 
 ## Directory registry
 
+- 📄 core-mechanisms.md — **priority** — registry, resolvers, YAML runner, attach, structured output
 - 📄 kernel.md — main orchestrator, task ID, verbosity, render modes
 - 📄 command-system.md — resolvers, runners, command request lifecycle
 - 📄 response-system.md — all response types and rendering pipeline
