@@ -6,15 +6,19 @@
 
 ## Decorators
 
-- [ ] `@command(help="...")` — define a command with documentation
-- [ ] `@option(...)` — add CLI options (wraps Click)
-- [ ] `@alias("name")` — create command alias
-- [ ] `@attach(position, command, ...)` — attach pre/post commands (`before` / `after`)
-- [ ] `@as_sudo()` — require sudo privileges
-- [ ] `@no_log()` — suppress logging
-- [ ] `@verbosity(level)` — set verbosity requirement
-- [ ] `@test_command()` — mark as test-only command
+- [x] `@command(help="...")` — exists in `wex-core/decorator/command.py`
+- [x] `@option(...)` — exists in `wex-core/decorator/option.py`
+- [ ] `@alias("name")` — missing
+- [ ] `@attach(position, command, ...)` — missing (`before` / `after` hooks)
+- [ ] `@as_sudo()` — missing
+- [ ] `@no_log()` — missing
+- [ ] `@verbosity(level)` — missing
+- [ ] `@test_command()` — missing
+
+## New in v6
+
+- [x] `@middleware` — exists in `wex-core/decorator/middleware.py`
 
 ## v6 target
 
-- `wex-core`
+- `wex-core/decorator/`

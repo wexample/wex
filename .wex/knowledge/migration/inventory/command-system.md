@@ -1,7 +1,5 @@
 # Command System
 
-You are reading this file because you need to understand the command system migration status.
-
 ## v5 reference
 
 - Kernel: `wex-5/src/utils/kernel.py`
@@ -20,23 +18,25 @@ You are reading this file because you need to understand the command system migr
 
 ### Resolvers
 
-- [x] Service resolver — functional
-- [ ] Addon resolver — `AddonCommandResolver` to create
-  - [ ] Parse `addon::group/command` format
-  - [ ] Register addon directories
-  - [ ] Resolve Python file path
-  - [ ] Convert path to method name
-  - [ ] Test with `default::info/show`
+- [x] Addon resolver — `AddonCommandResolver` exists in wex-core
+- [x] Service resolver — `ServiceCommandResolver` exists in wex-core
 - [ ] User resolver — to evaluate
 
 ### Runners
 
-- [x] Python runner — implemented
-- [ ] Execution pathway — not fully tested
-  - [ ] Verify Python script path resolution
-  - [ ] Validate module execution mechanism
+- [x] Python runner — `CorePythonCommandRunner` implemented
+- [x] YAML runner — `CoreYamlCommandRunner` implemented
+- [ ] Execution pathway — not fully tested end-to-end
+
+### Command request lifecycle
+
+- [x] `CommandRequest` — exists in wex-core
+- [x] `CommandMethodWrapper` — wraps decorated functions
+- [x] `ExtendedCommand` — runs commands with `ExecutionContext`
+- [x] `ExecutionContext` — passed to every command (kernel, request, io, middleware, progress) ← **new in v6**
 
 ### Response system
 
-- [ ] Connect command responses to prompt system
-- [ ] Restore sophisticated response handling from v5
+> ⚠️ Paradigm change: v5 used response objects (`DefaultResponse`, `TableResponse`…).
+> v6 replaces this with `ExecutionContext` + pluggable output handlers.
+> See `response-system.md` for migration status of individual response types.

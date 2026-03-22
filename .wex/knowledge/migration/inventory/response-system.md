@@ -1,13 +1,20 @@
 # Response System
 
+> ⚠️ Paradigm change: v5 response objects are replaced in v6 by `ExecutionContext` + output handlers.
+> Before migrating individual types, decide which v5 responses map to v6 output patterns vs which need new equivalents.
+
 ## v5 reference
 
 `wex-5/src/core/response/`
 
-## Response types
+## v6 equivalent (already in place)
 
-- [ ] `AbstractResponse` — base with rendering logic
-- [ ] `DefaultResponse` — plain text
+- [x] Output handlers: `stdout` / `file` / `none` — pluggable, set via `--output_format` / `--output_target`
+- [x] `ExecutionContext` — provides `io.log()`, `io.progress()`, access to kernel and request
+
+## Response types to migrate or replace
+
+- [ ] `DefaultResponse` — plain text → `io.log()`?
 - [ ] `DictResponse` — dictionary output
 - [ ] `ListResponse` — list output
 - [ ] `TableResponse` — table formatting
@@ -21,12 +28,7 @@
 - [ ] `ResponseCollectionResponse` — multiple responses
 - [ ] `QueuedCollectionResponse` — queued response execution
 
-## Rendering pipeline
-
-- [ ] Render mode selection (terminal / json / none)
-- [ ] Parent/child response chaining
-- [ ] Output printing
-
 ## v6 target
 
-- `wex-core`
+- Simple output → `ExecutionContext.io`
+- Structured output → to define (new response classes in wex-core, or a dedicated pattern)

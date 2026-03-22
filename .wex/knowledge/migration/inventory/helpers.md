@@ -4,7 +4,10 @@
 
 `wex-5/src/helper/`
 
-## Modules
+## Status
+
+> Many helpers are already ported into `PACKAGES/PYTHON/packages/helpers` under a different structure.
+> Check individual functions before migrating — many exist under new names.
 
 ### command.py
 - [ ] `execute_command_sync` / `execute_command_async`
@@ -14,6 +17,7 @@
 - [ ] `apply_command_decorator`
 
 ### string.py
+> Check `helpers/src/wexample_helpers/helpers/string.py` first.
 - [ ] `string_to_camel_case`, `string_to_pascal_case`
 - [ ] `string_format_ignore_missing`
 - [ ] `string_truncate`, `string_multiline_center`, `string_trim_leading`
@@ -23,6 +27,7 @@
 - [ ] `string_list_calculate_max_widths`
 
 ### file.py
+> Check `helpers/src/wexample_helpers/helpers/file.py` and `PACKAGES/PYTHON/packages/file/` first.
 - [ ] `file_create_parent_dir`
 - [ ] `file_remove_file_if_exists`
 - [ ] File listing, reading, writing utilities
@@ -38,6 +43,7 @@
 - [ ] `routing_build_webhook_route_map`
 
 ### prompt.py
+> Check `PACKAGES/PYTHON/packages/prompt/` first — `IoManager` covers many of these.
 - [ ] `prompt_build_progress_bar`, `prompt_progress_steps`
 - [ ] `prompt_choice`, `prompt_choice_dict`
 - [ ] `prompt_pick_a_file`, `prompt_pick_a_dir`

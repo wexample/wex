@@ -7,13 +7,13 @@
 
 ## Features
 
-- [ ] Task ID generation (format: `YYYYMMDD-HHMMSS-nanoseconds-PID`)
+- [x] Verbosity levels: `quiet` / `default` / `medium` / `maximum` — `VerbosityLevel` enum in `prompt` package
+- [x] Render modes / output handlers: `stdout` / `file` / `none` — pluggable output targets in wex-core
+- [x] Addon and command resolution orchestration — `Kernel` in wex-core
+- [x] Addon registration system — `AbstractAddonManager` + addon registry
+- [ ] Task ID generation (format: `YYYYMMDD-HHMMSS-nanoseconds-PID`) — bash-side, to verify in `bin/wex`
 - [ ] Post-exec command handling (bash-side loop after Python exits)
-- [ ] Verbosity levels: `quiet` / `default` / `medium` / `maximum`
-- [ ] Render modes: `terminal` / `json` / `none`
-- [ ] Addon and command resolution orchestration
-- [ ] Response rendering pipeline
 
 ## v6 target
 
-- `wex-core` → `AbstractKernel`
+- `wex-core` → `Kernel` (extends `CommandRunnerKernel`, `CommandLineKernel`, `AbstractKernel`)
