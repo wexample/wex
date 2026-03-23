@@ -37,9 +37,15 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 ## Registry
 
-- [ ] Central command registry — lists all available commands across all addons
-- [ ] Used by: autocomplete, `test::run/all`, `default::info/show`
-- [ ] v5 reference: `registry/build` + `KernelRegistryFileStructure`
+The registry is a central artifact — built once, persisted to disk (YAML via `KernelRegistryFile`), consumed by many features. Commands should read it, not rebuild it.
+
+- [ ] `core::registry/build` — scan all addons, persist to `{workdir}/.wex/registry.yml`
+- [ ] Registry loaded at kernel startup (or lazily on first access)
+- [ ] `@alias` — resolver reads aliases from registry to map short names to full commands
+- [ ] `autocomplete/suggest` — reads registry to list all available commands for shell completion
+- [ ] `default::info/show` — reads registry to display available commands
+- [ ] `test::run/all` — reads registry to collect test file paths (currently rebuilds each call — to fix)
+- [ ] v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandResolver`
 
 ---
 
@@ -94,7 +100,7 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 - [x] `@command`, `@option`
 - [x] `@middleware` (new in v6)
-- [ ] `@alias`
+- [ ] `@alias` — registered in registry at build time; resolved before command execution
 - [ ] `@attach`
 - [ ] `@as_sudo` — triggers `os.execvp("sudo", ...)` before execution
 - [ ] `@no_log` — exclude command from log files
