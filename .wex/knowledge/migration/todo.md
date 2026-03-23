@@ -30,14 +30,34 @@ Active tasks only — completed items live in the inventory files.
 - [ ] Implement `@verbosity`
 - [ ] Implement `@test_command`
 
-## Registry (unblocks: autocomplete, @alias, info/show, test runner)
+## Registry
 
-- [x] `default::registry/build` — scan addons, persist to `{workdir}/.wex/tmp/registry.yml`
-- [x] Registry loaded at kernel startup (`_init_registry()` already handles build-if-empty / load-from-file)
-- [x] `KernelRegistry.hydrate()` now loads full resolver data from file
-- [x] Refactor `test::run/all` to read registry from `kernel.get_configuration_registry()`
-- [ ] `@alias` decorator — register aliases at build time, resolve before execution
-- [ ] `core::autocomplete/suggest` — read registry for shell completion
+- [x] Infrastructure de base — `registry/build`, `hydrate()`, `get_addon_commands()`, `test::run/all`
+
+### Bloquant (description, alias, attachments, properties)
+
+- [ ] Ajouter `description` dans `RegistryCommandData` — extraire `help=` du `@command`
+- [ ] Ajouter `alias` dans `RegistryCommandData` — liste des alias `@alias`
+- [ ] Ajouter `attachments` dans `RegistryCommandData` — before/after de `@attach`
+- [ ] Ajouter `properties` dans `RegistryCommandData` — metadata custom des decorators
+- [ ] Ajouter `name` dans l'entrée addon
+- [ ] `resolver.resolve_alias(command)` — lookup avant pattern matching
+
+### Service resolver registry
+
+- [ ] `ServiceCommandResolver.build_registry_data()` — scanner `services/`, charger `service.yml`
+- [ ] Résolution de l'héritage (`config.extends` → merge récursif)
+
+### Helpers & options
+
+- [ ] `registry_get_all_commands(kernel)`, `registry_find_commands_by_function_property()`
+- [ ] `resolver.get_commands_registry()`
+- [ ] Options `--test`, `--write`, `@alias("rebuild")` sur `registry/build`
+
+### Autocomplete
+
+- [ ] `resolver.autocomplete_suggest(cursor, search_split)` sur chaque resolver
+- [ ] `default::autocomplete/suggest`
 
 ## Addons: core
 

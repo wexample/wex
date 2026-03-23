@@ -39,13 +39,62 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 The registry is a central artifact — built once, persisted to disk (YAML via `KernelRegistryFile`), consumed by many features. Commands should read it, not rebuild it.
 
-- [ ] `core::registry/build` — scan all addons, persist to `{workdir}/.wex/registry.yml`
-- [ ] Registry loaded at kernel startup (or lazily on first access)
-- [ ] `@alias` — resolver reads aliases from registry to map short names to full commands
-- [ ] `autocomplete/suggest` — reads registry to list all available commands for shell completion
-- [ ] `default::info/show` — reads registry to display available commands
-- [ ] `test::run/all` — reads registry to collect test file paths (currently rebuilds each call — to fix)
-- [ ] v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandResolver`
+v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandResolver` + `src/helper/registry.py`
+
+### Infrastructure
+
+- [x] `default::registry/build` — scans all addons, persists to `{workdir}/.wex/tmp/registry.yml`
+- [x] Registry built at kernel startup if file is empty (`_init_registry()`)
+- [x] `KernelRegistry.hydrate()` loads full resolver data from file
+- [x] `KernelRegistry.get_addon_commands()` accessor
+- [x] `test::run/all` reads registry from `kernel.get_configuration_registry()`
+
+### Command schema — fields missing in v6
+
+Each command entry in v5 has: `command`, `file`, `test`, `alias`, `attachments`, `description`, `properties`.
+v6 currently only has: `command`, `path`, `test`.
+
+- [ ] `description` — extract `help=` from `@command` decorator at build time ← **blocks `info/show`**
+- [ ] `alias` — list of aliases registered via `@alias` ← **blocks alias resolution**
+- [ ] `attachments` — `{before: [...], after: [...]}` from `@attach` ← blocks `@attach`
+- [ ] `properties` — custom decorator metadata (`app_dir_required`, `ai_tool`, `app_webhook`…)
+
+### Addon entry — field missing in v6
+
+- [ ] `name` field per addon entry (v5: `{name: str, commands: {...}}`)
+
+### Alias resolution — entirely missing in v6
+
+- [ ] `resolver.resolve_alias(command)` — linear lookup: if input matches any `alias[]`, return full command name
+- [ ] Called before pattern matching in `resolver.supports()` ← **blocks `@alias` end-to-end**
+
+### Service resolver registry — entirely missing in v6
+
+v5 stores per service: `addon`, `name`, `dir`, `config` (with `extends`), `commands`.
+
+- [ ] `ServiceCommandResolver.build_registry_data()` — scan `addons/{addon}/services/`
+- [ ] Service config loading from `service.yml`
+- [ ] Service inheritance resolution (`config.extends` → recursive merge with parent)
+
+### Helper functions — missing in v6
+
+- [ ] `registry_get_all_commands(kernel)` — all commands across all resolvers (flat)
+- [ ] `registry_get_all_commands_from_registry_part(part)` — commands from one resolver
+- [ ] `registry_find_commands_by_function_property(kernel, prop)` — filter by custom property
+- [ ] `resolver.get_commands_registry()` — commands dict for active resolver
+
+### registry/build options — missing in v6
+
+- [ ] `--test` flag — include `@test_command` entries in registry
+- [ ] `--write` flag — dry-run mode (build without saving)
+- [ ] `@alias("rebuild")` — short alias for the command
+
+### Autocomplete — missing in v6
+
+- [ ] `resolver.autocomplete_suggest(cursor, search_split)` — cursor-aware suggestions per resolver
+- [ ] `autocomplete/suggest` command — aggregate suggestions across all resolvers
+- [ ] AddonCommandResolver: cursor=0 → addon names/aliases, cursor=1 → groups, cursor=2 → commands, cursor≥3 → args
+- [ ] ServiceCommandResolver: cursor=0 → `@`, cursor=1 → service names, cursor=2-3 → commands
 
 ---
 
