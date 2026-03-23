@@ -54,8 +54,8 @@ v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandRe
 Each command entry in v5 has: `command`, `file`, `test`, `alias`, `attachments`, `description`, `properties`.
 v6 currently only has: `command`, `path`, `test`.
 
-- [ ] `description` — extract `help=` from `@command` decorator at build time ← **blocks `info/show`**
-- [ ] `alias` — list of aliases registered via `@alias` ← **blocks alias resolution**
+- [x] `description` — extract `help=` from `@command` decorator at build time ← **blocks `info/show`**
+- [x] `alias` — list of aliases registered via `@alias` ← **blocks alias resolution**
 - [ ] `attachments` — `{before: [...], after: [...]}` from `@attach` ← blocks `@attach`
 - [ ] `properties` — custom decorator metadata (`app_dir_required`, `ai_tool`, `app_webhook`…)
 
@@ -65,8 +65,8 @@ v6 currently only has: `command`, `path`, `test`.
 
 ### Alias resolution — entirely missing in v6
 
-- [ ] `resolver.resolve_alias(command)` — linear lookup: if input matches any `alias[]`, return full command name
-- [ ] Called before pattern matching in `resolver.supports()` ← **blocks `@alias` end-to-end**
+- [x] `resolver.resolve_alias(command)` — linear lookup: if input matches any `alias[]`, return full command name
+- [x] Called before pattern matching in `resolver.supports()` ← **blocks `@alias` end-to-end**
 
 ### Service resolver registry — entirely missing in v6
 

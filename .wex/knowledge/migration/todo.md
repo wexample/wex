@@ -36,12 +36,12 @@ Active tasks only — completed items live in the inventory files.
 
 ### Bloquant (description, alias, attachments, properties)
 
-- [ ] Ajouter `description` dans `RegistryCommandData` — extraire `help=` du `@command`
-- [ ] Ajouter `alias` dans `RegistryCommandData` — liste des alias `@alias`
+- [x] Ajouter `description` dans `RegistryCommandData` — extraire `help=` du `@command`
+- [x] Ajouter `alias` dans `RegistryCommandData` — liste des alias `@alias`
 - [ ] Ajouter `attachments` dans `RegistryCommandData` — before/after de `@attach`
 - [ ] Ajouter `properties` dans `RegistryCommandData` — metadata custom des decorators
 - [ ] Ajouter `name` dans l'entrée addon
-- [ ] `resolver.resolve_alias(command)` — lookup avant pattern matching
+- [x] `resolver.resolve_alias(command)` — lookup avant pattern matching
 
 ### Service resolver registry
 
