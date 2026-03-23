@@ -30,10 +30,17 @@ Active tasks only — completed items live in the inventory files.
 - [ ] Implement `@verbosity`
 - [ ] Implement `@test_command`
 
+## Registry (unblocks: autocomplete, @alias, info/show, test runner)
+
+- [ ] `core::registry/build` — scan addons, persist to `{workdir}/.wex/registry.yml`
+- [ ] Load registry at kernel startup (lazy on first access)
+- [ ] Refactor `test::run/all` to read registry from disk instead of rebuilding
+- [ ] `@alias` decorator — register aliases at build time, resolve before execution
+- [ ] `core::autocomplete/suggest` — read registry for shell completion
+
 ## Addons: core
 
 - [ ] `logo/show`, `check/hi`, `command/create`
-- [ ] `autocomplete/suggest`
 - [ ] `logs/show`, `logs/rotate`
 - [ ] `core/install`, `core/uninstall`, `core/cleanup`, `install/update`
 
