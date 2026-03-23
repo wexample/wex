@@ -32,9 +32,10 @@ Active tasks only — completed items live in the inventory files.
 
 ## Registry (unblocks: autocomplete, @alias, info/show, test runner)
 
-- [ ] `core::registry/build` — scan addons, persist to `{workdir}/.wex/registry.yml`
-- [ ] Load registry at kernel startup (lazy on first access)
-- [ ] Refactor `test::run/all` to read registry from disk instead of rebuilding
+- [x] `default::registry/build` — scan addons, persist to `{workdir}/.wex/tmp/registry.yml`
+- [x] Registry loaded at kernel startup (`_init_registry()` already handles build-if-empty / load-from-file)
+- [x] `KernelRegistry.hydrate()` now loads full resolver data from file
+- [x] Refactor `test::run/all` to read registry from `kernel.get_configuration_registry()`
 - [ ] `@alias` decorator — register aliases at build time, resolve before execution
 - [ ] `core::autocomplete/suggest` — read registry for shell completion
 
