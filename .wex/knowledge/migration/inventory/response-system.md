@@ -1,5 +1,51 @@
 # Response System
 
+## Architecture decisions (v6)
+
+### Three distinct output concerns
+
+| Concern | What it is | v6 mechanism |
+|---|---|---|
+| **Response** | The data produced by a command | Response types (`DictResponse`, `ListResponse`, …) |
+| **Prompt** | Interactive UI — progress bars, confirmations, questions | `wexample-prompt` package, `context.io.*` |
+| **Log** | Operational/diagnostic messages (debug, info, warning, error) | `context.io.log()` → stderr / log file (to clarify) |
+
+These three must stay separate. A command that returns a `DictResponse` is producing **data**. A command that calls `io.log("starting…")` is emitting a **log**. A command that calls `io.confirm("sure?")` is doing a **prompt**. They may all happen in the same command, but they go to different destinations and have different consumers.
+
+### "Render mode" is dead — replaced by two orthogonal axes
+
+v5 conflated format + destination into one `render_mode`. v6 separates them cleanly:
+
+- **`output_format`** (`str` | `json`) — *how* the response is serialised
+  - `str` → human-readable, for the terminal
+  - `json` → machine-readable, for piping to other scripts or tools
+- **`output_target`** (`stdout` | `file` | `none`) — *where* it goes
+  - `none` → evaluate the command but suppress all output (used for internal calls and tests)
+
+v5 mapping:
+- `KERNEL_RENDER_MODE_TERMINAL` → `output_format=str` + `output_target=stdout`
+- `KERNEL_RENDER_MODE_JSON` → `output_format=json` + `output_target=stdout`
+- `KERNEL_RENDER_MODE_NONE` → `output_target=none` (format irrelevant)
+
+### Consequence for response types
+
+Each response type must implement format-aware rendering:
+```python
+def render(self, output_format: str) -> str:
+    if output_format == "json":
+        return json.dumps(self.content)
+    return self._render_str()   # human-readable default
+```
+`output_target=none` is handled upstream — the response is never asked to render.
+
+### On logs
+
+`context.io.log()` currently mixes logs and prompt feedback. To clarify later:
+- Logs (diagnostic) → should go to stderr or a log file, not stdout
+- The response pipeline should never write to stdout directly — that is the output handler's job
+
+---
+
 ## v5 reference
 
 `wex-5/src/core/response/`
