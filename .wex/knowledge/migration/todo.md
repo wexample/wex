@@ -11,8 +11,7 @@ Active tasks only — completed items live in the inventory files.
 
 ## Code TODOs
 
-- [ ] `wex-6/src/common/wex.py:44` — Add TestAddonManager only when testing core
-- [x] `wex-core/…/test/commands/run/all.py:25` — Finaliser le registre pour pouvoir lister les tests
+- [ ] `wex-6/src/common/wex.py:44` — Remove commented TestAddonManager lines
 - [ ] `wex-addon-app/…/basic_app_workdir.py:363` — Run tests
 - [ ] `filestate-python/…/class_name_matches_file_name_option.py:42` — TODO vide, à préciser
 
@@ -32,7 +31,7 @@ Active tasks only — completed items live in the inventory files.
 
 ## Registry
 
-- [x] Infrastructure de base — `registry/build`, `hydrate()`, `get_addon_commands()`, `test::run/all`
+- [x] Infrastructure de base — `registry/build`, `hydrate()`, `get_addon_commands()`
 
 ### Bloquant (description, alias, attachments, properties)
 
