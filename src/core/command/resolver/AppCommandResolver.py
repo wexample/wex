@@ -156,7 +156,7 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[3],
         ]
 
-    # v6: todo — quand nécessaire
+    # v6: todo → wex-addon-app/resolver/app_command_resolver.py (webhooks — dépend du response system)
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> AbstractResponse:
