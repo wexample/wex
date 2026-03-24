@@ -69,8 +69,16 @@ Active tasks only — completed items live in the inventory files.
 
 - [ ] `app/start`, `app/stop`, `app/restart`, `app/serve`, `app/exec`, `app/perms`
 - [ ] `db/dump`, `db/exec`, `db/go`, `db/restore`
-- [ ] `webhook/listen`, `webhook/exec`, `webhook/stop`
 - [ ] `remote/*`
+
+## Webhooks (addon-app — wex-addon-app/resolver/app_command_resolver.py)
+
+Webhooks = HTTP endpoints exposant des commandes app via `@app_webhook` decorator.
+Dépend de : response system, `app/start`.
+
+- [ ] `AppCommandResolver.run_command_request_from_url_path()` — migrer dans wex-addon-app
+- [ ] `@app_webhook` decorator — marque une commande comme exposable via HTTP
+- [ ] `webhook/listen`, `webhook/exec`, `webhook/stop` — commandes addon-app
 
 ## Addons: system / docker / ai / db / services
 
