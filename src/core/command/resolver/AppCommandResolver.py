@@ -38,6 +38,7 @@ class AppCommandResolver(AbstractCommandResolver):
             AppAddonManager, kernel.addons["app"]
         )
 
+    # v6: todo — afficher erreur claire si pas dans un app dir
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> AbstractResponse:
@@ -55,14 +56,17 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return super().render_request(request, render_mode)
 
+    # v6: done → resolver/app_command_resolver.py
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_APP
 
+    # v6: done → resolver/app_command_resolver.py
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_APP
 
+    # v6: done → resolver/app_command_resolver.py (build_command_path)
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
@@ -81,15 +85,18 @@ class AppCommandResolver(AbstractCommandResolver):
             ),
         )
 
+    # v6: done → common/command_address.py (to_command avec préfixe .)
     def build_command_from_parts(self, parts: StringsList) -> str:
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f"{COMMAND_CHAR_APP}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
+    # v6: done → resolver/app_command_resolver.py (build_command_function_name)
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["app", parts[1], parts[2]]
 
+    # v6: done → resolver/app_command_resolver.py (get_base_path, remonte depuis cwd)
     def get_base_path(self) -> Optional[str]:
         app_dir = self.app_addon_manager.app_dir
         if not app_dir:
@@ -105,6 +112,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return None
 
+    # v6: todo — quand nécessaire
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
@@ -138,6 +146,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return None
 
+    # v6: todo — quand nécessaire
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
@@ -147,6 +156,7 @@ class AppCommandResolver(AbstractCommandResolver):
             path_parts[3],
         ]
 
+    # v6: todo — quand nécessaire
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> AbstractResponse:
@@ -189,6 +199,7 @@ class AppCommandResolver(AbstractCommandResolver):
 
         return response
 
+    # v6: skip — absorbé dans build_registry_data
     def get_active_commands(self) -> RegistryCommandsCollection:
         # Use ap dir if specified.
         app_dir = self.app_addon_manager.app_dir

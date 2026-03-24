@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 
 
 class ServiceCommandResolver(AbstractCommandResolver):
+    # v6: todo — afficher erreur claire si service inconnu
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
@@ -50,17 +51,21 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return super().render_request(request, render_mode)
 
+    # v6: done → resolver/service_command_resolver.py
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_SERVICE
 
+    # v6: done → resolver/service_command_resolver.py
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_SERVICE
 
+    # v6: done → common/command_address.py (to_command avec préfixe @)
     def build_command_from_parts(self, parts: StringsList) -> str:
         return COMMAND_CHAR_SERVICE + super().build_command_from_parts(parts)
 
+    # v6: done → resolver/service_command_resolver.py (build_command_path)
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
@@ -81,9 +86,11 @@ class ServiceCommandResolver(AbstractCommandResolver):
             ),
         )
 
+    # v6: done → resolver/service_command_resolver.py (build_command_function_name)
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return [parts[0], parts[1], parts[2]]
 
+    # v6: skip — autocomplete, à faire plus tard
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
@@ -129,6 +136,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return None
 
+    # v6: todo — héritage de service (remonte la chaîne si commande absente)
     def locate_function(self, request: CommandRequest) -> bool:
         """
         Support services inheritance, if a function is not found in a service,
@@ -161,12 +169,14 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return False
 
+    # v6: todo — injection auto de --service option sur les commandes de service
     @classmethod
     def decorate_command(cls, function: AnyCallable) -> AnyCallable:
         from addons.app.decorator.service_option import service_option
 
         return cast(AnyCallable, service_option()(function))
 
+    # v6: todo — quand nécessaire
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
@@ -176,6 +186,7 @@ class ServiceCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
+    # v6: done → resolver/service_command_resolver.py (sans service.yml ni héritage)
     def build_registry_data(self, test: bool = False) -> RegistryAllServices:
         from src.helper.registry import registry_resolve_service_inheritance
 
@@ -211,8 +222,10 @@ class ServiceCommandResolver(AbstractCommandResolver):
 
         return registry
 
+    # v6: todo — bloqué par registry helpers
     def get_registered_services(self) -> StringsList:
         return cast(StringsList, self.get_registry_data().keys())
 
+    # v6: todo — bloqué par registry helpers
     def get_registered_service_data(self, name: str) -> RegistryService:
         return cast(RegistryService, self.get_registry_data()[name])

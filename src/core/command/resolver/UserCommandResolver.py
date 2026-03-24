@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 
 class UserCommandResolver(AbstractCommandResolver):
+    # v6: done → resolver/user_command_resolver.py (supports() gère sys.path)
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
@@ -35,14 +36,17 @@ class UserCommandResolver(AbstractCommandResolver):
 
         return super().render_request(request, render_mode)
 
+    # v6: done → resolver/user_command_resolver.py
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_USER
 
+    # v6: done → resolver/user_command_resolver.py
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_USER
 
+    # v6: done → resolver/user_command_resolver.py (build_command_path)
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
@@ -62,18 +66,22 @@ class UserCommandResolver(AbstractCommandResolver):
             ),
         )
 
+    # v6: done → resolver/user_command_resolver.py (get_base_path)
     def get_base_path(self) -> Optional[str]:
         return f"{get_user_or_sudo_user_home_data_path()}{APP_DIR_APP_DATA}"
 
+    # v6: done → resolver/user_command_resolver.py (build_command_function_name)
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return ["user", parts[1], parts[2]]
 
+    # v6: done → common/command_address.py (to_command avec préfixe ~)
     def build_command_from_parts(self, parts: StringsList) -> str:
         # Convert each part to kebab-case
         kebab_parts = [string_to_kebab_case(part) for part in parts]
 
         return f"{COMMAND_CHAR_USER}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
+    # v6: todo — autocomplete, à faire plus tard
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
@@ -103,6 +111,7 @@ class UserCommandResolver(AbstractCommandResolver):
                 )
         return None
 
+    # v6: todo — quand nécessaire
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:

@@ -17,14 +17,17 @@ from src.helper.registry import registry_get_all_commands
 
 
 class AddonCommandResolver(AbstractCommandResolver):
+    # v6: done → resolver/addon_command_resolver.py
     @classmethod
     def get_pattern(cls) -> str:
         return COMMAND_PATTERN_ADDON
 
+    # v6: done → resolver/addon_command_resolver.py
     @classmethod
     def get_type(cls) -> str:
         return COMMAND_TYPE_ADDON
 
+    # v6: done → resolver/addon_command_resolver.py (build_command_path)
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
@@ -45,6 +48,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             ),
         )
 
+    # v6: done → resolver/addon_command_resolver.py (build_command_function_name)
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         return [
             parts[0],
@@ -52,6 +56,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             parts[2],
         ]
 
+    # v6: done → CommandMethodWrapper.aliases (alias court group/cmd supprimé volontairement)
     def get_script_command_aliases(self, script_command: ScriptCommand) -> StringsList:
         aliases = super().get_script_command_aliases(script_command)
         match = self.build_match(self.build_command_from_function(script_command))
@@ -63,6 +68,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return aliases
 
+    # v6: todo — autocomplete, à faire plus tard
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
@@ -152,6 +158,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return None
 
+    # v6: todo — autocomplete
     def suggest_autocomplete_if_single(self, search_string: str) -> str:
         all_commands = registry_get_all_commands(self.kernel)
         all_names = [name for name in all_commands if name.startswith(search_string)]
@@ -163,6 +170,7 @@ class AddonCommandResolver(AbstractCommandResolver):
 
         return search_string
 
+    # v6: todo — quand nécessaire
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
@@ -172,6 +180,7 @@ class AddonCommandResolver(AbstractCommandResolver):
             path_parts[2],
         ]
 
+    # v6: done → resolver/addon_command_resolver.py
     def build_registry_data(self, test: bool = False) -> "RegistryResolverData":
         registry: "RegistryResolverData" = {}
 

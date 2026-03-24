@@ -49,6 +49,7 @@ from src.helper.user import get_user_or_sudo_user
 
 
 class AbstractCommandResolver(AbsractKernelChild):
+    # v6: todo — bloqué par système de réponses + @attach + logger
     def render_request(
         self, request: CommandRequest, render_mode: str
     ) -> "AbstractResponse":
@@ -89,6 +90,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return response
 
+    # v6: todo — bloqué par @attach
     def execute_attached(
         self,
         request: "CommandRequest",
@@ -138,9 +140,11 @@ class AbstractCommandResolver(AbsractKernelChild):
 
                         self.kernel.io.log(response.print_wrapped())
 
+    # v6: skip — absorbé dans build_registry_data
     def get_active_commands(self) -> RegistryCommandsCollection:
         return self.get_commands_registry()
 
+    # v6: todo — bloqué par @attach
     def execute_all_attached(
         self,
         request: "CommandRequest",
@@ -153,6 +157,7 @@ class AbstractCommandResolver(AbsractKernelChild):
                 request, position, previous=previous
             )
 
+    # v6: todo — bloqué par système de réponses (DictResponse, ListResponse, etc.)
     def wrap_response(self, response: Any) -> "AbstractResponse":
         if isinstance(response, AbstractResponse):
             return response
@@ -167,11 +172,13 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return DefaultResponse(self.kernel, response)
 
+    # v6: done → app/resolver/abstract_command_resolver.py
     @classmethod
     @abstractmethod
     def get_pattern(cls) -> str:
         pass
 
+    # v6: todo — bloqué par registry helpers (registry_get_all_commands_from_registry_part)
     def get_commands_registry(self) -> RegistryCommandsCollection:
         from src.helper.registry import registry_get_all_commands_from_registry_part
 
@@ -182,18 +189,22 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return {}
 
+    # v6: done → app/resolver/abstract_command_resolver.py
     @classmethod
     @abstractmethod
     def get_type(cls) -> str:
         pass
 
+    # v6: done → app/resolver/abstract_command_resolver.py
     @classmethod
     def build_match(cls, command: str) -> Optional[StringsMatch]:
         return re.match(cls.get_pattern(), command) if command else None
 
+    # v6: done → UserCommandResolver.get_base_path, AppCommandResolver.get_base_path
     def get_base_path(self) -> Optional[str]:
         return None
 
+    # v6: skip — absorbé dans build_command_path de chaque resolver
     def get_base_command_path(self) -> str | None:
         base_path = self.get_base_path()
 
@@ -202,9 +213,11 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return self.build_base_command_path(base_path)
 
+    # v6: skip — absorbé dans build_command_path de chaque resolver
     def build_base_command_path(self, base_path: str) -> str:
         return os.path.join(base_path, "command") + os.path.sep
 
+    # v6: skip — gestion de permissions fichier, hors scope
     def set_command_file_permission(self, command_path: str) -> None:
         base_path = self.get_base_path()
 
@@ -215,11 +228,13 @@ class AbstractCommandResolver(AbsractKernelChild):
                 get_user_or_sudo_user(),
             )
 
+    # v6: done → app/common/command_request.py
     def create_command_request(
         self, command: str, args: Optional["OptionalCoreCommandArgsListOrDict"] = None
     ) -> CommandRequest:
         return CommandRequest(self, command, args or [])
 
+    # v6: done → resolver/addon_command_resolver.py (_resolve_alias, transparent dans supports)
     def resolve_alias(self, command: str) -> str:
         registry = self.get_commands_registry()
         for item in registry:
@@ -227,6 +242,7 @@ class AbstractCommandResolver(AbsractKernelChild):
                 return item
         return command
 
+    # v6: done → resolver/addon_command_resolver.py (+ alias resolution transparente)
     def supports(self, command: str) -> bool:
         command = self.resolve_alias(command)
 
@@ -235,12 +251,14 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return False
 
+    # v6: done → build_command_path dans chaque resolver
     @abstractmethod
     def build_path(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> Optional[str]:
         pass
 
+    # v6: todo — bloqué par error handling unifié
     def build_path_or_fail(
         self, request: CommandRequest, extension: str, subdir: Optional[str] = None
     ) -> str:
@@ -259,15 +277,18 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return path
 
+    # v6: done → common/command_address.py (to_function_name)
     def get_function_name(self, parts: List[str]) -> str:
         return string_to_snake_case(
             COMMAND_SEPARATOR_FUNCTION_PARTS.join(self.get_function_name_parts(parts))
         )
 
+    # v6: done → build_command_function_name dans chaque resolver
     @abstractmethod
     def get_function_name_parts(self, parts: StringsList) -> StringsList:
         pass
 
+    # v6: todo — bloqué par sub-command execution
     def build_full_command_parts_from_script_command(
         self,
         script_command: ScriptCommand,
@@ -282,6 +303,7 @@ class AbstractCommandResolver(AbsractKernelChild):
             else []
         )
 
+    # v6: todo — bloqué par sub-command execution
     def build_full_command_from_function(
         self, script_command: ScriptCommand, args: OptionalCoreCommandArgsDict = None
     ) -> str:
@@ -289,6 +311,7 @@ class AbstractCommandResolver(AbsractKernelChild):
             self.build_full_command_parts_from_script_command(script_command, args)
         )
 
+    # v6: done → common/command_address.py (from_function_name)
     def build_command_parts_from_function_name(
         self, function_name: str
     ) -> "ShellCommandsList":
@@ -297,11 +320,13 @@ class AbstractCommandResolver(AbsractKernelChild):
         """
         return function_name.split(COMMAND_SEPARATOR_FUNCTION_PARTS)[:3]
 
+    # v6: done → common/command_address.py (from_path)
     def build_command_parts_from_file_path(self, command_path: str) -> StringsList:
         path_parts = command_path.split(os.sep)
 
         return [path_parts[-4], path_parts[-2], os.path.splitext(path_parts[-1])[0]]
 
+    # v6: done → common/command_address.py (to_command)
     def build_command_from_parts(self, parts: StringsList) -> str:
         """
         Returns the "default" format (addons style)
@@ -311,6 +336,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return f"{kebab_parts[0]}{COMMAND_SEPARATOR_ADDON}{kebab_parts[1]}{COMMAND_SEPARATOR_GROUP}{kebab_parts[2]}"
 
+    # v6: done → resolver/abstract_command_resolver.py (build_command_from_function)
     def build_command_from_function(self, script_command: ScriptCommand) -> str:
         if (
             not script_command.click_command
@@ -326,6 +352,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return self.build_command_from_parts(parts)
 
+    # v6: done → build_command_path dans chaque resolver (via CommandAddress)
     def build_command_path(
         self, base_path: str, extension: str, subdir: Optional[str], command_path: str
     ) -> str:
@@ -334,11 +361,13 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return os.path.join(base_path, "command", command_path + "." + extension)
 
+    # v6: todo — autocomplete, à faire plus tard
     def autocomplete_suggest(
         self, cursor: int, search_split: StringsList
     ) -> str | None:
         return None
 
+    # v6: todo — autocomplete
     def suggest_arguments(self, command: str, search: str) -> str:
         request = self.create_command_request(command)
 
@@ -351,6 +380,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return " ".join(search_params)
 
+    # v6: todo — autocomplete
     def suggest_from_path(
         self, commands_path: str, search_string: str, test_commands: bool = False
     ) -> StringsList:
@@ -367,6 +397,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return commands_names
 
+    # v6: done → build_registry_data dans chaque resolver
     def scan_commands_groups(
         self, directory: str, test_commands: bool = False
     ) -> RegistryCommandsCollection:
@@ -381,6 +412,7 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return command_dict
 
+    # v6: done → build_registry_data dans chaque resolver
     def scan_commands(
         self, directory: str, group: str, test_commands: bool = False
     ) -> RegistryCommandsCollection:
@@ -459,9 +491,11 @@ class AbstractCommandResolver(AbsractKernelChild):
                         )
         return commands
 
+    # v6: done → CommandMethodWrapper.aliases
     def get_script_command_aliases(self, script_command: ScriptCommand) -> List[str]:
         return script_command.aliases
 
+    # v6: todo — bloqué par multi-extension loading (YAML + Python)
     def locate_function(self, request: CommandRequest) -> bool:
         # Build dynamic variables
         request.match = self.build_match(request.get_string_command())
@@ -474,10 +508,12 @@ class AbstractCommandResolver(AbsractKernelChild):
                     return True
         return False
 
+    # v6: skip — absorbé dans le système de decorators
     @classmethod
     def decorate_command(cls, function: "AnyCallable") -> "AnyCallable":
         return function
 
+    # v6: todo — quand nécessaire
     def run_command_request_from_url_path(
         self, path: str, args: OptionalCoreCommandArgsDict = None
     ) -> "AbstractResponse":
@@ -490,6 +526,7 @@ class AbstractCommandResolver(AbsractKernelChild):
             command=command, args=cast(OptionalCoreCommandArgsListOrDict, args)
         )
 
+    # v6: todo — quand nécessaire
     def create_command_from_path(self, path: str) -> Optional[str]:
         parts = path.split(os.sep)
 
@@ -503,14 +540,17 @@ class AbstractCommandResolver(AbsractKernelChild):
 
         return self.build_command_from_parts(command_parts)
 
+    # v6: todo — quand nécessaire
     @abstractmethod
     def build_command_parts_from_url_path_parts(
         self, path_parts: StringsList
     ) -> StringsList:
         pass
 
+    # v6: done → build_registry_data dans chaque resolver
     def build_registry_data(self, test: bool = False) -> "RegistryResolverData":
         return {}
 
+    # v6: done → registry/kernel_registry.py
     def get_registry_data(self) -> "RegistryResolverData":
         return self.kernel.registry_structure.get_resolver_data(self.get_type())
