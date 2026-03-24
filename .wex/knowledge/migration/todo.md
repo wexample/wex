@@ -17,8 +17,34 @@ Active tasks only — completed items live in the inventory files.
 
 ## Command system
 
-- [ ] Test complete command execution flow end-to-end
-- [ ] Implement proper response handling (decide v6 pattern for structured output)
+- [x] Test complete command execution flow end-to-end (ping/pong test)
+
+## Response system
+
+See full inventory: `inventory/response-system.md`
+
+### Phase 1 — render modes + simple structured output
+- [ ] Render modes → map `TERMINAL/JSON/NONE` to `output_format` on kernel
+- [ ] `DictResponse` — dict → formatted lines or JSON
+- [ ] `ListResponse` — list → newline-separated or JSON array
+- [ ] `TableResponse` — rows + headers + title
+- [ ] `KeyValueResponse` — labelled pairs with optional title
+- [ ] `AbortResponse` — abort signal with reason
+
+### Phase 2 — special behaviours
+- [ ] `HiddenResponse` — stored but not printed in terminal mode
+- [ ] `FunctionResponse` — lazy callable wrapping
+- [ ] `NonInteractiveShellCommandResponse` — capture shell output
+- [ ] `InteractiveShellCommandResponse` — live tty passthrough
+
+### Phase 3 — collections
+- [ ] `ResponseCollectionResponse` — flat ordered list of responses
+- [ ] `QueuedCollectionResponse` — sequential steps, nested, fast mode, stop signals
+
+### Test infrastructure
+- [ ] `AbstractTestCase` equivalent — pytest base fixture + assertion helpers
+- [ ] `for_each_render_mode()` — parametrized render mode testing
+- [ ] Move `test_ping_executes` → co-located `commands/ping/test_pong.py`
 
 ## Decorators
 
