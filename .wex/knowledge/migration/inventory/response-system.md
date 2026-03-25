@@ -113,6 +113,9 @@ AbstractResponse (base)
 - [ ] `InteractiveShellCommandResponse` — live shell output (tty passthrough)
 
 ### Phase 3 — collections (most complex)
+
+> **Note de conception (v6)** : Le système v5 collections/callbacks/tasks/queue a été bien travaillé mais avec le recul certaines choses auraient pu être plus simples. Avant de migrer à l'identique, prendre le temps de questionner chaque mécanisme : est-ce qu'il peut être simplifié, ou est-ce que v6 (pipeline réponses, output_target, middlewares) offre déjà une meilleure alternative ?
+
 - [ ] `ResponseCollectionResponse` — flat ordered list of responses
 - [ ] `QueuedCollectionResponse` — sequential execution with:
   - `queue.get_previous_value()` — access previous step result

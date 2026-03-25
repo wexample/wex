@@ -32,8 +32,8 @@ See full inventory: `inventory/response-system.md`
 - [ ] `AbortResponse` — abort signal with reason
 
 ### Phase 2 — special behaviours
-- [ ] `HiddenResponse` — stored but not printed in terminal mode
-- [ ] `FunctionResponse` — lazy callable wrapping
+- [x] `HiddenResponse` — replaced by `output_target=none`
+- [ ] `FunctionResponse` — lazy callable wrapping (used by QueuedCollectionResponse steps, migrate with Phase 3)
 - [ ] `NonInteractiveShellCommandResponse` — capture shell output
 - [ ] `InteractiveShellCommandResponse` — live tty passthrough
 
