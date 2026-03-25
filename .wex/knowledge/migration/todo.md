@@ -25,10 +25,10 @@ See full inventory: `inventory/response-system.md`
 
 ### Phase 1 — render modes + simple structured output
 - [ ] Render modes → map `TERMINAL/JSON/NONE` to `output_format` on kernel
-- [ ] `DictResponse` — dict → formatted lines or JSON
-- [ ] `ListResponse` — list → newline-separated or JSON array
-- [ ] `TableResponse` — rows + headers + title
-- [ ] `KeyValueResponse` — labelled pairs with optional title
+- [x] `DictResponse` — dict → formatted lines or JSON
+- [x] `ListResponse` — list → newline-separated or JSON array
+- [x] `TableResponse` — rows + headers + title
+- [x] `KeyValueResponse` — merged into DictResponse (same rendering via PropertiesPromptResponse)
 - [ ] `AbortResponse` — abort signal with reason
 
 ### Phase 2 — special behaviours
