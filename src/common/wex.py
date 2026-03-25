@@ -29,7 +29,7 @@ class Wex(Kernel):
             from wexample_wex_core.addons.default.default_addon_manager import (
                 DefaultAddonManager,
             )
-            # from wexample_wex_core.addons.test.test_addon_manager import TestAddonManager
+            from wexample_wex_core.addons.demo.demo_addon_manager import DemoAddonManager
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
@@ -37,6 +37,7 @@ class Wex(Kernel):
             self.setup(addons=[
                 AppAddonManager,
                 DefaultAddonManager,
+                DemoAddonManager,
                 FilestateAddonManager,
                 JavascriptAddonManager,
                 PhpAddonManager,
