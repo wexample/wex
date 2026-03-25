@@ -115,13 +115,18 @@ AbstractResponse (base)
 ### Phase 3 — collections (most complex)
 
 > **Note de conception (v6)** : Le système v5 collections/callbacks/tasks/queue a été bien travaillé mais avec le recul certaines choses auraient pu être plus simples. Avant de migrer à l'identique, prendre le temps de questionner chaque mécanisme : est-ce qu'il peut être simplifié, ou est-ce que v6 (pipeline réponses, output_target, middlewares) offre déjà une meilleure alternative ?
+>
+> **Sur le système de "tasks" v5** : En v5, une hypothèse incorrecte — que les subprocesses Python ne pouvaient pas rester interactifs (tty passthrough) — a conduit à un système lourd où les commandes étaient écrites dans un fichier pour être exécutées par bash plutôt que par Python. En v6, cette contrainte n'existe pas : un subprocess Python peut très bien être interactif (`InteractiveShellCommandResponse`). Le système de tasks v5 devrait donc pouvoir être remplacé par de simples subprocesses, ce qui simplifie considérablement l'architecture. Ce point interfère avec `QueuedCollectionResponse` dans certains cas (notamment le fast mode) — à garder en tête lors de la migration.
 
 - [ ] `ResponseCollectionResponse` — flat ordered list of responses
 - [ ] `QueuedCollectionResponse` — sequential execution with:
   - `queue.get_previous_value()` — access previous step result
   - nested `QueuedCollectionResponse`
-  - fast mode vs standard mode (subprocess comparison in tests)
   - `QueuedCollectionStopResponse` / `QueuedCollectionStopCurrentStepResponse`
+  - **Drop**: fast mode (was a workaround for bash tasking, no longer needed)
+  - **Drop**: PathManager (was needed because each step was a separate process)
+
+> **Future idea — parallel execution** : `ParallelCollectionResponse` as a separate response type for concurrent steps. Out of scope for now, to be designed independently.
 
 ## v5 test infrastructure (AbstractTestCase)
 

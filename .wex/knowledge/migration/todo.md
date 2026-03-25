@@ -38,8 +38,8 @@ See full inventory: `inventory/response-system.md`
 - [ ] `InteractiveShellCommandResponse` — live tty passthrough
 
 ### Phase 3 — collections
-- [ ] `ResponseCollectionResponse` — flat ordered list of responses
-- [ ] `QueuedCollectionResponse` — sequential steps, nested, fast mode, stop signals
+- [x] `ResponseCollectionResponse` — flat ordered list of responses
+- [x] `QueuedCollectionResponse` — sequential steps, stop signals, previous_value pipeline (fast mode dropped)
 
 ### Test infrastructure
 - [ ] `AbstractTestCase` equivalent — pytest base fixture + assertion helpers
