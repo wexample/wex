@@ -34,8 +34,8 @@ See full inventory: `inventory/response-system.md`
 ### Phase 2 — special behaviours
 - [x] `HiddenResponse` — replaced by `output_target=none`
 - [ ] `FunctionResponse` — lazy callable wrapping (used by QueuedCollectionResponse steps, migrate with Phase 3)
-- [ ] `NonInteractiveShellCommandResponse` — capture shell output
-- [ ] `InteractiveShellCommandResponse` — live tty passthrough
+- [x] `ShellCommandResponse` (ex-NonInteractive) — capture shell output via `shell_run(capture=True)`
+- [x] `InteractiveShellCommandResponse` — live tty passthrough via `shell_run(inherit_stdio=True)`
 
 ### Phase 3 — collections
 - [x] `ResponseCollectionResponse` — flat ordered list of responses
