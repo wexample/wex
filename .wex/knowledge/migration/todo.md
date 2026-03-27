@@ -50,10 +50,11 @@ See full inventory: `inventory/response-system.md`
 
 - [x] Implement `@alias`
 - [x] Implement `@attach` (before/after hooks) — supporte string ET référence directe à la CommandMethodWrapper
-- [ ] Implement `@as_sudo`
-- [ ] Implement `@no_log`
-- [ ] Implement `@verbosity`
-- [ ] Implement `@test_command`
+- [ ] Implement `@as_sudo` — bloqué par shell commands middleware, à faire avec les services
+- [~] `@no_log` — **SKIP** : redondant avec `--quiet` / `output_target=none`
+- [~] `@verbosity` — **SKIP** : faisable directement via `context.kernel.io`
+- [~] `@test_command` — **SKIP** : auto-détecté par convention de chemin dans `build_registry_data`
+- [x] `check/hi` — migré avec `@alias("hi")`
 
 ## Registry
 
@@ -63,7 +64,7 @@ See full inventory: `inventory/response-system.md`
 
 - [x] Ajouter `description` dans `RegistryCommandData` — extraire `help=` du `@command`
 - [x] Ajouter `alias` dans `RegistryCommandData` — liste des alias `@alias`
-- [ ] Ajouter `attachments` dans `RegistryCommandData` — before/after de `@attach`
+- [x] Ajouter `attachments` dans `RegistryCommandData` — before/after de `@attach`
 - [ ] Ajouter `properties` dans `RegistryCommandData` — metadata custom des decorators
 - [ ] Ajouter `name` dans l'entrée addon
 - [x] `resolver.resolve_alias(command)` — lookup avant pattern matching
