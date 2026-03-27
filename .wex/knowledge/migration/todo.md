@@ -29,7 +29,7 @@ See full inventory: `inventory/response-system.md`
 - [x] `ListResponse` — list → newline-separated or JSON array
 - [x] `TableResponse` — rows + headers + title
 - [x] `KeyValueResponse` — merged into DictResponse (same rendering via PropertiesPromptResponse)
-- [ ] `AbortResponse` — abort signal with reason
+- [~] `AbortResponse` — **SKIP** : redondant avec `QueuedCollectionStopResponse` + exceptions Python
 
 ### Phase 2 — special behaviours
 - [x] `HiddenResponse` — replaced by `output_target=none`
@@ -48,8 +48,8 @@ See full inventory: `inventory/response-system.md`
 
 ## Decorators
 
-- [ ] Implement `@alias`
-- [ ] Implement `@attach` (before/after hooks)
+- [x] Implement `@alias`
+- [ ] Implement `@attach` (before/after hooks) — indépendant du YAML executor, utilise kernel.execute_kernel_command() directement
 - [ ] Implement `@as_sudo`
 - [ ] Implement `@no_log`
 - [ ] Implement `@verbosity`

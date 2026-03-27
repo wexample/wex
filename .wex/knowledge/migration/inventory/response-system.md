@@ -74,7 +74,7 @@ Each response type implements its own rendering per mode.
 ```
 AbstractResponse (base)
 ├── AbstractEmptyResponse
-│   └── AbortResponse                    — stops execution with reason
+│   └── AbortResponse                    — stops execution with reason [SKIP]
 ├── AbstractTerminalSectionResponse
 │   ├── DictResponse                     — dict as key: value lines
 │   ├── KeyValueResponse                 — key-value with optional title
@@ -104,7 +104,7 @@ AbstractResponse (base)
 - [ ] `ListResponse` — list → newline-separated or JSON array
 - [ ] `TableResponse` — rows + headers + title
 - [ ] `KeyValueResponse` — labelled key-value pairs with optional title
-- [ ] `AbortResponse` — abort signal with reason (partially covered by FailureResponse?)
+- [~] `AbortResponse` — **SKIP** : redondant avec `QueuedCollectionStopResponse` (dans une collection) et les exceptions Python (hors collection)
 
 ### Phase 2 — special behaviours
 - [ ] `HiddenResponse` — content stored, not printed in terminal mode
