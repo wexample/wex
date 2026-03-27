@@ -49,7 +49,7 @@ See full inventory: `inventory/response-system.md`
 ## Decorators
 
 - [x] Implement `@alias`
-- [ ] Implement `@attach` (before/after hooks) — indépendant du YAML executor, utilise kernel.execute_kernel_command() directement
+- [x] Implement `@attach` (before/after hooks) — supporte string ET référence directe à la CommandMethodWrapper
 - [ ] Implement `@as_sudo`
 - [ ] Implement `@no_log`
 - [ ] Implement `@verbosity`
