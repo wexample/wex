@@ -168,12 +168,13 @@ Prérequis bloquants avant autocomplete :
 - [x] YAML executor
 - [ ] `ServiceCommandResolver` migré
 - [ ] `AppCommandResolver` migré
-- [ ] `UserCommandResolver` migré
+- [x] `UserCommandResolver` migré
 
 ## Addons: core
 
 - [x] `check/hi` — migré avec `@alias("hi")`
-- [ ] `logo/show`, `command/create`
+- [ ] `logo/show`
+- [x] `command/create` — resolver delegation, templates yml/py, auto-rebuild registry
 - [ ] `logs/show`, `logs/rotate`
 - [ ] `core/install`, `core/uninstall`, `core/cleanup`, `install/update`
 
