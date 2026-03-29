@@ -166,7 +166,7 @@ L'autocomplete sera implémenté en une seule fois, une fois tous les resolvers 
 
 Prérequis bloquants avant autocomplete :
 - [x] YAML executor
-- [ ] `ServiceCommandResolver` migré
+- [x] `ServiceCommandResolver` migré
 - [x] `AppCommandResolver` migré
 - [x] `UserCommandResolver` migré
 
@@ -180,18 +180,18 @@ Prérequis bloquants avant autocomplete :
 
 ## Addons: app (Docker lifecycle)
 
+> À faire une fois qu'une vraie app Docker est en place pour tester.
+
 - [ ] `app/start`, `app/stop`, `app/restart`, `app/serve`, `app/exec`, `app/perms`
 - [ ] `db/dump`, `db/exec`, `db/go`, `db/restore`
 - [ ] `remote/*`
 
-## Webhooks (addon-app — wex-addon-app/resolver/app_command_resolver.py)
+## Webhooks (addon-app)
 
-Webhooks = HTTP endpoints exposant des commandes app via `@app_webhook` decorator.
-Dépend de : response system, `app/start`.
+> À faire après `app/start`. Dépend d'une vraie app en place.
 
-- [ ] `AppCommandResolver.run_command_request_from_url_path()` — migrer dans wex-addon-app
-- [ ] `@app_webhook` decorator — marque une commande comme exposable via HTTP
-- [ ] `webhook/listen`, `webhook/exec`, `webhook/stop` — commandes addon-app
+- [ ] `@app_webhook` decorator
+- [ ] `webhook/listen`, `webhook/exec`, `webhook/stop`
 
 ## Addons: system / docker / ai / db / services
 

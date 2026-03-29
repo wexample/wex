@@ -155,10 +155,12 @@ v6 currently only has: `command`, `path`, `test`.
 
 - [x] Log/print separation — `ExecutionContext.io` handles display; return values separate
 - [x] Render modes — `terminal` / `json` / `none` (output handlers in wex-core)
-- [ ] Response type wrapping — auto-convert return values: `dict` → `DictResponse`, `list` → `ListResponse`, `None` → `NullResponse`, callable → `FunctionResponse`, etc.
-- [ ] Structured response types — `TableResponse`, `KeyValueResponse`, `DictResponse`, `ListResponse`
+- [x] `DictResponse`, `ListResponse`, `TableResponse`, `FunctionResponse`
+- [x] `StrResponse`, `IntResponse`, `BooleanResponse`, `NullResponse`
+- [x] `ShellCommandResponse`, `InteractiveShellCommandResponse`
+- [x] `ResponseCollectionResponse`, `QueuedCollectionResponse`, `QueuedCollectionStop*`
+- [ ] Response type wrapping — auto-convert return values (dict → DictResponse, etc.)
 - [ ] `AbortResponse` — signals `--help` or command abort
-- [ ] `ResponseCollectionResponse` — multiple responses in one
 - [ ] JSON render mode per response — `render_mode_json_wrap_data()`
 
 ---
@@ -177,7 +179,7 @@ v6 currently only has: `command`, `path`, `test`.
 
 - [x] `@command` / `@option` decorators
 - [x] `--quiet`, `-v`, `-vv`, `-vvv`, `--output_format`, `--output_target`
-- [ ] Auto-injected options on every command: `--fast-mode`, `--command-request-step`, `--kernel-task-id`, `--parent-task-id`, `--log-indent`, `--log-length`, `--render-mode`
+- [~] Auto-injected options `--fast-mode`, `--command-request-step`, `--kernel-task-id`, `--parent-task-id` — **SKIP** : liés au QueuedCollection supprimé
 - [ ] `--help` → `AbortResponse(reason="INFO_COMMAND")` (caught Click exit)
 - [ ] `ctx.obj = kernel` — kernel passed via `@click.pass_obj`
 
@@ -187,21 +189,18 @@ v6 currently only has: `command`, `path`, `test`.
 
 - [x] `@command`, `@option`
 - [x] `@middleware` (new in v6)
-- [ ] `@alias` — registered in registry at build time; resolved before command execution
-- [ ] `@attach`
-- [ ] `@as_sudo` — triggers `os.execvp("sudo", ...)` before execution
-- [ ] `@no_log` — exclude command from log files
-- [ ] `@verbosity` — force verbosity level for this command only
-- [ ] `@test_command`
+- [x] `@alias` — registered in registry at build time; resolved before command execution
+- [x] `@attach` — pre/post hooks, string ET référence directe à CommandMethodWrapper
+- [x] `@as_sudo` — triggers `os.execvp("sudo", ...)` before execution
+- [~] `@no_log` — **SKIP** : redondant avec `--quiet`
+- [~] `@verbosity` — **SKIP** : faisable via `context.kernel.io`
+- [~] `@test_command` — **SKIP** : auto-détecté par convention de chemin
 
 ---
 
 ## Logging & event tracking
 
-- [ ] `Logger` — JSON log per task: command, trace, dateStart, duration, errors, events, parent/child task IDs
-- [ ] `append_error(level)` — FATAL or ERROR
-- [ ] `append_event(name, data)` — custom events (e.g. `EVENT_SWITCH_SUDO`)
-- [ ] IOManager log frame — scrolling display with `log_length` / `log_indent` + ANSI cursor control
+> **SKIP** — JSON task logs liés au Task ID supprimé. `context.io` couvre les besoins d'affichage.
 
 ---
 
@@ -214,7 +213,7 @@ v6 currently only has: `command`, `path`, `test`.
 
 ## Environment & config
 
-- [ ] `.env` loading — `dotenv_values()` → `kernel.env_values`; access via `kernel.env(key, default, required)`
+- [x] `.env` loading — via `HasYamlEnvKeysFile` mixin dans `AbstractKernel`
 - [ ] CommandRequest storage — `request.storage: dict` — per-request data store for sharing state across rendering steps
 
 ---
