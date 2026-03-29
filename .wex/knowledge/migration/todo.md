@@ -177,9 +177,9 @@ Prérequis bloquants avant autocomplete :
 ## Addons: core
 
 - [x] `check/hi` — migré avec `@alias("hi")`
-- [ ] `logo/show`
+- [x] `logo/show`
 - [x] `command/create` — resolver delegation, templates yml/py, auto-rebuild registry
-- [ ] `logs/show`, `logs/rotate`
+- [x] `logs/show`, `logs/rotate`
 - [ ] `core/install`, `core/uninstall` — à faire en dernier ; inclura config globale `~/.wex/config.yml` si besoin
 
 ## Addons: app (Docker lifecycle + config app)
