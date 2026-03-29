@@ -27,7 +27,7 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 ## YAML command definition system
 
-> V6 redesign — le runner YAML est un squelette vide, à implémenter from scratch en respectant les décisions d'architecture ci-dessous.
+> V6 — implémenté. Architecture finale ci-dessous pour référence.
 
 ### Format v6 (décisions de design)
 
@@ -107,9 +107,10 @@ v5 reference: `registry/build` + `KernelRegistryFileStructure` + `AddonCommandRe
 Each command entry in v5 has: `command`, `file`, `test`, `alias`, `attachments`, `description`, `properties`.
 v6 currently only has: `command`, `path`, `test`.
 
-- [x] `description` — extract `help=` from `@command` decorator at build time ← **blocks `info/show`**
-- [x] `alias` — list of aliases registered via `@alias` ← **blocks alias resolution**
-- [ ] `attachments` — `{before: [...], after: [...]}` from `@attach` ← blocks `@attach`
+- [x] `description` — extract `help=` from `@command` decorator at build time
+- [x] `alias` — list of aliases registered via `@alias`
+- [x] `attachments` — `{before: [...], after: [...]}` from `@attach`
+- [x] `sudo` — extrait du `@as_sudo`
 - [ ] `properties` — custom decorator metadata (`app_dir_required`, `ai_tool`, `app_webhook`…)
 
 ### Addon entry — field missing in v6

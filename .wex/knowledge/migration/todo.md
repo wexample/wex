@@ -19,6 +19,22 @@ Active tasks only — completed items live in the inventory files.
 
 - [x] Test complete command execution flow end-to-end (ping/pong test)
 
+## YAML executor
+
+- [x] `CoreYamlCommandRunner` — full implementation
+- [x] `YamlCommandDefinition` — immutable data object, parsed once, cached instance-level
+- [x] `AbstractScriptRunner` + `get_step_options()` — contrat extensible par les addons
+- [x] `BashScriptRunner` — inline script + file, `ignore_error`, `workdir`
+- [x] `PythonScriptRunner` — inline script + file, `ignore_error`, lazy via `PythonScriptResponse`
+- [x] `ScriptRunnerRegistry` sur le kernel — `kernel.script_runner_registry.register(MyRunner())`
+- [x] Substitution globale en amont (`yaml_substitute_step`) — runners reçoivent des strings propres
+- [x] Variables : env vars (basse priorité) < `PATH_CURRENT` < options (haute priorité)
+- [x] `variable:` — capture output d'un step dans une variable pour les steps suivants
+- [x] `command:` — appel interne via `kernel.execute_kernel_command()`
+- [x] Validation des clés inconnues à l'exécution avec message clair
+- [x] TypedDicts : `BashStepDict`, `PythonStepDict`, `InternalCommandStepDict`
+- [x] Symétrie totale Python/YAML au niveau registry (description, alias, attachments, sudo)
+
 ## Response system
 
 See full inventory: `inventory/response-system.md`
@@ -71,7 +87,8 @@ See full inventory: `inventory/response-system.md`
 
 ### Helpers & options
 
-- [ ] `registry_get_all_commands(kernel)`, `registry_find_commands_by_function_property()`
+- [x] `get_all_commands()`, `get_all_command_names()`, `get_sudo_commands()`, `find_command()`, `suggest()` sur `KernelRegistry`
+- [ ] `registry_find_commands_by_function_property()` — filter par custom property decorator
 - [ ] `resolver.get_commands_registry()`
 - [ ] Options `--test`, `--write`, `@alias("rebuild")` sur `registry/build`
 
@@ -148,14 +165,15 @@ Scan dynamique de `~/.wex/command/`.
 L'autocomplete sera implémenté en une seule fois, une fois tous les resolvers migrés (addon ✓, service, app, user). Implémenter par morceaux livrerait quelque chose d'incomplet à chaque étape.
 
 Prérequis bloquants avant autocomplete :
-- [ ] YAML executor (nécessaire pour app/service)
+- [x] YAML executor
 - [ ] `ServiceCommandResolver` migré
 - [ ] `AppCommandResolver` migré
 - [ ] `UserCommandResolver` migré
 
 ## Addons: core
 
-- [ ] `logo/show`, `check/hi`, `command/create`
+- [x] `check/hi` — migré avec `@alias("hi")`
+- [ ] `logo/show`, `command/create`
 - [ ] `logs/show`, `logs/rotate`
 - [ ] `core/install`, `core/uninstall`, `core/cleanup`, `install/update`
 
