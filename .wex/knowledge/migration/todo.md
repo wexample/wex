@@ -82,8 +82,8 @@ See full inventory: `inventory/response-system.md`
 
 ### Service resolver registry
 
-- [ ] `ServiceCommandResolver.build_registry_data()` — scanner `services/`, charger `service.yml`
-- [ ] Résolution de l'héritage (`config.extends` → merge récursif)
+- [x] `ServiceCommandResolver.build_registry_data()` — utilise `_scan_commands_dir` (yml + py, attachments, sudo)
+- [ ] Résolution de l'héritage service (`config.extends` → merge récursif) — feature avancée, non bloquante
 
 ### Helpers & options
 
