@@ -69,7 +69,7 @@ v5 had 3 render modes passed as argument to every `response.print()`:
 - `KERNEL_RENDER_MODE_NONE` — no output (lazy evaluation, used in tests and piped calls)
 
 Each response type implements its own rendering per mode.
-**v6 decision needed**: map render modes to `output_format` (`--output_format str|json`) already on kernel.
+**v6 — déjà en place** : `output_format` (str/json/yaml) sur `CommandRequest`, défaut `str` sur le kernel, dispatché dans `AbstractResponse.get_formatted()` → `_get_formatted_json_content()` / `_get_formatted_yaml_content()` / `_get_formatted_prompt_response()`.
 
 ## Response type hierarchy
 

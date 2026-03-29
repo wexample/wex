@@ -7,7 +7,7 @@ Active tasks only — completed items live in the inventory files.
 
 - [ ] Audit `helpers` package vs v5 helpers — check what's already ported
 - [ ] Audit `file-system.md` — check what structure classes exist in `app` and `filestate` packages
-- [ ] Audit `cli-bash.md` — check `bin/wex` in wex-6 for task ID and post-exec handling
+- [x] Audit `cli-bash.md` — `bin/wex` corrigé : `WEX_REQUEST_ID` passé via `--force-request-id` (plus en positional)
 
 ## Code TODOs
 
@@ -23,23 +23,17 @@ Active tasks only — completed items live in the inventory files.
 
 See full inventory: `inventory/response-system.md`
 
-### Phase 1 — render modes + simple structured output
-- [ ] Render modes → map `TERMINAL/JSON/NONE` to `output_format` on kernel
-- [x] `DictResponse` — dict → formatted lines or JSON
-- [x] `ListResponse` — list → newline-separated or JSON array
-- [x] `TableResponse` — rows + headers + title
-- [x] `KeyValueResponse` — merged into DictResponse (same rendering via PropertiesPromptResponse)
-- [~] `AbortResponse` — **SKIP** : redondant avec `QueuedCollectionStopResponse` + exceptions Python
+### Consolidation (done)
+- [x] Tous les types de réponse déplacés de `wex-core/response/` → `wexample_app/response/`
+- [x] `wex-core/response/` — répertoire entièrement supprimé
+- [x] `DictResponse`, `ListResponse`, `TableResponse`, `FunctionResponse` (callable générique)
+- [x] `ShellCommandResponse`, `InteractiveShellCommandResponse`
+- [x] `ResponseCollectionResponse`, `QueuedCollectionResponse`, `QueuedCollectionStop*`
+- [x] `StrResponse`, `IntResponse` — nouveaux types typés avec validation
+- [x] `BooleanResponse`, `NullResponse` — corrigés (`@base_class`, validation)
 
-### Phase 2 — special behaviours
-- [x] `HiddenResponse` — replaced by `output_target=none`
-- [ ] `FunctionResponse` — lazy callable wrapping (used by QueuedCollectionResponse steps, migrate with Phase 3)
-- [x] `ShellCommandResponse` (ex-NonInteractive) — capture shell output via `shell_run(capture=True)`
-- [x] `InteractiveShellCommandResponse` — live tty passthrough via `shell_run(inherit_stdio=True)`
-
-### Phase 3 — collections
-- [x] `ResponseCollectionResponse` — flat ordered list of responses
-- [x] `QueuedCollectionResponse` — sequential steps, stop signals, previous_value pipeline (fast mode dropped)
+### Render modes
+- [x] Render modes → déjà mappés : `output_format` (str/json/yaml) sur `CommandRequest`, `_config_arg_output_format` sur le kernel, dispatché dans `AbstractResponse.get_formatted()`
 
 ### Test infrastructure
 - [ ] `AbstractTestCase` equivalent — pytest base fixture + assertion helpers
@@ -50,7 +44,7 @@ See full inventory: `inventory/response-system.md`
 
 - [x] Implement `@alias`
 - [x] Implement `@attach` (before/after hooks) — supporte string ET référence directe à la CommandMethodWrapper
-- [ ] Implement `@as_sudo` — bloqué par shell commands middleware, à faire avec les services
+- [x] Implement `@as_sudo` — `decorator/as_sudo.py`, re-exec via `os.execvp("sudo", ...)` dans `Kernel._enforce_sudo_if_needed`
 - [~] `@no_log` — **SKIP** : redondant avec `--quiet` / `output_target=none`
 - [~] `@verbosity` — **SKIP** : faisable directement via `context.kernel.io`
 - [~] `@test_command` — **SKIP** : auto-détecté par convention de chemin dans `build_registry_data`
@@ -60,13 +54,14 @@ See full inventory: `inventory/response-system.md`
 
 - [x] Infrastructure de base — `registry/build`, `hydrate()`, `get_addon_commands()`
 
-### Bloquant (description, alias, attachments, properties)
+### Champs RegistryCommandData
 
-- [x] Ajouter `description` dans `RegistryCommandData` — extraire `help=` du `@command`
-- [x] Ajouter `alias` dans `RegistryCommandData` — liste des alias `@alias`
-- [x] Ajouter `attachments` dans `RegistryCommandData` — before/after de `@attach`
-- [ ] Ajouter `properties` dans `RegistryCommandData` — metadata custom des decorators
-- [ ] Ajouter `name` dans l'entrée addon
+- [x] `description` — extrait du `@command`
+- [x] `alias` — liste des `@alias`
+- [x] `attachments` — before/after de `@attach`
+- [x] `sudo` — extrait du `@as_sudo`, utilisé par `_enforce_sudo_if_needed`
+- [ ] `properties` — metadata custom des decorators
+- [ ] `name` dans l'entrée addon
 - [x] `resolver.resolve_alias(command)` — lookup avant pattern matching
 
 ### Service resolver registry
