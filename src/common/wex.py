@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from wexample_helpers.decorator.base_class import base_class
@@ -8,9 +9,15 @@ from wexample_wex_core.common.kernel import Kernel
 if TYPE_CHECKING:
     from src.workdir.wex_workdir import WexWorkdir
 
+_ASSETS_DIR = Path(__file__).parent.parent.parent / "assets"
+
 
 @base_class
 class Wex(Kernel):
+    def get_logo(self) -> str | None:
+        logo_path = _ASSETS_DIR / "logo.txt"
+        return logo_path.read_text(encoding="utf-8") if logo_path.exists() else None
+
     def _get_workdir_state_manager_class(self) -> type[WexWorkdir]:
         from src.workdir.wex_workdir import WexWorkdir
         return WexWorkdir
