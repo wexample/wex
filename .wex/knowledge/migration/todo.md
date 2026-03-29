@@ -79,29 +79,84 @@ See full inventory: `inventory/response-system.md`
 
 Infrastructure bash en place (`bin/autocomplete-handler`, `bin/autocomplete`). Commande Python rollbackée — à refaire proprement.
 
-**Étape 1 — Contrat de sortie**
-- Définir le format exact de sortie : une ligne, espace-séparé, sans aucun formatage parasite (logs compris)
-- Valider que `bin/wex default::autocomplete/suggest ...` produit exactement ça avec `--quiet`
+#### Architecture retenue
 
-**Étape 2 — Inventaire des cas de figure** (à couvrir avant d'écrire du code)
-- `wex <TAB>` — tout vide
-- `wex d<TAB>` — préfixe partiel
-- `wex demo<TAB>` — addon partiel, pas encore `::`
-- `wex demo:<TAB>` — en train de taper `::`
-- `wex demo::<TAB>` — addon complet, pas encore le groupe
-- `wex demo::p<TAB>` — groupe/commande partiel
-- `wex demo::ping/pong <TAB>` — commande complète, cursor=1 (arguments)
-- `wex pi<TAB>` → `ping` (alias)
+**Principe :** chaque resolver implémente `autocomplete_suggest(cursor, search_split)`. Il reconnaît son propre pattern de commande, sait où chercher ses suggestions, et retourne une string espace-séparée ou `""`. La commande Python agrège tous les resolvers.
 
-**Étape 3 — Python : `default::autocomplete/suggest`**
-- Réimplémenter proprement, chaque cas de l'étape 2 couvert par un test unitaire
-- Valider avant de toucher au bash
+**Source de données par resolver :**
+- `AddonCommandResolver` → **registry** (commandes globales, déjà buildées)
+- `ServiceCommandResolver` → **registry** (services déclarés globalement)
+- `AppCommandResolver` → **filesystem dynamique** — scan de `.wex/command/` dans le répertoire courant (contexte-dépendant, pas de cache possible)
+- `UserCommandResolver` → **filesystem dynamique** — scan de `~/.wex/command/`
 
-**Étape 4 — Bash : `bin/autocomplete`**
-- Réécrire depuis v5 (`cli/autocomplete`), cas par cas, avec tests live
+#### Contrat du mécanisme
 
-**Étape 5 — Debug mode**
-- `AUTOCOMPLETE_DEBUG=true` comme v5 pour inspecter les variables en cours de completion
+**Flux complet :**
+1. Bash appelle la completion function avec `COMP_WORDS` et `COMP_CWORD`
+2. Bash construit `SEARCH` (tout après `wex`, re-joint par espace) et `CURSOR = COMP_CWORD - 1`
+3. Bash appelle `wex --quiet default::autocomplete/suggest -s "${SEARCH}" -c "${CURSOR}"`
+4. Python itère tous les resolvers → agrège leurs suggestions → retourne une string espace-séparée
+5. Bash passe à `compgen -W "${SUGGESTIONS}" -- "${CURRENT}"` pour filtrer
+6. Bash ajoute un espace final si une seule suggestion complète
+
+> **Pourquoi SEARCH est re-joint par espace :** bash splitte sur `$COMP_WORDBREAKS` qui inclut `:` et `/`. `demo::ping/pong` devient `["demo", ":", ":", "ping", "/", "pong"]`. En re-joignant tout, Python reçoit un string stable et reconstruit lui-même le split sur les espaces.
+
+**Format de sortie Python (contrat strict) :**
+- Une seule ligne, suggestions séparées par des espaces
+- Aucun log, aucun formatage — `--quiet` systématique dans le bash
+- `""` si aucune suggestion
+
+**Sémantique cursor/search_split :**
+- `search` = tous les tokens après `wex` re-joints par espace
+- `search_split = search.split(" ")`
+- `cursor` = index 0-based dans `search_split` du mot en cours
+- `cursor >= len(search_split)` → `""` immédiatement
+
+#### Cas de figure par resolver
+
+**AddonCommandResolver** — reconnaît : `search_split[0]` ne commence pas par `.`, `~`, `@`
+
+| cursor | search_split exemple | résultat |
+|--------|----------------------|----------|
+| 0 | `[""]` | tous les addons : `demo:: default:: ...` |
+| 0 | `["de"]` | addons commençant par `de` : `demo::` |
+| 0 | `["pi"]` | alias correspondant : `ping` |
+| 1 | `["demo", ":"]` | `:` (compléter `::`) |
+| 1 | `["demo", "::"]` | toutes les commandes de `demo` : `ping/pong sudo/check` |
+| 2 | `["demo", "::", "p"]` | commandes commençant par `p` : `ping/pong` |
+| 2 | `["demo", "::", "ping/pong"]` | `ping/pong ` (complet, espace final) |
+| ≥3 | `["demo", "::", "ping/pong", "--t"]` | options : `--type` |
+
+**ServiceCommandResolver** — reconnaît : `search_split[0]` commence par `@`
+
+| cursor | search_split exemple | résultat |
+|--------|----------------------|----------|
+| 0 | `[""]` | `@` |
+| 0 | `["@"]` | tous les services |
+| 1 | `["@myapp", ":"]` | `:` |
+| 1 | `["@myapp", "::"]` | toutes les commandes du service |
+| 2 | `["@myapp", "::", "cmd"]` | commandes filtrées |
+
+**AppCommandResolver** — reconnaît : `search_split[0]` commence par `.`
+Scan dynamique de `.wex/command/` dans le répertoire courant (remonte jusqu'à trouver un `.wex/`).
+
+**UserCommandResolver** — reconnaît : `search_split[0]` commence par `~`
+Scan dynamique de `~/.wex/command/`.
+
+#### Plan d'implémentation
+
+**Étape 1 — `AddonCommandResolver.autocomplete_suggest()`**
+Implémenter les cas cursor 0/1/2/≥3 + alias, avec tests unitaires pour chaque cas du tableau.
+
+**Étape 2 — `default::autocomplete/suggest`**
+Commande qui itère `kernel.get_resolvers()`, agrège, retourne `StrResponse`.
+
+**Étape 3 — `bin/autocomplete` (bash)**
+Réécrire depuis v5, avec gestion `::` (CURRENT vide), trailing space par type, mode debug `AUTOCOMPLETE_DEBUG=true`.
+
+**Étape 4 — Tests live** cas par cas.
+
+**Étape 5 — Service/App/User** quand leurs resolvers seront migrés.
 
 ## Addons: core
 
