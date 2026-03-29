@@ -10,8 +10,8 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 - [x] Addon resolver — `addon::group/command`
 - [x] Service resolver — `@service::group/command`
-- [ ] App resolver — `.group/command` (app-local commands)
-- [ ] User resolver — `~group/command` (user-local commands)
+- [x] App resolver — `.group/command` (app-local commands)
+- [x] User resolver — `~group/command` (user-local commands)
 
 ---
 
@@ -21,7 +21,7 @@ These are prerequisites — without them, migrated commands are incomplete or un
 - [x] YAML command runner — `CoreYamlCommandRunner` — full implementation: bash/python runners, options, decorators, variable substitution, internal command calls
 - [ ] Sub-command execution — `kernel.run_command(command, args)` calls another command internally and returns its response; v5: `kernel.run_command()` + `kernel.previous_response`
 - [ ] Click argument conversion — `click_args_convert_dict_to_args()` / `click_args_convert_to_dict()` / `click_args_convert_dict_to_long_names_dict()` — bridge between Python dicts and CLI args for sub-commands
-- [ ] Attach system — pre/post command hooks (`@attach("before"/"after", cmd, pass_args, pass_previous)`) — attached commands run in fast mode
+- [x] Attach system — `@attach(position, command/wrapper, pass_args)` — string ET référence directe à CommandMethodWrapper
 
 ---
 
@@ -84,7 +84,7 @@ scripts:
 - [x] Built-in runners : `bash` (inline + file), `python` (inline + file)
 - [x] Variables : substitution `${VAR}`, `variable: VAR_NAME` pour capturer l'output, `PATH_CURRENT` built-in
 - [x] `command:` dans un script → appel interne via `kernel.execute_kernel_command()`
-- [ ] `ScriptRunnerRegistry` — pour permettre aux addons d'enregistrer leurs propres runners
+- [x] `ScriptRunnerRegistry` — `kernel.script_runner_registry.register(MyRunner())` sur le kernel
 
 ---
 
@@ -122,19 +122,16 @@ v6 currently only has: `command`, `path`, `test`.
 - [x] `resolver.resolve_alias(command)` — linear lookup: if input matches any `alias[]`, return full command name
 - [x] Called before pattern matching in `resolver.supports()` ← **blocks `@alias` end-to-end**
 
-### Service resolver registry — entirely missing in v6
+### Service resolver registry
 
-v5 stores per service: `addon`, `name`, `dir`, `config` (with `extends`), `commands`.
+- [x] `ServiceCommandResolver.build_registry_data()` — utilise `_scan_commands_dir` (yml + py, attachments, sudo)
+- [ ] Service config loading from `service.yml` — feature avancée, non bloquante
+- [ ] Service inheritance resolution (`config.extends` → recursive merge) — feature avancée, non bloquante
 
-- [ ] `ServiceCommandResolver.build_registry_data()` — scan `addons/{addon}/services/`
-- [ ] Service config loading from `service.yml`
-- [ ] Service inheritance resolution (`config.extends` → recursive merge with parent)
+### Helper functions
 
-### Helper functions — missing in v6
-
-- [ ] `registry_get_all_commands(kernel)` — all commands across all resolvers (flat)
-- [ ] `registry_get_all_commands_from_registry_part(part)` — commands from one resolver
-- [ ] `registry_find_commands_by_function_property(kernel, prop)` — filter by custom property
+- [x] `get_all_commands()`, `get_all_command_names()`, `get_sudo_commands()`, `find_command()`, `suggest()` sur `KernelRegistry`
+- [ ] `registry_find_commands_by_function_property(kernel, prop)` — filter by custom property decorator
 - [ ] `resolver.get_commands_registry()` — commands dict for active resolver
 
 ### registry/build options — missing in v6
@@ -168,24 +165,11 @@ v5 stores per service: `addon`, `name`, `dir`, `config` (with `extends`), `comma
 
 ## Queued collection (multi-step interactive execution)
 
-> v5's most sophisticated mechanism — enables interactive multi-step workflows.
-
-- [ ] `QueuedCollectionResponse` — sequential steps (values, callables, or responses)
-- [ ] Step path manager — tracks hierarchy `[0, 2, 1]` for nested steps
-- [ ] Default mode — stores step results in task files, one step per kernel invocation
-- [ ] Fast mode (`--fast-mode`) — all steps in memory, re-executes immediately; used for `@attach` and perf-critical scripts
-- [ ] `storable_data()` — controls what data passes between steps
-- [ ] Stop signals — `QueuedCollectionStopResponse`, `QueuedCollectionStopCurrentStepResponse`
-
----
+> **SKIP** — v6 uses subprocesses instead. No use case for in-process multi-step state machine.
 
 ## Task ID & propagation
 
-- [ ] Task ID as first `sys.argv` — identifies execution instance
-- [ ] `--kernel-task-id` — redirect to another task context
-- [ ] `--parent-task-id` — tracks parent kernel
-- [ ] Task files — `{task_id}.json`, `{task_id}.response`, `{task_id}.post-exec` in `{kernel.path['task']}/`
-- [ ] Post-exec queue — shell commands deferred to after kernel success; written to `{task_id}.post-exec`; supports async via `nohup` + `&`
+> **SKIP** — v6 uses subprocesses instead. Post-exec queue has no use case.
 
 ---
 
@@ -237,8 +221,8 @@ v5 stores per service: `addon`, `name`, `dir`, `config` (with `extends`), `comma
 
 ## CLI / shell
 
-- [ ] Task ID generation in `bin/wex` (format: `YYYYMMDD-HHMMSS-nanoseconds-PID`)
-- [ ] Post-exec loop in bash — reads `{task_id}.post-exec` after kernel exits
+- [~] Task ID generation in `bin/wex` — **SKIP** : no post-exec queue in v6
+- [~] Post-exec loop in bash — **SKIP** : no post-exec queue in v6
 - [ ] Autocomplete — depends on registry
 - [ ] Internal command → shell conversion — `internal_command_to_shell()`: `["bash", cli_path, command, ...args, "--kernel-task-id", ...]`
 - [ ] Process control — `process_kill_by_port()`, `process_kill_by_command()`, `process_get_all_by_port()`
