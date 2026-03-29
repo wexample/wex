@@ -18,7 +18,7 @@ These are prerequisites — without them, migrated commands are incomplete or un
 ## Command execution
 
 - [x] Python command runner
-- [ ] YAML command runner — `CoreYamlCommandRunner` exists, needs end-to-end validation
+- [x] YAML command runner — `CoreYamlCommandRunner` — full implementation: bash/python runners, options, decorators, variable substitution, internal command calls
 - [ ] Sub-command execution — `kernel.run_command(command, args)` calls another command internally and returns its response; v5: `kernel.run_command()` + `kernel.previous_response`
 - [ ] Click argument conversion — `click_args_convert_dict_to_args()` / `click_args_convert_to_dict()` / `click_args_convert_dict_to_long_names_dict()` — bridge between Python dicts and CLI args for sub-commands
 - [ ] Attach system — pre/post command hooks (`@attach("before"/"after", cmd, pass_args, pass_previous)`) — attached commands run in fast mode
@@ -27,11 +27,64 @@ These are prerequisites — without them, migrated commands are incomplete or un
 
 ## YAML command definition system
 
-- [ ] Validate `CoreYamlCommandRunner` supports full v5 YAML spec:
-  - `scripts[]` — steps: `command:` (internal), `script:` (bash inline), `file:` (bash file)
-  - `options[]` — Click options: name, short, type, default, help, is_flag, required
-  - `properties[]` — decorator list
-  - Variables in scripts: `PATH_CORE`, `PATH_CURRENT`, all options (uppercase)
+> V6 redesign — le runner YAML est un squelette vide, à implémenter from scratch en respectant les décisions d'architecture ci-dessous.
+
+### Format v6 (décisions de design)
+
+```yaml
+description: "Command description"       # remplace 'help' de v5
+decorators:                              # remplace 'properties' de v5 — symétrique avec @decorators Python
+  - name: sudo                           # équivaut à @as_sudo()
+  - name: alias                          # équivaut à @alias("hi")
+    args: hi
+  - name: attach                         # équivaut à @attach(position="after", command="...")
+    args:
+      position: after
+      command: demo::ping/pong
+      pass_args: true
+options:                                 # options CLI — inchangé vs v5
+  - name: type
+    short: t
+    type: str
+    required: true
+    help: "Response type"
+scripts:
+  - runner: bash                         # remplace 'type' de v5 — extensible via addons
+    script: echo "hello"
+  - runner: python
+    script: print("world")
+  - runner: bash
+    file: path/to/script.sh
+  - command: demo::ping/pong            # appel interne — inchangé vs v5
+    args:
+      type: dict
+```
+
+### Principes de design
+
+- **`type` top-level supprimé** — le type de resolver est inféré depuis le resolver qui a trouvé le fichier (comme pour `.py`)
+- **`decorators` unifié** — tout décorateur Python a son équivalent YAML ; les addons peuvent en enregistrer de nouveaux
+- **`runner` au lieu de `type` script** — extensible : `bash`/`python` built-in, d'autres fournis par addons (`rust`, `node`, `docker`…)
+- **`ScriptRunnerRegistry`** sur le kernel — les addons y enregistrent leurs runners
+- **Symétrie stricte** — un YAML et un Python doivent produire le même `CommandMethodWrapper` (mêmes champs registry : `description`, `alias`, `attachments`, `sudo`…)
+
+### Ce qui est reporté (dépendances non migrées)
+
+- `context: container` → Docker addon non migré
+- `app_should_run` → AppResolver non migré
+- `webhook` → addon-app concern
+
+### Plan d'implémentation
+
+- [x] Detection `.yml` dans `AddonCommandResolver.build_registry_data()`
+- [x] Parser YAML → extraire `description`, `options`, `decorators`, `scripts`
+- [x] `decorators` → appliquer sur `CommandMethodWrapper` (même logique que les décorateurs Python)
+- [x] `options` → `Option` objects avec type, required, default, short
+- [x] `scripts` → exécuter séquentiellement, retourner `ResponseCollectionResponse`
+- [x] Built-in runners : `bash` (inline + file), `python` (inline + file)
+- [x] Variables : substitution `${VAR}`, `variable: VAR_NAME` pour capturer l'output, `PATH_CURRENT` built-in
+- [x] `command:` dans un script → appel interne via `kernel.execute_kernel_command()`
+- [ ] `ScriptRunnerRegistry` — pour permettre aux addons d'enregistrer leurs propres runners
 
 ---
 
