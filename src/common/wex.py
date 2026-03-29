@@ -15,8 +15,16 @@ _ASSETS_DIR = Path(__file__).parent.parent.parent / "assets"
 @base_class
 class Wex(Kernel):
     def get_logo(self) -> str | None:
-        logo_path = _ASSETS_DIR / "logo.txt"
-        return logo_path.read_text(encoding="utf-8") if logo_path.exists() else None
+        import importlib.util
+
+        logo_py = _ASSETS_DIR / "logo.py"
+        if not logo_py.exists():
+            return None
+
+        spec = importlib.util.spec_from_file_location("wex_logo", logo_py)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)  # type: ignore[union-attr]
+        return mod.get_logo(self)
 
     def _get_workdir_state_manager_class(self) -> type[WexWorkdir]:
         from src.workdir.wex_workdir import WexWorkdir
