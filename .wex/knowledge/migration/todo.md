@@ -170,21 +170,27 @@ Prérequis bloquants avant autocomplete :
 - [x] `AppCommandResolver` migré
 - [x] `UserCommandResolver` migré
 
+## Prochaines étapes immédiates
+
+- [ ] Commandes système dans `wex-core` en YAML : `os/name`, `system/ip`, `disk/spaces`, `dir/spaces`, `process/by_port`, `kill/by_port`, `own/this`
+
 ## Addons: core
 
 - [x] `check/hi` — migré avec `@alias("hi")`
 - [ ] `logo/show`
 - [x] `command/create` — resolver delegation, templates yml/py, auto-rebuild registry
 - [ ] `logs/show`, `logs/rotate`
-- [ ] `core/install`, `core/uninstall`, `core/cleanup`, `install/update`
+- [ ] `core/install`, `core/uninstall` — à faire en dernier ; inclura config globale `~/.wex/config.yml` si besoin
 
-## Addons: app (Docker lifecycle)
+## Addons: app (Docker lifecycle + config app)
 
 > À faire une fois qu'une vraie app Docker est en place pour tester.
 
 - [ ] `app/start`, `app/stop`, `app/restart`, `app/serve`, `app/exec`, `app/perms`
 - [ ] `db/dump`, `db/exec`, `db/go`, `db/restore`
 - [ ] `remote/*`
+- [ ] `container/runs`, `docker/ip`, `docker/stop_all` — utils Docker légers, dans addon-app
+- [ ] Config app `.wex/config.yml` — `config/get`, `config/set` dans addon-app
 
 ## Webhooks (addon-app)
 
@@ -193,9 +199,12 @@ Prérequis bloquants avant autocomplete :
 - [ ] `@app_webhook` decorator
 - [ ] `webhook/listen`, `webhook/exec`, `webhook/stop`
 
-## Addons: system / docker / ai / db / services
+## Addons: ai / db / services
 
-- [ ] system: `os/name`, `system/ip`, `disk/spaces`, `process/by_port`, `kill/by_port`, `own/this`
-- [ ] docker: `container/runs`, `docker/ip`, `docker/stop_all`
 - [ ] ai: `talk/ask`, `talk/about_file`, `@ai_tool` decorator
 - [ ] services-db, services-php, services-various
+
+## SKIP définitifs
+
+- [~] `file/append_once`, `file/remove_line` — helpers Python, pas des commandes
+- [~] QueuedCollectionResponse, Task ID, post-exec queue, Logging JSON — v6 utilise des subprocesses
