@@ -167,7 +167,7 @@ L'autocomplete sera implémenté en une seule fois, une fois tous les resolvers 
 Prérequis bloquants avant autocomplete :
 - [x] YAML executor
 - [ ] `ServiceCommandResolver` migré
-- [ ] `AppCommandResolver` migré
+- [x] `AppCommandResolver` migré
 - [x] `UserCommandResolver` migré
 
 ## Addons: core
