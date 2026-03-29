@@ -30,6 +30,7 @@ class Wex(Kernel):
                 DefaultAddonManager,
             )
             from wexample_wex_core.addons.demo.demo_addon_manager import DemoAddonManager
+            from wexample_wex_core.addons.system.system_addon_manager import SystemAddonManager
             from wexample_wex_core.common.kernel import Kernel
             from wexample_wex_addon_filestate.filestate_addon_manager import FilestateAddonManager
             from wexample_wex_addon_app.app_addon_manager import AppAddonManager
@@ -38,12 +39,11 @@ class Wex(Kernel):
                 AppAddonManager,
                 DefaultAddonManager,
                 DemoAddonManager,
+                SystemAddonManager,
                 FilestateAddonManager,
                 JavascriptAddonManager,
                 PhpAddonManager,
                 PythonAddonManager,
-                # TODO Add it only when testing core.
-                # TestAddonManager,
             ]).exec_argv()
 
         except Exception as e:
