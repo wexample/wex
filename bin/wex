@@ -31,5 +31,5 @@ WEX_REQUEST_ID="$(date '+%Y%m%d-%H%M%S-%N')-$$"
 WEX_INTERPRETER=${WEX_INTERPRETER:-${WEX_ROOT}.venv/bin/python}
 
 # Load main python script
-${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" "${WEX_REQUEST_ID}" "${@}"
+${WEX_INTERPRETER} "${WEX_ROOT}__main__.py" --force-request-id "${WEX_REQUEST_ID}" "${@}"
 

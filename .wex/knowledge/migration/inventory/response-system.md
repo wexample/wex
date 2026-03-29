@@ -53,11 +53,13 @@ def render(self, output_format: str) -> str:
 ## Already in v6 (wexample-app)
 
 - [x] `NullResponse` — `response_normalize(None)` → already used by ping/pong test
-- [x] `BooleanResponse` — `response_normalize(bool)`
+- [x] `BooleanResponse` — `response_normalize(bool)` + `__attrs_post_init__` type check
 - [x] `DefaultResponse` — `response_normalize(Any)`
 - [x] `MultipleResponse` — container used by middleware execution
 - [x] `FailureResponse` — used in middleware stop-on-failure
 - [x] `response_normalize()` — central dispatcher (wexample-app/helpers/response.py)
+- [x] `StrResponse` — `wexample_app/response/str_response.py`, enforce `isinstance(str)`
+- [x] `IntResponse` — `wexample_app/response/int_response.py`, enforce `isinstance(int)`
 
 ## Render modes
 
@@ -100,31 +102,21 @@ AbstractResponse (base)
 ## Response types to migrate
 
 ### Phase 1 — simple structured output
-- [ ] `DictResponse` — dict → formatted lines or JSON
-- [ ] `ListResponse` — list → newline-separated or JSON array
-- [ ] `TableResponse` — rows + headers + title
-- [ ] `KeyValueResponse` — labelled key-value pairs with optional title
-- [~] `AbortResponse` — **SKIP** : redondant avec `QueuedCollectionStopResponse` (dans une collection) et les exceptions Python (hors collection)
+- [x] `DictResponse` — `wexample_app/response/dict_response.py`, title optionnel, PropertiesPromptResponse
+- [x] `ListResponse` — `wexample_app/response/list_response.py`, title optionnel, ListPromptResponse
+- [x] `TableResponse` — `wexample_app/response/table_response.py`, headers + rows
+- [x] `KeyValueResponse` — **SKIP** : fusionné dans `DictResponse` (même rendu via PropertiesPromptResponse)
+- [~] `AbortResponse` — **SKIP** : redondant avec `QueuedCollectionStopResponse` + exceptions Python
 
 ### Phase 2 — special behaviours
-- [ ] `HiddenResponse` — content stored, not printed in terminal mode
-- [ ] `FunctionResponse` — lazy callable wrapping
-- [ ] `NonInteractiveShellCommandResponse` — capture shell output as response
-- [ ] `InteractiveShellCommandResponse` — live shell output (tty passthrough)
+- [x] `HiddenResponse` — **SKIP** : remplacé par `output_target=none`
+- [x] `FunctionResponse` — `wexample_app/response/function_response.py` — `content: Callable[[], AbstractResponse]`, lazy + cached, le contenu est n'importe quel callable (pas lié à `run_function`)
+- [x] `ShellCommandResponse` (ex-NonInteractive) — `wexample_app/response/shell_command_response.py`
+- [x] `InteractiveShellCommandResponse` — `wexample_app/response/interactive_shell_command_response.py`
 
-### Phase 3 — collections (most complex)
-
-> **Note de conception (v6)** : Le système v5 collections/callbacks/tasks/queue a été bien travaillé mais avec le recul certaines choses auraient pu être plus simples. Avant de migrer à l'identique, prendre le temps de questionner chaque mécanisme : est-ce qu'il peut être simplifié, ou est-ce que v6 (pipeline réponses, output_target, middlewares) offre déjà une meilleure alternative ?
->
-> **Sur le système de "tasks" v5** : En v5, une hypothèse incorrecte — que les subprocesses Python ne pouvaient pas rester interactifs (tty passthrough) — a conduit à un système lourd où les commandes étaient écrites dans un fichier pour être exécutées par bash plutôt que par Python. En v6, cette contrainte n'existe pas : un subprocess Python peut très bien être interactif (`InteractiveShellCommandResponse`). Le système de tasks v5 devrait donc pouvoir être remplacé par de simples subprocesses, ce qui simplifie considérablement l'architecture. Ce point interfère avec `QueuedCollectionResponse` dans certains cas (notamment le fast mode) — à garder en tête lors de la migration.
-
-- [ ] `ResponseCollectionResponse` — flat ordered list of responses
-- [ ] `QueuedCollectionResponse` — sequential execution with:
-  - `queue.get_previous_value()` — access previous step result
-  - nested `QueuedCollectionResponse`
-  - `QueuedCollectionStopResponse` / `QueuedCollectionStopCurrentStepResponse`
-  - **Drop**: fast mode (was a workaround for bash tasking, no longer needed)
-  - **Drop**: PathManager (was needed because each step was a separate process)
+### Phase 3 — collections
+- [x] `ResponseCollectionResponse` — `wexample_app/response/response_collection_response.py`
+- [x] `QueuedCollectionResponse` — `wexample_app/response/queued_collection_response.py`, pipeline `previous_value`, `QueuedCollectionStopResponse`, `QueuedCollectionStopCurrentStepResponse`. Fast mode supprimé.
 
 > **Future idea — parallel execution** : `ParallelCollectionResponse` as a separate response type for concurrent steps. Out of scope for now, to be designed independently.
 
