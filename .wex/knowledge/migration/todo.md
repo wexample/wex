@@ -172,7 +172,7 @@ Prérequis bloquants avant autocomplete :
 
 ## Prochaines étapes immédiates
 
-- [ ] Commandes système dans `wex-core` en YAML : `os/name`, `system/ip`, `disk/spaces`, `dir/spaces`, `process/by_port`, `kill/by_port`, `own/this`
+- [x] Commandes système dans `wex-core` (addon `system`) : `os/name`, `system/ip`, `system/is_docker`, `disk/spaces`, `dir/spaces`, `process/by_port`, `kill/by_port`, `own/this`
 
 ## Addons: core
 
