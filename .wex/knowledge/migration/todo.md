@@ -143,20 +143,15 @@ Scan dynamique de `.wex/command/` dans le répertoire courant (remonte jusqu'à 
 **UserCommandResolver** — reconnaît : `search_split[0]` commence par `~`
 Scan dynamique de `~/.wex/command/`.
 
-#### Plan d'implémentation
+#### Plan d'implémentation — repoussé à la fin
 
-**Étape 1 — `AddonCommandResolver.autocomplete_suggest()`**
-Implémenter les cas cursor 0/1/2/≥3 + alias, avec tests unitaires pour chaque cas du tableau.
+L'autocomplete sera implémenté en une seule fois, une fois tous les resolvers migrés (addon ✓, service, app, user). Implémenter par morceaux livrerait quelque chose d'incomplet à chaque étape.
 
-**Étape 2 — `default::autocomplete/suggest`**
-Commande qui itère `kernel.get_resolvers()`, agrège, retourne `StrResponse`.
-
-**Étape 3 — `bin/autocomplete` (bash)**
-Réécrire depuis v5, avec gestion `::` (CURRENT vide), trailing space par type, mode debug `AUTOCOMPLETE_DEBUG=true`.
-
-**Étape 4 — Tests live** cas par cas.
-
-**Étape 5 — Service/App/User** quand leurs resolvers seront migrés.
+Prérequis bloquants avant autocomplete :
+- [ ] YAML executor (nécessaire pour app/service)
+- [ ] `ServiceCommandResolver` migré
+- [ ] `AppCommandResolver` migré
+- [ ] `UserCommandResolver` migré
 
 ## Addons: core
 
