@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+autocomplete() {
+  local CURRENT=${COMP_WORDS[${COMP_CWORD}]}
+  local SEARCH="${COMP_WORDS[*]:1}"
+  local CURSOR=$((COMP_CWORD - 1))
+
+  local SUGGESTIONS
+  SUGGESTIONS=($(wex default::autocomplete/suggest -s "${SEARCH}" -c "${CURSOR}" 2>/dev/null))
+
+  # "::" is a word separator in bash — clear CURRENT to allow suggestions through
+  if [ "${CURRENT}" == "::" ]; then
+    CURRENT=""
+  fi
+
+  COMPREPLY=($(compgen -W "${SUGGESTIONS[*]}" -- "${CURRENT}"))
+
+  # Add trailing space when there is a single unambiguous match
+  if [[ "${#COMPREPLY[@]}" -eq 1 ]]; then
+    local MATCH="${COMPREPLY[0]}"
+    # Only add space if the match is a complete command (not a partial like "demo::")
+    if [[ "${MATCH}" != *":" ]]; then
+      COMPREPLY[0]="${MATCH} "
+    fi
+  fi
+}
+
+autocomplete
