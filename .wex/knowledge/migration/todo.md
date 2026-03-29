@@ -77,8 +77,31 @@ See full inventory: `inventory/response-system.md`
 
 ### Autocomplete
 
-- [ ] `resolver.autocomplete_suggest(cursor, search_split)` sur chaque resolver
-- [ ] `default::autocomplete/suggest`
+Infrastructure bash en place (`bin/autocomplete-handler`, `bin/autocomplete`). Commande Python rollbackée — à refaire proprement.
+
+**Étape 1 — Contrat de sortie**
+- Définir le format exact de sortie : une ligne, espace-séparé, sans aucun formatage parasite (logs compris)
+- Valider que `bin/wex default::autocomplete/suggest ...` produit exactement ça avec `--quiet`
+
+**Étape 2 — Inventaire des cas de figure** (à couvrir avant d'écrire du code)
+- `wex <TAB>` — tout vide
+- `wex d<TAB>` — préfixe partiel
+- `wex demo<TAB>` — addon partiel, pas encore `::`
+- `wex demo:<TAB>` — en train de taper `::`
+- `wex demo::<TAB>` — addon complet, pas encore le groupe
+- `wex demo::p<TAB>` — groupe/commande partiel
+- `wex demo::ping/pong <TAB>` — commande complète, cursor=1 (arguments)
+- `wex pi<TAB>` → `ping` (alias)
+
+**Étape 3 — Python : `default::autocomplete/suggest`**
+- Réimplémenter proprement, chaque cas de l'étape 2 couvert par un test unitaire
+- Valider avant de toucher au bash
+
+**Étape 4 — Bash : `bin/autocomplete`**
+- Réécrire depuis v5 (`cli/autocomplete`), cas par cas, avec tests live
+
+**Étape 5 — Debug mode**
+- `AUTOCOMPLETE_DEBUG=true` comme v5 pour inspecter les variables en cours de completion
 
 ## Addons: core
 
