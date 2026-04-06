@@ -57,6 +57,13 @@
   - Délègue à `app/stop` puis `app/start`
   - **Test** : `app restart` sur network
 
+### Phase 3b — Services DB (wex-addon-services-db)
+- [x] **`AppService`** — classe `wex-addon-app/service/app_service.py` : porte `name` + `app_workdir`
+- [x] **`ServiceCommandResolver`** — déplacé de `wex-core` vers `wex-addon-app` ; injecte `service: AppService`
+- [x] **`@mysql::config/runtime`** — écrit `mysql.cnf` + `db.main` dans runtime config
+- [x] **`@mysql::service/ready`** — poll `mysqladmin ping` (container name encore placeholder)
+- [ ] **`@mysql::service/ready`** — résoudre le container name depuis `service.app_workdir.get_runtime_config()`
+
 ### Phase 4 — Commandes DB (dépendent de app/exec)
 - [ ] **`db/exec`** — exécute une commande dans le container DB
   - Délègue la construction de la commande SQL au service (`@service::db/exec`)
@@ -99,9 +106,9 @@
   - **Test** : `app perms` sur network
 
 ### Phase 6 — Config app (dépendances de start)
-- [ ] **`config/write`** — génère les fichiers runtime (`docker-compose.runtime.yml`, `config.runtime.yml`)
-  - En v5 c'est le cœur du système — à analyser plus finement avant d'implémenter
-  - **Bloquant pour `app/start`**
+- [x] **`config/write`** — génère `config.runtime.yml` + `docker-compose.runtime.yml`
+  - Testé sur network, fonctionne
+  - Todos restants : services compose files via hook, domains/domain_tld, user/group/uid/gid
 
 - [ ] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml`
   - Simple : wrap autour du loader de config v6
