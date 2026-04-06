@@ -29,32 +29,31 @@
 ## Ordre de migration
 
 ### Phase 1 — Infrastructure middleware Docker
-- [ ] **`DockerAppMiddleware`** — middleware qui résout un appdir Docker (`has .wex/config.yml` avec `global.type: app`)
-  - Distinct du `AppMiddleware` existant (qui résout les packages dev)
-  - Inject `docker_app_workdir` (ou `app_dir: Path`) dans le contexte
-  - Option `--app-path` optionnelle (défaut = cwd, remonte jusqu'au `.wex/`)
-  - **Dépendance** : toutes les commandes Docker en dépendent → à faire en premier
+- [x] **`DockerAppMiddleware`** — **ABANDONNÉ** : fusionné dans `AppMiddleware` existant
+  - `AppMiddleware` injecte déjà `app_workdir` sans valider la structure "package"
+  - Aucun commit jamais créé — décision prise avant l'implémentation
+  - `AppMiddleware` + `AppWorkdir` couvrent le cas Docker sans middleware séparé
 
 ### Phase 2 — Commandes simples (building blocks)
-- [ ] **`app/started`** — vérifie si les containers tournent
+- [x] **`app/started`** — écrit, utilise `AppMiddleware` + `AppWorkdir`
   - Lit `config.runtime.yml` (clé `started`) + interroge `docker ps`
   - Modes : `config` / `any-container` / `full`
   - Retourne `BoolResponse`
   - **Test** : lancer sur network stoppée → `False`, network démarrée → `True`
 
-- [ ] **`app/exec`** — exécute une commande dans un container via `docker exec`
+- [x] **`app/exec`** — exécute une commande dans un container via `docker exec`
   - Options : `--container-name`, `--command`, `--user`, `--interactive`, `--sync`
   - Retourne `InteractiveShellCommandResponse` ou `ShellCommandResponse`
   - **Test** : `app exec -c "echo hello"` dans network
 
 ### Phase 3 — Stop/restart (pas de dépendance externe)
-- [ ] **`app/stop`** — arrête l'app
+- [x] **`app/stop`** — arrête l'app
   - `docker compose stop` + `docker compose rm -f`
   - Hooks : `app/stop-pre`, `app/stop-post`
   - Met à jour `config.runtime.yml` (`started: false`)
   - **Test** : `app stop` sur network démarrée
 
-- [ ] **`app/restart`** — stop + start
+- [x] **`app/restart`** — stop + start (squelette, délègue à stop + start)
   - Délègue à `app/stop` puis `app/start`
   - **Test** : `app restart` sur network
 
@@ -78,7 +77,7 @@
   - **Test** : `db restore` sur network → sélectionner un dump existant
 
 ### Phase 5 — Start (commande la plus complexe)
-- [ ] **`app/start`** — démarre l'app complète
+- [~] **`app/start`** — squelette avec todos, bloqué par `config/write`
   - Pré-requis : middleware Docker, app/started, app/exec, app/perms, app/stop
   - Pipeline :
     1. Checkup (déjà démarrée ? env défini ?)
