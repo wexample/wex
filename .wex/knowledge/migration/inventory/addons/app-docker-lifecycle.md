@@ -78,7 +78,7 @@
   - Délègue au service (`@service::db/dump`), zip, symlink `db.latest`
   - **Test** : `db dump` sur network → vérifie le zip créé dans `.wex/mysql/dumps/`
 
-- [ ] **`db/restore`** — restaure un dump
+- [x] **`db/restore`** — restaure un dump
   - Liste les dumps disponibles (prompt si non précisé), unzip si besoin
   - Délègue à `@service::db/destroy` puis `@service::db/restore`
   - **Test** : `db restore` sur network → sélectionner un dump existant
