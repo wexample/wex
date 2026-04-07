@@ -84,19 +84,27 @@
   - **Test** : `db restore` sur network → sélectionner un dump existant
 
 ### Phase 5 — Start (commande la plus complexe)
-- [~] **`app/start`** — squelette avec todos, bloqué par `config/write`
-  - Pré-requis : middleware Docker, app/started, app/exec, app/perms, app/stop
-  - Pipeline :
-    1. Checkup (déjà démarrée ? env défini ?)
-    2. Proxy (démarrer le proxy si requis et absent)
-    3. Config (`config/write` — génère docker-compose.runtime.yml)
-    4. Hooks `app/start-pre`
-    5. `docker compose up -d`
-    6. Hosts update
-    7. Wait services ready (poll `service/ready`)
-    8. Hooks `app/start-post` + `app/serve`
-    9. First-init (hook `app/first-init` + lock file)
-  - **Test** : `app start` sur network (app arrêtée)
+- [x] **`app/start`** — fonctionnel sur network ✅
+  - `docker compose up -d` avec `InteractiveShellCommandResponse` (output live)
+  - `--env-file docker.env` passé au `up` (nécessaire pour les `extends` non résolus dans le runtime)
+  - Todos restants (stubs) :
+    - `_checkup` : détecter app déjà démarrée + env absent (bloqué par `env/choose`)
+    - `_proxy` : démarrer le proxy si requis (bloqué par proxy helper)
+    - `_update_hosts` : appeler `hosts/update` (bloqué par proxy + sudo)
+    - `_pending` : poll `service/ready` (bloqué par migration services)
+    - `_serve` / `_first_init` : hooks post-start (bloqué par migration services)
+    - `_complete` : afficher domaines + next commands
+
+### Décisions d'architecture prises lors de app/start
+
+- **`APP_NAME` vs `APP_PROJECT_NAME`** : deux variables séparées dans le runtime
+  - `APP_NAME=network` — nom de l'app seul, pour les service names dans compose et les `links`
+  - `APP_PROJECT_NAME=network_local` — `{name}_{env}`, pour les container names et `--project-name` docker
+  - Motivation : permettre de faire tourner la même app en dev et prod sur le même serveur sans conflit
+- **Service composes dans `-f`** : seuls les composes sans clé `services` sont inclus (ex: proxy → `wex_net`)
+  - Les service composes avec services (symfony, mysql…) sont référencés via `extends` uniquement
+  - Inclure les deux causait des doublons de container names
+- **Trailing slash sur `path` et `setup_path`** : cohérence avec v5 pour les concaténations dans compose (`${APP_SETUP_PATH}apache/…`)
 
 - [ ] **`app/perms`** — fix permissions (dépendance de start)
   - `chown` + `chmod` récursif selon config `permissions.*`
@@ -106,9 +114,9 @@
   - **Test** : `app perms` sur network
 
 ### Phase 6 — Config app (dépendances de start)
-- [x] **`config/write`** — génère `config.runtime.yml` + `docker-compose.runtime.yml`
+- [x] **`config/write`** — génère `config.runtime.yml` + `docker.env` + `docker-compose.runtime.yml`
   - Testé sur network, fonctionne
-  - Todos restants : services compose files via hook, domains/domain_tld, user/group/uid/gid
+  - Todos restants : domains/domain_tld, user/group/uid/gid
 
 - [ ] **`config/get`** / **`config/set`** — lecture/écriture dans `.wex/config.yml`
   - Simple : wrap autour du loader de config v6
@@ -150,7 +158,7 @@
 ```yaml
 # .wex/config.yml (network)
 wex:
-  version: 5.0.51+build.20231203154926
+  version: 6.0.9
 global:
   type: app
   name: network
@@ -159,6 +167,8 @@ docker:
   main_db_container: mysql
 require_proxy: true
 ```
+- `app/start` testé et fonctionnel sur network en wex v6 ✅
+- `docker-compose.yml` migré : `${APP_NAME}` → `${APP_PROJECT_NAME}` pour les container names, `links` utilisent les service names directs
 
 ---
 
