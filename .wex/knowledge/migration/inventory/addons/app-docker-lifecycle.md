@@ -73,13 +73,7 @@
 - [x] **`app/start`** — fonctionnel sur network ✅
   - `docker compose up -d` avec `InteractiveShellCommandResponse` (output live)
   - `--env-file docker.env` passé au `up` (nécessaire pour les `extends` non résolus dans le runtime)
-  - Todos restants (stubs) :
-    - `_checkup` : détecter app déjà démarrée + env absent (bloqué par `env/choose`)
-    - `_proxy` : démarrer le proxy si requis (bloqué par proxy helper)
-    - `_update_hosts` : appeler `hosts/update` (bloqué par proxy + sudo)
-    - ~~`_pending` : poll `service/ready`~~ — implémenté ✅
-    - `_serve` / `_first_init` : hooks post-start (bloqué par migration services)
-    - `_complete` : afficher domaines + next commands
+  - Stubs restants : voir Phase 7
 
 ### Décisions d'architecture prises lors de app/start
 
@@ -117,14 +111,12 @@
 ### Phase 8 — Migration fichier v5→v6
 - [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
 - [ ] **`migration_6_0_0.py`** — fichier de migration v5→v6
-  - Clé `wex.version` → `global.wex_version` (à confirmer)
-  - Structure `.wex/tmp/` — vérifier cohérence avec v6
-  - Clé `docker.main_db_container` → inchangée
+  - Clé `docker.main_db_container` → `docker.db.main`
   - Clé `global.type: app` — doit être présente
   - **Test** : faire tourner sur une app encore en v5
 
 ### Phase 9 — Commandes mineures manquantes
-- [ ] **`app/serve`** — hook uniquement, trivial
+- ~~`app/serve`~~ — supprimé, aucun usage trouvé
 - [ ] **`app/go`** — alias `app/exec --interactive` avec shell par défaut
 - [ ] **`container/list`** — liste containers depuis docker-compose.runtime.yml
 - [ ] **`env/choose`** / **`env/set`** / **`env/get`** — gestion environnement
@@ -160,7 +152,7 @@ global:
   name: network
   main_service: symfony
 docker:
-  main_db_container: mysql
+  db.main: mysql
 require_proxy: true
 ```
 - `app/start` testé et fonctionnel sur network en wex v6 ✅
