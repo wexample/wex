@@ -24,33 +24,35 @@ Pipeline final :
 
 ---
 
-### STEP 1 — `_runtime` : base app config
+### ✅ STEP 1 — `_runtime` : base app config
 **Ce qu'on fait :**
-- Écrire `runtime.yml` depuis `build_runtime_config_value()` + extras de base :
-  `{ env, name, host.ip, started: false }`
+- Écrire `runtime.yml` depuis un dict vide + extras de base : `{ env, name, host.ip, started: false }`
+- `name` lu depuis `get_project_name()` → `get_config().search("global.name")` (corrigé : ne lit plus le runtime)
 - Pas de services encore.
 
-**Résultat :** `runtime.yml` écrit, config/write passe.
+**Résultat :** `runtime.yml` propre, zéro bruit v5.
+> Validé.
 
 ---
 
-### STEP 2 — `AppService.get_runtime_contribution()` + merge dans `_runtime`
+### ✅ STEP 2 — `AppService.get_runtime_contribution()` + merge dans `_runtime`
 **Ce qu'on fait :**
-- Ajouter `get_runtime_contribution(app_env: str) -> dict` sur `AppService`
-- Implémentation par défaut : passthrough de `config.yml service.{name}` (host, port, name, password, user...)
-- `_runtime` itère sur les services, merge toutes les contributions dans runtime.yml
+- `get_runtime_contribution() -> dict` sur `AppService`
+- Lit `config.yml service.{name}` (host, port, name, password, user...) + path compose
+- `_runtime` itère sur les services, merge toutes les contributions
 
 **Contrat :**
 ```python
 # AppService.get_runtime_contribution() retourne, ex pour mysql :
 {
     "service": {
-        "mysql": { "host": "network_mysql", "port": 3306, "name": "network", ... }
+        "mysql": { "host": "network_mysql", "port": 3306, "compose": "/path/to/docker-compose.yml", ... }
     }
 }
 ```
 
-**Résultat :** runtime.yml contient les données de chaque service. config/write passe.
+**Résultat :** runtime.yml contient uniquement les données v6, une seule écriture.
+> Validé.
 
 ---
 
