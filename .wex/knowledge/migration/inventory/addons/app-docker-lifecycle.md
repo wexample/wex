@@ -70,7 +70,7 @@
   - Puis appelle `app/exec` sur le container DB
   - **Test** : `db exec -c "SELECT 1"` sur network
 
-- [ ] **`db/go`** — entre dans le CLI DB (mysql, psql…)
+- [x] **`db/go`** — entre dans le CLI DB (mysql, psql…)
   - Récupère la commande via `@service::db/go`, puis `app/exec --interactive`
   - **Test** : `db go` sur network (doit ouvrir mysql CLI)
 
