@@ -110,11 +110,20 @@
 
 ### Phase 7 — Stubs restants dans app/start
 - [x] **`_checkup`** — vérifie existence `.wex/.env` (appelle `env/choose` si absent) + détecte app déjà démarrée via `_check_started()`
-- [ ] **`_proxy`** — démarrer le proxy si requis (bloqué par proxy helper)
-- [ ] **`_update_hosts`** — appeler `hosts/update` (bloqué par proxy + sudo)
+- [x] **`_proxy`** — démarre le proxy si requis ; `helper/start` si proxy inexistant
+- [x] **`_update_hosts`** — appelle `hosts/update` (écrit `/etc/hosts` wex block)
 - ~~`_serve`~~ — supprimé, aucun usage trouvé en v5
 - ~~`_first_init`~~ — supprimé, aucun usage trouvé en v5
 - [x] **`_complete`** — domaines + suggestions de commandes via `AddonCommandResolver`
+
+### Décisions d'architecture app/start (phase 7)
+- **`run_function` → retourner la réponse** : appeler `run_function(fn)` depuis un step sans `return` orpheline la `QueuedCollectionResponse` — toujours `return run_function(fn)` pour que les steps s'exécutent
+- **`app_path` explicite** : `run_function(app__config__write)` sans `app_path` utilise `kernel.call_workdir` (le cwd de l'utilisateur), pas le workdir de la commande — toujours passer `{"app_path": str(app_path)}`
+- **`VIRTUAL_HOST`** : nginx-proxy requiert `VIRTUAL_HOST=${APP_DOMAIN_MAIN}` sur le container main — ajouté dans le service symfony docker-compose
+- **`helper/start`** : crée `/var/www/{env}/wex-proxy/` from scratch (config.yml v6, docker-compose nginx-proxy) puis appelle `app/start`
+- **`hosts/update`** : écrit un bloc `#[ wex ]# ... #[ end-wex ]#` dans `/etc/hosts`, `127.0.1.1` pour env local
+- **`start-pre` / `start-post`** : supprimés — aucun usage réel en v5 ; `@attach` remplace `start-post`
+- **`start-options`** (nextcloud) : non migré — à remplacer par `depends_on: condition: service_healthy` dans le docker-compose du service
 
 ### Phase 8 — Migration fichier v5→v6
 - [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
