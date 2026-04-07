@@ -75,6 +75,14 @@
   - `--env-file docker.env` passé au `up` (nécessaire pour les `extends` non résolus dans le runtime)
   - Stubs restants : voir Phase 7
 
+### Décisions d'architecture prises lors de app/go et app/exec
+
+- **`app/go` n'utilise pas `app/exec`** : construit `docker exec -ti container shell` directement via `InteractiveShellCommandResponse` — pas de `-c`, shell interactif pur
+- **`app/exec --interactive`** : utilise `shell -c command` + `InteractiveShellCommandResponse` (TTY hérité, mais commande via shell)
+- **Service `default`** : créé dans `wex-addon-app/services/default/` — injecté automatiquement en premier par `get_services()` dans `AppMiddleware` — fournit `stdin_open`, `tty`, `restart`, `environment`, `networks` à tous les services via `extends`
+  - Variable compose : `${SERVICE_DEFAULT_COMPOSE}` (générée dans `docker.env` par `config/write`)
+  - Valeurs par défaut : `APP_DOCKER_COMPOSE_STDIN_OPEN:-true`, `APP_DOCKER_COMPOSE_TTY:-true`
+
 ### Décisions d'architecture prises lors de app/start
 
 - **`APP_NAME` vs `APP_PROJECT_NAME`** : deux variables séparées dans le runtime
@@ -110,10 +118,9 @@
 
 ### Phase 8 — Migration fichier v5→v6
 - [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
-- [ ] **`migration_6_0_0.py`** — fichier de migration v5→v6
+- [x] **`migration_6_0_0.py`** — fichier de migration v5→v6
   - Clé `docker.main_db_container` → `docker.db.main`
   - Clé `global.type: app` — doit être présente
-  - **Test** : faire tourner sur une app encore en v5
 
 ### Phase 9 — Commandes mineures manquantes
 - ~~`app/serve`~~ — supprimé, aucun usage trouvé
