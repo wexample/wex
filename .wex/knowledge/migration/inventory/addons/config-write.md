@@ -107,7 +107,7 @@ config/write passe.
 
 ---
 
-### STEP 5 — `_docker` : docker-compose.runtime.yml
+### ✅ STEP 5 — `_docker` : docker-compose.runtime.yml
 **Ce qu'on fait :**
 - Injecter les compose files déclarés dans `service.*.compose` du runtime.yml
 - Injecter le compose de base de l'app (`.wex/docker/docker-compose.yml`)
