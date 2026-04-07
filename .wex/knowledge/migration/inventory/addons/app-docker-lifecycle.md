@@ -65,7 +65,7 @@
 - [x] **`@mysql::service/ready`** — résoudre le container name depuis `service.app_workdir.get_runtime_config()`
 
 ### Phase 4 — Commandes DB (dépendent de app/exec)
-- [ ] **`db/exec`** — exécute une commande dans le container DB
+- [x] **`db/exec`** — exécute une commande dans le container DB
   - Délègue la construction de la commande SQL au service (`@service::db/exec`)
   - Puis appelle `app/exec` sur le container DB
   - **Test** : `db exec -c "SELECT 1"` sur network
