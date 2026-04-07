@@ -110,8 +110,9 @@
 - [ ] **`_checkup`** — détecter app déjà démarrée + env absent (bloqué par `env/choose`)
 - [ ] **`_proxy`** — démarrer le proxy si requis (bloqué par proxy helper)
 - [ ] **`_update_hosts`** — appeler `hosts/update` (bloqué par proxy + sudo)
-- [ ] **`_serve` / `_first_init`** — hooks post-start (bloqué par migration services)
-- [ ] **`_complete`** — afficher domaines + next commands
+- ~~`_serve`~~ — supprimé, aucun usage trouvé en v5
+- ~~`_first_init`~~ — supprimé, aucun usage trouvé en v5
+- [x] **`_complete`** — domaines + suggestions de commandes via `AddonCommandResolver`
 
 ### Phase 8 — Migration fichier v5→v6
 - [x] **`migration/run`** — commande existante (`migration/run`, `migration/status`, `migration/rollback`)
