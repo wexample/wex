@@ -62,7 +62,7 @@
 - [x] **`ServiceCommandResolver`** — déplacé de `wex-core` vers `wex-addon-app` ; injecte `service: AppService`
 - [x] **`@mysql::config/runtime`** — écrit `mysql.cnf` + `db.main` dans runtime config
 - [x] **`@mysql::service/ready`** — poll `mysqladmin ping` (container name encore placeholder)
-- [ ] **`@mysql::service/ready`** — résoudre le container name depuis `service.app_workdir.get_runtime_config()`
+- [x] **`@mysql::service/ready`** — résoudre le container name depuis `service.app_workdir.get_runtime_config()`
 
 ### Phase 4 — Commandes DB (dépendent de app/exec)
 - [ ] **`db/exec`** — exécute une commande dans le container DB
@@ -91,7 +91,7 @@
     - `_checkup` : détecter app déjà démarrée + env absent (bloqué par `env/choose`)
     - `_proxy` : démarrer le proxy si requis (bloqué par proxy helper)
     - `_update_hosts` : appeler `hosts/update` (bloqué par proxy + sudo)
-    - `_pending` : poll `service/ready` (bloqué par migration services)
+    - ~~`_pending` : poll `service/ready`~~ — implémenté ✅
     - `_serve` / `_first_init` : hooks post-start (bloqué par migration services)
     - `_complete` : afficher domaines + next commands
 
